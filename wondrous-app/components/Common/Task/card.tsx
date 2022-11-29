@@ -112,6 +112,7 @@ export function TaskCard({
   boardType,
 }) {
   const location = useLocation();
+  const router = useRouter();
   const TaskIcon = TASK_ICONS[task.status];
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
@@ -125,7 +126,6 @@ export function TaskCard({
   const coverMedia = task?.media?.find((media) => media.type === 'image');
   const userProfile = useUserProfile();
 
-  const router = useRouter();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -205,9 +205,14 @@ export function TaskCard({
   const onNavigate = (e) => {
     // TODO refactor this
     if (!showPaymentModal && !isApplicationModalOpen) {
-      location.push(viewUrl);
-      windowOffset = window.scrollY;
-      document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+      const query = {
+        ...router.query,
+        task: task?.id
+      }
+
+      router.push({ query });
+      // windowOffset = window.scrollY;
+      // document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
     }
   };
 

@@ -1,3 +1,4 @@
+import TaskActions from "components/TaskActions";
 import React, { useEffect, useState, memo, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
@@ -182,15 +183,10 @@ function Wrapper(props) {
     orgData,
     onSearch,
     filterSchema,
-    routerQuery,
     onFilterChange,
     statuses,
     podIds,
-    activeEthAddress,
-    orgBoard,
     userId,
-    routerPath,
-    onNavigate,
     renderSharedHeader = null,
     isCollabWorkspace = false,
     inviteButtonSettings = null,
@@ -205,9 +201,11 @@ function Wrapper(props) {
 
   const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
 
+  const loggedInUser = useMe();
   const [moreInfoModalOpen, setMoreInfoModalOpen] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
+  const orgBoard = useOrgBoard();
 
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
@@ -228,15 +226,17 @@ function Wrapper(props) {
 
   const isGr15Sponsor = hasGr15Tasks || hasGr15Bounties;
   const links = orgProfile?.links;
+  const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
-  const { search, entity, cause } = routerQuery;
+  const { search, entity, cause } = router.query;
   const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
   const board = orgBoard;
   const boardFilters = board?.filters || {};
+  const { asPath } = router;
   let finalPath = '';
-  if (routerPath) {
-    const finalPathArr = routerPath.split('/');
+  if (asPath) {
+    const finalPathArr = asPath.split('/');
     finalPath = finalPathArr[finalPathArr.length - 1];
   }
 
@@ -247,7 +247,7 @@ function Wrapper(props) {
       const bountyCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.bountyCount;
       const taskCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.taskCount;
       if (taskCount === 0 && bountyCount > taskCount && finalPath === 'boards') {
-        onNavigate(`/${mainPath}/${orgProfile?.username}/boards?entity=bounty`, undefined, {
+        router.push(`/${mainPath}/${orgProfile?.username}/boards?entity=bounty`, undefined, {
           shallow: true,
         });
       }
@@ -311,6 +311,7 @@ function Wrapper(props) {
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
+      <TaskActions />
       <Suspense>
         <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       </Suspense>
@@ -331,7 +332,7 @@ function Wrapper(props) {
             orgId={orgBoard?.orgId}
             open={openCurrentRoleModal}
             onClose={() => setOpenCurrentRoleModal(false)}
-            linkedWallet={activeEthAddress}
+            linkedWallet={loggedInUser?.activeEthAddress}
             currentRoleName={orgRoleName}
             setOpenJoinRequestModal={setOpenJoinRequestModal}
             setClaimedOrRequestedRole={setClaimedOrRequestedRole}
@@ -475,7 +476,7 @@ function Wrapper(props) {
                   <>
                     <SettingsButton
                       onClick={() => {
-                        onNavigate(`/${mainPath}/settings/${orgBoard?.orgId}/general`);
+                        router.push(`/${mainPath}/settings/${orgBoard?.orgId}/general`);
                       }}
                     >
                       Settings
@@ -599,43 +600,56 @@ function Wrapper(props) {
   );
 }
 
-const WrapperMemo = memo(Wrapper, (prevProps, nextProps) => {
-  if (!nextProps.orgBoard?.orgId) {
-    return true;
-  }
+export default Wrapper;
 
-  const areEqual =
-    prevProps.routerQuery === nextProps.routerQuery &&
-    prevProps.orgBoard?.orgId === nextProps.orgBoard?.orgId &&
-    prevProps.routerPath === nextProps.routerPath &&
-    prevProps.activeEthAddress === nextProps.activeEthAddress;
-
-  // console.log(
-  //   '---------',
-  //   prevProps.routerQuery === nextProps.routerQuery,
-  //   prevProps.orgBoard?.orgId === nextProps.orgBoard?.orgId,
-  //   prevProps.routerPath === nextProps.routerPath,
-  //   prevProps.activeEthAddress === nextProps.activeEthAddress
-  // );
-  //
-  // console.log('-------', prevProps, nextProps);
-
-  return areEqual;
-});
-
-export default (props) => {
-  const loggedInUser = useMe();
-  const orgBoard = useOrgBoard();
-  const router = useRouter();
-
-  return (
-    <WrapperMemo
-      {...props}
-      routerQuery={router.query}
-      routerPath={router.asPath}
-      orgBoard={orgBoard}
-      activeEthAddress={loggedInUser?.activeEthAddress}
-      onNavigate={router.push}
-    />
-  );
-};
+//
+// const WrapperMemo = memo(Wrapper, (prevProps, nextProps) => {
+//   if (!nextProps.orgBoard?.orgId) {
+//     return true;
+//   }
+//
+//   const areEqual =
+//     prevProps.routerQuery === nextProps.routerQuery &&
+//     prevProps.orgBoard?.orgId === nextProps.orgBoard?.orgId &&
+//     prevProps.routerPath === nextProps.routerPath &&
+//     prevProps.loading === nextProps.loading &&
+//     prevProps.podIds === nextProps.podIds &&
+//     prevProps.statuses === nextProps.statuses &&
+//     prevProps.filterSchema === nextProps.filterSchema &&
+//     prevProps.orgData === nextProps.orgData &&
+//     prevProps.activeEthAddress === nextProps.activeEthAddress;
+//   //
+//   // console.log(
+//   //   '---------',
+//   //   prevProps.routerQuery === nextProps.routerQuery,
+//   //   prevProps.orgBoard?.orgId === nextProps.orgBoard?.orgId,
+//   //   prevProps.routerPath === nextProps.routerPath,
+//   //   prevProps.loading === nextProps.loading,
+//   //   prevProps.podIds === nextProps.podIds,
+//   //   prevProps.statuses === nextProps.statuses,
+//   //   prevProps.filterSchema === nextProps.filterSchema,
+//   //   prevProps.orgData === nextProps.orgData,
+//   //   prevProps.activeEthAddress === nextProps.activeEthAddress
+//   // );
+//   //
+//   // console.log('-------', prevProps, nextProps);
+//
+//   return areEqual;
+// });
+//
+// export default (props) => {
+//   const loggedInUser = useMe();
+//   const orgBoard = useOrgBoard();
+//   const router = useRouter();
+//
+//   return (
+//     <WrapperMemo
+//       {...props}
+//       routerQuery={router.query}
+//       routerPath={router.asPath}
+//       orgBoard={orgBoard}
+//       activeEthAddress={loggedInUser?.activeEthAddress}
+//       onNavigate={router.push}
+//     />
+//   );
+// };

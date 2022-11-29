@@ -359,26 +359,31 @@ export function TaskListCard(props) {
     return TASK_ICONS?.[taskType];
   };
 
+  const openTask = () => {
+    const query = {
+      ...router.query,
+      task: taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id,
+    };
+
+    router.push({ query });
+  };
+
   return (
     <>
-      <TaskViewModal
-        open={viewDetails}
-        handleClose={() => {
-          setViewDetails(false);
-          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}&entity=${
-            location?.params?.entity || Constants.ENTITIES_TYPES.TASK
-          }`;
-          location.push(newUrl);
-        }}
-        taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
-        isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
-        back
-      />
-      <TaskListCardWrapper
-        onClick={() => {
-          setViewDetails(true);
-        }}
-      >
+      {/*<TaskViewModal*/}
+      {/*  open={viewDetails}*/}
+      {/*  handleClose={() => {*/}
+      {/*    setViewDetails(false);*/}
+      {/*    const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}&entity=${*/}
+      {/*      location?.params?.entity || Constants.ENTITIES_TYPES.TASK*/}
+      {/*    }`;*/}
+      {/*    location.push(newUrl);*/}
+      {/*  }}*/}
+      {/*  taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}*/}
+      {/*  isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}*/}
+      {/*  back*/}
+      {/*/>*/}
+      <TaskListCardWrapper onClick={openTask}>
         <TaskHeader>
           <SafeImage
             useNextImage={false}
@@ -421,10 +426,10 @@ export function TaskListCard(props) {
           {task?.podName && (
             <PodWrapper
               onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const newUrl = `/pod/${task?.podId}/boards`;
-                window.location.href = newUrl;
+                // e.preventDefault();
+                // e.stopPropagation();
+                // const newUrl = `/pod/${task?.podId}/boards`;
+                // window.location.href = newUrl;
               }}
             >
               <PodName>{task?.podName.slice(0, 15)}</PodName>

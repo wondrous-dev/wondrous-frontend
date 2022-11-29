@@ -283,10 +283,10 @@ function KanbanBoard(props) {
   };
 
   useEffect(() => {
-    const { params } = location;
-    if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
-      setOpenModal(true);
-    }
+    // const { params } = location;
+    // if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
+    //   setOpenModal(true);
+    // }
   }, [orgBoard, podBoard, userBoard, location]);
 
   const onDragEnd = (result) => {
@@ -299,19 +299,19 @@ function KanbanBoard(props) {
   };
 
   const handleClose = () => {
-    const style = document.body.getAttribute('style');
-    const top = style.match(/(top: -)(.*?)(?=px)/);
-    document.body.setAttribute('style', '');
-    if (top?.length > 0) {
-      window?.scrollTo(0, Number(top[2]));
-    }
-    let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
-    if (board?.entityType) {
-      newUrl += `&entity=${board?.entityType}`;
-    }
-    location.push(newUrl);
-    enableContainerOverflow();
-    setOpenModal(false);
+    // const style = document.body.getAttribute('style');
+    // const top = style.match(/(top: -)(.*?)(?=px)/);
+    // document.body.setAttribute('style', '');
+    // if (top?.length > 0) {
+    //   window?.scrollTo(0, Number(top[2]));
+    // }
+    // let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
+    // if (board?.entityType) {
+    //   newUrl += `&entity=${board?.entityType}`;
+    // }
+    // location.push(newUrl);
+    // enableContainerOverflow();
+    // setOpenModal(false);
   };
 
   const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;

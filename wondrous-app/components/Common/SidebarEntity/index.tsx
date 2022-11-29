@@ -1,4 +1,4 @@
-import { useMemo, memo } from 'react';
+import { useMemo } from 'react';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import AboutEntity from 'components/Common/SidebarEntityAbout';
 import List from 'components/Common/SidebarEntityList';
@@ -46,4 +46,4 @@ const EntitySidebar = ({ children }) => {
   );
 };
 
-export default memo(EntitySidebar);
+export default EntitySidebar;

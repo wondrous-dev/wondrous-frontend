@@ -1,5 +1,7 @@
+import React, { memo, Suspense, useEffect } from 'react';
+import BoardSkeleton from 'components/Dashboard/boards/BoardSkeleton';
+import TaskActions from 'components/TaskActions';
 import dynamic from 'next/dynamic';
-import { memo, Suspense, useEffect } from 'react';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import Wrapper from 'components/organization/wrapper/wrapper';
 import { getFilterSchema } from 'utils/board';
@@ -72,18 +74,23 @@ function OrgBoards(props: Props) {
       statuses={statuses}
       podIds={podIds}
       userId={userId}
+      loading={loading}
     >
       <ColumnsContext.Provider value={{ columns, setColumns }}>
-        <Suspense>
-          <ActiveBoard
-            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-            columns={columns}
-            onLoadMore={onLoadMore}
-            hasMore={hasMore}
-            setColumns={setColumns}
-            entityType={entityType}
-          />
-        </Suspense>
+        {loading ? (
+          <BoardSkeleton />
+        ) : (
+          <Suspense>
+            <ActiveBoard
+              activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+              columns={columns}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              setColumns={setColumns}
+              entityType={entityType}
+            />
+          </Suspense>
+        )}
       </ColumnsContext.Provider>
     </Wrapper>
   );
