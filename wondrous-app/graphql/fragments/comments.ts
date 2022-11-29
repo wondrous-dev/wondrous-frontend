@@ -15,6 +15,7 @@ export const CommentFragment = gql`
     reactionCount
     taskId
     proposalId
+    submissionId
     additionalData {
       type
     }
