@@ -55,6 +55,15 @@ const useSidebarData = () => {
     handleOnClick,
     data: [
       {
+        items: [
+          {
+            text: orgBoard ? 'Project Portal' : null,
+            Icon: () => null,
+            link: `${link}/project`,
+          },
+        ],
+      },
+      {
         label: 'Workspaces',
         items: [
           {
