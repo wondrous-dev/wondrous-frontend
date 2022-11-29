@@ -19,7 +19,8 @@ export const HeaderBar = styled(AppBar)`
     padding: 0 30px;
 
     ${({ theme }) => theme.breakpoints.down('sm')} {
-      position: static;
+      position: sticky;
+      top: 0;
       margin-top: 0;
       padding-top: 42px;
       padding-bottom: 14px;
@@ -246,7 +247,7 @@ export const MissionControlIconWrapper = styled(HeaderHomeButton)`
 
 export const ConnectDiscordLink = styled.a`
   cursor: pointer;
-  color: ${palette.highlightBlue}
+  color: ${palette.highlightBlue};
 `;
 
 export const MenuContainer = styled.div`

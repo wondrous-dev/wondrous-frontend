@@ -208,6 +208,7 @@ export const SettingsHeaderBlock = styled.div`
   height: 70px;
   display: flex;
   align-items: center;
+  flex: 1;
 
   ${({ theme }) => theme.breakpoints.down('md')} {
     flex-direction: column;
@@ -217,11 +218,7 @@ export const SettingsHeaderBlock = styled.div`
 `;
 
 export const SettingsHeaderContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 14px;
-  flex: 1;
+  width: 100%;
 `;
 
 export const SettingsHeaderTitle = styled.div`

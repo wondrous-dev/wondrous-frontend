@@ -86,6 +86,11 @@ export const DeleteButton = styled(Button)`
     &:hover {
       background: ${palette.grey920};
     }
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+      border: 1px solid ${palette.red300};
+      color: white;
+    }
   }
 `;
 
@@ -97,6 +102,10 @@ export const RolePermissionsList = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 28px;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    display: block;
+  }
 `;
 
 export const Permission = styled.div`
@@ -113,6 +122,7 @@ export const RoleTokenGatingWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 85px;
+  flex-wrap: wrap;
 
   &:not(:first-child) {
     border-top: 1px solid ${palette.black91};

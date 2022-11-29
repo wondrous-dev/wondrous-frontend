@@ -17,6 +17,7 @@ import {
   Label,
   ListWrapper,
   SidebarContent,
+  SidebarDrawerWrapper,
   SidebarWrapper,
   Wrapper,
 } from 'components/Common/SidebarStyles';
@@ -36,12 +37,12 @@ import { GET_ORG_BY_ID } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useGlobalContext, useSideBar } from 'utils/hooks';
+import { useGlobalContext, useIsMobile, useSideBar } from 'utils/hooks';
 
 const createListItems = ({ orgId, podId, mainPath }) => [
   {
@@ -155,8 +156,9 @@ function SettingsWrapper(props) {
 
   const router = useRouter();
   const user = useMe();
-  const { minimized } = useSideBar();
+  const { minimized, openMobileOrgSidebar, setOpenMobileOrgSidebar } = useSideBar();
   const { userPermissionsContext } = useGlobalContext();
+  const isMobile = useIsMobile();
 
   const { pathname } = router;
   const { orgId, podId } = router.query;
@@ -168,6 +170,8 @@ function SettingsWrapper(props) {
   const pod = podData?.getPodById;
 
   const mainPath = org?.shared ? 'collaboration' : 'organization';
+
+  const handleCloseSidebar = () => setOpenMobileOrgSidebar(false);
 
   useEffect(() => {
     if (orgId || org) {
@@ -185,6 +189,15 @@ function SettingsWrapper(props) {
       });
     }
   }, [getOrgById, getPodById, org, orgId, podId]);
+
+  const settingsValues = useMemo(
+    () => ({
+      userPermissionsContext,
+      org,
+      pod,
+    }),
+    [org, pod, userPermissionsContext]
+  );
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
@@ -230,46 +243,51 @@ function SettingsWrapper(props) {
   };
   const activeSettingsPage = settingsPageConfig?.[String(podId ?? orgId ?? '')];
   const podIsArchived = !!podData?.getPodById?.archivedAt;
+
+  const renderSidebarContent = () => (
+    <>
+      <SidebarContent>
+        <BackButton href={activeSettingsPage?.path} />
+        <ListWrapper>
+          <Label>{activeSettingsPage.label} Settings</Label>
+          <ListWrapper>
+            {createListItems({ orgId, podId, mainPath }).map((item) => {
+              if (!item.page?.includes(activeSettingsPage.page)) return null;
+              const { href, Icon, label } = item;
+              const pathnameSplit = pathname.split('/');
+              const hrefSplit = href.split('/');
+              const endPathName = pathnameSplit[pathnameSplit.length - 1];
+              const endHref = hrefSplit[hrefSplit.length - 1];
+              const active = endHref === endPathName;
+              return (
+                <Link key={href} href={href} passHref style={{ textDecoration: 'none' }}>
+                  <Item key={label} Icon={Icon} isActive={active}>
+                    {label}
+                  </Item>
+                </Link>
+              );
+            })}
+            <Item Icon={ExitIcon} onClick={() => logout()}>
+              Log out
+            </Item>
+          </ListWrapper>
+        </ListWrapper>
+      </SidebarContent>
+      <CollapseExpandButton onClick={handleCloseSidebar} />
+    </>
+  );
+
   return (
-    <SettingsBoardContext.Provider
-      value={{
-        userPermissionsContext,
-        org,
-        pod,
-      }}
-    >
+    <SettingsBoardContext.Provider value={settingsValues}>
       <ChooseEntityToCreate />
       <Wrapper>
-        <SidebarWrapper minimized={minimized}>
-          <SidebarContent>
-            <BackButton href={activeSettingsPage?.path} />
-            <ListWrapper>
-              <Label>{activeSettingsPage.label} Settings</Label>
-              <ListWrapper>
-                {createListItems({ orgId, podId, mainPath }).map((item) => {
-                  if (!item.page?.includes(activeSettingsPage.page)) return null;
-                  const { href, Icon, label } = item;
-                  const pathnameSplit = pathname.split('/');
-                  const hrefSplit = href.split('/');
-                  const endPathName = pathnameSplit[pathnameSplit.length - 1];
-                  const endHref = hrefSplit[hrefSplit.length - 1];
-                  const active = endHref === endPathName;
-                  return (
-                    <Link key={href} href={href} passHref style={{ textDecoration: 'none' }}>
-                      <Item key={label} Icon={Icon} isActive={active}>
-                        {label}
-                      </Item>
-                    </Link>
-                  );
-                })}
-                <Item Icon={ExitIcon} onClick={() => logout()}>
-                  Log out
-                </Item>
-              </ListWrapper>
-            </ListWrapper>
-          </SidebarContent>
-          <CollapseExpandButton />
-        </SidebarWrapper>
+        {isMobile ? (
+          <SidebarDrawerWrapper open={openMobileOrgSidebar} onClose={handleCloseSidebar}>
+            {renderSidebarContent()}
+          </SidebarDrawerWrapper>
+        ) : (
+          <SidebarWrapper minimized={minimized}>{renderSidebarContent()}</SidebarWrapper>
+        )}
 
         <ChildrenWrapper minimized={minimized}>
           <SettingsChildrenWrapper>

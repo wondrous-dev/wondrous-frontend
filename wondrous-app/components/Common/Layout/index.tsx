@@ -75,7 +75,31 @@ export default function SidebarLayout({ children }) {
       setMinimized,
       orgsList,
     }),
-    [minimized, orgsList]
+    [minimized, openMobileOrgSidebar, orgsList]
+  );
+
+  const globalContextValues = useMemo(
+    () => ({
+      isCreateEntityModalOpen: createFormModal,
+      toggleCreateFormModal,
+      userOrgs,
+      userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+        ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+        : null,
+      notifications: notifications?.getNotifications,
+      refetchNotifications: refetch,
+      fetchMoreNotifications,
+      notificationsLoading,
+    }),
+    [
+      createFormModal,
+      fetchMoreNotifications,
+      notifications?.getNotifications,
+      notificationsLoading,
+      refetch,
+      userOrgs,
+      userPermissionsContext?.getUserPermissionContext,
+    ]
   );
 
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
@@ -84,20 +108,7 @@ export default function SidebarLayout({ children }) {
   return (
     <SideBarContext.Provider value={sidebarValue}>
       <SideBarComponent userOrgs={userOrgs} />
-      <GlobalContext.Provider
-        value={{
-          isCreateEntityModalOpen: createFormModal,
-          toggleCreateFormModal,
-          userOrgs,
-          userPermissionsContext: userPermissionsContext?.getUserPermissionContext
-            ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-            : null,
-          notifications: notifications?.getNotifications,
-          refetchNotifications: refetch,
-          fetchMoreNotifications,
-          notificationsLoading,
-        }}
-      >
+      <GlobalContext.Provider value={globalContextValues}>
         <HeaderComponent />
         <SectionWrapper width={width}>{children}</SectionWrapper>
       </GlobalContext.Provider>

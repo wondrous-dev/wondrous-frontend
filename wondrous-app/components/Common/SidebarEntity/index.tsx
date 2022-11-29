@@ -45,22 +45,23 @@ const EntitySidebar = ({ children }) => {
 
   const handleCloseSidebar = () => setOpenMobileOrgSidebar(false);
 
+  const renderSidebarContent = () => (
+    <>
+      <SidebarContent>
+        <Sidebar />
+      </SidebarContent>
+      <CollapseExpandButton onClick={handleCloseSidebar} />
+    </>
+  );
+
   return (
     <Wrapper>
       {isMobile ? (
         <SidebarDrawerWrapper open={openMobileOrgSidebar} onClose={handleCloseSidebar}>
-          <SidebarContent>
-            <Sidebar />
-          </SidebarContent>
-          <CollapseExpandButton onClick={handleCloseSidebar} />
+          {renderSidebarContent()}
         </SidebarDrawerWrapper>
       ) : (
-        <SidebarWrapper minimized={minimized}>
-          <SidebarContent>
-            <Sidebar />
-          </SidebarContent>
-          <CollapseExpandButton />
-        </SidebarWrapper>
+        <SidebarWrapper minimized={minimized}>{renderSidebarContent()}</SidebarWrapper>
       )}
       <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>
     </Wrapper>
