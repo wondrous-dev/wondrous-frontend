@@ -5,7 +5,7 @@ import PodIcon from 'components/Icons/podIcon';
 import CreateButton from 'components/Project/CreateButton';
 import HeaderTitle from 'components/Project/HeaderTitle';
 import PodCard from 'components/Project/PodCard';
-import { GET_ORG_PODS } from 'graphql/queries';
+import { GET_ORG_PODS_WITH_COUNT } from 'graphql/queries';
 import isEmpty from 'lodash/isEmpty';
 import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -63,7 +63,8 @@ const ShowAllButton = () => {
 };
 
 const useGetOrgPods = (orgId) => {
-  const { data } = useQuery(GET_ORG_PODS, {
+  const { data } = useQuery(GET_ORG_PODS_WITH_COUNT, {
+    skip: !orgId,
     variables: {
       orgId,
     },
