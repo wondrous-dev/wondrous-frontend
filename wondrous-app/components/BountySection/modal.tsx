@@ -2,7 +2,7 @@ import { useLazyQuery } from '@apollo/client';
 import { EXPLORE_MODAL_TABS_MAP, LINK } from 'utils/constants';
 import React, { useCallback, useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { GET_GR15_GRANTEES, GET_GR15_SPONSORS } from 'graphql/queries/org';
 import { TaskModalBaseCard } from 'components/Common/Task/styles';
 import CloseModalIcon from 'components/Icons/closeModal';

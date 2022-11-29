@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { COLLAB_TYPES, NOTIFICATION_OBJECT_TYPES, snakeToCamel } from 'utils/constants';
 import { Badge } from '@mui/material';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import SmartLink from 'components/Common/SmartLink';
 import NotificationsIcon from 'components/Icons/notifications';
-import getNotificationDescription from 'components/Notifications/utils';
+import { getNotificationDescription, getNotificationLink } from 'components/Notifications/utils';
 import Tooltip from 'components/Tooltip';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
 import { useInView } from 'react-intersection-observer';
@@ -74,20 +73,6 @@ function NotificationsBoard({ onlyBoard = false }) {
       fetchMore();
     }
   }, [inView, hasMore, notifications?.length]);
-
-  const getNotificationLink = (notification) => {
-    let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
-
-    if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
-      const mainPath = notification.type === COLLAB_TYPES.APPROVE ? 'collaboration' : 'organization';
-      notificationLink = `/${mainPath}/${notification.additionalData.orgUsername}/boards?collabs=${true}${
-        notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
-      }`;
-    }
-    notification?.additionalData?.viewNft && (notificationLink += `/nft`);
-
-    return notificationLink;
-  };
 
   // Construct Text of Notification
   const getNotificationText = (notification) => {
