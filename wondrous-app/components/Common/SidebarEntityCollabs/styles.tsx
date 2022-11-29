@@ -103,3 +103,7 @@ export const CollabRequestLogoWrapper = styled.div`
   color: ${palette.grey250};
   align-items: center;
 `;
+
+export const SidebarWrapper = styled.div`
+  padding: 24px 14px;
+`;

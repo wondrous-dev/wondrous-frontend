@@ -21,8 +21,8 @@ const AboutEntity = () => {
         canManage={canManage}
       />
       <ButtonWrapper>
-        <SettingsButton router={router} board={board} id={id} canManage={canManage} />
-        <InviteButton id={id} canManage={canManage} />
+        {/* <SettingsButton router={router} board={board} id={id} canManage={canManage} />
+        <InviteButton id={id} canManage={canManage} /> */}
       </ButtonWrapper>
     </Wrapper>
   );

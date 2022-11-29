@@ -14,7 +14,7 @@ import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useBoards } from 'utils/hooks';
+import { useBoards, useSideBar } from 'utils/hooks';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import GrantIcon from 'components/Icons/GrantIcon';
 
@@ -159,14 +159,15 @@ const location = () => {
 
 const List = () => {
   const { data, handleOnClick } = useSidebarData();
+  const { minimized } = useSideBar();
   const router = useRouter();
   const isActive = (entityType, link) => (entityType ? location().includes(link) : router.asPath.includes(link));
   return (
     <ListWrapper>
       {data?.map(({ label, items }) => (
         <ListWrapper key={label}>
-          <Label>{label}</Label>
-          <ListWrapper>
+          {!minimized && <Label>{label}</Label>}
+          <ListWrapper minimized={minimized}>
             {items.map(
               ({ text, link, Icon, count, entityType = null }) =>
                 !!text && (

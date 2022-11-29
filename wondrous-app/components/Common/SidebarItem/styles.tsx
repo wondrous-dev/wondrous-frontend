@@ -3,17 +3,17 @@ import styled from 'styled-components';
 
 export const ItemButton = styled(ButtonBase)`
   && {
-    border-radius: 3px;
     background: transparent;
+    padding: 14px;
     height: 32px;
     width: 100%;
     display: flex;
+    border-left: ${({ isActive, theme }) => isActive && `4px solid ${theme.palette.highlightPurple}`};
     align-items: center;
-    padding: 4px;
-    background: ${({ isActive, theme }) => isActive && `${theme.palette.black101}`};
-    justify-content: space-between;
+    background: ${({ isActive, theme }) => isActive && `${theme.palette.grey87}`};
+    justify-content: ${({ minimized }) => (minimized ? 'center' : 'space-between')};
     :hover {
-      background: ${({ theme }) => theme.palette.black101};
+      background: ${({ theme }) => theme.palette.grey87};
     }
   }
 `;

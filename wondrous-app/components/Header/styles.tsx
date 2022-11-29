@@ -6,7 +6,7 @@ import { Logo } from '../Common/ci';
 
 export const HeaderBar = styled(AppBar)`
   && {
-    margin-top: 18px;
+    padding: 14px;
     background: transparent;
     display: flex;
     align-items: center;
@@ -16,14 +16,10 @@ export const HeaderBar = styled(AppBar)`
     gap: 14px;
     justify-content: flex-end;
     box-shadow: none;
-    padding: 0 30px;
-
+    background: ${palette.grey900};
     ${({ theme }) => theme.breakpoints.down('sm')} {
-      position: static;
+      position: sticky;
       margin-top: 0;
-      padding-top: 42px;
-      padding-bottom: 14px;
-      background-color: #1d1d1d;
     }
   }
 `;
@@ -246,7 +242,7 @@ export const MissionControlIconWrapper = styled(HeaderHomeButton)`
 
 export const ConnectDiscordLink = styled.a`
   cursor: pointer;
-  color: ${palette.highlightBlue}
+  color: ${palette.highlightBlue};
 `;
 
 export const MenuContainer = styled.div`

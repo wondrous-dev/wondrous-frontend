@@ -19,25 +19,29 @@ export const SidebarWrapper = styled.div`
   gap: 28px;
   height: 100%;
   overflow-y: auto;
-  padding: 24px 14px;
   position: fixed;
-  width: ${entitySidebarWidth};
+  width: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   display: flex;
   z-index: 500;
+  transition: width 0.2s;
   justify-content: space-between;
-  ${({ minimized }) => minimized && `left: -100%`};
-  ${ScrollBarStyles}
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: ${({ minimized }) => (minimized ? '0px' : 'auto')};
+  }
+  ${ScrollBarStyles};
 `;
 
 export const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 28px;
   flex-grow: 1;
 `;
 
 export const ChildrenWrapper = styled.div`
   margin-left: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-left: ${({ minimized }) => (minimized ? '0px' : 'auto')};
+  }
   width: 100%;
 `;
 
@@ -48,7 +52,8 @@ export const Label = styled(Typography)`
     font-weight: 500;
     font-size: 13px;
     display: flex;
-    color: ${({ theme }) => theme.palette.blue20};
+    padding: 24px 14px 0px 14px;
+    color: ${({ theme }) => theme.palette.grey57};
   }
 `;
 
@@ -57,6 +62,12 @@ export const ListWrapper = styled(List)`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    ${({ minimized }) =>
+      minimized &&
+      ` 
+      justify-content: center;
+      align-items: center;
+    `})}
   }
 `;
 

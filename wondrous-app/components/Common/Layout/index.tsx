@@ -12,7 +12,8 @@ import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
 
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { SectionWrapper } from './styles';
+import Backdrop from '@mui/material/Backdrop';
+import { BackdropComponent, SectionWrapper } from './styles';
 
 const getOrgsList = (userOrgs, router) => {
   if (!userOrgs?.getUserOrgs) return [];
@@ -80,7 +81,7 @@ export default function SidebarLayout({ children }) {
   }
   return (
     <SideBarContext.Provider value={sidebarValue}>
-      <SideBarComponent userOrgs={userOrgs} />
+      {/* <SideBarComponent userOrgs={userOrgs} /> */}
       <GlobalContext.Provider
         value={{
           isCreateEntityModalOpen: createFormModal,
@@ -96,7 +97,8 @@ export default function SidebarLayout({ children }) {
         }}
       >
         <HeaderComponent />
-        <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
+        <BackdropComponent open={!minimized && isMobile} />
+        <SectionWrapper>{children}</SectionWrapper>
       </GlobalContext.Provider>
     </SideBarContext.Provider>
   );

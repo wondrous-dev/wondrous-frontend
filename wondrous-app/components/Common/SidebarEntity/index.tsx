@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/router';
 
 import useSideBar from 'hooks/useSideBar';
@@ -9,6 +9,8 @@ import List from 'components/Common/SidebarEntityList';
 import RolesSidebar from 'components/Common/SidebarEntityRoles';
 import CollabsSidebar from 'components/Common/SidebarEntityCollabs';
 import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
+import { useIsMobile, useOutsideAlerter } from 'utils/hooks';
+import SidebarHomeProject from '../SidebarHomeProject';
 
 const SIDEBAR_COMPONENTS = {
   collabs: () => <CollabsSidebar />,
@@ -16,8 +18,16 @@ const SIDEBAR_COMPONENTS = {
 };
 
 const EntitySidebar = ({ children }) => {
-  const { minimized } = useSideBar();
+  const { minimized, setMinimized } = useSideBar();
   const { query } = useRouter();
+  const isMobile = useIsMobile();
+  const sidebarRef = useRef();
+
+  useOutsideAlerter(sidebarRef, () => {
+    if (isMobile && !minimized) {
+      setMinimized(true);
+    }
+  });
 
   const Sidebar = useMemo(() => {
     if (query.roles) {
@@ -30,6 +40,7 @@ const EntitySidebar = ({ children }) => {
     return () => (
       <>
         <AboutEntity />
+        <SidebarHomeProject />
         <List />
       </>
     );
@@ -37,7 +48,7 @@ const EntitySidebar = ({ children }) => {
 
   return (
     <Wrapper>
-      <SidebarWrapper minimized={minimized}>
+      <SidebarWrapper minimized={minimized} ref={sidebarRef}>
         <SidebarContent>
           <Sidebar />
         </SidebarContent>

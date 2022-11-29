@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import palette from 'theme/palette';
-import { useBoards } from 'utils/hooks';
+import { useBoards, useSideBar } from 'utils/hooks';
 
 const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) => {
   const { orgBoard } = useBoards();
@@ -21,6 +21,7 @@ const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) =
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+  const { minimized } = useSideBar();
   const handleOnClickNotifications = () =>
     router.push(orgBoard ? `/organization/settings/${id}/notifications` : `/pod/settings/${id}/notifications`);
   return (
@@ -42,9 +43,9 @@ const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) =
               <NoLogoPod />
             )}
           </ButtonIcon>
-          <Text>{name}</Text>
+          {!minimized ? <Text>{name}</Text> : null}
         </IconText>
-        {canManage && <ArrowIcon open={open} />}
+        {canManage && !minimized && <ArrowIcon open={open} />}
       </Button>
       <MenuStyled anchorEl={anchorEl} open={open} onClose={handleClose}>
         <Item onClick={handleOnClickNotifications}>Notification Settings</Item>

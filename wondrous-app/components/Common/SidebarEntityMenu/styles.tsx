@@ -32,7 +32,7 @@ export const Button = styled(ButtonBase)`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: ${({ theme }) => theme.palette.black101};
+    background: ${({ theme }) => theme.palette.grey99};
     :hover {
       background: ${({ theme }) => theme.palette.grey78};
     }
@@ -44,6 +44,7 @@ export const IconText = styled.div`
   align-items: center;
   gap: 6px;
   width: 95%;
+  justify-content: center;
 `;
 
 export const ArrowIcon = styled((props) => (
