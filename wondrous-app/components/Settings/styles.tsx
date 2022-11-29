@@ -269,7 +269,8 @@ export const SettingsHeaderActionText = styled(ButtonBase)`
 // general settings styles
 export const GeneralSettingsContainer = styled.div`
   height: 100%;
-  width: 780px;
+  max-width: 780px;
+  width: 100%;
 `;
 
 export const GeneralSettingsInputsBlock = styled.div`
@@ -471,6 +472,11 @@ export const GeneralSettingsResetButton = styled(MuiButton)`
     &:hover {
       background: ${palette.black95};
     }
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+      font-size: 15px;
+      width: 100%;
+    }
   }
 `;
 
@@ -486,6 +492,14 @@ export const GeneralSettingsSaveChangesButton = styled(Button)`
 
       &:hover {
         background: transparent;
+      }
+    }
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+      width: 100%;
+
+      button {
+        font-size: 15px;
       }
     }
   }
