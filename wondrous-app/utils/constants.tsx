@@ -284,16 +284,15 @@ export const NOTIFICATION_TYPES = {
   PROPOSAL_REJECT: 'proposal_reject',
 };
 
-export const NOTIFICATION_OBJECT_TYPES = {
-  task: 'task',
-  task_comment: 'task',
-  task_proposal: 'task proposal',
-  task_proposal_comment: 'task proposal',
-  task_submission: 'submission',
-  comment: 'comment',
-  post: 'post',
-  kudos: 'kudos',
-  collaboration: 'collaboration',
+export const NOTIFICATION_OBJ_TYPES = {
+  TASK: 'task',
+  TASK_COMMENT: 'task_comment',
+  TASK_PROPOSAL: 'task_proposal',
+  TASK_PROPOSAL_COMMENT: 'task_proposal_comment',
+  TASK_SUBMISSION: 'task_submission',
+  TASK_SUBMISSION_COMMENT: 'task_submission_comment',
+  POST: 'post',
+  COLLABORATION: 'collaboration',
 };
 
 export const COLLAB_TYPES = {

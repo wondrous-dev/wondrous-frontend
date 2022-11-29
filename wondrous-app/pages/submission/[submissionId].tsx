@@ -3,19 +3,19 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { GET_TASK_SUBMISSION_BY_ID } from 'graphql/queries';
 import AppLayout from 'components/Common/Layout/App';
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function TaskRedirect() {
   const router = useRouter();
   const { submissionId } = router.query;
-  const [getTaskById, { data: submissionData }] = useLazyQuery(GET_TASK_SUBMISSION_BY_ID);
+  const [getSubmissionById, { data: submissionData }] = useLazyQuery(GET_TASK_SUBMISSION_BY_ID);
   useEffect(() => {
-    getTaskById({
+    getSubmissionById({
       variables: {
         submissionId,
       },
     });
-  }, [submissionId]);
+  }, [submissionId, getSubmissionById]);
 
   const taskSubmission = submissionData?.getTaskSubmissionById;
   if (taskSubmission?.org?.username) {

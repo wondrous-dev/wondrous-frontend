@@ -1,11 +1,33 @@
 import React from 'react';
 import * as Sentry from '@sentry/nextjs';
-import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_TYPES } from 'utils/constants';
+import { COLLAB_TYPES, NOTIFICATION_OBJ_TYPES, NOTIFICATION_TYPES } from 'utils/constants';
 import { NoUnderlineLink } from 'components/Common/Link/links';
 import { NotificationsLink } from './styles';
 
-export default function getNotificationDescription(notification, link) {
-  const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
+const NOTIFICATION_OBJ_TYPE_TO_DISPLAY = {
+  [NOTIFICATION_OBJ_TYPES.TASK]: 'task',
+  [NOTIFICATION_OBJ_TYPES.TASK_COMMENT]: 'task',
+  [NOTIFICATION_OBJ_TYPES.TASK_PROPOSAL]: 'task proposal',
+  [NOTIFICATION_OBJ_TYPES.TASK_PROPOSAL_COMMENT]: 'task proposal',
+  [NOTIFICATION_OBJ_TYPES.TASK_SUBMISSION]: 'submission',
+  [NOTIFICATION_OBJ_TYPES.TASK_SUBMISSION_COMMENT]: 'submission',
+  [NOTIFICATION_OBJ_TYPES.POST]: 'post',
+  [NOTIFICATION_OBJ_TYPES.COLLABORATION]: 'collaboration',
+};
+
+const NOTIFICATION_OBJ_TYPE_TO_LINK = {
+  [NOTIFICATION_OBJ_TYPES.TASK]: 'task',
+  [NOTIFICATION_OBJ_TYPES.TASK_COMMENT]: 'taskComment',
+  [NOTIFICATION_OBJ_TYPES.TASK_PROPOSAL]: 'proposal',
+  [NOTIFICATION_OBJ_TYPES.TASK_PROPOSAL_COMMENT]: 'taskProposalComment',
+  [NOTIFICATION_OBJ_TYPES.TASK_SUBMISSION]: 'submission',
+  [NOTIFICATION_OBJ_TYPES.TASK_SUBMISSION_COMMENT]: 'submissionComment',
+  [NOTIFICATION_OBJ_TYPES.POST]: 'post',
+  [NOTIFICATION_OBJ_TYPES.COLLABORATION]: 'collaboration',
+};
+
+export function getNotificationDescription(notification, link) {
+  const objectType = NOTIFICATION_OBJ_TYPE_TO_DISPLAY[notification.objectType];
   const object = (
     <span>
       <NotificationsLink styled={{ display: 'block' }}>
@@ -61,3 +83,20 @@ export default function getNotificationDescription(notification, link) {
       return <>unknown notification type</>;
   }
 }
+
+export const getNotificationLink = (notification) => {
+  let notificationLink = `/${NOTIFICATION_OBJ_TYPE_TO_LINK[notification.objectType]}/${notification.objectId}`;
+
+  if (notification.objectType === NOTIFICATION_OBJ_TYPES.COLLABORATION) {
+    const mainPath = notification.type === COLLAB_TYPES.APPROVE ? 'collaboration' : 'organization';
+    notificationLink = `/${mainPath}/${notification.additionalData.orgUsername}/boards?collabs=${true}${
+      notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
+    }`;
+  }
+
+  if (notification?.additionalData?.viewNft) {
+    notificationLink += `/nft`;
+  }
+
+  return notificationLink;
+};
