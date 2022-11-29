@@ -11,13 +11,11 @@ import { usePermissions } from 'utils/hooks';
 
 const ApplyOrClaimButton = ({ task }) => {
   const user = useMe();
-  const { canClaim, canApply } = usePermissions({ type: task?.type });
-  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const { canClaim, canApply } = usePermissions(task);
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   if (!canClaim && canApply) {
     return (
       <TaskApplicationButton
-        setIsApplicationModalOpen={setIsApplicationModalOpen}
         task={task}
         canApply={canApply}
         Icon={() => null}
@@ -44,28 +42,32 @@ const ApplyOrClaimButton = ({ task }) => {
     );
   }
 
-  return (
-    <ButtonPrimary
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        updateTaskAssignee({
-          variables: {
-            taskId: task?.id,
-            assigneeId: user?.id,
-          },
-          refetchQueries: [GET_ORG_TASK_BOARD_TASKS],
-        });
-      }}
-      style={{
-        width: '82px',
-      }}
-    >
-      <Typography color="#fff" fontWeight="500" fontSize="14px" padding="0 12px">
-        Claim
-      </Typography>
-    </ButtonPrimary>
-  );
+  if (canClaim) {
+    return (
+      <ButtonPrimary
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          updateTaskAssignee({
+            variables: {
+              taskId: task?.id,
+              assigneeId: user?.id,
+            },
+            refetchQueries: [GET_ORG_TASK_BOARD_TASKS],
+          });
+        }}
+        style={{
+          width: '82px',
+        }}
+      >
+        <Typography color="#fff" fontWeight="500" fontSize="14px" padding="0 12px">
+          Claim
+        </Typography>
+      </ButtonPrimary>
+    );
+  }
+
+  return null;
 };
 
 export default ApplyOrClaimButton;
