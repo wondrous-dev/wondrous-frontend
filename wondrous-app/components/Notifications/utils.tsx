@@ -59,9 +59,9 @@ export function getNotificationDescription(notification, link) {
         </>
       );
     case NOTIFICATION_TYPES.SUBMISSION_APPROVE:
-      return <>rejected your {object}</>;
-    case NOTIFICATION_TYPES.SUBMISSION_REJECT:
       return <>approved your {object}</>;
+    case NOTIFICATION_TYPES.SUBMISSION_REJECT:
+      return <>rejected your {object}</>;
     case NOTIFICATION_TYPES.SUBMISSION_REQUEST_CHANGE:
       return <>requested change on your {object}</>;
     case NOTIFICATION_TYPES.SUBMISSION_RESUBMIT:
