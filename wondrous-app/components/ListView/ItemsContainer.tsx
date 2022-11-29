@@ -6,6 +6,7 @@ import {
   TASK_STATUS_DONE,
   ENTITIES_TYPES,
 } from 'utils/constants';
+import { taskHasPayment } from 'utils/board';
 
 import { ToDo, InProgress, Done, InReview } from 'components/Icons';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
@@ -17,6 +18,7 @@ import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import { BountyIcon } from 'components/Common/BountyBoard/styles';
 import FlagIcon from 'components/Icons/flag';
+
 import { IconWrapper, ListViewItemWrapper } from './styles';
 import Item from './Item';
 
@@ -86,9 +88,7 @@ export default function ItemsContainer({
 }) {
   const { status, tasks } = data;
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
-
   const itemTitle = LABELS_MAP[status] || ENTITIES_LABELS_MAP[entityType] || '';
-
   const Icon = HEADER_ICONS[status] || ENTITIES_HEADER_ICONS[entityType];
 
   // onLoadMore is used for infinite loading
@@ -139,11 +139,15 @@ export default function ItemsContainer({
         noGap
       >
         {tasks?.length ? (
-          tasks.map((task, index) => (
-            <DndWrapper key={task.id} id={task.id} disableDnd={disableDnd} index={index}>
-              <Item entityType={entityType} task={task} />
-            </DndWrapper>
-          ))
+          tasks.map((task, index) => {
+            const isDragDisabled = disableDnd || taskHasPayment(task);
+
+            return (
+              <DndWrapper key={task.id} id={task.id} index={index} disableDnd={isDragDisabled}>
+                <Item entityType={entityType} task={task} isDragDisabled={isDragDisabled} />
+              </DndWrapper>
+            );
+          })
         ) : (
           <EmptyStateBoards hidePlaceholder status={status} />
         )}

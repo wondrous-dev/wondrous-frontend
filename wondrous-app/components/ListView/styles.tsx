@@ -12,9 +12,10 @@ export const ListViewItemBodyWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  cursor: pointer;
+  cursor: ${(props) => (props.isDragDisabled ? 'pointer' : 'move')};
   padding: 8px 8px;
   border-radius: 6px;
+  user-select: none;
   &:hover {
     background: #151515;
   }
@@ -62,8 +63,5 @@ export const Type = styled.div`
 
 export const ListViewItemWrapper = styled.div`
   width: 100%;
-  padding-top: 8px;
-  &:last-child {
-    padding-bottom: 0;
-  }
+  padding: 4px 0;
 `;

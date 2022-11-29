@@ -34,3 +34,5 @@ export enum ImageTypes {
   header = 'header',
   profile = 'profile',
 }
+
+export type ValueOf<T> = T[keyof T];

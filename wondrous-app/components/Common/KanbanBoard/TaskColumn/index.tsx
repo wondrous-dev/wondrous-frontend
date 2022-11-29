@@ -15,6 +15,7 @@ import {
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { taskHasPayment } from 'utils/board';
 
 import Task from 'components/Common/Task';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
@@ -172,29 +173,35 @@ function TaskColumn(props: ITaskColumn) {
         {(provided) => (
           <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
             {cardsList?.length ? (
-              cardsList.map((card, index) => (
-                <Draggable key={card.id} draggableId={card.id} index={index} isDragDisabled={board?.isDragDisabled}>
-                  {(provided, snapshot) => (
-                    <div
-                      style={{
-                        width: '100%',
-                      }}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      ref={provided.innerRef}
-                      isDragging={snapshot.isDragging}
-                    >
-                      {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
-                        <Milestone>
+              cardsList.map((card, index) => {
+                const isDragDisabled = board?.isDragDisabled || taskHasPayment(card);
+
+                return (
+                  <Draggable key={card.id} draggableId={card.id} index={index} isDragDisabled={isDragDisabled}>
+                    {(provided, snapshot) => (
+                      <div
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                        isDragging={snapshot.isDragging}
+                        style={{
+                          ...provided.draggableProps.style,
+                          userSelect: 'none',
+                          cursor: isDragDisabled ? 'default' : 'move',
+                        }}
+                      >
+                        {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
+                          <Milestone>
+                            <Task task={card} />
+                          </Milestone>
+                        ) : (
                           <Task task={card} />
-                        </Milestone>
-                      ) : (
-                        <Task task={card} />
-                      )}
-                    </div>
-                  )}
-                </Draggable>
-              ))
+                        )}
+                      </div>
+                    )}
+                  </Draggable>
+                );
+              })
             ) : (
               <EmptyStateBoards status={status} hidePlaceholder={board?.entityType === ENTITIES_TYPES.PROPOSAL} />
             )}

@@ -45,7 +45,7 @@ import {
   Type,
 } from './styles';
 
-function ListViewItem({ task, entityType }) {
+function ListViewItem({ task, entityType, isDragDisabled }) {
   let windowOffset = 0;
   const router = useRouter();
   const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
@@ -302,7 +302,7 @@ function ListViewItem({ task, entityType }) {
           />
         ) : null}
 
-        <ListViewItemBodyWrapper>
+        <ListViewItemBodyWrapper isDragDisabled={isDragDisabled}>
           <ListViewItemDataContainer>
             {assigneeProfilePicture ? (
               <SafeImage
