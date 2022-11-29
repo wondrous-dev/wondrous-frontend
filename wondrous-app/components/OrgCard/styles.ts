@@ -17,6 +17,11 @@ export const OrgCardWrapper = styled(Box)`
   border-radius: 3px;
   width: 310px;
   cursor: pointer;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+    border: 1px solid #3a3a3a;
+  }
 `;
 
 export const OrgCardBorderContainer = styled(Box)`

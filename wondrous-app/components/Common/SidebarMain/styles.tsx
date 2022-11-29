@@ -18,6 +18,10 @@ const hideScrollbar = css`
 `;
 
 export const DrawerComponent = styled(Drawer)`
+  .MuiPaper-root {
+    background-color: ${palette.black97};
+  }
+
   && {
     ${hideScrollbar}
     & .MuiDrawer-paperAnchorDockedLeft {

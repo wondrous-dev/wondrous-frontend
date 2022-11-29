@@ -81,12 +81,13 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
   const router = useRouter();
   const isPageActive = (str) => router.pathname.includes(str);
 
-  if (isMobile) {
-    return null;
-  }
-
   return (
-    <DrawerComponent variant="permanent" anchor="left">
+    <DrawerComponent
+      variant={isMobile ? 'temporary' : 'permanent'}
+      anchor="left"
+      open={minimized}
+      onClose={handleMinimize}
+    >
       {openHelpModal && <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />}
       <DrawerContainer>
         <DrawerBlockWrapper>

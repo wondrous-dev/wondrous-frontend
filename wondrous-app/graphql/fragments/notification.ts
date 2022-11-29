@@ -20,6 +20,7 @@ export const NotificationFragment = gql`
       orgUsername
       addMember
       viewNft
+      taskType
     }
   }
 `;

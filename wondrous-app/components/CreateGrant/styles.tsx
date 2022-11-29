@@ -9,7 +9,6 @@ import palette from 'theme/palette';
 
 export const Form = styled.form`
   color: ${palette.white};
-  width: 100%;
 `;
 
 export const DisplayWrapper = styled(TaskSectionDisplayContentWrapper)`

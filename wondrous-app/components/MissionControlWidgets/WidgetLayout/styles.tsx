@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
   min-width: 30%;
   flex: 1;
   padding: 10px;
-  overflow: hidden;
+  width: 100%;
 `;
 
 export const Title = styled(Typography)`

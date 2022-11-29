@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
-import { TaskListCard } from 'components/Common/Task';
+import TaskListCard from 'components/Common/Task/TaskListCard';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,

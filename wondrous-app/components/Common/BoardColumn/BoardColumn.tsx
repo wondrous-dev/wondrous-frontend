@@ -1,11 +1,14 @@
 import React from 'react';
+
 import palette from 'theme/palette';
-import { Task } from '../Task';
-import { ToDo } from '../../Icons';
-import { ColumnSection } from '../ColumnSection';
+
+import Task from 'components/Common/Task';
+import { ToDo } from 'components/Icons';
+import { ColumnSection } from 'components/Common/ColumnSection';
+
 import { BoardColumnWrapper, BoardColumnTitle, IconWrapper } from './styles';
 
-export function BoardColumn({ column, setColumn }) {
+export default function BoardColumn({ column, setColumn }) {
   const { sections = [], tasks = [], icon = ToDo, title = '' } = column;
 
   const count = tasks.length;
@@ -51,7 +54,8 @@ export function BoardColumn({ column, setColumn }) {
       ))}
       <div key={`${title}-task-list`}>
         {tasks.map((task) => (
-          <Task key={task.id} task={task} setTask={setTask} />
+          // TODO: setTask could be deprecated here?
+          <Task key={task.id} task={task} /* setTask={setTask} */ />
         ))}
       </div>
     </BoardColumnWrapper>

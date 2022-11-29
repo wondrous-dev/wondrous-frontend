@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { Menu } from '@mui/icons-material';
 
 import { User } from 'types/User';
 
@@ -8,7 +9,9 @@ import GlobalSearch from 'components/GlobalSearch';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
 import NotificationsBoard from 'components/Notifications';
 
-import { HeaderBar, HeaderCreateButton } from './styles';
+import useSideBar from 'hooks/useSideBar';
+
+import { HeaderBar, HeaderCreateButton, MenuContainer } from './styles';
 
 type Props = {
   isMobile: boolean;
@@ -18,40 +21,51 @@ type Props = {
   user: User | null;
 };
 
-const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => (
-  <HeaderBar>
-    {user && (
-      <>
-        {!isMobile && <Wallet />}
-        {!isMobile && <GlobalSearch />}
-        <NotificationsBoard />
+const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => {
+  const { setMinimized } = useSideBar();
 
-        {showCreateButton && (
-          <HeaderCreateButton
-            highlighted="true"
-            onClick={openCreateFormModal}
-            visibility={showCreateButton}
-            data-cy="header-button-create"
-          >
-            <CreateIconOutlined id="tour-header-create-btn" />
-          </HeaderCreateButton>
-        )}
-      </>
-    )}
-    {!user && (
-      <Button
-        highlighted
-        type="submit"
-        style={{
-          width: '100px',
-        }}
-        onClick={onSignInClick}
-      >
-        Sign in
-      </Button>
-    )}
-  </HeaderBar>
-);
+  const toggleMinimize = () => setMinimized((prevValue) => !prevValue);
+
+  return (
+    <HeaderBar>
+      {isMobile ? (
+        <MenuContainer onClick={toggleMinimize}>
+          <Menu />
+        </MenuContainer>
+      ) : null}
+      {user && (
+        <>
+          {!isMobile && <Wallet />}
+          <GlobalSearch />
+          <NotificationsBoard />
+
+          {showCreateButton && (
+            <HeaderCreateButton
+              highlighted="true"
+              onClick={openCreateFormModal}
+              visibility={showCreateButton}
+              data-cy="header-button-create"
+            >
+              <CreateIconOutlined id="tour-header-create-btn" />
+            </HeaderCreateButton>
+          )}
+        </>
+      )}
+      {!user && (
+        <Button
+          highlighted
+          type="submit"
+          style={{
+            width: '100px',
+          }}
+          onClick={onSignInClick}
+        >
+          Sign in
+        </Button>
+      )}
+    </HeaderBar>
+  );
+};
 
 // eslint-disable-next-line react/display-name
 export default memo(

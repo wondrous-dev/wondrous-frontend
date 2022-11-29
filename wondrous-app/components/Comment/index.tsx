@@ -137,7 +137,7 @@ function CommentBox(props) {
         variables: {
           input: { ...commentArgs, proposalId: task?.id },
         },
-      });
+      }).then(() => setComment(''));
     }
     if (submission) {
       return createSubmissionComment({

@@ -23,6 +23,7 @@ import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { delQuery } from 'utils/index';
 import { useLocation } from 'utils/useLocation';
 import GrantsBoardCard from './Card';
+import EmptyGrantsBoard from './EmptyState';
 
 const GrantsBoard = () => {
   const [activeFilter, setActiveFilter] = useState(GRANTS_STATUSES.OPEN);
@@ -195,7 +196,7 @@ const GrantsBoard = () => {
         {data?.map((grant, idx) => (
           <GrantsBoardCard grant={grant} handleCardClick={handleCardClick} key={grant.id} />
         ))}
-        {!data?.length && !loading ? <BountyBoardEmpty /> : null}
+        {!data?.length && !loading ? <EmptyGrantsBoard handleCreate={toggleCreateFormModal} /> : null}
       </CardsContainer>
       <LoadMore ref={ref} hasMore={hasMore} />
     </>

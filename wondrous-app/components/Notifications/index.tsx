@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { COLLAB_TYPES, NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
 import { Badge } from '@mui/material';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import SmartLink from 'components/Common/SmartLink';
 import NotificationsIcon from 'components/Icons/notifications';
+import { getNotificationDescription, getNotificationLink } from 'components/Notifications/utils';
 import Tooltip from 'components/Tooltip';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
-import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
 import { useHotkeys } from 'react-hotkeys-hook';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
@@ -60,9 +59,10 @@ function NotificationsBoard({ onlyBoard = false }) {
   );
 
   const getNotificationActorIcon = (notification) => {
+    if (!notification?.actorId) return;
     const initials = notification?.actorUsername && notification.actorUsername[0];
     const avatar = {
-      url: notification.actorThumbnail,
+      url: notification.actorThumbnail || notification.actorProfilePicture,
     };
 
     return <SmallAvatar initials={initials} avatar={avatar} />;
@@ -74,45 +74,26 @@ function NotificationsBoard({ onlyBoard = false }) {
     }
   }, [inView, hasMore, notifications?.length]);
 
-  const getNotificationLink = (notification) => {
-    let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
-
-    if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
-      const mainPath = notification.type === COLLAB_TYPES.APPROVE ? 'collaboration' : 'organization';
-      notificationLink = `/${mainPath}/${notification.additionalData.orgUsername}/boards?collabs=${true}${
-        notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
-      }`;
-    }
-    notification?.additionalData?.viewNft && (notificationLink += `/nft`);
-
-    return notificationLink;
-  };
-
   // Construct Text of Notification
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
-    const actor = (
+    const actor = notification?.actorId ? (
       <NotificationsLink>
         <NoUnderlineLink href={`/profile/${userName}/about`}>{userName}</NoUnderlineLink>
       </NotificationsLink>
-    );
-
-    const verb = NOTIFICATION_VERBS[notification.type];
-    const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
-
+    ) : null;
     const link = getNotificationLink(notification);
-    const object = (
+
+    const description = getNotificationDescription(notification, link);
+    const notificationTimeStamp = (
       <span>
-        <NotificationsLink styled={{ display: 'block' }}>
-          <NoUnderlineLink href={link}>{objectType}</NoUnderlineLink>
-        </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>
     );
 
     return (
       <>
-        {actor} {verb} {object}
+        {actor} {description} {notificationTimeStamp}
       </>
     );
   };

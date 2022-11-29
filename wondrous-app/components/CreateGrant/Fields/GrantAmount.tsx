@@ -38,7 +38,6 @@ const GrantAmount = ({
     }
   }, [activePaymentMethods?.length]);
 
-  console.log(error, 'error');
   return (
     <TaskSectionDisplayDiv alignItems="start">
       {activePaymentMethods?.length > 0 && (
