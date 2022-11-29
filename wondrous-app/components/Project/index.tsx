@@ -35,7 +35,7 @@ const Project = ({ orgData }) => {
         <CreateGrantModal />
         <PodModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
-          <PodCards orgId={id} />
+          <PodCards />
           <ListMainWrapper />
         </Grid>
       </>

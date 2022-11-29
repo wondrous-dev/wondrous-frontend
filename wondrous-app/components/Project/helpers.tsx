@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { PodModal } from 'components/Common/PodModal';
+import PodModal from 'components/Common/PodModal';
 import CreateCollaborationModal from 'components/CreateCollaborationModal';
 import { CreateEntity } from 'components/CreateEntity';
 import { CreateFormModalOverlay } from 'components/CreateEntity/styles';
@@ -9,6 +9,7 @@ import DocCategoriesDialog from 'components/DocCategoriesDialog';
 import {
   GET_ORG_COLLABS_FOR_ORG,
   GET_ORG_GRANTS,
+  GET_ORG_PODS_WITH_COUNT,
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_TASKS,
   GET_ORG_USERS,
@@ -22,6 +23,23 @@ import { useBoards, useProject } from 'utils/hooks';
 
 import { ICreateButtonProps } from './CreateButton';
 import { EntitiesType } from './types';
+
+const useOrgId = () => {
+  const { orgData } = useProject();
+  return orgData?.id;
+};
+
+export const useGetOrgPods = () => {
+  const orgId = useOrgId();
+  const { data } = useQuery(GET_ORG_PODS_WITH_COUNT, {
+    skip: !orgId,
+    variables: {
+      orgId,
+    },
+  });
+  const { getOrgPods: pods } = data || {};
+  return pods;
+};
 
 export const useCreateEntityModal = () => {
   const [entityType, setEntityType] = useState<EntitiesType>(null);
@@ -138,12 +156,12 @@ export const useCreateGrantButtonProps = (): ICreateButtonProps => {
 const LIMIT = 6;
 
 export const useGetOrgEntity = (type) => {
-  const { orgData } = useProject();
+  const orgId = useOrgId();
   const { data } = useQuery(GET_ORG_TASK_BOARD_TASKS, {
     nextFetchPolicy: 'cache-first',
-    skip: !orgData?.id,
+    skip: !orgId,
     variables: {
-      orgId: orgData?.id,
+      orgId,
       podIds: [],
       offset: 0,
       statuses: ['created', 'in_progress', 'in_review', 'completed'],
@@ -157,11 +175,11 @@ export const useGetOrgEntity = (type) => {
 };
 
 export const useGetOrgProposal = () => {
-  const { orgData } = useProject();
+  const orgId = useOrgId();
   const { data } = useQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
-    skip: !orgData?.id,
+    skip: !orgId,
     variables: {
-      orgId: orgData?.id,
+      orgId,
       limit: LIMIT,
       offset: 0,
       statuses: ['open', 'closed', 'approved'],
@@ -171,11 +189,11 @@ export const useGetOrgProposal = () => {
 };
 
 export const useGetOrgUsers = () => {
-  const { orgData } = useProject();
+  const orgId = useOrgId();
   const { data } = useQuery(GET_ORG_USERS, {
-    skip: !orgData?.id,
+    skip: !orgId,
     variables: {
-      orgId: orgData?.id,
+      orgId,
       limit: LIMIT,
     },
   });
@@ -183,11 +201,11 @@ export const useGetOrgUsers = () => {
 };
 
 export const useGetOrgDocumentCategories = () => {
-  const { orgData } = useProject();
+  const orgId = useOrgId();
   const { data } = useQuery(GET_ORG_DOCS_CATEGORIES, {
-    skip: !orgData?.id,
+    skip: !orgId,
     variables: {
-      orgId: orgData?.id,
+      orgId,
       limit: LIMIT, // TODO: add limit to backend
     },
   });
@@ -195,11 +213,11 @@ export const useGetOrgDocumentCategories = () => {
 };
 
 export const useGetGrantOrgBoard = () => {
-  const { orgData } = useProject();
+  const orgId = useOrgId();
   const { data } = useQuery(GET_ORG_GRANTS, {
-    skip: !orgData?.id,
+    skip: !orgId,
     variables: {
-      orgId: orgData?.id,
+      orgId,
       limit: LIMIT,
       offset: 0,
       status: 'open',
@@ -209,12 +227,12 @@ export const useGetGrantOrgBoard = () => {
 };
 
 export const useGetOrgCollabsForOrg = () => {
-  // TODO: this needs the username of child
-  const { orgData } = useProject();
+  // TODO: this needs the username of child and role
+  const orgId = useOrgId();
   const { data } = useQuery(GET_ORG_COLLABS_FOR_ORG, {
-    skip: !orgData?.id,
+    skip: !orgId,
     variables: {
-      orgId: orgData?.id,
+      orgId,
     },
   });
   return data?.getOrgCollabsForOrg;

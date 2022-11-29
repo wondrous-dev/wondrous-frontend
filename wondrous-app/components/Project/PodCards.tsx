@@ -1,17 +1,15 @@
-import { useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import Button from 'components/Button';
 import PodIcon from 'components/Icons/podIcon';
 import CreateButton from 'components/Project/CreateButton';
 import HeaderTitle from 'components/Project/HeaderTitle';
 import PodCard from 'components/Project/PodCard';
-import { GET_ORG_PODS_WITH_COUNT } from 'graphql/queries';
 import isEmpty from 'lodash/isEmpty';
 import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useProject } from 'utils/hooks';
 
-import { useEntityCreateButtonProps } from './helpers';
+import { useEntityCreateButtonProps, useGetOrgPods } from './helpers';
 
 const EmptyWrapper = styled.div`
   background-image: url(/images/project/pod-empty-bg.svg);
@@ -26,10 +24,6 @@ const EmptyWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
-
-interface PodCardsProps {
-  orgId: string;
-}
 
 const useNoPods = () => (
   <EmptyWrapper>
@@ -62,19 +56,8 @@ const ShowAllButton = () => {
   );
 };
 
-const useGetOrgPods = (orgId) => {
-  const { data } = useQuery(GET_ORG_PODS_WITH_COUNT, {
-    skip: !orgId,
-    variables: {
-      orgId,
-    },
-  });
-  const { getOrgPods: pods } = data || {};
-  return pods;
-};
-
-const PodCards = ({ orgId }: PodCardsProps) => {
-  const pods = useGetOrgPods(orgId);
+const PodCards = () => {
+  const pods = useGetOrgPods();
   const emptyComponent = useNoPods();
   const podsComponent = isEmpty(pods) ? emptyComponent : podCardContent(pods);
   return (
