@@ -78,6 +78,7 @@ import {
   RoleAccordion,
   PermissionTitleLabel,
   RolePermissionsList,
+  TokenGatedRoleModalHeader,
 } from './styles';
 import DeleteRoleConfirmationModal from './DeleteRoleConfirmationModal';
 
@@ -646,13 +647,7 @@ function TokenGateRoleConfigModal(props) {
   return (
     <Modal open={open} onClose={handleClose}>
       <TokenGatedRoleModal>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
+        <TokenGatedRoleModalHeader>
           <TokenGatedRoleModalTitle>Token gating for {selectedRoleForTokenGate?.name} role</TokenGatedRoleModalTitle>
           <div
             style={{
@@ -675,7 +670,7 @@ function TokenGateRoleConfigModal(props) {
               create new
             </TokenGatingButton>
           </div>
-        </div>
+        </TokenGatedRoleModalHeader>
 
         <Tabs
           value={selectedTab}

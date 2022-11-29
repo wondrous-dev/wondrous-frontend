@@ -319,6 +319,27 @@ export const TokenGatedRoleModal = styled(BaseCard)`
   /* Hide scrollbar for IE, Edge and Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    width: 95%;
+    margin: 14px;
+    left: 48%;
+  }
+`;
+
+export const TokenGatedRoleModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-direction: column;
+    align-items: flex-start;
+
+    > div {
+      margin-top: 10px;
+    }
+  }
 `;
 
 export const DiscordRoleModal = styled(BaseCard)`
