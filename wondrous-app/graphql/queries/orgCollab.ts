@@ -87,3 +87,19 @@ export const GET_ORG_COLLAB_REQUEST_BY_TOKEN = gql`
     }
   }
 `;
+
+export const GET_ORG_ACTIVE_COLLAB_COUNT = gql`
+  query getOrgActiveCollabCount($orgId: ID!) {
+    getOrgActiveCollabCount(orgId: $orgId) {
+      count
+    }
+  }
+`;
+
+export const GET_ORG_INVITE_COLLAB_COUNT = gql`
+  query getOrgInviteCollabCount($orgId: ID!) {
+    getOrgInviteCollabCount(orgId: $orgId) {
+      count
+    }
+  }
+`;

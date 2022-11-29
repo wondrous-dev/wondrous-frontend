@@ -128,11 +128,11 @@ export const PendingInviteCollaborationItem = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const [declineOrgCollabRequest] = useMutation(DECLINE_ORG_COLLAB_REQUEST, {
-    refetchQueries: ['getOrgCollabRequestForRecipient'],
+    refetchQueries: ['getOrgCollabRequestForRecipient', 'getOrgInviteCollabCount'],
   });
 
   const [approveOrgCollabRequest, { data }] = useMutation(APPROVE_ORG_COLLAB_REQUEST, {
-    refetchQueries: ['getUserPermissionContext', 'getOrgCollabRequestForRecipient'],
+    refetchQueries: ['getUserPermissionContext', 'getOrgCollabRequestForRecipient', 'getOrgActiveCollabCount'],
   });
   const handleModal = () => setIsOpen((prevState) => !prevState);
 

@@ -81,7 +81,7 @@ function Collaborations(props) {
       <CollabWrapper>
         <CollabsContainer>
           <HeaderBlock title={orgData?.name ? `Collabs with ${orgData?.name}` : 'Collabs'} />
-          <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+          <Tabs activeTab={activeTab} setActiveTab={setActiveTab} orgId={orgData?.id} />
           <NewCollabDiv>
             <Image src="/images/collabs/new-collab.svg" alt="New Collab" fill />
 

@@ -25,7 +25,7 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
     onCompleted: () => {
       setStep((prevState) => prevState + 1);
     },
-    refetchQueries: ['getOrgCollabRequestForInitiator'],
+    refetchQueries: ['getOrgCollabRequestForInitiator', 'getOrgInviteCollabCount'],
   });
 
   const onClose = () => {

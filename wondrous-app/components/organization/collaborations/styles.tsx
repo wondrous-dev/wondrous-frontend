@@ -140,3 +140,13 @@ export const EmptyText = styled(Typography)`
     margin-bottom: 20px;
   }
 `;
+
+export const CollabCount = styled(Typography)`
+  && {
+    color: ${({ isActive }) => (isActive ? 'white' : '#828282')};
+    background: ${palette.grey87};
+    padding: 2px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+`;
