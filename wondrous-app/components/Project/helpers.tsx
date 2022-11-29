@@ -21,8 +21,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards, useProject } from 'utils/hooks';
 
 import { ICreateButtonProps } from './CreateButton';
-
-export type EntitiesType = typeof ENTITIES_TYPES[keyof typeof ENTITIES_TYPES] | null;
+import { EntitiesType } from './types';
 
 export const useCreateEntityModal = () => {
   const [entityType, setEntityType] = useState<EntitiesType>(null);

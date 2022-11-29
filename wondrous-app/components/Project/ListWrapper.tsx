@@ -34,13 +34,13 @@ const ListWrapper = ({
   HeaderTitleProps,
   showAllUrl,
   data,
-  ListItemComponents: ListWrapperComponents,
+  ListItemProps,
 }: ListWrapperProps) => {
   const router = useRouter();
   const handleShowAllOnClick = () => router.push(`/organization/${router.query.username}/${showAllUrl}`);
   const entityContent = isEmpty(data)
     ? emptyComponent({ backgroundImageUrl, CreateButtonProps })
-    : data.map((i) => <ListItem {...ListWrapperComponents} data={i} />);
+    : data.map((i) => <ListItem {...ListItemProps} data={i} />);
   return (
     <Grid
       container

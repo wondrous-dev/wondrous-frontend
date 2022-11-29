@@ -60,7 +60,11 @@ const useListCollab = () => ({
   CreateButtonProps: useCollaborationButtonProps(),
   backgroundImageUrl: '/images/project/collab-empty-bg.svg',
   showAllUrl: 'project?collabs=true',
-  ListItemComponents: { LeftComponent, RightComponent },
+  ListItemProps: {
+    LeftComponent,
+    RightComponent,
+    onClick: (router, { username }) => router.push(`/collaboration/${username}/boards`),
+  },
   data: useGetOrgCollabsForOrg(),
 });
 

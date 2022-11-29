@@ -22,7 +22,12 @@ const useListBountyProps = () => ({
   CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.BOUNTY),
   backgroundImageUrl: '/images/project/bounty-empty-bg.svg',
   showAllUrl: 'boards?entity=bounty',
-  ListItemComponents: { LeftComponent, RightComponent },
+  ListItemProps: {
+    LeftComponent,
+    RightComponent,
+    onClick: (router, { orgUsername, id }) =>
+      router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=bounty`),
+  },
   data: useGetOrgEntity('bounty'),
 });
 

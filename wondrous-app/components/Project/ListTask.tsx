@@ -2,6 +2,7 @@ import Grid from '@mui/material/Grid';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import TaskCardDate from 'components/Common/TaskCardDate';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
+import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ApplyOrClaimButton from './ApplyOrClaimButton';
@@ -32,7 +33,12 @@ const useListTaskProps = () => ({
   CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.TASK),
   backgroundImageUrl: '/images/project/task-empty-bg.svg',
   showAllUrl: 'boards?entity=task',
-  ListItemComponents: { LeftComponent, RightComponent },
+  ListItemProps: {
+    LeftComponent,
+    RightComponent,
+    onClick: (router, { orgUsername, id }) =>
+      router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=task`),
+  },
   data: useGetOrgEntity('task'),
 });
 

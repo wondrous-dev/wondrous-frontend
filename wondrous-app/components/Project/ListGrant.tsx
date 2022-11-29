@@ -2,6 +2,7 @@ import Grid from '@mui/material/Grid';
 import Compensation from 'components/Common/Compensation';
 import CalendarIcon from 'components/Icons/calendar';
 import PlantIcon from 'components/Icons/plant.svg';
+import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import { formatDateDisplay } from 'utils/board';
 
@@ -60,8 +61,6 @@ const RightComponent = ({ numOfGrant, endDate, reward }) => {
   );
 };
 
-const ListItemGrant = { LeftComponent, RightComponent };
-
 const useListGrant = () => ({
   HeaderTitleProps: {
     text: 'Grant',
@@ -70,7 +69,11 @@ const useListGrant = () => ({
   CreateButtonProps: useCreateGrantButtonProps(),
   backgroundImageUrl: '/images/project/grant-empty-bg.svg',
   showAllUrl: 'grants',
-  ListItemComponents: ListItemGrant,
+  ListItemProps: {
+    LeftComponent,
+    RightComponent,
+    onClick: (router, { id }) => router.push(`/organization/${router.query.username}/grants?grant=${id}`),
+  },
   data: useGetGrantOrgBoard(),
 });
 

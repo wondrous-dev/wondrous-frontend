@@ -33,7 +33,12 @@ const useListProposal = () => ({
   CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.PROPOSAL),
   backgroundImageUrl: '/images/project/proposal-empty-bg.svg',
   showAllUrl: 'boards?entity=proposal',
-  ListItemComponents: { LeftComponent, RightComponent },
+  ListItemProps: {
+    LeftComponent,
+    RightComponent,
+    onClick: (router, { orgUsername, id }) =>
+      router.push(`/organization/${orgUsername}/boards?taskProposal=${id}&view=grid&entity=proposal`),
+  },
   data: useGetOrgProposal(),
 });
 

@@ -33,7 +33,12 @@ const useListMilestone = () => ({
   CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.MILESTONE),
   backgroundImageUrl: '/images/project/milestone-empty-bg.svg',
   showAllUrl: 'boards?entity=milestone',
-  ListItemComponents: ListItemMilestone,
+  ListItemProps: {
+    LeftComponent,
+    RightComponent,
+    onClick: (router, { orgUsername, id }) =>
+      router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=milestone`),
+  },
   data: useGetOrgEntity('milestone'),
 });
 

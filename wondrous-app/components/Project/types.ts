@@ -1,3 +1,4 @@
+import { ENTITIES_TYPES } from 'utils/constants';
 import { ICreateButtonProps } from './CreateButton';
 import { IHeaderTitleProps } from './HeaderTitle';
 
@@ -7,8 +8,11 @@ export interface ListWrapperProps {
   HeaderTitleProps: IHeaderTitleProps;
   showAllUrl: string;
   data?: object[];
-  ListItemComponents: {
+  ListItemProps: {
     LeftComponent: React.ElementType;
     RightComponent?: React.ElementType;
+    onClick?: (router, data?) => void;
   };
 }
+
+export type EntitiesType = typeof ENTITIES_TYPES[keyof typeof ENTITIES_TYPES] | null;

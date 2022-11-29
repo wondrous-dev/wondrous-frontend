@@ -2,6 +2,7 @@ import Grid from '@mui/material/Grid';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import RolePill from 'components/Common/RolePill';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
+import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import { useGetOrgUsers } from './helpers';
 
@@ -32,7 +33,11 @@ const useListMember = () => ({
   },
   backgroundImageUrl: '/images/project/collab-empty-bg.svg',
   showAllUrl: 'members',
-  ListItemComponents: { LeftComponent, RightComponent },
+  ListItemProps: {
+    LeftComponent,
+    RightComponent,
+    onClick: (router, { user }) => router.push(`/profile/${user.username}/about`),
+  },
   data: useGetOrgUsers(),
 });
 
