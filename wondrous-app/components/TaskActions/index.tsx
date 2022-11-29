@@ -10,15 +10,18 @@ type Props = {
   queryParams: object;
 };
 
-const TaskActions = ({}: Props) => {
+// TODO: Fix back
+const TaskActions = () => {
   // const [taskId, setTaskId] = useState(null);
   const router = useRouter();
   const { query } = router;
 
   useEffect(() => {
     if (query.task) {
-      const windowOffset = window.scrollY;
-      document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+      // document.body.style.top = `-${window.scrollY}px`;
+      // debugger;
+      // document.body.classList.add('modal-open');
+      // document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
       // setTaskId(taskId);
     }
   }, [query.task, query.taskProposal]);
@@ -30,14 +33,23 @@ const TaskActions = ({}: Props) => {
       <TaskViewModal
         open
         handleClose={() => {
-          const query = {
-            ...router.query
-          }
+          // debugger;
+          // document.body.classList.remove('modal-open');
+          // const top = parseInt(document.body.style.top, 10);
+
+          // if (top > 0) {
+          //   window.scrollTo(0, window.scrollY);
+          // }
+          //
+          // const query = {
+          //   ...router.query,
+          // };
 
           delete query.task;
           delete query.taskProposal;
 
-          router.push({ query });
+          router.push({ query }, undefined, { scroll: false });
+          // window.scrollTo(0, window.scrollY);
           // setViewDetails(false);
           // const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}&entity=${
           //   location?.params?.entity || Constants.ENTITIES_TYPES.TASK

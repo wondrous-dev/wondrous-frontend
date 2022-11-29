@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import * as Constants from 'utils/constants';
 import { getProposalStatus } from 'utils/board';
 import palette from 'theme/palette';
-import { useLocation } from 'utils/useLocation';
 
 import { Approved, Rejected } from 'components/Icons';
 import SmartLink from 'components/Common/SmartLink';
@@ -69,14 +68,17 @@ export default function ProposalCard({ openModal, title, description, task, goTo
   };
   const labelsAndActions = PROPOSAL_STATUS_MAP[proposalStatus]?.labelsAndActions;
   const HeaderIcon = STATUS_ICONS[proposalStatus];
-  const location = useLocation();
   return (
     <SmartLink
       href={viewUrl}
       preventLinkNavigation
       onNavigate={() => {
-        location.push(viewUrl);
-        document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
+        const query = {
+          ...router.query,
+          task: task.id
+        }
+
+        router.push({ query }, undefined, { scroll: false, shallow: true });
       }}
     >
       <CardWrapper>

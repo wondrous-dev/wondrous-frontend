@@ -15,6 +15,7 @@ import {
 } from 'graphql/mutations/taskSubmission';
 import isEmpty from 'lodash/isEmpty';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import {
   BOUNTY_TYPE,
@@ -26,7 +27,6 @@ import {
 } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useBoards, useColumns, useScrollIntoView } from 'utils/hooks';
-import { useLocation } from 'utils/useLocation';
 import { formatDateDisplay } from 'utils/board';
 
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -449,8 +449,8 @@ export function SubmissionItem({
   const handleEdit = () => {
     setSubmissionToEdit(submission);
   };
-  const location = useLocation();
   const mediaUploads = submission?.media;
+  const router = useRouter();
   const isCreator = user?.id === submission?.createdBy;
   const canComment = user?.id === submission?.createdBy || canReview;
   const { orgBoard, podBoard, board } = useBoards();
@@ -461,16 +461,16 @@ export function SubmissionItem({
   const handleNonBountyTypeCompletion = () =>
     nonBountyTypeCompletion({ fetchedTask, completeTask, boardColumns, submission });
   const handleBountyTypeCompletion = () => bountyTypeCompletion({ fetchedTask, orgBoard, podBoard, board, submission });
-  const isFocused = location?.params?.taskSubmissionId === submission.id;
+  const isFocused = router?.query?.taskSubmissionId === submission.id;
   const submissionRef = useScrollIntoView(isFocused);
 
   useEffect(
     () => () => {
       if (isFocused) {
-        const { taskSubmissionId, ...rest } = location?.params;
-        const params = new URLSearchParams(rest);
-        const newUrl = `${location.pathname}&${params.toString()}`;
-        location.push(newUrl);
+        const query = { ...router.query };
+        delete query.taskSubmissionId;
+
+        router.push({ query }, undefined, { scroll: false, shallow: true });
       }
     },
     []

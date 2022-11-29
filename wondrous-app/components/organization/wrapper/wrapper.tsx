@@ -338,7 +338,7 @@ function Wrapper(props) {
             setClaimedOrRequestedRole={setClaimedOrRequestedRole}
           />
         </Suspense>
-      )}
+      )}x
       <Suspense>
         <ChooseEntityToCreate />
       </Suspense>

@@ -58,5 +58,5 @@ export default memo(SidebarEntityListMemo, (prevProps, nextProps) => {
     JSON.stringify(prevProps.menuItems) === JSON.stringify(nextProps.menuItems) &&
     prevProps.urlPath === nextProps.urlPath;
 
-  return areEqual;
+  return false;
 });

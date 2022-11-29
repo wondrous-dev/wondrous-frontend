@@ -37,6 +37,7 @@ const useSidebarData = () => {
   const { board, orgBoard } = useBoards();
   const { setEntityType } = board || {};
   const router = useRouter();
+
   const handleOnClick =
     (link, type = null) =>
     () => {
@@ -44,115 +45,116 @@ const useSidebarData = () => {
         setEntityType(type);
         return;
       }
+
       router.push(link);
     };
 
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
-  const sidebarData = {
-    handleOnClick,
-    data: [
-      {
-        label: 'Workspaces',
-        items: [
-          {
-            text: 'Tasks',
-            Icon: CheckBoxIcon,
-            link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
-            count: taskCount.taskCount,
-            entityType: ENTITIES_TYPES.TASK,
-          },
-          {
-            text: 'Bounties',
-            Icon: StartIcon,
-            link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
-            count: taskCount.bountyCount,
-            entityType: ENTITIES_TYPES.BOUNTY,
-          },
-          {
-            text: 'Milestones',
-            Icon: FlagIcon,
-            link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
-            count: taskCount.milestoneCount,
-            entityType: ENTITIES_TYPES.MILESTONE,
-          },
-          {
-            text: 'Proposals',
-            Icon: ContentPaste,
-            link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
-            count: taskCount.proposalCount,
-            entityType: ENTITIES_TYPES.PROPOSAL,
-          },
-          !!orgBoard && {
-            text: 'Pods',
-            Icon: PodIcon,
-            link: `${link}/pods`,
-            count: board?.orgData?.podCount,
-          },
-          {
-            text: 'Grants',
-            Icon: GrantIcon,
-            link: `${link}/grants`,
-            count: taskCount?.grantCount,
-          },
-          !board?.orgData?.shared && {
-            text: 'Collaborations',
-            Icon: SmallDao2DaoIcon,
-            link: {
-              pathname: router.pathname,
-              query: {
-                ...router.query,
-                collabs: true,
-              },
+  const data = [
+    {
+      label: 'Workspaces',
+      items: [
+        {
+          text: 'Tasks',
+          Icon: CheckBoxIcon,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
+          count: taskCount.taskCount,
+          entityType: ENTITIES_TYPES.TASK,
+        },
+        {
+          text: 'Bounties',
+          Icon: StartIcon,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
+          count: taskCount.bountyCount,
+          entityType: ENTITIES_TYPES.BOUNTY,
+        },
+        {
+          text: 'Milestones',
+          Icon: FlagIcon,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
+          count: taskCount.milestoneCount,
+          entityType: ENTITIES_TYPES.MILESTONE,
+        },
+        {
+          text: 'Proposals',
+          Icon: ContentPaste,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
+          count: taskCount.proposalCount,
+          entityType: ENTITIES_TYPES.PROPOSAL,
+        },
+        !!orgBoard && {
+          text: 'Pods',
+          Icon: PodIcon,
+          link: `${link}/pods`,
+          count: board?.orgData?.podCount,
+        },
+        {
+          text: 'Grants',
+          Icon: GrantIcon,
+          link: `${link}/grants`,
+          count: taskCount?.grantCount,
+        },
+        !board?.orgData?.shared && {
+          text: 'Collaborations',
+          Icon: SmallDao2DaoIcon,
+          link: {
+            pathname: router.pathname,
+            query: {
+              ...router.query,
+              collabs: true,
             },
           },
-        ],
-      },
-      {
-        label: 'Community',
-        items: [
-          {
-            text: 'Leaderboard/Analytics',
-            Icon: PieChartIcon,
-            link: `${link}/analytics`,
-          },
-          // { TODO: Put back when mint kudos is out
-          //   text: 'Activity',
-          //   Icon: ShowChartIcon,
-          //   link: `${link}/activities`,
-          // },
-          {
-            text: 'Members',
-            Icon: GroupIcon,
-            link: `${link}/members`,
-          },
-          {
-            text: 'Roles',
-            Icon: StackIcon,
-            link: {
-              pathname: router.pathname,
-              query: {
-                ...router.query,
-                roles: true,
-              },
+        },
+      ],
+    },
+    {
+      label: 'Community',
+      items: [
+        {
+          text: 'Leaderboard/Analytics',
+          Icon: PieChartIcon,
+          link: `${link}/analytics`,
+        },
+        // { TODO: Put back when mint kudos is out
+        //   text: 'Activity',
+        //   Icon: ShowChartIcon,
+        //   link: `${link}/activities`,
+        // },
+        {
+          text: 'Members',
+          Icon: GroupIcon,
+          link: `${link}/members`,
+        },
+        {
+          text: 'Roles',
+          Icon: StackIcon,
+          link: {
+            pathname: router.pathname,
+            query: {
+              ...router.query,
+              roles: true,
             },
           },
+        },
 
-          {
-            text: 'Documentation',
-            Icon: FolderIcon,
-            link: `${link}/docs`,
-          },
-        ],
-      },
-    ],
-  };
-  return sidebarData;
+        {
+          text: 'Documentation',
+          Icon: FolderIcon,
+          link: `${link}/docs`,
+        },
+      ],
+    },
+  ];
+
+  return { data, handleOnClick };
 };
 
 const SidebarEntityList = () => {
   const router = useRouter();
   const { data, handleOnClick } = useSidebarData();
+
+  console.log(router.asPath, '-----------');
 
   return <SidebarEntityListMemo menuItems={data} handleOnClick={handleOnClick} urlPath={router.asPath} />;
 };

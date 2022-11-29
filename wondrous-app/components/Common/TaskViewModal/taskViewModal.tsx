@@ -23,7 +23,6 @@ import {
   updateProposalItem,
   updateTaskItem,
 } from 'utils/board';
-import { useLocation } from 'utils/useLocation';
 import {
   BOUNTY_TYPE,
   CATEGORY_LABELS,
@@ -141,8 +140,6 @@ interface ITaskListModalProps {
   taskId: string;
   isTaskProposal?: boolean;
   back?: boolean;
-  disableEnforceFocus?: boolean;
-  shouldFocusAfterRender?: boolean;
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -190,7 +187,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const location = useLocation();
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
@@ -412,7 +408,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     );
   }
 
-  const isViewNFTMode = !!location?.params?.viewNft;
+  const isViewNFTMode = !!router?.query?.viewNft;
 
   const canEdit =
     !isViewNFTMode &&
@@ -621,12 +617,12 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               <Tooltip title="Parent Task" placement="top">
                                 <SubtaskTitleWrapper
                                   onClick={() => {
-                                    const newUrl = `${delQuery(router.asPath)}?view=${
-                                      router?.query?.view || 'grid'
-                                    }&task=${fetchedTask?.parentTaskId}&entity=${
-                                      location?.params?.entity || ENTITIES_TYPES.TASK
-                                    }`;
-                                    location.push(newUrl);
+                                    const query = {
+                                      ...router.query,
+                                      task: fetchedTask?.parentTaskId,
+                                    };
+
+                                    router.push({ query }, undefined, { scroll: false, shallow: true });
                                   }}
                                 >
                                   <TaskModalHeaderIconWrapper>

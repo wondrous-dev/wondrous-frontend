@@ -163,7 +163,6 @@ function UserRow({ contributorTask }) {
   return (
     <ContributorDiv>
       <TaskViewModal
-        disableEnforceFocus
         open={openModal}
         shouldFocusAfterRender={false}
         handleClose={() => {

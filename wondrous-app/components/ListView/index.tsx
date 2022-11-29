@@ -12,8 +12,6 @@ import {
   STATUS_CLOSED,
 } from 'utils/constants';
 import { useState, useEffect } from 'react';
-import { useLocation } from 'utils/useLocation';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { delQuery, dedupeColumns } from 'utils';
 import { useRouter } from 'next/router';
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -53,13 +51,10 @@ export default function ListView({
   enableInfiniteLoading = false,
   ...props
 }: Props) {
-  const [isModalOpen, setOpenModal] = useState(false);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
-  const router = useRouter();
   const { taskCount = {}, fetchPerStatus, entityType, setColumns } = orgBoard || podBoard || userBoard;
-  const location = useLocation();
   const isProposalEntity = entityType === ENTITIES_TYPES.PROPOSAL;
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
@@ -67,27 +62,6 @@ export default function ListView({
   const [dndErrorModal, setDndErrorModal] = useState(false);
 
   const user = useMe();
-
-  useEffect(() => {
-    const { params } = location;
-    if (params.task || params.taskProposal) {
-      setOpenModal(true);
-    }
-  }, [location]);
-
-  const handleModalClose = () => {
-    const style = document.body.getAttribute('style');
-    const top = style.match(/(?<=top: -)(.*?)(?=px)/);
-    document.body.setAttribute('style', '');
-    if (top?.length > 0) {
-      window?.scrollTo(0, Number(top[0]));
-    }
-    const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}&entity=${
-      location?.params?.entity || ENTITIES_TYPES.TASK
-    }`;
-    location.push(newUrl);
-    setOpenModal(false);
-  };
 
   const handleShowAll = (status, limit) => fetchPerStatus(status, limit);
 
@@ -272,12 +246,6 @@ export default function ListView({
 
   return (
     <>
-      <TaskViewModal
-        open={isModalOpen}
-        handleClose={handleModalClose}
-        isTaskProposal={!!location.params.taskProposal}
-        taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
-      />
       {singleColumnData ? (
         <ItemsContainer
           entityType={entityType}

@@ -284,9 +284,9 @@ export default function ListViewItem({ task, entityType }) {
         preventLinkNavigation
         onNavigate={() => {
           if (!showPaymentModal) {
-            location.push(viewUrl);
-            windowOffset = window.scrollY;
-            document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+            // location.push(viewUrl);
+            // windowOffset = window.scrollY;
+            // document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
           }
         }}
       >
