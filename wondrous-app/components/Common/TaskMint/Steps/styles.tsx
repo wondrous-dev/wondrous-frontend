@@ -1,8 +1,9 @@
+import { Grid } from '@mui/material';
+import { Button } from 'components/Button';
+import NextImage from 'next/image';
 import styled, { css, keyframes } from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { Button } from 'components/Button';
-import { Grid } from '@mui/material';
 import { STEPS } from './constants';
 
 export const MintStep = styled.div`
@@ -60,8 +61,19 @@ const setAnimation = ({ step }) => {
 
 export const ProgressBarWrapper = styled(Grid)`
   && {
+    width: 100%;
     .mint-task-progress-bar {
       ${setAnimation}
     }
+  }
+`;
+
+export const Image = styled(NextImage)`
+  && {
+    position: relative !important;
+    transition: opacity 0.3s ease-in-out;
+    height: ${({ isActive }) => (isActive ? '100%' : '0 !important')};
+    width: ${({ isActive }) => (isActive ? '100%' : '0 !important')};
+    opacity: ${({ isActive }) => (isActive ? '1' : '0')};
   }
 `;
