@@ -213,7 +213,7 @@ export const SettingsHeaderBlock = styled.div`
   ${({ theme }) => theme.breakpoints.down('md')} {
     flex-direction: column;
     align-items: flex-start;
-    height: 100%;
+    height: initial;
   }
 `;
 
