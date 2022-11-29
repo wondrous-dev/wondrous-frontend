@@ -117,7 +117,9 @@ export const useCreateGrantModal = () => {
 export const usePodModal = () => {
   const [openPodModal, setOpenPodModal] = useState(false);
   const handleSetOpenPodModal = () => setOpenPodModal((prevState) => !prevState);
-  const Modal = () => <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />;
+  const Modal = () => (
+    <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} pods={useGetOrgPods()} />
+  );
   return { PodModal: Modal, handleSetOpenPodModal };
 };
 
