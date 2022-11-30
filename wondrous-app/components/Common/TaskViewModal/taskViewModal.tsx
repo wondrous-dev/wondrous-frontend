@@ -158,13 +158,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
 
-  console.log('-----TaskViewModal:render');
-
-  useEffect(() => {
-    console.log('-----TaskViewModal:---->mounted');
-    return () => console.log('-----TaskViewModal:<-----unmounted AAAA');
-  }, []);
-
   const {
     loading: taskApplicationCountLoading,
     error: taskApplicationCountError,

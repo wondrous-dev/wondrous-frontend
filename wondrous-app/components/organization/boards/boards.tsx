@@ -1,4 +1,4 @@
-import React, { memo, Suspense, useEffect } from 'react';
+import React, { memo, Suspense } from 'react';
 
 import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
 import dynamic from 'next/dynamic';
@@ -55,15 +55,6 @@ function OrgBoards(props: Props) {
 
   const filterSchema = getFilterSchema(entityType, orgData?.id);
   const ActiveBoard = BOARDS_MAP[entityType];
-
-  console.log('-----OrgBoards:render');
-
-  useEffect(() => {
-    console.log('-----OrgBoards:---->mounted');
-    return () => console.log('-----OrgBoards:<-----unmounted AAAA');
-  }, []);
-
-  console.log('-----OrgBoards:render:loading', loading);
 
   return (
     <Wrapper

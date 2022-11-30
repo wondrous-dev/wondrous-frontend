@@ -18,7 +18,7 @@ const SidebarEntityAboutMemo = ({ name, id, thumbnailPicture, profilePicture, bo
 
   useEffect(() => {
     console.log('-----SidebarEntityAboutMemo:---->mounted');
-    return () => console.log('-----SidebarEntityAboutMemo:<-----unmounted AAAA');
+    return () => console.log('-----SidebarEntityAboutMemo:<-----unmounted');
   }, []);
 
   return (

@@ -1,4 +1,4 @@
-import { useEffect, memo } from 'react';
+import { memo } from 'react';
 import { Label, ListWrapper } from 'components/Common/SidebarStyles';
 import Item from 'components/Common/SidebarItem';
 
@@ -18,13 +18,6 @@ type Props = {
 
 const SidebarEntityListMemo = ({ menuItems, handleOnClick, urlPath }: Props) => {
   const isActive = (entityType, link) => (entityType ? location().includes(link) : urlPath.includes(link));
-
-  console.log('-----SidebarEntityListMemo:render');
-
-  useEffect(() => {
-    console.log('-----SidebarEntityListMemo:mounted');
-    return () => console.log('-----SidebarEntityListMemo:unmounted - AAAAAAA');
-  }, []);
 
   return (
     <ListWrapper>
@@ -58,5 +51,5 @@ export default memo(SidebarEntityListMemo, (prevProps, nextProps) => {
     JSON.stringify(prevProps.menuItems) === JSON.stringify(nextProps.menuItems) &&
     prevProps.urlPath === nextProps.urlPath;
 
-  return false;
+  return areEqual;
 });

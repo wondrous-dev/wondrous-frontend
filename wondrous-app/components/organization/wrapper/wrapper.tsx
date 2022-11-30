@@ -1,6 +1,4 @@
-import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import TaskActions from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import React, { useEffect, useState, memo, Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
 import {
@@ -15,6 +13,7 @@ import {
   BOUNTY_TYPE,
   HEADER_ASPECT_RATIO,
 } from 'utils/constants';
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import apollo from 'services/apollo';
 import { Box } from '@mui/material';
 import TypeSelector from 'components/TypeSelector';
@@ -192,13 +191,6 @@ function Wrapper(props) {
     isCollabWorkspace = false,
     inviteButtonSettings = null,
   } = props;
-
-  console.log('-----Wrapper:render');
-
-  useEffect(() => {
-    console.log('-----Wrapper:---->mounted');
-    return () => console.log('-----Wrapper:<-----unmounted AAAA');
-  }, []);
 
   const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
 
@@ -600,55 +592,3 @@ function Wrapper(props) {
 }
 
 export default Wrapper;
-
-//
-// const WrapperMemo = memo(Wrapper, (prevProps, nextProps) => {
-//   if (!nextProps.orgBoard?.orgId) {
-//     return true;
-//   }
-//
-//   const areEqual =
-//     prevProps.routerQuery === nextProps.routerQuery &&
-//     prevProps.orgBoard?.orgId === nextProps.orgBoard?.orgId &&
-//     prevProps.routerPath === nextProps.routerPath &&
-//     prevProps.loading === nextProps.loading &&
-//     prevProps.podIds === nextProps.podIds &&
-//     prevProps.statuses === nextProps.statuses &&
-//     prevProps.filterSchema === nextProps.filterSchema &&
-//     prevProps.orgData === nextProps.orgData &&
-//     prevProps.activeEthAddress === nextProps.activeEthAddress;
-//   //
-//   // console.log(
-//   //   '---------',
-//   //   prevProps.routerQuery === nextProps.routerQuery,
-//   //   prevProps.orgBoard?.orgId === nextProps.orgBoard?.orgId,
-//   //   prevProps.routerPath === nextProps.routerPath,
-//   //   prevProps.loading === nextProps.loading,
-//   //   prevProps.podIds === nextProps.podIds,
-//   //   prevProps.statuses === nextProps.statuses,
-//   //   prevProps.filterSchema === nextProps.filterSchema,
-//   //   prevProps.orgData === nextProps.orgData,
-//   //   prevProps.activeEthAddress === nextProps.activeEthAddress
-//   // );
-//   //
-//   // console.log('-------', prevProps, nextProps);
-//
-//   return areEqual;
-// });
-//
-// export default (props) => {
-//   const loggedInUser = useMe();
-//   const orgBoard = useOrgBoard();
-//   const router = useRouter();
-//
-//   return (
-//     <WrapperMemo
-//       {...props}
-//       routerQuery={router.query}
-//       routerPath={router.asPath}
-//       orgBoard={orgBoard}
-//       activeEthAddress={loggedInUser?.activeEthAddress}
-//       onNavigate={router.push}
-//     />
-//   );
-// };
