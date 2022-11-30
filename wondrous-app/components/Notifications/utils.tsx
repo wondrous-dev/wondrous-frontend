@@ -40,7 +40,7 @@ export function getNotificationDescription(notification, link) {
     case NOTIFICATION_TYPES.MENTION:
       return <>mentioned you in a {object}</>;
     case NOTIFICATION_TYPES.COMMENT:
-      return <>comented on {object}</>;
+      return <>commented on {object}</>;
     // ====
     case NOTIFICATION_TYPES.TASK_ASSIGN:
       return <>assigned a {object} to you</>;
