@@ -1,6 +1,7 @@
 import Grid from '@mui/material/Grid';
 import ListMainWrapper from 'components/Project/ListMainWrapper';
 import PodCards from 'components/Project/PodCards';
+import { useMemo } from 'react';
 import { ProjectContext } from 'utils/contexts';
 
 import {
@@ -17,14 +18,17 @@ const Project = ({ orgData }) => {
   const { DocCategoriesModal, handleCreateNewCategory } = useDocCategoriesModal();
   const { CreateGrantModal, handleCreateFormModal } = useCreateGrantModal();
   const { PodModal, handleSetOpenPodModal } = usePodModal();
-  const projectContextValue = {
-    setEntityType,
-    handleCreateModal,
-    handleCreateNewCategory,
-    handleCreateFormModal,
-    handleSetOpenPodModal,
-    orgData,
-  };
+  const projectContextValue = useMemo(
+    () => ({
+      setEntityType,
+      handleCreateModal,
+      handleCreateNewCategory,
+      handleCreateFormModal,
+      handleSetOpenPodModal,
+      orgData,
+    }),
+    [setEntityType, handleCreateModal, handleCreateNewCategory, handleCreateFormModal, handleSetOpenPodModal, orgData]
+  );
   return (
     <ProjectContext.Provider value={projectContextValue}>
       <>
