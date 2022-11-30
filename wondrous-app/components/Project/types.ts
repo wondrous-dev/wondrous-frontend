@@ -1,8 +1,23 @@
+import { NextRouter } from 'next/router';
+import React from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 
-import { ICreateButtonProps } from './CreateButton';
-import { IHeaderTitleProps } from './HeaderTitle';
-import { IListItemProps } from './ListItem';
+export interface IListItemProps {
+  LeftComponent: React.ElementType;
+  RightComponent?: React.ElementType;
+  data?: object;
+  onClick?: (router: NextRouter, data?) => void;
+}
+
+export interface IHeaderTitleProps {
+  text: string;
+  IconComponent: React.ElementType;
+}
+
+export interface ICreateButtonProps {
+  onClick: () => unknown;
+  text: string;
+}
 
 export interface ListWrapperProps {
   backgroundImageUrl: string;

@@ -1,8 +1,9 @@
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+
+import { IHeaderTitleProps } from './types';
 
 const HeaderText = styled(Typography)`
   && {
@@ -13,11 +14,6 @@ const HeaderText = styled(Typography)`
     color: ${palette.blue20};
   }
 `;
-
-export interface IHeaderTitleProps {
-  text: string;
-  IconComponent: React.ElementType;
-}
 
 const HeaderTitle = ({ text, IconComponent }: IHeaderTitleProps) => (
   <Grid container width="fit-content" height="36px" gap="8px" alignItems="center" justifyContent="center">

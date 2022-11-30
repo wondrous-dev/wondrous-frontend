@@ -5,10 +5,7 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 import { useCheckOrgPermission } from 'utils/hooks';
 
-export interface ICreateButtonProps {
-  onClick: () => unknown;
-  text: string;
-}
+import { ICreateButtonProps } from './types';
 
 const Icon = () => (
   <Grid

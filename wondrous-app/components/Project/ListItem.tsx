@@ -1,8 +1,9 @@
 import Grid from '@mui/material/Grid';
-import { NextRouter, useRouter } from 'next/router';
-import React from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+
+import { IListItemProps } from './types';
 
 const Wrapper = styled(Grid)``;
 
@@ -29,13 +30,6 @@ const LeftComponentWrapper = styled(Grid)`
     }
   }
 `;
-
-export interface IListItemProps {
-  LeftComponent: React.ElementType;
-  RightComponent?: React.ElementType;
-  data?: object;
-  onClick?: (router: NextRouter, data?) => void;
-}
 
 const ListItem = ({ LeftComponent, RightComponent = () => null, onClick, data }: IListItemProps) => {
   const router = useRouter();

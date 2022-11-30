@@ -21,8 +21,7 @@ import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards, useProject, useSideBar } from 'utils/hooks';
 
-import { ICreateButtonProps } from './CreateButton';
-import { EntitiesType } from './types';
+import { EntitiesType, ICreateButtonProps } from './types';
 
 const useOrgId = () => {
   const { orgData } = useProject();
@@ -241,6 +240,5 @@ export const useGetOrgCollabsForOrg = () => {
 
 export const useHandleCollabShowAll = () => {
   const { setMinimized } = useSideBar();
-  // return () => console.log('hello');
   return () => setMinimized(false);
 };

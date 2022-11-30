@@ -11,7 +11,7 @@ import CreateButton from './CreateButton';
 import HeaderTitle from './HeaderTitle';
 import { DATA_LIMIT } from './helpers';
 import ListItem from './ListItem';
-import { ListWrapperProps } from './types';
+import { ICreateButtonProps, ListWrapperProps } from './types';
 
 const MainWrapper = styled(Grid)``;
 
@@ -59,7 +59,7 @@ const emptyComponent = ({ backgroundImageUrl, CreateButtonProps }) => (
   </Grid>
 );
 
-const AddButton = ({ onClick }) => {
+const AddButton = ({ onClick }: ICreateButtonProps) => {
   const hasPermission = useCheckOrgPermission();
   if (!onClick || !hasPermission) return null;
   return (
