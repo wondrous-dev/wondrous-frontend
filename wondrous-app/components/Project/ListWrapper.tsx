@@ -5,6 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { useCheckOrgPermission } from 'utils/hooks';
 
 import CreateButton from './CreateButton';
 import HeaderTitle from './HeaderTitle';
@@ -63,6 +64,16 @@ const emptyComponent = ({ backgroundImageUrl, CreateButtonProps }) => (
   </Grid>
 );
 
+const AddButton = ({ onClick }) => {
+  const hasPermission = useCheckOrgPermission();
+  if (!onClick || !hasPermission) return null;
+  return (
+    <AddButtonWrapper onClick={onClick}>
+      <PlusIcon />
+    </AddButtonWrapper>
+  );
+};
+
 const ListWrapper = ({
   backgroundImageUrl,
   CreateButtonProps,
@@ -88,11 +99,7 @@ const ListWrapper = ({
       <Grid container item flexDirection="column" flexGrow="1" padding="14px" gap="14px">
         <Grid container item alignItems="center" justifyContent="space-between">
           <HeaderTitle {...HeaderTitleProps} />
-          {CreateButtonProps?.onClick && (
-            <AddButtonWrapper onClick={CreateButtonProps.onClick}>
-              <PlusIcon />
-            </AddButtonWrapper>
-          )}
+          <AddButton {...CreateButtonProps} />
         </Grid>
         <Grid item container flexDirection="column" gap="10px" flexGrow="1">
           {entityContent}
