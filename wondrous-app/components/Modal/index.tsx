@@ -65,7 +65,6 @@ export function Modal({
   const contentRef = useRef();
 
   // TODO: Adrian - refactor this to use modals native API
-
   // useOutsideAlerter(contentRef, onClose);
   return (
     <ModalComponent open={open} onClose={onClose}>
