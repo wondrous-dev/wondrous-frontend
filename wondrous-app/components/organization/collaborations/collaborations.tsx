@@ -13,6 +13,7 @@ import { Masonry } from '@mui/lab';
 import { useIsMobile } from 'utils/hooks';
 
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import CollabWrapper from './wrapper';
 import {
   CollabInvitationHeader,
@@ -34,6 +35,8 @@ function Collaborations(props) {
   const { orgData = {}, userPermissionsContext } = props;
   const [activeTab, setActiveTab] = useState(TAB_TYPES.ACTIVE);
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const router = useRouter();
+  const { invite } = router.query;
   const isMobile = useIsMobile();
   const canManageCollabs = userPermissionsContext?.orgPermissions[orgData?.orgId]?.includes(PERMISSIONS.FULL_ACCESS);
 
@@ -75,6 +78,11 @@ function Collaborations(props) {
     }
   }, [activeTab, orgData?.id]);
 
+  useEffect(() => {
+    if (invite) {
+      setActiveTab(TAB_TYPES.INVITATIONS);
+    }
+  }, [invite]);
   return (
     <EntitySidebar>
       <CreateCollaborationModal open={openCreateModal} onCancel={handleCreateModal} defaultOrgId={orgData?.id} />
