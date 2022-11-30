@@ -13,35 +13,39 @@ import ListItem from './ListItem';
 import { ListWrapperProps } from './types';
 
 const MainWrapper = styled(Grid)`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 390px;
-  background: #1d1d1d;
-  border-radius: 6px;
-  width: 50%;
+  && {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 390px;
+    background: #1d1d1d;
+    border-radius: 6px;
+    width: 50%;
+  }
 `;
 
 const AddButtonWrapper = styled(ButtonBase)`
-  background: #313131;
-  align-items: center;
-  justify-content: center;
-  height: 36px;
-  width: 36px;
-  border-radius: 36px;
-  cursor: pointer;
-  display: flex;
-  visibility: hidden;
-  & svg {
-    path {
-      fill: #fff;
+  && {
+    background: #313131;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    width: 36px;
+    border-radius: 36px;
+    cursor: pointer;
+    display: flex;
+    visibility: hidden;
+    & svg {
+      path {
+        fill: #fff;
+      }
     }
-  }
-  &:hover {
-    background: #474747;
-  }
-  ${MainWrapper}:hover & {
-    visibility: visible;
+    &:hover {
+      background: #474747;
+    }
+    ${MainWrapper}:hover & {
+      visibility: visible;
+    }
   }
 `;
 
