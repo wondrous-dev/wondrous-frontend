@@ -1,4 +1,5 @@
-import TaskActions from "components/TaskActions";
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
+import TaskActions from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import React, { useEffect, useState, memo, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
@@ -311,7 +312,7 @@ function Wrapper(props) {
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
-      <TaskActions />
+      <TaskViewModalWatcher />
       <Suspense>
         <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       </Suspense>
@@ -338,7 +339,7 @@ function Wrapper(props) {
             setClaimedOrRequestedRole={setClaimedOrRequestedRole}
           />
         </Suspense>
-      )}x
+      )}
       <Suspense>
         <ChooseEntityToCreate />
       </Suspense>
@@ -359,7 +360,6 @@ function Wrapper(props) {
           />
         </Suspense>
       )}
-
       <HeaderImageWrapper>
         <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
           {orgProfile ? (
@@ -376,7 +376,6 @@ function Wrapper(props) {
           ) : null}
         </AspectRatio>
       </HeaderImageWrapper>
-
       <Content>
         <ContentContainer>
           <TokenHeader>

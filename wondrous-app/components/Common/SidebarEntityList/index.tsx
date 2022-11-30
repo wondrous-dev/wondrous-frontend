@@ -154,8 +154,6 @@ const SidebarEntityList = () => {
   const router = useRouter();
   const { data, handleOnClick } = useSidebarData();
 
-  console.log(router.asPath, '-----------');
-
   return <SidebarEntityListMemo menuItems={data} handleOnClick={handleOnClick} urlPath={router.asPath} />;
 };
 

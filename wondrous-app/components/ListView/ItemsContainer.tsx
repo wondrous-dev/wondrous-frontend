@@ -86,6 +86,10 @@ export default function ItemsContainer({
   ...props
 }) {
   const { status, tasks } = data;
+  const [editTask, setEditTask] = useState(false);
+  const [archiveTask, setArchiveTask] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(false);
+
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
 
   const itemTitle = LABELS_MAP[status] || ENTITIES_LABELS_MAP[entityType] || '';

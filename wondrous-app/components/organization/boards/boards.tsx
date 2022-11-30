@@ -1,6 +1,6 @@
 import React, { memo, Suspense, useEffect } from 'react';
-import BoardSkeleton from 'components/Dashboard/boards/BoardSkeleton';
-import TaskActions from 'components/TaskActions';
+
+import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
 import dynamic from 'next/dynamic';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import Wrapper from 'components/organization/wrapper/wrapper';
@@ -78,7 +78,7 @@ function OrgBoards(props: Props) {
     >
       <ColumnsContext.Provider value={{ columns, setColumns }}>
         {loading ? (
-          <BoardSkeleton />
+          <BoardColumnsSkeleton />
         ) : (
           <Suspense>
             <ActiveBoard
@@ -107,22 +107,6 @@ export default memo(OrgBoards, (prevProps, nextProps) => {
     prevProps.entityType === nextProps.entityType &&
     prevProps.loading === nextProps.loading &&
     prevProps.activeView === nextProps.activeView;
-
-  //
-  // console.log('-----OrgBoards:areEqual', prevProps, nextProps);
-  // console.log(
-  //   '-----OrgBoards:areEqual',
-  //
-  //   prevProps.columns === nextProps.columns,
-  //   prevProps.hasMore === nextProps.hasMore,
-  //   prevProps.orgData?.id === nextProps.orgData?.id,
-  //   prevProps.statuses === nextProps.statuses,
-  //   prevProps.podIds === nextProps.podIds,
-  //   prevProps.userId === nextProps.userId,
-  //   prevProps.entityType === nextProps.entityType,
-  //   prevProps.loading === nextProps.loading,
-  //   prevProps.activeView === nextProps.activeView
-  // );
 
   return areEqual;
 });

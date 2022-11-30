@@ -627,8 +627,8 @@ export const CreateEntityCancelButton = styled(ButtonUnstyled)`
 `;
 
 export const CreateEntityTemplateInput = styled.div`
-  flex-direction: 'row';
-  display: 'flex';
+  flex-direction: row;
+  display: flex;
 `;
 
 export const CreateEntityCreateTaskButton = styled(Button)`
@@ -813,17 +813,6 @@ export const CreateEntityPaymentMethodPopper = styled(PopperUnstyled)`
   overflow-y: auto;
   ${scrollBarStyles}
 `;
-
-export function CreateEntityPaymentMethodSelect(props) {
-  const components = {
-    Root: CreateEntityPaymentMethodRoot,
-    Listbox: CreateEntityPaymentMethodList,
-    Popper: CreateEntityPaymentMethodPopper,
-    ...props.components,
-  };
-
-  return <SelectUnstyled {...props} components={components} />;
-}
 
 export const CreateEntityPaymentMethodSelected = styled.div`
   display: flex;
@@ -1049,3 +1038,14 @@ export const SnapshotButtonBlock = styled.div`
   justify-content: left;
   margin-left: 24px;
 `;
+
+export function CreateEntityPaymentMethodSelect(props) {
+  const components = {
+    Root: CreateEntityPaymentMethodRoot,
+    Listbox: CreateEntityPaymentMethodList,
+    Popper: CreateEntityPaymentMethodPopper,
+    ...props.components,
+  };
+
+  return <SelectUnstyled {...props} components={components} />;
+}

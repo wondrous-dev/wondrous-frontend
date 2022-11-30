@@ -19,8 +19,6 @@ const EntitySidebar = ({ children }) => {
   const { minimized } = useSideBar();
   const { query } = useRouter();
 
-  console.log(query, '----------query');
-
   const Sidebar = useMemo(() => {
     if (query.roles) {
       return SIDEBAR_COMPONENTS.roles;

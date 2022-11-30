@@ -207,7 +207,6 @@ function ExploreComponent() {
           </TabsWrapper>
           {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
             <BountySection
-              isMobile={isMobile}
               bounties={bounties?.getTaskExplore}
               fetchMore={getTaskExploreFetchMore}
               hasMore={hasMoreBounties}
@@ -217,7 +216,6 @@ function ExploreComponent() {
           {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
           {(activeTab === null || activeTab === TABS_LABELS.GR15_DEI) && (
             <BountySection
-              isMobile={isMobile}
               bounties={bounties?.getTaskExplore}
               fetchMore={getTaskExploreFetchMore}
               hasMore={hasMoreBounties}

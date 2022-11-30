@@ -1,13 +1,12 @@
+import React, { useEffect, useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
+
 import { ColumnsContext } from 'utils/contexts';
 import { useRouter } from 'next/router';
 import pluralize from 'pluralize';
-import React, { useEffect, useState } from 'react';
 import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
-import ListView from 'components/ListView';
-import Table from 'components/Table';
-import KanbanBoard from '../KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
 import {
   BoardsContainer,
@@ -17,6 +16,10 @@ import {
   ShowAllButton,
   ShowAllSearchResults,
 } from './styles';
+
+const KanbanBoard = dynamic(() => import('../KanbanBoard/kanbanBoard'), { suspense: true });
+const Table = dynamic(() => import('components/Table'), { suspense: true });
+const ListView = dynamic(() => import('components/ListView'), { suspense: true });
 
 type Props = {
   columns: Array<any>;
@@ -57,14 +60,14 @@ function Boards(props: Props) {
     const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
 
     return view ? (
-      <>
+      <Suspense>
         {/* TEMPORARY until we come up with a list view for proposals */}
         {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
           <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
         ) : (
           <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}
-      </>
+      </Suspense>
     ) : null;
   }
 
@@ -100,7 +103,9 @@ function Boards(props: Props) {
                 {columns.tasksCount} {pluralize(name, columns.tasksCount)}
               </SearchType>
 
-              <Table columns={columns} limit={!showAll ? 5 : undefined} onLoadMore={onLoadMore} hasMore={false} />
+              <Suspense>
+                <Table columns={columns} limit={!showAll ? 5 : undefined} onLoadMore={onLoadMore} hasMore={false} />
+              </Suspense>
 
               {columns.tasksCount > 5 && !showAll ? (
                 <ShowAllSearchResults>

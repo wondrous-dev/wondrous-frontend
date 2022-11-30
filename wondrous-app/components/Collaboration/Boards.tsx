@@ -1,4 +1,6 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, memo, Suspense } from 'react';
+
+import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
 import { ColumnsContext } from 'utils/contexts';
 import Wrapper from 'components/organization/wrapper/wrapper';
 import { BOARDS_MAP, Props } from 'components/organization/boards/boards';
@@ -152,19 +154,39 @@ function CollabBoard(props: Props) {
         </ModalComponent>
       )}
       <ColumnsContext.Provider value={{ columns, setColumns }}>
-        {!loading && (
-          <ActiveBoard
-            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-            columns={columns}
-            onLoadMore={onLoadMore}
-            hasMore={hasMore}
-            setColumns={setColumns}
-            entityType={entityType}
-          />
+        {loading ? (
+          <BoardColumnsSkeleton />
+        ) : (
+          <Suspense>
+            <ActiveBoard
+              activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+              columns={columns}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              setColumns={setColumns}
+              entityType={entityType}
+            />
+          </Suspense>
         )}
       </ColumnsContext.Provider>
     </Wrapper>
   );
 }
 
-export default CollabBoard;
+export default memo(CollabBoard, (prevProps, nextProps) => {
+  const areEqual =
+    prevProps.columns === nextProps.columns &&
+    prevProps.hasMore === nextProps.hasMore &&
+    prevProps.orgData?.id === nextProps.orgData?.id &&
+    prevProps.statuses === nextProps.statuses &&
+    prevProps.podIds === nextProps.podIds &&
+    prevProps.userId === nextProps.userId &&
+    prevProps.entityType === nextProps.entityType &&
+    prevProps.loading === nextProps.loading &&
+    prevProps.isCollabWorkspace === nextProps.isCollabWorkspace &&
+    prevProps.filterSchema === nextProps.filterSchema &&
+    prevProps.userId === nextProps.filterSchema &&
+    prevProps.activeView === nextProps.activeView;
+
+  return areEqual;
+});
