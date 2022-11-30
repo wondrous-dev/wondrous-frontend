@@ -1,5 +1,6 @@
 import Grid from '@mui/material/Grid';
 import { NextRouter, useRouter } from 'next/router';
+import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
@@ -29,14 +30,14 @@ const LeftComponentWrapper = styled(Grid)`
   }
 `;
 
-interface IEntityItem {
+export interface IListItemProps {
   LeftComponent: React.ElementType;
   RightComponent?: React.ElementType;
   data?: object;
   onClick?: (router: NextRouter, data?) => void;
 }
 
-const ListItem = ({ LeftComponent, RightComponent = () => null, onClick, data }: IEntityItem) => {
+const ListItem = ({ LeftComponent, RightComponent = () => null, onClick, data }: IListItemProps) => {
   const router = useRouter();
   return (
     <Wrapper

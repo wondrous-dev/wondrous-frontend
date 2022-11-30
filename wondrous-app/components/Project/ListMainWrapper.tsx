@@ -35,8 +35,8 @@ const ListMainWrapper = () => {
         },
       ]}
     >
-      {listWrapperProps.map((i, index) => (
-        <ListWrapper key={index} {...i} />
+      {listWrapperProps.map((i) => (
+        <ListWrapper key={i.HeaderTitleProps.text} {...i} />
       ))}
     </Grid>
   );

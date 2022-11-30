@@ -9,20 +9,11 @@ import { useCheckOrgPermission } from 'utils/hooks';
 
 import CreateButton from './CreateButton';
 import HeaderTitle from './HeaderTitle';
+import { DATA_LIMIT } from './helpers';
 import ListItem from './ListItem';
 import { ListWrapperProps } from './types';
 
-const MainWrapper = styled(Grid)`
-  && {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 390px;
-    background: ${palette.grey900};
-    border-radius: 6px;
-    width: 50%;
-  }
-`;
+const MainWrapper = styled(Grid)``;
 
 const AddButtonWrapper = styled(ButtonBase)`
   && {
@@ -97,9 +88,17 @@ const ListWrapper = ({
   };
   const entityContent = isEmpty(data)
     ? emptyComponent({ backgroundImageUrl, CreateButtonProps })
-    : data.map((i) => <ListItem {...ListItemProps} data={i} />);
+    : data.slice(0, DATA_LIMIT).map((i) => <ListItem key={i?.id} {...ListItemProps} data={i} />);
   return (
-    <MainWrapper>
+    <MainWrapper
+      container
+      item
+      flexDirection="column"
+      justifyContent="space-between"
+      height="390px"
+      bgcolor={palette.grey900}
+      borderRadius="6px"
+    >
       <Grid container item flexDirection="column" flexGrow="1" padding="14px" gap="14px">
         <Grid container item alignItems="center" justifyContent="space-between">
           <HeaderTitle {...HeaderTitleProps} />

@@ -155,7 +155,7 @@ export const useCreateGrantButtonProps = (): ICreateButtonProps => {
   };
 };
 
-const LIMIT = 6;
+export const DATA_LIMIT = 6;
 
 export const useGetOrgEntity = (type) => {
   const orgId = useOrgId();
@@ -167,13 +167,13 @@ export const useGetOrgEntity = (type) => {
       podIds: [],
       offset: 0,
       statuses: ['created', 'in_progress', 'in_review', 'completed'],
-      limit: LIMIT,
+      limit: DATA_LIMIT,
       labelId: null,
       date: null,
       types: [type],
     },
   });
-  return sortBy(data?.getOrgTaskBoardTasks, ({ id }) => id).slice(0, LIMIT);
+  return sortBy(data?.getOrgTaskBoardTasks, ({ id }) => id);
 };
 
 export const useGetOrgProposal = () => {
@@ -182,7 +182,7 @@ export const useGetOrgProposal = () => {
     skip: !orgId,
     variables: {
       orgId,
-      limit: LIMIT,
+      limit: DATA_LIMIT,
       offset: 0,
       statuses: ['open', 'closed', 'approved'],
     },
@@ -196,7 +196,7 @@ export const useGetOrgUsers = () => {
     skip: !orgId,
     variables: {
       orgId,
-      limit: LIMIT,
+      limit: DATA_LIMIT,
     },
   });
   return data?.getOrgUsers;
@@ -208,10 +208,10 @@ export const useGetOrgDocumentCategories = () => {
     skip: !orgId,
     variables: {
       orgId,
-      limit: LIMIT, // TODO: add limit to backend
+      limit: DATA_LIMIT, // TODO: add limit to backend
     },
   });
-  return data?.getOrgDocumentCategories.slice(0, LIMIT);
+  return data?.getOrgDocumentCategories;
 };
 
 export const useGetGrantOrgBoard = () => {
@@ -220,7 +220,7 @@ export const useGetGrantOrgBoard = () => {
     skip: !orgId,
     variables: {
       orgId,
-      limit: LIMIT,
+      limit: DATA_LIMIT,
       offset: 0,
       status: 'open',
     },
