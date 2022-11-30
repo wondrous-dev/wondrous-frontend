@@ -66,12 +66,12 @@ export function Modal({
 
   // TODO: Adrian - refactor this to use modals native API
 
-  useOutsideAlerter(contentRef, onClose);
+  // useOutsideAlerter(contentRef, onClose);
   return (
     <ModalComponent open={open} onClose={onClose}>
       <ModalContainer tabIndex={-1} alignCenter={alignCenter}>
         <ModalDialog maxWidth={maxWidth} alignCenter={alignCenter}>
-          <ModalContent ref={contentRef}>
+          <ModalContent>
             <ModalHeader>
               {!!title && <ModalTitle>{title}</ModalTitle>}
               {onClose && <CloseModalBtn onClick={onClose} />}
