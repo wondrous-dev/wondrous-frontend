@@ -1,9 +1,12 @@
 import Grid from '@mui/material/Grid';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import RolePill from 'components/Common/RolePill';
 import CloseIcon from 'components/Icons/close.svg';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import Link from 'next/link';
 import palette from 'theme/palette';
+import { ROLES } from 'utils/constants';
+import { useBoards } from 'utils/hooks';
 
 import { useCollaborationButtonProps, useGetOrgCollabsForOrg } from './helpers';
 
@@ -21,9 +24,9 @@ const OrgWrapper = ({ username, profilePicture }) => (
   </Grid>
 );
 
-const LeftComponent = ({ username, parentOrgProfilePicture, childOrgProfilePicture }) => (
+const LeftComponent = ({ parentOrgName, childOrgName, parentOrgProfilePicture, childOrgProfilePicture }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
-    <OrgWrapper username={username} profilePicture={parentOrgProfilePicture} />
+    <OrgWrapper username={parentOrgName} profilePicture={parentOrgProfilePicture} />
     <Grid
       container
       item
@@ -46,11 +49,19 @@ const LeftComponent = ({ username, parentOrgProfilePicture, childOrgProfilePictu
     >
       <CloseIcon />
     </Grid>
-    <OrgWrapper username="" profilePicture={childOrgProfilePicture} />
+    <OrgWrapper username={childOrgName} profilePicture={childOrgProfilePicture} />
   </Grid>
 );
 
-const RightComponent = ({ date, type }) => null; // TODO: add collaboration role
+const RightComponent = ({ parentOrgName }) => {
+  const { orgBoard } = useBoards();
+  const roleName = orgBoard.orgData.name === parentOrgName ? ROLES.OWNER : ROLES.CONTRIBUTOR;
+  return (
+    <Grid container>
+      <RolePill roleName={roleName} />
+    </Grid>
+  );
+};
 
 const useListCollab = () => ({
   HeaderTitleProps: {
