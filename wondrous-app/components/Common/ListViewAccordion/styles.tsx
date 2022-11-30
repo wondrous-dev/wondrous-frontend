@@ -40,6 +40,7 @@ export const AccordionDetails = styled(MuiAccordionDetails)`
     border-bottom: 0.5px dashed #2b2b2b;
     border-radius: 6px;
     border-top: 0.5px dashed #2b2b2b;
+    background: ${({ highlighted }) => (highlighted ? palette.grey100 : 'none')};
   }
   ${EmptyStateWrapper} {
     width: fit-content;

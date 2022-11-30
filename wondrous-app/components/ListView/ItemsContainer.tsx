@@ -84,6 +84,7 @@ export default function ItemsContainer({
   disableDnd = false,
   enableInfiniteLoading = false,
   dndPlaceholder = null,
+  highlighted,
   ...props
 }) {
   const { status, tasks } = data;
@@ -137,17 +138,14 @@ export default function ItemsContainer({
         showMoreTitle="Show all"
         enableInfiniteLoading={enableInfiniteLoading}
         noGap
+        highlighted={highlighted}
       >
         {tasks?.length ? (
-          tasks.map((task, index) => {
-            const isDragDisabled = disableDnd || taskHasPayment(task);
-
-            return (
-              <DndWrapper key={task.id} id={task.id} index={index} disableDnd={isDragDisabled}>
-                <Item entityType={entityType} task={task} isDragDisabled={isDragDisabled} />
-              </DndWrapper>
-            );
-          })
+          tasks.map((task, index) => (
+            <DndWrapper key={task.id} id={task.id} index={index} disableDnd={disableDnd}>
+              <Item entityType={entityType} task={task} isDragDisabled={disableDnd} />
+            </DndWrapper>
+          ))
         ) : (
           <EmptyStateBoards hidePlaceholder status={status} />
         )}

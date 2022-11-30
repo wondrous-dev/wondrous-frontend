@@ -24,6 +24,7 @@ interface Props {
   loading?: boolean;
   enableInfiniteLoading?: boolean;
   noGap?: boolean;
+  highlighted?: boolean;
 }
 
 const Accordion = ({
@@ -39,6 +40,7 @@ const Accordion = ({
   loading,
   enableInfiniteLoading = false,
   noGap = false,
+  highlighted = false,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(isExpanded);
   const handleExpansion = () => setIsOpen(!isOpen);
@@ -67,7 +69,9 @@ const Accordion = ({
         </ListViewItemStatus>
         {headerAddons || null}
       </ListViewItemHeader>
-      <AccordionDetails noGap={noGap}>{children}</AccordionDetails>
+      <AccordionDetails highlighted={highlighted} noGap={noGap}>
+        {children}
+      </AccordionDetails>
       {enableInfiniteLoading && <LoadMore ref={ref} hasMore={hasMore} />}
       {hasMore && !enableInfiniteLoading ? (
         <ShowMoreButton type="button" onClick={onShowMore}>
