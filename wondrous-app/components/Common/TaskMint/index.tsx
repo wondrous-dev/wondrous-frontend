@@ -4,7 +4,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { TaskMint } from 'types/task';
 import TaskMintButton from './TaskMintButton';
 import Modals from './Modals';
-import TaskViewMintActions from './TaskMintViewActions';
+import MintViewAndShare from './MintViewAndShare';
 
 interface Props {
   taskMintData: TaskMint;
@@ -37,7 +37,7 @@ const TaskMintComponent = ({ taskMintData, taskStatus, assigneeId, setIsViewNft,
       <Modals isOpen={isModalOpen} onClose={toggleModal} />
 
       {isViewNft ? (
-        <TaskViewMintActions tokenId={tokenId} taskId={taskId} />
+        <MintViewAndShare tokenId={tokenId} taskId={taskId} />
       ) : (
         <TaskMintButton onClick={handleMintButtonClick} status={status} />
       )}

@@ -310,15 +310,9 @@ export const useNotifications = () => {
 export const useSteps = (defaultStep = 0) => {
   const [step, setStep] = useState(defaultStep);
 
-  const nextStep = () => {
-    if (step === step + 1) return;
-    setStep((prevState) => prevState + 1);
-  };
+  const nextStep = () => setStep((prevState) => prevState + 1);
 
-  const prevStep = () => {
-    if (step === step - 1) return;
-    setStep((prevState) => prevState - 1);
-  };
+  const prevStep = () => setStep((prevState) => prevState - 1);
 
   useEffect(() => () => setStep(defaultStep), []);
 

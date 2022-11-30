@@ -6,7 +6,15 @@ import OpenseaButton from '../OpenseaButton';
 import { CommunityShare } from '../Steps/SuccessMint';
 import { Wrapper } from './styles';
 
-const TaskViewMintActions = ({ tokenId, taskId }) => {
+/*
+ * @param {number} tokenId
+ * @param {number} taskId
+ * @returns {JSX.Element}
+ * @description: Component that contains the button to view the NFT on Opensea
+ * and the button to copy the link to the NFT view modal
+ */
+
+const MintViewAndShare = ({ tokenId, taskId }) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
 
   const handleShareClick = (e) => {
@@ -29,4 +37,4 @@ const TaskViewMintActions = ({ tokenId, taskId }) => {
   );
 };
 
-export default TaskViewMintActions;
+export default MintViewAndShare;

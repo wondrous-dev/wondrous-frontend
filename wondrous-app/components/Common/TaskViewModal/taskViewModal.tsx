@@ -217,7 +217,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       if (taskData) {
         const taskMintStatus = taskData?.taskMint?.status;
         if (taskMintStatus === TaskMintStatus.IN_PROGRESS) {
-          startPolling(2000);
+          startPolling(4000);
         }
         if (taskMintStatus === TaskMintStatus.COMPLETED) {
           stopPolling();
