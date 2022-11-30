@@ -42,7 +42,7 @@ export const StyledTab = styled(Tab)`
     max-width: fit-content;
     padding: 3px;
     margin-right: 20px;
-    color: ${({ isActive }) => (isActive ? 'white' : '#828282')};
+    color: ${({ isActive }) => (isActive ? 'white !important' : '#828282 !important')};
   }
 `;
 
@@ -143,7 +143,7 @@ export const EmptyText = styled(Typography)`
 
 export const CollabCount = styled(Typography)`
   && {
-    color: ${({ isActive }) => (isActive ? 'white' : '#828282')};
+    color: ${({ isActive }) => (isActive ? 'white !important' : '#828282 !important')};
     background: ${palette.grey87};
     padding: 2px;
     border-radius: 4px;

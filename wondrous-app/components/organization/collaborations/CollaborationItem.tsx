@@ -55,7 +55,7 @@ export const ActiveCollaborationItem = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collab?.id, userPermissionsContext]);
   return (
-    <SmartLink href={`/collaboration/${collab?.username}/boards`}>
+    <SmartLink href={`/collaboration/${collab?.username}/boards`} asLink>
       <CollabCard>
         <CollabCardHeader>
           <SharedOrgHeaderCard collab={collab} />
