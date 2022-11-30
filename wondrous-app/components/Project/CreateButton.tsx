@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import PlusIcon from 'components/Icons/plus';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { useCheckOrgPermission } from 'utils/hooks';
 
 export interface ICreateButtonProps {
   onClick: () => unknown;
@@ -83,11 +84,15 @@ export const ButtonIcon = styled(ButtonBase)`
   }
 `;
 
-const CreateButton = ({ onClick, text }: ICreateButtonProps) => (
-  <ButtonIcon onClick={onClick} disableRipple>
-    <Icon />
-    {`Create ${text}`}
-  </ButtonIcon>
-);
+const CreateButton = ({ onClick, text }: ICreateButtonProps) => {
+  const hasPermission = useCheckOrgPermission();
+  if (!hasPermission) return null;
+  return (
+    <ButtonIcon onClick={onClick} disableRipple>
+      <Icon />
+      {`Create ${text}`}
+    </ButtonIcon>
+  );
+};
 
 export default CreateButton;
