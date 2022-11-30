@@ -19,7 +19,7 @@ import sortBy from 'lodash/sortBy';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useBoards, useProject } from 'utils/hooks';
+import { useBoards, useProject, useSideBar } from 'utils/hooks';
 
 import { ICreateButtonProps } from './CreateButton';
 import { EntitiesType } from './types';
@@ -229,7 +229,6 @@ export const useGetGrantOrgBoard = () => {
 };
 
 export const useGetOrgCollabsForOrg = () => {
-  // TODO: this needs the username of child and role
   const orgId = useOrgId();
   const { data } = useQuery(GET_ORG_COLLABS_FOR_ORG, {
     skip: !orgId,
@@ -238,4 +237,10 @@ export const useGetOrgCollabsForOrg = () => {
     },
   });
   return data?.getOrgCollabsForOrg;
+};
+
+export const useHandleCollabShowAll = () => {
+  const { setMinimized } = useSideBar();
+  // return () => console.log('hello');
+  return () => setMinimized(false);
 };

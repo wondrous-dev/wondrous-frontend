@@ -8,7 +8,7 @@ import palette from 'theme/palette';
 import { ROLES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 
-import { useCollaborationButtonProps, useGetOrgCollabsForOrg } from './helpers';
+import { useCollaborationButtonProps, useGetOrgCollabsForOrg, useHandleCollabShowAll } from './helpers';
 
 const OrgWrapper = ({ username, profilePicture }) => (
   <Grid container item width="fit-content" sx={[{ '& a': { textDecoration: 'none' } }]}>
@@ -70,7 +70,10 @@ const useListCollab = () => ({
   },
   CreateButtonProps: useCollaborationButtonProps(),
   backgroundImageUrl: '/images/project/collab-empty-bg.svg',
-  showAllUrl: 'project?collabs=true',
+  showAllUrl: {
+    url: 'project?collabs=true',
+    onClick: useHandleCollabShowAll(),
+  },
   ListItemProps: {
     LeftComponent,
     RightComponent,

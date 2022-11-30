@@ -6,7 +6,7 @@ export interface ListWrapperProps {
   backgroundImageUrl: string;
   CreateButtonProps: ICreateButtonProps;
   HeaderTitleProps: IHeaderTitleProps;
-  showAllUrl: string;
+  showAllUrl: string | { url: string; onClick: () => unknown };
   data?: object[];
   ListItemProps: {
     LeftComponent: React.ElementType;
