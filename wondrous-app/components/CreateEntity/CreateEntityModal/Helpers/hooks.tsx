@@ -339,6 +339,7 @@ export const useCreateMilestone = () => {
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
       'getMilestones',
+      'getOrgTaskBoardTasks',
     ],
   });
   const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
@@ -385,7 +386,7 @@ export const useCreateMilestone = () => {
 
 export const useCreateBounty = () => {
   const [createBounty, { loading }] = useMutation(CREATE_BOUNTY, {
-    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard'],
+    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getOrgTaskBoardTasks'],
   });
   const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createBounty({
