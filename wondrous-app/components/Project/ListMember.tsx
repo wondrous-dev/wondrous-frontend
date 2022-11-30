@@ -27,10 +27,6 @@ const useListMember = () => ({
     text: 'Member',
     IconComponent: GroupIcon,
   },
-  CreateButtonProps: {
-    onClick: () => null,
-    text: 'Member',
-  },
   backgroundImageUrl: '/images/project/collab-empty-bg.svg',
   showAllUrl: 'members',
   ListItemProps: {

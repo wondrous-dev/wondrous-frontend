@@ -12,7 +12,6 @@ import {
 } from './helpers';
 
 const Project = ({ orgData }) => {
-  const { id } = orgData;
   const { setEntityType, CreateEntityModal } = useCreateEntityModal();
   const { CollaborationModal, handleCreateModal } = useCollaborationModal();
   const { DocCategoriesModal, handleCreateNewCategory } = useDocCategoriesModal();

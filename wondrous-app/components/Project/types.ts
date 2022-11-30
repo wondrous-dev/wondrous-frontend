@@ -4,7 +4,7 @@ import { IHeaderTitleProps } from './HeaderTitle';
 
 export interface ListWrapperProps {
   backgroundImageUrl: string;
-  CreateButtonProps: ICreateButtonProps;
+  CreateButtonProps?: ICreateButtonProps;
   HeaderTitleProps: IHeaderTitleProps;
   showAllUrl: string | { url: string; onClick: () => unknown };
   data?: object[];

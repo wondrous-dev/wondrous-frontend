@@ -1,13 +1,48 @@
 import ButtonBase from '@mui/material/ButtonBase';
 import Grid from '@mui/material/Grid';
+import PlusIcon from 'components/Icons/plus';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
+import styled from 'styled-components';
 import palette from 'theme/palette';
 
 import CreateButton from './CreateButton';
 import HeaderTitle from './HeaderTitle';
 import ListItem from './ListItem';
 import { ListWrapperProps } from './types';
+
+const MainWrapper = styled(Grid)`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 390px;
+  background: #1d1d1d;
+  border-radius: 6px;
+  width: 50%;
+`;
+
+const AddButtonWrapper = styled(ButtonBase)`
+  background: #313131;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  border-radius: 36px;
+  cursor: pointer;
+  display: flex;
+  visibility: hidden;
+  & svg {
+    path {
+      fill: #fff;
+    }
+  }
+  &:hover {
+    background: #474747;
+  }
+  ${MainWrapper}:hover & {
+    visibility: visible;
+  }
+`;
 
 const emptyComponent = ({ backgroundImageUrl, CreateButtonProps }) => (
   <Grid
@@ -49,16 +84,16 @@ const ListWrapper = ({
     ? emptyComponent({ backgroundImageUrl, CreateButtonProps })
     : data.map((i) => <ListItem {...ListItemProps} data={i} />);
   return (
-    <Grid
-      container
-      flexDirection="column"
-      justifyContent="space-between"
-      height="390px"
-      bgcolor="#1d1d1d"
-      borderRadius="6px"
-    >
+    <MainWrapper>
       <Grid container item flexDirection="column" flexGrow="1" padding="14px" gap="14px">
-        <HeaderTitle {...HeaderTitleProps} />
+        <Grid container item alignItems="center" justifyContent="space-between">
+          <HeaderTitle {...HeaderTitleProps} />
+          {CreateButtonProps?.onClick && (
+            <AddButtonWrapper onClick={CreateButtonProps.onClick}>
+              <PlusIcon />
+            </AddButtonWrapper>
+          )}
+        </Grid>
         <Grid item container flexDirection="column" gap="10px" flexGrow="1">
           {entityContent}
         </Grid>
@@ -81,7 +116,7 @@ const ListWrapper = ({
       >
         Show all
       </ButtonBase>
-    </Grid>
+    </MainWrapper>
   );
 };
 
