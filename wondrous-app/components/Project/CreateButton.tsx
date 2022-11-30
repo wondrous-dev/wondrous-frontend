@@ -1,4 +1,4 @@
-import { ButtonBase } from '@mui/material';
+import ButtonBase from '@mui/material/ButtonBase';
 import Grid from '@mui/material/Grid';
 import PlusIcon from 'components/Icons/plus';
 import styled from 'styled-components';

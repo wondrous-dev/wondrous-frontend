@@ -1,6 +1,5 @@
 import Grid from '@mui/material/Grid';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
-import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import { randomColors } from 'utils/common';
 

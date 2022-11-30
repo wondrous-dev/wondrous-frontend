@@ -6,7 +6,6 @@ import { ButtonPrimary } from 'components/Common/button';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries';
-import { useState } from 'react';
 import palette from 'theme/palette';
 import { usePermissions } from 'utils/hooks';
 

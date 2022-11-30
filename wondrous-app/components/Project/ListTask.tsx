@@ -2,7 +2,6 @@ import Grid from '@mui/material/Grid';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import TaskCardDate from 'components/Common/TaskCardDate';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
-import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ApplyOrClaimButton from './ApplyOrClaimButton';

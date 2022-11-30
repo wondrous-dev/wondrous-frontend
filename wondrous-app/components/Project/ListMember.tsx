@@ -2,7 +2,6 @@ import Grid from '@mui/material/Grid';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import RolePill from 'components/Common/RolePill';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
-import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import { useGetOrgUsers } from './helpers';
 
