@@ -1,7 +1,11 @@
 import { useRouter } from 'next/router';
+import { useTheme } from '@mui/material/styles';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import SwipeableViews from 'react-swipeable-views';
+import MobileStepper from '@mui/material/MobileStepper';
+import Button from '@mui/material/Button';
+import usePrevious, { useIsMobile, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import {
@@ -44,6 +48,7 @@ export const populateOrder = (index, tasks, field) => {
 
 function KanbanBoard(props) {
   const user = useMe();
+  const isMobile = useIsMobile();
   const { columns, onLoadMore, hasMore, setColumns } = props;
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
@@ -314,6 +319,22 @@ function KanbanBoard(props) {
     setOpenModal(false);
   };
 
+  const theme = useTheme();
+  const [activeStep, setActiveStep] = React.useState(0);
+  const maxSteps = columns.length;
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleStepChange = (step: number) => {
+    setActiveStep(step);
+  };
+
   const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;
   return (
     <KanbanBoardContainer>
@@ -343,12 +364,61 @@ function KanbanBoard(props) {
         key={taskId}
       />
       <DragDropContext onDragEnd={onDragEnd}>
-        {columns.map((column) => {
-          const { status, section, tasks } = column;
+        {isMobile ? (
+          <SwipeableViews
+            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+            index={activeStep}
+            onChangeIndex={handleStepChange}
+            enableMouseEvents
+          >
+            {columns.map((column) => {
+              const { status, section, tasks } = column;
 
-          return <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />;
-        })}
+              return (
+                <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />
+              );
+            })}
+          </SwipeableViews>
+        ) : (
+          <>
+            {columns.map((column) => {
+              const { status, section, tasks } = column;
+
+              return (
+                <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />
+              );
+            })}
+          </>
+        )}
       </DragDropContext>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '2rem',
+          left: 0,
+          zIndex: 20,
+          backgroundColor: 'white',
+          width: '100%',
+          color: 'white',
+        }}
+      >
+        <MobileStepper
+          style={{ background: 'white' }}
+          steps={maxSteps}
+          position="static"
+          activeStep={activeStep}
+          nextButton={
+            <Button color="primary" size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
+              Next
+            </Button>
+          }
+          backButton={
+            <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+              Back
+            </Button>
+          }
+        />
+      </div>
     </KanbanBoardContainer>
   );
 }

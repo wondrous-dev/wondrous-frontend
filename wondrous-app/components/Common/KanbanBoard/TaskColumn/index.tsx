@@ -14,7 +14,7 @@ import {
   STATUS_CLOSED,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useIsMobile, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 
 import Task from 'components/Common/Task';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
@@ -64,6 +64,7 @@ const HEADER_ICONS = {
 };
 
 function TaskColumn(props: ITaskColumn) {
+  const isMobile = useIsMobile();
   const { cardsList, moveCard, status, section } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -85,7 +86,7 @@ function TaskColumn(props: ITaskColumn) {
 
   let taskColumnWidth = '100%';
   if (!userBoard) {
-    taskColumnWidth = '25%';
+    taskColumnWidth = isMobile ? '100%' : '25%';
   }
   switch (status) {
     case TASK_STATUS_TODO:
@@ -106,15 +107,15 @@ function TaskColumn(props: ITaskColumn) {
       break;
     case STATUS_OPEN:
       number = taskCount?.proposalOpen || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     case STATUS_APPROVED:
       number = taskCount?.proposalApproved || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     case STATUS_CLOSED:
       number = taskCount?.proposalClosed || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     default:
       number = 0;

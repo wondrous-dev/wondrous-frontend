@@ -33,4 +33,14 @@ export const BoardsActivityInlineViewWrapper = styled.div`
     justify-content: flex-start;
     margin-top: 18px;
   }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-wrap: wrap;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-wrap: initial;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;

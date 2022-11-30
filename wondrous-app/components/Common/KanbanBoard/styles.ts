@@ -10,6 +10,12 @@ export const KanbanBoardContainer = styled.div`
   align-items: stretch;
   justify-content: space-between;
   margin-top: 32px;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-top: 150px;
+    display: block;
+    /* width: 400%; */
+  }
 `;
 export const LoadMore = styled.div`
   display: ${(props) => (props.hasMore ? 'block' : 'none')};

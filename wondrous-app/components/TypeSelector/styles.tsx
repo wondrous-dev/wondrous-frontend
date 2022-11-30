@@ -3,6 +3,10 @@ import palette from 'theme/palette';
 
 export const Wrapper = styled.div`
   display: flex;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-wrap: wrap;
+  }
 `;
 
 export const StatItem = styled.span`
@@ -39,6 +43,11 @@ export const StatItem = styled.span`
     padding: 1px;
   }
   `}
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 `;
 
 export const IconWrapper = styled.div`
