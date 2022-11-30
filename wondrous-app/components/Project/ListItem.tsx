@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid';
 import { NextRouter, useRouter } from 'next/router';
-import palette from 'theme/palette';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 const Wrapper = styled(Grid)``;
 
@@ -16,7 +16,7 @@ const LeftComponentWrapper = styled(Grid)`
     text-overflow: ellipsis;
     &:after {
       content: '';
-      background: linear-gradient(90deg, transparent 80%, #212121 100%);
+      background: linear-gradient(90deg, transparent 80%, ${palette.grey950} 100%);
       display: block;
       inset-block-end: 0;
       position: absolute;
@@ -44,7 +44,7 @@ const ListItem = ({ LeftComponent, RightComponent = () => null, onClick, data }:
       justifyContent="space-between"
       padding="4px"
       alignItems="center"
-      bgcolor="#212121"
+      bgcolor={palette.grey950}
       height="36px"
       borderRadius="4px"
       onClick={() => onClick?.(router, data)}

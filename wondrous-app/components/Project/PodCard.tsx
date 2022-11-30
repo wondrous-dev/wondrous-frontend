@@ -11,11 +11,11 @@ interface PodCardProps {
   contributorCount?: number;
 }
 
-const PodCard = ({ name, id, color = '#282828', contributorCount = 0 }: PodCardProps) => (
+const PodCard = ({ name, id, color = palette.grey99, contributorCount = 0 }: PodCardProps) => (
   <Grid
     container
     item
-    bgcolor="#212121"
+    bgcolor={palette.grey950}
     maxWidth="200px"
     flexGrow="1"
     height="76px"
@@ -47,9 +47,9 @@ const PodCard = ({ name, id, color = '#282828', contributorCount = 0 }: PodCardP
         item
         width="fit-content"
         height="28px"
-        bgcolor="#282828"
+        bgcolor={palette.grey99}
         borderRadius="4px"
-        color="#CCBBFF"
+        color={palette.blue20}
         fontFamily="Space Grotesk"
         fontWeight="600"
         padding="0 6px"

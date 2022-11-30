@@ -7,6 +7,7 @@ import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries';
 import { useState } from 'react';
+import palette from 'theme/palette';
 import { usePermissions } from 'utils/hooks';
 
 const ApplyOrClaimButton = ({ task }) => {
@@ -29,11 +30,11 @@ const ApplyOrClaimButton = ({ task }) => {
     return (
       <Grid
         container
-        bgcolor="#343434"
+        bgcolor={palette.black81}
         padding="0 14px"
         borderRadius="160px"
         alignItems="center"
-        color="#06FFA5"
+        color={palette.green30}
         fontWeight="500"
         width="fit-content"
       >
@@ -60,7 +61,7 @@ const ApplyOrClaimButton = ({ task }) => {
           width: '82px',
         }}
       >
-        <Typography color="#fff" fontWeight="500" fontSize="14px" padding="0 12px">
+        <Typography color={palette.white} fontWeight="500" fontSize="14px" padding="0 12px">
           Claim
         </Typography>
       </ButtonPrimary>

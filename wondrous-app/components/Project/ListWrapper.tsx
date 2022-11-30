@@ -18,7 +18,7 @@ const MainWrapper = styled(Grid)`
     flex-direction: column;
     justify-content: space-between;
     height: 390px;
-    background: #1d1d1d;
+    background: ${palette.grey900};
     border-radius: 6px;
     width: 50%;
   }
@@ -26,7 +26,7 @@ const MainWrapper = styled(Grid)`
 
 const AddButtonWrapper = styled(ButtonBase)`
   && {
-    background: #313131;
+    background: ${palette.grey87};
     align-items: center;
     justify-content: center;
     height: 36px;
@@ -37,11 +37,11 @@ const AddButtonWrapper = styled(ButtonBase)`
     visibility: hidden;
     & svg {
       path {
-        fill: #fff;
+        fill: ${palette.white};
       }
     }
     &:hover {
-      background: #474747;
+      background: ${palette.grey78};
     }
     ${MainWrapper}:hover & {
       visibility: visible;

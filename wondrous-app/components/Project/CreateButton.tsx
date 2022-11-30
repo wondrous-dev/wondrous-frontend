@@ -18,9 +18,9 @@ const Icon = () => (
     width="30px"
     height="30px"
     borderRadius="30px"
-    bgcolor="#313131"
+    bgcolor={palette.grey87}
   >
-    <PlusIcon fill="#CCBBFF" />
+    <PlusIcon fill={palette.blue20} />
   </Grid>
 );
 
@@ -78,7 +78,12 @@ export const ButtonIcon = styled(ButtonBase)`
         opacity: 90%;
         transform: translate(-2px, -2px);
         z-index: -2;
-        background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+        background: linear-gradient(
+          270deg,
+          ${palette.blue20} -5.62%,
+          ${palette.highlightPurple} 45.92%,
+          ${palette.highlightBlue} 103.12%
+        );
       }
     }
   }

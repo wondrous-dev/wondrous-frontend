@@ -159,6 +159,7 @@ export const blackColors = {
   black60: '#6B7075',
   black70: '#353535',
   black80: '#333333',
+  black81: '#343434',
   black85: '#2D2C2C',
   black87: '#292929',
   black90: '#23292F',

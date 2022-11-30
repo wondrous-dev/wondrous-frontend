@@ -6,6 +6,7 @@ import HeaderTitle from 'components/Project/HeaderTitle';
 import PodCard from 'components/Project/PodCard';
 import isEmpty from 'lodash/isEmpty';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useProject } from 'utils/hooks';
 
@@ -13,7 +14,7 @@ import { useEntityCreateButtonProps, useGetOrgPods } from './helpers';
 
 const EmptyWrapper = styled.div`
   background-image: url(/images/project/pod-empty-bg.svg);
-  background-color: #212121;
+  background-color: ${palette.grey950};
   background-size: 70%;
   background-repeat: no-repeat;
   background-position: center;
@@ -61,7 +62,7 @@ const PodCards = () => {
   const emptyComponent = useNoPods();
   const podsComponent = isEmpty(pods) ? emptyComponent : podCardContent(pods);
   return (
-    <Grid container bgcolor="#141414" padding="14px" gap="14px">
+    <Grid container bgcolor={palette.black97} padding="14px" gap="14px">
       <Grid container justifyContent="space-between">
         <HeaderTitle IconComponent={PodIcon} text="Pods" />
         <ShowAllButton />

@@ -16,7 +16,7 @@ const MilestoneProgress = ({ milestoneId }: { milestoneId: string }) => {
             justifyContent="flex-end"
             fontSize="13px"
             fontWeight="500"
-            color="#CCBBFF"
+            color={palette.blue20}
             width="fit-content"
           >
             {progress}%
@@ -31,7 +31,7 @@ const MilestoneProgress = ({ milestoneId }: { milestoneId: string }) => {
           </Grid>
         </>
       ) : (
-        <Typography color="#CCBBFF" fontSize="13px" fontWeight="500">
+        <Typography color={palette.blue20} fontSize="13px" fontWeight="500">
           No tasks
         </Typography>
       )}

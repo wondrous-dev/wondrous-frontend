@@ -13,7 +13,7 @@ import { useCollaborationButtonProps, useGetOrgCollabsForOrg, useHandleCollabSho
 const OrgWrapper = ({ username, profilePicture }) => (
   <Grid container item width="fit-content" sx={[{ '& a': { textDecoration: 'none' } }]}>
     <Link href={`/organization/${username}/boards`}>
-      <Grid container item width="fit-content" alignItems="center" color="#fff" gap="6px">
+      <Grid container item width="fit-content" alignItems="center" color={palette.white} gap="6px">
         <OrgProfilePicture
           profilePicture={profilePicture}
           style={{ height: '24px', width: '24px', borderRadius: '24px' }}
@@ -33,7 +33,7 @@ const LeftComponent = ({ parentOrgName, childOrgName, parentOrgProfilePicture, c
       height="16px"
       width="16px"
       borderRadius="16px"
-      bgcolor="#292929"
+      bgcolor={palette.black87}
       alignItems="center"
       justifyContent="center"
       sx={[
@@ -41,7 +41,7 @@ const LeftComponent = ({ parentOrgName, childOrgName, parentOrgProfilePicture, c
           '& svg': {
             transform: 'scale(60%)',
             path: {
-              fill: '#fff',
+              fill: palette.white,
             },
           },
         },
@@ -66,7 +66,7 @@ const RightComponent = ({ parentOrgName }) => {
 const useListCollab = () => ({
   HeaderTitleProps: {
     text: 'Collab',
-    IconComponent: () => <SmallDao2DaoIcon stroke="#fff" />,
+    IconComponent: () => <SmallDao2DaoIcon stroke={palette.white} />,
   },
   CreateButtonProps: useCollaborationButtonProps(),
   backgroundImageUrl: '/images/project/collab-empty-bg.svg',

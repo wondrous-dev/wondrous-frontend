@@ -2,7 +2,6 @@ import Grid from '@mui/material/Grid';
 import Compensation from 'components/Common/Compensation';
 import CalendarIcon from 'components/Icons/calendar';
 import PlantIcon from 'components/Icons/plant.svg';
-import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import { formatDateDisplay } from 'utils/board';
 
@@ -30,26 +29,33 @@ const RightComponent = ({ numOfGrant, endDate, reward }) => {
         padding="6px"
         height="28px"
         lineHeight="0"
-        color="#fff"
+        color={palette.white}
       >
         <CalendarIcon width="10px" height="11px" />
         {days}
       </Grid>
-      <Grid container item height="100%" width="fit-content" borderRadius="100px" sx={{ outline: '1px solid #474747' }}>
+      <Grid
+        container
+        item
+        height="100%"
+        width="fit-content"
+        borderRadius="100px"
+        sx={{ outline: `1px solid ${palette.grey78}` }}
+      >
         <Compensation
           rewards={[reward]}
-          pillStyle={{ backgroundColor: '#474747', borderRadius: '100px 0 0 100px', height: '100%' }}
+          pillStyle={{ backgroundColor: palette.grey78, borderRadius: '100px 0 0 100px', height: '100%' }}
         />
         <Grid
           item
           container
-          bgcolor="#313131"
+          bgcolor={palette.grey87}
           width="fit-content"
           height="100%"
           borderRadius="0 100px 100px 0"
           alignItems="center"
           padding="6px 8px 6px 6px"
-          color="#fff"
+          color={palette.white}
           fontSize="13px"
           fontWeight="500"
           lineHeight="0"

@@ -5,6 +5,7 @@ import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
 import palette from 'theme/palette';
 import { getProposalStatus } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
+
 import { useEntityCreateButtonProps, useGetOrgProposal } from './helpers';
 
 const LeftComponent = ({ title, creator }) => (
@@ -20,7 +21,7 @@ const RightComponent = ({ orgId, rejectedAt, approvedAt, closedAt }) => (
       type="proposal"
       orgId={orgId}
       status={getProposalStatus({ rejectedAt, approvedAt, closedAt })}
-      style={{ background: '#343434' }}
+      style={{ background: palette.black81 }}
     />
   </Grid>
 );

@@ -1,6 +1,7 @@
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 const HeaderText = styled(Typography)`
   && {
@@ -8,7 +9,7 @@ const HeaderText = styled(Typography)`
     font-style: normal;
     font-weight: 700;
     font-size: 20px;
-    color: #ccbbff;
+    color: ${palette.blue20};
   }
 `;
 
@@ -23,7 +24,7 @@ const HeaderTitle = ({ text, IconComponent }: IHeaderTitleProps) => (
       container
       alignItems="center"
       justifyContent="center"
-      bgcolor="#212121"
+      bgcolor={palette.grey950}
       borderRadius="36px"
       height="36px"
       width="36px"
