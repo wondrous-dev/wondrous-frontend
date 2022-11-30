@@ -1,6 +1,7 @@
 import ButtonBase from '@mui/material/ButtonBase';
 import Grid from '@mui/material/Grid';
 import PlusIcon from 'components/Icons/plus';
+import Tooltip from 'components/Tooltip';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
@@ -11,7 +12,7 @@ import CreateButton from './CreateButton';
 import HeaderTitle from './HeaderTitle';
 import { DATA_LIMIT } from './helpers';
 import ListItem from './ListItem';
-import { ICreateButtonProps, ListWrapperProps } from './types';
+import { ListWrapperProps } from './types';
 
 const MainWrapper = styled(Grid)``;
 
@@ -59,13 +60,15 @@ const emptyComponent = ({ backgroundImageUrl, CreateButtonProps }) => (
   </Grid>
 );
 
-const AddButton = ({ onClick }: ICreateButtonProps) => {
+const AddButton = ({ onClick, text }) => {
   const hasPermission = useCheckOrgPermission();
   if (!onClick || !hasPermission) return null;
   return (
-    <AddButtonWrapper onClick={onClick}>
-      <PlusIcon />
-    </AddButtonWrapper>
+    <Tooltip title={`Create new ${text.toLowerCase()}`} placement="top">
+      <AddButtonWrapper onClick={onClick}>
+        <PlusIcon />
+      </AddButtonWrapper>
+    </Tooltip>
   );
 };
 
@@ -102,7 +105,7 @@ const ListWrapper = ({
       <Grid container item flexDirection="column" flexGrow="1" padding="14px" gap="14px">
         <Grid container item alignItems="center" justifyContent="space-between">
           <HeaderTitle {...HeaderTitleProps} />
-          <AddButton {...CreateButtonProps} />
+          <AddButton {...CreateButtonProps} {...HeaderTitleProps} />
         </Grid>
         <Grid item container flexDirection="column" gap="10px" flexGrow="1">
           {entityContent}
