@@ -13,7 +13,7 @@ import PodIcon from 'components/Icons/podIcon';
 import { SearchIconWrapped } from 'components/SearchTasks/styles';
 import SearchSuggestions from 'components/SearchSuggestions';
 import { GLOBAL_SEARCH_TYPES } from 'utils/constants';
-import { useHotkey, useOutsideAlerter } from 'utils/hooks';
+import { useGlobalContext, useHotkey, useOutsideAlerter } from 'utils/hooks';
 
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
@@ -52,6 +52,7 @@ interface Labels {
 }
 
 function GlobalSearch() {
+  const { toggleSpotlight } = useGlobalContext();
   const [options, setOptions] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -114,7 +115,10 @@ function GlobalSearch() {
   };
 
   const showBadge = useHotkey();
-  const handleInputExpand = () => (isExpanded ? false : setIsExpanded(true));
+  const handleInputExpand = () => {
+    toggleSpotlight();
+    // return isExpanded ? false : setIsExpanded(true)
+  };
 
   const handleRedirect = (type, entity) => {
     handleClose();

@@ -13,6 +13,7 @@ import { useIsMobile } from 'utils/hooks';
 
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import Backdrop from '@mui/material/Backdrop';
+import Spotlight from 'components/Spotlight';
 import { BackdropComponent, SectionWrapper } from './styles';
 
 const getOrgsList = (userOrgs, router) => {
@@ -27,6 +28,7 @@ const getOrgsList = (userOrgs, router) => {
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
   const router = useRouter();
+  const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
   useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {
     // should this be here?
     router.push(`/dashboard`, undefined, {
@@ -79,6 +81,9 @@ export default function SidebarLayout({ children }) {
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
+
+  const toggleSpotlight = () => setIsSpotlightOpen((prev) => !prev);
+
   return (
     <SideBarContext.Provider value={sidebarValue}>
       {/* <SideBarComponent userOrgs={userOrgs} /> */}
@@ -94,10 +99,12 @@ export default function SidebarLayout({ children }) {
           refetchNotifications: refetch,
           fetchMoreNotifications,
           notificationsLoading,
+          toggleSpotlight,
         }}
       >
         <HeaderComponent />
         <BackdropComponent open={!minimized && isMobile} />
+        <Spotlight isOpen={isSpotlightOpen} onClose={toggleSpotlight} />
         <SectionWrapper>{children}</SectionWrapper>
       </GlobalContext.Provider>
     </SideBarContext.Provider>

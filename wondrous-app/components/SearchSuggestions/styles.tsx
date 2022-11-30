@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 
 export const Wrapper = styled.div`
-  background: ${palette.midnight};
-  top: 110%;
-  position: absolute;
+  background: transparent;
   width: fit-content;
   min-width: 100%;
   border-radius: 6px;
-  border: 1px solid ${palette.grey79};
   padding: 8px;
+  color: ${palette.grey250};
+  font-weight: 500;
+
   display: ${({ show }) => (show ? 'block' : 'none')};
 `;
 
@@ -23,6 +23,7 @@ export const Item = styled.div`
   gap: 8px;
   :hover {
     background: ${palette.black92};
+    color: ${palette.white};
   }
 `;
 
