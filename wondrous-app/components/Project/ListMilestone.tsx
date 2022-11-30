@@ -23,8 +23,6 @@ const RightComponent = ({ type, orgId, status, id }) => (
   </Grid>
 );
 
-const ListItemMilestone = { LeftComponent, RightComponent };
-
 const useListMilestone = () => ({
   HeaderTitleProps: {
     text: 'Milestone',

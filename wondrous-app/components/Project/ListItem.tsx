@@ -28,10 +28,31 @@ const ListItem = ({ LeftComponent, RightComponent = () => null, onClick, data }:
         },
       }}
     >
-      <Grid container item alignItems="center" width="fit-content">
+      <Grid
+        container
+        item
+        alignItems="center"
+        width="fit-content"
+        position="relative"
+        sx={{
+          flex: 1,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          '&:after': {
+            content: '""',
+            background: 'linear-gradient(90deg, transparent 80%,  #212121 100%)',
+            display: 'block',
+            insetBlockEnd: 0,
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+          },
+        }}
+      >
         <LeftComponent {...data} />
       </Grid>
-      <Grid container item alignItems="center" width="fit-content">
+      <Grid container item alignItems="center" justifySelf="flex-end" width="fit-content">
         <RightComponent {...data} />
       </Grid>
     </Grid>
