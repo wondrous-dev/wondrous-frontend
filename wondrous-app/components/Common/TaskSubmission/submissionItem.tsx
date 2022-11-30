@@ -646,7 +646,9 @@ export function SubmissionItem({
             )}
             {showReopenTaskAndBountyButtons && (
               <Grid display="flex" justifyContent="flex-end">
-                <ReopenTaskSubmission submission={submission} setCommentType={setCommentType} onClick={reopenTask} />
+                {canReview && (
+                  <ReopenTaskSubmission submission={submission} setCommentType={setCommentType} onClick={reopenTask} />
+                )}
                 <SubmissionBountyPaymentButton
                   fetchedTask={fetchedTask}
                   submission={submission}
