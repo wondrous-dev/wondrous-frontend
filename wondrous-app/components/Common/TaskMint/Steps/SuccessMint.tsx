@@ -15,7 +15,7 @@ import { useTaskContext } from 'utils/hooks';
 import { CommunityShareWrapper, ShareButton } from './styles';
 import { TaskMintDetailsChain } from '../TaskMintButton/styles';
 
-const CommunityShare = ({ handleShareClick }) => (
+export const CommunityShare = ({ handleShareClick }) => (
   <CommunityShareWrapper>
     <Typography color={palette.blue20} fontFamily={typography.fontFamily} fontWeight={500}>
       Share with community?

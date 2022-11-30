@@ -295,3 +295,11 @@ export const MINT_TASK = gql`
     taskMint(taskId: $taskId, title: $title, description: $description, links: $links)
   }
 `;
+
+export const COMPLETE_TASK_MINT = gql`
+  mutation completeTaskMint($operationId: String!) {
+    completeTaskMint(operationId: $operationId) {
+      success
+    }
+  }
+`;
