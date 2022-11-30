@@ -391,4 +391,3 @@ export const GET_GR15_GRANTEES = gql`
   }
   ${OrgFragment}
 `;
-

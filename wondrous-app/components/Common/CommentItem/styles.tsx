@@ -16,7 +16,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border-bottom: 1px solid ${palette.grey87};
+  border-top: 1px solid ${palette.grey87};
   padding: 12px 0px;
   ${({ highlight }) =>
     highlight &&

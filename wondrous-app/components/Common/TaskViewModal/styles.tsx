@@ -27,6 +27,7 @@ export const TaskModal = styled(Modal)`
   align-items: center;
   justify-content: center;
   z-index: 500;
+  padding: 0 24px;
 `;
 
 export const TaskModalCard = styled.div`
@@ -104,6 +105,10 @@ export const TaskModalHeaderTypography = styled(Typography)`
     font-size: 13px;
     color: ${theme.palette.white};
   `}
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
   }
 `;
 
@@ -269,6 +274,10 @@ const TaskModalTaskDataFullScreen = css`
   grid-template-columns: minmax(0, 6fr) 4fr;
   grid-template-rows: auto 1fr;
   row-gap: 36px;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    display: block;
+  }
 `;
 
 export const TaskModalTaskDataMinimized = css`
@@ -739,6 +748,11 @@ export const TaskSectionFooterTitleDiv = styled.div`
   align-items: center;
   padding: 0 24px;
   gap: 24px;
+  overflow-x: auto;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const TaskSubmissionTab = styled.div`
@@ -766,6 +780,7 @@ export const TaskSubmissionTab = styled.div`
 `;
 
 export const TaskTabText = styled(Typography)`
+  display: inline-flex;
   && {
     font-size: 14px;
     ${({ theme, isActive }) => `
@@ -779,11 +794,12 @@ export const TabItemCount = styled.span`
   background: ${({ isActive }) => (isActive ? '#282828' : '#282828')};
   padding: 2px 8px;
   border-radius: 200px;
+  margin-left: 4px;
 `;
 
 export const TaskSectionContent = styled.div`
   padding: 20px 24px;
-  background-color: #141414;
+  background-color: ${palette.grey125};
   flex-grow: 1;
 `;
 
@@ -864,6 +880,10 @@ export const ActionButton = styled(CreateFormPreviewButton)`
       mask-composite: exclude;
       padding: 1px;
       border-radius: 180px;
+    }
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      font-size: 15px;
     }
   }
   &.Mui-disabled {

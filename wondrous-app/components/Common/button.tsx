@@ -22,7 +22,7 @@ const ButtonInner = styled.button`
   cursor: pointer;
 `;
 
-const ButtonWrapper = styled.div`
+export const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   min-height: 40px;

@@ -68,7 +68,7 @@ export function CreateEntityDropdown(props) {
                 <DefaultImageComponent color={color} />
               )}
             </CreateEntityOptionImageWrapper>
-            <CreateEntityOptionLabel>{label}</CreateEntityOptionLabel>
+            <CreateEntityOptionLabel hideOnSmallScreen>{label}</CreateEntityOptionLabel>
           </CreateEntityOption>
         );
       })}
