@@ -104,7 +104,7 @@ export default function SidebarLayout({ children }) {
       >
         <HeaderComponent />
         <BackdropComponent open={!minimized && isMobile} />
-        <Spotlight isOpen={isSpotlightOpen} onClose={toggleSpotlight} />
+        {isSpotlightOpen ? <Spotlight onClose={toggleSpotlight} /> : null}
         <SectionWrapper>{children}</SectionWrapper>
       </GlobalContext.Provider>
     </SideBarContext.Provider>

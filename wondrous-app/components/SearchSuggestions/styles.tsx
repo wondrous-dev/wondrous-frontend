@@ -14,13 +14,24 @@ export const Wrapper = styled.div`
   display: ${({ show }) => (show ? 'block' : 'none')};
 `;
 
-export const Item = styled.div`
+export const Item = styled.button`
   border-radius: 6px;
   padding: 4px;
   cursor: pointer;
+  background: transparent;
+  width: 100%;
+  font-weight: inherit;
+  color: inherit;
+  font-family: inherit;
+  border: 0;
   display: flex;
   align-items: center;
   gap: 8px;
+  :focus {
+    outline: none;
+    background: ${palette.black92};
+    color: ${palette.white};
+  }
   :hover {
     background: ${palette.black92};
     color: ${palette.white};
@@ -34,6 +45,9 @@ export const IconWrapper = styled.div`
   height: 24px;
   width: 24px;
   border-radius: 4px;
+  ${Item}:focus & {
+    background: ${palette.highlightPurple};
+  }
   ${Item}:hover & {
     background: ${palette.highlightPurple};
   }

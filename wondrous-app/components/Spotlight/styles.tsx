@@ -13,6 +13,9 @@ export const Wrapper = styled(Grid)`
     left: 50%;
     border-radius: 6px;
     transform: translate(-50%, -50%);
+    &:focus {
+      outline: none;
+    }
   }
 `;
 

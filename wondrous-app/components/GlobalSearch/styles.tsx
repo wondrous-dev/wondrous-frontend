@@ -46,15 +46,11 @@ export const SearchInput = styled(Input)`
 `;
 
 export const SearchResults = styled.div`
-  background: ${palette.background.default};
-  top: 110%;
-  position: absolute;
+  background: ${palette.grey900};
   width: fit-content;
   min-width: 100%;
-  border-radius: 6px;
   overflow: scroll;
-  max-height: 60vh;
-  border: 0.5px solid ${palette.grey85};
+  max-height: 30rem;
 `;
 
 export const SearchResultCategory = styled.ul`
@@ -70,7 +66,20 @@ export const SearchResultItem = styled.li`
   gap: 10px;
   justify-content: flex-start;
   align-items: center;
+  font-weight: 500
+  font-family: ${typography.fontFamily};
+  font-size: 13px;
   cursor: pointer;
+  color: ${palette.grey250};
+  :focus {
+    outline: none;
+    background: ${palette.black92};
+    color: ${palette.white};
+  }
+  :hover {
+    background: ${palette.black92};
+    color: ${palette.white};
+  }
   img {
     border-radius: 6px;
   }

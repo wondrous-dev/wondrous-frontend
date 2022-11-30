@@ -163,7 +163,7 @@ function GlobalSearch() {
           />
         </SearchInputWrapper>
       </SearchWrapper>
-      <SearchSuggestions show={isExpanded && Object.keys(options)?.length === 0} setParentState={setIsExpanded} />
+      <SearchSuggestions show={isExpanded && Object.keys(options)?.length === 0} onClose={() => {}} />
       {Object.keys(options)?.length ? (
         <SearchResults>
           {Object.keys(options).map((option, optionIdx) => {
