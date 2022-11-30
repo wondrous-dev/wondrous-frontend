@@ -80,11 +80,11 @@ export function ColumnSection({ section, setSection }) {
     entityType = ENTITIES_TYPES.USER;
   }
   const openModal = () => {
-    // // document.body.style.overflow = 'hidden'
-    // // document.body.scroll = false
-    // windowOffset = window.scrollY;
-    // document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-    // setModalOpen(true);
+    // document.body.style.overflow = 'hidden'
+    // document.body.scroll = false
+    windowOffset = window.scrollY;
+    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+    setModalOpen(true);
   };
 
   if (!section) {
