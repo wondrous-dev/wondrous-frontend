@@ -307,6 +307,7 @@ export const GET_MINT_TASK_TOKEN_DATA = gql`
       tokenId
       imageUrl
       title
+      updatedAt
     }
   }
 `;

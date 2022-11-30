@@ -3,7 +3,6 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
 import Boards from 'components/Pod/boards';
 import { sectionOpeningReducer } from 'utils/board';
-import { useIsMobile } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from 'graphql/queries';
@@ -41,7 +40,6 @@ import {
 } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
-import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import EntitySidebar from 'components/Common/SidebarEntity';
 
 const useGetPodTaskBoardTasks = ({
@@ -306,7 +304,6 @@ type Props = {
 
 function BoardsPage({ meta }: Props) {
   const router = useRouter();
-  const isMobile = useIsMobile();
   const { podId, search, userId, view = ViewType.Grid, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -655,7 +652,6 @@ function BoardsPage({ meta }: Props) {
       }}
     >
       <EntitySidebar>
-        {isMobile ? <MobileComingSoonModal /> : null}
         <Boards
           columns={columns}
           onLoadMore={fetchMore}
