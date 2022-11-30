@@ -54,15 +54,17 @@ const useSidebarData = () => {
   const sidebarData = {
     handleOnClick,
     data: [
-      {
-        items: [
-          {
-            text: orgBoard ? 'Project Portal' : null,
-            Icon: () => null,
-            link: `${link}/project`,
-          },
-        ],
-      },
+      orgBoard && !board?.orgData?.shared
+        ? {
+            items: [
+              {
+                text: 'Project Portal',
+                Icon: () => null,
+                link: `${link}/project`,
+              },
+            ],
+          }
+        : { items: [] },
       {
         label: 'Workspaces',
         items: [
