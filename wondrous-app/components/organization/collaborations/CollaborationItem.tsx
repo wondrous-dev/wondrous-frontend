@@ -3,7 +3,7 @@ import RolePill from 'components/Common/RolePill';
 import { Modal as ModalComponent } from 'components/Modal';
 import SmartLink from 'components/Common/SmartLink';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useMutation } from '@apollo/client';
@@ -29,31 +29,33 @@ const ORG_PERMISSIONS = {
 
 export const ActiveCollaborationItem = (props) => {
   const { collab, userPermissionsContext } = props;
-  const [orgRoleName, setOrgRoleName] = useState(null);
-  const [permissions, setPermissions] = useState(undefined);
-  useEffect(() => {
-    const orgPermissions = parseUserPermissionContext({
-      userPermissionsContext,
-      orgId: collab?.id,
-    });
-    const role = userPermissionsContext?.orgRoles[collab?.id];
-    setOrgRoleName(role);
-    if (
-      orgPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
-      orgPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
-      orgPermissions?.includes(PERMISSIONS.APPROVE_PAYMENT)
-    ) {
-      setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS);
-    } else if (
-      userPermissionsContext?.orgPermissions &&
-      collab?.id in userPermissionsContext?.orgPermissions &&
-      orgPermissions
-    ) {
-      // Normal contributor with no access to admin settings
-      setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collab?.id, userPermissionsContext]);
+  // TODO: Add permissions for viewing
+  // const orgPermissions = parseUserPermissionContext({
+  //   userPermissionsContext,
+  //   orgId: collab?.id,
+  // });
+
+  // const permissions = useMemo(() => {
+  //   if (
+  //     orgPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
+  //     orgPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+  //     orgPermissions?.includes(PERMISSIONS.APPROVE_PAYMENT)
+  //   ) {
+  //     return ORG_PERMISSIONS.MANAGE_SETTINGS;
+  //   } else if (
+  //     userPermissionsContext?.orgPermissions &&
+  //     collab?.id in userPermissionsContext?.orgPermissions &&
+  //     orgPermissions
+  //   ) {
+  //     // Normal contributor with no access to admin settings
+  //     return ORG_PERMISSIONS.CONTRIBUTOR;
+  //   }
+  // }, [orgPermissions, userPermissionsContext, collab?.id]);
+  const orgRoleName = useMemo(
+    () => userPermissionsContext?.orgRoles && userPermissionsContext?.orgRoles[collab?.id],
+    [collab?.id, userPermissionsContext]
+  );
+
   return (
     <SmartLink href={`/collaboration/${collab?.username}/boards`} asLink>
       <CollabCard>

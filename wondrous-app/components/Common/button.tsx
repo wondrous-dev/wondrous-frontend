@@ -1,6 +1,7 @@
 import { ButtonProps, ButtonBase, Button as MuiButton, ButtonBaseProps } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
+import typography from 'theme/typography';
 
 import { GradientHighlightHorizontal, GradientMidnightVertical } from './gradients';
 
@@ -20,7 +21,7 @@ const ButtonInner = styled.button`
   color: white;
   padding: 12px;
   cursor: pointer;
-  font-family: Space Grotesk;
+  font-family: ${typography.fontFamily};
   &:hover {
     background: linear-gradient(82.03deg, #7427ff 50.7%, #00baff 107.99%);
   }

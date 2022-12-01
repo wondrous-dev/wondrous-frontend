@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import { Box } from '@mui/material';
+import typography from 'theme/typography';
 
 export const Separator = styled(Typography)`
   && {
@@ -41,7 +42,7 @@ export const SeparatorDiv = styled.div`
 export const OrgName = styled(Typography)`
   && {
     font-weight: 500;
-    font-family: Space Grotesk;
+    font-family: ${typography.fontFamily};
     color: ${palette.white};
     margin-left: 7px;
     font-size: 14px;

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 import { InputBase, ListItemIcon, Typography, Tab, Tabs } from '@mui/material';
 import { Button } from 'components/Common/button';
+import typography from 'theme/typography';
 
 export const CollabsContainer = styled.div`
   height: 100vh;
@@ -36,7 +37,7 @@ export const StyledTabs = styled(Tabs)`
 
 export const StyledTab = styled(Tab)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${typography.fontFamily};
     font-size: 14px;
     font-weight: 500;
     max-width: fit-content;
