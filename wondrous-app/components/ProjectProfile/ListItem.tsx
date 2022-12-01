@@ -10,7 +10,7 @@ const Wrapper = styled(Grid)``;
 const LeftComponentWrapper = styled(Grid)`
   && {
     align-items: center;
-    width: fit-content;
+    width: 500px;
     position: relative;
     flex: 1;
     white-space: nowrap;

@@ -27,13 +27,11 @@ const ListMainWrapper = () => {
       container
       justifyContent="space-between"
       gap="24px"
-      sx={[
-        {
-          '& > *': {
-            maxWidth: 'calc(50% - 12px)',
-          },
+      sx={{
+        '& > *': {
+          maxWidth: 'calc(50% - 12px)',
         },
-      ]}
+      }}
     >
       {listWrapperProps.map((i) => (
         <ListWrapper key={i.HeaderTitleProps.text} {...i} />
