@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useMemo, useState } from 'react';
 import { useIsMobile } from 'utils/hooks';
 import { StyledAlert, StyledSnackbar } from './styles';
 
@@ -18,28 +18,19 @@ export function SnackbarAlertProvider({ children }) {
     setSnackbarAlertOpen(false);
   };
 
-  const isMobile = useIsMobile();
-  useEffect(() => {
-    if (isMobile) {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage('Wonder currently works best on desktop. Mobile coming soon :)');
-      setSnackbarAlertAnchorOrigin({
-        vertical: 'bottom',
-        horizontal: 'center',
-      });
-    }
-  }, [isMobile]);
+  const snackbarAlertValues = useMemo(
+    () => ({
+      setSnackbarAlertMessage,
+      setSnackbarAlertAnchorOrigin,
+      setSnackbarAlertOpen,
+      setSnackbarAlertSeverity,
+      setSnackbarAlertAutoHideDuration,
+    }),
+    []
+  );
 
   return (
-    <SnackbarAlertContext.Provider
-      value={{
-        setSnackbarAlertMessage,
-        setSnackbarAlertAnchorOrigin,
-        setSnackbarAlertOpen,
-        setSnackbarAlertSeverity,
-        setSnackbarAlertAutoHideDuration,
-      }}
-    >
+    <SnackbarAlertContext.Provider value={snackbarAlertValues}>
       <StyledSnackbar
         anchorOrigin={anchorOrigin}
         open={open}

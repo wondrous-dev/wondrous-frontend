@@ -40,6 +40,7 @@ interface ITaskColumn {
   moveCard: any;
   status: string;
   section: Array<any>;
+  kanbanBoardRef: any;
 }
 
 const TITLES = {
@@ -65,7 +66,7 @@ const HEADER_ICONS = {
 
 function TaskColumn(props: ITaskColumn) {
   const isMobile = useIsMobile();
-  const { cardsList, moveCard, status, section } = props;
+  const { cardsList, moveCard, status, kanbanBoardRef, section } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -131,6 +132,7 @@ function TaskColumn(props: ITaskColumn) {
         width: taskColumnWidth,
       }}
     >
+      <div ref={kanbanBoardRef} />
       <CreateModalOverlay
         style={{
           height: '95vh',
