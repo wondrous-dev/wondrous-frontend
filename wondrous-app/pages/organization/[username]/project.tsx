@@ -1,11 +1,10 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
 import EntitySidebar from 'components/Common/SidebarEntity';
-import Activities from 'components/organization/activities/activities';
-import OrgProject from 'components/organization/Project';
+import OrgProject from 'components/organization/project';
 import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { OrgBoardContext } from 'utils/contexts';
 
 const useGetOrgFromUsername = (username) => {
@@ -29,16 +28,18 @@ function ActivitiesPage() {
     fetchPolicy: 'cache-and-network',
   });
   const org = useGetOrgFromUsername(username);
+  const contextValue = useMemo(
+    () => ({
+      userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+        ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+        : null,
+      orgId: org?.id,
+      orgData: org,
+    }),
+    [org, userPermissionsContext?.getUserPermissionContext]
+  );
   return (
-    <OrgBoardContext.Provider
-      value={{
-        userPermissionsContext: userPermissionsContext?.getUserPermissionContext
-          ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-          : null,
-        orgId: org?.id,
-        orgData: org,
-      }}
-    >
+    <OrgBoardContext.Provider value={contextValue}>
       <EntitySidebar>
         <OrgProject orgData={org} />
       </EntitySidebar>

@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
-import ListMainWrapper from 'components/Project/ListMainWrapper';
-import PodCards from 'components/Project/PodCards';
+import ListMainWrapper from 'components/ProjectProfile/ListMainWrapper';
+import PodCards from 'components/ProjectProfile/PodCards';
 import { useMemo } from 'react';
 import { ProjectContext } from 'utils/contexts';
 
@@ -12,7 +12,7 @@ import {
   usePodModal,
 } from './helpers';
 
-const Project = ({ orgData }) => {
+const ProjectProfile = ({ orgData }) => {
   const { setEntityType, CreateEntityModal } = useCreateEntityModal();
   const { CollaborationModal, handleCreateModal } = useCollaborationModal();
   const { DocCategoriesModal, handleCreateNewCategory } = useDocCategoriesModal();
@@ -46,4 +46,4 @@ const Project = ({ orgData }) => {
   );
 };
 
-export default Project;
+export default ProjectProfile;

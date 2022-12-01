@@ -1,9 +1,9 @@
 import Wrapper from 'components/organization/wrapper/wrapper';
-import Project from 'components/Project';
+import ProjectProfile from 'components/ProjectProfile';
 
 const OrgProject = ({ orgData = {} }) => (
   <Wrapper orgData={orgData}>
-    <Project orgData={orgData} />
+    <ProjectProfile orgData={orgData} />
   </Wrapper>
 );
 
