@@ -2,7 +2,7 @@ import FilterIcon from 'components/Icons/filter';
 import FilterItem from 'components/Common/Filter';
 import React, { useEffect, useState } from 'react';
 import omit from 'lodash/omit';
-import { useExploreGr15TasksAndBounties, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useExploreGr15TasksAndBounties, useIsMobile, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   BoardFiltersWrapper,
   BoardFiltersContainer,
@@ -15,12 +15,15 @@ import {
 } from './styles';
 
 export function FiltersTriggerButton({ onClick, isOpen }) {
+  const isMobile = useIsMobile();
+
   const exploreGr15TasksAndBounties = useExploreGr15TasksAndBounties();
   if (exploreGr15TasksAndBounties) return null;
   return (
     <Button className={`FiltersTrigger-button ${isOpen ? 'active' : ''}`} reversed onClick={onClick}>
       <FilterIcon stroke="white" />
-      Add filters
+
+      {!isMobile && 'Add filters'}
     </Button>
   );
 }

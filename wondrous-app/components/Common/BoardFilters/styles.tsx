@@ -2,11 +2,17 @@ import styled from 'styled-components';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { highlightBlue } from 'theme/colors';
 import palette from 'theme/palette';
+import theme from 'theme';
 
 export const BoardFiltersWrapper = styled.div`
   display: flex;
   width: 100%;
   gap: 18px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+  }
 `;
 
 export const BoardFiltersContainer = styled.div`

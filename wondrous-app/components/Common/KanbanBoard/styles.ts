@@ -12,9 +12,7 @@ export const KanbanBoardContainer = styled.div`
   margin-top: 32px;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-top: 150px;
     display: block;
-    /* width: 400%; */
   }
 `;
 export const LoadMore = styled.div`
@@ -30,7 +28,7 @@ export const ModalBody = styled(CreateLayoutsModal)`
 
 export const KanbanBoardPaginationContainer = styled.div`
   position: fixed;
-  bottom: 2rem;
+  bottom: 40px;
   left: 0;
   z-index: 20;
   width: 100%;

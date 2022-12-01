@@ -36,11 +36,10 @@ export const BoardsActivityInlineViewWrapper = styled.div`
 
   ${({ theme }) => theme.breakpoints.down('md')} {
     flex-wrap: wrap;
+    height: initial;
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    flex-wrap: initial;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: nowrap;
   }
 `;

@@ -19,6 +19,7 @@ export const FilterHandle = styled.div`
   background: #1b1b1b;
   border-radius: 6px;
   border: 0.5px solid #4b4b4b;
+  flex: 1;
 `;
 
 export const FilterHandleInner = styled.div`
