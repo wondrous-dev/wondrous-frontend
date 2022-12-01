@@ -32,7 +32,7 @@ export const SidebarWrapper = styled.div`
 export const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 14px;
   flex-grow: 1;
 `;
 

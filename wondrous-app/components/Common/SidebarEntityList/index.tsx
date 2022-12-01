@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import Grid from '@mui/material/Grid';
 import { Label, ListWrapper } from 'components/Common/SidebarStyles';
 import Item from 'components/Common/SidebarItem';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
@@ -64,7 +65,7 @@ const useSidebarData = () => {
               },
             ],
           }
-        : { items: [] },
+        : null,
       {
         label: 'Workspaces',
         items: [
@@ -173,29 +174,33 @@ const List = () => {
   const router = useRouter();
   const isActive = (entityType, link) => (entityType ? location().includes(link) : router.asPath.includes(link));
   return (
-    <ListWrapper>
-      {data?.map(({ label, items }) => (
-        <ListWrapper key={label}>
-          <Label>{label}</Label>
-          <ListWrapper>
-            {items.map(
-              ({ text, link, Icon, count, entityType = null }) =>
-                !!text && (
-                  <Item
-                    key={text}
-                    onClick={handleOnClick(link, entityType)}
-                    Icon={Icon}
-                    isActive={isActive(entityType, link)}
-                    count={count}
-                  >
-                    {text}
-                  </Item>
-                )
-            )}
-          </ListWrapper>
-        </ListWrapper>
-      ))}
-    </ListWrapper>
+    <div>
+      {data?.map((i) => {
+        if (!i) return null;
+        const { label, items } = i;
+        return (
+          <Grid container item flexDirection="column" key={label} padding="6px 0">
+            <Label>{label}</Label>
+            <ListWrapper>
+              {items.map(
+                ({ text, link, Icon, count, entityType = null }) =>
+                  !!text && (
+                    <Item
+                      key={text}
+                      onClick={handleOnClick(link, entityType)}
+                      Icon={Icon}
+                      isActive={isActive(entityType, link)}
+                      count={count}
+                    >
+                      {text}
+                    </Item>
+                  )
+              )}
+            </ListWrapper>
+          </Grid>
+        );
+      })}
+    </div>
   );
 };
 
