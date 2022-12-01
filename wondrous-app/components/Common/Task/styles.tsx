@@ -415,10 +415,6 @@ export const ActionButton = styled(CreateFormPreviewButton)`
   }
 `;
 
-export const CardWrapper = styled.div`
-  padding-top: 1em;
-`;
-
 export const CardContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -537,7 +533,7 @@ export const TaskActionMenu = styled.div`
   z-index: 100;
   align-items: center;
   display: none;
-  ${CardWrapper}:hover & {
+  ${CardContent}:hover & {
     display: block;
   }
 `;

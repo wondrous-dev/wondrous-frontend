@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
 
@@ -15,6 +15,8 @@ import {
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { taskHasPayment } from 'utils/board';
+import { TaskInterface } from 'types/task';
 
 import Task from 'components/Common/Task';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
@@ -33,6 +35,7 @@ import {
   TaskColumnContainerHeaderTitle,
   TaskColumnContainerCount,
   TaskListContainer,
+  TaskColumnItemWrapper,
 } from './styles';
 
 interface ITaskColumn {
@@ -40,6 +43,7 @@ interface ITaskColumn {
   moveCard: any;
   status: string;
   section: Array<any>;
+  draggingTask: TaskInterface | null;
 }
 
 const TITLES = {
@@ -64,13 +68,19 @@ const HEADER_ICONS = {
 };
 
 function TaskColumn(props: ITaskColumn) {
-  const { cardsList, moveCard, status, section } = props;
+  const { cardsList, status, section, draggingTask } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
   const [ref, inView] = useInView({});
+
+  const isTaskDragging = useMemo(() => draggingTask !== null, [draggingTask]);
+  const isDropDisabled = useMemo(
+    () => isTaskDragging && taskHasPayment(draggingTask) && status !== TASK_STATUS_DONE,
+    [draggingTask, isTaskDragging, status]
+  );
 
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
@@ -168,21 +178,27 @@ function TaskColumn(props: ITaskColumn) {
         )}
       </TaskColumnContainerHeader>
       {section && <ColumnSection section={section} setSection={() => {}} />}
-      <Droppable droppableId={status}>
+      <Droppable droppableId={status} isDropDisabled={isDropDisabled}>
         {(provided) => (
-          <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
+          <TaskListContainer
+            highlighted={isTaskDragging && !isDropDisabled}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
             {cardsList?.length ? (
               cardsList.map((card, index) => (
                 <Draggable key={card.id} draggableId={card.id} index={index} isDragDisabled={board?.isDragDisabled}>
                   {(provided, snapshot) => (
-                    <div
-                      style={{
-                        width: '100%',
-                      }}
+                    <TaskColumnItemWrapper
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                       ref={provided.innerRef}
                       isDragging={snapshot.isDragging}
+                      style={{
+                        ...provided.draggableProps.style,
+                        userSelect: 'none',
+                        cursor: board?.isDragDisabled ? 'default' : 'move',
+                      }}
                     >
                       {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
                         <Milestone>
@@ -191,7 +207,7 @@ function TaskColumn(props: ITaskColumn) {
                       ) : (
                         <Task task={card} />
                       )}
-                    </div>
+                    </TaskColumnItemWrapper>
                   )}
                 </Draggable>
               ))
