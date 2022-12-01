@@ -16,7 +16,7 @@ const useHandleImageChange = ({ setValue, tempState, setTempState, name }) => {
 };
 
 const ProfilePicture = (props) => {
-  const { name, tempState, setTempState } = props;
+  const { name, tempState, setTempState, label } = props;
   const file = tempState[name];
   const [field, _, { setValue }] = useField(name);
   const { handleChange } = useHandleImageChange({ setValue, tempState, setTempState, name });
@@ -24,20 +24,20 @@ const ProfilePicture = (props) => {
 
   return (
     <FieldWrapper>
-      <ImageUpload updateFilesCb={handleChange} title={field.name} imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE} />
+      <ImageUpload updateFilesCb={handleChange} title={label} imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE} />
     </FieldWrapper>
   );
 };
 
 function HeaderPicture(props) {
-  const { name, tempState, setTempState } = props;
+  const { name, tempState, setTempState, label } = props;
   const file = tempState[name];
   const [field, _, { setValue }] = useField(name);
   const { handleChange } = useHandleImageChange({ setValue, tempState, setTempState, name });
   const withImage = Boolean(file ?? field.value);
   return (
     <FieldWrapper>
-      <ImageUpload updateFilesCb={handleChange} title={field.name} imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE} />
+      <ImageUpload updateFilesCb={handleChange} title={label} imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE} />
     </FieldWrapper>
   );
 }
