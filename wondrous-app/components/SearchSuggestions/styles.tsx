@@ -27,15 +27,16 @@ export const Item = styled.button`
   display: flex;
   align-items: center;
   gap: 8px;
-  :focus {
-    outline: none;
-    background: ${palette.black92};
-    color: ${palette.white};
-  }
-  :hover {
-    background: ${palette.black92};
-    color: ${palette.white};
-  }
+  outline: none;
+
+  ${({ isActive }) =>
+    isActive &&
+    `
+  
+  outline: none;
+  background: ${palette.black92};
+  color: ${palette.white};
+  `}
 `;
 
 export const IconWrapper = styled.div`
@@ -45,12 +46,7 @@ export const IconWrapper = styled.div`
   height: 24px;
   width: 24px;
   border-radius: 4px;
-  ${Item}:focus & {
-    background: ${palette.highlightPurple};
-  }
-  ${Item}:hover & {
-    background: ${palette.highlightPurple};
-  }
+  ${({ isActive }) => isActive && `background: ${palette.highlightPurple};`}
 `;
 
 export const CheckedBox = styled((props) => <CheckedBoxIcon {...props} stroke="white" pathFill="none" />)``;

@@ -8,6 +8,7 @@ export const Wrapper = styled(Grid)`
   && {
     position: absolute;
     top: 50%;
+    width: 50vw;
     background: ${palette.grey900};
     border: 1px solid ${palette.grey79};
     left: 50%;

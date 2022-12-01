@@ -71,15 +71,14 @@ export const SearchResultItem = styled.li`
   font-size: 13px;
   cursor: pointer;
   color: ${palette.grey250};
-  :focus {
-    outline: none;
-    background: ${palette.black92};
-    color: ${palette.white};
-  }
-  :hover {
-    background: ${palette.black92};
-    color: ${palette.white};
-  }
+  ${({ isActive }) =>
+    isActive &&
+    `
+  
+  background: ${palette.black92}; 
+  color: ${palette.white};
+  `};
+
   img {
     border-radius: 6px;
   }
