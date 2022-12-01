@@ -41,8 +41,10 @@ type AppContextStore = {
   user: User;
 };
 
+const Layout = ({ Component, pageProps }) =>
+  Component.getLayout ? Component.getLayout(<Component {...pageProps} />) : <Component {...pageProps} />;
+
 function MyApp({ Component, pageProps }) {
-  console.log({ Component, pageProps }, '--------');
   // Only uncomment this method if you have blocking data requirements for
   // every single page in your application. This disables the ability to
   // perform automatic static optimization, causing every page in your app to
@@ -101,7 +103,7 @@ function MyApp({ Component, pageProps }) {
                       <NavigationProgress />
                       <SidebarLayout>
                         <OnboardingTour>
-                          <Component {...pageProps} />
+                          <Layout Component={Component} pageProps={pageProps} />≈
                         </OnboardingTour>
                       </SidebarLayout>
                     </HotkeyContext.Provider>

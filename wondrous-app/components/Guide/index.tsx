@@ -2,7 +2,6 @@ import { TourProvider } from '@reactour/tour';
 import { useMutation } from '@apollo/client';
 import { SET_USER_COMPLETED_GUIDE } from 'graphql/mutations/user';
 import { useRouter } from 'next/router';
-import {useEffect} from "react";
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { NextButton, PrevButton, NavigationWrapper } from './styles';
@@ -12,14 +11,6 @@ export default function OnboardingGuide({ children }) {
   const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
     refetchQueries: [{ query: GET_LOGGED_IN_USER }],
   });
-
-
-  console.log('-----OnboardingGuide:render');
-
-  useEffect(() => {
-    console.log('-----OnboardingGuide:mounted');
-    return () => console.log('-----OnboardingGuide:unmounted');
-  }, []);
 
   const router = useRouter();
 

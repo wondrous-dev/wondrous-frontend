@@ -1,3 +1,5 @@
+import Wrapper from 'components/Dashboard/wrapper';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import MetaTags from 'components/MetaTags';
@@ -24,5 +26,13 @@ const DashboardPage = (props) => {
 };
 
 export default DashboardPage;
+
+DashboardPage.getLayout = (page) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const router = useRouter();
+  const isAdmin = router.asPath.includes('/dashboard/admin');
+
+  return <Wrapper isAdmin={isAdmin}>{page}</Wrapper>;
+};
 
 export { getServerSideProps };

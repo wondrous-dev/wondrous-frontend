@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { ProgressBarWrapper, ProgressBarInner } from './styles';
 
 type Props = {
@@ -6,13 +6,6 @@ type Props = {
 };
 
 const NavigationProgressMemo = ({ isVisible }: Props) => {
-  console.log('-----NavigationProgress:render');
-
-  useEffect(() => {
-    console.log('-----NavigationProgress:mounted');
-    return () => console.log('-----NavigationProgress:unmounted');
-  }, []);
-
   return (
     <ProgressBarWrapper key={`progress-nav-${isVisible}`}>
       <ProgressBarInner isVisible={isVisible} />

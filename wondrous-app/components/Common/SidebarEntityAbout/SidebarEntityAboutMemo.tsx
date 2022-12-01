@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 
 import { ButtonWrapper, Wrapper } from 'components/Common/SidebarEntityAbout/styles';
 import InviteButton from 'components/Common/SidebarEntityInviteButton';
@@ -14,13 +14,6 @@ type Props = {
 };
 
 const SidebarEntityAboutMemo = ({ name, id, thumbnailPicture, profilePicture, board }: Props) => {
-  console.log('-----SidebarEntityAboutMemo:render');
-
-  useEffect(() => {
-    console.log('-----SidebarEntityAboutMemo:---->mounted');
-    return () => console.log('-----SidebarEntityAboutMemo:<-----unmounted');
-  }, []);
-
   return (
     <Wrapper>
       <EntityMenu name={name} id={id} thumbnailPicture={thumbnailPicture} profilePicture={profilePicture} />
