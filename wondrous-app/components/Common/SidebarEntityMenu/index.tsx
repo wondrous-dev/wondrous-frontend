@@ -1,3 +1,5 @@
+import { useMutation } from '@apollo/client';
+
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import {
   ArrowIcon,
@@ -9,6 +11,7 @@ import {
   NoLogoPod,
   Text,
 } from 'components/Common/SidebarEntityMenu/styles';
+import { LEAVE_ORG } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import palette from 'theme/palette';
@@ -23,8 +26,24 @@ const EntityMenu = ({ name, id, thumbnailPicture, profilePicture }) => {
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-  const handleOnClickNotifications = () =>
-    router.push(orgBoard ? `/organization/settings/${id}/notifications` : `/pod/settings/${id}/notifications`);
+  const [leaveOrg] = useMutation(LEAVE_ORG, {
+    onCompleted: () => {
+      router.push('/mission-control');
+    },
+    refetchQueries: ['getUserOrgs'],
+  });
+
+  const handleLeaveOrgClick = () => {
+    const confirmed = confirm('Are you sure you want to leave the organzation?');
+    if (!confirmed) {
+      return;
+    }
+    leaveOrg({
+      variables: {
+        orgId: id,
+      },
+    });
+  };
   return (
     <>
       <Button onClick={handleClick} open={open} disabled={!canManage}>
@@ -49,8 +68,7 @@ const EntityMenu = ({ name, id, thumbnailPicture, profilePicture }) => {
         {canManage && <ArrowIcon open={open} />}
       </Button>
       <MenuStyled anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <Item onClick={handleOnClickNotifications}>Notification Settings</Item>
-        {/* <Item>Leave Project</Item> NOTE: There's no endpoint for this yet. */}
+        <Item onClick={handleLeaveOrgClick}>Leave Organization</Item>
       </MenuStyled>
     </>
   );

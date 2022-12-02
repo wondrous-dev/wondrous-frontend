@@ -12,6 +12,10 @@ export const CardWrapper = styled.div`
   margin-bottom: 18px;
   padding: 14px;
   gap: 14px;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    border: 1px solid #424242;
+  }
 `;
 
 export const CardHeader = styled.div`
@@ -48,6 +52,12 @@ export const CardFooter = styled.div`
   align-items: center;
   gap: 12px;
   width: 100%;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    justify-content: space-between;
+    border-top: 0.5px solid #343434;
+    padding-top: 10px;
+  }
 `;
 
 export const CardHeaderInfo = styled.div`
@@ -132,7 +142,7 @@ export const LinkContainer = styled.a`
 `;
 
 export const RejectButton = styled.button`
-  padding: 7px 16px;
+  padding: 1px;
   background: #474747;
   border-radius: 234px;
   min-height: 32px;
@@ -146,9 +156,34 @@ export const RejectButton = styled.button`
   font-size: 14px;
   line-height: 14px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   /* identical to box height, or 100% */
 
   color: #ffffff;
+
+  > span {
+    background: #474747;
+    width: 100%;
+    height: 30px;
+    border-radius: 234px;
+    line-height: 15px;
+    padding: 7px 16px;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    background: linear-gradient(94.19deg, #f93701 10.13%, #7427ff 131.81%);
+    height: 42px;
+    flex: 1.25;
+    width: 100%;
+
+    > span {
+      background: #0f0f0f;
+      height: 40px;
+      line-height: 25px;
+    }
+  }
 `;
 
 export const LoadMore = styled.div`

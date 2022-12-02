@@ -2,18 +2,16 @@ import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
 
 import Pods from 'components/organization/pods';
-import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import { withAuth } from 'components/Auth/withAuth';
 
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 
-import { useGetOrgFromUsername, useIsMobile } from 'utils/hooks';
+import { useGetOrgFromUsername } from 'utils/hooks';
 import { OrgBoardContext } from 'utils/contexts';
 
 function PodsInOrgPage() {
   const router = useRouter();
-  const isMobile = useIsMobile();
 
   const { username } = router.query;
 
@@ -32,7 +30,6 @@ function PodsInOrgPage() {
         orgData,
       }}
     >
-      {isMobile ? <MobileComingSoonModal /> : null}
       <EntitySidebar>
         <Pods orgData={orgData} />
       </EntitySidebar>

@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
-import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, SEARCH_ORG_USERS } from 'graphql/queries/org';
@@ -357,7 +356,6 @@ const useGetOrgTaskBoard = ({
 
 function BoardsPage() {
   const router = useRouter();
-  const isMobile = useIsMobile();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -683,7 +681,6 @@ function BoardsPage() {
         hasActiveFilters,
       }}
     >
-      {isMobile ? <MobileComingSoonModal /> : null}
       <EntitySidebar>
         <Boards
           columns={columns}

@@ -40,7 +40,6 @@ import TASK_ICONS from './constants';
 import {
   ActionButton,
   CardContent,
-  CardWrapper,
   MilestoneProgressWrapper,
   SubtaskCount,
   SubtaskCountWrapper,
@@ -185,135 +184,134 @@ export default function TaskCard({
   const [anchorEl, setAnchorEl] = useState(null);
 
   return (
-    <CardWrapper>
-      <CardContent
-        onMouseEnter={() => setShowMenu(true)}
-        onMouseLeave={() => {
-          setShowMenu(false);
-          setAnchorEl(null);
-        }}
-        data-cy={`task-card-item-${title}`}
-      >
-        <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
-          {showPaymentModal && !isTaskSubmissionLoading ? (
-            <MakePaymentModal
-              getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-              open={showPaymentModal}
-              approvedSubmission={approvedSubmission}
-              handleClose={() => {}}
-              setShowPaymentModal={setShowPaymentModal}
-              fetchedTask={task}
-            />
-          ) : null}
-          <TaskHeader>
-            <TaskHeaderIconWrapper>
-              {(isUser || userProfile) &&
-                (task?.orgProfilePicture ? (
-                  <SafeImage
-                    useNextImage={false}
-                    src={task?.orgProfilePicture}
-                    style={{
-                      width: '29px',
-                      height: '28px',
-                      borderRadius: '4px',
-                      marginRight: '8px',
-                    }}
-                    alt="Organization logo"
-                  />
-                ) : (
-                  <DAOIcon />
-                ))}
-              {canClaim ? (
-                <>
-                  {claimed ? (
-                    <ActionButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                    >
-                      Claimed
-                    </ActionButton>
-                  ) : (
-                    <ButtonPrimary
-                      startIcon={<Claim />}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        updateTaskAssignee({
-                          variables: {
-                            taskId: id,
-                            assigneeId: user?.id,
-                          },
-                          onCompleted: (data) => {
-                            setClaimed(true);
-                            const task = data?.updateTaskAssignee;
-                            const transformedTask = transformTaskToTaskCard(task, {});
-                            if (boardColumns?.setColumns) {
-                              let columns = [...boardColumns?.columns];
-                              if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                                columns = updateInProgressTask(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                                columns = updateTaskItem(transformedTask, columns);
-                              }
-                              boardColumns.setColumns(columns);
-                            }
-                          },
-                        });
-                      }}
-                      data-cy={`task-card-item-${title}`}
-                    >
-                      Claim
-                    </ButtonPrimary>
-                  )}
-                </>
-              ) : (
-                <>
-                  {canApply && (
-                    <TaskApplicationButton
-                      setIsApplicationModalOpen={setIsApplicationModalOpen}
-                      task={task}
-                      canApply={canApply}
-                    />
-                  )}
-                </>
-              )}
-
-              {displayPayButton && !userProfile && (
-                <ActionButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePaymentModal();
+    <CardContent
+      onMouseEnter={() => setShowMenu(true)}
+      onMouseLeave={() => {
+        setShowMenu(false);
+        setAnchorEl(null);
+      }}
+      data-cy={`task-card-item-${title}`}
+    >
+      <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
+        {showPaymentModal && !isTaskSubmissionLoading ? (
+          <MakePaymentModal
+            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+            open={showPaymentModal}
+            approvedSubmission={approvedSubmission}
+            handleClose={() => {}}
+            setShowPaymentModal={setShowPaymentModal}
+            fetchedTask={task}
+          />
+        ) : null}
+        <TaskHeader>
+          <TaskHeaderIconWrapper>
+            {(isUser || userProfile) &&
+              (task?.orgProfilePicture ? (
+                <SafeImage
+                  useNextImage={false}
+                  src={task?.orgProfilePicture}
+                  style={{
+                    width: '29px',
+                    height: '28px',
+                    borderRadius: '4px',
+                    marginRight: '8px',
                   }}
-                >
-                  Pay
-                </ActionButton>
-              )}
-              {isMilestone && <MilestoneIcon />}
-              {!userProfile && <AvatarList users={userList} id={`task-${task?.id}`} />}
-              {hasGR15 && (
-                <>
-                  <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                  <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
-                </>
-              )}
-              <TaskCardPrivacy privacyLevel={task?.privacyLevel} />
-            </TaskHeaderIconWrapper>
-            <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end" gap="6px">
-              <TaskCardDate date={task?.dueDate} />
-              {task?.rewards && task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} />}
-            </Grid>
-          </TaskHeader>
-          <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
+                  alt="Organization logo"
+                />
+              ) : (
+                <DAOIcon />
+              ))}
+            {canClaim ? (
+              <>
+                {claimed ? (
+                  <ActionButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                  >
+                    Claimed
+                  </ActionButton>
+                ) : (
+                  <ButtonPrimary
+                    startIcon={<Claim />}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      updateTaskAssignee({
+                        variables: {
+                          taskId: id,
+                          assigneeId: user?.id,
+                        },
+                        onCompleted: (data) => {
+                          setClaimed(true);
+                          const task = data?.updateTaskAssignee;
+                          const transformedTask = transformTaskToTaskCard(task, {});
+                          if (boardColumns?.setColumns) {
+                            let columns = [...boardColumns?.columns];
+                            if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                              columns = updateInProgressTask(transformedTask, columns);
+                            } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                              columns = updateTaskItem(transformedTask, columns);
+                            }
+                            boardColumns.setColumns(columns);
+                          }
+                        },
+                      });
+                    }}
+                    data-cy={`task-card-item-${title}`}
+                  >
+                    Claim
+                  </ButtonPrimary>
+                )}
+              </>
+            ) : (
+              <>
+                {canApply && (
+                  <TaskApplicationButton
+                    setIsApplicationModalOpen={setIsApplicationModalOpen}
+                    task={task}
+                    canApply={canApply}
+                  />
+                )}
+              </>
+            )}
 
-          <TaskContent>
-            <TaskTitle>
-              <a href={viewUrl} data-cy={`task-card-item-${title}-link`}>
-                {task.title}
-              </a>
-            </TaskTitle>
+            {displayPayButton && !userProfile && (
+              <ActionButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePaymentModal();
+                }}
+              >
+                Pay
+              </ActionButton>
+            )}
+            {isMilestone && <MilestoneIcon />}
+            {!userProfile && <AvatarList users={userList} id={`task-${task?.id}`} />}
+            {hasGR15 && (
+              <>
+                <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
+              </>
+            )}
+            <TaskCardPrivacy privacyLevel={task?.privacyLevel} />
+          </TaskHeaderIconWrapper>
+          <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end" gap="6px">
+            <TaskCardDate date={task?.dueDate} />
+            {task?.rewards && task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} />}
+          </Grid>
+        </TaskHeader>
+        <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
 
-            {/* {task?.priority && (
+        <TaskContent>
+          <TaskTitle>
+            <a href={viewUrl} data-cy={`task-card-item-${title}-link`}>
+              {task.title}
+            </a>
+          </TaskTitle>
+
+          {/* {task?.priority && (
               <Box
                 sx={{
                   margin: '14px 0',
@@ -323,109 +321,108 @@ export default function TaskCard({
               </Box>
             )}
    */}
-            {isBounty && (
-              <TaskBountyOverview
-                totalSubmissionsCount={task?.totalSubmissionsCount}
-                approvedSubmissionsCount={task?.approvedSubmissionsCount}
-              />
-            )}
-            {isMilestone && (
-              <MilestoneProgressWrapper>
-                <MilestoneProgress milestoneId={id} />
-              </MilestoneProgressWrapper>
-            )}
-            {coverMedia ? (
-              <BoardsCardMedia>
-                <SafeImage
-                  style={{
-                    objectFit: 'cover',
-                    objectPosition: 'center',
-                    width: '100%',
-                    height: 'auto',
-                    maxHeight: '104px',
-                  }}
-                  width={270}
-                  height={104}
-                  src={coverMedia.slug}
-                  useNextImage
-                  alt="Task cover"
-                />
-              </BoardsCardMedia>
-            ) : null}
-          </TaskContent>
-          <BoardsCardFooter style={{ paddingBottom: '0' }}>
-            {task?.podName && !isPod && (
-              <PodIconName
-                color={task?.podColor}
-                name={task?.podName}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(task?.podId);
+          {isBounty && (
+            <TaskBountyOverview
+              totalSubmissionsCount={task?.totalSubmissionsCount}
+              approvedSubmissionsCount={task?.approvedSubmissionsCount}
+            />
+          )}
+          {isMilestone && (
+            <MilestoneProgressWrapper>
+              <MilestoneProgress milestoneId={id} />
+            </MilestoneProgressWrapper>
+          )}
+          {coverMedia ? (
+            <BoardsCardMedia>
+              <SafeImage
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  width: '100%',
+                  height: 'auto',
+                  maxHeight: '104px',
                 }}
+                width={270}
+                height={104}
+                src={coverMedia.slug}
+                useNextImage
+                alt="Task cover"
               />
-            )}
-            {isSubtask && (
-              <Tooltip title="Subtask" placement="top">
-                <div>
-                  <SubtaskLightIcon stroke="white" />
-                </div>
-              </Tooltip>
-            )}
+            </BoardsCardMedia>
+          ) : null}
+        </TaskContent>
+        <BoardsCardFooter style={{ paddingBottom: '0' }}>
+          {task?.podName && !isPod && (
+            <PodIconName
+              color={task?.podColor}
+              name={task?.podName}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goToPod(task?.podId);
+              }}
+            />
+          )}
+          {isSubtask && (
+            <Tooltip title="Subtask" placement="top">
+              <div>
+                <SubtaskLightIcon stroke="white" />
+              </div>
+            </Tooltip>
+          )}
 
-            <div
-              style={{
-                flex: 1,
-              }}
-            />
-            {!isMilestone && commentCount > 0 && (
-              <Tooltip title="View comments" placement="top">
-                <TaskAction
-                  key={`task-comment-${id}`}
-                  style={{
-                    marginRight: !isSubtask && !isMilestone && totalSubtask > 0 ? '0' : '18px',
-                  }}
-                >
-                  <TaskCommentIcon />
-                  <TaskActionAmount>{commentCount}</TaskActionAmount>
-                </TaskAction>
-              </Tooltip>
-            )}
-            {!isSubtask && !isMilestone && totalSubtask > 0 && (
-              <Tooltip title="Subtasks" placement="top">
-                <SubtaskCountWrapper
-                  style={{
-                    marginRight: '12px',
-                    paddingLeft: '0',
-                  }}
-                >
-                  <SubtaskLightIcon fill="none" stroke={palette.grey57} />
-                  <SubtaskCount>{totalSubtask}</SubtaskCount>
-                </SubtaskCountWrapper>
-              </Tooltip>
-            )}
-            <TaskCardMenu
-              anchorElParent={anchorEl}
-              canArchive={canArchive}
-              canEdit={canArchive}
-              canDelete={canDelete}
-              setAnchorElParent={setAnchorEl}
-              setArchiveTask={setArchiveTask}
-              setDeleteTask={setDeleteTask}
-              setEditTask={setEditTask}
-              setDuplicate={() => {
-                duplicateTask({
-                  variables: {
-                    taskId: id,
-                  },
-                });
-              }}
-              taskType={task?.type}
-              open={showMenu}
-            />
-          </BoardsCardFooter>
-        </SmartLink>
-      </CardContent>
-    </CardWrapper>
+          <div
+            style={{
+              flex: 1,
+            }}
+          />
+          {!isMilestone && commentCount > 0 && (
+            <Tooltip title="View comments" placement="top">
+              <TaskAction
+                key={`task-comment-${id}`}
+                style={{
+                  marginRight: !isSubtask && !isMilestone && totalSubtask > 0 ? '0' : '18px',
+                }}
+              >
+                <TaskCommentIcon />
+                <TaskActionAmount>{commentCount}</TaskActionAmount>
+              </TaskAction>
+            </Tooltip>
+          )}
+          {!isSubtask && !isMilestone && totalSubtask > 0 && (
+            <Tooltip title="Subtasks" placement="top">
+              <SubtaskCountWrapper
+                style={{
+                  marginRight: '12px',
+                  paddingLeft: '0',
+                }}
+              >
+                <SubtaskLightIcon fill="none" stroke={palette.grey57} />
+                <SubtaskCount>{totalSubtask}</SubtaskCount>
+              </SubtaskCountWrapper>
+            </Tooltip>
+          )}
+          <TaskCardMenu
+            anchorElParent={anchorEl}
+            canArchive={canArchive}
+            canEdit={canArchive}
+            canDelete={canDelete}
+            setAnchorElParent={setAnchorEl}
+            setArchiveTask={setArchiveTask}
+            setDeleteTask={setDeleteTask}
+            setEditTask={setEditTask}
+            setDuplicate={() => {
+              duplicateTask({
+                variables: {
+                  taskId: id,
+                },
+              });
+            }}
+            taskType={task?.type}
+            open={showMenu}
+          />
+        </BoardsCardFooter>
+      </SmartLink>
+    </CardContent>
   );
 }

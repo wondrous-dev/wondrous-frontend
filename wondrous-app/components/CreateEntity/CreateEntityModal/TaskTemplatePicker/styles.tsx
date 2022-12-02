@@ -241,6 +241,11 @@ export const TaskTemplateListItems = styled.li`
   }
 `;
 
+export const TaskTemplatePickerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const TaskTemplateTitleBar = styled.div`
   flex-direction: row;
   display: flex;

@@ -334,7 +334,13 @@ export function AssigneeField({
   );
 }
 
-export function ApplicationField({ shouldDisplay, taskApplicationCount, handleReviewButton }) {
+interface ApplicationFieldProps {
+  shouldDisplay: boolean;
+  taskApplicationCount?: any;
+  handleReviewButton?: any;
+}
+
+export function ApplicationField({ shouldDisplay, taskApplicationCount, handleReviewButton }: ApplicationFieldProps) {
   if (!shouldDisplay) return null;
   return (
     <TaskSectionDisplayDiv>

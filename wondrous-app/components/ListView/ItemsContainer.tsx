@@ -6,6 +6,7 @@ import {
   TASK_STATUS_DONE,
   ENTITIES_TYPES,
 } from 'utils/constants';
+import { taskHasPayment } from 'utils/board';
 
 import { ToDo, InProgress, Done, InReview } from 'components/Icons';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
@@ -17,7 +18,8 @@ import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import { BountyIcon } from 'components/Common/BountyBoard/styles';
 import FlagIcon from 'components/Icons/flag';
-import { IconWrapper } from './styles';
+
+import { IconWrapper, ListViewItemWrapper } from './styles';
 import Item from './Item';
 
 const HEADER_ICONS = {
@@ -53,23 +55,21 @@ const ENTITIES_HEADER_ICONS = {
   ),
   [ENTITIES_TYPES.BOUNTY]: BountyIcon,
 };
-const DndWrapper = ({ disableDnd, task, index, children }) =>
+
+const DndWrapper = ({ disableDnd, id, index, children }) =>
   disableDnd ? (
     children
   ) : (
-    <Draggable key={task.id} draggableId={task.id} index={index}>
+    <Draggable draggableId={id} index={index}>
       {(provided, snapshot) => (
-        <div
-          style={{
-            width: '100%',
-          }}
+        <ListViewItemWrapper
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
           {children}
-        </div>
+        </ListViewItemWrapper>
       )}
     </Draggable>
   );
@@ -83,6 +83,8 @@ export default function ItemsContainer({
   onLoadMore = null,
   disableDnd = false,
   enableInfiniteLoading = false,
+  dndPlaceholder = null,
+  highlighted,
   ...props
 }) {
   const { status, tasks } = data;
@@ -91,9 +93,7 @@ export default function ItemsContainer({
   const [deleteTask, setDeleteTask] = useState(false);
 
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
-
   const itemTitle = LABELS_MAP[status] || ENTITIES_LABELS_MAP[entityType] || '';
-
   const Icon = HEADER_ICONS[status] || ENTITIES_HEADER_ICONS[entityType];
 
   // onLoadMore is used for infinite loading
@@ -140,18 +140,20 @@ export default function ItemsContainer({
         hasMore={hasMore || (taskCount > LIMIT && tasks.length <= LIMIT)}
         onShowMore={loadMoreAction}
         showMoreTitle="Show all"
-        key={tasks}
         enableInfiniteLoading={enableInfiniteLoading}
+        noGap
+        highlighted={highlighted}
       >
         {tasks?.length ? (
           tasks.map((task, index) => (
-            <DndWrapper task={task} disableDnd={disableDnd} index={index}>
-              <Item entityType={entityType} task={task} />
+            <DndWrapper key={task.id} id={task.id} index={index} disableDnd={disableDnd}>
+              <Item entityType={entityType} task={task} isDragDisabled={disableDnd} />
             </DndWrapper>
           ))
         ) : (
           <EmptyStateBoards hidePlaceholder status={status} />
         )}
+        {dndPlaceholder}
       </Accordion>
     </>
   );
