@@ -185,9 +185,6 @@ export default memo(CollabBoard, (prevProps, nextProps) => {
     prevProps.userId === nextProps.userId &&
     prevProps.entityType === nextProps.entityType &&
     prevProps.loading === nextProps.loading &&
-    prevProps.isCollabWorkspace === nextProps.isCollabWorkspace &&
-    prevProps.filterSchema === nextProps.filterSchema &&
-    prevProps.userId === nextProps.filterSchema &&
     prevProps.activeView === nextProps.activeView;
 
   return areEqual;

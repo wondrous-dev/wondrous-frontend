@@ -9,14 +9,12 @@ import lazy from 'utils/enhancements/lazy';
 
 const Dashboard = lazy(() => import('./index.lazy'), BoardSkeleton);
 
-const DashboardPage = (props) => {
-  return (
-    <>
-      <MetaTags meta={props.meta} />
-      <Dashboard {...props} />
-    </>
-  );
-};
+const DashboardPage = (props) => (
+  <>
+    <MetaTags meta={props.meta} />
+    <Dashboard {...props} />
+  </>
+);
 
 export default DashboardPage;
 

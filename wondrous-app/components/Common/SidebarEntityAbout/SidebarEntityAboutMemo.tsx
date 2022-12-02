@@ -13,17 +13,15 @@ type Props = {
   board: any;
 };
 
-const SidebarEntityAboutMemo = ({ name, id, thumbnailPicture, profilePicture, board }: Props) => {
-  return (
-    <Wrapper>
-      <EntityMenu name={name} id={id} thumbnailPicture={thumbnailPicture} profilePicture={profilePicture} />
-      <ButtonWrapper>
-        <SettingsButton board={board} id={id} />
-        <InviteButton id={id} />
-      </ButtonWrapper>
-    </Wrapper>
-  );
-};
+const SidebarEntityAboutMemo = ({ name, id, thumbnailPicture, profilePicture, board }: Props) => (
+  <Wrapper>
+    <EntityMenu name={name} id={id} thumbnailPicture={thumbnailPicture} profilePicture={profilePicture} />
+    <ButtonWrapper>
+      <SettingsButton board={board} id={id} />
+      <InviteButton id={id} />
+    </ButtonWrapper>
+  </Wrapper>
+);
 
 export default memo(SidebarEntityAboutMemo, (prevProps, nextProps) => {
   const areEqual =

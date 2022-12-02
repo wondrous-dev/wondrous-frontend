@@ -5,13 +5,11 @@ type Props = {
   isVisible: boolean;
 };
 
-const NavigationProgressMemo = ({ isVisible }: Props) => {
-  return (
-    <ProgressBarWrapper key={`progress-nav-${isVisible}`}>
-      <ProgressBarInner isVisible={isVisible} />
-    </ProgressBarWrapper>
-  );
-};
+const NavigationProgressMemo = ({ isVisible }: Props) => (
+  <ProgressBarWrapper key={`progress-nav-${isVisible}`}>
+    <ProgressBarInner isVisible={isVisible} />
+  </ProgressBarWrapper>
+);
 
 NavigationProgressMemo.displayName = 'NavigationProgressMemo';
 
