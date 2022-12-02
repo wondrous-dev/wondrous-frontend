@@ -186,7 +186,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [isViewNft, setIsViewNft] = useState(!!location?.params?.viewNft);
+  const [isViewNft, setIsViewNft] = useState(!!router?.query?.viewNft);
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
@@ -360,10 +360,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   }, [fetchedTask?.snapshotId]);
 
   useEffect(() => {
-    if (isViewNft !== !!location?.params?.viewNft) {
-      setIsViewNft(!!location?.params?.viewNft);
+    if (isViewNft !== !!router?.query?.viewNft) {
+      setIsViewNft(!!router?.query?.viewNft);
     }
-  }, [location?.params?.viewNft]);
+  }, [router?.query?.viewNft]);
 
   if (editTask) {
     return (
@@ -412,8 +412,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       />
     );
   }
-
-  const isViewNFTMode = !!router?.query?.viewNft;
 
   const canEdit =
     !isViewNft &&

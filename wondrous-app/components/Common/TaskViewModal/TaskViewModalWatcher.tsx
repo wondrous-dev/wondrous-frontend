@@ -20,7 +20,13 @@ const TaskViewModalWatcher = () => {
 
   return taskId ? (
     <Suspense>
-      <TaskViewModal open handleClose={handleClose} taskId={taskId} back={query.view === ViewType.List} />
+      <TaskViewModal
+        open
+        handleClose={handleClose}
+        taskId={taskId}
+        back={query.view === ViewType.List}
+        isTaskProposal={!!query.taskProposal}
+      />
     </Suspense>
   ) : null;
 };
