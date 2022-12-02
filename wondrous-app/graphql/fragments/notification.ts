@@ -21,6 +21,8 @@ export const NotificationFragment = gql`
       addMember
       viewNft
       taskType
+      invitorOrgName
+      recipientOrgName
     }
   }
 `;
