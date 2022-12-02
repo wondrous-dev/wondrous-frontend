@@ -23,7 +23,7 @@ export interface ListWrapperProps {
   backgroundImageUrl: string;
   CreateButtonProps?: ICreateButtonProps;
   HeaderTitleProps: IHeaderTitleProps;
-  showAllUrl: string | { url: string; onClick: () => unknown };
+  showAllUrl: string;
   data?: Array<{
     [key: string]: any;
   }>;

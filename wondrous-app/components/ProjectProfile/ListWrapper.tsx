@@ -81,14 +81,7 @@ const ListWrapper = ({
   ListItemProps,
 }: ListWrapperProps) => {
   const router = useRouter();
-  const handleShowAllOnClick = () => {
-    if (typeof showAllUrl === 'string') {
-      router.push(`/organization/${router.query.username}/${showAllUrl}`);
-      return;
-    }
-    showAllUrl.onClick();
-    router.push(`/organization/${router.query.username}/${showAllUrl.url}`);
-  };
+  const handleShowAllOnClick = () => router.push(`/organization/${router.query.username}/${showAllUrl}`);
   const entityContent = isEmpty(data)
     ? emptyComponent({ backgroundImageUrl, CreateButtonProps })
     : data.slice(0, DATA_LIMIT).map((i) => <ListItem key={i?.id} {...ListItemProps} data={i} />);

@@ -70,10 +70,7 @@ const useListCollab = () => ({
   },
   CreateButtonProps: useCollaborationButtonProps(),
   backgroundImageUrl: '/images/project/collab-empty-bg.svg',
-  showAllUrl: {
-    url: 'project?collabs=true',
-    onClick: useHandleCollabShowAll(),
-  },
+  showAllUrl: 'collaborations',
   ListItemProps: {
     LeftComponent,
     RightComponent,
