@@ -11,7 +11,9 @@ export const CollabsContainer = styled.div`
 `;
 
 export const CollabsChildrenWrapper = styled.div`
-  padding: 100px 24px 0px 24px;
+  padding: 120px 0;
+  margin: 0 auto;
+  max-width: 720px;
 `;
 
 export const Container = styled.div`

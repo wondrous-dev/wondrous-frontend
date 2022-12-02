@@ -133,25 +133,22 @@ function CollabWrapper(props) {
       }}
     >
       <ChooseEntityToCreate />
-      <Wrapper>
-        <ChildrenWrapper minimized={minimized}>
-          <CollabsChildrenWrapper>
-            <div>
-              {showPodIcon ? (
-                <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
-                  <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
-                  <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
-                    <PodIcon />
-                  </SettingsDaoPodIndicatorIconWrapper>
-                  <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
-                  {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
-                </SettingsDaoPodIndicator>
-              ) : null}
-              {children}
-            </div>
-          </CollabsChildrenWrapper>
-        </ChildrenWrapper>
-      </Wrapper>
+
+      <CollabsChildrenWrapper>
+        <div>
+          {showPodIcon ? (
+            <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
+              <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
+              <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
+                <PodIcon />
+              </SettingsDaoPodIndicatorIconWrapper>
+              <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
+              {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
+            </SettingsDaoPodIndicator>
+          ) : null}
+          {children}
+        </div>
+      </CollabsChildrenWrapper>
     </SettingsBoardContext.Provider>
   );
 }
