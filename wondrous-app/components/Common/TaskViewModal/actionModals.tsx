@@ -145,7 +145,7 @@ export default function ActionModals({
       />
       <DeleteTaskModal
         open={deleteTask}
-        onClose={() => setDeleteTask(false)}љ
+        onClose={() => setDeleteTask(false)}
         taskType={taskType}
         taskId={fetchedTask?.id}
         onDelete={() => {
