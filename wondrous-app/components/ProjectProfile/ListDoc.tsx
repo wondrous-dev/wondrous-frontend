@@ -25,11 +25,11 @@ const LeftComponent = ({ name }) => (
 
 const useListDoc = () => ({
   HeaderTitleProps: {
-    text: 'Resource',
+    text: 'Document',
     IconComponent: FolderIcon,
   },
   CreateButtonProps: useDocCategoriesButtonProps(),
-  backgroundImageUrl: '/images/project/resources-empty-bg.svg',
+  backgroundImageUrl: '/images/project/document-empty-bg.svg',
   showAllUrl: 'docs',
   ListItemProps: {
     LeftComponent,

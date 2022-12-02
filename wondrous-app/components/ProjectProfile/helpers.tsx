@@ -142,7 +142,7 @@ export const useDocCategoriesButtonProps = (): ICreateButtonProps => {
   const { handleCreateNewCategory } = useProject();
   return {
     onClick: handleCreateNewCategory,
-    text: 'Resource',
+    text: 'Document',
   };
 };
 
