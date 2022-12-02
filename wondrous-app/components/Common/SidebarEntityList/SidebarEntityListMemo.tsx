@@ -17,13 +17,7 @@ type Props = {
 };
 
 const SidebarEntityListMemo = ({ menuItems, handleOnClick, urlPath }: Props) => {
-  const isActive = (entityType, link) => {
-
-    console.log(entityType, link, location(), (entityType ? location().includes(link) : urlPath.includes(link)));
-
-    return (entityType ? location().includes(link) : urlPath.includes(link));
-  }
-
+  const isActive = (entityType, link) => (entityType ? location().includes(link) : urlPath.includes(link));
 
   return (
     <ListWrapper>

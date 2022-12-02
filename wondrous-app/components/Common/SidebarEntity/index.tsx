@@ -19,21 +19,27 @@ const EntitySidebar = ({ children }) => {
   const { minimized } = useSideBar();
   const { query } = useRouter();
 
-  let Sidebar;
+  const Sidebar = useMemo(() => {
+    if (query.roles) {
+      return SIDEBAR_COMPONENTS.roles;
+    }
+    if (query.collabs) {
+      return SIDEBAR_COMPONENTS.collabs;
+    }
 
-  if (query.roles) {
-    Sidebar = SIDEBAR_COMPONENTS.roles;
-  }
-  if (query.collabs) {
-    Sidebar = SIDEBAR_COMPONENTS.collabs;
-  }
+    return () => (
+      <>
+        <AboutEntity />
+        <List />
+      </>
+    );
+  }, [query.roles, query.collabs]);
 
   return (
     <Wrapper>
       <SidebarWrapper minimized={minimized}>
         <SidebarContent>
-          <AboutEntity />
-          <List />
+          <Sidebar />
         </SidebarContent>
         <CollapseExpandButton />
       </SidebarWrapper>
