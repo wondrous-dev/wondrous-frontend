@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
 
 const TaskViewModal = dynamic(() => import('components/Common/TaskViewModal'), { suspense: true });
-
+// Use this component to open task view modal automatically and without any handlers
 const TaskViewModalWatcher = () => {
   const router = useRouter();
   const { query } = router;
