@@ -18,6 +18,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import GrantIcon from 'components/Icons/GrantIcon';
+import HomeIcon from 'components/Icons/home';
 
 const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
@@ -59,8 +60,8 @@ const useSidebarData = () => {
         ? {
             items: [
               {
-                text: 'Project Portal',
-                Icon: () => null,
+                text: 'Project Home',
+                Icon: () => <HomeIcon height="12px" width="12px" />,
                 link: `${link}/project`,
               },
             ],
