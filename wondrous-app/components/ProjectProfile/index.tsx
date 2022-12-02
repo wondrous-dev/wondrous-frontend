@@ -4,30 +4,22 @@ import PodCards from 'components/ProjectProfile/PodCards';
 import { useMemo } from 'react';
 import { ProjectContext } from 'utils/contexts';
 
-import {
-  useCollaborationModal,
-  useCreateEntityModal,
-  useCreateGrantModal,
-  useDocCategoriesModal,
-  usePodModal,
-} from './helpers';
+import { useCollaborationModal, useCreateEntityModal, useCreateGrantModal, useDocCategoriesModal } from './helpers';
 
 const ProjectProfile = ({ orgData }) => {
   const { setEntityType, CreateEntityModal } = useCreateEntityModal();
   const { CollaborationModal, handleCreateModal } = useCollaborationModal();
   const { DocCategoriesModal, handleCreateNewCategory } = useDocCategoriesModal();
   const { CreateGrantModal, handleCreateFormModal } = useCreateGrantModal();
-  const { PodModal, handleSetOpenPodModal } = usePodModal();
   const projectContextValue = useMemo(
     () => ({
       setEntityType,
       handleCreateModal,
       handleCreateNewCategory,
       handleCreateFormModal,
-      handleSetOpenPodModal,
       orgData,
     }),
-    [setEntityType, handleCreateModal, handleCreateNewCategory, handleCreateFormModal, handleSetOpenPodModal, orgData]
+    [setEntityType, handleCreateModal, handleCreateNewCategory, handleCreateFormModal, orgData]
   );
   return (
     <ProjectContext.Provider value={projectContextValue}>
@@ -36,7 +28,6 @@ const ProjectProfile = ({ orgData }) => {
         <CollaborationModal />
         <DocCategoriesModal />
         <CreateGrantModal />
-        <PodModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
           <PodCards />
           <ListMainWrapper />

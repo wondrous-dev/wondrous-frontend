@@ -5,6 +5,7 @@ import CreateButton from 'components/ProjectProfile/CreateButton';
 import HeaderTitle from 'components/ProjectProfile/HeaderTitle';
 import PodCard from 'components/ProjectProfile/PodCard';
 import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -38,7 +39,7 @@ const podCardContent = (pods) => {
 };
 
 const ShowAllButton = () => {
-  const { handleSetOpenPodModal } = useProject();
+  const router = useRouter();
   return (
     <Button
       color="grey"
@@ -50,7 +51,7 @@ const ShowAllButton = () => {
         fontSize: 13,
         fontWeight: 500,
       }}
-      onClick={handleSetOpenPodModal}
+      onClick={() => router.push(`/organization/${router.query.username}/pods`)}
     >
       Show all
     </Button>
