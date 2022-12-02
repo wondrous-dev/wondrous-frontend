@@ -8,7 +8,8 @@ import palette from 'theme/palette';
 import { ROLES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 
-import { useCollaborationButtonProps, useGetOrgCollabsForOrg, useHandleCollabShowAll } from './helpers';
+import { useCollaborationButtonProps, useGetOrgCollabsForOrg } from './helpers';
+import ListWrapper from './ListWrapper';
 
 const OrgWrapper = ({ username, profilePicture }) => (
   <Grid container item width="fit-content" sx={[{ '& a': { textDecoration: 'none' } }]}>
@@ -63,20 +64,22 @@ const RightComponent = ({ parentOrgName }) => {
   );
 };
 
-const useListCollab = () => ({
-  HeaderTitleProps: {
-    text: 'Collab',
-    IconComponent: () => <SmallDao2DaoIcon stroke={palette.white} />,
-  },
-  CreateButtonProps: useCollaborationButtonProps(),
-  backgroundImageUrl: '/images/project/collab-empty-bg.svg',
-  showAllUrl: 'collaborations',
-  ListItemProps: {
-    LeftComponent,
-    RightComponent,
-    onClick: (router, { username }) => router.push(`/collaboration/${username}/boards`),
-  },
-  data: useGetOrgCollabsForOrg(),
-});
+const ListCollab = () => (
+  <ListWrapper
+    HeaderTitleProps={{
+      text: 'Collab',
+      IconComponent: () => <SmallDao2DaoIcon stroke={palette.white} />,
+    }}
+    CreateButtonProps={useCollaborationButtonProps()}
+    backgroundImageUrl="/images/project/collab-empty-bg.svg"
+    showAllUrl="collaborations"
+    ListItemProps={{
+      LeftComponent,
+      RightComponent,
+      onClick: (router, { username }) => router.push(`/collaboration/${username}/boards`),
+    }}
+    data={useGetOrgCollabsForOrg()}
+  />
+);
 
-export default useListCollab;
+export default ListCollab;

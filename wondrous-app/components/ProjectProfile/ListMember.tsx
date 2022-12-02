@@ -4,6 +4,7 @@ import RolePill from 'components/Common/RolePill';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import palette from 'theme/palette';
 import { useGetOrgUsers } from './helpers';
+import ListWrapper from './ListWrapper';
 
 const LeftComponent = ({ user }) => {
   const { profilePicture, username } = user || {};
@@ -21,19 +22,21 @@ const RightComponent = ({ role }) => (
   </Grid>
 );
 
-const useListMember = () => ({
-  HeaderTitleProps: {
-    text: 'Member',
-    IconComponent: GroupIcon,
-  },
-  backgroundImageUrl: '/images/project/collab-empty-bg.svg',
-  showAllUrl: 'members',
-  ListItemProps: {
-    LeftComponent,
-    RightComponent,
-    onClick: (router, { user }) => router.push(`/profile/${user.username}/about`),
-  },
-  data: useGetOrgUsers(),
-});
+const ListMember = () => (
+  <ListWrapper
+    HeaderTitleProps={{
+      text: 'Member',
+      IconComponent: GroupIcon,
+    }}
+    backgroundImageUrl="/images/project/collab-empty-bg.svg"
+    showAllUrl="members"
+    ListItemProps={{
+      LeftComponent,
+      RightComponent,
+      onClick: (router, { user }) => router.push(`/profile/${user.username}/about`),
+    }}
+    data={useGetOrgUsers()}
+  />
+);
 
-export default useListMember;
+export default ListMember;

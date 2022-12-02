@@ -5,6 +5,7 @@ import palette from 'theme/palette';
 import { ENTITIES_TYPES, TASK_STATUS_DONE } from 'utils/constants';
 
 import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
+import ListWrapper from './ListWrapper';
 import MilestoneProgress from './MilestoneProgress';
 
 const LeftComponent = ({ title }) => (
@@ -23,21 +24,23 @@ const RightComponent = ({ type, orgId, status, id }) => (
   </Grid>
 );
 
-const useListMilestone = () => ({
-  HeaderTitleProps: {
-    text: 'Milestone',
-    IconComponent: FlagIcon,
-  },
-  CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.MILESTONE),
-  backgroundImageUrl: '/images/project/milestone-empty-bg.svg',
-  showAllUrl: 'boards?entity=milestone',
-  ListItemProps: {
-    LeftComponent,
-    RightComponent,
-    onClick: (router, { orgUsername, id }) =>
-      router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=milestone`),
-  },
-  data: useGetOrgEntity('milestone'),
-});
+const ListMilestone = () => (
+  <ListWrapper
+    HeaderTitleProps={{
+      text: 'Milestone',
+      IconComponent: FlagIcon,
+    }}
+    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.MILESTONE)}
+    backgroundImageUrl="/images/project/milestone-empty-bg.svg"
+    showAllUrl="boards?entity=milestone"
+    ListItemProps={{
+      LeftComponent,
+      RightComponent,
+      onClick: (router, { orgUsername, id }) =>
+        router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=milestone`),
+    }}
+    data={useGetOrgEntity('milestone')}
+  />
+);
 
-export default useListMilestone;
+export default ListMilestone;

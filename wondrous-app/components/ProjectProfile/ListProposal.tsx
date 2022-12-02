@@ -7,6 +7,7 @@ import { getProposalStatus } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
 
 import { useEntityCreateButtonProps, useGetOrgProposal } from './helpers';
+import ListWrapper from './ListWrapper';
 
 const LeftComponent = ({ title, creator }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -26,21 +27,23 @@ const RightComponent = ({ orgId, rejectedAt, approvedAt, closedAt }) => (
   </Grid>
 );
 
-const useListProposal = () => ({
-  HeaderTitleProps: {
-    text: 'Proposal',
-    IconComponent: ContentPaste,
-  },
-  CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.PROPOSAL),
-  backgroundImageUrl: '/images/project/proposal-empty-bg.svg',
-  showAllUrl: 'boards?entity=proposal',
-  ListItemProps: {
-    LeftComponent,
-    RightComponent,
-    onClick: (router, { orgUsername, id }) =>
-      router.push(`/organization/${orgUsername}/boards?taskProposal=${id}&view=grid&entity=proposal`),
-  },
-  data: useGetOrgProposal(),
-});
+const ListProposal = () => (
+  <ListWrapper
+    HeaderTitleProps={{
+      text: 'Proposal',
+      IconComponent: ContentPaste,
+    }}
+    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.PROPOSAL)}
+    backgroundImageUrl="/images/project/proposal-empty-bg.svg"
+    showAllUrl="boards?entity=proposal"
+    ListItemProps={{
+      LeftComponent,
+      RightComponent,
+      onClick: (router, { orgUsername, id }) =>
+        router.push(`/organization/${orgUsername}/boards?taskProposal=${id}&view=grid&entity=proposal`),
+    }}
+    data={useGetOrgProposal()}
+  />
+);
 
-export default useListProposal;
+export default ListProposal;

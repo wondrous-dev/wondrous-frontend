@@ -6,6 +6,7 @@ import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ApplyOrClaimButton from './ApplyOrClaimButton';
 import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
+import ListWrapper from './ListWrapper';
 
 const LeftComponent = ({ assigneeProfilePicture, title, assigneeId }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -24,21 +25,23 @@ const RightComponent = (props) => {
   );
 };
 
-const useListTaskProps = () => ({
-  HeaderTitleProps: {
-    text: 'Task',
-    IconComponent: CheckBoxIcon,
-  },
-  CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.TASK),
-  backgroundImageUrl: '/images/project/task-empty-bg.svg',
-  showAllUrl: 'boards?entity=task',
-  ListItemProps: {
-    LeftComponent,
-    RightComponent,
-    onClick: (router, { orgUsername, id }) =>
-      router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=task`),
-  },
-  data: useGetOrgEntity('task'),
-});
+const ListTask = () => (
+  <ListWrapper
+    HeaderTitleProps={{
+      text: 'Task',
+      IconComponent: CheckBoxIcon,
+    }}
+    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.TASK)}
+    backgroundImageUrl="/images/project/task-empty-bg.svg"
+    showAllUrl="boards?entity=task"
+    ListItemProps={{
+      LeftComponent,
+      RightComponent,
+      onClick: (router, { orgUsername, id }) =>
+        router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=task`),
+    }}
+    data={useGetOrgEntity('task')}
+  />
+);
 
-export default useListTaskProps;
+export default ListTask;

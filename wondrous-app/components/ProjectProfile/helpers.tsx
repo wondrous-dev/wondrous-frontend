@@ -227,8 +227,3 @@ export const useGetOrgCollabsForOrg = () => {
   });
   return data?.getOrgCollabsForOrg;
 };
-
-export const useHandleCollabShowAll = () => {
-  const { setMinimized } = useSideBar();
-  return () => setMinimized(false);
-};

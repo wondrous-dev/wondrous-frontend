@@ -4,6 +4,7 @@ import palette from 'theme/palette';
 import { randomColors } from 'utils/common';
 
 import { useDocCategoriesButtonProps, useGetOrgDocumentCategories } from './helpers';
+import ListWrapper from './ListWrapper';
 
 const LeftComponent = ({ name }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -23,19 +24,21 @@ const LeftComponent = ({ name }) => (
   </Grid>
 );
 
-const useListDoc = () => ({
-  HeaderTitleProps: {
-    text: 'Document',
-    IconComponent: FolderIcon,
-  },
-  CreateButtonProps: useDocCategoriesButtonProps(),
-  backgroundImageUrl: '/images/project/document-empty-bg.svg',
-  showAllUrl: 'docs',
-  ListItemProps: {
-    LeftComponent,
-    onClick: (router, { id }) => router.push(`/organization/${router.query.username}/docs?id=${id}`),
-  },
-  data: useGetOrgDocumentCategories(),
-});
+const ListDoc = () => (
+  <ListWrapper
+    HeaderTitleProps={{
+      text: 'Document',
+      IconComponent: FolderIcon,
+    }}
+    CreateButtonProps={useDocCategoriesButtonProps()}
+    backgroundImageUrl="/images/project/document-empty-bg.svg"
+    showAllUrl="docs"
+    ListItemProps={{
+      LeftComponent,
+      onClick: (router, { id }) => router.push(`/organization/${router.query.username}/docs?id=${id}`),
+    }}
+    data={useGetOrgDocumentCategories()}
+  />
+);
 
-export default useListDoc;
+export default ListDoc;

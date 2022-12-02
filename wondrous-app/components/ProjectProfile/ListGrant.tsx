@@ -6,6 +6,7 @@ import palette from 'theme/palette';
 import { formatDateDisplay } from 'utils/board';
 
 import { useCreateGrantButtonProps, useGetGrantOrgBoard } from './helpers';
+import ListWrapper from './ListWrapper';
 
 const LeftComponent = ({ title }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -67,20 +68,22 @@ const RightComponent = ({ numOfGrant, endDate, reward }) => {
   );
 };
 
-const useListGrant = () => ({
-  HeaderTitleProps: {
-    text: 'Grant',
-    IconComponent: PlantIcon,
-  },
-  CreateButtonProps: useCreateGrantButtonProps(),
-  backgroundImageUrl: '/images/project/grant-empty-bg.svg',
-  showAllUrl: 'grants',
-  ListItemProps: {
-    LeftComponent,
-    RightComponent,
-    onClick: (router, { id }) => router.push(`/organization/${router.query.username}/grants?grant=${id}`),
-  },
-  data: useGetGrantOrgBoard(),
-});
+const ListGrant = () => (
+  <ListWrapper
+    HeaderTitleProps={{
+      text: 'Grant',
+      IconComponent: PlantIcon,
+    }}
+    CreateButtonProps={useCreateGrantButtonProps()}
+    backgroundImageUrl="/images/project/grant-empty-bg.svg"
+    showAllUrl="grants"
+    ListItemProps={{
+      LeftComponent,
+      RightComponent,
+      onClick: (router, { id }) => router.push(`/organization/${router.query.username}/grants?grant=${id}`),
+    }}
+    data={useGetGrantOrgBoard()}
+  />
+);
 
-export default useListGrant;
+export default ListGrant;

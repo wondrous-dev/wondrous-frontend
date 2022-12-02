@@ -5,6 +5,7 @@ import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 
 import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
+import ListWrapper from './ListWrapper';
 
 const LeftComponent = ({ title }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -14,21 +15,23 @@ const LeftComponent = ({ title }) => (
 
 const RightComponent = ({ rewards }) => <Compensation rewards={rewards} />;
 
-const useListBountyProps = () => ({
-  HeaderTitleProps: {
-    text: 'Bounty',
-    IconComponent: StarIcon,
-  },
-  CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.BOUNTY),
-  backgroundImageUrl: '/images/project/bounty-empty-bg.svg',
-  showAllUrl: 'boards?entity=bounty',
-  ListItemProps: {
-    LeftComponent,
-    RightComponent,
-    onClick: (router, { orgUsername, id }) =>
-      router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=bounty`),
-  },
-  data: useGetOrgEntity('bounty'),
-});
+const ListBounty = () => (
+  <ListWrapper
+    HeaderTitleProps={{
+      text: 'Bounty',
+      IconComponent: StarIcon,
+    }}
+    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.BOUNTY)}
+    backgroundImageUrl="/images/project/bounty-empty-bg.svg"
+    showAllUrl="boards?entity=bounty"
+    ListItemProps={{
+      LeftComponent,
+      RightComponent,
+      onClick: (router, { orgUsername, id }) =>
+        router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=bounty`),
+    }}
+    data={useGetOrgEntity('bounty')}
+  />
+);
 
-export default useListBountyProps;
+export default ListBounty;
