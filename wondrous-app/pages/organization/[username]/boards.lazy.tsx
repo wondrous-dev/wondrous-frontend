@@ -418,16 +418,20 @@ function BoardsPage() {
     if (type !== entityType) {
       setIsLoading(true);
     }
-    insertUrlParam('entity', type);
-    removeUrlParam('cause');
+    const query: any = { ...router.query, entity: type };
+
+    delete query.cause;
+
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
     });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
-      insertUrlParam('view', ViewType.Grid);
+      query.view = ViewType.Grid;
     }
+
+    router.push({ query }, undefined, { shallow: true });
   };
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {

@@ -44,8 +44,11 @@ function CollabBoard(props: Props) {
 
   const handleModal = () => {
     if (router.query.addMembers) {
-      insertUrlParam('addMembers', '');
+      const query: any = { ...router.query, addMembers: '' };
+
+      router.push({ query }, undefined, { shallow: true, scroll: false });
     }
+
     setOpenInviteModal((prevState) => !prevState);
     setStep(0);
     setUsers({ admins: [], members: [], adminRole: null, memberRole: null });

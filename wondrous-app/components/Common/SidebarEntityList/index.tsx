@@ -98,7 +98,7 @@ const useSidebarData = () => {
         !board?.orgData?.shared && {
           text: 'Collaborations',
           Icon: SmallDao2DaoIcon,
-          link: `${link}/collaborations`
+          link: `${link}/collaborations`,
         },
       ],
     },

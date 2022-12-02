@@ -410,13 +410,17 @@ function BoardsPage() {
     if (type !== entityType) {
       setIsLoading(true);
     }
-    insertUrlParam('entity', type);
+
+    const query: any = { ...router.query, entity: type };
+
     setEntityType(type);
     setFilters({});
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
-      insertUrlParam('view', ViewType.Grid);
+      query.view = ViewType.Grid;
     }
+
+    router.push({ query }, undefined, { shallow: true });
   };
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
