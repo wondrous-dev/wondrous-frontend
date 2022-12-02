@@ -103,7 +103,12 @@ function MyApp({ Component, pageProps }) {
                       <NavigationProgress />
                       <SidebarLayout>
                         <OnboardingTour>
-                          <Layout Component={Component} pageProps={pageProps} />≈
+                          <Layout
+                            Component={Component}
+                            pageProps={pageProps}
+                            key={typeof window !== 'undefined' ? window.location.pathname : router.asPath}
+                          />
+                          ≈
                         </OnboardingTour>
                       </SidebarLayout>
                     </HotkeyContext.Provider>
