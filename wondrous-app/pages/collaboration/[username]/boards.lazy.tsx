@@ -25,7 +25,7 @@ import {
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam } from 'utils';
+import { dedupeColumns } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
 import {
   ENTITIES_TYPES,

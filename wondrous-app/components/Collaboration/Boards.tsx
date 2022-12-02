@@ -13,7 +13,6 @@ import { BATCH_ADD_MEMBERS } from 'graphql/mutations';
 import AddMembersConfirmation from 'components/CreateCollaborationModal/Steps/Confirmation';
 import { useRouter } from 'next/router';
 import { getFilterSchema } from 'utils/board';
-import { insertUrlParam } from 'utils/index';
 import SharedOrgHeader from './SharedOrgHeader';
 
 function CollabBoard(props: Props) {

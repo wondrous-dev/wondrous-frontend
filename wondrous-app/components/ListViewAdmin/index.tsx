@@ -10,7 +10,6 @@ import {
 import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon } from 'components/Icons/statusIcons';
 import { useGlobalContext, useUserBoard } from 'utils/hooks';
 import { useRouter } from 'next/router';
-import { delQuery, insertUrlParam } from 'utils';
 import { useMe } from 'components/Auth/withAuth';
 import { EmptyMemberRequestsListMessage } from 'components/organization/members/styles';
 import { Spinner } from 'components/Dashboard/bounties/styles';

@@ -27,7 +27,7 @@ import {
   DEFAULT_ENTITY_STATUS_FILTER,
 } from 'services/board';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
+import { dedupeColumns } from 'utils';
 import {
   PRIVACY_LEVEL,
   STATUS_OPEN,
