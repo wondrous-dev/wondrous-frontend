@@ -320,8 +320,8 @@ function KanbanBoard(props) {
         {null}
       </ConfirmModal>
 
-      <DragDropContext onDragEnd={onDragEnd}>
-        {columns.map((column) => {
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      {columns.map((column) => {
           const { status, section, tasks } = column;
 
           return (

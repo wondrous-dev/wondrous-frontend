@@ -25,7 +25,7 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
         task: task?.id
       }
 
-      router.push({ query }, undefined, { scroll: false });
+      router.push({ query }, undefined, { scroll: false, shallow: true });
     };
     useEffect(() => {
       if (inView && hasMore && activeView !== ViewType.List) {

@@ -35,7 +35,7 @@ const BountySection = ({ bounties = [], fetchMore = () => {}, hasMore, gr15DEI }
       task: bounty?.id,
     };
 
-    router.push({ query }, undefined, { scroll: false });
+    router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
   return (
