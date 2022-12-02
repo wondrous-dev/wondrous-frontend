@@ -6,11 +6,11 @@ import palette from 'theme/palette';
 import { useGetOrgUsers } from './helpers';
 
 const LeftComponent = ({ user }) => {
-  const { profilePicture, firstName, lastName } = user || {};
+  const { profilePicture, username } = user || {};
   return (
     <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
       <UserProfilePicture avatar={profilePicture} />
-      {firstName} {lastName}
+      {username}
     </Grid>
   );
 };
