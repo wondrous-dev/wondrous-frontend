@@ -97,14 +97,16 @@ function ExploreComponent() {
     });
   }, [filterBounties]);
 
-  const handleTabClick = (key) => {
-    if (key === activeTab) {
-      return setActiveTab(null);
+  const handleTabClick = (tab) => {
+    if (tab === activeTab) {
+      setActiveTab(null);
+    } else if (activeTab === null) {
+      setActiveTab(tab);
+    } else {
+      router.push({ query: { tab } }, undefined, {
+        shallow: true,
+      });
     }
-    router.push(`/explore?tab=${key}`, undefined, {
-      shallow: true,
-    });
-    return setActiveTab(key);
   };
 
   const tabs = [
