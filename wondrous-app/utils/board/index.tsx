@@ -1,8 +1,10 @@
 import { differenceInDays, format, formatDistance } from 'date-fns';
 import cloneDeep from 'lodash/cloneDeep';
 import map from 'lodash/map';
-import apollo from 'services/apollo';
+
 import { COLUMNS, ENTITIES_TYPES_FILTER_STATUSES, FILTER_STATUSES } from 'services/board';
+import { TaskInterface } from 'types/task';
+
 import {
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_IN_REVIEW,
@@ -11,6 +13,7 @@ import {
   STATUS_OPEN,
   ENTITIES_TYPES,
   STATUS_CLOSED,
+  PAYMENT_STATUS,
 } from '../constants';
 
 export const addProposalItem = (newItem, columns) => {
@@ -283,3 +286,6 @@ export const getFilterSchema = (entityType, orgId): { [key: string]: any } => {
   const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
   return entityTypeFilters;
 };
+
+export const taskHasPayment = (task: TaskInterface) =>
+  [PAYMENT_STATUS.PROCESSING, PAYMENT_STATUS.PAID].includes(task.paymentStatus);

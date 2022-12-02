@@ -112,13 +112,7 @@ const useSidebarData = () => {
           !board?.orgData?.shared && {
             text: 'Collaborations',
             Icon: SmallDao2DaoIcon,
-            link: {
-              pathname: router.pathname,
-              query: {
-                ...router.query,
-                collabs: true,
-              },
-            },
+            link: `${link}/collaborations`,
           },
         ],
       },

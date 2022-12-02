@@ -249,8 +249,10 @@ function ProfileSettings(props) {
 
     updateUserProfile({
       variables: {
-        ...input,
-        profilePicture: loggedInUser?.profilePicture,
+        input: {
+          ...input,
+          profilePicture: loggedInUser?.profilePicture,
+        },
       },
       onCompleted: (data) => {
         setProfilePictureUrl(data?.updateUser?.profilePicture);

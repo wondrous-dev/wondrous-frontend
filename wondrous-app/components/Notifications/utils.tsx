@@ -40,7 +40,7 @@ export function getNotificationDescription(notification, link) {
     case NOTIFICATION_TYPES.MENTION:
       return <>mentioned you in a {object}</>;
     case NOTIFICATION_TYPES.COMMENT:
-      return <>comented on {object}</>;
+      return <>commented on {object}</>;
     // ====
     case NOTIFICATION_TYPES.TASK_ASSIGN:
       return <>assigned a {object} to you</>;
@@ -89,9 +89,10 @@ export const getNotificationLink = (notification) => {
 
   if (notification.objectType === NOTIFICATION_OBJ_TYPES.COLLABORATION) {
     const mainPath = notification.type === COLLAB_TYPES.APPROVE ? 'collaboration' : 'organization';
-    notificationLink = `/${mainPath}/${notification.additionalData.orgUsername}/boards?collabs=${true}${
-      notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
-    }`;
+    notificationLink =
+      notification.type === COLLAB_TYPES.APPROVE
+        ? `/${mainPath}/${notification.additionalData.orgUsername}/boards`
+        : `/${mainPath}/${notification.additionalData.orgUsername}/collaborations?invite=true`;
   }
 
   if (notification?.additionalData?.viewNft) {

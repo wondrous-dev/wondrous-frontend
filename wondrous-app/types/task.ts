@@ -1,4 +1,6 @@
 import { User } from 'types/User';
+import { PAYMENT_STATUS } from 'utils/constants';
+import { ValueOf } from 'types/common';
 
 export type TaskFilter = {
   priorities?: string[];
@@ -48,6 +50,7 @@ export interface TaskMint {
   tokenId?: string;
   status: string;
 }
+
 export interface TaskInterface {
   __typename: string;
   assigneeId: string;
@@ -85,4 +88,5 @@ export interface TaskInterface {
   parentTaskId?: string;
   totalSubtaskCount?: number;
   isProposal?: boolean;
+  paymentStatus: ValueOf<typeof PAYMENT_STATUS> | null;
 }

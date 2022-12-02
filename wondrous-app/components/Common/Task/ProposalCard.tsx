@@ -23,7 +23,7 @@ import { RichTextViewer } from 'components/RichText';
 import { SafeImage } from 'components/Common/Image';
 import PodIconName from 'components/Common/PodIconName';
 
-import { CardContent, CardWrapper, ProposalCardIcon, ProposalCardType, ProposalFooterButton } from './styles';
+import { CardContent, ProposalCardIcon, ProposalCardType, ProposalFooterButton } from './styles';
 
 const STATUS_ICONS = {
   [Constants.STATUS_APPROVED]: Approved,
@@ -79,7 +79,7 @@ export default function ProposalCard({ openModal, title, description, task, goTo
         document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
       }}
     >
-      <CardWrapper>
+      <>
         <CardContent>
           <BoardsCardHeader>
             <BoardsCardSubheader>
@@ -138,7 +138,7 @@ export default function ProposalCard({ openModal, title, description, task, goTo
             ))}
           </BoardsCardFooter>
         </CardContent>
-      </CardWrapper>
+      </>
     </SmartLink>
   );
 }

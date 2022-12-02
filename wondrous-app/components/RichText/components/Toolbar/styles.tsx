@@ -12,6 +12,11 @@ export const ToolbarContainer = styled.div`
   padding: 4px;
   border-radius: 4px;
   background: #313131;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-wrap: wrap;
+    display: flex;
+  }
 `;
 
 export const ToolbarButton = styled(Button)`

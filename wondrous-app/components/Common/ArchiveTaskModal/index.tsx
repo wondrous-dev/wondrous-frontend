@@ -19,7 +19,7 @@ import {
   StyledCloseButton,
   StyledDialog,
   StyledDivider,
-  StyledHeader
+  StyledHeader,
 } from './styles';
 
 interface IArchiveTaskModalProps {
@@ -36,18 +36,30 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
   const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
 
   const [archiveGrant] = useMutation(ARCHIVE_GRANT, {
-    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById', 'getGrantApplications', 'getGrantApplicationById'],
+    refetchQueries: [
+      'getGrantOrgBoard',
+      'getGrantPodBoard',
+      'getGrantById',
+      'getGrantApplications',
+      'getGrantApplicationById',
+    ],
   });
 
   const [archiveGrantApplication] = useMutation(ARCHIVE_GRANT_APPLICATION, {
-    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById', 'getGrantApplications', 'getGrantApplicationById'],
-  })
+    refetchQueries: [
+      'getGrantOrgBoard',
+      'getGrantPodBoard',
+      'getGrantById',
+      'getGrantApplications',
+      'getGrantApplicationById',
+    ],
+  });
   const isTaskOrMilestoneOrBounty =
     taskType === Constants.TASK_TYPE || taskType === Constants.MILESTONE_TYPE || taskType === Constants.BOUNTY_TYPE;
   const isTaskProposal = taskType === 'task proposal';
 
   const handleArchive = () => {
-    if(taskType === Constants.ENTITIES_TYPES.GRANT_APPLICATION) {
+    if (taskType === Constants.ENTITIES_TYPES.GRANT_APPLICATION) {
       archiveGrantApplication({ variables: { grantApplicationId: taskId } });
     }
     if (taskType === Constants.ENTITIES_TYPES.GRANT) {

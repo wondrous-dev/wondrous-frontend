@@ -52,7 +52,7 @@ export const TaskMintDetailsChain = styled.div`
 export const TaskMintButtonWrapper = styled.button`
   border: 0;
   background: ${palette.grey1020};
-  color: ${palette.white};
+  color: ${({ labelColor }) => labelColor || palette.white};
   padding: 10px;
   display: flex;
   font-weight: 600;
@@ -63,7 +63,18 @@ export const TaskMintButtonWrapper = styled.button`
   &:disabled {
     pointer-events: none;
   }
+  position: relative;
+  &:before {
+    content: '';
+    width: 20%;
+    height: 65%;
+    position: absolute;
+  }
   &:hover {
     background: ${palette.grey1000};
+    &:before {
+      background: ${({ hoverColor }) => hoverColor || 'transparent'};
+      filter: blur(20px);
+    }
   }
 `;

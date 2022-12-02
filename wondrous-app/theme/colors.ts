@@ -40,6 +40,7 @@ export const greyColors = {
   grey98: '#1c1c1c',
   grey99: '#282828',
   grey100: '#161616',
+  grey125: '#141414',
   grey150: '#E3E5E9',
   grey200: '#DADADA',
   grey250: '#C4C4C4',
@@ -150,6 +151,8 @@ export const purpleColors = {
   purple620: '#ff418c',
   purple700: '#8C1EFF',
   purple800: '#8237FF',
+  purple900: '#8446E9',
+  purple950: '#8627FF',
 };
 
 export const blackColors = {
