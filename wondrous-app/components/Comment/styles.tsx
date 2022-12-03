@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import Button from 'components/Button';
 import { ButtonWrapper } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';

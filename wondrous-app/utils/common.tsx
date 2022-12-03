@@ -1,6 +1,5 @@
 import React from 'react';
 import regexifyString from 'regexify-string';
-import { Typography } from '@mui/material';
 import palette from 'theme/palette';
 import { TodoIcon, ArchivedIcon, CompletedIcon, InProgressIcon, InReviewIcon } from 'components/Icons/statusIcons';
 

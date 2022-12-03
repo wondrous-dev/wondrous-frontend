@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { getRoleColor } from 'components/Settings/Members/MembersTableRow/helpers';
 import styled from 'styled-components';
 import typography from 'theme/typography';

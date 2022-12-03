@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import CopyIcon from 'components/Icons/copy';
 import {
   LINK_BATCH_OFF_PLATFORM_FOR_APPLICATION,

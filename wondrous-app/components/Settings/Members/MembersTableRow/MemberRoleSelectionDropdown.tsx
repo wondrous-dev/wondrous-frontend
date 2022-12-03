@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import * as Sentry from '@sentry/nextjs';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import CheckMarkIcon from 'components/Icons/checkMark';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';

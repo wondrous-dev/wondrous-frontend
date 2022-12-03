@@ -57,7 +57,7 @@ import {
   getPodObject,
   onCorrectPage,
 } from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { palette } from '@mui/system';
 
 const HANDLE_TASKS = {

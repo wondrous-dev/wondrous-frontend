@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import UploadImageIcon from '../../Icons/uploadImage';
 
 export const CreateFormPickHeaderImageSection = styled.div`

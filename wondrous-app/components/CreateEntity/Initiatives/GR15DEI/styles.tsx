@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import styled, { css } from 'styled-components';
 import { white } from 'theme/colors';
 

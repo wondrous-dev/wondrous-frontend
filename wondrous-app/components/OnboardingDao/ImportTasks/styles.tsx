@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import ButtonImport from 'components/OnboardingDao/ButtonImport';
 import styled from 'styled-components';
 import CloseIcon from 'components/Icons/close.svg';

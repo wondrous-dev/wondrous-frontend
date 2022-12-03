@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import { PRIORITIES } from 'utils/constants';

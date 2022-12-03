@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import FlagIcon from 'components/Icons/flag';
 import palette from 'theme/palette';
 

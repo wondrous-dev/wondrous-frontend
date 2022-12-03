@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { SafeImage } from 'components/Common/Image';
 import Image from 'next/image';
 import styled from 'styled-components';

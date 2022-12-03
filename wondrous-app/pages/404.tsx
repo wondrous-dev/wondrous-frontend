@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { Button } from 'components/Common/button';
 import { NoUnderlineLink } from 'components/Common/Link/links';
 import Wrapper from 'components/Wrapper';

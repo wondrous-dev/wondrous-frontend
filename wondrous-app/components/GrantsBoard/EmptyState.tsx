@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { EmptyGranstIcon } from 'components/Icons/GrantStatusIcons';
 import palette from 'theme/palette';
 import typography from 'theme/typography';

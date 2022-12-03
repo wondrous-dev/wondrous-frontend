@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import GradientHeading from 'components/GradientHeading';
 import palette from 'theme/palette';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';

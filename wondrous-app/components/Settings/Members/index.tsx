@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
 import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_BY_ID, GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
 import { useRouter } from 'next/router';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import { Text } from 'components/styled';
 import Grid from '@mui/material/Grid';

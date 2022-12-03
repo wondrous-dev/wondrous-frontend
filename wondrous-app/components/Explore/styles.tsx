@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
 import { device } from 'utils/device';
 import palette from 'theme/palette';

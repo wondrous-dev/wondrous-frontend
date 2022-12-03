@@ -1,5 +1,5 @@
 import { InputUnstyled } from '@mui/base';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import styled from 'styled-components';
 

@@ -5,7 +5,7 @@ import { Button } from 'components/Button';
 import { StyledBadge } from 'components/Header/styles';
 import NotificationsIcon from 'components/Icons/notifications';
 import Tooltip from 'components/Tooltip';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 export default {
   title: 'Header/Buttons',

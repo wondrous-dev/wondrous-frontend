@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { FilterBox } from 'components/Common/Filter/styles';
 
 export const CardWrapper = styled.div`

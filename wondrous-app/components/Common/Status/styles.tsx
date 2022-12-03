@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 import VARIATIONS from './constants';

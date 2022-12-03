@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { Masonry } from '@mui/lab';
 import Grid from '@mui/material/Grid';
 import { white } from 'theme/colors';

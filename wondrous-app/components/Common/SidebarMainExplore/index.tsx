@@ -3,7 +3,7 @@ import SidebarTooltip from 'components/Common/SidebarMainTooltip';
 import ExploreIcon from 'components/Icons/Sidebar/explore.svg';
 import Link from 'next/link';
 import React from 'react';
-import { Badge } from '@mui/material';
+import Badge from '@mui/material/Badge';
 import { useHotkey } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { useHotkeys } from 'react-hotkeys-hook';

@@ -1,4 +1,4 @@
-import { ButtonBase } from '@mui/material';
+import ButtonBase from '@mui/material/ButtonBase';
 import { Logo } from 'components/Common/ci';
 import styled from 'styled-components';
 

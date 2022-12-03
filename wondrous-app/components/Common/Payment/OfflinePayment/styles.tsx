@@ -1,5 +1,5 @@
 import InputBase from '@mui/material/InputBase';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import DropdownSelect from 'components/Common/DropdownSelect';

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 

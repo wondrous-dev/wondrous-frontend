@@ -4,7 +4,7 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { Button } from 'components/Button';
 import { Claim } from 'components/Icons/claimTask';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 export default {
   title: 'Inputs/Buttons',

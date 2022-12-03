@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useHotkey } from 'utils/hooks';
-import { Badge } from '@mui/material';
+import Badge from '@mui/material/Badge';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { NoUnderlineLink } from 'components/Common/Link/links';
 import {

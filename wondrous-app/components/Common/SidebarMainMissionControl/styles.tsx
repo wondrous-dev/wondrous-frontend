@@ -1,4 +1,4 @@
-import { ButtonBase } from '@mui/material';
+import ButtonBase from '@mui/material/ButtonBase';
 import styled, { css } from 'styled-components';
 
 const MissionControlButtonBeforeHover = css`

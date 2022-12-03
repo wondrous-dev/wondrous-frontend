@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
 import { Button } from 'components/Common/button';
 import { GradientGR15Horizontal } from 'components/Common/gradients';

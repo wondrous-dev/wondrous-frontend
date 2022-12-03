@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import typography from 'theme/typography';
 
 export const Separator = styled(Typography)`

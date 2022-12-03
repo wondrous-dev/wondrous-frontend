@@ -11,7 +11,7 @@ import {
   CreateEntityTextfieldInputTemplate,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { MODAL_ACTIONS } from 'utils/constants';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import {
   CreateEntityDefaultDaoImage,
   PodSearchLabel,

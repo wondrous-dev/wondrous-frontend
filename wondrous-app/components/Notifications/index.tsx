@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Badge } from '@mui/material';
+import Badge from '@mui/material/Badge';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import SmartLink from 'components/Common/SmartLink';
 import NotificationsIcon from 'components/Icons/notifications';
