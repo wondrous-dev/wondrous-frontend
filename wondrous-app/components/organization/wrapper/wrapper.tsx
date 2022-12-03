@@ -11,8 +11,7 @@ import {
   BOUNTY_TYPE,
   HEADER_ASPECT_RATIO,
 } from 'utils/constants';
-import apollo from 'services/apollo';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
@@ -229,8 +228,6 @@ function Wrapper(props) {
     finalPath = finalPathArr[finalPathArr.length - 1];
   }
 
-  const previousEntity = usePrevious(entity);
-
   useEffect(() => {
     if (!entity && !search) {
       const bountyCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.bountyCount;
@@ -267,15 +264,15 @@ function Wrapper(props) {
       setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS);
     } else if (
       userPermissionsContext?.orgPermissions &&
-      orgProfile?.id in userPermissionsContext?.orgPermissions &&
+      orgProfile?.id in userPermissionsContext.orgPermissions &&
       orgPermissions
     ) {
       // Normal contributor with no access to admin settings
       setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
     } else if (
       orgBoard?.orgId &&
-      userPermissionsContext &&
-      !(orgProfile?.id in userPermissionsContext?.orgPermissions)
+      userPermissionsContext?.orgPermissions &&
+      !(orgProfile?.id in userPermissionsContext.orgPermissions)
     ) {
       setPermissions(null);
       getExistingJoinRequest({
