@@ -2,6 +2,7 @@ import { useLazyQuery } from '@apollo/client';
 import { logout, useMe } from 'components/Auth/withAuth';
 import {
   ArchivedPodIndicatorText,
+  SettingsChildrenWrapper,
   SettingsDaoPodIndicator,
   SettingsDaoPodIndicatorIconWrapper,
   SettingsDaoPodIndicatorOrgProfile,
