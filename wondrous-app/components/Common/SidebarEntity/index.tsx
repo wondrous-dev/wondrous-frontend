@@ -54,7 +54,9 @@ const EntitySidebar = ({ children }) => {
         </SidebarContent>
         <CollapseExpandButton />
       </SidebarWrapper>
-      <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>
+      <ChildrenWrapper minimized={minimized}>
+        
+        {children}</ChildrenWrapper>
     </Wrapper>
   );
 };

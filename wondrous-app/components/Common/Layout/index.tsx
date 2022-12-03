@@ -66,9 +66,8 @@ export default function SidebarLayout({ children }) {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
-
+  
   const orgsList = getOrgsList(userOrgs, router);
-  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
   const sidebarValue = useMemo(
     () => ({
       minimized,

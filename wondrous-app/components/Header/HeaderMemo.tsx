@@ -12,6 +12,7 @@ import NotificationsBoard from 'components/Notifications';
 import useSideBar from 'hooks/useSideBar';
 
 import { HeaderBar, HeaderCreateButton, MenuContainer } from './styles';
+import Grid from '@mui/material/Grid';
 
 type Props = {
   isMobile: boolean;
@@ -22,21 +23,25 @@ type Props = {
 };
 
 const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => {
-  const { setMinimized } = useSideBar();
+  const { setMinimized, minimized } = useSideBar();
 
-  const toggleMinimize = () => setMinimized((prevValue) => !prevValue);
+  const toggleMinimize = () => {
+    if(minimized) {
+      setMinimized(false);
+    }
+  };
 
   return (
-    <HeaderBar>
+    <HeaderBar minimized={minimized}>
       {isMobile ? (
         <MenuContainer onClick={toggleMinimize}>
           <Menu />
         </MenuContainer>
       ) : null}
       {user && (
-        <>
-          {!isMobile && <Wallet />}
+        <Grid display="flex" width="100%">
           <GlobalSearch />
+          {!isMobile && <Wallet />}
           <NotificationsBoard />
 
           {showCreateButton && (
@@ -49,7 +54,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateBu
               <CreateIconOutlined id="tour-header-create-btn" />
             </HeaderCreateButton>
           )}
-        </>
+        </Grid>
       )}
       {!user && (
         <Button

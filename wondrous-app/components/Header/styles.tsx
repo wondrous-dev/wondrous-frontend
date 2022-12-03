@@ -1,4 +1,5 @@
 import { AppBar, ButtonBase, IconButton, TextField } from '@mui/material';
+import { mainSidebarWidth, entitySidebarWidth } from 'components/Common/SidebarStyles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button } from '../Common/button';
@@ -11,7 +12,8 @@ export const HeaderBar = styled(AppBar)`
     display: flex;
     align-items: center;
     z-index: 200;
-    width: 100%;
+    width: calc(100% - ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)});
+
     flex-direction: row;
     gap: 14px;
     justify-content: flex-end;
@@ -19,6 +21,7 @@ export const HeaderBar = styled(AppBar)`
     background: ${palette.grey900};
     ${({ theme }) => theme.breakpoints.down('sm')} {
       position: sticky;
+      width: 100%;
       margin-top: 0;
     }
   }
@@ -253,9 +256,6 @@ export const MenuContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  left: 14px;
-
   svg {
     font-size: 36px;
   }

@@ -9,6 +9,7 @@ export const GlobalSearchWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   height: 100%;
+  flex: 1;
   position: relative;
   width: fit-content;
   cursor: pointer;
