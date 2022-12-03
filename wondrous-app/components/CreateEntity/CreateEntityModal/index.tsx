@@ -62,6 +62,7 @@ import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Li
 import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
+import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -123,7 +124,6 @@ import {
   CreateEntityLabelAddButton,
   CreateEntityLabelSelectWrapper,
   CreateEntityLabelWrapper,
-  CreateEntityMilestoneSearch,
   CreateEntityOpenInFullIcon,
   CreateEntityOption,
   CreateEntityOptionLabel,
@@ -1387,7 +1387,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           <CreateEntitySelectWrapper>
             {form.values.milestoneId !== null && (
               <CreateEntityWrapper>
-                <CreateEntityMilestoneSearch
+                <MilestoneSearch
                   autoFocus={!form.values?.milestoneId}
                   options={filterUserOptions(milestonesData)}
                   value={form.values.milestoneId}
