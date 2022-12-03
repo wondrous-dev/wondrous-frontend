@@ -19,8 +19,8 @@ function GlobalSearch() {
   useHotkeys(HOTKEYS.GLOBAL_SEARCH, () => toggleSpotlight(), []);
 
   return (
-    <GlobalSearchWrapper onClick={handleInputExpand} ref={wrapperRef}>
-      <SearchWrapper>
+    <GlobalSearchWrapper ref={wrapperRef}>
+      <SearchWrapper onClick={handleInputExpand} >
         <Badge badgeContent={HOTKEYS.GLOBAL_SEARCH} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
           <SearchIconWrapper>
             <SearchIconWrapped />

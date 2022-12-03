@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Menu } from '@mui/icons-material';
 
 import { User } from 'types/User';
@@ -8,31 +8,39 @@ import Wallet from 'components/Common/Wallet';
 import GlobalSearch from 'components/GlobalSearch';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
 import NotificationsBoard from 'components/Notifications';
-
+import HeaderItems, { TYPES } from 'components/HeaderItems';
 import useSideBar from 'hooks/useSideBar';
 
-import { HeaderBar, HeaderCreateButton, MenuContainer } from './styles';
+import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
 import Grid from '@mui/material/Grid';
 
 type Props = {
   isMobile: boolean;
   onSignInClick: () => unknown;
-  openCreateFormModal: () => unknown;
   showCreateButton: boolean;
   user: User | null;
 };
 
-const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => {
+const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) => {
   const { setMinimized, minimized } = useSideBar();
-
+  // const [openCreateFormModal, setOpenCreateFormModal] = useState(false);
+  const [activeModalType, setActiveModalType] = useState<TYPES | null>(null);
   const toggleMinimize = () => {
-    if(minimized) {
+    if (minimized) {
       setMinimized(false);
     }
+  };
+  
+  const handleActiveModalType = (type: TYPES) => {
+    if(activeModalType === type) {
+      return setActiveModalType(null);
+    }
+    return setActiveModalType(type);
   };
 
   return (
     <HeaderBar minimized={minimized}>
+      {/* <div style={{height: '30px', width: '30px', color: 'white', background: 'red'}}>hello</div> */}
       {isMobile ? (
         <MenuContainer onClick={toggleMinimize}>
           <Menu />
@@ -41,19 +49,27 @@ const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateBu
       {user && (
         <Grid display="flex" width="100%">
           <GlobalSearch />
-          {!isMobile && <Wallet />}
-          <NotificationsBoard />
+          <Grid display="flex" gap="14px" position="relative">
+            {activeModalType ? (
+              <HeaderItemWrapper>
+                <HeaderItems type={activeModalType} onClose={() => setActiveModalType(null)} />
+              </HeaderItemWrapper>
+            ) : null}
+            {!isMobile && <Wallet />}
+            <NotificationsBoard />
 
-          {showCreateButton && (
-            <HeaderCreateButton
-              highlighted="true"
-              onClick={openCreateFormModal}
-              visibility={showCreateButton}
-              data-cy="header-button-create"
-            >
-              <CreateIconOutlined id="tour-header-create-btn" />
-            </HeaderCreateButton>
-          )}
+            {showCreateButton && (
+              <HeaderCreateButton
+                highlighted="true"
+                isActive={activeModalType === TYPES.CREATE_ENTITY}
+                onClick={() => handleActiveModalType(TYPES.CREATE_ENTITY)}
+                visibility={showCreateButton}
+                data-cy="header-button-create"
+              >
+                <CreateIconOutlined id="tour-header-create-btn" />
+              </HeaderCreateButton>
+            )}
+          </Grid>
         </Grid>
       )}
       {!user && (

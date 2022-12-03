@@ -15,7 +15,6 @@ const HeaderComponent = () => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } =
     useContext(SnackbarAlertContext);
   const globalContext = useGlobalContext();
-  const { toggleCreateFormModal: openCreateFormModal } = globalContext;
   const router = useRouter();
   const urlsWithCreateButton = [
     '/boards',
@@ -57,7 +56,6 @@ const HeaderComponent = () => {
     <HeaderMemo
       isMobile={isMobile}
       onSignInClick={() => router.push('/login')}
-      openCreateFormModal={openCreateFormModal}
       showCreateButton={showCreateButton}
       user={user}
     />
