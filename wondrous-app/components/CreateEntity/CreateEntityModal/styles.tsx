@@ -1,6 +1,6 @@
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
 import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
-import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui/material';
+import { Autocomplete, Input, InputAdornment, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -15,6 +15,8 @@ import styled, { css } from 'styled-components';
 import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
 import scrollBarStyles from 'components/Common/ScrollbarStyles';
+import { StyledSelect } from 'components/Common/InviteLinkModal/styles';
+import typography from 'theme/typography';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
 import { CloseIcon } from '../../Common/BoardFilters/styles';
@@ -1103,4 +1105,81 @@ export const SnapshotButtonBlock = styled.div`
   display: flex;
   justify-content: left;
   margin-left: 24px;
+`;
+
+export const StyledProposalSelect = styled(Select)`
+  && {
+    background: #0f0f0f;
+    width: 100%;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .MuiSelect-select {
+    padding: 8px;
+    padding-left: 12px;
+  }
+
+  & .MuiSelect-root {
+    padding-left: 12px;
+  }
+
+  & .MuiInputBase-root {
+    border-radius: 0 6px 6px 0;
+  }
+
+  svg {
+    color: ${palette.white};
+    transition: transform 0.2s ease-out;
+  }
+  & .MuiInput-underline {
+    :hover:not(.Mui-disabled)::before {
+      border: none;
+      ::before {
+        border: none;
+      }
+      ::before {
+        border: none;
+      }
+    }
+  }
+`;
+export const ProposalVoteSelect = styled(({ className, ...props }) => (
+  <StyledProposalSelect {...props} {...className} MenuProps={{ classes: { paper: className } }} />
+))`
+  &.MuiPaper-root {
+    background: ${palette.black101};
+    border: 1px solid ${palette.grey79};
+    width: 100%;
+    color: ${palette.white};
+    max-width: 513px;
+  }
+
+  &.MuiPaper-root > .MuiList-padding {
+    padding: 12px;
+  }
+`;
+
+export const ProposalVoteSelectMenuItem = styled(MenuItem)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: ${palette.black98} !important;
+    color: ${palette.white};
+    border-radius: 4px;
+    padding: 8px;
+    transition: background 0.2s ease-out;
+    position: relative;
+  }
+`;
+
+export const ProposalVoteSelectMenuItemText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+    font-weight: 500;
+    color: ${palette.white};
+  }
 `;

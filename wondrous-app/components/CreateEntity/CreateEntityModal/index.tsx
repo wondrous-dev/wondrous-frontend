@@ -40,6 +40,7 @@ import {
   APPLICATION_POLICY_LABELS_MAP,
   GR15DEICategoryName,
   PRIORITIES,
+  PROPOSAL_VOTE_CHOICES,
 } from 'utils/constants';
 
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
@@ -63,6 +64,7 @@ import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
+import { InputLabel } from '@mui/material';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -96,6 +98,7 @@ import {
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
   formDirty,
+  useGetProposalChoices,
 } from './Helpers';
 import {
   CreateEntityAddButtonIcon,
@@ -154,6 +157,9 @@ import {
   SnapshotErrorText,
   CreateEntityPrivacySelectRenderLabelWrapper,
   CreateEntityCloseIcon,
+  ProposalVoteSelect,
+  ProposalVoteSelectMenuItem,
+  ProposalVoteSelectMenuItemText,
 } from './styles';
 
 import { MediaItem } from '../MediaItem';
@@ -310,7 +316,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
 
   const categoriesData = useGetCategories();
-
+  const proposalChoices = useGetProposalChoices();
   const pods = useGetAvailableUserPods(form.values.orgId);
   const roles = useGetOrgRoles(form.values.orgId);
 
@@ -392,6 +398,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
       form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     }
+    if (isProposal) {
+      form.setFieldValue('proposalVoteType', 'none');
+    }
     // TODO we should add recurring to bounties and milesstone
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('priority', existingTask?.priority || null);
@@ -408,6 +417,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     existingTask?.milestoneId,
     existingTask?.labels,
     isTask,
+    isProposal,
   ]);
 
   useEffect(() => {
@@ -872,6 +882,24 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           )}
         </CreateEntityLabelSelectWrapper>
         <CreateEntityDivider />
+        {isProposal && !existingTask && form?.values?.proposalVoteType && (
+          <>
+            <ProposalVoteSelect value={form?.values?.proposalVoteType} label="Select voting style">
+              <ProposalVoteSelectMenuItem value="none" disabled>
+                <ProposalVoteSelectMenuItemText>Select Voting Style</ProposalVoteSelectMenuItemText>
+              </ProposalVoteSelectMenuItem>
+              {proposalChoices.map((option) => (
+                <ProposalVoteSelectMenuItem
+                  value={option?.value}
+                  onClick={() => form.setFieldValue('proposalVoteType', option?.value)}
+                >
+                  <ProposalVoteSelectMenuItemText>{option?.label}</ProposalVoteSelectMenuItemText>
+                </ProposalVoteSelectMenuItem>
+              ))}
+            </ProposalVoteSelect>
+            <CreateEntityDivider />
+          </>
+        )}
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reviewer)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Reviewer</CreateEntityLabel>

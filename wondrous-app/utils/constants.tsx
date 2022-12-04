@@ -796,6 +796,15 @@ export const CATEGORY_LABELS = {
   [CATEGORY_TYPES.OPERATION]: '🛠️ Operation',
 };
 
+export const PROPOSAL_VOTE_CHOICES = {
+  BINARY: 'binary',
+  CUSTOM: 'custom',
+};
+export const PROPOSAL_VOTE_CHOICE_LABELS = {
+  [PROPOSAL_VOTE_CHOICES.BINARY]: 'For/Against',
+  [PROPOSAL_VOTE_CHOICES.CUSTOM]: 'Multiple Choice',
+};
+
 export const enum ORG_TYPES {
   ORG = 'org',
   COLLAB = 'collab',
