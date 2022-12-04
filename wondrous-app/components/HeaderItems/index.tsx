@@ -3,6 +3,9 @@ import CreateEntityComponent from './CreateEntityComponent';
 
 export enum TYPES {
   CREATE_ENTITY = 'CREATE_ENTITY',
+  WALLET = 'WALLET',
+  NOTIFICATIONS = 'NOTIFICATIONS',
+  PROFILE = 'PROFILE'
 }
 
 const TYPES_PER_COMPONENT = {

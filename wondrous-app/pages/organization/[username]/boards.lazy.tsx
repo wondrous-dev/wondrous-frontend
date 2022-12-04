@@ -42,7 +42,7 @@ import {
   TASK_STATUS_TODO,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useIsMobile } from 'utils/hooks';
+import { useIsMobile, usePageDataContext } from 'utils/hooks';
 
 const DynamicBoards = dynamic(() => import('components/organization/boards/boards'), {
   suspense: true,
@@ -380,6 +380,16 @@ function BoardsPage() {
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
 
+  const {setPageData} = usePageDataContext()
+  
+  useEffect(() => {
+    if(orgData) setPageData({orgData})
+  }, [orgData])
+
+  useEffect(() => {
+    return () => setPageData({})
+  }, [])
+  
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });

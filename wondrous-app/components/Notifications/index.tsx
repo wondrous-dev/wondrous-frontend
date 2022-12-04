@@ -35,7 +35,7 @@ import {
   NotificationWrapper,
 } from './styles';
 
-function NotificationsBoard({ onlyBoard = false }) {
+function NotificationsBoard({ onlyBoard = false, isActive=true }) {
   const { notifications, unreadCount, fetchMore, markAllNotificationsRead, markNotificationRead, hasMore } =
     useNotifications();
   const [isOpen, setIsOpen] = useState(false);
@@ -166,6 +166,7 @@ function NotificationsBoard({ onlyBoard = false }) {
       <div style={{ position: 'relative' }}>
         <StyledBadge
           color="primary"
+          isActive={isActive}
           hasUnreadNotifications={unreadCount > 0}
           isOpen={isOpen}
           onClick={toggleNotifications}

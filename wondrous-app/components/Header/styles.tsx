@@ -164,6 +164,7 @@ export const StyledBadge = styled(ButtonBase)`
     align-items: center;
     background: ${({ theme }) => theme.palette.grey87};
     border-radius: 50%;
+    opacity: ${({ isActive }) => (typeof isActive === 'boolean' ? (isActive ? 1 : 0.5) : 1)};
     border: none;
     cursor: pointer;
     display: flex;
@@ -184,6 +185,7 @@ export const HeaderCreateButton = styled(ButtonBase)`
   && {
     visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
     display: flex;
+    opacity: ${({ isActive }) => (isActive ? 1 : 0.5)};
     justify-content: flex-end;
     background: transparent;
     border: 0;
@@ -272,4 +274,5 @@ export const HeaderItemWrapper = styled.div`
   width: calc(100% + 28px);
   filter: drop-shadow(0px 4px 54px rgba(0, 0, 0, 0.35));
   border-radius: 0px 0px 0px 14px;
+  padding: 14px;
 `;

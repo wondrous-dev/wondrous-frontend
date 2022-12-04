@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 import { Menu } from '@mui/icons-material';
 
 import { User } from 'types/User';
@@ -13,6 +13,7 @@ import useSideBar from 'hooks/useSideBar';
 
 import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
 import Grid from '@mui/material/Grid';
+import { useOutsideAlerter } from 'utils/hooks';
 
 type Props = {
   isMobile: boolean;
@@ -23,6 +24,7 @@ type Props = {
 
 const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) => {
   const { setMinimized, minimized } = useSideBar();
+  const headerItemRef = useRef();
   // const [openCreateFormModal, setOpenCreateFormModal] = useState(false);
   const [activeModalType, setActiveModalType] = useState<TYPES | null>(null);
   const toggleMinimize = () => {
@@ -30,14 +32,16 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
       setMinimized(false);
     }
   };
-  
+
+  useOutsideAlerter(headerItemRef, () => setActiveModalType(null));
   const handleActiveModalType = (type: TYPES) => {
-    if(activeModalType === type) {
+    if (activeModalType === type) {
       return setActiveModalType(null);
     }
     return setActiveModalType(type);
   };
 
+  console.log(activeModalType)
   return (
     <HeaderBar minimized={minimized}>
       {/* <div style={{height: '30px', width: '30px', color: 'white', background: 'red'}}>hello</div> */}
@@ -51,17 +55,17 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
           <GlobalSearch />
           <Grid display="flex" gap="14px" position="relative">
             {activeModalType ? (
-              <HeaderItemWrapper>
+              <HeaderItemWrapper ref={headerItemRef}>
                 <HeaderItems type={activeModalType} onClose={() => setActiveModalType(null)} />
               </HeaderItemWrapper>
             ) : null}
-            {!isMobile && <Wallet />}
-            <NotificationsBoard />
+            {!isMobile && <Wallet isActive={(activeModalType === TYPES.WALLET) || !activeModalType} />}
+            <NotificationsBoard isActive={(activeModalType === TYPES.NOTIFICATIONS) || !activeModalType}/>
 
             {showCreateButton && (
               <HeaderCreateButton
                 highlighted="true"
-                isActive={activeModalType === TYPES.CREATE_ENTITY}
+                isActive={activeModalType === TYPES.CREATE_ENTITY || !activeModalType}
                 onClick={() => handleActiveModalType(TYPES.CREATE_ENTITY)}
                 visibility={showCreateButton}
                 data-cy="header-button-create"

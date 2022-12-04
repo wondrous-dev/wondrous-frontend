@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GlobalContext, SideBarContext } from 'utils/contexts';
+import { GlobalContext, PageDataContext, SideBarContext } from 'utils/contexts';
 import { LIMIT } from 'services/board';
 import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH } from 'utils/constants';
 import SideBarComponent from 'components/Common/SidebarMain';
@@ -28,6 +28,7 @@ const getOrgsList = (userOrgs, router) => {
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
   const router = useRouter();
+  const [pageData, setPageData] = useState({});
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
   useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {
     // should this be here?
@@ -83,6 +84,8 @@ export default function SidebarLayout({ children }) {
 
   const toggleSpotlight = () => setIsSpotlightOpen((prev) => !prev);
 
+  const pageDataValues = useMemo(() => ({ setPageData }), [setPageData]);
+  
   return (
     <SideBarContext.Provider value={sidebarValue}>
       {/* <SideBarComponent userOrgs={userOrgs} /> */}
@@ -99,12 +102,15 @@ export default function SidebarLayout({ children }) {
           fetchMoreNotifications,
           notificationsLoading,
           toggleSpotlight,
+          pageData
         }}
       >
         <HeaderComponent />
         <BackdropComponent open={!minimized && isMobile} />
         {isSpotlightOpen ? <Spotlight onClose={toggleSpotlight} /> : null}
+        <PageDataContext.Provider value={pageDataValues}>
         <SectionWrapper>{children}</SectionWrapper>
+        </PageDataContext.Provider>
       </GlobalContext.Provider>
     </SideBarContext.Provider>
   );

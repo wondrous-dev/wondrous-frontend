@@ -83,7 +83,7 @@ const Balance = ({ currency, children }) => {
   );
 };
 
-function Wallet() {
+function Wallet({isActive = true}) {
   const wonderWeb3 = useWonderWeb3();
 
   const { provider } = useContext(WonderWeb3Context);
@@ -189,7 +189,7 @@ function Wallet() {
   // potentially add || !user?.activeEthAddress
   if (!connected) {
     return (
-      <WalletWrapper>
+      <WalletWrapper isActive={isActive}>
         <Button onClick={() => setWalletModalOpen(true)}>
           {!user?.activeEthAddress ? 'Link Wallet to Account' : 'Connect Wallet'}
         </Button>
@@ -202,7 +202,7 @@ function Wallet() {
   }
 
   return (
-    <WalletWrapper>
+    <WalletWrapper isActive={isActive}>
       <Tooltip title={CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3.chain]}>
         <ChainWrapper>{CHAIN_LOGO[wonderWeb3.chain]}</ChainWrapper>
       </Tooltip>

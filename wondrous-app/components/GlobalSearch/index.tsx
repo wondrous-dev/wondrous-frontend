@@ -10,7 +10,6 @@ import { GlobalSearchWrapper, SearchIconWrapper, SearchWrapper } from './styles'
 
 function GlobalSearch() {
   const { toggleSpotlight } = useGlobalContext();
-  const wrapperRef = useRef(null);
 
   const showBadge = useHotkey();
 
@@ -19,7 +18,7 @@ function GlobalSearch() {
   useHotkeys(HOTKEYS.GLOBAL_SEARCH, () => toggleSpotlight(), []);
 
   return (
-    <GlobalSearchWrapper ref={wrapperRef}>
+    <GlobalSearchWrapper >
       <SearchWrapper onClick={handleInputExpand} >
         <Badge badgeContent={HOTKEYS.GLOBAL_SEARCH} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
           <SearchIconWrapper>

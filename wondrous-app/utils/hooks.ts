@@ -31,6 +31,7 @@ import {
   HotkeyContext,
   ExploreGr15TasksAndBountiesContext,
   TaskContext,
+  PageDataContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
 
@@ -384,3 +385,5 @@ export const useKeyPress = (targetKey) => {
 
   return keyPressed;
 };
+
+export const usePageDataContext = () => useContext(PageDataContext);

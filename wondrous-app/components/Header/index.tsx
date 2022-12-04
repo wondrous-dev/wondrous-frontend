@@ -14,7 +14,6 @@ const HeaderComponent = () => {
   const isMobile = useIsMobile();
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } =
     useContext(SnackbarAlertContext);
-  const globalContext = useGlobalContext();
   const router = useRouter();
   const urlsWithCreateButton = [
     '/boards',

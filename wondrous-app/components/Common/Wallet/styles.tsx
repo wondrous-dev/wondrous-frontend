@@ -14,6 +14,7 @@ const fontStyles = css`
 
 export const WalletWrapper = styled.div`
   display: flex;
+  opacity: ${({ isActive }) => (isActive ? 1 : 0.3)};
   align-items: center;
   justify-content: center;
   gap: 14px;

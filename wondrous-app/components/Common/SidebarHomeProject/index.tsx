@@ -9,7 +9,6 @@ const SidebarHomeProject = () => {
 
   const isActive = router.pathname.includes('/dashboard');
 
-  console.log(router);
   return (
     <UnstyledLink href="/dashboard">
       <SidebarItem Icon={HomeIcon} isActive={isActive}>
