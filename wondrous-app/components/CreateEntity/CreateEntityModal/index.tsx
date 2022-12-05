@@ -1772,7 +1772,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             })}
           </CreateEntityPrivacySelect>
         </CreateEntityHeaderWrapper>
-        <CreateEntityHeaderWrapper>
+        <CreateEntityHeaderWrapper showOnSmallScreen>
           {loading ? (
             <CircularProgress size={20} />
           ) : (
