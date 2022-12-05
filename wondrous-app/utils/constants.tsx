@@ -716,10 +716,10 @@ export const FEATURED_LIST = [
   },
   {
     username: 'readyplayerdao',
-    imageUrl: 'thumbnail/8O1Pf0coMMfoZA.jpg',
+    imageUrl: 'thumbnail/2VCr8n3GnqhnDg.jpg',
     bio: 'The future of gaming is decentralized and permissionless, and this time, the players are in charge.',
     name: 'Ready Player DAO',
-    headerUrl: 'org/header/62453427148423257/RoFj7IHwMf1gVg.jpeg',
+    headerUrl: 'org/header/45956704739786755/UNAOtLUAB524uw.png',
   },
   {
     username: 'stems',

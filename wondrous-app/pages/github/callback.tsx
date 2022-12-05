@@ -13,7 +13,7 @@ function Callback() {
   const state = router?.query?.state as string;
   const installationId = router?.query?.installation_id as string;
   const [connectOrgGithub] = useMutation(CONNECT_ORG_GITHUB);
-  console.log('installationid', installationId);
+
   useEffect(() => {
     if (code && state) {
       const parsedState = JSON.parse(state);
@@ -26,7 +26,6 @@ function Callback() {
           installationId,
         },
       }).then(() => {
-        console.log('redirectUrl', redirectUrl);
         window.location.href = redirectUrl;
       });
     }

@@ -13,6 +13,7 @@ import { useHotkey, useNotifications } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { LIMIT } from 'services/board';
 import { NoUnderlineLink } from 'components/Common/Link/links';
+import { ENTITIES_TYPES, NOTIFICATION_TYPES } from 'utils/constants';
 import { SmallAvatar } from '../Common/AvatarList';
 import { StyledBadge } from '../Header/styles';
 import {
@@ -35,6 +36,35 @@ import {
   NotificationWrapper,
 } from './styles';
 
+const getNotificationActorLink = (notification) => {
+  if (notification?.actorType === ENTITIES_TYPES.USER) {
+    return `/profile/${notification.actorUsername}/about`;
+  }
+  if (notification?.actorType === ENTITIES_TYPES.ORG) {
+    return `/organization/${notification.actorUsername}/boards  `;
+  }
+  if (notification?.actorType === ENTITIES_TYPES.POD) {
+    return `/pod/${notification?.actorId}/boards`;
+  }
+};
+
+const getNotificationActorUsername = (notification) => {
+  if (notification?.actorType === ENTITIES_TYPES.USER) {
+    return notification.actorUsername;
+  }
+  if (notification?.actorType === ENTITIES_TYPES.ORG) {
+    if (notification?.type === NOTIFICATION_TYPES.COLLAB_INVITE) {
+      return notification?.additionalData?.invitorOrgName;
+    }
+    if (notification?.type === NOTIFICATION_TYPES.COLLAB_APPROVE) {
+      return notification?.additionalData?.recipientOrgName;
+    }
+    return notification.actorUsername;
+  }
+  if (notification?.actorType === ENTITIES_TYPES.POD) {
+    return notification?.actorUsername;
+  }
+};
 function NotificationsBoard({ onlyBoard = false }) {
   const { notifications, unreadCount, fetchMore, markAllNotificationsRead, markNotificationRead, hasMore } =
     useNotifications();
@@ -76,10 +106,11 @@ function NotificationsBoard({ onlyBoard = false }) {
 
   // Construct Text of Notification
   const getNotificationText = (notification) => {
-    const userName = notification.actorUsername;
     const actor = notification?.actorId ? (
       <NotificationsLink>
-        <NoUnderlineLink href={`/profile/${userName}/about`}>{userName}</NoUnderlineLink>
+        <NoUnderlineLink href={getNotificationActorLink(notification)}>
+          {getNotificationActorUsername(notification)}
+        </NoUnderlineLink>
       </NotificationsLink>
     ) : null;
     const link = getNotificationLink(notification);

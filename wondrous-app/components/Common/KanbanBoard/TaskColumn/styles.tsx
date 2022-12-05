@@ -34,7 +34,21 @@ export const TaskListContainer = styled.div`
   width: 100%;
   height: 100%;
   min-height: 100vh;
+  margin-top: 1em;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  background: ${({ highlighted }) => (highlighted ? palette.grey90 : 'none')};
+  border: ${({ highlighted }) => `1px solid ${highlighted ? palette.violet800 : 'transparent'}`};
 `;
+
+export const TaskColumnItemWrapper = styled.div`
+  padding-bottom: 1em;
+
+  &:last-of-type {
+    padding-bottom: 0;
+  }
+`;
+
 export const TaskColumnContainer = styled.div`
   display: flex;
   flex-direction: column;

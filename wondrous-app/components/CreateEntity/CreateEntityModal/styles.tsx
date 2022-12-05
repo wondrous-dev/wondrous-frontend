@@ -17,7 +17,6 @@ import palette from 'theme/palette';
 import scrollBarStyles from 'components/Common/ScrollbarStyles';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
-import MilestoneSearch from './MilestoneSearch';
 import { CloseIcon } from '../../Common/BoardFilters/styles';
 
 const fullScreenStyle = css`
@@ -62,8 +61,6 @@ export const CreateEntityHeader = styled.div`
   padding: 12px 24px;
   justify-content: space-between;
 `;
-
-export const CreateEntityMilestoneSearch = styled(MilestoneSearch)``;
 
 export const CreateEntitySelectRoot = styled.button`
   font-family: 'Space Grotesk';

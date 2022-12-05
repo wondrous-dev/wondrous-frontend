@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { SelectUnstyled } from '@mui/base';
-import { TextField } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import {
   CreateEntityPaymentMethodRoot,
   CreateEntityPaymentMethodList,

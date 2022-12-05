@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import SwipeableViews from 'react-swipeable-views';
 import usePrevious, { useIsMobile, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -69,6 +69,12 @@ function KanbanBoard(props) {
   const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+  const [draggingTask, setDraggingTask] = useState(null);
+
+  const getTaskById = useCallback(
+    (taskId) => columns.map(({ tasks }) => tasks.find((task) => task.id === taskId)).filter((i) => i)[0],
+    [columns]
+  );
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
@@ -137,7 +143,7 @@ function KanbanBoard(props) {
   const moveCard = async (id, status, index, source) => {
     // TODO get rid of nested loop
     const updatedColumns = columns.map((column) => {
-      const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
+      const task = getTaskById(id);
       // Only allow when permissions are OK
       if (task?.paymentStatus !== PAYMENT_STATUS.PAID && task?.paymentStatus !== PAYMENT_STATUS.PROCESSING) {
         if (column.status !== status) {
@@ -311,8 +317,15 @@ function KanbanBoard(props) {
   }, [orgBoard, podBoard, userBoard, location]);
 
   useEffect(() => handleScrollToView(), [activeStep]);
+  const onDragStart = (event) => {
+    const task = getTaskById(event.draggableId);
+
+    setDraggingTask(task);
+  };
 
   const onDragEnd = (result) => {
+    setDraggingTask(null);
+
     const moveAction = isProposalEntity ? moveProposal : confirmCardMove(moveCard);
     try {
       moveAction(result.draggableId, result.destination.droppableId, result.destination.index, result.source);
@@ -366,7 +379,7 @@ function KanbanBoard(props) {
         isTaskProposal={!!location?.params?.taskProposal}
         key={taskId}
       />
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         {isMobile ? (
           <SwipeableViews
             axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -381,11 +394,12 @@ function KanbanBoard(props) {
               return (
                 <TaskColumn
                   key={status}
-                  kanbanBoardRef={kanbanBoardRef}
                   cardsList={tasks}
                   moveCard={moveCard}
                   status={status}
                   section={section}
+                  draggingTask={draggingTask}
+                  kanbanBoardRef={kanbanBoardRef}
                 />
               );
             })}
@@ -398,11 +412,12 @@ function KanbanBoard(props) {
               return (
                 <TaskColumn
                   key={status}
-                  kanbanBoardRef={kanbanBoardRef}
                   cardsList={tasks}
                   moveCard={moveCard}
                   status={status}
                   section={section}
+                  draggingTask={draggingTask}
+                  kanbanBoardRef={kanbanBoardRef}
                 />
               );
             })}

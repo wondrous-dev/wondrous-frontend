@@ -1,7 +1,6 @@
 import { CreateEntity } from 'components/CreateEntity';
 import { useEffect, useRef, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useLocation } from 'utils/useLocation';
 import {
   MilestoneSearchAutocomplete,
   MilestoneSearchAutocompletePopper,
@@ -44,7 +43,7 @@ function MilestoneSearch({ options, onChange, value, handleClose, formValues = n
 
   if (createMilestone) {
     return (
-      <CreateEntity
+      <CreateEntity // this is a circular depency, better to instantiate this in wrapper, and apply the global watcher pattern
         entityType={ENTITIES_TYPES.MILESTONE}
         handleCloseModal={() => {
           setCreateMilestone(false);

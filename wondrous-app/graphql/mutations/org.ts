@@ -84,6 +84,14 @@ export const KICK_ORG_USER = gql`
   }
 `;
 
+export const LEAVE_ORG = gql`
+  mutation leaveOrg($orgId: ID!) {
+    leaveOrg(orgId: $orgId) {
+      success
+    }
+  }
+`;
+
 export const CREATE_LABEL = gql`
   mutation createLabel($input: LabelInput) {
     createLabel(input: $input) {
