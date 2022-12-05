@@ -41,6 +41,7 @@ import {
   GR15DEICategoryName,
   PRIORITIES,
   PROPOSAL_VOTE_CHOICES,
+  DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY,
 } from 'utils/constants';
 
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
@@ -168,6 +169,7 @@ import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 import { TaskTemplatePickerWrapper } from './TaskTemplatePicker/styles';
+import CustomProposal from './CustomProposal';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status, setFormDirty } = props;
@@ -400,6 +402,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
     if (isProposal) {
       form.setFieldValue('proposalVoteType', 'none');
+      form.setFieldValue('customProposalChoices', DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY);
     }
     // TODO we should add recurring to bounties and milesstone
     form.setFieldValue('points', existingTask?.points || null);
@@ -897,6 +900,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 </ProposalVoteSelectMenuItem>
               ))}
             </ProposalVoteSelect>
+            {form?.values?.proposalVoteType === PROPOSAL_VOTE_CHOICES.CUSTOM && <CustomProposal form={form} />}
             <CreateEntityDivider />
           </>
         )}

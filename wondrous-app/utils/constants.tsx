@@ -805,6 +805,7 @@ export const PROPOSAL_VOTE_CHOICE_LABELS = {
   [PROPOSAL_VOTE_CHOICES.CUSTOM]: 'Multiple Choice',
 };
 
+export const DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY = ['', ''];
 export const enum ORG_TYPES {
   ORG = 'org',
   COLLAB = 'collab',

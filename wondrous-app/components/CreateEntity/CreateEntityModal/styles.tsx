@@ -1,6 +1,6 @@
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
 import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
-import { Autocomplete, Input, InputAdornment, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Autocomplete, Input, InputAdornment, InputBase, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -1181,5 +1181,53 @@ export const ProposalVoteSelectMenuItemText = styled(Typography)`
     font-size: 13px;
     font-weight: 500;
     color: ${palette.white};
+  }
+`;
+
+export const CustomProposalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 14px;
+
+  background: ${palette.black92};
+  border-radius: 6px;
+  margin-top: 14px;
+`;
+
+export const CustomProposalInput = styled(InputBase)`
+  && {
+    width: 100%;
+    height: 40px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: 0.01em;
+    background: ${palette.black101};
+    color: ${palette.white};
+    padding: 10px 15px;
+    margin-bottom: 10px;
+  }
+`;
+
+export const CustomAddOptionButton = styled.div`
+  background: ${palette.grey79};
+  padding: 4px 8px;
+  gap: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
+export const CustomAddOptionButtonText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    color: ${palette.grey130};
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
   }
 `;
