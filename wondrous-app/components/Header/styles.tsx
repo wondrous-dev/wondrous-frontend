@@ -267,7 +267,7 @@ export const HeaderItemWrapper = styled.div`
   position: absolute;
   right: -14px;
   box-shadow: 0px 1px 11px 3px rgb(0 0 0 / 67%);
-  top: -14px;
+  top: -100%;
   height: fit-content;
   min-height: calc(100% + 28px);
   background: ${palette.black92};
@@ -275,4 +275,7 @@ export const HeaderItemWrapper = styled.div`
   filter: drop-shadow(0px 4px 54px rgba(0, 0, 0, 0.35));
   border-radius: 0px 0px 0px 14px;
   padding: 14px;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100vw;
+  }
 `;

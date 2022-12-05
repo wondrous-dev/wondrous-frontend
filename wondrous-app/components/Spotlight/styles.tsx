@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import palette from 'theme/palette';
 import TextField from '@mui/material/TextField';
 import typography from 'theme/typography';
+import { Drawer, Modal } from '@mui/material';
 
 export const Wrapper = styled(Grid)`
   && {
@@ -46,3 +47,4 @@ export const SpotlightFooter = styled(Grid)`
     font-weight: 700;
   }
 `;
+

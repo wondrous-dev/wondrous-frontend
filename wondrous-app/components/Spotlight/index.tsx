@@ -1,4 +1,4 @@
-import { Grid, Modal, Typography } from '@mui/material';
+import { Drawer, Grid, Modal, Typography } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import {
   SearchResultCategory,
@@ -18,10 +18,13 @@ import { useKeyPress } from 'utils/hooks';
 import { DIRECTION, initialState, Labels, LABELS_DEFAULT_IMAGES_MAP, SUGGESTIONS, TYPES } from './constants';
 import { Input, SpotlightFooter, Wrapper } from './styles';
 import { reducer } from './utils';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 let timeout;
 
 const Spotlight = ({ onClose }) => {
+
+  const {isMobileScreen} = useMediaQuery();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const setOptions = (payload) => dispatch({ type: TYPES.SET_OPTIONS, payload });
@@ -119,8 +122,12 @@ const Spotlight = ({ onClose }) => {
     }
   }, [enterPress, optionsKeys?.length]);
 
+  console.log(isMobileScreen, 'isMobileScreen')
+
+  const WrapperComponent = isMobileScreen ? ({open, onClose, children}) => <Drawer anchor="top" open={open} onClose={onClose}>{children}</Drawer> : Modal;
+  
   return (
-    <Modal open onClose={onClose}>
+    <WrapperComponent open onClose={onClose}>
       <Wrapper>
         <Grid>
           <Input onChange={handleInputChange} placeholder="Select a command or search" />
@@ -178,7 +185,7 @@ const Spotlight = ({ onClose }) => {
           </Typography>
         </SpotlightFooter>
       </Wrapper>
-    </Modal>
+    </WrapperComponent>
   );
 };
 
