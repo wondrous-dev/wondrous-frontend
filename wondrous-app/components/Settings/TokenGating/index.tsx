@@ -15,6 +15,7 @@ import palette from 'theme/palette';
 
 import TokenGatingConditionList from './TokenGatingConditionList';
 import TokenGatingModal from './TokenGatingModal';
+import { TokenGatingContainer } from './styles';
 
 type Props = {
   orgId: string;
@@ -76,39 +77,41 @@ function TokenGatingSettings({ orgId }: Props) {
           selectedTokenGatingCondition,
         }}
       >
-        <Box width="100%" height="100%">
-          <Typography variant="h2" fontSize="28px" color="white">
-            Token Gating
-          </Typography>
-
-          <Box
-            sx={{
-              background: palette.black90,
-            }}
-            p="24px"
-            my="24px"
-            borderRadius="6px"
-          >
-            <Typography variant="h2" fontSize="20px" color={palette.blue20}>
-              Create New
+        <TokenGatingContainer>
+          <Box width="100%" height="100%">
+            <Typography variant="h2" fontSize="28px" color="white">
+              Token Gating
             </Typography>
 
-            <Typography fontSize="14px" color={palette.grey250}>
-              Define token gates by specifying access criteria for different levels of the org. Go to the roles settings
-              page to apply them to a role.
-            </Typography>
+            <Box
+              sx={{
+                background: palette.black90,
+              }}
+              p="24px"
+              my="24px"
+              borderRadius="6px"
+            >
+              <Typography variant="h2" fontSize="20px" color={palette.blue20}>
+                Create New
+              </Typography>
 
-            <Box display="flex" mt="20px">
-              <Button fullWidth={false} onClick={() => setOpenTokenGatingModal(true)}>
-                New Token gate
-              </Button>
+              <Typography fontSize="14px" color={palette.grey250}>
+                Define token gates by specifying access criteria for different levels of the org. Go to the roles
+                settings page to apply them to a role.
+              </Typography>
+
+              <Box display="flex" mt="20px">
+                <Button fullWidth={false} onClick={() => setOpenTokenGatingModal(true)}>
+                  New Token gate
+                </Button>
+              </Box>
             </Box>
           </Box>
-        </Box>
 
-        {openTokenGatingModal ? <TokenGatingModal org={org} orgId={orgId} open={openTokenGatingModal} /> : null}
+          {openTokenGatingModal ? <TokenGatingModal org={org} orgId={orgId} open={openTokenGatingModal} /> : null}
 
-        <TokenGatingConditionList orgId={orgId} />
+          <TokenGatingConditionList orgId={orgId} />
+        </TokenGatingContainer>
       </TokenGatingContext.Provider>
     </SettingsWrapper>
   );

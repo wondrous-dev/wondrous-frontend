@@ -11,6 +11,9 @@ import palette from 'theme/palette';
 export const PaymentMethodSettingWrapper = styled.div`
   width: 100%;
   height: 100%;
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const PaymentMethodSubHeader = styled(InputLabel)`

@@ -130,6 +130,12 @@ export const TokenGatingAutocompleteListItem = styled(ListItem)`
   }
 `;
 
+export const TokenGatingContainer = styled.div`
+  max-width: 939.06px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
 export const TokenGatingInputImage = styled((props) => (
   <SafeImage
     {...props}
