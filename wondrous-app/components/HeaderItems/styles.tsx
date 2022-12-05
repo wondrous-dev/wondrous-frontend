@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
@@ -16,6 +17,7 @@ export const EntityItem = styled.div`
   background: ${palette.grey87};
   justify-content: center;
   gap: 12px;
+  cursor: pointer;
   align-items: center;
   flex-direction: column;
   font-weight: 500;
@@ -23,6 +25,12 @@ export const EntityItem = styled.div`
   color: ${palette.white};
   border-radius: 6px;
   height: 100px;
+  &:hover {
+    background: ${palette.grey75};
+    ${ItemButtonIcon} {
+      background: ${palette.highlightPurple};
+    }
+  }
 `;
 
 export const Label = styled(Typography)`

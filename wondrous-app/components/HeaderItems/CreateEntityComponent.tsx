@@ -1,6 +1,5 @@
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
-import { useRouter } from 'next/router';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { Grid, Typography } from '@mui/material';
 import { Wrapper, EntityItem, Label, HorizontalEntityItem } from './styles';
@@ -14,11 +13,8 @@ import typography from 'theme/typography';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import GrantIcon from 'components/Icons/GrantIcon';
 
-const CreateEntityComponent = () => {
-  const router = useRouter();
-  const { pageData, userPermissionsContext } = useGlobalContext();
-
-  console.log(pageData, 'pageData');
+const CreateEntityComponent = ({ onClose }) => {
+  const { pageData, userPermissionsContext, setPageData } = useGlobalContext();
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext: userPermissionsContext,
@@ -49,6 +45,11 @@ const CreateEntityComponent = () => {
     },
   };
 
+  const setEntityType = (entityType) => {
+    setPageData({...pageData, createEntityType: entityType});
+    onClose()
+  };
+
   const SPACE_ITEMS_CONFIG = {
     label: 'Space',
     items: {
@@ -71,7 +72,7 @@ const CreateEntityComponent = () => {
         {Object.keys(BOARD_ITEMS_CONFIG.items).map((item, key) => {
           const { icon: Icon, label } = BOARD_ITEMS_CONFIG.items[item];
           return (
-            <EntityItem key={key}>
+            <EntityItem key={key} onClick={() => setEntityType(item)}>
               <ItemButtonIcon bgColor={palette.grey75}>
                 <Icon />
               </ItemButtonIcon>
@@ -85,10 +86,10 @@ const CreateEntityComponent = () => {
       </Grid>
       <Label>{SPACE_ITEMS_CONFIG.label}</Label>
       <Grid display="flex" flexWrap="wrap" justifyContent="space-between" gap="12px">
-      {Object.keys(SPACE_ITEMS_CONFIG.items).map((item, key) => {
+        {Object.keys(SPACE_ITEMS_CONFIG.items).map((item, key) => {
           const { icon: Icon, label } = SPACE_ITEMS_CONFIG.items[item];
           return (
-            <HorizontalEntityItem key={key}>
+            <HorizontalEntityItem key={key} onClick={() => setEntityType(item)}>
               <ItemButtonIcon bgColor={palette.grey75}>
                 <Icon />
               </ItemButtonIcon>
@@ -99,7 +100,7 @@ const CreateEntityComponent = () => {
             </HorizontalEntityItem>
           );
         })}
-        </Grid>
+      </Grid>
     </Wrapper>
   );
 };

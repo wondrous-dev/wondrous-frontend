@@ -1,7 +1,7 @@
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
 import { FormikValues } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
@@ -55,6 +55,7 @@ export function CreateEntity(props: ICreateEntity) {
 
   const isPodEntity = entityType === ENTITIES_TYPES.POD;
 
+  console.log('imhere bra')
   return (
     <>
       <CreateEntityDiscardTask
@@ -76,16 +77,24 @@ export function CreateEntity(props: ICreateEntity) {
 
 function ChooseEntityToCreate(props) {
   const globalContext = useGlobalContext();
-  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = globalContext;
+  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen, pageData, setPageData } = globalContext;
   const [entityType, setEntityType] = useState(undefined);
+
+  useEffect(() => {
+    if (pageData?.createEntityType !== entityType) {
+      setEntityType(pageData.createEntityType);
+    }
+  }, [pageData?.createEntityType])
+
   const resetEntityType = () => {
     if (entityType) {
       setEntityType(undefined);
+      setPageData({...pageData, createEntityType: undefined});
     }
   };
   const handleCloseModal = () => {
+    // toggleOpen();
     resetEntityType();
-    toggleOpen();
   };
 
   if (entityType) {
@@ -94,13 +103,14 @@ function ChooseEntityToCreate(props) {
         entityType={entityType}
         isTaskProposal={entityType === ENTITIES_TYPES.PROPOSAL}
         handleCloseModal={handleCloseModal}
-        open={open}
+        open
         cancel={resetEntityType}
         handleClose={handleCloseModal}
       />
     );
   }
 
+  console.log(open, 'open')
   return (
     <CreateFormModalOverlay
       open={open}

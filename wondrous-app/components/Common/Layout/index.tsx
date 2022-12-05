@@ -102,7 +102,8 @@ export default function SidebarLayout({ children }) {
           fetchMoreNotifications,
           notificationsLoading,
           toggleSpotlight,
-          pageData
+          pageData,
+          setPageData
         }}
       >
         <HeaderComponent />
