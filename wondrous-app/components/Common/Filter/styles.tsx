@@ -8,7 +8,7 @@ import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import palette from 'theme/palette';
 
 export const FilterHandle = styled.div`
-  display: flex;
+  display: inline-flex;
   position: relative;
   flex-direction: row;
   align-items: center;
@@ -20,6 +20,11 @@ export const FilterHandle = styled.div`
   border-radius: 6px;
   border: 0.5px solid #4b4b4b;
   flex: 1;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    flex: initial;
+    width: initial;
+  }
 `;
 
 export const FilterHandleInner = styled.div`

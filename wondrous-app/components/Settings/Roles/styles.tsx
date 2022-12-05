@@ -15,6 +15,8 @@ import typography from 'theme/typography';
 export const RolesContainer = styled.div`
   max-width: 780px;
   width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 
   ${newDropdownStyles}
 `;

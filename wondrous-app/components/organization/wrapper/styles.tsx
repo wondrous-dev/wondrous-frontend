@@ -40,7 +40,7 @@ export const HeaderImage = styled((props) => (
 
 export const TokenHeader = styled.div`
   position: relative;
-  width: 95%;
+  width: 100%;
   padding-top: 30px;
 `;
 
@@ -629,18 +629,21 @@ export const PostActivity = styled.div`
 `;
 
 export const BoardsSubheaderWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row-gap: 20px;
 
   ${({ theme }) => theme.breakpoints.down('lg')} {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     flex-direction: column;
     align-items: flex-start;
   }
 `;
 
 export const Container = styled.div`
-  width: 95%;
+  width: 100%;
   margin-top: 22px;
 `;
 

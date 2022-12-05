@@ -271,6 +271,8 @@ export const GeneralSettingsContainer = styled.div`
   height: 100%;
   max-width: 780px;
   width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const GeneralSettingsInputsBlock = styled.div`

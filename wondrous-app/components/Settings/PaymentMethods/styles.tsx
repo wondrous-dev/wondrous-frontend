@@ -52,7 +52,7 @@ export const PaymentMethodFormWrapper = styled(Box)`
 `;
 
 export const NewPaymentMethodCTAWrapper = styled.div`
-  width: 780px;
+  width: 100%;
   max-width: 780px;
   display: flex;
   align-items: center;
@@ -61,6 +61,8 @@ export const NewPaymentMethodCTAWrapper = styled.div`
   padding: 14px;
   border-radius: 6px;
   margin-top: 46px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const NewPaymentMethodCTAButton = styled(Button)`

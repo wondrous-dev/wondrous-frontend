@@ -44,6 +44,8 @@ export const MembersTable = styled.div`
   gap: 25px;
   width: 100%;
   max-width: 770px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const SeeMoreTextWrapper = styled.div`

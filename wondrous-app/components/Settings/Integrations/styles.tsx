@@ -7,6 +7,8 @@ export const IntegrationsContainer = styled.div`
   height: 100vh;
   width: 100%;
   max-width: 765px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const TableValueText = styled(Typography)`
@@ -120,7 +122,8 @@ export const IntegrationsConnectButton = styled(MuiButton)`
     .Mui-disabled {
       color: #ffffff;
     }
-    {({theme})=>theme.breakpoints.down('md')} {
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
       margin-top: 10px;
       margin-left: 0;
     }
