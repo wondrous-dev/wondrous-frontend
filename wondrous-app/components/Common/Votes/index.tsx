@@ -4,36 +4,46 @@ import {
   UPVOTE_TASK_PROPOSAL,
   DOWNVOTE_TASK_PROPOSAL,
   REMOVE_TASK_PROPOSAL_VOTE,
+  VOTE_FOR_PROPOSAL,
 } from 'graphql/mutations/taskProposal';
 import { ProposalVoteType, PROPOSAL_VOTE_LABELS, STATUS_OPEN } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
+import { VotedForCheckMark, NotVotedCheckmark } from 'components/Icons/VotedForCheckmark';
+import palette from 'theme/palette';
+
 import {
   VoteResultsWrapper,
+  VoterProfilePicture,
+  VoteLabel,
   VoteButton,
   VoteRowWrapper,
   VoteProgressBar,
   VoteCurrentProgress,
   VoteRowResult,
-  VotePercentageResult,
   RetractButton,
   VoteButtonLabel,
+  VoteRowContentWrapper,
 } from './styles';
 
 interface Props {
-  votes: {
-    counts: {
-      approve: number;
-      reject: number;
-    };
-    userVote: string;
-  };
   fullScreen: boolean;
-  taskId: string;
-  totalVotes: number;
+  proposal: {
+    id: String;
+    votes: {
+      counts: Record<string, number>;
+      userVote: string;
+      totalVotes: number;
+    };
+    voteOptions: string[];
+    voteType: 'binary' | 'custom';
+  };
   proposalStatus: string;
 }
 
-export default function VoteResults({ votes, fullScreen, taskId, totalVotes, proposalStatus }: Props) {
+export default function VoteResults({ proposal, fullScreen, proposalStatus }: Props) {
+  const { votes } = proposal;
+  const { totalVotes } = votes;
+  const proposalId = proposal.id;
   const user = useMe();
   const proposalRefetchQueries = ['getTaskProposalById'];
   const [upvoteProposal] = useMutation(UPVOTE_TASK_PROPOSAL, {
@@ -46,11 +56,11 @@ export default function VoteResults({ votes, fullScreen, taskId, totalVotes, pro
   const [removeProposalVote] = useMutation(REMOVE_TASK_PROPOSAL_VOTE, {
     refetchQueries: proposalRefetchQueries,
   });
-  const upvote = () => upvoteProposal({ variables: { taskProposalId: taskId } });
+  const upvote = () => upvoteProposal({ variables: { taskProposalId: proposalId } });
 
-  const downvote = () => downvoteProposal({ variables: { taskProposalId: taskId } });
+  const downvote = () => downvoteProposal({ variables: { taskProposalId: proposalId } });
 
-  const retract = () => removeProposalVote({ variables: { taskProposalId: taskId } });
+  const retract = () => removeProposalVote({ variables: { taskProposalId: proposalId } });
 
   const userVote = votes?.userVote;
 
@@ -86,9 +96,45 @@ export default function VoteResults({ votes, fullScreen, taskId, totalVotes, pro
   };
 
   const showActions = user && proposalStatus === STATUS_OPEN;
+  console.log('proposal?.voteOptions', proposal?.voteOptions);
   return (
     <VoteResultsWrapper isFullScreen={fullScreen}>
-      {ROWS_CONFIG.map((row, idx) => {
+      {proposal?.voteOptions?.map((option, idx) => {
+        const percentage = computePercentage(option);
+        const userVotedFor = userVote === option;
+        return (
+          <VoteRowWrapper key={`${option}`}>
+            <VoteRowContentWrapper>
+              <div style={{ display: 'flex', gap: 5 }}>
+                <VoteLabel color={palette.blue20}>{percentage}%</VoteLabel>
+                <VoteLabel color={palette.white} weight={500}>
+                  {option}
+                </VoteLabel>
+              </div>
+              <div style={{ display: 'flex', gap: 5 }}>
+                {userVotedFor ? (
+                  <>
+                    <VoterProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
+                    <VoteLabel color={palette.highlightBlue} weight={500}>
+                      Undo vote
+                    </VoteLabel>
+                    <VotedForCheckMark />{' '}
+                  </>
+                ) : (
+                  <NotVotedCheckmark />
+                )}
+              </div>
+            </VoteRowContentWrapper>
+            <VoteProgressBar>
+              <VoteCurrentProgress color="linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%)" width={`${percentage}%`} />
+            </VoteProgressBar>
+          </VoteRowWrapper>
+        );
+      })}
+      <VoteLabel color={palette.white} weight={500}>
+        Total Votes: {totalVotes}
+      </VoteLabel>
+      {/* {ROWS_CONFIG.map((row, idx) => {
         const percentage = computePercentage(row.key);
         const isVoted = userVote === row.key;
         return (
@@ -115,13 +161,7 @@ export default function VoteResults({ votes, fullScreen, taskId, totalVotes, pro
             </VoteProgressBar>
           </VoteRowWrapper>
         );
-      })}
-      {votes?.userVote && showActions && (
-        <RetractButton onClick={retract}>
-          <RetractVoteIcon />
-          Retract vote
-        </RetractButton>
-      )}
+      })} */}
     </VoteResultsWrapper>
   );
 }

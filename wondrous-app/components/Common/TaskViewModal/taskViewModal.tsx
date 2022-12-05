@@ -133,7 +133,6 @@ import {
   ProposerField,
   ReviewerField,
   TagsField,
-  VotesField,
 } from './taskViewModalFields';
 import WatchersField from './taskViewModalFields/WatchersField';
 import TaskViewModalFooter from './taskViewModalFooter';
@@ -533,10 +532,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     sectionRef?.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const totalVotes =
-    Number(fetchedTask?.votes?.counts[ProposalVoteType.APPROVE]) +
-    Number(fetchedTask?.votes?.counts[ProposalVoteType.REJECT]);
-
   const handleSnapshot = () => openSnapshot(orgSnapshot, fetchedTask, isTest);
 
   const handleModalClose = () => {
@@ -688,7 +683,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                           <TaskModalHeaderCloseModal onClick={() => handleClose()} />
                         </TaskModalHeaderWrapperRight>
                       </TaskModalHeader>
-                      <TaskModalTaskData hideRowGap={isViewNft} fullScreen={fullScreen}>
+                      <TaskModalTaskData hideRowGap={isViewNft || isTaskProposal} fullScreen={fullScreen}>
                         <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
                           <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
                           {!isViewNft ? (
@@ -708,6 +703,13 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                           <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
                           <TaskMediaWrapper media={fetchedTask?.media} />
                           {!fullScreen && <TaskBorder />}
+                          {isTaskProposal && (
+                            <VoteResults
+                              fullScreen={fullScreen}
+                              proposalStatus={getProposalStatus(fetchedTask)}
+                              proposal={fetchedTask}
+                            />
+                          )}
                         </TaskModalTitleDescriptionMedia>
                         <TaskSectionDisplayDivWrapper fullScreen={fullScreen}>
                           <TaskSectionDisplayData>
@@ -761,11 +763,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               creatorUsername={fetchedTask?.creatorUsername}
                               handleClose={handleClose}
                             />
-                            <VotesField
-                              shouldDisplay={isTaskProposal && !isMilestone}
-                              totalVotes={totalVotes}
-                              hasContent={fetchedTask?.votes}
-                            />
                             <DueDateField
                               dueDate={fetchedTask?.dueDate}
                               shouldDisplay={fetchedTask?.dueDate}
@@ -788,53 +785,42 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
                             <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                             {isTaskProposal && (
-                              <>
-                                <VoteResults
-                                  totalVotes={totalVotes}
-                                  fullScreen={fullScreen}
-                                  votes={fetchedTask?.votes}
-                                  proposalStatus={getProposalStatus(fetchedTask)}
-                                  taskId={fetchedTask?.id}
-                                />
-                                <CreateFormFooterButtons>
-                                  {fetchedTask?.changeRequestedAt && (
-                                    <>
-                                      <div style={flexDivStyle}>
-                                        <RejectIcon style={rejectIconStyle} />
-                                        <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
-                                      </div>
-                                      <div
-                                        style={{
-                                          flex: 1,
-                                        }}
-                                      />
-                                    </>
-                                  )}
-                                  {fetchedTask?.approvedAt && (
-                                    <>
-                                      <div style={flexDivStyle}>
-                                        <CompletedIcon style={rejectIconStyle} />
-                                        <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-                                      </div>
-                                      <div
-                                        style={{
-                                          flex: 1,
-                                        }}
-                                      />
-                                    </>
-                                  )}
-                                  {canApproveProposal && !fetchedTask?.approvedAt && (
-                                    <CreateFormButtonsBlock>
-                                      {!fetchedTask?.changeRequestedAt && (
-                                        <CreateFormCancelButton onClick={closeProposal}>Reject</CreateFormCancelButton>
-                                      )}
-                                      <CreateFormPreviewButton onClick={approveProposal}>
-                                        Approve
-                                      </CreateFormPreviewButton>
-                                    </CreateFormButtonsBlock>
-                                  )}
-                                </CreateFormFooterButtons>
-                              </>
+                              <CreateFormFooterButtons>
+                                {fetchedTask?.changeRequestedAt && (
+                                  <>
+                                    <div style={flexDivStyle}>
+                                      <RejectIcon style={rejectIconStyle} />
+                                      <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
+                                    </div>
+                                    <div
+                                      style={{
+                                        flex: 1,
+                                      }}
+                                    />
+                                  </>
+                                )}
+                                {fetchedTask?.approvedAt && (
+                                  <>
+                                    <div style={flexDivStyle}>
+                                      <CompletedIcon style={rejectIconStyle} />
+                                      <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
+                                    </div>
+                                    <div
+                                      style={{
+                                        flex: 1,
+                                      }}
+                                    />
+                                  </>
+                                )}
+                                {canApproveProposal && !fetchedTask?.approvedAt && (
+                                  <CreateFormButtonsBlock>
+                                    {!fetchedTask?.changeRequestedAt && (
+                                      <CreateFormCancelButton onClick={closeProposal}>Reject</CreateFormCancelButton>
+                                    )}
+                                    <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
+                                  </CreateFormButtonsBlock>
+                                )}
+                              </CreateFormFooterButtons>
                             )}
                             {isViewNft ? (
                               <ViewNftFields

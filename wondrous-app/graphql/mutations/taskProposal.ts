@@ -99,6 +99,13 @@ export const DELETE_TASK_PROPOSAL_COMMENT = gql`
     }
   }
 `;
+export const VOTE_FOR_PROPOSAL = gql`
+  mutation voteForProposal($taskProposalId: ID!, $choice: String!) {
+    voteForProposal(taskProposalId: $taskProposalId, choice: $choice) {
+      success
+    }
+  }
+`;
 
 export const UPVOTE_TASK_PROPOSAL = gql`
   mutation upvoteProposal($taskProposalId: ID!) {

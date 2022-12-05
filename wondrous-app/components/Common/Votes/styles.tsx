@@ -1,15 +1,16 @@
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
+import { SafeImage } from 'components/Common/Image';
 
 export const VoteResultsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  padding: 10px 10px 10px 10px;
   width: 100%;
-  background: ${({ isFullScreen }) => (isFullScreen ? '#1D1D1D' : '#171717')};
+  background: ${palette.grey910};
   border-radius: 6px;
-  padding: 14px;
   margin-top: 18px;
 `;
 
@@ -32,6 +33,13 @@ export const VoteButtonLabel = styled(Typography)`
 `}
   }
 `;
+
+export const VoterProfilePicture = styled(SafeImage).attrs({ useNextImage: false })`
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+`;
+
 export const VoteButton = styled.button`
   padding: 8px 35px;
   border: 0;
@@ -63,12 +71,18 @@ export const VoteButton = styled.button`
 `;
 
 export const VoteRowWrapper = styled.div`
+  width: 100%;
+  margin-bottom: 10px;
+  background: #282828;
+  border-radius: 6px;
+`;
+
+export const VoteRowContentWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  padding: 5px 5px 5px 5px;
   align-items: center;
   width: 100%;
-  gap: 10px;
-  padding: 10px 0px;
 `;
 
 export const VoteProgressBar = styled.div`
@@ -98,14 +112,13 @@ export const VoteRowResult = styled.span`
   min-width: fit-content;
 `;
 
-export const VotePercentageResult = styled(Typography)`
+export const VoteLabel = styled(Typography)`
   && {
-    color: ${palette.white};
+    color: ${({ color }) => color};
     font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: 14px;
+    font-weight: ${({ weight }) => weight};
+    line-height: 15px;
   }
 `;
 
