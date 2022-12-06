@@ -37,7 +37,6 @@ import {
   MILESTONE_TYPE,
   PERMISSIONS,
   PRIVACY_LEVEL,
-  ProposalVoteType,
   STATUS_APPROVED,
   TaskMintStatus,
   TASK_STATUS_ARCHIVED,
@@ -415,6 +414,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       />
     );
   }
+  const userInOrg =
+    userPermissionsContext?.orgPermissions && fetchedTask?.orgId in userPermissionsContext.orgPermissions;
 
   const canEdit =
     !isViewNft &&
@@ -705,6 +706,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                           {!fullScreen && <TaskBorder />}
                           {isTaskProposal && (
                             <VoteResults
+                              userInOrg={userInOrg}
                               fullScreen={fullScreen}
                               proposalStatus={getProposalStatus(fetchedTask)}
                               proposal={fetchedTask}

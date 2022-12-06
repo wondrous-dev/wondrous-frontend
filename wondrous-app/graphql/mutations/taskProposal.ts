@@ -107,22 +107,6 @@ export const VOTE_FOR_PROPOSAL = gql`
   }
 `;
 
-export const UPVOTE_TASK_PROPOSAL = gql`
-  mutation upvoteProposal($taskProposalId: ID!) {
-    upvoteProposal(taskProposalId: $taskProposalId) {
-      success
-    }
-  }
-`;
-
-export const DOWNVOTE_TASK_PROPOSAL = gql`
-  mutation downvoteProposal($taskProposalId: ID!) {
-    downvoteProposal(taskProposalId: $taskProposalId) {
-      success
-    }
-  }
-`;
-
 export const REMOVE_TASK_PROPOSAL_VOTE = gql`
   mutation removeProposalVote($taskProposalId: ID!) {
     removeProposalVote(taskProposalId: $taskProposalId) {

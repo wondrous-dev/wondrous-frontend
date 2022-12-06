@@ -1,12 +1,6 @@
-import RetractVoteIcon from 'components/Icons/retractVote';
 import { useMutation } from '@apollo/client';
-import {
-  UPVOTE_TASK_PROPOSAL,
-  DOWNVOTE_TASK_PROPOSAL,
-  REMOVE_TASK_PROPOSAL_VOTE,
-  VOTE_FOR_PROPOSAL,
-} from 'graphql/mutations/taskProposal';
-import { ProposalVoteType, PROPOSAL_VOTE_LABELS, STATUS_OPEN } from 'utils/constants';
+import { REMOVE_TASK_PROPOSAL_VOTE, VOTE_FOR_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { STATUS_OPEN } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
 import { VotedForCheckMark, NotVotedCheckmark } from 'components/Icons/VotedForCheckmark';
 import palette from 'theme/palette';
@@ -15,20 +9,29 @@ import {
   VoteResultsWrapper,
   VoterProfilePicture,
   VoteLabel,
-  VoteButton,
   VoteRowWrapper,
   VoteProgressBar,
   VoteCurrentProgress,
-  VoteRowResult,
-  RetractButton,
-  VoteButtonLabel,
   VoteRowContentWrapper,
 } from './styles';
+
+const computePercentage = (votes, type) => {
+  const amount = votes?.counts[type] || 0;
+  return Math.round((100 * amount) / votes.totalVotes) || 0;
+};
 
 interface Props {
   fullScreen: boolean;
   proposal: {
-    id: String;
+    id: string;
+    orgId: string;
+    podId: string;
+    org: {
+      privacyLevel: string;
+    };
+    pod: {
+      privacyLevel: string;
+    };
     votes: {
       counts: Record<string, number>;
       userVote: string;
@@ -38,99 +41,105 @@ interface Props {
     voteType: 'binary' | 'custom';
   };
   proposalStatus: string;
+  userInOrg: boolean;
+}
+function VoteOptionsRow({ votes, option, handleVote, handleUndoVote, user, voteType }) {
+  const percentage = computePercentage(votes, option);
+  const userVotedFor = votes?.userVote === option;
+  let optionDisplayName = option;
+  if (voteType === 'binary') {
+    optionDisplayName = option === 'approve' ? 'Yes' : 'No';
+  }
+  return (
+    <VoteRowWrapper key={`${option}`}>
+      <VoteRowContentWrapper onClick={() => handleVote(option)}>
+        <div style={{ display: 'flex', gap: 5 }}>
+          <VoteLabel color={palette.blue20}>{percentage}%</VoteLabel>
+          <VoteLabel color={palette.white} weight={500}>
+            {optionDisplayName}
+          </VoteLabel>
+        </div>
+        <div style={{ display: 'flex', gap: 5 }}>
+          {userVotedFor ? (
+            <>
+              <VoteLabel
+                style={{ cursor: 'pointer' }}
+                color={palette.highlightBlue}
+                weight={500}
+                onClick={(e) => handleUndoVote(e)}
+              >
+                Undo vote
+              </VoteLabel>
+              <VoterProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
+              <VotedForCheckMark />{' '}
+            </>
+          ) : (
+            <NotVotedCheckmark />
+          )}
+        </div>
+      </VoteRowContentWrapper>
+      <VoteProgressBar>
+        <VoteCurrentProgress color="linear-gradient(90deg, #4F00DE 65%, #06FFA5 100%)" width={`${percentage}%`} />
+      </VoteProgressBar>
+    </VoteRowWrapper>
+  );
 }
 
-export default function VoteResults({ proposal, fullScreen, proposalStatus }: Props) {
+export default function VoteResults({ userInOrg, proposal, fullScreen, proposalStatus }: Props) {
   const { votes } = proposal;
   const { totalVotes } = votes;
   const proposalId = proposal.id;
   const user = useMe();
+
+  const canVote = user && userInOrg && proposalStatus === STATUS_OPEN; // TODO add logic for private pod proposals?
   const proposalRefetchQueries = ['getTaskProposalById'];
-  const [upvoteProposal] = useMutation(UPVOTE_TASK_PROPOSAL, {
-    refetchQueries: proposalRefetchQueries,
-  });
-  const [downvoteProposal] = useMutation(DOWNVOTE_TASK_PROPOSAL, {
+  const [voteForProposal] = useMutation(VOTE_FOR_PROPOSAL, {
     refetchQueries: proposalRefetchQueries,
   });
 
   const [removeProposalVote] = useMutation(REMOVE_TASK_PROPOSAL_VOTE, {
     refetchQueries: proposalRefetchQueries,
   });
-  const upvote = () => upvoteProposal({ variables: { taskProposalId: proposalId } });
 
-  const downvote = () => downvoteProposal({ variables: { taskProposalId: proposalId } });
-
-  const retract = () => removeProposalVote({ variables: { taskProposalId: proposalId } });
-
-  const userVote = votes?.userVote;
-
-  const ROWS_CONFIG = [
-    {
-      key: ProposalVoteType.APPROVE,
-      btnLabel:
-        userVote === ProposalVoteType.APPROVE
-          ? PROPOSAL_VOTE_LABELS[ProposalVoteType.APPROVE].VOTED
-          : PROPOSAL_VOTE_LABELS[ProposalVoteType.APPROVE].ACTION,
-      color: 'linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%)',
-      btnHoverColor:
-        'linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%)',
-      action: upvote,
-    },
-    {
-      key: ProposalVoteType.REJECT,
-
-      btnLabel:
-        userVote === ProposalVoteType.REJECT
-          ? PROPOSAL_VOTE_LABELS[ProposalVoteType.REJECT].VOTED
-          : PROPOSAL_VOTE_LABELS[ProposalVoteType.REJECT].ACTION,
-      color: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #F93701 90.48%)',
-      btnHoverColor:
-        'linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), linear-gradient(196.76deg, #FFFFFF -48.71%, #F93701 90.48%)',
-      action: downvote,
-    },
-  ];
-
-  const computePercentage = (type) => {
-    const amount = votes?.counts[type] || 0;
-    return Math.round((100 * amount) / totalVotes) || 0;
+  const handleVote = (option) => {
+    if (!canVote) return;
+    voteForProposal({ variables: { taskProposalId: proposalId, choice: option } });
   };
 
-  const showActions = user && proposalStatus === STATUS_OPEN;
-  console.log('proposal?.voteOptions', proposal?.voteOptions);
+  const handleUndoVote = (e) => {
+    if (!canVote) return;
+    e.preventDefault();
+    e.stopPropagation();
+    removeProposalVote({ variables: { taskProposalId: proposalId } });
+  };
+
+  const binaryOptions = ['approve', 'reject'];
+
   return (
     <VoteResultsWrapper isFullScreen={fullScreen}>
-      {proposal?.voteOptions?.map((option, idx) => {
-        const percentage = computePercentage(option);
-        const userVotedFor = userVote === option;
-        return (
-          <VoteRowWrapper key={`${option}`}>
-            <VoteRowContentWrapper>
-              <div style={{ display: 'flex', gap: 5 }}>
-                <VoteLabel color={palette.blue20}>{percentage}%</VoteLabel>
-                <VoteLabel color={palette.white} weight={500}>
-                  {option}
-                </VoteLabel>
-              </div>
-              <div style={{ display: 'flex', gap: 5 }}>
-                {userVotedFor ? (
-                  <>
-                    <VoterProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
-                    <VoteLabel color={palette.highlightBlue} weight={500}>
-                      Undo vote
-                    </VoteLabel>
-                    <VotedForCheckMark />{' '}
-                  </>
-                ) : (
-                  <NotVotedCheckmark />
-                )}
-              </div>
-            </VoteRowContentWrapper>
-            <VoteProgressBar>
-              <VoteCurrentProgress color="linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%)" width={`${percentage}%`} />
-            </VoteProgressBar>
-          </VoteRowWrapper>
-        );
-      })}
+      {proposal?.voteOptions?.map((option) => (
+        <VoteOptionsRow
+          key={option}
+          voteType={proposal?.voteType}
+          votes={votes}
+          option={option}
+          handleVote={handleVote}
+          handleUndoVote={handleUndoVote}
+          user={user}
+        />
+      ))}
+      {proposal?.voteType === 'binary' &&
+        binaryOptions.map((option) => (
+          <VoteOptionsRow
+            key={option}
+            voteType={proposal?.voteType}
+            votes={votes}
+            option={option}
+            handleVote={handleVote}
+            handleUndoVote={handleUndoVote}
+            user={user}
+          />
+        ))}
       <VoteLabel color={palette.white} weight={500}>
         Total Votes: {totalVotes}
       </VoteLabel>

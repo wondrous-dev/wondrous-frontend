@@ -487,22 +487,6 @@ export const TASK_APPLICATION_STATUS_LABELS = {
 export const ONE_TIME_USE_INVITE_LINK = 'one_time';
 export const PUBLIC_INVITE_LINK = 'public';
 
-export const ProposalVoteType = {
-  APPROVE: 'approve',
-  REJECT: 'reject',
-};
-
-export const PROPOSAL_VOTE_LABELS = {
-  [ProposalVoteType.APPROVE]: {
-    VOTED: 'Voted For',
-    ACTION: 'Vote For',
-  },
-  [ProposalVoteType.REJECT]: {
-    VOTED: 'Voted Against',
-    ACTION: 'Vote Against',
-  },
-};
-
 export const PAGES_WITH_NO_SIDEBAR = [
   '/',
   '/forgot-password-sent',

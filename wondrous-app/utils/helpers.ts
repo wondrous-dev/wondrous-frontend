@@ -64,6 +64,7 @@ export const getMentionArray = (content) => {
 };
 
 export const parseUserPermissionContext = (props) => {
+  // TODO add return type here
   const userPermissionsContext = props?.userPermissionsContext;
   if (!userPermissionsContext) return [];
   const podId = props?.podId;
