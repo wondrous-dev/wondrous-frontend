@@ -66,6 +66,8 @@ export const formValidationSchema = Yup.object().shape({
       'Please enter a valid Milestone',
       (milestoneId) => milestoneId !== '' && milestoneId !== undefined
     ),
+  proposalVoteType: Yup.string().nullable(),
+  customProposalChoices: Yup.array().of(Yup.string().min(1)).optional().nullable(),
 });
 
 export const privacyOptions = {
@@ -352,6 +354,8 @@ export const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       categories: null,
+      proposalVoteType: null,
+      customProposalChoices: [],
     },
   },
 };

@@ -253,6 +253,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       const reviewerIds = values?.reviewerIds?.filter((i) => i !== null);
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userMentions = extractMentions(values.description);
+
       const points = parseInt(values.points, 10);
       const rewards = isEmpty(values.rewards)
         ? []
@@ -269,6 +270,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         githubRepo,
         recurringSchema,
         GR15DEISelected,
+        proposalVoteType,
+        customProposalChoices,
         ...finalValues
       } = values;
       let categories = values?.categories?.map((category) => category.id || category);
@@ -278,7 +281,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         }
         categories.push(GR15DEICategoryName);
       }
-
+      const voteType = proposalVoteType || PROPOSAL_VOTE_CHOICES.BINARY;
+      const voteChoices = customProposalChoices;
       const input = {
         ...finalValues,
         reviewerIds,
@@ -287,6 +291,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         timezone,
         userMentions,
         categories,
+        ...(isProposal && {
+          voteType,
+          ...(voteType === PROPOSAL_VOTE_CHOICES.CUSTOM && { voteChoices }),
+        }),
         description: JSON.stringify(values.description),
         ...(values?.githubPullRequest?.id && {
           githubPullRequest,
