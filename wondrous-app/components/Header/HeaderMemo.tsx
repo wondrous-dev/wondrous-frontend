@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Menu } from '@mui/icons-material';
+import Menu from '@mui/icons-material/Menu';
 
 import { User } from 'types/User';
 
