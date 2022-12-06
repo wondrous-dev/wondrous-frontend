@@ -326,7 +326,7 @@ function BoardsPage({ meta }: Props) {
   });
 
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
-  const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
+  const [getPod, { data: podData, loading: isPodDataLoading }] = useLazyQuery(GET_POD_BY_ID);
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
@@ -368,7 +368,7 @@ function BoardsPage({ meta }: Props) {
       query.view = ViewType.Grid;
     }
 
-    router.push({ query }, undefined, { shallow: true, scroll: false })
+    router.push({ query }, undefined, { shallow: true, scroll: false });
   };
 
   const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
@@ -445,10 +445,11 @@ function BoardsPage({ meta }: Props) {
   }, [userId]);
 
   useEffect(() => {
-    if (podId) {
+    // Load only once or when you switch POD
+    if (!isPodDataLoading && ((podId && !podData) || (podData && podData.getPodById.id !== podId))) {
       getPod({ variables: { podId } });
     }
-  }, []);
+  }, [podId, podData, isPodDataLoading]);
 
   useEffect(() => {
     if (podId) {
