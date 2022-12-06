@@ -510,6 +510,21 @@ function BoardsPage() {
     }
   }, [username, orgId, orgData, getOrg, getOrgFromUsername]);
 
+  // We need this hook when you switch between orgs
+  useEffect(() => {
+    if (orgData && orgData.username !== username) {
+      setFirstTimeFetch(true);
+      setOrgData(null);
+      setIsLoading(true);
+      // Get orgId from username
+      getOrgFromUsername({
+        variables: {
+          username,
+        },
+      });
+    }
+  }, [username]);
+
   useEffect(() => {
     if (orgId || orgData?.id) {
       const id = orgId || orgData?.id;

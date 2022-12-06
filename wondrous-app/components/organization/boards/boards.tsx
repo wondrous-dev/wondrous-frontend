@@ -97,6 +97,7 @@ export default memo(OrgBoards, (prevProps, nextProps) => {
     prevProps.userId === nextProps.userId &&
     prevProps.entityType === nextProps.entityType &&
     prevProps.loading === nextProps.loading &&
+    prevProps.loading === nextProps.loading &&
     prevProps.activeView === nextProps.activeView;
 
   return areEqual;

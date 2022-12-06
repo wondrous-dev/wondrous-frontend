@@ -100,7 +100,7 @@ function ExploreComponent() {
   const handleTabClick = (tab) => {
     if (tab === activeTab) {
       setActiveTab(null);
-    } else if (activeTab === null) {
+    } else if (activeTab === null && router.query.tab === tab) {
       setActiveTab(tab);
     } else {
       router.push({ query: { tab } }, undefined, {
