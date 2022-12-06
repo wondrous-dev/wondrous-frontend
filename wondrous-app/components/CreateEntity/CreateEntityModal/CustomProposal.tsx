@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import AddIcon from 'components/Icons/add.svg';
+import { ErrorText } from 'components/Common';
 import {
   CreateEntityAutocompletePopperRenderInputAdornment,
   CreateEntityAutocompletePopperRenderInputIcon,
   CustomAddOptionButton,
   CustomAddOptionButtonText,
+  CustomAddOptionDiv,
   CustomProposalContainer,
   CustomProposalInput,
 } from './styles';
@@ -12,6 +14,9 @@ import {
 export default function CustomProposal(props) {
   const { form } = props;
   const customProposalChoices = form?.values?.customProposalChoices;
+
+  const customProposalChoicesError = form?.errors?.customProposalChoices;
+
   return (
     <CustomProposalContainer>
       {customProposalChoices?.map((choice, index) => (
@@ -40,14 +45,25 @@ export default function CustomProposal(props) {
           }
         />
       ))}
-      <CustomAddOptionButton
-        onClick={() => {
-          form?.setFieldValue('customProposalChoices', [...customProposalChoices, '']);
-        }}
-      >
-        <AddIcon />
-        <CustomAddOptionButtonText>Add Option</CustomAddOptionButtonText>
-      </CustomAddOptionButton>
+      <CustomAddOptionDiv>
+        <CustomAddOptionButton
+          onClick={() => {
+            form?.setFieldValue('customProposalChoices', [...customProposalChoices, '']);
+          }}
+        >
+          <AddIcon />
+          <CustomAddOptionButtonText>Add Option</CustomAddOptionButtonText>
+        </CustomAddOptionButton>
+        {customProposalChoicesError?.length > 0 && (
+          <ErrorText
+            style={{
+              marginLeft: '12px',
+            }}
+          >
+            {customProposalChoicesError[0]}
+          </ErrorText>
+        )}
+      </CustomAddOptionDiv>
     </CustomProposalContainer>
   );
 }

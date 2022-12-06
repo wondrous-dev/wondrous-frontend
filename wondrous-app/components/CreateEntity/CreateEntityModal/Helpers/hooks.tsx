@@ -583,6 +583,8 @@ export const useCreateTaskProposal = () => {
           mediaUploads: input.mediaUploads,
           rewards: input.rewards,
           privacyLevel: input.privacyLevel,
+          voteOptions: input.voteOptions,
+          voteType: input.voteType,
         },
       },
     })

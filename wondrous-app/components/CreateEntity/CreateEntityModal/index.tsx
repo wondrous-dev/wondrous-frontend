@@ -282,7 +282,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         categories.push(GR15DEICategoryName);
       }
       const voteType = proposalVoteType || PROPOSAL_VOTE_CHOICES.BINARY;
-      const voteChoices = customProposalChoices;
+      const voteOptions = customProposalChoices;
       const input = {
         ...finalValues,
         reviewerIds,
@@ -293,7 +293,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         categories,
         ...(isProposal && {
           voteType,
-          ...(voteType === PROPOSAL_VOTE_CHOICES.CUSTOM && { voteChoices }),
+          ...(voteType === PROPOSAL_VOTE_CHOICES.CUSTOM && { voteOptions }),
         }),
         description: JSON.stringify(values.description),
         ...(values?.githubPullRequest?.id && {
@@ -909,6 +909,13 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               ))}
             </ProposalVoteSelect>
             {form?.values?.proposalVoteType === PROPOSAL_VOTE_CHOICES.CUSTOM && <CustomProposal form={form} />}
+            <ProposalVoteSelectMenuItemText
+              style={{
+                marginTop: '8px',
+              }}
+            >
+              P.S. In 'Multiple Choice' voting style, options cannot be edited
+            </ProposalVoteSelectMenuItemText>
             <CreateEntityDivider />
           </>
         )}

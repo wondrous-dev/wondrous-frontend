@@ -25,6 +25,7 @@ export const VoteRowWrapper = styled.div`
   width: 100%;
   background: #282828;
   border-radius: 6px;
+  cursor: pointer;
 `;
 
 export const VoteRowContentWrapper = styled.div`

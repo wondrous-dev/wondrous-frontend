@@ -1231,3 +1231,8 @@ export const CustomAddOptionButtonText = styled(Typography)`
     line-height: 18px;
   }
 `;
+
+export const CustomAddOptionDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
