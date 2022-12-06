@@ -436,12 +436,12 @@ export const TaskProposalFragment = gql`
     }
     snapshotId
     votes {
-      counts {
-        approve
-        reject
-      }
+      counts
       userVote
+      totalVotes
     }
+    voteType
+    voteOptions
     categories {
       name
     }

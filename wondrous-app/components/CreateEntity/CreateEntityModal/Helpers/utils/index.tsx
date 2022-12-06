@@ -66,6 +66,11 @@ export const formValidationSchema = Yup.object().shape({
       'Please enter a valid Milestone',
       (milestoneId) => milestoneId !== '' && milestoneId !== undefined
     ),
+  proposalVoteType: Yup.string().nullable(),
+  customProposalChoices: Yup.array()
+    .of(Yup.string().required('Option must not be an empty string'))
+    .optional()
+    .nullable(),
 });
 
 export const privacyOptions = {
@@ -238,6 +243,8 @@ export enum Fields {
   githubPullRequest,
   shouldUnclaimOnDueDateExpiry,
   priority,
+  voteOptions,
+  voteType,
 }
 
 export const entityTypeData = {
@@ -337,7 +344,15 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
-    fields: [Fields.dueDate, Fields.reward, Fields.milestone, Fields.priority, Fields.tags],
+    fields: [
+      Fields.dueDate,
+      Fields.reward,
+      Fields.milestone,
+      Fields.priority,
+      Fields.tags,
+      Fields.voteOptions,
+      Fields.voteType,
+    ],
     createMutation: useCreateTaskProposal,
     updateMutation: useUpdateTaskProposal,
     initialValues: {
@@ -352,6 +367,8 @@ export const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       categories: null,
+      proposalVoteType: null,
+      customProposalChoices: [],
     },
   },
 };
