@@ -4,6 +4,7 @@ import { STATUS_OPEN } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
 import { VotedForCheckMark, NotVotedCheckmark } from 'components/Icons/VotedForCheckmark';
 import palette from 'theme/palette';
+import VoteOptionRow from 'components/Common/Votes/VoteOptionRow';
 
 import {
   VoteResultsWrapper,
@@ -14,11 +15,6 @@ import {
   VoteCurrentProgress,
   VoteRowContentWrapper,
 } from './styles';
-
-const computePercentage = (votes, type) => {
-  const amount = votes?.counts[type] || 0;
-  return Math.round((100 * amount) / votes.totalVotes) || 0;
-};
 
 interface Props {
   fullScreen: boolean;
@@ -42,47 +38,6 @@ interface Props {
   };
   proposalStatus: string;
   userInOrg: boolean;
-}
-function VoteOptionsRow({ votes, option, handleVote, handleUndoVote, user, voteType }) {
-  const percentage = computePercentage(votes, option);
-  const userVotedFor = votes?.userVote === option;
-  let optionDisplayName = option;
-  if (voteType === 'binary') {
-    optionDisplayName = option === 'approve' ? 'Yes' : 'No';
-  }
-  return (
-    <VoteRowWrapper key={`${option}`}>
-      <VoteRowContentWrapper onClick={() => handleVote(option)}>
-        <div style={{ display: 'flex', gap: 5 }}>
-          <VoteLabel color={palette.blue20}>{percentage}%</VoteLabel>
-          <VoteLabel color={palette.white} weight={500}>
-            {optionDisplayName}
-          </VoteLabel>
-        </div>
-        <div style={{ display: 'flex', gap: 5 }}>
-          {userVotedFor ? (
-            <>
-              <VoteLabel
-                style={{ cursor: 'pointer' }}
-                color={palette.highlightBlue}
-                weight={500}
-                onClick={(e) => handleUndoVote(e)}
-              >
-                Undo vote
-              </VoteLabel>
-              <VoterProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
-              <VotedForCheckMark />{' '}
-            </>
-          ) : (
-            <NotVotedCheckmark />
-          )}
-        </div>
-      </VoteRowContentWrapper>
-      <VoteProgressBar>
-        <VoteCurrentProgress color="linear-gradient(90deg, #4F00DE 65%, #06FFA5 100%)" width={`${percentage}%`} />
-      </VoteProgressBar>
-    </VoteRowWrapper>
-  );
 }
 
 export default function VoteResults({ userInOrg, proposal, fullScreen, proposalStatus }: Props) {
@@ -118,7 +73,7 @@ export default function VoteResults({ userInOrg, proposal, fullScreen, proposalS
   return (
     <VoteResultsWrapper isFullScreen={fullScreen}>
       {proposal?.voteOptions?.map((option) => (
-        <VoteOptionsRow
+        <VoteOptionRow
           key={option}
           voteType={proposal?.voteType}
           votes={votes}
@@ -130,7 +85,7 @@ export default function VoteResults({ userInOrg, proposal, fullScreen, proposalS
       ))}
       {proposal?.voteType === 'binary' &&
         binaryOptions.map((option) => (
-          <VoteOptionsRow
+          <VoteOptionRow
             key={option}
             voteType={proposal?.voteType}
             votes={votes}
@@ -143,34 +98,6 @@ export default function VoteResults({ userInOrg, proposal, fullScreen, proposalS
       <VoteLabel color={palette.white} weight={500}>
         Total Votes: {totalVotes}
       </VoteLabel>
-      {/* {ROWS_CONFIG.map((row, idx) => {
-        const percentage = computePercentage(row.key);
-        const isVoted = userVote === row.key;
-        return (
-          <VoteRowWrapper key={idx}>
-            {showActions && (
-              <VoteButton
-                isVoted={userVote === row.key}
-                onClick={row.action}
-                type="button"
-                hoverColor={row.btnHoverColor}
-                color={row.color}
-                disabled={isVoted}
-              >
-                <VoteButtonLabel isVoted={isVoted} color={row.color}>
-                  {row.btnLabel}
-                </VoteButtonLabel>
-              </VoteButton>
-            )}
-            <VoteRowResult>
-              <VotePercentageResult>{percentage}%</VotePercentageResult> voted {!showActions && row.key}
-            </VoteRowResult>
-            <VoteProgressBar>
-              <VoteCurrentProgress color={row.color} width={`${percentage}%`} />
-            </VoteProgressBar>
-          </VoteRowWrapper>
-        );
-      })} */}
     </VoteResultsWrapper>
   );
 }
