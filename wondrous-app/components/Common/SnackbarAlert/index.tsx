@@ -1,5 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from 'react';
-import { useIsMobile } from 'utils/hooks';
+import { createContext, useState } from 'react';
 import { StyledAlert, StyledSnackbar } from './styles';
 
 export const SnackbarAlertContext = createContext(null);
@@ -18,19 +17,16 @@ export function SnackbarAlertProvider({ children }) {
     setSnackbarAlertOpen(false);
   };
 
-  const snackbarAlertValues = useMemo(
-    () => ({
-      setSnackbarAlertMessage,
-      setSnackbarAlertAnchorOrigin,
-      setSnackbarAlertOpen,
-      setSnackbarAlertSeverity,
-      setSnackbarAlertAutoHideDuration,
-    }),
-    []
-  );
-
   return (
-    <SnackbarAlertContext.Provider value={snackbarAlertValues}>
+    <SnackbarAlertContext.Provider
+      value={{
+        setSnackbarAlertMessage,
+        setSnackbarAlertAnchorOrigin,
+        setSnackbarAlertOpen,
+        setSnackbarAlertSeverity,
+        setSnackbarAlertAutoHideDuration,
+      }}
+    >
       <StyledSnackbar
         anchorOrigin={anchorOrigin}
         open={open}

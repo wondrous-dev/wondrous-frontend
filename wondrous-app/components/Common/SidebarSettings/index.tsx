@@ -37,7 +37,7 @@ import { GET_ORG_BY_ID } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
@@ -190,15 +190,6 @@ function SettingsWrapper(props) {
     }
   }, [getOrgById, getPodById, org, orgId, podId]);
 
-  const settingsValues = useMemo(
-    () => ({
-      userPermissionsContext,
-      org,
-      pod,
-    }),
-    [org, pod, userPermissionsContext]
-  );
-
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: orgId || pod?.orgId,
@@ -278,7 +269,13 @@ function SettingsWrapper(props) {
   );
 
   return (
-    <SettingsBoardContext.Provider value={settingsValues}>
+    <SettingsBoardContext.Provider
+      value={{
+        userPermissionsContext,
+        org,
+        pod,
+      }}
+    >
       <ChooseEntityToCreate />
       <Wrapper>
         {isMobile ? (

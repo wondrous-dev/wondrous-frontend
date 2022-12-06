@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GlobalContext, SideBarContext } from 'utils/contexts';
@@ -67,48 +67,35 @@ export default function SidebarLayout({ children }) {
 
   const orgsList = getOrgsList(userOrgs, router);
   const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
-  const sidebarValue = useMemo(
-    () => ({
-      minimized,
-      openMobileOrgSidebar,
-      setOpenMobileOrgSidebar,
-      setMinimized,
-      orgsList,
-    }),
-    [minimized, openMobileOrgSidebar, orgsList]
-  );
-
-  const globalContextValues = useMemo(
-    () => ({
-      isCreateEntityModalOpen: createFormModal,
-      toggleCreateFormModal,
-      userOrgs,
-      userPermissionsContext: userPermissionsContext?.getUserPermissionContext
-        ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-        : null,
-      notifications: notifications?.getNotifications,
-      refetchNotifications: refetch,
-      fetchMoreNotifications,
-      notificationsLoading,
-    }),
-    [
-      createFormModal,
-      fetchMoreNotifications,
-      notifications?.getNotifications,
-      notificationsLoading,
-      refetch,
-      userOrgs,
-      userPermissionsContext?.getUserPermissionContext,
-    ]
-  );
 
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
   return (
-    <SideBarContext.Provider value={sidebarValue}>
+    <SideBarContext.Provider
+      value={{
+        minimized,
+        openMobileOrgSidebar,
+        setOpenMobileOrgSidebar,
+        setMinimized,
+        orgsList,
+      }}
+    >
       <SideBarComponent userOrgs={userOrgs} />
-      <GlobalContext.Provider value={globalContextValues}>
+      <GlobalContext.Provider
+        value={{
+          isCreateEntityModalOpen: createFormModal,
+          toggleCreateFormModal,
+          userOrgs,
+          userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+            ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+            : null,
+          notifications: notifications?.getNotifications,
+          refetchNotifications: refetch,
+          fetchMoreNotifications,
+          notificationsLoading,
+        }}
+      >
         <HeaderComponent />
         <SectionWrapper width={width}>{children}</SectionWrapper>
       </GlobalContext.Provider>

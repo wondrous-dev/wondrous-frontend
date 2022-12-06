@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import SwipeableViews from 'react-swipeable-views';
 import usePrevious, { useIsMobile, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -29,6 +29,7 @@ import DndErrorModal from './DndErrorModal';
 import TaskColumn from './TaskColumn';
 import { KanbanBoardContainer, KanbanBoardPaginationContainer, KanbanBoardPaginationStepper } from './styles';
 import PaginationDot from './PaginationDot';
+import { SnackbarAlertContext } from '../SnackbarAlert';
 
 export const populateOrder = (index, tasks, field) => {
   let aboveOrder = null;
@@ -52,6 +53,10 @@ function KanbanBoard(props) {
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
   const theme = useTheme();
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const setSnackbarAlertSeverity = snackbarContext?.setSnackbarAlertSeverity;
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -186,9 +191,17 @@ function KanbanBoard(props) {
                     board,
                   },
                 },
-              }).catch(() => {});
+              }).catch((e) => {
+                setSnackbarAlertSeverity('error');
+                setSnackbarAlertOpen(true);
+                setSnackbarAlertMessage(e.message);
+              });
             }
-          } catch (err) {}
+          } catch (err) {
+            setSnackbarAlertSeverity('error');
+            setSnackbarAlertOpen(true);
+            setSnackbarAlertMessage(err.message);
+          }
           return {
             ...column,
             tasks: newTasks,
