@@ -182,3 +182,8 @@ export const removeUrlStart = (url) => {
   if (!url) return '';
   return url.replace(/http(s)?(:)?(\/\/)?|(\/\/)?(www\.)?/g, '');
 };
+
+export const CHAIN_REGEX = {
+  HARMONY: /^one[a-zA-Z0-9]{39}$/gm,
+  ETHEREUM: /^0x[a-zA-Z0-9]{40}$/gm,
+};
