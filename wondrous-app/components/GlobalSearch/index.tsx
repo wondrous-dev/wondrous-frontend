@@ -26,7 +26,6 @@ function GlobalSearch() {
           </SearchIconWrapper>
         </Badge>
       </SearchWrapper>
-      {/* <SearchSuggestions show={isExpanded && Object.keys(options)?.length === 0} onClose={() => {}} /> */}
     </GlobalSearchWrapper>
   );
 }

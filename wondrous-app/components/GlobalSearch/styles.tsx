@@ -47,7 +47,7 @@ export const SearchInput = styled(Input)`
 `;
 
 export const SearchResults = styled.div`
-  background: ${palette.grey900};
+  color: ${palette.grey250};
   width: fit-content;
   min-width: 100%;
   overflow: scroll;
@@ -76,8 +76,8 @@ export const SearchResultItem = styled.li`
     isActive &&
     `
   
-  background: ${palette.black92}; 
-  color: ${palette.white};
+    background: ${palette.black92};
+    color: ${palette.white};
   `};
 
   img {

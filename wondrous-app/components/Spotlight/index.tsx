@@ -1,6 +1,8 @@
-import { Drawer, Grid, Modal, Typography } from '@mui/material';
+import { CircularProgress, Grid, InputAdornment, Modal, Typography } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import {
+  SearchInput,
+  SearchInputWrapper,
   SearchResultCategory,
   SearchResultCategoryTitle,
   SearchResultItem,
@@ -16,15 +18,16 @@ import typography from 'theme/typography';
 import { GLOBAL_SEARCH_TYPES } from 'utils/constants';
 import { useKeyPress } from 'utils/hooks';
 import { DIRECTION, initialState, Labels, LABELS_DEFAULT_IMAGES_MAP, SUGGESTIONS, TYPES } from './constants';
-import { Input, SpotlightFooter, Wrapper } from './styles';
+import { Input, SpotlightFooter, Wrapper, MuiDrawer, LeftArrowButton } from './styles';
 import { reducer } from './utils';
 import useMediaQuery from 'hooks/useMediaQuery';
+import { SearchIconWrapped } from 'components/SearchTasks/styles';
+import BackIcon from 'components/Icons/BackIcon';
 
 let timeout;
 
 const Spotlight = ({ onClose }) => {
-
-  const {isMobileScreen} = useMediaQuery();
+  const { isMobileScreen } = useMediaQuery();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const setOptions = (payload) => dispatch({ type: TYPES.SET_OPTIONS, payload });
@@ -122,15 +125,54 @@ const Spotlight = ({ onClose }) => {
     }
   }, [enterPress, optionsKeys?.length]);
 
-  console.log(isMobileScreen, 'isMobileScreen')
+  const WrapperComponent = useMemo(
+    () =>
+      isMobileScreen
+        ? ({ open, onClose, children }) => (
+            <MuiDrawer anchor="top" open={open} onClose={onClose}>
+              {children}
+            </MuiDrawer>
+          )
+        : Modal,
+    [isMobileScreen]
+  );
 
-  const WrapperComponent = isMobileScreen ? ({open, onClose, children}) => <Drawer anchor="top" open={open} onClose={onClose}>{children}</Drawer> : Modal;
-  
   return (
     <WrapperComponent open onClose={onClose}>
       <Wrapper>
         <Grid>
-          <Input onChange={handleInputChange} placeholder="Select a command or search" />
+          {isMobileScreen ? (
+            <Grid display="flex" gap="16px" width="100%">
+              <LeftArrowButton type="button" onClick={onClose}> 
+              <BackIcon />
+              </LeftArrowButton>
+
+              <SearchInputWrapper isExpanded>
+                <SearchInput
+                  sx={{ height: '48px' }}
+                  isExpanded
+                  placeholder="Select a command or search"
+                  onChange={handleInputChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIconWrapped />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {isLoading ? (
+                          <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} />
+                        ) : null}
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </SearchInputWrapper>
+            </Grid>
+          ) : (
+            <Input onChange={handleInputChange} placeholder="Select a command or search" />
+          )}
         </Grid>
         <SearchSuggestions
           show={optionsKeys?.length === 0}

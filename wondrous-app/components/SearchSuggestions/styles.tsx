@@ -10,8 +10,12 @@ export const Wrapper = styled.div`
   padding: 8px;
   color: ${palette.grey250};
   font-weight: 500;
-
-  display: ${({ show }) => (show ? 'block' : 'none')};
+  flex-direction: column;
+  gap: 14px;
+  display: ${({ show }) => (show ? 'flex' : 'none')};
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding: 28px 0;
+  }
 `;
 
 export const Item = styled.button`
@@ -37,6 +41,10 @@ export const Item = styled.button`
   background: ${palette.black92};
   color: ${palette.white};
   `}
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding: 0;
+    font-size: 14px;
+  }
 `;
 
 export const IconWrapper = styled.div`
@@ -46,7 +54,15 @@ export const IconWrapper = styled.div`
   height: 24px;
   width: 24px;
   border-radius: 4px;
-  ${({ isActive }) => isActive && `background: ${palette.highlightPurple};`}
+  ${({ isActive }) => isActive && `background: ${palette.highlightPurple};`};
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    height: 36px;
+    width: 36px;
+    svg {
+      width: 36px;
+      height: 36px;
+    }
+  }
 `;
 
 export const CheckedBox = styled((props) => <CheckedBoxIcon {...props} stroke="white" pathFill="none" />)``;

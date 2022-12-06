@@ -55,7 +55,6 @@ export function CreateEntity(props: ICreateEntity) {
 
   const isPodEntity = entityType === ENTITIES_TYPES.POD;
 
-  console.log('imhere bra')
   return (
     <>
       <CreateEntityDiscardTask
