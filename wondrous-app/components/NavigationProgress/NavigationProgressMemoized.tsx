@@ -5,12 +5,12 @@ type Props = {
   isVisible: boolean;
 };
 
-const NavigationProgressMemo = ({ isVisible }: Props) => (
+const NavigationProgressMemoized = ({ isVisible }: Props) => (
   <ProgressBarWrapper key={`progress-nav-${isVisible}`}>
     <ProgressBarInner isVisible={isVisible} />
   </ProgressBarWrapper>
 );
 
-NavigationProgressMemo.displayName = 'NavigationProgressMemo';
+NavigationProgressMemoized.displayName = 'NavigationProgressMemo';
 
-export default memo(NavigationProgressMemo, (prevProps, nextProps) => prevProps.isVisible === nextProps.isVisible);
+export default memo(NavigationProgressMemoized, (prevProps, nextProps) => prevProps.isVisible === nextProps.isVisible);

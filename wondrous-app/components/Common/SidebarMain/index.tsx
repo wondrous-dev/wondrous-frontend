@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useIsMobile } from 'utils/hooks';
 
-import SidebarMemo from './SidebarMemo';
+import SidebarMemo from './SidebarMemoized';
 
 const SideBarComponent = () => {
   const isMobile = useIsMobile();

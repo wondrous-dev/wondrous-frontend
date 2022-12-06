@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import NavigationProgressMemo from './NavigationProgressMemo';
+import NavigationProgressMemoized from './NavigationProgressMemoized';
 
 const NavigationProgress = () => {
   const router = useRouter();
@@ -22,7 +22,7 @@ const NavigationProgress = () => {
     };
   }, []);
 
-  return <NavigationProgressMemo isVisible={isVisible} />;
+  return <NavigationProgressMemoized isVisible={isVisible} />;
 };
 
 export default NavigationProgress;

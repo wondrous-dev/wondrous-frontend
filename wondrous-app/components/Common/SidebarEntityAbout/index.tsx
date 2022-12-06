@@ -1,6 +1,6 @@
 import { useBoards } from 'utils/hooks';
 
-import SidebarEntityAboutMemo from './SidebarEntityAboutMemo';
+import SidebarEntityAboutMemo from './SidebarEntityAboutMemoized';
 
 const AboutEntity = () => {
   const { board } = useBoards();

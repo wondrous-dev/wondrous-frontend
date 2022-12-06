@@ -34,13 +34,6 @@ type User = {
   dummy: String;
 };
 
-type AppContextStore = {
-  isAuthenticated: boolean;
-  // TODO change type of this context
-  context: any;
-  user: User;
-};
-
 const Layout = ({ Component, pageProps }) =>
   Component.getLayout ? Component.getLayout(<Component {...pageProps} />) : <Component {...pageProps} />;
 
@@ -103,12 +96,7 @@ function MyApp({ Component, pageProps }) {
                       <NavigationProgress />
                       <SidebarLayout>
                         <OnboardingTour>
-                          <Layout
-                            Component={Component}
-                            pageProps={pageProps}
-                            key={typeof window !== 'undefined' ? window.location.pathname : router.asPath}
-                          />
-                          ≈
+                          <Layout Component={Component} pageProps={pageProps} />≈
                         </OnboardingTour>
                       </SidebarLayout>
                     </HotkeyContext.Provider>

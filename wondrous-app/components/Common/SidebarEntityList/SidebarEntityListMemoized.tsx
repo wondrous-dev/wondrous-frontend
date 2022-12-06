@@ -16,7 +16,7 @@ type Props = {
   urlPath: string;
 };
 
-const SidebarEntityListMemo = ({ menuItems, handleOnClick, urlPath }: Props) => {
+const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath }: Props) => {
   const isActive = (entityType, link) => (entityType ? location().includes(link) : urlPath.includes(link));
 
   return (
@@ -46,7 +46,7 @@ const SidebarEntityListMemo = ({ menuItems, handleOnClick, urlPath }: Props) => 
   );
 };
 
-export default memo(SidebarEntityListMemo, (prevProps, nextProps) => {
+export default memo(SidebarEntityListMemoized, (prevProps, nextProps) => {
   const areEqual =
     JSON.stringify(prevProps.menuItems) === JSON.stringify(nextProps.menuItems) &&
     prevProps.urlPath === nextProps.urlPath;

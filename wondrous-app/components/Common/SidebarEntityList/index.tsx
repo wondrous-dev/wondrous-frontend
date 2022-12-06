@@ -14,7 +14,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import GrantIcon from 'components/Icons/GrantIcon';
-import SidebarEntityListMemo from './SidebarEntityListMemo';
+import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
 const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
@@ -148,7 +148,7 @@ const SidebarEntityList = () => {
   const router = useRouter();
   const { data, handleOnClick } = useSidebarData();
 
-  return <SidebarEntityListMemo menuItems={data} handleOnClick={handleOnClick} urlPath={router.asPath} />;
+  return <SidebarEntityListMemoized menuItems={data} handleOnClick={handleOnClick} urlPath={router.asPath} />;
 };
 
 export default SidebarEntityList;

@@ -13,7 +13,7 @@ type Props = {
   board: any;
 };
 
-const SidebarEntityAboutMemo = ({ name, id, thumbnailPicture, profilePicture, board }: Props) => (
+const SidebarEntityAboutMemoized = ({ name, id, thumbnailPicture, profilePicture, board }: Props) => (
   <Wrapper>
     <EntityMenu name={name} id={id} thumbnailPicture={thumbnailPicture} profilePicture={profilePicture} />
     <ButtonWrapper>
@@ -23,7 +23,7 @@ const SidebarEntityAboutMemo = ({ name, id, thumbnailPicture, profilePicture, bo
   </Wrapper>
 );
 
-export default memo(SidebarEntityAboutMemo, (prevProps, nextProps) => {
+export default memo(SidebarEntityAboutMemoized, (prevProps, nextProps) => {
   const areEqual =
     prevProps.name === nextProps.name &&
     prevProps.id === nextProps.id &&
