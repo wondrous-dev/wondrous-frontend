@@ -65,7 +65,7 @@ export const CreateEntityHeader = styled.div`
 `;
 
 export const CreateEntitySelectRoot = styled.button`
-  font-family: 'Space Grotesk';
+  font-family: ${typography.fontFamily};
   font-weight: 500;
   font-size: 13px;
   width: 100%;
@@ -82,7 +82,7 @@ export const CreateEntitySelectRoot = styled.button`
 `;
 
 export const CreateEntitySelectListbox = styled.ul`
-  font-family: 'Space Grotesk';
+  font-family: ${typography.fontFamily};
   color: ${palette.white};
   margin: 0;
   padding: 0;
@@ -696,7 +696,7 @@ export const CreateEntityCreateTaskButton = styled(Button)`
       font-size: 15px;
       font-weight: 600;
       font-family: 'Space Grotesk';
-      background: #0f0f0f;
+      background: ${palette.background};
     }
   }
 `;
@@ -1109,9 +1109,9 @@ export const SnapshotButtonBlock = styled.div`
 
 export const StyledProposalSelect = styled(Select)`
   && {
-    background: #0f0f0f;
+    background: ${palette.background};
     width: 100%;
-    color: #fff;
+    color: ${palette.white};
     border-radius: 4px;
     font-size: 14px;
   }
