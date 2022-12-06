@@ -383,21 +383,6 @@ export function ProposerField({ shouldDisplay, creatorUsername, creatorProfilePi
     </TaskSectionDisplayDiv>
   );
 }
-export function VotesField({ shouldDisplay, totalVotes, hasContent }) {
-  if (!shouldDisplay) return null;
-  return (
-    <TaskSectionDisplayDiv>
-      <TaskSectionLabel>Voted</TaskSectionLabel>
-      <TaskSectionImageContent
-        hasContent={hasContent}
-        ContentComponent={InfoText}
-        ContentComponentProps={{
-          content: `${totalVotes} votes`,
-        }}
-      />
-    </TaskSectionDisplayDiv>
-  );
-}
 
 const DueDateFieldContent = ({ recurringSchema, dueDate }) => (
   <TaskSectionInfoText>

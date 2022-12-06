@@ -7,7 +7,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { useOrgBoard } from 'utils/hooks';
 import { capitalize } from 'utils/common';
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
-import { GET_ORG_ARCHIVED_PODS, GET_ORG_PODS_WITH_COUNT, GET_USER_PODS } from 'graphql/queries';
+import { GET_ORG_ARCHIVED_PODS, GET_ORG_PODS_WITH_COUNT, GET_USER_PODS_WITH_ORG_INFO } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 
 import PlusIcon from 'components/Icons/plus';
@@ -60,7 +60,7 @@ const Pods = (props) => {
       orgId: orgData?.id,
     },
   });
-  const { data: userPodsData } = useQuery(GET_USER_PODS, {
+  const { data: userPodsData } = useQuery(GET_USER_PODS_WITH_ORG_INFO, {
     fetchPolicy: 'network-only',
     skip: !user?.id,
     variables: {
