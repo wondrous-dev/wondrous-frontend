@@ -514,7 +514,6 @@ function BoardsPage() {
   useEffect(() => {
     if (orgData && orgData.username !== username) {
       setFirstTimeFetch(true);
-      setOrgData(null);
       setIsLoading(true);
       // Get orgId from username
       getOrgFromUsername({
