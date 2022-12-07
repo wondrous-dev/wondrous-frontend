@@ -1,8 +1,8 @@
 import Grid from '@mui/material/Grid';
 
 import ListBounty from './ListBounty';
+import ListCategory from './ListCategory';
 import ListCollab from './ListCollab';
-import ListDoc from './ListDoc';
 import ListGrant from './ListGrant';
 import ListMember from './ListMember';
 import ListMilestone from './ListMilestone';
@@ -27,7 +27,7 @@ const ListMainWrapper = () => (
     <ListMember />
     <ListCollab />
     <ListGrant />
-    <ListDoc />
+    <ListCategory />
   </Grid>
 );
 

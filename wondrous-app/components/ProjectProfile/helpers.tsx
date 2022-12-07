@@ -18,7 +18,7 @@ import sortBy from 'lodash/sortBy';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useBoards, useProject, useSideBar } from 'utils/hooks';
+import { useBoards, useProject } from 'utils/hooks';
 
 import { EntitiesType, ICreateButtonProps } from './types';
 
@@ -64,7 +64,7 @@ export const useCollaborationModal = () => {
   return { CollaborationModal, handleCreateModal };
 };
 
-export const useDocCategoriesModal = () => {
+export const useCategoriesModal = () => {
   const router = useRouter();
   const { board } = useBoards();
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
@@ -128,11 +128,11 @@ export const useCollaborationButtonProps = (): ICreateButtonProps => {
   };
 };
 
-export const useDocCategoriesButtonProps = (): ICreateButtonProps => {
+export const useCategoriesButtonProps = (): ICreateButtonProps => {
   const { handleCreateNewCategory } = useProject();
   return {
     onClick: handleCreateNewCategory,
-    text: 'Document',
+    text: 'Category',
   };
 };
 

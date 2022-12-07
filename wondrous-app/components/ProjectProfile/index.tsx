@@ -4,12 +4,12 @@ import PodCards from 'components/ProjectProfile/PodCards';
 import { useMemo } from 'react';
 import { ProjectContext } from 'utils/contexts';
 
-import { useCollaborationModal, useCreateEntityModal, useCreateGrantModal, useDocCategoriesModal } from './helpers';
+import { useCollaborationModal, useCreateEntityModal, useCreateGrantModal, useCategoriesModal } from './helpers';
 
 const ProjectProfile = ({ orgData }) => {
   const { setEntityType, CreateEntityModal } = useCreateEntityModal();
   const { CollaborationModal, handleCreateModal } = useCollaborationModal();
-  const { DocCategoriesModal, handleCreateNewCategory } = useDocCategoriesModal();
+  const { DocCategoriesModal, handleCreateNewCategory } = useCategoriesModal();
   const { CreateGrantModal, handleCreateFormModal } = useCreateGrantModal();
   const projectContextValue = useMemo(
     () => ({

@@ -3,7 +3,7 @@ import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import palette from 'theme/palette';
 import { randomColors } from 'utils/common';
 
-import { useDocCategoriesButtonProps, useGetOrgDocumentCategories } from './helpers';
+import { useCategoriesButtonProps, useGetOrgDocumentCategories } from './helpers';
 import ListWrapper from './ListWrapper';
 
 const LeftComponent = ({ name }) => (
@@ -24,13 +24,13 @@ const LeftComponent = ({ name }) => (
   </Grid>
 );
 
-const ListDoc = () => (
+const ListCategory = () => (
   <ListWrapper
     HeaderTitleProps={{
-      text: 'Document',
+      text: 'Category',
       IconComponent: FolderIcon,
     }}
-    CreateButtonProps={useDocCategoriesButtonProps()}
+    CreateButtonProps={useCategoriesButtonProps()}
     backgroundImageUrl="/images/project/document-empty-bg.svg"
     showAllUrl="docs"
     ListItemProps={{
@@ -41,4 +41,4 @@ const ListDoc = () => (
   />
 );
 
-export default ListDoc;
+export default ListCategory;
