@@ -1,9 +1,6 @@
-import React from 'react';
-
 import { ComponentMeta } from '@storybook/react';
-
-import PodCards from 'components/Common/PodCards';
-
+import PodCards from 'components/ProjectProfile/PodCards';
+import React from 'react';
 import * as PodCardStories from 'stories/PodCard/PodCard.stories';
 
 export default {

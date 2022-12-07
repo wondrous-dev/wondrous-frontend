@@ -1,15 +1,13 @@
-import React from 'react';
-
 import { ComponentMeta } from '@storybook/react';
-
-import ProjectCreateButton from 'components/Common/ProjectCreateButton';
+import CreateButton from 'components/ProjectProfile/CreateButton';
+import React from 'react';
 
 export default {
   title: 'ProjectCreateButton',
-  component: ProjectCreateButton,
-} as ComponentMeta<typeof ProjectCreateButton>;
+  component: CreateButton,
+} as ComponentMeta<typeof CreateButton>;
 
-const Template = (args) => <ProjectCreateButton {...args} />;
+const Template = (args) => <CreateButton {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = { onClick: () => null, text: 'Pods' };

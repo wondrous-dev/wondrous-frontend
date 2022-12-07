@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import PodIcon from 'components/Icons/podIcon';
 import Tooltip from 'components/Tooltip';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 interface PodIconNameProps {
   color?: string;
@@ -37,7 +38,7 @@ const PodIconName = ({ color = palette.grey900, name, onClick = null, IconCompon
         {...IconComponentProps}
       />
       <Typography
-        fontFamily="Space Grotesk"
+        fontFamily={typography.fontFamily}
         color={palette.white}
         fontSize="13px"
         fontWeight="500"

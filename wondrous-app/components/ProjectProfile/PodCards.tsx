@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useProject } from 'utils/hooks';
 
 import { useEntityCreateButtonProps, useGetOrgPods } from './helpers';
 
@@ -27,13 +26,13 @@ const EmptyWrapper = styled.div`
   justify-content: center;
 `;
 
-const useNoPods = () => (
+const NoPods = () => (
   <EmptyWrapper>
     <CreateButton {...useEntityCreateButtonProps(ENTITIES_TYPES.POD)} />
   </EmptyWrapper>
 );
 
-const podCardContent = (pods) => {
+const PodCardContent = ({ pods }) => {
   const numbersOfPodsToShow = 6;
   return pods?.slice(0, numbersOfPodsToShow).map((pod) => <PodCard key={pod.id} {...pod} />);
 };
@@ -60,8 +59,7 @@ const ShowAllButton = () => {
 
 const PodCards = () => {
   const pods = useGetOrgPods();
-  const emptyComponent = useNoPods();
-  const podsComponent = isEmpty(pods) ? emptyComponent : podCardContent(pods);
+  const podsComponent = isEmpty(pods) ? <NoPods /> : <PodCardContent pods={pods} />;
   return (
     <Grid container bgcolor={palette.black97} padding="14px" gap="14px">
       <Grid container justifyContent="space-between">

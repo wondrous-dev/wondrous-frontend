@@ -6,6 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { useCheckOrgPermission } from 'utils/hooks';
 
 import CreateButton from './CreateButton';
@@ -41,7 +42,7 @@ const AddButtonWrapper = styled(ButtonBase)`
   }
 `;
 
-const emptyComponent = ({ backgroundImageUrl, CreateButtonProps }) => (
+const EmptyComponent = ({ backgroundImageUrl, CreateButtonProps }) => (
   <Grid
     container
     width="auto"
@@ -82,9 +83,11 @@ const ListWrapper = ({
 }: ListWrapperProps) => {
   const router = useRouter();
   const handleShowAllOnClick = () => router.push(`/organization/${router.query.username}/${showAllUrl}`);
-  const entityContent = isEmpty(data)
-    ? emptyComponent({ backgroundImageUrl, CreateButtonProps })
-    : data.slice(0, DATA_LIMIT).map((i) => <ListItem key={i?.id} {...ListItemProps} data={i} />);
+  const entityContent = isEmpty(data) ? (
+    <EmptyComponent backgroundImageUrl={backgroundImageUrl} CreateButtonProps={CreateButtonProps} />
+  ) : (
+    data.slice(0, DATA_LIMIT).map((i) => <ListItem key={i?.id} {...ListItemProps} data={i} />)
+  );
   return (
     <MainWrapper
       container
@@ -112,7 +115,7 @@ const ListWrapper = ({
           background: palette.grey87,
           borderRadius: '0 0 6px 6px',
           color: palette.white,
-          fontFamily: 'Space Grotesk',
+          fontFamily: typography.fontFamily,
           fontWeight: 500,
           '&:hover': {
             background: palette.grey88,

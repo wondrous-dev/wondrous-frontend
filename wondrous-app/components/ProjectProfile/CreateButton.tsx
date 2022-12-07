@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import PlusIcon from 'components/Icons/plus';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { useCheckOrgPermission } from 'utils/hooks';
 
 import { ICreateButtonProps } from './types';
@@ -33,7 +34,7 @@ export const ButtonIcon = styled(ButtonBase)`
     z-index: 2;
     padding-right: 16px;
     padding-left: 2px;
-    font-family: 'Space Grotesk';
+    font-family: ${typography.fontFamily};
     color: ${palette.white};
     gap: 8px;
     text-transform: capitalize;

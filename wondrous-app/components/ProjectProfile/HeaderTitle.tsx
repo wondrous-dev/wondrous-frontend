@@ -2,12 +2,13 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 import { IHeaderTitleProps } from './types';
 
 const HeaderText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${typography.fontFamily};
     font-style: normal;
     font-weight: 700;
     font-size: 20px;
