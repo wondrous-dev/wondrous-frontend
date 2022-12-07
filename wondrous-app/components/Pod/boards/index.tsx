@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { memo, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 
+import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
 import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
-import BoardsActivity from 'components/Common/BoardsActivity';
 import { ENTITIES_TYPES } from 'utils/constants';
-import MilestoneBoard from 'components/Common/MilestoneBoard';
-import BountyBoard from 'components/Common/BountyBoard';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import { ColumnsContext } from 'utils/contexts';
-import Boards from '../../Common/Boards';
 import Wrapper from '../wrapper';
+
+const Boards = dynamic(() => import('components/Common/Boards'), { suspense: true });
+const BountyBoard = dynamic(() => import('components/Common/BountyBoard'), { suspense: true });
+const MilestoneBoard = dynamic(() => import('components/Common/MilestoneBoard'), { suspense: true });
 
 const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
@@ -58,19 +60,37 @@ function PodBoards(props: Props) {
   return (
     <Wrapper onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
       <ColumnsContext.Provider value={{ columns, setColumns }}>
-        {!loading && (
-          <ActiveBoard
-            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-            columns={columns}
-            onLoadMore={onLoadMore}
-            hasMore={hasMore}
-            setColumns={setColumns}
-            entityType={entityType}
-          />
+        {loading ? (
+          <BoardColumnsSkeleton />
+        ) : (
+          <Suspense>
+            <ActiveBoard
+              activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+              columns={columns}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              setColumns={setColumns}
+              entityType={entityType}
+            />
+          </Suspense>
         )}
       </ColumnsContext.Provider>
     </Wrapper>
   );
 }
 
-export default PodBoards;
+export default memo(PodBoards, (prevProps, nextProps) => {
+  const areEqual =
+    prevProps.columns === nextProps.columns &&
+    prevProps.hasMore === nextProps.hasMore &&
+    prevProps.statuses === nextProps.statuses &&
+    prevProps.userId === nextProps.userId &&
+    prevProps.entityType === nextProps.entityType &&
+    prevProps.loading === nextProps.loading &&
+    prevProps.searchString === nextProps.searchString &&
+    prevProps.orgId === nextProps.orgId &&
+    prevProps.userId === nextProps.userId &&
+    prevProps.activeView === nextProps.activeView;
+
+  return areEqual;
+});

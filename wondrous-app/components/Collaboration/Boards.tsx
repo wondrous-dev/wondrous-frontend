@@ -1,4 +1,6 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, memo, Suspense } from 'react';
+
+import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
 import { ColumnsContext } from 'utils/contexts';
 import Wrapper from 'components/organization/wrapper/wrapper';
 import { BOARDS_MAP, Props } from 'components/organization/boards/boards';
@@ -11,7 +13,6 @@ import { BATCH_ADD_MEMBERS } from 'graphql/mutations';
 import AddMembersConfirmation from 'components/CreateCollaborationModal/Steps/Confirmation';
 import { useRouter } from 'next/router';
 import { getFilterSchema } from 'utils/board';
-import { insertUrlParam } from 'utils/index';
 import SharedOrgHeader from './SharedOrgHeader';
 
 function CollabBoard(props: Props) {
@@ -42,8 +43,11 @@ function CollabBoard(props: Props) {
 
   const handleModal = () => {
     if (router.query.addMembers) {
-      insertUrlParam('addMembers', '');
+      const query: any = { ...router.query, addMembers: '' };
+
+      router.push({ query }, undefined, { shallow: true, scroll: false });
     }
+
     setOpenInviteModal((prevState) => !prevState);
     setStep(0);
     setUsers({ admins: [], members: [], adminRole: null, memberRole: null });
@@ -152,19 +156,36 @@ function CollabBoard(props: Props) {
         </ModalComponent>
       )}
       <ColumnsContext.Provider value={{ columns, setColumns }}>
-        {!loading && (
-          <ActiveBoard
-            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-            columns={columns}
-            onLoadMore={onLoadMore}
-            hasMore={hasMore}
-            setColumns={setColumns}
-            entityType={entityType}
-          />
+        {loading ? (
+          <BoardColumnsSkeleton />
+        ) : (
+          <Suspense>
+            <ActiveBoard
+              activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+              columns={columns}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              setColumns={setColumns}
+              entityType={entityType}
+            />
+          </Suspense>
         )}
       </ColumnsContext.Provider>
     </Wrapper>
   );
 }
 
-export default CollabBoard;
+export default memo(CollabBoard, (prevProps, nextProps) => {
+  const areEqual =
+    prevProps.columns === nextProps.columns &&
+    prevProps.hasMore === nextProps.hasMore &&
+    prevProps.orgData?.id === nextProps.orgData?.id &&
+    prevProps.statuses === nextProps.statuses &&
+    prevProps.podIds === nextProps.podIds &&
+    prevProps.userId === nextProps.userId &&
+    prevProps.entityType === nextProps.entityType &&
+    prevProps.loading === nextProps.loading &&
+    prevProps.activeView === nextProps.activeView;
+
+  return areEqual;
+});

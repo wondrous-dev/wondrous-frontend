@@ -40,6 +40,8 @@ import {
   APPLICATION_POLICY_LABELS_MAP,
   GR15DEICategoryName,
   PRIORITIES,
+  PROPOSAL_VOTE_CHOICES,
+  DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY,
 } from 'utils/constants';
 
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
@@ -62,6 +64,8 @@ import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Li
 import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
+import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
+import { InputLabel } from '@mui/material';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -95,6 +99,7 @@ import {
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
   formDirty,
+  useGetProposalChoices,
 } from './Helpers';
 import {
   CreateEntityAddButtonIcon,
@@ -123,7 +128,6 @@ import {
   CreateEntityLabelAddButton,
   CreateEntityLabelSelectWrapper,
   CreateEntityLabelWrapper,
-  CreateEntityMilestoneSearch,
   CreateEntityOpenInFullIcon,
   CreateEntityOption,
   CreateEntityOptionLabel,
@@ -154,6 +158,9 @@ import {
   SnapshotErrorText,
   CreateEntityPrivacySelectRenderLabelWrapper,
   CreateEntityCloseIcon,
+  ProposalVoteSelect,
+  ProposalVoteSelectMenuItem,
+  ProposalVoteSelectMenuItemText,
 } from './styles';
 
 import { MediaItem } from '../MediaItem';
@@ -162,6 +169,7 @@ import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 import { TaskTemplatePickerWrapper } from './TaskTemplatePicker/styles';
+import CustomProposal from './CustomProposal';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status, setFormDirty } = props;
@@ -245,6 +253,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       const reviewerIds = values?.reviewerIds?.filter((i) => i !== null);
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userMentions = extractMentions(values.description);
+
       const points = parseInt(values.points, 10);
       const rewards = isEmpty(values.rewards)
         ? []
@@ -261,6 +270,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         githubRepo,
         recurringSchema,
         GR15DEISelected,
+        proposalVoteType,
+        customProposalChoices,
         ...finalValues
       } = values;
       let categories = values?.categories?.map((category) => category.id || category);
@@ -270,7 +281,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         }
         categories.push(GR15DEICategoryName);
       }
-
+      const voteType = proposalVoteType || PROPOSAL_VOTE_CHOICES.BINARY;
+      const voteOptions = customProposalChoices;
       const input = {
         ...finalValues,
         reviewerIds,
@@ -279,6 +291,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         timezone,
         userMentions,
         categories,
+        ...(isProposal && {
+          voteType,
+          ...(voteType === PROPOSAL_VOTE_CHOICES.CUSTOM && { voteOptions }),
+        }),
         description: JSON.stringify(values.description),
         ...(values?.githubPullRequest?.id && {
           githubPullRequest,
@@ -310,7 +326,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
 
   const categoriesData = useGetCategories();
-
+  const proposalChoices = useGetProposalChoices();
   const pods = useGetAvailableUserPods(form.values.orgId);
   const roles = useGetOrgRoles(form.values.orgId);
 
@@ -392,6 +408,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
       form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     }
+    if (isProposal) {
+      form.setFieldValue('proposalVoteType', 'none');
+      form.setFieldValue('customProposalChoices', DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY);
+    }
     // TODO we should add recurring to bounties and milesstone
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('priority', existingTask?.priority || null);
@@ -408,6 +428,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     existingTask?.milestoneId,
     existingTask?.labels,
     isTask,
+    isProposal,
   ]);
 
   useEffect(() => {
@@ -872,6 +893,32 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           )}
         </CreateEntityLabelSelectWrapper>
         <CreateEntityDivider />
+        {isProposal && !existingTask && form?.values?.proposalVoteType && (
+          <>
+            <ProposalVoteSelect value={form?.values?.proposalVoteType} label="Select voting style">
+              <ProposalVoteSelectMenuItem value="none" disabled>
+                <ProposalVoteSelectMenuItemText>Select Voting Style</ProposalVoteSelectMenuItemText>
+              </ProposalVoteSelectMenuItem>
+              {proposalChoices.map((option) => (
+                <ProposalVoteSelectMenuItem
+                  value={option?.value}
+                  onClick={() => form.setFieldValue('proposalVoteType', option?.value)}
+                >
+                  <ProposalVoteSelectMenuItemText>{option?.label}</ProposalVoteSelectMenuItemText>
+                </ProposalVoteSelectMenuItem>
+              ))}
+            </ProposalVoteSelect>
+            {form?.values?.proposalVoteType === PROPOSAL_VOTE_CHOICES.CUSTOM && <CustomProposal form={form} />}
+            <ProposalVoteSelectMenuItemText
+              style={{
+                marginTop: '8px',
+              }}
+            >
+              P.S. In 'Multiple Choice' voting style, options cannot be edited
+            </ProposalVoteSelectMenuItemText>
+            <CreateEntityDivider />
+          </>
+        )}
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reviewer)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Reviewer</CreateEntityLabel>
@@ -1387,7 +1434,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           <CreateEntitySelectWrapper>
             {form.values.milestoneId !== null && (
               <CreateEntityWrapper>
-                <CreateEntityMilestoneSearch
+                <MilestoneSearch
                   autoFocus={!form.values?.milestoneId}
                   options={filterUserOptions(milestonesData)}
                   value={form.values.milestoneId}
@@ -1745,21 +1792,16 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             onChange={(value) => {
               form.setFieldValue('privacyLevel', value);
             }}
-            renderValue={(value) => {
-              const Icon = privacyOptions[value?.value]?.Icon;
-
-              return (
-                <Tooltip placement="top">
-                  <CreateEntityPrivacySelectRender>
-                    <CreateEntityPrivacySelectRenderLabelWrapper>
-                      <CreateEntityPrivacyIconWrapper>{Icon && <Icon />}</CreateEntityPrivacyIconWrapper>
-                      <CreateEntityPrivacySelectRenderLabel>{value?.value}</CreateEntityPrivacySelectRenderLabel>
-                    </CreateEntityPrivacySelectRenderLabelWrapper>
-                    <CreateEntitySelectArrowIcon />
-                  </CreateEntityPrivacySelectRender>
-                </Tooltip>
-              );
-            }}
+            renderValue={(value) => (
+              <Tooltip placement="top">
+                <CreateEntityPrivacySelectRender>
+                  <CreateEntityPrivacySelectRenderLabelWrapper>
+                    <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
+                  </CreateEntityPrivacySelectRenderLabelWrapper>
+                  <CreateEntitySelectArrowIcon />
+                </CreateEntityPrivacySelectRender>
+              </Tooltip>
+            )}
           >
             {Object.keys(privacyOptions).map((i) => {
               const { label, value, Icon } = privacyOptions[i];

@@ -74,7 +74,7 @@ const profilePictureStyle = {
   objectFit: 'cover' as any,
 };
 
-const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
+const SidebarMemoized = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
   const { minimized, setMinimized } = sidebar;
   const [openHelpModal, setOpenHelpModal] = useState(false);
   const handleMinimize = () => setMinimized(false);
@@ -185,7 +185,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
 
 // eslint-disable-next-line react/display-name
 export default memo(
-  SideBarMemo,
+  SidebarMemoized,
   (prevProps, nextProps) =>
     prevProps.isMobile === nextProps.isMobile &&
     prevProps.sidebar?.minimized === nextProps.sidebar?.minimized &&

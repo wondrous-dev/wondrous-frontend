@@ -27,7 +27,7 @@ import {
   DEFAULT_ENTITY_STATUS_FILTER,
 } from 'services/board';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
+import { dedupeColumns } from 'utils';
 import {
   PRIVACY_LEVEL,
   STATUS_OPEN,
@@ -326,7 +326,7 @@ function BoardsPage({ meta }: Props) {
   });
 
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
-  const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
+  const [getPod, { data: podData, loading: isPodDataLoading }] = useLazyQuery(GET_POD_BY_ID);
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
@@ -355,16 +355,20 @@ function BoardsPage({ meta }: Props) {
     if (type !== entityType) {
       setIsLoading(true);
     }
-    insertUrlParam('entity', type);
-    removeUrlParam('cause');
+
+    const query: any = { ...router.query, entity: type };
+
+    delete query.cause;
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
     });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
-      insertUrlParam('view', ViewType.Grid);
+      query.view = ViewType.Grid;
     }
+
+    router.push({ query }, undefined, { shallow: true, scroll: false });
   };
 
   const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
@@ -441,10 +445,11 @@ function BoardsPage({ meta }: Props) {
   }, [userId]);
 
   useEffect(() => {
-    if (podId) {
+    // Load only once or when you switch POD
+    if (!isPodDataLoading && ((podId && !podData) || (podData && podData.getPodById.id !== podId))) {
       getPod({ variables: { podId } });
     }
-  }, []);
+  }, [podId, podData, isPodDataLoading]);
 
   useEffect(() => {
     if (podId) {

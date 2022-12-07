@@ -1,9 +1,5 @@
 import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
-import {
-  CreateEntityLabelSelectWrapper,
-  CreateEntityLabelWrapper,
-  CreateEntityLabel,
-} from 'components/CreateEntity/CreateEntityModal/styles';
+import { CreateEntityLabelWrapper, CreateEntityLabel } from 'components/CreateEntity/CreateEntityModal/styles';
 import { ApplyPolicyItemButton, ApplyPolicyWrapper } from './styles';
 
 export const APPLY_POLICY_FIELDS = [

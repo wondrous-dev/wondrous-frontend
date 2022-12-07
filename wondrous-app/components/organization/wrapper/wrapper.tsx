@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
+
 import {
   ENTITIES_TYPES,
   PERMISSIONS,
@@ -11,8 +13,9 @@ import {
   BOUNTY_TYPE,
   HEADER_ASPECT_RATIO,
 } from 'utils/constants';
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import apollo from 'services/apollo';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
@@ -30,18 +33,13 @@ import {
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { RichTextViewer } from 'components/RichText';
-import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
-import CurrentRoleModal from 'components/RoleModal/CurrentRoleModal';
-import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
-import MoreInfoModal from 'components/profile/modals';
 import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { DiscordIcon } from '../../Icons/discord';
 import OpenSeaIcon from '../../Icons/openSea';
 import LinkedInIcon from '../../Icons/linkedIn';
 import { DAOEmptyIcon } from '../../Icons/dao';
-import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
 import { SafeImage } from '../../Common/Image';
 import {
   Content,
@@ -75,6 +73,12 @@ import {
 } from './styles';
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
+
+const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/OrgInviteLink'), { suspense: true });
+const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
+const CurrentRoleModal = dynamic(() => import('components/RoleModal/CurrentRoleModal'), { suspense: true });
+const ChooseEntityToCreate = dynamic(() => import('components/CreateEntity'), { suspense: true });
+const MoreInfoModal = dynamic(() => import('components/profile/modals'), { suspense: true });
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
@@ -229,8 +233,6 @@ function Wrapper(props) {
     finalPath = finalPathArr[finalPathArr.length - 1];
   }
 
-  const previousEntity = usePrevious(entity);
-
   useEffect(() => {
     if (!entity && !search) {
       const bountyCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.bountyCount;
@@ -267,15 +269,15 @@ function Wrapper(props) {
       setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS);
     } else if (
       userPermissionsContext?.orgPermissions &&
-      orgProfile?.id in userPermissionsContext?.orgPermissions &&
+      orgProfile?.id in userPermissionsContext.orgPermissions &&
       orgPermissions
     ) {
       // Normal contributor with no access to admin settings
       setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
     } else if (
       orgBoard?.orgId &&
-      userPermissionsContext &&
-      !(orgProfile?.id in userPermissionsContext?.orgPermissions)
+      userPermissionsContext?.orgPermissions &&
+      !(orgProfile?.id in userPermissionsContext.orgPermissions)
     ) {
       setPermissions(null);
       getExistingJoinRequest({
@@ -300,44 +302,54 @@ function Wrapper(props) {
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
-      <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      <TaskViewModalWatcher />
+      <Suspense>
+        <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      </Suspense>
       {openJoinRequestModal && (
-        <MembershipRequestModal
-          orgId={orgBoard?.orgId}
-          open={openJoinRequestModal}
-          onClose={() => setOpenJoinRequestModal(false)}
-          setOpenCurrentRoleModal={setOpenCurrentRoleModal}
-          requestingRole={claimedOrRequestedRole}
-        />
+        <Suspense>
+          <MembershipRequestModal
+            orgId={orgBoard?.orgId}
+            open={openJoinRequestModal}
+            onClose={() => setOpenJoinRequestModal(false)}
+            setOpenCurrentRoleModal={setOpenCurrentRoleModal}
+            requestingRole={claimedOrRequestedRole}
+          />
+        </Suspense>
       )}
       {openCurrentRoleModal && (
-        <CurrentRoleModal
-          orgId={orgBoard?.orgId}
-          open={openCurrentRoleModal}
-          onClose={() => setOpenCurrentRoleModal(false)}
-          linkedWallet={loggedInUser?.activeEthAddress}
-          currentRoleName={orgRoleName}
-          setOpenJoinRequestModal={setOpenJoinRequestModal}
-          setClaimedOrRequestedRole={setClaimedOrRequestedRole}
-        />
+        <Suspense>
+          <CurrentRoleModal
+            orgId={orgBoard?.orgId}
+            open={openCurrentRoleModal}
+            onClose={() => setOpenCurrentRoleModal(false)}
+            linkedWallet={loggedInUser?.activeEthAddress}
+            currentRoleName={orgRoleName}
+            setOpenJoinRequestModal={setOpenJoinRequestModal}
+            setClaimedOrRequestedRole={setClaimedOrRequestedRole}
+          />
+        </Suspense>
       )}
-      <ChooseEntityToCreate />
+      <Suspense>
+        <ChooseEntityToCreate />
+      </Suspense>
       {moreInfoModalOpen && (
-        <MoreInfoModal
-          open={moreInfoModalOpen && (showUsers || showPods)}
-          handleClose={() => {
-            document.body.setAttribute('style', '');
-            setShowPods(false);
-            setShowUsers(false);
-            setMoreInfoModalOpen(false);
-          }}
-          showUsers={showUsers}
-          showPods={showPods}
-          name={orgProfile?.name}
-          orgId={orgBoard?.orgId}
-        />
+        <Suspense>
+          <MoreInfoModal
+            open={moreInfoModalOpen && (showUsers || showPods)}
+            handleClose={() => {
+              document.body.setAttribute('style', '');
+              setShowPods(false);
+              setShowUsers(false);
+              setMoreInfoModalOpen(false);
+            }}
+            showUsers={showUsers}
+            showPods={showPods}
+            name={orgProfile?.name}
+            orgId={orgBoard?.orgId}
+          />
+        </Suspense>
       )}
-
       <HeaderImageWrapper>
         <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
           {orgProfile ? (
@@ -354,7 +366,6 @@ function Wrapper(props) {
           ) : null}
         </AspectRatio>
       </HeaderImageWrapper>
-
       <Content>
         <ContentContainer>
           <TokenHeader>

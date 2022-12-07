@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Menu } from '@mui/icons-material';
+import Menu from '@mui/icons-material/Menu';
 
 import { User } from 'types/User';
 
@@ -21,7 +21,7 @@ type Props = {
   user: User | null;
 };
 
-const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => {
+const HeaderMemoized = ({ isMobile, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => {
   const { setMinimized } = useSideBar();
 
   const toggleMinimize = () => setMinimized((prevValue) => !prevValue);
@@ -69,7 +69,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateBu
 
 // eslint-disable-next-line react/display-name
 export default memo(
-  HeaderMemo,
+  HeaderMemoized,
   (prevProps, nextProps) =>
     prevProps.isMobile === nextProps.isMobile &&
     prevProps.showCreateButton === nextProps.showCreateButton &&

@@ -16,8 +16,7 @@ import {
   BOARD_TYPE,
   STATUS_CLOSED,
 } from 'utils/constants';
-import { useLocation } from 'utils/useLocation';
-import { delQuery, dedupeColumns } from 'utils';
+import { dedupeColumns } from 'utils';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
@@ -25,7 +24,6 @@ import apollo from 'services/apollo';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK } from 'graphql/queries';
 import { taskHasPayment } from 'utils/board';
 
-import TaskViewModal from 'components/Common/TaskViewModal';
 import Droppable from 'components/StrictModeDroppable';
 import { useMe } from 'components/Auth/withAuth';
 import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
@@ -56,13 +54,10 @@ export default function ListView({
   enableInfiniteLoading = false,
   ...props
 }: Props) {
-  const [isModalOpen, setOpenModal] = useState(false);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
-  const router = useRouter();
   const { taskCount = {}, fetchPerStatus, entityType, setColumns } = orgBoard || podBoard || userBoard;
-  const location = useLocation();
   const isProposalEntity = entityType === ENTITIES_TYPES.PROPOSAL;
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
@@ -74,35 +69,14 @@ export default function ListView({
 
   const user = useMe();
 
-  useEffect(() => {
-    const { params } = location;
-    if (params.task || params.taskProposal) {
-      setOpenModal(true);
-    }
-  }, [location]);
+  const handleShowAll = (status, limit) => fetchPerStatus(status, limit);
+
+  const prevColumnState = usePrevious(columns);
 
   const getTaskById = useCallback(
     (taskId) => columns.map(({ tasks }) => tasks.find((task) => task.id === taskId)).filter((i) => i)[0],
     [columns]
   );
-
-  const handleModalClose = () => {
-    const style = document.body.getAttribute('style');
-    const top = style.match(/(?<=top: -)(.*?)(?=px)/);
-    document.body.setAttribute('style', '');
-    if (top?.length > 0) {
-      window?.scrollTo(0, Number(top[0]));
-    }
-    const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}&entity=${
-      location?.params?.entity || ENTITIES_TYPES.TASK
-    }`;
-    location.push(newUrl);
-    setOpenModal(false);
-  };
-
-  const handleShowAll = (status, limit) => fetchPerStatus(status, limit);
-
-  const prevColumnState = usePrevious(columns);
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
@@ -291,12 +265,6 @@ export default function ListView({
 
   return (
     <>
-      <TaskViewModal
-        open={isModalOpen}
-        handleClose={handleModalClose}
-        isTaskProposal={!!location.params.taskProposal}
-        taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
-      />
       {singleColumnData ? (
         <ItemsContainer
           entityType={entityType}

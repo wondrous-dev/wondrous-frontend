@@ -46,7 +46,7 @@ import {
 } from './styles';
 
 function ListViewItem({ task, entityType, isDragDisabled }) {
-  let windowOffset = 0;
+  const windowOffset = 0;
   const router = useRouter();
   const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
   const [data, setData] = useState(task);
@@ -284,9 +284,12 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
         preventLinkNavigation
         onNavigate={() => {
           if (!showPaymentModal) {
-            location.push(viewUrl);
-            windowOffset = window.scrollY;
-            document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+            const query = {
+              ...router.query,
+              [taskType]: task?.id,
+            };
+
+            router.push({ query }, undefined, { scroll: false, shallow: true });
           }
         }}
       >

@@ -16,8 +16,10 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import palette from 'theme/palette';
 import { useBoards } from 'utils/hooks';
+import useCanManage from '../../../hooks/useCanManage';
 
-const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) => {
+const EntityMenu = ({ name, id, thumbnailPicture, profilePicture }) => {
+  const canManage = useCanManage();
   const { orgBoard } = useBoards();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);

@@ -43,7 +43,6 @@ import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { TaskContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useLocation } from 'utils/useLocation';
 import { Categories, DataDisplay, Dates, GrantAmount } from './Fields';
 import ViewGrantFooter from './Footer';
 import GrantMenuStatus from './GrantMenuStatus';
@@ -82,19 +81,16 @@ const FIELDS_CONFIG = [
 const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant = null }) => {
   const [isEditMode, setEditMode] = useState(isEdit);
   const { isFullScreen, toggleFullScreen } = useFullScreen(true);
-  const location = useLocation();
   const [deleteTask, setDeleteTask] = useState(false);
   const [archiveTask, setArchiveTask] = useState(false);
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
 
-  const isViewApplication = !!location.params.grantApplicationId;
-
+  const router = useRouter();
+  const isViewApplication = !!router.query?.grantApplicationId;
   const { data, loading } = useQuery(GET_GRANT_BY_ID, {
     variables: { grantId },
     skip: !grantId || isViewApplication,
   });
-
-  const router = useRouter();
   const globalContext = useGlobalContext();
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const userPermissionsContext = getUserPermissionContext();

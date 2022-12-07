@@ -34,10 +34,14 @@ const ProposalsBoard = () => {
       statuses: [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED],
     },
     onCompleted: ({ getUserTaskBoardProposals }) => {
-      if (!previousData) {
-        const hasMoreData = getUserTaskBoardProposals?.length >= LIMIT;
-        setHasMore(hasMoreData);
-      }
+      // Wrap in timeout to fix error: Unhandled Runtime Error
+      // ReferenceError: Cannot access 'previousData' before initialization
+      setTimeout(() => {
+        if (!previousData) {
+          const hasMoreData = getUserTaskBoardProposals?.length >= LIMIT;
+          setHasMore(hasMoreData);
+        }
+      });
     },
   });
 

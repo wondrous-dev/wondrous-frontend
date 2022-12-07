@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { useLocation } from 'utils/useLocation';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   ENTITIES_TYPES,
@@ -45,7 +44,6 @@ export const populateOrder = (index, tasks, field) => {
 function KanbanBoard(props) {
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
-  const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
@@ -238,16 +236,11 @@ function KanbanBoard(props) {
     }
   };
 
-  const location = useLocation();
-
   const confirmCardMove = (moveAction) => async (id, status, index, source) => {
     const sourceColumn = columns.findIndex((column) => column.status === source.droppableId);
     const taskToUpdate = columns[sourceColumn]?.tasks.find((task) => task?.id === id);
     const taskType = taskToUpdate?.isProposal ? 'taskProposal' : 'task';
-    let viewUrl = `${delQuery(router.asPath)}?${taskType}=${taskToUpdate?.id}&view=${router.query.view || 'grid'}`;
-    if (board?.entityType) {
-      viewUrl += `&entity=${board?.entityType}`;
-    }
+
     let shouldConfirmInReviewTask = false;
     let pendingSubmissionCount = 0;
     if (status === TASK_STATUS_DONE) {
@@ -280,20 +273,18 @@ function KanbanBoard(props) {
         },
         closeAction: () => {
           setTaskToConfirm(null);
-          location.push(viewUrl);
+          const query = {
+            ...router.query,
+            [taskType]: taskToUpdate?.id,
+          };
+
+          router.push({ query }, undefined, { scroll: false, shallow: true });
         },
       });
       return;
     }
     return moveAction(id, status, index, source);
   };
-
-  useEffect(() => {
-    const { params } = location;
-    if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
-      setOpenModal(true);
-    }
-  }, [orgBoard, podBoard, userBoard, location]);
 
   const onDragStart = (event) => {
     const task = getTaskById(event.draggableId);
@@ -311,24 +302,6 @@ function KanbanBoard(props) {
       console.error('The card was dropped outside the context of DragDropContext.');
     }
   };
-
-  const handleClose = () => {
-    const style = document.body.getAttribute('style');
-    const top = style.match(/(top: -)(.*?)(?=px)/);
-    document.body.setAttribute('style', '');
-    if (top?.length > 0) {
-      window?.scrollTo(0, Number(top[2]));
-    }
-    let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
-    if (board?.entityType) {
-      newUrl += `&entity=${board?.entityType}`;
-    }
-    location.push(newUrl);
-    enableContainerOverflow();
-    setOpenModal(false);
-  };
-
-  const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;
   return (
     <KanbanBoardContainer>
       <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
@@ -347,15 +320,6 @@ function KanbanBoard(props) {
         {null}
       </ConfirmModal>
 
-      <TaskViewModal
-        disableEnforceFocus
-        open={openModal}
-        shouldFocusAfterRender={false}
-        handleClose={handleClose}
-        taskId={taskId}
-        isTaskProposal={!!location?.params?.taskProposal}
-        key={taskId}
-      />
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         {columns.map((column) => {
           const { status, section, tasks } = column;

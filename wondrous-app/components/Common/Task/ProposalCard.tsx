@@ -69,14 +69,17 @@ export default function ProposalCard({ openModal, title, description, task, goTo
   };
   const labelsAndActions = PROPOSAL_STATUS_MAP[proposalStatus]?.labelsAndActions;
   const HeaderIcon = STATUS_ICONS[proposalStatus];
-  const location = useLocation();
   return (
     <SmartLink
       href={viewUrl}
       preventLinkNavigation
       onNavigate={() => {
-        location.push(viewUrl);
-        document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
+        const query = {
+          ...router.query,
+          task: task.id,
+        };
+
+        router.push({ query }, undefined, { scroll: false, shallow: true });
       }}
     >
       <>
