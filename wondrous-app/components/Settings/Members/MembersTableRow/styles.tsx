@@ -117,6 +117,10 @@ export const MemberRoleSelect = styled(({ className, ...props }) => (
     max-width: 259px;
     color: ${palette.white};
     transform: translateX(18%) !important;
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+      transform: translateX(0%) !important;
+    }
   }
 
   &.MuiPaper-root > .MuiList-root {
@@ -127,6 +131,14 @@ export const MemberRoleSelect = styled(({ className, ...props }) => (
 
   &.MuiPaper-root > .MuiList-padding {
     padding: 12px;
+  }
+`;
+
+export const MemberRoleSelectionWrapper = styled.div`
+  display: ${({ showOnSmallScreen }) => (showOnSmallScreen ? 'none' : 'block')};
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    display: ${({ showOnSmallScreen }) => (showOnSmallScreen ? 'block' : 'none')};
   }
 `;
 

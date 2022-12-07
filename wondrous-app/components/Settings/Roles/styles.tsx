@@ -13,7 +13,10 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 
 export const RolesContainer = styled.div`
-  width: 780px;
+  max-width: 780px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 
   ${newDropdownStyles}
 `;
@@ -32,6 +35,10 @@ export const RoleNameBlock = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    height: 100%;
+  }
 `;
 
 export const CreateRole = styled.div`
@@ -81,6 +88,11 @@ export const DeleteButton = styled(Button)`
     &:hover {
       background: ${palette.grey920};
     }
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+      border: 1px solid ${palette.red300};
+      color: white;
+    }
   }
 `;
 
@@ -92,6 +104,10 @@ export const RolePermissionsList = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 28px;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    display: block;
+  }
 `;
 
 export const Permission = styled.div`
@@ -108,6 +124,7 @@ export const RoleTokenGatingWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 85px;
+  flex-wrap: wrap;
 
   &:not(:first-child) {
     border-top: 1px solid ${palette.black91};
@@ -304,6 +321,27 @@ export const TokenGatedRoleModal = styled(BaseCard)`
   /* Hide scrollbar for IE, Edge and Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    width: 95%;
+    margin: 14px;
+    left: 48%;
+  }
+`;
+
+export const TokenGatedRoleModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-direction: column;
+    align-items: flex-start;
+
+    > div {
+      margin-top: 10px;
+    }
+  }
 `;
 
 export const DiscordRoleModal = styled(BaseCard)`

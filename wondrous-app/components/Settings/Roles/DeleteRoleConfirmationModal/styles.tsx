@@ -17,6 +17,7 @@ export const DeleteRoleConfirmationModalWrapper = styled(Modal)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 14px;
 `;
 
 export const DeleteRoleConfirmationModalCard = styled.div`
@@ -26,6 +27,7 @@ export const DeleteRoleConfirmationModalCard = styled.div`
   border: 1px solid ${palette.grey79};
   border-radius: 6px;
   overflow: hidden;
+  margin: 14px;
 `;
 
 export const DeleteRoleConfirmationModalHeader = styled.div`
@@ -86,9 +88,16 @@ export const DeleteRoleConfirmationModalBodyWarningBox = styled.div`
   border: 1px solid ${palette.red650};
   border-radius: 6px;
   padding: 15px 10px;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    align-items: flex-start;
+  }
 `;
 
 export const DeleteRoleConfirmationModalBodyWarningBoxIcon = styled(InfoIcon)`
+  min-width: 18px;
+  min-height: 18px;
+
   && {
     fill: ${palette.white};
     transform: rotate(180deg);
@@ -96,6 +105,10 @@ export const DeleteRoleConfirmationModalBodyWarningBoxIcon = styled(InfoIcon)`
     path {
       stroke: ${palette.red820};
     }
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-top: 3px;
   }
 `;
 

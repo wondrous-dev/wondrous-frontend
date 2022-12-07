@@ -10,7 +10,7 @@ import { ViewType } from 'types/common';
 import { TaskInterface } from 'types/task';
 import { delQuery } from 'utils';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
-import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
+import { useExploreGr15TasksAndBounties, useHotkey, useIsMobile, useUserBoard } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { useLocation } from 'utils/useLocation';
 import { SafeImage } from '../Common/Image';
@@ -38,6 +38,7 @@ let timeout;
 
 export default function SearchTasks({ onSearch, isExpandable, autocompleteComponent }: Props) {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
@@ -115,7 +116,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   }
 
   const Autocomplete = autocompleteComponent || DefaultAutocomplete;
-  const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : '30%') : '100%';
+  const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : isMobile ? '100%' : '30%') : '100%';
 
   const handleBlur = (e) => setIsExpanded(false);
   const handleFocus = () => setIsExpanded(true);

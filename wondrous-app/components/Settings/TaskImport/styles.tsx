@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { Button as MuiButton, Typography, InputBase } from '@mui/material';
+import { Button as MuiButton, Typography } from '@mui/material';
 import { CreateLayoutsModal, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import NotionIcon from 'components/Icons/Notion';
 import CloseIcon from '@mui/icons-material/Close';
@@ -10,6 +10,8 @@ export const TaskImportContainer = styled.div`
   height: 100vh;
   width: 100%;
   max-width: 765px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const TaskImportMethodBlock = styled.div`

@@ -14,7 +14,7 @@ import {
   STATUS_CLOSED,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useIsMobile, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { taskHasPayment } from 'utils/board';
 import { TaskInterface } from 'types/task';
 
@@ -43,6 +43,7 @@ interface ITaskColumn {
   moveCard: any;
   status: string;
   section: Array<any>;
+  kanbanBoardRef: any;
   draggingTask: TaskInterface | null;
 }
 
@@ -68,7 +69,8 @@ const HEADER_ICONS = {
 };
 
 function TaskColumn(props: ITaskColumn) {
-  const { cardsList, status, section, draggingTask } = props;
+  const isMobile = useIsMobile();
+  const { cardsList, status, section, draggingTask, kanbanBoardRef } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -95,7 +97,7 @@ function TaskColumn(props: ITaskColumn) {
 
   let taskColumnWidth = '100%';
   if (!userBoard) {
-    taskColumnWidth = '25%';
+    taskColumnWidth = isMobile ? '100%' : '25%';
   }
   switch (status) {
     case TASK_STATUS_TODO:
@@ -116,15 +118,15 @@ function TaskColumn(props: ITaskColumn) {
       break;
     case STATUS_OPEN:
       number = taskCount?.proposalOpen || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     case STATUS_APPROVED:
       number = taskCount?.proposalApproved || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     case STATUS_CLOSED:
       number = taskCount?.proposalClosed || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     default:
       number = 0;
@@ -140,6 +142,7 @@ function TaskColumn(props: ITaskColumn) {
         width: taskColumnWidth,
       }}
     >
+      <div ref={kanbanBoardRef} />
       <CreateModalOverlay
         style={{
           height: '95vh',

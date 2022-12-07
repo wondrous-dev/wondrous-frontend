@@ -40,10 +40,8 @@ export const HeaderImage = styled((props) => (
 
 export const TokenHeader = styled.div`
   position: relative;
-  width: 95%;
+  width: 100%;
   padding-top: 30px;
-  display: flex;
-  flex-direction: column;
 `;
 
 export const TokenLogo = styled(LogoCircle)`
@@ -61,9 +59,7 @@ export const TokenEmptyLogo = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   border-radius: 50px;
-
   background: ${palette.black};
 `;
 
@@ -75,10 +71,8 @@ export const Content = styled.div`
 
 export const ContentContainer = styled.div`
   max-width: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
   width: 100%;
+  padding: 10px 30px;
 `;
 
 export const HeaderMainBlock = styled.div`
@@ -88,6 +82,13 @@ export const HeaderMainBlock = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+  }
 `;
 
 export const HeaderTitleIcon = styled.div`
@@ -132,6 +133,10 @@ export const HeaderButtons = styled.div`
   height: 100%;
   display: flex;
   gap: 4px;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-wrap: wrap;
+  }
 `;
 
 export const HeaderFollowButton = styled(Button)`
@@ -317,12 +322,32 @@ export const HeaderText = styled.div`
 `;
 
 export const HeaderActivity = styled.div`
-  flex-wrap: wrap;
   width: 100%;
   min-height: 23px;
   display: flex;
   align-items: center;
   margin-top: 8px;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-direction: column;
+    align-items: flex-start;
+
+    > div:first-child {
+      flex-wrap: wrap;
+    }
+
+    > div:last-child {
+      margin-top: 10px;
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+  }
 `;
 
 export const HeaderActivityLink = styled.a`
@@ -359,6 +384,10 @@ export const HeaderContributors = styled.div`
   :hover {
     background: ${palette.grey920};
   }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    margin-top: 10px;
+  }
 `;
 
 export const HeaderContributorsAmount = styled(Typography)`
@@ -385,7 +414,11 @@ export const HeaderPodsAmount = styled(HeaderContributorsAmount)``;
 
 export const HeaderPodsText = styled(HeaderContributorsText)``;
 
-export const HeaderGr15Sponsor = styled.div``;
+export const HeaderGr15Sponsor = styled.div`
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    margin-top: 10px;
+  }
+`;
 // cardStyles
 export const PostsContainer = styled.div`
   max-width: 680px;
@@ -599,11 +632,18 @@ export const BoardsSubheaderWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-row-gap: 20px;
-  align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 export const Container = styled.div`
-  width: 95%;
+  width: 100%;
   margin-top: 22px;
 `;
 

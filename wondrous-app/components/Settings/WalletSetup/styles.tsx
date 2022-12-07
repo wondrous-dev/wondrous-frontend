@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@mui/material';
+import { InputBase, Typography } from '@mui/material';
 
 export const WalletsContainer = styled.div`
   height: 100vh;
   width: 100%;
   max-width: 765px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const TableValueText = styled(Typography)`

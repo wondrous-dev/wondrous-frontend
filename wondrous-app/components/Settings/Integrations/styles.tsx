@@ -1,11 +1,14 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button as MuiButton, Typography, InputBase } from '@mui/material';
+import { CreateFormSelectBlock } from 'components/Common/DropdownSelect/styles';
 
 export const IntegrationsContainer = styled.div`
   height: 100vh;
-  width: calc(100vw - 350px);
+  width: 100%;
   max-width: 765px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const TableValueText = styled(Typography)`
@@ -47,8 +50,21 @@ export const IntegrationsSnapshotSubBlock = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  overflow-wrap: wrap;
+  align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  ${CreateFormSelectBlock} {
+    max-width: 100%;
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+  }
 `;
 
 export const IntegrationsSnapshotInputSubBlock = styled.div`
@@ -56,8 +72,10 @@ export const IntegrationsSnapshotInputSubBlock = styled.div`
   min-width: 200px;
   display: flex;
   flex-direction: column;
-  @media (max-width: 683px) {
+  ${({ theme }) => theme.breakpoints.down('md')} {
     width: 100%;
+    margin-top: 10px;
+    margin-right: 10px;
   }
 `;
 
@@ -104,7 +122,8 @@ export const IntegrationsConnectButton = styled(MuiButton)`
     .Mui-disabled {
       color: #ffffff;
     }
-    @media (max-width: 683px) {
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
       margin-top: 10px;
       margin-left: 0;
     }
@@ -131,7 +150,7 @@ export const IntegrationsDisconnectButton = styled(MuiButton)`
     .Mui-disabled {
       color: #ffffff;
     }
-    @media (max-width: 683px) {
+    ${({ theme }) => theme.breakpoints.down('md')} {
       margin-top: 10px;
       margin-left: 0;
     }

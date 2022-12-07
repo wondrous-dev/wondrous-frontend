@@ -1,7 +1,9 @@
 import { useRouter } from 'next/router';
-import React, { useState, useEffect, useCallback } from 'react';
+import { useTheme } from '@mui/material/styles';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import SwipeableViews from 'react-swipeable-views';
+import usePrevious, { useIsMobile, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import {
@@ -25,7 +27,9 @@ import ConfirmModal from 'components/Common/ConfirmModal';
 import { useMe } from '../../Auth/withAuth';
 import DndErrorModal from './DndErrorModal';
 import TaskColumn from './TaskColumn';
-import { KanbanBoardContainer, LoadMore } from './styles';
+import { KanbanBoardContainer, KanbanBoardPaginationContainer, KanbanBoardPaginationStepper } from './styles';
+import PaginationDot from './PaginationDot';
+import { SnackbarAlertContext } from '../SnackbarAlert';
 
 export const populateOrder = (index, tasks, field) => {
   let aboveOrder = null;
@@ -44,14 +48,24 @@ export const populateOrder = (index, tasks, field) => {
 
 function KanbanBoard(props) {
   const user = useMe();
+  const isMobile = useIsMobile();
   const { columns, onLoadMore, hasMore, setColumns } = props;
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
+  const theme = useTheme();
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const setSnackbarAlertSeverity = snackbarContext?.setSnackbarAlertSeverity;
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [taskToConfirm, setTaskToConfirm] = useState<any>(null);
+  const kanbanBoardRef = useRef<HTMLElement | null>(null);
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const maxSteps = columns.length;
+
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -177,9 +191,17 @@ function KanbanBoard(props) {
                     board,
                   },
                 },
-              }).catch((e) => {});
+              }).catch((e) => {
+                setSnackbarAlertSeverity('error');
+                setSnackbarAlertOpen(true);
+                setSnackbarAlertMessage(e.message);
+              });
             }
-          } catch (err) {}
+          } catch (err) {
+            setSnackbarAlertSeverity('error');
+            setSnackbarAlertOpen(true);
+            setSnackbarAlertMessage(err.message);
+          }
           return {
             ...column,
             tasks: newTasks,
@@ -211,7 +233,7 @@ function KanbanBoard(props) {
             variables: {
               proposalId: id,
             },
-            onCompleted: (data) => {
+            onCompleted: () => {
               boardColumns[sourceColumn]?.tasks?.splice(index, 1);
               boardColumns[destinationColumn]?.tasks?.unshift(taskToUpdate);
               setColumns(dedupeColumns(boardColumns));
@@ -225,7 +247,7 @@ function KanbanBoard(props) {
             variables: {
               proposalId: id,
             },
-            onCompleted: (data) => {
+            onCompleted: () => {
               boardColumns[sourceColumn]?.tasks?.splice(index, 1);
               const updatedTask = { ...taskToUpdate, closedAt: new Date() };
               boardColumns[destinationColumn]?.tasks?.unshift(updatedTask);
@@ -288,6 +310,18 @@ function KanbanBoard(props) {
     return moveAction(id, status, index, source);
   };
 
+  const handleScrollToView = () => {
+    if (kanbanBoardRef?.current) {
+      kanbanBoardRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest',
+      });
+    }
+  };
+
+  const handleStepChange = (step: number) => setActiveStep(step);
+
   useEffect(() => {
     const { params } = location;
     if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
@@ -295,6 +329,7 @@ function KanbanBoard(props) {
     }
   }, [orgBoard, podBoard, userBoard, location]);
 
+  useEffect(() => handleScrollToView(), [activeStep]);
   const onDragStart = (event) => {
     const task = getTaskById(event.draggableId);
 
@@ -329,6 +364,7 @@ function KanbanBoard(props) {
   };
 
   const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;
+
   return (
     <KanbanBoardContainer>
       <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
@@ -357,21 +393,59 @@ function KanbanBoard(props) {
         key={taskId}
       />
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        {columns.map((column) => {
-          const { status, section, tasks } = column;
+        {isMobile ? (
+          <SwipeableViews
+            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+            index={activeStep}
+            onChangeIndex={handleStepChange}
+            enableMouseEvents
+            key={activeStep}
+          >
+            {columns.map((column) => {
+              const { status, section, tasks } = column;
 
-          return (
-            <TaskColumn
-              key={status}
-              cardsList={tasks}
-              moveCard={moveCard}
-              status={status}
-              section={section}
-              draggingTask={draggingTask}
-            />
-          );
-        })}
+              return (
+                <TaskColumn
+                  key={status}
+                  cardsList={tasks}
+                  moveCard={moveCard}
+                  status={status}
+                  section={section}
+                  draggingTask={draggingTask}
+                  kanbanBoardRef={kanbanBoardRef}
+                />
+              );
+            })}
+          </SwipeableViews>
+        ) : (
+          <>
+            {columns.map((column) => {
+              const { status, section, tasks } = column;
+
+              return (
+                <TaskColumn
+                  key={status}
+                  cardsList={tasks}
+                  moveCard={moveCard}
+                  status={status}
+                  section={section}
+                  draggingTask={draggingTask}
+                  kanbanBoardRef={kanbanBoardRef}
+                />
+              );
+            })}
+          </>
+        )}
       </DragDropContext>
+      {isMobile ? (
+        <KanbanBoardPaginationContainer>
+          <KanbanBoardPaginationStepper>
+            {Array.from(Array(maxSteps).keys()).map((step: number) => (
+              <PaginationDot key={step} active={activeStep === step} onClick={() => handleStepChange(step)} />
+            ))}
+          </KanbanBoardPaginationStepper>
+        </KanbanBoardPaginationContainer>
+      ) : null}
     </KanbanBoardContainer>
   );
 }

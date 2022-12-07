@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GlobalContext, SideBarContext } from 'utils/contexts';
@@ -51,6 +51,7 @@ export default function SidebarLayout({ children }) {
     skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
   });
   const [minimized, setMinimized] = useState(false);
+  const [openMobileOrgSidebar, setOpenMobileOrgSidebar] = useState<boolean>(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
     skip: isMobile || PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
     variables: {
@@ -67,20 +68,20 @@ export default function SidebarLayout({ children }) {
 
   const orgsList = getOrgsList(userOrgs, router);
   const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
-  const sidebarValue = useMemo(
-    () => ({
-      minimized,
-      setMinimized,
-      orgsList,
-    }),
-    [minimized, orgsList]
-  );
 
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
   return (
-    <SideBarContext.Provider value={sidebarValue}>
+    <SideBarContext.Provider
+      value={{
+        minimized,
+        openMobileOrgSidebar,
+        setOpenMobileOrgSidebar,
+        setMinimized,
+        orgsList,
+      }}
+    >
       <SideBarComponent userOrgs={userOrgs} />
       <GlobalContext.Provider
         value={{
@@ -97,7 +98,7 @@ export default function SidebarLayout({ children }) {
         }}
       >
         <HeaderComponent />
-        <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
+        <SectionWrapper width={width}>{children}</SectionWrapper>
       </GlobalContext.Provider>
     </SideBarContext.Provider>
   );

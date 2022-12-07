@@ -18,7 +18,14 @@ function HeaderBlock(props) {
         <SettingsHeaderTitle>{title}</SettingsHeaderTitle>
         <SettingsHeaderText>{description}</SettingsHeaderText>
       </SettingsHeaderContent>
-      <Grid display="flex" flexDirection="column" alignItems="flex-end" gap="17px">
+      <Grid
+        display="flex"
+        flexDirection={{ md: 'column', sm: 'row', xs: 'row' }}
+        width="100%"
+        alignItems={{ md: 'flex-end', sm: 'center', xs: 'center' }}
+        gap="17px"
+        mt={{ md: 0, sm: '32px', xs: '32px' }}
+      >
         {!!onInvite && <SettingsHeaderInviteButton onClick={onInvite}>Invite</SettingsHeaderInviteButton>}
         {!!handleDownloadToCSV && (
           <SettingsHeaderActionText onClick={handleDownloadToCSV}>Download to CSV</SettingsHeaderActionText>

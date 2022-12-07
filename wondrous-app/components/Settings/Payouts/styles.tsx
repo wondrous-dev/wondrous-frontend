@@ -11,9 +11,21 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { GeneralSettingsContainer } from 'components/Settings/styles';
 import { Button as StyledButton } from 'components/Common/button';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+
+export const PayoutsContainer = styled.div`
+  max-width: 890px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+
+  ${GeneralSettingsContainer} {
+    max-width: 100%;
+  }
+`;
 
 export const LedgerActionButtonsContainer = styled.div`
   display: flex;

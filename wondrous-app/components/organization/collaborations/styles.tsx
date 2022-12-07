@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { InputBase, ListItemIcon, Typography, Tab, Tabs } from '@mui/material';
+import { Typography, Tab, Tabs } from '@mui/material';
 import { Button } from 'components/Common/button';
 import typography from 'theme/typography';
 
@@ -8,6 +8,8 @@ export const CollabsContainer = styled.div`
   height: 100vh;
   width: 100%;
   max-width: 765px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const CollabsChildrenWrapper = styled.div`

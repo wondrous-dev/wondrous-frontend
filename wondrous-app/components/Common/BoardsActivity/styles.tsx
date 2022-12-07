@@ -28,4 +28,18 @@ export const BoardsActivityInlineViewWrapper = styled.div`
   ${BoardFiltersContainer} {
     width: ${({ displaySingleViewFilter }) => (displaySingleViewFilter ? 'auto' : '100%')};
   }
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    justify-content: flex-start;
+    margin-top: 18px;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-wrap: wrap;
+    height: initial;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-wrap: nowrap;
+  }
 `;

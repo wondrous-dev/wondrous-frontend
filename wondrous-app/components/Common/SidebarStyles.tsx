@@ -1,4 +1,4 @@
-import { ButtonBase, List, Typography } from '@mui/material';
+import { ButtonBase, Drawer, List, Typography } from '@mui/material';
 import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import AddIcon from 'components/Icons/add.svg';
 import styled from 'styled-components';
@@ -21,12 +21,33 @@ export const SidebarWrapper = styled.div`
   overflow-y: auto;
   padding: 24px 14px;
   position: fixed;
+  top: 0;
   width: ${entitySidebarWidth};
   display: flex;
   z-index: 500;
   justify-content: space-between;
   ${({ minimized }) => minimized && `left: -100%`};
   ${ScrollBarStyles}
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+    position: static;
+    width: 0px;
+    z-index: -1;
+    gap: 0;
+    left: 0;
+  }
+`;
+
+export const SidebarDrawerWrapper = styled(Drawer)`
+  .MuiPaper-root {
+    background: ${({ theme }) => theme.palette.black92};
+    max-width: ${entitySidebarWidth};
+    overflow-y: auto;
+    padding: 24px 14px;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 `;
 
 export const SidebarContent = styled.div`
@@ -39,6 +60,10 @@ export const SidebarContent = styled.div`
 export const ChildrenWrapper = styled.div`
   margin-left: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   width: 100%;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-left: 0;
+  }
 `;
 
 export const Label = styled(Typography)`

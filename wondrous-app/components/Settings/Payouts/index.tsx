@@ -11,10 +11,8 @@ import {
   LedgerActionButtonsContainer,
   LedgerDownloadButton,
   PayoutSelectionSelect,
-  PayoutSelectionSelectValueDisplay,
-  PayoutSelectionSelectValueDisplayText,
   PayoutSelectionSelectMenuItem,
-  PayoutCount,
+  PayoutsContainer,
 } from 'components/Settings/Payouts/styles';
 import SubmissionPaymentCSVModal from 'components/Settings/Payouts/SubmissionPaymentCSVModal';
 import SettingsWrapper from 'components/Common/SidebarSettings';
@@ -516,70 +514,72 @@ function Payouts(props) {
 
   return (
     <SettingsWrapper>
-      <GeneralSettingsContainer>
-        <HeaderBlock
-          icon={<PayoutSettingsHeaderIcon />}
-          title="Payment Ledger"
-          description="Where you manage all your projects payouts"
+      <PayoutsContainer>
+        <GeneralSettingsContainer>
+          <HeaderBlock
+            icon={<PayoutSettingsHeaderIcon />}
+            title="Payment Ledger"
+            description="Where you manage all your projects payouts"
+          />
+        </GeneralSettingsContainer>
+
+        <SubmissionPaymentCSVModal
+          podId={podId}
+          orgId={orgId}
+          open={openExportModal}
+          handleClose={() => setOpenExportModal(false)}
+          exportPaymentCSV={exportSubmissionPaymentCsv}
+          unpaidSubmissions={submissionsToExport}
         />
-      </GeneralSettingsContainer>
 
-      <SubmissionPaymentCSVModal
-        podId={podId}
-        orgId={orgId}
-        open={openExportModal}
-        handleClose={() => setOpenExportModal(false)}
-        exportPaymentCSV={exportSubmissionPaymentCsv}
-        unpaidSubmissions={submissionsToExport}
-      />
+        <LedgerActionButtonsContainer>
+          <Grid display="flex" alignItems="center" gap="18px">
+            <PayoutSelectionSelect
+              value={selectAllFromChainSelected || true}
+              renderValue={renderSelectionValue}
+              onChange={handleSelectItemsBasedOnChain}
+            >
+              {selectionOptions.map((option) => (
+                <PayoutSelectionSelectMenuItem
+                  key={option.value}
+                  value={option.value}
+                  isSelected={selectAllFromChainSelected === option.value}
+                >
+                  {option.label}
+                </PayoutSelectionSelectMenuItem>
+              ))}
+            </PayoutSelectionSelect>
+            <LedgerDownloadButton onClick={handleDownloadToCSV}>Download to CSV</LedgerDownloadButton>
+          </Grid>
 
-      <LedgerActionButtonsContainer>
-        <Grid display="flex" alignItems="center" gap="18px">
-          <PayoutSelectionSelect
-            value={selectAllFromChainSelected || true}
-            renderValue={renderSelectionValue}
-            onChange={handleSelectItemsBasedOnChain}
-          >
-            {selectionOptions.map((option) => (
-              <PayoutSelectionSelectMenuItem
-                key={option.value}
-                value={option.value}
-                isSelected={selectAllFromChainSelected === option.value}
-              >
-                {option.label}
-              </PayoutSelectionSelectMenuItem>
-            ))}
-          </PayoutSelectionSelect>
-          <LedgerDownloadButton onClick={handleDownloadToCSV}>Download to CSV</LedgerDownloadButton>
-        </Grid>
+          <Toggle items={toggleItems} />
+        </LedgerActionButtonsContainer>
 
-        <Toggle items={toggleItems} />
-      </LedgerActionButtonsContainer>
+        {!!paymentCount && (
+          <Typography fontFamily={typography.fontFamily} fontSize="14px" fontWeight={500} color={palette.blue20}>
+            {paymentCount} {capitalize(view)} transactions
+          </Typography>
+        )}
 
-      {!!paymentCount && (
-        <Typography fontFamily={typography.fontFamily} fontSize="14px" fontWeight={500} color={palette.blue20}>
-          {paymentCount} {capitalize(view)} transactions
-        </Typography>
-      )}
+        <PayoutTable
+          org={org}
+          podId={podId}
+          paid={paid}
+          processing={processing}
+          paidList={paidList}
+          unpaidList={unpaidList}
+          processingList={processingList}
+          selectAllFromChainSelected={selectAllFromChainSelected}
+          handleClearSelectItemsBasedOnChain={handleClearSelectItemsBasedOnChain}
+          handleDownloadToCSV={handleDownloadToCSV}
+          canViewPaymentLink={canViewPaymentLink}
+          viewingUser={user}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
+        />
 
-      <PayoutTable
-        org={org}
-        podId={podId}
-        paid={paid}
-        processing={processing}
-        paidList={paidList}
-        unpaidList={unpaidList}
-        processingList={processingList}
-        selectAllFromChainSelected={selectAllFromChainSelected}
-        handleClearSelectItemsBasedOnChain={handleClearSelectItemsBasedOnChain}
-        handleDownloadToCSV={handleDownloadToCSV}
-        canViewPaymentLink={canViewPaymentLink}
-        viewingUser={user}
-        selectedItems={selectedItems}
-        setSelectedItems={setSelectedItems}
-      />
-
-      <LoadMore ref={ref} hasMore={hasMore} />
+        <LoadMore ref={ref} hasMore={hasMore} />
+      </PayoutsContainer>
     </SettingsWrapper>
   );
 }
