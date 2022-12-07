@@ -57,6 +57,7 @@ export const greyColors = {
   grey950: '#212121',
   grey910: '#171717',
   grey920: '#2D2D2D',
+  grey940: '#0f0f0f',
   grey1000: '#272729',
   grey1020: '#2F2F2F',
 };
