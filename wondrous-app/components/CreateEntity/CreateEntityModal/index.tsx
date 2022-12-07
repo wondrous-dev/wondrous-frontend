@@ -912,9 +912,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             <ProposalVoteSelectMenuItemText
               style={{
                 marginTop: '8px',
+                fontSize: '12px',
               }}
             >
-              P.S. In 'Multiple Choice' voting style, options cannot be edited
+              P.S In 'Multiple Choice' voting, options cannot be edited after the proposal is created
             </ProposalVoteSelectMenuItemText>
             <CreateEntityDivider />
           </>
