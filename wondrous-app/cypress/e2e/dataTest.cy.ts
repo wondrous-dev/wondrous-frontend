@@ -1,6 +1,6 @@
 describe('test spec', () => {
   it('passes', () => {
-    cy.visit('/dashboard');
+    cy.visit('/login');
     cy.dataCy('test');
   });
 });

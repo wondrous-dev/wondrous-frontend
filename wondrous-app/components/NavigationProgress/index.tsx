@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { ProgressBarWrapper, ProgressBarInner } from './styles';
+
+import NavigationProgressMemoized from './NavigationProgressMemoized';
 
 const NavigationProgress = () => {
   const router = useRouter();
@@ -9,6 +10,7 @@ const NavigationProgress = () => {
   const toggleVisibility = () => {
     setIsVisible((prevState) => !prevState);
   };
+
   useEffect(() => {
     router.events.on('routeChangeStart', toggleVisibility);
     router.events.on('routeChangeComplete', toggleVisibility);
@@ -20,11 +22,7 @@ const NavigationProgress = () => {
     };
   }, []);
 
-  return (
-    <ProgressBarWrapper key={`progress-nav-${isVisible}`}>
-      <ProgressBarInner isVisible={isVisible} />
-    </ProgressBarWrapper>
-  );
+  return <NavigationProgressMemoized isVisible={isVisible} />;
 };
 
 export default NavigationProgress;

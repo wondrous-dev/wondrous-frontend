@@ -37,7 +37,6 @@ import Typography from '@mui/material/Typography';
 import { capitalize } from 'utils/common';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
-import { useLocation } from 'utils/useLocation';
 import PayoutTable from './PayoutTable';
 import { INITIAL_SELECTION_OPTIONS } from './constants';
 import { useGetPaymentMethodsForOrg } from './hooks';
@@ -69,7 +68,6 @@ function Payouts(props) {
   const [selectedItems, setSelectedItems] = useState({});
 
   const [openExportModal, setOpenExportModal] = useState(false);
-  const location = useLocation();
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
   const [processingList, setProcessingList] = useState([]);

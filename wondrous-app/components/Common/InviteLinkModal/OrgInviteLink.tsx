@@ -211,3 +211,5 @@ export function OrgInviteLinkModal(props) {
     </StyledModal>
   );
 }
+
+export default OrgInviteLinkModal;

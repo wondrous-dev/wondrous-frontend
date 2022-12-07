@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 import { ThemeProvider as StyledComponentProvider } from 'styled-components';
 import Head from 'next/head';
 import { ApolloProvider } from '@apollo/client';
-import { CssBaseline, useMediaQuery } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { SnackbarAlertProvider } from 'components/Common/SnackbarAlert';
 import { Web3Provider } from '@ethersproject/providers';
@@ -33,14 +34,10 @@ type User = {
   dummy: String;
 };
 
-type AppContextStore = {
-  isAuthenticated: boolean;
-  // TODO change type of this context
-  context: any;
-  user: User;
-};
+const Layout = ({ Component, pageProps }) =>
+  Component.getLayout ? Component.getLayout(<Component {...pageProps} />) : <Component {...pageProps} />;
 
-function MyApp({ Component, context, isAuthenticated, user, pageProps: { session, ...pageProps } }) {
+function MyApp({ Component, pageProps }) {
   // Only uncomment this method if you have blocking data requirements for
   // every single page in your application. This disables the ability to
   // perform automatic static optimization, causing every page in your app to
@@ -99,13 +96,7 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
                       <NavigationProgress />
                       <SidebarLayout>
                         <OnboardingTour>
-                          <Component
-                            {...pageProps}
-                            query={context?.query}
-                            user={user}
-                            isAuthenticated={isAuthenticated}
-                            key={router.asPath}
-                          />
+                          <Layout Component={Component} pageProps={pageProps} />≈
                         </OnboardingTour>
                       </SidebarLayout>
                     </HotkeyContext.Provider>

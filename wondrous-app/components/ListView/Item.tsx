@@ -284,9 +284,12 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
         preventLinkNavigation
         onNavigate={() => {
           if (!showPaymentModal) {
-            location.push(viewUrl);
-            windowOffset = window.scrollY;
-            document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+            const query = {
+              ...router.query,
+              [taskType]: task?.id
+            }
+
+            router.push({ query }, undefined, { scroll: false, shallow: true });
           }
         }}
       >

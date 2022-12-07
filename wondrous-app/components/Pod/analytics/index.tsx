@@ -78,9 +78,7 @@ function UserRow({ contributorTask }) {
   return (
     <ContributorDiv>
       <TaskViewModal
-        disableEnforceFocus
         open={openModal}
-        shouldFocusAfterRender={false}
         handleClose={() => {
           const style = document.body.getAttribute('style');
           const top = style.match(/(top: -)(.*?)(?=px)/);

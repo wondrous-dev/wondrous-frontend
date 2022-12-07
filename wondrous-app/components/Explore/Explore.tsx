@@ -4,6 +4,7 @@ import { Button } from 'components/Button';
 import MuiButton from '@mui/material/Button';
 import { Box } from '@mui/material';
 
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import { DaosCube, BountyCone, GR15DEI } from 'components/Icons/ExplorePageIcons';
 import { useQuery } from '@apollo/client';
 import { FILTER_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
@@ -96,15 +97,18 @@ function ExploreComponent() {
     });
   }, [filterBounties]);
 
-  const handleTabClick = (key) => {
-    if (key === activeTab) {
-      return setActiveTab(null);
+  const handleTabClick = (tab) => {
+    if (tab === activeTab) {
+      setActiveTab(null);
+    } else if (activeTab === null && router.query.tab === tab) {
+      setActiveTab(tab);
+    } else {
+      router.push({ query: { tab } }, undefined, {
+        shallow: true,
+      });
     }
-    router.push(`/explore?tab=${key}`, undefined, {
-      shallow: true,
-    });
-    return setActiveTab(key);
   };
+
   const tabs = [
     {
       title: 'Explore Orgs',
@@ -141,15 +145,15 @@ function ExploreComponent() {
   ];
 
   useEffect(() => {
-    if (router?.query?.tab) {
+    if (router?.query?.tab && activeTab !== router?.query?.tab) {
       setActiveTab(router.query?.tab);
       if (router?.query?.tab === TABS_LABELS.GR15_DEI) {
         getGr15ExploreTasks();
       } else if (router?.query?.tab === TABS_LABELS.BOUNTY) {
-        filterBounties(null);
+        filterBounties({ category: undefined });
       }
     }
-  }, [router, getGr15ExploreTasks, filterBounties]);
+  }, [router.query?.tab, getGr15ExploreTasks, filterBounties]);
 
   return (
     <OverviewComponent
@@ -160,6 +164,7 @@ function ExploreComponent() {
         flexDirection: 'column',
       }}
     >
+      <TaskViewModalWatcher />
       <ChooseEntityToCreate />
       <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
         <BackgroundImg src="/images/explore/explore-page-banner.svg" />
@@ -207,7 +212,6 @@ function ExploreComponent() {
           </TabsWrapper>
           {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
             <BountySection
-              isMobile={isMobile}
               bounties={bounties?.getTaskExplore}
               fetchMore={getTaskExploreFetchMore}
               hasMore={hasMoreBounties}
@@ -217,7 +221,6 @@ function ExploreComponent() {
           {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
           {(activeTab === null || activeTab === TABS_LABELS.GR15_DEI) && (
             <BountySection
-              isMobile={isMobile}
               bounties={bounties?.getTaskExplore}
               fetchMore={getTaskExploreFetchMore}
               hasMore={hasMoreBounties}

@@ -97,7 +97,6 @@ export default function BoardsActivity(props) {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
-  const location = useLocation();
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
   const view = board?.activeView || String(router.query.view ?? ViewType.Grid);
@@ -106,16 +105,10 @@ export default function BoardsActivity(props) {
     onSearch,
     filterSchema,
     onFilterChange,
-    statuses,
-    podIds = [],
     isAdmin,
-    userId,
     withAdminToggle = false,
     toggleItems = [],
   } = props;
-  const statusesQuery = statuses?.length ? `&statuses=${statuses.join(',')}` : '';
-  const podIdsQuery = podIds?.length ? `&podIds=${podIds.join(',')}` : '';
-  const userIdQuery = userId ? `&userId=${userId}` : '';
   const setActiveView = board?.setActiveView;
   const listViewOptions = [
     {
@@ -124,12 +117,14 @@ export default function BoardsActivity(props) {
       active: view === ViewType.List,
       disabled: board?.entityType === ENTITIES_TYPES.PROPOSAL || isAdmin,
       action: () => {
-        if (setActiveView) {
-          setActiveView(ViewType.List);
-          insertUrlParam('view', ViewType.List);
-        } else {
-          location.push(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+        setActiveView(ViewType.List);
+
+        const query = {
+          ...router.query,
+          view: ViewType.List
         }
+
+        router.push({ query }, undefined, { scroll: false, shallow: true });
       },
     },
     {
@@ -138,13 +133,14 @@ export default function BoardsActivity(props) {
       active: view === ViewType.Grid,
       disabled: isAdmin,
       action: () => {
-        if (setActiveView) {
-          // change only boards page instead of triggering changes on all router connected components while still shallow changing the url
-          setActiveView(ViewType.Grid);
-          insertUrlParam('view', ViewType.Grid);
-        } else {
-          location.push(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+        setActiveView(ViewType.Grid);
+
+        const query = {
+          ...router.query,
+          view: ViewType.Grid
         }
+
+        router.push({ query }, undefined, { scroll: false, shallow: true });
       },
     },
   ];
@@ -152,12 +148,12 @@ export default function BoardsActivity(props) {
   useHotkeys(
     HOTKEYS.LIST_VIEW,
     () => {
-      if (setActiveView) {
-        setActiveView(ViewType.List);
-        insertUrlParam('view', ViewType.List);
-      } else {
-        location.push(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+      const query = {
+        ...router.query,
+        view: ViewType.List
       }
+
+      router.push({ query }, undefined, { scroll: false, shallow: true });
     },
     [view]
   );
@@ -165,12 +161,12 @@ export default function BoardsActivity(props) {
   useHotkeys(
     HOTKEYS.GRID_VIEW,
     () => {
-      if (setActiveView) {
-        setActiveView(ViewType.Grid);
-        insertUrlParam('view', ViewType.Grid);
-      } else {
-        location.push(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+      const query = {
+        ...router.query,
+        view: ViewType.Grid
       }
+
+      router.push({ query }, undefined, { scroll: false, shallow: true });
     },
     [view]
   );

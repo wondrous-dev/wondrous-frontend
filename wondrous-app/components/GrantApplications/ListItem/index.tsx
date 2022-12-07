@@ -18,8 +18,6 @@ import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
-import { delQuery } from 'utils/index';
-import { useLocation } from 'utils/useLocation';
 import { ApplicationItemContainer, ApplicationItemWrapper, Footer } from './styles';
 
 const EDITABLE_STATUSES = [
@@ -31,13 +29,15 @@ const EDITABLE_STATUSES = [
 const ListItem = ({ item }) => {
   const router = useRouter();
   const user = useMe();
-  const location = useLocation();
   const status = selectApplicationStatus(item);
-  const handleClick = (applicationId, query = '') => {
-    let newUrl = `${delQuery(router.asPath)}?grant=${location?.params?.grant}&grantApplicationId=${applicationId}`;
-    newUrl += query;
-    location.push(newUrl);
-    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
+  const handleClick = (applicationId, queryParams = {}) => {
+    const query = {
+      ...router.query,
+      ...queryParams,
+      grantApplicationId: applicationId,
+    };
+
+    router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
   const canEdit = item?.createdBy === user?.id && EDITABLE_STATUSES.includes(status);
@@ -62,7 +62,7 @@ const ListItem = ({ item }) => {
                 paddingX="16"
                 paddingY="7"
                 color="grey"
-                onClick={() => handleClick(item?.id, '&edit=true')}
+                onClick={() => handleClick(item?.id, { edit: true })}
                 height={26}
               >
                 Edit

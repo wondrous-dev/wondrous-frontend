@@ -46,7 +46,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
 
   const user = useMe();
 
-  const onEdit = () => handleCardClick(grant, `&edit=true`);
+  const onEdit = () => handleCardClick(grant, { edit: true });
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,

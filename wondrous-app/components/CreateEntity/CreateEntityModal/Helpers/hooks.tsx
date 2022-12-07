@@ -252,9 +252,11 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
 
   const [searchOrgUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_ORG_USERS, {
     onCompleted: (data) => {
-      if (!previousData) {
-        setHasMore(data.searchOrgUsers.length === LIMIT);
-      }
+      setTimeout(() => {
+        if (!previousData) {
+          setHasMore(data.searchOrgUsers.length === LIMIT);
+        }
+      });
     },
   });
 

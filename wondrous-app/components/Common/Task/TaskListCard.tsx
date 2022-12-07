@@ -33,9 +33,7 @@ import {
 
 export default function TaskListCard(props) {
   const { taskType, task } = props;
-  const location = useLocation();
   const router = useRouter();
-  const [viewDetails, setViewDetails] = useState(false);
   const TaskIcon = () => {
     if (task?.paymentStatus === Constants.PAYMENT_STATUS.PROCESSING) {
       return TASK_ICONS[Constants.TASK_STATUS_AWAITING_PAYMENT];
@@ -48,22 +46,14 @@ export default function TaskListCard(props) {
 
   return (
     <>
-      <TaskViewModal
-        open={viewDetails}
-        handleClose={() => {
-          setViewDetails(false);
-          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}&entity=${
-            location?.params?.entity || Constants.ENTITIES_TYPES.TASK
-          }`;
-          location.push(newUrl);
-        }}
-        taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
-        isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
-        back
-      />
       <TaskListCardWrapper
         onClick={() => {
-          setViewDetails(true);
+          const query = {
+            ...router.query,
+            task: task.id
+          }
+
+          router.push({ query }, undefined, { scroll: false, shallow: true });
         }}
       >
         <TaskHeader>

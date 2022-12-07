@@ -21,7 +21,6 @@ import typography from 'theme/typography';
 import { ENTITIES_TYPES, GRANTS_STATUSES } from 'utils/constants';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { delQuery } from 'utils/index';
-import { useLocation } from 'utils/useLocation';
 import GrantsBoardCard from './Card';
 import EmptyGrantsBoard from './EmptyState';
 
@@ -115,43 +114,27 @@ const GrantsBoard = () => {
     });
   };
 
-  const location = useLocation();
-  const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
 
-  const handleCardClick = (grant, query = '') => {
-    let newUrl = `${delQuery(router.asPath)}?grant=${grant?.id}`;
-    if (query) {
-      newUrl += query;
-    }
-    location.push(newUrl);
-    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
+  const handleCardClick = (grant, queryParams = {}) => {
+    const query = {
+      ...router.query,
+      ...queryParams,
+      grant: grant?.id,
+    };
+
+    router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
-  useEffect(() => {
-    const { params } = location;
-    if (params.grant) {
-      setOpenModal(true);
-    }
-  }, [location]);
-
   const handleModalClose = () => {
-    const style = document.body.getAttribute('style');
-    const top = style.match(/(top: -)(.*?)(?=px)/);
-    document.body.setAttribute('style', '');
-    if (top?.length > 0) {
-      window?.scrollTo(0, Number(top[2]));
-    }
-    const newUrl = `${delQuery(router.asPath)}`;
-    location.push(newUrl);
-    setOpenModal(false);
+    router.push({ pathname: `${delQuery(router.asPath)}` }, undefined, { scroll: false, shallow: true });
   };
 
   const existingGrant = useMemo(() => {
-    if (openModal && location?.params?.grant) {
-      return data?.find((grant) => grant?.id === location?.params?.grant);
+    if (router.query?.grant) {
+      return data?.find((grant) => grant?.id === router.query?.grant);
     }
-  }, [openModal, location?.params?.grant, data]);
+  }, [router.query?.grant, data]);
 
   const toggleCreateFormModal = () => setIsCreateModalOpen((prev) => !prev);
 
@@ -162,10 +145,10 @@ const GrantsBoard = () => {
     <>
       <ViewGrant
         existingGrant={existingGrant}
-        open={openModal}
+        open={!!router.query?.grant}
         handleClose={handleModalClose}
-        grantId={location?.params?.grant}
-        isEdit={!!location?.params?.edit}
+        grantId={router.query?.grant}
+        isEdit={!!router.query?.edit}
       />
       {isCreateModalOpen ? (
         <>

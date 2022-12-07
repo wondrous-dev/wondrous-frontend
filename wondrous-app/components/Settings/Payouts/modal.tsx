@@ -7,8 +7,6 @@ import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { useLocation } from 'utils/useLocation';
-import { delQuery } from 'utils';
 import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from '../../Common/Payment/SingleWalletPayment';
 import {
@@ -22,7 +20,6 @@ import {
   PaymentMethodWrapper,
   WarningTypography,
 } from '../../Common/Payment/styles';
-import { useMe } from '../../Auth/withAuth';
 
 enum ViewType {
   Paid = 'paid',
@@ -32,7 +29,6 @@ enum ViewType {
 function PayModal(props) {
   const { podId, orgId, open, handleClose, assigneeId, assigneeUsername, taskTitle, submissionId } = props;
   const router = useRouter();
-  const location = useLocation();
   const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
@@ -149,7 +145,11 @@ function PayModal(props) {
                   id: submissionId,
                 }}
                 handleClose={() => {
-                  location.push(`${delQuery(router.asPath)}?view=${ViewType.Paid}`);
+                  const query = {
+                    view: ViewType.Paid,
+                  };
+
+                  router.push({ query }, undefined, { scroll: false, shallow: true });
                   handleClose();
                 }}
               />
