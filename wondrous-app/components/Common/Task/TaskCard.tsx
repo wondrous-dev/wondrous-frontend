@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 
-import { useLocation } from 'utils/useLocation';
 import { useColumns, useUserProfile } from 'utils/hooks';
 import { GET_TASK_SUBMISSIONS_FOR_TASK, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { DUPLICATE_TASK } from 'graphql/mutations';
@@ -79,7 +78,6 @@ export default function TaskCard({
   setDeleteTask,
   boardType,
 }) {
-  const location = useLocation();
   const TaskIcon = TASK_ICONS[task.status];
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
@@ -174,8 +172,12 @@ export default function TaskCard({
   const onNavigate = (e) => {
     // TODO refactor this
     if (!showPaymentModal && !isApplicationModalOpen) {
-      location.push(viewUrl);
-      document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
+      const query = {
+        ...router.query,
+        task: task?.id
+      }
+
+      router.push({ query }, undefined, { scroll: false, shallow: true });
     }
   };
 

@@ -21,6 +21,11 @@ export function createSpacingUnit(multiplier = 1) {
   };
 }
 
+/**
+ * @deprecated
+ * @param key
+ * @param value
+ */
 export function insertUrlParam(key, value) {
   if (history.pushState) {
     const searchParams = new URLSearchParams(window.location.search);
@@ -32,6 +37,10 @@ export function insertUrlParam(key, value) {
   }
 }
 
+/**
+ * @deprecated
+ * @param key
+ */
 export function removeUrlParam(key) {
   if (history.pushState) {
     const searchParams = new URLSearchParams(window.location.search);

@@ -48,6 +48,8 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   TASK_STATUS_DONE,
+  PROPOSAL_VOTE_CHOICES,
+  PROPOSAL_VOTE_CHOICE_LABELS,
 } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import {
@@ -250,9 +252,11 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
 
   const [searchOrgUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_ORG_USERS, {
     onCompleted: (data) => {
-      if (!previousData) {
-        setHasMore(data.searchOrgUsers.length === LIMIT);
-      }
+      setTimeout(() => {
+        if (!previousData) {
+          setHasMore(data.searchOrgUsers.length === LIMIT);
+        }
+      });
     },
   });
 
@@ -296,6 +300,12 @@ export const useGetCategories = () =>
   Object.keys(CATEGORY_LABELS).map((key) => ({
     id: key,
     label: CATEGORY_LABELS[key],
+  }));
+
+export const useGetProposalChoices = () =>
+  Object.keys(PROPOSAL_VOTE_CHOICE_LABELS).map((key) => ({
+    value: key,
+    label: PROPOSAL_VOTE_CHOICE_LABELS[key],
   }));
 
 export const useCreateTask = () => {
@@ -575,6 +585,8 @@ export const useCreateTaskProposal = () => {
           mediaUploads: input.mediaUploads,
           rewards: input.rewards,
           privacyLevel: input.privacyLevel,
+          voteOptions: input.voteOptions,
+          voteType: input.voteType,
         },
       },
     })

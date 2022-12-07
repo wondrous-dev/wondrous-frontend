@@ -34,6 +34,7 @@ export default function TaskTypeSelector({ tasksPerTypeData, setExploreGr15Tasks
       {config.map((stat) => {
         const isActive = entityType === stat.type;
         const Icon = stat.icon;
+
         return (
           <StatItem
             key={stat.key}

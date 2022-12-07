@@ -22,7 +22,6 @@ import DropdownItem from 'components/Common/DropdownItem';
 import SmartLink from 'components/Common/SmartLink';
 import { ViewType } from 'types/common';
 import { delQuery } from 'utils/index';
-import { useLocation } from 'utils/useLocation';
 import Tooltip from 'components/Tooltip';
 import { RichTextViewer } from 'components/RichText';
 import { NoUnderlineLink } from 'components/Common/Link/links';
@@ -65,14 +64,13 @@ export default function TableBody({
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
-  const location = useLocation();
 
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   const tasksToLimit = limit && tasks?.length >= limit ? tasks.slice(0, limit) : tasks;
-  const view = location.params.view ?? ViewType.List;
+  const view = router.query?.view ?? ViewType.List;
   return (
     <StyledTableBody>
       {tasksToLimit?.map((task, index) => {
@@ -206,7 +204,14 @@ export default function TableBody({
             <StyledTableCell align="center">
               <TaskStatus status={status} />
             </StyledTableCell>
-            <SmartLink href={viewUrl} preventLinkNavigation onNavigate={() => location.push(viewUrl)}>
+            <SmartLink href={viewUrl} preventLinkNavigation onNavigate={() => {
+              const query = {
+                ...router.query,
+                task: task?.id
+              }
+
+              router.push({ query }, undefined, { scroll: false, shallow: true });
+            }}>
               <StyledTableCell className="clickable">
                 <TaskTitle>
                   <a href={viewUrl}>{task.title}</a>

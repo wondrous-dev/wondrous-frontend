@@ -27,10 +27,14 @@ const BountiesDashboard = ({ isAdmin }) => {
       statuses: DEFAULT_SUBMISSION_STATUSES,
     },
     onCompleted: ({ getUserBountySubmissions }) => {
-      if (!previousData) {
-        const hasMoreData = getUserBountySubmissions?.length >= LIMIT;
-        if (hasMoreData !== hasMore) setHasMore(hasMoreData);
-      }
+      // Wrap in timeout to fix error: Unhandled Runtime Error
+      // ReferenceError: Cannot access 'previousData' before initialization
+      setTimeout(() => {
+        if (!previousData) {
+          const hasMoreData = getUserBountySubmissions?.length >= LIMIT;
+          if (hasMoreData !== hasMore) setHasMore(hasMoreData);
+        }
+      });
     },
   });
 

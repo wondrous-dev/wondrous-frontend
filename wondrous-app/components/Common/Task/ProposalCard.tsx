@@ -69,75 +69,79 @@ export default function ProposalCard({ openModal, title, description, task, goTo
   };
   const labelsAndActions = PROPOSAL_STATUS_MAP[proposalStatus]?.labelsAndActions;
   const HeaderIcon = STATUS_ICONS[proposalStatus];
-  const location = useLocation();
   return (
-    <CardContent>
-      <SmartLink
-        href={viewUrl}
-        // preventLinkNavigation
-        onNavigate={() => {
-          console.log('what the');
-          location.push(viewUrl);
-          document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
-        }}
-      >
-        <BoardsCardHeader>
-          <BoardsCardSubheader>
-            <ProposalCardIcon />
-            <ProposalCardType>Proposal</ProposalCardType>
-            <BoardsPrivacyLabel>
-              {task?.privacyLevel === Constants.PRIVACY_LEVEL.public ? 'Public' : 'Members'}
-            </BoardsPrivacyLabel>
-          </BoardsCardSubheader>
-          {HeaderIcon ? <HeaderIcon /> : null}
-        </BoardsCardHeader>
-        <BoardsCardBody>
-          <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
-          <Box>
-            <TaskPriority value={task?.priority} />
-          </Box>
-          <BoardsCardBodyDescription as="div">
-            <RichTextViewer text={description} />
-          </BoardsCardBodyDescription>
-          {coverMedia ? (
-            <BoardsCardMedia>
-              <SafeImage
-                useNextImage={false}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-                src={coverMedia.slug}
-                alt="Task cover"
+    <SmartLink
+      href={viewUrl}
+      preventLinkNavigation
+      onNavigate={() => {
+        const query = {
+          ...router.query,
+          task: task.id,
+        };
+
+        router.push({ query }, undefined, { scroll: false, shallow: true });
+      }}
+    >
+      <>
+        <CardContent>
+          <BoardsCardHeader>
+            <BoardsCardSubheader>
+              <ProposalCardIcon />
+              <ProposalCardType>Proposal</ProposalCardType>
+              <BoardsPrivacyLabel>
+                {task?.privacyLevel === Constants.PRIVACY_LEVEL.public ? 'Public' : 'Members'}
+              </BoardsPrivacyLabel>
+            </BoardsCardSubheader>
+            {HeaderIcon ? <HeaderIcon /> : null}
+          </BoardsCardHeader>
+          <BoardsCardBody>
+            <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
+            <Box>
+              <TaskPriority value={task?.priority} />
+            </Box>
+            <BoardsCardBodyDescription as="div">
+              <RichTextViewer text={description} />
+            </BoardsCardBodyDescription>
+            {coverMedia ? (
+              <BoardsCardMedia>
+                <SafeImage
+                  useNextImage={false}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                  src={coverMedia.slug}
+                  alt="Task cover"
+                />
+              </BoardsCardMedia>
+            ) : null}
+            {task?.podName && (
+              <PodIconName
+                name={task?.podName}
+                color={task?.podColor}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  goToPod(task?.podId);
+                }}
               />
-            </BoardsCardMedia>
-          ) : null}
-          {task?.podName && (
-            <PodIconName
-              name={task?.podName}
-              color={task?.podColor}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                goToPod(task?.podId);
-              }}
-            />
-          )}
-        </BoardsCardBody>
-        <BoardsCardFooter style={{ paddingBottom: '7px' }}>
-          {labelsAndActions?.map((label, idx) => (
-            <ProposalFooterButton
-              isAction={!!label.action}
-              onClick={(e) => {
-                e.stopPropagation();
-                label.action && label.action();
-              }}
-              borderColor={label?.borderColor}
-              key={idx}
-              color={label?.color}
-            >
-              {label?.title}
-            </ProposalFooterButton>
-          ))}
-        </BoardsCardFooter>
-      </SmartLink>
-    </CardContent>
+            )}
+          </BoardsCardBody>
+          <BoardsCardFooter style={{ paddingBottom: '7px' }}>
+            {labelsAndActions?.map((label, idx) => (
+              <ProposalFooterButton
+                isAction={!!label.action}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  label.action && label.action();
+                }}
+                borderColor={label?.borderColor}
+                key={idx}
+                color={label?.color}
+              >
+                {label?.title}
+              </ProposalFooterButton>
+            ))}
+          </BoardsCardFooter>
+        </CardContent>
+      </>
+    </SmartLink>
   );
 }
