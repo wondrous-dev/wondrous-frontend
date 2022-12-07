@@ -39,7 +39,6 @@ const EntitySidebar = ({ children }) => {
 
     return () => (
       <>
-        <AboutEntity />
         <SidebarHomeProject />
         <List />
       </>

@@ -12,8 +12,7 @@ export const HeaderBar = styled(AppBar)`
     display: flex;
     align-items: center;
     z-index: 200;
-    width: calc(100% - ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)});
-
+    width: 100%;
     flex-direction: row;
     gap: 14px;
     justify-content: flex-end;

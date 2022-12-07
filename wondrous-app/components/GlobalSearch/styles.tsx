@@ -12,7 +12,6 @@ export const GlobalSearchWrapper = styled.div`
   flex: 1;
   position: relative;
   width: fit-content;
-  cursor: pointer;
   border-radius: 6px;
   position: relative;
   filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
@@ -24,6 +23,7 @@ export const SearchWrapper = styled.div`
     `linear-gradient(270deg, ${palette.blue20} -5.62%, ${palette.highlightPurple} 45.92%, ${palette.highlightBlue} 103.12%)`};
   display: flex;
   padding: 1px;
+  cursor: pointer;
   border-radius: 150px;
 `;
 

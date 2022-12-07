@@ -49,5 +49,6 @@ export const HorizontalEntityItem = styled(EntityItem)`
     flex-direction: row;
     height: fit-content;
     padding: 10px;
+    border-radius: 0px;
   }
 `;

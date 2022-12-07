@@ -9,12 +9,13 @@ import {
   NoLogoPod,
   Text,
 } from 'components/Common/SidebarEntityMenu/styles';
+import WorkspacePicker from 'components/WorkspacePicker';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import palette from 'theme/palette';
 import { useBoards, useSideBar } from 'utils/hooks';
 
-const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) => {
+const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage, isOrgView  = false}) => {
   const { orgBoard } = useBoards();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -22,14 +23,17 @@ const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) =
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   const { minimized } = useSideBar();
+
+  const isOrg = orgBoard || isOrgView
   const handleOnClickNotifications = () =>
-    router.push(orgBoard ? `/organization/settings/${id}/notifications` : `/pod/settings/${id}/notifications`);
+    router.push(isOrg ? `/organization/settings/${id}/notifications` : `/pod/settings/${id}/notifications`);
+
   return (
     <>
       <Button onClick={handleClick} open={open} disabled={!canManage}>
         <IconText>
           <ButtonIcon>
-            {orgBoard ? (
+            {isOrg ? (
               <OrgProfilePicture
                 profilePicture={thumbnailPicture || profilePicture}
                 style={{
@@ -47,10 +51,8 @@ const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) =
         </IconText>
         {canManage && !minimized && <ArrowIcon open={open} />}
       </Button>
-      <MenuStyled anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <Item onClick={handleOnClickNotifications}>Notification Settings</Item>
-        {/* <Item>Leave Project</Item> NOTE: There's no endpoint for this yet. */}
-      </MenuStyled>
+              <WorkspacePicker open={open} anchorEl={anchorEl} onClose={handleClose}             
+              />
     </>
   );
 };

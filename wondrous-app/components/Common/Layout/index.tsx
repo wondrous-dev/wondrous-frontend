@@ -78,13 +78,14 @@ export default function SidebarLayout({ children }) {
     [minimized, orgsList]
   );
 
+  const pageDataValues = useMemo(() => ({ setPageData }), [setPageData]);
+  
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
 
   const toggleSpotlight = () => setIsSpotlightOpen((prev) => !prev);
 
-  const pageDataValues = useMemo(() => ({ setPageData }), [setPageData]);
   
   return (
     <SideBarContext.Provider value={sidebarValue}>
@@ -103,7 +104,8 @@ export default function SidebarLayout({ children }) {
           notificationsLoading,
           toggleSpotlight,
           pageData,
-          setPageData
+          setPageData,
+          orgsList
         }}
       >
         <HeaderComponent />

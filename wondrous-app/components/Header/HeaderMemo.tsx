@@ -10,19 +10,25 @@ import { CreateIconOutlined } from 'components/Icons/createBtn';
 import NotificationsBoard from 'components/Notifications';
 import HeaderItems, { TYPES } from 'components/HeaderItems';
 import useSideBar from 'hooks/useSideBar';
-
+import { Org } from 'types/Org';
 import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
 import Grid from '@mui/material/Grid';
 import { useOutsideAlerter } from 'utils/hooks';
+import EntityMenu from 'components/Common/SidebarEntityMenu';
 
 type Props = {
   isMobile: boolean;
   onSignInClick: () => unknown;
   showCreateButton: boolean;
   user: User | null;
+  orgsList?: Array<
+    Org & {
+      isActive: boolean;
+    }
+  >;
 };
 
-const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) => {
+const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user, orgsList = [] }: Props) => {
   const { setMinimized, minimized } = useSideBar();
   const headerItemRef = useRef();
   // const [openCreateFormModal, setOpenCreateFormModal] = useState(false);
@@ -41,7 +47,6 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
     return setActiveModalType(type);
   };
 
-  console.log(activeModalType)
   return (
     <HeaderBar minimized={minimized}>
       {/* <div style={{height: '30px', width: '30px', color: 'white', background: 'red'}}>hello</div> */}
@@ -51,7 +56,19 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
         </MenuContainer>
       ) : null}
       {user && (
-        <Grid display="flex" width="100%">
+        <Grid display="flex" width="100%" gap="8px">
+          <Grid>
+          <EntityMenu
+          isOrgView
+            name={orgsList[0]?.name}
+            id={orgsList[0]?.id}
+            thumbnailPicture={orgsList[0]?.thumbnailPicture}
+            profilePicture={orgsList[0]?.profilePicture}
+            canManage={true}
+          /></Grid>
+          {/* <SettingsButton router={router} board={board} id={id} canManage={canManage} />
+        <InviteButton id={id} canManage={canManage} /> */}
+
           <GlobalSearch />
           <Grid display="flex" gap="14px" position="relative">
             {activeModalType ? (
@@ -59,8 +76,8 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
                 <HeaderItems type={activeModalType} onClose={() => setActiveModalType(null)} />
               </HeaderItemWrapper>
             ) : null}
-            {!isMobile && <Wallet isActive={(activeModalType === TYPES.WALLET) || !activeModalType} />}
-            <NotificationsBoard isActive={(activeModalType === TYPES.NOTIFICATIONS) || !activeModalType}/>
+            {!isMobile && <Wallet isActive={activeModalType === TYPES.WALLET || !activeModalType} />}
+            <NotificationsBoard isActive={activeModalType === TYPES.NOTIFICATIONS || !activeModalType} />
 
             {showCreateButton && (
               <HeaderCreateButton
@@ -98,5 +115,8 @@ export default memo(
   (prevProps, nextProps) =>
     prevProps.isMobile === nextProps.isMobile &&
     prevProps.showCreateButton === nextProps.showCreateButton &&
-    prevProps.user?.id === nextProps.user?.id
+    prevProps.user?.id === nextProps.user?.id &&
+    prevProps.orgsList?.every(
+      (org, index) => org.id === nextProps.orgsList[index]?.id && org.isActive === nextProps.orgsList[index]?.isActive
+    )
 );

@@ -20,6 +20,7 @@ export const SidebarWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
   position: fixed;
+  top: 70px;
   width: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   display: flex;
   z-index: 500;
