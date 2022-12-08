@@ -1,25 +1,12 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
+
 import { withAuth } from 'components/Auth/withAuth';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import OrgProject from 'components/organization/project';
 import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { useRouter } from 'next/router';
-import { useEffect, useMemo } from 'react';
 import { OrgBoardContext } from 'utils/contexts';
-
-const useGetOrgFromUsername = (username) => {
-  const [getOrgFromUsername, { data }] = useLazyQuery(GET_ORG_FROM_USERNAME);
-  useEffect(() => {
-    if (!data && username) {
-      getOrgFromUsername({
-        variables: {
-          username,
-        },
-      });
-    }
-  }, [username, data, getOrgFromUsername]);
-  return data?.getOrgFromUsername;
-};
 
 function ActivitiesPage() {
   const router = useRouter();
@@ -27,7 +14,8 @@ function ActivitiesPage() {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-  const org = useGetOrgFromUsername(username);
+  const [getOrgFromUsername, { data: { getOrgFromUsername: org = null } = {} }] = useLazyQuery(GET_ORG_FROM_USERNAME);
+
   const contextValue = useMemo(
     () => ({
       userPermissionsContext: userPermissionsContext?.getUserPermissionContext
@@ -38,6 +26,17 @@ function ActivitiesPage() {
     }),
     [org, userPermissionsContext?.getUserPermissionContext]
   );
+
+  useEffect(() => {
+    if (username) {
+      getOrgFromUsername({
+        variables: {
+          username,
+        },
+      });
+    }
+  }, [username]);
+
   return (
     <OrgBoardContext.Provider value={contextValue}>
       <EntitySidebar>
