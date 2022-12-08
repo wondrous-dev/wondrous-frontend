@@ -15,8 +15,16 @@ const TaskViewModalWatcher = () => {
 
   useEffect(() => {
     // not include task id in the queue if it's already there
-    if (taskIdFromQuery && !taskQueue.includes(taskIdFromQuery)) {
-      setTaskQueue([...taskQueue, taskIdFromQuery]);
+    if (taskIdFromQuery) {
+      if (taskQueue.includes(taskIdFromQuery)) {
+        // remove last task from the queue
+        setTaskQueue([...taskQueue].slice(0, -1));
+      } else {
+        setTaskQueue([...taskQueue, taskIdFromQuery]);
+      }
+    } else if (taskQueue.length) {
+      // This is for case when you click browser's back button
+      setTaskQueue([]);
     }
   }, [taskIdFromQuery]);
 
@@ -26,14 +34,14 @@ const TaskViewModalWatcher = () => {
     // this is for milestone, to not replace the milestone page when you open a task
     if (taskQueue.length > 1) {
       // Remove last task from the queue
-      setTaskQueue([...taskQueue].slice(0, -1));
+      // setTaskQueue([...taskQueue].slice(0, -1));
       // milestone page can't have taskProposal query param, so pass only task
       newUrlQuery.task = taskQueue[taskQueue.length - 2];
     } else {
       delete newUrlQuery.task;
       delete newUrlQuery.taskProposal;
 
-      setTaskQueue([]);
+      // setTaskQueue([]);
     }
 
     router.push({ query: newUrlQuery }, undefined, { scroll: false });
