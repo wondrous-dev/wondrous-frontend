@@ -15,6 +15,7 @@ import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from 
 import Grid from '@mui/material/Grid';
 import { useOutsideAlerter } from 'utils/hooks';
 import EntityMenu from 'components/Common/SidebarEntityMenu';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 type Props = {
   isMobile: boolean;
@@ -30,6 +31,7 @@ type Props = {
 
 const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user, orgsList = [] }: Props) => {
   const { setMinimized, minimized } = useSideBar();
+  const { isMobileScreen } = useMediaQuery();
   const headerItemRef = useRef();
   // const [openCreateFormModal, setOpenCreateFormModal] = useState(false);
   const [activeModalType, setActiveModalType] = useState<TYPES | null>(null);
@@ -57,18 +59,19 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user, orgsList 
       ) : null}
       {user && (
         <Grid display="flex" width="100%" gap="8px">
-          <Grid>
-          <EntityMenu
-          isOrgView
-            name={orgsList[0]?.name}
-            id={orgsList[0]?.id}
-            thumbnailPicture={orgsList[0]?.thumbnailPicture}
-            profilePicture={orgsList[0]?.profilePicture}
-            canManage={true}
-          /></Grid>
-          {/* <SettingsButton router={router} board={board} id={id} canManage={canManage} />
-        <InviteButton id={id} canManage={canManage} /> */}
-
+          {!isMobileScreen ? (
+            <Grid>
+              
+              <EntityMenu
+                isOrgView
+                name={orgsList[0]?.name}
+                id={orgsList[0]?.id}
+                thumbnailPicture={orgsList[0]?.thumbnailPicture}
+                profilePicture={orgsList[0]?.profilePicture}
+                canManage={true}
+              />
+            </Grid>
+          ) : null}
           <GlobalSearch />
           <Grid display="flex" gap="14px" position="relative">
             {activeModalType ? (

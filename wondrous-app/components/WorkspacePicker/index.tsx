@@ -1,9 +1,8 @@
-import Grid from '@mui/material/Grid';
 import Popover from '@mui/material/Popover';
 import { useGlobalContext } from 'utils/hooks';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 
-import { Wrapper, OrgItem, OrgWrapper, ItemsWrapper, UnstyledButton } from './styles';
+import { Wrapper, OrgItem, OrgWrapper, ItemsWrapper, UnstyledButton, UnstyledLink } from './styles';
 import palette from 'theme/palette';
 import PlusIcon from 'components/Icons/plus';
 import { ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
@@ -12,16 +11,18 @@ import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import typography from 'theme/typography';
 import Typography from '@mui/material/Typography';
 import OrgSettingsIcon from 'components/Icons/OrgSettingsIcon';
-import Link from 'next/link';
 import { PAGE_PATHNAME } from 'utils/constants';
 import AddDaoButton from 'components/Common/SidebarMainAddDao';
+import useMediaQuery from 'hooks/useMediaQuery';
+import { MuiDrawer } from 'components/Spotlight/styles';
+import { useMemo } from 'react';
 
 const ITEMS_CONFIG = [
   {
     type: 'component',
     Component: () => (
       <AddDaoButton
-        renderButton={({handleCreateDaoModal}) => (
+        renderButton={({ handleCreateDaoModal }) => (
           <UnstyledButton type="button" onClick={handleCreateDaoModal}>
             <HorizontalEntityItem>
               <ItemButtonIcon bgColor={palette.grey75}>
@@ -53,34 +54,50 @@ const ITEMS_CONFIG = [
 
 const TYPE_TO_COMPONENT = {
   button: UnstyledButton,
-  link: Link,
+  link: UnstyledLink,
 };
 
 const WorkspacePicker = ({ open, anchorEl, onClose }) => {
   const { orgsList } = useGlobalContext();
+  const { isMobileScreen } = useMediaQuery();
 
-  console.log(orgsList);
+  const Container = useMemo(
+    () =>
+      isMobileScreen
+        ? ({ open, onClose, children }) => (
+            <MuiDrawer anchor="bottom" open={open} onClose={onClose}>
+              {children}
+            </MuiDrawer>
+          )
+        : ({ children, open, onClose }) => (
+            <Popover
+              open={open}
+              anchorEl={anchorEl}
+              onClose={onClose}
+              sx={{
+                '& .MuiPopover-paper': {
+                  borderRadius: '6px',
+                  border: `1px solid ${palette.grey79}`,
+                },
+              }}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              {children}
+            </Popover>
+          ),
+    [isMobileScreen, anchorEl]
+  );
 
+  console.log(orgsList, 'orgsList');
   return (
-    <Popover
-      open={open}
-      anchorEl={anchorEl}
-      onClose={onClose}
-      sx={{
-        '& .MuiPopover-paper': {
-          borderRadius: '6px',
-          border: `1px solid ${palette.grey79}`,
-        },
-      }}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-    >
+    <Container open={open} onClose={onClose}>
       <Wrapper>
         <OrgWrapper gap="8px" display="flex" flexWrap="wrap" justifyContent="space-between">
           {orgsList?.map((org, key) => {
@@ -123,7 +140,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose }) => {
           })}
         </ItemsWrapper>
       </Wrapper>
-    </Popover>
+    </Container>
   );
 };
 

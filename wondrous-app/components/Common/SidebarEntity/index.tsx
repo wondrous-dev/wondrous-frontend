@@ -9,8 +9,10 @@ import List from 'components/Common/SidebarEntityList';
 import RolesSidebar from 'components/Common/SidebarEntityRoles';
 import CollabsSidebar from 'components/Common/SidebarEntityCollabs';
 import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
-import { useIsMobile, useOutsideAlerter } from 'utils/hooks';
+import { useOutsideAlerter } from 'utils/hooks';
 import SidebarHomeProject from '../SidebarHomeProject';
+import useMediaQuery from 'hooks/useMediaQuery';
+import {PAGES_WITH_NO_ENTITY_SIDEBAR} from 'utils/constants';
 
 const SIDEBAR_COMPONENTS = {
   collabs: () => <CollabsSidebar />,
@@ -20,11 +22,11 @@ const SIDEBAR_COMPONENTS = {
 const EntitySidebar = ({ children }) => {
   const { minimized, setMinimized } = useSideBar();
   const { query } = useRouter();
-  const isMobile = useIsMobile();
+  const {isMobileScreen} = useMediaQuery()
   const sidebarRef = useRef();
 
   useOutsideAlerter(sidebarRef, () => {
-    if (isMobile && !minimized) {
+    if (isMobileScreen && !minimized) {
       setMinimized(true);
     }
   });
@@ -39,11 +41,12 @@ const EntitySidebar = ({ children }) => {
 
     return () => (
       <>
+        {isMobileScreen ? <AboutEntity /> : null}
         <SidebarHomeProject />
         <List />
       </>
     );
-  }, [query.roles, query.collabs]);
+  }, [query.roles, query.collabs, isMobileScreen]);
 
   return (
     <Wrapper>

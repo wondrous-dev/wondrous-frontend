@@ -877,3 +877,7 @@ export const GRANT_APPLY_POLICY = {
   EVERYONE: 'everyone',
   ONLY_ORG_MEMBERS: 'only_org_members',
 };
+
+export const PAGES_WITH_NO_ENTITY_SIDEBAR = [
+  '/explore'
+];

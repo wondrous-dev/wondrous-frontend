@@ -63,3 +63,7 @@ export const UnstyledButton = styled.button`
   width: 100%;
   height: 100%;
 `;
+
+export const UnstyledLink = styled(Link)`
+  text-decoration: none;
+`;

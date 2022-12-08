@@ -55,7 +55,7 @@ export default function SidebarLayout({ children }) {
   });
   const [minimized, setMinimized] = useState(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
-    skip: isMobile || PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
+    skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
     variables: {
       excludeSharedOrgs: true,
     },
@@ -86,7 +86,6 @@ export default function SidebarLayout({ children }) {
 
   const toggleSpotlight = () => setIsSpotlightOpen((prev) => !prev);
 
-  
   return (
     <SideBarContext.Provider value={sidebarValue}>
       {/* <SideBarComponent userOrgs={userOrgs} /> */}

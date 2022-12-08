@@ -52,7 +52,7 @@ export const MuiDrawer = styled(Drawer)`
     .MuiPaper-root {
       height: fit-content;
       min-height: 10%;
-      border-radius: 0px 0px 14px 14px;
+      border-radius: ${({anchor}) => anchor === 'top' ? '0px 0px 14px 14px' : '14px 14px 0px 0px'};
       background: ${palette.black92};
     }
   }
