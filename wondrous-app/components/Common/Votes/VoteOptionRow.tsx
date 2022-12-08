@@ -19,7 +19,7 @@ export default function VoteOptionRow({ votes, option, handleVote, handleUndoVot
   const percentage = computePercentage(votes, option);
   const userVotedFor = votes?.userVote === option;
   let optionDisplayName = option;
-  if (voteType === 'binary') {
+  if (voteType === 'binary' || !voteType) {
     optionDisplayName = option === 'approve' ? 'Yes' : 'No';
   }
   return (

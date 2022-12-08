@@ -7,7 +7,6 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import ListView from 'components/ListView';
 import { CardsContainer } from './styles';
 
-
 export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
   return function Wrapper({
     columns = [],
@@ -22,8 +21,8 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
     const handleCardClick = (task) => {
       const query = {
         ...router.query,
-        task: task?.id
-      }
+        task: task?.id,
+      };
 
       router.push({ query }, undefined, { scroll: false, shallow: true });
     };
@@ -37,9 +36,7 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
       <>
         <CardsContainer numberOfColumns={numberOfColumns} isFullWidth={activeView === ViewType.List}>
           {activeView === ViewType.Grid ? (
-            <Suspense>
-              <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
-            </Suspense>
+            <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
           ) : (
             <ListView
               enableInfiniteLoading

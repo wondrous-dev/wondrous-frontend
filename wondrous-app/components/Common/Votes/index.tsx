@@ -72,18 +72,19 @@ export default function VoteResults({ userInOrg, proposal, fullScreen, proposalS
 
   return (
     <VoteResultsWrapper isFullScreen={fullScreen}>
-      {proposal?.voteOptions?.map((option) => (
-        <VoteOptionRow
-          key={option}
-          voteType={proposal?.voteType}
-          votes={votes}
-          option={option}
-          handleVote={handleVote}
-          handleUndoVote={handleUndoVote}
-          user={user}
-        />
-      ))}
-      {proposal?.voteType === 'binary' &&
+      {proposal?.voteType === 'custom' &&
+        proposal?.voteOptions?.map((option) => (
+          <VoteOptionRow
+            key={option}
+            voteType={proposal?.voteType}
+            votes={votes}
+            option={option}
+            handleVote={handleVote}
+            handleUndoVote={handleUndoVote}
+            user={user}
+          />
+        ))}
+      {(proposal?.voteType === 'binary' || !proposal?.voteType) &&
         binaryOptions.map((option) => (
           <VoteOptionRow
             key={option}
