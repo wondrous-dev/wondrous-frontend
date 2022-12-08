@@ -131,7 +131,7 @@ function KanbanBoard(props) {
 
   const moveCard = async (id, status, index, source) => {
     // TODO get rid of nested loop
-
+    // index is the position of the new task in the column
     const updatedColumns = columns.map((column) => {
       const task = getTaskById(id);
       // Only allow when permissions are OK
