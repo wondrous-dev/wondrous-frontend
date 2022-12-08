@@ -432,6 +432,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   ]);
 
   useEffect(() => {
+    form.setFieldValue('proposalVoteType', 'none');
+  }, [form?.values?.orgId]);
+
+  useEffect(() => {
     if (isSubtask) {
       form.setFieldValue('parentTaskId', parentTaskId);
       getTaskById({
