@@ -33,15 +33,11 @@ const TaskViewModalWatcher = () => {
 
     // this is for milestone, to not replace the milestone page when you open a task
     if (taskQueue.length > 1) {
-      // Remove last task from the queue
-      // setTaskQueue([...taskQueue].slice(0, -1));
       // milestone page can't have taskProposal query param, so pass only task
       newUrlQuery.task = taskQueue[taskQueue.length - 2];
     } else {
       delete newUrlQuery.task;
       delete newUrlQuery.taskProposal;
-
-      // setTaskQueue([]);
     }
 
     router.push({ query: newUrlQuery }, undefined, { scroll: false });
