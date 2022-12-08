@@ -30,11 +30,7 @@ const MilestoneProgress = ({ milestoneId }: { milestoneId: string }) => {
             />
           </Grid>
         </>
-      ) : (
-        <Typography color={palette.blue20} fontSize="13px" fontWeight="500">
-          No tasks
-        </Typography>
-      )}
+      ) : null}
     </Grid>
   );
 };
