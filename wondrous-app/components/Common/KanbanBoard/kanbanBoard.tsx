@@ -33,7 +33,7 @@ export const populateOrder = (index, tasks, field) => {
     aboveOrder = tasks[index - 1][field];
   }
   if (index < tasks.length - 1) {
-    belowOrder = tasks[index][field];
+    belowOrder = tasks[index + 1][field];
   }
   return {
     aboveOrder,
@@ -131,6 +131,7 @@ function KanbanBoard(props) {
 
   const moveCard = async (id, status, index, source) => {
     // TODO get rid of nested loop
+    // index is the position of the new task in the column
     const updatedColumns = columns.map((column) => {
       const task = getTaskById(id);
       // Only allow when permissions are OK
@@ -151,7 +152,7 @@ function KanbanBoard(props) {
           if (orgBoard) {
             board = BOARD_TYPE.org;
             aboveOrder = populateOrder(index, newTasks, 'orgOrder').aboveOrder;
-            belowOrder = populateOrder(index, column.tasks, 'orgOrder').belowOrder;
+            belowOrder = populateOrder(index, newTasks, 'orgOrder').belowOrder;
           } else if (podBoard) {
             board = BOARD_TYPE.pod;
             aboveOrder = populateOrder(index, newTasks, 'podOrder').aboveOrder;
@@ -275,8 +276,8 @@ function KanbanBoard(props) {
           setTaskToConfirm(null);
           const query = {
             ...router.query,
-            [taskType]: taskToUpdate?.id
-          }
+            [taskType]: taskToUpdate?.id,
+          };
 
           router.push({ query }, undefined, { scroll: false, shallow: true });
         },
@@ -321,7 +322,7 @@ function KanbanBoard(props) {
       </ConfirmModal>
 
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-      {columns.map((column) => {
+        {columns.map((column) => {
           const { status, section, tasks } = column;
 
           return (

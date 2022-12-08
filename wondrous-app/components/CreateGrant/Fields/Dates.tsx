@@ -6,6 +6,7 @@ import {
   CreateEntityDueDate,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { DisplayWrapper } from '../styles';
+import { DueDateWrapper } from './styles';
 
 export default function Dates({ startDate, endDate, onChange }) {
   return (
@@ -14,31 +15,35 @@ export default function Dates({ startDate, endDate, onChange }) {
         <CreateEntityLabel>Dates</CreateEntityLabel>
       </CreateEntityLabelWrapper>
       <DisplayWrapper>
-        <CreateEntityDueDate
-          autoFocus={false}
-          className="create-entity-date"
-          setValue={(date) => {
-            onChange('startDate', date);
-          }}
-          hideRecurring
-          placement="bottom"
-          handleClose={() => {
-            onChange('startDate', null);
-          }}
-          value={startDate}
-        />
+        <DueDateWrapper>
+          <CreateEntityDueDate
+            autoFocus={false}
+            className="create-entity-date"
+            setValue={(date) => {
+              onChange('startDate', date);
+            }}
+            hideRecurring
+            placement="bottom"
+            handleClose={() => {
+              onChange('startDate', null);
+            }}
+            value={startDate}
+          />
+        </DueDateWrapper>
 
-        <CreateEntityDueDate
-          className="create-entity-date"
-          autoFocus={false}
-          setValue={(date) => onChange('endDate', date)}
-          hideRecurring
-          placement="bottom"
-          handleClose={() => {
-            onChange('endDate', null);
-          }}
-          value={endDate}
-        />
+        <DueDateWrapper>
+          <CreateEntityDueDate
+            className="create-entity-date"
+            autoFocus={false}
+            setValue={(date) => onChange('endDate', date)}
+            hideRecurring
+            placement="bottom"
+            handleClose={() => {
+              onChange('endDate', null);
+            }}
+            value={endDate}
+          />
+        </DueDateWrapper>
       </DisplayWrapper>
     </TaskSectionDisplayDiv>
   );
