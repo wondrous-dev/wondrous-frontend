@@ -108,7 +108,7 @@ export default function SidebarLayout({ children }) {
         }}
       >
         <HeaderComponent />
-        <BackdropComponent open={!minimized && isMobile} />
+        {!minimized && isMobile && <BackdropComponent open />}
         {isSpotlightOpen ? <Spotlight onClose={toggleSpotlight} /> : null}
         <PageDataContext.Provider value={pageDataValues}>
         <SectionWrapper>{children}</SectionWrapper>

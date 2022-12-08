@@ -12,13 +12,14 @@ export const Wrapper = styled.div`
 
 export const OrgItem = styled(Link)`
   flex: 1;
-  flex-basis: 48%;
+  flex-basis: fit-content;
   text-decoration: none;
   display: flex;
   background: ${({ isActive }) => (isActive ? palette.grey87 : palette.black92)};
   justify-content: center;
   gap: 12px;
   cursor: pointer;
+  text-align: center;
   align-items: center;
   flex-direction: column;
   font-weight: 500;
@@ -31,11 +32,16 @@ export const OrgItem = styled(Link)`
   }
 `;
 
+export const FullWidthItem = styled(OrgItem)`
+  flex-basis: 100%;
+`;
+
 export const OrgWrapper = styled(Grid)`
   && {
     background: ${palette.grey900};
     padding: 12px;
     max-height: 300px;
+    min-width: 300px;
     overflow-y: auto;
     ${ScrollBarStyles};
   }

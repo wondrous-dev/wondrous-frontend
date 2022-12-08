@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react';
+import { memo, useMemo, useRef, useState } from 'react';
 import { Menu } from '@mui/icons-material';
 
 import { User } from 'types/User';
@@ -13,9 +13,11 @@ import useSideBar from 'hooks/useSideBar';
 import { Org } from 'types/Org';
 import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
 import Grid from '@mui/material/Grid';
-import { useOutsideAlerter } from 'utils/hooks';
+import { useGlobalContext, useOutsideAlerter } from 'utils/hooks';
 import EntityMenu from 'components/Common/SidebarEntityMenu';
 import useMediaQuery from 'hooks/useMediaQuery';
+import { useRouter } from 'next/router';
+import { PAGE_PATHNAME } from 'utils/constants';
 
 type Props = {
   isMobile: boolean;
@@ -29,12 +31,13 @@ type Props = {
   >;
 };
 
-const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user, orgsList = [] }: Props) => {
+const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) => {
   const { setMinimized, minimized } = useSideBar();
   const { isMobileScreen } = useMediaQuery();
   const headerItemRef = useRef();
   // const [openCreateFormModal, setOpenCreateFormModal] = useState(false);
   const [activeModalType, setActiveModalType] = useState<TYPES | null>(null);
+  const router = useRouter();
   const toggleMinimize = () => {
     if (minimized) {
       setMinimized(false);
@@ -52,24 +55,16 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user, orgsList 
   return (
     <HeaderBar minimized={minimized}>
       {/* <div style={{height: '30px', width: '30px', color: 'white', background: 'red'}}>hello</div> */}
-      {isMobile ? (
+      {isMobile && router.pathname !== PAGE_PATHNAME.explore ? (
         <MenuContainer onClick={toggleMinimize}>
           <Menu />
         </MenuContainer>
       ) : null}
       {user && (
         <Grid display="flex" width="100%" gap="8px">
-          {!isMobileScreen ? (
+          {!isMobileScreen || router.pathname === PAGE_PATHNAME.explore ? (
             <Grid>
-              
-              <EntityMenu
-                isOrgView
-                name={orgsList[0]?.name}
-                id={orgsList[0]?.id}
-                thumbnailPicture={orgsList[0]?.thumbnailPicture}
-                profilePicture={orgsList[0]?.profilePicture}
-                canManage={true}
-              />
+              <EntityMenu user={user} />
             </Grid>
           ) : null}
           <GlobalSearch />

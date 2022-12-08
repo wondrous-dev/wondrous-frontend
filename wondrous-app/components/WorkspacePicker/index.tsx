@@ -1,8 +1,8 @@
 import Popover from '@mui/material/Popover';
 import { useGlobalContext } from 'utils/hooks';
-import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import { OrgProfilePicture, UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 
-import { Wrapper, OrgItem, OrgWrapper, ItemsWrapper, UnstyledButton, UnstyledLink } from './styles';
+import { Wrapper, OrgItem, OrgWrapper, ItemsWrapper, UnstyledButton, UnstyledLink, FullWidthItem } from './styles';
 import palette from 'theme/palette';
 import PlusIcon from 'components/Icons/plus';
 import { ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
@@ -20,10 +20,16 @@ import { useMemo } from 'react';
 const ITEMS_CONFIG = [
   {
     type: 'component',
-    Component: () => (
+    Component: ({ onClose }) => (
       <AddDaoButton
         renderButton={({ handleCreateDaoModal }) => (
-          <UnstyledButton type="button" onClick={handleCreateDaoModal}>
+          <UnstyledButton
+            type="button"
+            onClick={() => {
+              handleCreateDaoModal();
+              onClose();
+            }}
+          >
             <HorizontalEntityItem>
               <ItemButtonIcon bgColor={palette.grey75}>
                 <PlusIcon />
@@ -57,7 +63,7 @@ const TYPE_TO_COMPONENT = {
   link: UnstyledLink,
 };
 
-const WorkspacePicker = ({ open, anchorEl, onClose }) => {
+const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user }) => {
   const { orgsList } = useGlobalContext();
   const { isMobileScreen } = useMediaQuery();
 
@@ -96,13 +102,30 @@ const WorkspacePicker = ({ open, anchorEl, onClose }) => {
   );
 
   console.log(orgsList, 'orgsList');
+
   return (
     <Container open={open} onClose={onClose}>
       <Wrapper>
         <OrgWrapper gap="8px" display="flex" flexWrap="wrap" justifyContent="space-between">
+          <FullWidthItem isActive={isUserBoard} href={`/dashboard`} onClick={onClose}>
+            <UserProfilePicture
+              avatar={user?.profilePicture}
+              style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '100%'
+              }}
+            />
+            My workspace
+          </FullWidthItem>
           {orgsList?.map((org, key) => {
             return (
-              <OrgItem key={org?.id} isActive={org?.isActive} href={`/organization/${org?.username}/project`}>
+              <OrgItem
+                key={org?.id}
+                isActive={org?.isActive}
+                href={`/organization/${org?.username}/project`}
+                onClick={onClose}
+              >
                 <OrgProfilePicture
                   profilePicture={org?.profilePicture}
                   style={{
@@ -118,14 +141,14 @@ const WorkspacePicker = ({ open, anchorEl, onClose }) => {
         </OrgWrapper>
         <ItemsWrapper>
           {ITEMS_CONFIG?.map(({ Icon, label, type, url, Component }, key) => {
-            if (type === 'component') return <Component key={key} />;
+            if (type === 'component') return <Component key={key} onClose={onClose} />;
 
             const Wrapper = TYPE_TO_COMPONENT[type];
 
-            const wrapperProps = url ? { href: url } : { onClick: onClose };
+            const wrapperProps = url ? { href: url } : {};
 
             return (
-              <Wrapper {...wrapperProps}>
+              <Wrapper {...wrapperProps} onClick={onClose}>
                 <HorizontalEntityItem key={key}>
                   <ItemButtonIcon bgColor={palette.grey75}>
                     <Icon />

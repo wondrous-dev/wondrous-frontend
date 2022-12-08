@@ -250,8 +250,8 @@ export const ConnectDiscordLink = styled.a`
 `;
 
 export const MenuContainer = styled.div`
-  height: 48px;
-  width: 48px;
+  height: 40px;
+  width: 40px;
   background: #2d2d2d;
   border-radius: 9px;
   display: flex;

@@ -19,6 +19,11 @@ export const OrgProfilePicture = ({ profilePicture, style = {} }) => {
   );
 };
 
+interface UserProfilePictureProps {
+  avatar?: string;
+  style?: React.CSSProperties;
+};
+
 export const UserProfilePicture = ({
   avatar,
   style = {
@@ -27,7 +32,7 @@ export const UserProfilePicture = ({
     borderRadius: '13px',
     marginRight: '4px',
   },
-}) =>
+}: UserProfilePictureProps) =>
   avatar ? (
     <SafeImage useNextImage={false} style={style} src={avatar} alt="Profile picture" />
   ) : (

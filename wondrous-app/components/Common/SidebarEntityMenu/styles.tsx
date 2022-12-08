@@ -7,7 +7,7 @@ export const ButtonIcon = styled.div`
   width: 28px;
   height: 28px;
   background: ${({ theme }) => theme.palette.grey78};
-  border-radius: 6px;
+  border-radius: ${({ isUserBoard }) => (isUserBoard ? '100%' : '6px')};
 `;
 
 export const Text = styled(Typography)`
@@ -56,6 +56,7 @@ export const ArrowIcon = styled((props) => (
     transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
     display: flex;
     height: 32px;
+    margin-left: 6px;
     align-items: center;
     justify-content: center;
     svg {
@@ -111,4 +112,12 @@ export const NoLogoPod = styled((props) => (
   align-items: center;
   justify-content: center;
   background: ${({ theme }) => theme.palette.grey87}; ;
+`;
+
+export const IconWrapper = styled.div`
+  height: 28px;
+  width: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
