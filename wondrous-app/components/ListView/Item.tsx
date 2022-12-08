@@ -26,7 +26,6 @@ import { useMe } from 'components/Auth/withAuth';
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
-import { useLocation } from 'utils/useLocation';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
@@ -62,7 +61,6 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
 
-  const location = useLocation();
   const {
     assigneeProfilePicture,
     title,

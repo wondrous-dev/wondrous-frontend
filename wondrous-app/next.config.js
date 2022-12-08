@@ -5,7 +5,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 module.exports = withBundleAnalyzer({
   /* config options here */
-  reactStrictMode: true,
+  reactStrictMode: false,
   compiler: {
     // Enables the styled-components SWC transform
     styledComponents: true

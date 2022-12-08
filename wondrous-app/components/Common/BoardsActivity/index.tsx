@@ -23,7 +23,6 @@ import palette from 'theme/palette';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { useLocation } from 'utils/useLocation';
 import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
