@@ -94,3 +94,10 @@ export const ApplyPolicyItemButton = styled.button`
     border-radius: 4px;
   `};
 `;
+
+export const DueDateWrapper = styled.span`
+  width: 100%;
+  .create-entity-date {
+    max-width: 100% !important;
+  }
+`;
