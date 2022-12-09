@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { useLocation } from 'utils/useLocation';
 import * as Constants from 'utils/constants';
 import { delQuery } from 'utils/index';
 import { renderMentionString } from 'utils/common';
