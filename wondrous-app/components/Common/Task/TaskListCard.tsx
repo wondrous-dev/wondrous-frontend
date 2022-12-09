@@ -100,7 +100,7 @@ export default function TaskListCard(props) {
               e.preventDefault();
               e.stopPropagation();
               const newUrl = `/pod/${task?.podId}/boards`;
-              window.location.href = newUrl;
+              router.push(newUrl);
             }}
           >
             <PodName>{task?.podName.slice(0, 15)}</PodName>
