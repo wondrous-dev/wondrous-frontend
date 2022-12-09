@@ -59,7 +59,7 @@ const useSidebarData = () => {
             {
               text: 'Project Home',
               Icon: () => <HomeIcon height="12px" width="12px" />,
-              link: `${link}/project`,
+              link: `${link}/home`,
             },
           ],
         }

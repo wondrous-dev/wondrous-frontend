@@ -120,7 +120,7 @@ const SidebarMemoized = ({ orgsList, sidebar, isMobile, handleProfileClick, user
             <DrawerList id="tour-sidebar-daos">
               {orgsList?.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
                 <SidebarTooltip key={id} title={name}>
-                  <Link key={id} href={`/organization/${username}/project`} passHref>
+                  <Link key={id} href={`/organization/${username}/home`} passHref>
                     <ButtonIcon button key={id} isActive={isActive}>
                       <DaoIconWrapper>
                         {thumbnailPicture || profilePicture ? (
