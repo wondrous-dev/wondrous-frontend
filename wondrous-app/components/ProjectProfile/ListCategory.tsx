@@ -31,7 +31,7 @@ const ListCategory = () => (
       IconComponent: FolderIcon,
     }}
     CreateButtonProps={useCategoriesButtonProps()}
-    backgroundImageUrl="/images/project/document-empty-bg.svg"
+    backgroundImageUrl="/images/project/category-empty-bg.svg"
     showAllUrl="docs"
     ListItemProps={{
       LeftComponent,
