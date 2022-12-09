@@ -23,9 +23,11 @@ import {
   CreateLayoutBountyIcon,
   CreateLayoutProposalIcon,
   CreateLayoutGrantIcon,
+  ChooseEntityWrapper,
 } from './styles';
 import RightArrowIcon from '../Icons/rightArrow';
 import CloseModalIcon from '../Icons/closeModal';
+import CreateEntityComponent from 'components/HeaderItems/CreateEntityComponent';
 
 export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.TASK]: {
@@ -96,28 +98,9 @@ function ChooseEntityToCreateModal(props) {
   });
 
   return (
-    <CreateLayoutsModal>
-      <CreateLayoutsModalHeader>
-        <CreateLayoutsModalTitle>Create new...</CreateLayoutsModalTitle>
-        <CreateLayoutsModalCloseButton onClick={handleClose}>
-          <CloseModalIcon />
-        </CreateLayoutsModalCloseButton>
-      </CreateLayoutsModalHeader>
-      <CreateLayoutsModalItemContainer>
-        {/* {Object.entries(ENTITIES_UI_ELEMENTS).map(([key, { icon: EntityIcon, label }]) => ( */}
-        {entries.map(([key, { icon: EntityIcon, label }]) => (
-          <CreateLayoutsModalItem key={key} onClick={() => setEntityType(key)} data-cy={`modal-item-${label}`}>
-            <CreateLayoutsModalItemTitleBlock>
-              <EntityIcon circle />
-              <CreateLayoutsModalItemTitle>{label}</CreateLayoutsModalItemTitle>
-            </CreateLayoutsModalItemTitleBlock>
-            <IconButton>
-              <RightArrowIcon />
-            </IconButton>
-          </CreateLayoutsModalItem>
-        ))}
-      </CreateLayoutsModalItemContainer>
-    </CreateLayoutsModal>
+    <ChooseEntityWrapper>
+      <CreateEntityComponent onClose={handleClose} />
+    </ChooseEntityWrapper>
   );
 }
 

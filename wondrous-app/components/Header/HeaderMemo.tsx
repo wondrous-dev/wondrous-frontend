@@ -18,6 +18,7 @@ import EntityMenu from 'components/Common/SidebarEntityMenu';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { PAGE_PATHNAME } from 'utils/constants';
+import HeaderUserProfile from 'components/HeaderUserProfile';
 
 type Props = {
   isMobile: boolean;
@@ -76,7 +77,10 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
             ) : null}
             {!isMobile && <Wallet isActive={activeModalType === TYPES.WALLET || !activeModalType} />}
             <NotificationsBoard isActive={activeModalType === TYPES.NOTIFICATIONS || !activeModalType} />
-
+            <HeaderUserProfile
+              handleClick={() => handleActiveModalType(TYPES.PROFILE)}
+              isActive={activeModalType === TYPES.PROFILE}
+            />
             {showCreateButton && (
               <HeaderCreateButton
                 highlighted="true"

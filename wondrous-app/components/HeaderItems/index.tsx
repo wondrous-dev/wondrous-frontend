@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import CreateEntityComponent from './CreateEntityComponent';
+import UserProfile from './UserProfile';
 
 export enum TYPES {
   CREATE_ENTITY = 'CREATE_ENTITY',
@@ -10,6 +11,7 @@ export enum TYPES {
 
 const TYPES_PER_COMPONENT = {
   [TYPES.CREATE_ENTITY]: CreateEntityComponent,
+  [TYPES.PROFILE]: UserProfile
 };
 
 const HeaderItems = ({ type, onClose }) => {

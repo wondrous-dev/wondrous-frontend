@@ -92,7 +92,6 @@ function ChooseEntityToCreate(props) {
     }
   };
   const handleCloseModal = () => {
-    // toggleOpen();
     resetEntityType();
   };
 
@@ -109,7 +108,6 @@ function ChooseEntityToCreate(props) {
     );
   }
 
-  console.log(open, 'open')
   return (
     <CreateFormModalOverlay
       open={open}

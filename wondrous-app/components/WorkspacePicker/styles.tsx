@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Grid } from '@mui/material';
-import { HorizontalEntityItem } from 'components/HeaderItems/styles';
+import { HorizontalEntityItem } from 'components/HeaderItems/CreateEntityComponent/styles';
 import Link from 'next/link';
 import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 

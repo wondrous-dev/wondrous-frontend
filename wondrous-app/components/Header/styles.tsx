@@ -273,7 +273,7 @@ export const HeaderItemWrapper = styled.div`
   width: calc(100% + 28px);
   filter: drop-shadow(0px 4px 54px rgba(0, 0, 0, 0.35));
   border-radius: 0px 0px 0px 14px;
-  padding: 14px;
+  padding: 24px 14px 14px 14px;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     width: 100vw;
   }

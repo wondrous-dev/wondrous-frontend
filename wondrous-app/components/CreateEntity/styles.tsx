@@ -14,6 +14,7 @@ import CreatePodIcon from '../Icons/createPod.svg';
 import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';
 import WonderTokenIcon from '../Icons/wonderToken';
+import { Wrapper } from 'components/HeaderItems/CreateEntityComponent/styles';
 
 export const MediaUploadGrid = styled(Grid)`
   && {
@@ -800,4 +801,18 @@ export const EditorToolbar = styled.div`
 
 export const TextInputDiv = styled.div`
   height: 100px;
+`;
+
+export const ChooseEntityWrapper = styled.div`
+  width: 50vw;
+  background: ${palette.black92};
+  padding: 14px;
+  border-radius: 6px;
+  ${Wrapper} {
+    padding-top: 0px;
+  }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    min-width: 100vw;
+    width: 100%;
+  }
 `;

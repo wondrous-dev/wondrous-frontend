@@ -203,10 +203,10 @@ function Wallet({isActive = true}) {
 
   return (
     <WalletWrapper isActive={isActive}>
-      <Tooltip title={CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3.chain]}>
+      {/* <Tooltip title={CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3.chain]}>
         <ChainWrapper>{CHAIN_LOGO[wonderWeb3.chain]}</ChainWrapper>
-      </Tooltip>
-      <Balance currency={currency}>
+      </Tooltip> */}
+      {/* <Balance currency={currency}>
         <CurrencyDropdownItem
           currency="WONDER"
           selected={currency.symbol === 'WONDER'}
@@ -220,7 +220,7 @@ function Wallet({isActive = true}) {
             displayCurrency={displayCurrency}
           />
         )}
-      </Balance>
+      </Balance> */}
 
       <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
       {/* {differentAccountError && (

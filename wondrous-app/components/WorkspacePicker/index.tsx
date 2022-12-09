@@ -6,7 +6,7 @@ import { Wrapper, OrgItem, OrgWrapper, ItemsWrapper, UnstyledButton, UnstyledLin
 import palette from 'theme/palette';
 import PlusIcon from 'components/Icons/plus';
 import { ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
-import { HorizontalEntityItem } from 'components/HeaderItems/styles';
+import { HorizontalEntityItem } from 'components/HeaderItems/CreateEntityComponent/styles';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import typography from 'theme/typography';
 import Typography from '@mui/material/Typography';
