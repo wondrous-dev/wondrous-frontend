@@ -4,7 +4,7 @@ import RolePill from 'components/Common/RolePill';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import palette from 'theme/palette';
 import { useGetOrgUsers } from './helpers';
-import ListWrapper from './ListWrapper';
+import SectionContent from './SectionContent';
 
 const LeftComponent = ({ user }) => {
   const { profilePicture, username } = user || {};
@@ -22,8 +22,8 @@ const RightComponent = ({ role }) => (
   </Grid>
 );
 
-const ListMember = () => (
-  <ListWrapper
+const ProfileMemberSection = () => (
+  <SectionContent
     HeaderTitleProps={{
       text: 'Member',
       IconComponent: GroupIcon,
@@ -39,4 +39,4 @@ const ListMember = () => (
   />
 );
 
-export default ListMember;
+export default ProfileMemberSection;

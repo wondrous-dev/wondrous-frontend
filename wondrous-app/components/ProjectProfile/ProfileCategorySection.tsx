@@ -4,7 +4,7 @@ import palette from 'theme/palette';
 import { randomColors } from 'utils/common';
 
 import { useCategoriesButtonProps, useGetOrgDocumentCategories } from './helpers';
-import ListWrapper from './ListWrapper';
+import SectionContent from './SectionContent';
 
 const LeftComponent = ({ name }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -24,8 +24,8 @@ const LeftComponent = ({ name }) => (
   </Grid>
 );
 
-const ListCategory = () => (
-  <ListWrapper
+const ProfileCategorySection = () => (
+  <SectionContent
     HeaderTitleProps={{
       text: 'Category',
       IconComponent: FolderIcon,
@@ -41,4 +41,4 @@ const ListCategory = () => (
   />
 );
 
-export default ListCategory;
+export default ProfileCategorySection;

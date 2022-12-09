@@ -5,7 +5,7 @@ import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 
 import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
-import ListWrapper from './ListWrapper';
+import SectionContent from './SectionContent';
 
 const LeftComponent = ({ title }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -15,8 +15,8 @@ const LeftComponent = ({ title }) => (
 
 const RightComponent = ({ rewards }) => <Compensation rewards={rewards} />;
 
-const ListBounty = () => (
-  <ListWrapper
+const ProfileBountySection = () => (
+  <SectionContent
     HeaderTitleProps={{
       text: 'Bounty',
       IconComponent: StarIcon,
@@ -34,4 +34,4 @@ const ListBounty = () => (
   />
 );
 
-export default ListBounty;
+export default ProfileBountySection;

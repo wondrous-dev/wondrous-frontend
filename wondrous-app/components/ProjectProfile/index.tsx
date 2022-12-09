@@ -1,10 +1,10 @@
 import Grid from '@mui/material/Grid';
-import ListMainWrapper from 'components/ProjectProfile/ListMainWrapper';
 import PodCards from 'components/ProjectProfile/PodCards';
 import { useMemo } from 'react';
 import { ProjectContext } from 'utils/contexts';
 
 import { useCollaborationModal, useCreateEntityModal, useCreateGrantModal, useCategoriesModal } from './helpers';
+import ProfileSectionsWrapper from './ProfileSectionsWrapper';
 
 const ProjectProfile = ({ orgData }) => {
   const { setEntityType, CreateEntityModal } = useCreateEntityModal();
@@ -30,7 +30,7 @@ const ProjectProfile = ({ orgData }) => {
         <CreateGrantModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
           <PodCards />
-          <ListMainWrapper />
+          <ProfileSectionsWrapper />
         </Grid>
       </>
     </ProjectContext.Provider>

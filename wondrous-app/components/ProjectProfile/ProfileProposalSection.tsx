@@ -7,7 +7,7 @@ import { getProposalStatus } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
 
 import { useEntityCreateButtonProps, useGetOrgProposal } from './helpers';
-import ListWrapper from './ListWrapper';
+import SectionContent from './SectionContent';
 
 const LeftComponent = ({ title, creator }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -27,8 +27,8 @@ const RightComponent = ({ orgId, rejectedAt, approvedAt, closedAt }) => (
   </Grid>
 );
 
-const ListProposal = () => (
-  <ListWrapper
+const ProfileProposalSection = () => (
+  <SectionContent
     HeaderTitleProps={{
       text: 'Proposal',
       IconComponent: ContentPaste,
@@ -46,4 +46,4 @@ const ListProposal = () => (
   />
 );
 
-export default ListProposal;
+export default ProfileProposalSection;

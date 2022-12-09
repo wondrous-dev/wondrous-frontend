@@ -9,7 +9,7 @@ import { ROLES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 
 import { useCollaborationButtonProps, useGetOrgCollabsForOrg } from './helpers';
-import ListWrapper from './ListWrapper';
+import SectionContent from './SectionContent';
 
 const OrgWrapper = ({ username, profilePicture }) => (
   <Grid container item width="fit-content" sx={[{ '& a': { textDecoration: 'none' } }]}>
@@ -64,8 +64,8 @@ const RightComponent = ({ parentOrgName }) => {
   );
 };
 
-const ListCollab = () => (
-  <ListWrapper
+const ProfileCollabSection = () => (
+  <SectionContent
     HeaderTitleProps={{
       text: 'Collab',
       IconComponent: () => <SmallDao2DaoIcon stroke={palette.white} />,
@@ -82,4 +82,4 @@ const ListCollab = () => (
   />
 );
 
-export default ListCollab;
+export default ProfileCollabSection;

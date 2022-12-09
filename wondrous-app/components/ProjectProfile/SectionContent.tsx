@@ -73,7 +73,7 @@ const AddButton = ({ onClick, text }) => {
   );
 };
 
-const ListWrapper = ({
+const SectionContent = ({
   backgroundImageUrl,
   CreateButtonProps,
   HeaderTitleProps,
@@ -129,4 +129,4 @@ const ListWrapper = ({
   );
 };
 
-export default ListWrapper;
+export default SectionContent;

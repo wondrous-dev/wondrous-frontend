@@ -6,7 +6,7 @@ import palette from 'theme/palette';
 import { formatDateDisplay } from 'utils/board';
 
 import { useCreateGrantButtonProps, useGetGrantOrgBoard } from './helpers';
-import ListWrapper from './ListWrapper';
+import SectionContent from './SectionContent';
 
 const LeftComponent = ({ title }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -68,8 +68,8 @@ const RightComponent = ({ numOfGrant, endDate, reward }) => {
   );
 };
 
-const ListGrant = () => (
-  <ListWrapper
+const ProfileGrantSection = () => (
+  <SectionContent
     HeaderTitleProps={{
       text: 'Grant',
       IconComponent: PlantIcon,
@@ -86,4 +86,4 @@ const ListGrant = () => (
   />
 );
 
-export default ListGrant;
+export default ProfileGrantSection;

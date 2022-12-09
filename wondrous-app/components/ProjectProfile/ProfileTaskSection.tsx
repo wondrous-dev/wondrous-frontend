@@ -6,7 +6,7 @@ import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ApplyOrClaimButton from './ApplyOrClaimButton';
 import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
-import ListWrapper from './ListWrapper';
+import SectionContent from './SectionContent';
 
 const LeftComponent = ({ assigneeProfilePicture, title, assigneeId }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -25,8 +25,8 @@ const RightComponent = (props) => {
   );
 };
 
-const ListTask = () => (
-  <ListWrapper
+const ProfileTaskSection = () => (
+  <SectionContent
     HeaderTitleProps={{
       text: 'Task',
       IconComponent: CheckBoxIcon,
@@ -44,4 +44,4 @@ const ListTask = () => (
   />
 );
 
-export default ListTask;
+export default ProfileTaskSection;

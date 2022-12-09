@@ -5,7 +5,7 @@ import palette from 'theme/palette';
 import { ENTITIES_TYPES, TASK_STATUS_DONE } from 'utils/constants';
 
 import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
-import ListWrapper from './ListWrapper';
+import SectionContent from './SectionContent';
 import MilestoneProgress from './MilestoneProgress';
 
 const LeftComponent = ({ title }) => (
@@ -24,8 +24,8 @@ const RightComponent = ({ type, orgId, status, id }) => (
   </Grid>
 );
 
-const ListMilestone = () => (
-  <ListWrapper
+const ProfileMilestoneSection = () => (
+  <SectionContent
     HeaderTitleProps={{
       text: 'Milestone',
       IconComponent: FlagIcon,
@@ -43,4 +43,4 @@ const ListMilestone = () => (
   />
 );
 
-export default ListMilestone;
+export default ProfileMilestoneSection;
