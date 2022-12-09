@@ -1,4 +1,6 @@
 import { ButtonBase, Typography } from '@mui/material';
+import { PageItemContainer } from 'components/HeaderItems/UserProfile/styles';
+import { UnstyledButton } from 'components/WorkspacePicker/styles';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 
@@ -39,15 +41,25 @@ const PodsButtonBefore = css`
 `;
 
 export const PodsIconWrapper = styled.div`
-  align-items: center;
-  border-radius: 50%;
+  background: ${palette.grey87};
+  border-radius: 300px;
+  height: 38px;
+  width: 38px;
   display: flex;
-  height: 36px;
   justify-content: center;
+  align-items: center;
   position: relative;
-  width: 36px;
-  z-index: 2;
-  background: ${({ theme }) => theme.palette.grey87};
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 180px;
+    background: linear-gradient(180deg, #00baff 0%, #f2c678 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+  }
 `;
 
 const PodIconHighlight = css`
@@ -103,5 +115,29 @@ export const PodModalFooterInfoWrapperText = styled(Typography)`
   && {
     color: ${palette.white};
     font-size: 13px;
+  }
+`;
+
+export const PodsButtonWrapper = styled(UnstyledButton)`
+  && {
+    .BaseBadge-root {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+  }
+`;
+
+export const PodsItem = styled(PageItemContainer)`
+  && {
+    &:hover {
+      ${PodsIconWrapper} {
+        border: 2px solid ${palette.highlightPurple};
+        background: linear-gradient(180deg, #00baff 0%, #f2c678 100%) !important;
+      }
+    }
   }
 `;
