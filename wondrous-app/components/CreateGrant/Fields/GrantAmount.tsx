@@ -48,16 +48,12 @@ const GrantAmount = ({
 
   return (
     <TaskSectionDisplayDiv alignItems="start">
-      {/* {activePaymentMethods?.length === 0 && (
-        <CreateEntityWrapper>
-          <Grid display="flex" direction="column" gap="4px" width="100%">
-            <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
-              {' '}
-              Set up payment method
-            </StyledLink>
-          </Grid>
-        </CreateEntityWrapper>
-      )} */}
+      {activePaymentMethods?.length === 0 && (
+        <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
+          {' '}
+          Set up payment method
+        </StyledLink>
+      )}
       {activePaymentMethods?.length > 0 && (
         <>
           <CreateEntityLabelWrapper>
