@@ -373,7 +373,7 @@ export const useCheckOrgPermission = () => {
   const { orgBoard } = useBoards();
   const permissions = parseUserPermissionContext({
     userPermissionsContext: orgBoard?.userPermissionsContext,
-    orgId: orgBoard?.orgId,
+    orgId: orgBoard?.orgData?.id,
   });
   const hasFullPermission = permissions.includes(PERMISSIONS.FULL_ACCESS);
   const hasEditPermission = permissions.includes(PERMISSIONS.EDIT_TASK);
