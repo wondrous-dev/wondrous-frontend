@@ -25,6 +25,7 @@ const OrgProject = () => {
         ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
         : null,
       orgData,
+      orgId: orgData?.id,
     }),
     [orgData, userPermissionsContext]
   );
