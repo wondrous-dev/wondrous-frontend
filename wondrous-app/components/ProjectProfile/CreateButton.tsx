@@ -93,7 +93,7 @@ const CreateButton = ({ onClick, text }: ICreateButtonProps) => {
   return (
     <ButtonIcon onClick={onClick} disableRipple>
       <Icon />
-      {`Create ${text}`}
+      Create {text}
     </ButtonIcon>
   );
 };
