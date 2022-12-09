@@ -39,8 +39,8 @@ const ProfileProposalSection = () => (
     ListItemProps={{
       LeftComponent,
       RightComponent,
-      onClick: (router, { orgUsername, id }) =>
-        router.push(`/organization/${orgUsername}/boards?taskProposal=${id}&view=grid&entity=proposal`),
+      onClick: (router, { id }) =>
+        router.push({ query: { ...router.query, taskProposal: id } }, undefined, { scroll: false }),
     }}
     data={useGetOrgProposal()}
   />

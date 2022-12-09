@@ -36,8 +36,7 @@ const ProfileMilestoneSection = () => (
     ListItemProps={{
       LeftComponent,
       RightComponent,
-      onClick: (router, { orgUsername, id }) =>
-        router.push(`/organization/${orgUsername}/boards?task=${id}&view=grid&entity=milestone`),
+      onClick: (router, { id }) => router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
     }}
     data={useGetOrgEntity('milestone')}
   />
