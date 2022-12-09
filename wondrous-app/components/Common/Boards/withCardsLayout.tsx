@@ -36,9 +36,7 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
       <>
         <CardsContainer numberOfColumns={numberOfColumns} isFullWidth={activeView === ViewType.List}>
           {activeView === ViewType.Grid ? (
-            <Suspense>
-              <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
-            </Suspense>
+            <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
           ) : (
             <ListView
               enableInfiniteLoading
