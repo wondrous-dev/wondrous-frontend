@@ -71,7 +71,7 @@ const RightComponent = ({ numOfGrant, endDate, reward }) => {
 const ProfileGrantSection = () => (
   <SectionContent
     HeaderTitleProps={{
-      text: 'Grant',
+      text: 'Grants',
       IconComponent: PlantIcon,
     }}
     CreateButtonProps={useCreateGrantButtonProps()}

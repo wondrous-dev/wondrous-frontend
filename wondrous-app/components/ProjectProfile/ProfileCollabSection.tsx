@@ -67,7 +67,7 @@ const RightComponent = ({ parentOrgName }) => {
 const ProfileCollabSection = () => (
   <SectionContent
     HeaderTitleProps={{
-      text: 'Collab',
+      text: 'Collabs',
       IconComponent: () => <SmallDao2DaoIcon stroke={palette.white} />,
     }}
     CreateButtonProps={useCollaborationButtonProps()}

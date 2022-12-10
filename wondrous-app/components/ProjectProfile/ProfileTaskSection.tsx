@@ -28,7 +28,7 @@ const RightComponent = (props) => {
 const ProfileTaskSection = () => (
   <SectionContent
     HeaderTitleProps={{
-      text: 'Task',
+      text: 'Tasks',
       IconComponent: CheckBoxIcon,
     }}
     CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.TASK)}

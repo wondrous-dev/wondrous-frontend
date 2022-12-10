@@ -25,7 +25,7 @@ const RightComponent = ({ role }) => (
 const ProfileMemberSection = () => (
   <SectionContent
     HeaderTitleProps={{
-      text: 'Member',
+      text: 'Members',
       IconComponent: GroupIcon,
     }}
     backgroundImageUrl="/images/project/collab-empty-bg.svg"

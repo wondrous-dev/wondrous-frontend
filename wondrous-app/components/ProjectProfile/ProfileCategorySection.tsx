@@ -27,7 +27,7 @@ const LeftComponent = ({ name }) => (
 const ProfileCategorySection = () => (
   <SectionContent
     HeaderTitleProps={{
-      text: 'Category',
+      text: 'Documentation',
       IconComponent: FolderIcon,
     }}
     CreateButtonProps={useCategoriesButtonProps()}

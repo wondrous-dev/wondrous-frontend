@@ -30,7 +30,7 @@ const RightComponent = ({ orgId, rejectedAt, approvedAt, closedAt }) => (
 const ProfileProposalSection = () => (
   <SectionContent
     HeaderTitleProps={{
-      text: 'Proposal',
+      text: 'Proposals',
       IconComponent: ContentPaste,
     }}
     CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.PROPOSAL)}
