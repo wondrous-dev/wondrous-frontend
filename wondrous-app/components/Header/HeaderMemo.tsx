@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef, useState } from 'react';
+import { Fragment, memo, useMemo, useRef, useState } from 'react';
 import { Menu } from '@mui/icons-material';
 
 import { User } from 'types/User';
@@ -19,6 +19,8 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { PAGE_PATHNAME } from 'utils/constants';
 import HeaderUserProfile from 'components/HeaderUserProfile';
+import { BackdropComponent } from 'components/Common/Layout/styles';
+import { Backdrop } from '@mui/material';
 
 type Props = {
   isMobile: boolean;
@@ -32,10 +34,13 @@ type Props = {
   >;
 };
 
+const ACTIVE_MODAL_TYPES_WITH_COMPONENTS = [TYPES.WALLET, TYPES.CREATE_ENTITY, TYPES.PROFILE];
+
 const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) => {
   const { setMinimized, minimized } = useSideBar();
   const { isMobileScreen } = useMediaQuery();
   const headerItemRef = useRef();
+  const wrapperRef = useRef();
   // const [openCreateFormModal, setOpenCreateFormModal] = useState(false);
   const [activeModalType, setActiveModalType] = useState<TYPES | null>(null);
   const router = useRouter();
@@ -45,16 +50,21 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
     }
   };
 
-  useOutsideAlerter(headerItemRef, () => setActiveModalType(null));
+  useOutsideAlerter(wrapperRef, () => setActiveModalType(null));
+
   const handleActiveModalType = (type: TYPES) => {
-    if (activeModalType === type) {
-      return setActiveModalType(null);
-    }
-    return setActiveModalType(type);
+    setActiveModalType((prev) => (prev === type ? null : type));
   };
+
+  const displayCustomHeaderItem = useMemo(
+    () => ACTIVE_MODAL_TYPES_WITH_COMPONENTS.includes(activeModalType),
+    [activeModalType]
+  );
+  console.log(displayCustomHeaderItem, 'displayCustomHeaderItem')
 
   return (
     <HeaderBar minimized={minimized}>
+      <Backdrop open={!!activeModalType && isMobileScreen} />
       {/* <div style={{height: '30px', width: '30px', color: 'white', background: 'red'}}>hello</div> */}
       {isMobile && router.pathname !== PAGE_PATHNAME.explore ? (
         <MenuContainer onClick={toggleMinimize}>
@@ -69,17 +79,30 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
             </Grid>
           ) : null}
           <GlobalSearch />
-          <Grid display="flex" gap="14px" position="relative">
-            {activeModalType ? (
+          <Grid display="flex" gap="14px" position="relative" ref={activeModalType ? wrapperRef : null}>
+            {displayCustomHeaderItem ? (
               <HeaderItemWrapper ref={headerItemRef}>
                 <HeaderItems type={activeModalType} onClose={() => setActiveModalType(null)} />
               </HeaderItemWrapper>
             ) : null}
-            {!isMobile && <Wallet isActive={activeModalType === TYPES.WALLET || !activeModalType} />}
-            <NotificationsBoard isActive={activeModalType === TYPES.NOTIFICATIONS || !activeModalType} />
+            {!isMobile && (
+              <Wallet
+                isActive={activeModalType === TYPES.WALLET || !activeModalType}
+                handleClick={() => handleActiveModalType(TYPES.WALLET)}
+              />
+            )}
+            <NotificationsBoard
+              setIsActive={() =>
+                setActiveModalType((prev) => (prev === TYPES.NOTIFICATIONS ? null : TYPES.NOTIFICATIONS))
+              }
+              isActive={activeModalType === TYPES.NOTIFICATIONS || !activeModalType}
+              ref={headerItemRef}
+              isOpen={activeModalType === TYPES.NOTIFICATIONS}
+            />
             <HeaderUserProfile
               handleClick={() => handleActiveModalType(TYPES.PROFILE)}
-              isActive={activeModalType === TYPES.PROFILE}
+              open={activeModalType === TYPES.PROFILE}
+              isActive={activeModalType === TYPES.PROFILE || !activeModalType}
             />
             {showCreateButton && (
               <HeaderCreateButton

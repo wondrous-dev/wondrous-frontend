@@ -167,6 +167,7 @@ export const StyledBadge = styled(ButtonBase)`
     border: none;
     cursor: pointer;
     display: flex;
+    z-index: 10;
     height: 40px;
     justify-content: center;
     position: relative;
@@ -202,18 +203,11 @@ export const HeaderCreateButton = styled(ButtonBase)`
       left: 0;
       top: 0;
     }
+    
     &:hover {
       cursor: pointer;
       &::before {
-        background: linear-gradient(
-          212.53deg,
-          #ff6dd7 -79.63%,
-          #b820ff -41.63%,
-          #f93701 -9.97%,
-          #ffd653 22.6%,
-          #00baff 56.07%,
-          #06ffa5 85.93%
-        );
+        background: linear-gradient(270deg, #00BAFF -5.62%, #7427FF 45.92%, #CCBBFF 103.12%);
       }
     }
   }
@@ -276,5 +270,7 @@ export const HeaderItemWrapper = styled.div`
   padding: 24px 14px 14px 14px;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     width: 100vw;
+  border-radius: 0px 0px 14px 14px;
+
   }
 `;

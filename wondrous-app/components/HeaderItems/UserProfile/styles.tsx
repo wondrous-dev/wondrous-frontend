@@ -83,8 +83,9 @@ export const ProfileInfo = styled.div`
   position: absolute;
   right: 50%;
   left: 50%;
-  bottom: 50%;
+  bottom: 55%;
   display: flex;
+  cursor: pointer;
   flex-direction: column;
   gap: 12px;
   align-items: center;
@@ -110,6 +111,9 @@ export const ButtonIcon = styled(ItemButtonIcon)`
 
 export const UserHelperWrapper = styled.div`
   display: flex;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 6px;
   align-items: center;
   gap: 14px;
   justify-content: flex-start;

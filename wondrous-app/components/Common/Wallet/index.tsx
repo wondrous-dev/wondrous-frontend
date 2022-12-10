@@ -83,7 +83,7 @@ const Balance = ({ currency, children }) => {
   );
 };
 
-function Wallet({isActive = true}) {
+function Wallet({isActive = true, handleClick}) {
   const wonderWeb3 = useWonderWeb3();
 
   const { provider } = useContext(WonderWeb3Context);
@@ -202,7 +202,7 @@ function Wallet({isActive = true}) {
   }
 
   return (
-    <WalletWrapper isActive={isActive}>
+    <WalletWrapper isActive={isActive} onClick={handleClick}>
       {/* <Tooltip title={CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3.chain]}>
         <ChainWrapper>{CHAIN_LOGO[wonderWeb3.chain]}</ChainWrapper>
       </Tooltip> */}

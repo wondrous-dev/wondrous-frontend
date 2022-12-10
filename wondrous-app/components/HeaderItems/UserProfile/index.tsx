@@ -27,18 +27,22 @@ import {
   ProfileInfo,
   UserContainer,
   UserHelperWrapper,
-  ButtonIcon
+  ButtonIcon,
 } from './styles';
 
-const TutorialsButton = () => {
+const TutorialsButton = ({ onClick }) => {
   const [openHelpModal, setOpenHelpModal] = useState(false);
+
+  const handleClick = () => {
+    setOpenHelpModal(true);
+    // onClick()
+  }
   return (
     <>
       {openHelpModal && <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />}
-      <UserHelperWrapper>
-      <ButtonIcon bgColor={palette.grey75}>
-
-        <QuestionMarkIcon />
+      <UserHelperWrapper onClick={handleClick}>
+        <ButtonIcon bgColor={palette.grey75}>
+          <QuestionMarkIcon />
         </ButtonIcon>
         <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
           Tutorials
@@ -66,30 +70,9 @@ const PAGE_SELECTOR_CONFIG = [
     type: 'component',
   },
 ];
-
-const USER_HELPERS = [
-  {
-    label: 'Your settings',
-    key: 'settings',
-    Icon: WrenchIcon,
-    href: '/profile/settings',
-  },
-  {
-    label: 'Tutorials',
-    key: 'tutorails',
-    component: TutorialsButton,
-  },
-  {
-    label: 'Log out',
-    key: 'log-out',
-    Icon: LogoutIcon,
-    action: logout,
-  },
-];
-
-const UserHelpers = () => (
+const UserHelpers = ({ onClick }) => (
   <Grid display="flex" direction="column" gap="14px">
-    <UnstyledLink href="/profile/settings">
+    <UnstyledLink href="/profile/settings" onClick={onClick}>
       <UserHelperWrapper>
         <ButtonIcon bgColor={palette.grey75}>
           <WrenchIcon />
@@ -99,8 +82,13 @@ const UserHelpers = () => (
         </Typography>
       </UserHelperWrapper>
     </UnstyledLink>
-    <TutorialsButton />
-    <UnstyledButton onClick={logout}>
+    <TutorialsButton onClick={onClick} />
+    <UnstyledButton
+      onClick={() => {
+        onClick();
+        logout();
+      }}
+    >
       <UserHelperWrapper display="flex" gap="14px" justifyContent="flex-start" alignItems="center">
         <ButtonIcon bgColor={palette.grey75}>
           <LogoutIcon />
@@ -113,7 +101,7 @@ const UserHelpers = () => (
   </Grid>
 );
 
-const UserProfile = () => {
+const UserProfile = ({ onClose }) => {
   const user = useMe();
 
   return (
@@ -122,19 +110,21 @@ const UserProfile = () => {
         <ImageWrapper>
           <Image fill alt="Profile banner" src="/images/profile/profile-banner.png" />
         </ImageWrapper>
-        <ProfileInfo>
-          <UserProfilePictureGR15
-            isGr15Contributor={user?.checkIsGr15Contributor?.isGr15Contributor}
-            avatar={user?.profilePicture}
-            style={{
-              height: '90px',
-              width: '90px',
-            }}
-          />
-          <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
-            {user?.username}
-          </Typography>
-        </ProfileInfo>
+        <UnstyledLink href={`/profile/${user?.username}/about`} onClick={onClose}>
+          <ProfileInfo>
+            <UserProfilePictureGR15
+              isGr15Contributor={user?.checkIsGr15Contributor?.isGr15Contributor}
+              avatar={user?.profilePicture}
+              style={{
+                height: '90px',
+                width: '90px',
+              }}
+            />
+            <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
+              {user?.username}
+            </Typography>
+          </ProfileInfo>
+        </UnstyledLink>
       </UserContainer>
       <PageSelectorWrapper>
         {PAGE_SELECTOR_CONFIG.map((page, idx) => {
@@ -142,7 +132,7 @@ const UserProfile = () => {
             return page.component;
           }
           return (
-            <LinkWrapper href={page.href} key={idx}>
+            <LinkWrapper href={page.href} key={idx} onClick={onClose}>
               <PageItemContainer>
                 {page.Icon}
                 <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
@@ -154,7 +144,7 @@ const UserProfile = () => {
         })}
       </PageSelectorWrapper>
       <div>
-        <UserHelpers />
+        <UserHelpers onClick={onClose} />
       </div>
     </Wrapper>
   );

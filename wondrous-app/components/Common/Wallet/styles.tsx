@@ -18,6 +18,8 @@ export const WalletWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 14px;
+  cursor: pointer;
+  z-index: 10;
 `;
 
 export const Button = styled(ButtonBase)`
@@ -38,7 +40,6 @@ export const ChainWrapper = styled(IconButton)`
     height: 40px;
     background: ${({ theme }) => theme.palette.grey87};
     border-radius: 50%;
-    ${filterDropShadow};
   }
 `;
 
@@ -74,7 +75,6 @@ export const WalletAddress = styled.div`
   padding: 0 16px;
   text-overflow: ellipsis;
   ${fontStyles};
-  ${filterDropShadow};
 `;
 
 export const CurrencySelectorItem = styled(ListItem)`
