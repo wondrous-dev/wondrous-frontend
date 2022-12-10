@@ -18,7 +18,7 @@ const RightComponent = ({ rewards }) => <Compensation rewards={rewards} />;
 const ProfileBountySection = () => (
   <SectionContent
     HeaderTitleProps={{
-      text: 'Bounty',
+      text: 'Bounties',
       IconComponent: StarIcon,
     }}
     CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.BOUNTY)}

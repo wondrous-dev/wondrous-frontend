@@ -27,7 +27,7 @@ const RightComponent = ({ type, orgId, status, id }) => (
 const ProfileMilestoneSection = () => (
   <SectionContent
     HeaderTitleProps={{
-      text: 'Milestone',
+      text: 'Milestones',
       IconComponent: FlagIcon,
     }}
     CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.MILESTONE)}
