@@ -11,7 +11,7 @@ import {
   NoLogoPod,
   Text,
 } from 'components/Common/SidebarEntityMenu/styles';
-import { LEAVE_ORG } from 'graphql/mutations';
+import { LEAVE_ORG, LEAVE_POD } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import palette from 'theme/palette';
@@ -20,7 +20,7 @@ import useCanManage from '../../../hooks/useCanManage';
 
 const EntityMenu = ({ name, id, thumbnailPicture, profilePicture }) => {
   const canManage = useCanManage();
-  const { orgBoard } = useBoards();
+  const { orgBoard, podBoard } = useBoards();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -33,14 +33,33 @@ const EntityMenu = ({ name, id, thumbnailPicture, profilePicture }) => {
     refetchQueries: ['getUserOrgs'],
   });
 
+  const [leavePod] = useMutation(LEAVE_POD, {
+    onCompleted: () => {
+      router.push('/mission-control');
+    },
+    refetchQueries: ['getUserPods'],
+  });
+
   const handleLeaveOrgClick = () => {
-    const confirmed = confirm('Are you sure you want to leave the organzation?');
+    const confirmed = confirm(`Are you sure you want to leave ${name}?`);
     if (!confirmed) {
       return;
     }
     leaveOrg({
       variables: {
         orgId: id,
+      },
+    });
+  };
+
+  const handleLeavePodClick = () => {
+    const confirmed = confirm(`Are you sure you want to leave ${name} pod?`);
+    if (!confirmed) {
+      return;
+    }
+    leavePod({
+      variables: {
+        podId: id,
       },
     });
   };
@@ -68,7 +87,8 @@ const EntityMenu = ({ name, id, thumbnailPicture, profilePicture }) => {
         {canManage && <ArrowIcon open={open} />}
       </Button>
       <MenuStyled anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <Item onClick={handleLeaveOrgClick}>Leave Organization</Item>
+        {podBoard && <Item onClick={handleLeavePodClick}>Leave Pod</Item>}
+        {orgBoard && <Item onClick={handleLeaveOrgClick}>Leave Organization</Item>}
       </MenuStyled>
     </>
   );
