@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import ChooseEntityToCreate from 'components/CreateEntity';

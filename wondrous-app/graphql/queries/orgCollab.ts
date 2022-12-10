@@ -3,15 +3,14 @@ import { gql } from '@apollo/client';
 export const GET_ORG_COLLABS_FOR_ORG = gql`
   query getOrgCollabsForOrg($orgId: ID!) {
     getOrgCollabsForOrg(orgId: $orgId) {
+      id
       childOrgProfilePicture
+      parentOrgProfilePicture
+      parentOrgName
       childOrgName
       username
       description
       name
-      parentOrgProfilePicture
-      parentOrgName
-      id
-      privacyLevel
     }
   }
 `;

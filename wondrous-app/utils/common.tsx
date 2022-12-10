@@ -1,8 +1,8 @@
-import React from 'react';
+import { ArchivedIcon, CompletedIcon, InProgressIcon, InReviewIcon, TodoIcon } from 'components/Icons/statusIcons';
+import shuffle from 'lodash/shuffle';
 import regexifyString from 'regexify-string';
-import { Typography } from '@mui/material';
 import palette from 'theme/palette';
-import { TodoIcon, ArchivedIcon, CompletedIcon, InProgressIcon, InReviewIcon } from 'components/Icons/statusIcons';
+import { ColorTypes } from './constants';
 
 export const renderMentionString = (props) => {
   const { content, textStyle, simple, router } = props;
@@ -142,3 +142,5 @@ export function shallowEqual(objA, objB) {
 
   return !Object.keys({ ...objA, ...objB }).some((key) => objA[key] !== objB[key]);
 }
+
+export const randomColors = () => shuffle(Object.values(ColorTypes));

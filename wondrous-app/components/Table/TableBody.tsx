@@ -204,14 +204,18 @@ export default function TableBody({
             <StyledTableCell align="center">
               <TaskStatus status={status} />
             </StyledTableCell>
-            <SmartLink href={viewUrl} preventLinkNavigation onNavigate={() => {
-              const query = {
-                ...router.query,
-                task: task?.id
-              }
+            <SmartLink
+              href={viewUrl}
+              preventLinkNavigation
+              onNavigate={() => {
+                const query = {
+                  ...router.query,
+                  task: task?.id,
+                };
 
-              router.push({ query }, undefined, { scroll: false, shallow: true });
-            }}>
+                router.push({ query }, undefined, { scroll: false, shallow: true });
+              }}
+            >
               <StyledTableCell className="clickable">
                 <TaskTitle>
                   <a href={viewUrl}>{task.title}</a>

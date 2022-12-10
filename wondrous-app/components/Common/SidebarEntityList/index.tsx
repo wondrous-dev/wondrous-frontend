@@ -14,6 +14,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import GrantIcon from 'components/Icons/GrantIcon';
+import HomeIcon from 'components/Icons/home';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
 const usePerTypeTaskCountForBoard = () => {
@@ -52,6 +53,17 @@ const useSidebarData = () => {
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
   const data = [
+    orgBoard && !board?.orgData?.shared
+      ? {
+          items: [
+            {
+              text: 'Project Home',
+              Icon: () => <HomeIcon height="12px" width="12px" />,
+              link: `${link}/home`,
+            },
+          ],
+        }
+      : null,
     {
       label: 'Workspaces',
       items: [

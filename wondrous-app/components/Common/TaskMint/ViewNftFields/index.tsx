@@ -9,7 +9,6 @@ import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { cutString } from 'utils/helpers';
 import { delQuery } from 'utils/index';
-import { useLocation } from 'utils/useLocation';
 import { PolygonIconWrapper, TaskLink } from './styles';
 
 const FIELDS = [
@@ -29,15 +28,14 @@ const FIELDS = [
   {
     label: 'Task',
     Component: ({ taskId, title, onClose }) => {
-      const location = useLocation();
       const router = useRouter();
 
       const url = useMemo(
         () =>
           `${delQuery(router.asPath)}?task=${taskId}&view=${router.query.view || 'grid'}&entity=${
-            location?.params?.entity || ENTITIES_TYPES.TASK
+            router?.query?.entity || ENTITIES_TYPES.TASK
           }`,
-        [location?.params?.entity, router?.asPath, router?.query?.view, taskId]
+        [router?.query?.entity, router?.asPath, router?.query?.view, taskId]
       );
 
       const onClick = (e) => {

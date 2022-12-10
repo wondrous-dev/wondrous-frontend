@@ -1,4 +1,4 @@
-import TaskViewModalWatcher from "components/Common/TaskViewModal/TaskViewModalWatcher";
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import Image from 'next/image';

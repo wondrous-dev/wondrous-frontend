@@ -33,14 +33,18 @@ export function PostQuote(props) {
           <PostReferenceBackground>
             <PostHeader post={referencedObject} />
             <ReferenceTitle>
-              <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => {
-                const query = {
-                  ...router.query,
-                  task: taskId
-                }
+              <SmartLink
+                href={taskViewUrl}
+                preventLinkNavigation
+                onNavigate={() => {
+                  const query = {
+                    ...router.query,
+                    task: taskId,
+                  };
 
-                router.push({ query }, undefined, { scroll: false, shallow: true });
-              }}>
+                  router.push({ query }, undefined, { scroll: false, shallow: true });
+                }}
+              >
                 {referencedObject?.title}
               </SmartLink>
             </ReferenceTitle>

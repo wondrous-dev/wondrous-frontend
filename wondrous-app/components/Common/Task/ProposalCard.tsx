@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import * as Constants from 'utils/constants';
 import { getProposalStatus } from 'utils/board';
 import palette from 'theme/palette';
-import { useLocation } from 'utils/useLocation';
 
 import { Approved, Rejected } from 'components/Icons';
 import SmartLink from 'components/Common/SmartLink';

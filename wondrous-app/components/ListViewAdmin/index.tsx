@@ -68,8 +68,8 @@ function ListViewAdmin({ column }: Props) {
 
       const query = {
         ...router.query,
-        [taskType]: id
-      }
+        [taskType]: id,
+      };
 
       router.push({ query }, undefined, { scroll: false, shallow: true });
     }
