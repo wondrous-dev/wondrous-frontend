@@ -2,19 +2,10 @@ import { useMutation } from '@apollo/client';
 import { REMOVE_TASK_PROPOSAL_VOTE, VOTE_FOR_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { STATUS_OPEN } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
-import { VotedForCheckMark, NotVotedCheckmark } from 'components/Icons/VotedForCheckmark';
 import palette from 'theme/palette';
 import VoteOptionRow from 'components/Common/Votes/VoteOptionRow';
 
-import {
-  VoteResultsWrapper,
-  VoterProfilePicture,
-  VoteLabel,
-  VoteRowWrapper,
-  VoteProgressBar,
-  VoteCurrentProgress,
-  VoteRowContentWrapper,
-} from './styles';
+import { VoteResultsWrapper, VoteLabel } from './styles';
 
 interface Props {
   fullScreen: boolean;
@@ -76,6 +67,7 @@ export default function VoteResults({ userInOrg, proposal, fullScreen, proposalS
         proposal?.voteOptions?.map((option) => (
           <VoteOptionRow
             key={option}
+            canVote={canVote}
             voteType={proposal?.voteType}
             votes={votes}
             option={option}
@@ -88,6 +80,7 @@ export default function VoteResults({ userInOrg, proposal, fullScreen, proposalS
         binaryOptions.map((option) => (
           <VoteOptionRow
             key={option}
+            canVote={canVote}
             voteType={proposal?.voteType}
             votes={votes}
             option={option}
