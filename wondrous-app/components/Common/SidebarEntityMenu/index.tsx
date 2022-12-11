@@ -18,24 +18,14 @@ import { useGlobalContext } from 'utils/hooks';
 import {IconWrapper} from './styles'
 
 const EntityMenu = ({ user, activePod = null }) => {
-  // isUserBoard={isUserBoard}
-  // activeOrg={activeOrg}
-  // isOrgView={isOrg}
-  // isExplore={isExplore}
-  // user={user}
   const router = useRouter()
   const {orgsList} = useGlobalContext()
 
   const activeOrg = useMemo(() => orgsList.find((org) => org.isActive), [router.pathname, orgsList]);
 
-  console.log(activeOrg, 'activeOrg');
   const orgOrPod = activeOrg || activePod || {};
 
   const { thumbnailPicture, profilePicture, name, id } = orgOrPod;
-
-  const userProfilePicture = user?.profilePicture;
-
-  console.log(router);
 
   const isExplore = useMemo(() => router.pathname.includes('/explore'), [router.pathname]);
 
@@ -47,9 +37,6 @@ const EntityMenu = ({ user, activePod = null }) => {
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-
-  const handleOnClickNotifications = () =>
-    router.push(isOrg ? `/organization/settings/${id}/notifications` : `/pod/settings/${id}/notifications`);
 
   let pageTitle = useMemo(() => {
     if (isExplore) {
