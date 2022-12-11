@@ -7,8 +7,8 @@ import { getFilterSchema } from 'utils/board';
 
 const getStatus = ({ type, orgId, status }) => {
   const entityTypeFilters = getFilterSchema(type, orgId);
-  const statuses = entityTypeFilters?.find(({ name }) => name === 'statuses')?.items;
-  const taskStatus = statuses?.find(({ id }) => id === status);
+  const statuses = entityTypeFilters && entityTypeFilters?.find(({ name }) => name === 'statuses')?.items;
+  const taskStatus = statuses && statuses?.find(({ id }) => id === status);
   return taskStatus;
 };
 

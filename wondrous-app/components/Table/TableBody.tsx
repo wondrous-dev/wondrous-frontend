@@ -25,6 +25,7 @@ import { delQuery } from 'utils/index';
 import Tooltip from 'components/Tooltip';
 import { RichTextViewer } from 'components/RichText';
 import { NoUnderlineLink } from 'components/Common/Link/links';
+import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import { useMe } from '../Auth/withAuth';
 import { AvatarList } from '../Common/AvatarList';
 import { SafeImage } from '../Common/Image';
@@ -71,6 +72,7 @@ export default function TableBody({
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   const tasksToLimit = limit && tasks?.length >= limit ? tasks.slice(0, limit) : tasks;
   const view = router.query?.view ?? ViewType.List;
+
   return (
     <StyledTableBody>
       {tasksToLimit?.map((task, index) => {
@@ -82,7 +84,17 @@ export default function TableBody({
         const isTaskProposal = task?.__typename === 'TaskProposalCard';
         const isTaskSubmission = task?.__typename === 'TaskSubmissionCard';
         const dropdownItemLabel = isTaskProposal ? 'Proposal' : task.type;
+        const assigneeId = task?.assigneeId;
+        const isBounty = task?.type === Constants.BOUNTY_TYPE;
+        const isMilestone = task?.type === Constants.MILESTONE_TYPE;
 
+        const canClaim =
+          task?.taskApplicationPermissions?.canClaim &&
+          !assigneeId &&
+          !isBounty &&
+          !isMilestone &&
+          task?.status !== Constants.TASK_STATUS_DONE;
+        const canApply = !canClaim && task?.taskApplicationPermissions?.canApply;
         const permissions = parseUserPermissionContext({
           userPermissionsContext,
           orgId: task?.orgId,
@@ -160,44 +172,54 @@ export default function TableBody({
                 {!task?.assigneeId &&
                   (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&
                   task?.type === 'task' && (
-                    <ClaimButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        updateTaskAssignee({
-                          variables: {
-                            taskId: task?.id,
-                            assigneeId: user?.id,
-                          },
-                          onCompleted: (data) => {
-                            const task = data?.updateTaskAssignee;
-                            const transformedTask = transformTaskToTaskCard(task, {});
-                            if (board?.setColumns) {
-                              let columns = [...board?.columns];
-                              if (transformedTask.status === Constants.TASK_STATUS_IN_REVIEW) {
-                                columns = updateInReviewItem(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                                columns = updateInProgressTask(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                                columns = updateTaskItem(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_DONE) {
-                                columns = updateCompletedItem(transformedTask, columns);
-                              }
-                              board.setColumns(columns);
-                            }
-                          },
-                        });
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
                       }}
                     >
-                      <Claim />
-                      <span
-                        style={{
-                          marginLeft: '4px',
-                        }}
-                      >
-                        Claim
-                      </span>
-                    </ClaimButton>
+                      {canApply && <TaskApplicationButton title="Apply" task={task} canApply={canApply} />}
+                      {canClaim && (
+                        <ClaimButton
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            updateTaskAssignee({
+                              variables: {
+                                taskId: task?.id,
+                                assigneeId: user?.id,
+                              },
+                              onCompleted: (data) => {
+                                const task = data?.updateTaskAssignee;
+                                const transformedTask = transformTaskToTaskCard(task, {});
+                                if (board?.setColumns) {
+                                  let columns = [...board?.columns];
+                                  if (transformedTask.status === Constants.TASK_STATUS_IN_REVIEW) {
+                                    columns = updateInReviewItem(transformedTask, columns);
+                                  } else if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                                    columns = updateInProgressTask(transformedTask, columns);
+                                  } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                                    columns = updateTaskItem(transformedTask, columns);
+                                  } else if (transformedTask.status === Constants.TASK_STATUS_DONE) {
+                                    columns = updateCompletedItem(transformedTask, columns);
+                                  }
+                                  board.setColumns(columns);
+                                }
+                              },
+                            });
+                          }}
+                        >
+                          <Claim />
+                          <span
+                            style={{
+                              marginLeft: '4px',
+                            }}
+                          >
+                            Claim
+                          </span>
+                        </ClaimButton>
+                      )}
+                    </div>
                   )}
               </StyledTableCell>
             )}

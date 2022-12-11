@@ -374,8 +374,10 @@ function BoardsPage({ meta }: Props) {
   const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
       const boardColumns = [...columns];
-      boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForPodBoardView];
-      setColumns(boardColumns);
+      if (boardColumns[0].tasks?.length > 0) {
+        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForPodBoardView];
+        setColumns(boardColumns);
+      }
       setIsLoading(false);
     },
     fetchPolicy: 'cache-and-network',
