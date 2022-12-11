@@ -40,7 +40,8 @@ export function BoardsActivityInlineView({
   displaySingleViewFilter = false,
 }) {
   const { orgBoard, podBoard, userBoard } = useBoards();
-
+  const router = useRouter();
+  const { search } = router.query;
   const board = orgBoard || podBoard || userBoard;
 
   const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter || board?.hasActiveFilters);
@@ -62,7 +63,18 @@ export function BoardsActivityInlineView({
   );
   return (
     <>
-      <BoardsActivityInlineViewWrapper displaySingleViewFilter={displaySingleViewFilter}>
+      <BoardsActivityInlineViewWrapper
+        style={
+          search
+            ? {
+                justifyContent: 'flex-start',
+              }
+            : {
+                justifyContent: 'flex-end',
+              }
+        }
+        displaySingleViewFilter={displaySingleViewFilter}
+      >
         <SearchTasks isExpandable={isExpandable} onSearch={onSearch} />
         {displaySingleViewFilter && (
           <BoardFilters

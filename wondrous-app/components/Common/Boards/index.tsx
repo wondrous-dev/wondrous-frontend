@@ -54,7 +54,7 @@ function Boards(props: Props) {
     const { splitCols, totalCount } = splitColsByType(columns);
     setTotalCount(totalCount);
     setSearchResults(splitCols);
-  }, [columns]);
+  }, [columns, searchQuery]);
 
   function renderBoard() {
     const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
@@ -91,7 +91,6 @@ function Boards(props: Props) {
 
         {Object.keys(searchResults).map((type) => {
           const { name, icon, columns, showAll } = searchResults[type];
-
           if (!columns.tasksCount) {
             return null;
           }

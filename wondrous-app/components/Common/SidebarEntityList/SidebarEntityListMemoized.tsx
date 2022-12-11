@@ -20,7 +20,6 @@ type Props = {
 
 const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath }: Props) => {
   const isActive = (entityType, link) => (entityType ? location().includes(link) : urlPath.includes(link));
-
   return (
     <ListWrapper>
       {menuItems?.map((menuItem) => {

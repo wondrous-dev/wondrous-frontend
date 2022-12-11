@@ -38,15 +38,14 @@ const useSidebarData = () => {
   const { board, orgBoard } = useBoards();
   const { setEntityType } = board || {};
   const router = useRouter();
-
+  const { search } = router.query;
   const handleOnClick =
     (link, type = null) =>
     () => {
       if (type && setEntityType) {
         setEntityType(type);
-        return;
+        if (!search) return;
       }
-
       router.push(link);
     };
 
