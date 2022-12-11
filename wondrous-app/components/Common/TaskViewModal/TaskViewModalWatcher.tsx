@@ -40,7 +40,7 @@ const TaskViewModalWatcher = () => {
       delete newUrlQuery.taskProposal;
     }
 
-    router.push({ query: newUrlQuery }, undefined, { scroll: false });
+    router.push({ query: newUrlQuery }, undefined, { scroll: false, shallow: true });
   };
 
   return (
