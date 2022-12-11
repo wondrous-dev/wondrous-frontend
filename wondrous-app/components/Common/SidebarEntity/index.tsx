@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 
 import useSideBar from 'hooks/useSideBar';
@@ -9,10 +9,8 @@ import List from 'components/Common/SidebarEntityList';
 import RolesSidebar from 'components/Common/SidebarEntityRoles';
 import CollabsSidebar from 'components/Common/SidebarEntityCollabs';
 import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
-import { useOutsideAlerter } from 'utils/hooks';
-import SidebarHomeProject from '../SidebarHomeProject';
 import useMediaQuery from 'hooks/useMediaQuery';
-import {PAGES_WITH_NO_ENTITY_SIDEBAR} from 'utils/constants';
+import SidebarHomeProject from '../SidebarHomeProject';
 
 const SIDEBAR_COMPONENTS = {
   collabs: () => <CollabsSidebar />,
@@ -20,16 +18,9 @@ const SIDEBAR_COMPONENTS = {
 };
 
 const EntitySidebar = ({ children }) => {
-  const { minimized, setMinimized } = useSideBar();
+  const { minimized } = useSideBar();
   const { query } = useRouter();
   const {isMobileScreen} = useMediaQuery()
-  const sidebarRef = useRef();
-
-  useOutsideAlerter(sidebarRef, () => {
-    if (isMobileScreen && !minimized) {
-      setMinimized(true);
-    }
-  });
 
   const Sidebar = useMemo(() => {
     if (query.roles) {
@@ -50,7 +41,7 @@ const EntitySidebar = ({ children }) => {
 
   return (
     <Wrapper>
-      <SidebarWrapper minimized={minimized} ref={sidebarRef}>
+      <SidebarWrapper minimized={minimized}>
         <SidebarContent>
           <Sidebar />
         </SidebarContent>
@@ -58,7 +49,8 @@ const EntitySidebar = ({ children }) => {
       </SidebarWrapper>
       <ChildrenWrapper minimized={minimized}>
         
-        {children}</ChildrenWrapper>
+        {children}
+        </ChildrenWrapper>
     </Wrapper>
   );
 };

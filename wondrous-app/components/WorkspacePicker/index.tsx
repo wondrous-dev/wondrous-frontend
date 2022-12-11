@@ -27,7 +27,6 @@ const ITEMS_CONFIG = [
             type="button"
             onClick={() => {
               handleCreateDaoModal();
-              onClose();
             }}
           >
             <HorizontalEntityItem>
@@ -50,12 +49,12 @@ const ITEMS_CONFIG = [
     type: 'link',
     url: PAGE_PATHNAME.explore,
   },
-  {
-    label: 'Settings',
-    Icon: OrgSettingsIcon,
-    type: 'link',
-    url: '/profile/settings',
-  },
+  // {
+  //   label: 'Settings',
+  //   Icon: OrgSettingsIcon,
+  //   type: 'link',
+  //   url: '/profile/settings',
+  // },
 ];
 
 const TYPE_TO_COMPONENT = {
@@ -107,7 +106,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
     <Container open={open} onClose={onClose}>
       <Wrapper>
         <OrgWrapper gap="8px" display="flex" flexWrap="wrap" justifyContent="space-between">
-          <FullWidthItem isActive={isUserBoard} href={`/dashboard`} onClick={onClose}>
+          <OrgItem isActive={isUserBoard} href={`/dashboard`} onClick={onClose}>
             <UserProfilePicture
               avatar={user?.profilePicture}
               style={{
@@ -117,7 +116,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
               }}
             />
             My workspace
-          </FullWidthItem>
+          </OrgItem>
           {orgsList?.map((org, key) => {
             return (
               <OrgItem

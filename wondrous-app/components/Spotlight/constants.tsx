@@ -10,16 +10,6 @@ export const SUGGESTIONS = [
     Icon: CheckedBox,
     key: 'user-created-tasks',
   },
-  {
-    label: "Tasks I've created",
-    Icon: CheckedBox,
-    key: 'user-created-tasks',
-  },
-  {
-    label: "Tasks I've created",
-    Icon: CheckedBox,
-    key: 'user-created-tasks',
-  },
 ];
 
 export const initialState = {

@@ -3,21 +3,22 @@ import React, { useRef, useState } from 'react';
 import { Modal as ModalComponent } from 'components/Modal';
 import SelectOrgs from 'components/CreateCollaborationModal/Steps/SelectOrgs';
 import SentRequestSuccess from 'components/CreateCollaborationModal/Steps/SentRequestSuccess';
-import { Org } from 'types/Org';
-import { User } from 'types/User';
 import { CREATE_COLLAB_REQUST } from 'graphql/mutations';
 import { useMutation } from '@apollo/client';
 import StarsBackground from 'components/StarsBackground';
-import { useSteps } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useSteps } from 'utils/hooks';
 
 type Props = {
   open: boolean;
   onCancel: () => void;
-  defaultOrgId?: string;
 };
 
-const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
+const CreateCollaborationModal = ({ open, onCancel }: Props) => {
   const { step, setStep } = useSteps(0);
+  const orgBoard = useOrgBoard()
+  const podBoard = usePodBoard()
+
+  const defaultOrgId = orgBoard?.orgId || podBoard?.orgId
   const [orgs, setOrgs] = useState({ org1: null, org2: null });
   const [createCollabRequest, { data: collabRequestData }] = useMutation(CREATE_COLLAB_REQUST, {
     onCompleted: () => {

@@ -1,33 +1,19 @@
 import React from 'react';
-import { IconButton } from '@mui/material';
 
-import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
+import { ENTITIES_TYPES } from 'utils/constants';
+import CreateEntityComponent from 'components/HeaderItems/CreateEntityComponent';
 
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useQuery } from '@apollo/client';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import {
   CreateLayoutDaoIcon,
   CreateLayoutMilestoneIcon,
   CreateLayoutPodsIcon,
-  CreateLayoutsModal,
-  CreateLayoutsModalCloseButton,
-  CreateLayoutsModalHeader,
-  CreateLayoutsModalItem,
-  CreateLayoutsModalItemContainer,
-  CreateLayoutsModalItemTitle,
-  CreateLayoutsModalItemTitleBlock,
-  CreateLayoutsModalTitle,
   CreateLayoutTaskIcon,
   CreateLayoutBountyIcon,
   CreateLayoutProposalIcon,
   CreateLayoutGrantIcon,
   ChooseEntityWrapper,
 } from './styles';
-import RightArrowIcon from '../Icons/rightArrow';
-import CloseModalIcon from '../Icons/closeModal';
-import CreateEntityComponent from 'components/HeaderItems/CreateEntityComponent';
+import Dao2DaoIcon from 'components/Icons/Dao2Dao';
 
 export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.TASK]: {
@@ -58,44 +44,14 @@ export const ENTITIES_UI_ELEMENTS = {
     icon: CreateLayoutGrantIcon,
     label: 'Grant',
   },
+  [ENTITIES_TYPES.COLLAB]: {
+    icon: Dao2DaoIcon,
+    label: 'Collaboration'
+  }
 };
 
 function ChooseEntityToCreateModal(props) {
-  const { handleClose, setEntityType } = props;
-
-  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
-    fetchPolicy: 'cache-and-network',
-  });
-  const orgBoard = useOrgBoard();
-  const podBoard = usePodBoard();
-  const board = orgBoard || podBoard;
-  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
-    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
-    : null;
-
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext,
-    orgId: board?.orgId,
-    podId: board?.podId,
-  });
-
-  const entries = Object.entries(ENTITIES_UI_ELEMENTS).filter(([key]) => {
-    if (
-      !permissions.includes(PERMISSIONS.FULL_ACCESS) &&
-      !permissions.includes(PERMISSIONS.MANAGE_POD) &&
-      key === ENTITIES_TYPES.POD
-    ) {
-      return false;
-    }
-    if (
-      !permissions.includes(PERMISSIONS.FULL_ACCESS) &&
-      !permissions.includes(PERMISSIONS.CREATE_TASK) &&
-      key === ENTITIES_TYPES.MILESTONE
-    ) {
-      return false;
-    }
-    return key !== ENTITIES_TYPES.ORG;
-  });
+  const { handleClose } = props;
 
   return (
     <ChooseEntityWrapper>

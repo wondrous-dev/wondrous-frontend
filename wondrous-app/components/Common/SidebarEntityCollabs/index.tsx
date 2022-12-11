@@ -74,7 +74,7 @@ const CollabsSidebar = () => {
 
   return (
     <SidebarWrapper>
-      <CreateCollaborationModal open={openCreateModal} onCancel={handleCreateModal} defaultOrgId={board?.orgId} />
+      <CreateCollaborationModal open={openCreateModal} onCancel={handleCreateModal} />
 
       <BackButton href={href} />
       <SectionWrapper>

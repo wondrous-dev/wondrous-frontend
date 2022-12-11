@@ -84,7 +84,12 @@ export default function SidebarLayout({ children }) {
     return children;
   }
 
-  const toggleSpotlight = () => setIsSpotlightOpen((prev) => !prev);
+  const toggleSpotlight = () => {
+    setIsSpotlightOpen((prev) => !prev)
+    if(!minimized && isMobile) {
+      setMinimized(true)
+    }
+  };
 
   return (
     <SideBarContext.Provider value={sidebarValue}>
@@ -108,7 +113,7 @@ export default function SidebarLayout({ children }) {
         }}
       >
         <HeaderComponent />
-        {!minimized && isMobile && <BackdropComponent open />}
+        {!minimized && isMobile && <BackdropComponent open onClick={() => setMinimized(true)}/>}
         {isSpotlightOpen ? <Spotlight onClose={toggleSpotlight} /> : null}
         <PageDataContext.Provider value={pageDataValues}>
         <SectionWrapper>{children}</SectionWrapper>

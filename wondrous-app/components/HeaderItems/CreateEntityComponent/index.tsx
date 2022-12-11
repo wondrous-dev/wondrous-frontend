@@ -12,15 +12,11 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import GrantIcon from 'components/Icons/GrantIcon';
+import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 
 const CreateEntityComponent = ({ onClose }) => {
-  const { pageData, userPermissionsContext, setPageData } = useGlobalContext();
+  const { pageData, setPageData } = useGlobalContext();
 
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext: userPermissionsContext,
-    orgId: pageData?.orgData?.id,
-    podId: pageData?.podData?.podId,
-  });
 
   const BOARD_ITEMS_CONFIG = {
     label: 'Board item',
@@ -32,7 +28,6 @@ const CreateEntityComponent = ({ onClose }) => {
       [ENTITIES_TYPES.MILESTONE]: {
         icon: FlagIcon,
         label: 'Milestone',
-        hide: permissions?.includes(PERMISSIONS.CREATE_TASK) || permissions?.includes(PERMISSIONS.FULL_ACCESS),
       },
       [ENTITIES_TYPES.BOUNTY]: {
         icon: StartIcon,
@@ -56,11 +51,14 @@ const CreateEntityComponent = ({ onClose }) => {
       [ENTITIES_TYPES.POD]: {
         icon: PodIcon,
         label: 'Pod',
-        hide: permissions?.includes(PERMISSIONS.MANAGE_POD) || permissions?.includes(PERMISSIONS.FULL_ACCESS),
       },
       [ENTITIES_TYPES.GRANT]: {
         icon: GrantIcon,
         label: 'Grant',
+      },
+      [ENTITIES_TYPES.COLLAB]: {
+        icon: SmallDao2DaoIcon,
+        label: 'Collaboration'
       },
     },
   };

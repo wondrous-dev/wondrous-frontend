@@ -1,5 +1,5 @@
 import { Fragment, memo, useMemo, useRef, useState } from 'react';
-import { Menu } from '@mui/icons-material';
+import { Menu, Close } from '@mui/icons-material';
 
 import { User } from 'types/User';
 
@@ -21,6 +21,7 @@ import { PAGE_PATHNAME } from 'utils/constants';
 import HeaderUserProfile from 'components/HeaderUserProfile';
 import { BackdropComponent } from 'components/Common/Layout/styles';
 import { Backdrop } from '@mui/material';
+import RedXIcon from 'components/Icons/redx';
 
 type Props = {
   isMobile: boolean;
@@ -41,35 +42,28 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
   const { isMobileScreen } = useMediaQuery();
   const headerItemRef = useRef();
   const wrapperRef = useRef();
-  // const [openCreateFormModal, setOpenCreateFormModal] = useState(false);
   const [activeModalType, setActiveModalType] = useState<TYPES | null>(null);
   const router = useRouter();
-  const toggleMinimize = () => {
-    if (minimized) {
-      setMinimized(false);
-    }
-  };
+  const toggleMinimize = () => setMinimized((prev) => !prev);
 
   useOutsideAlerter(wrapperRef, () => setActiveModalType(null));
 
   const handleActiveModalType = (type: TYPES) => {
     setActiveModalType((prev) => (prev === type ? null : type));
+    if (!minimized && isMobileScreen) setMinimized(true);
   };
 
   const displayCustomHeaderItem = useMemo(
     () => ACTIVE_MODAL_TYPES_WITH_COMPONENTS.includes(activeModalType),
     [activeModalType]
   );
-  console.log(displayCustomHeaderItem, 'displayCustomHeaderItem')
 
   return (
     <HeaderBar minimized={minimized}>
       <Backdrop open={!!activeModalType && isMobileScreen} />
       {/* <div style={{height: '30px', width: '30px', color: 'white', background: 'red'}}>hello</div> */}
       {isMobile && router.pathname !== PAGE_PATHNAME.explore ? (
-        <MenuContainer onClick={toggleMinimize}>
-          <Menu />
-        </MenuContainer>
+        <MenuContainer onClick={toggleMinimize}>{!minimized ? <Close /> : <Menu />}</MenuContainer>
       ) : null}
       {user && (
         <Grid display="flex" width="100%" gap="8px">
@@ -92,9 +86,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
               />
             )}
             <NotificationsBoard
-              setIsActive={() =>
-                setActiveModalType((prev) => (prev === TYPES.NOTIFICATIONS ? null : TYPES.NOTIFICATIONS))
-              }
+              setIsActive={() => handleActiveModalType(TYPES.NOTIFICATIONS)}
               isActive={activeModalType === TYPES.NOTIFICATIONS || !activeModalType}
               ref={headerItemRef}
               isOpen={activeModalType === TYPES.NOTIFICATIONS}

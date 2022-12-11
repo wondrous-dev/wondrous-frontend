@@ -20,10 +20,11 @@ export const SidebarWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
   position: fixed;
-  top: 70px;
+  top: 0px;
+  padding-top:70px;
+  z-index: 1;
   width: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   display: flex;
-  z-index: 500;
   transition: width 0.2s;
   justify-content: space-between;
   ${({ theme }) => theme.breakpoints.down('sm')} {

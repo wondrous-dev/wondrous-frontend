@@ -379,17 +379,7 @@ function BoardsPage() {
   const [activeView, setActiveView] = useState(view);
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
-
-  const {setPageData} = usePageDataContext()
-  
-  useEffect(() => {
-    if(orgData) setPageData({orgData})
-  }, [orgData])
-
-  useEffect(() => {
-    return () => setPageData({})
-  }, [])
-  
+    
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });

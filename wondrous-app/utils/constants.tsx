@@ -150,6 +150,7 @@ export const ENTITIES_TYPES = {
   SUBMISSION: 'submission',
   GRANT: 'grant',
   GRANT_APPLICATION: 'grant_application',
+  COLLAB: 'collab'
 };
 
 export const MODAL_TABS_MAP = {

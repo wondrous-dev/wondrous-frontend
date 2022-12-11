@@ -55,7 +55,7 @@ const useSidebarData = () => {
     handleOnClick,
     data: [
       {
-        label: 'Workspaces',
+        label: 'Work',
         items: [
           {
             text: 'Tasks',
@@ -85,6 +85,12 @@ const useSidebarData = () => {
             count: taskCount.proposalCount,
             entityType: ENTITIES_TYPES.PROPOSAL,
           },
+          
+        ],
+      },
+      {
+        label: 'Spaces',
+        items: [
           !!orgBoard && {
             text: 'Pods',
             Icon: PodIcon,
@@ -108,13 +114,13 @@ const useSidebarData = () => {
               },
             },
           },
-        ],
+        ]
       },
       {
         label: 'Community',
         items: [
           {
-            text: 'Leaderboard/Analytics',
+            text: 'Leaderboard',
             Icon: PieChartIcon,
             link: `${link}/analytics`,
           },

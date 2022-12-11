@@ -13,6 +13,7 @@ export const Wrapper = styled.div`
 export const OrgItem = styled(Link)`
   flex: 1;
   flex-basis: fit-content;
+  min-width: 30%;
   text-decoration: none;
   display: flex;
   background: ${({ isActive }) => (isActive ? palette.grey87 : palette.black92)};

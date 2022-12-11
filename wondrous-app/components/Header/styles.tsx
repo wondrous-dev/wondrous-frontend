@@ -17,6 +17,8 @@ export const HeaderBar = styled(AppBar)`
     gap: 14px;
     justify-content: flex-end;
     box-shadow: none;
+    position: sticky;
+    top: 0;
     background: ${palette.grey900};
     ${({ theme }) => theme.breakpoints.down('sm')} {
       position: sticky;
@@ -187,6 +189,11 @@ export const HeaderCreateButton = styled(ButtonBase)`
     display: flex;
     opacity: ${({ isActive }) => (isActive ? 1 : 0.5)};
     justify-content: flex-end;
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      position: fixed;
+      bottom: 2%;
+      right: 2%;
+    }
     background: transparent;
     border: 0;
     position: relative;
@@ -243,16 +250,18 @@ export const ConnectDiscordLink = styled.a`
   color: ${palette.highlightBlue};
 `;
 
-export const MenuContainer = styled.div`
+export const MenuContainer = styled.button`
   height: 40px;
   width: 40px;
   background: #2d2d2d;
   border-radius: 9px;
+  border: none;
   display: flex;
+  color: ${palette.blue20};
   align-items: center;
   justify-content: center;
   svg {
-    font-size: 36px;
+    font-size: 30px;
   }
 `;
 
