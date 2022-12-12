@@ -85,7 +85,7 @@ function Collaborations(props) {
   }, [invite]);
   return (
     <EntitySidebar>
-      <CreateCollaborationModal open={openCreateModal} onCancel={handleCreateModal} defaultOrgId={orgData?.id} />
+      <CreateCollaborationModal open={openCreateModal} onCancel={handleCreateModal} />
       <CollabWrapper>
         <CollabsContainer>
           <HeaderBlock title={orgData?.name ? `Collabs with ${orgData?.name}` : 'Collabs'} />

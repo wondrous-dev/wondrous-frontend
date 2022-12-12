@@ -6,7 +6,7 @@ import SentRequestSuccess from 'components/CreateCollaborationModal/Steps/SentRe
 import { CREATE_COLLAB_REQUST } from 'graphql/mutations';
 import { useMutation } from '@apollo/client';
 import StarsBackground from 'components/StarsBackground';
-import { useOrgBoard, usePodBoard, useSteps } from 'utils/hooks';
+import { useBoards, useOrgBoard, usePodBoard, useSteps } from 'utils/hooks';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 
 type Props = {
@@ -16,10 +16,8 @@ type Props = {
 
 const CreateCollaborationModal = ({ open, onCancel }: Props) => {
   const { step, setStep } = useSteps(0);
-  const orgBoard = useOrgBoard()
-  const podBoard = usePodBoard()
-
-  const defaultOrgId = orgBoard?.orgId || podBoard?.orgId
+  const { board } = useBoards();
+  const defaultOrgId = board?.orgId
   const [orgs, setOrgs] = useState({ org1: null, org2: null });
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const [createCollabRequest, { data: collabRequestData }] = useMutation(CREATE_COLLAB_REQUST, {

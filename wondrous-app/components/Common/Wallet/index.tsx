@@ -83,7 +83,7 @@ const Balance = ({ currency, children }) => {
   );
 };
 
-function Wallet({isActive = true, handleClick}) {
+function Wallet({isActive = true, handleClick = () => {}}) {
   const wonderWeb3 = useWonderWeb3();
 
   const { provider } = useContext(WonderWeb3Context);
