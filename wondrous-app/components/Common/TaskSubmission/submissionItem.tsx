@@ -23,6 +23,7 @@ import {
   SUBMISSION_COMMENT_TYPE,
   SUBMISSION_STATUS,
   TASK_STATUS_DONE,
+  TASK_STATUS_PAID,
   TASK_TYPE,
 } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
@@ -360,8 +361,8 @@ function ResubmitTaskSubmissionButton({
 }
 
 function ReopenTaskSubmission({ submission, setCommentType, onClick }) {
-  const { approvedAt, rejectedAt } = submission;
-  if (!(approvedAt || rejectedAt)) return null;
+  const { approvedAt, rejectedAt, paymentStatus } = submission;
+  if (!(approvedAt || rejectedAt) || paymentStatus === TASK_STATUS_PAID) return null;
   const text = approvedAt ? 'Undo approval' : 'Undo rejection';
   const handleOnClick = () => {
     setCommentType(null);
