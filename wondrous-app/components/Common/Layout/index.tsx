@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GlobalContext, PageDataContext, SideBarContext } from 'utils/contexts';
@@ -16,6 +16,7 @@ import Spotlight from 'components/Spotlight';
 import { BackdropComponent, SectionWrapper } from './styles';
 import UserSidebar from '../UserSidebar';
 import EntitySidebar from '../SidebarEntity';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 const getOrgsList = (userOrgs, router) => {
   if (!userOrgs?.getUserOrgs) return [];
@@ -34,9 +35,6 @@ const PAGES_WITH_USER_SIDEBAR = [
   '/dashboard/bounties',
   '/dashboard',
   '/dashboard/proposals',
-  '/profile/settings',
-  '/profile/notifications',
-  '/profile/login-methods',
   '/profile/[username]/about',
 ];
 
@@ -55,7 +53,7 @@ const SectionContainer = ({ children }: any) => {
   return <SectionWrapper>{children}</SectionWrapper>;
 };
 export default function SidebarLayout({ children }) {
-  const isMobile = useIsMobile();
+  const {isMobileScreen : isMobile} = useMediaQuery();
   const router = useRouter();
   const [pageData, setPageData] = useState({});
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
@@ -83,13 +81,17 @@ export default function SidebarLayout({ children }) {
     fetchPolicy: 'cache-and-network',
     skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
   });
-  const [minimized, setMinimized] = useState(false);
+  const [minimized, setMinimized] = useState(true);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
     skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
     variables: {
       excludeSharedOrgs: true,
     },
   });
+  
+  useEffect(() => {
+    setMinimized(isMobile)
+  }, [isMobile])
 
   const [createFormModal, setCreateFormModal] = useState(false);
 

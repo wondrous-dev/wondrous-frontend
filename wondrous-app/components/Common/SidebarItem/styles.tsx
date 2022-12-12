@@ -8,7 +8,7 @@ export const ItemButton = styled(ButtonBase)`
     height: 32px;
     width: 100%;
     display: flex;
-    border-left: 4px solid ${({ isActive, theme }) => isActive && `${theme.palette.highlightPurple}`};
+    border-left: 4px solid ${({ isActive, theme }) => isActive ? `${theme.palette.highlightPurple}`: 'transparent'};
     align-items: center;
     background: ${({ isActive, theme }) => isActive && `${theme.palette.grey87}`};
     justify-content: ${({ minimized }) => (minimized ? 'center' : 'space-between')};

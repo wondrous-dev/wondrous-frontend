@@ -1,20 +1,21 @@
 import { useQuery } from '@apollo/client';
+import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
+import GrantIcon from 'components/Icons/GrantIcon';
+import HomeIcon from 'components/Icons/home';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
 import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
+import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import StackIcon from 'components/Icons/Sidebar/stack.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
-import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
+import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useBoards, useSideBar } from 'utils/hooks';
-import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
-import GrantIcon from 'components/Icons/GrantIcon';
-import HomeIcon from 'components/Icons/home';
+import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
 const usePerTypeTaskCountForBoard = () => {
@@ -36,6 +37,9 @@ const usePerTypeTaskCountForBoard = () => {
 
 const useSidebarData = () => {
   const { board, orgBoard } = useBoards();
+  const { setMinimized} = useSideBar();
+  const {isMobileScreen} = useMediaQuery();
+  
   const { setEntityType } = board || {};
   const router = useRouter();
   const { search } = router.query;
@@ -45,6 +49,9 @@ const useSidebarData = () => {
       if (type && setEntityType) {
         setEntityType(type);
         if (!search) return;
+      }
+      if(isMobileScreen) {
+        setMinimized(true)
       }
       router.push(link);
     };

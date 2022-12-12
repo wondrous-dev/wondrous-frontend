@@ -26,7 +26,11 @@ const SIDEBAR_COMPONENTS = {
 const EntitySidebarButtons = () => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
+  const { minimized } = useSideBar();
+
   const [openInvite, setOpenInvite] = useState(false);
+
+  if (minimized) return null;
   const href = orgBoard
     ? `/organization/settings/${orgBoard?.orgId}/general`
     : `/pod/settings/${podBoard?.podId}/general`;
@@ -48,7 +52,6 @@ const EntitySidebarButtons = () => {
   );
 };
 
-
 const EntitySidebar = ({ children, renderSidebar = null }) => {
   const { minimized } = useSideBar();
   const { query } = useRouter();
@@ -64,7 +67,6 @@ const EntitySidebar = ({ children, renderSidebar = null }) => {
 
     return () => (
       <>
-        {isMobileScreen ? <AboutEntity /> : null}
         <EntitySidebarButtons />
         <List />
       </>
@@ -74,9 +76,9 @@ const EntitySidebar = ({ children, renderSidebar = null }) => {
   return (
     <Wrapper>
       <SidebarWrapper minimized={minimized}>
-        <SidebarContent>
-          {renderSidebar ? renderSidebar() : <Sidebar />}
-        </SidebarContent>
+        {isMobileScreen ? <AboutEntity /> : null}
+
+        <SidebarContent>{renderSidebar ? renderSidebar() : <Sidebar />}</SidebarContent>
         <CollapseExpandButton />
       </SidebarWrapper>
       <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>

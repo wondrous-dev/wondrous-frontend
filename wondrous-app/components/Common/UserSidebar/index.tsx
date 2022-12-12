@@ -5,7 +5,9 @@ import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import WrenchIcon from 'components/Icons/wrench';
+import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
+import { ORG_MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { useSideBar } from 'utils/hooks';
 import { UserProfilePictureGR15 } from '../ProfilePictureHelpers';
 import SidebarEntityListMemoized from '../SidebarEntityList/SidebarEntityListMemoized';
@@ -13,7 +15,14 @@ import PodsIconButton from '../SidebarMainPods';
 
 const useSidebarData = () => {
   const router = useRouter();
-  const handleOnClick = (link) => () => router.push(link);
+  const {setMinimized} = useSideBar()
+  const {isMobileScreen} = useMediaQuery()
+  const handleOnClick = (link) => () => {
+    router.push(link)
+    if(isMobileScreen) {
+      setMinimized(true)
+    }
+  };
 
   const user = useMe();
   const data = [
@@ -49,12 +58,14 @@ const useSidebarData = () => {
         {
           text: 'Contributor',
           Icon: CheckBoxIcon,
+          customActiveCheck: () => router.pathname === '/dashboard',
           link: '/dashboard',
         },
         {
           text: 'Operator',
           Icon: GroupIcon,
-          link: '/dashboard/admin',
+          customActiveCheck: () => router.pathname === '/dashboard/admin',
+          link: `/dashboard/admin?boardType=${ORG_MEMBERSHIP_REQUESTS}`,
         },
       ],
     },

@@ -33,9 +33,11 @@ const DropdownItem = ({ isOrg, thumbnailPicture, profilePicture, activePod, isEx
   }
   if (activePod) return <NoLogoPod />;
   if (isExplore) {
-    return <IconWrapper>
-      <ExplorePageMinimalIcon />
-    </IconWrapper>;
+    return (
+      <IconWrapper>
+        <ExplorePageMinimalIcon />
+      </IconWrapper>
+    );
   }
   return (
     <UserProfilePicture
@@ -75,8 +77,6 @@ const EntityMenu = () => {
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
-  console.log(isExplore, 'isExplore')
-  
   let pageTitle = useMemo(() => {
     if (isExplore) {
       return 'Explore';
@@ -84,7 +84,7 @@ const EntityMenu = () => {
     if (isUserBoard) {
       return 'My workspace';
     }
-    return name
+    return name;
   }, [name, isExplore, isUserBoard, isOrg]);
 
   return (

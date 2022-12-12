@@ -16,13 +16,12 @@ export const Wrapper = styled.div`
 export const SidebarWrapper = styled.div`
   background: ${({ theme }) => theme.palette.black92};
   flex-direction: column;
-  gap: 28px;
   height: 100%;
   overflow-y: auto;
   position: fixed;
   top: 0px;
   padding-top:70px;
-  z-index: 1;
+  z-index: 100;
   width: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   display: flex;
   transition: width 0.2s;
