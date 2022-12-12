@@ -53,6 +53,24 @@ export const GET_USER_PODS = gql`
   }
 `;
 
+export const GET_USER_PODS_WITH_ORG_INFO = gql`
+  query getUserPods($userId: String) {
+    getUserPods(userId: $userId) {
+      id
+      username
+      name
+      profilePicture
+      description
+      color
+      org {
+        id
+        name
+        username
+        profilePicture
+      }
+    }
+  }
+`;
 export const GET_USER_AVAILABLE_PODS = gql`
   query getAvailableUserPods($orgId: String) {
     getAvailableUserPods(orgId: $orgId) {

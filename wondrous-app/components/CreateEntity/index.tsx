@@ -38,6 +38,8 @@ interface ICreateEntity {
   formValues?: FormikValues;
   parentTaskId?: string;
   privacyLevel?: string;
+  proposalVoteType?: string;
+  customProposalChoices?: string[];
 }
 
 export function CreateEntity(props: ICreateEntity) {

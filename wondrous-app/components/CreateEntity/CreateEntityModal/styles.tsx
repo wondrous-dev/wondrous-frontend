@@ -1,6 +1,6 @@
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
 import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
-import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui/material';
+import { Autocomplete, Input, InputAdornment, InputBase, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -15,9 +15,11 @@ import styled, { css } from 'styled-components';
 import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
 import scrollBarStyles from 'components/Common/ScrollbarStyles';
+import { StyledSelect } from 'components/Common/InviteLinkModal/styles';
+import typography from 'theme/typography';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
-import MilestoneSearch from './MilestoneSearch';
+import { CloseIcon } from '../../Common/BoardFilters/styles';
 
 const fullScreenStyle = css`
   max-height: 100vh;
@@ -32,7 +34,8 @@ const fullScreenStyle = css`
 
 export const CreateEntityForm = styled.form`
   max-height: 95vh;
-  width: 561px;
+  max-width: 561px;
+  width: 100%;
   border-radius: 6px;
   overflow-y: auto;
   background: #1d1d1d;
@@ -46,6 +49,10 @@ export const CreateEntityForm = styled.form`
     }
   }}
   transition: all 0.1s linear;
+
+  ${(props) => props.theme.breakpoints.down('sm')} {
+    width: 95%;
+  }
 `;
 
 export const CreateEntityHeader = styled.div`
@@ -57,10 +64,8 @@ export const CreateEntityHeader = styled.div`
   justify-content: space-between;
 `;
 
-export const CreateEntityMilestoneSearch = styled(MilestoneSearch)``;
-
 export const CreateEntitySelectRoot = styled.button`
-  font-family: 'Space Grotesk';
+  font-family: ${typography.fontFamily};
   font-weight: 500;
   font-size: 13px;
   width: 100%;
@@ -77,7 +82,7 @@ export const CreateEntitySelectRoot = styled.button`
 `;
 
 export const CreateEntitySelectListbox = styled.ul`
-  font-family: 'Space Grotesk';
+  font-family: ${typography.fontFamily};
   color: ${palette.white};
   margin: 0;
   padding: 0;
@@ -184,9 +189,18 @@ export const CreateEntitySelectRootValueWrapper = styled.div`
   text-overflow: ellipsis;
 `;
 
-export const CreateEntityHeaderWrapper = styled.div`
-  display: flex;
+export const CreateEntityHeaderWrapper = styled.div<{ showOnSmallScreen: boolean; hideOnLargeScreen: boolean }>`
+  display: ${(props) => (props.hideOnLargeScreen ? 'none' : 'inline-flex')};
   gap: 12px;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: ${(props) => (props.showOnSmallScreen ? 'inline-flex' : 'none')};
+
+    .select-tooltip {
+      min-width: 32px;
+      height: 32px;
+    }
+  }
 `;
 
 export const CreateEntityOpenInFullIcon = styled((props) => (
@@ -207,7 +221,26 @@ export const CreateEntityOpenInFullIcon = styled((props) => (
   }
 `;
 
+export const CreateEntityCloseIcon = styled((props) => (
+  <div {...props}>
+    <CloseIcon />
+  </div>
+))`
+  width: 32px;
+  height: 32px;
+  background: rgba(49, 49, 49, 0.3);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  :hover {
+    background: rgba(49, 49, 49, 1);
+    cursor: pointer;
+  }
+`;
+
 export const CreateEntitySelectArrowIcon = styled(Arrow)`
+  margin-left: 10px;
   transform: rotate(90deg);
   path {
     fill: #7a7a7a;
@@ -318,6 +351,10 @@ export const CreateEntitySelectErrorWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
+
+  > button {
+    min-width: fit-content;
+  }
 `;
 
 export const CreateEntitySelectWrapper = styled.div`
@@ -571,6 +608,19 @@ export const CreateEntityApplicationsSelectRender = styled.div`
 export const CreateEntityPrivacySelectRenderLabel = styled.div`
   display: flex;
   align-items: center;
+  color: white;
+  text-transform: capitalize;
+  margin-left: 10px;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
+`;
+
+export const CreateEntityPrivacySelectRenderLabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 `;
 
 export const CreateEntityPrivacyIconWrapper = styled.div`
@@ -624,6 +674,9 @@ export const CreateEntityCancelButton = styled(ButtonUnstyled)`
     cursor: pointer;
     background: #454545;
   }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
 `;
 
 export const CreateEntityTemplateInput = styled.div`
@@ -643,12 +696,12 @@ export const CreateEntityCreateTaskButton = styled(Button)`
       font-size: 15px;
       font-weight: 600;
       font-family: 'Space Grotesk';
-      background: #0f0f0f;
+      background: ${palette.background};
     }
   }
 `;
 
-export const CreateEntityAttachment = styled(ButtonUnstyled)`
+export const CreateEntityAttachment = styled(ButtonUnstyled)<{ showOnSmallScreen: boolean }>`
   background: #282828;
   font-family: 'Space Grotesk';
   font-size: 14px;
@@ -658,7 +711,7 @@ export const CreateEntityAttachment = styled(ButtonUnstyled)`
   border: none;
   border-radius: 4px;
   padding: 8px;
-  display: flex;
+  display: ${(props) => (props.showOnSmallScreen ? 'none' : 'flex')};
   align-items: center;
   justify-content: space-between;
   :hover {
@@ -666,6 +719,10 @@ export const CreateEntityAttachment = styled(ButtonUnstyled)`
     background: #454545;
     filter: drop-shadow(0 8px 2px #171717);
     transition: all ease-in-out 0.2s;
+  }
+
+  ${(props) => props.theme.breakpoints.down('sm')} {
+    display: ${(props) => (props.showOnSmallScreen ? 'flex' : 'none')};
   }
 `;
 
@@ -1048,4 +1105,134 @@ export const SnapshotButtonBlock = styled.div`
   display: flex;
   justify-content: left;
   margin-left: 24px;
+`;
+
+export const StyledProposalSelect = styled(Select)`
+  && {
+    background: ${palette.grey940};
+    width: 100%;
+    color: ${palette.white};
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .MuiSelect-select {
+    padding: 8px;
+    padding-left: 12px;
+  }
+
+  & .MuiSelect-root {
+    padding-left: 12px;
+  }
+
+  & .MuiInputBase-root {
+    border-radius: 0 6px 6px 0;
+  }
+
+  svg {
+    color: ${palette.white};
+    transition: transform 0.2s ease-out;
+  }
+  & .MuiInput-underline {
+    :hover:not(.Mui-disabled)::before {
+      border: none;
+      ::before {
+        border: none;
+      }
+      ::before {
+        border: none;
+      }
+    }
+  }
+`;
+export const ProposalVoteSelect = styled(({ className, ...props }) => (
+  <StyledProposalSelect {...props} {...className} MenuProps={{ classes: { paper: className } }} />
+))`
+  &.MuiPaper-root {
+    background: ${palette.black101};
+    border: 1px solid ${palette.grey79};
+    width: 100%;
+    color: ${palette.white};
+    max-width: 513px;
+  }
+
+  &.MuiPaper-root > .MuiList-padding {
+    padding: 12px;
+  }
+`;
+
+export const ProposalVoteSelectMenuItem = styled(MenuItem)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: ${palette.black98} !important;
+    color: ${palette.white};
+    border-radius: 4px;
+    padding: 8px;
+    transition: background 0.2s ease-out;
+    position: relative;
+  }
+`;
+
+export const ProposalVoteSelectMenuItemText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+    font-weight: 500;
+    color: ${palette.white};
+  }
+`;
+
+export const CustomProposalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 14px;
+
+  background: ${palette.black92};
+  border-radius: 6px;
+  margin-top: 14px;
+`;
+
+export const CustomProposalInput = styled(InputBase)`
+  && {
+    width: 100%;
+    height: 40px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: 0.01em;
+    background: ${palette.black101};
+    color: ${palette.white};
+    padding: 10px 15px;
+    margin-bottom: 10px;
+  }
+`;
+
+export const CustomAddOptionButton = styled.div`
+  background: ${palette.grey79};
+  padding: 4px 8px;
+  gap: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
+export const CustomAddOptionButtonText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    color: ${palette.grey130};
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+  }
+`;
+
+export const CustomAddOptionDiv = styled.div`
+  display: flex;
+  align-items: center;
 `;

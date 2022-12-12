@@ -100,7 +100,6 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
     [isMobileScreen, anchorEl]
   );
 
-  console.log(orgsList, 'orgsList');
 
   return (
     <Container open={open} onClose={onClose}>
@@ -122,7 +121,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
               <OrgItem
                 key={org?.id}
                 isActive={org?.isActive}
-                href={`/organization/${org?.username}/project`}
+                href={`/organization/${org?.username}/home`}
                 onClick={onClose}
               >
                 <OrgProfilePicture

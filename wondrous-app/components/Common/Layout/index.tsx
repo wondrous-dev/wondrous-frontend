@@ -51,6 +51,7 @@ export default function SidebarLayout({ children }) {
       offset: 0,
       limit: LIMIT,
     },
+    fetchPolicy: 'cache-and-network',
     skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
   });
   const [minimized, setMinimized] = useState(false);

@@ -8,7 +8,6 @@ import * as Constants from 'utils/constants';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import SmartLink from 'components/Common/SmartLink';
 import KudosForm from 'components/Common/KudosForm';
-import { useLocation } from 'utils/useLocation';
 import { useMe } from '../../Auth/withAuth';
 import {
   PostHeaderDefaultUserImage,
@@ -33,12 +32,10 @@ const objectTypeText = {
 export function PostHeader(props) {
   const { post } = props;
   const router = useRouter();
-  const location = useLocation();
   const { id, postId, verb, taskStatus, objectType, content, referencedObject, objectId, actor = {} } = post;
   const postObjectType = objectType ?? referencedObject?.objectType;
   const [menu, setMenu] = useState(null);
   const [kudosForm, setKudosForm] = useState(null);
-  const [taskViewModal, setTaskViewModal] = useState(false);
   const loggedInUser = useMe();
   const canEditPost = loggedInUser?.username === actor?.username && verb === PostVerbType.KUDOS;
   const taskId = referencedObject?.objectId ?? objectId;
@@ -64,7 +61,18 @@ export function PostHeader(props) {
           <>
             awarded a kudos {referencedUser && `to ${referencedUser}`} for a completed{' '}
             <PostHeaderLink as="span">
-              <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => location.push(taskViewUrl)}>
+              <SmartLink
+                href={taskViewUrl}
+                preventLinkNavigation
+                onNavigate={() => {
+                  const query = {
+                    ...router.query,
+                    task: taskId,
+                  };
+
+                  router.push({ query }, undefined, { scroll: false, shallow: true });
+                }}
+              >
                 {objectTypeHeaderText}
               </SmartLink>
             </PostHeaderLink>
@@ -105,18 +113,9 @@ export function PostHeader(props) {
 
   const headerText = createHeaderText(verbOrStatus, postObjectType, referencedObject?.actor?.username);
 
-  useEffect(() => {
-    if (router?.query?.task) {
-      setTaskViewModal(true);
-    } else {
-      setTaskViewModal(false);
-    }
-  }, [router?.query?.task]);
-
   return (
     <>
       <KudosForm open={kudosForm} existingContent={content} onClose={handlePostEditClose} id={postId} />
-      <TaskViewModal open={taskViewModal} taskId={taskId} handleClose={handleTaskViewModalClose} />
       <PostHeaderWrapper>
         <PostHeaderImageTextWrapper>
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}

@@ -5,12 +5,14 @@ import ExploreComponent from '../../components/Explore';
 
 function Explore({ user }) {
   const { setIsOpen, setCurrentStep } = useTour();
+
   useLayoutEffect(() => {
     if (user && !user.lastCompletedGuide) {
       setCurrentStep(0);
       setIsOpen(true);
     }
   }, [user]);
+
   return <ExploreComponent />;
 }
 

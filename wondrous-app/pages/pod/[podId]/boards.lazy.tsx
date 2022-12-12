@@ -3,7 +3,6 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
 import Boards from 'components/Pod/boards';
 import { sectionOpeningReducer } from 'utils/board';
-import { useIsMobile } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from 'graphql/queries';
@@ -28,7 +27,7 @@ import {
   DEFAULT_ENTITY_STATUS_FILTER,
 } from 'services/board';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
+import { dedupeColumns } from 'utils';
 import {
   PRIVACY_LEVEL,
   STATUS_OPEN,
@@ -41,7 +40,6 @@ import {
 } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
-import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import EntitySidebar from 'components/Common/SidebarEntity';
 
 const useGetPodTaskBoardTasks = ({
@@ -306,7 +304,6 @@ type Props = {
 
 function BoardsPage({ meta }: Props) {
   const router = useRouter();
-  const isMobile = useIsMobile();
   const { podId, search, userId, view = ViewType.Grid, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -329,7 +326,7 @@ function BoardsPage({ meta }: Props) {
   });
 
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
-  const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
+  const [getPod, { data: podData, loading: isPodDataLoading }] = useLazyQuery(GET_POD_BY_ID);
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
@@ -358,23 +355,29 @@ function BoardsPage({ meta }: Props) {
     if (type !== entityType) {
       setIsLoading(true);
     }
-    insertUrlParam('entity', type);
-    removeUrlParam('cause');
+
+    const query: any = { ...router.query, entity: type };
+
+    delete query.cause;
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
     });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
-      insertUrlParam('view', ViewType.Grid);
+      query.view = ViewType.Grid;
     }
+
+    router.push({ query }, undefined, { shallow: true, scroll: false });
   };
 
   const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
       const boardColumns = [...columns];
-      boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForPodBoardView];
-      setColumns(boardColumns);
+      if (boardColumns[0].tasks?.length > 0) {
+        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForPodBoardView];
+        setColumns(boardColumns);
+      }
       setIsLoading(false);
     },
     fetchPolicy: 'cache-and-network',
@@ -444,10 +447,11 @@ function BoardsPage({ meta }: Props) {
   }, [userId]);
 
   useEffect(() => {
-    if (podId) {
+    // Load only once or when you switch POD
+    if (!isPodDataLoading && ((podId && !podData) || (podData && podData.getPodById.id !== podId))) {
       getPod({ variables: { podId } });
     }
-  }, []);
+  }, [podId, podData, isPodDataLoading]);
 
   useEffect(() => {
     if (podId) {
@@ -655,7 +659,6 @@ function BoardsPage({ meta }: Props) {
       }}
     >
       <EntitySidebar>
-        {isMobile ? <MobileComingSoonModal /> : null}
         <Boards
           columns={columns}
           onLoadMore={fetchMore}

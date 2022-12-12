@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
 import * as Constants from 'utils/constants';
-import { useLocation } from 'utils/useLocation';
 
 import {
   MilestoneEmpty,
@@ -67,14 +66,16 @@ function MilestoneTaskReward({ rewards }) {
 }
 
 export default function MilestoneTaskList({ data }) {
-  const { asPath, query } = useRouter();
-  const location = useLocation();
+  const { asPath, query, push } = useRouter();
   const taskUrl = (id) => `${delQuery(asPath)}?task=${id}&view=grid&entity=milestone`;
 
   const onNavigate = (id) => {
-    const url = taskUrl(id);
-    location.push(url);
-    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
+    const newQuery = {
+      ...query,
+      task: id,
+    };
+
+    push({ query: newQuery }, undefined, { scroll: false, shallow: true });
   };
 
   if (isEmpty(data)) return <MilestoneEmpty>No tasks yet.</MilestoneEmpty>;

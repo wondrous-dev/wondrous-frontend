@@ -1,4 +1,6 @@
 import { OrgProfilePicture, UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import { useMutation } from '@apollo/client';
+
 import {
   ArrowIcon,
   Button,
@@ -11,6 +13,7 @@ import {
 } from 'components/Common/SidebarEntityMenu/styles';
 import { ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
 import WorkspacePicker from 'components/WorkspacePicker';
+import { LEAVE_ORG, LEAVE_POD } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import palette from 'theme/palette';
@@ -50,7 +53,43 @@ const EntityMenu = ({ user, activePod = null }) => {
     }
   }, [name, isExplore, isUserBoard, isOrg]);
 
-  console.log(user, 'USEr12')
+  const [leaveOrg] = useMutation(LEAVE_ORG, {
+    onCompleted: () => {
+      router.push('/mission-control');
+    },
+    refetchQueries: ['getUserOrgs'],
+  });
+
+  const [leavePod] = useMutation(LEAVE_POD, {
+    onCompleted: () => {
+      router.push('/mission-control');
+    },
+    refetchQueries: ['getUserPods'],
+  });
+
+  const handleLeaveOrgClick = () => {
+    const confirmed = confirm(`Are you sure you want to leave ${name}?`);
+    if (!confirmed) {
+      return;
+    }
+    leaveOrg({
+      variables: {
+        orgId: id,
+      },
+    });
+  };
+
+  const handleLeavePodClick = () => {
+    const confirmed = confirm(`Are you sure you want to leave ${name} pod?`);
+    if (!confirmed) {
+      return;
+    }
+    leavePod({
+      variables: {
+        podId: id,
+      },
+    });
+  };
   return (
     <>
       <Button onClick={handleClick} open={open}>
@@ -100,6 +139,10 @@ const EntityMenu = ({ user, activePod = null }) => {
         <ArrowIcon open={open} />
       </Button>
       <WorkspacePicker user={user} isUserBoard={isUserBoard} open={open} anchorEl={anchorEl} onClose={handleClose} />
+      {/* <MenuStyled anchorEl={anchorEl} open={open} onClose={handleClose}> */}
+        {/* {podBoard && <Item onClick={handleLeavePodClick}>Leave Pod</Item>}
+        {orgBoard && <Item onClick={handleLeaveOrgClick}>Leave Organization</Item>} */}
+      {/* </MenuStyled> */}
     </>
   );
 };

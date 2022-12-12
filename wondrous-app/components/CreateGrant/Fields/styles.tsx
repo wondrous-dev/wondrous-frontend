@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { SelectUnstyled } from '@mui/base';
-import { TextField } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import {
   CreateEntityPaymentMethodRoot,
   CreateEntityPaymentMethodList,
@@ -93,4 +93,11 @@ export const ApplyPolicyItemButton = styled.button`
     color: ${palette.highlightBlue};
     border-radius: 4px;
   `};
+`;
+
+export const DueDateWrapper = styled.span`
+  width: 100%;
+  .create-entity-date {
+    max-width: 100% !important;
+  }
 `;

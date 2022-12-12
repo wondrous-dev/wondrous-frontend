@@ -1,6 +1,5 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
-import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { Boards } from 'components/Collaboration';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -26,7 +25,7 @@ import {
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam } from 'utils';
+import { dedupeColumns } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
 import {
   ENTITIES_TYPES,
@@ -39,7 +38,7 @@ import {
   TASK_STATUSES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useGlobalContext, useIsMobile } from 'utils/hooks';
+import { useGlobalContext } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -351,7 +350,6 @@ const useGetOrgTaskBoard = ({
 
 function BoardsPage() {
   const router = useRouter();
-  const isMobile = useIsMobile();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -412,20 +410,26 @@ function BoardsPage() {
     if (type !== entityType) {
       setIsLoading(true);
     }
-    insertUrlParam('entity', type);
+
+    const query: any = { ...router.query, entity: type };
+
     setEntityType(type);
     setFilters({});
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
-      insertUrlParam('view', ViewType.Grid);
+      query.view = ViewType.Grid;
     }
+
+    router.push({ query }, undefined, { shallow: true });
   };
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
       const boardColumns = [...columns];
-      boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
-      setColumns(boardColumns);
+      if (boardColumns[0].tasks?.length > 0) {
+        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
+        setColumns(boardColumns);
+      }
       setIsLoading(false);
     },
     onError: (error) => {
@@ -660,7 +664,6 @@ function BoardsPage() {
         hasMore: orgTaskHasMore,
       }}
     >
-      {isMobile ? <MobileComingSoonModal /> : null}
       <EntitySidebar>
         <Boards
           columns={columns}

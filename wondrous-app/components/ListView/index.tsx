@@ -1,3 +1,8 @@
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/router';
+import { DragDropContext } from 'react-beautiful-dnd';
+import { useMutation } from '@apollo/client';
+
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   TASK_STATUS_TODO,
@@ -11,22 +16,18 @@ import {
   BOARD_TYPE,
   STATUS_CLOSED,
 } from 'utils/constants';
-import { useState, useEffect } from 'react';
-import { useLocation } from 'utils/useLocation';
-import TaskViewModal from 'components/Common/TaskViewModal';
-import { delQuery, dedupeColumns } from 'utils';
-import { useRouter } from 'next/router';
-import { DragDropContext } from 'react-beautiful-dnd';
-import Droppable from 'components/StrictModeDroppable';
-import { useMe } from 'components/Auth/withAuth';
+import { dedupeColumns } from 'utils';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useMutation } from '@apollo/client';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import apollo from 'services/apollo';
-import BoardLock from 'components/BoardLock';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK } from 'graphql/queries';
+import { taskHasPayment } from 'utils/board';
+
+import Droppable from 'components/StrictModeDroppable';
+import { useMe } from 'components/Auth/withAuth';
+import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
+
 import ItemsContainer from './ItemsContainer';
 
 interface Props {
@@ -53,45 +54,29 @@ export default function ListView({
   enableInfiniteLoading = false,
   ...props
 }: Props) {
-  const [isModalOpen, setOpenModal] = useState(false);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
-  const router = useRouter();
   const { taskCount = {}, fetchPerStatus, entityType, setColumns } = orgBoard || podBoard || userBoard;
-  const location = useLocation();
   const isProposalEntity = entityType === ENTITIES_TYPES.PROPOSAL;
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
+  const [draggingTask, setDraggingTask] = useState(null);
+
+  const isTaskDragging = useMemo(() => draggingTask !== null, [draggingTask]);
 
   const user = useMe();
-
-  useEffect(() => {
-    const { params } = location;
-    if (params.task || params.taskProposal) {
-      setOpenModal(true);
-    }
-  }, [location]);
-
-  const handleModalClose = () => {
-    const style = document.body.getAttribute('style');
-    const top = style.match(/(?<=top: -)(.*?)(?=px)/);
-    document.body.setAttribute('style', '');
-    if (top?.length > 0) {
-      window?.scrollTo(0, Number(top[0]));
-    }
-    const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}&entity=${
-      location?.params?.entity || ENTITIES_TYPES.TASK
-    }`;
-    location.push(newUrl);
-    setOpenModal(false);
-  };
 
   const handleShowAll = (status, limit) => fetchPerStatus(status, limit);
 
   const prevColumnState = usePrevious(columns);
+
+  const getTaskById = useCallback(
+    (taskId) => columns.map(({ tasks }) => tasks.find((task) => task.id === taskId)).filter((i) => i)[0],
+    [columns]
+  );
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
@@ -200,7 +185,7 @@ export default function ListView({
   const moveCard = async (id, status, index, source) => {
     // TODO get rid of nested loop
     const updatedColumns = columns.map((column) => {
-      const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
+      const task = getTaskById(id);
       // Only allow when permissions are OK
       if (task?.paymentStatus !== PAYMENT_STATUS.PAID && task?.paymentStatus !== PAYMENT_STATUS.PROCESSING) {
         if (column.status !== status) {
@@ -262,6 +247,8 @@ export default function ListView({
   };
 
   const onDragEnd = (result) => {
+    setDraggingTask(null);
+
     const moveAction = isProposalEntity ? moveProposal : moveCard;
     try {
       moveAction(result.draggableId, result.destination.droppableId, result.destination.index, result.source);
@@ -270,14 +257,14 @@ export default function ListView({
     }
   };
 
+  const onDragStart = (event) => {
+    const task = getTaskById(event.draggableId);
+
+    setDraggingTask(task);
+  };
+
   return (
     <>
-      <TaskViewModal
-        open={isModalOpen}
-        handleClose={handleModalClose}
-        isTaskProposal={!!location.params.taskProposal}
-        taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
-      />
       {singleColumnData ? (
         <ItemsContainer
           entityType={entityType}
@@ -286,14 +273,18 @@ export default function ListView({
           onLoadMore={onLoadMore}
           disableDnd
           enableInfiniteLoading={enableInfiniteLoading}
+          highlighted={isTaskDragging}
         />
       ) : (
-        <DragDropContext onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
+        <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
           {columns.map((column) => {
             if (!column) return null;
-            const count = (taskCount && taskCount[STATUS_MAP[column?.status]]) || column.count || 0;
+
+            const count = (taskCount && taskCount[STATUS_MAP[column.status]]) || column.count || 0;
+            const isDropDisabled = isTaskDragging && taskHasPayment(draggingTask) && column.status !== TASK_STATUS_DONE;
+
             return (
-              <Droppable droppableId={column?.status}>
+              <Droppable droppableId={column?.status} isDropDisabled={isDropDisabled}>
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}>
                     <ItemsContainer
@@ -303,6 +294,8 @@ export default function ListView({
                       taskCount={count}
                       handleShowAll={handleShowAll}
                       enableInfiniteLoading={enableInfiniteLoading}
+                      dndPlaceholder={provided.placeholder}
+                      highlighted={isTaskDragging && !isDropDisabled}
                     />
                   </div>
                 )}

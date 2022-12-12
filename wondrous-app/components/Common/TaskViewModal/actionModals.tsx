@@ -69,7 +69,9 @@ export default function ActionModals({
         taskId: fetchedTask?.id,
       },
     }).then((result) => {
-      handleClose();
+      if (handleClose) {
+        handleClose();
+      }
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage(
         <>
@@ -147,7 +149,9 @@ export default function ActionModals({
         taskType={taskType}
         taskId={fetchedTask?.id}
         onDelete={() => {
-          handleClose();
+          if (handleClose) {
+            handleClose();
+          }
           setSnackbarAlertOpen(true);
           setSnackbarAlertMessage(`Deleted successfully!`);
         }}

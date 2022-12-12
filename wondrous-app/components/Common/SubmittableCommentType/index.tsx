@@ -1,6 +1,11 @@
 import Status from 'components/Common/Status';
 import { GRANT_APPLICATION_STATUSES, SUBMISSION_COMMENT_TYPE } from 'utils/constants';
-import { TextAwaitingReview, TextChangesRejected, TextChangesRequested, TextCompleted } from 'components/Common/Status/styles';
+import {
+  TextAwaitingReview,
+  TextChangesRejected,
+  TextChangesRequested,
+  TextCompleted,
+} from 'components/Common/Status/styles';
 
 const statusComponents = {
   [SUBMISSION_COMMENT_TYPE.RESUBMIT]: {
@@ -38,11 +43,11 @@ const statusComponents = {
   [GRANT_APPLICATION_STATUSES.REJECTED]: {
     Text: TextChangesRejected,
     defaultText: 'Reject',
-  }, 
+  },
   [GRANT_APPLICATION_STATUSES.WAITING_FOR_REVIEW]: {
     Text: TextAwaitingReview,
     defaultText: 'Waiting for review',
-  }
+  },
 };
 
 interface SubmittableStatusProps {

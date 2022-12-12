@@ -12,6 +12,7 @@ import {
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import isEmpty from 'lodash/isEmpty';
 import { useContext, useRef, useState } from 'react';
+import { Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { transformMediaFormat } from 'utils/helpers';
 import { handleAddFile } from 'utils/media';
@@ -137,6 +138,7 @@ function SubmissionFormDescriptionField({ formik, orgId }) {
       <SubmissionDescriptionEditor
         onClick={() => {
           ReactEditor.focus(editor);
+          Transforms.select(editor, [0]);
           formik.setFieldError('descriptionText', '');
         }}
       >

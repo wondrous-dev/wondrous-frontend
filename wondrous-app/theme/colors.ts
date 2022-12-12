@@ -40,6 +40,8 @@ export const greyColors = {
   grey98: '#1c1c1c',
   grey99: '#282828',
   grey100: '#161616',
+  grey125: '#141414',
+  grey130: '#BFBFBF',
   grey150: '#E3E5E9',
   grey200: '#DADADA',
   grey250: '#C4C4C4',
@@ -55,6 +57,7 @@ export const greyColors = {
   grey950: '#212121',
   grey910: '#171717',
   grey920: '#2D2D2D',
+  grey940: '#0f0f0f',
   grey1000: '#272729',
   grey1020: '#2F2F2F',
 };
@@ -150,6 +153,8 @@ export const purpleColors = {
   purple620: '#ff418c',
   purple700: '#8C1EFF',
   purple800: '#8237FF',
+  purple900: '#8446E9',
+  purple950: '#8627FF',
 };
 
 export const blackColors = {
@@ -159,6 +164,7 @@ export const blackColors = {
   black60: '#6B7075',
   black70: '#353535',
   black80: '#333333',
+  black81: '#343434',
   black85: '#2D2C2C',
   black87: '#292929',
   black90: '#23292F',

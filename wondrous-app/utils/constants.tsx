@@ -488,22 +488,6 @@ export const TASK_APPLICATION_STATUS_LABELS = {
 export const ONE_TIME_USE_INVITE_LINK = 'one_time';
 export const PUBLIC_INVITE_LINK = 'public';
 
-export const ProposalVoteType = {
-  APPROVE: 'approve',
-  REJECT: 'reject',
-};
-
-export const PROPOSAL_VOTE_LABELS = {
-  [ProposalVoteType.APPROVE]: {
-    VOTED: 'Voted For',
-    ACTION: 'Vote For',
-  },
-  [ProposalVoteType.REJECT]: {
-    VOTED: 'Voted Against',
-    ACTION: 'Vote Against',
-  },
-};
-
 export const PAGES_WITH_NO_SIDEBAR = [
   '/',
   '/forgot-password-sent',
@@ -717,10 +701,10 @@ export const FEATURED_LIST = [
   },
   {
     username: 'readyplayerdao',
-    imageUrl: 'thumbnail/8O1Pf0coMMfoZA.jpg',
+    imageUrl: 'thumbnail/2VCr8n3GnqhnDg.jpg',
     bio: 'The future of gaming is decentralized and permissionless, and this time, the players are in charge.',
     name: 'Ready Player DAO',
-    headerUrl: 'org/header/62453427148423257/RoFj7IHwMf1gVg.jpeg',
+    headerUrl: 'org/header/45956704739786755/UNAOtLUAB524uw.png',
   },
   {
     username: 'stems',
@@ -813,6 +797,16 @@ export const CATEGORY_LABELS = {
   [CATEGORY_TYPES.OPERATION]: '🛠️ Operation',
 };
 
+export const PROPOSAL_VOTE_CHOICES = {
+  BINARY: 'binary',
+  CUSTOM: 'custom',
+};
+export const PROPOSAL_VOTE_CHOICE_LABELS = {
+  [PROPOSAL_VOTE_CHOICES.BINARY]: 'For/Against',
+  [PROPOSAL_VOTE_CHOICES.CUSTOM]: 'Multiple Choice',
+};
+
+export const DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY = ['', ''];
 export const enum ORG_TYPES {
   ORG = 'org',
   COLLAB = 'collab',

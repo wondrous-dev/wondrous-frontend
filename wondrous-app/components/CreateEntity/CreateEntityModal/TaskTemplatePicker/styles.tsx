@@ -1,14 +1,12 @@
 import { ButtonUnstyled, PopperUnstyled } from '@mui/base';
-import { Autocomplete, Button, ClickAwayListener, InputAdornment, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, ClickAwayListener, Typography } from '@mui/material';
 import { CheckedBoxPropsIcon } from 'components/Icons/checkedBoxProps';
 import CloseModalIcon from 'components/Icons/closeModal';
 import EllipsesIcon from 'components/Icons/ellipsesIcon';
 import Ethereum from 'components/Icons/ethereum';
 import PodIcon from 'components/Icons/podIcon';
 import PointsIconCustom from 'components/Icons/PointsIconCustom';
-import SearchIcon from 'components/Icons/search';
 import styled, { css } from 'styled-components';
-import theme from 'theme';
 import { greyColors, white } from 'theme/colors';
 import palette from 'theme/palette';
 import Arrow from '../../../Icons/arrow.svg';
@@ -239,6 +237,11 @@ export const TaskTemplateListItems = styled.li`
       background: rgba(122, 122, 122, 0.2);
     }
   }
+`;
+
+export const TaskTemplatePickerWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 export const TaskTemplateTitleBar = styled.div`

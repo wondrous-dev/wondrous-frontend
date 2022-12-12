@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 
 import { useIsMobile, useGlobalContext } from 'utils/hooks';
 import { useMe, withAuth } from 'components/Auth/withAuth';
-import HeaderMemo from 'components/Header/HeaderMemo';
+import HeaderMemo from 'components/Header/HeaderMemoized';
 import { useContext, useEffect } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { ConnectDiscordLink } from './styles';
@@ -27,6 +27,7 @@ const HeaderComponent = () => {
     '/settings',
     '/mission-control',
     '/grants',
+    '/home',
   ];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
 

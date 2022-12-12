@@ -146,7 +146,7 @@ export default function ApplicationCard({
             const Button = btn.component;
             return (
               <Button key={idx} type="button" onClick={btn.action}>
-                {btn.label}
+                <span>{btn.label}</span>
               </Button>
             );
           })}

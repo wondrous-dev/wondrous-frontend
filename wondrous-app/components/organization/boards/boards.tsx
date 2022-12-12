@@ -1,12 +1,16 @@
-import Boards from 'components/Common/Boards';
+import React, { memo, Suspense } from 'react';
+
+import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
+import dynamic from 'next/dynamic';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
-import BountyBoard from 'components/Common/BountyBoard';
-import MilestoneBoard from 'components/Common/MilestoneBoard';
 import Wrapper from 'components/organization/wrapper/wrapper';
-import React from 'react';
 import { getFilterSchema } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { ColumnsContext } from 'utils/contexts';
+
+const Boards = dynamic(() => import('components/Common/Boards'), { suspense: true });
+const BountyBoard = dynamic(() => import('components/Common/BountyBoard'), { suspense: true });
+const MilestoneBoard = dynamic(() => import('components/Common/MilestoneBoard'), { suspense: true });
 
 export const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
@@ -61,21 +65,40 @@ function OrgBoards(props: Props) {
       statuses={statuses}
       podIds={podIds}
       userId={userId}
+      loading={loading}
     >
       <ColumnsContext.Provider value={{ columns, setColumns }}>
-        {!loading && (
-          <ActiveBoard
-            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-            columns={columns}
-            onLoadMore={onLoadMore}
-            hasMore={hasMore}
-            setColumns={setColumns}
-            entityType={entityType}
-          />
+        {loading ? (
+          <BoardColumnsSkeleton />
+        ) : (
+          <Suspense>
+            <ActiveBoard
+              activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+              columns={columns}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              setColumns={setColumns}
+              entityType={entityType}
+            />
+          </Suspense>
         )}
       </ColumnsContext.Provider>
     </Wrapper>
   );
 }
 
-export default OrgBoards;
+export default memo(OrgBoards, (prevProps, nextProps) => {
+  const areEqual =
+    prevProps.columns === nextProps.columns &&
+    prevProps.hasMore === nextProps.hasMore &&
+    prevProps.orgData?.id === nextProps.orgData?.id &&
+    prevProps.statuses === nextProps.statuses &&
+    prevProps.podIds === nextProps.podIds &&
+    prevProps.userId === nextProps.userId &&
+    prevProps.entityType === nextProps.entityType &&
+    prevProps.loading === nextProps.loading &&
+    prevProps.loading === nextProps.loading &&
+    prevProps.activeView === nextProps.activeView;
+
+  return areEqual;
+});

@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useRouter } from 'next/router';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import Compensation from 'components/Common/Compensation';
 import { PERMISSIONS, TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
@@ -14,7 +13,6 @@ import { APPROVE_SUBMISSION, REQUEST_CHANGE_SUBMISSION } from 'graphql/mutations
 import { addTaskItem, removeProposalItem, updateProposalItem, updateSubmissionItem } from 'utils/board';
 import { renderMentionString } from 'utils/common';
 import { ViewType } from 'types/common';
-import { useLocation } from 'utils/useLocation';
 import { skipForCommandKey } from 'utils/links';
 import { RichTextViewer } from 'components/RichText';
 import { RejectIcon } from '../../Icons/taskModalIcons';
@@ -74,12 +72,10 @@ export function TaskSummary({ task, setTask, action, taskType }) {
   const { compensation = {}, description = '', id, media, status, title = '', users = [] } = task;
 
   const TaskIcon = TASK_ICONS[status];
-  const [modalOpen, setModalOpen] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [approveTaskSubmission] = useMutation(APPROVE_SUBMISSION);
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION);
-  const location = useLocation();
 
   const router = useRouter();
   const goToPod = (podId) => {
@@ -90,13 +86,13 @@ export function TaskSummary({ task, setTask, action, taskType }) {
     });
   };
 
-  const openModal = (viewUrl) => {
-    location.push(viewUrl);
-    // document.body.style.overflow = 'hidden'
-    // document.body.scroll = false
-    windowOffset = window.scrollY;
-    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-    setModalOpen(true);
+  const openModal = () => {
+    const query = {
+      ...router.query,
+      task: task?.id,
+    };
+
+    router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
   const orgBoard = useOrgBoard();
@@ -195,7 +191,7 @@ export function TaskSummary({ task, setTask, action, taskType }) {
       });
   }
 
-  const view = location.params.view ?? ViewType.Grid;
+  const view = router.query?.view ?? ViewType.Grid;
 
   let viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
 
@@ -206,7 +202,7 @@ export function TaskSummary({ task, setTask, action, taskType }) {
   }
 
   return (
-    <TaskSummaryWrapper key={id} onClick={skipForCommandKey(() => openModal(viewUrl))}>
+    <TaskSummaryWrapper key={id} onClick={skipForCommandKey(openModal)}>
       <TaskSummaryInner>
         <TaskHeader style={{ justifyContent: 'start' }}>
           <OrgProfilePicture src={task?.orgProfilePicture} />

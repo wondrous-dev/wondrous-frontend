@@ -56,22 +56,16 @@ import {
   UPDATE_GRANT_APPLICATION,
 } from 'graphql/mutations';
 import { isEmpty, keys } from 'lodash';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
-import { transformMediaFormat } from 'utils/helpers';
+import { CHAIN_REGEX, transformMediaFormat } from 'utils/helpers';
 import { useTaskContext } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as yup from 'yup';
 import { ActionButton, FooterButtonsWrapper, HeaderTypography, IconWrapper } from './styles';
 import { descriptionTemplate } from './utils';
-
-const validationSchema = yup.object({
-  title: yup.string().required('Title is required'),
-  paymentAddress: yup.string().required('Wallet address is required'),
-  mediaUploads: yup.array(),
-});
 
 const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClose }) => {
   const user = useMe();
@@ -129,6 +123,22 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
           },
         })
     : createGrantApplication;
+
+  const chainToValidate = useMemo(() => {
+    if (grant.chain === 'harmony') {
+      return CHAIN_REGEX.HARMONY;
+    }
+    return CHAIN_REGEX.ETHEREUM;
+  }, []);
+
+  const validationSchema = yup.object({
+    title: yup.string().required('Title is required'),
+    paymentAddress: yup
+      .string()
+      .matches(chainToValidate, 'Wallet address is not valid')
+      .required('Wallet address is required'),
+    mediaUploads: yup.array(),
+  });
 
   const form = useFormik({
     initialValues,
@@ -195,7 +205,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
 
   return (
     <Form onSubmit={form.handleSubmit}>
-      <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
+      <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant-application">
         <CreateEntityHeader>
           <CreateEntityHeaderWrapper>
             <HeaderTypography onClick={handleCloseAction}>
@@ -274,31 +284,36 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
                 <CreateEntityLabel>Wallet address</CreateEntityLabel>
               </CreateEntityLabelWrapper>
               <CreateEntityWrapper>
-                <GrantTextField
-                  autoComplete="off"
-                  autoFocus={!form.values.paymentAddress}
-                  name="paymentAddress"
-                  onChange={form.handleChange}
-                  placeholder="Enter address"
-                  value={form.values.paymentAddress}
-                  fullWidth
-                  InputProps={{
-                    inputComponent: GrantTextFieldInput,
-                    endAdornment: (
-                      <CreateEntityAutocompletePopperRenderInputAdornment
-                        position="end"
-                        onClick={() => form.setFieldValue('paymentAddress', '')}
-                      >
-                        <CreateEntityAutocompletePopperRenderInputIcon />
-                      </CreateEntityAutocompletePopperRenderInputAdornment>
-                    ),
-                  }}
-                  error={form.errors?.paymentAddress}
-                  onFocus={() => form.setFieldError('paymentAddress', undefined)}
-                />
-                <ActionButton type="button" onClick={handleUseConnectedButton}>
-                  Use connected
-                </ActionButton>
+                <Grid display="flex" direction="column" gap="14px" width="100%">
+                  <Grid display="flex" gap="14px" width="100%" justifyContent="space-between">
+                    <GrantTextField
+                      autoComplete="off"
+                      autoFocus={!form.values.paymentAddress}
+                      name="paymentAddress"
+                      onChange={form.handleChange}
+                      placeholder="Enter address"
+                      value={form.values.paymentAddress}
+                      fullWidth
+                      InputProps={{
+                        inputComponent: GrantTextFieldInput,
+                        endAdornment: (
+                          <CreateEntityAutocompletePopperRenderInputAdornment
+                            position="end"
+                            onClick={() => form.setFieldValue('paymentAddress', '')}
+                          >
+                            <CreateEntityAutocompletePopperRenderInputIcon />
+                          </CreateEntityAutocompletePopperRenderInputAdornment>
+                        ),
+                      }}
+                      error={form.errors?.paymentAddress}
+                      onFocus={() => form.setFieldError('paymentAddress', undefined)}
+                    />
+                    <ActionButton type="button" onClick={handleUseConnectedButton}>
+                      Use connected
+                    </ActionButton>
+                  </Grid>
+                  {form?.errors?.paymentAddress && <CreateEntityError>{form.errors?.paymentAddress}</CreateEntityError>}
+                </Grid>
               </CreateEntityWrapper>
             </TaskSectionDisplayDiv>
             <TaskSectionDisplayDiv alignItems="start">

@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
-import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, SEARCH_ORG_USERS } from 'graphql/queries/org';
@@ -42,11 +41,8 @@ import {
   TASK_STATUS_TODO,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useIsMobile, usePageDataContext } from 'utils/hooks';
-
-const DynamicBoards = dynamic(() => import('components/organization/boards/boards'), {
-  suspense: true,
-});
+import { useIsMobile } from 'utils/hooks';
+import Boards from 'components/organization/boards/boards';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -360,7 +356,6 @@ const useGetOrgTaskBoard = ({
 
 function BoardsPage() {
   const router = useRouter();
-  const isMobile = useIsMobile();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -423,23 +418,29 @@ function BoardsPage() {
     if (type !== entityType) {
       setIsLoading(true);
     }
-    insertUrlParam('entity', type);
-    removeUrlParam('cause');
+    const query: any = { ...router.query, entity: type };
+
+    delete query.cause;
+
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
     });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
-      insertUrlParam('view', ViewType.Grid);
+      query.view = ViewType.Grid;
     }
+
+    router.push({ query }, undefined, { shallow: true });
   };
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
       const boardColumns = [...columns];
-      boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
-      setColumns(boardColumns);
+      if (boardColumns[0].tasks?.length > 0) {
+        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
+        setColumns(boardColumns);
+      }
       setIsLoading(false);
     },
     onError: (error) => {
@@ -510,6 +511,20 @@ function BoardsPage() {
       });
     }
   }, [username, orgId, orgData, getOrg, getOrgFromUsername]);
+
+  // We need this hook when you switch between orgs
+  useEffect(() => {
+    if (orgData && orgData.username !== username) {
+      setFirstTimeFetch(true);
+      setIsLoading(true);
+      // Get orgId from username
+      getOrgFromUsername({
+        variables: {
+          username,
+        },
+      });
+    }
+  }, [username]);
 
   useEffect(() => {
     if (orgId || orgData?.id) {
@@ -686,26 +701,23 @@ function BoardsPage() {
         hasActiveFilters,
       }}
     >
-      {isMobile ? <MobileComingSoonModal /> : null}
       <EntitySidebar>
-        <Suspense fallback="Loading...">
-          <DynamicBoards
-            columns={columns}
-            searchString={searchString}
-            onLoadMore={fetchMore}
-            onSearch={handleSearch}
-            onFilterChange={handleFilterChange}
-            hasMore={orgTaskHasMore}
-            orgData={orgData}
-            statuses={filters?.statuses}
-            podIds={filters?.podIds}
-            setColumns={setColumns}
-            loading={isLoading}
-            entityType={entityType}
-            userId={userId?.toString()}
-            activeView={activeView}
-          />
-        </Suspense>
+        <Boards
+          columns={columns}
+          searchString={searchString}
+          onLoadMore={fetchMore}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+          hasMore={orgTaskHasMore}
+          orgData={orgData}
+          statuses={filters?.statuses}
+          podIds={filters?.podIds}
+          setColumns={setColumns}
+          loading={isLoading}
+          entityType={entityType}
+          userId={userId?.toString()}
+          activeView={activeView}
+        />
       </EntitySidebar>
     </OrgBoardContext.Provider>
   );

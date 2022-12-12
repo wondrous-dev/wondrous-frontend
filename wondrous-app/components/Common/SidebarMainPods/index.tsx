@@ -1,8 +1,6 @@
 import { Badge, Typography } from '@mui/material';
-import { PodModal } from 'components/Common/PodModal';
-import { PodsButton, PodsButtonWrapper, PodsIconWrapper, PodsItem } from 'components/Common/SidebarMainPods/styles';
-import SidebarTooltip from 'components/Common/SidebarMainTooltip';
-import { PageItemContainer } from 'components/HeaderItems/UserProfile/styles';
+import { PodsButtonWrapper, PodsIconWrapper, PodsItem } from 'components/Common/SidebarMainPods/styles';
+import PodModal from 'components/Common/PodModal';
 import PodsIcon from 'components/Icons/Sidebar/podsGradient.svg';
 import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -10,7 +8,6 @@ import  typography  from 'theme/typography';
 import palette from 'theme/palette';
 import { useHotkey } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { UnstyledButton } from 'components/WorkspacePicker/styles';
 
 const PodsIconButton = () => {
   const [openPodModal, setOpenPodModal] = useState(false);

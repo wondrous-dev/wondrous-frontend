@@ -25,6 +25,10 @@ export function notify() {
   listeners.forEach((listener) => listener());
 }
 
+/**
+ * Please use React Router instead of this hook.
+ * @deprecated
+ */
 export function useLocation() {
   const [location, setLocation] = useState(null);
   const urlParams = new URLSearchParams(location?.search);

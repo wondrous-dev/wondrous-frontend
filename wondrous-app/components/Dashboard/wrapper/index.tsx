@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import { useIsMobile } from 'utils/hooks';
 import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader, BannerWrapper } from './styles';
 
 const CONFIG_MAP = {
@@ -17,11 +20,12 @@ const CONFIG_MAP = {
 
 const Wrapper = (props) => {
   const { children, isAdmin } = props;
-
+  const isMobile = useIsMobile();
   const config = isAdmin ? CONFIG_MAP.ADMIN : CONFIG_MAP.CONTRIBUTOR;
 
   return (
     <OverviewComponent>
+      {isMobile ? <MobileComingSoonModal /> : null}
       <ChooseEntityToCreate />
       <BannerWrapper>
         <Banner src={config.img} />

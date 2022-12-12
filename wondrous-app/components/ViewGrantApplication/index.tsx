@@ -43,7 +43,6 @@ import { ENTITIES_TYPES, GRANT_APPLICATION_STATUSES, PERMISSIONS, PRIVACY_LEVEL 
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
 import { delQuery } from 'utils/index';
-import { useLocation } from 'utils/useLocation';
 
 import { useQuery } from '@apollo/client';
 
@@ -121,14 +120,13 @@ const ViewGrantApplication = ({ onClose }) => {
   const userPermissionsContext = getUserPermissionContext();
   const [deleteTask, setDeleteTask] = useState(false);
   const [archiveTask, setArchiveTask] = useState(false);
-  const location = useLocation();
   const { data } = useQuery(GET_GRANT_APPLICATION_BY_ID, {
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
     variables: {
-      grantApplicationId: location?.params?.grantApplicationId,
+      grantApplicationId: router?.query?.grantApplicationId,
     },
-    skip: !location?.params?.grantApplicationId,
+    skip: !router?.query?.grantApplicationId,
   });
 
   const grantApplication = data?.getGrantApplicationById;
@@ -139,10 +137,10 @@ const ViewGrantApplication = ({ onClose }) => {
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
 
   useEffect(() => {
-    if (location?.params?.edit && !isEditMode) {
+    if (router?.query?.edit && !isEditMode) {
       setEditMode(true);
     }
-  }, [location?.params?.edit]);
+  }, [router?.query?.edit]);
 
   const user = useMe();
   const permissions = parseUserPermissionContext({
@@ -163,9 +161,11 @@ const ViewGrantApplication = ({ onClose }) => {
   const displayTitle = grant?.title?.slice(0, 10);
 
   const handleGrantClick = () => {
-    const url = `${delQuery(router.asPath)}?grant=${grant?.id}`;
-    location.push(url);
-    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
+    const query = {
+      grant: grant?.id,
+    };
+
+    router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
   const status = useMemo(() => selectApplicationStatus(grantApplication), [grantApplication]);

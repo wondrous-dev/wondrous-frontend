@@ -13,11 +13,8 @@ import Item from 'components/Common/SidebarItem';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import useCanEdit from 'hooks/useCanEdit';
 import useSideBar from 'hooks/useSideBar';
-import { shuffle } from 'lodash';
-import { ColorTypes } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
-
-const randomColors = shuffle(Object.values(ColorTypes));
+import { randomColors } from 'utils/common';
 
 const ResourcesSidebar = ({ children, docs, handleCreateNewCategory, handleSelectCategory, selectedCategory }) => {
   const { minimized } = useSideBar();

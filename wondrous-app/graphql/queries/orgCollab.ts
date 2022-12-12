@@ -3,10 +3,14 @@ import { gql } from '@apollo/client';
 export const GET_ORG_COLLABS_FOR_ORG = gql`
   query getOrgCollabsForOrg($orgId: ID!) {
     getOrgCollabsForOrg(orgId: $orgId) {
+      id
       childOrgProfilePicture
-      username
-      name
       parentOrgProfilePicture
+      parentOrgName
+      childOrgName
+      username
+      description
+      name
     }
   }
 `;
@@ -79,6 +83,22 @@ export const GET_ORG_COLLAB_REQUEST_BY_TOKEN = gql`
       }
       title
       mission
+    }
+  }
+`;
+
+export const GET_ORG_ACTIVE_COLLAB_COUNT = gql`
+  query getOrgActiveCollabCount($orgId: ID!) {
+    getOrgActiveCollabCount(orgId: $orgId) {
+      count
+    }
+  }
+`;
+
+export const GET_ORG_INVITE_COLLAB_COUNT = gql`
+  query getOrgInviteCollabCount($orgId: ID!) {
+    getOrgInviteCollabCount(orgId: $orgId) {
+      count
     }
   }
 `;

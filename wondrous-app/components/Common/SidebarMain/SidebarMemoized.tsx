@@ -74,7 +74,7 @@ const profilePictureStyle = {
   objectFit: 'cover' as any,
 };
 
-const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
+const SidebarMemoized = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
   const { minimized, setMinimized } = sidebar;
   const [openHelpModal, setOpenHelpModal] = useState(false);
   const handleMinimize = () => setMinimized(false);
@@ -120,7 +120,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
             <DrawerList id="tour-sidebar-daos">
               {orgsList?.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
                 <SidebarTooltip key={id} title={name}>
-                  <Link key={id} href={`/organization/${username}/boards?entity=task`} passHref>
+                  <Link key={id} href={`/organization/${username}/home`} passHref>
                     <ButtonIcon button key={id} isActive={isActive}>
                       <DaoIconWrapper>
                         {thumbnailPicture || profilePicture ? (
@@ -185,7 +185,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
 
 // eslint-disable-next-line react/display-name
 export default memo(
-  SideBarMemo,
+  SidebarMemoized,
   (prevProps, nextProps) =>
     prevProps.isMobile === nextProps.isMobile &&
     prevProps.sidebar?.minimized === nextProps.sidebar?.minimized &&

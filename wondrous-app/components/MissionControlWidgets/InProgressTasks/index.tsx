@@ -12,10 +12,8 @@ import {
   PodSearchPaper,
 } from 'components/CreateEntity/CreateEntityModal/PodSearch/styles';
 import { LIMIT } from 'services/board';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
-import { useLocation } from 'utils/useLocation';
 import { useEffect, useState } from 'react';
 import { delQuery } from 'utils';
 import { LoadMore } from 'components/SearchTasks/styles';
@@ -67,8 +65,6 @@ const InProgressTasksWidget = () => {
 
   const router = useRouter();
   const [ref, inView] = useInView({ initialInView: true });
-  const location = useLocation();
-  const [openModal, setOpenModal] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const fetchMore = () => {
@@ -83,41 +79,17 @@ const InProgressTasksWidget = () => {
     }
   }, [inView, hasMore, data?.getUserTaskBoardTasks?.length]);
 
-  const handleCardClick = (task, query = '') => {
-    const newUrl = `${delQuery(router.asPath)}?task=${task?.id}${query}`;
-    location.push(newUrl);
-    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
-  };
+  const handleCardClick = (task) => {
+    const query = {
+      ...router.query,
+      task: task?.id,
+    };
 
-  useEffect(() => {
-    const { params } = location;
-    if (params.task || params.taskProposal) {
-      setOpenModal(true);
-    }
-  }, [location]);
-
-  const handleModalClose = () => {
-    const style = document.body.getAttribute('style');
-    const top = style.match(/(top: -)(.*?)(?=px)/);
-    document.body.setAttribute('style', '');
-    if (top?.length > 0) {
-      window.scrollTo(0, Number(top[2]));
-    }
-    const newUrl = `${delQuery(router.asPath)}`;
-    location.push(newUrl);
-    setOpenModal(false);
+    router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
   return (
     <WidgetLayout title="In-Progress tasks">
-      <TaskViewModal
-        disableEnforceFocus
-        open={openModal}
-        shouldFocusAfterRender={false}
-        handleClose={handleModalClose}
-        taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
-        isTaskProposal={!!location?.params?.taskProposal}
-      />
       <TasksWrapper>
         {!!userOrgs && (
           <OrgSearchWrapper>

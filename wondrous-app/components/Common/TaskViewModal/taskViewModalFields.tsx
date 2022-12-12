@@ -334,7 +334,13 @@ export function AssigneeField({
   );
 }
 
-export function ApplicationField({ shouldDisplay, taskApplicationCount, handleReviewButton }) {
+interface ApplicationFieldProps {
+  shouldDisplay: boolean;
+  taskApplicationCount?: any;
+  handleReviewButton?: any;
+}
+
+export function ApplicationField({ shouldDisplay, taskApplicationCount, handleReviewButton }: ApplicationFieldProps) {
   if (!shouldDisplay) return null;
   return (
     <TaskSectionDisplayDiv>
@@ -373,21 +379,6 @@ export function ProposerField({ shouldDisplay, creatorUsername, creatorProfilePi
         imgSrc={creatorProfilePicture}
         DefaultImageComponent={() => <DefaultUserImage />}
         DefaultContent={InfoText}
-      />
-    </TaskSectionDisplayDiv>
-  );
-}
-export function VotesField({ shouldDisplay, totalVotes, hasContent }) {
-  if (!shouldDisplay) return null;
-  return (
-    <TaskSectionDisplayDiv>
-      <TaskSectionLabel>Voted</TaskSectionLabel>
-      <TaskSectionImageContent
-        hasContent={hasContent}
-        ContentComponent={InfoText}
-        ContentComponentProps={{
-          content: `${totalVotes} votes`,
-        }}
       />
     </TaskSectionDisplayDiv>
   );

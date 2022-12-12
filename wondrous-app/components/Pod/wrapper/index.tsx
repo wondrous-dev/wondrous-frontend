@@ -1,3 +1,4 @@
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -255,6 +256,7 @@ function Wrapper(props) {
 
   return (
     <>
+      <TaskViewModalWatcher />
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
       {openJoinRequestModal && (
         <MembershipRequestModal
@@ -314,7 +316,7 @@ function Wrapper(props) {
                 <LogoWrapper>
                   <OrgLogoWrapper
                     onClick={() => {
-                      router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
+                      router.push(`/organization/${orgData?.getOrgById?.username}/home`);
                     }}
                   >
                     <div

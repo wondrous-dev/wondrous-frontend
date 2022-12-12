@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 
 import { Modal as ModalComponent } from 'components/Modal';
 import SelectOrgs from 'components/CreateCollaborationModal/Steps/SelectOrgs';
@@ -7,6 +7,7 @@ import { CREATE_COLLAB_REQUST } from 'graphql/mutations';
 import { useMutation } from '@apollo/client';
 import StarsBackground from 'components/StarsBackground';
 import { useOrgBoard, usePodBoard, useSteps } from 'utils/hooks';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 
 type Props = {
   open: boolean;
@@ -20,11 +21,12 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
 
   const defaultOrgId = orgBoard?.orgId || podBoard?.orgId
   const [orgs, setOrgs] = useState({ org1: null, org2: null });
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const [createCollabRequest, { data: collabRequestData }] = useMutation(CREATE_COLLAB_REQUST, {
     onCompleted: () => {
       setStep((prevState) => prevState + 1);
     },
-    refetchQueries: ['getOrgCollabRequestForInitiator'],
+    refetchQueries: ['getOrgCollabRequestForInitiator', 'getOrgInviteCollabCount'],
   });
 
   const onClose = () => {

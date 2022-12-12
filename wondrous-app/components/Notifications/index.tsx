@@ -13,6 +13,7 @@ import { useHotkey, useNotifications, useOutsideAlerter } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { LIMIT } from 'services/board';
 import { NoUnderlineLink } from 'components/Common/Link/links';
+import { ENTITIES_TYPES, NOTIFICATION_TYPES } from 'utils/constants';
 import { SmallAvatar } from '../Common/AvatarList';
 import { HeaderItemWrapper, StyledBadge } from '../Header/styles';
 import {
@@ -36,6 +37,10 @@ import {
 } from './styles';
 import { Wrapper } from 'components/HeaderItems/CreateEntityComponent/styles';
 
+// const Test = forwardRef((props, ref) => {
+//   return null;
+// })
+
 const NotificationsBoard = forwardRef(
   ({ onlyBoard = false, isActive = true, setIsActive = () => {}, isOpen = false }: any, forwardedRef: any) => {
     const { notifications, unreadCount, fetchMore, markAllNotificationsRead, markNotificationRead, hasMore } =
@@ -44,12 +49,71 @@ const NotificationsBoard = forwardRef(
     const toggleNotifications = () => {
       setIsActive();
     };
+    const getNotificationActorLink = (notification) => {
+      if (notification?.actorType === ENTITIES_TYPES.USER) {
+        return `/profile/${notification.actorUsername}/about`;
+      }
+      if (notification?.actorType === ENTITIES_TYPES.ORG) {
+        return `/organization/${notification.actorUsername}/boards  `;
+      }
+      if (notification?.actorType === ENTITIES_TYPES.POD) {
+        return `/pod/${notification?.actorId}/boards`;
+      }
+    };
 
+    const getNotificationActorUsername = (notification) => {
+      if (notification?.actorType === ENTITIES_TYPES.USER) {
+        return notification.actorUsername;
+      }
+      if (notification?.actorType === ENTITIES_TYPES.ORG) {
+        if (notification?.type === NOTIFICATION_TYPES.COLLAB_INVITE) {
+          return notification?.additionalData?.invitorOrgName;
+        }
+        if (notification?.type === NOTIFICATION_TYPES.COLLAB_APPROVE) {
+          return notification?.additionalData?.recipientOrgName;
+        }
+        return notification.actorUsername;
+      }
+      if (notification?.actorType === ENTITIES_TYPES.POD) {
+        return notification?.actorUsername;
+      }
+    };
     const showBadge = useHotkey();
 
     const handleMarkAllRead = async () => {
       // Mark all read (empty arg)
       markAllNotificationsRead();
+    };
+
+    useEffect(() => {
+      if (inView && hasMore && notifications?.length >= LIMIT) {
+        fetchMore();
+      }
+    }, [inView, hasMore, notifications?.length]);
+
+    // Construct Text of Notification
+    const getNotificationText = (notification) => {
+      const actor = notification?.actorId ? (
+        <NotificationsLink>
+          <NoUnderlineLink href={getNotificationActorLink(notification)}>
+            {getNotificationActorUsername(notification)}
+          </NoUnderlineLink>
+        </NotificationsLink>
+      ) : null;
+      const link = getNotificationLink(notification);
+
+      const description = getNotificationDescription(notification, link);
+      const notificationTimeStamp = (
+        <span>
+          <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
+        </span>
+      );
+
+      return (
+        <>
+          {actor} {description} {notificationTimeStamp}
+        </>
+      );
     };
 
     useHotkeys(
@@ -68,41 +132,6 @@ const NotificationsBoard = forwardRef(
       };
 
       return <SmallAvatar initials={initials} avatar={avatar} />;
-    };
-
-    useEffect(() => {
-      if (inView && hasMore && notifications?.length >= LIMIT) {
-        fetchMore();
-      }
-    }, [inView, hasMore, notifications?.length]);
-
-    // useOutsideAlerter(forwardedRef, () => {
-    //   setIsOpen(false);
-    //   setIsActive();
-    // });
-
-    // Construct Text of Notification
-    const getNotificationText = (notification) => {
-      const userName = notification.actorUsername;
-      const actor = notification?.actorId ? (
-        <NotificationsLink>
-          <NoUnderlineLink href={`/profile/${userName}/about`}>{userName}</NoUnderlineLink>
-        </NotificationsLink>
-      ) : null;
-      const link = getNotificationLink(notification);
-
-      const description = getNotificationDescription(notification, link);
-      const notificationTimeStamp = (
-        <span>
-          <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
-        </span>
-      );
-
-      return (
-        <>
-          {actor} {description} {notificationTimeStamp}
-        </>
-      );
     };
 
     const getContentPreview = (notification) => {

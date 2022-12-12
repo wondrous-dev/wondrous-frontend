@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, memo } from 'react';
 import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_DONE,
@@ -26,7 +26,6 @@ import { useMe } from 'components/Auth/withAuth';
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
-import { useLocation } from 'utils/useLocation';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
@@ -45,8 +44,8 @@ import {
   Type,
 } from './styles';
 
-export default function ListViewItem({ task, entityType }) {
-  let windowOffset = 0;
+function ListViewItem({ task, entityType, isDragDisabled }) {
+  const windowOffset = 0;
   const router = useRouter();
   const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
   const [data, setData] = useState(task);
@@ -62,7 +61,6 @@ export default function ListViewItem({ task, entityType }) {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
 
-  const location = useLocation();
   const {
     assigneeProfilePicture,
     title,
@@ -284,9 +282,12 @@ export default function ListViewItem({ task, entityType }) {
         preventLinkNavigation
         onNavigate={() => {
           if (!showPaymentModal) {
-            location.push(viewUrl);
-            windowOffset = window.scrollY;
-            document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+            const query = {
+              ...router.query,
+              [taskType]: task?.id,
+            };
+
+            router.push({ query }, undefined, { scroll: false, shallow: true });
           }
         }}
       >
@@ -302,7 +303,7 @@ export default function ListViewItem({ task, entityType }) {
           />
         ) : null}
 
-        <ListViewItemBodyWrapper>
+        <ListViewItemBodyWrapper isDragDisabled={isDragDisabled}>
           <ListViewItemDataContainer>
             {assigneeProfilePicture ? (
               <SafeImage
@@ -433,3 +434,5 @@ export default function ListViewItem({ task, entityType }) {
     </>
   );
 }
+
+export default memo(ListViewItem);

@@ -404,10 +404,15 @@ export const ActionButton = styled(CreateFormPreviewButton)`
       background: transparent;
     }
   }
-`;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex: 1;
+    width: 100%;
 
-export const CardWrapper = styled.div`
-  padding-top: 1em;
+    && {
+      height: 42px;
+      justify-content: center;
+    }
+  }
 `;
 
 export const CardContent = styled.div`
@@ -528,7 +533,7 @@ export const TaskActionMenu = styled.div`
   z-index: 100;
   align-items: center;
   display: none;
-  ${CardWrapper}:hover & {
+  ${CardContent}:hover & {
     display: block;
   }
 `;

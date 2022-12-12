@@ -62,13 +62,20 @@ const useGetOrgDocs = (orgId) => {
   };
 };
 
+const useSelectedCategory = (id: string) => {
+  const [selectedCategory, setSelectedCategory] = useState(id);
+  useEffect(() => {
+    setSelectedCategory(id);
+  }, [id]);
+  return { selectedCategory, setSelectedCategory };
+};
+
 function Docs(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const router = useRouter();
-
   const { docData, categoriesData } = useGetOrgDocs(orgId);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const { selectedCategory, setSelectedCategory } = useSelectedCategory(router.query.id as string);
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
@@ -77,7 +84,7 @@ function Docs(props) {
   const [pinned, setPinned] = useState(false);
 
   const filteredCategories = selectedCategory
-    ? categoriesData.filter((i) => i.id === selectedCategory)
+    ? categoriesData?.filter((i) => i.id === selectedCategory)
     : categoriesData;
 
   const [menuAnchor, setMenuAnchor] = useState(null);
