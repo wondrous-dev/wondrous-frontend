@@ -344,7 +344,7 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
           </ListViewItemDataContainer>
           <ListViewItemActions>
             {dueDate && <DueDateText>{format(new Date(dueDate), 'MMM d')}</DueDateText>}
-            {rewards && rewards?.length > 0 && <Compensation pillStyle={{ padding: '10px' }} rewards={rewards} />}
+            {rewards && rewards?.length > 0 && <Compensation rewards={rewards} />}
             {displayPayButton && (
               <ButtonPrimary
                 onClick={(e) => {
