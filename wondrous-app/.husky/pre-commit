@@ -2,4 +2,4 @@
 . "$(dirname "$0")/_/husky.sh"
 
 cd wondrous-app
-# yarn lint-staged
+yarn lint-staged

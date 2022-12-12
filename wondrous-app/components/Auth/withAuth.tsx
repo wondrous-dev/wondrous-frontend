@@ -254,7 +254,6 @@ export const logout = async () => {
 
 export const withAuth = (Component, noCache = false) => {
   function AuthComponent(props) {
-    const { navigation, route } = props;
     const router = useRouter();
     const [token, setToken] = useState(null);
     const [tokenLoading, setTokenLoading] = useState(true);

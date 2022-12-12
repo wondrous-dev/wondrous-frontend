@@ -16,8 +16,6 @@ const WalletItem = () => {
   const [isCopied, setIsCopied] = useState(false);
   const wonderWeb3 = useWonderWeb3();
 
-  console.log(CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3?.nativeTokenSymbol]);
-
   const handleAddressCopy = () => {
     setIsCopied(true);
     setTimeout(() => {
@@ -43,14 +41,14 @@ const WalletItem = () => {
           </Grid>
           <Grid display="flex" gap="12px" alignItems="center">
             <Tooltip title={CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3?.chainName]}>
-            <WalletAddress>
+              <WalletAddress>
                 <Grid display="flex" gap="6px" alignItems="center">
-                {CHAIN_LOGO[wonderWeb3?.chain]}
-                <Typography color={palette.white} fontFamily={typography.fontFamily} fontWeight={500} fontSize="13px">
-                {wonderWeb3?.nativeTokenSymbol}
-                </Typography>
+                  {CHAIN_LOGO[wonderWeb3?.chain]}
+                  <Typography color={palette.white} fontFamily={typography.fontFamily} fontWeight={500} fontSize="13px">
+                    {wonderWeb3?.nativeTokenSymbol}
+                  </Typography>
                 </Grid>
-                </WalletAddress>
+              </WalletAddress>
             </Tooltip>
             <WalletAddress>
               {isCopied

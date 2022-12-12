@@ -1,22 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GlobalContext, PageDataContext, SideBarContext } from 'utils/contexts';
-import { LIMIT } from 'services/board';
-import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH } from 'utils/constants';
-import SideBarComponent from 'components/Common/SidebarMain';
 import HeaderComponent from 'components/Header';
+import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { LIMIT } from 'services/board';
+import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
+import { GlobalContext, PageDataContext, SideBarContext } from 'utils/contexts';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
 
-import { HOTKEYS } from 'utils/hotkeyHelper';
 import Spotlight from 'components/Spotlight';
-import { BackdropComponent, SectionWrapper } from './styles';
-import UserSidebar from '../UserSidebar';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import EntitySidebar from '../SidebarEntity';
-import useMediaQuery from 'hooks/useMediaQuery';
+import UserSidebar from '../UserSidebar';
+import { BackdropComponent, SectionWrapper } from './styles';
 
 const getOrgsList = (userOrgs, router) => {
   if (!userOrgs?.getUserOrgs) return [];
@@ -53,7 +51,7 @@ const SectionContainer = ({ children }: any) => {
   return <SectionWrapper>{children}</SectionWrapper>;
 };
 export default function SidebarLayout({ children }) {
-  const {isMobileScreen : isMobile} = useMediaQuery();
+  const isMobile = useIsMobile()
   const router = useRouter();
   const [pageData, setPageData] = useState({});
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);

@@ -1,4 +1,4 @@
-import { useMe } from 'components/Auth/withAuth';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 import Item from 'components/Common/SidebarItem';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
@@ -111,4 +111,4 @@ const UserSidebar = () => {
   );
 };
 
-export default UserSidebar;
+export default withAuth(UserSidebar);
