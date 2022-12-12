@@ -3,7 +3,7 @@ import { PodInviteLinkModal } from 'components/Common/InviteLinkModal/podInviteL
 import { GreyButton } from 'components/Common/SidebarStyles';
 import { useState } from 'react';
 import { useOrgBoard } from 'utils/hooks';
-import useCanManage from "../../../hooks/useCanManage";
+import useCanManage from '../../../hooks/useCanManage';
 
 const InviteButton = ({ id }) => {
   const orgBoard = useOrgBoard();

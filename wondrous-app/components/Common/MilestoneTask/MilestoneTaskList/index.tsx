@@ -72,8 +72,8 @@ export default function MilestoneTaskList({ data }) {
   const onNavigate = (id) => {
     const newQuery = {
       ...query,
-      task: id
-    }
+      task: id,
+    };
 
     push({ query: newQuery }, undefined, { scroll: false, shallow: true });
   };

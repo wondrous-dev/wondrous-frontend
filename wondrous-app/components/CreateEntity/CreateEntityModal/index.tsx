@@ -409,7 +409,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     }
     if (isProposal) {
-      form.setFieldValue('proposalVoteType', 'none');
+      form.setFieldValue('proposalVoteType', 'binary');
       form.setFieldValue('customProposalChoices', DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY);
     }
     // TODO we should add recurring to bounties and milesstone
@@ -432,7 +432,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   ]);
 
   useEffect(() => {
-    form.setFieldValue('proposalVoteType', 'none');
+    form.setFieldValue('proposalVoteType', 'binary');
   }, [form?.values?.orgId]);
 
   useEffect(() => {
@@ -900,9 +900,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         {isProposal && !existingTask && form?.values?.proposalVoteType && (
           <>
             <ProposalVoteSelect value={form?.values?.proposalVoteType} label="Select voting style">
-              <ProposalVoteSelectMenuItem value="none" disabled>
-                <ProposalVoteSelectMenuItemText>Select Voting Style</ProposalVoteSelectMenuItemText>
-              </ProposalVoteSelectMenuItem>
               {proposalChoices.map((option) => (
                 <ProposalVoteSelectMenuItem
                   value={option?.value}

@@ -82,12 +82,11 @@ const InProgressTasksWidget = () => {
   const handleCardClick = (task) => {
     const query = {
       ...router.query,
-      task: task?.id
-    }
+      task: task?.id,
+    };
 
     router.push({ query }, undefined, { scroll: false, shallow: true });
   };
-
 
   return (
     <WidgetLayout title="In-Progress tasks">

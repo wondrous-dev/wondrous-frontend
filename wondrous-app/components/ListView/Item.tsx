@@ -26,7 +26,6 @@ import { useMe } from 'components/Auth/withAuth';
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
-import { useLocation } from 'utils/useLocation';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
@@ -46,7 +45,7 @@ import {
 } from './styles';
 
 function ListViewItem({ task, entityType, isDragDisabled }) {
-  let windowOffset = 0;
+  const windowOffset = 0;
   const router = useRouter();
   const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
   const [data, setData] = useState(task);
@@ -62,7 +61,6 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
 
-  const location = useLocation();
   const {
     assigneeProfilePicture,
     title,
@@ -286,8 +284,8 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
           if (!showPaymentModal) {
             const query = {
               ...router.query,
-              [taskType]: task?.id
-            }
+              [taskType]: task?.id,
+            };
 
             router.push({ query }, undefined, { scroll: false, shallow: true });
           }

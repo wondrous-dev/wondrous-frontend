@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+
 import {
   CreateEntityPaymentMethodItem,
   filterPaymentMethods,
   useGetPaymentMethods,
 } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { StyledLink } from 'components/Common/text';
 import {
   CreateEntityWrapper,
   CreateEntityPaymentMethodSelected,
@@ -29,6 +32,7 @@ const GrantAmount = ({
   disableAmountOfRewards = false,
   disableInput = false,
 }) => {
+  const router = useRouter();
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
   const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
 
@@ -38,8 +42,18 @@ const GrantAmount = ({
     }
   }, [activePaymentMethods?.length]);
 
+  const handlePaymentMethodRedirect = () => {
+    router.push(`/organization/settings/${orgId}/payment-method`);
+  };
+
   return (
     <TaskSectionDisplayDiv alignItems="start">
+      {activePaymentMethods?.length === 0 && (
+        <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
+          {' '}
+          Set up payment method
+        </StyledLink>
+      )}
       {activePaymentMethods?.length > 0 && (
         <>
           <CreateEntityLabelWrapper>
