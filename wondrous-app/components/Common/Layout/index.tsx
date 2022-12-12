@@ -21,7 +21,7 @@ const getOrgsList = (userOrgs, router) => {
   const { getUserOrgs } = userOrgs;
   return getUserOrgs.map((item) => ({
     ...item,
-    isActive: router.pathname.includes('/organization/[username]') && router.query?.username === item.username,
+    isActive: (router.pathname.includes('/organization/') && (router.query?.username === item.username || router.query?.orgId === item.id)),
   }));
 };
 

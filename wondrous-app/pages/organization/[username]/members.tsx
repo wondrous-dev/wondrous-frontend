@@ -6,6 +6,7 @@ import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/quer
 import { OrgBoardContext } from 'utils/contexts';
 import MemberRequests from 'components/organization/members';
 import EntitySidebar from 'components/Common/SidebarEntity';
+import { usePageDataContext } from 'utils/hooks';
 
 const useGetOrgFromUsername = (username) => {
   const [getOrgFromUsername, { data }] = useLazyQuery(GET_ORG_FROM_USERNAME);
@@ -23,11 +24,22 @@ const useGetOrgFromUsername = (username) => {
 
 function OrgMemberPage() {
   const router = useRouter();
+  const { setPageData } = usePageDataContext();
   const { username } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
   const org = useGetOrgFromUsername(username);
+  useEffect(() => {
+    if (org) {
+      setPageData({ orgData: org });
+    }
+  }, [org]);
+
+  useEffect(() => {
+    return () => setPageData({});
+  }, []);
+
   return (
     <OrgBoardContext.Provider
       value={{

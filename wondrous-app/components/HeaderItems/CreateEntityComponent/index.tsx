@@ -1,18 +1,18 @@
-import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
-import { useGlobalContext } from 'utils/hooks';
-import { parseUserPermissionContext } from 'utils/helpers';
 import { Grid, Typography } from '@mui/material';
-import { Wrapper, EntityItem, Label, HorizontalEntityItem } from './styles';
+import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
+import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
+import GrantIcon from 'components/Icons/GrantIcon';
+import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
 import FlagIcon from 'components/Icons/Sidebar/flag.svg';
-import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
+import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
-import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import PodIcon from 'components/Icons/Sidebar/pods.svg';
-import GrantIcon from 'components/Icons/GrantIcon';
-import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
+import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useGlobalContext } from 'utils/hooks';
+import { EntityItem, HorizontalEntityItem, Label, Wrapper } from './styles';
 
 const CreateEntityComponent = ({ onClose }) => {
   const { pageData, setPageData } = useGlobalContext();

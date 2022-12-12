@@ -1,24 +1,21 @@
-import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useMemo, useState } from 'react';
 
 import useSideBar from 'hooks/useSideBar';
 
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import AboutEntity from 'components/Common/SidebarEntityAbout';
+import CollabsSidebar from 'components/Common/SidebarEntityCollabs';
 import List from 'components/Common/SidebarEntityList';
 import RolesSidebar from 'components/Common/SidebarEntityRoles';
-import CollabsSidebar from 'components/Common/SidebarEntityCollabs';
 import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
-import useMediaQuery from 'hooks/useMediaQuery';
-import SidebarHomeProject from '../SidebarHomeProject';
-import Button from 'components/Button';
-import Grid from '@mui/material/Grid';
 import { RequestApproveButton } from 'components/organization/members/styles';
-import { ButtonsContainer, SettingsBtn } from './styles';
 import { UnstyledLink } from 'components/WorkspacePicker/styles';
+import useMediaQuery from 'hooks/useMediaQuery';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { OrgInviteLinkModal } from '../InviteLinkModal/OrgInviteLink';
 import { PodInviteLinkModal } from '../InviteLinkModal/podInviteLink';
+import { ButtonsContainer, SettingsBtn } from './styles';
 
 const SIDEBAR_COMPONENTS = {
   collabs: () => <CollabsSidebar />,
@@ -67,7 +64,6 @@ const EntitySidebar = ({ children }) => {
       <>
         {isMobileScreen ? <AboutEntity /> : null}
         <EntitySidebarButtons />
-        <SidebarHomeProject />
         <List />
       </>
     );

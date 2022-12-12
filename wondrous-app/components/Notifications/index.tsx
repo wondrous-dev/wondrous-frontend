@@ -1,19 +1,20 @@
-import React, { forwardRef, useEffect, useState } from 'react';
 import { Badge } from '@mui/material';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import SmartLink from 'components/Common/SmartLink';
+import { Wrapper } from 'components/HeaderItems/CreateEntityComponent/styles';
 import NotificationsIcon from 'components/Icons/notifications';
 import { getNotificationDescription, getNotificationLink } from 'components/Notifications/utils';
 import Tooltip from 'components/Tooltip';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
-import { useInView } from 'react-intersection-observer';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useInView } from 'react-intersection-observer';
+import { LIMIT } from 'services/board';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
+import { ENTITIES_TYPES, NOTIFICATION_TYPES } from 'utils/constants';
 import { useHotkey, useNotifications, useOutsideAlerter } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { LIMIT } from 'services/board';
-import { NoUnderlineLink } from 'components/Common/Link/links';
-import { ENTITIES_TYPES, NOTIFICATION_TYPES } from 'utils/constants';
 import { SmallAvatar } from '../Common/AvatarList';
 import { HeaderItemWrapper, StyledBadge } from '../Header/styles';
 import {
@@ -33,9 +34,8 @@ import {
   NotificationsMarkRead,
   NotificationsOverlay,
   NotificationsTitle,
-  NotificationWrapper,
+  NotificationWrapper
 } from './styles';
-import { Wrapper } from 'components/HeaderItems/CreateEntityComponent/styles';
 
 // const Test = forwardRef((props, ref) => {
 //   return null;

@@ -28,7 +28,7 @@ const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimize
         const { label, items } = menuItem;
         return (
           <ListWrapper key={label}>
-            <Label>{label}</Label>
+            {label ? <Label>{label}</Label> : null}
             <ListWrapper minimized={minimized}>
               {items.map(
                 ({ text, link, Icon, count, entityType = null }) =>

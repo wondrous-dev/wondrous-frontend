@@ -44,6 +44,7 @@ import {
   SettingsHeaderText,
   CreateFormAddDetailsTabWrapper,
 } from './styles';
+import { usePageDataContext } from 'utils/hooks';
 
 interface ToastProps {
   show: boolean;
@@ -371,8 +372,12 @@ export function PodGeneralSettings() {
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
   const [color, setColor] = useState(null);
+  const {setPageData} = usePageDataContext()
   const [getPod, { data: getPodByIdData }] = useLazyQuery(GET_POD_BY_ID, {
-    onCompleted: ({ getPodById }) => setPod(getPodById),
+    onCompleted: ({ getPodById }) => {
+      setPod(getPodById);
+      setPageData({pod: getPodById})
+    },
     fetchPolicy: 'cache-and-network',
   });
   const [getOrg, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
@@ -607,6 +612,7 @@ function GeneralSettings() {
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
   const [isPrivate, setIsPrivate] = useState(null);
+  const {setPageData} = usePageDataContext()
   const router = useRouter();
   const { orgId } = router.query;
 
@@ -623,9 +629,12 @@ function GeneralSettings() {
   }
 
   const [getOrgById, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
-    onCompleted: ({ getOrgById }) => setOrganization(getOrgById),
+    onCompleted: ({ getOrgById }) => {
+      setPageData({orgData: getOrgById});
+      setOrganization(getOrgById)},
     fetchPolicy: 'cache-and-network',
   });
+
 
   useEffect(() => {
     if (orgId) {

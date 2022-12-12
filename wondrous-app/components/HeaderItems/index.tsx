@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import CreateEntityComponent from './CreateEntityComponent';
 import UserProfile from './UserProfile';
 import WalletItem from './Wallet';
-import Notifications from './Notifications';
 
 export enum TYPES {
   CREATE_ENTITY = 'CREATE_ENTITY',
@@ -15,7 +14,6 @@ const TYPES_PER_COMPONENT = {
   [TYPES.CREATE_ENTITY]: CreateEntityComponent,
   [TYPES.PROFILE]: UserProfile,
   [TYPES.WALLET]: WalletItem,
-  [TYPES.NOTIFICATIONS]: Notifications
 };
 
 const HeaderItems = ({ type, onClose }) => {

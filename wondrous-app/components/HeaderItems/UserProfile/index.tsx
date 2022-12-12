@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { logout, useMe } from 'components/Auth/withAuth';
-import HelpModal from 'components/Common/HelpModal';
+import HelpModal from 'components/Common/HelpModal.jsx';
 import { UserProfilePicture, UserProfilePictureGR15 } from 'components/Common/ProfilePictureHelpers';
 import PodsIconButton from 'components/Common/SidebarMainPods';
 import { PodsIconWrapper } from 'components/Common/SidebarMainPods/styles';
@@ -18,7 +18,7 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { Wrapper } from '../CreateEntityComponent/styles';
 import {
-  GridIconWrapper,
+  ButtonIcon, GridIconWrapper,
   ImageWrapper,
   ItemContainer,
   LinkWrapper,
@@ -26,8 +26,7 @@ import {
   PageSelectorWrapper,
   ProfileInfo,
   UserContainer,
-  UserHelperWrapper,
-  ButtonIcon,
+  UserHelperWrapper
 } from './styles';
 
 const TutorialsButton = ({ onClick }) => {

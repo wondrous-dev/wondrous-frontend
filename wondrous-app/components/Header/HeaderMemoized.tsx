@@ -1,27 +1,26 @@
+import { Close, Menu } from '@mui/icons-material';
 import { Fragment, memo, useMemo, useRef, useState } from 'react';
-import { Menu, Close } from '@mui/icons-material';
 
 import { User } from 'types/User';
 
+import { Backdrop } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { Button } from 'components/Common/button';
+import EntityMenu from 'components/Common/SidebarEntityMenu';
 import Wallet from 'components/Common/Wallet';
 import GlobalSearch from 'components/GlobalSearch';
-import { CreateIconOutlined } from 'components/Icons/createBtn';
-import NotificationsBoard from 'components/Notifications';
 import HeaderItems, { TYPES } from 'components/HeaderItems';
-import useSideBar from 'hooks/useSideBar';
-import { Org } from 'types/Org';
-import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
-import Grid from '@mui/material/Grid';
-import { useGlobalContext, useOutsideAlerter } from 'utils/hooks';
-import EntityMenu from 'components/Common/SidebarEntityMenu';
-import useMediaQuery from 'hooks/useMediaQuery';
-import { useRouter } from 'next/router';
-import { PAGE_PATHNAME } from 'utils/constants';
 import HeaderUserProfile from 'components/HeaderUserProfile';
-import { BackdropComponent } from 'components/Common/Layout/styles';
-import { Backdrop } from '@mui/material';
+import { CreateIconOutlined } from 'components/Icons/createBtn';
 import RedXIcon from 'components/Icons/redx';
+import NotificationsBoard from 'components/Notifications';
+import useMediaQuery from 'hooks/useMediaQuery';
+import useSideBar from 'hooks/useSideBar';
+import { useRouter } from 'next/router';
+import { Org } from 'types/Org';
+import { PAGE_PATHNAME } from 'utils/constants';
+import { useOutsideAlerter } from 'utils/hooks';
+import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
 
 type Props = {
   isMobile: boolean;
@@ -69,7 +68,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
         <Grid display="flex" width="100%" gap="8px">
           {!isMobileScreen || router.pathname === PAGE_PATHNAME.explore ? (
             <Grid>
-              <EntityMenu user={user} />
+              <EntityMenu />
             </Grid>
           ) : null}
           <GlobalSearch />

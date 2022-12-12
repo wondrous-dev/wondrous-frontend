@@ -1,10 +1,11 @@
 import { Button, ButtonBase, Chip, Grid, IconButton, Modal, Popper, TextField, Typography } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
+import DropdownSelect from 'components/Common/DropdownSelect';
+import { Wrapper } from 'components/HeaderItems/CreateEntityComponent/styles';
+import GrantIcon from 'components/Icons/GrantIcon';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import DropdownSelect from 'components/Common/DropdownSelect';
-import GrantIcon from 'components/Icons/GrantIcon';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
 import BountyIcon from '../Icons/createBounty.svg';
@@ -14,7 +15,6 @@ import CreatePodIcon from '../Icons/createPod.svg';
 import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';
 import WonderTokenIcon from '../Icons/wonderToken';
-import { Wrapper } from 'components/HeaderItems/CreateEntityComponent/styles';
 
 export const MediaUploadGrid = styled(Grid)`
   && {

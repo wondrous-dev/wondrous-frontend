@@ -52,17 +52,15 @@ const useSidebarData = () => {
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
   const data = [
-    orgBoard && !board?.orgData?.shared
-      ? {
-          items: [
-            {
-              text: 'Project Home',
-              Icon: () => <HomeIcon height="12px" width="12px" />,
-              link: `${link}/home`,
-            },
-          ],
-        }
-      : null,
+    !!(orgBoard && !board?.orgData?.shared) && {
+      items: [
+        {
+          text: 'Project Home',
+          Icon: () => <HomeIcon height="12px" width="12px" />,
+          link: `${link}/home`,
+        },
+      ],
+    },
     {
       label: 'Work',
       items: [
@@ -165,7 +163,14 @@ const SidebarEntityList = () => {
   const { data, handleOnClick } = useSidebarData();
 
   const { minimized } = useSideBar();
-  return <SidebarEntityListMemoized minimized={minimized} menuItems={data} handleOnClick={handleOnClick} urlPath={router.asPath} />
+  return (
+    <SidebarEntityListMemoized
+      minimized={minimized}
+      menuItems={data}
+      handleOnClick={handleOnClick}
+      urlPath={router.asPath}
+    />
+  );
 };
 
 export default SidebarEntityList;

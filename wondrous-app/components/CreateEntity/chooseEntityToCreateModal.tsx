@@ -1,19 +1,13 @@
 import React from 'react';
 
-import { ENTITIES_TYPES } from 'utils/constants';
 import CreateEntityComponent from 'components/HeaderItems/CreateEntityComponent';
+import { ENTITIES_TYPES } from 'utils/constants';
 
-import {
-  CreateLayoutDaoIcon,
-  CreateLayoutMilestoneIcon,
-  CreateLayoutPodsIcon,
-  CreateLayoutTaskIcon,
-  CreateLayoutBountyIcon,
-  CreateLayoutProposalIcon,
-  CreateLayoutGrantIcon,
-  ChooseEntityWrapper,
-} from './styles';
 import Dao2DaoIcon from 'components/Icons/Dao2Dao';
+import {
+  ChooseEntityWrapper, CreateLayoutBountyIcon, CreateLayoutDaoIcon, CreateLayoutGrantIcon, CreateLayoutMilestoneIcon,
+  CreateLayoutPodsIcon, CreateLayoutProposalIcon, CreateLayoutTaskIcon
+} from './styles';
 
 export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.TASK]: {

@@ -6,10 +6,13 @@ import {
   SearchResultCategory,
   SearchResultCategoryTitle,
   SearchResultItem,
-  SearchResults,
+  SearchResults
 } from 'components/GlobalSearch/styles';
+import BackIcon from 'components/Icons/BackIcon';
 import SearchSuggestions from 'components/SearchSuggestions';
+import { SearchIconWrapped } from 'components/SearchTasks/styles';
 import { SEARCH_GLOBAL } from 'graphql/queries';
+import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useReducer } from 'react';
 import apollo from 'services/apollo';
@@ -18,11 +21,8 @@ import typography from 'theme/typography';
 import { GLOBAL_SEARCH_TYPES } from 'utils/constants';
 import { useKeyPress } from 'utils/hooks';
 import { DIRECTION, initialState, Labels, LABELS_DEFAULT_IMAGES_MAP, SUGGESTIONS, TYPES } from './constants';
-import { Input, SpotlightFooter, Wrapper, MuiDrawer, LeftArrowButton } from './styles';
+import { Input, LeftArrowButton, MuiDrawer, SpotlightFooter, Wrapper } from './styles';
 import { reducer } from './utils';
-import useMediaQuery from 'hooks/useMediaQuery';
-import { SearchIconWrapped } from 'components/SearchTasks/styles';
-import BackIcon from 'components/Icons/BackIcon';
 
 let timeout;
 
