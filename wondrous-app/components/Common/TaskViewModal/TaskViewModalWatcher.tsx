@@ -15,7 +15,7 @@ const TaskViewModalWatcher = () => {
     delete query.task;
     delete query.taskProposal;
 
-    router.push({ query }, undefined, { scroll: false });
+    router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
   return taskId ? (
