@@ -16,7 +16,7 @@ type Props = {
   menuItems: Array<MenuItem>;
   handleOnClick: (link: unknown, entityType: unknown) => void;
   urlPath: string;
-  minimized: boolean
+  minimized: boolean;
 };
 
 const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimized }: Props) => {
@@ -30,8 +30,9 @@ const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimize
           <ListWrapper key={label}>
             {label ? <Label>{label}</Label> : null}
             <ListWrapper minimized={minimized}>
-              {items.map(
-                ({ text, link, Icon, count, entityType = null }) =>
+              {items.map(({ text, link, Icon, count, entityType = null, Component = null, ignoreIconStyles = false }) => {
+                if (Component) return <Component key={text} />;
+                return (
                   !!text && (
                     <Item
                       key={text}
@@ -39,11 +40,13 @@ const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimize
                       Icon={Icon}
                       isActive={isActive(entityType, link)}
                       count={count}
+                      ignoreIconStyles={ignoreIconStyles}
                     >
                       {text}
                     </Item>
                   )
-              )}
+                );
+              })}
             </ListWrapper>
           </ListWrapper>
         );
@@ -55,7 +58,9 @@ const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimize
 export default memo(SidebarEntityListMemoized, (prevProps, nextProps) => {
   const areEqual =
     JSON.stringify(prevProps.menuItems) === JSON.stringify(nextProps.menuItems) &&
-    prevProps.urlPath === nextProps.urlPath && prevProps.minimized && nextProps.minimized;
+    prevProps.urlPath === nextProps.urlPath &&
+    prevProps.minimized &&
+    nextProps.minimized;
 
   return areEqual;
 });

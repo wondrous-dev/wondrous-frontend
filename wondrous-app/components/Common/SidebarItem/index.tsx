@@ -8,22 +8,23 @@ import {
 import { isNumber } from 'lodash';
 import { useSideBar } from 'utils/hooks';
 
-const MinimizedItem = ({ isActive, Icon, roundedBg, bgColor }) => (
+const MinimizedItem = ({ isActive, Icon, roundedBg, bgColor, ignoreIconStyles = false }) => (
   <IconTextWrapper>
     {Icon && (
-      <ItemButtonIcon isActive={isActive} roundedBg={roundedBg} bgColor={bgColor}>
+      <ItemButtonIcon isActive={isActive} roundedBg={roundedBg} bgColor={bgColor} ignoreIconStyles={ignoreIconStyles}>
         <Icon />
       </ItemButtonIcon>
     )}
   </IconTextWrapper>
 );
 
-const ExpandedItem = ({ children, isActive, Icon, roundedBg, bgColor, count }) => (
+const ExpandedItem = ({ children, isActive, Icon, roundedBg, bgColor, count, ignoreIconStyles = false }) => (
   <>
     <IconTextWrapper>
       {Icon && (
-        <ItemButtonIcon isActive={isActive} roundedBg={roundedBg} bgColor={bgColor}>
+        <ItemButtonIcon isActive={isActive} roundedBg={roundedBg} bgColor={bgColor} ignoreIconStyles={ignoreIconStyles}>
           <Icon />
+
         </ItemButtonIcon>
       )}
       <ItemButtonText>{children}</ItemButtonText>

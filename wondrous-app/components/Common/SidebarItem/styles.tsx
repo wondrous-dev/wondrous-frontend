@@ -1,5 +1,5 @@
 import { ButtonBase, Typography } from '@mui/material';
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 
 export const ItemButton = styled(ButtonBase)`
   && {
@@ -8,7 +8,7 @@ export const ItemButton = styled(ButtonBase)`
     height: 32px;
     width: 100%;
     display: flex;
-    border-left: ${({ isActive, theme }) => isActive && `4px solid ${theme.palette.highlightPurple}`};
+    border-left: 4px solid ${({ isActive, theme }) => isActive && `${theme.palette.highlightPurple}`};
     align-items: center;
     background: ${({ isActive, theme }) => isActive && `${theme.palette.grey87}`};
     justify-content: ${({ minimized }) => (minimized ? 'center' : 'space-between')};
@@ -18,27 +18,40 @@ export const ItemButton = styled(ButtonBase)`
   }
 `;
 
-export const ItemButtonIcon = styled.div`
-  width: 22px;
-  height: 22px;
+export const ButtonIcon = styled.div`
+width: 22px;
+height: 22px;
+display: flex;
+align-items: center;
+justify-content: center;
   background: ${({ bgColor, theme, isActive }) =>
-    bgColor || (isActive && `${theme.palette.highlightPurple}`) || `${theme.palette.grey87}`};
-  border-radius: ${({ roundedBg }) => (roundedBg ? '50%' : '4px')};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  ${ItemButton}:hover & {
-    background: ${({ theme }) => theme.palette.highlightPurple};
+  bgColor || (isActive && `${theme.palette.highlightPurple}`) || `${theme.palette.grey87}`};
+border-radius: ${({ roundedBg }) => (roundedBg ? '50%' : '4px')};
+${ItemButton}:hover & {
+  background: ${({ theme }) => theme.palette.highlightPurple};
+}
+svg {
+  path {
+    stroke: ${({ theme }) => theme.palette.white};
   }
-  svg {
-    path {
-      stroke: ${({ theme }) => theme.palette.white};
-    }
-    rect {
-      stroke: ${({ theme }) => theme.palette.white};
-    }
+  rect {
+    stroke: ${({ theme }) => theme.palette.white};
   }
+}
+
 `;
+
+export const UnstyledButtonIcon = styled.div`
+width: 22px;
+height: 22px;
+display: flex;
+align-items: center;
+justify-content: center;
+
+`;
+
+
+export const ItemButtonIcon = ({ignoreIconStyles = false, children, ...props}) => ignoreIconStyles ? <UnstyledButtonIcon>{children}</UnstyledButtonIcon> : <ButtonIcon {...props}>{children}</ButtonIcon> 
 
 export const ItemButtonText = styled(Typography)`
   && {

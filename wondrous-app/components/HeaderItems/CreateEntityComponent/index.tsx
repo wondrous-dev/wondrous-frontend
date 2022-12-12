@@ -64,13 +64,13 @@ const CreateEntityComponent = ({ onClose }) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper data-cy="modal-base">
       <Label>{BOARD_ITEMS_CONFIG.label}</Label>
       <Grid display="flex" flexWrap="wrap" justifyContent="space-between" gap="12px">
         {Object.keys(BOARD_ITEMS_CONFIG.items).map((item, key) => {
           const { icon: Icon, label } = BOARD_ITEMS_CONFIG.items[item];
           return (
-            <EntityItem key={key} onClick={() => setEntityType(item)}>
+            <EntityItem key={key} onClick={() => setEntityType(item)} data-cy={`modal-item-${label}`}>
               <ItemButtonIcon bgColor={palette.grey75}>
                 <Icon />
               </ItemButtonIcon>

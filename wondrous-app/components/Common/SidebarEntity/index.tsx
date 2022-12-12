@@ -15,6 +15,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { OrgInviteLinkModal } from '../InviteLinkModal/OrgInviteLink';
 import { PodInviteLinkModal } from '../InviteLinkModal/podInviteLink';
+import SidebarUserBoard from '../UserSidebar';
 import { ButtonsContainer, SettingsBtn } from './styles';
 
 const SIDEBAR_COMPONENTS = {
@@ -47,7 +48,8 @@ const EntitySidebarButtons = () => {
   );
 };
 
-const EntitySidebar = ({ children }) => {
+
+const EntitySidebar = ({ children, renderSidebar = null }) => {
   const { minimized } = useSideBar();
   const { query } = useRouter();
   const { isMobileScreen } = useMediaQuery();
@@ -73,7 +75,7 @@ const EntitySidebar = ({ children }) => {
     <Wrapper>
       <SidebarWrapper minimized={minimized}>
         <SidebarContent>
-          <Sidebar />
+          {renderSidebar ? renderSidebar() : <Sidebar />}
         </SidebarContent>
         <CollapseExpandButton />
       </SidebarWrapper>

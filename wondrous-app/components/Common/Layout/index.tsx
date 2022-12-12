@@ -12,19 +12,48 @@ import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
 
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import Backdrop from '@mui/material/Backdrop';
 import Spotlight from 'components/Spotlight';
 import { BackdropComponent, SectionWrapper } from './styles';
+import UserSidebar from '../UserSidebar';
+import EntitySidebar from '../SidebarEntity';
 
 const getOrgsList = (userOrgs, router) => {
   if (!userOrgs?.getUserOrgs) return [];
   const { getUserOrgs } = userOrgs;
   return getUserOrgs.map((item) => ({
     ...item,
-    isActive: (router.pathname.includes('/organization/') && (router.query?.username === item.username || router.query?.orgId === item.id)),
+    isActive:
+      router.pathname.includes('/organization/') &&
+      (router.query?.username === item.username || router.query?.orgId === item.id),
   }));
 };
 
+const PAGES_WITH_USER_SIDEBAR = [
+  '/mission-control',
+  '/dashboard/admin',
+  '/dashboard/bounties',
+  '/dashboard',
+  '/dashboard/proposals',
+  '/profile/settings',
+  '/profile/notifications',
+  '/profile/login-methods',
+  '/profile/[username]/about',
+];
+
+const SectionContainer = ({ children }: any) => {
+  const router = useRouter();
+
+  const isPageWithUserSidebar = useMemo(() => PAGES_WITH_USER_SIDEBAR.includes(router.pathname), [router.pathname]);
+
+  if (isPageWithUserSidebar) {
+    return (
+      <SectionWrapper>
+        <EntitySidebar renderSidebar={UserSidebar}>{children}</EntitySidebar>
+      </SectionWrapper>
+    );
+  }
+  return <SectionWrapper>{children}</SectionWrapper>;
+};
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
   const router = useRouter();
@@ -68,7 +97,7 @@ export default function SidebarLayout({ children }) {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
   };
-  
+
   const orgsList = getOrgsList(userOrgs, router);
   const sidebarValue = useMemo(
     () => ({
@@ -80,15 +109,15 @@ export default function SidebarLayout({ children }) {
   );
 
   const pageDataValues = useMemo(() => ({ setPageData }), [setPageData]);
-  
+
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
 
   const toggleSpotlight = () => {
-    setIsSpotlightOpen((prev) => !prev)
-    if(!minimized && isMobile) {
-      setMinimized(true)
+    setIsSpotlightOpen((prev) => !prev);
+    if (!minimized && isMobile) {
+      setMinimized(true);
     }
   };
 
@@ -110,14 +139,17 @@ export default function SidebarLayout({ children }) {
           toggleSpotlight,
           pageData,
           setPageData,
-          orgsList
+          orgsList,
         }}
       >
         <HeaderComponent />
-        {!minimized && isMobile && <BackdropComponent open onClick={() => setMinimized(true)}/>}
+        {!minimized && isMobile && <BackdropComponent open onClick={() => setMinimized(true)} />}
         {isSpotlightOpen ? <Spotlight onClose={toggleSpotlight} /> : null}
         <PageDataContext.Provider value={pageDataValues}>
-        <SectionWrapper>{children}</SectionWrapper>
+          <SectionContainer>
+            {children}
+          </SectionContainer>
+
         </PageDataContext.Provider>
       </GlobalContext.Provider>
     </SideBarContext.Provider>
