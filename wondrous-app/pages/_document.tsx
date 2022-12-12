@@ -2,7 +2,22 @@ import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
 import { ServerStyleSheets } from '@mui/styles';
+import Script from 'next/script';
+import * as snippet from '@segment/snippet';
 import theme from '../theme';
+
+function renderSnippet() {
+  const opts = {
+    apiKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || 'Z6AOVuCjq8c9Kz0s463V4GRD1zZ0KhDx',
+    page: false,
+  };
+
+  if (process.env.NODE_ENV === 'development') {
+    return snippet.max(opts);
+  }
+
+  return snippet.min(opts);
+}
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -36,22 +51,6 @@ class MyDocument extends Document {
     return (
       <Html lang="en" dir="ltr">
         <Head>
-          <script
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
-          />
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}', {
-              page_path: window.location.pathname,
-            });
-          `,
-            }}
-          />
           <meta charSet="utf-8" />
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
