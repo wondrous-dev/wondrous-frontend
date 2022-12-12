@@ -25,6 +25,7 @@ import { getProposalStatus } from 'utils/board';
 import { ENTITIES_TYPES, PERMISSIONS, STATUS_APPROVED, STATUS_CLOSED, TASK_STATUS_ARCHIVED } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useSnackbarAlert } from './SnackbarAlert';
 
 const TaskStatusMenuWrapper = styled(Menu)`
   && {
@@ -190,11 +191,23 @@ const useTaskMenuStatusProposal = ({ task, entityType }) => {
 const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
   const { id: taskId } = task;
   const { canArchive } = useUserPermission(task);
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useSnackbarAlert();
   const [archiveTaskMutation] = useMutation(ARCHIVE_TASK, {
     refetchQueries: refetchNonProposalQueries,
   });
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: refetchNonProposalQueries,
+    onError: ({ graphQLErrors }) => {
+      if (graphQLErrors[0].extensions.errorCode === 'must_go_through_submission') {
+        setSnackbarAlertSeverity('error');
+        setSnackbarAlertMessage('Cannot complete this task without submission');
+        setSnackbarAlertOpen(true);
+        return;
+      }
+      setSnackbarAlertMessage('Something went wrong');
+      setSnackbarAlertSeverity('error');
+      setSnackbarAlertOpen(true);
+    },
   });
   const handleOnChange = (newStatus) => {
     if (newStatus === TASK_STATUS_ARCHIVED) {

@@ -1,8 +1,10 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useIsMobile } from 'utils/hooks';
 import { StyledAlert, StyledSnackbar } from './styles';
 
 export const SnackbarAlertContext = createContext(null);
+
+export const useSnackbarAlert = () => useContext(SnackbarAlertContext);
 
 export function SnackbarAlertProvider({ children }) {
   const [message, setSnackbarAlertMessage] = useState('');
