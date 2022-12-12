@@ -28,9 +28,7 @@ const OrgProject = () => {
     }
   }, [orgData]);
 
-  useEffect(() => {
-    return () => setPageData({});
-  }, []);
+  useEffect(() => () => setPageData({}), [])
 
   const contextValue = useMemo(
     () => ({

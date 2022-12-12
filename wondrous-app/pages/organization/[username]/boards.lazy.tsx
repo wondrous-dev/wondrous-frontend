@@ -471,9 +471,7 @@ function BoardsPage() {
     }
   }, [orgData])
 
-  useEffect(() => {
-    return () => setPageData({})
-  }, [])
+  useEffect(() => () => setPageData({}), [])
 
   const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
     onCompleted: (data) => {

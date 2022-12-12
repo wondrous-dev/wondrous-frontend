@@ -17,9 +17,7 @@ const GrantsPage = () => {
     }
   }, [org]);
 
-  useEffect(() => {
-    return () => setPageData({});
-  }, []);
+  useEffect(() => () => setPageData({}), [])
 
   const { userPermissionsContext } = useGlobalContext();
   return (

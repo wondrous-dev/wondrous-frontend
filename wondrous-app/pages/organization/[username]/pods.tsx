@@ -28,9 +28,7 @@ function PodsInOrgPage() {
     }
   }, [orgData]);
 
-  useEffect(() => {
-    return () => setPageData({});
-  }, []);
+  useEffect(() => () => setPageData({}), [])
 
   return (
     <OrgBoardContext.Provider

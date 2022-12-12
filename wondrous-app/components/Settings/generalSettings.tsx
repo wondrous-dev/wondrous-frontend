@@ -1,17 +1,18 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { useRouter } from 'next/router';
-import apollo from 'services/apollo';
 import { Box } from '@mui/system';
-import React, { useEffect, useState } from 'react';
-import { DeleteButton } from 'components/Settings/Roles/styles';
 import { SafeImage } from 'components/Common/Image';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import HeaderBlock from 'components/Settings/headerBlock';
-import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
+import { DeleteButton } from 'components/Settings/Roles/styles';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import apollo from 'services/apollo';
 import { ImageKeyEnums, ImageTypes } from 'types/common';
+import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
+import { usePageDataContext } from 'utils/hooks';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
-import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
+import { ARCHIVE_POD, UNARCHIVE_POD, UPDATE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';
@@ -26,7 +27,7 @@ import ImageUpload from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import {
-  GeneralSettingsButtonsBlock,
+  CreateFormAddDetailsTabWrapper, GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
   GeneralSettingsDAODescriptionBlock,
   GeneralSettingsDAODescriptionInput,
@@ -39,12 +40,8 @@ import {
   GeneralSettingsSocialsBlock,
   GeneralSettingsSocialsBlockRow,
   GeneralSettingsSocialsBlockWrapper,
-  LabelBlock,
-  Snackbar,
-  SettingsHeaderText,
-  CreateFormAddDetailsTabWrapper,
+  LabelBlock, SettingsHeaderText, Snackbar
 } from './styles';
-import { usePageDataContext } from 'utils/hooks';
 
 interface ToastProps {
   show: boolean;

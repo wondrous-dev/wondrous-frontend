@@ -36,9 +36,7 @@ function OrgMemberPage() {
     }
   }, [org]);
 
-  useEffect(() => {
-    return () => setPageData({});
-  }, []);
+  useEffect(() => () => setPageData({}), [])
 
   return (
     <OrgBoardContext.Provider

@@ -2,24 +2,23 @@ import Popover from '@mui/material/Popover';
 import { OrgProfilePicture, UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { useGlobalContext, useOrgBoard, usePodBoard } from 'utils/hooks';
 
+import { useMutation } from '@apollo/client';
 import Typography from '@mui/material/Typography';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import AddDaoButton from 'components/Common/SidebarMainAddDao';
 import { HorizontalEntityItem } from 'components/HeaderItems/CreateEntityComponent/styles';
 import { ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
-import OrgSettingsIcon from 'components/Icons/OrgSettingsIcon';
+import LogoutIcon from 'components/Icons/logout';
 import PlusIcon from 'components/Icons/plus';
 import { MuiDrawer } from 'components/Spotlight/styles';
+import { LEAVE_ORG, LEAVE_POD } from 'graphql/mutations';
 import useMediaQuery from 'hooks/useMediaQuery';
+import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { PAGE_PATHNAME } from 'utils/constants';
 import { FullWidthItem, ItemsWrapper, OrgItem, OrgWrapper, UnstyledButton, UnstyledLink, Wrapper } from './styles';
-import LogoutIcon from 'components/Icons/logout';
-import { useMutation } from '@apollo/client';
-import { LEAVE_ORG, LEAVE_POD } from 'graphql/mutations';
-import { useRouter } from 'next/router';
 
 const LeaveWorkspace = ({ onClose }) => {
   const router = useRouter();
