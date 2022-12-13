@@ -1,5 +1,6 @@
 import 'react-aspect-ratio/aspect-ratio.css';
 import React, { useEffect, useState } from 'react';
+import Script from 'next/script';
 import { useRouter } from 'next/router';
 import { ThemeProvider as StyledComponentProvider } from 'styled-components';
 import Head from 'next/head';
@@ -23,16 +24,26 @@ import OnboardingTour from 'components/Guide';
 import SidebarLayout from 'components/Common/Layout';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import * as snippet from '@segment/snippet';
 
 declare global {
   interface Window {
-    gtag: any;
+    analytics: any;
   }
 }
 
-type User = {
-  dummy: String;
-};
+function renderSnippet() {
+  const opts = {
+    apiKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || '',
+    page: false,
+  };
+
+  if (process.env.NODE_ENV === 'development') {
+    return snippet.max(opts);
+  }
+
+  return snippet.min(opts);
+}
 
 const Layout = ({ Component, pageProps }) =>
   Component.getLayout ? Component.getLayout(<Component {...pageProps} />) : <Component {...pageProps} />;
@@ -56,9 +67,11 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const handleRouteChange = (url) => {
-      window.gtag('config', process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS, {
-        page_path: url,
-      });
+      if (process.env.NODE_ENV === 'production') {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const params = Object.fromEntries(urlSearchParams.entries());
+        window.analytics.page(params);
+      }
     };
     router.events.on('routeChangeComplete', handleRouteChange);
     return () => {
@@ -83,7 +96,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         <link rel="shortcut icon" href="/images/favicon.ico" />
       </Head>
-
+      <Script id="segment-script" dangerouslySetInnerHTML={{ __html: renderSnippet() }} />
       <IsMobileContext.Provider value={isMobile}>
         <StyledComponentProvider theme={theme}>
           <ThemeProvider theme={theme}>
