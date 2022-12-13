@@ -3,12 +3,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import last from 'lodash/last';
 import React, { useRef, useState } from 'react';
 
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { ViewType } from 'types/common';
 import { TaskInterface } from 'types/task';
-import { delQuery } from 'utils';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
 import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';

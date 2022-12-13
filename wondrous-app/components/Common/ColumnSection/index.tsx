@@ -7,7 +7,7 @@ import {
   TASK_STATUS_REQUESTED,
   PRIVACY_LEVEL,
 } from 'utils/constants';
-import { TaskListViewModal } from 'components/Common/TaskViewModal';
+import TaskListViewModal from 'components/Common/TaskViewModal/TaskListViewModal';
 import { useRouter } from 'next/router';
 import { TaskSummary } from '../TaskSummary';
 import { Requested, Chevron } from '../../Icons/sections';

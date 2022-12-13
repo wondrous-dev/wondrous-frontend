@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   ENTITIES_TYPES,
   BOARD_TYPE,

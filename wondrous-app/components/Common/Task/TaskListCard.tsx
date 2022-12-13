@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { useLocation } from 'utils/useLocation';
 import * as Constants from 'utils/constants';
-import { delQuery } from 'utils/index';
 import { renderMentionString } from 'utils/common';
 
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { SafeImage } from 'components/Common/Image';
 import { AvatarList } from 'components/Common/AvatarList';
 import Compensation from 'components/Common/Compensation';

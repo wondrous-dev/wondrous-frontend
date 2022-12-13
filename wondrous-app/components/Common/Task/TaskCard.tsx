@@ -174,8 +174,8 @@ export default function TaskCard({
     if (!showPaymentModal && !isApplicationModalOpen) {
       const query = {
         ...router.query,
-        task: task?.id
-      }
+        task: task?.id,
+      };
 
       router.push({ query }, undefined, { scroll: false, shallow: true });
     }
@@ -184,15 +184,15 @@ export default function TaskCard({
   const [anchorEl, setAnchorEl] = useState(null);
 
   return (
-    <CardContent
-      onMouseEnter={() => setShowMenu(true)}
-      onMouseLeave={() => {
-        setShowMenu(false);
-        setAnchorEl(null);
-      }}
-      data-cy={`task-card-item-${title}`}
-    >
-      <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
+    <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
+      <CardContent
+        onMouseEnter={() => setShowMenu(true)}
+        onMouseLeave={() => {
+          setShowMenu(false);
+          setAnchorEl(null);
+        }}
+        data-cy={`task-card-item-${title}`}
+      >
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
             getTaskSubmissionsForTask={getTaskSubmissionsForTask}
@@ -422,7 +422,7 @@ export default function TaskCard({
             open={showMenu}
           />
         </BoardsCardFooter>
-      </SmartLink>
-    </CardContent>
+      </CardContent>
+    </SmartLink>
   );
 }

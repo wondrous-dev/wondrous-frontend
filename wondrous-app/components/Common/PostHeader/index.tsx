@@ -1,11 +1,10 @@
+import { useState } from 'react';
 import { ClickAwayListener } from '@mui/material';
-import { delQuery } from 'utils';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+
+import { delQuery } from 'utils';
 import { ObjectType, PostVerbType } from 'types/post';
 import * as Constants from 'utils/constants';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import SmartLink from 'components/Common/SmartLink';
 import KudosForm from 'components/Common/KudosForm';
 import { useMe } from '../../Auth/withAuth';
