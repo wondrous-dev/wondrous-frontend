@@ -22,16 +22,16 @@ import { FullWidthItem, ItemsWrapper, OrgItem, OrgWrapper, UnstyledButton, Unsty
 
 const LeaveWorkspace = ({ onClose }) => {
   const router = useRouter();
-  const {pageData, orgsList} = useGlobalContext();
+  const { pageData, orgsList } = useGlobalContext();
 
   const activeOrg = useMemo(() => orgsList.find((org) => org.isActive), [router.pathname, orgsList]);
 
-  const activePod = pageData?.pod
+  const activePod = pageData?.pod;
 
   const orgOrPod = activeOrg || activePod || {};
 
-  const {name} = orgOrPod;
-  
+  const { name } = orgOrPod;
+
   const [leaveOrg] = useMutation(LEAVE_ORG, {
     onCompleted: () => {
       router.push('/mission-control');
@@ -79,7 +79,7 @@ const LeaveWorkspace = ({ onClose }) => {
   return (
     <UnstyledButton type="button" onClick={action}>
       <HorizontalEntityItem>
-        <ItemButtonIcon style={{padding: '4px'}} bgColor={palette.grey75}>
+        <ItemButtonIcon style={{ padding: '4px' }} bgColor={palette.grey75}>
           <LogoutIcon />
         </ItemButtonIcon>
 
@@ -176,7 +176,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
     <Container open={open} onClose={onClose}>
       <Wrapper>
         <OrgWrapper gap="8px" display="flex" flexWrap="wrap" justifyContent="space-between">
-          <OrgItem isActive={isUserBoard} href="/dashboard" onClick={onClose}>
+          <FullWidthItem isActive={isUserBoard} href="/mission-control" onClick={onClose}>
             <UserProfilePicture
               avatar={user?.profilePicture}
               style={{
@@ -186,7 +186,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
               }}
             />
             My workspace
-          </OrgItem>
+          </FullWidthItem>
           {orgsList?.map((org, key) => (
             <OrgItem
               key={org?.id}

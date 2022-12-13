@@ -20,7 +20,7 @@ export const SidebarWrapper = styled.div`
   overflow-y: auto;
   position: fixed;
   top: 0px;
-  padding-top:70px;
+  padding-top: 70px;
   z-index: 100;
   width: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   display: flex;
@@ -54,7 +54,7 @@ export const Label = styled(Typography)`
     font-weight: 500;
     font-size: 13px;
     display: flex;
-    padding: 24px 14px 0px 14px;
+    padding: 0px 14px 0px 14px;
     color: ${({ theme }) => theme.palette.grey57};
   }
 `;

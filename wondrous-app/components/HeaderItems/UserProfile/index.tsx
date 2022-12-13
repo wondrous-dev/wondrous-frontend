@@ -18,7 +18,8 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { Wrapper } from '../CreateEntityComponent/styles';
 import {
-  ButtonIcon, GridIconWrapper,
+  ButtonIcon,
+  GridIconWrapper,
   ImageWrapper,
   ItemContainer,
   LinkWrapper,
@@ -26,7 +27,7 @@ import {
   PageSelectorWrapper,
   ProfileInfo,
   UserContainer,
-  UserHelperWrapper
+  UserHelperWrapper,
 } from './styles';
 
 const TutorialsButton = ({ onClick }) => {
@@ -35,7 +36,7 @@ const TutorialsButton = ({ onClick }) => {
   const handleClick = () => {
     setOpenHelpModal(true);
     // onClick()
-  }
+  };
   return (
     <>
       {openHelpModal && <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />}
@@ -60,7 +61,7 @@ const PAGE_SELECTOR_CONFIG = [
         <GridViewIcon />
       </GridIconWrapper>
     ),
-    href: '/dashboard',
+    href: '/mission-control',
   },
   {
     label: 'My Pods',
