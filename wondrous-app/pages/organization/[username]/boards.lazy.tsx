@@ -43,6 +43,7 @@ import {
 import { OrgBoardContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
 import Boards from 'components/organization/boards/boards';
+import useTaskActions from "../../../hooks/useTaskActions";
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -356,6 +357,7 @@ const useGetOrgTaskBoard = ({
 
 function BoardsPage() {
   const router = useRouter();
+  const taskActions = useTaskActions();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -676,6 +678,7 @@ function BoardsPage() {
   return (
     <OrgBoardContext.Provider
       value={{
+        ...taskActions,
         columns,
         setColumns,
         orgId: orgData?.id,

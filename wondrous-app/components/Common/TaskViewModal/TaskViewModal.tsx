@@ -140,14 +140,13 @@ import ViewNftFields from '../TaskMint/ViewNftFields';
 
 interface ITaskListModalProps {
   open: boolean;
-  handleClose: () => any;
+  handleClose: (goBack: boolean) => any;
   taskId: string;
   isTaskProposal?: boolean;
   back?: boolean;
 }
 
-// eslint-disable-next-line import/prefer-default-export
-export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back }: ITaskListModalProps) => {
+const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back }: ITaskListModalProps) => {
   const [fetchedTask, setFetchedTask] = useState(null);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
@@ -370,13 +369,13 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
         handleCloseModal={() => {
           setEditTask(false);
           setFetchedTask(null);
-          handleClose();
+          handleClose(true);
         }}
         entityType={entityType}
         handleClose={() => {
           setEditTask(false);
           setFetchedTask(null);
-          handleClose();
+          handleClose(true);
         }}
         cancel={() => setEditTask(false)}
         existingTask={
@@ -442,7 +441,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     setArchiveTask(false);
     setDeleteTask(false);
     if (isTaskProposal) {
-      handleClose();
+      handleClose(true);
     }
   };
 
@@ -483,7 +482,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
         }
         boardColumns?.setColumns(columns);
         document.body.setAttribute('style', `position: relative;`);
-        handleClose();
+        handleClose(true);
       },
     });
   };
@@ -508,7 +507,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       refetchQueries: ['GetOrgTaskBoardProposals', 'getUserTaskBoardProposals'],
     });
     document.body.setAttribute('style', `position: relative;`);
-    handleClose();
+    handleClose(true);
   };
   const canClaim =
     fetchedTask?.taskApplicationPermissions?.canClaim &&
@@ -532,8 +531,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const handleSnapshot = () => openSnapshot(orgSnapshot, fetchedTask, isTest);
 
   const handleModalClose = () => {
+    handleClose(true);
     setFetchedTask(null);
-    handleClose();
   };
 
   const remaininTaskCategories = fetchedTask?.categories
@@ -579,7 +578,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                         <TaskModalHeaderWrapper>
                           <TaskModalHeaderIconWrapper
                             onClick={() => {
-                              handleClose();
+                              handleClose(false);
                               router.push(`/organization/${fetchedTask?.orgUsername}/boards`, undefined, {
                                 shallow: true,
                               });
@@ -599,7 +598,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               <TaskModalHeaderArrow />
                               <TaskModalHeaderIconWrapper
                                 onClick={() => {
-                                  handleClose();
+                                  handleClose(falsex);
                                   router.push(`/pod/${fetchedTask?.podId}/boards`, undefined, {
                                     shallow: true,
                                   });
@@ -856,7 +855,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                   </TaskSectionInfoTextCreator>
                                 )}
                                 onClick={() => {
-                                  handleClose();
+                                  handleClose(false);
                                   router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
                                     shallow: true,
                                   });
@@ -912,3 +911,5 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     </ApprovedSubmissionContext.Provider>
   );
 };
+
+export default TaskViewModal;

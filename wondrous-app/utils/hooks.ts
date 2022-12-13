@@ -33,6 +33,7 @@ import {
   TaskContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
+import { TaskActions } from '../hooks/useTaskActions';
 
 export const useHotkey = () => useContext(HotkeyContext);
 
@@ -85,7 +86,12 @@ export const useUserBoard = () => useContext(UserBoardContext);
 
 export const useExploreGr15TasksAndBounties = () => useContext(ExploreGr15TasksAndBountiesContext);
 
-export const useBoards = () => {
+type UseBoard = TaskActions & {
+  [key: string]: any;
+};
+
+// I've added types to have autocomplete for IDE
+export const useBoards = (): { orgBoard: UseBoard; podBoard: UseBoard; userBoard: UseBoard; board: UseBoard } => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
