@@ -114,7 +114,7 @@ const useCreateOrg = () => {
     onCompleted: ({ createOrg }) => {
       const { username, id } = createOrg;
       if (!collabInvite) {
-        router.push(`organization/${username}/boards`);
+        router.push(`organization/${username}/home`);
       } else {
         redeemCollabToken({ variables: { orgId: id, token: collabInvite } });
       }

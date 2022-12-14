@@ -28,7 +28,7 @@ const OrgItem = (props) => {
   return (
     <OrgItemContainer
       onClick={() => {
-        window.open(`${LINK}/organization/${org?.username}/boards?entity=task`);
+        window.open(`${LINK}/organization/${org?.username}/home`);
       }}
     >
       <SafeImage

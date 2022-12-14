@@ -54,12 +54,12 @@ function ContributorOnboardingPage({ preloadedState }: Props) {
             token,
           },
           onCompleted: (data) => {
-            router.push(`/organization/${orgInfo?.username}/boards`, undefined, {
+            router.push(`/organization/${orgInfo?.username}/home`, undefined, {
               shallow: true,
             });
           },
           onError: () => {
-            router.push(`/organization/${orgInfo?.username}/boards`, undefined, {
+            router.push(`/organization/${orgInfo?.username}/home`, undefined, {
               shallow: true,
             });
           },

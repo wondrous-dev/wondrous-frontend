@@ -13,7 +13,7 @@ import SectionContent from './SectionContent';
 
 const OrgWrapper = ({ username, profilePicture }) => (
   <Grid container item width="fit-content" sx={[{ '& a': { textDecoration: 'none' } }]}>
-    <Link href={`/organization/${username}/boards`}>
+    <Link href={`/organization/${username}/home`}>
       <Grid container item width="fit-content" alignItems="center" color={palette.white} gap="6px">
         <OrgProfilePicture
           profilePicture={profilePicture}

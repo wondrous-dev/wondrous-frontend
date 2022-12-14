@@ -41,7 +41,7 @@ const getNotificationActorLink = (notification) => {
     return `/profile/${notification.actorUsername}/about`;
   }
   if (notification?.actorType === ENTITIES_TYPES.ORG) {
-    return `/organization/${notification.actorUsername}/boards  `;
+    return `/organization/${notification.actorUsername}/home  `;
   }
   if (notification?.actorType === ENTITIES_TYPES.POD) {
     return `/pod/${notification?.actorId}/boards`;

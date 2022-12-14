@@ -23,7 +23,7 @@ function OrgCard({ item }) {
   const userOrg = item;
   const org = item?.org;
   const role = item?.role;
-  const taskViewUrl = `${LINK}/organization/${org?.username}/boards`;
+  const taskViewUrl = `${LINK}/organization/${org?.username}/home`;
   return (
     <SmartLink href={taskViewUrl} asLink>
       <OrgCardWrapper>
