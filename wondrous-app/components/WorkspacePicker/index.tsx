@@ -34,13 +34,14 @@ const LeaveWorkspace = ({ onClose }) => {
   const router = useRouter();
   const { pageData, orgsList } = useGlobalContext();
 
-  const activeOrg = useMemo(() => orgsList.find((org) => org.isActive), [router.pathname, orgsList]);
-
   const activePod = pageData?.pod;
 
-  const orgOrPod = activeOrg || activePod || {};
+  const activeOrg = useMemo(
+    () => orgsList.find((org) => org.isActive || org.id === activePod?.orgId),
+    [router.pathname, orgsList, activePod]
+  );
 
-  const { name } = orgOrPod;
+  const { name } = activeOrg || {};
 
   const [leaveOrg] = useMutation(LEAVE_ORG, {
     onCompleted: () => {
@@ -58,7 +59,7 @@ const LeaveWorkspace = ({ onClose }) => {
     refetchQueries: ['getUserPods'],
   });
 
-  if (!activeOrg && !activePod) return null;
+  if (!activeOrg) return null;
 
   const handleLeaveOrgClick = () => {
     const confirmed = confirm(`Are you sure you want to leave ${name}?`);
@@ -84,7 +85,7 @@ const LeaveWorkspace = ({ onClose }) => {
     });
   };
 
-  const action = activeOrg ? handleLeaveOrgClick : handleLeavePodClick;
+  const action = activePod ? handleLeavePodClick : handleLeaveOrgClick;
 
   return (
     <UnstyledButton type="button" onClick={action}>
@@ -94,7 +95,7 @@ const LeaveWorkspace = ({ onClose }) => {
         </ItemButtonIcon>
 
         <Typography color="inherit" fontSize="15px" fontWeight={500} fontFamily={typography.fontFamily}>
-          Leave {activeOrg ? 'Organization' : 'Pod'}
+          Leave {activePod ? 'Pod' : 'Organization'}
         </Typography>
       </LeaveWorkspaceWrapper>
     </UnstyledButton>
@@ -182,7 +183,7 @@ const TYPE_TO_COMPONENT = {
 };
 
 const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user }) => {
-  const { orgsList } = useGlobalContext();
+  const { orgsList, pageData } = useGlobalContext();
   const { isMobileScreen } = useMediaQuery();
 
   const Container = useMemo(
@@ -237,7 +238,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
           {orgsList?.map((org, key) => (
             <OrgItem
               key={org?.id}
-              isActive={org?.isActive}
+              isActive={org?.isActive || org?.id === pageData?.pod?.orgId}
               href={`/organization/${org?.username}/home`}
               onClick={onClose}
             >

@@ -51,7 +51,7 @@ const SectionContainer = ({ children }: any) => {
   return <SectionWrapper>{children}</SectionWrapper>;
 };
 export default function SidebarLayout({ children }) {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
   const router = useRouter();
   const [pageData, setPageData] = useState({});
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
@@ -86,10 +86,10 @@ export default function SidebarLayout({ children }) {
       excludeSharedOrgs: true,
     },
   });
-  
+
   useEffect(() => {
-    setMinimized(isMobile)
-  }, [isMobile])
+    setMinimized(isMobile);
+  }, [isMobile]);
 
   const [createFormModal, setCreateFormModal] = useState(false);
 
@@ -123,7 +123,6 @@ export default function SidebarLayout({ children }) {
 
   return (
     <SideBarContext.Provider value={sidebarValue}>
-      {/* <SideBarComponent userOrgs={userOrgs} /> */}
       <GlobalContext.Provider
         value={{
           isCreateEntityModalOpen: createFormModal,
@@ -146,10 +145,7 @@ export default function SidebarLayout({ children }) {
         {!minimized && isMobile && <BackdropComponent open onClick={() => setMinimized(true)} />}
         {isSpotlightOpen ? <Spotlight onClose={toggleSpotlight} /> : null}
         <PageDataContext.Provider value={pageDataValues}>
-          <SectionContainer>
-            {children}
-          </SectionContainer>
-
+          <SectionContainer>{children}</SectionContainer>
         </PageDataContext.Provider>
       </GlobalContext.Provider>
     </SideBarContext.Provider>

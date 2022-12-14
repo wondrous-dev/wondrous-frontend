@@ -1,15 +1,7 @@
 import { useMe } from 'components/Auth/withAuth';
 import { OrgProfilePicture, UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 
-import {
-  ArrowIcon,
-  Button,
-  ButtonIcon,
-  IconText,
-  NoLogoPod,
-  Text,
-  IconWrapper,
-} from 'components/Common/SidebarEntityMenu/styles';
+import { ArrowIcon, Button, ButtonIcon, IconText, Text, IconWrapper } from 'components/Common/SidebarEntityMenu/styles';
 import { ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
 import WorkspacePicker from 'components/WorkspacePicker';
 import { useRouter } from 'next/router';
@@ -17,8 +9,8 @@ import { useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import { useGlobalContext } from 'utils/hooks';
 
-const DropdownItem = ({ isOrg, thumbnailPicture, profilePicture, activePod, isExplore, userProfilePicture }) => {
-  if (isOrg) {
+const DropdownItem = ({ isOrgOrPod, thumbnailPicture, profilePicture, isExplore, userProfilePicture }) => {
+  if (isOrgOrPod) {
     return (
       <OrgProfilePicture
         profilePicture={thumbnailPicture || profilePicture}
@@ -31,7 +23,6 @@ const DropdownItem = ({ isOrg, thumbnailPicture, profilePicture, activePod, isEx
       />
     );
   }
-  if (activePod) return <NoLogoPod />;
   if (isExplore) {
     return (
       <IconWrapper>
@@ -55,21 +46,24 @@ const EntityMenu = () => {
   const router = useRouter();
   const { orgsList, pageData } = useGlobalContext();
   const user = useMe();
-  const activePod = useMemo(() => pageData?.pod, [pageData?.pod]);
+  const activePodOrg = useMemo(() => pageData?.pod?.org, [pageData?.pod]);
 
   const activeOrg = useMemo(() => orgsList.find((org) => org.isActive), [router.pathname, orgsList]);
 
-  const orgOrPod = activeOrg || activePod || {};
+  const orgOrPod = activeOrg || activePodOrg || {};
 
-  const { thumbnailPicture, profilePicture, name, id } = orgOrPod;
+  const { thumbnailPicture, profilePicture, name } = orgOrPod;
 
   const isExplore = useMemo(() => router.pathname.includes('/explore'), [router.pathname]);
 
-  const isOrg = useMemo(() => router.pathname.includes('/organization'), [router.pathname]);
+  const isOrgOrPod = useMemo(
+    () => router.pathname.includes('/organization') || router.pathname.includes('/pod'),
+    [router.pathname]
+  );
 
   const isUserBoard = useMemo(
-    () => !isExplore && !activeOrg && !activePod,
-    [router.pathname, isExplore, activeOrg, activePod]
+    () => !isExplore && !activeOrg && !activePodOrg,
+    [router.pathname, isExplore, activeOrg, activePodOrg]
   );
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -77,7 +71,7 @@ const EntityMenu = () => {
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
-  let pageTitle = useMemo(() => {
+  const pageTitle = useMemo(() => {
     if (isExplore) {
       return 'Explore';
     }
@@ -85,7 +79,7 @@ const EntityMenu = () => {
       return 'My workspace';
     }
     return name;
-  }, [name, isExplore, isUserBoard, isOrg]);
+  }, [name, isExplore, isUserBoard, isOrgOrPod]);
 
   return (
     <>
@@ -93,10 +87,9 @@ const EntityMenu = () => {
         <IconText>
           <ButtonIcon isUserBoard={isUserBoard}>
             <DropdownItem
-              isOrg={isOrg}
+              isOrgOrPod={isOrgOrPod}
               thumbnailPicture={thumbnailPicture}
               profilePicture={profilePicture}
-              activePod={activePod}
               isExplore={isExplore}
               userProfilePicture={user?.profilePicture}
             />
