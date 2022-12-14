@@ -60,12 +60,6 @@ export function OnboardingBuildProfile({ updateUser }) {
           profilePicture: imageUrl,
         },
       },
-      onCompleted: (data) => {
-        // setProfilePictureUrl(data?.updateUser?.profilePicture);
-        // setSnackbarAlertSeverity('success');
-        // setSnackbarAlertOpen(true);
-        // setSnackbarAlertMessage(message);
-      },
     });
   };
 
