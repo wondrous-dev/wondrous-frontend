@@ -49,7 +49,6 @@ const useGetOrgTaskBoardTasks = ({
   setColumns,
   setOrgTaskHasMore,
   orgId,
-
   userId,
   entityType,
   setIsLoading,
