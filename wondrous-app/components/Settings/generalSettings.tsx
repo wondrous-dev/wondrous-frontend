@@ -10,6 +10,7 @@ import HeaderBlock from 'components/Settings/headerBlock';
 import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { ImageKeyEnums, ImageTypes } from 'types/common';
+import ImageUpload from 'components/Settings/imageUpload';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -22,7 +23,6 @@ import LinkBigIcon from '../Icons/link';
 import OpenSeaIcon from '../Icons/openSea';
 import TwitterPurpleIcon from '../Icons/twitterPurple';
 import ColorSettings from './ColorDropdown';
-import ImageUpload from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import {

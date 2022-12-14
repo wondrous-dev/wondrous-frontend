@@ -2,30 +2,19 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 
 import { useRouter } from 'next/router';
-
+import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import palette from 'theme/palette';
 import { getFilenameAndType, uploadMedia } from 'utils/media';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
+import ImageUpload from 'components/Settings/imageUpload';
 import { useMe } from '../../Auth/withAuth';
-import { SafeImage } from '../../Common/Image';
-import ProfilePictureAdd from '../../../public/images/onboarding/profile-picture-add.svg';
-import {
-  UsernameTitle,
-  UsernameDescription,
-  UsernameInput,
-  ProfilePictureDiv,
-  RemovePictureBtn,
-  ErrorText,
-} from '../styles';
+import { UsernameTitle, UsernameDescription, UsernameInput, ErrorText } from '../styles';
 
 export function OnboardingBuildProfile({ updateUser }) {
   const router = useRouter();
   const { collabInvite } = router.query;
   const [bio, setBio] = useState('');
-  const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const user = useMe();
-  const [image, setImage] = useState('');
-  const inputRef: any = useRef();
   const [error, setError] = useState('');
   const collabInviteQueryString = collabInvite ? `?collabInvite=${collabInvite}` : '';
 
@@ -34,36 +23,6 @@ export function OnboardingBuildProfile({ updateUser }) {
       setBio(user?.bio);
     }
   }, [user?.bio]);
-
-  const handleFile = useCallback(
-    async (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        setFileUploadLoading(true);
-        const fileName = file?.name;
-        // get image preview
-        const { fileType, filename } = getFilenameAndType(fileName);
-        const imagePrefix = `tmp/${user?.id}/`;
-        const imageUrl = imagePrefix + filename;
-        await uploadMedia({ filename: imageUrl, fileType, file });
-
-        updateUser({
-          variables: {
-            input: {
-              profilePicture: imageUrl,
-            },
-          },
-          onCompleted: (data) => {
-            setFileUploadLoading(false);
-            if (data?.updateUser?.profilePicture) {
-              setImage(data?.updateUser?.profilePicture);
-            }
-          },
-        });
-      }
-    },
-    [updateUser, user?.id]
-  );
 
   const goToNextStep = () => {
     const nextStep = user?.userInfo?.email
@@ -92,12 +51,35 @@ export function OnboardingBuildProfile({ updateUser }) {
     }
   };
 
-  useEffect(() => {
-    if (user?.profilePicture) {
-      setImage(user?.profilePicture);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.profilePicture]);
+  const updateImage = (imageUrl: string | null, successMessage?: string) => {
+    const message = successMessage || 'User profile picture uploaded successfully';
+
+    updateUser({
+      variables: {
+        input: {
+          profilePicture: imageUrl,
+        },
+      },
+    });
+  };
+
+  async function uploadImage(file) {
+    const fileName = file.name;
+    // get image preview
+    const { fileType, filename } = getFilenameAndType(fileName);
+
+    const imagePrefix = `tmp/${user?.id}/`;
+    const imageUrl = imagePrefix + filename;
+
+    await uploadMedia({ filename: imageUrl, fileType, file });
+
+    updateImage(imageUrl);
+  }
+
+  function deleteImage() {
+    updateImage(null, 'User profile picture deleted successfully.');
+  }
+
   // @ts-ignore
   return (
     <OnboardingLayout
@@ -130,61 +112,16 @@ export function OnboardingBuildProfile({ updateUser }) {
           }}
         >
           <span>Profile picture</span>
-          {fileUploadLoading && <FileLoading />}
         </UsernameTitle>
 
-        <UsernameDescription>(Recommended 52 x 52)</UsernameDescription>
-
-        {image ? (
-          <ProfilePictureDiv>
-            <SafeImage
-              src={image}
-              width={52}
-              height={52}
-              useNextImage
-              style={{
-                borderRadius: '26px',
-                objectFit: 'cover',
-              }}
-              alt="Profile picture"
-            />
-            <ProfilePictureAdd
-              onClick={() => {
-                inputRef.current.click();
-              }}
-              style={{
-                position: 'absolute',
-                marginLeft: '-16px',
-                cursor: 'pointer',
-              }}
-            />
-            <input type="file" hidden ref={inputRef} onChange={handleFile} />
-            <RemovePictureBtn
-              onClick={() => {
-                setImage('');
-              }}
-            >
-              Remove
-            </RemovePictureBtn>
-          </ProfilePictureDiv>
-        ) : (
-          <>
-            <UsernameDescription
-              style={{
-                color: palette.highlightBlue,
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                marginTop: '0',
-              }}
-              onClick={() => {
-                inputRef.current.click();
-              }}
-            >
-              Upload new profile picture
-            </UsernameDescription>
-            <input type="file" hidden ref={inputRef} onChange={handleFile} />
-          </>
-        )}
+        <ImageUpload
+          imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
+          image={user?.profilePicture}
+          title=""
+          updateFilesCb={uploadImage}
+          avatarEditorTitle="Upload a profile image"
+          onDeleteImage={deleteImage}
+        />
 
         {error && <ErrorText>{error}</ErrorText>}
       </div>

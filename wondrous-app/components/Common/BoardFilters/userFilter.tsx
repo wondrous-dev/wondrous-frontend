@@ -1,4 +1,5 @@
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { useRouter } from 'next/router';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { AppliedFiltersItem, CloseIcon } from './styles';
@@ -8,8 +9,9 @@ export default function UserFilterPill() {
   const podBoard = usePodBoard();
 
   const board = orgBoard || podBoard;
-
-  if (!board?.user) return null;
+  const router = useRouter();
+  const { userId } = router.query;
+  if (!board?.user || !userId) return null;
   const { username, profilePicture } = board?.user;
 
   const deleteUserFilter = () => board?.deleteUserIdFilter();

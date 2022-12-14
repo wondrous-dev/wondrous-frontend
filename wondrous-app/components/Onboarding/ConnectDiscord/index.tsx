@@ -14,7 +14,7 @@ enum Text {
   TitleSuccess = 'Success!',
   TitleStandard = 'Connect to Discord',
   DescriptionSuccess = 'You have connected the Discord.',
-  DescriptionStandard = 'Connect your Discord to get preapproval to join DAOs you’re a Discord member of. This is necessary if you want admin level permissions and are a core contributor.',
+  DescriptionStandard = 'Connect your Discord to receive work notifications, join relevant projects, and start Discord threads to discuss work. This is highly recommended.',
   UserConnected = 'Discord user already connected to another account.',
   ErrorConnecting = 'Error connecting to Discord. Please try again or contact support.',
 }
