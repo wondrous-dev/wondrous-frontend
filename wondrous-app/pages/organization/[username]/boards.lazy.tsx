@@ -38,10 +38,8 @@ import {
   STATUS_OPEN,
   STATUSES_ON_ENTITY_TYPES,
   TASK_STATUSES,
-  TASK_STATUS_TODO,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useIsMobile } from 'utils/hooks';
 import Boards from 'components/organization/boards/boards';
 
 const useGetOrgTaskBoardTasks = ({
