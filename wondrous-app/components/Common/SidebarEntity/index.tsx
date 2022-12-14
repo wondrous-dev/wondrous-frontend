@@ -6,19 +6,17 @@ import useSideBar from 'hooks/useSideBar';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import AboutEntity from 'components/Common/SidebarEntityAbout';
 import CollabsSidebar from 'components/Common/SidebarEntityCollabs';
-import List from 'components/Common/SidebarEntityList';
+import SidebarEntityList from 'components/Common/SidebarEntityList';
 import RolesSidebar from 'components/Common/SidebarEntityRoles';
 import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
-import { RequestApproveButton } from 'components/organization/members/styles';
 import { UnstyledLink } from 'components/WorkspacePicker/styles';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import Button from 'components/Button';
 import palette from 'theme/palette';
-import { OrgInviteLinkModal } from '../InviteLinkModal/OrgInviteLink';
-import { PodInviteLinkModal } from '../InviteLinkModal/podInviteLink';
-import SidebarUserBoard from '../UserSidebar';
-import { ButtonsContainer, SettingsBtn } from './styles';
+import { OrgInviteLinkModal } from 'components/Common/InviteLinkModal/OrgInviteLink';
+import { PodInviteLinkModal } from 'components/Common/InviteLinkModal/podInviteLink';
+import { ButtonsContainer } from './styles';
 
 const SIDEBAR_COMPONENTS = {
   collabs: () => <CollabsSidebar />,
@@ -98,7 +96,7 @@ const EntitySidebar = ({ children, renderSidebar = null }) => {
     return () => (
       <>
         <EntitySidebarButtons />
-        <List />
+        <SidebarEntityList />
       </>
     );
   }, [query.roles, query.collabs, isMobileScreen]);
