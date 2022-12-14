@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { HorizontalEntityItem } from 'components/HeaderItems/CreateEntityComponent/styles';
 import Link from 'next/link';
 import ScrollBarStyles from 'components/Common/ScrollbarStyles';
+import { ButtonIcon } from 'components/Common/SidebarItem/styles';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -58,7 +59,7 @@ export const Item = styled(HorizontalEntityItem)`
   && {
     background: transparent;
     padding: 12px;
-    border-radius: 0px
+    border-radius: 0px;
   }
 `;
 
@@ -73,4 +74,22 @@ export const UnstyledButton = styled.button`
 
 export const UnstyledLink = styled(Link)`
   text-decoration: none;
+`;
+
+export const LeaveWorkspaceWrapper = styled(HorizontalEntityItem)`
+  && {
+    color: ${palette.white};
+
+    &:hover {
+      color: ${palette.red900};
+      ${ButtonIcon} {
+        svg {
+          path {
+            stroke: ${palette.red900};
+          }
+        }
+        background: transparent !important;
+      }
+    }
+  }
 `;

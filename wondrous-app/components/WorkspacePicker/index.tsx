@@ -1,15 +1,16 @@
 import Popover from '@mui/material/Popover';
 import { OrgProfilePicture, UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
-import { useGlobalContext, useOrgBoard, usePodBoard } from 'utils/hooks';
+import { useGlobalContext } from 'utils/hooks';
 
 import { useMutation } from '@apollo/client';
+import { Add } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import AddDaoButton from 'components/Common/SidebarMainAddDao';
 import { HorizontalEntityItem } from 'components/HeaderItems/CreateEntityComponent/styles';
+import BackspaceIcon from 'components/Icons/BackspaceIcon';
 import { ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
-import LogoutIcon from 'components/Icons/logout';
-import PlusIcon from 'components/Icons/plus';
+import OrgSettingsIcon from 'components/Icons/OrgSettingsIcon';
 import { MuiDrawer } from 'components/Spotlight/styles';
 import { LEAVE_ORG, LEAVE_POD } from 'graphql/mutations';
 import useMediaQuery from 'hooks/useMediaQuery';
@@ -18,7 +19,16 @@ import { useMemo } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { PAGE_PATHNAME } from 'utils/constants';
-import { FullWidthItem, ItemsWrapper, OrgItem, OrgWrapper, UnstyledButton, UnstyledLink, Wrapper } from './styles';
+import {
+  FullWidthItem,
+  ItemsWrapper,
+  LeaveWorkspaceWrapper,
+  OrgItem,
+  OrgWrapper,
+  UnstyledButton,
+  UnstyledLink,
+  Wrapper,
+} from './styles';
 
 const LeaveWorkspace = ({ onClose }) => {
   const router = useRouter();
@@ -78,16 +88,43 @@ const LeaveWorkspace = ({ onClose }) => {
 
   return (
     <UnstyledButton type="button" onClick={action}>
+      <LeaveWorkspaceWrapper>
+        <ItemButtonIcon bgColor={palette.grey75}>
+          <BackspaceIcon />
+        </ItemButtonIcon>
+
+        <Typography color="inherit" fontSize="15px" fontWeight={500} fontFamily={typography.fontFamily}>
+          Leave {activeOrg ? 'Organization' : 'Pod'}
+        </Typography>
+      </LeaveWorkspaceWrapper>
+    </UnstyledButton>
+  );
+};
+
+const WorkspaceSettings = () => {
+  const router = useRouter();
+  const { pageData, orgsList } = useGlobalContext();
+
+  const activeOrg = useMemo(() => orgsList.find((org) => org.isActive), [router.pathname, orgsList]);
+
+  const activePod = pageData?.pod;
+
+  const href = activeOrg
+    ? `/organization/settings/${activeOrg?.id}/general`
+    : `/pod/settings/${activePod?.pod?.id}/general`;
+
+  return (
+    <UnstyledLink href={href}>
       <HorizontalEntityItem>
-        <ItemButtonIcon style={{ padding: '4px' }} bgColor={palette.grey75}>
-          <LogoutIcon />
+        <ItemButtonIcon bgColor={palette.grey75} ignoreIconStyles={false}>
+          <OrgSettingsIcon />
         </ItemButtonIcon>
 
         <Typography color={palette.white} fontSize="15px" fontWeight={500} fontFamily={typography.fontFamily}>
-          Leave {activeOrg ? 'Organization' : 'Pod'}
+          {activeOrg ? 'Organization' : 'Pod'} Settings
         </Typography>
       </HorizontalEntityItem>
-    </UnstyledButton>
+    </UnstyledLink>
   );
 };
 
@@ -105,7 +142,13 @@ const ITEMS_CONFIG = [
           >
             <HorizontalEntityItem>
               <ItemButtonIcon bgColor={palette.grey75}>
-                <PlusIcon />
+                <Add
+                  sx={{
+                    path: {
+                      stroke: 'transparent !important',
+                    },
+                  }}
+                />
               </ItemButtonIcon>
 
               <Typography color={palette.white} fontSize="15px" fontWeight={500} fontFamily={typography.fontFamily}>
@@ -122,6 +165,10 @@ const ITEMS_CONFIG = [
     Icon: ExplorePageMinimalIcon,
     type: 'link',
     url: PAGE_PATHNAME.explore,
+  },
+  {
+    type: 'component',
+    Component: WorkspaceSettings,
   },
   {
     type: 'component',

@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
+import { ButtonIcon } from 'components/Common/SidebarItem/styles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
@@ -27,8 +27,13 @@ export const EntityItem = styled.div`
   height: 100px;
   &:hover {
     background: ${palette.grey75};
-    ${ItemButtonIcon} {
+    ${ButtonIcon} {
       background: ${palette.highlightPurple};
+      svg {
+        path {
+          stroke: ${palette.white};
+        }
+      }
     }
   }
 `;
