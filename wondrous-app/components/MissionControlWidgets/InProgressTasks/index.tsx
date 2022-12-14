@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import WidgetLayout from 'components/MissionControlWidgets/WidgetLayout';
 import { GET_USER_TASK_BOARD_TASKS } from 'graphql/queries';
-import { useGlobalContext } from 'utils/hooks';
+import { useGlobalContext, useTaskActions } from 'utils/hooks';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { useMe } from 'components/Auth/withAuth';
 import { TASK_STATUS_IN_PROGRESS } from 'utils/constants';
@@ -15,7 +15,6 @@ import { LIMIT } from 'services/board';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState } from 'react';
-import { delQuery } from 'utils';
 import { LoadMore } from 'components/SearchTasks/styles';
 import {
   TaskContainer,
@@ -34,6 +33,7 @@ const InProgressTasksWidget = () => {
   const globalContext = useGlobalContext();
   const { userOrgs } = globalContext;
   const user = useMe();
+  const { openTaskViewModal } = useTaskActions();
 
   const {
     data,
@@ -79,15 +79,6 @@ const InProgressTasksWidget = () => {
     }
   }, [inView, hasMore, data?.getUserTaskBoardTasks?.length]);
 
-  const handleCardClick = (task) => {
-    const query = {
-      ...router.query,
-      task: task?.id,
-    };
-
-    router.push({ query }, undefined, { scroll: false, shallow: true });
-  };
-
   return (
     <WidgetLayout title="In-Progress tasks">
       <TasksWrapper>
@@ -122,7 +113,7 @@ const InProgressTasksWidget = () => {
 
         <TasksContainer>
           {data?.getUserTaskBoardTasks?.map((task, idx) => (
-            <TaskContainer key={idx} onClick={() => handleCardClick(task)}>
+            <TaskContainer key={idx} onClick={() => openTaskViewModal(task)}>
               <OrgProfilePicture profilePicture={task?.orgProfilePicture} />
               <TaskTitle>{task.title}</TaskTitle>
             </TaskContainer>

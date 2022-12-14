@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { delQuery } from 'utils';
 import { MEDIA_TYPES, PRIVACY_LEVEL, TASK_STATUS_DONE, ENTITIES_TYPES } from 'utils/constants';
+import { useTaskActions } from 'utils/hooks';
 import {
   TaskSubtaskClaimButtonWrapper,
   TaskSubtaskCoverImageSafeImage,
@@ -174,21 +175,14 @@ function TaskSubtaskEmptyState() {
 
 export const TaskSubtaskItem = (props) => {
   const router = useRouter();
+  const { openTaskViewModal } = useTaskActions();
   const { query } = router;
   const { assignee, privacyLevel, rewards, status, title, id, media, taskApplicationPermissions, userId } = props;
   const subtaskUrl = `${delQuery(router.asPath)}?task=${id}&view=${query.view || 'grid'}&entity=task`;
-  const onNavigate = (e) => {
-    const query = {
-      ...router.query,
-      task: id,
-    };
-
-    router.push({ query }, undefined, { scroll: false, shallow: true });
-  };
 
   return (
     <div>
-      <SmartLink href={subtaskUrl} preventLinkNavigation onNavigate={onNavigate}>
+      <SmartLink href={subtaskUrl} preventLinkNavigation onNavigate={() => openTaskViewModal({ id })}>
         <TaskSubtaskItemWrapper>
           <TaskSubtaskItemHeader>
             <TaskSubtaskItemContent>

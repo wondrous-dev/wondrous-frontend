@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import usePrevious, { useOrgBoard, usePodBoard, useTaskActions, useUserBoard } from 'utils/hooks';
 import {
   ENTITIES_TYPES,
   BOARD_TYPE,
@@ -44,6 +44,7 @@ function KanbanBoard(props) {
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
   const router = useRouter();
+  const { openTaskViewModal } = useTaskActions();
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -273,12 +274,7 @@ function KanbanBoard(props) {
         },
         closeAction: () => {
           setTaskToConfirm(null);
-          const query = {
-            ...router.query,
-            [taskType]: taskToUpdate?.id,
-          };
-
-          router.push({ query }, undefined, { scroll: false, shallow: true });
+          openTaskViewModal(taskToUpdate);
         },
       });
       return;

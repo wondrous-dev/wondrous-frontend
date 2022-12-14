@@ -8,7 +8,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { ViewType } from 'types/common';
 import { TaskInterface } from 'types/task';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
-import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
+import { useExploreGr15TasksAndBounties, useHotkey, useTaskActions, useUserBoard } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { SafeImage } from '../Common/Image';
 import { UserIconSmall } from '../Icons/Search/types';
@@ -44,6 +44,8 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   const board = useUserBoard() || {};
   const autocompleteRef = useRef<HTMLInputElement>();
   const exploreGr15TasksAndBounties = useExploreGr15TasksAndBounties();
+  const { openTaskViewModal } = useTaskActions();
+
   useHotkeys(
     HOTKEYS.LOCAL_SEARCH,
     () => {
@@ -88,16 +90,6 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
       setIsLoading(false);
     }, 200);
   };
-
-  function handleTaskClick(task) {
-    const taskType = task.__typename === 'TaskProposalCard' ? 'proposal' : 'task';
-    const query = {
-      ...router.query,
-      [taskType]: task?.id,
-    };
-
-    router.push({ query }, undefined, { scroll: false, shallow: true });
-  }
 
   function handleShowMore() {
     setOpen(false);
@@ -174,7 +166,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
           );
         } else {
           content.push(
-            <Option key={taskOrUser.title} onClick={() => handleTaskClick(taskOrUser)}>
+            <Option key={taskOrUser.title} onClick={() => openTaskViewModal(taskOrUser)}>
               {TaskTypeIcons[taskOrUser.type]}
               {taskOrUser.title}
             </Option>

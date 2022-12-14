@@ -13,6 +13,7 @@ import { RejectIcon } from 'components/Icons/taskModalIcons';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { TaskSummaryAction } from 'components/Common/TaskSummary/styles';
 import { Arrow } from 'components/Icons/sections';
+import { useTaskActions } from 'utils/hooks';
 
 import TASK_ICONS from './constants';
 import {
@@ -31,6 +32,8 @@ import {
 export default function TaskListCard(props) {
   const { taskType, task } = props;
   const router = useRouter();
+  const { openTaskViewModal } = useTaskActions();
+
   const TaskIcon = () => {
     if (task?.paymentStatus === Constants.PAYMENT_STATUS.PROCESSING) {
       return TASK_ICONS[Constants.TASK_STATUS_AWAITING_PAYMENT];
@@ -42,16 +45,7 @@ export default function TaskListCard(props) {
   };
 
   return (
-    <TaskListCardWrapper
-      onClick={() => {
-        const query = {
-          ...router.query,
-          task: task.id,
-        };
-
-        router.push({ query }, undefined, { scroll: false, shallow: true });
-      }}
-    >
+    <TaskListCardWrapper onClick={() => openTaskViewModal(task)}>
       <TaskHeader>
         <SafeImage
           useNextImage={false}

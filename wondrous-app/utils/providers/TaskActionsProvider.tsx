@@ -29,6 +29,10 @@ const TaskActionsProvider = ({ children }) => {
     }
   }, [query]);
 
+  /**
+   * Opens task in modal. You can pass { id: string, isProposal: boolean } if you don't have entire task object
+   * @param task
+   */
   const openTaskViewModal = (task: TaskInterface) => {
     const isInQueue = taskViewQueue.some((item) => item.id === task.id);
 
@@ -64,8 +68,6 @@ const TaskActionsProvider = ({ children }) => {
       router.push({ query }, undefined, { scroll: false, shallow: true });
     }
   };
-
-  console.log(taskViewQueue, '<<< taskViewQueue');
 
   return (
     <TaskActionsContext.Provider

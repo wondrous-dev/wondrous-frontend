@@ -15,7 +15,7 @@ import {
   ENTITIES_TYPES,
 } from 'utils/constants';
 import { parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useTaskActions, useUserBoard } from 'utils/hooks';
 import palette from 'theme/palette';
 import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
@@ -65,6 +65,7 @@ export default function TableBody({
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const { openTaskViewModal } = useTaskActions();
 
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
@@ -226,18 +227,7 @@ export default function TableBody({
             <StyledTableCell align="center">
               <TaskStatus status={status} />
             </StyledTableCell>
-            <SmartLink
-              href={viewUrl}
-              preventLinkNavigation
-              onNavigate={() => {
-                const query = {
-                  ...router.query,
-                  task: task?.id,
-                };
-
-                router.push({ query }, undefined, { scroll: false, shallow: true });
-              }}
-            >
+            <SmartLink href={viewUrl} preventLinkNavigation onNavigate={() => openTaskViewModal(task)}>
               <StyledTableCell className="clickable">
                 <TaskTitle>
                   <a href={viewUrl}>{task.title}</a>

@@ -8,7 +8,7 @@ import {
   POD_MEMBERSHIP_REQUESTS,
 } from 'utils/constants';
 import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon } from 'components/Icons/statusIcons';
-import { useGlobalContext, useUserBoard } from 'utils/hooks';
+import { useGlobalContext, useTaskActions, useUserBoard } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { useMe } from 'components/Auth/withAuth';
 import { EmptyMemberRequestsListMessage } from 'components/organization/members/styles';
@@ -49,6 +49,7 @@ function ListViewAdmin({ column }: Props) {
   const board = useUserBoard();
   const user = useMe();
   const globalContext = useGlobalContext();
+  const { openTaskViewModal } = useTaskActions();
 
   const { adminWorkflowCount } = board;
 
@@ -63,15 +64,9 @@ function ListViewAdmin({ column }: Props) {
 
   const selectTask = (id, type) => {
     if (![ORG_MEMBERSHIP_REQUESTS, POD_MEMBERSHIP_REQUESTS].includes(type)) {
-      const isTaskProposal = type === TASK_STATUS_PROPOSAL_REQUEST;
-      const taskType = isTaskProposal ? 'taskProposal' : 'task';
+      const isProposal = type === TASK_STATUS_PROPOSAL_REQUEST;
 
-      const query = {
-        ...router.query,
-        [taskType]: id,
-      };
-
-      router.push({ query }, undefined, { scroll: false, shallow: true });
+      openTaskViewModal({ id, isProposal });
     }
   };
   if (!column || !user) return null;

@@ -32,16 +32,6 @@ export default function SmartLink({
   const router = useRouter();
 
   const handleClick = (event) => {
-    (window as any).start = Date.now();
-    const interval = setInterval(() => {
-      const el = document.querySelector('[class*=styles__TaskModalCard]');
-
-      if (el) {
-        console.log(Date.now() - (window as any).start, '-------------VIEW DONE ----------');
-        clearInterval(interval);
-      }
-    }, );
-
     const isCommandKeyPressed = event.metaKey || event.ctrlKey;
     onClick(event);
 

@@ -2,6 +2,7 @@ import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils/index';
 import { useRouter } from 'next/router';
 import { RichTextViewer } from 'components/RichText';
+import { useTaskActions } from 'utils/hooks';
 import {
   PostContentBackground,
   PostContentBorder,
@@ -22,6 +23,7 @@ export function PostQuote(props) {
   const { referencedObject, content } = post;
   const taskId = referencedObject?.objectId;
   const taskViewUrl = `${delQuery(router.asPath)}?task=${taskId}`;
+  const { openTaskViewModal } = useTaskActions();
 
   return (
     <PostQuoteBackground>
@@ -33,18 +35,7 @@ export function PostQuote(props) {
           <PostReferenceBackground>
             <PostHeader post={referencedObject} />
             <ReferenceTitle>
-              <SmartLink
-                href={taskViewUrl}
-                preventLinkNavigation
-                onNavigate={() => {
-                  const query = {
-                    ...router.query,
-                    task: taskId,
-                  };
-
-                  router.push({ query }, undefined, { scroll: false, shallow: true });
-                }}
-              >
+              <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => openTaskViewModal({ id: taskId })}>
                 {referencedObject?.title}
               </SmartLink>
             </ReferenceTitle>

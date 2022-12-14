@@ -36,6 +36,7 @@ import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { MoreOptions } from 'components/Table/styles';
 import { CreateEntity } from 'components/CreateEntity';
 import { ButtonPrimary } from 'components/Common/button';
+import { useTaskActions } from 'utils/hooks';
 import {
   ListViewItemBodyWrapper,
   ListViewItemDataContainer,
@@ -45,7 +46,7 @@ import {
 } from './styles';
 
 function ListViewItem({ task, entityType, isDragDisabled }) {
-  const windowOffset = 0;
+  const { openTaskViewModal } = useTaskActions();
   const router = useRouter();
   const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
   const [data, setData] = useState(task);
@@ -282,12 +283,7 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
         preventLinkNavigation
         onNavigate={() => {
           if (!showPaymentModal) {
-            const query = {
-              ...router.query,
-              [taskType]: task?.id,
-            };
-
-            router.push({ query }, undefined, { scroll: false, shallow: true });
+            openTaskViewModal(task);
           }
         }}
       >
