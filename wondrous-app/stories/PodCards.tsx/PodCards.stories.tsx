@@ -1,5 +1,5 @@
 import { ComponentMeta } from '@storybook/react';
-import PodCards from 'components/ProjectProfile/PodCards';
+import PodCards from 'components/ProjectProfile/PodSection';
 import React from 'react';
 import * as PodCardStories from 'stories/PodCard/PodCard.stories';
 

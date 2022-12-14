@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid';
-import PodCards from 'components/ProjectProfile/PodCards';
+import PodSection from 'components/ProjectProfile/PodSection';
 import { useMemo } from 'react';
 import { ProjectContext } from 'utils/contexts';
 
@@ -29,7 +29,7 @@ const ProjectProfile = ({ orgData }) => {
         <DocCategoriesModal />
         <CreateGrantModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
-          <PodCards />
+          <PodSection />
           <ProfileSectionsWrapper />
         </Grid>
       </>

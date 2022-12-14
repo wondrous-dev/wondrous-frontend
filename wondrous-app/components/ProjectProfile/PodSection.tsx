@@ -61,7 +61,7 @@ const PodCards = () => {
   const pods = useGetOrgPods();
   const podsComponent = isEmpty(pods) ? <NoPods /> : <PodCardContent pods={pods} />;
   return (
-    <Grid container bgcolor={palette.black97} padding="14px" gap="14px">
+    <Grid container bgcolor={palette.grey900} padding="14px" gap="14px" borderRadius="6px">
       <Grid container justifyContent="space-between">
         <HeaderTitle IconComponent={PodIcon} text="Pods" />
         <ShowAllButton />
