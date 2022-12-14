@@ -135,25 +135,20 @@ function PayModal(props) {
         </StyledTabs>
         <PaymentMethodWrapper>
           {selectedTab === 'off_platform' && (
-            <>
-              <WarningTypography>
-                This link will only be visible to the assignee and other admins with the payment permission
-              </WarningTypography>
-              <OfflinePayment
-                submissionPaymentInfo={submissionPaymentInfo}
-                approvedSubmission={{
-                  id: submissionId,
-                }}
-                handleClose={() => {
-                  const query = {
-                    view: ViewType.Paid,
-                  };
+            <OfflinePayment
+              submissionPaymentInfo={submissionPaymentInfo}
+              approvedSubmission={{
+                id: submissionId,
+              }}
+              handleClose={() => {
+                const query = {
+                  view: ViewType.Paid,
+                };
 
-                  router.push({ query }, undefined, { scroll: false, shallow: true });
-                  handleClose();
-                }}
-              />
-            </>
+                router.push({ query }, undefined, { scroll: false, shallow: true });
+                handleClose();
+              }}
+            />
           )}
 
           {selectedTab === 'wallet' && (
