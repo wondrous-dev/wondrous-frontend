@@ -17,6 +17,27 @@ const TaskActionsProvider = ({ children }) => {
   const [taskViewQueue, setTaskViewQueue] = useState<TaskInterface[]>([]);
 
   useEffect(() => {
+    router.beforePopState(({ as }) => {
+      if (as !== router.asPath) {
+        // Will run when leaving the current page; on back/forward actions
+        if (taskViewQueue.length) {
+          const prevTask = taskViewQueue[taskViewQueue.length - 2];
+
+          if ((prevTask && as.includes(prevTask.id)) || taskViewQueue.length === 1) {
+            // close previous or last task if you click browser's back button
+            setTaskViewQueue([...taskViewQueue].slice(0, -1));
+          }
+        }
+      }
+      return true;
+    });
+
+    return () => {
+      router.beforePopState(() => true);
+    };
+  }, [router]); // Add any state variables to dependencies array if needed.
+
+  useEffect(() => {
     const taskId = query.task || query.taskProposal;
 
     if (taskId && !taskViewQueue.length) {
@@ -84,7 +105,7 @@ const TaskActionsProvider = ({ children }) => {
           taskId={task.id}
           task={task.__typename ? task : null}
           back={router.query.view === ViewType.List}
-          isTaskProposal={!!task.isProposal}
+          isTaskProposal={!!(task ? task.isProposal : query.taskProposal)}
           open
         />
       ))}

@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
 import * as Constants from 'utils/constants';
+import { useTaskActions } from 'utils/hooks';
 
 import {
   MilestoneEmpty,
@@ -66,17 +67,9 @@ function MilestoneTaskReward({ rewards }) {
 }
 
 export default function MilestoneTaskList({ data }) {
-  const { asPath, query, push } = useRouter();
+  const { asPath } = useRouter();
+  const { openTaskViewModal } = useTaskActions();
   const taskUrl = (id) => `${delQuery(asPath)}?task=${id}&view=grid&entity=milestone`;
-
-  const onNavigate = (id) => {
-    const newQuery = {
-      ...query,
-      task: id,
-    };
-
-    push({ query: newQuery }, undefined, { scroll: false, shallow: true });
-  };
 
   if (isEmpty(data)) return <MilestoneEmpty>No tasks yet.</MilestoneEmpty>;
   return (
@@ -85,7 +78,7 @@ export default function MilestoneTaskList({ data }) {
         const { id, title, assignee, privacyLevel, dueDate, rewards, commentCount } = task;
         const isPrivate = privacyLevel !== Constants.PRIVACY_LEVEL.public;
         return (
-          <SmartLink href={taskUrl(id)} preventLinkNavigation key={id} onNavigate={() => onNavigate(id)}>
+          <SmartLink href={taskUrl(id)} preventLinkNavigation key={id} onNavigate={() => openTaskViewModal(task)}>
             <MilestoneTaskItem>
               <MilestoneUserImage assignee={assignee} />
               <MilestoneTaskTitleAndInfo>
