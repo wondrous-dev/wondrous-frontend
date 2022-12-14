@@ -207,7 +207,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                       <TaskModalHeaderIconWrapper
                         onClick={() => {
                           onClose();
-                          router.push(`/organization/${grant?.org?.username}/boards`, undefined, {
+                          router.push(`/organization/${grant?.org?.username}/home`, undefined, {
                             shallow: true,
                           });
                         }}
