@@ -205,7 +205,7 @@ function SettingsWrapper(props) {
         shallow: true,
       });
     } else if (org) {
-      router.push(`/${mainPath}/${org?.username}/boards`, undefined, {
+      router.push(`/${mainPath}/${org?.username}/home`, undefined, {
         shallow: true,
       });
     }
@@ -214,8 +214,8 @@ function SettingsWrapper(props) {
   const settingsPageConfig = {
     [String(orgId)]: {
       page: SettingsPage.Org,
-      path: `/${mainPath}/${org?.username}/boards`,
-      label: 'DAO',
+      path: `/${mainPath}/${org?.username}/home`,
+      label: 'Org',
     },
     [String(podId)]: {
       page: SettingsPage.Pod,

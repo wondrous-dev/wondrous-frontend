@@ -18,6 +18,7 @@ const EXCLUDED_PATHS = [
   '/invite/pod/[token]',
   '/invite/[token]',
   '/organization/[username]/boards',
+  '/organization/[username]/home',
   '/login',
   '/discord/callback',
   '/onboarding/welcome',

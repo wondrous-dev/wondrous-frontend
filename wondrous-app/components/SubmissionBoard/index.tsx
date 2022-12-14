@@ -31,7 +31,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
       shallow: true,
     });
 
-  const goToOrg = (orgId) => router.push(`/org/${orgId}/boards`, undefined, { shallow: true });
+  const goToOrg = (orgId) => router.push(`/org/${orgId}/home`, undefined, { shallow: true });
 
   const editSubmission = (taskId, submissionId) => handleCardClick({ id: taskId }, `&taskSubmissionId=${submissionId}`);
 
