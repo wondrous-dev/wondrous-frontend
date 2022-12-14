@@ -146,7 +146,7 @@ export default function TaskCard({
   // refactor this. move this logic in a separate hook
   const displayPayButton =
     !!task?.approvedSubmissionsCount &&
-    task?.status === Constants.TASK_STATUS_DONE &&я
+    task?.status === Constants.TASK_STATUS_DONE &&
     hasPermissionToPay &&
     (!task.paymentStatus || task.paymentStatus === 'unpaid') &&
     task?.rewards?.length > 0;

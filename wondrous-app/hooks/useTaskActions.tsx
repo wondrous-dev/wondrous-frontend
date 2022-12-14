@@ -2,13 +2,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { TaskInterface } from 'types/task';
 
-type TaskViewItem = {
-  taskId?: string;
-  isProposal?: boolean;
-};
-
 export type TaskActions = {
-  taskViewQueue: TaskViewItem[];
+  taskViewQueue: TaskInterface[];
   openTaskViewModal: (task: TaskInterface) => void;
   closeTaskViewModal: (goBack: boolean) => void;
 };
@@ -21,16 +16,13 @@ export type TaskActions = {
 const useTaskActions = () => {
   const router = useRouter();
   // Queue has task ids that should be opened in modal
-  const [taskViewQueue, setTaskViewQueue] = useState<TaskViewItem[]>([]);
+  const [taskViewQueue, setTaskViewQueue] = useState<TaskInterface[]>([]);
 
-  const openTaskViewModal = (task) => {
-    if (!taskViewQueue.includes(task.id)) {
-      const taskViewItem: TaskViewItem = {
-        taskId: task.id,
-        isProposal: task.isProposal,
-      };
+  const openTaskViewModal = (task: TaskInterface) => {
+    const isInQueue = taskViewQueue.some((item) => item.id === task.id);
 
-      const newQueue = [...taskViewQueue, taskViewItem];
+    if (!isInQueue) {
+      const newQueue = [...taskViewQueue, task];
       setTaskViewQueue(newQueue);
 
       const query = {
@@ -52,7 +44,7 @@ const useTaskActions = () => {
       if (taskViewQueue.length > 1) {
         const taskViewItem = taskViewQueue[taskViewQueue.length - 1];
 
-        query[taskViewItem.isProposal ? 'task' : 'taskProposal'] = taskViewItem.taskId;
+        query[taskViewItem.isProposal ? 'task' : 'taskProposal'] = taskViewItem.id;
       } else {
         delete query.task;
         delete query.taskProposal;

@@ -52,13 +52,14 @@ const TaskViewModalWatcher = () => {
 
   return (
     <>
-      {board.taskViewQueue.map((taskViewItem) => (
+      {board.taskViewQueue.map((task) => (
         <TaskViewModal
-          key={taskViewItem.taskId}
+          key={task.id}
           handleClose={board.closeTaskViewModal}
-          taskId={taskViewItem.taskId}
+          taskId={task.id}
+          task={task}
           back={router.query.view === ViewType.List}
-          isTaskProposal={!!taskViewItem.isProposal}
+          isTaskProposal={!!task.isProposal}
           open
         />
       ))}

@@ -137,6 +137,7 @@ import TaskViewModalFooter from './taskViewModalFooter';
 import { hasGR15DEIIntiative, openSnapshot } from './utils';
 import TaskViewNft from '../TaskViewNft';
 import ViewNftFields from '../TaskMint/ViewNftFields';
+import { TaskInterface } from 'types/task';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -144,9 +145,10 @@ interface ITaskListModalProps {
   taskId: string;
   isTaskProposal?: boolean;
   back?: boolean;
+  task?: TaskInterface;
 }
 
-const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back }: ITaskListModalProps) => {
+const TaskViewModal = ({ open, handleClose, taskId, task, isTaskProposal = false, back }: ITaskListModalProps) => {
   const [fetchedTask, setFetchedTask] = useState(null);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
@@ -190,7 +192,7 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
     orgId: fetchedTask?.orgId,
     podId: fetchedTask?.podId,
   });
-  const { canViewTask } = useCanViewTask(fetchedTask, userPermissionsContext, permissions);
+  const { canViewTask } = useCanViewTask(fetchedTask || task, userPermissionsContext, permissions);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -215,6 +217,7 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
         if (taskMintStatus === TaskMintStatus.COMPLETED) {
           stopPolling();
         }
+
         setFetchedTask(
           transformTaskToTaskCard(taskData, {
             orgProfilePicture: taskData?.org?.profilePicture,
@@ -544,6 +547,9 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
       };
       return newCategory;
     });
+
+  const fetchedOrPassedTask = fetchedTask || task;
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -556,7 +562,7 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
             completeModal={completeModal}
             setCompleteModal={setCompleteModal}
             taskType={taskType}
-            fetchedTask={fetchedTask}
+            fetchedTask={fetchedOrPassedTask}
             archiveTask={archiveTask}
             archiveTaskMutation={archiveTaskMutation}
             handleOnCloseArchiveTaskModal={handleOnCloseArchiveTaskModal}
@@ -567,10 +573,10 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
             setSnackbarAlertMessage={setSnackbarAlertMessage}
           />
         )}
-        <TaskContext.Provider value={{ fetchedTask, refetch, tokenData }}>
+        <TaskContext.Provider value={{ fetchedOrPassedTask, refetch, tokenData }}>
           <TaskModal open={open} onClose={handleModalClose}>
             <TaskModalCard fullScreen={fullScreen}>
-              {!!fetchedTask && canViewTask !== null && (
+              {!!fetchedOrPassedTask && canViewTask !== null && (
                 <>
                   {canViewTask ? (
                     <>
@@ -579,37 +585,37 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                           <TaskModalHeaderIconWrapper
                             onClick={() => {
                               handleClose(false);
-                              router.push(`/organization/${fetchedTask?.orgUsername}/boards`, undefined, {
+                              router.push(`/organization/${fetchedOrPassedTask?.orgUsername}/boards`, undefined, {
                                 shallow: true,
                               });
                             }}
                           >
-                            {fetchedTask?.orgProfilePicture ? (
-                              <TaskCardOrgPhoto src={fetchedTask?.orgProfilePicture} />
+                            {fetchedOrPassedTask?.orgProfilePicture ? (
+                              <TaskCardOrgPhoto src={fetchedOrPassedTask?.orgProfilePicture} />
                             ) : (
                               <TaskCardOrgNoLogo>
                                 <DAOIcon />
                               </TaskCardOrgNoLogo>
                             )}
-                            <TaskModalHeaderTypography>{fetchedTask?.org.name}</TaskModalHeaderTypography>
+                            <TaskModalHeaderTypography>{fetchedOrPassedTask?.org?.name}</TaskModalHeaderTypography>
                           </TaskModalHeaderIconWrapper>
-                          {fetchedTask?.podName && (
+                          {fetchedOrPassedTask?.podName && (
                             <>
                               <TaskModalHeaderArrow />
                               <TaskModalHeaderIconWrapper
                                 onClick={() => {
-                                  handleClose(falsex);
-                                  router.push(`/pod/${fetchedTask?.podId}/boards`, undefined, {
+                                  handleClose(false);
+                                  router.push(`/pod/${fetchedOrPassedTask?.podId}/boards`, undefined, {
                                     shallow: true,
                                   });
                                 }}
                               >
-                                <TaskCardPodIcon color={fetchedTask?.podColor} />
-                                <TaskModalHeaderTypography>{fetchedTask?.podName}</TaskModalHeaderTypography>
+                                <TaskCardPodIcon color={fetchedOrPassedTask?.podColor} />
+                                <TaskModalHeaderTypography>{fetchedOrPassedTask?.podName}</TaskModalHeaderTypography>
                               </TaskModalHeaderIconWrapper>
                             </>
                           )}
-                          {isSubtask && fetchedTask?.type === TASK_TYPE && (
+                          {isSubtask && fetchedOrPassedTask?.type === TASK_TYPE && (
                             <>
                               <TaskModalHeaderArrow />
                               <Tooltip title="Parent Task" placement="top">
@@ -617,7 +623,7 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                                   onClick={() => {
                                     const query = {
                                       ...router.query,
-                                      task: fetchedTask?.parentTaskId,
+                                      task: fetchedOrPassedTask?.parentTaskId,
                                     };
 
                                     router.push({ query }, undefined, { scroll: false, shallow: true });
@@ -627,14 +633,14 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                                     <CheckedBoxIcon />
                                   </TaskModalHeaderIconWrapper>
                                   <TaskModalHeaderTypography>
-                                    {cutString(fetchedTask?.parentTask?.title, 20)}
+                                    {cutString(fetchedOrPassedTask?.parentTask?.title, 20)}
                                   </TaskModalHeaderTypography>
                                 </SubtaskTitleWrapper>
                               </Tooltip>
                             </>
                           )}
 
-                          {isSubtask && fetchedTask?.type === TASK_TYPE && (
+                          {isSubtask && fetchedOrPassedTask?.type === TASK_TYPE && (
                             <>
                               <TaskModalHeaderArrow />
                               <SubtaskIconWrapper>
@@ -642,13 +648,13 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                               </SubtaskIconWrapper>
                             </>
                           )}
-                          {fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public && (
+                          {fetchedOrPassedTask?.privacyLevel !== PRIVACY_LEVEL.public && (
                             <>
                               <TaskModalHeaderArrow />
                               <TaskModalHeaderPrivacyIcon
-                                isPrivate={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public}
+                                isPrivate={fetchedOrPassedTask?.privacyLevel !== PRIVACY_LEVEL.public}
                                 tooltipTitle={
-                                  fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public ? 'Members only' : 'Public'
+                                  fetchedOrPassedTask?.privacyLevel !== PRIVACY_LEVEL.public ? 'Members only' : 'Public'
                                 }
                               />
                             </>
@@ -658,7 +664,7 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                           {back && (
                             <TaskModalHeaderBackToList onClick={handleClose}>Back to list</TaskModalHeaderBackToList>
                           )}
-                          <TaskModalHeaderShare fetchedTask={fetchedTask} />
+                          <TaskModalHeaderShare fetchedTask={fetchedOrPassedTask} />
                           <TaskModalHeaderOpenInFullIcon
                             isFullScreen={fullScreen}
                             onClick={() => setFullScreen(!fullScreen)}
@@ -676,59 +682,65 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                             setEditTask={setEditTask}
                             taskType={taskType}
                           />
-                          <TaskModalHeaderCloseModal onClick={() => handleClose()} />
+                          <TaskModalHeaderCloseModal onClick={() => handleClose(true)} />
                         </TaskModalHeaderWrapperRight>
                       </TaskModalHeader>
                       <TaskModalTaskData hideRowGap={isViewNft || isTaskProposal} fullScreen={fullScreen}>
                         <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
-                          <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
+                          <TaskModalTitle>{fetchedOrPassedTask?.title}</TaskModalTitle>
                           {!isViewNft ? (
                             <TaskModalTaskStatusMoreInfo>
-                              {fetchedTask?.snapshotId && (
+                              {fetchedOrPassedTask?.snapshotId && (
                                 <TaskModalSnapshot onClick={handleSnapshot}>
                                   <TaskModalSnapshotLogo />
                                   <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                                 </TaskModalSnapshot>
                               )}
-                              {canEdit && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
+                              {canEdit && <TaskMenuStatus task={fetchedOrPassedTask} isTaskProposal={isTaskProposal} />}
                               {isMilestone && (
-                                <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
+                                <MilestoneProgressViewModal
+                                  milestoneId={fetchedOrPassedTask?.id}
+                                  isMilestone={isMilestone}
+                                />
                               )}
                             </TaskModalTaskStatusMoreInfo>
                           ) : null}
-                          <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
-                          <TaskMediaWrapper media={fetchedTask?.media} />
+                          <TaskDescriptionTextWrapper
+                            text={fetchedOrPassedTask?.description}
+                            key={fetchedOrPassedTask?.id}
+                          />
+                          <TaskMediaWrapper media={fetchedOrPassedTask?.media} />
                           {!fullScreen && <TaskBorder />}
                           {isTaskProposal && (
                             <VoteResults
                               userInOrg={userInOrg}
                               fullScreen={fullScreen}
-                              proposalStatus={getProposalStatus(fetchedTask)}
-                              proposal={fetchedTask}
+                              proposalStatus={getProposalStatus(fetchedOrPassedTask)}
+                              proposal={fetchedOrPassedTask}
                             />
                           )}
                         </TaskModalTitleDescriptionMedia>
                         <TaskSectionDisplayDivWrapper fullScreen={fullScreen}>
                           <TaskSectionDisplayData>
                             <TaskMintComponent
-                              assigneeId={fetchedTask?.assigneeId}
-                              taskStatus={fetchedTask?.status}
-                              taskMintData={fetchedTask?.taskMint}
+                              assigneeId={fetchedOrPassedTask?.assigneeId}
+                              taskStatus={fetchedOrPassedTask?.status}
+                              taskMintData={fetchedOrPassedTask?.taskMint}
                               isViewNft={isViewNft}
                               setIsViewNft={setIsViewNft}
-                              taskId={fetchedTask?.id}
+                              taskId={fetchedOrPassedTask?.id}
                             />
                             <ReviewerField
                               shouldDisplay={!isTaskProposal && !isMilestone}
                               reviewerData={reviewerData}
                               handleClose={handleClose}
                               canEdit={canEdit}
-                              fetchedTask={fetchedTask}
+                              fetchedTask={fetchedOrPassedTask}
                               user={user}
                             />
                             <AssigneeField
                               shouldDisplay={showAssignee}
-                              fetchedTask={fetchedTask}
+                              fetchedTask={fetchedOrPassedTask}
                               canEdit={canEdit}
                               setFetchedTask={setFetchedTask}
                               updateInReviewItem={updateInReviewItem}
@@ -746,7 +758,7 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                               podId={board?.podId}
                               userId={board?.userId}
                             />
-                            {!isViewNft && <WatchersField fetchedTask={fetchedTask} />}
+                            {!isViewNft && <WatchersField fetchedTask={fetchedOrPassedTask} />}
                             <ApplicationField
                               shouldDisplay={
                                 canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0
@@ -756,34 +768,42 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                             />
                             <ProposerField
                               shouldDisplay={isTaskProposal && !isMilestone}
-                              creatorProfilePicture={fetchedTask?.creatorProfilePicture}
-                              creatorUsername={fetchedTask?.creatorUsername}
+                              creatorProfilePicture={fetchedOrPassedTask?.creatorProfilePicture}
+                              creatorUsername={fetchedOrPassedTask?.creatorUsername}
                               handleClose={handleClose}
                             />
                             <DueDateField
-                              dueDate={fetchedTask?.dueDate}
-                              shouldDisplay={fetchedTask?.dueDate}
-                              recurringSchema={fetchedTask?.recurringSchema}
-                              shouldUnclaimOnDueDateExpiry={fetchedTask?.shouldUnclaimOnDueDateExpiry}
+                              dueDate={fetchedOrPassedTask?.dueDate}
+                              shouldDisplay={fetchedOrPassedTask?.dueDate}
+                              recurringSchema={fetchedOrPassedTask?.recurringSchema}
+                              shouldUnclaimOnDueDateExpiry={fetchedOrPassedTask?.shouldUnclaimOnDueDateExpiry}
                             />
-                            <Rewards fetchedTask={fetchedTask} user={user} />
-                            <PointsField shouldDisplay={!!fetchedTask?.points} points={fetchedTask?.points} />
+                            <Rewards fetchedTask={fetchedOrPassedTask} user={user} />
+                            <PointsField
+                              shouldDisplay={!!fetchedOrPassedTask?.points}
+                              points={fetchedOrPassedTask?.points}
+                            />
                             <MilestoneField
-                              shouldDisplay={!!fetchedTask?.milestoneId}
-                              milestoneId={fetchedTask?.milestoneId}
+                              shouldDisplay={!!fetchedOrPassedTask?.milestoneId}
+                              milestoneId={fetchedOrPassedTask?.milestoneId}
                               getTaskById={getTaskById}
-                              milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
+                              milestoneTitle={
+                                fetchedOrPassedTask?.milestone?.title || fetchedOrPassedTask?.milestoneTitle
+                              }
                             />
-                            <PriorityField priority={fetchedTask?.priority} />
+                            <PriorityField priority={fetchedOrPassedTask?.priority} />
                             <CategoryField
                               shouldDisplay={remaininTaskCategories?.length > 0}
                               labels={remaininTaskCategories}
                             />
-                            <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
-                            <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
+                            <TagsField
+                              shouldDisplay={fetchedOrPassedTask?.labels?.length > 0}
+                              labels={fetchedOrPassedTask?.labels}
+                            />
+                            <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedOrPassedTask?.categories)} />
                             {isTaskProposal && (
                               <CreateFormFooterButtons>
-                                {fetchedTask?.changeRequestedAt && (
+                                {fetchedOrPassedTask?.changeRequestedAt && (
                                   <>
                                     <div style={flexDivStyle}>
                                       <RejectIcon style={rejectIconStyle} />
@@ -796,7 +816,7 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                                     />
                                   </>
                                 )}
-                                {fetchedTask?.approvedAt && (
+                                {fetchedOrPassedTask?.approvedAt && (
                                   <>
                                     <div style={flexDivStyle}>
                                       <CompletedIcon style={rejectIconStyle} />
@@ -809,9 +829,9 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                                     />
                                   </>
                                 )}
-                                {canApproveProposal && !fetchedTask?.approvedAt && (
+                                {canApproveProposal && !fetchedOrPassedTask?.approvedAt && (
                                   <CreateFormButtonsBlock>
-                                    {!fetchedTask?.changeRequestedAt && (
+                                    {!fetchedOrPassedTask?.changeRequestedAt && (
                                       <CreateFormCancelButton onClick={closeProposal}>Reject</CreateFormCancelButton>
                                     )}
                                     <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
@@ -821,32 +841,32 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                             )}
                             {isViewNft ? (
                               <ViewNftFields
-                                taskId={fetchedTask?.id}
+                                taskId={fetchedOrPassedTask?.id}
                                 onClose={() => setIsViewNft(false)}
-                                taskTitle={fetchedTask?.title}
+                                taskTitle={fetchedOrPassedTask?.title}
                               />
                             ) : null}
-                            <GithubButtons fetchedTask={fetchedTask} />
+                            <GithubButtons fetchedTask={fetchedOrPassedTask} />
                           </TaskSectionDisplayData>
                           <TaskSectionDisplayCreator>
-                            {fetchedTask?.creatorUsername && !isTaskProposal && (
+                            {fetchedOrPassedTask?.creatorUsername && !isTaskProposal && (
                               <TaskSectionImageContent
-                                hasContent={fetchedTask?.creatorUsername}
-                                imgSrc={fetchedTask?.creatorProfilePicture}
+                                hasContent={fetchedOrPassedTask?.creatorUsername}
+                                imgSrc={fetchedOrPassedTask?.creatorProfilePicture}
                                 DefaultImageComponent={() => <DefaultUserImage />}
                                 ContentComponent={() => (
                                   <TaskSectionInfoTextCreator>
-                                    {fetchedTask?.creatorUsername}{' '}
+                                    {fetchedOrPassedTask?.creatorUsername}{' '}
                                     <TaskSectionInfoCreatorTask>
-                                      created this {fetchedTask?.type}{' '}
+                                      created this {fetchedOrPassedTask?.type}{' '}
                                     </TaskSectionInfoCreatorTask>
-                                    {fetchedTask?.createdAt && (
+                                    {fetchedOrPassedTask?.createdAt && (
                                       <TaskSectionInfoCreatorDaysAgo>
-                                        {formatDateDisplay(fetchedTask?.createdAt, true)}
+                                        {formatDateDisplay(fetchedOrPassedTask?.createdAt, true)}
                                         {/* {taskCreatedBefore >= 7 ? (
-                                      <>on {format(new Date(fetchedTask?.createdAt), 'MM/dd/yyyy')}</>
+                                      <>on {format(new Date(fetchedOrPassedTask?.createdAt), 'MM/dd/yyyy')}</>
                                     ) : (
-                                      formatDistance(new Date(fetchedTask?.createdAt), new Date(), {
+                                      formatDistance(new Date(fetchedOrPassedTask?.createdAt), new Date(), {
                                         addSuffix: true,
                                       })
                                     )} */}
@@ -856,7 +876,7 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                                 )}
                                 onClick={() => {
                                   handleClose(false);
-                                  router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
+                                  router.push(`/profile/${fetchedOrPassedTask?.creatorUsername}/about`, undefined, {
                                     shallow: true,
                                   });
                                 }}
@@ -866,7 +886,7 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                         </TaskSectionDisplayDivWrapper>
                         {isViewNft ? (
                           <TaskViewNft
-                            taskId={fetchedTask?.id}
+                            taskId={fetchedOrPassedTask?.id}
                             getTaskMintTokenData={getTaskMintTokenData}
                             tokenData={tokenData}
                           />
@@ -885,13 +905,13 @@ const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back
                             isSubtask={isSubtask}
                             activeTab={activeTab}
                             setActiveTab={setActiveTab}
-                            fetchedTask={fetchedTask}
+                            fetchedTask={fetchedOrPassedTask}
                             user={user}
                             canViewApplications={canViewApplications}
                             boardColumns={boardColumns}
                             taskSubmissionsForTask={taskSubmissionsForTask}
                             getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-                            handleClose={handleClose}
+                            handleClose={() => handleClose(true)}
                             setFetchedTask={setFetchedTask}
                             setShowPaymentModal={setShowPaymentModal}
                             taskSubmissionsForTaskLoading={taskSubmissionsForTaskLoading}
