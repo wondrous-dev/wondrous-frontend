@@ -20,7 +20,7 @@ export default function VoteOptionRow({ votes, option, handleVote, handleUndoVot
   const userVotedFor = votes?.userVote === option;
   let optionDisplayName = option;
   if (voteType === 'binary' || !voteType) {
-    optionDisplayName = option === 'approve' ? 'Yes' : 'No';
+    optionDisplayName = option === 'approve' ? 'Vote For' : 'Vote Against';
   }
   return (
     <VoteRowWrapper key={`${option}`}>

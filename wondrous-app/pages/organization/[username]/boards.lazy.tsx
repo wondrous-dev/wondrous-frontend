@@ -38,10 +38,9 @@ import {
   STATUS_OPEN,
   STATUSES_ON_ENTITY_TYPES,
   TASK_STATUSES,
-  TASK_STATUS_TODO,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useIsMobile, usePageDataContext } from 'utils/hooks';
+import { usePageDataContext } from 'utils/hooks';
 import Boards from 'components/organization/boards/boards';
 
 const useGetOrgTaskBoardTasks = ({
@@ -49,7 +48,6 @@ const useGetOrgTaskBoardTasks = ({
   setColumns,
   setOrgTaskHasMore,
   orgId,
-
   userId,
   entityType,
   setIsLoading,
@@ -356,7 +354,7 @@ const useGetOrgTaskBoard = ({
 
 function BoardsPage() {
   const router = useRouter();
-  const {setPageData} = usePageDataContext()
+  const { setPageData } = usePageDataContext();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -375,7 +373,7 @@ function BoardsPage() {
   const [activeView, setActiveView] = useState(view);
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
-    
+
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -466,12 +464,12 @@ function BoardsPage() {
   };
 
   useEffect(() => {
-    if(orgData) {
-      setPageData({orgData})
+    if (orgData) {
+      setPageData({ orgData });
     }
-  }, [orgData])
+  }, [orgData]);
 
-  useEffect(() => () => setPageData({}), [])
+  useEffect(() => () => setPageData({}), []);
 
   const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
     onCompleted: (data) => {

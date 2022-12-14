@@ -31,12 +31,12 @@ function ContributorOnboardingPage({ path = 'organization' }) {
             token,
           },
           onCompleted: (data) => {
-            router.push(`/${path}/${orgInfo?.username}/boards`, undefined, {
+            router.push(`/${path}/${orgInfo?.username}/home`, undefined, {
               shallow: true,
             });
           },
           onError: () => {
-            router.push(`/${path}/${orgInfo?.username}/boards`, undefined, {
+            router.push(`/${path}/${orgInfo?.username}/home`, undefined, {
               shallow: true,
             });
           },

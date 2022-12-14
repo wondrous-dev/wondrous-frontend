@@ -90,7 +90,7 @@ export default function MembershipRequestTable(props) {
                     />
                     <NoUnderlineLink
                       passHref
-                      href={`/organization/${request?.orgUsername}/boards`}
+                      href={`/organization/${request?.orgUsername}/home`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

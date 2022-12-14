@@ -48,28 +48,23 @@ const useGetPodTaskBoardTasks = ({
   setColumns,
   setPodTaskHasMore,
   podId,
-  statuses,
-  priorities,
+  userId,
   entityType,
   setIsLoading,
   search,
-  labelId,
-  date,
-  privacyLevel,
-  userId,
-  category,
+  filters,
 }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
-    onCompleted: (data) => {
+    onCompleted: ({ getPodTaskBoardTasks }) => {
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
-        setColumns(data?.getPodTaskBoardTasks);
+        setColumns(getPodTaskBoardTasks);
         setIsLoading(false);
         return;
       }
-      const newColumns = populateTaskColumns(data?.getPodTaskBoardTasks, ORG_POD_COLUMNS);
+      const newColumns = populateTaskColumns(getPodTaskBoardTasks, ORG_POD_COLUMNS);
       setColumns(dedupeColumns(newColumns));
       setIsLoading(false);
     },
@@ -78,16 +73,11 @@ const useGetPodTaskBoardTasks = ({
     },
   });
   const getPodTaskBoardTasksFetchMore = useCallback(() => {
-    const fetchMoreVariables = {
-      ...variables,
-      input: {
-        ...variables.input,
+    fetchMore({
+      variables: {
         offset:
           entityType === ENTITIES_TYPES.TASK ? Math.max(...columns.map(({ tasks }) => tasks.length)) : columns.length,
       },
-    };
-    fetchMore({
-      variables: fetchMoreVariables,
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getPodTaskBoardTasks.length >= LIMIT);
         return {
@@ -99,33 +89,11 @@ const useGetPodTaskBoardTasks = ({
     });
   }, [columns, fetchMore, setPodTaskHasMore, variables]);
 
-  const fetchPerStatus = async (status, limit) => {
-    const column = columns?.find((column) => column.status === status);
-    const fetchMoreVariables = {
-      ...variables,
-      input: {
-        ...variables.input,
-        offset: column?.tasks?.length,
-        statuses: [status],
-        ...(limit ? { limit } : {}),
-      },
-    };
-
-    fetchMore({
-      variables: fetchMoreVariables,
-      updateQuery: (prev, { fetchMoreResult }) => ({
-        getPodTaskBoardTasks: [...prev.getPodTaskBoardTasks, ...fetchMoreResult.getPodTaskBoardTasks],
-      }),
-    }).catch((error) => {
-      console.log(error);
-    });
-  };
-
   useEffect(() => {
-    if (entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search && !userId) {
+    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search && podId) {
       const taskBoardStatuses =
-        statuses?.length > 0
-          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
+        filters?.statuses?.length > 0
+          ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
           : // double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
 
@@ -135,14 +103,14 @@ const useGetPodTaskBoardTasks = ({
           input: {
             podId,
             statuses: taskBoardStatuses,
-            priorities,
+            priorities: filters?.priorities,
             limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
             offset: 0,
-            labelId,
-            date,
-            category,
+            labelId: filters?.labelId,
+            date: filters?.date,
+            category: filters?.category,
             types: [entityType],
-            ...(privacyLevel === PRIVACY_LEVEL.public && {
+            ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
               onlyPublic: true,
             }),
           },
@@ -150,19 +118,111 @@ const useGetPodTaskBoardTasks = ({
       });
       setPodTaskHasMore(true);
     }
-  }, [
-    getPodTaskBoardTasks,
-    podId,
-    statuses,
-    priorities,
-    setPodTaskHasMore,
-    entityType,
-    labelId,
-    date,
-    privacyLevel,
-    category,
-  ]);
+  }, [getPodTaskBoardTasks, podId, filters, setPodTaskHasMore, entityType, userId]);
+
+  const fetchPerStatus = async (status, limit) => {
+    const columnIdx = columns?.findIndex((column) => column.status === status);
+    fetchMore({
+      variables: {
+        offset: columns[columnIdx]?.tasks?.length,
+        statuses: [status],
+        ...(limit ? { limit } : {}),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setPodTaskHasMore(fetchMoreResult?.getPodTaskBoardTasks.length >= LIMIT);
+        return {
+          getPodTaskBoardTasks: [...prev.getPodTaskBoardTasks, ...fetchMoreResult.getPodTaskBoardTasks],
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
   return { fetchMore: getPodTaskBoardTasksFetchMore, fetchPerStatus };
+};
+
+const useGetTaskRelatedToUser = ({
+  userId,
+  podId,
+  setColumns,
+  columns,
+  setPodTaskHasMore,
+  entityType,
+  setIsLoading,
+  search,
+  filters,
+}) => {
+  const [getTasksRelatedToUserInPod, { fetchMore }] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_POD, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+    onCompleted: ({ getTasksRelatedToUserInPod }) => {
+      if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
+        setColumns(getTasksRelatedToUserInPod);
+        setIsLoading(false);
+        return;
+      }
+      const newColumns = populateTaskColumns(getTasksRelatedToUserInPod, ORG_POD_COLUMNS);
+      setColumns(dedupeColumns(newColumns));
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      console.log(error);
+      setIsLoading(false);
+    },
+  });
+
+  const getTasksRelatedToUserFetchMore = useCallback(() => {
+    fetchMore({
+      variables: {
+        offset:
+          entityType === ENTITIES_TYPES.TASK
+            ? columns.reduce((prev, next) => (prev += next.tasks.length), 0)
+            : columns.length,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setPodTaskHasMore(fetchMoreResult?.getTasksRelatedToUserInPod.length >= LIMIT);
+        const getTasksRelatedToUserInPod = [
+          ...prev.getTasksRelatedToUserInOrg,
+          ...fetchMoreResult.getTasksRelatedToUserInPod,
+        ];
+        return {
+          getTasksRelatedToUserInPod,
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [columns, fetchMore, setPodTaskHasMore]);
+
+  useEffect(() => {
+    if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && podId) {
+      const taskBoardStatuses =
+        filters?.statuses?.length > 0
+          ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+          : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+      const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
+      getTasksRelatedToUserInPod({
+        variables: {
+          priorities: filters?.priorities,
+          userId,
+          podId,
+          statuses: taskBoardStatuses,
+          limit: taskBoardLimit,
+          offset: 0,
+          labelId: filters?.labelId,
+          date: filters?.date,
+          types: [entityType],
+          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
+            onlyPublic: true,
+          }),
+        },
+      });
+      setPodTaskHasMore(true);
+    }
+  }, [podId, userId, entityType, filters]);
+  return { fetchMore: getTasksRelatedToUserFetchMore };
 };
 
 const useGetPodTaskProposals = ({
@@ -171,15 +231,11 @@ const useGetPodTaskProposals = ({
   setColumns,
   columns,
   podId,
-  statuses,
-  priorities,
   entityType,
   setIsLoading,
   setPodTaskHasMore,
   search,
-  labelId,
-  date,
-  privacyLevel,
+  filters,
 }) => {
   const [getPodTaskProposals, { data, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
@@ -203,7 +259,7 @@ const useGetPodTaskProposals = ({
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getPodTaskBoardProposals.length >= LIMIT);
         const getPodTaskBoardProposals = uniqBy(
-          [...prev.getOrgTaskBoardProposals, ...fetchMoreResult.getOrgTaskBoardProposals],
+          [...prev.getPodTaskBoardProposals, ...fetchMoreResult.getPodTaskBoardProposals],
           'id'
         );
         return {
@@ -217,24 +273,24 @@ const useGetPodTaskProposals = ({
 
   useEffect(() => {
     const proposalBoardStatuses =
-      statuses?.length > 0
-        ? statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
+      filters?.statuses?.length > 0
+        ? filters?.statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
         : [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED];
     if (entityType === ENTITIES_TYPES.PROPOSAL && !search && podId) {
       getPodTaskProposals({
         variables: {
           input: {
             podId,
-            priorities,
+            priorities: filters?.priorities,
             statuses: proposalBoardStatuses,
             offset: 0,
-            labelId,
+            labelId: filters?.labelId,
             limit: LIMIT,
           },
         },
       });
     }
-  }, [getPodTaskProposals, podId, statuses, priorities, entityType, labelId]);
+  }, [getPodTaskProposals, podId, setPodTaskHasMore, entityType, filters]);
   return { fetchMore: getProposalsFetchMore };
 };
 
@@ -248,31 +304,32 @@ const useGetPodTaskBoard = ({
   entityType,
   setIsLoading,
   search,
-  statuses,
-  priorities,
-  labelId,
-  date,
-  privacyLevel,
   userId,
-  category,
+  filters,
 }) => {
   const listView = view === ViewType.List;
   const board = {
-    tasks: useGetPodTaskBoardTasks({
+    [userId]: useGetTaskRelatedToUser({
       columns,
       setColumns,
       setPodTaskHasMore,
       podId,
-      statuses,
-      priorities,
       entityType,
       setIsLoading,
       search,
-      labelId,
-      date,
-      privacyLevel,
       userId,
-      category,
+      filters,
+    }),
+    withoutUserId: useGetPodTaskBoardTasks({
+      columns,
+      setColumns,
+      setPodTaskHasMore,
+      podId,
+      entityType,
+      setIsLoading,
+      search,
+      userId,
+      filters,
     }),
     proposals: useGetPodTaskProposals({
       listView,
@@ -280,18 +337,15 @@ const useGetPodTaskBoard = ({
       setColumns,
       columns,
       podId,
-      statuses,
-      priorities,
       entityType,
       setIsLoading,
       setPodTaskHasMore,
       search,
-      labelId,
-      date,
-      privacyLevel,
+      filters,
     }),
   };
-  const { fetchMore, fetchPerStatus }: any = entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : board.tasks;
+  const { fetchMore, fetchPerStatus }: any =
+    entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : userId ? board[userId] : board.withoutUserId;
   return { fetchMore, fetchPerStatus };
 };
 
@@ -305,20 +359,10 @@ type Props = {
 
 function BoardsPage({ meta }: Props) {
   const router = useRouter();
-  const {setPageData} = usePageDataContext()
+  const { setPageData } = usePageDataContext();
   const { podId, search, userId, view = ViewType.Grid, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
-  const [entityType, setEntityType] = useState(activeEntityFromQuery);
-  const [section, setSection] = useReducer(sectionOpeningReducer, '');
-  const [searchString, setSearchString] = useState('');
-  const [activeView, setActiveView] = useState(view);
-  const [isLoading, setIsLoading] = useState(true);
-  const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
-  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
-    fetchPolicy: 'cache-and-network',
-  });
-
   const [filters, setFilters] = useState<TaskFilter>({
     statuses: DEFAULT_ENTITY_STATUS_FILTER[activeEntityFromQuery],
     priorities: [],
@@ -326,17 +370,26 @@ function BoardsPage({ meta }: Props) {
     date: null,
     privacyLevel: null,
   });
+  const [searchString, setSearchString] = useState('');
+  const [entityType, setEntityType] = useState(activeEntityFromQuery);
+  const [section, setSection] = useReducer(sectionOpeningReducer, '');
+  const [activeView, setActiveView] = useState(view);
+  const [isLoading, setIsLoading] = useState(true);
+  const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
   const [getPod, { data: podData, loading: isPodDataLoading }] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: ({ getPodById }) => {
-      setPageData({pod: getPodById})
-    }
+      setPageData({ pod: getPodById });
+    },
   });
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
-  const { statuses, labelId, date, privacyLevel, category, priorities } = filters;
+  const { statuses, labelId, date, privacyLevel } = filters;
 
   const { fetchMore, fetchPerStatus } = useGetPodTaskBoard({
     section,
@@ -345,16 +398,11 @@ function BoardsPage({ meta }: Props) {
     setColumns,
     setPodTaskHasMore,
     podId,
-    statuses,
-    priorities,
+    filters,
     userId,
     entityType,
     setIsLoading,
     search,
-    labelId,
-    date,
-    privacyLevel,
-    category,
   });
 
   const handleEntityTypeChange = (type) => {
@@ -405,20 +453,6 @@ function BoardsPage({ meta }: Props) {
   };
 
   const [getPodBoardTaskCount, { data: podTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD);
-
-  const [getTasksRelatedToUser] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_POD, {
-    onCompleted: (data) => {
-      if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
-        setColumns(data?.getTasksRelatedToUserInPod);
-        setIsLoading(false);
-        return;
-      }
-      const newColumns = populateTaskColumns(data?.getTasksRelatedToUserInPod, ORG_POD_COLUMNS);
-      setColumns(dedupeColumns(newColumns));
-      setIsLoading(false);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
 
   const searchPodTaskProposalsArgs = {
     variables: {
@@ -486,27 +520,6 @@ function BoardsPage({ meta }: Props) {
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
-      } else if (userId && entityType !== ENTITIES_TYPES.PROPOSAL) {
-        const taskBoardStatuses =
-          filters?.statuses?.length > 0
-            ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
-            : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
-
-        getTasksRelatedToUser({
-          variables: {
-            podId,
-            userId,
-            limit: 1000,
-            offset: 0,
-            statuses: taskBoardStatuses,
-            labelId,
-            types: [entityType],
-            date,
-            ...(privacyLevel === PRIVACY_LEVEL.public && {
-              onlyPublic: true,
-            }),
-          },
-        });
       } else {
         // fetch user task boards after getting orgId from username
 

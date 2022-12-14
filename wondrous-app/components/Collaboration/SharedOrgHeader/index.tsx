@@ -88,7 +88,7 @@ const SharedOrgHeader = ({ parentOrgs }) => (
   <Grid container direction="row" wrap="nowrap" gap="18px" sx={{ width: 'auto' }}>
     {parentOrgs?.map((org, idx) => (
       <>
-        <Link href={`/organization/${org?.username}/boards`}>
+        <Link href={`/organization/${org?.username}/home`}>
           <Box sx={{ minWidth: '60px', cursor: 'pointer' }} key={idx}>
             <SafeImage
               src={org?.profilePicture}

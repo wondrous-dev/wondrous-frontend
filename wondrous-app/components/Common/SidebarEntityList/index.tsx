@@ -37,9 +37,9 @@ const usePerTypeTaskCountForBoard = () => {
 
 const useSidebarData = () => {
   const { board, orgBoard } = useBoards();
-  const { setMinimized} = useSideBar();
-  const {isMobileScreen} = useMediaQuery();
-  
+  const { setMinimized } = useSideBar();
+  const { isMobileScreen } = useMediaQuery();
+
   const { setEntityType } = board || {};
   const router = useRouter();
   const { search } = router.query;
@@ -50,8 +50,8 @@ const useSidebarData = () => {
         setEntityType(type);
         if (!search) return;
       }
-      if(isMobileScreen) {
-        setMinimized(true)
+      if (isMobileScreen) {
+        setMinimized(true);
       }
       router.push(link);
     };
@@ -127,7 +127,7 @@ const useSidebarData = () => {
       label: 'Community',
       items: [
         {
-          text: 'Leaderboard/Analytics',
+          text: 'Leaderboard',
           Icon: PieChartIcon,
           link: `${link}/analytics`,
         },

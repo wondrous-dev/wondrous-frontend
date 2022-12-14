@@ -11,6 +11,7 @@ import apollo from 'services/apollo';
 import { ImageKeyEnums, ImageTypes } from 'types/common';
 import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
 import { usePageDataContext } from 'utils/hooks';
+import ImageUpload from 'components/Settings/imageUpload';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { ARCHIVE_POD, UNARCHIVE_POD, UPDATE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -23,11 +24,11 @@ import LinkBigIcon from '../Icons/link';
 import OpenSeaIcon from '../Icons/openSea';
 import TwitterPurpleIcon from '../Icons/twitterPurple';
 import ColorSettings from './ColorDropdown';
-import ImageUpload from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import {
-  CreateFormAddDetailsTabWrapper, GeneralSettingsButtonsBlock,
+  CreateFormAddDetailsTabWrapper,
+  GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
   GeneralSettingsDAODescriptionBlock,
   GeneralSettingsDAODescriptionInput,
@@ -40,7 +41,9 @@ import {
   GeneralSettingsSocialsBlock,
   GeneralSettingsSocialsBlockRow,
   GeneralSettingsSocialsBlockWrapper,
-  LabelBlock, SettingsHeaderText, Snackbar
+  LabelBlock,
+  SettingsHeaderText,
+  Snackbar,
 } from './styles';
 
 interface ToastProps {
@@ -369,11 +372,11 @@ export function PodGeneralSettings() {
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
   const [color, setColor] = useState(null);
-  const {setPageData} = usePageDataContext()
+  const { setPageData } = usePageDataContext();
   const [getPod, { data: getPodByIdData }] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: ({ getPodById }) => {
       setPod(getPodById);
-      setPageData({pod: getPodById})
+      setPageData({ pod: getPodById });
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -609,7 +612,7 @@ function GeneralSettings() {
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
   const [isPrivate, setIsPrivate] = useState(null);
-  const {setPageData} = usePageDataContext()
+  const { setPageData } = usePageDataContext();
   const router = useRouter();
   const { orgId } = router.query;
 
@@ -627,11 +630,11 @@ function GeneralSettings() {
 
   const [getOrgById, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
     onCompleted: ({ getOrgById }) => {
-      setPageData({orgData: getOrgById});
-      setOrganization(getOrgById)},
+      setPageData({ orgData: getOrgById });
+      setOrganization(getOrgById);
+    },
     fetchPolicy: 'cache-and-network',
   });
-
 
   useEffect(() => {
     if (orgId) {

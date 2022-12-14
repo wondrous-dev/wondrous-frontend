@@ -91,7 +91,7 @@ export const getNotificationLink = (notification) => {
     const mainPath = notification.type === COLLAB_TYPES.APPROVE ? 'collaboration' : 'organization';
     notificationLink =
       notification.type === COLLAB_TYPES.APPROVE
-        ? `/${mainPath}/${notification.additionalData.orgUsername}/boards`
+        ? `/${mainPath}/${notification.additionalData.orgUsername}/home`
         : `/${mainPath}/${notification.additionalData.orgUsername}/collaborations?invite=true`;
   }
 

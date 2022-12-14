@@ -2589,6 +2589,25 @@
     react-transition-group "^4.4.5"
     rifm "^0.12.1"
 
+"@ndhoule/each@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ndhoule/each/-/each-2.0.1.tgz#bbed372a603e0713a3193c706a73ddebc5b426a9"
+  integrity sha512-wHuJw6x+rF6Q9Skgra++KccjBozCr9ymtna0FhxmV/8xT/hZ2ExGYR8SV8prg8x4AH/7mzDYErNGIVHuzHeybw==
+  dependencies:
+    "@ndhoule/keys" "^2.0.0"
+
+"@ndhoule/keys@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ndhoule/keys/-/keys-2.0.0.tgz#3d64ae677c65a261747bf3a457c62eb292a4e0ce"
+  integrity sha512-vtCqKBC1Av6dsBA8xpAO+cgk051nfaI+PnmTZep2Px0vYrDvpUmLxv7z40COlWH5yCpu3gzNhepk+02yiQiZNw==
+
+"@ndhoule/map@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ndhoule/map/-/map-2.0.1.tgz#f5ca0a47424ea67f46e2a6d499b9e9bc886aefa8"
+  integrity sha512-WOEf2An9mL4DVY6NHgaRmFC82pZGrmzW4I0hpPPdczDP4Gp5+Q1Nny77x3w0qzENA8+cbgd9+Lx2ClSTLvkB0g==
+  dependencies:
+    "@ndhoule/each" "^2.0.1"
+
 "@next/bundle-analyzer@12.1.6":
   version "12.1.6"
   resolved "https://registry.yarnpkg.com/@next/bundle-analyzer/-/bundle-analyzer-12.1.6.tgz#5f4efcdb8c91d70c8be6013b0aacdb4d89ba1312"
@@ -2847,6 +2866,13 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz#8be36a1f66f3265389e90b5f9c9962146758f728"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
+
+"@segment/snippet@^4.15.3":
+  version "4.15.3"
+  resolved "https://registry.yarnpkg.com/@segment/snippet/-/snippet-4.15.3.tgz#ac829ec4570b249f559756293f4736e434885de7"
+  integrity sha512-75kVTYaQGYMkwVjJvCLLOlzxV8jCDxvKG68U88joo/rBx95SIXETcjUmIXF6A7SFRCgz83B+zrZbo+JYsmHkig==
+  dependencies:
+    "@ndhoule/map" "^2.0.1"
 
 "@sentry/browser@6.19.7":
   version "6.19.7"

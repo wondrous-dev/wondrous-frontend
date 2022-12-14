@@ -6,7 +6,7 @@ import {
   SearchResultCategory,
   SearchResultCategoryTitle,
   SearchResultItem,
-  SearchResults
+  SearchResults,
 } from 'components/GlobalSearch/styles';
 import BackIcon from 'components/Icons/BackIcon';
 import SearchSuggestions from 'components/SearchSuggestions';
@@ -103,7 +103,7 @@ const Spotlight = ({ onClose }) => {
   const handleRedirect = (type, entity) => {
     onClose();
     if (type === GLOBAL_SEARCH_TYPES.ORGS)
-      return router.push(`/organization/${entity.username}/boards?view=grid`, undefined, { shallow: true });
+      return router.push(`/organization/${entity.username}/home`, undefined, { shallow: true });
     if (type === GLOBAL_SEARCH_TYPES.PODS)
       return router.push(`/pod/${entity.id}/boards?view=grid`, undefined, { shallow: true });
     if (type === GLOBAL_SEARCH_TYPES.USERS)
@@ -143,8 +143,8 @@ const Spotlight = ({ onClose }) => {
         <Grid>
           {isMobileScreen ? (
             <Grid display="flex" gap="16px" width="100%">
-              <LeftArrowButton type="button" onClick={onClose}> 
-              <BackIcon />
+              <LeftArrowButton type="button" onClick={onClose}>
+                <BackIcon />
               </LeftArrowButton>
 
               <SearchInputWrapper isExpanded>

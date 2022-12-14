@@ -34,12 +34,8 @@ import {
   NotificationsMarkRead,
   NotificationsOverlay,
   NotificationsTitle,
-  NotificationWrapper
+  NotificationWrapper,
 } from './styles';
-
-// const Test = forwardRef((props, ref) => {
-//   return null;
-// })
 
 const NotificationsBoard = forwardRef(
   ({ onlyBoard = false, isActive = true, setIsActive = () => {}, isOpen = false }: any, forwardedRef: any) => {
@@ -54,7 +50,7 @@ const NotificationsBoard = forwardRef(
         return `/profile/${notification.actorUsername}/about`;
       }
       if (notification?.actorType === ENTITIES_TYPES.ORG) {
-        return `/organization/${notification.actorUsername}/boards  `;
+        return `/organization/${notification.actorUsername}/home  `;
       }
       if (notification?.actorType === ENTITIES_TYPES.POD) {
         return `/pod/${notification?.actorId}/boards`;
@@ -199,85 +195,83 @@ const NotificationsBoard = forwardRef(
       );
     }
     return (
-      <>
-        <div>
-          <StyledBadge
+      <div>
+        <StyledBadge
+          color="primary"
+          isActive={isActive}
+          hasUnreadNotifications={unreadCount > 0}
+          onClick={toggleNotifications}
+        >
+          <Badge
+            badgeContent={HOTKEYS.OPEN_NOTIFICATION}
             color="primary"
-            isActive={isActive}
-            hasUnreadNotifications={unreadCount > 0}
-            onClick={toggleNotifications}
+            invisible={!showBadge}
+            style={{ zIndex: 999 }}
           >
-            <Badge
-              badgeContent={HOTKEYS.OPEN_NOTIFICATION}
-              color="primary"
-              invisible={!showBadge}
-              style={{ zIndex: 999 }}
-            >
-              <Tooltip title="Notifications" style={{ zIndex: 1 }}>
-                <NotificationsIcon />
-              </Tooltip>
-            </Badge>
-          </StyledBadge>
-          <HeaderItemWrapper ref={forwardedRef} style={{ display }}>
-            <Wrapper>
-              <NotificationsBoardHeader>
-                <NotificationsTitle>Notifications</NotificationsTitle>
-                <NotificationsMarkRead enabled={unreadCount > 0}>
-                  <span onClick={handleMarkAllRead}>Mark all as read</span>
-                </NotificationsMarkRead>
-              </NotificationsBoardHeader>
-              <NotificationsBoardWrapper>
-                {notifications?.length ? (
-                  notifications?.map((notification) => {
-                    const isNotificationViewed = notification?.viewedAt;
-                    const notificationLink = getNotificationLink(notification);
+            <Tooltip title="Notifications" style={{ zIndex: 1 }}>
+              <NotificationsIcon />
+            </Tooltip>
+          </Badge>
+        </StyledBadge>
+        <HeaderItemWrapper ref={forwardedRef} style={{ display }}>
+          <Wrapper>
+            <NotificationsBoardHeader>
+              <NotificationsTitle>Notifications</NotificationsTitle>
+              <NotificationsMarkRead enabled={unreadCount > 0}>
+                <span onClick={handleMarkAllRead}>Mark all as read</span>
+              </NotificationsMarkRead>
+            </NotificationsBoardHeader>
+            <NotificationsBoardWrapper>
+              {notifications?.length ? (
+                notifications?.map((notification) => {
+                  const isNotificationViewed = notification?.viewedAt;
+                  const notificationLink = getNotificationLink(notification);
 
-                    return (
-                      <SmartLink
-                        key={`notifications-${notification.id}`}
-                        href={notificationLink}
-                        onClick={() => {
-                          markNotificationRead({
-                            variables: {
-                              notificationId: notification?.id,
-                            },
-                            refetchQueries: [GET_NOTIFICATIONS],
-                          });
-                        }}
-                      >
-                        <NotificationsItem isNotificationViewed={isNotificationViewed}>
-                          <NotificationItemIcon>
-                            {getNotificationActorIcon(notification)}
-                            <NotificationItemStatus>{notification.status}</NotificationItemStatus>
-                          </NotificationItemIcon>
-                          <NotificationWrapper>
-                            <NotificationItemBody>
-                              <NotificationItemInner>{getNotificationText(notification)}</NotificationItemInner>
-                            </NotificationItemBody>
-                            <NotificationsContentPreview>{getContentPreview(notification)}</NotificationsContentPreview>
-                          </NotificationWrapper>
-                          {!isNotificationViewed && <NotificationsDot />}
-                        </NotificationsItem>
-                      </SmartLink>
-                    );
-                  })
-                ) : (
-                  <NotificationsItem emptyNotifications>
-                    <NotificationItemBody emptyNotifications>No notifications</NotificationItemBody>
-                  </NotificationsItem>
-                )}
-                <LoadMore
-                  style={{
-                    height: '20px',
-                  }}
-                  hasMore
-                  ref={ref}
-                />
-              </NotificationsBoardWrapper>
-            </Wrapper>
-          </HeaderItemWrapper>
-        </div>
-      </>
+                  return (
+                    <SmartLink
+                      key={`notifications-${notification.id}`}
+                      href={notificationLink}
+                      onClick={() => {
+                        markNotificationRead({
+                          variables: {
+                            notificationId: notification?.id,
+                          },
+                          refetchQueries: [GET_NOTIFICATIONS],
+                        });
+                      }}
+                    >
+                      <NotificationsItem isNotificationViewed={isNotificationViewed}>
+                        <NotificationItemIcon>
+                          {getNotificationActorIcon(notification)}
+                          <NotificationItemStatus>{notification.status}</NotificationItemStatus>
+                        </NotificationItemIcon>
+                        <NotificationWrapper>
+                          <NotificationItemBody>
+                            <NotificationItemInner>{getNotificationText(notification)}</NotificationItemInner>
+                          </NotificationItemBody>
+                          <NotificationsContentPreview>{getContentPreview(notification)}</NotificationsContentPreview>
+                        </NotificationWrapper>
+                        {!isNotificationViewed && <NotificationsDot />}
+                      </NotificationsItem>
+                    </SmartLink>
+                  );
+                })
+              ) : (
+                <NotificationsItem emptyNotifications>
+                  <NotificationItemBody emptyNotifications>No notifications</NotificationItemBody>
+                </NotificationsItem>
+              )}
+              <LoadMore
+                style={{
+                  height: '20px',
+                }}
+                hasMore
+                ref={ref}
+              />
+            </NotificationsBoardWrapper>
+          </Wrapper>
+        </HeaderItemWrapper>
+      </div>
     );
   }
 );

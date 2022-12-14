@@ -19,9 +19,7 @@ import { randomColors } from 'utils/common';
 const ResourcesSidebar = ({ children, docs, handleCreateNewCategory, handleSelectCategory, selectedCategory }) => {
   const { minimized } = useSideBar();
   const { board, orgBoard } = useBoards();
-  const href = orgBoard
-    ? `/organization/${board?.orgData?.username}/boards?entity=task`
-    : `/pod/${board?.podId}/boards?entity=task`;
+  const href = orgBoard ? `/organization/${board?.orgData?.username}/home` : `/pod/${board?.podId}/boards?entity=task`;
   const canEdit = useCanEdit();
   return (
     <Wrapper>

@@ -208,7 +208,7 @@ const ViewGrantApplication = ({ onClose }) => {
             <TaskModalHeaderIconWrapper
               onClick={() => {
                 onClose();
-                router.push(`/organization/${grant?.orgUsername}/boards`, undefined, {
+                router.push(`/organization/${grant?.orgUsername}/home`, undefined, {
                   shallow: true,
                 });
               }}
