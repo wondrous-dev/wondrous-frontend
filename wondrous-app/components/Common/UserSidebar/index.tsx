@@ -1,8 +1,8 @@
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import Item from 'components/Common/SidebarItem';
-import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
-import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
-import GroupIcon from 'components/Icons/Sidebar/group.svg';
+import { ExplorePageSidebarIcon } from 'components/Icons/ExplorePageIcons';
+import { ContributorIcon } from 'components/Icons/Sidebar/Contributor';
+import OperatorIcon from 'components/Icons/Sidebar/Operator';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import WrenchIcon from 'components/Icons/wrench';
 import useMediaQuery from 'hooks/useMediaQuery';
@@ -15,12 +15,12 @@ import PodsIconButton from '../SidebarMainPods';
 
 const useSidebarData = () => {
   const router = useRouter();
-  const {setMinimized} = useSideBar()
-  const {isMobileScreen} = useMediaQuery()
+  const { setMinimized } = useSideBar();
+  const { isMobileScreen } = useMediaQuery();
   const handleOnClick = (link) => () => {
-    router.push(link)
-    if(isMobileScreen) {
-      setMinimized(true)
+    router.push(link);
+    if (isMobileScreen) {
+      setMinimized(true);
     }
   };
 
@@ -31,7 +31,7 @@ const useSidebarData = () => {
       items: [
         {
           text: 'Mission Control',
-          Icon: GridViewIcon,
+          Icon: ExplorePageSidebarIcon,
           link: '/mission-control',
         },
         {
@@ -57,13 +57,13 @@ const useSidebarData = () => {
       items: [
         {
           text: 'Contributor',
-          Icon: CheckBoxIcon,
+          Icon: ContributorIcon,
           customActiveCheck: () => router.pathname === '/dashboard',
           link: '/dashboard',
         },
         {
           text: 'Operator',
-          Icon: GroupIcon,
+          Icon: OperatorIcon,
           customActiveCheck: () => router.pathname === '/dashboard/admin',
           link: `/dashboard/admin?boardType=${ORG_MEMBERSHIP_REQUESTS}`,
         },
@@ -77,7 +77,7 @@ const useSidebarData = () => {
           Component: () => (
             <PodsIconButton
               renderIcon={({ setOpenPodModal, openPodModal }) => (
-                <Item Icon={PodIcon} onClick={setOpenPodModal} isActive={openPodModal} text='Pods'>
+                <Item Icon={PodIcon} onClick={setOpenPodModal} isActive={openPodModal} text="Pods">
                   Pods
                 </Item>
               )}

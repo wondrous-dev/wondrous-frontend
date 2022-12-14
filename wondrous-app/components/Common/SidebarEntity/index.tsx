@@ -13,6 +13,8 @@ import { RequestApproveButton } from 'components/organization/members/styles';
 import { UnstyledLink } from 'components/WorkspacePicker/styles';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import Button from 'components/Button';
+import palette from 'theme/palette';
 import { OrgInviteLinkModal } from '../InviteLinkModal/OrgInviteLink';
 import { PodInviteLinkModal } from '../InviteLinkModal/podInviteLink';
 import SidebarUserBoard from '../UserSidebar';
@@ -34,6 +36,19 @@ const EntitySidebarButtons = () => {
   const href = orgBoard
     ? `/organization/settings/${orgBoard?.orgId}/general`
     : `/pod/settings/${podBoard?.podId}/general`;
+
+  const sharedButtonProps = {
+    height: 30,
+    fullWidth: true,
+  };
+
+  const sharedButtonTheme = {
+    fontSize: '14px',
+    fontWeight: 500,
+    paddingX: 8,
+    paddingY: 8,
+  };
+
   return (
     <>
       {orgBoard ? (
@@ -43,10 +58,25 @@ const EntitySidebarButtons = () => {
         <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
       ) : null}
       <ButtonsContainer>
-        <UnstyledLink href={href}>
-          <SettingsBtn>Settings</SettingsBtn>
+        <UnstyledLink href={href} style={{ width: '100%' }}>
+          {/* <SettingsBtn>Settings</SettingsBtn> */}
+          <Button
+            {...sharedButtonProps}
+            buttonTheme={{
+              background: palette.grey75,
+              borderColor: 'transparent',
+              hover: {
+                background: palette.grey76,
+              },
+              ...sharedButtonTheme,
+            }}
+          >
+            Settings
+          </Button>
         </UnstyledLink>
-        <RequestApproveButton onClick={() => setOpenInvite(true)}>Invite</RequestApproveButton>
+        <Button buttonTheme={sharedButtonTheme} {...sharedButtonProps} onClick={() => setOpenInvite(true)}>
+          Invite
+        </Button>
       </ButtonsContainer>
     </>
   );

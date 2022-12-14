@@ -27,7 +27,7 @@ export const SidebarWrapper = styled.div`
   transition: width 0.2s;
   justify-content: space-between;
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    width: ${({ minimized }) => (minimized ? '0px' : 'auto')};
+    width: ${({ minimized }) => (minimized ? '0px' : '100%')};
   }
   ${ScrollBarStyles};
 `;
@@ -35,7 +35,6 @@ export const SidebarWrapper = styled.div`
 export const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 14px;
   flex-grow: 1;
 `;
 
@@ -54,7 +53,7 @@ export const Label = styled(Typography)`
     font-weight: 500;
     font-size: 13px;
     display: flex;
-    padding: 0px 14px 0px 14px;
+    padding: 0px 14px 0px 18px;
     color: ${({ theme }) => theme.palette.grey57};
   }
 `;
