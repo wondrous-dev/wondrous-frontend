@@ -40,6 +40,7 @@ import {
   ExploreGr15TasksAndBountiesContext,
   TaskContext,
   ProjectContext,
+  TaskActionsContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
 
@@ -87,6 +88,18 @@ export const useWindowSize = () => {
 export const useTextInput = () => useContext(TextInputContext);
 
 export const useOrgBoard = () => useContext(OrgBoardContext);
+
+// You can find all data in the provider
+// utils/providers/TaskActionsProvider.tsx
+export const useTaskActions = () => {
+  const { taskViewQueue, openTaskViewModal, closeTaskViewModal } = useContext(TaskActionsContext);
+
+  return {
+    taskViewQueue,
+    openTaskViewModal,
+    closeTaskViewModal,
+  };
+};
 
 export const usePodBoard = () => useContext(PodBoardContext);
 

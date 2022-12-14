@@ -41,7 +41,7 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import Boards from 'components/organization/boards/boards';
-import useTaskActions from "../../../hooks/useTaskActions";
+import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -354,7 +354,6 @@ const useGetOrgTaskBoard = ({
 
 function BoardsPage() {
   const router = useRouter();
-  const taskActions = useTaskActions();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -677,7 +676,6 @@ function BoardsPage() {
   return (
     <OrgBoardContext.Provider
       value={{
-        ...taskActions,
         columns,
         setColumns,
         orgId: orgData?.id,
@@ -701,24 +699,26 @@ function BoardsPage() {
         hasActiveFilters,
       }}
     >
-      <EntitySidebar>
-        <Boards
-          columns={columns}
-          searchString={searchString}
-          onLoadMore={fetchMore}
-          onSearch={handleSearch}
-          onFilterChange={handleFilterChange}
-          hasMore={orgTaskHasMore}
-          orgData={orgData}
-          statuses={filters?.statuses}
-          podIds={filters?.podIds}
-          setColumns={setColumns}
-          loading={isLoading}
-          entityType={entityType}
-          userId={userId?.toString()}
-          activeView={activeView}
-        />
-      </EntitySidebar>
+      <TaskActionsProvider>
+        <EntitySidebar>
+          <Boards
+            columns={columns}
+            searchString={searchString}
+            onLoadMore={fetchMore}
+            onSearch={handleSearch}
+            onFilterChange={handleFilterChange}
+            hasMore={orgTaskHasMore}
+            orgData={orgData}
+            statuses={filters?.statuses}
+            podIds={filters?.podIds}
+            setColumns={setColumns}
+            loading={isLoading}
+            entityType={entityType}
+            userId={userId?.toString()}
+            activeView={activeView}
+          />
+        </EntitySidebar>
+      </TaskActionsProvider>
     </OrgBoardContext.Provider>
   );
 }

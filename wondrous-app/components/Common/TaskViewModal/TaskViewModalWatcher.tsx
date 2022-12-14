@@ -9,8 +9,7 @@ import { useBoards } from 'utils/hooks';
 // const TaskViewModal = dynamic(() => import('components/Common/TaskViewModal'), { suspense: true });
 import TaskViewModal from 'components/Common/TaskViewModal';
 // Use this component to open task view modal automatically and without any handlers
-const TaskViewModalWatcher = () => {
-  const { board } = useBoards();
+const TaskViewModalWatcher = ({ taskViewQueue, handleClose }) => {
   const router = useRouter();
   // const { query } = router;
   // const taskIdFromQuery = (query.task || query.taskProposal) as string | null;
@@ -48,14 +47,14 @@ const TaskViewModalWatcher = () => {
   // };
 
   console.log(router.query, '<<< router.query');
-  console.log(board.taskViewQueue, '<<< router.query');
+  console.log(taskViewQueue, '<<< router.query');
 
   return (
     <>
-      {board.taskViewQueue.map((task) => (
+      {taskViewQueue.map((task) => (
         <TaskViewModal
           key={task.id}
-          handleClose={board.closeTaskViewModal}
+          handleClose={handleClose}
           taskId={task.id}
           task={task}
           back={router.query.view === ViewType.List}

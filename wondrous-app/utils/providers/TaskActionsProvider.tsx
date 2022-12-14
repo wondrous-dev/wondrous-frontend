@@ -1,19 +1,16 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { TaskInterface } from 'types/task';
 
-export type TaskActions = {
-  taskViewQueue: TaskInterface[];
-  openTaskViewModal: (task: TaskInterface) => void;
-  closeTaskViewModal: (goBack: boolean) => void;
-};
+import { TaskInterface } from 'types/task';
+import { TaskActionsContext } from 'utils/contexts';
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 
 /**
  * You have to use this hook in the board provider, so TaskViewModalWatcher could subscribe to it
  * We need the task id to be in the state and after in url to optimize performance
  * TODO: Handle router on initial page load
  */
-const useTaskActions = () => {
+const TaskActionsProvider = ({ children }) => {
   const router = useRouter();
   // Queue has task ids that should be opened in modal
   const [taskViewQueue, setTaskViewQueue] = useState<TaskInterface[]>([]);
@@ -52,24 +49,23 @@ const useTaskActions = () => {
 
       router.push({ query }, undefined, { scroll: false, shallow: true });
     }
-
-    // TODO: Remove me
-    // const newQueue = [...taskViewQueue];
-    // newQueue[0] = null;
-    // setTaskViewQueue(newQueue);
-
-    // if (taskViewQueue.includes(taskId)) {
-    // remove last task from the queue
-    // }
   };
 
   console.log(taskViewQueue, '<<< taskViewQueue');
 
-  return {
-    taskViewQueue,
-    openTaskViewModal,
-    closeTaskViewModal,
-  };
+  return (
+    <TaskActionsContext.Provider
+      value={{
+        taskViewQueue,
+        openTaskViewModal,
+        closeTaskViewModal,
+      }}
+    >
+      <TaskViewModalWatcher taskViewQueue={taskViewQueue} handleClose={closeTaskViewModal} />
+
+      {children}
+    </TaskActionsContext.Provider>
+  );
 };
 
-export default useTaskActions;
+export default TaskActionsProvider;

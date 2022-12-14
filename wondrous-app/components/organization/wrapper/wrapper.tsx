@@ -302,7 +302,6 @@ function Wrapper(props) {
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
-      <TaskViewModalWatcher />
       <Suspense>
         <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       </Suspense>
