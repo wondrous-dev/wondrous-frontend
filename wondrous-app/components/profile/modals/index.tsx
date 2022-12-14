@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import Modal from '@mui/material/Modal';
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
@@ -10,6 +10,7 @@ import { TaskModalBaseCard } from 'components/Common/Task/styles';
 import { useRouter } from 'next/router';
 import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
+import { useBoards } from 'utils/hooks';
 import { RichTextViewer } from 'components/RichText';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { MODAL_TABS_MAP } from 'utils/constants';
@@ -90,6 +91,7 @@ const UserItem = forwardRef((props: any, ref) => {
 
 function MoreInfoModal(props) {
   const { orgId, podId, showUsers, showPods, open, handleClose, name } = props;
+  const { podBoard } = useBoards();
   const [displayUsers, setDisplayUsers] = useState(showUsers);
   const [displayPods, setDisplayPods] = useState(showPods);
   const [hasMoreUsers, setHasMoreUsers] = useState(false);
@@ -327,15 +329,17 @@ function MoreInfoModal(props) {
             >
               <StyledTab isActive={activeTab === MODAL_TABS_MAP.CONTRIBUTORS} label="Contributors" />
             </TabText>
-            <TabText
-              onClick={() => {
-                setDisplayPods(true);
-                setDisplayUsers(false);
-                setActiveTab(MODAL_TABS_MAP.PODS);
-              }}
-            >
-              <StyledTab isActive={activeTab === MODAL_TABS_MAP.PODS} label="Pods" />{' '}
-            </TabText>
+            {!podBoard && (
+              <TabText
+                onClick={() => {
+                  setDisplayPods(true);
+                  setDisplayUsers(false);
+                  setActiveTab(MODAL_TABS_MAP.PODS);
+                }}
+              >
+                <StyledTab isActive={activeTab === MODAL_TABS_MAP.PODS} label="Pods" />{' '}
+              </TabText>
+            )}
           </StyledTabs>
         </Container>
         <SearchBox>
