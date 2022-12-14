@@ -119,7 +119,7 @@ function GlobalSearch() {
   const handleRedirect = (type, entity) => {
     handleClose();
     if (type === GLOBAL_SEARCH_TYPES.ORGS)
-      return router.push(`/organization/${entity.username}/boards?view=grid`, undefined, { shallow: true });
+      return router.push(`/organization/${entity.username}/home`, undefined, { shallow: true });
     if (type === GLOBAL_SEARCH_TYPES.PODS)
       return router.push(`/pod/${entity.id}/boards?view=grid`, undefined, { shallow: true });
     if (type === GLOBAL_SEARCH_TYPES.USERS)

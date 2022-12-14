@@ -91,7 +91,7 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
     });
   };
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
-  const goToOrg = (orgUsername) => router.push(`/organization/${orgUsername}/boards`, undefined, { shallow: true });
+  const goToOrg = (orgUsername) => router.push(`/organization/${orgUsername}/home`, undefined, { shallow: true });
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [showMenu, setShowMenu] = useState(false);

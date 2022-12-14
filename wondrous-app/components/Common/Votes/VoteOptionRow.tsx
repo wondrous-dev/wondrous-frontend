@@ -15,12 +15,12 @@ const computePercentage = (votes, type) => {
   return Math.round((100 * amount) / votes.totalVotes) || 0;
 };
 
-export default function VoteOptionRow({ votes, option, handleVote, handleUndoVote, user, voteType }) {
+export default function VoteOptionRow({ votes, option, handleVote, handleUndoVote, user, voteType, canVote }) {
   const percentage = computePercentage(votes, option);
   const userVotedFor = votes?.userVote === option;
   let optionDisplayName = option;
   if (voteType === 'binary' || !voteType) {
-    optionDisplayName = option === 'approve' ? 'Yes' : 'No';
+    optionDisplayName = option === 'approve' ? 'Vote For' : 'Vote Against';
   }
   return (
     <VoteRowWrapper key={`${option}`}>
@@ -40,7 +40,7 @@ export default function VoteOptionRow({ votes, option, handleVote, handleUndoVot
                 weight={500}
                 onClick={(e) => handleUndoVote(e)}
               >
-                Undo vote
+                {canVote ? 'Undo vote' : 'Your vote'}
               </VoteLabel>
               <VoterProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
               <VotedForCheckMark />{' '}

@@ -63,9 +63,15 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
         shallow: true,
       });
     } else if (firstOrg) {
-      router.push(`/${firstOrg?.shared ? 'collaboration' : 'organization'}/${firstOrg.username}/boards`, undefined, {
-        shallow: true,
-      });
+      router.push(
+        `/${firstOrg?.shared ? 'collaboration' : 'organization'}/${firstOrg.username}/${
+          firstOrg?.shared ? 'boards' : 'home'
+        }`,
+        undefined,
+        {
+          shallow: true,
+        }
+      );
     } else {
       router.push('/explore', undefined, {
         shallow: true,

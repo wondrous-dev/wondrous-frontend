@@ -458,41 +458,6 @@ function ProfileSettings(props) {
           </GeneralSettingsIntegrationsBlockButton>
         </GeneralSettingsInputsBlock>
 
-        {/* <GeneralSettingsInputsBlock>
-          {profileBannerUrl ? (
-            <ProfilePictureDiv>
-              <LabelBlock>Profile Banner</LabelBlock>
-              <SafeImage
-                src={profileBannerUrl}
-                style={{
-                  width: '1350px',
-                  height: '259px',
-                  borderRadius: '6px',
-                }}
-              />
-              <ProfilePictureAdd
-                onClick={() => {
-                  // restart the profile picture addition
-                  setProfileBannerUrl(null);
-                  setProfileBanner(null);
-                }}
-                style={{
-                  position: 'absolute',
-                  marginLeft: '-16px',
-                  cursor: 'pointer',
-                }}
-              />
-            </ProfilePictureDiv>
-          ) : (
-            <ImageUpload
-              image={profileBanner}
-              imageWidth={1350}
-              imageHeight={259}
-              imageName="Profile Banner"
-              updateFilesCb={setProfileBanner}
-            />
-          )}
-        </GeneralSettingsInputsBlock> */}
         <GeneralSettingsButtonsBlock>
           <GeneralSettingsResetButton>Cancel changes</GeneralSettingsResetButton>
           <GeneralSettingsSaveChangesButton highlighted onClick={handleSaveChanges}>

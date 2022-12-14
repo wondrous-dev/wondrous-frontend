@@ -60,14 +60,18 @@ export function PostHeader(props) {
           <>
             awarded a kudos {referencedUser && `to ${referencedUser}`} for a completed{' '}
             <PostHeaderLink as="span">
-              <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => {
-                const query = {
-                  ...router.query,
-                  task: taskId
-                }
+              <SmartLink
+                href={taskViewUrl}
+                preventLinkNavigation
+                onNavigate={() => {
+                  const query = {
+                    ...router.query,
+                    task: taskId,
+                  };
 
-                router.push({ query }, undefined, { scroll: false, shallow: true });
-              }}>
+                  router.push({ query }, undefined, { scroll: false, shallow: true });
+                }}
+              >
                 {objectTypeHeaderText}
               </SmartLink>
             </PostHeaderLink>

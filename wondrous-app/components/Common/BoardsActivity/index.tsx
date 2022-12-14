@@ -23,7 +23,6 @@ import palette from 'theme/palette';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { useLocation } from 'utils/useLocation';
 import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
@@ -41,7 +40,8 @@ export function BoardsActivityInlineView({
   displaySingleViewFilter = false,
 }) {
   const { orgBoard, podBoard, userBoard } = useBoards();
-
+  const router = useRouter();
+  const { search } = router.query;
   const board = orgBoard || podBoard || userBoard;
 
   const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter || board?.hasActiveFilters);
@@ -63,7 +63,18 @@ export function BoardsActivityInlineView({
   );
   return (
     <>
-      <BoardsActivityInlineViewWrapper displaySingleViewFilter={displaySingleViewFilter}>
+      <BoardsActivityInlineViewWrapper
+        style={
+          search
+            ? {
+                justifyContent: 'flex-start',
+              }
+            : {
+                justifyContent: 'flex-end',
+              }
+        }
+        displaySingleViewFilter={displaySingleViewFilter}
+      >
         <SearchTasks isExpandable={isExpandable} onSearch={onSearch} />
         {displaySingleViewFilter && (
           <BoardFilters
@@ -101,14 +112,7 @@ export default function BoardsActivity(props) {
   const router = useRouter();
   const view = board?.activeView || String(router.query.view ?? ViewType.Grid);
   const { search: searchQuery } = router.query;
-  const {
-    onSearch,
-    filterSchema,
-    onFilterChange,
-    isAdmin,
-    withAdminToggle = false,
-    toggleItems = [],
-  } = props;
+  const { onSearch, filterSchema, onFilterChange, isAdmin, withAdminToggle = false, toggleItems = [] } = props;
   const setActiveView = board?.setActiveView;
   const listViewOptions = [
     {
@@ -121,8 +125,8 @@ export default function BoardsActivity(props) {
 
         const query = {
           ...router.query,
-          view: ViewType.List
-        }
+          view: ViewType.List,
+        };
 
         router.push({ query }, undefined, { scroll: false, shallow: true });
       },
@@ -137,8 +141,8 @@ export default function BoardsActivity(props) {
 
         const query = {
           ...router.query,
-          view: ViewType.Grid
-        }
+          view: ViewType.Grid,
+        };
 
         router.push({ query }, undefined, { scroll: false, shallow: true });
       },
@@ -150,8 +154,8 @@ export default function BoardsActivity(props) {
     () => {
       const query = {
         ...router.query,
-        view: ViewType.List
-      }
+        view: ViewType.List,
+      };
 
       router.push({ query }, undefined, { scroll: false, shallow: true });
     },
@@ -163,8 +167,8 @@ export default function BoardsActivity(props) {
     () => {
       const query = {
         ...router.query,
-        view: ViewType.Grid
-      }
+        view: ViewType.Grid,
+      };
 
       router.push({ query }, undefined, { scroll: false, shallow: true });
     },

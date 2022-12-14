@@ -92,7 +92,13 @@ function PodListCard(props) {
     </NoUnderlineLink>
   );
 }
-export function PodModal(props) {
+
+interface PodModalProps {
+  open: boolean;
+  handleClose: () => unknown;
+}
+
+export default function PodModal(props: PodModalProps) {
   const { open, handleClose } = props;
   const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS_WITH_COUNT, {
     fetchPolicy: 'network-only',

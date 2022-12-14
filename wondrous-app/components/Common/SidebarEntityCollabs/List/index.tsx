@@ -14,7 +14,7 @@ export default function CollabsEntityList({ items, label, type }) {
           <CollabRequestTitle>{request.title}</CollabRequestTitle>
           <CollabRequestLogoWrapper>
             <SidebarTooltip title={request.initiatorOrg.username} placement="top">
-              <Link href={`/organization/${request.initiatorOrg.username}/boards`}>
+              <Link href={`/organization/${request.initiatorOrg.username}/home`}>
                 <OrgProfilePicture
                   profilePicture={request.initiatorOrg.profilePicture}
                   style={{ height: '22px', width: '22px', borderRadius: '2px' }}
@@ -23,7 +23,7 @@ export default function CollabsEntityList({ items, label, type }) {
             </SidebarTooltip>
             X
             <SidebarTooltip title={request.recipientOrg.username}>
-              <Link href={`/organization/${request.recipientOrg.username}/boards`}>
+              <Link href={`/organization/${request.recipientOrg.username}/home`}>
                 <OrgProfilePicture
                   profilePicture={request.recipientOrg.profilePicture}
                   style={{ height: '22px', width: '22px', borderRadius: '2px' }}

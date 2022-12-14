@@ -7,8 +7,8 @@ import { getFilterSchema } from 'utils/board';
 
 const getStatus = ({ type, orgId, status }) => {
   const entityTypeFilters = getFilterSchema(type, orgId);
-  const statuses = entityTypeFilters?.find(({ name }) => name === 'statuses')?.items;
-  const taskStatus = statuses?.find(({ id }) => id === status);
+  const statuses = entityTypeFilters && entityTypeFilters?.find(({ name }) => name === 'statuses')?.items;
+  const taskStatus = statuses && statuses?.find(({ id }) => id === status);
   return taskStatus;
 };
 
@@ -21,7 +21,14 @@ export const IconWrapper = styled.div`
   }
 `;
 
-const TaskCardStatus = ({ type, orgId, status }) => {
+interface TaskCardStatusProps {
+  type: string;
+  orgId: string;
+  status: string;
+  style?: object;
+}
+
+const TaskCardStatus = ({ type, orgId, status, style = {} }: TaskCardStatusProps) => {
   const { isLaptopScreen } = useMediaQuery();
   const { icon, label } = getStatus({ type, orgId, status });
   return (
@@ -35,6 +42,8 @@ const TaskCardStatus = ({ type, orgId, status }) => {
       gap="6px"
       height="28px"
       width="fit-content"
+      color="#fff"
+      style={{ ...style }}
     >
       <Box
         height="24px"

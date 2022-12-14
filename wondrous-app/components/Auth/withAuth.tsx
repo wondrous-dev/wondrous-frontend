@@ -18,6 +18,7 @@ const EXCLUDED_PATHS = [
   '/invite/pod/[token]',
   '/invite/[token]',
   '/organization/[username]/boards',
+  '/organization/[username]/home',
   '/login',
   '/discord/callback',
   '/onboarding/welcome',
@@ -261,6 +262,17 @@ export const withAuth = (Component, noCache = false) => {
     const { data, loading, error } = useQuery(GET_LOGGED_IN_USER, {
       skip: typeof window !== 'undefined' && !getAuthHeader(),
     });
+
+    useEffect(() => {
+      if (process.env.NODE_ENV !== 'production') return;
+      const storedSegmentUserId = localStorage.getItem('ajs_user_id')?.replaceAll('"', '') || null;
+      if (data?.getLoggedinUser?.id && storedSegmentUserId !== data?.getLoggedinUser?.id) {
+        window.analytics.identify(data?.getLoggedinUser?.id, {
+          username: data?.getLoggedinUser?.username,
+        });
+      }
+    }, [data?.getLoggedinUser]);
+
     useEffect(() => {
       (async () => {
         const newToken = await getAuthHeader();

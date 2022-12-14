@@ -229,6 +229,9 @@ function Table(props) {
                 </StyledTableCell>
               ) : null}
               <StyledTableCell align="center" width="77px">
+                Assignee
+              </StyledTableCell>
+              <StyledTableCell align="center" width="77px">
                 Status
               </StyledTableCell>
               <StyledTableCell width="383px"> {isAdmin ? 'Submission' : 'Task'}</StyledTableCell>

@@ -67,10 +67,7 @@ export const formValidationSchema = Yup.object().shape({
       (milestoneId) => milestoneId !== '' && milestoneId !== undefined
     ),
   proposalVoteType: Yup.string().nullable(),
-  customProposalChoices: Yup.array()
-    .of(Yup.string().required('Option must not be an empty string'))
-    .optional()
-    .nullable(),
+  customProposalChoices: Yup.array().optional().nullable(),
 });
 
 export const privacyOptions = {

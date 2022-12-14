@@ -316,7 +316,7 @@ function Wrapper(props) {
                 <LogoWrapper>
                   <OrgLogoWrapper
                     onClick={() => {
-                      router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
+                      router.push(`/organization/${orgData?.getOrgById?.username}/home`);
                     }}
                   >
                     <div

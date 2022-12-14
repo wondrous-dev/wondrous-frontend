@@ -14,6 +14,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import GrantIcon from 'components/Icons/GrantIcon';
+import HomeIcon from 'components/Icons/home';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
 const usePerTypeTaskCountForBoard = () => {
@@ -37,21 +38,31 @@ const useSidebarData = () => {
   const { board, orgBoard } = useBoards();
   const { setEntityType } = board || {};
   const router = useRouter();
-
+  const { search } = router.query;
   const handleOnClick =
     (link, type = null) =>
     () => {
       if (type && setEntityType) {
         setEntityType(type);
-        return;
+        if (!search) return;
       }
-
       router.push(link);
     };
 
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
   const data = [
+    orgBoard && !board?.orgData?.shared
+      ? {
+          items: [
+            {
+              text: 'Project Home',
+              Icon: () => <HomeIcon height="12px" width="12px" />,
+              link: `${link}/home`,
+            },
+          ],
+        }
+      : null,
     {
       label: 'Workspaces',
       items: [
@@ -106,7 +117,7 @@ const useSidebarData = () => {
       label: 'Community',
       items: [
         {
-          text: 'Leaderboard/Analytics',
+          text: 'Leaderboard',
           Icon: PieChartIcon,
           link: `${link}/analytics`,
         },

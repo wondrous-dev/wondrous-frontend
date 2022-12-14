@@ -38,10 +38,8 @@ import {
   STATUS_OPEN,
   STATUSES_ON_ENTITY_TYPES,
   TASK_STATUSES,
-  TASK_STATUS_TODO,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useIsMobile } from 'utils/hooks';
 import Boards from 'components/organization/boards/boards';
 import useTaskActions from "../../../hooks/useTaskActions";
 
@@ -50,7 +48,6 @@ const useGetOrgTaskBoardTasks = ({
   setColumns,
   setOrgTaskHasMore,
   orgId,
-
   userId,
   entityType,
   setIsLoading,
@@ -439,8 +436,10 @@ function BoardsPage() {
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
     onCompleted: (data) => {
       const boardColumns = [...columns];
-      boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
-      setColumns(boardColumns);
+      if (boardColumns[0].tasks?.length > 0) {
+        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
+        setColumns(boardColumns);
+      }
       setIsLoading(false);
     },
     onError: (error) => {

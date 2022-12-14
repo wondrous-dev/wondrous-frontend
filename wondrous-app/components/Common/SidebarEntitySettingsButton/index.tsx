@@ -1,6 +1,6 @@
 import { GreyButton } from 'components/Common/SidebarStyles';
 import { useRouter } from 'next/router';
-import useCanManage from "../../../hooks/useCanManage";
+import useCanManage from '../../../hooks/useCanManage';
 
 const SettingsButton = ({ board, id }) => {
   const router = useRouter();

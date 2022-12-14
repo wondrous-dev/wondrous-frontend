@@ -7,41 +7,46 @@ const location = () => {
   return '';
 };
 
+type MenuItem = {
+  label?: string;
+  items: Array<any>;
+} | null;
+
 type Props = {
-  menuItems: Array<{
-    label: string;
-    items: Array<any>;
-  }>;
+  menuItems: Array<MenuItem>;
   handleOnClick: (link: unknown, entityType: unknown) => void;
   urlPath: string;
 };
 
 const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath }: Props) => {
   const isActive = (entityType, link) => (entityType ? location().includes(link) : urlPath.includes(link));
-
   return (
     <ListWrapper>
-      {menuItems?.map(({ label, items }) => (
-        <ListWrapper key={label}>
-          <Label>{label}</Label>
-          <ListWrapper>
-            {items.map(
-              ({ text, link, Icon, count, entityType = null }) =>
-                !!text && (
-                  <Item
-                    key={text}
-                    onClick={handleOnClick(link, entityType)}
-                    Icon={Icon}
-                    isActive={isActive(entityType, link)}
-                    count={count}
-                  >
-                    {text}
-                  </Item>
-                )
-            )}
+      {menuItems?.map((menuItem) => {
+        if (!menuItem) return null;
+        const { label, items } = menuItem;
+        return (
+          <ListWrapper key={label}>
+            <Label>{label}</Label>
+            <ListWrapper>
+              {items.map(
+                ({ text, link, Icon, count, entityType = null }) =>
+                  !!text && (
+                    <Item
+                      key={text}
+                      onClick={handleOnClick(link, entityType)}
+                      Icon={Icon}
+                      isActive={isActive(entityType, link)}
+                      count={count}
+                    >
+                      {text}
+                    </Item>
+                  )
+              )}
+            </ListWrapper>
           </ListWrapper>
-        </ListWrapper>
-      ))}
+        );
+      })}
     </ListWrapper>
   );
 };

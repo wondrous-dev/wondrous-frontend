@@ -585,7 +585,7 @@ const TaskViewModal = ({ open, handleClose, taskId, task, isTaskProposal = false
                           <TaskModalHeaderIconWrapper
                             onClick={() => {
                               handleClose(false);
-                              router.push(`/organization/${fetchedOrPassedTask?.orgUsername}/boards`, undefined, {
+                              router.push(`/organization/${fetchedOrPassedTask?.orgUsername}/home`, undefined, {
                                 shallow: true,
                               });
                             }}

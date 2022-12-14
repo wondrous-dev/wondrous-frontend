@@ -13,18 +13,13 @@ import Item from 'components/Common/SidebarItem';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import useCanEdit from 'hooks/useCanEdit';
 import useSideBar from 'hooks/useSideBar';
-import { shuffle } from 'lodash';
-import { ColorTypes } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
-
-const randomColors = shuffle(Object.values(ColorTypes));
+import { randomColors } from 'utils/common';
 
 const ResourcesSidebar = ({ children, docs, handleCreateNewCategory, handleSelectCategory, selectedCategory }) => {
   const { minimized } = useSideBar();
   const { board, orgBoard } = useBoards();
-  const href = orgBoard
-    ? `/organization/${board?.orgData?.username}/boards?entity=task`
-    : `/pod/${board?.podId}/boards?entity=task`;
+  const href = orgBoard ? `/organization/${board?.orgData?.username}/home` : `/pod/${board?.podId}/boards?entity=task`;
   const canEdit = useCanEdit();
   return (
     <Wrapper>

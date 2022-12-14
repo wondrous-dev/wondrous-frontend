@@ -4,27 +4,33 @@ import { SafeImage } from 'components/Common/Image';
 import palette from 'theme/palette';
 import { shrinkNumber } from 'utils/helpers';
 
-export default function Compensation(props) {
-  const { rewards, style, pillStyle = {}, id } = props;
+export default function Compensation({ rewards = null, ...props }) {
+  if (!rewards || !rewards?.[0].rewardAmount) return null;
+  const { style, pillStyle = {}, id } = props;
   const { icon, rewardAmount, symbol } = rewards[0] || {};
-  if (!rewardAmount) return null;
   const shrinkAmount = shrinkNumber(rewardAmount);
   return (
-    <Grid container width="fit-content" key={id} style={style}>
+    <Grid
+      container
+      width="fit-content"
+      key={id}
+      style={style}
+      height="28px"
+      minWidth="45px"
+      lineHeight="0"
+      borderRadius="25px"
+      padding="0"
+    >
       <Grid
         container
+        item
+        borderRadius="inherit"
         bgcolor={palette.grey99}
-        borderRadius="25px"
         gap="4px"
         alignItems="center"
         paddingRight="8px"
-        paddingLeft={icon ? '1px' : '8px'}
-        height="28px"
-        minWidth="45px"
-        justifyContent="space-between"
-        lineHeight="0"
+        paddingLeft={icon ? '2px' : '8px'}
         style={pillStyle}
-        width="fit-content"
       >
         {icon && (
           <Grid container item height="100%" width="max-content" alignItems="center">
