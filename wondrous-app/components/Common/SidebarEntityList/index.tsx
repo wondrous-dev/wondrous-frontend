@@ -117,7 +117,7 @@ const useSidebarData = () => {
       label: 'Community',
       items: [
         {
-          text: 'Leaderboard/Analytics',
+          text: 'Leaderboard',
           Icon: PieChartIcon,
           link: `${link}/analytics`,
         },
