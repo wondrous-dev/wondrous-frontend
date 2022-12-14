@@ -1,6 +1,8 @@
 import { withAuth } from 'components/Auth/withAuth';
 import React, { useLayoutEffect, useEffect } from 'react';
 import { useTour } from '@reactour/tour';
+
+import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 import ExploreComponent from '../../components/Explore';
 
 function Explore({ user }) {
@@ -13,7 +15,11 @@ function Explore({ user }) {
     }
   }, [user]);
 
-  return <ExploreComponent />;
+  return (
+    <TaskActionsProvider>
+      <ExploreComponent />
+    </TaskActionsProvider>
+  );
 }
 
 export default withAuth(Explore);

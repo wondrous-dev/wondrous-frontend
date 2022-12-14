@@ -4,7 +4,6 @@ import { Button } from 'components/Button';
 import MuiButton from '@mui/material/Button';
 import { Box } from '@mui/material';
 
-import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import { DaosCube, BountyCone, GR15DEI } from 'components/Icons/ExplorePageIcons';
 import { useQuery } from '@apollo/client';
 import { FILTER_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
@@ -164,7 +163,6 @@ function ExploreComponent() {
         flexDirection: 'column',
       }}
     >
-      <TaskViewModalWatcher />
       <ChooseEntityToCreate />
       <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
         <BackgroundImg src="/images/explore/explore-page-banner.svg" />

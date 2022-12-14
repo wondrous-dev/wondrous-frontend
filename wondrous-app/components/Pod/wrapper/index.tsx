@@ -1,4 +1,3 @@
-import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -256,7 +255,6 @@ function Wrapper(props) {
 
   return (
     <>
-      <TaskViewModalWatcher />
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
       {openJoinRequestModal && (
         <MembershipRequestModal

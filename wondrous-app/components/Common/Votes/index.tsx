@@ -33,7 +33,7 @@ interface Props {
 
 export default function VoteResults({ userInOrg, proposal, fullScreen, proposalStatus }: Props) {
   const { votes } = proposal;
-  const { totalVotes } = votes;
+  const { totalVotes } = votes || {};
   const proposalId = proposal.id;
   const user = useMe();
 
@@ -60,6 +60,10 @@ export default function VoteResults({ userInOrg, proposal, fullScreen, proposalS
   };
 
   const binaryOptions = ['approve', 'reject'];
+
+  if (!votes) {
+    return null;
+  }
 
   return (
     <VoteResultsWrapper isFullScreen={fullScreen}>

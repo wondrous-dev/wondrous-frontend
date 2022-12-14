@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box';
-import { useRouter } from 'next/router';
 
 import * as Constants from 'utils/constants';
 import { getProposalStatus } from 'utils/board';
@@ -21,7 +20,7 @@ import TaskPriority from 'components/Common/TaskPriority';
 import { RichTextViewer } from 'components/RichText';
 import { SafeImage } from 'components/Common/Image';
 import PodIconName from 'components/Common/PodIconName';
-
+import { useTaskActions } from 'utils/hooks';
 import { CardContent, ProposalCardIcon, ProposalCardType, ProposalFooterButton } from './styles';
 
 const STATUS_ICONS = {
@@ -29,8 +28,8 @@ const STATUS_ICONS = {
   [Constants.STATUS_CLOSED]: Rejected,
 };
 
-export default function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange, viewUrl }) {
-  const router = useRouter();
+export default function ProposalCard({ title, description, task, goToPod, proposalRequestChange, viewUrl }) {
+  const { openTaskViewModal } = useTaskActions();
   const coverMedia = task?.media?.find((media) => media.type === 'image');
 
   const proposalStatus = getProposalStatus(task);
@@ -74,11 +73,7 @@ export default function ProposalCard({ openModal, title, description, task, goTo
         href={viewUrl}
         preventLinkNavigation
         onNavigate={() => {
-          const query = {
-            ...router.query,
-            taskProposal: task.id,
-          };
-          router.push({ query }, undefined, { scroll: false, shallow: true });
+          openTaskViewModal(task);
         }}
       >
         <BoardsCardHeader>

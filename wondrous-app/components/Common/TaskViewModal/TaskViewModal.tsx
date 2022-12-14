@@ -72,7 +72,7 @@ import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress'
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
-import { delQuery } from 'utils/index';
+import { TaskInterface } from 'types/task';
 import ActionModals from './actionModals';
 import { tabs } from './constants';
 import {
@@ -137,7 +137,6 @@ import TaskViewModalFooter from './taskViewModalFooter';
 import { hasGR15DEIIntiative, openSnapshot } from './utils';
 import TaskViewNft from '../TaskViewNft';
 import ViewNftFields from '../TaskMint/ViewNftFields';
-import { TaskInterface } from 'types/task';
 
 interface ITaskListModalProps {
   open: boolean;

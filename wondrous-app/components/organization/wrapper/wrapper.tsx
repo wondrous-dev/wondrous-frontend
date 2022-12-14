@@ -13,8 +13,6 @@ import {
   BOUNTY_TYPE,
   HEADER_ASPECT_RATIO,
 } from 'utils/constants';
-import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import apollo from 'services/apollo';
 import Box from '@mui/material/Box';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';

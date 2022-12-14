@@ -37,7 +37,12 @@ const TASK_MINT_BUTTON_STATUS_CONFIG = {
 };
 
 const TaskMintButton = ({ onClick, status }) => {
+  if (!status) {
+    return null;
+  }
+
   const config = TASK_MINT_BUTTON_STATUS_CONFIG[status];
+
   return (
     <TaskMintWrapper>
       <TaskMintDetails>
