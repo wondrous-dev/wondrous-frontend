@@ -27,6 +27,11 @@ export const PodFragment = gql`
     createdBy
     createdAt
     orgId
+    org {
+      profilePicture
+      name
+      username
+    }
     tags
     color
     archivedAt

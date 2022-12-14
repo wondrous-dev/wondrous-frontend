@@ -41,6 +41,7 @@ import {
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
 import EntitySidebar from 'components/Common/SidebarEntity';
+import { usePageDataContext } from 'utils/hooks';
 
 const useGetPodTaskBoardTasks = ({
   columns,
@@ -358,6 +359,7 @@ type Props = {
 
 function BoardsPage({ meta }: Props) {
   const router = useRouter();
+  const { setPageData } = usePageDataContext();
   const { podId, search, userId, view = ViewType.Grid, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -379,7 +381,11 @@ function BoardsPage({ meta }: Props) {
   });
 
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
-  const [getPod, { data: podData, loading: isPodDataLoading }] = useLazyQuery(GET_POD_BY_ID);
+  const [getPod, { data: podData, loading: isPodDataLoading }] = useLazyQuery(GET_POD_BY_ID, {
+    onCompleted: ({ getPodById }) => {
+      setPageData({ pod: getPodById });
+    },
+  });
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 

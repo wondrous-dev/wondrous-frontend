@@ -9,9 +9,9 @@ export const GlobalSearchWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   height: 100%;
+  flex: 1;
   position: relative;
   width: fit-content;
-  cursor: pointer;
   border-radius: 6px;
   position: relative;
   filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
@@ -23,6 +23,7 @@ export const SearchWrapper = styled.div`
     `linear-gradient(270deg, ${palette.blue20} -5.62%, ${palette.highlightPurple} 45.92%, ${palette.highlightBlue} 103.12%)`};
   display: flex;
   padding: 1px;
+  cursor: pointer;
   border-radius: 150px;
 `;
 
@@ -46,15 +47,11 @@ export const SearchInput = styled(Input)`
 `;
 
 export const SearchResults = styled.div`
-  background: ${palette.background.default};
-  top: 110%;
-  position: absolute;
+  color: ${palette.grey250};
   width: fit-content;
   min-width: 100%;
-  border-radius: 6px;
   overflow: scroll;
-  max-height: 60vh;
-  border: 0.5px solid ${palette.grey85};
+  max-height: 30rem;
 `;
 
 export const SearchResultCategory = styled.ul`
@@ -70,7 +67,19 @@ export const SearchResultItem = styled.li`
   gap: 10px;
   justify-content: flex-start;
   align-items: center;
+  font-weight: 500
+  font-family: ${typography.fontFamily};
+  font-size: 13px;
   cursor: pointer;
+  color: ${palette.grey250};
+  ${({ isActive }) =>
+    isActive &&
+    `
+  
+    background: ${palette.black92};
+    color: ${palette.white};
+  `};
+
   img {
     border-radius: 6px;
   }
