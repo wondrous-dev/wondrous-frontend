@@ -29,25 +29,36 @@ const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimize
         const { label, items } = menuItem;
         return (
           <ListWrapper key={label}>
-            {label ? <Label>{label}</Label> : null}
+            {label && !minimized ? <Label>{label}</Label> : null}
             <ListWrapper minimized={minimized}>
-              {items.map(({ text, link, Icon, count, entityType = null, Component = null, ignoreIconStyles = false, customActiveCheck = null }) => {
-                if (Component) return <Component key={text} />;
-                return (
-                  !!text && (
-                    <Item
-                      key={text}
-                      onClick={handleOnClick(link, entityType)}
-                      Icon={Icon}
-                      isActive={customActiveCheck ? customActiveCheck() : isActive(entityType, link)}
-                      count={count}
-                      ignoreIconStyles={ignoreIconStyles}
-                    >
-                      {text}
-                    </Item>
-                  )
-                );
-              })}
+              {items.map(
+                ({
+                  text,
+                  link,
+                  Icon,
+                  count,
+                  entityType = null,
+                  Component = null,
+                  ignoreIconStyles = false,
+                  customActiveCheck = null,
+                }) => {
+                  if (Component) return <Component key={text} />;
+                  return (
+                    !!text && (
+                      <Item
+                        key={text}
+                        onClick={handleOnClick(link, entityType)}
+                        Icon={Icon}
+                        isActive={customActiveCheck ? customActiveCheck() : isActive(entityType, link)}
+                        count={count}
+                        ignoreIconStyles={ignoreIconStyles}
+                      >
+                        {text}
+                      </Item>
+                    )
+                  );
+                }
+              )}
             </ListWrapper>
           </ListWrapper>
         );

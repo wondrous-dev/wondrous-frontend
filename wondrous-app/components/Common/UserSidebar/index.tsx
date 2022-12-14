@@ -9,7 +9,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { ORG_MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { useSideBar } from 'utils/hooks';
-import { UserProfilePictureGR15 } from '../ProfilePictureHelpers';
+import { UserProfilePicture } from '../ProfilePictureHelpers';
 import SidebarEntityListMemoized from '../SidebarEntityList/SidebarEntityListMemoized';
 import PodsIconButton from '../SidebarMainPods';
 
@@ -38,14 +38,13 @@ const useSidebarData = () => {
           text: 'My Profile',
           ignoreIconStyles: true,
           Icon: () => (
-            <UserProfilePictureGR15
+            <UserProfilePicture
               style={{
                 height: '22px',
                 width: '22px',
                 marginRight: '0px',
               }}
               avatar={user?.profilePicture}
-              isGr15Contributor={user?.checkIsGr15Contributor?.isGr15Contributor}
             />
           ),
           link: `/profile/${user?.username}/about`,
