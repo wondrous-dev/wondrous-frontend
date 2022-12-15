@@ -35,30 +35,32 @@ interface IFilterProps {
 }
 
 function Filter(props: IFilterProps) {
-  const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected, withSearch = false } = props;
+  const {
+    filterSchema = { items: [] },
+    onChange,
+    currentIdx,
+    schemaLength,
+    onRemove,
+    selected,
+    withSearch = false,
+  } = props;
   const { query, variables } = filterSchema;
-  const [items, setItems] = useState(filterSchema?.items || []);
+  const [items, setItems] = useState(query ? [] : filterSchema?.items);
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
-  const { isLoading, data } = useFilterQuery(query, variables, open);
+  useFilterQuery(query, variables, open, ({ isLoading, data }) => {
+    if (!isLoading && data) {
+      const queriedItems = [...data, ...items];
+      const mutatedItems = filterSchema?.mutate ? filterSchema.mutate(queriedItems) : queriedItems;
+      setItems(uniqBy(mutatedItems, 'id'));
+    }
+  });
 
   const toggleOpen = () => {
     if (!filterSchema?.disabled) setOpen(!open);
   };
 
   useOutsideAlerter(wrapperRef, () => setOpen(false));
-
-  useEffect(() => {
-    setItems(filterSchema?.items);
-  }, [filterSchema]);
-
-  useEffect(() => {
-    if (!isLoading && data) {
-      const queriedItems = [...data, ...items];
-      const mutatedItems = filterSchema?.mutate ? filterSchema.mutate(queriedItems) : queriedItems;
-      setItems(uniqBy(mutatedItems, 'id'));
-    }
-  }, [isLoading]);
 
   const filterItems = (item, selected) => {
     if (selected.find((i) => i.id === item.id)) {

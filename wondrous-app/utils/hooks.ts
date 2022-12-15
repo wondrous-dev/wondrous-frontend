@@ -40,7 +40,7 @@ import {
   ExploreGr15TasksAndBountiesContext,
   TaskContext,
   PageDataContext,
-  ProjectContext
+  ProjectContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
 
@@ -157,7 +157,6 @@ export const useOutsideAlerter = (ref, callback) => {
   }, [ref]);
 };
 
-
 function usePrevious(value) {
   const ref = useRef();
   useEffect(() => {
@@ -186,24 +185,23 @@ export const useRouterQuery = ({
   return [state, setState];
 };
 
-export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
+export const useFilterQuery = (query, variables = {}, shouldFetch = true, callback = null) => {
   const getData = async () => {
     const { data } = await apollo.query({
       query,
       variables,
     });
-    setData(Object.values(data).flat());
-    setIsLoading(false);
+    if (callback)
+      callback({
+        isLoading: false,
+        data: Object.values(data).flat(),
+      });
   };
   useEffect(() => {
     if (query && shouldFetch) {
-      setIsLoading(true);
       getData();
     }
   }, [query, variables, shouldFetch]);
-  return { isLoading, data };
 };
 
 export const useGetPerStatusTaskCountForUserBoard = (userId) => {
