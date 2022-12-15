@@ -58,7 +58,7 @@ export function CreateEntity(props: ICreateEntity) {
 
   const isPodEntity = entityType === ENTITIES_TYPES.POD;
 
-  const isCollab = entityType === ENTITIES_TYPES.COLLAB
+  const isCollab = entityType === ENTITIES_TYPES.COLLAB;
   return (
     <>
       <CreateEntityDiscardTask
@@ -69,8 +69,7 @@ export function CreateEntity(props: ICreateEntity) {
       />
       <CreateFormModalOverlay open={open} onClose={handleCloseForm}>
         <>
-        
-          {isCollab && <CreateCollaborationModal open onCancel={handleCloseForm} />}  
+          {isCollab && <CreateCollaborationModal open onCancel={handleCloseForm} />}
           {isTaskOrProposal && <CreateEntityModal {...props} setFormDirty={setFormDirty} />}
           {isPodEntity && <CreatePodModal {...props} />}
           {isGrantEntity && <CreateGrant {...props} setFormDirty={setFormDirty} />}
@@ -86,11 +85,12 @@ function ChooseEntityToCreate() {
 
   const resetEntityType = () => {
     if (pageData?.createEntityType) {
-      setPageData({...pageData, createEntityType: undefined});
+      setPageData({ ...pageData, createEntityType: undefined });
     }
   };
   const handleCloseModal = () => {
     resetEntityType();
+    if (open) toggleOpen();
   };
 
   if (pageData?.createEntityType) {

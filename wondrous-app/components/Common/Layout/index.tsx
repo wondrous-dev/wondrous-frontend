@@ -9,7 +9,6 @@ import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
 import { GlobalContext, PageDataContext, SideBarContext } from 'utils/contexts';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
-
 import Spotlight from 'components/Spotlight';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import EntitySidebar from '../SidebarEntity';
@@ -55,6 +54,7 @@ export default function SidebarLayout({ children }) {
   const router = useRouter();
   const [pageData, setPageData] = useState({});
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
+
   useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {
     // should this be here?
     router.push(`/dashboard`, undefined, {
@@ -99,6 +99,7 @@ export default function SidebarLayout({ children }) {
   };
 
   const orgsList = getOrgsList(userOrgs, router);
+
   const sidebarValue = useMemo(
     () => ({
       minimized,
@@ -107,6 +108,12 @@ export default function SidebarLayout({ children }) {
     }),
     [minimized, orgsList]
   );
+
+  useHotkeys(HOTKEYS.CHOOSE_ENTITY, () => {
+    if (!createFormModal) {
+      toggleCreateFormModal();
+    }
+  });
 
   const pageDataValues = useMemo(() => ({ setPageData }), [setPageData]);
 

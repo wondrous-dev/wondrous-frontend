@@ -43,6 +43,7 @@ const useSidebarData = () => {
                 height: '22px',
                 width: '22px',
                 marginRight: '0px',
+                borderRadius: '13px',
               }}
               avatar={user?.profilePicture}
             />

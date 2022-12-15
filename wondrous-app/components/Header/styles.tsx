@@ -2,6 +2,7 @@ import { AppBar, ButtonBase, IconButton, TextField } from '@mui/material';
 import { mainSidebarWidth, entitySidebarWidth } from 'components/Common/SidebarStyles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { HEADER_HEIGHT } from 'utils/constants';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
 
@@ -10,6 +11,7 @@ export const HeaderBar = styled(AppBar)`
     padding: 10px 14px 10px 14px;
     background: transparent;
     display: flex;
+    height: ${HEADER_HEIGHT};
     align-items: center;
     z-index: 200;
     width: 100%;
@@ -17,7 +19,7 @@ export const HeaderBar = styled(AppBar)`
     gap: 14px;
     justify-content: flex-end;
     box-shadow: none;
-    position: sticky;
+    position: fixed;
     top: 0;
     background: ${palette.grey900};
     ${({ theme }) => theme.breakpoints.down('sm')} {
@@ -175,6 +177,9 @@ export const StyledBadge = styled(ButtonBase)`
     position: relative;
     width: 40px;
     filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
+    :hover {
+      background: ${({ theme }) => theme.palette.grey78};
+    }
     svg {
       circle {
         display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
@@ -210,11 +215,11 @@ export const HeaderCreateButton = styled(ButtonBase)`
       left: 0;
       top: 0;
     }
-    
+
     &:hover {
       cursor: pointer;
       &::before {
-        background: linear-gradient(270deg, #00BAFF -5.62%, #7427FF 45.92%, #CCBBFF 103.12%);
+        background: linear-gradient(270deg, #00baff -5.62%, #7427ff 45.92%, #ccbbff 103.12%);
       }
     }
   }
@@ -279,7 +284,6 @@ export const HeaderItemWrapper = styled.div`
   padding: 24px 14px 14px 14px;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     width: 100vw;
-  border-radius: 0px 0px 14px 14px;
-
+    border-radius: 0px 0px 14px 14px;
   }
 `;

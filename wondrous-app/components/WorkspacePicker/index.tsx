@@ -24,6 +24,7 @@ import {
   ItemsWrapper,
   LeaveWorkspaceWrapper,
   OrgItem,
+  OrgItemTitle,
   OrgWrapper,
   UnstyledButton,
   UnstyledLink,
@@ -106,13 +107,18 @@ const WorkspaceSettings = () => {
   const router = useRouter();
   const { pageData, orgsList } = useGlobalContext();
 
-  const activeOrg = useMemo(() => orgsList.find((org) => org.isActive), [router.pathname, orgsList]);
+  const activeOrg = useMemo(
+    () => orgsList.find((org) => org.isActive || org.id === pageData?.pod?.orgId),
+    [router.pathname, orgsList]
+  );
+
+  if (!activeOrg) return null;
 
   const activePod = pageData?.pod;
 
-  const href = activeOrg
-    ? `/organization/settings/${activeOrg?.id}/general`
-    : `/pod/settings/${activePod?.pod?.id}/general`;
+  const href = activePod
+    ? `/pod/settings/${activePod?.pod?.id}/general`
+    : `/organization/settings/${activeOrg?.id}/general`;
 
   return (
     <UnstyledLink href={href}>
@@ -122,7 +128,7 @@ const WorkspaceSettings = () => {
         </ItemButtonIcon>
 
         <Typography color={palette.white} fontSize="15px" fontWeight={500} fontFamily={typography.fontFamily}>
-          {activeOrg ? 'Organization' : 'Pod'} Settings
+          {activePod ? 'Pod' : 'Organization'} Settings
         </Typography>
       </HorizontalEntityItem>
     </UnstyledLink>
@@ -233,7 +239,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
                 borderRadius: '100%',
               }}
             />
-            My workspace
+            <OrgItemTitle>My workspace</OrgItemTitle>
           </FullWidthItem>
           {orgsList?.map((org, key) => (
             <OrgItem
@@ -250,7 +256,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
                   height: '28px',
                 }}
               />
-              {org?.name}
+              <OrgItemTitle>{org?.name}</OrgItemTitle>
             </OrgItem>
           ))}
         </OrgWrapper>

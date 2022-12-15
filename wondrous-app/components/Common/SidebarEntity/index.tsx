@@ -30,7 +30,6 @@ const EntitySidebarButtons = () => {
 
   const [openInvite, setOpenInvite] = useState(false);
 
-  if (minimized) return null;
   const href = orgBoard
     ? `/organization/settings/${orgBoard?.orgId}/general`
     : `/pod/settings/${podBoard?.podId}/general`;
@@ -55,7 +54,7 @@ const EntitySidebarButtons = () => {
       {podBoard ? (
         <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
       ) : null}
-      <ButtonsContainer>
+      <ButtonsContainer minimized={minimized}>
         <UnstyledLink href={href} style={{ width: '100%' }}>
           {/* <SettingsBtn>Settings</SettingsBtn> */}
           <Button

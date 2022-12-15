@@ -2,13 +2,10 @@ import { Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { logout, useMe } from 'components/Auth/withAuth';
 import HelpModal from 'components/Common/HelpModal.jsx';
-import { UserProfilePicture, UserProfilePictureGR15 } from 'components/Common/ProfilePictureHelpers';
+import { UserProfilePictureGR15 } from 'components/Common/ProfilePictureHelpers';
 import PodsIconButton from 'components/Common/SidebarMainPods';
-import { PodsIconWrapper } from 'components/Common/SidebarMainPods/styles';
-import { MissionControlIconWrapper } from 'components/Header/styles';
 import LogoutIcon from 'components/Icons/logout';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
-import { PodsIcon, TutorialsIcon } from 'components/Icons/sidebar';
 import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
 import WrenchIcon from 'components/Icons/wrench';
 import { UnstyledButton, UnstyledLink } from 'components/WorkspacePicker/styles';
@@ -21,7 +18,6 @@ import {
   ButtonIcon,
   GridIconWrapper,
   ImageWrapper,
-  ItemContainer,
   LinkWrapper,
   PageItemContainer,
   PageSelectorWrapper,
@@ -35,7 +31,6 @@ const TutorialsButton = ({ onClick }) => {
 
   const handleClick = () => {
     setOpenHelpModal(true);
-    // onClick()
   };
   return (
     <>
@@ -78,7 +73,7 @@ const UserHelpers = ({ onClick }) => (
           <WrenchIcon />
         </ButtonIcon>
         <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
-          Your settings
+          My settings
         </Typography>
       </UserHelperWrapper>
     </UnstyledLink>
@@ -106,11 +101,11 @@ const UserProfile = ({ onClose }) => {
 
   return (
     <Wrapper>
-      <UserContainer>
-        <ImageWrapper>
-          <Image fill alt="Profile banner" src="/images/profile/profile-banner.png" />
-        </ImageWrapper>
-        <UnstyledLink href={`/profile/${user?.username}/about`} onClick={onClose}>
+      <UnstyledLink href={`/profile/${user?.username}/about`} onClick={onClose}>
+        <UserContainer>
+          <ImageWrapper>
+            <Image fill alt="Profile banner" src="/images/profile/profile-banner.png" />
+          </ImageWrapper>
           <ProfileInfo>
             <UserProfilePictureGR15
               isGr15Contributor={user?.checkIsGr15Contributor?.isGr15Contributor}
@@ -124,8 +119,8 @@ const UserProfile = ({ onClose }) => {
               {user?.username}
             </Typography>
           </ProfileInfo>
-        </UnstyledLink>
-      </UserContainer>
+        </UserContainer>
+      </UnstyledLink>
       <PageSelectorWrapper>
         {PAGE_SELECTOR_CONFIG.map((page, idx) => {
           if (page.type === 'component') {

@@ -1,5 +1,5 @@
 import { Badge } from '@mui/material';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { SearchIconWrapped } from 'components/SearchTasks/styles';
 import { useGlobalContext, useHotkey } from 'utils/hooks';
@@ -15,11 +15,11 @@ function GlobalSearch() {
 
   const handleInputExpand = () => toggleSpotlight();
 
-  useHotkeys(HOTKEYS.GLOBAL_SEARCH, () => toggleSpotlight(), []);
+  useHotkeys(HOTKEYS.GLOBAL_SEARCH, () => toggleSpotlight());
 
   return (
-    <GlobalSearchWrapper >
-      <SearchWrapper onClick={handleInputExpand} >
+    <GlobalSearchWrapper>
+      <SearchWrapper onClick={handleInputExpand}>
         <Badge badgeContent={HOTKEYS.GLOBAL_SEARCH} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
           <SearchIconWrapper>
             <SearchIconWrapped />

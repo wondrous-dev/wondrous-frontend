@@ -45,7 +45,7 @@ export function getNotificationDescription(notification, link) {
     case NOTIFICATION_TYPES.TASK_ASSIGN:
       return <>assigned a {object} to you</>;
     case NOTIFICATION_TYPES.CREATOR_TASK_ASSIGN:
-      return <>Your {object} was asigned</>;
+      return <>Your {object} was assigned</>;
     // ====
     case NOTIFICATION_TYPES.PROPOSAL_APPROVE:
       return <>Your {object} was approved</>;

@@ -4,9 +4,16 @@ import CreateEntityComponent from 'components/HeaderItems/CreateEntityComponent'
 import { ENTITIES_TYPES } from 'utils/constants';
 
 import Dao2DaoIcon from 'components/Icons/Dao2Dao';
+import { useOutsideAlerter } from 'utils/hooks';
 import {
-  ChooseEntityWrapper, CreateLayoutBountyIcon, CreateLayoutDaoIcon, CreateLayoutGrantIcon, CreateLayoutMilestoneIcon,
-  CreateLayoutPodsIcon, CreateLayoutProposalIcon, CreateLayoutTaskIcon
+  ChooseEntityWrapper,
+  CreateLayoutBountyIcon,
+  CreateLayoutDaoIcon,
+  CreateLayoutGrantIcon,
+  CreateLayoutMilestoneIcon,
+  CreateLayoutPodsIcon,
+  CreateLayoutProposalIcon,
+  CreateLayoutTaskIcon,
 } from './styles';
 
 export const ENTITIES_UI_ELEMENTS = {
@@ -40,13 +47,12 @@ export const ENTITIES_UI_ELEMENTS = {
   },
   [ENTITIES_TYPES.COLLAB]: {
     icon: Dao2DaoIcon,
-    label: 'Collaboration'
-  }
+    label: 'Collaboration',
+  },
 };
 
 function ChooseEntityToCreateModal(props) {
   const { handleClose } = props;
-
   return (
     <ChooseEntityWrapper>
       <CreateEntityComponent onClose={handleClose} />

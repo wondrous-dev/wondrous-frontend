@@ -13,17 +13,10 @@ export const PodsIconButton = ({ renderIcon = null }) => {
   const [openPodModal, setOpenPodModal] = useState(false);
   const showBadge = useHotkey();
 
-  useHotkeys(
-    HOTKEYS.OPEN_PODS,
-    () => {
-      setOpenPodModal(!openPodModal);
-    },
-    [openPodModal]
-  );
-
+  // TODO Adrian: refactor this to reuse the header pod modal
   return (
     <>
-      <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
+      {openPodModal ? <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} /> : null}
       {renderIcon ? (
         renderIcon({ setOpenPodModal, openPodModal })
       ) : (
@@ -34,7 +27,7 @@ export const PodsIconButton = ({ renderIcon = null }) => {
                 <PodsIcon />
               </PodsIconWrapper>
               <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
-                My pods
+                My Pods
               </Typography>
             </Badge>
           </PodsButtonWrapper>
