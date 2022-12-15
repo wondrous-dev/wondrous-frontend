@@ -153,6 +153,7 @@ const Spotlight = ({ onClose }) => {
                   isExpanded
                   placeholder="Select a command or search"
                   onChange={handleInputChange}
+                  autoFocus
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -171,7 +172,7 @@ const Spotlight = ({ onClose }) => {
               </SearchInputWrapper>
             </Grid>
           ) : (
-            <Input onChange={handleInputChange} placeholder="Select a command or search" />
+            <Input onChange={handleInputChange} autoFocus placeholder="Select a command or search" />
           )}
         </Grid>
         <SearchSuggestions

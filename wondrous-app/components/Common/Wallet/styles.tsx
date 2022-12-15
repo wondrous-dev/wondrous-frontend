@@ -74,6 +74,9 @@ export const WalletAddress = styled.div`
   overflow-x: hidden;
   padding: 0 16px;
   text-overflow: ellipsis;
+  :hover {
+    background: ${({ theme }) => theme.palette.grey78};
+  }
   ${fontStyles};
 `;
 

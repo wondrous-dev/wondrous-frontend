@@ -122,6 +122,10 @@ export const SearchIconWrapper = styled.div`
   justify-content: center;
   width: 40px;
   ${({ isExpanded }) => !isExpanded && 'border-radius: 50%;'};
+  :hover {
+    background: ${({ theme }) => theme.palette.grey78};
+  }
+
   svg {
     path {
       stroke: ${({ isExpanded }) => (isExpanded ? palette.highlightBlue : palette.white)};

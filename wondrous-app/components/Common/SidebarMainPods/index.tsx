@@ -13,17 +13,8 @@ export const PodsIconButton = ({ renderIcon = null }) => {
   const [openPodModal, setOpenPodModal] = useState(false);
   const showBadge = useHotkey();
 
-  useHotkeys(
-    HOTKEYS.OPEN_PODS,
-    () => {
-      setOpenPodModal(!openPodModal);
-    },
-    [openPodModal]
-  );
-
   return (
     <>
-      <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       {renderIcon ? (
         renderIcon({ setOpenPodModal, openPodModal })
       ) : (

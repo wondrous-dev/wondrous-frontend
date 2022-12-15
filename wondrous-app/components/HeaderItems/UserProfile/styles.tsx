@@ -57,6 +57,9 @@ export const PageItemContainer = styled(ItemContainer)`
 export const UserContainer = styled(ItemContainer)`
   height: 12rem;
   overflow: hidden;
+  &:hover {
+    background: ${palette.grey87};
+  }
 `;
 
 export const PageSelectorWrapper = styled.div`

@@ -804,7 +804,7 @@ export const TextInputDiv = styled.div`
 `;
 
 export const ChooseEntityWrapper = styled.div`
-  width: 50vw;
+  width: 30vw;
   background: ${palette.black92};
   padding: 14px;
   border-radius: 6px;

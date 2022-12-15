@@ -44,11 +44,11 @@ const DropdownItem = ({ isOrgOrPod, thumbnailPicture, profilePicture, isExplore,
 
 const EntityMenu = () => {
   const router = useRouter();
-  const { orgsList, pageData } = useGlobalContext();
+  const { pageData } = useGlobalContext();
   const user = useMe();
   const activePodOrg = useMemo(() => pageData?.pod?.org, [pageData?.pod]);
 
-  const activeOrg = useMemo(() => orgsList.find((org) => org.isActive), [router.pathname, orgsList]);
+  const activeOrg = pageData?.orgData;
 
   const orgOrPod = activeOrg || activePodOrg || {};
 
