@@ -7,7 +7,7 @@ import { Logo } from '../Common/ci';
 
 export const HeaderBar = styled(AppBar)`
   && {
-    padding: 14px;
+    padding: 10px 14px 10px 14px;
     background: transparent;
     display: flex;
     align-items: center;
