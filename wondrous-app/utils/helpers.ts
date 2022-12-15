@@ -92,10 +92,10 @@ export const hasCreateTaskPermission = ({ userPermissionsContext, orgId = undefi
   return permissions.some((i) => [PERMISSIONS.FULL_ACCESS, PERMISSIONS.CREATE_TASK].includes(i));
 };
 
-export const transformTaskToTaskCard = (task, extraData) => ({
+export const transformTaskToTaskCard = (task, extraData = null) => ({
   ...task,
-  assigneeUsername: task?.assignee?.username,
-  assigneeProfilePicture: task?.assignee?.profilePicture,
+  assigneeUsername: task?.assignee?.username || null,
+  assigneeProfilePicture: task?.assignee?.profilePicture || null,
   orgProfilePicture: extraData?.orgProfilePicture || task?.org?.profilePicture,
   orgName: extraData?.orgName || task?.org?.name,
   orgUsername: extraData?.orgUsername || task?.org?.username,
@@ -103,6 +103,7 @@ export const transformTaskToTaskCard = (task, extraData) => ({
   podColor: extraData?.podColor || task?.pod?.color,
   creatorUsername: task?.creator?.username,
   creatorProfilePicture: task?.creator?.profilePicture,
+  __typename: 'TaskCard',
 });
 
 export const transformTaskProposalToTaskProposalCard = (taskProposal, extraData) => ({

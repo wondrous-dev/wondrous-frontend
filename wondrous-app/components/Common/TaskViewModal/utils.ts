@@ -1,4 +1,7 @@
+import { useApolloClient } from '@apollo/client';
+import { TaskCardFragment } from 'graphql/fragments/task';
 import { GR15DEICategoryName } from 'utils/constants';
+import { transformTaskToTaskCard } from 'utils/helpers';
 import { tabsPerType } from './constants';
 
 export const selectTabsPerType = (isTaskProposal = false, isMilestone = false, isSubtask = false, isBounty = false) => {
@@ -31,4 +34,19 @@ export const hasGR15DEIIntiative = (categories) => {
     }
   });
   return hasInitiative;
+};
+
+export const useUpdateTaskCardCache = () => {
+  const client = useApolloClient();
+  const handleUpdateTaskCardCache = ({ data }) => {
+    const { id } = data;
+    const transformedTaskToTaskCard = transformTaskToTaskCard(data);
+    client.writeFragment({
+      fragment: TaskCardFragment,
+      fragmentName: 'TaskCardFragment',
+      id: `TaskCard:${id}`,
+      data: transformedTaskToTaskCard,
+    });
+  };
+  return handleUpdateTaskCardCache;
 };
