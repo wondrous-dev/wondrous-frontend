@@ -7,6 +7,7 @@ import EntitySidebar from 'components/Common/SidebarEntity';
 import GrantsBoard from 'components/GrantsBoard';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import Wrapper from 'components/Pod/wrapper';
+import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
 const GrantsPage = () => {
   const router = useRouter();
@@ -22,11 +23,13 @@ const GrantsPage = () => {
         userPermissionsContext,
       }}
     >
-      <EntitySidebar>
-        <Wrapper>
-          <GrantsBoard />
-        </Wrapper>
-      </EntitySidebar>
+      <TaskActionsProvider>
+        <EntitySidebar>
+          <Wrapper>
+            <GrantsBoard />
+          </Wrapper>
+        </EntitySidebar>
+      </TaskActionsProvider>
     </PodBoardContext.Provider>
   );
 };

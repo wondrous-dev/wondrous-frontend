@@ -6,16 +6,13 @@ import { TaskActionsContext } from 'utils/contexts';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { ViewType } from 'types/common';
 
-/**
- * You have to use this hook in the board provider, so TaskViewModalWatcher could subscribe to it
- * We need the task id to be in the state and after in url to optimize performance
- */
 const TaskActionsProvider = ({ children }) => {
   const router = useRouter();
   const { query } = router;
   // Queue has task ids that should be opened in modal
   const [taskViewQueue, setTaskViewQueue] = useState<TaskInterface[]>([]);
 
+  // handle browser's back button to hide task view modal
   useEffect(() => {
     router.beforePopState(({ as }) => {
       if (as !== router.asPath) {

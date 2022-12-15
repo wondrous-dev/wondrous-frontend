@@ -6,6 +6,7 @@ import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/quer
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { OrgBoardContext } from 'utils/contexts';
+import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
 const OrgProject = () => {
   const { username } = useRouter().query;
@@ -32,11 +33,13 @@ const OrgProject = () => {
 
   return (
     <OrgBoardContext.Provider value={contextValue}>
-      <EntitySidebar>
-        <Wrapper orgData={orgData}>
-          <ProjectProfile orgData={orgData} />
-        </Wrapper>
-      </EntitySidebar>
+      <TaskActionsProvider>
+        <EntitySidebar>
+          <Wrapper orgData={orgData}>
+            <ProjectProfile orgData={orgData} />
+          </Wrapper>
+        </EntitySidebar>
+      </TaskActionsProvider>
     </OrgBoardContext.Provider>
   );
 };
