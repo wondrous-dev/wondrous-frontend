@@ -116,11 +116,12 @@ const useSidebarData = () => {
           link: `${link}/grants`,
           count: taskCount?.grantCount,
         },
-        !board?.orgData?.shared && {
-          text: 'Collaborations',
-          Icon: SmallDao2DaoIcon,
-          link: `${link}/collaborations`,
-        },
+        !board?.orgData?.shared &&
+          !!orgBoard && {
+            text: 'Collaborations',
+            Icon: SmallDao2DaoIcon,
+            link: `${link}/collaborations`,
+          },
       ],
     },
     {
