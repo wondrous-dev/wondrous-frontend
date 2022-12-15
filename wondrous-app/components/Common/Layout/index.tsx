@@ -99,7 +99,7 @@ export default function SidebarLayout({ children }) {
   };
 
   const orgsList = getOrgsList(userOrgs, router);
-  console.log(orgsList, userOrgs, 'userORgs');
+
   const sidebarValue = useMemo(
     () => ({
       minimized,

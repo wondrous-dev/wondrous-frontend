@@ -79,9 +79,10 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
           <MenuContainer onClick={toggleMinimize}>{!minimized ? <Close /> : <Menu />}</MenuContainer>
         ) : null}
         {user && (
-          <Grid display="flex" width="100%" gap="8px">
+          <Grid display="flex" width="100%" gap="14px">
             {!isMobileScreen || router.pathname === PAGE_PATHNAME.explore ? (
-              <Grid>
+              // 192px is the width of the sidebar - sidebar styles width - 14px (padding)
+              <Grid maxWidth="192px">
                 <EntityMenu />
               </Grid>
             ) : null}
