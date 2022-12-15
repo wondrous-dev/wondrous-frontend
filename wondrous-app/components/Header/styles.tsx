@@ -2,6 +2,7 @@ import { AppBar, ButtonBase, IconButton, TextField } from '@mui/material';
 import { mainSidebarWidth, entitySidebarWidth } from 'components/Common/SidebarStyles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { HEADER_HEIGHT } from 'utils/constants';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
 
@@ -10,6 +11,7 @@ export const HeaderBar = styled(AppBar)`
     padding: 10px 14px 10px 14px;
     background: transparent;
     display: flex;
+    height: ${HEADER_HEIGHT};
     align-items: center;
     z-index: 200;
     width: 100%;
@@ -17,7 +19,7 @@ export const HeaderBar = styled(AppBar)`
     gap: 14px;
     justify-content: flex-end;
     box-shadow: none;
-    position: sticky;
+    position: fixed;
     top: 0;
     background: ${palette.grey900};
     ${({ theme }) => theme.breakpoints.down('sm')} {
