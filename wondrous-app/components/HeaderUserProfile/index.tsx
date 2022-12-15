@@ -10,7 +10,10 @@ const HeaderUserProfile = ({ handleClick, open, isActive }) => {
 
   return (
     <HeaderUserProfileWrapper onClick={handleClick} open={open} isActive={isActive}>
-      <UserProfilePicture avatar={user?.profilePicture} style={{height: '31px', width: '31px'}}/>
+      <UserProfilePicture
+        avatar={user?.profilePicture}
+        style={{ height: '31px', width: '31px', borderRadius: '13px' }}
+      />
       {isMobileScreen ? null : user?.username}
       <ChevronFilled fill="white" className="accordion-expansion-icon" />
     </HeaderUserProfileWrapper>

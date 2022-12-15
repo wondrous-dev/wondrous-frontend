@@ -55,6 +55,7 @@ export const Label = styled(Typography)`
     display: flex;
     padding: 0px 14px 0px 18px;
     color: ${({ theme }) => theme.palette.grey57};
+    ${({ minimized }) => (minimized ? 'visibility: hidden' : '')}}
   }
 `;
 

@@ -73,7 +73,7 @@ const UserHelpers = ({ onClick }) => (
           <WrenchIcon />
         </ButtonIcon>
         <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
-          Your settings
+          My settings
         </Typography>
       </UserHelperWrapper>
     </UnstyledLink>

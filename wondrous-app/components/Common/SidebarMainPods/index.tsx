@@ -25,7 +25,7 @@ export const PodsIconButton = ({ renderIcon = null }) => {
                 <PodsIcon />
               </PodsIconWrapper>
               <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
-                My pods
+                My Pods
               </Typography>
             </Badge>
           </PodsButtonWrapper>
