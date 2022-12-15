@@ -24,6 +24,7 @@ import {
   ItemsWrapper,
   LeaveWorkspaceWrapper,
   OrgItem,
+  OrgItemTitle,
   OrgWrapper,
   UnstyledButton,
   UnstyledLink,
@@ -238,7 +239,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
                 borderRadius: '100%',
               }}
             />
-            My workspace
+            <OrgItemTitle>My workspace</OrgItemTitle>
           </FullWidthItem>
           {orgsList?.map((org, key) => (
             <OrgItem
@@ -255,7 +256,7 @@ const WorkspacePicker = ({ open, anchorEl, onClose, isUserBoard = false, user })
                   height: '28px',
                 }}
               />
-              {org?.name}
+              <OrgItemTitle>{org?.name}</OrgItemTitle>
             </OrgItem>
           ))}
         </OrgWrapper>
