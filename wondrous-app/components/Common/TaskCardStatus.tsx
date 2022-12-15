@@ -9,7 +9,7 @@ const getStatus = ({ type, orgId, status }) => {
   const entityTypeFilters = getFilterSchema(type, orgId);
   const statuses = entityTypeFilters && entityTypeFilters?.find(({ name }) => name === 'statuses')?.items;
   const taskStatus = statuses && statuses?.find(({ id }) => id === status);
-  return taskStatus;
+  return taskStatus || {};
 };
 
 export const IconWrapper = styled.div`
@@ -30,7 +30,8 @@ interface TaskCardStatusProps {
 
 const TaskCardStatus = ({ type, orgId, status, style = {} }: TaskCardStatusProps) => {
   const { isLaptopScreen } = useMediaQuery();
-  const { icon, label } = getStatus({ type, orgId, status });
+  const { icon = null, label = null } = getStatus({ type, orgId, status });
+
   return (
     <Grid
       container
