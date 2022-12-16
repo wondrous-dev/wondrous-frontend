@@ -1,6 +1,6 @@
 import FilterIcon from 'components/Icons/filter';
 import FilterItem from 'components/Common/Filter';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, memo, useState } from 'react';
 import omit from 'lodash/omit';
 import { useExploreGr15TasksAndBounties, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
@@ -13,6 +13,38 @@ import {
   CloseIcon,
   AppliedFiltersIconWrapper,
 } from './styles';
+
+interface AppliedFilterProps {
+  appliedFilters: any;
+  handleFilterPill: (item: any, key: string) => void;
+}
+
+const Item = ({ Icon, value, handleFilterPill, filterType }) => (
+  <AppliedFiltersItem>
+    <AppliedFiltersIconWrapper>
+      {Icon ? <Icon style={{ margin: 0 }} width="100%" height="100%" /> : null}
+    </AppliedFiltersIconWrapper>
+    {value.name}
+    <CloseIcon onClick={() => handleFilterPill(value, filterType)} />
+  </AppliedFiltersItem>
+);
+
+const AppliedFilter = ({ appliedFilters, handleFilterPill }: AppliedFilterProps) => (
+  <>
+    {Object.entries(appliedFilters).map(([filterType, value]: any, idx) => {
+      if (Array.isArray(value)) {
+        return value.map((item, idx) => {
+          const Icon = item?.pillIcon;
+          return item && <Item Icon={Icon} value={item} handleFilterPill={handleFilterPill} filterType={filterType} />;
+        });
+      }
+      const Icon = value?.pillIcon;
+      return value ? (
+        <Item Icon={Icon} value={value} handleFilterPill={handleFilterPill} filterType={filterType} />
+      ) : null;
+    })}
+  </>
+);
 
 export function FiltersTriggerButton({ onClick, isOpen }) {
   const exploreGr15TasksAndBounties = useExploreGr15TasksAndBounties();
@@ -70,22 +102,14 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
     applyFilter(newFilters);
   };
 
-  const appliedFiltersMap = Object.keys(appliedFilters).reduce((acc, next) => {
-    if (Array.isArray(appliedFilters[next])) {
-      acc = [...acc, ...appliedFilters[next]];
-      return acc;
-    }
-    acc = [...acc, appliedFilters[next]];
-    return acc;
-  }, []);
-
-  const handleFilterPill = (filter) => {
-    if (Array.isArray(appliedFilters[filter.filterType])) {
-      const newItems = appliedFilters[filter.filterType].filter((item) => item.id !== filter.id);
-      const newFilters = { ...appliedFilters, [filter.filterType]: newItems };
+  const handleFilterPill = (filter, filterType) => {
+    if (Array.isArray(appliedFilters[filterType])) {
+      const newItems = appliedFilters[filterType].filter((item) => item.id !== filter.id);
+      if (!newItems?.length) return removeAppliedFilter(filterType);
+      const newFilters = { ...appliedFilters, [filterType]: newItems };
       return applyFilter(newFilters);
     }
-    removeAppliedFilter(filter.filterType);
+    return removeAppliedFilter(filterType);
   };
 
   const clearAll = () => {
@@ -108,22 +132,9 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
           />
         ))}
       </BoardFiltersWrapper>
-      {!!appliedFiltersMap.length && showAppliedFilters && (
+      {!!Object.keys(appliedFilters)?.length && showAppliedFilters && (
         <AppliedFiltersWrapper>
-          {appliedFiltersMap.map((filter, idx) => {
-            const Icon = filter?.pillIcon;
-            return (
-              filter && (
-                <AppliedFiltersItem key={idx}>
-                  <AppliedFiltersIconWrapper>
-                    <Icon style={{ margin: 0 }} width="100%" height="100%" />
-                  </AppliedFiltersIconWrapper>
-                  {filter.name}
-                  <CloseIcon onClick={() => handleFilterPill(filter)} />
-                </AppliedFiltersItem>
-              )
-            );
-          })}
+          <AppliedFilter appliedFilters={appliedFilters} handleFilterPill={handleFilterPill} />
           <ClearButton onClick={clearAll}>Clear all</ClearButton>
         </AppliedFiltersWrapper>
       )}

@@ -25,6 +25,7 @@ import {
   CollabRequestAction,
   CollabRequestTitle,
   CollabsWrapper,
+  SidebarWrapper,
 } from './styles';
 
 const useBackHref = ({ router }) => {
@@ -72,8 +73,8 @@ const CollabsSidebar = () => {
   const handleCreateModal = () => setOpenCreateModal((prevState) => !prevState);
 
   return (
-    <>
-      <CreateCollaborationModal open={openCreateModal} onCancel={handleCreateModal} defaultOrgId={board?.orgId} />
+    <SidebarWrapper>
+      <CreateCollaborationModal open={openCreateModal} onCancel={handleCreateModal} />
 
       <BackButton href={href} />
       <SectionWrapper>
@@ -120,7 +121,7 @@ const CollabsSidebar = () => {
           )}
         </ListWrapper>
       </SectionWrapper>
-    </>
+    </SidebarWrapper>
   );
 };
 

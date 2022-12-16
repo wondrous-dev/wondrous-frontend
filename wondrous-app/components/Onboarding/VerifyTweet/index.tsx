@@ -90,7 +90,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
         shallow: true,
       });
     } else {
-      router.push('/explore', undefined, {
+      router.push('/mission-control', undefined, {
         shallow: true,
       });
     }

@@ -8,12 +8,13 @@ import { useTaskActions } from 'utils/hooks';
 import ApplyOrClaimButton from './ApplyOrClaimButton';
 import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
 import SectionContent from './SectionContent';
+import { ProfileGrid } from './styles';
 
 const LeftComponent = ({ assigneeProfilePicture, title, assigneeId }) => (
-  <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
+  <ProfileGrid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
     {assigneeId ? <UserProfilePicture avatar={assigneeProfilePicture} /> : null}
     {title}
-  </Grid>
+  </ProfileGrid>
 );
 
 const RightComponent = (props) => {

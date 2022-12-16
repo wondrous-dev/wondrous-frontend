@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 export const mainSidebarWidth = '84px';
 
-const entitySidebarWidth = '200px';
+export const entitySidebarWidth = '220px';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -16,28 +16,33 @@ export const Wrapper = styled.div`
 export const SidebarWrapper = styled.div`
   background: ${({ theme }) => theme.palette.black92};
   flex-direction: column;
-  gap: 28px;
   height: 100%;
   overflow-y: auto;
-  padding: 24px 14px;
   position: fixed;
-  width: ${entitySidebarWidth};
+  top: 0px;
+  padding-top: 70px;
+  z-index: 100;
+  width: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   display: flex;
-  z-index: 500;
+  transition: width 0.2s;
   justify-content: space-between;
-  ${({ minimized }) => minimized && `left: -100%`};
-  ${ScrollBarStyles}
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: ${({ minimized }) => (minimized ? '0px' : '100%')};
+  }
+  ${ScrollBarStyles};
 `;
 
 export const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 14px;
   flex-grow: 1;
 `;
 
 export const ChildrenWrapper = styled.div`
   margin-left: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-left: ${({ minimized }) => (minimized ? '0px' : 'auto')};
+  }
   width: 100%;
 `;
 
@@ -48,7 +53,9 @@ export const Label = styled(Typography)`
     font-weight: 500;
     font-size: 13px;
     display: flex;
-    color: ${({ theme }) => theme.palette.blue20};
+    padding: 0px 14px 0px 18px;
+    color: ${({ theme }) => theme.palette.grey57};
+    ${({ minimized }) => (minimized ? 'visibility: hidden' : '')}}
   }
 `;
 
@@ -57,6 +64,12 @@ export const ListWrapper = styled(List)`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    ${({ minimized }) =>
+      minimized &&
+      ` 
+      justify-content: center;
+      align-items: center;
+    `})}
   }
 `;
 

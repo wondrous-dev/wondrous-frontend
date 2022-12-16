@@ -106,11 +106,10 @@ export const HeaderTitle = styled(Typography)`
   && {
     font-weight: 500;
     font-size: 26px;
-    line-height: 36px;
     display: flex;
     align-items: center;
     color: #ffffff;
-    margin-left: 4px;
+    margin-left: 10px;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;

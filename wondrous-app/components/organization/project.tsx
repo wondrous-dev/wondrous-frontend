@@ -4,12 +4,14 @@ import Wrapper from 'components/organization/wrapper/wrapper';
 import ProjectProfile from 'components/ProjectProfile';
 import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { OrgBoardContext } from 'utils/contexts';
+import { usePageDataContext } from 'utils/hooks';
 import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
 const OrgProject = () => {
   const { username } = useRouter().query;
+  const { setPageData } = usePageDataContext();
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -20,6 +22,15 @@ const OrgProject = () => {
     },
   });
   const { getOrgFromUsername: orgData } = data || {};
+
+  useEffect(() => {
+    if (orgData) {
+      setPageData({ orgData });
+    }
+  }, [orgData]);
+
+  useEffect(() => () => setPageData({}), [])
+
   const contextValue = useMemo(
     () => ({
       userPermissionsContext: userPermissionsContext?.getUserPermissionContext

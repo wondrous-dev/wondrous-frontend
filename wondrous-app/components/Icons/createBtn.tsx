@@ -33,32 +33,23 @@ export default function CreateBtnIcon(props) {
 
 export function CreateIconOutlined(props) {
   return (
-    <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <circle
-        cx="20.1484"
-        cy="20.291"
-        r="19.3333"
-        fill="#0F0F0F"
-        stroke="url(#paint0_linear_10646_243532)"
-        strokeWidth="1.33333"
-      />
-      <path d="M26.5312 20.1543H19.9672L13.4757 20.1543" stroke="white" strokeLinecap="round" />
-      <path d="M20.0078 13.627V20.1547V26.6825" stroke="white" strokeLinecap="round" />
+    <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1.21875" y="1" width="35" height="35" rx="17.5" fill="#282828" />
+      <path d="M23.2891 18.502H18.6942H14.1502" stroke="white" stroke-linecap="round" />
+      <path d="M18.7227 13.9297V18.4991V23.0686" stroke="white" stroke-linecap="round" />
+      <rect x="1.21875" y="1" width="35" height="35" rx="17.5" stroke="url(#paint0_linear_21396_207275)" />
       <defs>
         <linearGradient
-          id="paint0_linear_10646_243532"
-          x1="55.2458"
-          y1="-42.2449"
-          x2="3.65569"
-          y2="38.6426"
+          id="paint0_linear_21396_207275"
+          x1="38.7438"
+          y1="18.5"
+          x2="-0.40625"
+          y2="18.5"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#FF6DD7" />
-          <stop offset="0.21875" stopColor="#B820FF" />
-          <stop offset="0.401042" stopColor="#F93701" />
-          <stop offset="0.588542" stopColor="#FFD653" />
-          <stop offset="0.78125" stopColor="#00BAFF" />
-          <stop offset="0.953125" stopColor="#06FFA5" />
+          <stop stopColor="#00BAFF" />
+          <stop offset="0.473958" stopColor="#7427FF" />
+          <stop offset="1" stopColor="#CCBBFF" />
         </linearGradient>
       </defs>
     </svg>

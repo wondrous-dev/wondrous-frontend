@@ -9,12 +9,13 @@ import { useTaskActions } from 'utils/hooks';
 
 import { useEntityCreateButtonProps, useGetOrgProposal } from './helpers';
 import SectionContent from './SectionContent';
+import { ProfileGrid } from './styles';
 
 const LeftComponent = ({ title, creator }) => (
-  <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
+  <ProfileGrid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
     <UserProfilePicture avatar={creator?.profilePicture} />
     {title}
-  </Grid>
+  </ProfileGrid>
 );
 
 const RightComponent = ({ orgId, rejectedAt, approvedAt, closedAt }) => (

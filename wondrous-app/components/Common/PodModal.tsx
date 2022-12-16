@@ -1,5 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
-import { useMe } from 'components/Auth/withAuth';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 import { SafeImage } from 'components/Common/Image';
 import PodIconName from 'components/Common/PodIconName';
 import {
@@ -98,7 +98,7 @@ interface PodModalProps {
   handleClose: () => unknown;
 }
 
-export default function PodModal(props: PodModalProps) {
+function PodModal(props: PodModalProps) {
   const { open, handleClose } = props;
   const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS_WITH_COUNT, {
     fetchPolicy: 'network-only',
@@ -149,3 +149,5 @@ export default function PodModal(props: PodModalProps) {
     </CreateModalOverlay>
   );
 }
+
+export default withAuth(PodModal)

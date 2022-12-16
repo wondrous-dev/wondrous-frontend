@@ -8,7 +8,7 @@ export const MemberRolePill = styled(Typography)`
     width: auto;
     max-lines: 1;
     white-space: nowrap;
-    font-size: 14px;
+    font-size: ${(props) => props.fontSize || '14px'};
     padding: 4px 12px 4px 12px;
     border-radius: 30px;
     border: 1px solid ${(props) => getRoleColor(props.roleName)};

@@ -3,26 +3,47 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 
 export const Wrapper = styled.div`
-  background: ${palette.midnight};
-  top: 110%;
-  position: absolute;
+  background: transparent;
   width: fit-content;
   min-width: 100%;
   border-radius: 6px;
-  border: 1px solid ${palette.grey79};
   padding: 8px;
-  display: ${({ show }) => (show ? 'block' : 'none')};
+  color: ${palette.grey250};
+  font-weight: 500;
+  flex-direction: column;
+  gap: 14px;
+  display: ${({ show }) => (show ? 'flex' : 'none')};
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding: 28px 0;
+  }
 `;
 
-export const Item = styled.div`
+export const Item = styled.button`
   border-radius: 6px;
   padding: 4px;
   cursor: pointer;
+  background: transparent;
+  width: 100%;
+  font-weight: inherit;
+  color: inherit;
+  font-family: inherit;
+  border: 0;
   display: flex;
   align-items: center;
   gap: 8px;
-  :hover {
-    background: ${palette.black92};
+  outline: none;
+
+  ${({ isActive }) =>
+    isActive &&
+    `
+  
+  outline: none;
+  background: ${palette.black92};
+  color: ${palette.white};
+  `}
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding: 0;
+    font-size: 14px;
   }
 `;
 
@@ -33,8 +54,14 @@ export const IconWrapper = styled.div`
   height: 24px;
   width: 24px;
   border-radius: 4px;
-  ${Item}:hover & {
-    background: ${palette.highlightPurple};
+  ${({ isActive }) => isActive && `background: ${palette.highlightPurple};`};
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    height: 36px;
+    width: 36px;
+    svg {
+      width: 36px;
+      height: 36px;
+    }
   }
 `;
 

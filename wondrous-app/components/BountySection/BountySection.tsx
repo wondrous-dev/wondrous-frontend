@@ -23,6 +23,10 @@ import {
 } from './styles';
 import ExploreOrgGr15Modal from './modal';
 
+const BountyBoardContainer = ({ children }) => (
+  <StyledGridContainer columns={{ xs: 1, sm: 2, md: 2, lg: 3 }}>{children}</StyledGridContainer>
+);
+
 const BountySection = ({ bounties = [], fetchMore = () => {}, hasMore, gr15DEI }) => {
   const [openExploreGr15Modal, setExploreGr15Modal] = useState(false);
   const [showSponsors, setShowSponsors] = useState(false);
@@ -104,7 +108,7 @@ const BountySection = ({ bounties = [], fetchMore = () => {}, hasMore, gr15DEI }
         </>
       )}
 
-      <BountyBoard Container={StyledGridContainer} tasks={bounties} displayOrg handleCardClick={openTaskViewModal} />
+      <BountyBoard Container={BountyBoardContainer} tasks={bounties} displayOrg handleCardClick={ç} />
       {hasMore && !!bounties?.length && (
         <ShowMoreButtonWrapper>
           <ShowMoreButton type="button" onClick={() => fetchMore()}>

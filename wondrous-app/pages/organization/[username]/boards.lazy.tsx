@@ -40,6 +40,7 @@ import {
   TASK_STATUSES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
+import { usePageDataContext } from 'utils/hooks';
 import Boards from 'components/organization/boards/boards';
 import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
@@ -354,6 +355,7 @@ const useGetOrgTaskBoard = ({
 
 function BoardsPage() {
   const router = useRouter();
+  const { setPageData } = usePageDataContext();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -461,6 +463,14 @@ function BoardsPage() {
       searchString: search,
     },
   };
+
+  useEffect(() => {
+    if (orgData) {
+      setPageData({ orgData });
+    }
+  }, [orgData]);
+
+  useEffect(() => () => setPageData({}), []);
 
   const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
     onCompleted: (data) => {

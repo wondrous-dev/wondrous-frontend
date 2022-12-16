@@ -59,7 +59,7 @@ export const useCollaborationModal = () => {
   const [openCollaborationModal, setCollaborationModal] = useState(false);
   const handleCreateModal = () => setCollaborationModal((prevState) => !prevState);
   const CollaborationModal = () => (
-    <CreateCollaborationModal open={openCollaborationModal} onCancel={handleCreateModal} defaultOrgId={board?.orgId} />
+    <CreateCollaborationModal open={openCollaborationModal} onCancel={handleCreateModal} />
   );
   return { CollaborationModal, handleCreateModal };
 };

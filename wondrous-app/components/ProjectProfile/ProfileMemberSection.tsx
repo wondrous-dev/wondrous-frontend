@@ -5,14 +5,15 @@ import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import palette from 'theme/palette';
 import { useGetOrgUsers } from './helpers';
 import SectionContent from './SectionContent';
+import { ProfileGrid } from './styles';
 
 const LeftComponent = ({ user }) => {
   const { profilePicture, username } = user || {};
   return (
-    <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
+    <ProfileGrid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
       <UserProfilePicture avatar={profilePicture} />
       {username}
-    </Grid>
+    </ProfileGrid>
   );
 };
 

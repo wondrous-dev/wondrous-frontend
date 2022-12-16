@@ -83,7 +83,7 @@ const Balance = ({ currency, children }) => {
   );
 };
 
-function Wallet() {
+function Wallet({isActive = true, handleClick = () => {}}) {
   const wonderWeb3 = useWonderWeb3();
 
   const { provider } = useContext(WonderWeb3Context);
@@ -189,7 +189,7 @@ function Wallet() {
   // potentially add || !user?.activeEthAddress
   if (!connected) {
     return (
-      <WalletWrapper>
+      <WalletWrapper isActive={isActive}>
         <Button onClick={() => setWalletModalOpen(true)}>
           {!user?.activeEthAddress ? 'Link Wallet to Account' : 'Connect Wallet'}
         </Button>
@@ -202,11 +202,11 @@ function Wallet() {
   }
 
   return (
-    <WalletWrapper>
-      <Tooltip title={CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3.chain]}>
+    <WalletWrapper isActive={isActive} onClick={handleClick}>
+      {/* <Tooltip title={CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3.chain]}>
         <ChainWrapper>{CHAIN_LOGO[wonderWeb3.chain]}</ChainWrapper>
-      </Tooltip>
-      <Balance currency={currency}>
+      </Tooltip> */}
+      {/* <Balance currency={currency}>
         <CurrencyDropdownItem
           currency="WONDER"
           selected={currency.symbol === 'WONDER'}
@@ -220,7 +220,7 @@ function Wallet() {
             displayCurrency={displayCurrency}
           />
         )}
-      </Balance>
+      </Balance> */}
 
       <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
       {/* {differentAccountError && (

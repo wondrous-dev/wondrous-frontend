@@ -134,7 +134,7 @@ export const NOTION_CONNECT_TYPES = {
 
 export const SIDEBAR_WIDTH = '84px';
 export const SIDEBAR_WIDTH_WITH_DAO = '344px';
-export const HEADER_HEIGHT = '68px';
+export const HEADER_HEIGHT = '62px';
 
 export const PROFILE_CARD_WIDTH = 310;
 export const PROFILE_CARD_HEIGHT = 194;
@@ -150,6 +150,7 @@ export const ENTITIES_TYPES = {
   SUBMISSION: 'submission',
   GRANT: 'grant',
   GRANT_APPLICATION: 'grant_application',
+  COLLAB: 'collab',
 };
 
 export const MODAL_TABS_MAP = {
@@ -223,7 +224,7 @@ export const MODAL_ACTIONS = {
 
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
-export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;
+export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,25}$/;
 
 export const PERMISSIONS = {
   CREATE_TASK: 'create_task',
@@ -608,6 +609,13 @@ export const FEATURED_LIST = [
     name: 'Bankless Africa',
   },
   {
+    username: 'clubraredao',
+    imageUrl: 'thumbnail/8d9bECvHKIueHQ.png',
+    headerUrl: 'org/header/54613035730337824/D6pAiyPBzl3N5w.png',
+    bio: 'ClubRare DAO is the accelerator for Phygital NFT creators.',
+    name: 'ClubRare DAO',
+  },
+  {
     username: 'radicle',
     imageUrl: 'thumbnail/6l_gQZS35SPfhg.jpg',
     bio: 'A peer-to-peer stack for building software together 🌞',
@@ -634,6 +642,13 @@ export const FEATURED_LIST = [
     headerUrl: 'org/header/67845186849341630/_XcbBTe71pLPXw.png',
     bio: 'Unlock is a decentralized protocol for memberships.',
     name: 'Unlock Protocol',
+  },
+  {
+    username: 'asraya',
+    imageUrl: 'thumbnail/-r_Xydyp17RCHg.png',
+    bio: 'A community serving Visionaries & Entrepreneurs through Web3 tech to future-proof our businesses & heal our planet.',
+    headerUrl: 'org/header/58691516186492993/fQ9hmq-dAecc8Q.png',
+    name: 'Asraya',
   },
   {
     username: 'dydx',
@@ -685,13 +700,6 @@ export const FEATURED_LIST = [
     name: 'MetricsDAO',
   },
   {
-    username: 'colorsxdao',
-    imageUrl: 'thumbnail/g1CnmWylfW90gw.jpg',
-    bio: 'A global community of creatives supporting each other across disciplines.',
-    headerUrl: 'org/header/53653210809761819/TWZLIRcWtuTkDQ.jpg',
-    name: 'Colors DAO',
-  },
-  {
     username: 'yup',
     imageUrl: 'thumbnail/pHu07-T3OVr2BQ.png',
     bio: '✺ curate ✺ NFTs, Tweets, Videos, Tokens, Articles, Songs... you get the idea',
@@ -725,27 +733,6 @@ export const FEATURED_LIST = [
     imageUrl: 'thumbnail/-Q-HabZ7gJkrKw.png',
     headerUrl: 'org/header/56156210349473838/MtLalTJmk1BL8g.png',
     bio: '#DeFi 2.0 protocol generating passive income for $RVRS stakers through a community governed treasury ',
-  },
-  {
-    username: 'atlantis0x',
-    name: 'Atlantis World',
-    bio: 'Web3 social, gaming and education in one lightweight metaverse 🎮',
-    imageUrl: 'thumbnail/LMtWEfrwC0xciA.jpg',
-    headerUrl: 'org/header/57232528252076086/ZKu56UoDcII3VA.jpeg',
-  },
-  {
-    username: 'jokedao',
-    name: 'jokedao',
-    bio: 'bottom-up, on-chain governance. for user-generated roadmaps, grants, endorsements, bounties, curation, and community-driven decisions',
-    imageUrl: 'thumbnail/MSO7Y_fM363jAQ.jpg',
-    headerUrl: 'org/header/57703800857690169/Nt_ukZ50W-X4JQ.jpeg',
-  },
-  {
-    username: 'lobby3',
-    name: 'Lobby3',
-    bio: 'Join our fight to advance economic opportunity and Web3 technology in D.C. 👾',
-    imageUrl: 'thumbnail/vtNOT3HZxQluaw.png',
-    headerUrl: 'org/header/52285666880389143/5rJ29hbei-D78w.jpeg',
   },
 ];
 
@@ -871,3 +858,7 @@ export const GRANT_APPLY_POLICY = {
   EVERYONE: 'everyone',
   ONLY_ORG_MEMBERS: 'only_org_members',
 };
+
+export const PAGES_WITH_NO_ENTITY_SIDEBAR = ['/explore'];
+
+export const EMPTY_RICH_TEXT_STRING = '[{"children":[{"text":""}],"type":"paragraph"}]';

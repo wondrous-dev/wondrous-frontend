@@ -41,7 +41,6 @@ export const MissionControlSidebarWrapper = styled.div`
   padding: 14px;
   display: flex;
   flex-direction: column;
-  padding-top: ${HEADER_HEIGHT};
   gap: 24px;
   position: relative;
   z-index: 1;
@@ -58,8 +57,7 @@ export const MissionControlWidgetsContainer = styled.div`
   flex-basis: 100%;
   display: flex;
   gap: 14px;
-  justify-content: flex-start;
-  align-items: baseline;
+  align-items: flex-start;
   flex-wrap: wrap;
   flex: 1;
 
@@ -84,7 +82,7 @@ export const MissionControlSidebarIconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  bottom: 0;
+  bottom: 10%;
   position: absolute;
   width: 100%;
   z-index: 0;

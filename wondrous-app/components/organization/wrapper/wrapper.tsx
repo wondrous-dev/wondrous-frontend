@@ -12,6 +12,7 @@ import {
   GR15DEICategoryName,
   BOUNTY_TYPE,
   HEADER_ASPECT_RATIO,
+  EMPTY_RICH_TEXT_STRING,
 } from 'utils/constants';
 import Box from '@mui/material/Box';
 import TypeSelector from 'components/TypeSelector';
@@ -220,7 +221,7 @@ function Wrapper(props) {
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const { search, entity, cause } = router.query;
-  const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
+  const onTaskPage = entity === ENTITIES_TYPES.TASK;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
   const board = orgBoard;
   const boardFilters = board?.filters || {};
@@ -384,8 +385,8 @@ function Wrapper(props) {
                           <DAOEmptyIcon />
                         </TokenEmptyLogo>
                       }
-                      width={60}
-                      height={60}
+                      width={50}
+                      height={50}
                       useNextImage
                       style={{
                         borderRadius: '6px',
@@ -396,12 +397,12 @@ function Wrapper(props) {
                       <>
                         <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
                         <GR15DEILogo
-                          width="42"
-                          height="42"
+                          width="30"
+                          height="30"
                           onClick={() => setOpenGR15Modal(true)}
                           style={{
                             top: '0',
-                            right: '-20px',
+                            right: '1px',
                             position: 'absolute',
                             zIndex: '25',
                           }}
@@ -472,9 +473,13 @@ function Wrapper(props) {
                 )}
               </HeaderButtons>
             </HeaderMainBlock>
-            <HeaderText as="div">
-              <RichTextViewer text={orgProfile?.description} />
-            </HeaderText>
+            {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
+              <HeaderText as="div">
+                <RichTextViewer text={orgProfile?.description} />
+              </HeaderText>
+            ) : (
+              <div style={{ height: 10 }} />
+            )}
             <div>
               <HeaderActivity>
                 <HeaderContributors

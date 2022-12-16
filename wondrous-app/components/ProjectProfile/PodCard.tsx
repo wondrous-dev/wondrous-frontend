@@ -25,9 +25,12 @@ const PodCard = ({ name, id, color = palette.grey99, contributorCount = 0 }: Pod
     padding="4px"
     flexShrink="1"
     sx={{
-      cursor: 'pointer',
       '& a': {
         textDecoration: 'none',
+      },
+      '&:hover': {
+        cursor: 'pointer',
+        background: palette.grey920,
       },
     }}
   >
