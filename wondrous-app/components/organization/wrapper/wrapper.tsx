@@ -223,8 +223,9 @@ function Wrapper(props) {
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const { search, entity, cause } = router.query;
-  const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
+  const onTaskPage = entity === ENTITIES_TYPES.TASK;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
+  console.log('onBountyPage', onBountyPage);
   const board = orgBoard;
   const boardFilters = board?.filters || {};
   const { asPath } = router;
