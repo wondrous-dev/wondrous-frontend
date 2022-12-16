@@ -41,9 +41,23 @@ export const guideConfig = {
             <StepBody>Find work and create/join projects here.</StepBody>
           </div>
         ),
+        nextButtonTitle: 'Continue',
+        prevButtonTitle: 'Skip training',
+        prevAction: 'skip',
+      },
+      {
+        selector: '#tour-header-launch',
+        position: 'center',
+        content: () => (
+          <div>
+            <StepTitle gradient="linear-gradient(180deg, #FFFFFF 0%, #FFD653 100%)">Let’s get to work</StepTitle>
+            <StepBody>Want to create a project or find an existing one to join?</StepBody>
+          </div>
+        ),
         nextButtonTitle: 'Finish',
         prevButtonTitle: 'Skip training',
         prevAction: 'skip',
+        nextAction: 'finish',
       },
     ],
   },

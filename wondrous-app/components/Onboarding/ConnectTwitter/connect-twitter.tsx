@@ -29,7 +29,7 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
       if (userData?.getLoggedinUser?.userInfo?.twitterUsername) {
-        router.push(`/explore`, undefined, {
+        router.push(`/mission-control`, undefined, {
           shallow: true,
         });
       }
@@ -73,7 +73,7 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
         }
       );
     } else {
-      router.push('/explore', undefined, {
+      router.push('/mission-control', undefined, {
         shallow: true,
       });
     }

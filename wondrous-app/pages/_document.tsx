@@ -46,7 +46,7 @@ class MyDocument extends Document {
             rel="stylesheet"
           />
         </Head>
-        <body>
+        <body id="tour-header-launch">
           <script>0</script>
           <Main />
           <NextScript />
