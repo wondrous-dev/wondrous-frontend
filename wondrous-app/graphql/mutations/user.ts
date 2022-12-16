@@ -135,3 +135,11 @@ export const RESET_PASSWORD = gql`
     }
   }
 `;
+
+export const CLOSE_MAIN_BANNER = gql`
+  mutation closeMainBanner {
+    closeMainBanner {
+      success
+    }
+  }
+`;
