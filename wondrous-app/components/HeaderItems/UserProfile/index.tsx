@@ -113,6 +113,7 @@ const UserProfile = ({ onClose }) => {
               style={{
                 height: '90px',
                 width: '90px',
+                borderRadius: '100%',
               }}
             />
             <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
