@@ -4,6 +4,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { useWonderWeb3 } from 'services/web3';
 import { useMutation } from '@apollo/client';
 import { CLOSE_MAIN_BANNER } from 'graphql/mutations';
+import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { PlayerWrapper } from 'components/Onboarding/VerifyTweet/styles';
 import Button from 'components/Button';
 import Link from 'next/link';
@@ -16,7 +17,7 @@ export default function AnnouncementModal({ open, onClose }) {
     onCompleted: () => {
       onClose();
     },
-    refetchQueries: ['getLoggedinUser'],
+    refetchQueries: [GET_LOGGED_IN_USER],
   });
   const generateTweetInfo = () => {
     if (user?.activeEthAddress) {
