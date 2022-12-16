@@ -276,9 +276,9 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
   );
 };
 
-export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false, Container = Fragment }) {
+export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false, Container }) {
   return (
-    <Container>
+    <Container columns={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
       {tasks?.length ? (
         tasks.map((bounty) => (
           <BountyItem key={bounty?.id} bounty={bounty} handleCardClick={handleCardClick} displayOrg={displayOrg} />

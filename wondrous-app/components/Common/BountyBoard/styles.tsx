@@ -89,7 +89,6 @@ export const BountyCardWrapper = styled.div`
   position: relative;
   z-index: 1;
   min-width: 365px;
-  width: 33.3%;
   &::before {
     background: ${palette.grey900};
     border-radius: 6px;
