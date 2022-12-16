@@ -49,7 +49,7 @@ export default function OnboardingGuide({ children }) {
     <TourProvider
       afterOpen={disableBody}
       beforeClose={beforeClose}
-      showCloseButton={false}
+      showCloseButton
       disableInteraction
       onClickMask={() => {}}
       steps={steps}
