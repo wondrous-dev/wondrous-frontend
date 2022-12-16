@@ -146,7 +146,14 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
       step={5}
     >
       <div style={{ textAlign: 'center', marginBottom: '50px', marginTop: '20px' }}>
-        <Image src="/images/onboarding/twitter.svg" width={406} height={224} alt="" />
+        <img
+          src="/images/onboarding/twitter.svg"
+          alt=""
+          style={{
+            width: '100%',
+            height: '224px',
+          }}
+        />
       </div>
     </OnboardingLayout>
   );
