@@ -63,7 +63,7 @@ function OnboardingWelcome({ updateUser, user }) {
         },
       });
     } else {
-      setError("Please enter a valid username with 3-15 alphanumeric characters with no '.'");
+      setError("Please enter a valid username with 3-25 alphanumeric characters with no '.'");
     }
   };
 

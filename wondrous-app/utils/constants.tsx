@@ -224,7 +224,7 @@ export const MODAL_ACTIONS = {
 
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
-export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;
+export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,25}$/;
 
 export const PERMISSIONS = {
   CREATE_TASK: 'create_task',
