@@ -3,29 +3,52 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
-import apollo from 'services/apollo';
-import { storeAuthHeader, useMe, withAuth } from 'components/Auth/withAuth';
-import { InviteWelcomeBoxWrapper } from 'components/Onboarding/styles';
+import { CallbackBackground, CallbackHeading, CallbackWrapper } from 'components/Common/CallbackWrapper';
 import { VERIFY_TWITTER } from 'graphql/mutations';
-import { GRAPHQL_ERRORS } from 'utils/constants';
 // https://yourCallbackUrl.com?oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0&oauth_verifier=uw7NjWHT6OJ1MpJOXsHfNxoAhPKpgI8BlYDhxEjIBY
 
 function Callback() {
   const router = useRouter();
-  const [successfullyVerified, setSuccessfullyVerified] = useState(false);
   const { code, state, error: twitterError }: any = router.query;
+  const collabInviteCode = state?.split('collabInvite=')[1] || '';
+  const source = state?.split('?collabInvite=')[0] || 'onboading';
   const [verifyTwitter] = useMutation(VERIFY_TWITTER, {
-    onError: () => {
-      console.error('error verifying twitter');
+    onCompleted: () => {
+      if (source === 'onboarding') {
+        router.replace({
+          pathname: `/twitter/verify-tweet`,
+          ...(collabInviteCode ? { query: { collabInvite: collabInviteCode } } : {}),
+        });
+      }
+      if (source === 'profile') {
+        router.replace({
+          pathname: '/profile/settings',
+          query: { successfulAuth: 'true' }, // unecessary for now
+        });
+      }
+    },
+    onError: (e) => {
+      console.error('error verifying twitter', e);
+      if (source === 'onboarding') {
+        router.replace({
+          pathname: `/onboarding/twitter`,
+          ...(collabInviteCode ? { query: { collabInvite: collabInviteCode, error: 'unknown' } } : {}),
+        });
+      }
+      if (source === 'profile') {
+        router.replace({
+          pathname: '/profile/settings',
+          query: { successfulAuth: 'false' }, // unecessary for now
+        });
+      }
     },
   });
 
-  const collabInviteCode = state?.split('collabInvite=')[1] || '';
   useEffect(() => {
     if (twitterError === 'access_denied') {
       router.replace({
         pathname: `/onboarding/twitter`,
-        ...(collabInviteCode ? { query: { collabInvite: collabInviteCode } } : {}),
+        ...(collabInviteCode ? { query: { collabInvite: collabInviteCode, eror: 'access_denied' } } : {}),
       });
     }
   }, [twitterError]);
@@ -34,32 +57,18 @@ function Callback() {
     if (code) {
       verifyTwitter({
         variables: { code },
-      }).then(() => {
-        if (state === 'onboarding') {
-          router.replace({
-            pathname: `/twitter/verify-tweet`,
-            ...(collabInviteCode ? { query: { collabInvite: collabInviteCode } } : {}),
-          });
-        }
-        if (state === 'profile') {
-          router.replace({
-            pathname: '/profile/settings',
-            query: { successfulAuth: 'true' }, // unecessary for now
-          });
-        }
       });
     }
   }, [code]);
 
   return (
-    <InviteWelcomeBoxWrapper
-      style={{
-        minHeight: '100vh',
-      }}
-    >
-      {!successfullyVerified && <CircularProgress />}
-      {successfullyVerified && <h1>success</h1>}
-    </InviteWelcomeBoxWrapper>
+    <>
+      <CallbackBackground />
+      <CallbackWrapper>
+        <CallbackHeading>Connecting Twitter Server</CallbackHeading>
+        <CircularProgress />
+      </CallbackWrapper>
+    </>
   );
 }
 

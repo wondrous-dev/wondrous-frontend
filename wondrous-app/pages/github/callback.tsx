@@ -3,7 +3,7 @@ import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useCallback } from 'react';
 import { storeAuthHeader, useMe, withAuth } from 'components/Auth/withAuth';
-import { InviteWelcomeBoxWrapper } from 'components/Onboarding/styles';
+import { CallbackBackground, CallbackHeading, CallbackWrapper } from 'components/Common/CallbackWrapper';
 import { CONNECT_ORG_GITHUB } from 'graphql/mutations/org';
 
 function Callback() {
@@ -32,13 +32,13 @@ function Callback() {
   }, [code, state]);
 
   return (
-    <InviteWelcomeBoxWrapper
-      style={{
-        minHeight: '100vh',
-      }}
-    >
-      <CircularProgress />
-    </InviteWelcomeBoxWrapper>
+    <>
+      <CallbackBackground />
+      <CallbackWrapper>
+        <CallbackHeading>Connecting Github Server</CallbackHeading>
+        <CircularProgress />
+      </CallbackWrapper>
+    </>
   );
 }
 
