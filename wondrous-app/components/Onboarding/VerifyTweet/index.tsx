@@ -150,7 +150,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
             fontWeight: '400',
           }}
         >
-          If you haven&apos;t connected your wallet, please add your ENS to the tweet
+          If you haven&apos;t connected your wallet, add your address or ENS to the tweet
         </InviteWelcomeBoxParagraph>
       )}
       <div
