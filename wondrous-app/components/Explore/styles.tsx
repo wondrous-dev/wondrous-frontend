@@ -77,7 +77,7 @@ export const BackgroundTextWrapper = styled.div`
   flex-direction: column;
   gap: 42px;
   justify-content: flex-start;
-  width: 75%;
+  width: 80%;
   @media ${device.mobileL} {
     top: 20%;
   }
