@@ -21,7 +21,7 @@ import {
 } from 'utils/constants';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import { useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
-import { KudosWidget, InProgressTasksWidget } from 'components/MissionControlWidgets';
+import { KudosWidget, MyProjectsWidget } from 'components/MissionControlWidgets';
 import { ConnectWallet, Notifications } from 'components/MissionControlSidebarWidgets';
 import HighlightedCone from 'components/Icons/HighlightedCone';
 import {
@@ -157,13 +157,13 @@ const MissionControl = () => {
         ))}
         <MissionControlWidgetsContainer>
           <KudosWidget />
-          <InProgressTasksWidget />
+          <Notifications />
         </MissionControlWidgetsContainer>
       </MissionControlWidgetsWrapper>
       <MissionControlSidebarWrapper>
         <ConnectWallet />
         <FocusWrapper>
-          <Notifications />
+          <MyProjectsWidget />
         </FocusWrapper>
         <MissionControlSidebarIconWrapper>
           <HighlightedCone />

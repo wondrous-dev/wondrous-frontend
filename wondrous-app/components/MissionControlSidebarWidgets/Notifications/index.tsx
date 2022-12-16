@@ -1,13 +1,14 @@
 import Accordion from 'components/Common/Accordion';
 import NotificationsBoard from 'components/Notifications';
+import WidgetLayout from 'components/MissionControlWidgets/WidgetLayout';
 import { NotificationsWrapper } from './styles';
 
 const Notifications = () => (
-  <Accordion title="Notifications" defaultExpanded>
+  <WidgetLayout title="Notifications" padding="10px 0px 10px 10px">
     <NotificationsWrapper>
       <NotificationsBoard onlyBoard />
     </NotificationsWrapper>
-  </Accordion>
+  </WidgetLayout>
 );
 
 export default Notifications;
