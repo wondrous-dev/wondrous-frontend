@@ -225,7 +225,6 @@ function Wrapper(props) {
   const { search, entity, cause } = router.query;
   const onTaskPage = entity === ENTITIES_TYPES.TASK;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
-  console.log('onBountyPage', onBountyPage);
   const board = orgBoard;
   const boardFilters = board?.filters || {};
   const { asPath } = router;
