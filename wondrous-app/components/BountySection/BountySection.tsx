@@ -108,7 +108,7 @@ const BountySection = ({ bounties = [], fetchMore = () => {}, hasMore, gr15DEI }
         </>
       )}
 
-      <BountyBoard Container={BountyBoardContainer} tasks={bounties} displayOrg handleCardClick={ç} />
+      <BountyBoard Container={BountyBoardContainer} tasks={bounties} displayOrg handleCardClick={openTaskViewModal} />
       {hasMore && !!bounties?.length && (
         <ShowMoreButtonWrapper>
           <ShowMoreButton type="button" onClick={() => fetchMore()}>
