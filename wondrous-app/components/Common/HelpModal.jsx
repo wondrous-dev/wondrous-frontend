@@ -65,7 +65,7 @@ function HelpModal(props) {
             }}
           >
             <CreateFormPreviewButton
-              href="https://wonderverse.gitbook.io/welcome-to-wonderverse/why-wonder/how-we-help-web3-organizations"
+              href="https://wonderverse.gitbook.io/welcome-to-wonderverse"
               style={{
                 marginTop: '24px',
               }}

@@ -39,6 +39,7 @@ import {
   HotkeyContext,
   ExploreGr15TasksAndBountiesContext,
   TaskContext,
+  PageDataContext,
   ProjectContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
@@ -184,24 +185,23 @@ export const useRouterQuery = ({
   return [state, setState];
 };
 
-export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
+export const useFilterQuery = (query, variables = {}, shouldFetch = true, callback = null) => {
   const getData = async () => {
     const { data } = await apollo.query({
       query,
       variables,
     });
-    setData(Object.values(data).flat());
-    setIsLoading(false);
+    if (callback)
+      callback({
+        isLoading: false,
+        data: Object.values(data).flat(),
+      });
   };
   useEffect(() => {
     if (query && shouldFetch) {
-      setIsLoading(true);
       getData();
     }
   }, [query, variables, shouldFetch]);
-  return { isLoading, data };
 };
 
 export const useGetPerStatusTaskCountForUserBoard = (userId) => {
@@ -369,6 +369,34 @@ export const useFullScreen = (defaultValue = false) => {
   return { isFullScreen, toggleFullScreen };
 };
 
+export const useKeyPress = (targetKey) => {
+  const [keyPressed, setKeyPressed] = useState(false);
+
+  function downHandler({ key }) {
+    if (key === targetKey) {
+      setKeyPressed(true);
+    }
+  }
+
+  const upHandler = ({ key }) => {
+    if (key === targetKey) {
+      setKeyPressed(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', downHandler);
+    window.addEventListener('keyup', upHandler);
+    return () => {
+      window.removeEventListener('keydown', downHandler);
+      window.removeEventListener('keyup', upHandler);
+    };
+  }, []);
+
+  return keyPressed;
+};
+
+export const usePageDataContext = () => useContext(PageDataContext);
 export const useCheckOrgPermission = () => {
   const { orgBoard } = useBoards();
   const permissions = parseUserPermissionContext({

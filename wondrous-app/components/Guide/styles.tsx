@@ -1,4 +1,10 @@
+import { Typography } from '@mui/material';
+
+import { Button, ButtonPrimary } from 'components/Common/button';
+import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import styled from 'styled-components';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 export const StepTitle = styled.h1`
   font-family: 'Space Grotesk';
@@ -88,5 +94,31 @@ export const EndGuideButton = styled.button`
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     padding: 1px;
+  }
+`;
+
+export const LaunchButton = styled(Button)`
+  && {
+    min-height: 0;
+    height: 34px;
+    ${GradientHighlightHorizontal}
+    button {
+      text-transform: capitalize;
+      min-height: 0;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Space Grotesk';
+      background: ${palette.background};
+    }
+  }
+`;
+
+export const LaunchButtonText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+    color: ${palette.white};
+    font-weight: 600;
+    padding: 4px;
   }
 `;

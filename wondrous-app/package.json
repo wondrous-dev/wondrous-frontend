@@ -74,7 +74,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "7.31.3",
     "react-hotjar": "4.0.0",
-    "react-hotkeys-hook": "3.4.6",
+    "react-hotkeys-hook": "4.0.6",
     "react-intersection-observer": "8.34.0",
     "react-masonry-css": "1.0.16",
     "react-mentions": "4.4.2",

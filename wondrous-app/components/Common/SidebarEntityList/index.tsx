@@ -1,20 +1,21 @@
 import { useQuery } from '@apollo/client';
+import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
+import GrantIcon from 'components/Icons/GrantIcon';
+import HomeIcon from 'components/Icons/home';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
 import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
+import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import StackIcon from 'components/Icons/Sidebar/stack.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
-import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
+import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useBoards } from 'utils/hooks';
-import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
-import GrantIcon from 'components/Icons/GrantIcon';
-import HomeIcon from 'components/Icons/home';
+import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
 const usePerTypeTaskCountForBoard = () => {
@@ -36,6 +37,9 @@ const usePerTypeTaskCountForBoard = () => {
 
 const useSidebarData = () => {
   const { board, orgBoard } = useBoards();
+  const { setMinimized } = useSideBar();
+  const { isMobileScreen } = useMediaQuery();
+
   const { setEntityType } = board || {};
   const router = useRouter();
   const { search } = router.query;
@@ -46,25 +50,26 @@ const useSidebarData = () => {
         setEntityType(type);
         if (!search) return;
       }
+      if (isMobileScreen) {
+        setMinimized(true);
+      }
       router.push(link);
     };
 
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
   const data = [
-    orgBoard && !board?.orgData?.shared
-      ? {
-          items: [
-            {
-              text: 'Project Home',
-              Icon: () => <HomeIcon height="12px" width="12px" />,
-              link: `${link}/home`,
-            },
-          ],
-        }
-      : null,
+    !!(orgBoard && !board?.orgData?.shared) && {
+      items: [
+        {
+          text: 'Project Home',
+          Icon: () => <HomeIcon height="12px" width="12px" />,
+          link: `${link}/home`,
+        },
+      ],
+    },
     {
-      label: 'Workspaces',
+      label: 'Work',
       items: [
         {
           text: 'Tasks',
@@ -94,6 +99,11 @@ const useSidebarData = () => {
           count: taskCount.proposalCount,
           entityType: ENTITIES_TYPES.PROPOSAL,
         },
+      ],
+    },
+    {
+      label: 'Spaces',
+      items: [
         !!orgBoard && {
           text: 'Pods',
           Icon: PodIcon,
@@ -106,11 +116,12 @@ const useSidebarData = () => {
           link: `${link}/grants`,
           count: taskCount?.grantCount,
         },
-        !board?.orgData?.shared && {
-          text: 'Collaborations',
-          Icon: SmallDao2DaoIcon,
-          link: `${link}/collaborations`,
-        },
+        !board?.orgData?.shared &&
+          !!orgBoard && {
+            text: 'Collaborations',
+            Icon: SmallDao2DaoIcon,
+            link: `${link}/collaborations`,
+          },
       ],
     },
     {
@@ -159,7 +170,15 @@ const SidebarEntityList = () => {
   const router = useRouter();
   const { data, handleOnClick } = useSidebarData();
 
-  return <SidebarEntityListMemoized menuItems={data} handleOnClick={handleOnClick} urlPath={router.asPath} />;
+  const { minimized } = useSideBar();
+  return (
+    <SidebarEntityListMemoized
+      minimized={minimized}
+      menuItems={data}
+      handleOnClick={handleOnClick}
+      urlPath={router.asPath}
+    />
+  );
 };
 
 export default SidebarEntityList;

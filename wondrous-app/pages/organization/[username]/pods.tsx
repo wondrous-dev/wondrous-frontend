@@ -7,18 +7,28 @@ import { withAuth } from 'components/Auth/withAuth';
 
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 
-import { useGetOrgFromUsername } from 'utils/hooks';
+import { useGetOrgFromUsername, usePageDataContext } from 'utils/hooks';
 import { OrgBoardContext } from 'utils/contexts';
+import { useEffect } from 'react';
 
 function PodsInOrgPage() {
   const router = useRouter();
 
   const { username } = router.query;
 
+  const { setPageData } = usePageDataContext();
   const orgData = useGetOrgFromUsername(username);
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
+
+  useEffect(() => {
+    if (orgData) {
+      setPageData({ orgData });
+    }
+  }, [orgData]);
+
+  useEffect(() => () => setPageData({}), [])
 
   return (
     <OrgBoardContext.Provider

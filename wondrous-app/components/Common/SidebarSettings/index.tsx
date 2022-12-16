@@ -214,7 +214,7 @@ function SettingsWrapper(props) {
   const settingsPageConfig = {
     [String(orgId)]: {
       page: SettingsPage.Org,
-      path: `/${mainPath}/${org?.username}/home`,
+      path: `/${mainPath}/${org?.username}/${org?.shared ? 'boards' : 'home'}`,
       label: 'Org',
     },
     [String(podId)]: {

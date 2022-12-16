@@ -4,7 +4,8 @@ import styled from 'styled-components';
 export const Wrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  padding: 24px 14px;
+  justify-content: ${({ minimized }) => (minimized ? 'center' : 'flex-end')};
 `;
 
 export const Button = styled(ButtonBase)`
@@ -17,5 +18,12 @@ export const Button = styled(ButtonBase)`
     background: transparent;
     border-radius: 50%;
     background: ${({ theme }) => theme.palette.black97};
+    ${({ minimized }) =>
+      minimized &&
+      `
+    
+    transition: transform 0.2s;
+    transform: rotate(180deg);
+    `}
   }
 `;

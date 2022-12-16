@@ -4,7 +4,14 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
-import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL, HEADER_ASPECT_RATIO } from 'utils/constants';
+import {
+  ENTITIES_TYPES,
+  GR15DEICategoryName,
+  PERMISSIONS,
+  PRIVACY_LEVEL,
+  HEADER_ASPECT_RATIO,
+  EMPTY_RICH_TEXT_STRING,
+} from 'utils/constants';
 import { parseUserPermissionContext, removeUrlStart, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard } from 'utils/hooks';
 import { AspectRatio } from 'react-aspect-ratio';
@@ -335,8 +342,8 @@ function Wrapper(props) {
                             <DAOEmptyIcon />
                           </TokenEmptyLogo>
                         }
-                        width={60}
-                        height={60}
+                        width={50}
+                        height={50}
                         useNextImage
                         alt="Pod logo"
                         style={{
@@ -347,8 +354,8 @@ function Wrapper(props) {
                         <>
                           <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
                           <GR15DEILogo
-                            width="42"
-                            height="42"
+                            width="30"
+                            height="30"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -356,7 +363,7 @@ function Wrapper(props) {
                             }}
                             style={{
                               top: '0',
-                              right: '-20px',
+                              right: '-10px',
                               position: 'absolute',
                               zIndex: '20',
                             }}
@@ -373,8 +380,8 @@ function Wrapper(props) {
                     <PodIcon
                       color={podProfile?.color}
                       style={{
-                        width: 60,
-                        height: 60,
+                        width: 50,
+                        height: 50,
                         borderRadius: 50,
                       }}
                     />
@@ -427,9 +434,13 @@ function Wrapper(props) {
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              <HeaderText as="div">
-                <RichTextViewer text={podProfile?.description} />
-              </HeaderText>
+              {podProfile?.description && podProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
+                <HeaderText as="div">
+                  <RichTextViewer text={podProfile?.description} />
+                </HeaderText>
+              ) : (
+                <div style={{ height: 10 }} />
+              )}
               <div>
                 <HeaderActivity>
                   {links?.map((link) => (

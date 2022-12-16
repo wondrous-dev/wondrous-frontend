@@ -1,10 +1,11 @@
 import { Button, ButtonBase, Chip, Grid, IconButton, Modal, Popper, TextField, Typography } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
+import DropdownSelect from 'components/Common/DropdownSelect';
+import { Wrapper } from 'components/HeaderItems/CreateEntityComponent/styles';
+import GrantIcon from 'components/Icons/GrantIcon';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import DropdownSelect from 'components/Common/DropdownSelect';
-import GrantIcon from 'components/Icons/GrantIcon';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
 import BountyIcon from '../Icons/createBounty.svg';
@@ -800,4 +801,18 @@ export const EditorToolbar = styled.div`
 
 export const TextInputDiv = styled.div`
   height: 100px;
+`;
+
+export const ChooseEntityWrapper = styled.div`
+  width: 30vw;
+  background: ${palette.black92};
+  padding: 14px;
+  border-radius: 6px;
+  ${Wrapper} {
+    padding-top: 0px;
+  }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    min-width: 100vw;
+    width: 100%;
+  }
 `;

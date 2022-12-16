@@ -5,11 +5,13 @@ import { useSideBar } from 'utils/hooks';
 import { toolTipStyle } from 'components/Common/SidebarStyles';
 
 const CollapseExpandButton = () => {
-  const { setMinimized } = useSideBar();
+  const { setMinimized, minimized } = useSideBar();
+
+  const title = minimized ? 'Expand' : 'Collapse';
   return (
-    <Wrapper>
-      <Tooltip style={toolTipStyle} title="Collapse Sidebar" placement="right">
-        <Button onClick={() => setMinimized(true)}>
+    <Wrapper minimized={minimized}>
+      <Tooltip style={toolTipStyle} title={`${title} Sidebar`} placement="right">
+        <Button minimized={minimized} onClick={() => setMinimized((prev) => !prev)}>
           <BackArrowIcon />
         </Button>
       </Tooltip>

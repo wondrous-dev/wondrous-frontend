@@ -27,7 +27,7 @@ export function TaskSubtaskHeader({ taskId, canCreate }) {
         <TaskSubtaskHeaderButtonIconWrapper>
           <TaskSubtaskHeaderButtonIcon fill="#ccbbff" />
         </TaskSubtaskHeaderButtonIconWrapper>
-        <TaskSubtaskHeaderButtonLabel>Add task</TaskSubtaskHeaderButtonLabel>
+        <TaskSubtaskHeaderButtonLabel>Add subtask</TaskSubtaskHeaderButtonLabel>
       </TaskSubtaskHeaderButton>
     </TaskSubtaskHeaderWrapper>
   );

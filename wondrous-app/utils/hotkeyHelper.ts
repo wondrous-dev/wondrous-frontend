@@ -1,5 +1,5 @@
 export const HOTKEYS = {
-  GLOBAL_SEARCH: 'shift+enter',
+  GLOBAL_SEARCH: 'Meta+k, Meta+p',
   LOCAL_SEARCH: 'enter',
   SHOW_SHORTCUTS: 'shift+S',
   CREATE_TASK: 'shift+T',

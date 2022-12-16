@@ -134,7 +134,7 @@ export const NOTION_CONNECT_TYPES = {
 
 export const SIDEBAR_WIDTH = '84px';
 export const SIDEBAR_WIDTH_WITH_DAO = '344px';
-export const HEADER_HEIGHT = '68px';
+export const HEADER_HEIGHT = '62px';
 
 export const PROFILE_CARD_WIDTH = 310;
 export const PROFILE_CARD_HEIGHT = 194;
@@ -150,6 +150,7 @@ export const ENTITIES_TYPES = {
   SUBMISSION: 'submission',
   GRANT: 'grant',
   GRANT_APPLICATION: 'grant_application',
+  COLLAB: 'collab',
 };
 
 export const MODAL_TABS_MAP = {
@@ -223,7 +224,7 @@ export const MODAL_ACTIONS = {
 
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
-export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;
+export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,25}$/;
 
 export const PERMISSIONS = {
   CREATE_TASK: 'create_task',
@@ -871,3 +872,7 @@ export const GRANT_APPLY_POLICY = {
   EVERYONE: 'everyone',
   ONLY_ORG_MEMBERS: 'only_org_members',
 };
+
+export const PAGES_WITH_NO_ENTITY_SIDEBAR = ['/explore'];
+
+export const EMPTY_RICH_TEXT_STRING = '[{"children":[{"text":""}],"type":"paragraph"}]';

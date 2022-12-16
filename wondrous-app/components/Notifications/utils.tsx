@@ -45,12 +45,12 @@ export function getNotificationDescription(notification, link) {
     case NOTIFICATION_TYPES.TASK_ASSIGN:
       return <>assigned a {object} to you</>;
     case NOTIFICATION_TYPES.CREATOR_TASK_ASSIGN:
-      return <>your {object} was asigned</>;
+      return <>Your {object} was assigned</>;
     // ====
     case NOTIFICATION_TYPES.PROPOSAL_APPROVE:
-      return <>your {object} was approved</>;
+      return <>Your {object} was approved</>;
     case NOTIFICATION_TYPES.PROPOSAL_REJECT:
-      return <>your {object} was rejected</>;
+      return <>Your {object} was rejected</>;
     // ====
     case NOTIFICATION_TYPES.SUBMISSION_CREATE:
       return (
@@ -77,7 +77,7 @@ export function getNotificationDescription(notification, link) {
     case NOTIFICATION_TYPES.TASK_MINTED:
       return <>finished minting a {object} </>;
     case NOTIFICATION_TYPES.PAYMENT_RECEIVED:
-      return <>you just received a payment!</>;
+      return <>You just received a payment!</>;
     default:
       Sentry.captureMessage(`unknow notification type: ${notification?.type}, ${objectType}`);
       return <>unknown notification type</>;

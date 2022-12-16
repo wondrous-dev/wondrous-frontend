@@ -1,7 +1,8 @@
+import CreateCollaborationModal from 'components/CreateCollaborationModal';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
 import { FormikValues } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
@@ -57,6 +58,7 @@ export function CreateEntity(props: ICreateEntity) {
 
   const isPodEntity = entityType === ENTITIES_TYPES.POD;
 
+  const isCollab = entityType === ENTITIES_TYPES.COLLAB;
   return (
     <>
       <CreateEntityDiscardTask
@@ -67,6 +69,7 @@ export function CreateEntity(props: ICreateEntity) {
       />
       <CreateFormModalOverlay open={open} onClose={handleCloseForm}>
         <>
+          {isCollab && <CreateCollaborationModal open onCancel={handleCloseForm} />}
           {isTaskOrProposal && <CreateEntityModal {...props} setFormDirty={setFormDirty} />}
           {isPodEntity && <CreatePodModal {...props} />}
           {isGrantEntity && <CreateGrant {...props} setFormDirty={setFormDirty} />}
@@ -76,27 +79,27 @@ export function CreateEntity(props: ICreateEntity) {
   );
 }
 
-function ChooseEntityToCreate(props) {
+function ChooseEntityToCreate() {
   const globalContext = useGlobalContext();
-  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = globalContext;
-  const [entityType, setEntityType] = useState(undefined);
+  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen, pageData, setPageData } = globalContext;
+
   const resetEntityType = () => {
-    if (entityType) {
-      setEntityType(undefined);
+    if (pageData?.createEntityType) {
+      setPageData({ ...pageData, createEntityType: undefined });
     }
   };
   const handleCloseModal = () => {
     resetEntityType();
-    toggleOpen();
+    if (open) toggleOpen();
   };
 
-  if (entityType) {
+  if (pageData?.createEntityType) {
     return (
       <CreateEntity
-        entityType={entityType}
-        isTaskProposal={entityType === ENTITIES_TYPES.PROPOSAL}
+        entityType={pageData?.createEntityType}
+        isTaskProposal={pageData?.createEntityType === ENTITIES_TYPES.PROPOSAL}
         handleCloseModal={handleCloseModal}
-        open={open}
+        open
         cancel={resetEntityType}
         handleClose={handleCloseModal}
       />
@@ -110,7 +113,7 @@ function ChooseEntityToCreate(props) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <ChooseEntityToCreateModal handleClose={handleCloseModal} setEntityType={setEntityType} />
+      <ChooseEntityToCreateModal handleClose={handleCloseModal} />
     </CreateFormModalOverlay>
   );
 }
