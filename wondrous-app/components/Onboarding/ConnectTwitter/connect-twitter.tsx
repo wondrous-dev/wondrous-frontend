@@ -1,11 +1,7 @@
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
-import { useQuery } from '@apollo/client';
-import { useIsMobile } from 'utils/hooks';
-import { GET_LOGGED_IN_USER } from 'graphql/queries';
-import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
+import { useMutation, useQuery } from '@apollo/client';
+import LeftArrowIcon from 'components/Icons/leftArrow';
 import { CompletedIcon } from 'components/Icons/statusIcons';
+import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import {
   BackButton,
   Container,
@@ -15,15 +11,20 @@ import {
   RightButtons,
 } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
+import { SET_USER_SIGNUP_COMPLETE } from 'graphql/mutations';
+import { GET_LOGGED_IN_USER } from 'graphql/queries';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { TWITTER_CHALLENGE_CODE } from 'utils/constants';
-import LeftArrowIcon from 'components/Icons/leftArrow';
-import { WalletConnected, Label } from '../styles';
+import { useIsMobile } from 'utils/hooks';
 import TwitterSmallLogo from '../../../public/images/onboarding/twitter-logo.svg';
+import { Label, WalletConnected } from '../styles';
 
 export function ConnectTwitter({ firstOrg, firstPod }) {
   const router = useRouter();
   const { collabInvite } = router.query;
-
+  const [setUserSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE);
   const isMobile = useIsMobile();
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
@@ -32,6 +33,9 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
         router.push(`/mission-control`, undefined, {
           shallow: true,
         });
+      }
+      if (!userData?.getLoggedinUser?.userInfo?.signupComplete) {
+        setUserSignupComplete();
       }
     },
   });
