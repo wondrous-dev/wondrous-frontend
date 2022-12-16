@@ -13,11 +13,11 @@ import {
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
 import Image from 'next/image';
 import { useWonderWeb3 } from 'services/web3';
+import { PlayerWrapper } from 'components/Onboarding/VerifyTweet/styles';
+import { useMe } from 'components/Auth/withAuth';
 import useEagerConnectConditional from 'services/web3/hooks/useEagerConnectConditional';
 import TwitterLogo from '../../../public/images/twitter.svg';
 import { InviteWelcomeBoxParagraph } from '../styles';
-import { PlayerWrapper } from './styles';
-import { useMe } from '../../Auth/withAuth';
 
 // const buttonStyle = {
 //   background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
@@ -53,7 +53,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
 
   useEagerConnectConditional(user?.activeEthAddress);
 
-  const userAlreadyTweeted = !!userData?.getLoggedinUser?.userInfo?.promotionTweet;
+  const userAlreadyTweeted = !!userData?.getLoggedinUser?.userInfo?.orbit1Tweet;
 
   const connectWeb3 = async () => {
     await wonderWeb3.onConnect();
