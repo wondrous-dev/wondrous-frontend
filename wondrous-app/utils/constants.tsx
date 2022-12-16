@@ -874,3 +874,5 @@ export const GRANT_APPLY_POLICY = {
 };
 
 export const PAGES_WITH_NO_ENTITY_SIDEBAR = ['/explore'];
+
+export const EMPTY_RICH_TEXT_STRING = '[{"children":[{"text":""}],"type":"paragraph"}]';

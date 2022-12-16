@@ -12,6 +12,7 @@ import {
   GR15DEICategoryName,
   BOUNTY_TYPE,
   HEADER_ASPECT_RATIO,
+  EMPTY_RICH_TEXT_STRING,
 } from 'utils/constants';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import apollo from 'services/apollo';
@@ -387,8 +388,8 @@ function Wrapper(props) {
                           <DAOEmptyIcon />
                         </TokenEmptyLogo>
                       }
-                      width={60}
-                      height={60}
+                      width={50}
+                      height={50}
                       useNextImage
                       style={{
                         borderRadius: '6px',
@@ -399,12 +400,12 @@ function Wrapper(props) {
                       <>
                         <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
                         <GR15DEILogo
-                          width="42"
-                          height="42"
+                          width="30"
+                          height="30"
                           onClick={() => setOpenGR15Modal(true)}
                           style={{
                             top: '0',
-                            right: '-20px',
+                            right: '1px',
                             position: 'absolute',
                             zIndex: '25',
                           }}
@@ -475,9 +476,13 @@ function Wrapper(props) {
                 )}
               </HeaderButtons>
             </HeaderMainBlock>
-            <HeaderText as="div">
-              <RichTextViewer text={orgProfile?.description} />
-            </HeaderText>
+            {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
+              <HeaderText as="div">
+                <RichTextViewer text={orgProfile?.description} />
+              </HeaderText>
+            ) : (
+              <div style={{ height: 10 }} />
+            )}
             <div>
               <HeaderActivity>
                 <HeaderContributors
