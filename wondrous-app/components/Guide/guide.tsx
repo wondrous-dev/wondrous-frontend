@@ -25,7 +25,7 @@ export const guideConfig = {
             <StepTitle gradient="linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)">
               Your personal navigation
             </StepTitle>
-            <StepBody>Find your profile, workhub, and pods you join live here.</StepBody>
+            <StepBody>Access your Profile and Personal Workspace here</StepBody>
           </div>
         ),
         nextButtonTitle: 'Continue',
@@ -38,7 +38,7 @@ export const guideConfig = {
         content: () => (
           <div>
             <StepTitle gradient="linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%)">Navigate projects</StepTitle>
-            <StepBody>Find work and create/join projects here.</StepBody>
+            <StepBody>Here you can navigate, explore, and create projects</StepBody>
           </div>
         ),
         nextButtonTitle: 'Continue',
