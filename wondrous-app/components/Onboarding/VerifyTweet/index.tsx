@@ -35,7 +35,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
-      if (data?.getLoggedinUser?.userInfo && !userData?.getLoggedinUser?.userInfo?.twitterUsername) {
+      if (data?.getLoggedinUser?.userInfo && !data?.getLoggedinUser?.userInfo?.twitterUsername) {
         router.push(`/onboarding/twitter`, undefined, {
           shallow: true,
           ...(collabInvite ? { query: { collabInvite } } : {}),
@@ -71,8 +71,8 @@ function VerifyTweet({ firstOrg, firstPod }) {
     }
   }, [userAlreadyTweeted]);
 
-  const hanldeLaterClick = () => {
-    // if user is part of a org maybe redirect to org
+  const handleLaterClick = () => {
+    // if user has collabInvite token and is not a member of an org we assume they want to create a new org
     if (collabInvite && !firstOrg) {
       return router.push(`/onboarding-dao?collabInvite=${collabInvite}`, undefined, {
         shallow: true,
@@ -86,9 +86,15 @@ function VerifyTweet({ firstOrg, firstPod }) {
         shallow: true,
       });
     } else if (firstOrg) {
-      router.push(`/organization/${firstOrg.username}/home`, undefined, {
-        shallow: true,
-      });
+      router.push(
+        `/${firstOrg?.shared ? 'collaboration' : 'organization'}/${firstOrg.username}/${
+          firstOrg?.shared ? 'boards' : 'home'
+        }`,
+        undefined,
+        {
+          shallow: true,
+        }
+      );
     } else {
       router.push('/mission-control', undefined, {
         shallow: true,
@@ -100,11 +106,11 @@ function VerifyTweet({ firstOrg, firstPod }) {
     if (user?.activeEthAddress) {
       if (wonderWeb3.ensName) {
         // && wonderWeb3.address === user?.activeEthAddress ?
-        return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0AENS%3A%20${wonderWeb3.ensName}&in_reply_to=1536797296263737345`;
+        return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0AENS%3A%20${wonderWeb3.ensName}&in_reply_to=1536797296263737345`;
       }
-      return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A${user?.activeEthAddress}&in_reply_to=1536797296263737345`;
+      return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A${user?.activeEthAddress}&in_reply_to=1536797296263737345`;
     }
-    return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to=1536797296263737345`;
+    return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to=1536797296263737345`;
   };
 
   return (
@@ -120,7 +126,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
           marginTop: 0,
         }}
       >
-        Get your Launch Pass NFT
+        Get your Orbit 1 NFT
       </OnboardingTitle>
       <InviteWelcomeBoxParagraph
         style={{
@@ -130,7 +136,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
           fontWeight: '400',
         }}
       >
-        Want to get your launch NFT? <br /> Verify your Twitter to get the password and link.
+        Want to get your Orbit 1 NFT? <br /> Verify your Twitter to get the password and link.
       </InviteWelcomeBoxParagraph>
       {!user?.activeEthAddress && (
         <InviteWelcomeBoxParagraph
@@ -218,7 +224,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
                 width: '100%',
                 height: '50px',
               }}
-              onClick={hanldeLaterClick}
+              onClick={handleLaterClick}
             >
               I’ll get it later
             </Later>
@@ -246,7 +252,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
                 width: '100%',
                 height: '50px',
               }}
-              onClick={hanldeLaterClick}
+              onClick={handleLaterClick}
             >
               Continue to dashboard
             </ContinueButton>
