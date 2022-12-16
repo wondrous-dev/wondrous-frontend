@@ -30,7 +30,6 @@ export const login = () => {
     aliasQuery(req, 'getPerStatusTaskCountForUserBoard');
     aliasQuery(req, 'getNotifications');
     aliasQuery(req, 'getUserOrgs');
-    aliasQuery(req, 'getUserTaskBoardTasks');
     aliasQuery(req, 'emailSignin');
   });
   cy.visit('/login');
@@ -43,5 +42,4 @@ export const login = () => {
   cy.wait('@gqlgetPerStatusTaskCountForUserBoardQuery');
   cy.wait('@gqlgetNotificationsQuery');
   cy.wait('@gqlgetUserOrgsQuery');
-  cy.wait('@gqlgetUserTaskBoardTasksQuery');
 };
