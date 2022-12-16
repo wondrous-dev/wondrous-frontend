@@ -105,11 +105,11 @@ function VerifyTweet({ firstOrg, firstPod }) {
     if (user?.activeEthAddress) {
       if (wonderWeb3.ensName) {
         // && wonderWeb3.address === user?.activeEthAddress ?
-        return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0AENS%3A%20${wonderWeb3.ensName}&in_reply_to=1536797296263737345`;
+        return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0AENS%3A%20${wonderWeb3.ensName}&in_reply_to=1603833807081066496`;
       }
-      return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A${user?.activeEthAddress}&in_reply_to=1536797296263737345`;
+      return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A${user?.activeEthAddress}&in_reply_to=1603833807081066496`;
     }
-    return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to=1536797296263737345`;
+    return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to=1603833807081066496`;
   };
 
   return (
