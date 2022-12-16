@@ -10,7 +10,7 @@ import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import RolePill from 'components/Common/RolePill';
 import { useMe } from 'components/Auth/withAuth';
 import AddDaoModal from 'components/Common/AddDaoModal';
-import Link from 'next/link';
+import SmartLink from 'components/Common/SmartLink';
 import {
   ProjectRowContainer,
   MyProjectWrapper,
@@ -64,7 +64,11 @@ const MyProjectsWidget = () => {
       {data?.getUserOrgRoles?.length > 0 && (
         <MyProjectRowsContainer>
           {data?.getUserOrgRoles?.map((orgRole, idx) => (
-            <Link href={`/organization/${orgRole?.org?.username}/home`} key={`myproject-${orgRole?.org?.id}`}>
+            <SmartLink
+              href={`/organization/${orgRole?.org?.username}/home`}
+              key={`myproject-${orgRole?.org?.id}`}
+              asLink
+            >
               <ProjectRowContainer>
                 <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                   <OrgProfilePicture profilePicture={orgRole?.org?.thumbnailPicture || orgRole?.org?.profilePicture} />
@@ -73,7 +77,7 @@ const MyProjectsWidget = () => {
 
                 <RolePill roleName={orgRole?.role?.name} fontSize={13} onClick={() => {}} />
               </ProjectRowContainer>
-            </Link>
+            </SmartLink>
           ))}
         </MyProjectRowsContainer>
       )}
