@@ -117,7 +117,6 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
     onChange({});
   };
 
-  console.log(appliedFilters, 'appliedFilters');
   return (
     <BoardFiltersContainer>
       <BoardFiltersWrapper>
