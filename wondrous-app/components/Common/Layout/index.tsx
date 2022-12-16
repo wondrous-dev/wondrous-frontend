@@ -1,5 +1,7 @@
 import { useQuery } from '@apollo/client';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 import HeaderComponent from 'components/Header';
+import Spotlight from 'components/Spotlight';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -9,7 +11,6 @@ import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
 import { GlobalContext, PageDataContext, SideBarContext } from 'utils/contexts';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
-import Spotlight from 'components/Spotlight';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import EntitySidebar from '../SidebarEntity';
 import UserSidebar from '../UserSidebar';
@@ -26,7 +27,7 @@ const getOrgsList = (userOrgs, router) => {
   }));
 };
 
-const PAGES_WITH_USER_SIDEBAR = [
+export const PAGES_WITH_USER_SIDEBAR = [
   '/mission-control',
   '/dashboard/admin',
   '/dashboard/bounties',
@@ -35,10 +36,14 @@ const PAGES_WITH_USER_SIDEBAR = [
   '/profile/[username]/about',
 ];
 
-const SectionContainer = ({ children }: any) => {
+const SectionContainer = withAuth(({ children }: any) => {
   const router = useRouter();
+  const user = useMe();
 
-  const isPageWithUserSidebar = useMemo(() => PAGES_WITH_USER_SIDEBAR.includes(router.pathname), [router.pathname]);
+  const isPageWithUserSidebar = useMemo(() => {
+    if (router.pathname === `/profile/[username]/about` && router.query?.username !== user?.username) return false;
+    return PAGES_WITH_USER_SIDEBAR.includes(router.pathname);
+  }, [router.pathname, router.query?.username, user?.username]);
 
   if (isPageWithUserSidebar) {
     return (
@@ -48,7 +53,8 @@ const SectionContainer = ({ children }: any) => {
     );
   }
   return <SectionWrapper>{children}</SectionWrapper>;
-};
+});
+
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
   const router = useRouter();
