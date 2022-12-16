@@ -305,7 +305,7 @@ export function FourthStep({ style }) {
 export function FifthStep({ style }) {
   return (
     <div style={style}>
-      <svg width={554} height={25} fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width="100%" height={25} fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill="url(#a)" d="M5.094 10.235h543.462v4H5.094z" />
         <circle cx={12} cy={12.235} r={11.5} fill="#00BAFF" stroke="url(#b)" />
         <path d="M12.383 16.794h1.536v-8.4h-2.772l-1.716 3.792h1.608l1.128-2.664h.216v7.272Z" fill="#fff" />

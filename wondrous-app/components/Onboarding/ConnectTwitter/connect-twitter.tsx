@@ -145,8 +145,8 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
       footer={isMobile ? mobileFooter : footer}
       step={5}
     >
-      <div style={{ textAlign: 'center', marginBottom: '50px', marginTop: '20px' }}>
-        <Image src="/images/onboarding/twitter.svg" width={406} height={224} alt="" />
+      <div style={{ textAlign: 'center', marginBottom: '50px', marginTop: '20px', width: '100%' }}>
+        <Image src="/images/onboarding/twitter.svg" fill alt="" />
       </div>
     </OnboardingLayout>
   );
