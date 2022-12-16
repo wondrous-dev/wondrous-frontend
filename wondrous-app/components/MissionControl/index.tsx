@@ -1,5 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useMe, withAuth } from 'components/Auth/withAuth';
+import { useTour } from '@reactour/tour';
+import { useLayoutEffect } from 'react';
 import {
   TodoIcon,
   InProgressIcon,
@@ -119,6 +121,14 @@ const CARDS_CONFIG = {
 
 const MissionControl = () => {
   const user = useMe();
+  const { setIsOpen, setCurrentStep } = useTour();
+
+  useLayoutEffect(() => {
+    if (user && !user.lastCompletedGuide) {
+      setCurrentStep(0);
+      setIsOpen(true);
+    }
+  }, [user]);
   const { data: adminWorkflowCount, loading: workflowCountLoading } = useQuery(
     GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT,
     {
