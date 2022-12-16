@@ -46,7 +46,11 @@ function renderSnippet() {
 }
 
 const Layout = ({ Component, pageProps }) =>
-  Component.getLayout ? Component.getLayout(<Component {...pageProps} />) : <Component {...pageProps} />;
+  Component.getLayout ? (
+    Component.getLayout(<Component id="tour-header-launch" {...pageProps} />)
+  ) : (
+    <Component id="tour-header-launch" {...pageProps} />
+  );
 
 function MyApp({ Component, pageProps }) {
   // Only uncomment this method if you have blocking data requirements for
