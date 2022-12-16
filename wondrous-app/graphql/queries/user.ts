@@ -111,8 +111,8 @@ export const GET_USER_TASKS_COMPLETED_COUNT = gql`
 `;
 
 export const GET_USER_ORG_ROLES = gql`
-  query getUserOrgRoles($userId: String) {
-    getUserOrgRoles(userId: $userId) {
+  query getUserOrgRoles($userId: String, $excludeSharedOrgs: Boolean) {
+    getUserOrgRoles(userId: $userId, excludeSharedOrgs: $excludeSharedOrgs) {
       org {
         name
         username

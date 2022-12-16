@@ -57,8 +57,7 @@ export const MissionControlWidgetsContainer = styled.div`
   flex-basis: 100%;
   display: flex;
   gap: 14px;
-  justify-content: flex-start;
-  align-items: baseline;
+  align-items: flex-start;
   flex-wrap: wrap;
   flex: 1;
 
