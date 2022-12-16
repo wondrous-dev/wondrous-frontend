@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { UserBoardContext } from 'utils/contexts';
-import { GET_USER_TASK_BOARD_SUBMISSIONS, SEARCH_TASKS_FOR_USER_BOARD_VIEW } from 'graphql/queries';
+import { GET_USER_BOUNTY_SUBMISSIONS, SEARCH_TASKS_FOR_USER_BOARD_VIEW } from 'graphql/queries';
 import { LIMIT, ENTITY_TO_STATUS_MAP } from 'services/board';
 import BoardWrapper from 'components/Dashboard/boards/BoardWrapper';
 import SubmissionBoard from 'components/SubmissionBoard';
@@ -10,7 +10,7 @@ import { ViewType } from 'types/common';
 import { useMe } from 'components/Auth/withAuth';
 import { ENTITIES_TYPES, TASKS_DEFAULT_STATUSES, STATUS_OPEN, STATUS_CHANGE_REQUESTED } from 'utils/constants';
 import apollo from 'services/apollo';
-import { Spinner } from './styles';
+import { PageDescription, Spinner } from './styles';
 
 const DEFAULT_SUBMISSION_STATUSES = [STATUS_OPEN, STATUS_CHANGE_REQUESTED];
 
@@ -18,7 +18,7 @@ const Board = withCardsLayout(SubmissionBoard, 4);
 const BountiesDashboard = ({ isAdmin }) => {
   const loggedInUser = useMe();
   const [hasMore, setHasMore] = useState(true);
-  const { data, loading, fetchMore, previousData, refetch } = useQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
+  const { data, loading, fetchMore, previousData, refetch } = useQuery(GET_USER_BOUNTY_SUBMISSIONS, {
     skip: !loggedInUser?.id,
     variables: {
       limit: LIMIT,
@@ -26,11 +26,15 @@ const BountiesDashboard = ({ isAdmin }) => {
       userId: loggedInUser?.id,
       statuses: DEFAULT_SUBMISSION_STATUSES,
     },
-    onCompleted: ({ getUserTaskBoardSubmissions }) => {
-      if (!previousData) {
-        const hasMoreData = getUserTaskBoardSubmissions?.length >= LIMIT;
-        if (hasMoreData !== hasMore) setHasMore(hasMoreData);
-      }
+    onCompleted: ({ getUserBountySubmissions }) => {
+      // Wrap in timeout to fix error: Unhandled Runtime Error
+      // ReferenceError: Cannot access 'previousData' before initialization
+      setTimeout(() => {
+        if (!previousData) {
+          const hasMoreData = getUserBountySubmissions?.length >= LIMIT;
+          if (hasMoreData !== hasMore) setHasMore(hasMoreData);
+        }
+      });
     },
   });
 
@@ -40,10 +44,10 @@ const BountiesDashboard = ({ isAdmin }) => {
     if (hasMore)
       fetchMore({
         variables: {
-          offset: data?.getUserTaskBoardSubmissions.length,
+          offset: data?.getUserBountySubmissions.length,
         },
       }).then(({ data }) => {
-        const hasMoreData = data?.getUserTaskBoardSubmissions?.length >= LIMIT;
+        const hasMoreData = data?.getUserBountySubmissions?.length >= LIMIT;
         if (hasMoreData !== hasMore) setHasMore(hasMoreData);
       });
   }, [hasMore, fetchMore, data, setHasMore]);
@@ -52,7 +56,7 @@ const BountiesDashboard = ({ isAdmin }) => {
     const { statuses, ...rest } = filtersToApply;
     const statusesToApply = filtersToApply?.statuses?.length ? filtersToApply.statuses : DEFAULT_SUBMISSION_STATUSES;
     refetch({ ...rest, statuses: statusesToApply }).then(({ data }) =>
-      setHasMore(data?.getUserTaskBoardSubmissions?.length >= LIMIT)
+      setHasMore(data?.getUserBountySubmissions?.length >= LIMIT)
     );
   };
 
@@ -87,6 +91,7 @@ const BountiesDashboard = ({ isAdmin }) => {
         searchLabel: 'Search bounties...',
         enableViewSwitcher: false,
         displaySingleViewFilter: true,
+        filters: { statuses: DEFAULT_SUBMISSION_STATUSES },
       }}
     >
       <BoardWrapper
@@ -97,12 +102,14 @@ const BountiesDashboard = ({ isAdmin }) => {
         statuses={[]}
         podIds={[]}
       >
+        <PageDescription>Showing bounties you've submitted to</PageDescription>
+
         {loading ? (
           <Spinner />
         ) : (
           <Board
             onLoadMore={onLoadMore}
-            columns={data?.getUserTaskBoardSubmissions}
+            columns={data?.getUserBountySubmissions}
             hasMore={hasMore}
             activeView={ViewType.Grid}
           />

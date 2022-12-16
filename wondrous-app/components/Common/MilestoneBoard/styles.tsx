@@ -33,29 +33,31 @@ export const MilestonesContainer = styled.div`
 `;
 
 export const MilestoneCard = styled.div`
-  display: flex;
-  flex-direction: column;
   align-items: flex-start;
-  gap: 18px;
-  flex-grow: 0;
+  background: linear-gradient(54.27deg, ${palette.grey79} 20.18%, ${palette.highlightBlue} 130.2%);
+  border-radius: 6px;
+  border: 0px solid transparent;
   color: ${palette.white};
   cursor: pointer;
-  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   height: fit-content;
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+  padding: 14px;
   position: relative;
-  border: 0px solid transparent;
-  border-radius: 5px;
+  z-index: 1;
+  min-width: 365px;
   &::before {
-    border-radius: 5px;
+    background: ${palette.grey900};
+    border-radius: 6px;
     content: '';
+    height: calc(100% - 2px);
+    left: 0;
     position: absolute;
-    inset: 0;
-    background: linear-gradient(132.7deg, #00baff 0%, #7000ff 98.92%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: 1px;
+    top: 0;
+    transform: translate(1px, 1px);
+    width: calc(100% - 2px);
+    z-index: -1;
   }
 `;
 

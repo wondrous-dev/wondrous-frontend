@@ -1,44 +1,57 @@
 import { ButtonBase, Typography } from '@mui/material';
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 
 export const ItemButton = styled(ButtonBase)`
   && {
-    border-radius: 3px;
     background: transparent;
+    padding: 14px;
     height: 32px;
     width: 100%;
     display: flex;
+    border-left: 4px solid ${({ isActive, theme }) => isActive ? `${theme.palette.highlightPurple}`: 'transparent'};
     align-items: center;
-    padding: 4px;
-    background: ${({ isActive, theme }) => isActive && `${theme.palette.black101}`};
-    justify-content: space-between;
+    background: ${({ isActive, theme }) => isActive && `${theme.palette.grey87}`};
+    justify-content: ${({ minimized }) => (minimized ? 'center' : 'space-between')};
     :hover {
-      background: ${({ theme }) => theme.palette.black101};
+      background: ${({ theme }) => theme.palette.grey87};
     }
   }
 `;
 
-export const ItemButtonIcon = styled.div`
-  width: 22px;
-  height: 22px;
+export const ButtonIcon = styled.div`
+width: 22px;
+height: 22px;
+display: flex;
+align-items: center;
+justify-content: center;
   background: ${({ bgColor, theme, isActive }) =>
-    bgColor || (isActive && `${theme.palette.highlightPurple}`) || `${theme.palette.grey87}`};
-  border-radius: ${({ roundedBg }) => (roundedBg ? '50%' : '4px')};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  ${ItemButton}:hover & {
-    background: ${({ theme }) => theme.palette.highlightPurple};
+  bgColor || (isActive && `${theme.palette.highlightPurple}`) || `${theme.palette.grey87}`};
+border-radius: ${({ roundedBg }) => (roundedBg ? '50%' : '4px')};
+${ItemButton}:hover & {
+  background: ${({ theme }) => theme.palette.highlightPurple};
+}
+svg {
+  path {
+    stroke: ${({ theme }) => theme.palette.white};
   }
-  svg {
-    path {
-      stroke: ${({ theme }) => theme.palette.white};
-    }
-    rect {
-      stroke: ${({ theme }) => theme.palette.white};
-    }
+  rect {
+    stroke: ${({ theme }) => theme.palette.white};
   }
+}
+
 `;
+
+export const UnstyledButtonIcon = styled.div`
+width: 22px;
+height: 22px;
+display: flex;
+align-items: center;
+justify-content: center;
+
+`;
+
+
+export const ItemButtonIcon = ({ignoreIconStyles = false, children, ...props}) => ignoreIconStyles ? <UnstyledButtonIcon>{children}</UnstyledButtonIcon> : <ButtonIcon {...props}>{children}</ButtonIcon> 
 
 export const ItemButtonText = styled(Typography)`
   && {
@@ -50,7 +63,6 @@ export const ItemButtonText = styled(Typography)`
     align-items: center;
     gap: 8px;
     color: ${({ theme }) => theme.palette.white};
-    line-height: 0;
   }
 `;
 

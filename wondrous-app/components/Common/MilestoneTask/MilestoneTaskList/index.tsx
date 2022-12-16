@@ -1,8 +1,8 @@
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import SmartLink from 'components/Common/SmartLink';
 import { format } from 'date-fns';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
+import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
 import * as Constants from 'utils/constants';
 
@@ -66,8 +66,18 @@ function MilestoneTaskReward({ rewards }) {
 }
 
 export default function MilestoneTaskList({ data }) {
-  const { asPath } = useRouter();
+  const { asPath, query, push } = useRouter();
   const taskUrl = (id) => `${delQuery(asPath)}?task=${id}&view=grid&entity=milestone`;
+
+  const onNavigate = (id) => {
+    const newQuery = {
+      ...query,
+      task: id,
+    };
+
+    push({ query: newQuery }, undefined, { scroll: false, shallow: true });
+  };
+
   if (isEmpty(data)) return <MilestoneEmpty>No tasks yet.</MilestoneEmpty>;
   return (
     <MilestoneTaskListWrapper>
@@ -75,11 +85,13 @@ export default function MilestoneTaskList({ data }) {
         const { id, title, assignee, privacyLevel, dueDate, rewards, commentCount } = task;
         const isPrivate = privacyLevel !== Constants.PRIVACY_LEVEL.public;
         return (
-          <SmartLink href={taskUrl(id)} key={id} asLink>
+          <SmartLink href={taskUrl(id)} preventLinkNavigation key={id} onNavigate={() => onNavigate(id)}>
             <MilestoneTaskItem>
               <MilestoneUserImage assignee={assignee} />
               <MilestoneTaskTitleAndInfo>
-                <MilestoneTaskTitle>{title}</MilestoneTaskTitle>
+                <MilestoneTaskTitle>
+                  <a href={taskUrl(id)}>{title}</a>
+                </MilestoneTaskTitle>
                 <MilestoneTaskInfo>
                   <MilestoneTaskDuDate dueDate={dueDate} />
                   <MilestoneTaskReward rewards={rewards} />
@@ -91,7 +103,12 @@ export default function MilestoneTaskList({ data }) {
               </MilestoneTaskTitleAndInfo>
               <MilestoneTaskPrivacyAndStatus>
                 <MilestoneTaskPrivacyIcon isPrivate={isPrivate} tooltipTitle={isPrivate ? 'Members only' : 'Public'} />
-                <MilestoneTaskMenuStatus task={task} />
+                <MilestoneTaskMenuStatus
+                  task={task}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                />
               </MilestoneTaskPrivacyAndStatus>
             </MilestoneTaskItem>
           </SmartLink>

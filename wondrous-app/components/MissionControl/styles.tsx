@@ -7,6 +7,10 @@ export const MissionControlWrapper = styled.div`
   height: 100%;
   min-height: 100vh;
   overflow: hidden;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-direction: column;
+  }
 `;
 
 export const MissionControlWidgetsWrapper = styled.div`
@@ -21,6 +25,13 @@ export const MissionControlWidgetsWrapper = styled.div`
   justify-content: center;
   padding: 14px;
   align-content: baseline;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+  }
 `;
 
 export const MissionControlSidebarWrapper = styled.div`
@@ -30,10 +41,10 @@ export const MissionControlSidebarWrapper = styled.div`
   padding: 14px;
   display: flex;
   flex-direction: column;
-  padding-top: ${HEADER_HEIGHT};
   gap: 24px;
   position: relative;
   z-index: 1;
+  background-position: bottom;
 `;
 
 export const MissionControlWorkspaceCard = styled.div`
@@ -46,9 +57,24 @@ export const MissionControlWidgetsContainer = styled.div`
   flex-basis: 100%;
   display: flex;
   gap: 14px;
-  justify-content: flex-start;
-  align-items: baseline;
+  align-items: flex-start;
   flex-wrap: wrap;
+  flex: 1;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    flex-direction: column;
+    align-items: center;
+    max-width: 49%;
+    width: 100%;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    max-width: 60%;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    max-width: 100%;
+  }
 `;
 
 export const MissionControlSidebarIconWrapper = styled.div`
@@ -56,7 +82,7 @@ export const MissionControlSidebarIconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  bottom: 0;
+  bottom: 10%;
   position: absolute;
   width: 100%;
   z-index: 0;
@@ -92,6 +118,10 @@ export const MissionControlSidebarIconWrapper = styled.div`
     animation-duration: 12000ms;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    position: static;
   }
 `;
 

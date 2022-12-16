@@ -1,10 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import BountyBoard from 'components/Common/BountyBoard';
 import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
-import { delQuery } from 'utils';
-import { useLocation } from 'utils/useLocation';
 import { ButtonPrimary } from 'components/Common/button';
 import {
   BountySectionHeader,
@@ -26,37 +23,23 @@ import {
 } from './styles';
 import ExploreOrgGr15Modal from './modal';
 
-const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore, gr15DEI }) => {
-  const [openModal, setOpenModal] = useState(false);
+const BountyBoardContainer = ({ children }) => (
+  <StyledGridContainer columns={{ xs: 1, sm: 2, md: 2, lg: 3 }}>{children}</StyledGridContainer>
+);
+
+const BountySection = ({ bounties = [], fetchMore = () => {}, hasMore, gr15DEI }) => {
   const [openExploreGr15Modal, setExploreGr15Modal] = useState(false);
   const [showSponsors, setShowSponsors] = useState(false);
   const [showGrantees, setShowGrantees] = useState(false);
   const router = useRouter();
-  const location = useLocation();
 
   const handleCardClick = (bounty) => {
-    const newUrl = `${delQuery(router.asPath)}?task=${bounty?.id}`;
-    location.push(newUrl);
-    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
-  };
+    const query = {
+      ...router.query,
+      task: bounty?.id,
+    };
 
-  useEffect(() => {
-    const { params } = location;
-    if (params.task || params.taskProposal) {
-      setOpenModal(true);
-    }
-  }, [location]);
-
-  const handleModalClose = () => {
-    const style = document.body.getAttribute('style');
-    const top = style.match(/(?<=top: -)(.*?)(?=px)/);
-    document.body.setAttribute('style', '');
-    if (top?.length > 0) {
-      window?.scrollTo(0, Number(top[0]));
-    }
-    const newUrl = `${delQuery(router.asPath)}`;
-    location.push(newUrl);
-    setOpenModal(false);
+    router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
   return (
@@ -130,19 +113,11 @@ const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore,
       ) : (
         <>
           <BountySectionHeader>Explore work</BountySectionHeader>
-          <SectionSubheader>Make crypto while contributing to your favorite DAOs</SectionSubheader>
+          <SectionSubheader>Make crypto while contributing to your favorite web3 teams</SectionSubheader>
         </>
       )}
 
-      <TaskViewModal
-        disableEnforceFocus
-        open={openModal}
-        shouldFocusAfterRender={false}
-        handleClose={handleModalClose}
-        taskId={location?.params?.task?.toString()}
-      />
-
-      <BountyBoard Container={StyledGridContainer} tasks={bounties} displayOrg handleCardClick={handleCardClick} />
+      <BountyBoard Container={BountyBoardContainer} tasks={bounties} displayOrg handleCardClick={handleCardClick} />
       {hasMore && !!bounties?.length && (
         <ShowMoreButtonWrapper>
           <ShowMoreButton type="button" onClick={() => fetchMore()}>

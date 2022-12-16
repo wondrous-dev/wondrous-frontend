@@ -8,6 +8,7 @@ import { DropDownButtonDecision } from 'components/DropDownDecision/DropDownButt
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { SafeImage } from 'components/Common/Image';
 
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import {
   Initials,
   StyledTable,
@@ -44,7 +45,7 @@ export default function MembershipRequestTable(props) {
         <StyledTableHead>
           <StyledTableRow>
             <StyledTableCell align="center" width="20%">
-              DAO
+              Org
             </StyledTableCell>
             <StyledTableCell align="center" width="20%">
               Pod
@@ -85,37 +86,44 @@ export default function MembershipRequestTable(props) {
                         borderRadius: '17px',
                         marginRight: '4px',
                       }}
+                      alt="Organization logo"
                     />
-                    <Link passHref href={`/organization/${request?.orgUsername}/boards`}>
-                      <a target="_blank" rel="noopener noreferrer">
-                        <TaskDescription
-                          style={{
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          {request?.orgUsername}
-                        </TaskDescription>
-                      </a>
-                    </Link>
-                  </div>
-                )}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                {request?.podName ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <Link passHref href={`/pod/${request?.podId}/boards`}>
-                    <a target="_blank" rel="noopener noreferrer">
+                    <NoUnderlineLink
+                      passHref
+                      href={`/organization/${request?.orgUsername}/home`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <TaskDescription
                         style={{
                           textDecoration: 'underline',
                           cursor: 'pointer',
                         }}
                       >
-                        {request?.podName}
+                        {request?.orgUsername}
                       </TaskDescription>
-                    </a>
-                  </Link>
+                    </NoUnderlineLink>
+                  </div>
+                )}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                {request?.podName ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <NoUnderlineLink
+                    passHref
+                    href={`/pod/${request?.podId}/boards`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <TaskDescription
+                      style={{
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {request?.podName}
+                    </TaskDescription>
+                  </NoUnderlineLink>
                 ) : null}
               </StyledTableCell>
               <StyledTableCell align="center">
@@ -136,6 +144,7 @@ export default function MembershipRequestTable(props) {
                           marginRight: '8px',
                         }}
                         src={request?.userProfilePicture}
+                        alt="User profile picture"
                       />
                     )}
 

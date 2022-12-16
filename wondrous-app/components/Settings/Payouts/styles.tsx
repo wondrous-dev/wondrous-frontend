@@ -446,22 +446,6 @@ export const BottomActionBarText = styled(Typography)`
   }
 `;
 
-export const BottomActionBarPayButton = styled(PayeePayButton)`
-  && {
-    button {
-      font-size: 15px;
-      padding: 8px 24px;
-      border-radius: 1000px;
-      background: ${palette.background.default};
-      transition: background 0.2s ease-in-out;
-
-      &:hover {
-        background: transparent;
-      }
-    }
-  }
-`;
-
 export const BottomActionBarButton = styled(Button)`
   && {
     font-family: ${typography.fontFamily};

@@ -1,3 +1,4 @@
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import { useRouter } from 'next/router';
 import Tabs from 'components/organization/tabs/tabs';
 import { USER_BOARD_PAGE_TYPES, ORG_MEMBERSHIP_REQUESTS } from 'utils/constants';
@@ -31,6 +32,7 @@ const BoardWrapper = ({ children, isAdmin, onSearch, filterSchema, onFilterChang
   const pageType = isAdmin ? USER_BOARD_PAGE_TYPES.ADMIN : USER_BOARD_PAGE_TYPES.CONTRIBUTOR;
   return (
     <Wrapper>
+      <TaskViewModalWatcher />
       <Tabs page={pageType} withQueries={isAdmin}>
         <BoardsActivityWrapper>
           <BoardsActivity

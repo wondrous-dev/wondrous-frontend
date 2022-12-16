@@ -9,6 +9,7 @@ export const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
   position: fixed;
+  z-index: 1000;
 `;
 
 export const Stars = styled.div`

@@ -1,14 +1,4 @@
 import {
-  Archived,
-  AwaitingPayment,
-  DoneWithBorder,
-  InProgressWithBorder,
-  InReview,
-  Paid,
-  Requested,
-  TodoWithBorder,
-} from 'components/Icons';
-import {
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_AWAITING_PAYMENT,
   TASK_STATUS_DONE,
@@ -18,6 +8,17 @@ import {
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
 } from 'utils/constants';
+
+import {
+  Archived,
+  AwaitingPayment,
+  DoneWithBorder,
+  InProgressWithBorder,
+  InReview,
+  Paid,
+  Requested,
+  TodoWithBorder,
+} from 'components/Icons';
 
 const TASK_ICONS = {
   [TASK_STATUS_TODO]: TodoWithBorder,

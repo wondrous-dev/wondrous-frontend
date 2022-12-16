@@ -22,6 +22,7 @@ import {
   PostHeaderUsername,
   PostHeaderWrapper,
 } from './styles';
+import { NoUnderlineLink } from '../Link/links';
 
 const objectTypeText = {
   [ObjectType.TASK_SUBMISSION]: 'task',
@@ -35,7 +36,6 @@ export function PostHeader(props) {
   const postObjectType = objectType ?? referencedObject?.objectType;
   const [menu, setMenu] = useState(null);
   const [kudosForm, setKudosForm] = useState(null);
-  const [taskViewModal, setTaskViewModal] = useState(false);
   const loggedInUser = useMe();
   const canEditPost = loggedInUser?.username === actor?.username && verb === PostVerbType.KUDOS;
   const taskId = referencedObject?.objectId ?? objectId;
@@ -64,9 +64,16 @@ export function PostHeader(props) {
               <SmartLink
                 href={taskViewUrl}
                 preventLinkNavigation
-                onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
+                onNavigate={() => {
+                  const query = {
+                    ...router.query,
+                    task: taskId,
+                  };
+
+                  router.push({ query }, undefined, { scroll: false, shallow: true });
+                }}
               >
-                <a href={taskViewUrl}>{objectTypeHeaderText}</a>
+                {objectTypeHeaderText}
               </SmartLink>
             </PostHeaderLink>
           </>
@@ -81,7 +88,7 @@ export function PostHeader(props) {
                 preventLinkNavigation
                 onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
               >
-                <a href={taskViewUrl}>{objectTypeHeaderText}</a>
+                {objectTypeHeaderText}
               </SmartLink>
             </PostHeaderLink>
           </>
@@ -96,7 +103,7 @@ export function PostHeader(props) {
                 preventLinkNavigation
                 onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
               >
-                <a href={taskViewUrl}>{objectTypeHeaderText}</a>
+                {objectTypeHeaderText}
               </SmartLink>
             </PostHeaderLink>
           </>
@@ -106,24 +113,15 @@ export function PostHeader(props) {
 
   const headerText = createHeaderText(verbOrStatus, postObjectType, referencedObject?.actor?.username);
 
-  useEffect(() => {
-    if (router?.query?.task) {
-      setTaskViewModal(true);
-    } else {
-      setTaskViewModal(false);
-    }
-  }, [router?.query?.task]);
-
   return (
     <>
       <KudosForm open={kudosForm} existingContent={content} onClose={handlePostEditClose} id={postId} />
-      <TaskViewModal open={taskViewModal} taskId={taskId} handleClose={handleTaskViewModalClose} />
       <PostHeaderWrapper>
         <PostHeaderImageTextWrapper>
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}
           <PostHeaderText>
             <PostHeaderUsername as="span">
-              <Link href={`/profile/${actor?.username}/about`}>{actor?.username}</Link>
+              <NoUnderlineLink href={`/profile/${actor?.username}/about`}>{actor?.username}</NoUnderlineLink>
             </PostHeaderUsername>{' '}
             {headerText}
           </PostHeaderText>

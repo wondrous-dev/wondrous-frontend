@@ -1,34 +1,71 @@
-import React, { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GlobalContext, SideBarContext } from 'utils/contexts';
-import { LIMIT } from 'services/board';
-import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH } from 'utils/constants';
-import SideBarComponent from 'components/Common/SidebarMain';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 import HeaderComponent from 'components/Header';
+import Spotlight from 'components/Spotlight';
+import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { LIMIT } from 'services/board';
+import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
+import { GlobalContext, PageDataContext, SideBarContext } from 'utils/contexts';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
-
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { SectionWrapper } from './styles';
+import EntitySidebar from '../SidebarEntity';
+import UserSidebar from '../UserSidebar';
+import { BackdropComponent, SectionWrapper } from './styles';
 
 const getOrgsList = (userOrgs, router) => {
   if (!userOrgs?.getUserOrgs) return [];
   const { getUserOrgs } = userOrgs;
   return getUserOrgs.map((item) => ({
     ...item,
-    isActive: router.pathname.includes('/organization/[username]') && router.query?.username === item.username,
+    isActive:
+      router.pathname.includes('/organization/') &&
+      (router.query?.username === item.username || router.query?.orgId === item.id),
   }));
 };
+
+export const PAGES_WITH_USER_SIDEBAR = [
+  '/mission-control',
+  '/dashboard/admin',
+  '/dashboard/bounties',
+  '/dashboard',
+  '/dashboard/proposals',
+  '/profile/[username]/about',
+];
+
+const SectionContainer = withAuth(({ children }: any) => {
+  const router = useRouter();
+  const user = useMe();
+
+  const isPageWithUserSidebar = useMemo(() => {
+    if (router.pathname === `/profile/[username]/about` && router.query?.username !== user?.username) return false;
+    return PAGES_WITH_USER_SIDEBAR.includes(router.pathname);
+  }, [router.pathname, router.query?.username, user?.username]);
+
+  if (isPageWithUserSidebar) {
+    return (
+      <SectionWrapper>
+        <EntitySidebar renderSidebar={UserSidebar}>{children}</EntitySidebar>
+      </SectionWrapper>
+    );
+  }
+  return <SectionWrapper>{children}</SectionWrapper>;
+});
 
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
   const router = useRouter();
+  const [pageData, setPageData] = useState({});
+  const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
+
   useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {
     // should this be here?
-    router.push(`/dashboard`);
+    router.push(`/dashboard`, undefined, {
+      shallow: true,
+    });
   });
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -45,15 +82,20 @@ export default function SidebarLayout({ children }) {
       offset: 0,
       limit: LIMIT,
     },
+    fetchPolicy: 'cache-and-network',
     skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
   });
-  const [minimized, setMinimized] = useState(false);
+  const [minimized, setMinimized] = useState(true);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
-    skip: isMobile || PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
+    skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
     variables: {
       excludeSharedOrgs: true,
     },
   });
+
+  useEffect(() => {
+    setMinimized(isMobile);
+  }, [isMobile]);
 
   const [createFormModal, setCreateFormModal] = useState(false);
 
@@ -63,7 +105,7 @@ export default function SidebarLayout({ children }) {
   };
 
   const orgsList = getOrgsList(userOrgs, router);
-  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
+
   const sidebarValue = useMemo(
     () => ({
       minimized,
@@ -73,12 +115,27 @@ export default function SidebarLayout({ children }) {
     [minimized, orgsList]
   );
 
+  useHotkeys(HOTKEYS.CHOOSE_ENTITY, () => {
+    if (!createFormModal) {
+      toggleCreateFormModal();
+    }
+  });
+
+  const pageDataValues = useMemo(() => ({ setPageData }), [setPageData]);
+
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
+
+  const toggleSpotlight = () => {
+    setIsSpotlightOpen((prev) => !prev);
+    if (!minimized && isMobile) {
+      setMinimized(true);
+    }
+  };
+
   return (
     <SideBarContext.Provider value={sidebarValue}>
-      <SideBarComponent userOrgs={userOrgs} />
       <GlobalContext.Provider
         value={{
           isCreateEntityModalOpen: createFormModal,
@@ -91,10 +148,18 @@ export default function SidebarLayout({ children }) {
           refetchNotifications: refetch,
           fetchMoreNotifications,
           notificationsLoading,
+          toggleSpotlight,
+          pageData,
+          setPageData,
+          orgsList,
         }}
       >
         <HeaderComponent />
-        <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
+        {!minimized && isMobile && <BackdropComponent open onClick={() => setMinimized(true)} />}
+        {isSpotlightOpen ? <Spotlight onClose={toggleSpotlight} /> : null}
+        <PageDataContext.Provider value={pageDataValues}>
+          <SectionContainer>{children}</SectionContainer>
+        </PageDataContext.Provider>
       </GlobalContext.Provider>
     </SideBarContext.Provider>
   );

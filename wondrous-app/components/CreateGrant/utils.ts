@@ -1,0 +1,2 @@
+export const descriptionTemplate =
+  '[{"children":[{"text":"Purpose","headingTwo":true}],"type":"paragraph"},{"type":"paragraph","children":[{"text":""}]},{"type":"paragraph","children":[{"text":""}]},{"type":"paragraph","children":[{"text":""}]},{"type":"paragraph","children":[{"headingTwo":true,"text":"Grant description "}]},{"type":"paragraph","children":[{"text":""}]},{"type":"paragraph","children":[{"text":""}]},{"type":"paragraph","children":[{"text":""}]},{"type":"paragraph","children":[{"headingTwo":true,"text":"Requirements"}]}]';

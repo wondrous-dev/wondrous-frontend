@@ -18,6 +18,7 @@ const EXCLUDED_PATHS = [
   '/invite/pod/[token]',
   '/invite/[token]',
   '/organization/[username]/boards',
+  '/organization/[username]/home',
   '/login',
   '/discord/callback',
   '/onboarding/welcome',
@@ -25,6 +26,7 @@ const EXCLUDED_PATHS = [
   '/404',
   '/invite/collab/[token]',
   '/invite/collab/members/[token]',
+  '/task/[taskId]/nft',
 ];
 
 export const useMe = () => useContext(MyContext);
@@ -157,9 +159,21 @@ export const getUserSigningMessage = async (
   }
 };
 
-export const getAuthHeader = () => localStorage.getItem('wonderToken') || null;
+export const getAuthHeader = () => {
+  try {
+    return localStorage.getItem('wonderToken') || null;
+  } catch (error) {
+    return null;
+  }
+};
 
-export const getWaitlistAuthHeader = () => localStorage.getItem('waitlistToken') || null;
+export const getWaitlistAuthHeader = () => {
+  try {
+    return localStorage.getItem('waitlistToken') || null;
+  } catch (error) {
+    return null;
+  }
+};
 
 export const linkWallet = async (web3Address: string, signedMessage: string, blockchain: string) => {
   try {
@@ -241,13 +255,23 @@ export const logout = async () => {
 
 export const withAuth = (Component, noCache = false) => {
   function AuthComponent(props) {
-    const { navigation, route } = props;
     const router = useRouter();
     const [token, setToken] = useState(null);
     const [tokenLoading, setTokenLoading] = useState(true);
     const { data, loading, error } = useQuery(GET_LOGGED_IN_USER, {
       skip: typeof window !== 'undefined' && !getAuthHeader(),
     });
+
+    useEffect(() => {
+      if (process.env.NODE_ENV !== 'production') return;
+      const storedSegmentUserId = localStorage.getItem('ajs_user_id')?.replaceAll('"', '') || null;
+      if (data?.getLoggedinUser?.id && storedSegmentUserId !== data?.getLoggedinUser?.id) {
+        window.analytics.identify(data?.getLoggedinUser?.id, {
+          username: data?.getLoggedinUser?.username,
+        });
+      }
+    }, [data?.getLoggedinUser]);
+
     useEffect(() => {
       (async () => {
         const newToken = await getAuthHeader();

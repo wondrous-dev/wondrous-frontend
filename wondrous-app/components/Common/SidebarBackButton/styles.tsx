@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  padding: 14px 0px 0px 14px;
 `;
 
 export const Button = styled(ButtonBase)`

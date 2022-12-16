@@ -18,6 +18,7 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import { removeUrlStart } from 'utils/helpers';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -57,6 +58,7 @@ function ProfileInfo({ userProfile }) {
     ? user?.checkIsGr15Contributor?.isGr15Contributor
     : userProfile?.checkIsGr15Contributor?.isGr15Contributor;
 
+  const twitterUrl = `https://twitter.com/${userProfile?.userInfo?.twitterUsername}`;
   return (
     <ProfileInfoWrapper>
       <ChooseEntityToCreate />
@@ -81,11 +83,12 @@ function ProfileInfo({ userProfile }) {
               src={profilePicture}
               width={62}
               height={62}
-              objectFit="cover"
               useNextImage
               style={{
+                objectFit: 'cover',
                 borderRadius: '50%',
               }}
+              alt="Profile picture"
             />
           ) : (
             <DefaultUserImage
@@ -133,17 +136,50 @@ function ProfileInfo({ userProfile }) {
               <ProfileInfoIcon>
                 <ProfileInfoLinkIcon />
               </ProfileInfoIcon>
-              <ProfileInfoIcon>{formatLinkDisplay(mainLink)}</ProfileInfoIcon>
+              <ProfileInfoIcon>{removeUrlStart(mainLink?.url)}</ProfileInfoIcon>
             </ProfileInfoMainLink>
+          </ProfileInfoLink>
+        )}
+        {userProfile?.userInfo?.discordUsername && (
+          <ProfileInfoLink
+            target="_blank"
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            <ProfileInfoIcon
+              style={{
+                marginRight: '8px',
+              }}
+            >
+              <DiscordIcon fill="#ccbbff" />
+            </ProfileInfoIcon>
+            <ProfileInfoIcon>{`${userProfile?.userInfo?.discordUsername}#${userProfile?.userInfo?.discordDiscriminator}`}</ProfileInfoIcon>
+          </ProfileInfoLink>
+        )}
+        {userProfile?.userInfo?.twitterUsername && (
+          <ProfileInfoLink key={twitterUrl} href={twitterUrl} target="_blank">
+            <ProfileInfoIcon>
+              <TwitterPurpleIcon fill="#ccbbff" />
+            </ProfileInfoIcon>
           </ProfileInfoLink>
         )}
         {social.map(({ url, type }) => {
           if (!url) return null;
+          if (type === SOCIAL_MEDIA_DISCORD) {
+            // legacy discord url
+            return;
+          }
+          if (type === SOCIAL_MEDIA_TWITTER) {
+            // legacy twitter url
+            return;
+          }
           const SocialIcon = SOCIAL_ICONS[type];
+
           return (
             <ProfileInfoLink key={url} href={url} target="_blank">
               <ProfileInfoIcon>
-                <SocialIcon />
+                <SocialIcon fill="#ccbbff" />
               </ProfileInfoIcon>
             </ProfileInfoLink>
           );

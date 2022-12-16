@@ -23,13 +23,13 @@ import { useRouter } from 'next/router';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
 import CloseModalIcon from 'components/Icons/closeModal';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import HeaderBlock from 'components/Settings/headerBlock';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
+import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { ErrorText } from '../Common';
 import { SafeImage } from '../Common/Image';
 import { ProfilePictureDiv } from '../Onboarding/styles';
-import { HeaderBlock } from './headerBlock';
-import { ImageUpload } from './imageUpload';
+import ImageUpload from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import {
@@ -56,16 +56,6 @@ import {
 const discordUrl = getDiscordUrl();
 
 const socialsData = [
-  {
-    icon: <TwitterPurpleIcon />,
-    link: 'https://twitter.com/',
-    type: 'twitter',
-  },
-  {
-    icon: <DiscordIcon />,
-    link: 'https://discord.gg/',
-    type: 'discord',
-  },
   {
     icon: <OpenSeaIcon />,
     link: 'https://opensea.io/',
@@ -116,7 +106,11 @@ function SettingsLinks({ links, setLinks }) {
   };
   return (
     <>
-      <GeneralSettingsSocialsBlock>
+      <GeneralSettingsSocialsBlock
+        style={{
+          paddingTop: '0',
+        }}
+      >
         <LabelBlock>Socials</LabelBlock>
         <GeneralSettingsSocialsBlockWrapper>
           {socialsData.map((item) => {
@@ -175,18 +169,15 @@ function ProfileSettings(props) {
     const { value } = e.target;
     setUsername(value);
   };
-
   const handleEmailChange = (e) => {
     const { value } = e.target;
     setEmail(value);
   };
-
   const handleProfileBioChange = (e) => {
     const { value } = e.target;
     if (value.length <= 200) setErrors({ ...errors, description: null });
     setProfileBio(value);
   };
-
   useEffect(() => {
     if (loggedInUser?.username) {
       setUsername(loggedInUser?.username);
@@ -198,6 +189,7 @@ function ProfileSettings(props) {
       setProfileBio(loggedInUser?.bio);
     }
   }, [loggedInUser?.username, loggedInUser?.userInfo?.email, loggedInUser?.bio]);
+
   const handleSaveChanges = async () => {
     if (!USERNAME_REGEX.test(username)) {
       setErrors({
@@ -241,19 +233,6 @@ function ProfileSettings(props) {
       input['email'] = email;
     }
 
-    if (profilePicture) {
-      const file = profilePicture;
-      const fileName = profilePicture.name;
-      // get image preview
-      const { fileType, filename } = getFilenameAndType(fileName);
-
-      const imagePrefix = `tmp/${loggedInUser?.id}/`;
-      const imageUrl = imagePrefix + filename;
-
-      await uploadMedia({ filename: imageUrl, fileType, file });
-      input['profilePicture'] = imageUrl;
-    }
-
     // ----> Backend not Ready yet...
     //   if(profileBanner) {
     //     const file = profileBanner;
@@ -270,12 +249,13 @@ function ProfileSettings(props) {
 
     updateUserProfile({
       variables: {
-        input,
+        input: {
+          ...input,
+          profilePicture: loggedInUser?.profilePicture,
+        },
       },
       onCompleted: (data) => {
-        if (data?.updateUser?.profilePicture) {
-          setProfilePictureUrl(data?.updateUser?.profilePicture);
-        }
+        setProfilePictureUrl(data?.updateUser?.profilePicture);
         setSnackbarAlertSeverity('success');
         setSnackbarAlertOpen(true);
         setSnackbarAlertMessage(<>User profile updated successfully</>);
@@ -290,6 +270,41 @@ function ProfileSettings(props) {
     const url = buildTwitterAuthUrl(TWITTER_CHALLENGE_CODE, 'profile');
     window.open(url);
   };
+
+  const updateImage = (imageUrl: string | null, successMessage?: string) => {
+    const message = successMessage || 'User profile picture uploaded successfully';
+
+    updateUserProfile({
+      variables: {
+        input: {
+          profilePicture: imageUrl,
+        },
+      },
+      onCompleted: (data) => {
+        setProfilePictureUrl(data?.updateUser?.profilePicture);
+        setSnackbarAlertSeverity('success');
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(message);
+      },
+    });
+  };
+
+  async function uploadImage(file) {
+    const fileName = file.name;
+    // get image preview
+    const { fileType, filename } = getFilenameAndType(fileName);
+
+    const imagePrefix = `tmp/${loggedInUser?.id}/`;
+    const imageUrl = imagePrefix + filename;
+
+    await uploadMedia({ filename: imageUrl, fileType, file });
+
+    updateImage(imageUrl);
+  }
+
+  function deleteImage() {
+    updateImage(null, 'User profile picture deleted successfully.');
+  }
 
   return (
     <SettingsWrapper>
@@ -325,42 +340,25 @@ function ProfileSettings(props) {
         <GeneralSettingsInputsBlock
           style={{
             borderBottom: 'none',
+            padding: '30px 0 0 0',
           }}
         >
-          {profilePictureUrl ? (
-            <ProfilePictureDiv>
-              <LabelBlock>Profile Picture</LabelBlock>
-              <SafeImage
-                useNextImage={false}
-                src={profilePictureUrl}
-                style={{
-                  width: '52px',
-                  height: '52px',
-                  borderRadius: '26px',
-                }}
-              />
-              <ProfilePictureAdd
-                onClick={() => {
-                  // restart the profile picture addition
-                  setProfilePictureUrl(null);
-                  setProfilePicture(null);
-                }}
-                style={{
-                  position: 'absolute',
-                  marginLeft: '-16px',
-                  cursor: 'pointer',
-                }}
-              />
-            </ProfilePictureDiv>
-          ) : (
-            <ImageUpload
-              image={profilePicture}
-              imageWidth={52}
-              imageHeight={52}
-              imageName="Profile Picture"
-              updateFilesCb={setProfilePicture}
-            />
-          )}
+          <ImageUpload
+            imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
+            image={loggedInUser?.profilePicture}
+            title="Profile Pic"
+            updateFilesCb={uploadImage}
+            avatarEditorTitle="Upload a profile image"
+            onDeleteImage={deleteImage}
+          />
+
+          {/* <ImageUpload
+            imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
+            image={loggedInUser?.headerPicture}
+            title="Header"
+            updateFilesCb={setProfileBanner}
+            avatarEditorTitle="Upload a header image"
+          /> */}
         </GeneralSettingsInputsBlock>
 
         <SettingsLinks links={links} setLinks={setLinks} />
@@ -426,6 +424,7 @@ function ProfileSettings(props) {
           </GeneralSettingsIntegrationsBlockButton>
           {discordUserExists && <ErrorText>Discord user already connected to another account</ErrorText>}
           {discordError && <ErrorText>Error connecting to Discord. Please try again or contact support.</ErrorText>}
+
           <GeneralSettingsIntegrationsBlockButton
             style={{
               marginTop: '30px',
@@ -448,52 +447,17 @@ function ProfileSettings(props) {
               }
             }}
           >
-            <Tooltip title="Connect your twitter account" placement="top">
+            <Tooltip title="Connect your Twitter account" placement="top">
               <div>
                 <GeneralSettingsTwitterIcon />
                 {loggedInUser?.userInfo?.twitterUsername
                   ? `Connected to ${loggedInUser?.userInfo?.twitterUsername}`
-                  : 'Connect twitter'}
+                  : 'Connect Twitter'}
               </div>
             </Tooltip>
           </GeneralSettingsIntegrationsBlockButton>
         </GeneralSettingsInputsBlock>
 
-        {/* <GeneralSettingsInputsBlock>
-          {profileBannerUrl ? (
-            <ProfilePictureDiv>
-              <LabelBlock>Profile Banner</LabelBlock>
-              <SafeImage
-                src={profileBannerUrl}
-                style={{
-                  width: '1350px',
-                  height: '259px',
-                  borderRadius: '6px',
-                }}
-              />
-              <ProfilePictureAdd
-                onClick={() => {
-                  // restart the profile picture addition
-                  setProfileBannerUrl(null);
-                  setProfileBanner(null);
-                }}
-                style={{
-                  position: 'absolute',
-                  marginLeft: '-16px',
-                  cursor: 'pointer',
-                }}
-              />
-            </ProfilePictureDiv>
-          ) : (
-            <ImageUpload
-              image={profileBanner}
-              imageWidth={1350}
-              imageHeight={259}
-              imageName="Profile Banner"
-              updateFilesCb={setProfileBanner}
-            />
-          )}
-        </GeneralSettingsInputsBlock> */}
         <GeneralSettingsButtonsBlock>
           <GeneralSettingsResetButton>Cancel changes</GeneralSettingsResetButton>
           <GeneralSettingsSaveChangesButton highlighted onClick={handleSaveChanges}>

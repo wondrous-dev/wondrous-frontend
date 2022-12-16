@@ -38,12 +38,14 @@ import {
 export const TaskSectionImageContent = ({
   hasContent,
   DefaultContent = null,
+  DefaultContentProps = null,
   imgSrc = '',
   DefaultImageComponent = null,
   ContentComponent,
+  ContentComponentProps = null,
   onClick = () => {},
 }) => {
-  if (!hasContent) return <DefaultContent />;
+  if (!hasContent) return <DefaultContent {...DefaultContentProps} />;
 
   const defaultImage = DefaultImageComponent && (
     <TaskSectionImageContentImage>
@@ -62,7 +64,7 @@ export const TaskSectionImageContent = ({
   return (
     <TaskSectionImageContentWrapper onClick={onClick}>
       {image}
-      <ContentComponent />
+      <ContentComponent {...ContentComponentProps} />
     </TaskSectionImageContentWrapper>
   );
 };
@@ -114,7 +116,7 @@ export const TaskDescriptionTextWrapper = ({ text }) => {
 
   return (
     <>
-      <TaskDescriptionText isExpanded={isExpanded} initialHeight={initialHeight} ref={checkRichTextHeight}>
+      <TaskDescriptionText isExpanded={isExpanded} initialHeight={initialHeight} ref={checkRichTextHeight} as="div">
         <RichTextViewer text={text} />
       </TaskDescriptionText>
       {showButton && (
@@ -230,7 +232,7 @@ export const Menu = ({
   setDeleteTask,
   setEditTask,
   taskType,
-}) => {
+}: any) => {
   const menuItems = {
     Complete: {
       condition: canEdit && (isMilestone || isBounty),
@@ -270,9 +272,9 @@ export const Menu = ({
   );
 };
 
-export const LockedTaskMessage = ({ handleClose }) => (
+export const LockedTaskMessage = ({ handleClose, entityType = 'task' }) => (
   <LockedTask>
-    <EmptyState content={"Oh! You don't have permission to view this task"}>
+    <EmptyState content={`Oh! You don't have permission to view this ${entityType}`}>
       <ActionButton onClick={handleClose}>Visit board</ActionButton>
     </EmptyState>
   </LockedTask>

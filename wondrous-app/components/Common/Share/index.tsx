@@ -18,10 +18,10 @@ interface IShareProps {
 
 const Share = ({ fetchedTask, className }: IShareProps) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
-  const { id, parentTaskId, orgUsername, type } = fetchedTask;
+  const { id, orgUsername, type } = fetchedTask;
   const entityType = type || ENTITIES_TYPES.PROPOSAL;
   const taskTypeQuery = type ? `task` : `taskProposal`;
-  const taskId = parentTaskId || id;
+  const taskId = id;
   const handleOnClick = (e) => {
     e.preventDefault();
     e.stopPropagation();

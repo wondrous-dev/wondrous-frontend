@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import SubmissionStatus from 'components/Common/SubmissionStatus';
+import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import palette from 'theme/palette';
 import { Container } from './styles';
 
@@ -20,23 +20,26 @@ const CommentItem = (props) => {
   } = props;
   return (
     <Container ref={commentRef} highlight={isOpenedFromNotification}>
-      <Grid container justifyContent="flex-start" alignItems="center" sx={{ gap: '4px' }}>
+      <Grid container justifyContent="flex-start" alignItems="center" gap="4px">
         {role && (
           <Box
+            color={palette.blue20}
+            padding="4px 8px"
+            height="26px"
+            fontWeight="500"
+            fontSize="14px"
+            borderRadius="4px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
             sx={{
               background: palette.grey99,
-              color: palette.blue20,
-              padding: '4px 8px',
-              height: '26px',
-              fontWeight: 500,
-              fontSize: '14px',
-              borderRadius: '4px',
             }}
           >
             {role}
           </Box>
         )}
-        {type && <SubmissionStatus status={type} />}
+        {type && <SubmittableCommentType status={type} />}
       </Grid>
       <Grid container>
         {actorProfilePicture ? (
@@ -49,6 +52,7 @@ const CommentItem = (props) => {
               borderRadius: '16px',
               marginRight: '12px',
             }}
+            alt="Actor profile picture"
           />
         ) : (
           <DefaultUserImage
@@ -60,7 +64,7 @@ const CommentItem = (props) => {
             }}
           />
         )}
-        <div>
+        <Grid flex={1}>
           <Grid container justifyContent="flex-start" alignItems="center">
             <Box
               sx={{
@@ -108,7 +112,7 @@ const CommentItem = (props) => {
               Delete
             </Box>
           )}
-        </div>
+        </Grid>
       </Grid>
     </Container>
   );

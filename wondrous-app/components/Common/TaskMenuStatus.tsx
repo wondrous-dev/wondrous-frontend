@@ -6,6 +6,7 @@ import { APPROVE_TASK_PROPOSAL, ARCHIVE_TASK, CLOSE_TASK_PROPOSAL, UPDATE_TASK_S
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_TASKS,
+  GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
   GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
@@ -17,13 +18,14 @@ import {
   GET_USER_TASK_BOARD_TASKS,
 } from 'graphql/queries';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
 import styled from 'styled-components';
 import { getProposalStatus } from 'utils/board';
 import { ENTITIES_TYPES, PERMISSIONS, STATUS_APPROVED, STATUS_CLOSED, TASK_STATUS_ARCHIVED } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { SnackbarAlertContext } from './SnackbarAlert';
 
 const TaskStatusMenuWrapper = styled(Menu)`
   && {
@@ -115,6 +117,7 @@ const refetchNonProposalQueries = [
   GET_TASK_BY_ID,
   GET_TASKS_FOR_MILESTONE,
   GET_USER_TASK_BOARD_TASKS,
+  GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
 ];
 
 const refetchTaskProposalQueries = [
@@ -188,11 +191,23 @@ const useTaskMenuStatusProposal = ({ task, entityType }) => {
 const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
   const { id: taskId } = task;
   const { canArchive } = useUserPermission(task);
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
   const [archiveTaskMutation] = useMutation(ARCHIVE_TASK, {
     refetchQueries: refetchNonProposalQueries,
   });
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: refetchNonProposalQueries,
+    onError: ({ graphQLErrors }) => {
+      if (graphQLErrors[0].extensions.errorCode === 'must_go_through_submission') {
+        setSnackbarAlertSeverity('error');
+        setSnackbarAlertMessage('Cannot complete this task without submission');
+        setSnackbarAlertOpen(true);
+        return;
+      }
+      setSnackbarAlertMessage('Something went wrong');
+      setSnackbarAlertSeverity('error');
+      setSnackbarAlertOpen(true);
+    },
   });
   const handleOnChange = (newStatus) => {
     if (newStatus === TASK_STATUS_ARCHIVED) {
@@ -216,19 +231,22 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
   return { handleOnChange, filterStatus, currentStatus, disableMenu: false };
 };
 
-function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableMenu, className }) {
+export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableMenu, className = '' }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setAnchorEl(e.currentTarget);
   };
   const handleClose = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setAnchorEl(null);
   };
   const handleItemOnClick = (status) => (e) => {
     e.preventDefault();
+    e.stopPropagation();
     handleClose(e);
     handleOnChange(status.id);
   };

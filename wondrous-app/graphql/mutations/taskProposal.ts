@@ -99,18 +99,9 @@ export const DELETE_TASK_PROPOSAL_COMMENT = gql`
     }
   }
 `;
-
-export const UPVOTE_TASK_PROPOSAL = gql`
-  mutation upvoteProposal($taskProposalId: ID!) {
-    upvoteProposal(taskProposalId: $taskProposalId) {
-      success
-    }
-  }
-`;
-
-export const DOWNVOTE_TASK_PROPOSAL = gql`
-  mutation downvoteProposal($taskProposalId: ID!) {
-    downvoteProposal(taskProposalId: $taskProposalId) {
+export const VOTE_FOR_PROPOSAL = gql`
+  mutation voteForProposal($taskProposalId: ID!, $choice: String!) {
+    voteForProposal(taskProposalId: $taskProposalId, choice: $choice) {
       success
     }
   }

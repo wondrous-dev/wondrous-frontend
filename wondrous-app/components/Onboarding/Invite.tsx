@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useWonderWeb3 } from 'services/web3';
 import { useIsMobile } from 'utils/hooks';
 import { useRouter } from 'next/router';
-import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
-import { SupportedChainType } from 'utils/web3Constants';
+import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
+import { SupportedChainType, SUPPORTED_CHAINS } from 'utils/web3Constants';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
@@ -196,6 +196,7 @@ export function Invite({
                   marginBottom: '20px',
                 }}
                 src={orgInfo?.profilePicture || podInfo?.org?.profilePicture}
+                alt="Profile picture"
               />
             ) : (
               <NoLogo />
@@ -204,14 +205,14 @@ export function Invite({
         ) : null}
 
         <InviteWelcomeBoxTitle>{titleSentence}</InviteWelcomeBoxTitle>
-        <InviteWelcomeBoxParagraph>Wonder is where DAOs manage world changing projects</InviteWelcomeBoxParagraph>
+        <InviteWelcomeBoxParagraph>Wonder is where web3 teams manage world changing projects</InviteWelcomeBoxParagraph>
 
         {children}
 
         <Connectors>
           {!isMobile && <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />}
-          <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
           <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
+          <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
           <Button
             style={buttonStyles}
             onClick={() => {

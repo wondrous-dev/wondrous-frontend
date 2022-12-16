@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client';
 import BackButton from 'components/Common/SidebarBackButton';
 import { SectionWrapper, StyledSettingsIcon } from 'components/Common/SidebarEntityRoles/styles';
 import Item from 'components/Common/SidebarItem';
@@ -8,6 +7,10 @@ import useCanManage from 'hooks/useCanManage';
 import { pickBy } from 'lodash';
 import { useRouter } from 'next/router';
 import { useBoards } from 'utils/hooks';
+
+import { useQuery } from '@apollo/client';
+
+import { SidebarWrapper } from '../SidebarEntityCollabs/styles';
 
 const useBackHref = ({ router }) => {
   const query = pickBy(router.query, (_v, key) => key !== 'roles');
@@ -42,20 +45,34 @@ const RolesSidebar = () => {
     router.push(orgBoard ? `/organization/settings/${board.orgId}/roles` : `/pod/settings/${board.podId}/roles`);
   const canManage = useCanManage();
   return (
-    <>
+    <SidebarWrapper>
       <BackButton href={href} />
       <SectionWrapper>
         <ListWrapper>
           <ListWrapper>
             <Label>Your current role</Label>
-            <Item disabled>{userRole}</Item>
+            <div
+              onClick={handleCreateNewRole}
+              style={{
+                cursor: 'pointer',
+              }}
+            >
+              <Item disabled>{userRole}</Item>
+            </div>
           </ListWrapper>
           <ListWrapper>
             <Label>Other roles</Label>
             {otherRoles?.map(({ name, id: roleId }) => (
-              <Item key={roleId} disabled>
-                {name}
-              </Item>
+              <div
+                onClick={handleCreateNewRole}
+                style={{
+                  cursor: 'pointer',
+                }}
+              >
+                <Item key={roleId} disabled>
+                  {name}
+                </Item>
+              </div>
             ))}
             {canManage && (
               <Item roundedBg onClick={handleCreateNewRole}>
@@ -70,7 +87,7 @@ const RolesSidebar = () => {
           </Item>
         )}
       </SectionWrapper>
-    </>
+    </SidebarWrapper>
   );
 };
 

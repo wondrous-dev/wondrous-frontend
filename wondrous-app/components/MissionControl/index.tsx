@@ -1,5 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useMe, withAuth } from 'components/Auth/withAuth';
+import { useTour } from '@reactour/tour';
+import { useLayoutEffect } from 'react';
 import {
   TodoIcon,
   InProgressIcon,
@@ -21,7 +23,7 @@ import {
 } from 'utils/constants';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import { useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
-import { KudosWidget, InProgressTasksWidget } from 'components/MissionControlWidgets';
+import { KudosWidget, MyProjectsWidget } from 'components/MissionControlWidgets';
 import { ConnectWallet, Notifications } from 'components/MissionControlSidebarWidgets';
 import HighlightedCone from 'components/Icons/HighlightedCone';
 import {
@@ -39,7 +41,7 @@ import MissionControlWorkspaceCard from './WorkspaceCard';
 const CARDS_CONFIG = {
   workspace: [
     {
-      label: 'Contributor \n Workspace',
+      label: 'Your Contributor \n Workspace',
       url: '/dashboard',
       labelGradient: 'linear-gradient(180deg, #7427FF 0%, #F2C678 100%)',
       img: '/images/mission-control/contributor-card.png',
@@ -77,7 +79,7 @@ const CARDS_CONFIG = {
       ],
     },
     {
-      label: 'Operator \n Workspace',
+      label: 'Your Operator \n Workspace',
       labelGradient: 'linear-gradient(180deg, #00BAFF 0%, #F2C678 100%)',
       img: '/images/mission-control/operator-card.png',
       hoverImg: '/images/mission-control/operator-card-hover.png',
@@ -119,6 +121,14 @@ const CARDS_CONFIG = {
 
 const MissionControl = () => {
   const user = useMe();
+  const { setIsOpen, setCurrentStep } = useTour();
+
+  useLayoutEffect(() => {
+    if (user && !user.lastCompletedGuide) {
+      setCurrentStep(0);
+      setIsOpen(true);
+    }
+  }, [user]);
   const { data: adminWorkflowCount, loading: workflowCountLoading } = useQuery(
     GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT,
     {
@@ -157,13 +167,13 @@ const MissionControl = () => {
         ))}
         <MissionControlWidgetsContainer>
           <KudosWidget />
-          <InProgressTasksWidget />
+          <Notifications />
         </MissionControlWidgetsContainer>
       </MissionControlWidgetsWrapper>
       <MissionControlSidebarWrapper>
         <ConnectWallet />
         <FocusWrapper>
-          <Notifications />
+          <MyProjectsWidget />
         </FocusWrapper>
         <MissionControlSidebarIconWrapper>
           <HighlightedCone />

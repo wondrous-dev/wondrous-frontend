@@ -1,14 +1,17 @@
 import { AppBar, ButtonBase, IconButton, TextField } from '@mui/material';
+import { mainSidebarWidth, entitySidebarWidth } from 'components/Common/SidebarStyles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { HEADER_HEIGHT } from 'utils/constants';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
 
 export const HeaderBar = styled(AppBar)`
   && {
-    margin-top: 18px;
+    padding: 10px 14px 10px 14px;
     background: transparent;
     display: flex;
+    height: ${HEADER_HEIGHT};
     align-items: center;
     z-index: 200;
     width: 100%;
@@ -16,7 +19,14 @@ export const HeaderBar = styled(AppBar)`
     gap: 14px;
     justify-content: flex-end;
     box-shadow: none;
-    padding: 0 30px;
+    position: fixed;
+    top: 0;
+    background: ${palette.grey900};
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      position: sticky;
+      width: 100%;
+      margin-top: 0;
+    }
   }
 `;
 
@@ -157,14 +167,19 @@ export const StyledBadge = styled(ButtonBase)`
     align-items: center;
     background: ${({ theme }) => theme.palette.grey87};
     border-radius: 50%;
+    opacity: ${({ isActive }) => (typeof isActive === 'boolean' ? (isActive ? 1 : 0.5) : 1)};
     border: none;
     cursor: pointer;
     display: flex;
+    z-index: 10;
     height: 40px;
     justify-content: center;
     position: relative;
     width: 40px;
     filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
+    :hover {
+      background: ${({ theme }) => theme.palette.grey78};
+    }
     svg {
       circle {
         display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
@@ -177,7 +192,13 @@ export const HeaderCreateButton = styled(ButtonBase)`
   && {
     visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
     display: flex;
+    opacity: ${({ isActive }) => (isActive ? 1 : 0.5)};
     justify-content: flex-end;
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      position: fixed;
+      bottom: 2%;
+      right: 2%;
+    }
     background: transparent;
     border: 0;
     position: relative;
@@ -194,18 +215,11 @@ export const HeaderCreateButton = styled(ButtonBase)`
       left: 0;
       top: 0;
     }
+
     &:hover {
       cursor: pointer;
       &::before {
-        background: linear-gradient(
-          212.53deg,
-          #ff6dd7 -79.63%,
-          #b820ff -41.63%,
-          #f93701 -9.97%,
-          #ffd653 22.6%,
-          #00baff 56.07%,
-          #06ffa5 85.93%
-        );
+        background: linear-gradient(270deg, #00baff -5.62%, #7427ff 45.92%, #ccbbff 103.12%);
       }
     }
   }
@@ -233,5 +247,43 @@ export const MissionControlIconWrapper = styled(HeaderHomeButton)`
       }
       background: ${palette.violet50};
     }
+  }
+`;
+
+export const ConnectDiscordLink = styled.a`
+  cursor: pointer;
+  color: ${palette.highlightBlue};
+`;
+
+export const MenuContainer = styled.button`
+  height: 40px;
+  width: 40px;
+  background: #2d2d2d;
+  border-radius: 9px;
+  border: none;
+  display: flex;
+  color: ${palette.blue20};
+  align-items: center;
+  justify-content: center;
+  svg {
+    font-size: 30px;
+  }
+`;
+
+export const HeaderItemWrapper = styled.div`
+  position: absolute;
+  right: -14px;
+  box-shadow: 0px 1px 11px 3px rgb(0 0 0 / 67%);
+  top: -100%;
+  height: fit-content;
+  min-height: calc(100% + 28px);
+  background: ${palette.black92};
+  width: calc(100% + 28px);
+  filter: drop-shadow(0px 4px 54px rgba(0, 0, 0, 0.35));
+  border-radius: 0px 0px 0px 14px;
+  padding: 24px 14px 14px 14px;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100vw;
+    border-radius: 0px 0px 14px 14px;
   }
 `;

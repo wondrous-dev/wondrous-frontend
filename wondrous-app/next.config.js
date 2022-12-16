@@ -6,7 +6,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 module.exports = withBundleAnalyzer({
   /* config options here */
   reactStrictMode: true,
-  images: { domains: ['www.notion.so', 'storage.googleapis.com', 'pbs.twimg.com', 'avatars.githubusercontent.com'] },
+  compiler: {
+    // Enables the styled-components SWC transform
+    styledComponents: true
+  },
+  images: { domains: ['www.notion.so', 'storage.googleapis.com', 'pbs.twimg.com', 'avatars.githubusercontent.com', 's3.amazonaws.com'] },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

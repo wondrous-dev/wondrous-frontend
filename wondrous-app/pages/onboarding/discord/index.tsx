@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useMutation, useLazyQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 import { ConnectDiscord } from 'components/Onboarding/ConnectDiscord';
 import { MainWrapper } from 'components/Onboarding/styles';
-import { UPDATE_USER } from 'graphql/mutations';
-import { GET_PRESIGNED_IMAGE_URL } from 'graphql/queries/media';
+import { SET_USER_SIGNUP_COMPLETE, UPDATE_USER } from 'graphql/mutations';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 
 function ConnectDiscordPage() {
@@ -13,6 +12,8 @@ function ConnectDiscordPage() {
   const { collabInvite } = router.query;
   const user = useMe();
   const collabInviteQueryString = collabInvite ? `?collabInvite=${collabInvite}` : '';
+
+  const [setUserSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE);
 
   const goToNextStep = () => {
     const nextStep = user.activeEthAddress
@@ -27,6 +28,12 @@ function ConnectDiscordPage() {
       goToNextStep();
     },
   });
+
+  useEffect(() => {
+    if (!user?.signupComplete) {
+      setUserSignupComplete();
+    }
+  }, [user?.signupComplete]);
 
   useEffect(() => {
     if (user?.userInfo?.discordUsername) {

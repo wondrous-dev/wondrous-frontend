@@ -1,41 +1,62 @@
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import { SafeImage } from 'components/Common/Image';
+import palette from 'theme/palette';
 import { shrinkNumber } from 'utils/helpers';
-import { ToDo } from '../../Icons';
-import { WonderCoin } from '../../Icons/wonderCoin';
-import { SafeImage } from '../Image';
-import { CompensationWrapper, IconContainer, CompensationPill, CompensationAmount } from './styles';
-import Ethereum from '../../Icons/ethereum';
-import { Matic } from '../../Icons/matic';
-import { USDCoin } from '../../Icons/USDCoin';
 
-export function Compensation(props) {
-  const { rewards, taskIcon, style, pillStyle = {} } = props;
+export default function Compensation({ rewards = null, ...props }) {
+  if (!rewards || !rewards?.[0].rewardAmount) return null;
+  const { style, pillStyle = {}, id } = props;
   const { icon, rewardAmount, symbol } = rewards[0] || {};
-
+  const shrinkAmount = shrinkNumber(rewardAmount);
   return (
-    <CompensationWrapper key={props.id} style={style}>
-      <CompensationPill style={pillStyle}>
-        {rewardAmount && (
-          <>
-            {icon && (
-              <IconContainer>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <SafeImage
-                  useNextImage={false}
-                  src={icon}
-                  style={{
-                    width: '24px',
-                    height: '24px',
-                  }}
-                />
-              </IconContainer>
-            )}
-            <CompensationAmount>
-              {rewardAmount} {icon ? null : symbol}
-            </CompensationAmount>
-          </>
+    <Grid
+      container
+      width="fit-content"
+      key={id}
+      style={style}
+      height="28px"
+      minWidth="45px"
+      lineHeight="0"
+      borderRadius="25px"
+      padding="0"
+    >
+      <Grid
+        container
+        item
+        borderRadius="inherit"
+        bgcolor={palette.grey99}
+        gap="4px"
+        alignItems="center"
+        paddingRight="8px"
+        paddingLeft={icon ? '2px' : '8px'}
+        style={pillStyle}
+      >
+        {icon && (
+          <Grid container item height="100%" width="max-content" alignItems="center">
+            <SafeImage
+              useNextImage={false}
+              src={icon}
+              style={{
+                width: '24px',
+                height: '24px',
+              }}
+              alt="Icon"
+            />
+          </Grid>
         )}
-        {taskIcon || null}
-      </CompensationPill>
-    </CompensationWrapper>
+        <Typography
+          color={palette.white}
+          fontWeight="600"
+          fontSize="13px"
+          alignItems="center"
+          gap="3px"
+          width="fit-content"
+          lineHeight="0"
+        >
+          {shrinkAmount} {!icon && symbol}
+        </Typography>
+      </Grid>
+    </Grid>
   );
 }

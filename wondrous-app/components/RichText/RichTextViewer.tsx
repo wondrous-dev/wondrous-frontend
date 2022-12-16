@@ -1,13 +1,16 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { memo } from 'react';
-import { Descendant, Text } from 'slate';
+import { Descendant, Text, Node } from 'slate';
 
 import { renderMentionString } from 'utils/common';
 
+import Typography from '@mui/material/Typography';
+
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import { FormattedText } from './types';
 import { isRichText } from './utils';
-import { BulletedList, NumberedList, RichTextStyled, Strikethrough } from './styles';
+import { BulletedList, NumberedList, RichTextStyled } from './styles';
 import { Leaf } from './elements';
 
 const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
@@ -31,20 +34,24 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
         );
       case 'mention':
         return (
-          <Link key={i} href={`/profile/${node.mentionable}/about`} passHref>
-            <a>@{node.mentionable}</a>
-          </Link>
+          <NoUnderlineLink key={i} href={`/profile/${node.mentionable}/about`}>
+            @{node.mentionable}
+          </NoUnderlineLink>
         );
       case 'link':
         return (
-          <Link key={i} href={node.href} passHref>
-            <a target="_blank" rel="noopener noreferrer">
-              {node.children[0]?.text}
-            </a>
-          </Link>
+          <NoUnderlineLink key={i} href={node.href} target="_blank" rel="noopener noreferrer">
+            {node.children[0]?.text}
+          </NoUnderlineLink>
         );
       case 'bulleted-list':
         return <BulletedList>{children}</BulletedList>;
+      case 'headingOne':
+        return <Typography variant="h1">{children}</Typography>;
+      case 'headingTwo':
+        return <Typography variant="h2">{children}</Typography>;
+      case 'headingThree':
+        return <Typography variant="h3">{children}</Typography>;
       case 'numbered-list':
         return <NumberedList>{children}</NumberedList>;
       case 'list-item':
@@ -54,11 +61,21 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
     }
   });
 
-const RichTextViewer: React.FC<{ text?: string }> = ({ text }) => {
+const serialize = (nodes) => nodes.map((n) => Node.string(n)).join('\n');
+
+const RichTextViewer: React.FC<{ text?: string; asText?: boolean }> = ({ text, asText = '' }) => {
   const router = useRouter();
 
   if (!text) {
-    return <div />;
+    return null;
+  }
+
+  if (asText) {
+    return (
+      <Typography fontFamily="inherit" color="inherit" fontSize="inherit">
+        {serialize(JSON.parse(text))}
+      </Typography>
+    );
   }
 
   return isRichText(text) ? (

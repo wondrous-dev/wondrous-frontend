@@ -1,27 +1,15 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import Link from 'next/link';
+import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 
 export const NotificationsBoardWrapper = styled.div`
-  position: absolute;
-  width: 320px;
-  min-height: 30px;
-  overflow-y: scroll;
   max-height: 60vh;
-  padding: 0px;
-  margin-left: -200px;
-  margin-top: 20px;
-  top: 100%;
-  border-radius: 5px;
-  background: ${palette.black92};
-  transition: 0.2s display;
-  z-index: 100;
-  border-radius: 3px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-
-  font-size: 13px;
-  overscroll-behavior: contain;
+  overflow: auto;
+  ${ScrollBarStyles}
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    max-height: 100vh;
+  }
 `;
 
 export const NotificationsBoardArrow = styled.div`
@@ -170,20 +158,20 @@ export const NotificationsOverlay = styled.div`
   background: transparent;
   z-index: 97;
 `;
-export const NotificationsLink = styled.a`
-  color: ${palette.highlightBlue};
-  font-weight: 700;
 
+export const NotificationsLink = styled.span`
   a {
     color: ${palette.highlightBlue};
     font-weight: 700;
     text-decoration: none;
+    display: inline-block;
 
     &:hover {
       text-decoration: underline;
     }
   }
 `;
+
 export const NotificationItemInner = styled.div`
   padding-top: 2px;
   color: ${palette.white};

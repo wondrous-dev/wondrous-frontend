@@ -105,15 +105,6 @@ export const DiscordLink = styled.a`
   }
 `;
 
-export const ExplanationText = styled(Typography)`
-  && {
-    color: rgba(196, 196, 196, 1);
-    font-size: 14px;
-    line-height: 20px;
-    margin-top: 8px;
-  }
-`;
-
 export const UserDiscordNotificationSettingsContainer = styled.div`
   border-bottom: 1px solid #363636;
   padding-bottom: 20px;

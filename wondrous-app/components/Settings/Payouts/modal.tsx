@@ -1,22 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography, Tab } from '@mui/material';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Tab } from '@mui/material';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { PERMISSIONS } from 'utils/constants';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { delQuery } from 'utils';
-import { DAOIcon } from '../../Icons/dao';
-import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from '../../Common/Payment/SingleWalletPayment';
 import {
-  PodNameTypography,
   PaymentModal,
   PaymentModalHeader,
   PaymentTitleDiv,
@@ -27,14 +20,13 @@ import {
   PaymentMethodWrapper,
   WarningTypography,
 } from '../../Common/Payment/styles';
-import { useMe } from '../../Auth/withAuth';
 
 enum ViewType {
   Paid = 'paid',
   Unpaid = 'unpaid',
 }
 
-export function PayModal(props) {
+function PayModal(props) {
   const { podId, orgId, open, handleClose, assigneeId, assigneeUsername, taskTitle, submissionId } = props;
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState('wallet');
@@ -143,21 +135,20 @@ export function PayModal(props) {
         </StyledTabs>
         <PaymentMethodWrapper>
           {selectedTab === 'off_platform' && (
-            <>
-              <WarningTypography>
-                This link will only be visible to the assignee and other admins with the payment permission
-              </WarningTypography>
-              <OfflinePayment
-                submissionPaymentInfo={submissionPaymentInfo}
-                approvedSubmission={{
-                  id: submissionId,
-                }}
-                handleClose={() => {
-                  router.replace(`${delQuery(router.asPath)}?view=${ViewType.Paid}`);
-                  handleClose();
-                }}
-              />
-            </>
+            <OfflinePayment
+              submissionPaymentInfo={submissionPaymentInfo}
+              approvedSubmission={{
+                id: submissionId,
+              }}
+              handleClose={() => {
+                const query = {
+                  view: ViewType.Paid,
+                };
+
+                router.push({ query }, undefined, { scroll: false, shallow: true });
+                handleClose();
+              }}
+            />
           )}
 
           {selectedTab === 'wallet' && (
@@ -179,3 +170,5 @@ export function PayModal(props) {
     </Modal>
   );
 }
+
+export default PayModal;

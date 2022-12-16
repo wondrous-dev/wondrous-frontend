@@ -15,7 +15,11 @@ import { ModalCloseButton } from 'components/Common/ModalCloseButton';
 import AndroidSwitch from 'components/Common/AndroidSwitch';
 import palette from 'theme/palette';
 
-export const StyledModal = styled(Modal)``;
+export const StyledModal = styled(Modal)`
+  && {
+    z-index: 2000;
+  }
+`;
 
 export const StyledBox = styled(Box)`
   width: 682px;

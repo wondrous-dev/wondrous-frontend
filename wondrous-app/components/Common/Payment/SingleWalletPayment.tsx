@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { ethers } from 'ethers';
-import { BigNumber } from 'bignumber.js';
 import { useMutation } from '@apollo/client';
-import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION, LINK_METAMASK_PAYMENT } from 'graphql/mutations/payment';
 import { SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types';
+import { BigNumber } from 'bignumber.js';
+import { ethers } from 'ethers';
+import {
+  LINK_METAMASK_PAYMENT,
+  LINK_METAMASK_PAYMENT_FOR_APPLICATION,
+  PROPOSE_GNOSIS_TX_FOR_APPLICATION,
+  PROPOSE_GNOSIS_TX_FOR_SUBMISSION,
+} from 'graphql/mutations/payment';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { TransactionData } from 'services/web3/hooks/types';
 
 import { CircularProgress } from '@mui/material';
@@ -15,16 +20,22 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
+import { ERC20abi } from 'services/contracts/erc20.abi';
 import useGnosisSdk from 'services/payment';
 import { useWonderWeb3 } from 'services/web3';
-import { ERC20abi } from 'services/contracts/erc20.abi';
 import { usePaymentModal } from 'utils/hooks';
-import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME, CHAIN_TO_EXPLORER_URL } from 'utils/web3Constants';
-import { DEFAULT_ERC20_GAS_LIMIT } from 'utils/constants';
+import {
+  CHAIN_TO_EXPLORER_URL,
+  CHAIN_TO_GNOSIS_URL_ABBR,
+  DEFAULT_ERC20_GAS_LIMIT,
+  SUPPORTED_CHAINS,
+} from 'utils/web3Constants';
 
 import DropdownSelect from 'components/Common/DropdownSelect';
 import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
-import { ErrorText } from '..';
+import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
+import { ENTITIES_TYPES } from 'utils/constants';
+import { ErrorText } from 'components/Common';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
 
@@ -71,7 +82,9 @@ export function SingleWalletPayment(props) {
     submissionPaymentInfo,
     changedRewardAmount,
     parentError,
+    entityType = null,
   } = props;
+
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
   const [selectedWalletId, setSelectedWalletId] = useState(null);
@@ -117,7 +130,7 @@ export function SingleWalletPayment(props) {
     setWrongChainError(null);
     const chain = submissionPaymentInfo?.paymentData[0].chain;
     if (chain && currentChainId) {
-      if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
+      if (chain !== SUPPORTED_CHAINS[currentChainId]) {
         setWrongChainError(`currently connected to the wrong network should be on ${chain}`);
       }
     }
@@ -168,6 +181,32 @@ export function SingleWalletPayment(props) {
     ],
   });
 
+  const [proposeGnosisTxForGrantApplication] = useMutation(PROPOSE_GNOSIS_TX_FOR_APPLICATION, {
+    onCompleted: (data) => {
+      setPaymentPending(true);
+      if (paymentModal?.onPaymentComplete) {
+        paymentModal?.onPaymentComplete();
+      }
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+    refetchQueries: [GET_GRANT_APPLICATION_BY_ID],
+  });
+
+  const [linkMetamaskPaymentForGrantApplication] = useMutation(LINK_METAMASK_PAYMENT_FOR_APPLICATION, {
+    onCompleted: (data) => {
+      setPaymentPending(true);
+      if (paymentModal?.onPaymentComplete) {
+        paymentModal?.onPaymentComplete();
+      }
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+    refetchQueries: [GET_GRANT_APPLICATION_BY_ID],
+  });
+
   const [linkMetamaskPayment] = useMutation(LINK_METAMASK_PAYMENT, {
     onCompleted: (data) => {
       if (paymentModal?.onPaymentComplete) {
@@ -192,7 +231,7 @@ export function SingleWalletPayment(props) {
 
   useEffect(() => {
     if (transactionHash) {
-      const url = constructExplorerRedirectUrl(CHAIN_ID_TO_CHAIN_NAME[currentChainId], transactionHash);
+      const url = constructExplorerRedirectUrl(SUPPORTED_CHAINS[currentChainId], transactionHash);
       console.log(url);
       setExploreRedirectUrl(url);
     }
@@ -309,22 +348,35 @@ export function SingleWalletPayment(props) {
       sender,
       signature,
     };
-    proposeGnosisTxForSubmission({
-      variables: {
-        input: {
-          submissionId: approvedSubmission.id,
-          walletId: selectedWalletId,
-          chain: submissionPaymentInfo?.paymentData[0].chain,
-          transactionData: txData,
+    if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
+      proposeGnosisTxForGrantApplication({
+        variables: {
+          input: {
+            grantApplicationId: approvedSubmission.id,
+            walletId: selectedWalletId,
+            chain: submissionPaymentInfo?.paymentData[0].chain,
+            transactionData: txData,
+          },
         },
-      },
-      refetchQueries: [
-        GET_UNPAID_SUBMISSIONS_FOR_POD,
-        GET_UNPAID_SUBMISSIONS_FOR_ORG,
-        GET_PAYMENTS_FOR_POD,
-        GET_PAYMENTS_FOR_ORG,
-      ],
-    });
+      });
+    } else {
+      proposeGnosisTxForSubmission({
+        variables: {
+          input: {
+            submissionId: approvedSubmission.id,
+            walletId: selectedWalletId,
+            chain: submissionPaymentInfo?.paymentData[0].chain,
+            transactionData: txData,
+          },
+        },
+        refetchQueries: [
+          GET_UNPAID_SUBMISSIONS_FOR_POD,
+          GET_UNPAID_SUBMISSIONS_FOR_ORG,
+          GET_PAYMENTS_FOR_POD,
+          GET_PAYMENTS_FOR_ORG,
+        ],
+      });
+    }
     t2 = performance.now();
     console.log(`proposeGnosisTxForSubmission took ${t2 - t1} milliseconds`);
     setGnosisTransactionLoading(false);
@@ -334,12 +386,12 @@ export function SingleWalletPayment(props) {
     const iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     const chain = paymentData?.chain;
-    if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
+    if (chain !== SUPPORTED_CHAINS[currentChainId]) {
       setWrongChainError(`Please switch to ${chain} chain`);
       return;
     }
     if (selectedWallet?.address?.toLowerCase() !== wonderWeb3.address?.toLowerCase()) {
-      setNotOwnerError(`Must be connected to the selecte walleted ${selectedWallet?.address}`);
+      setNotOwnerError(`Must be connected to the selected wallet ${selectedWallet?.address}`);
       return;
     }
     let transactionData: TransactionData;
@@ -376,6 +428,18 @@ export function SingleWalletPayment(props) {
     const transactionObj = await wonderWeb3.sendTransaction(transactionData);
     const txHash = transactionObj?.hash;
     setTransactionHash(txHash);
+    if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
+      return linkMetamaskPaymentForGrantApplication({
+        variables: {
+          input: {
+            grantApplicationId: approvedSubmission.id,
+            walletId: selectedWalletId,
+            chain,
+            txHash,
+          },
+        },
+      });
+    }
     linkMetamaskPayment({
       variables: {
         input: {

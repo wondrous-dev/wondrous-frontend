@@ -19,28 +19,38 @@ import {
   DISCONNECT_DISCORD_ROLE_TO_ORG_ROLE,
   CONNECT_DISCORD_ROLE_TO_ORG_ROLE,
   IMPORT_DISCORD_ROLE_AS_ORG_ROLE,
+  DISCONNECT_DISCORD_ROLE_TO_POD_ROLE,
+  CONNECT_DISCORD_ROLE_TO_POD_ROLE,
+  IMPORT_DISCORD_ROLE_AS_POD_ROLE,
 } from 'graphql/mutations/integration';
 
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
+import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { ErrorText } from 'components/Common';
+import SettingsWrapper from 'components/Common/SidebarSettings';
+import RolePill from 'components/Common/RolePill';
+import AndroidSwitch from 'components/Common/AndroidSwitch';
+import HeaderBlock from 'components/Settings/headerBlock';
 import CloseModalIcon from 'components/Icons/closeModal';
+import UserCheckIcon from 'components/Icons/userCheckIcon';
+import RoleLockIcon from 'components/Icons/rolesLock.svg';
+import { DiscordIcon } from 'components/Icons/discord';
+
+import { TOKEN_GATING_CONDITION_TYPE } from 'utils/constants';
+import palette from 'theme/palette';
+
 import styles, {
   CategoryHeader,
   CategoryRow,
   InterestButton,
   StyledDialogContent,
 } from 'components/Common/UserInterestModal/styles';
-
-import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/CreateEntity/styles';
-import { ErrorText } from 'components/Common';
-import SettingsWrapper from 'components/Common/SidebarSettings';
-import { TOKEN_GATING_CONDITION_TYPE } from 'utils/constants';
-import { Grid, Typography } from '@mui/material';
-
-import RoleLockIcon from '../../Icons/rolesLock.svg';
 import {
   Box,
   CreateRole,
@@ -65,11 +75,11 @@ import {
   ImportDiscordRoleButton,
   DiscordRoleModal,
   DiscordElementWrapper,
+  RoleAccordion,
+  PermissionTitleLabel,
+  RolePermissionsList,
 } from './styles';
-import Switch from '../../Common/Switch';
-import Accordion from '../../Common/Accordion';
-import UserCheckIcon from '../../Icons/userCheckIcon';
-import { HeaderBlock } from '../headerBlock';
+import DeleteRoleConfirmationModal from './DeleteRoleConfirmationModal';
 
 type Props = {
   orgId: any;
@@ -82,11 +92,11 @@ type Props = {
   }>;
   toast: { show: boolean; message: string };
   onCreateNewRole: (name: string, permissions: string[]) => any;
-  onDeleteRole: (role: Role) => any;
+  onDeleteRole: (role: Role, callback?: () => void) => any;
   onPermissionsChange: (role: Role, permissions: string[]) => any;
   onToastClose: () => any;
-  getOrgDiscordRoles?: () => any;
-  orgDiscordConfigData?: any;
+  getDiscordRoles?: () => any;
+  discordConfigData?: any;
   allDiscordRolesData?: any;
 };
 
@@ -100,20 +110,31 @@ function Roles({
   toast,
   onToastClose,
   permissons,
-  orgDiscordConfigData,
+  discordConfigData,
   allDiscordRolesData,
-  getOrgDiscordRoles,
+  getDiscordRoles,
 }: Props) {
   const router = useRouter();
 
   const [newRoleName, setNewRoleName] = useState('');
   const [newRolePermissionsExpanded, setNewRolePermissionsExpanded] = useState(false);
   const [newRolePermissions, setNewRolePermissions] = useState([]);
+
   const [tokenGatedRoleModalOpen, setTokenGatedRoleModalOpen] = useState(false);
   const [discordRoleModalOpen, setDiscordRoleModalOpen] = useState(false);
   const [discordRoleImportModalOpen, setDiscordRoleImportModalOpen] = useState(false);
+  const [roleDeleteConfirmationModalOpen, setRoleDeleteConfirmationModalOpen] = useState(false);
+
   const [selectedRoleForTokenGate, setSelectedRoleForTokenGate] = useState(null);
   const [selectedRoleForDiscord, setSelectedRoleForDiscord] = useState(null);
+  const [selectedRoleForDeletion, setSelectedRoleForDeletion] = useState(null);
+
+  useEffect(() => {
+    if (!roleDeleteConfirmationModalOpen) {
+      setSelectedRoleForDeletion(null);
+    }
+  }, [roleDeleteConfirmationModalOpen]);
+
   // Creates new role
   function handleCreateNewRoleClick() {
     onCreateNewRole(newRoleName, newRolePermissions);
@@ -153,10 +174,23 @@ function Roles({
       setNewRolePermissionsExpanded(false);
     }
   };
+
+  const handleDeleteRoleButtonClick = (role: Role) => {
+    setSelectedRoleForDeletion(role);
+    setRoleDeleteConfirmationModalOpen(true);
+  };
+
+  const handleRoleDeletion = () => {
+    onDeleteRole(selectedRoleForDeletion, () => {
+      setRoleDeleteConfirmationModalOpen(false);
+    });
+  };
+
   const handleCloseModal = () => {
     setTokenGatedRoleModalOpen(false);
     setDiscordRoleModalOpen(false);
     setDiscordRoleImportModalOpen(false);
+    setRoleDeleteConfirmationModalOpen(false);
   };
 
   return (
@@ -175,25 +209,31 @@ function Roles({
         podId={podId}
         selectedRoleForTokenGate={selectedRoleForTokenGate}
       />
+      <DeleteRoleConfirmationModal
+        isOpen={roleDeleteConfirmationModalOpen}
+        handleClose={handleCloseModal}
+        handleDeleteRole={handleRoleDeletion}
+        roleToDelete={selectedRoleForDeletion}
+      />
 
-      {!podId && (
+      {discordRoleImportModalOpen && (
         <DiscordRoleSelectModal
           open={discordRoleImportModalOpen}
           allDiscordRolesData={allDiscordRolesData}
           orgId={orgId}
           podId={podId}
           onClose={handleCloseModal}
-          getOrgDiscordRoles={getOrgDiscordRoles}
+          getDiscordRoles={getDiscordRoles}
         />
       )}
-      {!podId && (
+      {discordRoleModalOpen && (
         <DiscordRoleSelectionModal
           open={discordRoleModalOpen}
           handleClose={handleCloseModal}
           orgId={orgId}
           podId={podId}
           selectedRoleForDiscord={selectedRoleForDiscord}
-          getOrgDiscordRoles={getOrgDiscordRoles}
+          getDiscordRoles={getDiscordRoles}
           allDiscordRolesData={allDiscordRolesData}
         />
       )}
@@ -209,107 +249,135 @@ function Roles({
             <LabelBlock>Create a new role</LabelBlock>
 
             <CreateRole>
-              <RoleNameInput value={newRoleName} onChange={handleRoleNameChange} />
+              <RoleNameInput placeholder="Create a new role" value={newRoleName} onChange={handleRoleNameChange} />
               <CreateRoleButton onClick={handleCreateNewRoleClick} disabled={!newRoleName} highlighted={!!newRoleName}>
                 Create role
               </CreateRoleButton>
             </CreateRole>
           </RoleNameBlock>
         </RolesInputsBlock>
-        <Accordion
+        <RoleAccordion
           title="Select permissions"
           disabled={!newRoleName}
           expanded={newRolePermissionsExpanded}
           onChange={(e, expanded) => setNewRolePermissionsExpanded(expanded)}
         >
           <Permissions>
-            {permissons.map((item) => (
-              <Permission key={item.permission}>
-                <div>
-                  <PermissionTitle>{item.title}</PermissionTitle>
-                  <PermissionSubtitle>{item.subTitle}</PermissionSubtitle>
-                </div>
-                <Switch
-                  size="medium"
-                  checked={newRolePermissions.includes(item.permission)}
-                  onChange={(e) => handleNewRolePermissionChange(item.permission, e.currentTarget.checked)}
-                />
-              </Permission>
-            ))}
+            <RolePermissionsList>
+              {permissons.map((item, idx) => {
+                const arePermissionsLengthEven = permissons.length % 2 === 0;
+                const showBorder = arePermissionsLengthEven
+                  ? idx !== permissons.length - 1 && idx !== permissons.length - 2
+                  : idx !== permissons.length - 1;
+
+                return (
+                  <Permission key={item.permission} showBorder={showBorder}>
+                    <div>
+                      <PermissionTitle>{item.title}</PermissionTitle>
+                      <PermissionSubtitle>{item.subTitle}</PermissionSubtitle>
+                    </div>
+                    <AndroidSwitch
+                      size="medium"
+                      checked={newRolePermissions.includes(item.permission)}
+                      onChange={(e) => handleNewRolePermissionChange(item.permission, e.currentTarget.checked)}
+                    />
+                  </Permission>
+                );
+              })}
+            </RolePermissionsList>
           </Permissions>
-        </Accordion>
-        {!podId && !orgDiscordConfigData?.length && (
+        </RoleAccordion>
+        {!discordConfigData?.length && (
           <ImportDiscordRoleButton
             onClick={() => {
-              router.push(`/organization/settings/${orgId}/notifications`);
+              if (podId) {
+                router.push(`/pod/settings/${podId}/notifications`);
+              } else if (orgId) {
+                router.push(`/organization/settings/${orgId}/notifications`);
+              }
             }}
           >
             Connect your Discord server to import roles
           </ImportDiscordRoleButton>
         )}
-        {!podId && !!orgDiscordConfigData?.length && (
+        {!!discordConfigData?.length && (
           <ImportDiscordRoleButton
             onClick={() => {
               setDiscordRoleImportModalOpen(true);
             }}
           >
+            <DiscordIcon fill={palette.highlightBlue} />
             Import Roles from Discord
           </ImportDiscordRoleButton>
         )}
-        {roles.length ? <LabelBlock mt={80}>{roles.length} Existing roles</LabelBlock> : null}
 
-        {roles.map(
-          (
-            orgRole // this isn't org role, i think it's both
-          ) => (
-            <Box key={orgRole.id} mt={22}>
-              <Accordion
-                title={
-                  <TitleLockIconWrapper>
-                    <p>{orgRole.name}</p>
-                    {orgRole.tokenGatingCondition ? <RoleLockIcon /> : null}
-                  </TitleLockIconWrapper>
-                }
-              >
-                <Permissions>
-                  <TokenGatingOnRoleDisplay
-                    tokenGatingCondition={orgRole.tokenGatingCondition}
-                    setTokenGatedRoleModalOpen={setTokenGatedRoleModalOpen}
-                    role={orgRole}
-                    setSelectedRoleForTokenGate={setSelectedRoleForTokenGate}
-                  />
-                  {!podId && (
+        {roles.length ? (
+          <LabelBlock pt={28} sx={{ borderTop: `1px solid ${palette.black92}` }}>
+            {roles.length} Existing roles
+          </LabelBlock>
+        ) : null}
+
+        <Grid sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {roles.map(
+            (
+              orgRole // this isn't org role, i think it's both
+            ) => (
+              <Box key={orgRole.id}>
+                <RoleAccordion
+                  title={
+                    <TitleLockIconWrapper>
+                      <RolePill roleName={orgRole.name} />
+                      {orgRole.tokenGatingCondition ? <RoleLockIcon /> : null}
+                    </TitleLockIconWrapper>
+                  }
+                >
+                  <Permissions>
+                    <TokenGatingOnRoleDisplay
+                      tokenGatingCondition={orgRole.tokenGatingCondition}
+                      setTokenGatedRoleModalOpen={setTokenGatedRoleModalOpen}
+                      role={orgRole}
+                      setSelectedRoleForTokenGate={setSelectedRoleForTokenGate}
+                    />
                     <DiscordOnRoleDisplay
                       discordRolesInfo={orgRole.discordRolesInfo}
                       setDiscordRoleModalOpen={setDiscordRoleModalOpen}
                       role={orgRole}
                       setSelectedRoleForDiscord={setSelectedRoleForDiscord}
-                      orgDiscordConfigData={orgDiscordConfigData}
+                      discordConfigData={discordConfigData}
                     />
-                  )}
-
-                  {permissons.map((item) => (
-                    <Permission key={item.permission}>
-                      <div>
-                        <PermissionTitle>{item.title}</PermissionTitle>
-                        <PermissionSubtitle>{item.subTitle}</PermissionSubtitle>
-                      </div>
-                      <Switch
-                        size="medium"
-                        color="secondary"
-                        checked={orgRole.permissions.includes(item.permission)}
-                        onChange={(e) => handleRolePermissionChange(orgRole, item.permission, e.currentTarget.checked)}
-                      />
-                    </Permission>
-                  ))}
+                    <RolePermissionsList>
+                      {permissons.map((item, idx) => {
+                        const arePermissionsLengthEven = permissons.length % 2 === 0;
+                        const showBorder = arePermissionsLengthEven
+                          ? idx !== permissons.length - 1 && idx !== permissons.length - 2
+                          : idx !== permissons.length - 1;
+                        return (
+                          <Permission key={item.permission} showBorder={showBorder}>
+                            <div>
+                              <PermissionTitle>{item.title}</PermissionTitle>
+                              <PermissionSubtitle>{item.subTitle}</PermissionSubtitle>
+                            </div>
+                            <AndroidSwitch
+                              size="medium"
+                              color="secondary"
+                              checked={orgRole.permissions.includes(item.permission)}
+                              onChange={(e) =>
+                                handleRolePermissionChange(orgRole, item.permission, e.currentTarget.checked)
+                              }
+                            />
+                          </Permission>
+                        );
+                      })}
+                    </RolePermissionsList>
+                  </Permissions>
                   <PermissionFooter>
-                    <DeleteButton onClick={() => onDeleteRole(orgRole)}>Delete role</DeleteButton>
+                    <DeleteButton onClick={() => handleDeleteRoleButtonClick(orgRole)}>Delete role</DeleteButton>
                   </PermissionFooter>
-                </Permissions>
-              </Accordion>
-            </Box>
-          )
-        )}
+                </RoleAccordion>
+              </Box>
+            )
+          )}
+        </Grid>
       </RolesContainer>
     </SettingsWrapper>
   );
@@ -326,11 +394,15 @@ function TokenGatingOnRoleDisplay(props) {
       <TitleLockIconWrapper>
         {tokenGatingCondition ? (
           <>
-            <PermissionTitle>Active Token Gate: {tokenGatingCondition?.name}</PermissionTitle>
+            <PermissionTitle>
+              Active Token Gate: <PermissionTitleLabel>{tokenGatingCondition?.name}</PermissionTitleLabel>
+            </PermissionTitle>
             <RoleLockIcon />
           </>
         ) : (
-          <PermissionTitle>Token Gating: Inactive</PermissionTitle>
+          <PermissionTitle>
+            Token Gating: <PermissionTitleLabel isInactive>Inactive</PermissionTitleLabel>
+          </PermissionTitle>
         )}
       </TitleLockIconWrapper>
       <TokenGatingButton onClick={handleEditClick} highlighted>
@@ -341,21 +413,25 @@ function TokenGatingOnRoleDisplay(props) {
 }
 
 function DiscordOnRoleDisplay(props) {
-  const { discordRolesInfo, setDiscordRoleModalOpen, role, setSelectedRoleForDiscord, orgDiscordConfigData } = props;
+  const { discordRolesInfo, setDiscordRoleModalOpen, role, setSelectedRoleForDiscord, discordConfigData } = props;
   const handleEditClick = () => {
     setSelectedRoleForDiscord(role);
     setDiscordRoleModalOpen(true);
   };
-  if (!orgDiscordConfigData?.length) {
+  if (!discordConfigData?.length) {
     return <></>;
   }
   return (
     <RoleTokenGatingWrapper>
       <TitleLockIconWrapper>
         {discordRolesInfo && discordRolesInfo.length > 0 ? (
-          <PermissionTitle>Connected to discord Role: {discordRolesInfo[0]?.name}</PermissionTitle>
+          <PermissionTitle>
+            Connected to discord Role: <PermissionTitleLabel>{discordRolesInfo[0]?.name}</PermissionTitleLabel>
+          </PermissionTitle>
         ) : (
-          <PermissionTitle>Discord Role Connected: None</PermissionTitle>
+          <PermissionTitle>
+            Discord Role Connected: <PermissionTitleLabel isNone>None</PermissionTitleLabel>
+          </PermissionTitle>
         )}
       </TitleLockIconWrapper>
 
@@ -367,11 +443,12 @@ function DiscordOnRoleDisplay(props) {
 }
 
 function DiscordRoleSelectionModal(props) {
+  // for connecting single discord role to wonder role
   const router = useRouter();
-  const { open, handleClose, orgId, podId, selectedRoleForDiscord, getOrgDiscordRoles, allDiscordRolesData } = props;
+  const { open, handleClose, orgId, podId, selectedRoleForDiscord, getDiscordRoles, allDiscordRolesData } = props;
   useEffect(() => {
     if (open) {
-      getOrgDiscordRoles();
+      getDiscordRoles();
     }
   }, [open]);
 
@@ -390,9 +467,9 @@ function DiscordRoleSelectionModal(props) {
 
       if (selectedRoleForDiscord?.__typename === 'PodRole') {
         await apollo.mutate({
-          mutation: DISCONNECT_DISCORD_ROLE_TO_ORG_ROLE,
+          mutation: DISCONNECT_DISCORD_ROLE_TO_POD_ROLE,
           variables: {
-            orgRoleId: selectedRoleForDiscord?.id,
+            podRoleId: selectedRoleForDiscord?.id,
             discordRoleId: '',
           },
           refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
@@ -420,13 +497,13 @@ function DiscordRoleSelectionModal(props) {
 
       if (selectedRoleForDiscord?.__typename === 'PodRole') {
         await apollo.mutate({
-          mutation: CONNECT_DISCORD_ROLE_TO_ORG_ROLE,
+          mutation: CONNECT_DISCORD_ROLE_TO_POD_ROLE,
           variables: {
-            orgRoleId: selectedRoleForDiscord?.id,
+            podRoleId: selectedRoleForDiscord?.id,
             discordRoleId,
             guildId,
           },
-          // refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD]
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
       }
     } catch (e) {
@@ -455,7 +532,7 @@ function DiscordRoleSelectionModal(props) {
           allDiscordRolesData.map((discordRoleData, idx) => (
             <Grid display="flex" gap="10px" key={idx} direction="column">
               <Typography fontSize="18px" color="white" fontWeight={600}>
-                {discordRoleData?.channelInfo?.guildName}
+                {discordRoleData?.guildInfo?.guildName}
               </Typography>
               <Box>
                 {discordRoleData?.roles?.map((role) => (
@@ -628,13 +705,14 @@ function TokenGateRoleConfigModal(props) {
 }
 
 export function DiscordRoleSelectModal(props) {
-  const { open, onClose, allDiscordRolesData, getOrgDiscordRoles, orgId, podId } = props;
+  // for importing multiple discord roles into pod/org
+  const { open, onClose, allDiscordRolesData, getDiscordRoles, orgId, podId } = props;
   const [selectedDiscordRoles, setSelectedDiscordRoles] = useState({});
   const [importRoleError, setImportRoleError] = useState(null);
 
   useEffect(() => {
     if (open) {
-      getOrgDiscordRoles();
+      getDiscordRoles();
     }
   }, [open]);
 
@@ -659,19 +737,35 @@ export function DiscordRoleSelectModal(props) {
       return;
     }
     try {
-      await apollo.mutate({
-        mutation: IMPORT_DISCORD_ROLE_AS_ORG_ROLE,
-        variables: {
-          input: {
-            orgId,
-            discordRoleGuildIds: Object.keys(selectedDiscordRoles).map((discordRoleId) => ({
-              roleId: discordRoleId,
-              guildId: selectedDiscordRoles[discordRoleId].guildId,
-            })),
+      if (podId) {
+        await apollo.mutate({
+          mutation: IMPORT_DISCORD_ROLE_AS_POD_ROLE,
+          variables: {
+            input: {
+              podId,
+              discordRoleGuildIds: Object.keys(selectedDiscordRoles).map((discordRoleId) => ({
+                roleId: discordRoleId,
+                guildId: selectedDiscordRoles[discordRoleId].guildId,
+              })),
+            },
           },
-        },
-        refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
-      });
+          refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
+        });
+      } else if (orgId) {
+        await apollo.mutate({
+          mutation: IMPORT_DISCORD_ROLE_AS_ORG_ROLE,
+          variables: {
+            input: {
+              orgId,
+              discordRoleGuildIds: Object.keys(selectedDiscordRoles).map((discordRoleId) => ({
+                roleId: discordRoleId,
+                guildId: selectedDiscordRoles[discordRoleId].guildId,
+              })),
+            },
+          },
+          refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
+        });
+      }
     } catch (err) {
       if (err?.graphQLErrors && err?.graphQLErrors.length > 0) {
         if (err?.graphQLErrors[0].extensions?.errorCode === 'role_already_exist') {
@@ -714,7 +808,7 @@ export function DiscordRoleSelectModal(props) {
             allDiscordRolesData.map((discordRole) => (
               <Grid display="flex" gap="10px" direction="column" width="100%">
                 <Typography fontWeight="600" fontSize="18px" color="white">
-                  {discordRole?.channelInfo?.guildName}
+                  {discordRole?.guildInfo?.guildName}
                 </Typography>
                 <CategoryRow>
                   {discordRole?.roles?.map((role) => (

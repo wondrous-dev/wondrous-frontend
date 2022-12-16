@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography, Tab } from '@mui/material';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { cutString } from 'utils/helpers';
-import isEqual from 'lodash/isEqual';
 import {
   PodNameTypography,
   PaymentModal,
@@ -32,9 +30,6 @@ import {
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { TableCellText } from './styles';
-import { DAOIcon } from '../../Icons/dao';
-import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { BatchRetroactivePayment } from './BatchRetroactivePayment';
 
 enum ViewType {
@@ -168,6 +163,7 @@ export function RetroactivePayoutModal(props) {
                               useNextImage={false}
                               src={contributor?.assigneeProfilePicture}
                               style={imageStyle}
+                              alt="Assignee profile picture"
                             />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
@@ -205,6 +201,7 @@ export function RetroactivePayoutModal(props) {
                                 width: '24px',
                                 height: '24px',
                               }}
+                              alt="Contributor icon"
                             />
                           </IconContainer>
                           <CompensationAmount>

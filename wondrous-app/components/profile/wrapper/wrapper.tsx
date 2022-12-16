@@ -1,3 +1,4 @@
+import React from 'react';
 import { DiscordIcon } from 'components/Icons/discord';
 import OpenSeaIcon from 'components/Icons/openSea';
 import TwitterPurpleIcon from 'components/Icons/twitterPurple';
@@ -50,7 +51,7 @@ function Wrapper(props: IWrapperProps) {
   const loggedInUser = useMe();
   const { children, userProfileData = {} } = props;
   const { links } = userProfileData;
-  const { mainLink, social, websites } = parseLinks(links);
+  const { mainLink, social } = parseLinks(links);
   const { firstName, lastName, username, bio, additionalInfo = {}, profilePicture } = userProfileData;
   const { orgCount, podCount } = additionalInfo;
   const viewingSelf = userProfileData?.id === loggedInUser?.id;
@@ -65,7 +66,7 @@ function Wrapper(props: IWrapperProps) {
   };
 
   const profileImageComponent = profilePicture ? (
-    <SafeImage src={profilePicture} style={style as React.CSSProperties} useNextImage={false} />
+    <SafeImage src={profilePicture} style={style as React.CSSProperties} useNextImage={false} alt="Profile picture" />
   ) : (
     <DefaultUserImage style={style} />
   );
@@ -104,7 +105,7 @@ function Wrapper(props: IWrapperProps) {
               </HeaderOrgPodCount>
               <HeaderOrgPodCount>
                 <HeaderOrgCount>{orgCount}</HeaderOrgCount>
-                <HeaderOrgCountText>DAOs</HeaderOrgCountText>
+                <HeaderOrgCountText>Organizations</HeaderOrgCountText>
               </HeaderOrgPodCount>
               {mainLink?.url && (
                 <HeaderActivityLink href={mainLink.url} target="_blank">

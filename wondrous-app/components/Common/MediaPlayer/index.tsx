@@ -18,6 +18,7 @@ export function TaskMedia(props) {
         }}
         useNextImage={false}
         src={slug || uploadSlug}
+        alt="Task image"
       />
     ),
     video: (

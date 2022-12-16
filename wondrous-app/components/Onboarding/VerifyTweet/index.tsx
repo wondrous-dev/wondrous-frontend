@@ -86,11 +86,11 @@ function VerifyTweet({ firstOrg, firstPod }) {
         shallow: true,
       });
     } else if (firstOrg) {
-      router.push(`/organization/${firstOrg.username}/boards`, undefined, {
+      router.push(`/organization/${firstOrg.username}/home`, undefined, {
         shallow: true,
       });
     } else {
-      router.push('/explore', undefined, {
+      router.push('/mission-control', undefined, {
         shallow: true,
       });
     }

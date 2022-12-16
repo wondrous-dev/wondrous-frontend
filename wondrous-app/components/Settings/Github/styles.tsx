@@ -29,7 +29,6 @@ export const GithubLinkText = styled(Typography)`
   && {
     font-weight: 500;
     font-size: 13px;
-    line-height: 0;
     ${({ theme }) => `
       color: ${theme.palette.white}
     `}

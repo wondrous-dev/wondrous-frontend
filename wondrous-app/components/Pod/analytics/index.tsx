@@ -27,8 +27,7 @@ import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
-import { BountySignifier, PodName, PodWrapper } from 'components/Common/Task/styles';
-import PodIcon from 'components/Icons/podIcon';
+import { BountySignifier } from 'components/Common/Task/styles';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
@@ -79,9 +78,7 @@ function UserRow({ contributorTask }) {
   return (
     <ContributorDiv>
       <TaskViewModal
-        disableEnforceFocus
         open={openModal}
-        shouldFocusAfterRender={false}
         handleClose={() => {
           const style = document.body.getAttribute('style');
           const top = style.match(/(top: -)(.*?)(?=px)/);
@@ -111,6 +108,7 @@ function UserRow({ contributorTask }) {
                   useNextImage={false}
                   src={contributorTask?.assigneeProfilePicture}
                   style={UserRowPictureStyles}
+                  alt="Assignee profile picture"
                 />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
@@ -222,6 +220,7 @@ function UserRow({ contributorTask }) {
                           width: '16px',
                           height: '16px',
                         }}
+                        alt="USDC logo"
                       />
                       <RewardAmount
                         style={{
@@ -442,6 +441,7 @@ function Analytics(props) {
                     height: '30px',
                     borderRadius: '15px',
                   }}
+                  alt="Profile picture"
                 />
               )}
               <OptionTypography>{option?.label}</OptionTypography>

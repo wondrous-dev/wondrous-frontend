@@ -2,13 +2,14 @@ import { BoardsCardMedia } from 'components/Common/Boards/styles';
 import { SafeImage } from 'components/Common/Image';
 import { useRouter } from 'next/router';
 import { TaskAction, TaskActionAmount } from 'components/Common/Task/styles';
-import { OrgProfilePicture, PodProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { RichTextViewer } from 'components/RichText';
 import { IconsList, ICON_TYPES } from 'components/ListViewAdmin/ColumnEntry';
 import Tooltip from 'components/Tooltip';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RequestDeclineButton } from 'components/organization/members/styles';
 import { SubmissionItemStatus } from 'components/Common/TaskSubmission/submissionItem';
+import PodIconName from 'components/Common/PodIconName';
 import {
   SubmissionCardWrapper,
   SubmissionCardHeader,
@@ -30,7 +31,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
       shallow: true,
     });
 
-  const goToOrg = (orgId) => router.push(`/org/${orgId}/boards`, undefined, { shallow: true });
+  const goToOrg = (orgId) => router.push(`/org/${orgId}/home`, undefined, { shallow: true });
 
   const editSubmission = (taskId, submissionId) => handleCardClick({ id: taskId }, `&taskSubmissionId=${submissionId}`);
 
@@ -52,9 +53,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                       }}
                     />
                   </OrgButton>
-                  {task?.podName ? (
-                    <PodProfilePicture goToPod={goToPod} podId={task?.podId} podColor={task?.podColor} />
-                  ) : null}
+                  {task?.podName ? <PodIconName onClick={goToPod} name={task?.podName} color={task?.podColor} /> : null}
                   <SubmissionIcon>
                     <SubmissionItemStatus hideTitle submission={task} />
                   </SubmissionIcon>
@@ -63,7 +62,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                 <SubmissionType>Your bounty submission</SubmissionType>
               </SubmissionCardHeader>
               <SubmissionCardBody>
-                <SubmissionDescription>
+                <SubmissionDescription as="div">
                   <RichTextViewer text={task.description} />
                 </SubmissionDescription>
                 {task?.media?.[0] ? (
@@ -72,6 +71,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                       useNextImage={false}
                       style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
                       src={task?.media[0].slug}
+                      alt="Task image"
                     />
                   </BoardsCardMedia>
                 ) : null}

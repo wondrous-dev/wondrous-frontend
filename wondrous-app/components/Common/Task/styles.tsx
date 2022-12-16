@@ -1,11 +1,14 @@
-import { MenuItem, Modal, Typography } from '@mui/material';
-import ProposalIcon from 'components/Icons/proposalIcon';
 import styled from 'styled-components';
+import MenuItem from '@mui/material/MenuItem';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+
 import palette from 'theme/palette';
 
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-import { BaseCard } from '../card';
-import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
+import ProposalIcon from 'components/Icons/proposalIcon';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { BaseCard } from 'components/Common/card';
+import { GradientMidnightDiagonal, GradientMidnightVertical } from 'components/Common/gradients';
 
 export const TaskInner = styled.div`
   display: flex;
@@ -44,7 +47,7 @@ export const TaskHeader = styled.div`
   display: flex;
   width: 100%;
   text-align: left;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
 `;
 
@@ -52,12 +55,7 @@ export const TaskHeaderIconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  & > * {
-    margin-right: 4px;
-  }
-  & > *:last-child {
-    margin-right: 0;
-  }
+  gap: 4px;
 `;
 
 export const TaskContent = styled.div`
@@ -149,6 +147,12 @@ export const PodWrapper = styled.div`
   align-items: center;
   margin-right: 6px;
   margin-top: 12px;
+  background: ${palette.grey99};
+  border-radius: 64px;
+  padding: 2px 8px 2px 2px;
+  max-width: fit-content;
+  gap: 4px;
+  height: max-content;
 `;
 
 export const BountySignifier = styled.div`
@@ -164,11 +168,10 @@ export const BountySignifier = styled.div`
 
 export const PodName = styled(Typography)`
   && {
-    background: #363636;
     font-size: 13px;
     color: ${({ theme }) => theme.palette.white};
-    padding: 1px 8px;
     border-radius: 190px;
+    font-weight: 500;
   }
 `;
 
@@ -380,7 +383,7 @@ export const ActionButton = styled(CreateFormPreviewButton)`
     gap: 4px;
     height: auto;
     z-index: 10;
-    border: 1px solid transparent;
+    border: 0px solid transparent;
     :hover {
       background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
     }
@@ -401,14 +404,22 @@ export const ActionButton = styled(CreateFormPreviewButton)`
       background: transparent;
     }
   }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex: 1;
+    width: 100%;
+
+    && {
+      height: 42px;
+      justify-content: center;
+    }
+  }
 `;
 
-export const ProposalCardWrapper = styled.div`
+export const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   color: ${({ theme }) => theme.palette.white};
   padding: 14px;
-  margin: ${(props) => (props.wrapped ? '0' : '1em 0 0 0')};
   border-radius: 6px;
   background: ${palette.grey900};
   gap: 14px;
@@ -517,12 +528,12 @@ export const LoadMore = styled.div`
 export const TaskActionMenu = styled.div`
   display: flex;
   justify-content: center;
-  height: 24px;
+  height: 28px;
   width: max-content;
   z-index: 100;
   align-items: center;
-  visibility: hidden;
-  ${ProposalCardWrapper}:hover & {
-    visibility: visible;
+  display: none;
+  ${CardContent}:hover & {
+    display: block;
   }
 `;

@@ -1,8 +1,8 @@
 import styled, { keyframes } from 'styled-components';
-import palette from 'theme/palette';
-import { ProposalCardWrapper } from 'components/Common/Task/styles';
 
-export const SkeletonCardWrapper = styled(ProposalCardWrapper)`
+import palette from 'theme/palette';
+
+export const SkeletonCardWrapper = styled.div`
   && {
     margin: 10px;
     pointer-events: none;

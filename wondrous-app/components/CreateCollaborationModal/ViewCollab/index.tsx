@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useSteps } from 'utils/hooks';
 import { ViewButton } from './styles';
 
-const Actions = ({ type, onClose, onSubmit, declineLabel, acceptLabel }) => (
+export const Actions = ({ type, onClose, onSubmit, declineLabel, acceptLabel }) => (
   <Grid container gap="18px">
     <Button color="grey" onClick={onClose}>
       {declineLabel}
@@ -29,13 +29,13 @@ const ViewCollabModal = ({ orgCollabRequest, type }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [declineOrgCollabRequest] = useMutation(DECLINE_ORG_COLLAB_REQUEST, {
-    refetchQueries: ['getOrgCollabRequestForRecipient'],
+    refetchQueries: ['getOrgCollabRequestForRecipient', 'getOrgInviteCollabCount'],
   });
 
   const isActionTypeModal = type === MODAL_TYPE.ACTION;
 
   const [approveOrgCollabRequest, { data }] = useMutation(APPROVE_ORG_COLLAB_REQUEST, {
-    refetchQueries: ['getUserPermissionContext'],
+    refetchQueries: ['getUserPermissionContext', 'getOrgActiveCollabCount'],
   });
 
   useEffect(() => {

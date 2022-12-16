@@ -197,21 +197,6 @@ export const Label = styled(Typography)`
   }
 `;
 
-export const RemovePictureBtn = styled.button`
-  display: flex;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 15px;
-  color: #cb3340;
-  margin-top: 11px;
-  margin-bottom: 41px;
-  text-decoration: underline;
-  background: none;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-`;
-
 export const ActionButtons = styled.div`
   width: 100%;
   justify-content: end;

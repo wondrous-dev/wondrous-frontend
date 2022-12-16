@@ -22,7 +22,6 @@ export const OverviewComponent = styled.section`
 
 export const HeaderImageWrapper = styled.div`
   width: 100%;
-  height: 100px;
   overflow: hidden;
   position: relative;
 `;
@@ -95,7 +94,6 @@ export const HeaderTitleIcon = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  margin-bottom: 8px;
   & > * {
     margin-left: 10px;
     :first-child {
@@ -108,11 +106,10 @@ export const HeaderTitle = styled(Typography)`
   && {
     font-weight: 500;
     font-size: 26px;
-    line-height: 36px;
     display: flex;
     align-items: center;
     color: #ffffff;
-    margin-left: 20px;
+    margin-left: 10px;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
@@ -125,7 +122,7 @@ export const HeaderTag = styled(Typography)`
     font-weight: 400;
     font-size: 18px;
     line-height: 18px;
-    margin-left: 20px;
+    margin-left: 12px;
   }
 `;
 
@@ -309,15 +306,13 @@ export function HeaderSettingsLockedButton(props) {
   );
 }
 
-export const HeaderText = styled(Typography)`
-  && {
-    font-size: 15px;
-    line-height: 22px;
-    letter-spacing: 0.01em;
-    color: #ffffff;
-    margin-bottom: 8px;
-    margin-top: 24px;
-  }
+export const HeaderText = styled.div`
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  margin-bottom: 8px;
+  margin-top: 24px;
 `;
 
 export const HeaderActivity = styled.div`

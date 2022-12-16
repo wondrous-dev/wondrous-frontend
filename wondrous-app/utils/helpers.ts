@@ -64,6 +64,7 @@ export const getMentionArray = (content) => {
 };
 
 export const parseUserPermissionContext = (props) => {
+  // TODO add return type here
   const userPermissionsContext = props?.userPermissionsContext;
   if (!userPermissionsContext) return [];
   const podId = props?.podId;
@@ -176,3 +177,13 @@ export const deleteTaskFromCache = (cache, id, keys = []) => {
 };
 
 export const transformCategoryFormat = (categories) => categories && categories.map((item) => item?.name);
+
+export const removeUrlStart = (url) => {
+  if (!url) return '';
+  return url.replace(/http(s)?(:)?(\/\/)?|(\/\/)?(www\.)?/g, '');
+};
+
+export const CHAIN_REGEX = {
+  HARMONY: /^one[a-zA-Z0-9]{39}$/gm,
+  ETHEREUM: /^0x[a-zA-Z0-9]{40}$/gm,
+};

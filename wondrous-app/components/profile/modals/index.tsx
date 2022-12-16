@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import Modal from '@mui/material/Modal';
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
@@ -10,6 +10,7 @@ import { TaskModalBaseCard } from 'components/Common/Task/styles';
 import { useRouter } from 'next/router';
 import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
+import { useBoards } from 'utils/hooks';
 import { RichTextViewer } from 'components/RichText';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { MODAL_TABS_MAP } from 'utils/constants';
@@ -53,7 +54,7 @@ const PodItem = forwardRef((props: any, ref) => {
       }
     >
       <TabContainerText>{pod?.name}</TabContainerText>
-      <PodExplainerText>
+      <PodExplainerText as="div">
         <RichTextViewer text={pod?.description} />
       </PodExplainerText>
     </PodWrapper>
@@ -88,10 +89,9 @@ const UserItem = forwardRef((props: any, ref) => {
   );
 });
 
-export function MoreInfoModal(props) {
+function MoreInfoModal(props) {
   const { orgId, podId, showUsers, showPods, open, handleClose, name } = props;
-  const [displayUsers, setDisplayUsers] = useState(showUsers);
-  const [displayPods, setDisplayPods] = useState(showPods);
+  const { podBoard } = useBoards();
   const [hasMoreUsers, setHasMoreUsers] = useState(false);
   const [podList, setPodList] = useState([]);
   const [searchedUserList, setSearchedUserList] = useState([]);
@@ -102,8 +102,12 @@ export function MoreInfoModal(props) {
   const userListItemRef = useRef(null);
   const podsOverflowBoxRef = useRef(null);
   const podListItemRef = useRef(null);
-  const [activeTab, setActiveTab] = useState(MODAL_TABS_MAP.CONTRIBUTORS);
-  const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS);
+  const [activeTab, setActiveTab] = useState(null);
+  const displayUsers = activeTab === MODAL_TABS_MAP.CONTRIBUTORS;
+  const displayPods = activeTab === MODAL_TABS_MAP.PODS;
+  const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS, {
+    fetchPolicy: 'cache-and-network',
+  });
   const [userVirtualPaginationCount, setUserVirtualPaginationCount] = useState(5);
   const [podVirtualPaginationCount, setPodVirtualPaginationCount] = useState(5);
   const shouldMonitorUsersListRef = useRef(true);
@@ -220,11 +224,9 @@ export function MoreInfoModal(props) {
 
   useEffect(() => {
     if (showUsers && !displayUsers && !displayPods) {
-      setDisplayUsers(true);
       setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
     }
     if (showPods && !displayUsers && !displayPods) {
-      setDisplayPods(true);
       setActiveTab(MODAL_TABS_MAP.PODS);
     }
     if (orgId) {
@@ -295,8 +297,6 @@ export function MoreInfoModal(props) {
       open={open}
       onClose={() => {
         handleClose();
-        setDisplayUsers(false);
-        setDisplayPods(false);
         setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
       }}
     >
@@ -306,8 +306,6 @@ export function MoreInfoModal(props) {
           <CloseIconContainer
             onClick={() => {
               handleClose();
-              setDisplayUsers(false);
-              setDisplayPods(false);
               setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
             }}
           >
@@ -318,22 +316,21 @@ export function MoreInfoModal(props) {
           <StyledTabs value={activeTab} variant="fullWidth">
             <TabText
               onClick={() => {
-                setDisplayPods(false);
-                setDisplayUsers(true);
                 setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
               }}
             >
-              <StyledTab isActive={activeTab === MODAL_TABS_MAP.CONTRIBUTORS} label="Contributors" />
+              <StyledTab isActive={displayUsers} label="Contributors" />
             </TabText>
-            <TabText
-              onClick={() => {
-                setDisplayPods(true);
-                setDisplayUsers(false);
-                setActiveTab(MODAL_TABS_MAP.PODS);
-              }}
-            >
-              <StyledTab isActive={activeTab === MODAL_TABS_MAP.PODS} label="Pods" />{' '}
-            </TabText>
+            ;
+            {!podBoard && (
+              <TabText
+                onClick={() => {
+                  setActiveTab(MODAL_TABS_MAP.PODS);
+                }}
+              >
+                <StyledTab isActive={displayPods} label="Pods" />{' '}
+              </TabText>
+            )}
           </StyledTabs>
         </Container>
         <SearchBox>
@@ -392,3 +389,5 @@ export function MoreInfoModal(props) {
     </Modal>
   );
 }
+
+export default MoreInfoModal;

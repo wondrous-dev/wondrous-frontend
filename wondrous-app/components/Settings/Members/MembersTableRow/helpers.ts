@@ -54,7 +54,7 @@ export const getRoleEmoji = (role) => {
 export const getRoleColor = (role) => {
   // role is either the role object or rolename
   if (!role) {
-    return '';
+    return ROLE_COLORS_AND_EMOJIS[ROLES.NO_ROLE].color;
   }
   let correspondingRoleKey;
   if (typeof role === 'string') {

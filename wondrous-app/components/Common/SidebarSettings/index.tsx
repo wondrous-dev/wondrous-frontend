@@ -26,6 +26,7 @@ import RolesIcon from 'components/Icons/roles';
 import FileDownloadIcon from 'components/Icons/Sidebar/fileDownload.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import HexagonIcon from 'components/Icons/Sidebar/hexagon.svg';
+import LoginIcon from 'components/Icons/Sidebar/loginIcon.svg';
 import NotificationsIcon from 'components/Icons/Sidebar/notifications.svg';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import ReceiptIcon from 'components/Icons/Sidebar/receipt.svg';
@@ -56,6 +57,13 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     value: 'general',
     href: orgId ? `/${mainPath}/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
     page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: LoginIcon,
+    label: 'Log in Methods',
+    value: 'log-in-methods',
+    href: `/profile/login-methods`,
+    page: [SettingsPage.Profile],
   },
   {
     Icon: WrenchIcon,
@@ -117,8 +125,8 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     Icon: FileDownloadIcon,
     label: 'Task Import',
     value: 'import',
-    href: `/${mainPath}/settings/${orgId}/task-import`,
-    page: [SettingsPage.Org],
+    href: orgId ? `/${mainPath}/settings/${orgId}/task-import` : `/pod/settings/${podId}/task-import`,
+    page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: NotificationsIcon,
@@ -197,7 +205,7 @@ function SettingsWrapper(props) {
         shallow: true,
       });
     } else if (org) {
-      router.push(`/${mainPath}/${org?.username}/boards`, undefined, {
+      router.push(`/${mainPath}/${org?.username}/home`, undefined, {
         shallow: true,
       });
     }
@@ -206,8 +214,8 @@ function SettingsWrapper(props) {
   const settingsPageConfig = {
     [String(orgId)]: {
       page: SettingsPage.Org,
-      path: `/${mainPath}/${org?.username}/boards`,
-      label: 'DAO',
+      path: `/${mainPath}/${org?.username}/${org?.shared ? 'boards' : 'home'}`,
+      label: 'Org',
     },
     [String(podId)]: {
       page: SettingsPage.Pod,
@@ -247,7 +255,7 @@ function SettingsWrapper(props) {
                   const endHref = hrefSplit[hrefSplit.length - 1];
                   const active = endHref === endPathName;
                   return (
-                    <Link key={href} href={href} passHref>
+                    <Link key={href} href={href} passHref style={{ textDecoration: 'none' }}>
                       <Item key={label} Icon={Icon} isActive={active}>
                         {label}
                       </Item>

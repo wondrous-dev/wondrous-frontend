@@ -13,6 +13,18 @@ const Leaf: React.FC<{
     children = <strong>{children}</strong>;
   }
 
+  if (leaf.headingOne) {
+    children = <h1>{children}</h1>;
+  }
+
+  if (leaf.headingTwo) {
+    children = <h2>{children}</h2>;
+  }
+
+  if (leaf.headingThree) {
+    children = <h3>{children}</h3>;
+  }
+
   if (leaf.code) {
     children = <code>{children}</code>;
   }

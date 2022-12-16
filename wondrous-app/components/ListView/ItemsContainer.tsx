@@ -6,6 +6,7 @@ import {
   TASK_STATUS_DONE,
   ENTITIES_TYPES,
 } from 'utils/constants';
+import { taskHasPayment } from 'utils/board';
 
 import { ToDo, InProgress, Done, InReview } from 'components/Icons';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
@@ -15,7 +16,10 @@ import { LIMIT } from 'services/board';
 import Accordion from 'components/Common/ListViewAccordion';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import EmptyStateBoards from 'components/EmptyStateBoards';
-import { IconWrapper } from './styles';
+import { BountyIcon } from 'components/Common/BountyBoard/styles';
+import FlagIcon from 'components/Icons/flag';
+
+import { IconWrapper, ListViewItemWrapper } from './styles';
 import Item from './Item';
 
 const HEADER_ICONS = {
@@ -32,13 +36,69 @@ const LABELS_MAP = {
   [TASK_STATUS_DONE]: 'Done',
 };
 
-export default function ItemsContainer({ data, taskCount, fetchPerStatus, entityType, handleShowAll, ...props }) {
+const ENTITIES_LABELS_MAP = {
+  [ENTITIES_TYPES.TASK]: 'Tasks',
+  [ENTITIES_TYPES.MILESTONE]: 'Milestones',
+  [ENTITIES_TYPES.BOUNTY]: 'Bounties',
+};
+
+const ENTITIES_HEADER_ICONS = {
+  [ENTITIES_TYPES.MILESTONE]: () => (
+    <FlagIcon
+      stroke="url(#open0)"
+      secondStroke="url(#open1)"
+      style={{
+        width: '21px',
+        height: '21px',
+      }}
+    />
+  ),
+  [ENTITIES_TYPES.BOUNTY]: BountyIcon,
+};
+
+const DndWrapper = ({ disableDnd, id, index, children }) =>
+  disableDnd ? (
+    children
+  ) : (
+    <Draggable draggableId={id} index={index}>
+      {(provided, snapshot) => (
+        <ListViewItemWrapper
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          isDragging={snapshot.isDragging}
+        >
+          {children}
+        </ListViewItemWrapper>
+      )}
+    </Draggable>
+  );
+
+export default function ItemsContainer({
+  data,
+  taskCount = null,
+  entityType = ENTITIES_TYPES.TASK,
+  handleShowAll = null,
+  hasMore,
+  onLoadMore = null,
+  disableDnd = false,
+  enableInfiniteLoading = false,
+  dndPlaceholder = null,
+  highlighted,
+  ...props
+}) {
   const { status, tasks } = data;
+  const [editTask, setEditTask] = useState(false);
+  const [archiveTask, setArchiveTask] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(false);
+
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
+  const itemTitle = LABELS_MAP[status] || ENTITIES_LABELS_MAP[entityType] || '';
+  const Icon = HEADER_ICONS[status] || ENTITIES_HEADER_ICONS[entityType];
 
-  const itemTitle = LABELS_MAP[status] || '';
-
-  const Icon = HEADER_ICONS[status];
+  // onLoadMore is used for infinite loading
+  // handleShowAll is used to fetch entities per status on click
+  const loadMoreAction = () => (onLoadMore ? onLoadMore() : handleShowAll(status, taskCount));
 
   const HeaderAddons =
     status === TASK_STATUS_TODO ? (
@@ -64,7 +124,7 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
         onClose={() => setCreateTaskModalOpen(false)}
       >
         <CreateEntityModal
-          entityType={ENTITIES_TYPES.TASK}
+          entityType={entityType}
           handleClose={() => setCreateTaskModalOpen(false)}
           resetEntityType={() => {}}
           setEntityType={() => {}}
@@ -77,32 +137,23 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
         title={itemTitle}
         count={taskCount}
         headerAddons={HeaderAddons}
-        hasMore={taskCount > LIMIT && tasks.length <= LIMIT}
-        onShowMore={() => handleShowAll(status, taskCount)}
+        hasMore={hasMore || (taskCount > LIMIT && tasks.length <= LIMIT)}
+        onShowMore={loadMoreAction}
         showMoreTitle="Show all"
-        key={tasks}
+        enableInfiniteLoading={enableInfiniteLoading}
+        noGap
+        highlighted={highlighted}
       >
         {tasks?.length ? (
-          tasks.map((task, idx) => (
-            <Draggable key={task.id} draggableId={task.id} index={idx}>
-              {(provided, snapshot) => (
-                <div
-                  style={{
-                    width: '100%',
-                  }}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  ref={provided.innerRef}
-                  isDragging={snapshot.isDragging}
-                >
-                  <Item entityType={entityType} task={task} />
-                </div>
-              )}
-            </Draggable>
+          tasks.map((task, index) => (
+            <DndWrapper key={task.id} id={task.id} index={index} disableDnd={disableDnd}>
+              <Item entityType={entityType} task={task} isDragDisabled={disableDnd} />
+            </DndWrapper>
           ))
         ) : (
           <EmptyStateBoards hidePlaceholder status={status} />
         )}
+        {dndPlaceholder}
       </Accordion>
     </>
   );

@@ -63,7 +63,7 @@ function OnboardingWelcome({ updateUser, user }) {
         },
       });
     } else {
-      setError("Please enter a valid username with 3-15 alphanumeric characters with no '.'");
+      setError("Please enter a valid username with 3-25 alphanumeric characters with no '.'");
     }
   };
 
@@ -74,11 +74,7 @@ function OnboardingWelcome({ updateUser, user }) {
     </WalletConnected>
   ) : null;
 
-  const description = (
-    <div>
-      Earn crypto while contributoring to web3 projects. <br /> Let’s get your membership set up, it’ll take 2 minutes.
-    </div>
-  );
+  const description = <div>Let’s get your membership set up, it’ll take 1 minute.</div>;
 
   return (
     <OnboardingLayout

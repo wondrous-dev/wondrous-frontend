@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { MediaFragment } from 'graphql/fragments/media';
 import { OrgFragment, OrgInviteFragment } from '../fragments/org';
 
 export const GET_ORG_BY_ID = gql`
@@ -180,23 +181,57 @@ export const GET_ORG_PODS = gql`
       username
       description
       privacyLevel
-      headerPicture
       profilePicture
       thumbnailPicture
       createdBy
       createdAt
       orgId
-      tags
+      color
+    }
+  }
+`;
+
+export const GET_ORG_PODS_WITH_COUNT = gql`
+  query getOrgPods($orgId: String) {
+    getOrgPods(orgId: $orgId) {
+      id
+      name
+      username
+      description
+      privacyLevel
+      profilePicture
+      thumbnailPicture
+      createdBy
+      createdAt
+      orgId
       contributorCount
-      tasksCompletedCount
+      color
+    }
+  }
+`;
+
+export const GET_ORG_ARCHIVED_PODS = gql`
+  query getOrgArchivedPods($orgId: String) {
+    getOrgArchivedPods(orgId: $orgId) {
+      id
+      name
+      username
+      description
+      privacyLevel
+      profilePicture
+      thumbnailPicture
+      createdBy
+      createdAt
+      orgId
+      contributorCount
       color
     }
   }
 `;
 
 export const SEARCH_ORG_USERS = gql`
-  query searchOrgUsers($orgId: ID!, $searchString: String!, $limit: Int, $offset: Int) {
-    searchOrgUsers(orgId: $orgId, searchString: $searchString, limit: $limit, offset: $offset) {
+  query searchOrgUsers($orgIds: [ID], $searchString: String!, $limit: Int, $offset: Int) {
+    searchOrgUsers(orgIds: $orgIds, searchString: $searchString, limit: $limit, offset: $offset) {
       id
       username
       profilePicture
@@ -280,6 +315,7 @@ export const GET_TASKS_PER_TYPE = gql`
       taskCount
       proposalCount
       milestoneCount
+      grantCount
     }
   }
 `;
@@ -291,6 +327,7 @@ export const GET_TASKS_PER_TYPE_FOR_POD = gql`
       taskCount
       proposalCount
       milestoneCount
+      grantCount
     }
   }
 `;

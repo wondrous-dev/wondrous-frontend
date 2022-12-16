@@ -23,7 +23,7 @@ import {
 } from 'graphql/mutations/task';
 import { ATTACH_MEDIA_TO_TASK_PROPOSAL, REMOVE_MEDIA_FROM_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_TASK_BY_ID } from 'graphql/queries/task';
+import { GET_MINIMAL_TASK_BY_ID } from 'graphql/queries/task';
 
 import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
@@ -40,10 +40,12 @@ import {
   APPLICATION_POLICY_LABELS_MAP,
   GR15DEICategoryName,
   PRIORITIES,
+  PROPOSAL_VOTE_CHOICES,
+  DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY,
 } from 'utils/constants';
 
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useFullScreen, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import { StyledChipTag } from 'components/Tags/styles';
 import { GithubLink } from 'components/Settings/Github/styles';
@@ -61,6 +63,9 @@ import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtask
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
 import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
+import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
+import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
+import { InputLabel } from '@mui/material';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -93,6 +98,8 @@ import {
   CreateEntityPaymentMethodItem,
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
+  formDirty,
+  useGetProposalChoices,
 } from './Helpers';
 import {
   CreateEntityAddButtonIcon,
@@ -121,13 +128,11 @@ import {
   CreateEntityLabelAddButton,
   CreateEntityLabelSelectWrapper,
   CreateEntityLabelWrapper,
-  CreateEntityMilestoneSearch,
   CreateEntityOpenInFullIcon,
   CreateEntityOption,
   CreateEntityOptionLabel,
   CreateEntityPaymentMethodOption,
   CreateEntityPaymentMethodSelect,
-  CreateEntityPodSearch,
   CreateEntityPrivacyIconWrapper,
   CreateEntityPrivacyLabel,
   CreateEntityPrivacySelect,
@@ -151,6 +156,11 @@ import {
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
   SnapshotErrorText,
+  CreateEntityPrivacySelectRenderLabelWrapper,
+  CreateEntityCloseIcon,
+  ProposalVoteSelect,
+  ProposalVoteSelectMenuItem,
+  ProposalVoteSelectMenuItemText,
 } from './styles';
 
 import { MediaItem } from '../MediaItem';
@@ -158,9 +168,11 @@ import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
+import { TaskTemplatePickerWrapper } from './TaskTemplatePicker/styles';
+import CustomProposal from './CustomProposal';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
+  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status, setFormDirty } = props;
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask =
     parentTaskId !== undefined || (existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null);
@@ -192,7 +204,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     fetchPolicy: 'network-only',
   });
   const inputRef: any = useRef();
-  const [getTaskById] = useLazyQuery(GET_TASK_BY_ID);
+  const [getTaskById] = useLazyQuery(GET_MINIMAL_TASK_BY_ID);
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
@@ -241,6 +253,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       const reviewerIds = values?.reviewerIds?.filter((i) => i !== null);
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userMentions = extractMentions(values.description);
+
       const points = parseInt(values.points, 10);
       const rewards = isEmpty(values.rewards)
         ? []
@@ -250,9 +263,26 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
-      const categories = values?.categories.map((category) => category.id || category);
-      const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
-        values;
+      const {
+        chooseGithubIssue,
+        chooseGithubPullRequest,
+        githubIssue,
+        githubRepo,
+        recurringSchema,
+        GR15DEISelected,
+        proposalVoteType,
+        customProposalChoices,
+        ...finalValues
+      } = values;
+      let categories = values?.categories?.map((category) => category.id || category);
+      if (GR15DEISelected) {
+        if (!categories) {
+          categories = [];
+        }
+        categories.push(GR15DEICategoryName);
+      }
+      const voteType = proposalVoteType || PROPOSAL_VOTE_CHOICES.BINARY;
+      const voteOptions = customProposalChoices;
       const input = {
         ...finalValues,
         reviewerIds,
@@ -261,6 +291,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         timezone,
         userMentions,
         categories,
+        ...(isProposal && {
+          voteType,
+          ...(voteType === PROPOSAL_VOTE_CHOICES.CUSTOM && { voteOptions }),
+        }),
         description: JSON.stringify(values.description),
         ...(values?.githubPullRequest?.id && {
           githubPullRequest,
@@ -276,6 +310,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
   });
+
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId, true));
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(form.values.orgId);
   const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
@@ -291,7 +326,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
 
   const categoriesData = useGetCategories();
-
+  const proposalChoices = useGetProposalChoices();
   const pods = useGetAvailableUserPods(form.values.orgId);
   const roles = useGetOrgRoles(form.values.orgId);
 
@@ -311,7 +346,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const filteredEligibleReviewers = eligibleReviewers.filter(
     (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
   );
-  const [fullScreen, setFullScreen] = useState(false);
+  const { isFullScreen, toggleFullScreen } = useFullScreen();
   const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK);
   const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
   const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL);
@@ -373,6 +408,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
       form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     }
+    if (isProposal) {
+      form.setFieldValue('proposalVoteType', 'binary');
+      form.setFieldValue('customProposalChoices', DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY);
+    }
     // TODO we should add recurring to bounties and milesstone
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('priority', existingTask?.priority || null);
@@ -389,7 +428,12 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     existingTask?.milestoneId,
     existingTask?.labels,
     isTask,
+    isProposal,
   ]);
+
+  useEffect(() => {
+    form.setFieldValue('proposalVoteType', 'binary');
+  }, [form?.values?.orgId]);
 
   useEffect(() => {
     if (isSubtask) {
@@ -586,8 +630,14 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const hasSubTasks = subTasks?.data?.length > 0;
   const canTurnIntoBounty = !hasSubTasks && !isSubtask && existingTask?.type === ENTITIES_TYPES.TASK;
 
+  useEffect(() => {
+    if (setFormDirty) {
+      setFormDirty(formDirty(form));
+    }
+  }, [form, setFormDirty]);
+
   return (
-    <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen} data-cy="modal-create-entity">
+    <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={isFullScreen} data-cy="modal-create-entity">
       <ConvertTaskToBountyModal
         open={turnTaskToBountyModal}
         onClose={() => setTurnTaskToBountyModal(false)}
@@ -620,7 +670,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         }}
       />
       <CreateEntityHeader>
-        <CreateEntityHeaderWrapper>
+        <CreateEntityHeaderWrapper showOnSmallScreen hideOnLargeScreen={false}>
           <CreateEntitySelectErrorWrapper>
             <CreateEntityDropdown
               name="orgId"
@@ -649,7 +699,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           {form.values.orgId !== null && (
             <>
               <CreateEntityHeaderArrowIcon />
-              <CreateEntityPodSearch
+              <PodSearch
                 options={filterOptionsWithPermission(
                   entityType,
                   pods,
@@ -666,7 +716,14 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         <CreateEntityHeaderWrapper>
           <Tooltip title="Full screen" placement="top">
             <Box>
-              <CreateEntityOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+              <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />
+            </Box>
+          </Tooltip>
+        </CreateEntityHeaderWrapper>
+        <CreateEntityHeaderWrapper showOnSmallScreen hideOnLargeScreen>
+          <Tooltip title="Close Modal" placement="top-end">
+            <Box>
+              <CreateEntityCloseIcon onClick={cancel} />
             </Box>
           </Tooltip>
         </CreateEntityHeaderWrapper>
@@ -840,6 +897,30 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           )}
         </CreateEntityLabelSelectWrapper>
         <CreateEntityDivider />
+        {isProposal && !existingTask && form?.values?.proposalVoteType && (
+          <>
+            <ProposalVoteSelect value={form?.values?.proposalVoteType} label="Select voting style">
+              {proposalChoices.map((option) => (
+                <ProposalVoteSelectMenuItem
+                  value={option?.value}
+                  onClick={() => form.setFieldValue('proposalVoteType', option?.value)}
+                >
+                  <ProposalVoteSelectMenuItemText>{option?.label}</ProposalVoteSelectMenuItemText>
+                </ProposalVoteSelectMenuItem>
+              ))}
+            </ProposalVoteSelect>
+            {form?.values?.proposalVoteType === PROPOSAL_VOTE_CHOICES.CUSTOM && <CustomProposal form={form} />}
+            <ProposalVoteSelectMenuItemText
+              style={{
+                marginTop: '8px',
+                fontSize: '12px',
+              }}
+            >
+              P.S In 'Multiple Choice' voting, options cannot be edited after the proposal is created
+            </ProposalVoteSelectMenuItemText>
+            <CreateEntityDivider />
+          </>
+        )}
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reviewer)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Reviewer</CreateEntityLabel>
@@ -874,7 +955,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                           startAdornment={
                             <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                               {reviewer?.profilePicture ? (
-                                <SafeImage useNextImage={false} src={reviewer.profilePicture} />
+                                <SafeImage useNextImage={false} src={reviewer.profilePicture} alt="Profile picture" />
                               ) : (
                                 <CreateEntityDefaultUserImage />
                               )}
@@ -899,7 +980,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                       return (
                         <CreateEntityAutocompleteOption {...props}>
                           {option?.profilePicture ? (
-                            <SafeImage useNextImage={false} src={option?.profilePicture} />
+                            <SafeImage useNextImage={false} src={option?.profilePicture} alt="Profile picture" />
                           ) : (
                             <CreateEntityDefaultUserImage />
                           )}
@@ -989,7 +1070,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                         startAdornment={
                           <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                             {assignee?.profilePicture ? (
-                              <SafeImage useNextImage={false} src={assignee.profilePicture} />
+                              <SafeImage useNextImage={false} src={assignee.profilePicture} alt="Profile picture" />
                             ) : (
                               <CreateEntityDefaultUserImage />
                             )}
@@ -1011,7 +1092,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                   renderOption={(props, option) => (
                     <CreateEntityAutocompleteOption {...props} data-cy={`assignee-option-${option.label}`}>
                       {option?.profilePicture ? (
-                        <SafeImage useNextImage={false} src={option?.profilePicture} />
+                        <SafeImage useNextImage={false} src={option?.profilePicture} alt="Profile picture" />
                       ) : (
                         <CreateEntityDefaultUserImage />
                       )}
@@ -1103,27 +1184,25 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                       }
                       renderValue={() => (
                         <CreateEntityApplicationsSelectRender>
-                          <>
-                            {form.values?.claimPolicyRoles?.map((role) => {
-                              const roleData = getRoleDataById(role);
-                              return (
-                                <StyledChipTag
-                                  key={role}
-                                  style={{ margin: '2px' }}
-                                  deleteIcon={<div>&times;</div>}
-                                  onClick={() =>
-                                    form.setFieldValue(
-                                      'claimPolicyRoles',
-                                      form.values?.claimPolicyRoles?.filter((claimRole) => claimRole !== role)
-                                    )
-                                  }
-                                  label={roleData?.name}
-                                  // background={option.color}
-                                  variant="outlined"
-                                />
-                              );
-                            })}
-                          </>
+                          {form.values?.claimPolicyRoles?.map((role) => {
+                            const roleData = getRoleDataById(role);
+                            return (
+                              <StyledChipTag
+                                key={role}
+                                style={{ margin: '2px' }}
+                                deleteIcon={<div>&times;</div>}
+                                onClick={() =>
+                                  form.setFieldValue(
+                                    'claimPolicyRoles',
+                                    form.values?.claimPolicyRoles?.filter((claimRole) => claimRole !== role)
+                                  )
+                                }
+                                label={roleData?.name}
+                                // background={option.color}
+                                variant="outlined"
+                              />
+                            );
+                          })}
                           <CreateEntitySelectArrowIcon />
                         </CreateEntityApplicationsSelectRender>
                       )}
@@ -1356,19 +1435,21 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
           <CreateEntitySelectWrapper>
             {form.values.milestoneId !== null && (
-              <CreateEntityMilestoneSearch
-                autoFocus={!form.values?.milestoneId}
-                options={filterUserOptions(milestonesData)}
-                value={form.values.milestoneId}
-                onChange={(milestoneId) => {
-                  form.setFieldValue('milestoneId', milestoneId);
-                }}
-                handleClose={() => {
-                  form.setFieldValue('milestoneId', null);
-                }}
-                formValues={form.values}
-                disabled={formValues?.milestoneId}
-              />
+              <CreateEntityWrapper>
+                <MilestoneSearch
+                  autoFocus={!form.values?.milestoneId}
+                  options={filterUserOptions(milestonesData)}
+                  value={form.values.milestoneId}
+                  onChange={(milestoneId) => {
+                    form.setFieldValue('milestoneId', milestoneId);
+                  }}
+                  handleClose={() => {
+                    form.setFieldValue('milestoneId', null);
+                  }}
+                  formValues={form.values}
+                  disabled={formValues?.milestoneId}
+                />
+              </CreateEntityWrapper>
             )}
             {form.values.milestoneId === null && (
               <CreateEntityLabelAddButton
@@ -1380,6 +1461,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
               </CreateEntityLabelAddButton>
             )}
+            {form?.errors?.milestoneId && <ErrorText>{form?.errors?.milestoneId}</ErrorText>}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
@@ -1403,23 +1485,35 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
-        {form?.errors?.milestoneId && <ErrorText>{form?.errors?.milestoneId}</ErrorText>}
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.tags)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Category</CreateEntityLabel>
           </CreateEntityLabelWrapper>
           <CreateEntitySelectWrapper>
-            <DropdownSearch
-              label="Select Category"
-              searchPlaceholder="Search categories"
-              options={categoriesData}
-              value={filterCategoryValues(form.values.categories)}
-              onChange={(categories) => {
-                form.setFieldValue('categories', [...categories]);
-              }}
-              disabled={formValues?.categories}
-              onClose={() => {}}
-            />
+            {form.values.categories !== null && (
+              <DropdownSearch
+                autoFocus={form?.values?.categories?.length === 0}
+                label="Select Category"
+                searchPlaceholder="Search categories"
+                options={categoriesData}
+                value={filterCategoryValues(form.values.categories)}
+                onChange={(categories) => {
+                  form.setFieldValue('categories', [...categories]);
+                }}
+                disabled={formValues?.categories}
+                onClose={() => {}}
+              />
+            )}
+            {form.values.categories == null && (
+              <CreateEntityLabelAddButton
+                onClick={() => {
+                  form.setFieldValue('categories', []);
+                }}
+              >
+                <CreateEntityAddButtonIcon />
+                <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+              </CreateEntityLabelAddButton>
+            )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
@@ -1665,12 +1759,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             </CreateEntityLabelSelectWrapper>
           )}
         <CreateEntityDivider />
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+        <TaskTemplatePickerWrapper>
           <TaskTemplatePicker
             options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
             value={form.values.orgId}
@@ -1685,22 +1774,21 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           {!isProposal && (
             <GR15DEICreateSelector
               setGR15DEISelected={() => {
-                if (form.values.categories?.includes(GR15DEICategoryName)) {
-                  const newCategoriesArray = form.values.categories.filter((name) => name !== GR15DEICategoryName);
-                  form.setFieldValue('categories', newCategoriesArray);
-                } else {
-                  const newCategoriesArray = [...form.values.categories, GR15DEICategoryName];
-                  form.setFieldValue('categories', newCategoriesArray);
-                }
+                form.setFieldValue('GR15DEISelected', !form?.values?.GR15DEISelected);
               }}
-              GR15DEISelected={form.values.categories?.includes(GR15DEICategoryName)}
+              GR15DEISelected={form?.values?.GR15DEISelected}
             />
           )}
-        </div>
+        </TaskTemplatePickerWrapper>
       </CreateEntityBody>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
+          <CreateEntityAttachment showOnSmallScreen onClick={() => inputRef.current.click()}>
+            <CreateEntityAttachmentIcon />
+            {fileUploadLoading && <FileLoading />}
+          </CreateEntityAttachment>
           <CreateEntityPrivacySelect
+            className="select-tooltip"
             name="privacyLevel"
             value={form.values.privacyLevel}
             onChange={(value) => {
@@ -1709,7 +1797,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             renderValue={(value) => (
               <Tooltip placement="top">
                 <CreateEntityPrivacySelectRender>
-                  <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
+                  <CreateEntityPrivacySelectRenderLabelWrapper>
+                    <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
+                  </CreateEntityPrivacySelectRenderLabelWrapper>
                   <CreateEntitySelectArrowIcon />
                 </CreateEntityPrivacySelectRender>
               </Tooltip>

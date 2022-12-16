@@ -11,7 +11,7 @@ export const MilestoneTaskListWrapper = styled.div`
   margin-top: 24px;
 `;
 
-export const MilestoneTaskItem = styled.div`
+export const MilestoneTaskItem = styled.a`
   padding: 18px 0;
   border-top: 1px dashed ${({ theme }) => theme.palette.grey900};
   border-bottom: 1px dashed ${({ theme }) => theme.palette.grey900};
@@ -20,6 +20,7 @@ export const MilestoneTaskItem = styled.div`
   align-items: flex-start;
   gap: 12px;
   cursor: pointer;
+  text-decoration: none;
 `;
 
 export const MilestoneTaskImageWrapper = styled.div`
@@ -52,6 +53,13 @@ export const MilestoneTaskTitle = styled(Typography)`
     word-break: break-all;
     hyphens: auto;
     color: ${({ theme }) => theme.palette.white};
+  }
+  a {
+    color: white;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 

@@ -15,7 +15,7 @@ import {
 function AboutOrganizationsCard(props) {
   const router = useRouter();
   const { name, description, profilePicture, thumbnailPicture, username } = props;
-  const handleOnClick = () => router.push(`/organization/${username}/boards`);
+  const handleOnClick = () => router.push(`/organization/${username}/home`);
   return (
     <UserAboutInfoCard onClick={handleOnClick}>
       <UserAboutInfoCardHeader>
@@ -29,6 +29,7 @@ function AboutOrganizationsCard(props) {
               borderRadius: '4px',
               marginRight: '8px',
             }}
+            alt="User profile picture"
           />
         ) : (
           <UserAboutInfoCardNoLogo>

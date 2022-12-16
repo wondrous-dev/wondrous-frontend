@@ -1,20 +1,34 @@
-import { assignIn, assignWith, cloneDeep, isEmpty, isNull, isUndefined, pick, sortBy, uniqBy } from 'lodash';
-import { PRIVACY_LEVEL, CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, CATEGORY_LABELS } from 'utils/constants';
-import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
-import * as Yup from 'yup';
+import { SafeImage } from 'components/Common/Image';
 import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
 import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
-import { SafeImage } from 'components/Common/Image';
-import { plainTextToRichText, deserializeRichText } from 'components/RichText';
+import { deserializeRichText, plainTextToRichText } from 'components/RichText';
 import { FormikValues } from 'formik';
+import assignIn from 'lodash/assignIn';
+import assignWith from 'lodash/assignWith';
+import cloneDeep from 'lodash/cloneDeep';
+import isDate from 'lodash/isDate';
+import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
+import isNull from 'lodash/isNull';
+import isObject from 'lodash/isObject';
+import isUndefined from 'lodash/isUndefined';
+import pick from 'lodash/pick';
+import pickBy from 'lodash/pickBy';
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
+import { Dispatch, SetStateAction } from 'react';
+import { CATEGORY_LABELS, ENTITIES_TYPES, GR15DEICategoryName, PRIVACY_LEVEL } from 'utils/constants';
+import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
+import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
+import * as Yup from 'yup';
 import {
-  useCreateTask,
-  useUpdateTask,
-  useCreateMilestone,
-  useUpdateMilestone,
   useCreateBounty,
-  useUpdateBounty,
+  useCreateMilestone,
+  useCreateTask,
   useCreateTaskProposal,
+  useUpdateBounty,
+  useUpdateMilestone,
+  useUpdateTask,
   useUpdateTaskProposal,
 } from '../hooks';
 
@@ -39,7 +53,8 @@ export const formValidationSchema = Yup.object().shape({
         paymentMethodId: Yup.string().required(),
         rewardAmount: Yup.number()
           .typeError('Reward amount must be a number')
-          .moreThan(0, 'Reward amount must be greater than 0'),
+          .moreThan(0, 'Reward amount must be greater than 0')
+          .required('Reward amount is required'),
       })
     )
     .optional()
@@ -51,6 +66,8 @@ export const formValidationSchema = Yup.object().shape({
       'Please enter a valid Milestone',
       (milestoneId) => milestoneId !== '' && milestoneId !== undefined
     ),
+  proposalVoteType: Yup.string().nullable(),
+  customProposalChoices: Yup.array().optional().nullable(),
 });
 
 export const privacyOptions = {
@@ -105,6 +122,7 @@ export const filterPaymentMethods = (paymentMethods) => {
         useNextImage={false}
         src={paymentMethod.icon}
         style={{ width: '30px', height: '30px', borderRadius: '15px' }}
+        alt="Payment method"
       />
     ),
     label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
@@ -222,6 +240,8 @@ export enum Fields {
   githubPullRequest,
   shouldUnclaimOnDueDateExpiry,
   priority,
+  voteOptions,
+  voteType,
 }
 
 export const entityTypeData = {
@@ -267,7 +287,8 @@ export const entityTypeData = {
       chooseGithubIssue: false,
       parentTaskId: null,
       priority: null,
-      categories: [],
+      categories: null,
+      GR15DEISelected: false,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -285,7 +306,7 @@ export const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       priority: null,
-      categories: [],
+      categories: null,
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
@@ -315,11 +336,20 @@ export const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       priority: null,
-      categories: [],
+      categories: null,
+      GR15DEISelected: false,
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
-    fields: [Fields.dueDate, Fields.reward, Fields.milestone, Fields.priority, Fields.tags],
+    fields: [
+      Fields.dueDate,
+      Fields.reward,
+      Fields.milestone,
+      Fields.priority,
+      Fields.tags,
+      Fields.voteOptions,
+      Fields.voteType,
+    ],
     createMutation: useCreateTaskProposal,
     updateMutation: useUpdateTaskProposal,
     initialValues: {
@@ -333,7 +363,9 @@ export const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
-      categories: [],
+      categories: null,
+      proposalVoteType: null,
+      customProposalChoices: [],
     },
   },
 };
@@ -343,15 +375,18 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
   const description = deserializeRichText(existingTask.description);
+  const GR15DEISelected = existingTask?.categories?.some((category) => category?.name === GR15DEICategoryName);
+  const remainingCategories = existingTask?.categories?.filter((category) => category?.name !== GR15DEICategoryName);
   const existingTaskValues = pick(
     {
       ...existingTask,
       description,
       mediaUploads: transformMediaFormat(existingTask?.media),
-      categories: transformCategoryFormat(existingTask?.categories),
+      categories: isEmpty(remainingCategories) ? null : transformCategoryFormat(remainingCategories),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
       rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => ({ rewardAmount, paymentMethodId })),
       labelIds: isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
+      GR15DEISelected,
     },
     defaultValuesKeys
   );
@@ -410,4 +445,40 @@ export interface ICreateEntityModal {
   setEntityType?: Function;
   formValues?: FormikValues;
   status?: string;
+  setFormDirty?: Dispatch<SetStateAction<boolean>>;
 }
+
+export interface GrantCreateModalProps extends ICreateEntityModal {
+  isEdit?: boolean;
+  existingGrant?: {
+    id: string;
+    title: string;
+    description: string;
+    orgId: string;
+    podId?: string;
+    media?: any;
+    privacyLevel?: string;
+    reward?: {
+      paymentMethodId?: string;
+      rewardAmount?: string;
+    };
+    numOfGrant?: string;
+    startDate?: string;
+    endDate?: string;
+    applyPolicy?: string;
+    categories?: {
+      name?: string;
+    }[];
+    reviewerIds?: string[];
+  };
+}
+
+export const formDirty = (form: FormikValues): boolean => {
+  const { initialValues, values } = form;
+  const excludedFields = ['orgId'];
+  const pickByValKey = (val, key) =>
+    !excludedFields.includes(key) && val && (isObject(val) && !isDate(val) ? !isEmpty(val) : val);
+  const updatedInitialValues = pickBy(initialValues, pickByValKey);
+  const updatedValues = pickBy(values, pickByValKey);
+  return !isEqual(updatedInitialValues, updatedValues);
+};

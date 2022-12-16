@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useRef, useState, useContext } from 'rea
 import Modal from '@mui/material/Modal';
 import { Tab } from '@mui/material';
 import { BigNumber } from 'bignumber.js';
-import { GRAPHQL_ERRORS, BOUNTY_TYPE, PERMISSIONS } from 'utils/constants';
+import { GRAPHQL_ERRORS, BOUNTY_TYPE, PERMISSIONS, ENTITIES_TYPES } from 'utils/constants';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
-import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
+import { GET_GRANT_APPLICATION_PAYMENT_INFO, GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -17,7 +17,7 @@ import { ErrorText } from 'components/Onboarding/styles';
 import { SafeImage } from '../Image';
 import { useMe } from '../../Auth/withAuth';
 import { DAOIcon } from '../../Icons/dao';
-import { OrganisationsCardNoLogo } from '../../profile/about/styles';
+import OrganisationsCardNoLogo from '../../profile/about/styles';
 import { OfflinePayment } from './OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
@@ -48,11 +48,26 @@ const GoBackStyle = {
   cursor: 'pointer',
 };
 
+// TODO: Adrian - we need to refactor this to make it generic for both tasks and grants
+
+/**
+ *
+ * @param props {
+ *  entityType: GRANT | TASK,
+ *  fetchedTask: GRANT | TASK
+ *  approvedSubmission: SUBMISSION | GRANT_APPLICATION
+ *  reward: {
+ *   tokenName,
+ *   rewardAmount
+ *  }
+ * }
+ */
+
 export function MakePaymentModal(props) {
-  const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask, getTaskSubmissionsForTask } = props;
+  const { open, handleClose, setShowPaymentModal, handleGoBack, approvedSubmission, fetchedTask, reward, entityType } =
+    props;
   const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
-  const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
   const [rewardAmount, setRewardAmount] = useState('');
   const [changeRewardAmount, setChangeRewardAmount] = useState(false);
   const [changedRewardAmount, setChangedRewardAmount] = useState(null);
@@ -63,9 +78,6 @@ export function MakePaymentModal(props) {
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const [changeRewardErrorText, setChangeRewardErrorText] = useState('');
-  const board = orgBoard || podBoard || userBoard;
-  const router = useRouter();
-  const user = useMe();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -92,12 +104,9 @@ export function MakePaymentModal(props) {
     fetchPolicy: 'network-only',
   });
 
-  const [getSubmissionPaymentInfo] = useLazyQuery(GET_SUBMISSION_PAYMENT_INFO, {
-    onCompleted: (data) => {
-      setSubmissionPaymentInfo(data?.getSubmissionPaymentInfo);
-    },
+  const [getSubmissionPaymentInfo, { data: submissionPaymentInfo }] = useLazyQuery(GET_SUBMISSION_PAYMENT_INFO, {
     onError: (err) => {
-      if (err?.graphQLErrors[0].extensions?.message === GRAPHQL_ERRORS.NO_RECIPIENT_WEB_3_ADDRESS) {
+      if (err?.graphQLErrors[0]?.extensions?.message === GRAPHQL_ERRORS.NO_RECIPIENT_WEB_3_ADDRESS) {
         setSubmissionPaymentError(
           'Recipient has no active wallet. Please inform them to connect their wallet to their account'
         );
@@ -105,6 +114,21 @@ export function MakePaymentModal(props) {
     },
     fetchPolicy: 'network-only',
   });
+
+  const [getGrantApplicationPaymentInfo, { data: grantApplicationPaymentInfo }] = useLazyQuery(
+    GET_GRANT_APPLICATION_PAYMENT_INFO,
+    {
+      onError: (err) => {
+        if (err?.graphQLErrors[0].extensions?.message === GRAPHQL_ERRORS.NO_RECIPIENT_WEB_3_ADDRESS) {
+          setSubmissionPaymentError(
+            'Recipient has no active wallet. Please inform them to connect their wallet to their account'
+          );
+        }
+      },
+      fetchPolicy: 'network-only',
+    }
+  );
+
   useEffect(() => {
     if (fetchedTask?.podId) {
       getPodWallet({
@@ -134,39 +158,47 @@ export function MakePaymentModal(props) {
   }, [fetchedTask]);
 
   useEffect(() => {
-    setRewardAmount(fetchedTask?.rewards[0]?.rewardAmount);
-    setTokenName(fetchedTask?.rewards[0]?.tokenName);
+    setRewardAmount(reward?.rewardAmount);
+    setTokenName(reward?.tokenName);
   }, [fetchedTask]);
 
+  const handlePaymentInfo = () => {
+    if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
+      getGrantApplicationPaymentInfo({
+        variables: {
+          grantApplicationId: approvedSubmission?.id,
+        },
+      });
+    } else {
+      getSubmissionPaymentInfo({
+        variables: {
+          submissionId: approvedSubmission?.id,
+        },
+      });
+    }
+  };
   useEffect(() => {
-    getSubmissionPaymentInfo({
-      variables: {
-        submissionId: approvedSubmission?.id,
-      },
-    });
+    handlePaymentInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approvedSubmission]);
+
   const handleCloseAll = () => {
     handleClose();
     setShowPaymentModal(false);
   };
 
-  const handleGoBackToTask = () => {
-    setShowPaymentModal(false);
-    getTaskSubmissionsForTask({
-      variables: {
-        taskId: fetchedTask?.id,
-      },
-    });
-  };
-
   const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
 
-  const isBounty = fetchedTask.type === BOUNTY_TYPE;
+  const isBountyOrGrantApplication =
+    fetchedTask.type === BOUNTY_TYPE || entityType === ENTITIES_TYPES.GRANT_APPLICATION;
+
   const payee = {
-    userId: isBounty ? approvedSubmission?.createdBy : fetchedTask?.assigneeId,
-    username: isBounty ? approvedSubmission?.creator.username : fetchedTask.assigneeUsername,
+    userId: isBountyOrGrantApplication ? approvedSubmission?.createdBy : fetchedTask?.assigneeId,
+    username: isBountyOrGrantApplication ? approvedSubmission?.creator.username : fetchedTask.assigneeUsername,
   };
+
+  const paymentInfo =
+    submissionPaymentInfo?.getSubmissionPaymentInfo || grantApplicationPaymentInfo?.getGrantApplicationPaymentInfo;
 
   return (
     <Modal open={open} onClose={handleCloseAll}>
@@ -182,6 +214,7 @@ export function MakePaymentModal(props) {
                 borderRadius: '4px',
                 marginRight: '8px',
               }}
+              alt="Organization logo"
             />
           ) : (
             <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
@@ -199,7 +232,7 @@ export function MakePaymentModal(props) {
             </div>
           )}
           <>
-            <PodNameTypography style={GoBackStyle} onClick={handleGoBackToTask}>
+            <PodNameTypography style={GoBackStyle} onClick={handleGoBack}>
               Back to Task
             </PodNameTypography>
           </>
@@ -213,21 +246,20 @@ export function MakePaymentModal(props) {
                 {rewardAmount} {tokenName?.toUpperCase()}{' '}
               </span>
               to{' '}
-              <Link href={`/profile/${payee.userId}/about`}>
-                <a
-                  style={{
-                    color: '#ffffff',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                  }}
-                  target="_blank"
-                >
-                  {payee.username}
-                </a>
+              <Link
+                href={`/profile/${payee.userId}/about`}
+                style={{
+                  color: '#ffffff',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                }}
+                target="_blank"
+              >
+                {payee.username}
               </Link>{' '}
             </PaymentTitleText>
-            <PaymentDescriptionText>Task: {fetchedTask.title}</PaymentDescriptionText>
-            {fetchedTask?.type === BOUNTY_TYPE && (
+            <PaymentDescriptionText>Task: {fetchedTask?.title}</PaymentDescriptionText>
+            {isBountyOrGrantApplication && (
               <>
                 {changeRewardAmount ? (
                   <>
@@ -256,7 +288,7 @@ export function MakePaymentModal(props) {
                       <SaveNewRewardAmountButton
                         onClick={() => {
                           const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
-                          const initialBigRewardAmount = new BigNumber(fetchedTask?.rewards[0]?.rewardAmount);
+                          const initialBigRewardAmount = new BigNumber(reward?.rewardAmount);
                           if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
                             setChangeRewardErrorText('New reward must be greater than minimum');
                           } else {
@@ -306,7 +338,8 @@ export function MakePaymentModal(props) {
               handleClose={handleCloseAll}
               approvedSubmission={approvedSubmission}
               fetchedTask={fetchedTask}
-              submissionPaymentInfo={submissionPaymentInfo}
+              submissionPaymentInfo={paymentInfo}
+              entityType={entityType}
             />
           )}
           {selectedTab === 'wallet' && (
@@ -315,11 +348,12 @@ export function MakePaymentModal(props) {
               approvedSubmission={approvedSubmission}
               fetchedTask={fetchedTask}
               wallets={wallets}
-              submissionPaymentInfo={submissionPaymentInfo}
+              submissionPaymentInfo={paymentInfo}
               orgId={approvedSubmission?.orgId}
               podId={approvedSubmission?.podId}
               changedRewardAmount={useChangedRewardAmount ? rewardAmount : null}
               parentError={submissionPaymentError}
+              entityType={entityType}
             />
           )}
         </PaymentMethodWrapper>

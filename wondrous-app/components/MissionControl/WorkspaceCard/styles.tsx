@@ -86,6 +86,14 @@ export const MissionControlWorkspaceCardWrapper = styled.div`
       }
     }
   }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    max-width: 60%;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    max-width: 100%;
+  }
 `;
 
 export const WorkspaceCardContainer = styled.div`
@@ -160,6 +168,6 @@ export const WorkspaceCardStatLabel = styled(Typography)`
 
 export const WorkspaceCardLabelWrapper = styled.div`
   position: absolute;
-  width: min-content;
+  max-width: 400px;
   top: 16%;
 `;

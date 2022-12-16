@@ -12,9 +12,17 @@ interface Props {
   canApply: boolean;
   title?: string;
   setIsApplicationModalOpen?: (boolean) => void;
+  Icon?: React.ElementType;
+  style?: object;
 }
 
-export default function TaskApplicationButton({ task, title = 'Apply', setIsApplicationModalOpen }: Props) {
+export default function TaskApplicationButton({
+  task,
+  title = 'Apply',
+  setIsApplicationModalOpen,
+  Icon = () => <Claim />,
+  style,
+}: Props) {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
 
@@ -69,13 +77,17 @@ export default function TaskApplicationButton({ task, title = 'Apply', setIsAppl
         <TaskApplicationModal open={isConfirmationModalOpen} onClose={handleClose} handleSubmit={handleSubmit} />
       )}
       <ButtonPrimary
-        startIcon={<Claim />}
+        startIcon={<Icon />}
         onClick={handleButtonClick}
         disabled={task?.taskApplicationPermissions?.hasUserApplied}
+        style={{
+          ...style,
+        }}
       >
         <span
           style={{
             color: white,
+            width: '100%',
           }}
         >
           {btnTitle}

@@ -15,13 +15,21 @@ const httpLink = new HttpLink({
 });
 
 const getAuth = () => {
-  const token = getAuthHeader();
-  return token ? `Bearer ${token}` : '';
+  try {
+    const token = getAuthHeader();
+    return token ? `Bearer ${token}` : '';
+  } catch (error) {
+    return null;
+  }
 };
 
 const getWaitlistAuth = () => {
-  const token = getWaitlistAuthHeader();
-  return token ? `Bearer ${token}` : '';
+  try {
+    const token = getWaitlistAuthHeader();
+    return token ? `Bearer ${token}` : '';
+  } catch (error) {
+    return null;
+  }
 };
 
 const authLink = setContext((_, { headers }) => {
@@ -88,7 +96,7 @@ const cache = new InMemoryCache({
             return merged;
           },
         },
-        getUserTaskBoardSubmissions: {
+        getUserBountySubmissions: {
           keyArgs: ['input', ['status']],
           merge: offsetLimitPaginationInput,
         },
@@ -116,12 +124,15 @@ const cache = new InMemoryCache({
         },
         getNotifications: offsetLimitPagination(),
         getUserFeed: offsetLimitPagination(),
-        searchOrgUsers: offsetLimitPagination(['orgId', 'searchString']),
+        searchOrgUsers: offsetLimitPagination(['orgIds', 'searchString']),
         getUserTaskBoardTasks: {
           keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses', 'priorities']],
           merge: offsetLimitPaginationInput,
         },
         getOrgUsers: offsetLimitPagination(['orgId', 'searchString', 'roleIds', 'limit']),
+        getGrantOrgBoard: offsetLimitPagination(['orgId', 'status']),
+        getGrantPodBoard: offsetLimitPagination(['podId', 'status']),
+        getGrantApplicationsForGrant: offsetLimitPagination(['grantId', 'status']),
       },
     },
   },

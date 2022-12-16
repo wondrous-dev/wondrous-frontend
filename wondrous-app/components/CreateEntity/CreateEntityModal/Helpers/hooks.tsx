@@ -26,7 +26,7 @@ import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
 } from 'graphql/queries';
 import { debounce } from 'lodash';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext } from 'react';
 import { LIMIT } from 'services/board';
 import {
   updateInReviewItem,
@@ -40,6 +40,7 @@ import {
   removeCompletedItem,
   removeTaskItemOnEntityType,
 } from 'utils/board';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   CATEGORY_LABELS,
   ENTITIES_TYPES,
@@ -47,6 +48,8 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   TASK_STATUS_DONE,
+  PROPOSAL_VOTE_CHOICES,
+  PROPOSAL_VOTE_CHOICE_LABELS,
 } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import {
@@ -56,6 +59,8 @@ import {
   getPodObject,
   onCorrectPage,
 } from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
+import { Typography } from '@mui/material';
+import { palette } from '@mui/system';
 
 const HANDLE_TASKS = {
   REMOVE: {
@@ -122,7 +127,9 @@ export const useGetPodGithubIntegrations = (pod) => {
 };
 
 export const useGetPodPullRequests = (pod) => {
-  const [getPodGithubPullRequests, { data: podGithubPullRequestsData }] = useLazyQuery(GET_POD_GITHUB_PULL_REQUESTS);
+  const [getPodGithubPullRequests, { data: podGithubPullRequestsData }] = useLazyQuery(GET_POD_GITHUB_PULL_REQUESTS, {
+    fetchPolicy: 'cache-and-network',
+  });
   useEffect(() => {
     if (pod) {
       getPodGithubPullRequests({
@@ -243,11 +250,13 @@ export const useGetPaymentMethods = (orgId, includeDeactivated = false) => {
 export const useGetOrgUsers = (orgId, searchString = '') => {
   const [hasMore, setHasMore] = useState(false);
 
-  const [searchOrgUsers, { data, refetch, fetchMore, previousData }] = useLazyQuery(SEARCH_ORG_USERS, {
+  const [searchOrgUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_ORG_USERS, {
     onCompleted: (data) => {
-      if (!previousData) {
-        setHasMore(data.searchOrgUsers.length === LIMIT);
-      }
+      setTimeout(() => {
+        if (!previousData) {
+          setHasMore(data.searchOrgUsers.length === LIMIT);
+        }
+      });
     },
   });
 
@@ -264,7 +273,7 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
     if (orgId)
       searchOrgUsers({
         variables: {
-          orgId,
+          orgIds: [orgId],
           searchString,
           limit: LIMIT,
         },
@@ -291,6 +300,12 @@ export const useGetCategories = () =>
   Object.keys(CATEGORY_LABELS).map((key) => ({
     id: key,
     label: CATEGORY_LABELS[key],
+  }));
+
+export const useGetProposalChoices = () =>
+  Object.keys(PROPOSAL_VOTE_CHOICE_LABELS).map((key) => ({
+    value: key,
+    label: PROPOSAL_VOTE_CHOICE_LABELS[key],
   }));
 
 export const useCreateTask = () => {
@@ -334,6 +349,7 @@ export const useCreateMilestone = () => {
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
       'getMilestones',
+      'getOrgTaskBoardTasks',
     ],
   });
   const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
@@ -380,7 +396,7 @@ export const useCreateMilestone = () => {
 
 export const useCreateBounty = () => {
   const [createBounty, { loading }] = useMutation(CREATE_BOUNTY, {
-    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard'],
+    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getOrgTaskBoardTasks'],
   });
   const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createBounty({
@@ -425,6 +441,9 @@ export const useCreateBounty = () => {
 };
 
 export const useUpdateTask = () => {
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [updateTask, { loading }] = useMutation(UPDATE_TASK, {
     refetchQueries: () => [
       'getPerStatusTaskCountForMilestone',
@@ -433,6 +452,7 @@ export const useUpdateTask = () => {
       SEARCH_USER_CREATED_TASKS,
     ],
   });
+
   const handleMutation = ({ input, board, handleClose, existingTask }) => {
     updateTask({
       variables: {
@@ -458,15 +478,19 @@ export const useUpdateTask = () => {
         }
         board.setColumns(columns);
       }
+      setSnackbarAlertMessage('Success! Task updated :)');
+      setSnackbarAlertOpen(true);
       handleClose();
     });
   };
   return { handleMutation, loading };
 };
 
-
 export const useUpdateMilestone = () => {
   const [updateMilestone, { loading }] = useMutation(UPDATE_MILESTONE);
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const handleMutation = ({ input, board, handleClose, existingTask }) => {
     updateMilestone({
       variables: {
@@ -494,6 +518,8 @@ export const useUpdateMilestone = () => {
         }
         board.setColumns(columns);
       }
+      setSnackbarAlertMessage('Success! Milestone updated :)');
+      setSnackbarAlertOpen(true);
       handleClose();
     });
   };
@@ -501,6 +527,9 @@ export const useUpdateMilestone = () => {
 };
 
 export const useUpdateBounty = () => {
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [updateBounty, { loading }] = useMutation(UPDATE_BOUNTY, {
     refetchQueries: () => [
       'getOrgTaskBoardTasks',
@@ -517,6 +546,8 @@ export const useUpdateBounty = () => {
         input,
       },
     }).then(() => {
+      setSnackbarAlertMessage('Success! Bounty updated :)');
+      setSnackbarAlertOpen(true);
       handleClose();
     });
   };
@@ -555,6 +586,8 @@ export const useCreateTaskProposal = () => {
           mediaUploads: input.mediaUploads,
           rewards: input.rewards,
           privacyLevel: input.privacyLevel,
+          voteOptions: input.voteOptions,
+          voteType: input.voteType,
         },
       },
     })
@@ -567,6 +600,9 @@ export const useCreateTaskProposal = () => {
 };
 
 export const useUpdateTaskProposal = () => {
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [updateTaskProposal, { loading }] = useMutation(UPDATE_TASK_PROPOSAL, {
     refetchQueries: () => [
       'GetUserTaskBoardProposals',
@@ -601,6 +637,8 @@ export const useUpdateTaskProposal = () => {
         },
       },
     }).then(() => {
+      setSnackbarAlertMessage('Success! Proposal updated :)');
+      setSnackbarAlertOpen(true);
       handleClose();
     });
   };

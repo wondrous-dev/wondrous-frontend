@@ -128,6 +128,15 @@ export const KICK_POD_USER = gql`
   }
 `;
 
+export const LEAVE_POD = gql`
+  mutation leavePod($podId: ID!) {
+    leavePod(podId: $podId) {
+      success
+    }
+  }
+`;
+
+
 export const ADD_POD_GITHUB_REPO = gql`
   mutation addPodGithubRepo($podId: ID!, $repoName: String!, $repoId: String!, $importTasks: Boolean) {
     addPodGithubRepo(podId: $podId, repoName: $repoName, repoId: $repoId, importTasks: $importTasks) {
@@ -139,6 +148,14 @@ export const ADD_POD_GITHUB_REPO = gql`
 export const DELETE_POD_GITHUB_REPO_INTEGRATION = gql`
   mutation deletePodGithubRepo($entityIntegrationId: ID!) {
     deletePodGithubRepo(entityIntegrationId: $entityIntegrationId) {
+      success
+    }
+  }
+`;
+
+export const CONNECT_NOTION_TO_POD = gql`
+  mutation connectNotionToPod($podId: ID!, $authorizationCode: String!) {
+    connectNotionToPod(podId: $podId, authorizationCode: $authorizationCode) {
       success
     }
   }

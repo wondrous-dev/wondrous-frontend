@@ -22,9 +22,9 @@ import { ADD_POD_GITHUB_REPO, DELETE_POD_GITHUB_REPO_INTEGRATION } from 'graphql
 import { GRAPHQL_ERRORS } from 'utils/constants';
 import { ErrorText } from 'components/Common';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import HeaderBlock from 'components/Settings/headerBlock';
 import { ImportTaskModal } from './confirmImportTaskModal';
 import { AddRepoDiv, GithubLink, GithubButtonDiv, PodGithubExplainerText, RepoDiv, RepoDivTitle } from './styles';
-import { HeaderBlock } from '../headerBlock';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
 
@@ -268,6 +268,7 @@ export function GithubIntegration({ orgId, podId }) {
                         height: '30px',
                         borderRadius: '15px',
                       }}
+                      alt="Profile picture"
                     />
                   )}
                   <OptionTypography>{option?.label}</OptionTypography>

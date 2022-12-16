@@ -12,8 +12,8 @@ import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
-import { BountySignifier, PodName, PodWrapper } from 'components/Common/Task/styles';
-import PodIcon from 'components/Icons/podIcon';
+import { BountySignifier } from 'components/Common/Task/styles';
+import PodIconName from 'components/Common/PodIconName';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
@@ -163,9 +163,7 @@ function UserRow({ contributorTask }) {
   return (
     <ContributorDiv>
       <TaskViewModal
-        disableEnforceFocus
         open={openModal}
-        shouldFocusAfterRender={false}
         handleClose={() => {
           const style = document.body.getAttribute('style');
           const top = style.match(/(top: -)(.*?)(?=px)/);
@@ -195,6 +193,7 @@ function UserRow({ contributorTask }) {
                   useNextImage={false}
                   src={contributorTask?.assigneeProfilePicture}
                   style={UserRowPictureStyles}
+                  alt="Assignee profile picture"
                 />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
@@ -316,25 +315,7 @@ function UserRow({ contributorTask }) {
                       {100}
                     </RewardAmount>
                   </Reward> */}
-                  {podName && (
-                    <PodWrapper
-                      style={{
-                        marginTop: '0',
-                        marginRight: '8px',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <PodIcon
-                        color={podColor}
-                        style={{
-                          width: '26px',
-                          height: '26px',
-                          marginRight: '4px',
-                        }}
-                      />
-                      <PodName>{podName}</PodName>
-                    </PodWrapper>
-                  )}
+                  {podName && <PodIconName color={podColor} name={podName} />}
                   {reward && (
                     <Reward>
                       <SafeImage
@@ -344,6 +325,7 @@ function UserRow({ contributorTask }) {
                           width: '16px',
                           height: '16px',
                         }}
+                        alt="USDC logo"
                       />
                       <RewardAmount
                         style={{
@@ -440,7 +422,7 @@ function Analytics(props) {
     if (orgId) {
       searchOrgUsers({
         variables: {
-          orgId,
+          orgIds: [orgId],
           searchString: '',
         },
       });
@@ -482,7 +464,7 @@ function Analytics(props) {
     searchOrgUsers({
       variables: {
         searchString: newInputValue,
-        orgId,
+        orgIds: [orgId],
       },
     });
   };
@@ -589,6 +571,7 @@ function Analytics(props) {
                     height: '30px',
                     borderRadius: '15px',
                   }}
+                  alt="Profile picture"
                 />
               )}
               <OptionTypography>{option?.label}</OptionTypography>

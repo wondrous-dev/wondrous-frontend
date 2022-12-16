@@ -159,7 +159,7 @@ function InviteMember(props) {
             if (!touched) {
               searchOrgUsers({
                 variables: {
-                  orgId,
+                  orsIds: [orgId],
                   searchString: '',
                 },
               });
@@ -168,7 +168,7 @@ function InviteMember(props) {
           onInputChange={(event, newInputValue) => {
             searchOrgUsers({
               variables: {
-                orgId,
+                orgIds: [orgId],
                 searchString: newInputValue,
               },
             });
@@ -190,6 +190,7 @@ function InviteMember(props) {
                     height: '18px',
                     borderRadius: '50%',
                   }}
+                  alt="Thumbnail picture"
                 />
               ) : (
                 <DefaultUserImage />

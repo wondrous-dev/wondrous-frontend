@@ -12,15 +12,29 @@ export type FormattedText = {
   italic?: true;
   underline?: true;
   strikethrough?: true;
+  headingOne?: true;
+  headingTwo?: true;
+  headingThree?: true;
   children?: undefined;
 };
-export type MarkType = 'bold' | 'italic' | 'code' | 'underline' | 'strikethrough';
+export type MarkType =
+  | 'bold'
+  | 'italic'
+  | 'code'
+  | 'underline'
+  | 'strikethrough'
+  | 'headingOne'
+  | 'headingTwo'
+  | 'headingThree';
 export type CustomText = FormattedText;
 
 export type ParagraphElement = {
   type: 'paragraph';
   children: (CustomText | CustomMentionElement)[];
   text?: undefined;
+  headingOne?: undefined;
+  headingTwo?: undefined;
+  headingThree?: undefined;
 };
 
 export type LinkElement = {
@@ -44,6 +58,27 @@ export type BulletedListElement = {
   text?: undefined;
 };
 
+export type HeadingOneElement = {
+  type: 'headingOne';
+  align?: string;
+  children: CustomText[];
+  text?: undefined;
+};
+
+export type HeadingTwoElement = {
+  type: 'headingTwo';
+  align?: string;
+  children: CustomText[];
+  text?: undefined;
+};
+
+export type HeadingThreeElement = {
+  type: 'headingThree';
+  align?: string;
+  children: CustomText[];
+  text?: undefined;
+};
+
 export type TogglabaleBlock = LinkElement | NumberedListElement | BulletedListElement;
 export type ListItemElement = { type: 'list-item'; children: Descendant[]; text?: undefined };
 export type CustomMentionElement = MentionElement<CustomText[]>;
@@ -54,7 +89,10 @@ export type CustomElement =
   | LinkElement
   | NumberedListElement
   | BulletedListElement
-  | ListItemElement;
+  | ListItemElement
+  | HeadingOneElement
+  | HeadingTwoElement
+  | HeadingThreeElement;
 
 export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor;
 

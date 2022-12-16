@@ -1,15 +1,30 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from 'graphql/fragments/comments';
-import { TaskCardFragment, TaskFragment, TaskSubmissionFragment, TaskTemplateFragment } from 'graphql/fragments/task';
+import {
+  TaskCardFragment,
+  FullTaskFragment,
+  MinimalTaskFragment,
+  TaskSubmissionFragment,
+  TaskTemplateFragment,
+} from 'graphql/fragments/task';
 import { MediaFragment } from 'graphql/fragments/media';
 
 export const GET_TASK_BY_ID = gql`
   query getTaskById($taskId: ID!) {
     getTaskById(taskId: $taskId) {
-      ...TaskFragment
+      ...FullTaskFragment
     }
   }
-  ${TaskFragment}
+  ${FullTaskFragment}
+`;
+
+export const GET_MINIMAL_TASK_BY_ID = gql`
+  query getTaskById($taskId: ID!) {
+    getTaskById(taskId: $taskId) {
+      ...MinimalTaskFragment
+    }
+  }
+  ${MinimalTaskFragment}
 `;
 
 export const GET_TASK_TEMPLATES_BY_USER_ID = gql`
@@ -98,13 +113,22 @@ export const GET_TASK_COMMENT_BY_ID = gql`
   ${CommentFragment}
 `;
 
+export const GET_SUBMISSION_COMMENT_BY_ID = gql`
+  query getTaskSubmissionCommentById($submissionCommentId: ID!) {
+    getTaskSubmissionCommentById(submissionCommentId: $submissionCommentId) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
+`;
+
 export const GET_TASKS_FOR_MILESTONE = gql`
   query getTasksForMilestone($milestoneId: ID!, $status: String, $limit: Int, $offset: Int) {
     getTasksForMilestone(milestoneId: $milestoneId, status: $status, limit: $limit, offset: $offset) {
-      ...TaskFragment
+      ...FullTaskFragment
     }
   }
-  ${TaskFragment}
+  ${FullTaskFragment}
 `;
 
 export const GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE = gql`
@@ -265,5 +289,25 @@ export const FILTER_BOUNTIES_TO_EXPLORE = gql`
 export const RENDER_RICH_TEXT = gql`
   query renderRichText($jsonText: String) {
     renderRichText(jsonText: $jsonText)
+  }
+`;
+
+export const GET_MINT_OPERATION = gql`
+  query getTaskMintOperation($operationId: String!) {
+    getTaskMintOperation(operationId: $operationId) {
+      status
+      txHash
+      resourceId
+    }
+  }
+`;
+export const GET_MINT_TASK_TOKEN_DATA = gql`
+  query getTaskMintTokenData($taskId: ID!) {
+    getTaskMintTokenData(taskId: $taskId) {
+      tokenId
+      imageUrl
+      title
+      updatedAt
+    }
   }
 `;

@@ -1,48 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
-import CreateBtnIcon from 'components/Icons/createBtn';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Draggable } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
 
 import {
-  PERMISSIONS,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
   ENTITIES_TYPES,
-  BOARD_TYPE,
   STATUS_OPEN,
   STATUS_APPROVED,
   STATUS_CLOSED,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
-import { Task } from 'components/Common/Task';
-import { LoadMore } from 'components/Common/KanbanBoard/styles';
-
-import Milestone from 'components/Common/Milestone';
-import { useMe } from 'components/Auth/withAuth';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { taskHasPayment } from 'utils/board';
+import { TaskInterface } from 'types/task';
+
+import Task from 'components/Common/Task';
+import { LoadMore } from 'components/Common/KanbanBoard/styles';
+import Milestone from 'components/Common/Milestone';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import Droppable from 'components/StrictModeDroppable';
+import { ColumnSection } from 'components/Common/ColumnSection';
+import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from 'components/Icons';
+
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
   TaskColumnContainerHeaderTitle,
   TaskColumnContainerCount,
   TaskListContainer,
+  TaskColumnItemWrapper,
 } from './styles';
-import { ColumnSection } from '../../ColumnSection';
-import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from '../../../Icons';
 
 interface ITaskColumn {
   cardsList: Array<any>;
   moveCard: any;
   status: string;
   section: Array<any>;
+  draggingTask: TaskInterface | null;
 }
 
 const TITLES = {
@@ -67,13 +68,19 @@ const HEADER_ICONS = {
 };
 
 function TaskColumn(props: ITaskColumn) {
-  const { cardsList, moveCard, status, section } = props;
+  const { cardsList, status, section, draggingTask } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
   const [ref, inView] = useInView({});
+
+  const isTaskDragging = useMemo(() => draggingTask !== null, [draggingTask]);
+  const isDropDisabled = useMemo(
+    () => isTaskDragging && taskHasPayment(draggingTask) && status !== TASK_STATUS_DONE,
+    [draggingTask, isTaskDragging, status]
+  );
 
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
@@ -171,30 +178,36 @@ function TaskColumn(props: ITaskColumn) {
         )}
       </TaskColumnContainerHeader>
       {section && <ColumnSection section={section} setSection={() => {}} />}
-      <Droppable droppableId={status}>
+      <Droppable droppableId={status} isDropDisabled={isDropDisabled}>
         {(provided) => (
-          <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
+          <TaskListContainer
+            highlighted={isTaskDragging && !isDropDisabled}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
             {cardsList?.length ? (
               cardsList.map((card, index) => (
                 <Draggable key={card.id} draggableId={card.id} index={index} isDragDisabled={board?.isDragDisabled}>
                   {(provided, snapshot) => (
-                    <div
-                      style={{
-                        width: '100%',
-                      }}
+                    <TaskColumnItemWrapper
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                       ref={provided.innerRef}
                       isDragging={snapshot.isDragging}
+                      style={{
+                        ...provided.draggableProps.style,
+                        userSelect: 'none',
+                        cursor: board?.isDragDisabled ? 'default' : 'move',
+                      }}
                     >
                       {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
                         <Milestone>
-                          <Task task={card} setTask={() => {}} />
+                          <Task task={card} />
                         </Milestone>
                       ) : (
-                        <Task task={card} setTask={() => {}} />
+                        <Task task={card} />
                       )}
-                    </div>
+                    </TaskColumnItemWrapper>
                   )}
                 </Draggable>
               ))

@@ -10,8 +10,8 @@ export const Wrapper = styled.div`
   border-radius: 6px;
   min-width: 30%;
   flex: 1;
-  padding: 10px;
-  overflow: hidden;
+  padding: ${(props) => props.padding || '10px'};
+  width: 100%;
 `;
 
 export const Title = styled(Typography)`
@@ -27,5 +27,3 @@ export const Title = styled(Typography)`
     color: ${palette.blue20};
   }
 `;
-
-export const ChildrenWrapper = styled.div``;

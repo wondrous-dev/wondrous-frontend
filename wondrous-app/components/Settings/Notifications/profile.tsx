@@ -18,7 +18,6 @@ import {
   UserDiscordNotificationSettingsDiv,
   UserDiscordNotificationSettingsText,
   LoggedInDiscordUserText,
-  ExplanationText,
   NotificationSettingsCategoryLabel,
   NotificationSettingLabel,
   NotificationSettingListItem,
@@ -30,19 +29,7 @@ import {
   NotificationSettingsButtonsBlock,
 } from './styles';
 import Switch from '../../Common/Switch';
-import { ErrorText } from '../../Common';
-import { SafeImage } from '../../Common/Image';
-import { ProfilePictureDiv } from '../../Onboarding/styles';
-import {
-  GeneralSettingsButtonsBlock,
-  GeneralSettingsContainer,
-  GeneralSettingsResetButton,
-  GeneralSettingsSaveChangesButton,
-  LabelBlock,
-  DiscordText,
-} from '../styles';
-import { ImageUpload } from '../imageUpload';
-import { HeaderBlock } from '../headerBlock';
+import { GeneralSettingsContainer, GeneralSettingsResetButton, GeneralSettingsSaveChangesButton } from '../styles';
 
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({
@@ -363,41 +350,6 @@ function ProfileSettings(props) {
           </div>
         </UserDiscordNotificationSettingsContainer>
 
-        {/* <GeneralSettingsInputsBlock>
-          {profileBannerUrl ? (
-            <ProfilePictureDiv>
-              <LabelBlock>Profile Banner</LabelBlock>
-              <SafeImage
-                src={profileBannerUrl}
-                style={{
-                  width: '1350px',
-                  height: '259px',
-                  borderRadius: '6px',
-                }}
-              />
-              <ProfilePictureAdd
-                onClick={() => {
-                  // restart the profile picture addition
-                  setProfileBannerUrl(null);
-                  setProfileBanner(null);
-                }}
-                style={{
-                  position: 'absolute',
-                  marginLeft: '-16px',
-                  cursor: 'pointer',
-                }}
-              />
-            </ProfilePictureDiv>
-          ) : (
-            <ImageUpload
-              image={profileBanner}
-              imageWidth={1350}
-              imageHeight={259}
-              imageName="Profile Banner"
-              updateFilesCb={setProfileBanner}
-            />
-          )}
-        </GeneralSettingsInputsBlock> */}
         {isSettingChanged && isDiscordConnected && notificationOn && (
           <NotificationSettingsButtonsBlock>
             <GeneralSettingsResetButton onClick={setInitialSettings}>Reset changes</GeneralSettingsResetButton>

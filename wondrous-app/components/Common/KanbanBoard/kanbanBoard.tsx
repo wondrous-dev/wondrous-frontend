@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { useLocation } from 'utils/useLocation';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   ENTITIES_TYPES,
@@ -12,7 +11,6 @@ import {
   STATUS_APPROVED,
   STATUS_CLOSED,
   TASK_STATUS_DONE,
-  TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
 // Task update (column changes)
 import apollo from 'services/apollo';
@@ -35,7 +33,7 @@ export const populateOrder = (index, tasks, field) => {
     aboveOrder = tasks[index - 1][field];
   }
   if (index < tasks.length - 1) {
-    belowOrder = tasks[index][field];
+    belowOrder = tasks[index + 1][field];
   }
   return {
     aboveOrder,
@@ -46,7 +44,6 @@ export const populateOrder = (index, tasks, field) => {
 function KanbanBoard(props) {
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
-  const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
@@ -61,6 +58,12 @@ function KanbanBoard(props) {
   const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+  const [draggingTask, setDraggingTask] = useState(null);
+
+  const getTaskById = useCallback(
+    (taskId) => columns.map(({ tasks }) => tasks.find((task) => task.id === taskId)).filter((i) => i)[0],
+    [columns]
+  );
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
@@ -93,9 +96,7 @@ function KanbanBoard(props) {
       currentBoard = 'assignee';
     }
     try {
-      const {
-        data: { updateTask: task },
-      } = await apollo.mutate({
+      await apollo.mutate({
         mutation: UPDATE_TASK_STATUS,
         variables: {
           taskId: taskToBeUpdated.id,
@@ -130,8 +131,9 @@ function KanbanBoard(props) {
 
   const moveCard = async (id, status, index, source) => {
     // TODO get rid of nested loop
+    // index is the position of the new task in the column
     const updatedColumns = columns.map((column) => {
-      const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
+      const task = getTaskById(id);
       // Only allow when permissions are OK
       if (task?.paymentStatus !== PAYMENT_STATUS.PAID && task?.paymentStatus !== PAYMENT_STATUS.PROCESSING) {
         if (column.status !== status) {
@@ -150,7 +152,7 @@ function KanbanBoard(props) {
           if (orgBoard) {
             board = BOARD_TYPE.org;
             aboveOrder = populateOrder(index, newTasks, 'orgOrder').aboveOrder;
-            belowOrder = populateOrder(index, column.tasks, 'orgOrder').belowOrder;
+            belowOrder = populateOrder(index, newTasks, 'orgOrder').belowOrder;
           } else if (podBoard) {
             board = BOARD_TYPE.pod;
             aboveOrder = populateOrder(index, newTasks, 'podOrder').aboveOrder;
@@ -235,16 +237,11 @@ function KanbanBoard(props) {
     }
   };
 
-  const location = useLocation();
-
   const confirmCardMove = (moveAction) => async (id, status, index, source) => {
     const sourceColumn = columns.findIndex((column) => column.status === source.droppableId);
     const taskToUpdate = columns[sourceColumn]?.tasks.find((task) => task?.id === id);
     const taskType = taskToUpdate?.isProposal ? 'taskProposal' : 'task';
-    let viewUrl = `${delQuery(router.asPath)}?${taskType}=${taskToUpdate?.id}&view=${router.query.view || 'grid'}`;
-    if (board?.entityType) {
-      viewUrl += `&entity=${board?.entityType}`;
-    }
+
     let shouldConfirmInReviewTask = false;
     let pendingSubmissionCount = 0;
     if (status === TASK_STATUS_DONE) {
@@ -277,7 +274,12 @@ function KanbanBoard(props) {
         },
         closeAction: () => {
           setTaskToConfirm(null);
-          location.push(viewUrl);
+          const query = {
+            ...router.query,
+            [taskType]: taskToUpdate?.id,
+          };
+
+          router.push({ query }, undefined, { scroll: false, shallow: true });
         },
       });
       return;
@@ -285,14 +287,15 @@ function KanbanBoard(props) {
     return moveAction(id, status, index, source);
   };
 
-  useEffect(() => {
-    const { params } = location;
-    if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
-      setOpenModal(true);
-    }
-  }, [orgBoard, podBoard, userBoard, location]);
+  const onDragStart = (event) => {
+    const task = getTaskById(event.draggableId);
+
+    setDraggingTask(task);
+  };
 
   const onDragEnd = (result) => {
+    setDraggingTask(null);
+
     const moveAction = isProposalEntity ? moveProposal : confirmCardMove(moveCard);
     try {
       moveAction(result.draggableId, result.destination.droppableId, result.destination.index, result.source);
@@ -300,24 +303,6 @@ function KanbanBoard(props) {
       console.error('The card was dropped outside the context of DragDropContext.');
     }
   };
-
-  const handleClose = () => {
-    const style = document.body.getAttribute('style');
-    const top = style.match(/(top: -)(.*?)(?=px)/);
-    document.body.setAttribute('style', '');
-    if (top?.length > 0) {
-      window?.scrollTo(0, Number(top[2]));
-    }
-    let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
-    if (board?.entityType) {
-      newUrl += `&entity=${board?.entityType}`;
-    }
-    location.push(newUrl);
-    enableContainerOverflow();
-    setOpenModal(false);
-  };
-
-  const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;
   return (
     <KanbanBoardContainer>
       <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
@@ -336,20 +321,20 @@ function KanbanBoard(props) {
         {null}
       </ConfirmModal>
 
-      <TaskViewModal
-        disableEnforceFocus
-        open={openModal}
-        shouldFocusAfterRender={false}
-        handleClose={handleClose}
-        taskId={taskId}
-        isTaskProposal={!!location?.params?.taskProposal}
-        key={taskId}
-      />
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         {columns.map((column) => {
           const { status, section, tasks } = column;
 
-          return <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />;
+          return (
+            <TaskColumn
+              key={status}
+              cardsList={tasks}
+              moveCard={moveCard}
+              status={status}
+              section={section}
+              draggingTask={draggingTask}
+            />
+          );
         })}
       </DragDropContext>
     </KanbanBoardContainer>

@@ -1,55 +1,129 @@
-import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
-import {
-  ArrowIcon,
-  Button,
-  ButtonIcon,
-  IconText,
-  Item,
-  MenuStyled,
-  NoLogoPod,
-  Text,
-} from 'components/Common/SidebarEntityMenu/styles';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import palette from 'theme/palette';
-import { useBoards } from 'utils/hooks';
+import { useMe } from 'components/Auth/withAuth';
+import { OrgProfilePicture, UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 
-const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) => {
-  const { orgBoard } = useBoards();
+import { ArrowIcon, Button, ButtonIcon, IconText, Text, IconWrapper } from 'components/Common/SidebarEntityMenu/styles';
+import { ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
+import WorkspacePicker from 'components/WorkspacePicker';
+import { useRouter } from 'next/router';
+import { useMemo, useState } from 'react';
+import palette from 'theme/palette';
+import { useGlobalContext } from 'utils/hooks';
+
+const DropdownItem = ({ isOrgOrPod, thumbnailPicture, profilePicture, isExplore, userProfilePicture, isUserBoard }) => {
+  if (isOrgOrPod) {
+    return (
+      <ButtonIcon isUserBoard={isUserBoard}>
+        <OrgProfilePicture
+          profilePicture={thumbnailPicture || profilePicture}
+          style={{
+            borderRadius: '3px',
+            width: '28px',
+            height: '28px',
+            background: palette.grey87,
+          }}
+        />
+      </ButtonIcon>
+    );
+  }
+  if (isExplore) {
+    return (
+      <ButtonIcon isUserBoard={isUserBoard}>
+        <IconWrapper>
+          <ExplorePageMinimalIcon />
+        </IconWrapper>
+      </ButtonIcon>
+    );
+  }
+  if (isUserBoard) {
+    return (
+      <ButtonIcon isUserBoard={isUserBoard}>
+        <UserProfilePicture
+          avatar={userProfilePicture}
+          style={{
+            width: '28px',
+            height: '28px',
+            borderRadius: '100%',
+          }}
+        />
+      </ButtonIcon>
+    );
+  }
+  return null;
+};
+
+const MY_WORKSPACES = [
+  '/mission-control',
+  '/dashboard/admin',
+  '/dashboard/bounties',
+  '/dashboard',
+  '/dashboard/proposals',
+  '/profile/[username]/about',
+  '/profile/settings',
+  '/profile/login-methods',
+  '/profile/notifications',
+];
+
+const EntityMenu = () => {
   const router = useRouter();
+  const { pageData } = useGlobalContext();
+  const user = useMe();
+  const activePodOrg = useMemo(() => pageData?.pod?.org, [pageData?.pod]);
+
+  const activeOrg = pageData?.orgData;
+
+  const orgOrPod = activeOrg || activePodOrg || {};
+
+  const { thumbnailPicture, profilePicture, name } = orgOrPod;
+
+  const isExplore = useMemo(() => router.pathname.includes('/explore'), [router.pathname]);
+
+  const isOrgOrPod = useMemo(
+    () => router.pathname.includes('/organization') || router.pathname.includes('/pod'),
+    [router.pathname]
+  );
+
+  const isUserBoard = useMemo(() => {
+    if (router.pathname === `/profile/[username]/about` && router.query?.username !== user?.username) return false;
+
+    return MY_WORKSPACES.includes(router.pathname);
+  }, [router.pathname, user]);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-  const handleOnClickNotifications = () =>
-    router.push(orgBoard ? `/organization/settings/${id}/notifications` : `/pod/settings/${id}/notifications`);
+
+  const pageTitle = useMemo(() => {
+    if (isExplore) {
+      return 'Explore';
+    }
+    if (isUserBoard) {
+      return 'My workspace';
+    }
+    if (name) {
+      return name;
+    }
+    return 'Select workspace';
+  }, [name, isExplore, isUserBoard, isOrgOrPod]);
+
   return (
     <>
-      <Button onClick={handleClick} open={open} disabled={!canManage}>
+      <Button onClick={handleClick} open={open} id="tour-header-project-navigation">
         <IconText>
-          <ButtonIcon>
-            {orgBoard ? (
-              <OrgProfilePicture
-                profilePicture={thumbnailPicture || profilePicture}
-                style={{
-                  borderRadius: '3px',
-                  width: '28px',
-                  height: '28px',
-                  background: palette.grey87,
-                }}
-              />
-            ) : (
-              <NoLogoPod />
-            )}
-          </ButtonIcon>
-          <Text>{name}</Text>
+          <DropdownItem
+            isOrgOrPod={isOrgOrPod}
+            thumbnailPicture={thumbnailPicture}
+            profilePicture={profilePicture}
+            isExplore={isExplore}
+            isUserBoard={isUserBoard}
+            userProfilePicture={user?.profilePicture}
+          />
+
+          <Text>{pageTitle}</Text>
         </IconText>
-        {canManage && <ArrowIcon open={open} />}
+        <ArrowIcon open={open} />
       </Button>
-      <MenuStyled anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <Item onClick={handleOnClickNotifications}>Notification Settings</Item>
-        {/* <Item>Leave Project</Item> NOTE: There's no endpoint for this yet. */}
-      </MenuStyled>
+      <WorkspacePicker user={user} isUserBoard={isUserBoard} open={open} anchorEl={anchorEl} onClose={handleClose} />
     </>
   );
 };

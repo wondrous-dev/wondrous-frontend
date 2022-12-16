@@ -34,7 +34,7 @@ import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
 import { SubmissionPayment } from './submissionPayment';
 
-function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText = '', dataCy = 'submission' }) {
+export function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText = '', dataCy = 'submission' }) {
   return (
     <SubmissionButtonWrapperGradient>
       <SubmissionButtonWrapperBackground>
@@ -49,39 +49,37 @@ function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText
   );
 }
 
-const inProgressMoveCompleted =
-  ({ boardColumns, board }) =>
-  (data) => {
-    const task = data?.updateTaskStatus;
-    if (boardColumns?.setColumns) {
-      const transformedTask = transformTaskToTaskCard(task, {});
-      if (board?.entityType && board?.entityType === ENTITIES_TYPES.BOUNTY) {
-        const newColumns = boardColumns?.columns.map((col) => (col.id === transformedTask.id ? transformedTask : col));
-        boardColumns?.setColumns(newColumns);
-        return;
-      }
-      const columns = [...boardColumns?.columns];
-      columns[0].tasks = columns[0].tasks.filter((existingTask) => {
-        if (transformedTask?.id !== existingTask?.id) {
-          return true;
-        }
-        return false;
-      });
-      columns[1].tasks = [transformedTask, ...columns[1].tasks];
-      boardColumns?.setColumns(columns);
+const inProgressMoveCompleted = ({ boardColumns, board }, data) => {
+  const task = data?.updateTaskStatus;
+  if (boardColumns?.setColumns) {
+    const transformedTask = transformTaskToTaskCard(task, {});
+    if (board?.entityType && board?.entityType === ENTITIES_TYPES.BOUNTY) {
+      const newColumns = boardColumns?.columns.map((col) => (col.id === transformedTask.id ? transformedTask : col));
+      boardColumns?.setColumns(newColumns);
+      return;
     }
-  };
+    const columns = [...boardColumns?.columns];
+    columns[0].tasks = columns[0].tasks.filter((existingTask) => {
+      if (transformedTask?.id !== existingTask?.id) {
+        return true;
+      }
+      return false;
+    });
+    columns[1].tasks = [transformedTask, ...columns[1].tasks];
+    boardColumns?.setColumns(columns);
+  }
+};
 
-function TaskSubmissionsLoading({ loading }) {
+export function TaskSubmissionsLoading({ loading }) {
   if (!loading) return null;
   return <CircularProgress />;
 }
 
-function TaskSubmissionsEmptyState() {
+export function TaskSubmissionsEmptyState({ label = 'No submissions yet' }) {
   return (
     <TaskSubmissionEmptyStateContainer>
       <TaskSubmissionEmptyStateIcon />
-      <TaskSubmissionEmptyStateText>No submissions yet</TaskSubmissionEmptyStateText>
+      <TaskSubmissionEmptyStateText>{label}</TaskSubmissionEmptyStateText>
     </TaskSubmissionEmptyStateContainer>
   );
 }
@@ -208,7 +206,7 @@ export function TaskSubmissions(props) {
   } = props;
   const router = useRouter();
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
-    onCompleted: inProgressMoveCompleted({ boardColumns, board }),
+    onCompleted: (data) => inProgressMoveCompleted({ boardColumns, board }, data),
   });
   const [updateTaskHideSubmissions] = useMutation(UPDATE_TASK_SHOW_SUBMISSIONS, {
     refetchQueries: ['getTaskById'],
@@ -253,16 +251,20 @@ export function TaskSubmissions(props) {
         submissionToEdit={submissionToEdit}
       />
       <TaskSubmissionsFormInactive submissionToEdit={submissionToEdit} makeSubmission={makeSubmission}>
-        <Grid container direction="row" justifyContent="space-between" alignItems="center">
-          <TaskSubmissionsFilter
-            fetchedTaskSubmissions={fetchedTaskSubmissions}
-            setFilteredSubmissions={setFilteredSubmissions}
-          />
-          <TaskSubmissionsTaskInProgress
-            canSubmit={canSubmit}
-            setMakeSubmission={setMakeSubmission}
-            taskStatus={taskStatus}
-          />
+        <Grid container direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+          <Grid item xl={6} lg={6} md={6} sm={5} xs={5} display="flex" justifyContent="flex-start">
+            <TaskSubmissionsFilter
+              fetchedTaskSubmissions={fetchedTaskSubmissions}
+              setFilteredSubmissions={setFilteredSubmissions}
+            />
+          </Grid>
+          <Grid item xl={6} lg={6} md={6} sm={5} xs={5} display="flex" justifyContent="flex-end">
+            <TaskSubmissionsTaskInProgress
+              canSubmit={canSubmit}
+              setMakeSubmission={setMakeSubmission}
+              taskStatus={taskStatus}
+            />
+          </Grid>
         </Grid>
         {isBounty &&
           fetchedTask?.status !== TASK_STATUS_DONE &&

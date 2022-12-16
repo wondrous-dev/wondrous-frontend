@@ -1,6 +1,7 @@
 import { ButtonUnstyled } from '@mui/base';
 import { Button, Menu, MenuItem, Modal, Typography } from '@mui/material';
 import { Button as GradientButton } from 'components/Common/button';
+import { Button as ComponentButton } from 'components/Button';
 import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
 import Share from 'components/Common/Share';
@@ -26,6 +27,7 @@ export const TaskModal = styled(Modal)`
   align-items: center;
   justify-content: center;
   z-index: 500;
+  padding: 0 24px;
 `;
 
 export const TaskModalCard = styled.div`
@@ -104,6 +106,10 @@ export const TaskModalHeaderTypography = styled(Typography)`
     color: ${theme.palette.white};
   `}
   }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
 `;
 
 export const TaskModalHeaderBackToList = styled(TaskModalHeaderTypography)`
@@ -178,6 +184,13 @@ export const SubtaskIconWrapper = styled(TaskModalHeaderIconWrapper)`
   cursor: auto;
 `;
 
+export const SubtaskTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 8px;
+`;
+
 export const TaskModalHeaderShare = styled((props) => <Share {...props} />)`
   && {
     width: 32px;
@@ -243,6 +256,7 @@ export const TaskModalHeaderMenu = styled(Menu)`
 
 export const TaskModalHeaderMenuItem = styled(MenuItem)`
   && {
+    z-index: 1000;
     display: flex;
     justify-content: flex-start;
     color: ${({ theme, warning }) => (warning ? theme.palette.red800 : theme.palette.white)};
@@ -257,12 +271,16 @@ export const TaskModalHeaderMenuItem = styled(MenuItem)`
 
 const TaskModalTaskDataFullScreen = css`
   display: grid;
-  grid-template-columns: 6fr 4fr;
+  grid-template-columns: minmax(0, 6fr) 4fr;
   grid-template-rows: auto 1fr;
   row-gap: 36px;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    display: block;
+  }
 `;
 
-const TaskModalTaskDataMinimized = css`
+export const TaskModalTaskDataMinimized = css`
   display: flex;
   flex-direction: column;
 `;
@@ -270,6 +288,7 @@ const TaskModalTaskDataMinimized = css`
 export const TaskModalTaskData = styled.div`
   flex-grow: 1;
   ${({ fullScreen }) => (fullScreen ? TaskModalTaskDataFullScreen : TaskModalTaskDataMinimized)};
+  ${({ hideRowGap }) => (hideRowGap ? 'row-gap: 0 !important' : '')};
 `;
 
 export const TaskModalTitleDescriptionMedia = styled.div`
@@ -284,6 +303,7 @@ export const TaskModalTitleDescriptionMedia = styled.div`
 export const TaskModalTitle = styled(Typography)`
   && {
     font-size: 24px;
+    word-break: break-all;
     ${({ theme }) => `
     color: ${theme.palette.white};
     font-weight: ${theme.typography.fontWeightBold};
@@ -411,7 +431,7 @@ export const TaskSectionDisplayData = styled.div`
 
 export const TaskSectionDisplayDiv = styled.div`
   display: flex;
-  align-items: center;
+  align-items: ${({ alignItems }) => alignItems || 'center'};
 `;
 
 export const TaskSectionDisplayLabel = styled.div`
@@ -428,6 +448,7 @@ export const TaskSectionDisplayContentWrapper = styled.div`
   row-gap: 12px;
   column-gap: 36px;
   flex-flow: row wrap;
+  width: 100%;
 `;
 
 export const TaskSectionTagWrapper = styled.div`
@@ -457,6 +478,7 @@ export const TaskSectionImageContentWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
 `;
 
 export const TaskSectionImageContentSafeImage = styled(SafeImage).attrs({ useNextImage: false })``;
@@ -712,6 +734,7 @@ export const TaskSectionInfoCreatorDaysAgo = styled.span`
 export const TaskSectionInfoDiv = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
 `;
 
 export const TaskModalFooter = styled.div`
@@ -726,6 +749,11 @@ export const TaskSectionFooterTitleDiv = styled.div`
   align-items: center;
   padding: 0 24px;
   gap: 24px;
+  overflow-x: auto;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const TaskSubmissionTab = styled.div`
@@ -753,6 +781,7 @@ export const TaskSubmissionTab = styled.div`
 `;
 
 export const TaskTabText = styled(Typography)`
+  display: inline-flex;
   && {
     font-size: 14px;
     ${({ theme, isActive }) => `
@@ -766,11 +795,12 @@ export const TabItemCount = styled.span`
   background: ${({ isActive }) => (isActive ? '#282828' : '#282828')};
   padding: 2px 8px;
   border-radius: 200px;
+  margin-left: 4px;
 `;
 
 export const TaskSectionContent = styled.div`
   padding: 20px 24px;
-  background-color: #141414;
+  background-color: ${palette.grey125};
   flex-grow: 1;
 `;
 
@@ -852,6 +882,10 @@ export const ActionButton = styled(CreateFormPreviewButton)`
       padding: 1px;
       border-radius: 180px;
     }
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      font-size: 15px;
+    }
   }
   &.Mui-disabled {
     &::before {
@@ -886,4 +920,35 @@ export const LockedTask = styled.div`
 export const TaskIntiativesContainer = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const AddReviewerButton = styled(ComponentButton)`
+  && {
+    width: 26px;
+    min-height: 0;
+    height: 26px;
+    background: ${palette.grey920};
+    border-radius: 4px;
+    padding: 0;
+    & > button {
+      background: ${palette.grey920};
+      width: 26px;
+      height: 26px;
+      &:hover {
+        background: ${palette.grey920};
+      }
+    }
+  }
+`;
+
+export const ReviewerWrapper = styled.div`
+  width: 100%;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  > div:nth-last-child(2) {
+    max-width: ${({ showAddButton }) => showAddButton && `calc(100% - 40px)`};
+  }
 `;

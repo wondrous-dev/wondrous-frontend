@@ -111,7 +111,6 @@ export const useSnapshot = () => {
   // checks for Snapshot stored in Wonder Org via Wonder API & updates state to reflect db
   const [getOrgSnapshotInfo, { loading: getOrgSnapshotInfoLoading }] = useLazyQuery(GET_ORG_SNAPSHOT_INFO, {
     onCompleted: (data) => {
-      console.log('dataa', data);
       if (data?.getOrgSnapshotInfo) {
         const { snapshotEns, name, symbol, network, url } = data?.getOrgSnapshotInfo;
         // sets local state of integrations field from 'org' table, or null if nonexistent

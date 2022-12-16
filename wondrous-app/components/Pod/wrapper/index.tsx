@@ -1,11 +1,21 @@
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
-import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
-import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
-import { usePodBoard, useTokenGating } from 'utils/hooks';
+import {
+  ENTITIES_TYPES,
+  GR15DEICategoryName,
+  PERMISSIONS,
+  PRIVACY_LEVEL,
+  HEADER_ASPECT_RATIO,
+  EMPTY_RICH_TEXT_STRING,
+} from 'utils/constants';
+import { parseUserPermissionContext, removeUrlStart, toggleHtmlOverflow } from 'utils/helpers';
+import { usePodBoard } from 'utils/hooks';
+import { AspectRatio } from 'react-aspect-ratio';
+import DEFAULT_HEADER from 'public/images/overview/background.png';
 import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
@@ -15,20 +25,20 @@ import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
-import BoardLock from 'components/BoardLock';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import {
   ExploreProjectsButton,
   ExploreProjectsButtonFilled,
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
+import MoreInfoModal from 'components/profile/modals';
 import { LogoWrapper, OrgLogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
-import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import { MoreInfoModal } from '../../profile/modals';
+import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import {
   Content,
   ContentContainer,
+  Container,
   HeaderActivity,
   HeaderActivityLink,
   HeaderActivityLinkIcon,
@@ -56,7 +66,6 @@ import Tabs from '../../organization/tabs/tabs';
 import PodIcon from '../../Icons/podIcon';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
 import { useMe } from '../../Auth/withAuth';
-import DefaultBg from '../../../public/images/overview/background.png';
 
 const ExplorePodGr15 = ({
   onTaskPage,
@@ -151,7 +160,7 @@ function Wrapper(props) {
   const [showUsers, setShowUsers] = useState(false);
   const [podRoleName, setPodRoleName] = useState(null);
   const [showPods, setShowPods] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [moreInfoModalOpen, setMoreInfoModalOpen] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST);
   const [getPerTypeTaskCountForPodBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE_FOR_POD);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
@@ -160,7 +169,6 @@ function Wrapper(props) {
   const userJoinRequest = getUserJoinRequestData?.getUserJoinPodRequest;
   const podBoard = usePodBoard();
   const boardFilters = podBoard?.filters || {};
-  const [tokenGatingConditions, isTokenGatingInfoLoading] = useTokenGating(podBoard?.orgId);
   const [getOrg, { loading: isOrgLoading, data: orgData }] = useLazyQuery(GET_ORG_BY_ID, {
     fetchPolicy: 'cache-and-network',
   });
@@ -253,125 +261,132 @@ function Wrapper(props) {
     }
   }, [podBoard?.podId]);
 
-  const showFilters = router?.pathname === '/pod/[podId]/boards';
-  console.log('setOpenCurrentRoleModal', setOpenCurrentRoleModal);
   return (
     <>
+      <TaskViewModalWatcher />
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
-      <MembershipRequestModal
-        podId={podBoard?.podId}
-        open={openJoinRequestModal}
-        onClose={() => setOpenJoinRequestModal(false)}
-        setOpenCurrentRoleModal={setOpenCurrentRoleModal}
-        requestingRole={claimedOrRequestedRole}
-      />
-      <PodCurrentRoleModal
-        podId={podBoard?.podId}
-        open={openCurrentRoleModal}
-        onClose={() => setOpenCurrentRoleModal(false)}
-        linkedWallet={loggedInUser?.activeEthAddress}
-        currentRoleName={podRoleName}
-        setOpenJoinRequestModal={setOpenJoinRequestModal}
-        setClaimedOrRequestedRole={setClaimedOrRequestedRole}
-      />
-      <MoreInfoModal
-        open={open && (showUsers || showPods)}
-        handleClose={() => {
-          document.body.setAttribute('style', '');
-          setOpen(false);
-        }}
-        showUsers={showUsers}
-        showPods={showPods}
-        name={podProfile?.name}
-        podId={podProfile?.id}
-      />
+      {openJoinRequestModal && (
+        <MembershipRequestModal
+          podId={podBoard?.podId}
+          open={openJoinRequestModal}
+          onClose={() => setOpenJoinRequestModal(false)}
+          setOpenCurrentRoleModal={setOpenCurrentRoleModal}
+          requestingRole={claimedOrRequestedRole}
+        />
+      )}
+      {openCurrentRoleModal && (
+        <PodCurrentRoleModal
+          podId={podBoard?.podId}
+          open={openCurrentRoleModal}
+          onClose={() => setOpenCurrentRoleModal(false)}
+          linkedWallet={loggedInUser?.activeEthAddress}
+          currentRoleName={podRoleName}
+          setOpenJoinRequestModal={setOpenJoinRequestModal}
+          setClaimedOrRequestedRole={setClaimedOrRequestedRole}
+        />
+      )}
+      {moreInfoModalOpen && (
+        <MoreInfoModal
+          open={moreInfoModalOpen && (showUsers || showPods)}
+          handleClose={() => {
+            document.body.setAttribute('style', '');
+            setMoreInfoModalOpen(false);
+          }}
+          showUsers={showUsers}
+          showPods={showPods}
+          name={podProfile?.name}
+          podId={podProfile?.id}
+        />
+      )}
       <ChooseEntityToCreate />
       <OverviewComponent>
         <HeaderImageWrapper>
-          {podProfile ? (
-            <SafeImage
-              src={podProfile?.headerPicture || DefaultBg}
-              width="100%"
-              height={100}
-              layout="fill"
-              objectFit="cover"
-              useNextImage
-            />
-          ) : null}
+          <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
+            {podProfile ? (
+              <SafeImage
+                src={podProfile?.headerPicture || DEFAULT_HEADER}
+                style={{
+                  objectFit: 'cover',
+                  width: '100%',
+                }}
+                fill
+                useNextImage
+                alt="Pod header"
+              />
+            ) : null}
+          </AspectRatio>
         </HeaderImageWrapper>
         <Content>
           <ContentContainer>
             <TokenHeader>
               <HeaderMainBlock>
-                {!isTokenGatingInfoLoading && (
-                  <LogoWrapper>
-                    <OrgLogoWrapper
-                      onClick={() => {
-                        router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
+                <LogoWrapper>
+                  <OrgLogoWrapper
+                    onClick={() => {
+                      router.push(`/organization/${orgData?.getOrgById?.username}/home`);
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: 'relative',
+                        cursor: 'pointer',
+                        ...(isGr15Sponsor && {
+                          marginRight: '20px',
+                        }),
                       }}
                     >
-                      <div
+                      <SafeImage
+                        src={orgData?.getOrgById?.profilePicture}
+                        placeholderComp={
+                          <TokenEmptyLogo>
+                            <DAOEmptyIcon />
+                          </TokenEmptyLogo>
+                        }
+                        width={50}
+                        height={50}
+                        useNextImage
+                        alt="Pod logo"
                         style={{
-                          position: 'relative',
-                          cursor: 'pointer',
-                          ...(isGr15Sponsor && {
-                            marginRight: '20px',
-                          }),
-                        }}
-                      >
-                        <SafeImage
-                          src={orgData?.getOrgById?.profilePicture}
-                          placeholderComp={
-                            <TokenEmptyLogo>
-                              <DAOEmptyIcon />
-                            </TokenEmptyLogo>
-                          }
-                          width={60}
-                          height={60}
-                          layout="fixed"
-                          useNextImage
-                          style={{
-                            borderRadius: '6px',
-                          }}
-                        />
-                        {isGr15Sponsor && (
-                          <>
-                            <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                            <GR15DEILogo
-                              width="42"
-                              height="42"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setOpenGR15Modal(true);
-                              }}
-                              style={{
-                                top: '0',
-                                right: '-20px',
-                                position: 'absolute',
-                                zIndex: '20',
-                              }}
-                            />
-                          </>
-                        )}
-                      </div>
-                    </OrgLogoWrapper>
-
-                    <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />
-                    {podProfile?.profilePicture ? (
-                      <PodProfileImage src={podProfile?.profilePicture} />
-                    ) : (
-                      <PodIcon
-                        color={podProfile?.color}
-                        style={{
-                          width: 60,
-                          height: 60,
-                          borderRadius: 50,
+                          borderRadius: '6px',
                         }}
                       />
-                    )}
-                  </LogoWrapper>
-                )}
+                      {isGr15Sponsor && (
+                        <>
+                          <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                          <GR15DEILogo
+                            width="30"
+                            height="30"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setOpenGR15Modal(true);
+                            }}
+                            style={{
+                              top: '0',
+                              right: '-10px',
+                              position: 'absolute',
+                              zIndex: '20',
+                            }}
+                          />
+                        </>
+                      )}
+                    </div>
+                  </OrgLogoWrapper>
+
+                  <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />
+                  {podProfile?.profilePicture ? (
+                    <PodProfileImage src={podProfile?.profilePicture} />
+                  ) : (
+                    <PodIcon
+                      color={podProfile?.color}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 50,
+                      }}
+                    />
+                  )}
+                </LogoWrapper>
 
                 <HeaderTitleIcon>
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
@@ -389,12 +404,6 @@ function Wrapper(props) {
                     </RoleButtonWrapper>
                   )}
 
-                  {!isTokenGatingInfoLoading && (
-                    <TokenGatedBoard
-                      isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                      tooltipTitle="Token gating"
-                    />
-                  )}
                   <ToggleBoardPrivacyIcon
                     isPrivate={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public}
                     tooltipTitle={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
@@ -425,55 +434,61 @@ function Wrapper(props) {
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              <HeaderText>
-                <RichTextViewer text={podProfile?.description} />
-              </HeaderText>
-              <HeaderActivity>
-                {links?.map((link) => (
-                  <>
-                    {link?.url ? (
-                      <HeaderActivityLink href={link?.url} key={link}>
-                        {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
-                        {link?.name || link?.url}
-                      </HeaderActivityLink>
-                    ) : null}
-                  </>
-                ))}
-                <HeaderContributors
-                  isInPodPage
-                  onClick={() => {
-                    setOpen(true);
-                    setShowUsers(true);
-                  }}
-                >
-                  <HeaderContributorsAmount>{podProfile?.contributorCount}</HeaderContributorsAmount>
-                  <HeaderContributorsText>
-                    {podProfile?.contributorCount === 1 ? 'Contributor' : 'Contributors'}
-                  </HeaderContributorsText>
-                </HeaderContributors>
-                {podIsGr15Sponsor && (
-                  <HeaderGr15Sponsor>
-                    <ExplorePodGr15
-                      onTaskPage={onTaskPage}
-                      onBountyPage={onBountyPage}
-                      hasGr15Bounties={podHasGr15Bounties}
-                      hasGr15Tasks={podHasGr15Tasks}
-                      onFilterChange={onFilterChange}
-                      podProfile={podProfile}
-                      filters={boardFilters}
-                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                    />
-                  </HeaderGr15Sponsor>
-                )}
-                {/* <HeaderPods>
+              {podProfile?.description && podProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
+                <HeaderText as="div">
+                  <RichTextViewer text={podProfile?.description} />
+                </HeaderText>
+              ) : (
+                <div style={{ height: 10 }} />
+              )}
+              <div>
+                <HeaderActivity>
+                  {links?.map((link) => (
+                    <>
+                      {link?.url ? (
+                        <HeaderActivityLink href={link?.url} key={link}>
+                          {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
+                          {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
+                        </HeaderActivityLink>
+                      ) : null}
+                    </>
+                  ))}
+                  <HeaderContributors
+                    isInPodPage
+                    onClick={() => {
+                      setMoreInfoModalOpen(true);
+                      setShowUsers(true);
+                    }}
+                  >
+                    <HeaderContributorsAmount>{podProfile?.contributorCount}</HeaderContributorsAmount>
+                    <HeaderContributorsText>
+                      {podProfile?.contributorCount === 1 ? 'Contributor' : 'Contributors'}
+                    </HeaderContributorsText>
+                  </HeaderContributors>
+                  {podIsGr15Sponsor && (
+                    <HeaderGr15Sponsor>
+                      <ExplorePodGr15
+                        onTaskPage={onTaskPage}
+                        onBountyPage={onBountyPage}
+                        hasGr15Bounties={podHasGr15Bounties}
+                        hasGr15Tasks={podHasGr15Tasks}
+                        onFilterChange={onFilterChange}
+                        podProfile={podProfile}
+                        filters={boardFilters}
+                        exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                        setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                      />
+                    </HeaderGr15Sponsor>
+                  )}
+                  {/* <HeaderPods>
                     <HeaderPodsAmount>{podProfile?.podCount}</HeaderPodsAmount>
                     <HeaderPodsText>Pods</HeaderPodsText>
                   </HeaderPods> */}
-              </HeaderActivity>
+                </HeaderActivity>
+              </div>
             </TokenHeader>
 
-            <Tabs page="pod" showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
+            <Container>
               <BoardsSubheaderWrapper>
                 {podBoard?.setEntityType && !search && (
                   <TypeSelector
@@ -481,7 +496,7 @@ function Wrapper(props) {
                     setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
                   />
                 )}
-                {showFilters && (
+                {!!filterSchema && (
                   <BoardsActivity
                     onSearch={onSearch}
                     filterSchema={filterSchema}
@@ -491,9 +506,8 @@ function Wrapper(props) {
                   />
                 )}
               </BoardsSubheaderWrapper>
-
               {children}
-            </Tabs>
+            </Container>
           </ContentContainer>
         </Content>
       </OverviewComponent>

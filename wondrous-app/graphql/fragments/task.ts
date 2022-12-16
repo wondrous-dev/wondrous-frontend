@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 import { MediaFragment } from './media';
 
-export const TaskFragment = gql`
-  fragment TaskFragment on Task {
+export const MinimalTaskFragment = gql`
+  fragment MinimalTaskFragment on Task {
     id
     title
     createdAt
@@ -15,7 +15,75 @@ export const TaskFragment = gql`
     podId
     type
     priority
-    blockerTaskIds
+    dueDate
+    status
+    paymentStatus
+    links {
+      url
+      displayName
+      type
+    }
+    assigneeId
+    userMentions
+    media {
+      ...MediaFragment
+    }
+    assignee {
+      username
+      profilePicture
+    }
+    org {
+      profilePicture
+      name
+      username
+      privacyLevel
+      shared
+    }
+    pod {
+      name
+      color
+      privacyLevel
+    }
+    commentCount
+    privacyLevel
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+      chain
+    }
+    recurringSchema {
+      daily
+      weekly
+      monthly
+      periodic
+    }
+    points
+    claimPolicy
+    claimPolicyRoles
+    shouldUnclaimOnDueDateExpiry
+    hideSubmissions
+  }
+
+  ${MediaFragment}
+`;
+
+export const FullTaskFragment = gql`
+  fragment FullTaskFragment on Task {
+    id
+    title
+    createdAt
+    createdBy
+    completedAt
+    description
+    milestoneId
+    parentTaskId
+    orgId
+    podId
+    type
+    priority
     dueDate
     status
     paymentStatus
@@ -64,6 +132,9 @@ export const TaskFragment = gql`
     milestone {
       title
     }
+    parentTask {
+      title
+    }
     orgOrder
     podOrder
     assigneeOrder
@@ -104,6 +175,10 @@ export const TaskFragment = gql`
     hideSubmissions
     categories {
       name
+    }
+    taskMint {
+      tokenId
+      status
     }
   }
 
@@ -361,12 +436,12 @@ export const TaskProposalFragment = gql`
     }
     snapshotId
     votes {
-      counts {
-        approve
-        reject
-      }
+      counts
       userVote
+      totalVotes
     }
+    voteType
+    voteOptions
     categories {
       name
     }

@@ -1,9 +1,9 @@
-import { Wrapper, ChildrenWrapper, Title } from './styles';
+import { Wrapper, Title } from './styles';
 
-const WidgetLayout: React.FC<{ title: string; children: any }> = ({ title, children }) => (
-  <Wrapper>
+const WidgetLayout: React.FC<{ title: string; children: any; padding?: String }> = ({ title, children, ...props }) => (
+  <Wrapper {...props}>
     <Title>{title}</Title>
-    <ChildrenWrapper>{children}</ChildrenWrapper>
+    <div>{children}</div>
   </Wrapper>
 );
 

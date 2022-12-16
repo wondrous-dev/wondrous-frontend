@@ -1,16 +1,8 @@
-import {
-  Box,
-  Button as MuiButton,
-  ButtonBase,
-  InputBase,
-  List,
-  ListItem,
-  ListItemIcon,
-  Typography,
-} from '@mui/material';
+import { Box, Button as MuiButton, ButtonBase, InputBase, List, ListItem, Typography } from '@mui/material';
 import SnackbarComp from '@mui/material/Snackbar';
 import { SafeImage } from 'components/Common/Image';
-import styled from 'styled-components';
+import Image from 'next/image';
+import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { Button } from '../Common/button';
@@ -180,7 +172,7 @@ export const SettingsDaoPodIndicatorOrgProfile = styled((props) => (
     }}
     {...props}
   />
-))``;
+));
 
 export const SettingsDaoPodIndicatorText = styled(Typography)`
   && {
@@ -261,16 +253,6 @@ export const SettingsHeaderInviteButton = styled.button`
   cursor: pointer;
 `;
 
-export const SettingsHeaderInviteButtonIcon = styled.div`
-  height: 25px;
-  width: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #3d3d3d;
-  border-radius: 1000px;
-`;
-
 export const SettingsHeaderActionText = styled(ButtonBase)`
   && {
     font-family: ${typography.fontFamily};
@@ -284,12 +266,13 @@ export const SettingsHeaderActionText = styled(ButtonBase)`
 // general settings styles
 export const GeneralSettingsContainer = styled.div`
   height: 100%;
-  width: 555px;
+  width: 780px;
 `;
 
 export const GeneralSettingsInputsBlock = styled.div`
   padding: 30px 0;
-  border-bottom: 1px solid #363636;
+  border-bottom: 1px solid ${palette.black92};
+  margin-bottom: 30px;
 `;
 
 export const GeneralSettingsDAONameBlock = styled.div`
@@ -315,12 +298,11 @@ export const GeneralSettingsDAONameInput = styled(InputBase)`
   && {
     width: 100%;
     height: 40px;
-    border: 1px solid #4b4b4b;
     border-radius: 6px;
-
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
+    background: ${palette.black101};
     color: ${palette.white};
     padding: 10px 15px;
   }
@@ -345,23 +327,29 @@ export const GeneralSettingsDAODescriptionInput = styled(GeneralSettingsDAONameI
     color: ${palette.white};
     padding: 10px 15px;
     border: none;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 `;
 
 export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
   && {
     font-size: 12px;
-    color: #7a7a7a;
+    background: ${palette.black101};
+    color: ${palette.grey57};
     width: 100%;
     text-align: right;
     padding: 8px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
   }
 `;
 
 // socials block
 export const GeneralSettingsSocialsBlock = styled.div`
   padding: 30px 0 15px;
-  border-bottom: 1px solid #363636;
+  border-bottom: 1px solid ${palette.black92};
+  border-top: 1px solid ${palette.black92};
 `;
 
 export const GeneralSettingsSocialsBlockWrapper = styled.div``;
@@ -370,6 +358,26 @@ export const GeneralSettingsSocialsBlockRow = styled.div`
   width: 100%;
   display: flex;
   margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  div {
+    margin-right: 0;
+  }
+
+  .MuiInputBase-root {
+    flex: 1;
+    padding: 0px !important;
+    border: 0px !important;
+    border-radius: 4px;
+    padding: 12px !important;
+    background: ${palette.black101};
+
+    input {
+      font-size: 14px;
+    }
+  }
 `;
 
 export const GeneralSettingsSocialsBlockRowLabel = styled.div`
@@ -390,7 +398,7 @@ export const GeneralSettingsSocialsBlockRowLabel = styled.div`
 export const GeneralSettingsIntegrationsBlock = styled.div`
   width: 100%;
   padding: 28px 0;
-  border-bottom: 1px solid #363636;
+  border-bottom: 1px solid ${palette.black92};
 `;
 
 export const GeneralSettingsDiscordIcon = styled(Discord)`
@@ -417,6 +425,25 @@ export const GeneralSettingsIntegrationsBlockButton = styled(Button)`
   }
 `;
 
+export const ImageComponent = styled<{ borderRadius: boolean }>(Image)`
+  width: 100%;
+  ${({ borderRadius }) =>
+    borderRadius &&
+    css`
+      border-radius: 50%;
+    `};
+`;
+
+export const CreateFormAddDetailsTabWrapper = styled.div`
+  div {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  padding-bottom: 32px;
+  border-bottom: 1px solid ${palette.black92};
+`;
+
 // buttons block
 export const GeneralSettingsButtonsBlock = styled.div`
   padding: 30px 0;
@@ -425,18 +452,22 @@ export const GeneralSettingsButtonsBlock = styled.div`
 
 export const GeneralSettingsResetButton = styled(MuiButton)`
   && {
-    width: 191px;
-    height: 40px;
-    background: #232323;
-    border-radius: 234px;
+    background: ${palette.black92};
+    border-radius: 1000px;
+    padding: 8.5px 29px;
 
     //text
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;
-    color: #ffffff;
+    color: ${palette.white};
     text-transform: none;
-    font-family: Space Grotesk;
+    font-family: ${typography.fontFamily};
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: ${palette.black95};
+    }
   }
 `;
 
@@ -444,17 +475,23 @@ export const GeneralSettingsSaveChangesButton = styled(Button)`
   && {
     width: 191px;
     margin-left: 22px;
-    height: 40px;
-    font-family: Space Grotesk;
-    min-height: 40px;
+    font-family: ${typography.fontFamily};
+
+    button {
+      background: ${palette.background.default};
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: transparent;
+      }
+    }
   }
 `;
 
 // imageUpload.tsx section
 export const ImageUploadBlock = styled.div`
   width: 100%;
-  padding: 30px 0;
-  border-bottom: 1px solid #363636;
+  padding: 0 0 30px 0;
 `;
 
 export const ImageUploadRecommendText = styled(Typography)`
@@ -469,27 +506,45 @@ export const ImageUploadRecommendText = styled(Typography)`
 export const ImageUploadBlockActivitySection = styled.div`
   display: flex;
   justify-content: left;
-  flex-direction: column;
+  align-items: center;
 `;
 
-export const ImageUploadBlockInputWrapper = styled.div``;
+export const ImageUploadBlockInputWrapper = styled.div<{ isIcon: boolean }>`
+  position: relative;
+  width: ${({ isIcon }) => (isIcon ? '80px' : '100%')};
+  height: ${({ isIcon }) => (isIcon ? '80px' : 'auto')}; ;
+`;
 
-export const ImageUploadBlockInputButton = styled.input`
+export const ImageUploadButtonWrapper = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+`;
+
+export const ImageUploadButton = styled.div<{ marginLeft: string }>`
+  text-align: center;
+  width: 48px;
+  height: 48px;
+  background-color: #1d1d1d99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: ${({ marginLeft }) => marginLeft || 0};
+`;
+
+export const ImageUploadBlockInput = styled.input`
   position: absolute;
   color: deepskyblue;
   background-color: transparent;
   border-bottom: 1px solid deepskyblue;
   cursor: pointer;
   display: none;
-`;
-
-export const ImageUploadBlockInputLabel = styled.label`
-  font-size: 14px;
-  line-height: 19px;
-  letter-spacing: 0.01em;
-  text-decoration-line: underline;
-  color: #00baff;
-  cursor: pointer;
 `;
 
 export const ImageUploadBlockUploadedImg = styled.img`
@@ -508,6 +563,12 @@ export const ImageUploadBlockRemoveButton = styled(MuiButton)`
     text-decoration: underline;
   }
 `;
+
+export const ImageUploadBlockActionIcons = styled.div`
+  display: flex;
+  margin-left: 18px;
+`;
+
 export const CloseButton = styled.button`
   position: absolute;
   right: -8px;
@@ -517,10 +578,30 @@ export const CloseButton = styled.button`
   border-radius: 50%;
   display: flex;
   padding: 3px;
-  border: 1px solid #363636;
+  border: 1px solid ${palette.black92};
 
   &:hover {
-    background: #363636;
+    background: ${palette.black92};
+  }
+`;
+
+export const ToolButton = styled(Button)`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  width: 36px;
+  height: 36px;
+  background: #313131;
+  border-radius: 6px;
+  fill: #313131;
+  margin-right: 12px;
+
+  button {
+    background: #313131;
+    border-radius: 6px;
   }
 `;
 

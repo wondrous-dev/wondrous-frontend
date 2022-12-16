@@ -11,11 +11,13 @@ import {
 } from 'graphql/mutations/taskSubmission';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import isEmpty from 'lodash/isEmpty';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
+import { Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { transformMediaFormat } from 'utils/helpers';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
+import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
   SubmissionDescriptionEditor,
   SubmissionDescriptionEditorEditorToolbar,
@@ -118,45 +120,10 @@ const handleRemoveItem =
     });
   };
 
-const handleSubmit = ({
-  submissionToEdit,
-  updateTaskSubmission,
-  descriptionText,
-  link,
-  createTaskSubmission,
-  taskId,
-  mediaUploads,
-}) => {
-  const filteredLinks = link.filter((i) => i.url);
-  const stringifiedDescription = JSON.stringify(descriptionText);
-  if (submissionToEdit) {
-    updateTaskSubmission({
-      variables: {
-        submissionId: submissionToEdit?.id,
-        input: {
-          description: stringifiedDescription,
-          links: filteredLinks,
-        },
-      },
-    });
-  } else {
-    createTaskSubmission({
-      variables: {
-        input: {
-          taskId,
-          description: stringifiedDescription,
-          links: filteredLinks,
-          mediaUploads,
-        },
-      },
-    });
-  }
-};
-
 function SubmissionFormDescriptionField({ formik, orgId }) {
   const { data: orgUsersData, refetch } = useQuery(SEARCH_ORG_USERS, {
     variables: {
-      orgId,
+      orgIds: [orgId],
       searchString: '',
     },
   });
@@ -171,6 +138,7 @@ function SubmissionFormDescriptionField({ formik, orgId }) {
       <SubmissionDescriptionEditor
         onClick={() => {
           ReactEditor.focus(editor);
+          Transforms.select(editor, [0]);
           formik.setFieldError('descriptionText', '');
         }}
       >
@@ -329,18 +297,68 @@ const SubmissionFormSchema = Yup.object().shape({
 
 export function TaskSubmissionForm(props) {
   const { cancelSubmissionForm, orgId, taskId, submissionToEdit } = props;
-  const refetchQueries = {
-    refetchQueries: [
-      'getTaskSubmissionsForTask',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getUserTaskBoardTasks',
-      'getUserTaskBoardSubmissions',
-      'getTaskById',
-    ],
+  const refetchQueries = [
+    'getTaskSubmissionsForTask',
+    'getOrgTaskBoardTasks',
+    'getPodTaskBoardTasks',
+    'getUserTaskBoardTasks',
+    'getTaskById',
+  ];
+
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+
+  const handleSubmit = ({
+    submissionToEdit,
+    updateTaskSubmission,
+    descriptionText,
+    link,
+    createTaskSubmission,
+    taskId,
+    mediaUploads,
+  }) => {
+    const filteredLinks = link.filter((i) => i.url);
+    const stringifiedDescription = JSON.stringify(descriptionText);
+
+    if (submissionToEdit) {
+      updateTaskSubmission({
+        variables: {
+          submissionId: submissionToEdit?.id,
+          input: {
+            description: stringifiedDescription,
+            links: filteredLinks,
+          },
+        },
+      }).then();
+    } else {
+      createTaskSubmission({
+        variables: {
+          input: {
+            taskId,
+            description: stringifiedDescription,
+            links: filteredLinks,
+            mediaUploads,
+          },
+        },
+      });
+    }
   };
-  const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, refetchQueries);
-  const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, refetchQueries);
+
+  const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, {
+    onCompleted: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(`Successfully submitted!`);
+    },
+    refetchQueries,
+  });
+  const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
+    onCompleted: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(`Successfully updated!`);
+    },
+    refetchQueries,
+  });
   const submissionFormSubmitText = submissionToEdit ? 'Submit edits' : 'Submit for approval';
   return (
     <SubmissionFormWrapper>

@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, memo } from 'react';
 import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_DONE,
@@ -11,7 +11,7 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
-import { Compensation } from 'components/Common/Compensation';
+import Compensation from 'components/Common/Compensation';
 import { format } from 'date-fns';
 import { DueDateText, ArchivedTaskUndo } from 'components/Common/Task/styles';
 import Tooltip from 'components/Tooltip';
@@ -26,7 +26,6 @@ import { useMe } from 'components/Auth/withAuth';
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
-import { useLocation } from 'utils/useLocation';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
@@ -45,8 +44,8 @@ import {
   Type,
 } from './styles';
 
-export default function ListViewItem({ task, entityType }) {
-  let windowOffset = 0;
+function ListViewItem({ task, entityType, isDragDisabled }) {
+  const windowOffset = 0;
   const router = useRouter();
   const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
   const [data, setData] = useState(task);
@@ -62,7 +61,6 @@ export default function ListViewItem({ task, entityType }) {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
 
-  const location = useLocation();
   const {
     assigneeProfilePicture,
     title,
@@ -234,6 +232,15 @@ export default function ListViewItem({ task, entityType }) {
     });
   };
 
+  const handleGoBackToTask = () => {
+    setShowPaymentModal(false);
+    getTaskSubmissionsForTask({
+      variables: {
+        taskId: task?.id,
+      },
+    });
+  };
+
   if (!data) return null;
   return (
     <>
@@ -275,16 +282,20 @@ export default function ListViewItem({ task, entityType }) {
         preventLinkNavigation
         onNavigate={() => {
           if (!showPaymentModal) {
-            location.push(viewUrl);
-            windowOffset = window.scrollY;
-            document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+            const query = {
+              ...router.query,
+              [taskType]: task?.id,
+            };
+
+            router.push({ query }, undefined, { scroll: false, shallow: true });
           }
         }}
       >
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+            handleGoBack={handleGoBackToTask}
             open={showPaymentModal}
+            reward={task?.rewards[0]}
             approvedSubmission={approvedSubmission}
             handleClose={() => {}}
             setShowPaymentModal={setShowPaymentModal}
@@ -292,7 +303,7 @@ export default function ListViewItem({ task, entityType }) {
           />
         ) : null}
 
-        <ListViewItemBodyWrapper>
+        <ListViewItemBodyWrapper isDragDisabled={isDragDisabled}>
           <ListViewItemDataContainer>
             {assigneeProfilePicture ? (
               <SafeImage
@@ -304,6 +315,7 @@ export default function ListViewItem({ task, entityType }) {
                   marginRight: '4px',
                 }}
                 src={assigneeProfilePicture}
+                alt="Assignee profile picture"
               />
             ) : (
               <DefaultUserImage
@@ -332,7 +344,7 @@ export default function ListViewItem({ task, entityType }) {
           </ListViewItemDataContainer>
           <ListViewItemActions>
             {dueDate && <DueDateText>{format(new Date(dueDate), 'MMM d')}</DueDateText>}
-            {rewards && rewards?.length > 0 && <Compensation pillStyle={{ padding: '10px' }} rewards={rewards} />}
+            {rewards && rewards?.length > 0 && <Compensation rewards={rewards} />}
             {displayPayButton && (
               <ButtonPrimary
                 onClick={(e) => {
@@ -384,7 +396,7 @@ export default function ListViewItem({ task, entityType }) {
                         fontWeight="normal"
                         textAlign="left"
                       >
-                        Edit task
+                        Edit {entityType || 'task'}
                       </DropdownItem>
                       <DropdownItem
                         onClick={() => {
@@ -395,7 +407,7 @@ export default function ListViewItem({ task, entityType }) {
                         fontWeight="normal"
                         textAlign="left"
                       >
-                        Archive task
+                        Archive {entityType || 'task'}
                       </DropdownItem>
                       {canDelete && (
                         <DropdownItem
@@ -408,7 +420,7 @@ export default function ListViewItem({ task, entityType }) {
                           fontWeight="normal"
                           textAlign="left"
                         >
-                          Delete task
+                          Delete {entityType || 'task'}
                         </DropdownItem>
                       )}
                     </Dropdown>
@@ -422,3 +434,5 @@ export default function ListViewItem({ task, entityType }) {
     </>
   );
 }
+
+export default memo(ListViewItem);

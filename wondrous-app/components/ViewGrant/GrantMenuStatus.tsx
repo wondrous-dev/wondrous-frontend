@@ -1,0 +1,47 @@
+import { useMutation } from '@apollo/client';
+import { TaskMenu } from 'components/Common/TaskMenuStatus';
+import GrantIcon from 'components/Icons/GrantIcon';
+import { GrantStatusActiveIcon, GrantStatusCompleted } from 'components/Icons/GrantStatusIcons';
+import TaskStatus from 'components/Icons/TaskStatus';
+import { UPDATE_GRANT, UPDATE_GRANT_STATUS } from 'graphql/mutations/grant';
+import { GRANTS_STATUSES, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
+import { useTaskContext } from 'utils/hooks';
+
+const STATUSES = [
+  {
+    id: GRANTS_STATUSES.OPEN,
+    label: 'Active',
+    icon: <GrantStatusActiveIcon />,
+  },
+  {
+    id: GRANTS_STATUSES.CLOSED,
+    label: 'Completed',
+    icon: <GrantStatusCompleted />,
+  },
+];
+
+const GrantMenuStatus = ({ currentStatus, canEdit, onUpdateSuccess, onUpdateError }) => {
+  const { grant } = useTaskContext();
+  const status = STATUSES.find((s) => s.id === currentStatus);
+  const [updateGrantStatus] = useMutation(UPDATE_GRANT_STATUS, {
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
+    onCompleted: () => onUpdateSuccess(),
+    onError: () => onUpdateError(),
+  });
+
+  const handleOnChange = (status) =>
+    updateGrantStatus({
+      variables: {
+        grantId: grant?.id,
+        input: {
+          newStatus: status,
+        },
+      },
+    });
+
+  return (
+    <TaskMenu currentStatus={status} filterStatus={STATUSES} handleOnChange={handleOnChange} disableMenu={!canEdit} />
+  );
+};
+
+export default GrantMenuStatus;

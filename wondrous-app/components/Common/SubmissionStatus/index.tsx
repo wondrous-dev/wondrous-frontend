@@ -1,15 +1,13 @@
-import { CompletedIcon, InReviewIcon, RejectedIcon } from 'components/Icons/statusIcons';
-import ChangesRequestedIcon from 'components/Icons/changesRequestedIcon.svg';
-import { SUBMISSION_STATUS } from 'utils/constants';
-import VARIATIONS from './constants';
+import Status from 'components/Common/Status';
 import {
-  IconWrapper,
   TextAwaitingReview,
   TextChangesRejected,
   TextChangesRequested,
   TextCompleted,
-  StatusWrapper,
-} from './styles';
+} from 'components/Common/Status/styles';
+import ChangesRequestedIcon from 'components/Icons/changesRequestedIcon.svg';
+import { CompletedIcon, InReviewIcon, RejectedIcon } from 'components/Icons/statusIcons';
+import { SUBMISSION_STATUS } from 'utils/constants';
 
 const statusComponents = {
   [SUBMISSION_STATUS.AWAITING_REVIEW]: {
@@ -45,25 +43,15 @@ const statusComponents = {
 };
 
 interface SubmissionStatusProps {
-  status?: SUBMISSION_STATUS;
-  variation?: VARIATIONS;
+  status: SUBMISSION_STATUS;
   text?: String;
 }
 
 const SubmissionStatus = (props: SubmissionStatusProps) => {
-  const { status = null, variation = VARIATIONS.default, text = '' } = props;
-  const { Icon, Text, defaultText } = statusComponents[status] || {};
-  if (!status) return null;
-  return (
-    <StatusWrapper variation={variation}>
-      {variation === VARIATIONS.rounded && (
-        <IconWrapper>
-          <Icon />
-        </IconWrapper>
-      )}
-      <Text>{text || defaultText}</Text>
-    </StatusWrapper>
-  );
+  const { status, text = '' } = props;
+  const selectedStatusComponent = statusComponents?.[status];
+  const { Icon, Text, defaultText } = selectedStatusComponent;
+  return <Status Icon={Icon} Text={Text} textContent={text || defaultText} variation="rounded" />;
 };
 
 export default SubmissionStatus;

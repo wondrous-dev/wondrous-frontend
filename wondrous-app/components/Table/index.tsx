@@ -9,7 +9,6 @@ import { delQuery } from 'utils';
 import * as Constants from 'utils/constants';
 import { ENTITIES_TYPES, TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST } from 'utils/constants';
 import { useColumns } from 'utils/hooks';
-import { useLocation } from 'utils/useLocation';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { CreateEntity } from 'components/CreateEntity';
@@ -56,7 +55,6 @@ function Table(props) {
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isKudosModalOpen, setKudosModalOpen] = useState(false);
@@ -66,7 +64,6 @@ function Table(props) {
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const boardColumns = useColumns();
-  const location = useLocation();
 
   useEffect(() => {
     if (inView && hasMore) {
@@ -181,26 +178,10 @@ function Table(props) {
     setKudosTask(null);
   };
 
-  useEffect(() => {
-    const viewModal =
-      (location.params.task || location.params.taskProposal) &&
-      (location.params.view == ViewType.List || location.params.view == ViewType.Admin);
-
-    setPreviewModalOpen(viewModal);
-  }, [location.params]);
-
   const tableTasks = tasks || createTasksFromColumns(columns);
 
   return (
     <>
-      <TaskViewModal
-        open={isPreviewModalOpen}
-        handleClose={() => {
-          location.replace(`${delQuery(router.asPath)}?view=${location.params.view ?? ViewType.Grid}`);
-        }}
-        isTaskProposal={!!location.params.taskProposal}
-        taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
-      />
       {isArchiveModalOpen && selectedTask?.id ? (
         <ArchiveTaskModal
           taskId={selectedTask?.id}
@@ -242,13 +223,16 @@ function Table(props) {
           <StyledTableHead>
             <StyledTableRow>
               <StyledTableCell align="center" width="56px">
-                DAO
+                Org
               </StyledTableCell>
               {entityType === ENTITIES_TYPES.TASK || isAdmin ? (
                 <StyledTableCell align="center" width="105px">
                   {isAdmin ? 'Created by' : 'Assigned'}
                 </StyledTableCell>
               ) : null}
+              <StyledTableCell align="center" width="77px">
+                Assignee
+              </StyledTableCell>
               <StyledTableCell align="center" width="77px">
                 Status
               </StyledTableCell>

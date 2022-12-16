@@ -1,5 +1,4 @@
 import { Button, Typography } from '@mui/material';
-import { getRoleColor } from 'components/Settings/Members/MembersTableRow/helpers';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 

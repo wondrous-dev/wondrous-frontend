@@ -36,12 +36,19 @@ export function PostQuote(props) {
               <SmartLink
                 href={taskViewUrl}
                 preventLinkNavigation
-                onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
+                onNavigate={() => {
+                  const query = {
+                    ...router.query,
+                    task: taskId,
+                  };
+
+                  router.push({ query }, undefined, { scroll: false, shallow: true });
+                }}
               >
-                <a href={taskViewUrl}>{referencedObject?.title}</a>
+                {referencedObject?.title}
               </SmartLink>
             </ReferenceTitle>
-            <ReferenceDescription>
+            <ReferenceDescription as="div">
               <RichTextViewer text={referencedObject?.content} />
             </ReferenceDescription>
             <ReferenceMediaWrapper>

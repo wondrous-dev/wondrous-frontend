@@ -3,8 +3,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import IconButton from '@mui/material/IconButton';
+import { CircularProgress } from '@mui/material';
 
+import IconButton from '@mui/material/IconButton';
 import CloseModalIcon from 'components/Icons/closeModal';
 import styles, { DeleteButton, CancelButton, SubmitButton, SubmitButtonWrap } from './styled';
 
@@ -20,12 +21,13 @@ interface DocModalProps {
   cancelLabel?: string;
   submitLabel?: string;
   submitButtonStyle?: SubmitButtonStyle | string;
-  children: unknown;
-  titleIcon?: unknown;
+  children: any;
+  titleIcon?: any;
   onSubmit: () => unknown;
   onClose: () => unknown;
   rejectAction?: () => unknown;
   reverseButtons?: boolean;
+  isLoading?: boolean;
 }
 
 function ConfirmModal({
@@ -41,6 +43,7 @@ function ConfirmModal({
   cancelLabel = 'Cancel',
   rejectAction,
   reverseButtons = false,
+  isLoading,
 }: DocModalProps) {
   const cancelButtonAction = rejectAction || onClose;
   return (
@@ -72,6 +75,9 @@ function ConfirmModal({
         {submitButtonStyle === SubmitButtonStyle.Default ? (
           <SubmitButtonWrap>
             <SubmitButton type="submit" onClick={onSubmit}>
+              {isLoading && (
+                <CircularProgress style={{ borderRadius: '50%', width: '20px', height: '20px', marginRight: '10px' }} />
+              )}{' '}
               {submitLabel}
             </SubmitButton>
           </SubmitButtonWrap>

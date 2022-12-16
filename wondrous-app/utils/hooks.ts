@@ -1,8 +1,16 @@
 import { NextRouter, useRouter } from 'next/router';
-import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo } from 'react';
+import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo, useCallback } from 'react';
 import apollo from 'services/apollo';
 import { TokenGatingCondition } from 'types/TokenGating';
-import { PRIVACY_LEVEL, TASK_TYPE, PERMISSIONS, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
+import {
+  PRIVACY_LEVEL,
+  TASK_TYPE,
+  PERMISSIONS,
+  BOUNTY_TYPE,
+  MILESTONE_TYPE,
+  ENTITIES_TYPES,
+  TASK_STATUS_DONE,
+} from 'utils/constants';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
@@ -12,6 +20,7 @@ import {
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations';
 import { LIMIT } from 'services/board';
+import { useMe } from 'components/Auth/withAuth';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -29,7 +38,11 @@ import {
   TokenGatingContext,
   HotkeyContext,
   ExploreGr15TasksAndBountiesContext,
+  TaskContext,
+  PageDataContext,
+  ProjectContext,
 } from './contexts';
+import { parseUserPermissionContext } from './helpers';
 
 export const useHotkey = () => useContext(HotkeyContext);
 
@@ -95,6 +108,8 @@ export const useUserProfile = () => useContext(UserProfileContext);
 //   console.log('useUserProfile must be used within a UserProfileContext Provider');
 // }
 // return context;
+
+export const useProject = () => useContext(ProjectContext);
 
 export const useSettings = () => useContext(SettingsBoardContext);
 
@@ -170,41 +185,23 @@ export const useRouterQuery = ({
   return [state, setState];
 };
 
-export const useTokenGating = (orgId) => {
-  const [getTokenGatingConditionsForOrg, { data, loading }] = useLazyQuery(GET_TOKEN_GATING_CONDITIONS_FOR_ORG, {
-    fetchPolicy: 'network-only',
-  });
-  useEffect(() => {
-    if (orgId) {
-      getTokenGatingConditionsForOrg({
-        variables: {
-          orgId,
-        },
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId]);
-  return [data, loading];
-};
-
-export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
+export const useFilterQuery = (query, variables = {}, shouldFetch = true, callback = null) => {
   const getData = async () => {
     const { data } = await apollo.query({
       query,
       variables,
     });
-    setData(Object.values(data).flat());
-    setIsLoading(false);
+    if (callback)
+      callback({
+        isLoading: false,
+        data: Object.values(data).flat(),
+      });
   };
   useEffect(() => {
     if (query && shouldFetch) {
-      setIsLoading(true);
       getData();
     }
   }, [query, variables, shouldFetch]);
-  return { isLoading, data };
 };
 
 export const useGetPerStatusTaskCountForUserBoard = (userId) => {
@@ -323,5 +320,90 @@ export const useNotifications = () => {
 
 export const useSteps = (defaultStep = 0) => {
   const [step, setStep] = useState(defaultStep);
-  return { step, setStep };
+
+  const nextStep = () => setStep((prevState) => prevState + 1);
+
+  const prevStep = () => setStep((prevState) => prevState - 1);
+
+  useEffect(() => () => setStep(defaultStep), []);
+
+  return { step, setStep, nextStep, prevStep };
+};
+
+export const usePermissions = (entity, isTaskProposal = false) => {
+  const globalContext = useGlobalContext();
+  const { id: userId } = useMe() || {};
+  const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
+  const userPermissionsContext = getUserPermissionContext();
+  const { orgId, podId, createdBy, assigneeId, type, status, taskApplicationPermissions } = entity || {};
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId,
+    podId,
+  });
+  const hasFullPermission = permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const hasEditPermission = permissions.includes(PERMISSIONS.EDIT_TASK);
+  const createdByUser = createdBy === userId;
+  const canEdit = hasFullPermission || hasEditPermission || createdByUser || (assigneeId && assigneeId === userId);
+  const canArchive = permissions.includes(PERMISSIONS.MANAGE_BOARD) || hasFullPermission || createdByUser;
+  const canViewApplications = hasFullPermission || hasEditPermission || (createdByUser && type === TASK_TYPE);
+  const canDelete = canArchive && (type === ENTITIES_TYPES.TASK || type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
+  const canApproveProposal = hasFullPermission || permissions.includes(PERMISSIONS.CREATE_TASK);
+  const canClaim =
+    taskApplicationPermissions?.canClaim &&
+    !assigneeId &&
+    type !== BOUNTY_TYPE &&
+    type !== MILESTONE_TYPE &&
+    status !== TASK_STATUS_DONE;
+  const canApply = !canClaim && taskApplicationPermissions?.canApply;
+  return { canEdit, canArchive, canViewApplications, canDelete, canApproveProposal, canClaim, canApply };
+};
+
+export const useTaskContext = () => useContext(TaskContext);
+
+export const useFullScreen = (defaultValue = false) => {
+  const [isFullScreen, setIsFullScreen] = useState(defaultValue);
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
+  return { isFullScreen, toggleFullScreen };
+};
+
+export const useKeyPress = (targetKey) => {
+  const [keyPressed, setKeyPressed] = useState(false);
+
+  function downHandler({ key }) {
+    if (key === targetKey) {
+      setKeyPressed(true);
+    }
+  }
+
+  const upHandler = ({ key }) => {
+    if (key === targetKey) {
+      setKeyPressed(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', downHandler);
+    window.addEventListener('keyup', upHandler);
+    return () => {
+      window.removeEventListener('keydown', downHandler);
+      window.removeEventListener('keyup', upHandler);
+    };
+  }, []);
+
+  return keyPressed;
+};
+
+export const usePageDataContext = () => useContext(PageDataContext);
+export const useCheckOrgPermission = () => {
+  const { orgBoard } = useBoards();
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext: orgBoard?.userPermissionsContext,
+    orgId: orgBoard?.orgData?.id,
+  });
+  const hasFullPermission = permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const hasEditPermission = permissions.includes(PERMISSIONS.EDIT_TASK);
+  return hasFullPermission || hasEditPermission;
 };

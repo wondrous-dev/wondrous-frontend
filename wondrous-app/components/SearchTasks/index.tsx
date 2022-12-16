@@ -7,7 +7,7 @@ import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { ViewType } from 'types/common';
-import { TaskFragment } from 'types/task';
+import { TaskInterface } from 'types/task';
 import { delQuery } from 'utils';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
 import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
@@ -26,7 +26,9 @@ const TaskTypeIcons = {
 };
 
 type Props = {
-  onSearch: (searchString: string) => Promise<{ users: Array<any>; tasks: TaskFragment[]; proposals: TaskFragment[] }>;
+  onSearch: (
+    searchString: string
+  ) => Promise<{ users: Array<any>; tasks: TaskInterface[]; proposals: TaskInterface[] }>;
   isExpandable?: boolean;
   autocompleteComponent?: React.Component;
 };
@@ -37,7 +39,6 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
   const [inputValue, setInputValue] = useState(router.query.search);
   const [options, setOptions] = useState([]);
   const [hasMore, setHasMore] = useState(false);
@@ -91,11 +92,13 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   };
 
   function handleTaskClick(task) {
-    const urlParams: any = new URLSearchParams(window.location.search);
-    urlParams.append(task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task', task?.id);
-    router.replace(`${delQuery(router.asPath)}?${urlParams.toString()}`);
+    const taskType = task.__typename === 'TaskProposalCard' ? 'proposal' : 'task';
+    const query = {
+      ...router.query,
+      [taskType]: task?.id,
+    };
 
-    setSelectedTask(task);
+    router.push({ query }, undefined, { scroll: false, shallow: true });
   }
 
   function handleShowMore() {
@@ -117,112 +120,102 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   const handleFocus = () => setIsExpanded(true);
   if (exploreGr15TasksAndBounties) return null;
   return (
-    <>
-      <TaskViewModal
-        open={!!selectedTask}
-        handleClose={() => {
-          setSelectedTask(null);
-          router.replace(`${delQuery(router.asPath)}?view=${router.query.view ?? ViewType.Grid}`);
-        }}
-        isTaskProposal={selectedTask?.__typename === 'TaskProposalCard'}
-        taskId={selectedTask?.id}
-      />
-      <Autocomplete
-        open={open}
-        onOpen={() => setOpen(true)}
-        onBlur={handleBlur}
-        onFocus={handleFocus}
-        isExpanded={isExpanded}
-        onClose={() => setOpen(false)}
-        onInputChange={(event, searchString) => {
-          handleInputChange(event, searchString);
-          if (searchString === 'undefined') {
-            setInputValue('');
-          } else {
-            setInputValue(searchString || '');
-          }
-        }}
-        style={{ width: autocompleteWidth }}
-        disableClearable
-        freeSolo={!inputValue || isLoading}
-        getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}
-        noOptionsText="no results found"
-        options={options}
-        isLoading={isLoading}
-        filterOptions={(x) => x}
-        renderOption={(props, taskOrUser) => {
-          const content = [];
+    <Autocomplete
+      open={open}
+      onOpen={() => setOpen(true)}
+      onBlur={handleBlur}
+      onFocus={handleFocus}
+      isExpanded={isExpanded}
+      onClose={() => setOpen(false)}
+      onInputChange={(event, searchString) => {
+        handleInputChange(event, searchString);
+        if (searchString === 'undefined') {
+          setInputValue('');
+        } else {
+          setInputValue(searchString || '');
+        }
+      }}
+      style={{ width: autocompleteWidth }}
+      disableClearable
+      freeSolo={!inputValue || isLoading}
+      getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}
+      noOptionsText="no results found"
+      options={options}
+      isLoading={isLoading}
+      filterOptions={(x) => x}
+      renderOption={(props, taskOrUser) => {
+        const content = [];
 
-          if (taskOrUser.username) {
-            content.push(
-              <Option
-                key={taskOrUser.username}
-                onClick={() => {
-                  router.push({
-                    pathname: location.pathname,
-                    query: { userId: taskOrUser.id, view: router.query.view ?? ViewType.Grid },
-                  });
-                }}
-              >
-                {taskOrUser.profilePicture ? (
-                  <SafeImage
-                    useNextImage={false}
-                    src={taskOrUser?.profilePicture}
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      borderRadius: '4px',
-                    }}
-                  />
-                ) : (
-                  <UserIconSmall />
-                )}
-                {taskOrUser.username}
-              </Option>
-            );
-          } else {
-            content.push(
-              <Option key={taskOrUser.title} onClick={() => handleTaskClick(taskOrUser)}>
-                {TaskTypeIcons[taskOrUser.type]}
-                {taskOrUser.title}
-              </Option>
-            );
-          }
+        if (taskOrUser.username) {
+          content.push(
+            <Option
+              key={taskOrUser.username}
+              onClick={() => {
+                router.push({
+                  pathname: location.pathname,
+                  query: { userId: taskOrUser.id, view: router.query.view ?? ViewType.Grid },
+                });
+              }}
+            >
+              {taskOrUser.profilePicture ? (
+                <SafeImage
+                  useNextImage={false}
+                  src={taskOrUser?.profilePicture}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '4px',
+                  }}
+                  alt="Profile picture"
+                />
+              ) : (
+                <UserIconSmall />
+              )}
+              {taskOrUser.username}
+            </Option>
+          );
+        } else {
+          content.push(
+            <Option key={taskOrUser.title} onClick={() => handleTaskClick(taskOrUser)}>
+              {TaskTypeIcons[taskOrUser.type]}
+              {taskOrUser.title}
+            </Option>
+          );
+        }
 
-          if (hasMore && last(options) === taskOrUser) {
-            content.push(
-              <Option onClick={() => handleShowMore()}>
-                <LoadMore>Show more results</LoadMore>
-              </Option>
-            );
-          }
+        if (hasMore && last(options) === taskOrUser) {
+          content.push(
+            <Option onClick={() => handleShowMore()}>
+              <LoadMore>Show more results</LoadMore>
+            </Option>
+          );
+        }
 
-          return content;
-        }}
-        renderInput={(params) => (
-          <Input
-            sx={{ height: '40px' }}
-            {...params}
-            inputRef={autocompleteRef}
-            placeholder={`${isExpanded || !isExpandable ? searchLabel : 'Search'}`}
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Badge badgeContent={HOTKEYS.LOCAL_SEARCH} color="primary" invisible={!showBadge}>
-                    <SearchIconWrapped />
-                  </Badge>
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
-      />
-    </>
+        return content;
+      }}
+      renderInput={(params) => (
+        <Input
+          sx={{ height: '40px' }}
+          {...params}
+          inputRef={autocompleteRef}
+          placeholder={`${isExpanded || !isExpandable ? searchLabel : 'Search'}`}
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <InputAdornment position="start">
+                <Badge badgeContent={HOTKEYS.LOCAL_SEARCH} color="primary" invisible={!showBadge}>
+                  <SearchIconWrapped />
+                </Badge>
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
+    />
   );
 }

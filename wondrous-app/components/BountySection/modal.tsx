@@ -2,7 +2,7 @@ import { useLazyQuery } from '@apollo/client';
 import { EXPLORE_MODAL_TABS_MAP, LINK } from 'utils/constants';
 import React, { useCallback, useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { GET_GR15_GRANTEES, GET_GR15_SPONSORS } from 'graphql/queries/org';
 import { TaskModalBaseCard } from 'components/Common/Task/styles';
 import CloseModalIcon from 'components/Icons/closeModal';
@@ -28,7 +28,7 @@ const OrgItem = (props) => {
   return (
     <OrgItemContainer
       onClick={() => {
-        window.open(`${LINK}/organization/${org?.username}/boards?entity=task`);
+        window.open(`${LINK}/organization/${org?.username}/home`);
       }}
     >
       <SafeImage
@@ -38,12 +38,13 @@ const OrgItem = (props) => {
             <DAOEmptyIcon />
           </TokenEmptyLogo>
         }
-        width="42px"
-        height="42px"
+        width={42}
+        height={42}
         useNextImage
         style={{
           borderRadius: '6px',
         }}
+        alt="Organization logo"
       />
       <OrgItemDescriptionDiv>
         <OrgItemDescriptionTitle>{org?.name}</OrgItemDescriptionTitle>

@@ -18,6 +18,7 @@ export function MediaItem(props) {
             left: '0',
             height: '40px',
           }}
+          alt="Media Item"
         />
       )}
       {mediaItem?.type === 'video' && (

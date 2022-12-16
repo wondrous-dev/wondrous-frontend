@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
+
 import {
   ENTITIES_TYPES,
   PERMISSIONS,
@@ -9,14 +11,19 @@ import {
   SOCIAL_MEDIA_LINKEDIN,
   GR15DEICategoryName,
   BOUNTY_TYPE,
+  HEADER_ASPECT_RATIO,
+  EMPTY_RICH_TEXT_STRING,
 } from 'utils/constants';
-import { Box } from '@mui/system';
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
+import apollo from 'services/apollo';
+import Box from '@mui/material/Box';
 import TypeSelector from 'components/TypeSelector';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
-import DefaultBg from 'public/images/overview/background.png';
+import DEFAULT_HEADER from 'public/images/overview/background.png';
+import { AspectRatio } from 'react-aspect-ratio';
 
-import usePrevious, { useOrgBoard, useTokenGating } from 'utils/hooks';
+import usePrevious, { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery } from '@apollo/client';
 import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { useRouter } from 'next/router';
@@ -27,22 +34,13 @@ import {
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { RichTextViewer } from 'components/RichText';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
-import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
-import BoardLock from 'components/BoardLock';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
-import CurrentRoleModal from 'components/RoleModal/CurrentRoleModal';
-import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
-import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
+import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { DiscordIcon } from '../../Icons/discord';
 import OpenSeaIcon from '../../Icons/openSea';
 import LinkedInIcon from '../../Icons/linkedIn';
 import { DAOEmptyIcon } from '../../Icons/dao';
-import { MoreInfoModal } from '../../profile/modals';
-import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
 import { SafeImage } from '../../Common/Image';
 import {
   Content,
@@ -77,6 +75,12 @@ import {
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 
+const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/OrgInviteLink'), { suspense: true });
+const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
+const CurrentRoleModal = dynamic(() => import('components/RoleModal/CurrentRoleModal'), { suspense: true });
+const ChooseEntityToCreate = dynamic(() => import('components/CreateEntity'), { suspense: true });
+const MoreInfoModal = dynamic(() => import('components/profile/modals'), { suspense: true });
+
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
   CONTRIBUTOR: 'contributor',
@@ -100,6 +104,7 @@ const ExploreOrgGr15 = ({
       <ExploreButton
         style={{
           marginTop: 0,
+          marginRight: '8px',
         }}
         onClick={() => {
           router.push(`/organization/${orgProfile?.username}/boards?entity=${BOUNTY_TYPE}`, undefined, {
@@ -116,6 +121,7 @@ const ExploreOrgGr15 = ({
       <ExploreButton
         style={{
           marginTop: 0,
+          marginRight: '8px',
         }}
         onClick={() => {
           router.push(
@@ -136,6 +142,7 @@ const ExploreOrgGr15 = ({
       <ExploreButton
         style={{
           marginTop: 0,
+          marginRight: '8px',
         }}
         onClick={() => {
           setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
@@ -154,6 +161,7 @@ const ExploreOrgGr15 = ({
       <ExploreButton
         style={{
           marginTop: 0,
+          marginRight: '8px',
         }}
         onClick={() => {
           setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
@@ -188,7 +196,7 @@ function Wrapper(props) {
   const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
 
   const loggedInUser = useMe();
-  const [open, setOpen] = useState(false);
+  const [moreInfoModalOpen, setMoreInfoModalOpen] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
@@ -198,14 +206,12 @@ function Wrapper(props) {
   const userPermissionsContext = orgBoard?.userPermissionsContext;
   const [orgRoleName, setOrgRoleName] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
-  const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
   const [claimedOrRequestedRole, setClaimedOrRequestedRole] = useState(null);
 
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
-  const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
   const orgProfile = orgData;
@@ -217,7 +223,7 @@ function Wrapper(props) {
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const { search, entity, cause } = router.query;
-  const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
+  const onTaskPage = entity === ENTITIES_TYPES.TASK;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
   const board = orgBoard;
   const boardFilters = board?.filters || {};
@@ -227,8 +233,6 @@ function Wrapper(props) {
     const finalPathArr = asPath.split('/');
     finalPath = finalPathArr[finalPathArr.length - 1];
   }
-
-  const previousEntity = usePrevious(entity);
 
   useEffect(() => {
     if (!entity && !search) {
@@ -266,15 +270,15 @@ function Wrapper(props) {
       setPermissions(ORG_PERMISSIONS.MANAGE_SETTINGS);
     } else if (
       userPermissionsContext?.orgPermissions &&
-      orgProfile?.id in userPermissionsContext?.orgPermissions &&
+      orgProfile?.id in userPermissionsContext.orgPermissions &&
       orgPermissions
     ) {
       // Normal contributor with no access to admin settings
       setPermissions(ORG_PERMISSIONS.CONTRIBUTOR);
     } else if (
       orgBoard?.orgId &&
-      userPermissionsContext &&
-      !(orgProfile?.id in userPermissionsContext?.orgPermissions)
+      userPermissionsContext?.orgPermissions &&
+      !(orgProfile?.id in userPermissionsContext.orgPermissions)
     ) {
       setPermissions(null);
       getExistingJoinRequest({
@@ -296,73 +300,73 @@ function Wrapper(props) {
     }
   }, [orgBoard?.orgId]);
 
-  useHotkeys('tab+t', () => {
-    setCreateTaskModalOpen((prevState) => !prevState);
-  });
-
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
-      <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
-      <MembershipRequestModal
-        orgId={orgBoard?.orgId}
-        open={openJoinRequestModal}
-        onClose={() => setOpenJoinRequestModal(false)}
-        setOpenCurrentRoleModal={setOpenCurrentRoleModal}
-        requestingRole={claimedOrRequestedRole}
-      />
-      <CurrentRoleModal
-        orgId={orgBoard?.orgId}
-        open={openCurrentRoleModal}
-        onClose={() => setOpenCurrentRoleModal(false)}
-        linkedWallet={loggedInUser?.activeEthAddress}
-        currentRoleName={orgRoleName}
-        setOpenJoinRequestModal={setOpenJoinRequestModal}
-        setClaimedOrRequestedRole={setClaimedOrRequestedRole}
-      />
-      <ChooseEntityToCreate />
-      <MoreInfoModal
-        open={open && (showUsers || showPods)}
-        handleClose={() => {
-          document.body.setAttribute('style', '');
-          setShowPods(false);
-          setShowUsers(false);
-          setOpen(false);
-        }}
-        showUsers={showUsers}
-        showPods={showPods}
-        name={orgProfile?.name}
-        orgId={orgBoard?.orgId}
-      />
-      <CreateModalOverlay
-        style={{
-          height: '95vh',
-        }}
-        open={isCreateTaskModalOpen}
-        onClose={() => setCreateTaskModalOpen(false)}
-      >
-        <CreateEntityModal
-          entityType={ENTITIES_TYPES.TASK}
-          handleClose={() => setCreateTaskModalOpen(false)}
-          resetEntityType={() => {}}
-          setEntityType={() => {}}
-          cancel={() => setCreateTaskModalOpen(false)}
-        />
-      </CreateModalOverlay>
-
-      <HeaderImageWrapper>
-        {orgProfile ? (
-          <SafeImage
-            src={orgProfile?.headerPicture || DefaultBg}
-            width="100%"
-            height={100}
-            layout="fill"
-            objectFit="cover"
-            useNextImage
+      <TaskViewModalWatcher />
+      <Suspense>
+        <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      </Suspense>
+      {openJoinRequestModal && (
+        <Suspense>
+          <MembershipRequestModal
+            orgId={orgBoard?.orgId}
+            open={openJoinRequestModal}
+            onClose={() => setOpenJoinRequestModal(false)}
+            setOpenCurrentRoleModal={setOpenCurrentRoleModal}
+            requestingRole={claimedOrRequestedRole}
           />
-        ) : null}
+        </Suspense>
+      )}
+      {openCurrentRoleModal && (
+        <Suspense>
+          <CurrentRoleModal
+            orgId={orgBoard?.orgId}
+            open={openCurrentRoleModal}
+            onClose={() => setOpenCurrentRoleModal(false)}
+            linkedWallet={loggedInUser?.activeEthAddress}
+            currentRoleName={orgRoleName}
+            setOpenJoinRequestModal={setOpenJoinRequestModal}
+            setClaimedOrRequestedRole={setClaimedOrRequestedRole}
+          />
+        </Suspense>
+      )}
+      <Suspense>
+        <ChooseEntityToCreate />
+      </Suspense>
+      {moreInfoModalOpen && (
+        <Suspense>
+          <MoreInfoModal
+            open={moreInfoModalOpen && (showUsers || showPods)}
+            handleClose={() => {
+              document.body.setAttribute('style', '');
+              setShowPods(false);
+              setShowUsers(false);
+              setMoreInfoModalOpen(false);
+            }}
+            showUsers={showUsers}
+            showPods={showPods}
+            name={orgProfile?.name}
+            orgId={orgBoard?.orgId}
+          />
+        </Suspense>
+      )}
+      <HeaderImageWrapper>
+        <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
+          {orgProfile ? (
+            <SafeImage
+              src={orgProfile?.headerPicture || DEFAULT_HEADER}
+              fill
+              style={{
+                objectFit: 'cover',
+                width: '100%',
+              }}
+              useNextImage
+              alt="Organization header"
+            />
+          ) : null}
+        </AspectRatio>
       </HeaderImageWrapper>
-
       <Content>
         <ContentContainer>
           <TokenHeader>
@@ -384,23 +388,24 @@ function Wrapper(props) {
                           <DAOEmptyIcon />
                         </TokenEmptyLogo>
                       }
-                      width="60px"
-                      height="60px"
+                      width={50}
+                      height={50}
                       useNextImage
                       style={{
                         borderRadius: '6px',
                       }}
+                      alt="Organization logo"
                     />
                     {isGr15Sponsor && (
                       <>
                         <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
                         <GR15DEILogo
-                          width="42"
-                          height="42"
+                          width="30"
+                          height="30"
                           onClick={() => setOpenGR15Modal(true)}
                           style={{
                             top: '0',
-                            right: '-20px',
+                            right: '1px',
                             position: 'absolute',
                             zIndex: '25',
                           }}
@@ -437,13 +442,6 @@ function Wrapper(props) {
                     </RolePill>
                   </RoleButtonWrapper>
                 )}
-                {/* </Tooltip> */}
-                {!isLoading && (
-                  <TokenGatedBoard
-                    isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                    tooltipTitle="Token gating"
-                  />
-                )}
                 <ToggleBoardPrivacyIcon
                   isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
                   tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
@@ -478,59 +476,59 @@ function Wrapper(props) {
                 )}
               </HeaderButtons>
             </HeaderMainBlock>
-            <HeaderText>
-              <RichTextViewer text={orgProfile?.description} />
-            </HeaderText>
-            <HeaderActivity>
-              <HeaderContributors
-                onClick={() => {
-                  setOpen(true);
-                  setShowUsers(true);
-                }}
-              >
-                <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
-                <HeaderContributorsText>Contributors</HeaderContributorsText>
-              </HeaderContributors>
-              <HeaderPods
-                onClick={() => {
-                  setOpen(true);
-                  setShowPods(true);
-                }}
-              >
-                <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
-                <HeaderPodsText>Pods</HeaderPodsText>
-              </HeaderPods>
-              {isGr15Sponsor && (
-                <HeaderGr15Sponsor>
-                  <ExploreOrgGr15
-                    onTaskPage={onTaskPage}
-                    onBountyPage={onBountyPage}
-                    hasGr15Bounties={hasGr15Bounties}
-                    hasGr15Tasks={hasGr15Tasks}
-                    onFilterChange={onFilterChange}
-                    orgProfile={orgProfile}
-                    filters={boardFilters}
-                    exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                    setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                  />
-                </HeaderGr15Sponsor>
-              )}
-              {links?.map((link, index) => {
-                if (link.type === 'link') {
-                  return (
-                    <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                      <HeaderActivityLinkIcon />
-                      {link?.name || link?.url}
-                    </HeaderActivityLink>
-                  );
-                }
-              })}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
+            {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
+              <HeaderText as="div">
+                <RichTextViewer text={orgProfile?.description} />
+              </HeaderText>
+            ) : (
+              <div style={{ height: 10 }} />
+            )}
+            <div>
+              <HeaderActivity>
+                <HeaderContributors
+                  onClick={() => {
+                    setMoreInfoModalOpen(true);
+                    setShowUsers(true);
+                  }}
+                >
+                  <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
+                  <HeaderContributorsText>Contributors</HeaderContributorsText>
+                </HeaderContributors>
+                <HeaderPods
+                  onClick={() => {
+                    setMoreInfoModalOpen(true);
+                    setShowPods(true);
+                  }}
+                >
+                  <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
+                  <HeaderPodsText>Pods</HeaderPodsText>
+                </HeaderPods>
+                {isGr15Sponsor && (
+                  <HeaderGr15Sponsor>
+                    <ExploreOrgGr15
+                      onTaskPage={onTaskPage}
+                      onBountyPage={onBountyPage}
+                      hasGr15Bounties={hasGr15Bounties}
+                      hasGr15Tasks={hasGr15Tasks}
+                      onFilterChange={onFilterChange}
+                      orgProfile={orgProfile}
+                      filters={boardFilters}
+                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                    />
+                  </HeaderGr15Sponsor>
+                )}
+                {links?.map((link, index) => {
+                  if (link.type === 'link') {
+                    return (
+                      <HeaderActivityLink href={link?.url} key={index} target="_blank">
+                        <HeaderActivityLinkIcon />
+                        {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
+                      </HeaderActivityLink>
+                    );
+                  }
+                })}
+
                 {links?.map((link, index) => {
                   if (link.type !== 'link') {
                     let SocialIcon = null;
@@ -556,6 +554,7 @@ function Wrapper(props) {
                               width: '20px',
                               height: '20px',
                             }}
+                            fill="#ccbbff"
                           />
                         </HeaderActivityLink>
                       );
@@ -563,8 +562,8 @@ function Wrapper(props) {
                     return null;
                   }
                 })}
-              </div>
-            </HeaderActivity>
+              </HeaderActivity>
+            </div>
           </TokenHeader>
           <Container>
             <BoardsSubheaderWrapper>

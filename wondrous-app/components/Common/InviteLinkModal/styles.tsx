@@ -218,7 +218,7 @@ export const InviteThruLinkButtonSuccessLabel = styled(InviteThruLinkButtonLabel
     background: -webkit-linear-gradient(to bottom, #ffffff 0%, #06ffa5 100%);
     background: -moz-linear-gradient(to bottom, #ffffff 0%, #06ffa5 100%);
     background: linear-gradient(to bottom, #ffffff 0%, #06ffa5 100%);
-    background-clip: text;
+    background-clip: inherit;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-left: 11px;

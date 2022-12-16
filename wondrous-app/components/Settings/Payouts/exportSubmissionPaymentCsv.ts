@@ -1,7 +1,7 @@
 import { EXPORT_PAYMENT_CSV_TYPE } from 'utils/constants';
 import { format } from 'date-fns';
 
-export const exportSubmissionPaymentCsv = ({ unpaidSubmissions, exportCSVType, isPod = false }) => {
+const exportSubmissionPaymentCsv = ({ unpaidSubmissions, exportCSVType, isPod = false }) => {
   let headers = [];
   if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.UTOPIA) {
     headers = ['Name', 'Wallet', 'Amount', 'Denominated in', 'Pay-out Token'];
@@ -11,7 +11,6 @@ export const exportSubmissionPaymentCsv = ({ unpaidSubmissions, exportCSVType, i
     headers = ['Username', 'Address/ENS', 'Amount', 'Token Address', 'Token Name', 'Symbol', 'Chain', 'Decimals'];
   }
   const rows = [[headers]];
-  console.log('unpaidSubmissions', unpaidSubmissions);
   if (!unpaidSubmissions || Object.keys(unpaidSubmissions).length === 0) {
     return;
   }
@@ -77,3 +76,5 @@ export const exportSubmissionPaymentCsv = ({ unpaidSubmissions, exportCSVType, i
   document.body.appendChild(link); // Required for FF
   link.click();
 };
+
+export default exportSubmissionPaymentCsv;

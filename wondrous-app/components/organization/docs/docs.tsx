@@ -62,14 +62,20 @@ const useGetOrgDocs = (orgId) => {
   };
 };
 
+const useSelectedCategory = (id: string) => {
+  const [selectedCategory, setSelectedCategory] = useState(id);
+  useEffect(() => {
+    setSelectedCategory(id);
+  }, [id]);
+  return { selectedCategory, setSelectedCategory };
+};
+
 function Docs(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const router = useRouter();
-
   const { docData, categoriesData } = useGetOrgDocs(orgId);
-
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const { selectedCategory, setSelectedCategory } = useSelectedCategory(router.query.id as string);
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
@@ -78,7 +84,7 @@ function Docs(props) {
   const [pinned, setPinned] = useState(false);
 
   const filteredCategories = selectedCategory
-    ? categoriesData.filter((i) => i.id === selectedCategory)
+    ? categoriesData?.filter((i) => i.id === selectedCategory)
     : categoriesData;
 
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -169,17 +175,17 @@ function Docs(props) {
           <Box sx={styles.topButtonsContainer}>
             <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
               <AddIconWrapper style={styles.addIcon} />
-              Add new doc
+              Add new category
             </Button>
           </Box>
         )}
 
-        {isEmpty(docData) && (
+        {isEmpty(docData) && isEmpty(categoriesData) && (
           <EmptyStateGeneric
             content={`Welcome to the Documents page for ${orgData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
           />
         )}
-        {canEdit && (
+        {/* {canEdit && (
           <Tooltip title="Create new doc category" placement="top">
             <Box sx={styles.categoryButtonContainer}>
               <Box sx={styles.categoryButton} onClick={handleCreateNewCategory}>
@@ -187,7 +193,7 @@ function Docs(props) {
               </Box>
             </Box>
           </Tooltip>
-        )}
+        )} */}
         {!isEmpty(pinnedDocs) && (
           <PinnedDocsSection
             onDialogOpen={handleOpenDocDialogPinned}

@@ -11,8 +11,14 @@ export const DAOIcon = ({ style = {}, encircled = true, stroke = '#7A7A7A' }) =>
   </svg>
 );
 
-export const DAOEmptyIcon = () => (
-  <svg width="97" height="97" viewBox="0 0 97 97" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const DAOEmptyIcon = (props) => (
+  <svg
+    width={props?.width || '97'}
+    height={props?.height || '97'}
+    viewBox="0 0 97 97"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <circle cx="48.3203" cy="48.2588" r="48" fill="url(#paint0_linear_3094_64346)" />
     <path
       fillRule="evenodd"

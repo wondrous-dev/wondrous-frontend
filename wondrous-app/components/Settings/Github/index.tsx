@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import palette from 'theme/palette';
 import { useEffect, useState } from 'react';
@@ -23,7 +22,6 @@ export const getGithubCallbackUrl = () => {
 };
 
 export function GithubIntegration({ orgId }) {
-  const router = useRouter();
   const [githubConnected, setGithubConnected] = useState(false);
   const [hasGithubIntegration, { data: hasGithubIntegrationData }] = useLazyQuery(HAS_ORG_GITHUB_INTEGRATION);
   const [deleteOrgGithubIntegration] = useMutation(DELETE_ORG_GITHUB);

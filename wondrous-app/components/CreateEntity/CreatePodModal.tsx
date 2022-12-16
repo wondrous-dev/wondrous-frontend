@@ -7,24 +7,22 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CREATE_POD } from 'graphql/mutations/pod';
 import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
-import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import palette from 'theme/palette';
-import { ENTITIES_TYPES, GRAPHQL_ERRORS, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { GRAPHQL_ERRORS, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { RichTextEditor, useEditor, countCharacters, extractMentions, plainTextToRichText } from 'components/RichText';
 import DropdownSelect from 'components/Common/DropdownSelect';
-import { TextInput } from '../TextInput';
+import CreateDaoIcon from 'components/Icons/createDao';
+import AudioIcon from 'components/Icons/MediaTypesIcons/audio';
+import CodeIcon from 'components/Icons/MediaTypesIcons/code';
+import ImageIcon from 'components/Icons/MediaTypesIcons/image';
+import VideoIcon from 'components/Icons/MediaTypesIcons/video';
+import { TextInput } from 'components/TextInput';
 
-import { ErrorText } from '../Common';
-import CloseModalIcon from '../Icons/closeModal';
-import InputForm from '../Common/InputForm/inputForm';
-import CreateDaoIcon from '../Icons/createDao';
-import AudioIcon from '../Icons/MediaTypesIcons/audio';
-import CodeIcon from '../Icons/MediaTypesIcons/code';
-import ImageIcon from '../Icons/MediaTypesIcons/image';
-import VideoIcon from '../Icons/MediaTypesIcons/video';
+import { ErrorText } from 'components/Common';
+import CloseModalIcon from 'components/Icons/closeModal';
+import InputForm from 'components/Common/InputForm/inputForm';
 
 import {
   CreateLayoutPodsIcon,
@@ -127,7 +125,7 @@ function CreatePodModal(props) {
   const handleUserMentionChange = (query) =>
     searchOrgUsers({
       variables: {
-        orgId: org,
+        orgIds: [org],
         searchString: query,
       },
     }).then(({ data }) => data?.searchOrgUsers?.map((user) => ({ ...user, display: user.username, id: user.id })));
@@ -206,16 +204,10 @@ function CreatePodModal(props) {
     if (canCreatePod) {
       const podInput = {
         name: title,
-        username: title?.toLowerCase().split(' ').join('_'),
+        username: title?.toLowerCase().split(' ').join(''),
         description: podDescriptionText,
         orgId: org,
         privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
-        links: [
-          {
-            url: link,
-            displayName: link,
-          },
-        ],
       };
       if (!title) {
         const newErrors = { ...errors };
@@ -247,7 +239,7 @@ function CreatePodModal(props) {
         general: 'You need the right permissions to create a pod',
       });
     }
-  }, [podDescriptionText, title, org, canCreatePod, errors, link, createPod, isPublicEntity]);
+  }, [podDescriptionText, title, org, canCreatePod, errors, createPod, isPublicEntity]);
 
   const creating = createPodLoading && !createPodError;
   return (
@@ -268,10 +260,10 @@ function CreatePodModal(props) {
       <CreateFormMainSection>
         <CreateFormMainSelects>
           <DropdownSelect
-            title="DAO"
+            title="Org"
             value={org}
             setValue={setOrg}
-            labelText="Choose DAO"
+            labelText="Choose Org"
             labelIcon={<CreateDaoIcon />}
             options={filterDAOptions(userOrgs?.getUserOrgs) || []}
             name="dao"
@@ -328,22 +320,6 @@ function CreatePodModal(props) {
         <CreateFormAddDetailsAppearBlock>
           {(showLinkAttachmentSection || showVisibility) && (
             <CreateFormAddDetailsAppearBlockContainer>
-              {showLinkAttachmentSection && (
-                <CreateFormLinkAttachmentBlock
-                  style={{
-                    borderBottom: 'none',
-                  }}
-                >
-                  <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
-                  <InputForm
-                    value={link}
-                    onChange={(e) => setLink(e.target.value)}
-                    margin
-                    placeholder="Enter link URL"
-                    search={false}
-                  />
-                </CreateFormLinkAttachmentBlock>
-              )}
               {showVisibility && (
                 <CreateFormAddDetailsTab>
                   <CreateFormAddDetailsInputLabel>Who can see this pod?</CreateFormAddDetailsInputLabel>

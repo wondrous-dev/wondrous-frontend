@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ModalComponent from '@mui/material/Modal';
-
+import { useOutsideAlerter } from 'utils/hooks';
 import {
   ModalBody,
   ModalContent,
@@ -47,6 +47,8 @@ type Props = {
   footerRight?: React.ReactNode;
 
   alignCenter?: boolean;
+
+  footerCenter?: React.ReactNode;
 };
 
 export function Modal({
@@ -55,12 +57,23 @@ export function Modal({
   title,
   footerLeft,
   footerRight,
+  footerCenter,
   maxWidth,
   children,
   alignCenter = false,
 }: Props) {
+  const contentRef = useRef();
+
+  // TODO: Adrian - refactor this to use modals native API
+  // useOutsideAlerter(contentRef, onClose);
   return (
-    <ModalComponent open={open} onClose={onClose}>
+    <ModalComponent
+      open={open}
+      onClose={onClose}
+      style={{
+        zIndex: 2000,
+      }}
+    >
       <ModalContainer tabIndex={-1} alignCenter={alignCenter}>
         <ModalDialog maxWidth={maxWidth} alignCenter={alignCenter}>
           <ModalContent>
@@ -71,10 +84,10 @@ export function Modal({
 
             <ModalBody>{children}</ModalBody>
 
-            {footerLeft || footerRight ? (
-              <ModalFooter>
-                <ModalFooterLeft>{footerLeft}</ModalFooterLeft>
-                <ModalFooterRight>{footerRight}</ModalFooterRight>
+            {!!footerLeft || !!footerRight || !!footerCenter ? (
+              <ModalFooter alignCenter={!!footerCenter}>
+                {footerLeft ? <ModalFooterLeft>{footerLeft}</ModalFooterLeft> : null}
+                {footerRight ? <ModalFooterRight>{footerRight}</ModalFooterRight> : null}
               </ModalFooter>
             ) : null}
           </ModalContent>

@@ -117,15 +117,7 @@ const useGetUserAboutPage = (userId) => {
           console.log(e);
         });
     }
-  }, [
-    userId,
-    userOrgRolesData,
-    inProgressData,
-    completedTasksData,
-    getUserOrgRoles,
-    getUserInProgressTasks,
-    getUserCompletedTasks,
-  ]);
+  }, [userId, userOrgRolesData, getUserOrgRoles, getUserInProgressTasks, getUserCompletedTasks]);
 
   return userOrgRolesData
     ? {

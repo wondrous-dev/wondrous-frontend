@@ -1,6 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
-import { useMe } from 'components/Auth/withAuth';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 import { SafeImage } from 'components/Common/Image';
+import PodIconName from 'components/Common/PodIconName';
 import {
   LoadMore,
   TaskContent,
@@ -8,28 +9,27 @@ import {
   TaskListCardWrapper,
   TaskListModalHeader,
   TaskModalBaseCard,
-  TaskTitle,
 } from 'components/Common/Task/styles';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import PodIcon from 'components/Icons/podIcon';
 import {
   PodModalFooter,
   PodModalFooterInfoWrapper,
   PodModalFooterInfoWrapperText,
 } from 'components/Common/SidebarMainPods/styles';
-import { GET_USER_PODS } from 'graphql/queries';
+import { GET_USER_PODS_WITH_COUNT } from 'graphql/queries';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { renderMentionString } from 'utils/common';
 import { cutString } from 'utils/helpers';
+import { NoUnderlineLink } from './Link/links';
 
 function PodListCard(props) {
   const { pod, handleClose } = props;
   const router = useRouter();
   return (
-    <Link href={`/pod/${pod?.id}/boards`} passHref>
+    <NoUnderlineLink href={`/pod/${pod?.id}/boards`} passHref>
       <TaskListCardWrapper
         onClick={() => {
           if (handleClose) {
@@ -45,15 +45,7 @@ function PodListCard(props) {
             marginBottom: '0',
           }}
         >
-          <PodIcon
-            color={pod?.color}
-            style={{
-              width: '26px',
-              height: '26px',
-              marginRight: '8px',
-            }}
-          />
-          <TaskTitle>{pod?.name}</TaskTitle>
+          <PodIconName color={pod?.color} name={pod?.name} />
         </TaskHeader>
         <TaskContent
           style={{
@@ -78,6 +70,7 @@ function PodListCard(props) {
                 borderRadius: '4px',
                 marginRight: '8px',
               }}
+              alt="Organization Logo"
             />
           )}
           {!!pod?.contributorCount && (
@@ -94,21 +87,20 @@ function PodListCard(props) {
               </PodModalFooterInfoWrapperText>
             </PodModalFooterInfoWrapper>
           )}
-          {!!pod?.milestoneCount && (
-            <PodModalFooterInfoWrapper>
-              <PodModalFooterInfoWrapperText>
-                {pod?.milestoneCount} {pod?.milestoneCount === 1 ? 'milestone' : 'milestones'}
-              </PodModalFooterInfoWrapperText>
-            </PodModalFooterInfoWrapper>
-          )}
         </PodModalFooter>
       </TaskListCardWrapper>
-    </Link>
+    </NoUnderlineLink>
   );
 }
-export function PodModal(props) {
+
+interface PodModalProps {
+  open: boolean;
+  handleClose: () => unknown;
+}
+
+function PodModal(props: PodModalProps) {
   const { open, handleClose } = props;
-  const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS, {
+  const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS_WITH_COUNT, {
     fetchPolicy: 'network-only',
   });
   const [pods, setPods] = useState([]);
@@ -157,3 +149,5 @@ export function PodModal(props) {
     </CreateModalOverlay>
   );
 }
+
+export default withAuth(PodModal)
