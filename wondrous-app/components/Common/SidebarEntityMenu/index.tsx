@@ -83,7 +83,7 @@ const EntityMenu = () => {
 
   return (
     <>
-      <Button onClick={handleClick} open={open}>
+      <Button onClick={handleClick} open={open} id="tour-header-project-navigation">
         <IconText>
           <ButtonIcon isUserBoard={isUserBoard}>
             <DropdownItem

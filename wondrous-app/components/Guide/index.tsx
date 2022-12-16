@@ -4,7 +4,7 @@ import { SET_USER_COMPLETED_GUIDE } from 'graphql/mutations/user';
 import { useRouter } from 'next/router';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
-import { NextButton, PrevButton, NavigationWrapper } from './styles';
+import { NextButton, PrevButton, NavigationWrapper, LaunchButton, LaunchButtonText } from './styles';
 import { guideConfig } from './guide';
 
 export default function OnboardingGuide({ children }) {
@@ -85,6 +85,34 @@ export default function OnboardingGuide({ children }) {
           }
           return setCurrentStep((step) => step + 1);
         };
+        if (stepsData?.nextAction === 'skip') {
+          return null;
+        }
+        if (stepsData.nextAction === 'finish') {
+          return (
+            <LaunchButton
+              onClick={() => {
+                if (guide?.id) {
+                  setUserCompletedGuide({
+                    variables: {
+                      guideId: guide?.id,
+                    },
+                  }).then(() => {
+                    router.push('/onboarding-dao', undefined, {
+                      shallow: true,
+                    });
+                  });
+                } else {
+                  router.push('/onboarding-dao', undefined, {
+                    shallow: true,
+                  });
+                }
+              }}
+            >
+              <LaunchButtonText>Launch a Project</LaunchButtonText>
+            </LaunchButton>
+          );
+        }
         return (
           <NextButton type="button" onClick={action}>
             {buttonTitle}
@@ -100,6 +128,31 @@ export default function OnboardingGuide({ children }) {
           }
           return setCurrentStep((step) => step - 1);
         };
+        if (stepsData.nextAction === 'finish') {
+          return (
+            <LaunchButton
+              onClick={() => {
+                if (guide?.id) {
+                  setUserCompletedGuide({
+                    variables: {
+                      guideId: guide?.id,
+                    },
+                  }).then(() => {
+                    router.push('/explore', undefined, {
+                      shallow: true,
+                    });
+                  });
+                } else {
+                  router.push('/explore', undefined, {
+                    shallow: true,
+                  });
+                }
+              }}
+            >
+              <LaunchButtonText>Find a project</LaunchButtonText>
+            </LaunchButton>
+          );
+        }
         return (
           <PrevButton type="button" onClick={action}>
             {buttonTitle}

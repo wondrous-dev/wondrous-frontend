@@ -112,6 +112,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
               />
               {showCreateButton && (
                 <HeaderCreateButton
+                  id="tour-header-create-btn"
                   highlighted="true"
                   isActive={activeModalType === TYPES.CREATE_ENTITY || !activeModalType}
                   onClick={() => handleActiveModalType(TYPES.CREATE_ENTITY)}

@@ -9,7 +9,12 @@ const HeaderUserProfile = ({ handleClick, open, isActive }) => {
   const { isMobileScreen } = useMediaQuery();
 
   return (
-    <HeaderUserProfileWrapper onClick={handleClick} open={open} isActive={isActive}>
+    <HeaderUserProfileWrapper
+      id="tour-header-personal-navigation"
+      onClick={handleClick}
+      open={open}
+      isActive={isActive}
+    >
       <UserProfilePicture
         avatar={user?.profilePicture}
         style={{ height: '31px', width: '31px', borderRadius: '13px' }}
