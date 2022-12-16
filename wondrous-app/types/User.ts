@@ -3,7 +3,7 @@ export interface UserInfo {
   email: string;
   discordUsername: string;
   twitterUsername?: any;
-  promotionTweet?: any;
+  orbit1Tweet?: any;
 }
 
 export interface User {
