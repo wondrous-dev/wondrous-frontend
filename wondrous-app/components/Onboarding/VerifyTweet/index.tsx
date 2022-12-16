@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
+import ReactPlayer from 'react-player';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { VERIFY_USER_TWEET } from 'graphql/mutations';
@@ -160,17 +161,17 @@ function VerifyTweet({ firstOrg, firstPod }) {
         }}
       >
         <PlayerWrapper>
-          <Image alt="Background" src="https://storage.googleapis.com/public-wonder/thisis.png" quality={100} width={300} height={300} />
-
-          {/* <StyledMuxPlayer
-            autoPlay="muted"
-            loop
-            streamType="on-demand"
-            playbackId="TrJJODUH400xzbi00R1t2Pq5ik00zA7MwQ9y59NyU2Ailo"
-            metadata={{
-              video_title: 'Orbit 1 NFT',
+          <ReactPlayer
+            style={{
+              height: '100%',
+              width: '100%',
             }}
-          /> */}
+            muted
+            playing
+            loop
+            controls={false}
+            url="https://stream.mux.com/TrJJODUH400xzbi00R1t2Pq5ik00zA7MwQ9y59NyU2Ailo.m3u8"
+          />
         </PlayerWrapper>
         {!tweetVerified && (
           <div
