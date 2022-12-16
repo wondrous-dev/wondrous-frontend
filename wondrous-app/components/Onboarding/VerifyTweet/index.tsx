@@ -3,8 +3,6 @@ import { useRouter } from 'next/router';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { VERIFY_USER_TWEET } from 'graphql/mutations';
-import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
-import { CompletedIcon } from 'components/Icons/statusIcons';
 import {
   ContinueButton,
   LaterButton,
@@ -17,6 +15,7 @@ import { useWonderWeb3 } from 'services/web3';
 import useEagerConnectConditional from 'services/web3/hooks/useEagerConnectConditional';
 import TwitterLogo from '../../../public/images/twitter.svg';
 import { InviteWelcomeBoxParagraph } from '../styles';
+import { PlayerWrapper } from './styles';
 import { useMe } from '../../Auth/withAuth';
 
 // const buttonStyle = {
@@ -121,23 +120,26 @@ function VerifyTweet({ firstOrg, firstPod }) {
         minHeight: 'unset',
       }}
     >
-      <OnboardingTitle
-        style={{
-          marginTop: 0,
-        }}
-      >
-        Get your Orbit 1 NFT
-      </OnboardingTitle>
-      <InviteWelcomeBoxParagraph
-        style={{
-          textAlign: 'left',
-          width: '100%',
-          fontSize: '15px',
-          fontWeight: '400',
-        }}
-      >
-        Want to get your Orbit 1 NFT? <br /> Verify your Twitter to get the password and link.
-      </InviteWelcomeBoxParagraph>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <OnboardingTitle
+          style={{
+            marginTop: 0,
+            textAlign: 'center',
+          }}
+        >
+          Get your Orbit 1 NFT
+        </OnboardingTitle>
+        <InviteWelcomeBoxParagraph
+          style={{
+            textAlign: 'center',
+            width: '100%',
+            fontSize: '15px',
+            fontWeight: '400',
+          }}
+        >
+          Want to get your Orbit 1 NFT? Tweet us!
+        </InviteWelcomeBoxParagraph>
+      </div>
       {!user?.activeEthAddress && (
         <InviteWelcomeBoxParagraph
           style={{
@@ -157,7 +159,19 @@ function VerifyTweet({ firstOrg, firstPod }) {
           alignItems: 'center',
         }}
       >
-        <Image alt="Background" src="/images/poap/launch-poap.png" quality={100} width={300} height={300} />
+        <PlayerWrapper>
+          <Image alt="Background" src="https://storage.googleapis.com/public-wonder/thisis.png" quality={100} width={300} height={300} />
+
+          {/* <StyledMuxPlayer
+            autoPlay="muted"
+            loop
+            streamType="on-demand"
+            playbackId="TrJJODUH400xzbi00R1t2Pq5ik00zA7MwQ9y59NyU2Ailo"
+            metadata={{
+              video_title: 'Orbit 1 NFT',
+            }}
+          /> */}
+        </PlayerWrapper>
         {!tweetVerified && (
           <div
             style={{
