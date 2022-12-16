@@ -35,6 +35,7 @@ import { useRouter } from 'next/router';
 import { Fragment, useContext, useState } from 'react';
 import palette from 'theme/palette';
 import { usePermissions } from 'utils/hooks';
+import { TaskInterface } from 'types/task';
 import { BountyBoardEmpty, BountyCardWrapper } from './styles';
 
 export function SubmissionsCount({ total, approved }) {
@@ -276,9 +277,20 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
   );
 };
 
-export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false, Container }) {
+interface Props {
+  tasks: TaskInterface[];
+  handleCardClick?: (bounty: TaskInterface) => void;
+  displayOrg?: boolean;
+  Container?: any;
+}
+export default function Board({
+  tasks,
+  handleCardClick = (bounty) => {},
+  displayOrg = false,
+  Container = Fragment,
+}: Props) {
   return (
-    <Container columns={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
+    <Container>
       {tasks?.length ? (
         tasks.map((bounty) => (
           <BountyItem key={bounty?.id} bounty={bounty} handleCardClick={handleCardClick} displayOrg={displayOrg} />

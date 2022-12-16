@@ -9,38 +9,59 @@ import { useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import { useGlobalContext } from 'utils/hooks';
 
-const DropdownItem = ({ isOrgOrPod, thumbnailPicture, profilePicture, isExplore, userProfilePicture }) => {
+const DropdownItem = ({ isOrgOrPod, thumbnailPicture, profilePicture, isExplore, userProfilePicture, isUserBoard }) => {
   if (isOrgOrPod) {
     return (
-      <OrgProfilePicture
-        profilePicture={thumbnailPicture || profilePicture}
-        style={{
-          borderRadius: '3px',
-          width: '28px',
-          height: '28px',
-          background: palette.grey87,
-        }}
-      />
+      <ButtonIcon isUserBoard={isUserBoard}>
+        <OrgProfilePicture
+          profilePicture={thumbnailPicture || profilePicture}
+          style={{
+            borderRadius: '3px',
+            width: '28px',
+            height: '28px',
+            background: palette.grey87,
+          }}
+        />
+      </ButtonIcon>
     );
   }
   if (isExplore) {
     return (
-      <IconWrapper>
-        <ExplorePageMinimalIcon />
-      </IconWrapper>
+      <ButtonIcon isUserBoard={isUserBoard}>
+        <IconWrapper>
+          <ExplorePageMinimalIcon />
+        </IconWrapper>
+      </ButtonIcon>
     );
   }
-  return (
-    <UserProfilePicture
-      avatar={userProfilePicture}
-      style={{
-        width: '28px',
-        height: '28px',
-        borderRadius: '100%',
-      }}
-    />
-  );
+  if (isUserBoard) {
+    return (
+      <ButtonIcon isUserBoard={isUserBoard}>
+        <UserProfilePicture
+          avatar={userProfilePicture}
+          style={{
+            width: '28px',
+            height: '28px',
+            borderRadius: '100%',
+          }}
+        />
+      </ButtonIcon>
+    );
+  }
+  return null;
 };
+
+const MY_WORKSPACES = [
+  '/mission-control',
+  '/dashboard/admin',
+  '/dashboard/bounties',
+  '/dashboard',
+  '/dashboard/proposals',
+  '/profile/[username]/about',
+  '/profile/settings',
+  '/profile/login-methods',
+  '/profile/notifications',
+];
 
 const EntityMenu = () => {
   const router = useRouter();
@@ -61,10 +82,11 @@ const EntityMenu = () => {
     [router.pathname]
   );
 
-  const isUserBoard = useMemo(
-    () => !isExplore && !activeOrg && !activePodOrg,
-    [router.pathname, isExplore, activeOrg, activePodOrg]
-  );
+  const isUserBoard = useMemo(() => {
+    if (router.pathname === `/profile/[username]/about` && router.query?.username !== user?.username) return false;
+
+    return MY_WORKSPACES.includes(router.pathname);
+  }, [router.pathname, user]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -78,22 +100,25 @@ const EntityMenu = () => {
     if (isUserBoard) {
       return 'My workspace';
     }
-    return name;
+    if (name) {
+      return name;
+    }
+    return 'Select workspace';
   }, [name, isExplore, isUserBoard, isOrgOrPod]);
 
   return (
     <>
       <Button onClick={handleClick} open={open} id="tour-header-project-navigation">
         <IconText>
-          <ButtonIcon isUserBoard={isUserBoard}>
-            <DropdownItem
-              isOrgOrPod={isOrgOrPod}
-              thumbnailPicture={thumbnailPicture}
-              profilePicture={profilePicture}
-              isExplore={isExplore}
-              userProfilePicture={user?.profilePicture}
-            />
-          </ButtonIcon>
+          <DropdownItem
+            isOrgOrPod={isOrgOrPod}
+            thumbnailPicture={thumbnailPicture}
+            profilePicture={profilePicture}
+            isExplore={isExplore}
+            isUserBoard={isUserBoard}
+            userProfilePicture={user?.profilePicture}
+          />
+
           <Text>{pageTitle}</Text>
         </IconText>
         <ArrowIcon open={open} />
