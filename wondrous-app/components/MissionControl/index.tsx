@@ -160,6 +160,7 @@ const MissionControl = () => {
 
   return (
     <MissionControlWrapper>
+      <ChooseEntityToCreate />
       {announcementModalOpen && (
         <AnnouncementModal open={announcementModalOpen} onClose={() => setAnnouncementModalOpen(false)} />
       )}
