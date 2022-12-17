@@ -5,6 +5,7 @@ import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
 import palette from 'theme/palette';
 import { getProposalStatus } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { useTaskActions } from 'utils/hooks';
 
 import { useEntityCreateButtonProps, useGetOrgProposal } from './helpers';
 import SectionContent from './SectionContent';
@@ -28,23 +29,26 @@ const RightComponent = ({ orgId, rejectedAt, approvedAt, closedAt }) => (
   </Grid>
 );
 
-const ProfileProposalSection = () => (
-  <SectionContent
-    HeaderTitleProps={{
-      text: 'Proposals',
-      IconComponent: ContentPaste,
-    }}
-    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.PROPOSAL)}
-    backgroundImageUrl="/images/project/proposal-empty-bg.svg"
-    showAllUrl="boards?entity=proposal"
-    ListItemProps={{
-      LeftComponent,
-      RightComponent,
-      onClick: (router, { id }) =>
-        router.push({ query: { ...router.query, taskProposal: id } }, undefined, { scroll: false }),
-    }}
-    data={useGetOrgProposal()}
-  />
-);
+const ProfileProposalSection = () => {
+  const { openTaskViewModal } = useTaskActions();
+
+  return (
+    <SectionContent
+      HeaderTitleProps={{
+        text: 'Proposals',
+        IconComponent: ContentPaste,
+      }}
+      CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.PROPOSAL)}
+      backgroundImageUrl="/images/project/proposal-empty-bg.svg"
+      showAllUrl="boards?entity=proposal"
+      ListItemProps={{
+        LeftComponent,
+        RightComponent,
+        onClick: (router, { id }) => openTaskViewModal({ id }),
+      }}
+      data={useGetOrgProposal()}
+    />
+  );
+};
 
 export default ProfileProposalSection;

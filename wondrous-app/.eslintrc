@@ -65,7 +65,7 @@
     "no-return-assign": "warn",
     "no-sparse-arrays": "warn",
     "no-empty": "warn",
-    "no-restricted-exports": "warn",
+    "no-restricted-exports": ["warn", { "restrictedNamedExports": [] }],
     "no-empty-pattern": "warn",
     "no-undef": "warn",
     "no-sequences": "warn",

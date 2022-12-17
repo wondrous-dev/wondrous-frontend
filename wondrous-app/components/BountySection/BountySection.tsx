@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import BountyBoard from 'components/Common/BountyBoard';
 import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
-import { useRouter } from 'next/router';
+import { useTaskActions } from 'utils/hooks';
 import { ButtonPrimary } from 'components/Common/button';
 import {
   BountySectionHeader,
@@ -31,16 +31,7 @@ const BountySection = ({ bounties = [], fetchMore = () => {}, hasMore, gr15DEI }
   const [openExploreGr15Modal, setExploreGr15Modal] = useState(false);
   const [showSponsors, setShowSponsors] = useState(false);
   const [showGrantees, setShowGrantees] = useState(false);
-  const router = useRouter();
-
-  const handleCardClick = (bounty) => {
-    const query = {
-      ...router.query,
-      task: bounty?.id,
-    };
-
-    router.push({ query }, undefined, { scroll: false, shallow: true });
-  };
+  const { openTaskViewModal } = useTaskActions();
 
   return (
     <SectionWrapper>
@@ -117,7 +108,7 @@ const BountySection = ({ bounties = [], fetchMore = () => {}, hasMore, gr15DEI }
         </>
       )}
 
-      <BountyBoard Container={BountyBoardContainer} tasks={bounties} displayOrg handleCardClick={handleCardClick} />
+      <BountyBoard Container={BountyBoardContainer} tasks={bounties} displayOrg handleCardClick={openTaskViewModal} />
       {hasMore && !!bounties?.length && (
         <ShowMoreButtonWrapper>
           <ShowMoreButton type="button" onClick={() => fetchMore()}>

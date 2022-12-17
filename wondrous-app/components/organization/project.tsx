@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
 import { OrgBoardContext } from 'utils/contexts';
 import { usePageDataContext } from 'utils/hooks';
+import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
 const OrgProject = () => {
   const { username } = useRouter().query;
@@ -21,7 +22,7 @@ const OrgProject = () => {
     },
   });
   const { getOrgFromUsername: orgData } = data || {};
-  
+
   useEffect(() => {
     if (orgData) {
       setPageData({ orgData });
@@ -43,11 +44,13 @@ const OrgProject = () => {
 
   return (
     <OrgBoardContext.Provider value={contextValue}>
-      <EntitySidebar>
-        <Wrapper orgData={orgData}>
-          <ProjectProfile orgData={orgData} />
-        </Wrapper>
-      </EntitySidebar>
+      <TaskActionsProvider>
+        <EntitySidebar>
+          <Wrapper orgData={orgData}>
+            <ProjectProfile orgData={orgData} />
+          </Wrapper>
+        </EntitySidebar>
+      </TaskActionsProvider>
     </OrgBoardContext.Provider>
   );
 };

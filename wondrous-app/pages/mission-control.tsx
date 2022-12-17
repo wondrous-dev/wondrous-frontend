@@ -8,7 +8,7 @@ import palette from '../theme/palette';
 
 const MissionControlSkeleton = () => (
   <Grid container wrap="nowrap" gap="20px" columns={3}>
-    {Array.from(new Array(2)).map((index) => (
+    {Array.from(new Array(2).keys()).map((index) => (
       <Grid key={index} item sm={5}>
         <Box mt="80px" width="100%">
           <Skeleton sx={{ bgcolor: palette.grey900 }} variant="rectangular" width="100%" height={500} />

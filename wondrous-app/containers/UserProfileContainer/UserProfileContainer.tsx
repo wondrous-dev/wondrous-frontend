@@ -1,4 +1,3 @@
-import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import Image from 'next/image';
@@ -12,6 +11,7 @@ import ProfileUserTaskDaos from 'components/ProfileUserTaskDaos';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useQuery } from '@apollo/client';
 import { UserProfileContainerWrapper, UserProfileHeaderImageWrapper, UserProfileContainerContent } from './styles';
+import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
 function UserProfileContainer() {
   const router = useRouter();
@@ -29,23 +29,24 @@ function UserProfileContainer() {
           : null,
       }}
     >
-      <TaskViewModalWatcher />
-      <UserProfileContainerWrapper>
-        <UserProfileHeaderImageWrapper>
-          <Image
-            src="/images/profile/profileBackground.png"
-            fill
-            style={{
-              objectFit: 'cover',
-            }}
-            alt="header-image"
-          />
-        </UserProfileHeaderImageWrapper>
-        <UserProfileContainerContent>
-          <ProfileInfo userProfile={userProfileData} />
-          <ProfileUserTaskDaos userProfile={userProfileData} />
-        </UserProfileContainerContent>
-      </UserProfileContainerWrapper>
+      <TaskActionsProvider>
+        <UserProfileContainerWrapper>
+          <UserProfileHeaderImageWrapper>
+            <Image
+              src="/images/profile/profileBackground.png"
+              fill
+              style={{
+                objectFit: 'cover',
+              }}
+              alt="header-image"
+            />
+          </UserProfileHeaderImageWrapper>
+          <UserProfileContainerContent>
+            <ProfileInfo userProfile={userProfileData} />
+            <ProfileUserTaskDaos userProfile={userProfileData} />
+          </UserProfileContainerContent>
+        </UserProfileContainerWrapper>
+      </TaskActionsProvider>
     </UserProfileContext.Provider>
   );
 }

@@ -21,7 +21,6 @@ import {
   ExportCSVButtonText,
 } from 'components/organization/analytics/styles';
 import { SafeImage } from 'components/Common/Image';
-import { DefaultProfilePicture, UserProfilePicture } from 'components/profile/modals/styles';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';

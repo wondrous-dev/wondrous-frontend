@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 
-import { useColumns, useUserProfile } from 'utils/hooks';
+import { useBoards, useColumns, useTaskActions, useUserProfile } from 'utils/hooks';
 import { GET_TASK_SUBMISSIONS_FOR_TASK, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { DUPLICATE_TASK } from 'graphql/mutations';
 import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
@@ -80,6 +80,7 @@ export default function TaskCard({
 }) {
   const TaskIcon = TASK_ICONS[task.status];
   const boardColumns = useColumns();
+  const { openTaskViewModal } = useTaskActions();
   const [claimed, setClaimed] = useState(false);
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
@@ -172,27 +173,22 @@ export default function TaskCard({
   const onNavigate = (e) => {
     // TODO refactor this
     if (!showPaymentModal && !isApplicationModalOpen) {
-      const query = {
-        ...router.query,
-        task: task?.id,
-      };
-
-      router.push({ query }, undefined, { scroll: false, shallow: true });
+      openTaskViewModal(task);
     }
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
 
   return (
-    <CardContent
-      onMouseEnter={() => setShowMenu(true)}
-      onMouseLeave={() => {
-        setShowMenu(false);
-        setAnchorEl(null);
-      }}
-      data-cy={`task-card-item-${title}`}
-    >
-      <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
+    <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
+      <CardContent
+        onMouseEnter={() => setShowMenu(true)}
+        onMouseLeave={() => {
+          setShowMenu(false);
+          setAnchorEl(null);
+        }}
+        data-cy={`task-card-item-${title}`}
+      >
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
             getTaskSubmissionsForTask={getTaskSubmissionsForTask}
@@ -422,7 +418,7 @@ export default function TaskCard({
             open={showMenu}
           />
         </BoardsCardFooter>
-      </SmartLink>
-    </CardContent>
+      </CardContent>
+    </SmartLink>
   );
 }

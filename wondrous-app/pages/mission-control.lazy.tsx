@@ -1,5 +1,10 @@
 import MissionControl from 'components/MissionControl';
+import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
-const MissionControlPage = () => <MissionControl />;
+const MissionControlPage = () => (
+  <TaskActionsProvider>
+    <MissionControl />
+  </TaskActionsProvider>
+);
 
 export default MissionControlPage;

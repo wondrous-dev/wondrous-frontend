@@ -10,6 +10,10 @@ import CommentList from 'components/Comment';
 import { useLazyQuery } from '@apollo/client';
 import { GET_SUBTASK_COUNT_FOR_TASK } from 'graphql/queries';
 import {
+  TaskViewModalFooterSkeleton,
+  TaskSkeletonFooterTitleDiv,
+} from 'components/Common/TaskViewModal/skeleton/TaskViewModalFooterSkeleton';
+import {
   TaskModalFooter,
   TaskSectionFooterTitleDiv,
   TaskSubmissionTab,
@@ -43,6 +47,7 @@ interface Props {
   setFetchedTask: (task) => any;
   setShowPaymentModal: (value: boolean) => any;
   taskSubmissionsForTaskLoading: boolean;
+  loading: boolean;
 }
 
 const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -70,6 +75,7 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
     setFetchedTask,
     setShowPaymentModal,
     taskSubmissionsForTaskLoading,
+    loading,
   } = props;
 
   const podBoard = usePodBoard();
@@ -117,20 +123,26 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
 
   return (
     <TaskModalFooter fullScreen={fullScreen}>
-      <TaskSectionFooterTitleDiv>
-        {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
-          const active = tab === activeTab;
-          return (
-            <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
-              <TaskTabText isActive={active}>
-                {tab}{' '}
-                {tab === tabs.discussion && <TabItemCount isActive={active}>{fetchedTask?.commentCount}</TabItemCount>}
-                {tab === tabs.subTasks && <TabItemCount isActive={active}>{subTaskCount}</TabItemCount>}
-              </TaskTabText>
-            </TaskSubmissionTab>
-          );
-        })}
-      </TaskSectionFooterTitleDiv>
+      {loading ? (
+        <TaskSkeletonFooterTitleDiv />
+      ) : (
+        <TaskSectionFooterTitleDiv>
+          {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
+            const active = tab === activeTab;
+            return (
+              <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
+                <TaskTabText isActive={active}>
+                  {tab}{' '}
+                  {tab === tabs.discussion && (
+                    <TabItemCount isActive={active}>{fetchedTask?.commentCount}</TabItemCount>
+                  )}
+                  {tab === tabs.subTasks && <TabItemCount isActive={active}>{subTaskCount}</TabItemCount>}
+                </TaskTabText>
+              </TaskSubmissionTab>
+            );
+          })}
+        </TaskSectionFooterTitleDiv>
+      )}
       <TaskSectionContent ref={ref}>
         {activeTab === tabs.applications && fetchedTask?.id && (
           <TaskApplicationList
@@ -141,26 +153,32 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
             canViewApplications={canViewApplications}
           />
         )}
-        {activeTab === tabs.submissions && (
-          <TaskSubmission
-            assigneeProfilePicture={fetchedTask?.profilePicture}
-            assigneeUsername={fetchedTask?.assigneeUsername}
-            board={board}
-            boardColumns={boardColumns}
-            canMoveProgress={canMoveProgress}
-            canReview={canReview}
-            canSubmit={canSubmit}
-            fetchedTask={fetchedTask}
-            fetchedTaskSubmissions={taskSubmissionsForTask?.getTaskSubmissionsForTask}
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-            handleClose={handleClose}
-            isBounty={isBounty}
-            orgId={fetchedTask?.orgId}
-            setFetchedTask={setFetchedTask}
-            setShowPaymentModal={setShowPaymentModal}
-            taskId={fetchedTask?.id}
-            taskSubmissionLoading={taskSubmissionsForTaskLoading}
-          />
+        {loading ? (
+          <TaskViewModalFooterSkeleton />
+        ) : (
+          <>
+            {activeTab === tabs.submissions && (
+              <TaskSubmission
+                assigneeProfilePicture={fetchedTask?.profilePicture}
+                assigneeUsername={fetchedTask?.assigneeUsername}
+                board={board}
+                boardColumns={boardColumns}
+                canMoveProgress={canMoveProgress}
+                canReview={canReview}
+                canSubmit={canSubmit}
+                fetchedTask={fetchedTask}
+                fetchedTaskSubmissions={taskSubmissionsForTask?.getTaskSubmissionsForTask}
+                getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                handleClose={handleClose}
+                isBounty={isBounty}
+                orgId={fetchedTask?.orgId}
+                setFetchedTask={setFetchedTask}
+                setShowPaymentModal={setShowPaymentModal}
+                taskId={fetchedTask?.id}
+                taskSubmissionLoading={taskSubmissionsForTaskLoading}
+              />
+            )}
+          </>
         )}
         {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} canCreate={canCreate} />}
         {activeTab === tabs.discussion && (

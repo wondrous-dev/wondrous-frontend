@@ -4,6 +4,7 @@ import TaskCardDate from 'components/Common/TaskCardDate';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { useTaskActions } from 'utils/hooks';
 import ApplyOrClaimButton from './ApplyOrClaimButton';
 import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
 import SectionContent from './SectionContent';
@@ -26,22 +27,26 @@ const RightComponent = (props) => {
   );
 };
 
-const ProfileTaskSection = () => (
-  <SectionContent
-    HeaderTitleProps={{
-      text: 'Tasks',
-      IconComponent: CheckBoxIcon,
-    }}
-    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.TASK)}
-    backgroundImageUrl="/images/project/task-empty-bg.svg"
-    showAllUrl="boards?entity=task"
-    ListItemProps={{
-      LeftComponent,
-      RightComponent,
-      onClick: (router, { id }) => router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
-    }}
-    data={useGetOrgEntity('task')}
-  />
-);
+const ProfileTaskSection = () => {
+  const { openTaskViewModal } = useTaskActions();
+
+  return (
+    <SectionContent
+      HeaderTitleProps={{
+        text: 'Tasks',
+        IconComponent: CheckBoxIcon,
+      }}
+      CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.TASK)}
+      backgroundImageUrl="/images/project/task-empty-bg.svg"
+      showAllUrl="boards?entity=task"
+      ListItemProps={{
+        LeftComponent,
+        RightComponent,
+        onClick: (router, { id }) => openTaskViewModal({ id }),
+      }}
+      data={useGetOrgEntity('task')}
+    />
+  );
+};
 
 export default ProfileTaskSection;

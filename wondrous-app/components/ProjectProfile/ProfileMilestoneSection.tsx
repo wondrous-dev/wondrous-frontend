@@ -3,6 +3,7 @@ import TaskCardStatus from 'components/Common/TaskCardStatus';
 import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES, TASK_STATUS_DONE } from 'utils/constants';
+import { useTaskActions } from 'utils/hooks';
 
 import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
 import SectionContent from './SectionContent';
@@ -24,22 +25,26 @@ const RightComponent = ({ type, orgId, status, id }) => (
   </Grid>
 );
 
-const ProfileMilestoneSection = () => (
-  <SectionContent
-    HeaderTitleProps={{
-      text: 'Milestones',
-      IconComponent: FlagIcon,
-    }}
-    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.MILESTONE)}
-    backgroundImageUrl="/images/project/milestone-empty-bg.svg"
-    showAllUrl="boards?entity=milestone"
-    ListItemProps={{
-      LeftComponent,
-      RightComponent,
-      onClick: (router, { id }) => router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
-    }}
-    data={useGetOrgEntity('milestone')}
-  />
-);
+const ProfileMilestoneSection = () => {
+  const { openTaskViewModal } = useTaskActions();
+
+  return (
+    <SectionContent
+      HeaderTitleProps={{
+        text: 'Milestones',
+        IconComponent: FlagIcon,
+      }}
+      CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.MILESTONE)}
+      backgroundImageUrl="/images/project/milestone-empty-bg.svg"
+      showAllUrl="boards?entity=milestone"
+      ListItemProps={{
+        LeftComponent,
+        RightComponent,
+        onClick: (router, { id }) => openTaskViewModal({ id }),
+      }}
+      data={useGetOrgEntity('milestone')}
+    />
+  );
+};
 
 export default ProfileMilestoneSection;

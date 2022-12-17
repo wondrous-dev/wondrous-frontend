@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { delQuery } from 'utils';
 import Link from 'next/link';
 
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useTaskActions, useUserBoard } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import Compensation from 'components/Common/Compensation';
 import { PERMISSIONS, TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
@@ -70,6 +70,7 @@ export const rejectIconStyle = {
 
 export function TaskSummary({ task, setTask, action, taskType }) {
   const { compensation = {}, description = '', id, media, status, title = '', users = [] } = task;
+  const { openTaskViewModal } = useTaskActions();
 
   const TaskIcon = TASK_ICONS[status];
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -84,15 +85,6 @@ export function TaskSummary({ task, setTask, action, taskType }) {
     router.push(`/pod/${podId}/boards`, undefined, {
       shallow: true,
     });
-  };
-
-  const openModal = () => {
-    const query = {
-      ...router.query,
-      task: task?.id,
-    };
-
-    router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
   const orgBoard = useOrgBoard();
@@ -202,7 +194,7 @@ export function TaskSummary({ task, setTask, action, taskType }) {
   }
 
   return (
-    <TaskSummaryWrapper key={id} onClick={skipForCommandKey(openModal)}>
+    <TaskSummaryWrapper key={id} onClick={skipForCommandKey(() => openTaskViewModal(task))}>
       <TaskSummaryInner>
         <TaskHeader style={{ justifyContent: 'start' }}>
           <OrgProfilePicture src={task?.orgProfilePicture} />

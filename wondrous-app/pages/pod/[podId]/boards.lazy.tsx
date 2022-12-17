@@ -42,6 +42,7 @@ import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import { usePageDataContext } from 'utils/hooks';
+import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
 const useGetPodTaskBoardTasks = ({
   columns,
@@ -677,23 +678,25 @@ function BoardsPage({ meta }: Props) {
         filters,
       }}
     >
-      <EntitySidebar>
-        <Boards
-          columns={columns}
-          onLoadMore={fetchMore}
-          hasMore={podTaskHasMore}
-          onSearch={handleSearch}
-          searchString={searchString}
-          onFilterChange={handleFilterChange}
-          setColumns={setColumns}
-          loading={isLoading}
-          entityType={entityType}
-          userId={userId?.toString()}
-          orgId={pod?.orgId}
-          statuses={statuses}
-          activeView={activeView}
-        />
-      </EntitySidebar>
+      <TaskActionsProvider>
+        <EntitySidebar>
+          <Boards
+            columns={columns}
+            onLoadMore={fetchMore}
+            hasMore={podTaskHasMore}
+            onSearch={handleSearch}
+            searchString={searchString}
+            onFilterChange={handleFilterChange}
+            setColumns={setColumns}
+            loading={isLoading}
+            entityType={entityType}
+            userId={userId?.toString()}
+            orgId={pod?.orgId}
+            statuses={statuses}
+            activeView={activeView}
+          />
+        </EntitySidebar>
+      </TaskActionsProvider>
     </PodBoardContext.Provider>
   );
 }

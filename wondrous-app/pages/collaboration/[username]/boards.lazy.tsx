@@ -39,6 +39,7 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useGlobalContext } from 'utils/hooks';
+import TaskActionsProvider from 'utils/providers/TaskActionsProvider';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -664,24 +665,26 @@ function BoardsPage() {
         hasMore: orgTaskHasMore,
       }}
     >
-      <EntitySidebar>
-        <Boards
-          columns={columns}
-          searchString={searchString}
-          onLoadMore={fetchMore}
-          onSearch={handleSearch}
-          onFilterChange={handleFilterChange}
-          hasMore={orgTaskHasMore}
-          orgData={orgData}
-          statuses={filters?.statuses}
-          podIds={filters?.podIds}
-          setColumns={setColumns}
-          loading={isLoading}
-          entityType={entityType}
-          userId={userId?.toString()}
-          activeView={activeView}
-        />
-      </EntitySidebar>
+      <TaskActionsProvider>
+        <EntitySidebar>
+          <Boards
+            columns={columns}
+            searchString={searchString}
+            onLoadMore={fetchMore}
+            onSearch={handleSearch}
+            onFilterChange={handleFilterChange}
+            hasMore={orgTaskHasMore}
+            orgData={orgData}
+            statuses={filters?.statuses}
+            podIds={filters?.podIds}
+            setColumns={setColumns}
+            loading={isLoading}
+            entityType={entityType}
+            userId={userId?.toString()}
+            activeView={activeView}
+          />
+        </EntitySidebar>
+      </TaskActionsProvider>
     </OrgBoardContext.Provider>
   );
 }

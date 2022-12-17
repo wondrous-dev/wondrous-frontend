@@ -1,8 +1,8 @@
-import { useEffect, Suspense } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { ViewType } from 'types/common';
+import { useTaskActions } from 'utils/hooks';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ListView from 'components/ListView';
 import { CardsContainer } from './styles';
@@ -15,17 +15,9 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
     activeView,
     entityType = ENTITIES_TYPES.TASK,
   }) {
-    const router = useRouter();
     const [ref, inView] = useInView({});
+    const { openTaskViewModal } = useTaskActions();
 
-    const handleCardClick = (task) => {
-      const query = {
-        ...router.query,
-        task: task?.id,
-      };
-
-      router.push({ query }, undefined, { scroll: false, shallow: true });
-    };
     useEffect(() => {
       if (inView && hasMore && activeView !== ViewType.List) {
         onLoadMore();
@@ -36,7 +28,7 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
       <>
         <CardsContainer numberOfColumns={numberOfColumns} isFullWidth={activeView === ViewType.List}>
           {activeView === ViewType.Grid ? (
-            <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
+            <WrappedBoard tasks={columns} handleCardClick={openTaskViewModal} />
           ) : (
             <ListView
               enableInfiniteLoading

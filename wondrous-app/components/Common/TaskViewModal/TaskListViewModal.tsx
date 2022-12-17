@@ -27,7 +27,7 @@ const LIMIT = 5;
 
 const TASK_LIST_VIEW_LIMIT = 5;
 
-export function TaskListViewModal(props) {
+function TaskListViewModal(props) {
   const [fetchedList, setFetchedList] = useState([]);
   const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
 
@@ -433,3 +433,5 @@ export function TaskListViewModal(props) {
     </CreateModalOverlay>
   );
 }
+
+export default TaskListViewModal;

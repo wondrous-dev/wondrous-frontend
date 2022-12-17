@@ -1,13 +1,13 @@
+import { useState } from 'react';
 import { ClickAwayListener } from '@mui/material';
-import { delQuery } from 'utils';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+
+import { delQuery } from 'utils';
 import { ObjectType, PostVerbType } from 'types/post';
 import * as Constants from 'utils/constants';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import SmartLink from 'components/Common/SmartLink';
 import KudosForm from 'components/Common/KudosForm';
+import { useTaskActions } from 'utils/hooks';
 import { useMe } from '../../Auth/withAuth';
 import {
   PostHeaderDefaultUserImage,
@@ -32,6 +32,7 @@ const objectTypeText = {
 export function PostHeader(props) {
   const { post } = props;
   const router = useRouter();
+  const { openTaskViewModal } = useTaskActions();
   const { id, postId, verb, taskStatus, objectType, content, referencedObject, objectId, actor = {} } = post;
   const postObjectType = objectType ?? referencedObject?.objectType;
   const [menu, setMenu] = useState(null);
@@ -61,18 +62,7 @@ export function PostHeader(props) {
           <>
             awarded a kudos {referencedUser && `to ${referencedUser}`} for a completed{' '}
             <PostHeaderLink as="span">
-              <SmartLink
-                href={taskViewUrl}
-                preventLinkNavigation
-                onNavigate={() => {
-                  const query = {
-                    ...router.query,
-                    task: taskId,
-                  };
-
-                  router.push({ query }, undefined, { scroll: false, shallow: true });
-                }}
-              >
+              <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => openTaskViewModal({ id: taskId })}>
                 {objectTypeHeaderText}
               </SmartLink>
             </PostHeaderLink>

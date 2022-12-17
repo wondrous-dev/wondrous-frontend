@@ -14,8 +14,6 @@ import {
   HEADER_ASPECT_RATIO,
   EMPTY_RICH_TEXT_STRING,
 } from 'utils/constants';
-import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import apollo from 'services/apollo';
 import Box from '@mui/material/Box';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
@@ -303,7 +301,6 @@ function Wrapper(props) {
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
-      <TaskViewModalWatcher />
       <Suspense>
         <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       </Suspense>
