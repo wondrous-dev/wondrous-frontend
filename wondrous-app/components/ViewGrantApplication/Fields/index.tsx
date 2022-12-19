@@ -18,7 +18,8 @@ import {
   REQUEST_CHANGE_GRANT_APPLICATION,
 } from 'graphql/mutations';
 import { useRouter } from 'next/router';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { useWonderWeb3 } from 'services/web3';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { renderMentionString } from 'utils/common';
@@ -224,6 +225,13 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
 
 export const WalletAddressViewer = ({ walletAddress }) => {
   const [isCopied, setIsCopied] = useState(false);
+  const [ensOrAddress, setEnsOrAddress] = useState(walletAddress);
+  const wonderWeb3 = useWonderWeb3();
+
+  useEffect(() => {
+    wonderWeb3.getENSNameFromEthAddress(walletAddress).then((ensName) => setEnsOrAddress(ensName || walletAddress));
+  }, [walletAddress]);
+
   const handleAddressCopy = () => {
     setIsCopied(true);
     setTimeout(() => {
@@ -232,10 +240,15 @@ export const WalletAddressViewer = ({ walletAddress }) => {
     navigator.clipboard.writeText(`${walletAddress}`);
   };
 
+  const walletAddressText = useMemo(
+    () => (ensOrAddress?.includes('.eth') ? ensOrAddress : `${ensOrAddress?.slice(0, 8)}...${ensOrAddress?.slice(-4)}`),
+    [ensOrAddress]
+  );
+
   return (
     <WalletAddressWrapper>
       <DataDisplayWrapper onClick={handleAddressCopy}>
-        {isCopied ? 'Address copied!' : `${walletAddress?.slice(0, 8)}...${walletAddress?.slice(-4)}`}
+        {isCopied ? 'Address copied!' : `${walletAddressText}`}
         {!isCopied && <CopyIcon />}
       </DataDisplayWrapper>
     </WalletAddressWrapper>

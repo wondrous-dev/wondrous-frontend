@@ -42,7 +42,6 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ENTITIES_TYPES, GRANT_APPLICATION_STATUSES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
-import { delQuery } from 'utils/index';
 
 import { useQuery } from '@apollo/client';
 
@@ -51,7 +50,6 @@ import Typography from '@mui/material/Typography';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { IconWrapper } from 'components/Common/Status/styles';
 import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
-import { GrantModalCard } from 'components/CreateGrant/styles';
 import { ItemPill } from 'components/GrantsBoard/styles';
 import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/Icons/statusIcons';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';

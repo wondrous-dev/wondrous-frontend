@@ -251,6 +251,9 @@ export const HeaderButton = styled.button`
   font-size: 15px;
   line-height: 150%;
   margin-right: 10px;
+  &:hover {
+    ${({ reversed }) => (reversed ? `background: transparent` : `background: ${palette.highlightPurple}`)};
+  }
 `;
 
 export const RoleButtonWrapper = styled.div`
