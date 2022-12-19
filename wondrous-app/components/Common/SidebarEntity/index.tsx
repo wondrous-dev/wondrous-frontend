@@ -16,6 +16,8 @@ import Button from 'components/Button';
 import palette from 'theme/palette';
 import { OrgInviteLinkModal } from 'components/Common/InviteLinkModal/OrgInviteLink';
 import { PodInviteLinkModal } from 'components/Common/InviteLinkModal/podInviteLink';
+import useCanManage from 'hooks/useCanManage';
+import JoinWorkspace from 'components/Common/JoinWorkspace';
 import { ButtonsContainer } from './styles';
 
 const SIDEBAR_COMPONENTS = {
@@ -27,8 +29,17 @@ const EntitySidebarButtons = () => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const { minimized } = useSideBar();
+  const canManage = useCanManage();
 
   const [openInvite, setOpenInvite] = useState(false);
+
+  if (!canManage) {
+    return (
+      <ButtonsContainer>
+        <JoinWorkspace />
+      </ButtonsContainer>
+    );
+  }
 
   const href = orgBoard
     ? `/organization/settings/${orgBoard?.orgId}/general`

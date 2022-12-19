@@ -161,7 +161,10 @@ function Wrapper(props) {
   const [podRoleName, setPodRoleName] = useState(null);
   const [showPods, setShowPods] = useState(false);
   const [moreInfoModalOpen, setMoreInfoModalOpen] = useState(false);
-  const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST);
+  const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+  });
   const [getPerTypeTaskCountForPodBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE_FOR_POD);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);

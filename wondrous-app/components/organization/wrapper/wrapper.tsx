@@ -211,7 +211,10 @@ function Wrapper(props) {
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
   const [claimedOrRequestedRole, setClaimedOrRequestedRole] = useState(null);
 
-  const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
+  const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+  });
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
   const orgProfile = orgData;
