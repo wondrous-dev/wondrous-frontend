@@ -35,7 +35,7 @@ const EntitySidebarButtons = () => {
 
   if (!canManage) {
     return (
-      <ButtonsContainer>
+      <ButtonsContainer minimized={minimized}>
         <JoinWorkspace />
       </ButtonsContainer>
     );
