@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
@@ -29,8 +29,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import palette from 'theme/palette';
-import { TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_IN_REVIEW, TASK_STATUS_TODO } from 'utils/constants';
-import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
+import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
 import RecurringIcon from '../../../public/images/icons/recurring.svg';
 import { TaskSectionImageContent, TaskSectionLabel } from './helpers';
 import {
@@ -54,6 +53,7 @@ import {
   TaskSectionInfoTextMilestone,
   TaskSectionTagWrapper,
 } from './styles';
+import { useUpdateTaskCardCache } from './utils';
 
 export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdit = false, fetchedTask, user }) {
   const router = useRouter();
@@ -158,13 +158,12 @@ const AssigneeDefaultContent = ({
   canClaim,
   canEdit,
   fetchedTask,
+  handleOnCompleted,
   isTaskProposal,
   onCorrectPage,
   router,
   updateProposalItem,
   user,
-  updateBoard,
-  setFetchedTask,
 }) => {
   const [ref, inView] = useInView({});
   const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
@@ -180,10 +179,7 @@ const AssigneeDefaultContent = ({
         taskId: fetchedTask?.id,
         assigneeId,
       },
-      onCompleted: (data) => {
-        const task = data?.updateTaskAssignee;
-        updateBoard({ task, setFetchedTask, boardColumns });
-      },
+      onCompleted: (data) => handleOnCompleted(data?.updateTaskAssignee),
     });
   };
   if (canClaim && canEdit)
@@ -242,43 +238,27 @@ const AssigneeDefaultContent = ({
 };
 
 export function AssigneeField({
-  fetchedTask,
-  canEdit,
-  setFetchedTask,
-  updateInReviewItem,
   boardColumns,
-  handleClose,
-  user,
-  canClaim,
-  isTaskProposal,
-  updateProposalItem,
-  updateInProgressTask,
-  updateTaskItem,
-  updateCompletedItem,
   canApply,
-  shouldDisplay,
+  canClaim,
+  canEdit,
+  fetchedTask,
+  handleClose,
+  isTaskProposal,
   orgId,
   podId,
+  shouldDisplay,
+  updateProposalItem,
+  user,
   userId,
 }) {
   const onCorrectPage = fetchedTask?.orgId === orgId || fetchedTask?.podId === podId || fetchedTask?.userId === userId;
+  const handleUpdateTaskCardCache = useUpdateTaskCardCache();
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
-  const updateBoard = ({ task, setFetchedTask, boardColumns }) => {
-    const transformedTask = transformTaskToTaskCard(task, {});
-    setFetchedTask(transformedTask);
-    if (boardColumns?.setColumns && onCorrectPage) {
-      const columns = [...boardColumns?.columns];
-      const updateColumnFn = {
-        [TASK_STATUS_IN_REVIEW]: updateInReviewItem,
-        [TASK_STATUS_IN_PROGRESS]: updateInProgressTask,
-        [TASK_STATUS_TODO]: updateTaskItem,
-        [TASK_STATUS_DONE]: updateCompletedItem,
-      };
-      const updatedColumns = updateColumnFn?.[transformedTask?.status](transformedTask, columns);
-      boardColumns.setColumns(updatedColumns);
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage('Assignee updated successfully.');
-    }
+  const handleOnCompleted = (data) => {
+    handleUpdateTaskCardCache({ data });
+    setSnackbarAlertOpen(true);
+    setSnackbarAlertMessage('Assignee updated successfully.');
   };
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
   const router = useRouter();
@@ -299,10 +279,7 @@ export function AssigneeField({
                 variables: {
                   taskId: fetchedTask?.id,
                 },
-                onCompleted: (data) => {
-                  const task = data?.removeTaskAssignee;
-                  updateBoard({ task, setFetchedTask, boardColumns });
-                },
+                onCompleted: (data) => handleOnCompleted(data?.removeTaskAssignee),
               });
             },
             canEdit,
@@ -320,13 +297,12 @@ export function AssigneeField({
             canClaim,
             canEdit,
             fetchedTask,
+            handleOnCompleted,
             isTaskProposal,
             onCorrectPage,
             router,
             updateProposalItem,
             user,
-            updateBoard,
-            setFetchedTask,
           }}
         />
       </TaskSectionInfoDiv>
