@@ -12,6 +12,8 @@ import {
   STATUS_OPEN,
   STATUS_APPROVED,
   STATUS_CLOSED,
+  HEADER_ICONS,
+  TITLES,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -27,7 +29,6 @@ import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import Droppable from 'components/StrictModeDroppable';
 import { ColumnSection } from 'components/Common/ColumnSection';
-import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from 'components/Icons';
 
 import {
   TaskColumnContainer,
@@ -45,27 +46,6 @@ interface ITaskColumn {
   section: Array<any>;
   draggingTask: TaskInterface | null;
 }
-
-const TITLES = {
-  [TASK_STATUS_TODO]: 'To-do',
-  [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
-  [TASK_STATUS_IN_REVIEW]: 'In-Review',
-  [TASK_STATUS_DONE]: 'Done',
-  // PROPOSALS
-  [STATUS_OPEN]: 'Open',
-  [STATUS_APPROVED]: 'Approved',
-  [STATUS_CLOSED]: 'Rejected',
-};
-
-const HEADER_ICONS = {
-  [TASK_STATUS_TODO]: ToDo,
-  [TASK_STATUS_IN_PROGRESS]: InProgress,
-  [TASK_STATUS_IN_REVIEW]: InReview,
-  [TASK_STATUS_DONE]: Done,
-  [STATUS_OPEN]: Proposal,
-  [STATUS_APPROVED]: Approved,
-  [STATUS_CLOSED]: Rejected,
-};
 
 function TaskColumn(props: ITaskColumn) {
   const { cardsList, status, section, draggingTask } = props;

@@ -16,7 +16,7 @@ interface Props {
   Icon?: any;
   title: string;
   count: number;
-  children: unknown[];
+  children: any;
   headerAddons?: any;
   hasMore?: boolean;
   onShowMore?: () => any;

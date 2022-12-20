@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { UserBoardContext } from 'utils/contexts';
 import BoardWrapper from 'components/Dashboard/boards/BoardWrapper';
 import { useGlobalContext } from 'utils/hooks';
 import { useMe } from 'components/Auth/withAuth';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_USER_TASK_BOARD_PROPOSALS,
@@ -14,6 +14,58 @@ import { ENTITIES_TYPES, PRIVACY_LEVEL, STATUS_APPROVED, STATUS_CLOSED, STATUS_O
 import { Spinner } from 'components/Dashboard/bounties/styles';
 import Boards from 'components/Common/Boards';
 import apollo from 'services/apollo';
+import { useRouter } from 'next/router';
+
+const useSearch = () => {
+  const { search: searchQuery } = useRouter()?.query;
+  const loggedInUser = useMe();
+  const [searchColumns, setSearchColumns] = useState({
+    [ENTITIES_TYPES.PROPOSAL]: [],
+  });
+  const [hasMore, setHasMore] = useState(true);
+
+  const [searchProposals] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
+    onCompleted: (data) => {
+      const proposals = data?.searchProposalsForUserBoardView;
+      const newColumns = populateProposalColumns(
+        proposals,
+        searchColumns[ENTITIES_TYPES.PROPOSAL]?.length > 0
+          ? searchColumns[ENTITIES_TYPES.PROPOSAL]
+          : ORG_POD_PROPOSAL_COLUMNS
+      );
+      setSearchColumns({ ...searchColumns, [ENTITIES_TYPES.PROPOSAL]: newColumns });
+
+      const hasMoreProposals = proposals.length >= LIMIT;
+
+      if (hasMoreProposals !== hasMore) {
+        setHasMore(hasMoreProposals);
+      }
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  useEffect(() => {
+    if (!loggedInUser) return;
+    if (searchQuery) {
+      searchProposals({
+        variables: {
+          userId: loggedInUser?.id,
+          podIds: [],
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: LIMIT,
+          searchString: searchQuery,
+        },
+      });
+    }
+  }, [searchQuery, loggedInUser]);
+
+  return {
+    searchProposals,
+    searchColumns,
+    hasMore,
+  };
+};
 
 const ProposalsBoard = () => {
   const loggedInUser = useMe();
@@ -78,6 +130,8 @@ const ProposalsBoard = () => {
     refetch({ ...filters }).then(({ data }) => setHasMore(data?.getUserTaskBoardProposals?.length >= LIMIT));
   };
 
+  const { searchColumns, searchProposals } = useSearch();
+
   function handleSearch(searchString: string) {
     const searchTaskProposalsArgs = {
       variables: {
@@ -126,7 +180,11 @@ const ProposalsBoard = () => {
         statuses={[]}
         podIds={[]}
       >
-        {loading ? <Spinner /> : <Boards columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />}
+        {loading ? (
+          <Spinner />
+        ) : (
+          <Boards searchColumns={searchColumns} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+        )}
       </BoardWrapper>
     </UserBoardContext.Provider>
   );

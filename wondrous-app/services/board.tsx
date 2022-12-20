@@ -26,11 +26,11 @@ import {
 import Box from '@mui/material/Box';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { StatusDefaultIcon, InReviewIcon } from 'components/Icons/statusIcons';
-import { Proposal, Approved, Rejected } from 'components/Icons';
+import { Proposal, Approved, Rejected, TodoWithBorder } from 'components/Icons';
 import TaskStatus from 'components/Icons/TaskStatus';
 import React from 'react';
 import cloneDeep from 'lodash/cloneDeep';
-import { BountyIcon, MilestoneIcon, TaskIcon } from 'components/Icons/Search/types';
+import MilestoneIcon from 'components/Icons/milestoneField.svg';
 import { delQuery } from 'utils';
 import { GET_ORG_PODS } from 'graphql/queries/org';
 import CreatePodIcon from 'components/Icons/createPod';
@@ -906,12 +906,11 @@ export const splitColsByType = (columns) => {
 
   const createColumnsByType = (type) => {
     const cols: any = cloneDeep(columns);
-
     cols.tasksCount = 0;
 
     cols.forEach((col) => {
       col.tasks = col.tasks.filter((task) => {
-        if ((task.type || TASK_TYPE) === type) {
+        if ((task.type || TASK_TYPE) === type && !task.isProposal) {
           totalCount++;
           cols.tasksCount++;
           return true;
@@ -919,17 +918,6 @@ export const splitColsByType = (columns) => {
 
         return false;
       });
-      if (col.section) {
-        col.section.tasks = col.section.tasks.filter((task) => {
-          if ((task.type || TASK_TYPE) === type) {
-            totalCount++;
-            cols.tasksCount++;
-            return true;
-          }
-
-          return false;
-        });
-      }
     });
 
     return cols;
@@ -937,23 +925,29 @@ export const splitColsByType = (columns) => {
 
   const splitCols = {
     [TASK_TYPE]: {
-      name: 'task',
+      name: 'Tasks',
       showAll: false,
       columns: createColumnsByType(TASK_TYPE),
-      icon: <TaskIcon />,
+      icon: null,
     },
-    [BOUNTY_TYPE]: {
-      name: 'bounties',
+    [ENTITIES_TYPES.PROPOSAL]: {
+      name: 'Proposals',
       showAll: false,
-      columns: createColumnsByType(BOUNTY_TYPE),
-      icon: <BountyIcon />,
+      columns: createColumnsByType(ENTITIES_TYPES.PROPOSAL),
+      icon: null,
     },
-    [MILESTONE_TYPE]: {
-      name: 'milestone',
-      showAll: false,
-      columns: createColumnsByType(MILESTONE_TYPE),
-      icon: <MilestoneIcon />,
-    },
+    // [BOUNTY_TYPE]: {
+    //   name: 'Bounties',
+    //   showAll: false,
+    //   columns: extractMilestonesAndBounties(BOUNTY_TYPE),
+    //   icon: StarIcon,
+    // },
+    // [MILESTONE_TYPE]: {
+    //   name: 'Milestones',
+    //   showAll: false,
+    //   columns: extractMilestonesAndBounties(MILESTONE_TYPE),
+    //   icon: () => <FlagIcon stroke="url(#open0)" secondStroke="url(#open1)" />,
+    // },
   };
 
   return { splitCols, totalCount };
