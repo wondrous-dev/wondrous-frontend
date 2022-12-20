@@ -16,6 +16,25 @@ const styles = {
       margin: '0 0 0 70px',
       padding: 0,
     },
+    '& .MuiIconButton-root': {
+      padding: 0,
+      backgroundColor: palette.violet100,
+      borderRadius: '4px',
+      width: '16px',
+      height: '16px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'all 0.3s ease-in-out',
+    },
+    '& .MuiIconButton-root:hover': {
+      backgroundColor: palette.blue20,
+      color: palette.violet950,
+    },
+    '.MuiButtonBase-root .MuiSvgIcon-root': {
+      height: '10px',
+      width: '10px',
+    },
   },
   viewDropdown: {
     innerStyle: {

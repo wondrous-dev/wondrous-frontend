@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import format from 'date-fns/format';
 import addDays from 'date-fns/addDays';
 import isToday from 'date-fns/isToday';
@@ -7,45 +7,42 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
 import palette from 'theme/palette';
-import { Done, InProgress, InReview, ToDo } from 'components/Icons';
 import styles from 'components/Calendar/CalendarWeekView/styles';
-import { taskList } from 'components/Calendar/testData';
 import SmartLink from 'components/Common/SmartLink';
+import { delQuery } from 'utils/index';
+import { ViewType } from 'types/common';
+import { CalendarContext } from 'utils/contexts';
 
-type Props = {
-  /**
-   * The current view date
-   */
-  viewDate: Date;
+const CalendarWeekView = () => {
+  const {
+    taskStatusIcon,
+    router,
+    viewStartDate,
+    tasksMap,
+    handleTaskClick,
+    getUserTaskBoardTasksCalendar,
+    loggedInUser,
+  } = useContext(CalendarContext);
 
-  /**
-   * The number of days in a week. Can be used to create a shorter or longer week view.
-   * The first day of the week will always be the viewDate
-   */
-  daysInWeek?: number;
-  location: any;
-  viewUrl: string;
-};
+  const daysInWeek = 7;
+  const lastDayOfWeek = addDays(new Date(viewStartDate), daysInWeek - 1);
 
-const CalendarWeekView = ({ viewDate, daysInWeek = 7, location, viewUrl }: Props) => {
-  // const week = [];
-  //
-  // for (let i = 0; i <= 6; i++) {
-  //   week.push(format(addDays(new Date(), i), 'ccc d'));
-  // }
-
-  const taskStatusIcon = {
-    created: <ToDo width="16" height="16" />,
-    in_progress: <InProgress width="16" height="16" />,
-    in_review: <InReview width="16" height="16" />,
-    completed: <Done width="16" height="16" />,
-  };
+  // useEffect(() => {
+  //   getUserTaskBoardTasksCalendar({
+  //     variables: {
+  //       userId: loggedInUser?.orgId,
+  //       fromDate: viewStartDate,
+  //       toDate: lastDayOfWeek,
+  //     },
+  //   });
+  // }, [viewStartDate, lastDayOfWeek]);
 
   return (
     <Grid container wrap="nowrap" sx={styles.wrapper}>
       {new Array(daysInWeek).fill(daysInWeek).map((day, dayIndex) => {
-        const date = addDays(viewDate, dayIndex);
+        const date = addDays(viewStartDate, dayIndex);
         const dateIsToday = isToday(date);
+        const tasks = tasksMap[format(date, 'yyyy-MM-dd')] ?? [];
 
         return (
           <Grid
@@ -70,19 +67,23 @@ const CalendarWeekView = ({ viewDate, daysInWeek = 7, location, viewUrl }: Props
               <Box className="ColumnHeaderText">{format(date, 'ccc d')}</Box>
             </Grid>
             <Grid container item className="ColumnBody" rowSpacing="20px" sx={styles.columnBody}>
-              {taskList.map((task) => (
-                <SmartLink
-                  key={task.title}
-                  href={viewUrl}
-                  preventLinkNavigation
-                  onNavigate={() => location.replace(viewUrl)}
-                >
-                  <Grid item display="flex" wrap="nowrap">
-                    <Box>{taskStatusIcon[task.status]}</Box>
-                    <Typography sx={styles.taskTitle}>{task.title}</Typography>
-                  </Grid>
-                </SmartLink>
-              ))}
+              {tasks?.map((task) => {
+                const viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${ViewType.Calendar}`;
+
+                return (
+                  <SmartLink
+                    key={task.title}
+                    href={viewUrl}
+                    preventLinkNavigation
+                    onClick={(task) => handleTaskClick(task)}
+                  >
+                    <Grid item display="flex" wrap="nowrap" sx={{ width: '100%' }}>
+                      <Box>{taskStatusIcon[task.status]}</Box>
+                      <Typography sx={styles.taskTitle}>{task.title}</Typography>
+                    </Grid>
+                  </SmartLink>
+                );
+              })}
             </Grid>
           </Grid>
         );

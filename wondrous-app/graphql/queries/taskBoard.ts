@@ -436,6 +436,46 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD = gql`
   ${PerStatusTaskCountFragment}
 `;
 
+export const GET_USER_TASK_BOARD_TASKS_CALENDAR = gql`
+  query getUserTaskBoardTasksCalendar(
+    $userId: ID
+    $statuses: [String]
+    $searchString: String
+    $priorities: [String]
+    $orgId: String
+    $podIds: [String]
+    $limit: Int
+    $labelId: String
+    $offset: Int
+    $date: String
+    $onlyPublic: Boolean
+    $types: [String]
+    $fromDate: String
+    $toDate: String
+  ) {
+    getUserTaskBoardTasksCalendar(
+      input: {
+        userId: $userId
+        statuses: $statuses
+        searchString: $searchString
+        orgId: $orgId
+        podIds: $podIds
+        limit: $limit
+        labelId: $labelId
+        offset: $offset
+        date: $date
+        onlyPublic: $onlyPublic
+        types: $types
+        fromDate: $fromDate
+        toDate: $toDate
+      }
+    ) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
 // export const GET_ORG_SIDEBAR_COUNT = gql`
 //   query getOrgSidebarCount($orgId: ID!) {
 //     getOrgSidebarCount(orgId: $orgId) {

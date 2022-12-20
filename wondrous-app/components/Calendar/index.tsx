@@ -1,4 +1,3 @@
-import TaskViewModal from 'components/Common/TaskViewModal';
 import startOfMonth from 'date-fns/startOfMonth';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -7,11 +6,13 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import startOfWeek from 'date-fns/startOfWeek';
+import endOfMonth from 'date-fns/endOfMonth';
 import subWeeks from 'date-fns/subWeeks';
 import addWeeks from 'date-fns/addWeeks';
 import subMonths from 'date-fns/subMonths';
 import addMonths from 'date-fns/addMonths';
 import format from 'date-fns/format';
+import { useLazyQuery } from '@apollo/client';
 
 import DropdownSelect from 'components/Common/DropdownSelect';
 import CalendarWeekView from 'components/Calendar/CalendarWeekView';
@@ -19,27 +20,42 @@ import CalendarMonthView from 'components/Calendar/CalendarMonthView';
 import WonderButton from 'components/Button';
 import ArrowLeft from 'components/Icons/ArrowLeft';
 import ArrowRight from 'components/Icons/ArrowRight';
-import { ViewType } from 'types/common';
-import { TaskFragment } from 'types/task';
-import testData from 'components/Calendar/testData';
+import { TaskInterface } from 'types/task';
 import { CALENDAR_CONFIG, CALENDAR_DAY_GRID_VIEW } from 'utils/constants';
+import InfoIcon from 'components/Icons/infoIcon';
+import { Done, InProgress, InReview, ToDo } from 'components/Icons';
+import { CalendarContext } from 'utils/contexts';
+import { GET_USER_TASK_BOARD_TASKS_CALENDAR } from 'graphql/queries';
+import { useMe } from 'components/Auth/withAuth';
 import styles from './styles';
 
 type Props = {
   tasksMap: {
-    [key: string]: TaskFragment[];
+    [key: string]: TaskInterface[];
   };
 };
 
 const Calendar = ({ tasksMap }: Props) => {
+  const [getUserTaskBoardTasksCalendar, { data: getUserTaskBoardTasksCalendarData }] = useLazyQuery(
+    GET_USER_TASK_BOARD_TASKS_CALENDAR,
+    { fetchPolicy: 'network-only' }
+  );
   const [view, setView] = useState<CALENDAR_DAY_GRID_VIEW>(CALENDAR_CONFIG.defaultView);
-  const [viewDate, setViewDate] = useState<Date>(startOfMonth(new Date()));
-  const [openTask, setOpenTask] = useState<TaskFragment>(null);
+  const [viewStartDate, setViewStartDate] = useState<Date>(startOfMonth(new Date()));
   const router = useRouter();
+  const loggedInUser = useMe();
+  const [isAlertHidden, setIsAlertHidden] = useState(localStorage.getItem('dueDatesHidden') === 'true');
+
+  const taskStatusIcon = {
+    created: <ToDo width="16" height="16" />,
+    in_progress: <InProgress width="16" height="16" />,
+    in_review: <InReview width="16" height="16" />,
+    completed: <Done width="16" height="16" />,
+  };
 
   // Select previous week or month
   const handlePrevClick = () => {
-    setViewDate((prevDate) => {
+    setViewStartDate((prevDate) => {
       if (view === CALENDAR_DAY_GRID_VIEW.Month) {
         return subMonths(prevDate, 1);
       }
@@ -50,7 +66,7 @@ const Calendar = ({ tasksMap }: Props) => {
 
   // Select next week or month
   const handleNextClick = () => {
-    setViewDate((prevDate) => {
+    setViewStartDate((prevDate) => {
       if (view === CALENDAR_DAY_GRID_VIEW.Month) {
         return addMonths(prevDate, 1);
       }
@@ -60,7 +76,7 @@ const Calendar = ({ tasksMap }: Props) => {
   };
 
   const handleTodayClick = () => {
-    setViewDate(() => {
+    setViewStartDate(() => {
       if (view === CALENDAR_DAY_GRID_VIEW.Month) {
         return startOfMonth(new Date());
       }
@@ -69,30 +85,35 @@ const Calendar = ({ tasksMap }: Props) => {
     });
   };
 
-  // const openTask = (task: TaskFragment) => {
-  //   // const pathQuery = router?.query?.username ? { username: router.query.username } : { podId: router.query.podId };
-  //   router.replace(
-  //     {
-  //       pathname: router.pathname,
-  //       query: {
-  //         taskdId: task.id,
-  //         view: ViewType.Calendar,
-  //         // boardType: boardType in PRIVACY_LEVEL ? boardType : 'all',
-  //       },
-  //     },
-  //     undefined,
-  //     { shallow: true }
-  //   );
-  // };
+  const viewEndDate = endOfMonth(new Date(viewStartDate));
+
+  const handleAlertClose = () => {
+    localStorage.setItem('dueDatesHidden', 'true');
+    setIsAlertHidden(true);
+  };
+
+  const handleTaskClick = (task) => {
+    const query = {
+      ...router.query,
+      task: task?.id,
+    };
+
+    router.push({ query }, undefined, { scroll: false, shallow: true });
+  };
 
   return (
-    <div>
-      {/*<TaskViewModal*/}
-      {/*  open={!!openTask}*/}
-      {/*  handleClose={() => setOpenTask(false)}*/}
-      {/*  isTaskProposal={false}*/}
-      {/*  taskId={(location.params.taskProposal ?? location.params.task)?.toString()}*/}
-      {/*/>*/}
+    <CalendarContext.Provider
+      value={{
+        taskStatusIcon,
+        router,
+        tasksMap,
+        viewStartDate,
+        viewEndDate,
+        handleTaskClick,
+        getUserTaskBoardTasksCalendar,
+        loggedInUser,
+      }}
+    >
       <Grid container alignItems="center" justifyContent="space-between">
         <Grid item display="flex" alignItems="center">
           <Grid item>
@@ -103,7 +124,7 @@ const Calendar = ({ tasksMap }: Props) => {
           <Grid container item display="flex" alignItems="center" sx={{ margin: '0 32px' }}>
             <Grid item sx={{ minWidth: '112px', marginRight: '24px' }}>
               <Typography color="white" fontWeight={500} fontSize="14px" textAlign="center">
-                {format(viewDate, 'MMMM yyyy')}
+                {format(viewStartDate, 'MMMM yyyy')}
               </Typography>
             </Grid>
 
@@ -144,27 +165,16 @@ const Calendar = ({ tasksMap }: Props) => {
         </Grid>
 
         <Grid item>
-          <Alert
-            onClose={() => {}}
-            action={
-              <WonderButton color="purple" borderRadius={4} width={18} height={18} buttonTheme={{ paddingX: 0 }}>
-                &times;
-              </WonderButton>
-            }
-            sx={styles.infoAlert}
-            severity="info"
-          >
-            Only tasks with due dates are displayed
-          </Alert>
+          {!isAlertHidden ? (
+            <Alert onClose={handleAlertClose} sx={styles.infoAlert} severity="info" icon={<InfoIcon />}>
+              Only tasks with due dates are displayed
+            </Alert>
+          ) : null}
         </Grid>
       </Grid>
 
-      {view === CALENDAR_DAY_GRID_VIEW.Month ? (
-        <CalendarMonthView tasksMap={tasksMap} viewDate={viewDate} />
-      ) : (
-        <CalendarWeekView tasks={testData.data.getOrgTaskBoardTasks} viewDate={viewDate} />
-      )}
-    </div>
+      {view === CALENDAR_DAY_GRID_VIEW.Month ? <CalendarMonthView /> : <CalendarWeekView />}
+    </CalendarContext.Provider>
   );
 };
 
