@@ -75,8 +75,11 @@ const useGetPodTaskBoardTasks = ({
   const getPodTaskBoardTasksFetchMore = useCallback(() => {
     fetchMore({
       variables: {
-        offset:
-          entityType === ENTITIES_TYPES.TASK ? Math.max(...columns.map(({ tasks }) => tasks.length)) : columns.length,
+        input: {
+          ...variables?.input,
+          offset:
+            entityType === ENTITIES_TYPES.TASK ? Math.max(...columns.map(({ tasks }) => tasks.length)) : columns.length,
+        },
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getPodTaskBoardTasks.length >= LIMIT);
