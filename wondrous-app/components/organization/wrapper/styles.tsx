@@ -94,22 +94,14 @@ export const HeaderTitleIcon = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  & > * {
-    margin-left: 10px;
-    :first-child {
-      margin-left: 0;
-    }
-  }
+  gap: 10px;
 `;
 
 export const HeaderTitle = styled(Typography)`
   && {
     font-weight: 500;
-    font-size: 26px;
-    display: flex;
-    align-items: center;
+    font-size: 20px;
     color: #ffffff;
-    margin-left: 10px;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
@@ -120,9 +112,8 @@ export const HeaderTag = styled(Typography)`
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 400;
-    font-size: 18px;
+    font-size: 15px;
     line-height: 18px;
-    margin-left: 12px;
   }
 `;
 
@@ -314,8 +305,6 @@ export const HeaderText = styled.div`
   line-height: 22px;
   letter-spacing: 0.01em;
   color: #ffffff;
-  margin-bottom: 8px;
-  margin-top: 24px;
 `;
 
 export const HeaderActivity = styled.div`
@@ -324,7 +313,6 @@ export const HeaderActivity = styled.div`
   min-height: 23px;
   display: flex;
   align-items: center;
-  margin-top: 8px;
 `;
 
 export const HeaderActivityLink = styled.a`
@@ -348,13 +336,11 @@ export const HeaderActivityLinkIcon = styled(LinkIcon)`
 
 export const HeaderContributors = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  margin-right: 14px;
   background: ${(props) => (props?.isInPodPage ? palette.grey950 : palette.grey98)};
-  padding: 12px;
+  padding: 10px;
   border-radius: 1000px;
   transition: background 0.2s ease-in-out;
 
@@ -366,8 +352,7 @@ export const HeaderContributors = styled.div`
 export const HeaderContributorsAmount = styled(Typography)`
   && {
     font-weight: 500;
-    font-size: 15px;
-    line-height: 150%;
+    font-size: 13px;
     display: flex;
     align-items: center;
     color: ${palette.highlightBlue};
@@ -380,12 +365,6 @@ export const HeaderContributorsText = styled(HeaderContributorsAmount)`
     color: ${palette.white};
   }
 `;
-
-export const HeaderPods = styled(HeaderContributors)``;
-
-export const HeaderPodsAmount = styled(HeaderContributorsAmount)``;
-
-export const HeaderPodsText = styled(HeaderContributorsText)``;
 
 export const HeaderGr15Sponsor = styled.div``;
 // cardStyles
@@ -609,23 +588,7 @@ export const Container = styled.div`
   margin-top: 22px;
 `;
 
-export const SettingsButton = styled(ButtonBase)`
-  && {
-    align-items: center;
-    background: ${palette.grey75};
-    border-radius: 216px;
-    color: ${palette.white};
-    cursor: pointer;
-    display: flex;
-    font-family: ${typography.fontFamily};
-    font-size: 14px;
-    font-weight: 500;
-    height: 36px;
-    justify-content: center;
-    min-width: 110px;
-  }
-`;
-
+// currently unused
 export const InviteButton = styled(ButtonBase)`
   && {
     align-items: center;

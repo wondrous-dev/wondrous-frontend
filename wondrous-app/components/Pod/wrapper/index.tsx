@@ -59,7 +59,6 @@ import {
   HeaderButton,
   BoardsSubheaderWrapper,
   InviteButton,
-  SettingsButton,
   HeaderGr15Sponsor,
 } from '../../organization/wrapper/styles';
 import Tabs from '../../organization/tabs/tabs';
@@ -428,22 +427,29 @@ function Wrapper(props) {
                     </>
                   )}
                   {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
-                    <>
-                      <SettingsButton onClick={() => router.push(`/pod/settings/${podBoard?.podId}/general`)}>
-                        Settings
-                      </SettingsButton>
-                      <InviteButton onClick={() => setOpenInvite(true)}>Invite</InviteButton>
-                    </>
+                    <InviteButton onClick={() => setOpenInvite(true)}>Invite</InviteButton>
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              {podProfile?.description && podProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
-                <HeaderText as="div">
-                  <RichTextViewer text={podProfile?.description} />
-                </HeaderText>
-              ) : (
-                <div style={{ height: 10 }} />
-              )}
+              <div style={{ display: 'flex' }}>
+                {podProfile?.description && podProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
+                  <HeaderText as="div">
+                    <RichTextViewer text={podProfile?.description} />
+                  </HeaderText>
+                ) : (
+                  <div style={{ height: 10 }} />
+                )}
+                {links?.map((link) => (
+                  <>
+                    {link?.url ? (
+                      <HeaderActivityLink href={link?.url} key={link}>
+                        {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
+                        {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
+                      </HeaderActivityLink>
+                    ) : null}
+                  </>
+                ))}
+              </div>
               <div>
                 <HeaderActivity>
                   {links?.map((link) => (
