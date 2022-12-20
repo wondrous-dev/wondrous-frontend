@@ -187,7 +187,7 @@ const useGetTaskRelatedToUser = ({
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getTasksRelatedToUserInPod.length >= LIMIT);
         const getTasksRelatedToUserInPod = [
-          ...prev.getTasksRelatedToUserInOrg,
+          ...prev.getTasksRelatedToUserInPod,
           ...fetchMoreResult.getTasksRelatedToUserInPod,
         ];
         return {
