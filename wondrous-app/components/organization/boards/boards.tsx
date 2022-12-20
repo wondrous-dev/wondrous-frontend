@@ -34,6 +34,7 @@ export type Props = {
   entityType: string;
   loading: boolean;
   activeView: string | string[];
+  searchColumns?: any
 };
 
 function OrgBoards(props: Props) {
@@ -51,6 +52,7 @@ function OrgBoards(props: Props) {
     entityType,
     loading,
     activeView,
+    searchColumns
   } = props;
 
   const filterSchema = getFilterSchema(entityType, orgData?.id);
@@ -77,6 +79,7 @@ function OrgBoards(props: Props) {
               columns={columns}
               onLoadMore={onLoadMore}
               hasMore={hasMore}
+              searchColumns={searchColumns}
               setColumns={setColumns}
               entityType={entityType}
             />

@@ -10,6 +10,7 @@ import { ColumnsContext } from 'utils/contexts';
 
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { BoardsContainer } from './styles';
+import { Fragment } from 'react';
 
 const KanbanBoard = dynamic(() => import('../KanbanBoard/kanbanBoard'), { suspense: true });
 const Table = dynamic(() => import('components/Table'), { suspense: true });
@@ -20,6 +21,8 @@ const PROPOSAL_STATUSES = ['proposalOpen', 'proposalApproved', 'proposalClosed']
 const TITLES = {
   [ENTITIES_TYPES.TASK]: 'Tasks',
   [ENTITIES_TYPES.PROPOSAL]: 'Proposals',
+  [ENTITIES_TYPES.MILESTONE]: 'Milestones',
+  [ENTITIES_TYPES.BOUNTY]: 'Bounties',
 };
 
 const SearchResults = ({ searchColumns = {}, searchQuery }) => {
@@ -29,6 +32,7 @@ const SearchResults = ({ searchColumns = {}, searchQuery }) => {
 
   const { taskCount } = orgBoard || userBoard || podBoard;
 
+  console.log(searchColumns, 'SEARCH123');
   const counts = useMemo(() => {
     const taskAndProposalCount = {
       [ENTITIES_TYPES.TASK]: 0,
@@ -59,16 +63,26 @@ const SearchResults = ({ searchColumns = {}, searchQuery }) => {
       </TitleWrapper>
       {Object.keys(searchColumns).map((entityType) => {
         const columns = searchColumns[entityType];
+        const singleColumnData = entityType === ENTITIES_TYPES.BOUNTY || entityType === ENTITIES_TYPES.MILESTONE;
+
+        const Wrapper = singleColumnData
+          ? Fragment
+          : ({ children }) => (
+              <Accordion title={TITLES[entityType]} count={counts[entityType]}>
+                {children}
+              </Accordion>
+            );
         return (
-          <Accordion title={TITLES[entityType]} count={counts[entityType]}>
+          <Wrapper>
             <ListView
               key={entityType}
               entityType={entityType}
               columns={columns}
+              singleColumnData={singleColumnData}
               hasMore={false}
               onLoadMore={() => null}
             />
-          </Accordion>
+          </Wrapper>
         );
       })}
     </Wrapper>

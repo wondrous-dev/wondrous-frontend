@@ -1,5 +1,4 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
@@ -27,7 +26,7 @@ import {
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
+import { dedupeColumns } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
 import {
   ENTITIES_TYPES,
@@ -43,6 +42,71 @@ import { OrgBoardContext } from 'utils/contexts';
 import { usePageDataContext } from 'utils/hooks';
 import Boards from 'components/organization/boards/boards';
 
+const useSearch = () => {
+  const [searchColumns, setSearchColumns] = useState({
+    [ENTITIES_TYPES.TASK]: [],
+    [ENTITIES_TYPES.PROPOSAL]: [],
+    [ENTITIES_TYPES.MILESTONE]: [],
+    [ENTITIES_TYPES.BOUNTY]: [],
+  });
+  const [hasMore, setHasMore] = useState(true);
+  const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
+    onCompleted: (data) => {
+      const tasks = data?.searchTasksForOrgBoardView;
+      const columnsPerTaskType = tasks?.reduce(
+        (acc, next) => {
+          const { type } = next;
+          acc[type] = [...(acc[type] || []), next];
+          return acc;
+        },
+        { ...searchColumns }
+      );
+
+      const columnsPerStatus = Object.keys(columnsPerTaskType).reduce((acc, next) => {
+        if (next === ENTITIES_TYPES.TASK) {
+          const columns = populateTaskColumns(columnsPerTaskType[next], ORG_POD_COLUMNS);
+          acc[next] = columns;
+          return acc;
+        }
+        acc[next] = columnsPerTaskType[next];
+        return acc;
+      }, {});
+
+      setSearchColumns(columnsPerStatus);
+      const hasMoreTasks = tasks.length >= LIMIT;
+      setHasMore(hasMoreTasks);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
+    onCompleted: (data) => {
+      const proposals = data?.searchProposalsForOrgBoardView;
+      const newColumns = populateProposalColumns(
+        proposals,
+        searchColumns[ENTITIES_TYPES.PROPOSAL]?.length > 0
+          ? searchColumns[ENTITIES_TYPES.PROPOSAL]
+          : ORG_POD_PROPOSAL_COLUMNS
+      );
+      setSearchColumns({ ...searchColumns, [ENTITIES_TYPES.PROPOSAL]: newColumns });
+      const hasMoreProposals = proposals.length >= LIMIT;
+
+      if (hasMoreProposals !== hasMore) {
+        setHasMore(hasMoreProposals);
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  return {
+    searchOrgTasks,
+    searchOrgTaskProposals,
+    searchColumns,
+  };
+};
 const useGetOrgTaskBoardTasks = ({
   columns,
   setColumns,
@@ -346,6 +410,7 @@ const useGetOrgTaskBoard = ({
       filters,
     }),
   };
+
   const { fetchMore, fetchPerStatus }: any =
     entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : userId ? board[userId] : board.withoutUserId;
 
@@ -378,6 +443,8 @@ function BoardsPage() {
     fetchPolicy: 'cache-and-network',
   });
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(true);
+
+  const { searchOrgTasks, searchOrgTaskProposals, searchColumns } = useSearch();
 
   const { fetchMore, fetchPerStatus } = useGetOrgTaskBoard({
     view: activeView,
@@ -433,22 +500,6 @@ function BoardsPage() {
     router.push({ query }, undefined, { shallow: true });
   };
 
-  const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const boardColumns = [...columns];
-      if (boardColumns[0].tasks?.length > 0) {
-        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
-        setColumns(boardColumns);
-      }
-      setIsLoading(false);
-    },
-    onError: (error) => {
-      console.log(error);
-      setIsLoading(false);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
   const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD);
 
   const searchOrgTaskProposalsArgs = {
@@ -470,20 +521,6 @@ function BoardsPage() {
   }, [orgData]);
 
   useEffect(() => () => setPageData({}), []);
-
-  const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const tasks = data?.searchTasksForOrgBoardView;
-      const newColumns = populateTaskColumns(tasks, ORG_POD_COLUMNS);
-      setColumns(dedupeColumns(newColumns));
-      searchOrgTaskProposals(searchOrgTaskProposalsArgs);
-      if (orgTaskHasMore) {
-        setOrgTaskHasMore(tasks.length >= LIMIT);
-      }
-      setFirstTimeFetch(true);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
 
   const [getOrgFromUsername] = useLazyQuery(GET_ORG_FROM_USERNAME, {
     onCompleted: (data) => {
@@ -555,7 +592,12 @@ function BoardsPage() {
               }),
             },
           };
-          searchOrgTasks(searchOrgTasksArgs);
+          searchOrgTasks(searchOrgTasksArgs).then(() =>
+            searchOrgTaskProposals(searchOrgTaskProposalsArgs).then(() => setIsLoading(false))
+          );
+          getOrgBoardTaskCount({
+            variables: {},
+          });
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
@@ -682,6 +724,7 @@ function BoardsPage() {
     [filters]
   );
 
+  console.log(orgTaskCountData?.getPerStatusTaskCountForOrgBoard, 'searchCols');
   return (
     <OrgBoardContext.Provider
       value={{
@@ -724,6 +767,7 @@ function BoardsPage() {
           entityType={entityType}
           userId={userId?.toString()}
           activeView={activeView}
+          searchColumns={searchColumns}
         />
       </EntitySidebar>
     </OrgBoardContext.Provider>
