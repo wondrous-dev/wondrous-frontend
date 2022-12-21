@@ -10,16 +10,21 @@ import {
   MILESTONE_TYPE,
   ENTITIES_TYPES,
   TASK_STATUS_DONE,
+  COLUMNS_CONFIGURATION,
 } from 'utils/constants';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
   GET_POD_BY_ID,
   GET_ORG_FROM_USERNAME,
+  SEARCH_ORG_TASK_BOARD_PROPOSALS,
+  SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+  SEARCH_POD_TASK_BOARD_PROPOSALS,
+  SEARCH_TASKS_FOR_POD_BOARD_VIEW,
 } from 'graphql/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations';
-import { LIMIT } from 'services/board';
+import { generateColumns, LIMIT, ORG_POD_COLUMNS, ORG_POD_PROPOSAL_COLUMNS, populateProposalColumns, populateTaskColumns } from 'services/board';
 import { useMe } from 'components/Auth/withAuth';
 import {
   ColumnsContext,
@@ -406,4 +411,130 @@ export const useCheckOrgPermission = () => {
   const hasFullPermission = permissions.includes(PERMISSIONS.FULL_ACCESS);
   const hasEditPermission = permissions.includes(PERMISSIONS.EDIT_TASK);
   return hasFullPermission || hasEditPermission;
+};
+
+
+export const useSearch = () => {
+  const [searchColumns, setSearchColumns] = useState({
+    [ENTITIES_TYPES.TASK]: [],
+    [ENTITIES_TYPES.PROPOSAL]: [],
+    [ENTITIES_TYPES.MILESTONE]: [],
+    [ENTITIES_TYPES.BOUNTY]: [],
+  });
+  const [hasMore, setHasMore] = useState(true);
+  const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
+    onCompleted: (data) => {
+      const tasks = data?.searchTasksForOrgBoardView;
+      const columnsPerTaskType = tasks?.reduce(
+        (acc, next) => {
+          const { type } = next;
+          acc[type] = [...(acc[type] || []), next];
+          return acc;
+        },
+        { ...searchColumns }
+      );
+
+      const columnsPerStatus = Object.keys(columnsPerTaskType).reduce((acc, next) => {
+        if (next === ENTITIES_TYPES.TASK) {
+          const columns = populateTaskColumns(columnsPerTaskType[next], generateColumns(false, COLUMNS_CONFIGURATION.ORG));
+          acc[next] = columns;
+          return acc;
+        }
+        acc[next] = columnsPerTaskType[next];
+        return acc;
+      }, {});
+
+      setSearchColumns(columnsPerStatus);
+      const hasMoreTasks = tasks.length >= LIMIT;
+      setHasMore(hasMoreTasks);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
+    onCompleted: (data) => {
+      const proposals = data?.searchProposalsForOrgBoardView;
+      const newColumns = populateProposalColumns(
+        proposals,
+        searchColumns[ENTITIES_TYPES.PROPOSAL]?.length > 0
+          ? searchColumns[ENTITIES_TYPES.PROPOSAL]
+          : ORG_POD_PROPOSAL_COLUMNS
+      );
+      setSearchColumns({ ...searchColumns, [ENTITIES_TYPES.PROPOSAL]: newColumns });
+      const hasMoreProposals = proposals.length >= LIMIT;
+
+      if (hasMoreProposals !== hasMore) {
+        setHasMore(hasMoreProposals);
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [searchPodTasks] = useLazyQuery(SEARCH_TASKS_FOR_POD_BOARD_VIEW, {
+    onCompleted: (data) => {
+      const tasks = data?.searchTasksForPodBoardView;
+      console.log(tasks?.length, 'TASKS123');
+      const columnsPerTaskType = tasks?.reduce(
+        (acc, next) => {
+          const { type } = next;
+          acc[type] = [...(acc[type] || []), next];
+          return acc;
+        },
+        { ...searchColumns }
+      );
+
+      const columnsPerStatus = Object.keys(columnsPerTaskType).reduce((acc, next) => {
+        if (next === ENTITIES_TYPES.TASK) {
+          const columns = populateTaskColumns(columnsPerTaskType[next], generateColumns(false, COLUMNS_CONFIGURATION.ORG));
+          acc[next] = columns;
+          return acc;
+        }
+        acc[next] = columnsPerTaskType[next];
+        return acc;
+      }, {});
+      setSearchColumns(columnsPerStatus);
+      const hasMoreTasks = tasks.length >= LIMIT;
+      setHasMore(hasMoreTasks);
+    },
+    onError: (error) => {
+      console.log(error, 'ERROR SEARCH TASKS FOR POD BOARD VIEW')
+    },
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
+    onCompleted: (data) => {
+      const proposals = data?.searchProposalsForPodBoardView;
+      const newColumns = populateProposalColumns(
+        proposals,
+        searchColumns[ENTITIES_TYPES.PROPOSAL]?.length > 0
+          ? searchColumns[ENTITIES_TYPES.PROPOSAL]
+          : ORG_POD_PROPOSAL_COLUMNS
+      );
+      // setSearchColumns({ ...searchColumns, [ENTITIES_TYPES.PROPOSAL]: newColumns });
+      const hasMoreProposals = proposals.length >= LIMIT;
+
+      if (hasMoreProposals !== hasMore) {
+        setHasMore(hasMoreProposals);
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+
+  return {
+    searchOrgTasks,
+    searchOrgTaskProposals,
+    searchColumns,
+    searchPodTasks,
+    searchPodTaskProposals,
+  };
 };

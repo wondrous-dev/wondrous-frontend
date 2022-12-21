@@ -36,77 +36,11 @@ import {
   STATUS_CLOSED,
   STATUS_OPEN,
   STATUSES_ON_ENTITY_TYPES,
-  TASK_STATUSES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { usePageDataContext } from 'utils/hooks';
 import Boards from 'components/organization/boards/boards';
 
-const useSearch = () => {
-  const [searchColumns, setSearchColumns] = useState({
-    [ENTITIES_TYPES.TASK]: [],
-    [ENTITIES_TYPES.PROPOSAL]: [],
-    [ENTITIES_TYPES.MILESTONE]: [],
-    [ENTITIES_TYPES.BOUNTY]: [],
-  });
-  const [hasMore, setHasMore] = useState(true);
-  const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const tasks = data?.searchTasksForOrgBoardView;
-      const columnsPerTaskType = tasks?.reduce(
-        (acc, next) => {
-          const { type } = next;
-          acc[type] = [...(acc[type] || []), next];
-          return acc;
-        },
-        { ...searchColumns }
-      );
-
-      const columnsPerStatus = Object.keys(columnsPerTaskType).reduce((acc, next) => {
-        if (next === ENTITIES_TYPES.TASK) {
-          const columns = populateTaskColumns(columnsPerTaskType[next], ORG_POD_COLUMNS);
-          acc[next] = columns;
-          return acc;
-        }
-        acc[next] = columnsPerTaskType[next];
-        return acc;
-      }, {});
-
-      setSearchColumns(columnsPerStatus);
-      const hasMoreTasks = tasks.length >= LIMIT;
-      setHasMore(hasMoreTasks);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const proposals = data?.searchProposalsForOrgBoardView;
-      const newColumns = populateProposalColumns(
-        proposals,
-        searchColumns[ENTITIES_TYPES.PROPOSAL]?.length > 0
-          ? searchColumns[ENTITIES_TYPES.PROPOSAL]
-          : ORG_POD_PROPOSAL_COLUMNS
-      );
-      setSearchColumns({ ...searchColumns, [ENTITIES_TYPES.PROPOSAL]: newColumns });
-      const hasMoreProposals = proposals.length >= LIMIT;
-
-      if (hasMoreProposals !== hasMore) {
-        setHasMore(hasMoreProposals);
-      }
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  return {
-    searchOrgTasks,
-    searchOrgTaskProposals,
-    searchColumns,
-  };
-};
 const useGetOrgTaskBoardTasks = ({
   columns,
   setColumns,
@@ -444,7 +378,6 @@ function BoardsPage() {
   });
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(true);
 
-  const { searchOrgTasks, searchOrgTaskProposals, searchColumns } = useSearch();
 
   const { fetchMore, fetchPerStatus } = useGetOrgTaskBoard({
     view: activeView,
@@ -592,11 +525,10 @@ function BoardsPage() {
               }),
             },
           };
-          searchOrgTasks(searchOrgTasksArgs).then(() =>
-            searchOrgTaskProposals(searchOrgTaskProposalsArgs).then(() => setIsLoading(false))
-          );
           getOrgBoardTaskCount({
-            variables: {},
+            variables: {
+              orgId: id,
+            },
           });
           setFirstTimeFetch(true);
           setSearchString(search as string);
@@ -609,7 +541,8 @@ function BoardsPage() {
         });
       }
     }
-  }, [orgData, orgId, getOrgBoardTaskCount, , filters]);
+  }, [orgData, orgId, getOrgBoardTaskCount, search, filters]);
+
 
   function handleSearch(searchString: string) {
     const id = orgId || orgData?.id;
@@ -661,53 +594,6 @@ function BoardsPage() {
     filtersToApply = { statuses: [], podIds: [], labelId: null, date: null, category: null }
   ) => {
     setFilters(filtersToApply);
-
-    if (search) {
-      const id = orgId || orgData?.id;
-      const taskStatuses = filtersToApply?.statuses.filter((status) => TASK_STATUSES.includes(status));
-      const searchProposals =
-        filtersToApply?.statuses.length !== taskStatuses.length ||
-        filtersToApply?.statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
-      const searchTasks = !(searchProposals && filtersToApply?.statuses.length === 1);
-
-      const searchOrgTasksArgs = {
-        variables: {
-          podIds: filtersToApply?.podIds,
-          orgId: id,
-          limit: 1000,
-          labelId: filtersToApply?.labelId,
-          offset: 0,
-          // Needed to exclude proposals
-          statuses: taskStatuses,
-          search,
-          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
-            onlyPublic: true,
-          }),
-        },
-      };
-
-      if (searchTasks) {
-        searchOrgTasks(searchOrgTasksArgs);
-      } else {
-        const newColumns = [...columns];
-        newColumns.forEach((column) => {
-          column.tasks = [];
-        });
-
-        setColumns(dedupeColumns(newColumns));
-        setIsLoading(false);
-      }
-
-      if (searchProposals) {
-        const proposalArgs = {
-          ...searchOrgTaskProposalsArgs,
-          podIds: filters?.podIds,
-          priorities: filters?.priorities,
-        };
-        searchOrgTaskProposals(proposalArgs);
-        setIsLoading(false);
-      }
-    }
   };
 
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
@@ -723,8 +609,7 @@ function BoardsPage() {
     () => !!Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length)?.length,
     [filters]
   );
-
-  console.log(orgTaskCountData?.getPerStatusTaskCountForOrgBoard, 'searchCols');
+    
   return (
     <OrgBoardContext.Provider
       value={{
@@ -767,7 +652,6 @@ function BoardsPage() {
           entityType={entityType}
           userId={userId?.toString()}
           activeView={activeView}
-          searchColumns={searchColumns}
         />
       </EntitySidebar>
     </OrgBoardContext.Provider>

@@ -38,7 +38,7 @@ import {
   TASK_STATUSES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useGlobalContext } from 'utils/hooks';
+import { useGlobalContext, useSearch } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -371,7 +371,6 @@ function BoardsPage() {
   const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
   const { userPermissionsContext } = useGlobalContext();
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(true);
-
   const { fetchMore, fetchPerStatus } = useGetOrgTaskBoard({
     view: activeView,
     section,
@@ -392,6 +391,8 @@ function BoardsPage() {
       getUser({ variables: { userId } });
     }
   }, [userId]);
+
+  const { searchOrgTasks, searchOrgTaskProposals, searchColumns } = useSearch();
 
   const deleteUserIdFilter = () => {
     const routerQuery = { ...router.query };
@@ -423,22 +424,6 @@ function BoardsPage() {
     router.push({ query }, undefined, { shallow: true });
   };
 
-  const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const boardColumns = [...columns];
-      if (boardColumns[0].tasks?.length > 0) {
-        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
-        setColumns(boardColumns);
-      }
-      setIsLoading(false);
-    },
-    onError: (error) => {
-      console.log(error);
-      setIsLoading(false);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
   const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD);
 
   const searchOrgTaskProposalsArgs = {
@@ -452,20 +437,6 @@ function BoardsPage() {
       searchString: search,
     },
   };
-
-  const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const tasks = data?.searchTasksForOrgBoardView;
-      const newColumns = populateTaskColumns(tasks, ORG_POD_COLUMNS);
-      setColumns(dedupeColumns(newColumns));
-      searchOrgTaskProposals(searchOrgTaskProposalsArgs);
-      if (orgTaskHasMore) {
-        setOrgTaskHasMore(tasks.length >= LIMIT);
-      }
-      setFirstTimeFetch(true);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
 
   const [getOrgFromUsername] = useLazyQuery(GET_ORG_FROM_USERNAME, {
     onCompleted: (data) => {
@@ -680,6 +651,7 @@ function BoardsPage() {
           entityType={entityType}
           userId={userId?.toString()}
           activeView={activeView}
+          searchColumns={searchColumns}
         />
       </EntitySidebar>
     </OrgBoardContext.Provider>

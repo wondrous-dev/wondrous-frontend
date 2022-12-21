@@ -41,7 +41,8 @@ import {
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
 import EntitySidebar from 'components/Common/SidebarEntity';
-import { usePageDataContext } from 'utils/hooks';
+import { usePageDataContext, useSearch } from 'utils/hooks';
+
 
 const useGetPodTaskBoardTasks = ({
   columns,
@@ -380,6 +381,8 @@ function BoardsPage({ meta }: Props) {
     fetchPolicy: 'cache-and-network',
   });
 
+  const { searchPodTasks, searchPodTaskProposals, searchColumns } = useSearch();
+
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
   const [getPod, { data: podData, loading: isPodDataLoading }] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: ({ getPodById }) => {
@@ -425,19 +428,6 @@ function BoardsPage({ meta }: Props) {
     router.push({ query }, undefined, { shallow: true, scroll: false });
   };
 
-  const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const boardColumns = [...columns];
-      if (boardColumns[0].tasks?.length > 0) {
-        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForPodBoardView];
-        setColumns(boardColumns);
-      }
-      setIsLoading(false);
-    },
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-    notifyOnNetworkStatusChange: true,
-  });
 
   const deleteUserIdFilter = () => {
     const routerQuery = { ...router.query };
@@ -467,18 +457,6 @@ function BoardsPage({ meta }: Props) {
     },
   };
 
-  const [searchPodTasks] = useLazyQuery(SEARCH_TASKS_FOR_POD_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const tasks = data?.searchTasksForPodBoardView;
-      setColumns(dedupeColumns(populateTaskColumns(tasks, ORG_POD_COLUMNS)));
-      searchPodTaskProposals(searchPodTaskProposalsArgs);
-      if (podTaskHasMore) {
-        setPodTaskHasMore(tasks.length >= LIMIT);
-      }
-      setFirstTimeFetch(true);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
 
   useEffect(() => {
     if (userId) {
@@ -521,8 +499,6 @@ function BoardsPage({ meta }: Props) {
           setSearchString(search as string);
         }
       } else {
-        // fetch user task boards after getting orgId from username
-
         getPodBoardTaskCount({
           variables: {
             podId,
@@ -530,7 +506,7 @@ function BoardsPage({ meta }: Props) {
         });
       }
     }
-  }, [podId, getPodBoardTaskCount, getPod, labelId, date, privacyLevel, entityType]);
+  }, [podId, getPodBoardTaskCount, getPod, labelId, date, privacyLevel, entityType, search]);
 
   function handleSearch(searchString: string) {
     const searchPodTaskProposalsArgs = {
@@ -650,6 +626,7 @@ function BoardsPage({ meta }: Props) {
     [filters]
   );
 
+  console.log(searchColumns, 'SEARCHCOLUMNSPOD')
   return (
     <PodBoardContext.Provider
       value={{
@@ -692,6 +669,7 @@ function BoardsPage({ meta }: Props) {
           orgId={pod?.orgId}
           statuses={statuses}
           activeView={activeView}
+          searchColumns={searchColumns}
         />
       </EntitySidebar>
     </PodBoardContext.Provider>

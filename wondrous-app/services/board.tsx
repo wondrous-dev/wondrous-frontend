@@ -840,12 +840,12 @@ export const ORG_POD_PROPOSAL_COLUMNS = [PROPOSAL_OPEN, PROPOSAL_APPROVED, PROPO
 
 export const LIMIT = 10;
 
-export const populateTaskColumns = (tasks, columns) => {
+export const populateTaskColumns = (tasks, columns, skipEmptyColumns = false, withCount = false) => {
   if (!columns) {
     return [];
   }
 
-  const newColumns = columns.map((column) => {
+  let newColumns = columns.map((column) => {
     column.tasks = [];
 
     return (
@@ -861,10 +861,22 @@ export const populateTaskColumns = (tasks, columns) => {
       }, column)
     );
   });
+  if (skipEmptyColumns) {
+    newColumns = newColumns.filter((column) => column?.tasks?.length > 0);
+  }
+  if (withCount) {
+    newColumns = newColumns.map((column) => {
+      const count = column?.tasks?.length;
+      return {
+        ...column,
+        count,
+      };
+    });
+  }
   return newColumns;
 };
 
-export const populateProposalColumns = (proposals, columns) => {
+export const populateProposalColumns = (proposals, columns, skipEmptyColumns = false, withCount = false) => {
   if (!columns) {
     return [];
   }
@@ -881,10 +893,24 @@ export const populateProposalColumns = (proposals, columns) => {
     if (!proposal.approvedAt && !proposal.closedAt) proposalsMap[STATUS_OPEN].push({ ...proposal, isProposal: true });
     if (proposal.closedAt && !proposal.approvedAt) proposalsMap[STATUS_CLOSED].push({ ...proposal, isProposal: true });
   });
-  return columns.map((column) => ({
+  let newColumns = columns.map((column) => ({
     ...column,
     tasks: [...column.tasks, ...proposalsMap[column.status]],
   }));
+  if (skipEmptyColumns) {
+    newColumns = newColumns.filter((column) => column?.tasks?.length > 0);
+  }
+  if (withCount) {
+    newColumns = newColumns.map((column) => {
+      const count = column?.tasks?.length;
+      return {
+        ...column,
+        count,
+      };
+    });
+  }
+  console.log(newColumns, 'NEW COLUMNS', withCount);
+  return newColumns;
 };
 
 export const addToTaskColumns = (newResults, columns) => {

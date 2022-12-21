@@ -281,7 +281,7 @@ export default function ListView({
           {columns?.map((column) => {
             if (!column) return null;
 
-            const count = (taskCount && taskCount[STATUS_MAP[column.status]]) || column.count || 0;
+            const count = column.count || (taskCount && taskCount[STATUS_MAP[column.status]]) || 0;
             const isDropDisabled = isTaskDragging && taskHasPayment(draggingTask) && column.status !== TASK_STATUS_DONE;
 
             return (
