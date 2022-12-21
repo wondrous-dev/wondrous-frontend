@@ -11,25 +11,11 @@ import {
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
-import {
-  LIMIT,
-  USER_COLUMNS,
-  populateTaskColumns,
-  generateUserDashboardFilters,
-  populateProposalColumns,
-  ORG_POD_PROPOSAL_COLUMNS,
-} from 'services/board';
+import { LIMIT, USER_COLUMNS, populateTaskColumns, generateUserDashboardFilters } from 'services/board';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
-import {
-  TASKS_DEFAULT_STATUSES,
-  STATUS_OPEN,
-  TASK_STATUSES,
-  TASK_STATUS_IN_REVIEW,
-  PRIVACY_LEVEL,
-  ENTITIES_TYPES,
-} from 'utils/constants';
+import { TASKS_DEFAULT_STATUSES, STATUS_OPEN, PRIVACY_LEVEL } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
 import { useGlobalContext, useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 import BoardWrapper from './BoardWrapper';
@@ -145,53 +131,6 @@ const useFilterSchema = (loggedInUser) => {
   }
 };
 
-const useSearch = () => {
-  const [searchColumns, setSearchColumns] = useState({
-    [ENTITIES_TYPES.TASK]: [],
-    [ENTITIES_TYPES.PROPOSAL]: [],
-  });
-  const [hasMore, setHasMore] = useState(true);
-  const [searchTasks] = useLazyQuery(SEARCH_TASKS_FOR_USER_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const tasks = data?.searchTasksForUserBoardView;
-      const newColumns = populateTaskColumns(
-        tasks,
-        searchColumns[ENTITIES_TYPES.TASK]?.length > 0 ? searchColumns[ENTITIES_TYPES.TASK] : USER_COLUMNS
-      );
-      setSearchColumns({ ...searchColumns, [ENTITIES_TYPES.TASK]: newColumns });
-      const hasMoreTasks = tasks.length >= LIMIT;
-      setHasMore(hasMoreTasks);
-    },
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-  });
-
-  const [searchProposals] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const proposals = data?.searchProposalsForUserBoardView;
-      const newColumns = populateProposalColumns(
-        proposals,
-        searchColumns[ENTITIES_TYPES.PROPOSAL]?.length > 0
-          ? searchColumns[ENTITIES_TYPES.PROPOSAL]
-          : ORG_POD_PROPOSAL_COLUMNS
-      );
-      setSearchColumns({ ...searchColumns, [ENTITIES_TYPES.PROPOSAL]: newColumns });
-
-      const hasMoreProposals = proposals.length >= LIMIT;
-
-      if (hasMoreProposals !== hasMore) {
-        setHasMore(hasMoreProposals);
-      }
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-  return {
-    searchTasks,
-    searchProposals,
-    searchColumns,
-    hasMore,
-  };
-};
 const BoardsPage = (props) => {
   const { isAdmin } = props;
   const router = useRouter();
@@ -218,7 +157,6 @@ const BoardsPage = (props) => {
   });
 
   const filterSchema = useFilterSchema(loggedInUser);
-  const { searchTasks, searchProposals, searchColumns, hasMore: searchHasMore } = useSearch();
 
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus = () => {} } = useGetUserTaskBoard({
     section,
@@ -229,39 +167,6 @@ const BoardsPage = (props) => {
     view,
     filters,
   });
-
-  useEffect(() => {
-    if (!loggedInUser) {
-      return;
-    }
-    if (search) {
-      const searchTaskProposalsArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: [],
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: LIMIT,
-          searchString: search,
-        },
-      };
-
-      const searchTasksArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: [],
-          limit: LIMIT,
-          offset: 0,
-          // Needed to exclude proposals
-          statuses: TASKS_DEFAULT_STATUSES,
-          searchString: search,
-        },
-      };
-
-      searchTasks(searchTasksArgs);
-      searchProposals(searchTaskProposalsArgs);
-    }
-  }, [loggedInUser]);
 
   const handleLoadMore = (type = null) => {
     if (hasMoreTasks) {
@@ -313,50 +218,6 @@ const BoardsPage = (props) => {
 
   const handleFilterChange = (filtersToApply = { statuses: [], podIds: [], date: null, orgId: null }) => {
     setFilters(filtersToApply);
-    if (search) {
-      const taskStatuses = filtersToApply.statuses?.filter((status) => TASK_STATUSES.includes(status));
-      const shouldSearchProposals =
-        filtersToApply.statuses?.length !== taskStatuses?.length || filtersToApply.statuses === TASKS_DEFAULT_STATUSES;
-      const shouldSearchTasks = !(searchProposals && filtersToApply.statuses?.length === 1);
-      const searchTaskProposalsArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: filtersToApply.podIds,
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: LIMIT,
-          searchString: search,
-        },
-      };
-
-      const searchTasksArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: filtersToApply.podIds,
-          limit: LIMIT,
-          offset: 0,
-          // Needed to exclude proposals
-          statuses: taskStatuses,
-          searchString: search,
-        },
-      };
-
-      if (shouldSearchTasks) {
-        searchTasks(searchTasksArgs);
-      } else {
-        const newColumns = [...contributorColumns];
-        newColumns.forEach((column) => {
-          column.tasks = [];
-          column.section.tasks = [];
-        });
-
-        setContributorColumns(newColumns);
-      }
-
-      if (shouldSearchProposals) {
-        searchProposals(searchTaskProposalsArgs);
-      }
-    }
   };
 
   return (
@@ -391,7 +252,6 @@ const BoardsPage = (props) => {
           onLoadMore={handleLoadMore}
           hasMore={hasMoreTasks}
           isAdmin={isAdmin}
-          searchColumns={searchColumns}
           setColumns={setContributorColumns}
         />
       </BoardWrapper>

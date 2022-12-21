@@ -41,8 +41,7 @@ import {
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
 import EntitySidebar from 'components/Common/SidebarEntity';
-import { usePageDataContext, useSearch } from 'utils/hooks';
-
+import { usePageDataContext } from 'utils/hooks';
 
 const useGetPodTaskBoardTasks = ({
   columns,
@@ -381,8 +380,6 @@ function BoardsPage({ meta }: Props) {
     fetchPolicy: 'cache-and-network',
   });
 
-  const { searchPodTasks, searchPodTaskProposals, searchColumns } = useSearch();
-
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
   const [getPod, { data: podData, loading: isPodDataLoading }] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: ({ getPodById }) => {
@@ -428,7 +425,6 @@ function BoardsPage({ meta }: Props) {
     router.push({ query }, undefined, { shallow: true, scroll: false });
   };
 
-
   const deleteUserIdFilter = () => {
     const routerQuery = { ...router.query };
     delete routerQuery.userId;
@@ -457,7 +453,6 @@ function BoardsPage({ meta }: Props) {
     },
   };
 
-
   useEffect(() => {
     if (userId) {
       getUser({ variables: { userId } });
@@ -475,26 +470,6 @@ function BoardsPage({ meta }: Props) {
     if (podId) {
       if (search) {
         if (!firstTimeFetch) {
-          const searchPodTasksArgs = {
-            variables: {
-              input: {
-                podId,
-                limit: 1000,
-                offset: 0,
-                labelId,
-                date,
-
-                // Needed to exclude proposals
-                statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
-                searchString: search,
-                ...(privacyLevel === PRIVACY_LEVEL.public && {
-                  onlyPublic: true,
-                }),
-              },
-            },
-          };
-
-          searchPodTasks(searchPodTasksArgs);
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
@@ -567,66 +542,12 @@ function BoardsPage({ meta }: Props) {
 
   const handleFilterChange: any = (filtersToApply = { statuses: [], labelId: null, date: null }) => {
     setFilters(filtersToApply);
-
-    const { statuses, labelId } = filtersToApply;
-    const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
-    const searchProposals =
-      statuses?.length !== taskStatuses?.length ||
-      statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
-    const searchTasks = !(searchProposals && statuses?.length === 1);
-    if (search) {
-      const searchPodTaskProposalsArgs = {
-        variables: {
-          input: {
-            podId,
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: 1000,
-            searchString: search,
-          },
-        },
-      };
-
-      const searchPodTasksArgs = {
-        variables: {
-          input: {
-            podId,
-            limit: 1000,
-            offset: 0,
-            // Needed to exclude proposals
-            statuses: taskStatuses,
-            labelId,
-            searchString: search,
-            ...(privacyLevel === PRIVACY_LEVEL.public && {
-              onlyPublic: true,
-            }),
-          },
-        },
-      };
-
-      if (searchTasks) {
-        searchPodTasks(searchPodTasksArgs);
-      } else {
-        const newColumns = [...columns];
-        newColumns.forEach((column: any) => {
-          column.tasks = [];
-        });
-
-        setColumns(newColumns);
-      }
-
-      if (searchProposals) {
-        searchPodTaskProposals(searchPodTaskProposalsArgs);
-      }
-    }
   };
 
   const hasActiveFilters = useMemo(
     () => !!Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length)?.length,
     [filters]
   );
-
-  console.log(searchColumns, 'SEARCHCOLUMNSPOD')
   return (
     <PodBoardContext.Provider
       value={{
@@ -669,7 +590,6 @@ function BoardsPage({ meta }: Props) {
           orgId={pod?.orgId}
           statuses={statuses}
           activeView={activeView}
-          searchColumns={searchColumns}
         />
       </EntitySidebar>
     </PodBoardContext.Provider>

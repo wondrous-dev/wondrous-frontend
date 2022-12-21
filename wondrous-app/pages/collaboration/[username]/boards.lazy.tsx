@@ -35,10 +35,9 @@ import {
   STATUS_CLOSED,
   STATUS_OPEN,
   STATUSES_ON_ENTITY_TYPES,
-  TASK_STATUSES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useGlobalContext, useSearch } from 'utils/hooks';
+import { useGlobalContext } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -392,8 +391,6 @@ function BoardsPage() {
     }
   }, [userId]);
 
-  const { searchOrgTasks, searchOrgTaskProposals, searchColumns } = useSearch();
-
   const deleteUserIdFilter = () => {
     const routerQuery = { ...router.query };
     delete routerQuery.userId;
@@ -478,23 +475,6 @@ function BoardsPage() {
 
       if (search) {
         if (!firstTimeFetch) {
-          const id = orgId || orgData?.id;
-          const searchOrgTasksArgs = {
-            variables: {
-              podIds: filters?.podIds,
-              priorities: filters?.priorities,
-              orgId: id,
-              limit: 1000,
-              offset: 0,
-              // Needed to exclude proposals
-              statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
-              searchString: search,
-              ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
-                onlyPublic: true,
-              }),
-            },
-          };
-          searchOrgTasks(searchOrgTasksArgs);
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
@@ -556,53 +536,6 @@ function BoardsPage() {
 
   const handleFilterChange: any = (filtersToApply = { statuses: [], podIds: [], labelId: null, date: null }) => {
     setFilters(filtersToApply);
-
-    if (search) {
-      const id = orgId || orgData?.id;
-      const taskStatuses = filtersToApply?.statuses.filter((status) => TASK_STATUSES.includes(status));
-      const searchProposals =
-        filtersToApply?.statuses.length !== taskStatuses.length ||
-        filtersToApply?.statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
-      const searchTasks = !(searchProposals && filtersToApply?.statuses.length === 1);
-
-      const searchOrgTasksArgs = {
-        variables: {
-          podIds: filtersToApply?.podIds,
-          orgId: id,
-          limit: 1000,
-          labelId: filtersToApply?.labelId,
-          offset: 0,
-          // Needed to exclude proposals
-          statuses: taskStatuses,
-          search,
-          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
-            onlyPublic: true,
-          }),
-        },
-      };
-
-      if (searchTasks) {
-        searchOrgTasks(searchOrgTasksArgs);
-      } else {
-        const newColumns = [...columns];
-        newColumns.forEach((column) => {
-          column.tasks = [];
-        });
-
-        setColumns(dedupeColumns(newColumns));
-        setIsLoading(false);
-      }
-
-      if (searchProposals) {
-        const proposalArgs = {
-          ...searchOrgTaskProposalsArgs,
-          podIds: filters?.podIds,
-          priorities: filters?.priorities,
-        };
-        searchOrgTaskProposals(proposalArgs);
-        setIsLoading(false);
-      }
-    }
   };
 
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
@@ -651,7 +584,6 @@ function BoardsPage() {
           entityType={entityType}
           userId={userId?.toString()}
           activeView={activeView}
-          searchColumns={searchColumns}
         />
       </EntitySidebar>
     </OrgBoardContext.Provider>

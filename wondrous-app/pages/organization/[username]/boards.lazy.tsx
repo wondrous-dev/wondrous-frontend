@@ -378,7 +378,6 @@ function BoardsPage() {
   });
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(true);
 
-
   const { fetchMore, fetchPerStatus } = useGetOrgTaskBoard({
     view: activeView,
     section,
@@ -510,21 +509,6 @@ function BoardsPage() {
       if (search) {
         if (!firstTimeFetch) {
           const id = orgId || orgData?.id;
-          const searchOrgTasksArgs = {
-            variables: {
-              podIds: filters?.podIds,
-              priorities: filters?.priorities,
-              orgId: id,
-              limit: 1000,
-              offset: 0,
-              // Needed to exclude proposals
-              statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
-              searchString: search,
-              ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
-                onlyPublic: true,
-              }),
-            },
-          };
           getOrgBoardTaskCount({
             variables: {
               orgId: id,
@@ -542,7 +526,6 @@ function BoardsPage() {
       }
     }
   }, [orgData, orgId, getOrgBoardTaskCount, search, filters]);
-
 
   function handleSearch(searchString: string) {
     const id = orgId || orgData?.id;
@@ -609,7 +592,7 @@ function BoardsPage() {
     () => !!Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length)?.length,
     [filters]
   );
-    
+
   return (
     <OrgBoardContext.Provider
       value={{
