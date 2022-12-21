@@ -25,23 +25,13 @@ type Props = {
   filterSchema?: any;
   userId?: string;
   entityType?: string;
-  searchColumns?: any;
 };
 
 const LIST_VIEW_MAP = {
   [ENTITIES_TYPES.TASK]: ListView,
 };
 function Boards(props: Props) {
-  const {
-    columns,
-    onLoadMore,
-    hasMore,
-    isAdmin,
-    setColumns,
-    activeView,
-    entityType = ENTITIES_TYPES.TASK,
-    searchColumns,
-  } = props;
+  const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView, entityType = ENTITIES_TYPES.TASK } = props;
   const router = useRouter();
   const { search: searchQuery } = router.query;
   const view = activeView || String(router.query.view ?? ViewType.Grid);

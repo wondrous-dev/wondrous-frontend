@@ -927,6 +927,10 @@ export const addToTaskColumns = (newResults, columns) => {
   return newColumns;
 };
 
+/**
+ * @deprecated
+ * @param columns
+ */
 export const splitColsByType = (columns) => {
   let totalCount = 0;
 
@@ -962,18 +966,6 @@ export const splitColsByType = (columns) => {
       columns: createColumnsByType(ENTITIES_TYPES.PROPOSAL),
       icon: null,
     },
-    // [BOUNTY_TYPE]: {
-    //   name: 'Bounties',
-    //   showAll: false,
-    //   columns: extractMilestonesAndBounties(BOUNTY_TYPE),
-    //   icon: StarIcon,
-    // },
-    // [MILESTONE_TYPE]: {
-    //   name: 'Milestones',
-    //   showAll: false,
-    //   columns: extractMilestonesAndBounties(MILESTONE_TYPE),
-    //   icon: () => <FlagIcon stroke="url(#open0)" secondStroke="url(#open1)" />,
-    // },
   };
 
   return { splitCols, totalCount };

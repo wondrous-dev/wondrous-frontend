@@ -33,7 +33,6 @@ type Props = {
   activeView: string | string[];
   orgId?: string;
   statuses?: string[];
-  searchColumns?: any;
 };
 
 function PodBoards(props: Props) {
@@ -49,7 +48,6 @@ function PodBoards(props: Props) {
     loading,
     activeView,
     orgId,
-    searchColumns,
     statuses,
   } = props;
 
@@ -70,7 +68,6 @@ function PodBoards(props: Props) {
               columns={columns}
               onLoadMore={onLoadMore}
               hasMore={hasMore}
-              searchColumns={searchColumns}
               setColumns={setColumns}
               entityType={entityType}
             />
@@ -92,8 +89,7 @@ export default memo(PodBoards, (prevProps, nextProps) => {
     prevProps.searchString === nextProps.searchString &&
     prevProps.orgId === nextProps.orgId &&
     prevProps.userId === nextProps.userId &&
-    prevProps.searchColumns === nextProps.searchColumns &&
     prevProps.activeView === nextProps.activeView;
-  
+
   return areEqual;
 });

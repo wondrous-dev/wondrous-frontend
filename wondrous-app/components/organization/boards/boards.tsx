@@ -34,7 +34,6 @@ export type Props = {
   entityType: string;
   loading: boolean;
   activeView: string | string[];
-  searchColumns?: any
 };
 
 function OrgBoards(props: Props) {
@@ -52,7 +51,6 @@ function OrgBoards(props: Props) {
     entityType,
     loading,
     activeView,
-    searchColumns
   } = props;
 
   const filterSchema = getFilterSchema(entityType, orgData?.id);
@@ -78,7 +76,6 @@ function OrgBoards(props: Props) {
               columns={columns}
               onLoadMore={onLoadMore}
               hasMore={hasMore}
-              searchColumns={searchColumns}
               setColumns={setColumns}
               entityType={entityType}
             />
@@ -101,6 +98,5 @@ export default memo(OrgBoards, (prevProps, nextProps) => {
     prevProps.loading === nextProps.loading &&
     prevProps.loading === nextProps.loading &&
     prevProps.activeView === nextProps.activeView;
-    prevProps.searchColumns === nextProps.searchColumns;
   return areEqual;
 });
