@@ -124,9 +124,12 @@ const useGetPodTaskBoardTasks = ({
     const columnIdx = columns?.findIndex((column) => column.status === status);
     fetchMore({
       variables: {
-        offset: columns[columnIdx]?.tasks?.length,
-        statuses: [status],
-        ...(limit ? { limit } : {}),
+        input: {
+          podId,
+          offset: columns[columnIdx]?.tasks?.length,
+          statuses: [status],
+          ...(limit ? { limit } : {}),
+        },
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getPodTaskBoardTasks.length >= LIMIT);
