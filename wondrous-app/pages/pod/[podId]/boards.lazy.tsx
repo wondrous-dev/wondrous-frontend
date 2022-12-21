@@ -56,9 +56,10 @@ const useGetPodTaskBoardTasks = ({
 }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ getPodTaskBoardTasks }) => {
+      if (userId) return;
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
         setColumns(getPodTaskBoardTasks);
         setIsLoading(false);
@@ -161,6 +162,7 @@ const useGetTaskRelatedToUser = ({
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ getTasksRelatedToUserInPod }) => {
+      if (!userId) return;
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
         setColumns(getTasksRelatedToUserInPod);
         setIsLoading(false);
