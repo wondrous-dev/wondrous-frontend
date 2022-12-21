@@ -36,7 +36,7 @@ export default function AnnouncementModal({ open, onClose }) {
 
   return (
     <Modal
-      title="Tweet to get your Orbit 1 NFTT"
+      title="Tweet to get your Orbit 1 NFT"
       open={open}
       onClose={closeModal}
       maxWidth={500}
