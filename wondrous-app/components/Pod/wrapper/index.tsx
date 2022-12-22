@@ -40,8 +40,6 @@ import {
   ContentContainer,
   Container,
   HeaderActivity,
-  HeaderActivityLink,
-  HeaderActivityLinkIcon,
   HeaderButtons,
   HeaderContributors,
   HeaderContributorsAmount,
@@ -59,7 +57,6 @@ import {
   HeaderButton,
   BoardsSubheaderWrapper,
   InviteButton,
-  HeaderGr15Sponsor,
 } from '../../organization/wrapper/styles';
 import Tabs from '../../organization/tabs/tabs';
 import PodIcon from '../../Icons/podIcon';
@@ -439,29 +436,9 @@ function Wrapper(props) {
                 ) : (
                   <div style={{ height: 10 }} />
                 )}
-                {links?.map((link) => (
-                  <>
-                    {link?.url ? (
-                      <HeaderActivityLink href={link?.url} key={link}>
-                        {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
-                        {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
-                      </HeaderActivityLink>
-                    ) : null}
-                  </>
-                ))}
               </div>
               <div>
                 <HeaderActivity>
-                  {links?.map((link) => (
-                    <>
-                      {link?.url ? (
-                        <HeaderActivityLink href={link?.url} key={link}>
-                          {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
-                          {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
-                        </HeaderActivityLink>
-                      ) : null}
-                    </>
-                  ))}
                   <HeaderContributors
                     isInPodPage
                     onClick={() => {
@@ -475,19 +452,17 @@ function Wrapper(props) {
                     </HeaderContributorsText>
                   </HeaderContributors>
                   {podIsGr15Sponsor && (
-                    <HeaderGr15Sponsor>
-                      <ExplorePodGr15
-                        onTaskPage={onTaskPage}
-                        onBountyPage={onBountyPage}
-                        hasGr15Bounties={podHasGr15Bounties}
-                        hasGr15Tasks={podHasGr15Tasks}
-                        onFilterChange={onFilterChange}
-                        podProfile={podProfile}
-                        filters={boardFilters}
-                        exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                        setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                      />
-                    </HeaderGr15Sponsor>
+                    <ExplorePodGr15
+                      onTaskPage={onTaskPage}
+                      onBountyPage={onBountyPage}
+                      hasGr15Bounties={podHasGr15Bounties}
+                      hasGr15Tasks={podHasGr15Tasks}
+                      onFilterChange={onFilterChange}
+                      podProfile={podProfile}
+                      filters={boardFilters}
+                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                    />
                   )}
                   {/* <HeaderPods>
                     <HeaderPodsAmount>{podProfile?.podCount}</HeaderPodsAmount>

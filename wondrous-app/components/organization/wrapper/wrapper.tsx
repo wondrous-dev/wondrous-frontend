@@ -10,6 +10,7 @@ import {
   HEADER_ASPECT_RATIO,
   EMPTY_RICH_TEXT_STRING,
 } from 'utils/constants';
+import MembersIcon from 'components/Icons/members';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import apollo from 'services/apollo';
 import Box from '@mui/material/Box';
@@ -32,6 +33,7 @@ import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15
 import { RichTextViewer } from 'components/RichText';
 import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
+import palette from 'theme/palette';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
 import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { DAOEmptyIcon } from '../../Icons/dao';
@@ -52,13 +54,11 @@ import {
   TokenEmptyLogo,
   HeaderTitleIcon,
   HeaderImageWrapper,
-  HeaderTag,
   BoardsSubheaderWrapper,
   RoleButtonWrapper,
   RoleText,
   Container,
   InviteButton,
-  HeaderGr15Sponsor,
 } from './styles';
 import { useMe } from '../../Auth/withAuth';
 
@@ -86,7 +86,7 @@ const ExploreOrgGr15 = ({
 }) => {
   const router = useRouter();
   const ExploreButton = exploreGr15TasksAndBounties ? ExploreProjectsButtonFilled : ExploreProjectsButton;
-  if (onTaskPage && !hasGr15Tasks && hasGr15Bounties) {
+  if (true) {
     return (
       <ExploreButton
         style={{
@@ -414,7 +414,6 @@ function Wrapper(props) {
                 >
                   {orgProfile?.name}
                 </HeaderTitle>
-                {!isCollabWorkspace && <HeaderTag>@{orgProfile?.username}</HeaderTag>}
                 <HeaderActivity>
                   <HeaderContributors
                     onClick={() => {
@@ -422,30 +421,27 @@ function Wrapper(props) {
                       setShowUsers(true);
                     }}
                   >
+                    <MembersIcon stroke={palette.blue20} />
                     <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
-                    <HeaderContributorsText>Contributors</HeaderContributorsText>
                   </HeaderContributors>
-                  {/* {isGr15Sponsor && (
-                    <HeaderGr15Sponsor>
-                      <ExploreOrgGr15
-                        onTaskPage={onTaskPage}
-                        onBountyPage={onBountyPage}
-                        hasGr15Bounties={hasGr15Bounties}
-                        hasGr15Tasks={hasGr15Tasks}
-                        onFilterChange={onFilterChange}
-                        orgProfile={orgProfile}
-                        filters={boardFilters}
-                        exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                        setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                      />
-                    </HeaderGr15Sponsor>
-                  )} */}
+                  {true && (
+                    <ExploreOrgGr15
+                      onTaskPage={onTaskPage}
+                      onBountyPage={onBountyPage}
+                      hasGr15Bounties={hasGr15Bounties}
+                      hasGr15Tasks={hasGr15Tasks}
+                      onFilterChange={onFilterChange}
+                      orgProfile={orgProfile}
+                      filters={boardFilters}
+                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                    />
+                  )}
                 </HeaderActivity>
               </HeaderTitleIcon>
               <HeaderButtons>
                 {permissions && orgRoleName && (
                   <RoleButtonWrapper>
-                    <RoleText>Your Role:</RoleText>
                     <RolePill
                       onClick={() => {
                         setOpenCurrentRoleModal(true);
@@ -478,7 +474,7 @@ function Wrapper(props) {
                 )}
               </HeaderButtons>
             </HeaderMainBlock>
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}>
               {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
                 <HeaderText as="div">
                   <RichTextViewer text={orgProfile?.description} />

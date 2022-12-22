@@ -8,7 +8,6 @@ import { blackColors, greyColors } from 'theme/colors';
 import { BaseCard } from 'components/Common/card';
 import typography from 'theme/typography';
 import { LogoCircle } from 'components/Common/ci';
-import { LinkIcon } from 'components/Icons/linkIcon';
 
 export const OverviewComponent = styled.section`
   width: 100%;
@@ -106,6 +105,7 @@ export const HeaderTitle = styled(Typography)`
   }
 `;
 
+// used fo org username, not used rn
 export const HeaderTag = styled(Typography)`
   && {
     color: ${palette.grey250};
@@ -309,10 +309,10 @@ export const HeaderText = styled.div`
 
 export const HeaderActivity = styled.div`
   flex-wrap: wrap;
-  width: 100%;
   min-height: 23px;
   display: flex;
   align-items: center;
+  gap: 10px;
 `;
 
 export const HeaderActivityLink = styled.a`
@@ -322,16 +322,8 @@ export const HeaderActivityLink = styled.a`
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #ccbbff;
+  color: ${palette.highlightBlue};
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  margin-right: 12px;
-`;
-
-export const HeaderActivityLinkIcon = styled(LinkIcon)`
-  height: 23px;
-  width: 23px;
-  margin-right: 8px;
-  margin-top: 8px;
 `;
 
 export const HeaderContributors = styled.div`
@@ -340,7 +332,7 @@ export const HeaderContributors = styled.div`
   gap: 6px;
   cursor: pointer;
   background: ${(props) => (props?.isInPodPage ? palette.grey950 : palette.grey98)};
-  padding: 10px;
+  padding: 3px 6px;
   border-radius: 1000px;
   transition: background 0.2s ease-in-out;
 
@@ -355,7 +347,7 @@ export const HeaderContributorsAmount = styled(Typography)`
     font-size: 13px;
     display: flex;
     align-items: center;
-    color: ${palette.highlightBlue};
+    color: ${palette.white};
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
@@ -366,7 +358,6 @@ export const HeaderContributorsText = styled(HeaderContributorsAmount)`
   }
 `;
 
-export const HeaderGr15Sponsor = styled.div``;
 // cardStyles
 export const PostsContainer = styled.div`
   max-width: 680px;

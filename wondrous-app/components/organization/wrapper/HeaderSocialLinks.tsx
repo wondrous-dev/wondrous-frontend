@@ -1,27 +1,29 @@
 import React from 'react';
 
+import palette from 'theme/palette';
 import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA, SOCIAL_MEDIA_LINKEDIN } from 'utils/constants';
+import { LinkIcon } from 'components/Icons/linkIcon';
 import { removeUrlStart } from 'utils/helpers';
 import { DiscordIcon } from '../../Icons/discord';
 import OpenSeaIcon from '../../Icons/openSea';
 import LinkedInIcon from '../../Icons/linkedIn';
-import { HeaderActivityLink, HeaderActivityLinkIcon } from './styles';
+import { HeaderActivityLink } from './styles';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 
 const HeaderSocialLinks = ({ links }) => (
-  <>
-    {links?.map((link, index) => {
+  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+    {links?.map((link) => {
       if (link.type === 'link') {
         return (
-          <HeaderActivityLink href={link?.url} key={index} target="_blank">
-            <HeaderActivityLinkIcon />
+          <HeaderActivityLink href={link?.url} key={link?.url} target="_blank">
+            <LinkIcon style={{ marginRight: 5 }} />
             {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
           </HeaderActivityLink>
         );
       }
     })}
 
-    {links?.map((link, index) => {
+    {links?.map((link) => {
       if (link.type !== 'link') {
         let SocialIcon = null;
         switch (link.type) {
@@ -40,13 +42,13 @@ const HeaderSocialLinks = ({ links }) => (
         }
         if (SocialIcon) {
           return (
-            <HeaderActivityLink href={link?.url} key={index} target="_blank">
+            <HeaderActivityLink href={link?.url} key={link?.url} target="_blank">
               <SocialIcon
                 style={{
-                  width: '20px',
-                  height: '20px',
+                  width: '15px',
+                  height: '15px',
                 }}
-                fill="#ccbbff"
+                fill={palette.grey57}
               />
             </HeaderActivityLink>
           );
@@ -54,7 +56,7 @@ const HeaderSocialLinks = ({ links }) => (
         return null;
       }
     })}
-  </>
+  </div>
 );
 
 export default HeaderSocialLinks;
