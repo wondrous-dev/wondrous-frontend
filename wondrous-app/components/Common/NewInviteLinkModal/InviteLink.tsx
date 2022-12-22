@@ -17,7 +17,6 @@ import { GET_POD_ROLES } from 'graphql/queries';
 import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
 import {
-  StyledModal,
   StyledBox,
   TextHeading,
   CloseButton,
