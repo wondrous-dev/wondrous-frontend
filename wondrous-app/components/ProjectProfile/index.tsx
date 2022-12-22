@@ -30,7 +30,7 @@ const ProjectProfile = ({ orgData }) => {
         <CreateGrantModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
           <PodSection />
-          <ProfileSectionsWrapper />
+          <ProfileSectionsWrapper layout={orgData?.layout} orgId={orgData?.id} />
         </Grid>
       </>
     </ProjectContext.Provider>

@@ -89,15 +89,7 @@ const SectionContent = ({
     data.slice(0, DATA_LIMIT).map((i) => <ListItem key={i?.id} {...ListItemProps} data={i} />)
   );
   return (
-    <MainWrapper
-      container
-      item
-      flexDirection="column"
-      justifyContent="space-between"
-      height="390px"
-      bgcolor={palette.grey900}
-      borderRadius="6px"
-    >
+    <>
       <Grid container item flexDirection="column" flexGrow="1" padding="14px" gap="14px">
         <Grid container item alignItems="center" justifyContent="space-between">
           <HeaderTitle {...HeaderTitleProps} />
@@ -125,7 +117,7 @@ const SectionContent = ({
       >
         Show all
       </ButtonBase>
-    </MainWrapper>
+    </>
   );
 };
 
