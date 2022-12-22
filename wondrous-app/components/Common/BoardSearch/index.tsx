@@ -30,6 +30,7 @@ import dynamic from 'next/dynamic';
 import ItemsContainer from 'components/ListView/ItemsContainer';
 import { useMe } from 'components/Auth/withAuth';
 import { useRouter } from 'next/router';
+import { Spinner } from 'components/Dashboard/bounties/styles';
 
 const ListView = dynamic(() => import('components/ListView'), { suspense: true });
 
@@ -167,7 +168,7 @@ const BoardSearch = ({ searchQuery }) => {
     },
   };
 
-  const [getOrgTasks, { data: orgTasksData, refetch: refetchOrgTasksData }] = useLazyQuery(
+  const [getOrgTasks, { data: orgTasksData, refetch: refetchOrgTasksData, loading: orgTasksLoading }] = useLazyQuery(
     SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
     {
       fetchPolicy: 'cache-and-network',
@@ -176,16 +177,14 @@ const BoardSearch = ({ searchQuery }) => {
     }
   );
 
-  const [getOrgProposals, { data: orgProposalData, refetch: refetchOrgProposalsData }] = useLazyQuery(
-    SEARCH_ORG_TASK_BOARD_PROPOSALS,
-    {
+  const [getOrgProposals, { data: orgProposalData, refetch: refetchOrgProposalsData, loading: orgProposalsLoading }] =
+    useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
       notifyOnNetworkStatusChange: true,
-    }
-  );
+    });
 
-  const [getPodTasks, { data: podTasksData, refetch: refetchPodTasksData }] = useLazyQuery(
+  const [getPodTasks, { data: podTasksData, refetch: refetchPodTasksData, loading: podTasksLoading }] = useLazyQuery(
     SEARCH_TASKS_FOR_POD_BOARD_VIEW,
     {
       fetchPolicy: 'cache-and-network',
@@ -194,32 +193,28 @@ const BoardSearch = ({ searchQuery }) => {
     }
   );
 
-  const [getPodProposals, { data: podProposalData, refetch: refetchPodProposalsData }] = useLazyQuery(
-    SEARCH_POD_TASK_BOARD_PROPOSALS,
-    {
+  const [getPodProposals, { data: podProposalData, refetch: refetchPodProposalsData, loading: podProposalsLoading }] =
+    useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
       notifyOnNetworkStatusChange: true,
-    }
-  );
+    });
 
-  const [getUserBoardTasks, { data: userBoardTasksData, refetch: refetchUserTaskData }] = useLazyQuery(
-    SEARCH_TASKS_FOR_USER_BOARD_VIEW,
-    {
+  const [getUserBoardTasks, { data: userBoardTasksData, refetch: refetchUserTaskData, loading: userTasksLoading }] =
+    useLazyQuery(SEARCH_TASKS_FOR_USER_BOARD_VIEW, {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
       notifyOnNetworkStatusChange: true,
-    }
-  );
+    });
 
-  const [getUserBoardProposals, { data: userBoardProposalsData, refetch: refetchUserProposalData }] = useLazyQuery(
-    SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
-    {
-      fetchPolicy: 'cache-and-network',
-      nextFetchPolicy: 'cache-first',
-      notifyOnNetworkStatusChange: true,
-    }
-  );
+  const [
+    getUserBoardProposals,
+    { data: userBoardProposalsData, refetch: refetchUserProposalData, loading: userProposalsLoading },
+  ] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+  });
 
   useEffect(() => {
     if (!loggedInUser) return;
@@ -335,28 +330,40 @@ const BoardSearch = ({ searchQuery }) => {
     return taskAndProposalCount;
   }, [dataColumns]);
 
-  if (!dataColumns) return null;
+  const loading =
+    orgTasksLoading ||
+    orgProposalsLoading ||
+    podTasksLoading ||
+    podProposalsLoading ||
+    userTasksLoading ||
+    userProposalsLoading;
   return (
     <Wrapper>
       <TitleWrapper>
         <Title>
-          Showing {counts.total} results {searchQuery ? `for ‘${searchQuery}’` : null}
+          {loading && !counts
+            ? `Searching result for '${searchQuery}'`
+            : `Showing ${counts?.total} results for ${searchQuery || null}`}
         </Title>
       </TitleWrapper>
-      {Object.keys(dataColumns).map((entityType) => {
-        const columns = dataColumns[entityType];
-        const singleColumnData = entityType === ENTITIES_TYPES.BOUNTY || entityType === ENTITIES_TYPES.MILESTONE;
-        if (!singleColumnData) {
-          return (
-            <Accordion title={TITLES[entityType]} count={counts[entityType]}>
-              {columns?.map((column, idx) => (
-                <EntityListItem columns={column} key={idx} entityType={entityType} />
-              ))}
-            </Accordion>
-          );
-        }
-        return <EntityListItem columns={columns} entityType={entityType} />;
-      })}
+      {dataColumns && !loading ? (
+        Object.keys(dataColumns).map((entityType) => {
+          const columns = dataColumns[entityType];
+          const singleColumnData = entityType === ENTITIES_TYPES.BOUNTY || entityType === ENTITIES_TYPES.MILESTONE;
+          if (!singleColumnData) {
+            return (
+              <Accordion title={TITLES[entityType]} count={counts[entityType]}>
+                {columns?.map((column, idx) => (
+                  <EntityListItem columns={column} key={idx} entityType={entityType} />
+                ))}
+              </Accordion>
+            );
+          }
+          return <EntityListItem columns={columns} entityType={entityType} />;
+        })
+      ) : (
+        <Spinner />
+      )}
     </Wrapper>
   );
 };
