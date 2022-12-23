@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import * as Sentry from '@sentry/nextjs';
+import Modal from '@mui/material/Modal';
 
 import { useMe } from 'components/Auth/withAuth';
 import PersonAddIcon from 'components/Icons/personAdd';
@@ -16,7 +17,6 @@ import { GET_POD_ROLES } from 'graphql/queries';
 import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
 import {
-  StyledModal,
   StyledBox,
   TextHeading,
   CloseButton,
@@ -182,7 +182,7 @@ export function NewInviteLinkModal(props) {
     : putDefaultRoleOnTop(podRoles?.getPodRoles, permissions);
 
   return (
-    <StyledModal open={open} onClose={handleOnClose}>
+    <Modal open={open} onClose={handleOnClose}>
       <StyledBox>
         <HeadingWrapper>
           <IconTextWrapper>
@@ -245,6 +245,6 @@ export function NewInviteLinkModal(props) {
         <StyledDivider /> */}
         <LinkSwitch label="One time use" checked={linkOneTimeUse} onClick={handleLinkOneTimeUseChange} />
       </StyledBox>
-    </StyledModal>
+    </Modal>
   );
 }
