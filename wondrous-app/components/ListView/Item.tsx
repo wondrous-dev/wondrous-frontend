@@ -45,7 +45,6 @@ import {
 } from './styles';
 
 function ListViewItem({ task, entityType, isDragDisabled }) {
-  const windowOffset = 0;
   const router = useRouter();
   const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
   const [data, setData] = useState(task);
@@ -355,7 +354,7 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
                 Pay
               </ButtonPrimary>
             )}
-            {!assigneeId && status !== TASK_STATUS_DONE && task.type === TASK_TYPE && (
+            {!assigneeId && status !== TASK_STATUS_DONE && task.type === TASK_TYPE && !task?.isProposal && (
               <>
                 {claimed ? (
                   <ButtonPrimary

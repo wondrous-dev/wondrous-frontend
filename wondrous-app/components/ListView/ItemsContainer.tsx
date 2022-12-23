@@ -1,45 +1,25 @@
 import { useState } from 'react';
-import {
-  TASK_STATUS_TODO,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_DONE,
-  ENTITIES_TYPES,
-} from 'utils/constants';
-import { taskHasPayment } from 'utils/board';
+import { ENTITIES_TYPES, TASK_STATUS_TODO, HEADER_ICONS, TITLES } from 'utils/constants';
 
-import { ToDo, InProgress, Done, InReview } from 'components/Icons';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
-import { Draggable } from 'react-beautiful-dnd';
-import { LIMIT } from 'services/board';
+import { BountyIcon } from 'components/Common/BountyBoard/styles';
 import Accordion from 'components/Common/ListViewAccordion';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import EmptyStateBoards from 'components/EmptyStateBoards';
-import { BountyIcon } from 'components/Common/BountyBoard/styles';
+import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import FlagIcon from 'components/Icons/flag';
+import { Draggable } from 'react-beautiful-dnd';
+import { LIMIT } from 'services/board';
 
-import { IconWrapper, ListViewItemWrapper } from './styles';
+import { useRouter } from 'next/router';
 import Item from './Item';
-
-const HEADER_ICONS = {
-  [TASK_STATUS_TODO]: ToDo,
-  [TASK_STATUS_IN_PROGRESS]: InProgress,
-  [TASK_STATUS_IN_REVIEW]: InReview,
-  [TASK_STATUS_DONE]: Done,
-};
-
-const LABELS_MAP = {
-  [TASK_STATUS_TODO]: 'To-do',
-  [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
-  [TASK_STATUS_IN_REVIEW]: 'In-Review',
-  [TASK_STATUS_DONE]: 'Done',
-};
+import { IconWrapper, ListViewItemWrapper } from './styles';
 
 const ENTITIES_LABELS_MAP = {
   [ENTITIES_TYPES.TASK]: 'Tasks',
   [ENTITIES_TYPES.MILESTONE]: 'Milestones',
   [ENTITIES_TYPES.BOUNTY]: 'Bounties',
+  [ENTITIES_TYPES.PROPOSAL]: 'Proposals',
 };
 
 const ENTITIES_HEADER_ICONS = {
@@ -88,12 +68,9 @@ export default function ItemsContainer({
   ...props
 }) {
   const { status, tasks } = data;
-  const [editTask, setEditTask] = useState(false);
-  const [archiveTask, setArchiveTask] = useState(false);
-  const [deleteTask, setDeleteTask] = useState(false);
-
+  const router = useRouter();
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
-  const itemTitle = LABELS_MAP[status] || ENTITIES_LABELS_MAP[entityType] || '';
+  const itemTitle = TITLES[status] || ENTITIES_LABELS_MAP[entityType] || '';
   const Icon = HEADER_ICONS[status] || ENTITIES_HEADER_ICONS[entityType];
 
   // onLoadMore is used for infinite loading
@@ -101,7 +78,7 @@ export default function ItemsContainer({
   const loadMoreAction = () => (onLoadMore ? onLoadMore() : handleShowAll(status, taskCount));
 
   const HeaderAddons =
-    status === TASK_STATUS_TODO ? (
+    status === TASK_STATUS_TODO && !router?.query?.search ? (
       <IconWrapper>
         <CreateBtnIconDark
           onClick={() => setCreateTaskModalOpen(true)}
@@ -135,7 +112,7 @@ export default function ItemsContainer({
         isExpanded={tasks?.length > 0}
         Icon={Icon}
         title={itemTitle}
-        count={taskCount}
+        count={taskCount || tasks?.length}
         headerAddons={HeaderAddons}
         hasMore={hasMore || (taskCount > LIMIT && tasks.length <= LIMIT)}
         onShowMore={loadMoreAction}

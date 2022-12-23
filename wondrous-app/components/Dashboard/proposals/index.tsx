@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { UserBoardContext } from 'utils/contexts';
 import BoardWrapper from 'components/Dashboard/boards/BoardWrapper';
 import { useGlobalContext } from 'utils/hooks';
