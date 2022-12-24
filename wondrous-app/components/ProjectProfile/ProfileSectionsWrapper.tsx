@@ -1,10 +1,13 @@
 import { useMutation } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import StrictModeDroppable from 'components/StrictModeDroppable';
-import { UPSERT_ORG_PROFILE_PAGE, UPSERT_POD_PROFILE_PAGE } from 'graphql/mutations';
+import { UPSERT_ORG_PROFILE_PAGE } from 'graphql/mutations';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 
 import palette from 'theme/palette';
+import { PERMISSIONS } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useOrgBoard } from 'utils/hooks';
 import ProfileBountySection from './ProfileBountySection';
 import ProfileCategorySection from './ProfileCategorySection';
 import ProfileCollabSection from './ProfileCollabSection';
@@ -19,6 +22,7 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
     refetchQueries: ['getOrgFromUsername'],
   });
 
+  const { userPermissionsContext } = useOrgBoard();
   // TODO: Not used yet
   // const [upsertPodProfilePage] = useMutation(UPSERT_POD_PROFILE_PAGE);
 
@@ -44,6 +48,11 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
 
   if (!layout) return null;
 
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId,
+  });
+
   const Components = {
     task: ProfileTaskSection,
     bounty: ProfileBountySection,
@@ -55,9 +64,11 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
     resource: ProfileCategorySection,
   };
 
+  const hasFullAccess = permissions.includes(PERMISSIONS.FULL_ACCESS);
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <StrictModeDroppable droppableId="droppableId">
+      <StrictModeDroppable droppableId="droppableId" isDragDisabled={!hasFullAccess}>
         {(provided) => (
           <Grid
             container
@@ -74,7 +85,7 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
             {layout?.map((order, index) => {
               const Component = Components[order];
               return (
-                <Draggable key={index} draggableId={`${index}`} index={index}>
+                <Draggable key={index} draggableId={`${index}`} index={index} isDragDisabled={!hasFullAccess}>
                   {(provided, snapshot) => (
                     <Grid
                       container
