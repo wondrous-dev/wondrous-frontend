@@ -11,6 +11,7 @@ import {
   EMPTY_RICH_TEXT_STRING,
 } from 'utils/constants';
 import MembersIcon from 'components/Icons/members';
+import { Button as PrimaryButton } from 'components/Button';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import apollo from 'services/apollo';
 import Box from '@mui/material/Box';
@@ -33,6 +34,7 @@ import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15
 import { RichTextViewer } from 'components/RichText';
 import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
+import { PodIconThin } from 'components/Icons/podIcon';
 import palette from 'theme/palette';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
 import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
@@ -42,7 +44,7 @@ import {
   Content,
   ContentContainer,
   HeaderActivity,
-  HeaderButtons,
+  HeaderTopRightContainer,
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
@@ -52,13 +54,16 @@ import {
   HeaderTitle,
   TokenHeader,
   TokenEmptyLogo,
-  HeaderTitleIcon,
+  HeaderTopLeftContainer,
   HeaderImageWrapper,
   BoardsSubheaderWrapper,
+  MemberPodIconBackground,
   RoleButtonWrapper,
   RoleText,
   Container,
   InviteButton,
+  PrivacyContainer,
+  PrivacyText,
 } from './styles';
 import { useMe } from '../../Auth/withAuth';
 
@@ -86,7 +91,7 @@ const ExploreOrgGr15 = ({
 }) => {
   const router = useRouter();
   const ExploreButton = exploreGr15TasksAndBounties ? ExploreProjectsButtonFilled : ExploreProjectsButton;
-  if (true) {
+  if (onTaskPage && !hasGr15Tasks && hasGr15Bounties) {
     return (
       <ExploreButton
         style={{
@@ -363,83 +368,104 @@ function Wrapper(props) {
               {orgData?.shared && renderSharedHeader ? (
                 renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
               ) : (
-                <Box sx={{ flex: '0 0 60px' }}>
-                  <div
+                <div
+                  style={{
+                    height: '100%',
+                    position: 'relative',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <SafeImage
+                    src={orgProfile?.profilePicture}
+                    placeholderComp={
+                      <TokenEmptyLogo>
+                        <DAOEmptyIcon />
+                      </TokenEmptyLogo>
+                    }
+                    width={36}
+                    height={36}
+                    useNextImage
                     style={{
-                      position: 'relative',
-                      cursor: 'pointer',
+                      borderRadius: '6px',
                     }}
-                  >
-                    <SafeImage
-                      src={orgProfile?.profilePicture}
-                      placeholderComp={
-                        <TokenEmptyLogo>
-                          <DAOEmptyIcon />
-                        </TokenEmptyLogo>
-                      }
-                      width={40}
-                      height={40}
-                      useNextImage
-                      style={{
-                        borderRadius: '6px',
-                      }}
-                      alt="Organization logo"
-                    />
-                    {isGr15Sponsor && (
-                      <>
-                        <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                        <GR15DEILogo
-                          width="30"
-                          height="30"
-                          onClick={() => setOpenGR15Modal(true)}
-                          style={{
-                            top: '0',
-                            right: '1px',
-                            position: 'absolute',
-                            zIndex: '25',
-                          }}
-                        />
-                      </>
-                    )}
-                  </div>
-                </Box>
+                    alt="Organization logo"
+                  />
+                  {isGr15Sponsor && (
+                    <>
+                      <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                      <GR15DEILogo
+                        width="25"
+                        height="25"
+                        onClick={() => setOpenGR15Modal(true)}
+                        style={{
+                          top: '0',
+                          right: '-10px',
+                          position: 'absolute',
+                          zIndex: '25',
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
               )}
-              <HeaderTitleIcon>
+              <HeaderTopLeftContainer>
                 <HeaderTitle
                   style={{
                     ...(isGr15Sponsor && {
-                      marginLeft: '24px',
+                      marginLeft: '5px',
                     }),
                   }}
                 >
                   {orgProfile?.name}
                 </HeaderTitle>
-                <HeaderActivity>
-                  <HeaderContributors
-                    onClick={() => {
-                      setMoreInfoModalOpen(true);
-                      setShowUsers(true);
-                    }}
-                  >
+                <PrivacyContainer>
+                  <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
+                </PrivacyContainer>
+
+                {isGr15Sponsor && (
+                  <ExploreOrgGr15
+                    onTaskPage={onTaskPage}
+                    onBountyPage={onBountyPage}
+                    hasGr15Bounties={hasGr15Bounties}
+                    hasGr15Tasks={hasGr15Tasks}
+                    onFilterChange={onFilterChange}
+                    orgProfile={orgProfile}
+                    filters={boardFilters}
+                    exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                    setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                  />
+                )}
+              </HeaderTopLeftContainer>
+              <HeaderTopRightContainer>
+                {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
+                  <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>
+                )}
+
+                <HeaderContributors
+                  onClick={() => {
+                    setMoreInfoModalOpen(true);
+                    setShowUsers(true);
+                  }}
+                >
+                  <MemberPodIconBackground>
+                    <PodIconThin />
+                  </MemberPodIconBackground>
+                  <HeaderContributorsAmount>{orgProfile?.podCount} </HeaderContributorsAmount>
+                  <HeaderContributorsText>Pods</HeaderContributorsText>
+                </HeaderContributors>
+                <HeaderContributors
+                  onClick={() => {
+                    setMoreInfoModalOpen(true);
+                    setShowUsers(true);
+                  }}
+                >
+                  <MemberPodIconBackground>
                     <MembersIcon stroke={palette.blue20} />
-                    <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
-                  </HeaderContributors>
-                  {true && (
-                    <ExploreOrgGr15
-                      onTaskPage={onTaskPage}
-                      onBountyPage={onBountyPage}
-                      hasGr15Bounties={hasGr15Bounties}
-                      hasGr15Tasks={hasGr15Tasks}
-                      onFilterChange={onFilterChange}
-                      orgProfile={orgProfile}
-                      filters={boardFilters}
-                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                    />
-                  )}
-                </HeaderActivity>
-              </HeaderTitleIcon>
-              <HeaderButtons>
+                  </MemberPodIconBackground>
+                  <HeaderContributorsAmount>{orgProfile?.contributorCount} </HeaderContributorsAmount>
+                  <HeaderContributorsText>Members</HeaderContributorsText>
+                </HeaderContributors>
+
                 {permissions && orgRoleName && (
                   <RoleButtonWrapper>
                     <RolePill
@@ -447,32 +473,39 @@ function Wrapper(props) {
                         setOpenCurrentRoleModal(true);
                       }}
                       roleName={orgRoleName}
-                    >
-                      🔑 {orgRoleName}
-                    </RolePill>
+                    />
                   </RoleButtonWrapper>
                 )}
-                <ToggleBoardPrivacyIcon
-                  isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                  tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
-                />
-                {permissions === null && (
+                {true && (
                   <>
                     {userJoinRequest?.id ? (
-                      <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
+                      <PrimaryButton
+                        height={36}
+                        width="max-content"
+                        variant="outlined"
+                        color="purple"
+                        succeeded
+                        paddingX={15}
+                        buttonTheme={{ fontWeight: '500', fontSize: '14px' }}
+                      >
+                        Request sent
+                      </PrimaryButton>
                     ) : (
-                      <HeaderButton
-                        reversed
+                      <PrimaryButton
+                        height={36}
+                        paddingX={15}
+                        width="max-content"
+                        buttonTheme={{ fontWeight: '500', fontSize: '14px' }}
                         onClick={() => {
                           setOpenCurrentRoleModal(true);
                         }}
                       >
                         Join org
-                      </HeaderButton>
+                      </PrimaryButton>
                     )}
                   </>
                 )}
-              </HeaderButtons>
+              </HeaderTopRightContainer>
             </HeaderMainBlock>
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}>
               {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (

@@ -15,7 +15,7 @@ const ButtonWrapper = styled.div`
   min-height: ${(props) => props.height || 40}px;
   min-width: ${(props) => props.minWidth || 0}px;
   padding: 1px;
-  width: ${(props) => (props.fullWidth ? '100%' : 'auto')};
+  width: ${(props) => (props.fullWidth ? '100%' : props.width || 'auto')};
 `;
 
 const ButtonInner = styled.button`
@@ -113,9 +113,17 @@ type Props = SpaceProps & {
    */
   disabled?: boolean;
   /**
+   * Make buttons look inactive and action accueeded by adding the succeeded boolean attribute to any button element.
+   */
+  succeeded?: boolean;
+  /**
    * Create block level buttons—those that span the full width of a parent
    */
   fullWidth?: boolean;
+  /**
+   * 100% or any other value
+   */
+  width?: number | string;
   /**
    * Button has three different variants
    */
@@ -167,6 +175,11 @@ export const Button = ({
   if (buttonProps.disabled) {
     buttonProps.textColor = palette.grey60;
     buttonProps.borderColor = palette.grey60;
+    buttonProps.background = palette.background.default;
+  }
+  if (buttonProps.succeeded) {
+    buttonProps.textColor = palette.green30;
+    buttonProps.borderColor = palette.green30;
     buttonProps.background = palette.background.default;
   }
 

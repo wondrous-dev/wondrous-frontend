@@ -40,7 +40,7 @@ import {
   ContentContainer,
   Container,
   HeaderActivity,
-  HeaderButtons,
+  HeaderTopRightContainer,
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
@@ -51,7 +51,7 @@ import {
   RoleText,
   OverviewComponent,
   TokenHeader,
-  HeaderTitleIcon,
+  HeaderTopLeftContainer,
   HeaderImageWrapper,
   TokenEmptyLogo,
   HeaderButton,
@@ -387,10 +387,10 @@ function Wrapper(props) {
                   )}
                 </LogoWrapper>
 
-                <HeaderTitleIcon>
+                <HeaderTopLeftContainer>
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
-                </HeaderTitleIcon>
-                <HeaderButtons>
+                </HeaderTopLeftContainer>
+                <HeaderTopRightContainer>
                   {permissions && podRoleName && (
                     <RoleButtonWrapper>
                       <RoleText>Your Role:</RoleText>
@@ -426,7 +426,7 @@ function Wrapper(props) {
                   {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                     <InviteButton onClick={() => setOpenInvite(true)}>Invite</InviteButton>
                   )}
-                </HeaderButtons>
+                </HeaderTopRightContainer>
               </HeaderMainBlock>
               <div style={{ display: 'flex' }}>
                 {podProfile?.description && podProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
@@ -440,7 +440,6 @@ function Wrapper(props) {
               <div>
                 <HeaderActivity>
                   <HeaderContributors
-                    isInPodPage
                     onClick={() => {
                       setMoreInfoModalOpen(true);
                       setShowUsers(true);
