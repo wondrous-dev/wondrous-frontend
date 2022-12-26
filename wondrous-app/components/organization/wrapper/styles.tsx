@@ -39,7 +39,7 @@ export const HeaderImage = styled((props) => (
 export const TokenHeader = styled.div`
   position: relative;
   width: 95%;
-  padding-top: 30px;
+  margin-top: 24px;
   display: flex;
   flex-direction: column;
 `;
@@ -53,8 +53,8 @@ export const TokenLogo = styled(LogoCircle)`
 `;
 
 export const TokenEmptyLogo = styled.div`
-  width: 70px;
-  height: 70px;
+  width: 36px;
+  height: 36px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -396,7 +396,7 @@ export const BoardsSubheaderWrapper = styled.div`
 
 export const Container = styled.div`
   width: 95%;
-  margin-top: 22px;
+  margin-top: 20px;
 `;
 
 // currently unused

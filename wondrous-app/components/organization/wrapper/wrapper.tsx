@@ -437,7 +437,7 @@ function Wrapper(props) {
                 )}
               </HeaderTopLeftContainer>
               <HeaderTopRightContainer>
-                {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
+                {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (
                   <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>
                 )}
 
@@ -476,7 +476,7 @@ function Wrapper(props) {
                     />
                   </RoleButtonWrapper>
                 )}
-                {true && (
+                {permissions === null && (
                   <>
                     {userJoinRequest?.id ? (
                       <PrimaryButton
