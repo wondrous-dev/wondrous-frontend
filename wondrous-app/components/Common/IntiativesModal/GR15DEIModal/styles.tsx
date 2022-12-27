@@ -74,7 +74,7 @@ export const InitiativeContentMembershipDiv = styled.div`
 export const ExploreProjectsButton = styled(Button)`
   && {
     min-height: 0;
-    height: 34px;
+    height: 32px;
     width: fit-content;
     margin-top: 14px;
     ${GradientGR15Horizontal}
@@ -91,7 +91,7 @@ export const ExploreProjectsButton = styled(Button)`
 export const ExploreProjectsButtonFilled = styled(Button)`
   && {
     min-height: 0;
-    height: 34px;
+    height: 32px;
     width: fit-content;
     margin-top: 14px;
     ${GradientGR15Horizontal}

@@ -67,10 +67,7 @@ export function Modal({
   // TODO: Adrian - refactor this to use modals native API
   // useOutsideAlerter(contentRef, onClose);
   return (
-    <ModalComponent
-      open={open}
-      onClose={onClose}
-    >
+    <ModalComponent open={open} onClose={onClose}>
       <ModalContainer tabIndex={-1} alignCenter={alignCenter}>
         <ModalDialog maxWidth={maxWidth} alignCenter={alignCenter}>
           <ModalContent>
