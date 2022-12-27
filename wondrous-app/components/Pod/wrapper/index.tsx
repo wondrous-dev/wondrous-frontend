@@ -42,7 +42,6 @@ import {
   Content,
   ContentContainer,
   Container,
-  HeaderActivity,
   HeaderTopRightContainer,
   HeaderContributors,
   HeaderContributorsAmount,
@@ -51,15 +50,12 @@ import {
   HeaderText,
   HeaderTitle,
   RoleButtonWrapper,
-  RoleText,
   OverviewComponent,
   TokenHeader,
   HeaderTopLeftContainer,
   HeaderImageWrapper,
   TokenEmptyLogo,
-  HeaderButton,
   BoardsSubheaderWrapper,
-  InviteButton,
   MemberPodIconBackground,
   PrivacyContainer,
   PrivacyText,
@@ -394,21 +390,19 @@ function Wrapper(props) {
                   <PrivacyContainer>
                     <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
                   </PrivacyContainer>
-                  <HeaderActivity>
-                    {podIsGr15Sponsor && (
-                      <ExplorePodGr15
-                        onTaskPage={onTaskPage}
-                        onBountyPage={onBountyPage}
-                        hasGr15Bounties={podHasGr15Bounties}
-                        hasGr15Tasks={podHasGr15Tasks}
-                        onFilterChange={onFilterChange}
-                        podProfile={podProfile}
-                        filters={boardFilters}
-                        exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                        setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                      />
-                    )}
-                  </HeaderActivity>
+                  {podIsGr15Sponsor && (
+                    <ExplorePodGr15
+                      onTaskPage={onTaskPage}
+                      onBountyPage={onBountyPage}
+                      hasGr15Bounties={podHasGr15Bounties}
+                      hasGr15Tasks={podHasGr15Tasks}
+                      onFilterChange={onFilterChange}
+                      podProfile={podProfile}
+                      filters={boardFilters}
+                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                    />
+                  )}
                 </HeaderTopLeftContainer>
 
                 <HeaderTopRightContainer>

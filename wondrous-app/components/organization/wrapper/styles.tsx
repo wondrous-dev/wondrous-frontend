@@ -1,5 +1,7 @@
 import { SafeImage } from 'components/Common/Image';
-import { Button, IconButton, Typography, ButtonBase } from '@mui/material';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import ButtonBase from '@mui/material/ButtonBase';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
@@ -254,17 +256,6 @@ export const RoleButtonWrapper = styled.div`
   width: max-content;
 `;
 
-export const RoleText = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 16px;
-    color: ${palette.grey250};
-  }
-`;
-
 export const RoleButton = styled(HeaderButton)`
   && {
     border-radius: 1000px;
@@ -307,13 +298,6 @@ export const HeaderText = styled.div`
   color: #ffffff;
 `;
 
-export const HeaderActivity = styled.div`
-  flex-wrap: wrap;
-  min-height: 23px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
 export const MemberPodIconBackground = styled.div`
   display: flex;
   justify-content: center;
@@ -399,7 +383,6 @@ export const Container = styled.div`
   margin-top: 20px;
 `;
 
-// currently unused
 export const InviteButton = styled(ButtonBase)`
   && {
     align-items: center;

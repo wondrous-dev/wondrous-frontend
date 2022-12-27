@@ -13,8 +13,6 @@ import {
 import MembersIcon from 'components/Icons/members';
 import { Button as PrimaryButton } from 'components/Button';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import apollo from 'services/apollo';
-import Box from '@mui/material/Box';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
@@ -37,19 +35,16 @@ import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks
 import { PodIconThin } from 'components/Icons/podIcon';
 import palette from 'theme/palette';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
-import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { SafeImage } from '../../Common/Image';
 import {
   Content,
   ContentContainer,
-  HeaderActivity,
   HeaderTopRightContainer,
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
   HeaderMainBlock,
-  HeaderButton,
   HeaderText,
   HeaderTitle,
   TokenHeader,
@@ -59,7 +54,6 @@ import {
   BoardsSubheaderWrapper,
   MemberPodIconBackground,
   RoleButtonWrapper,
-  RoleText,
   Container,
   InviteButton,
   PrivacyContainer,
