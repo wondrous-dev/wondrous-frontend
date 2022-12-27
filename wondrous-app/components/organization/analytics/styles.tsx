@@ -4,7 +4,6 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import { GradientMidnightDiagonal, GradientMidnightVertical } from 'components/Common/gradients';
 import { TextField, Typography } from '@mui/material';
 import palette from 'theme/palette';
-import { StyledDatePicker } from 'components/Common/DatePicker/styles';
 import { Button } from 'components/Common/button';
 import { PaymentModal } from 'components/Common/Payment/styles';
 import { CreateFormRewardCurrency } from 'components/CreateEntity/styles';

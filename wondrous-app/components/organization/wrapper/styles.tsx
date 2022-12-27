@@ -46,13 +46,6 @@ export const TokenHeader = styled.div`
   flex-direction: column;
 `;
 
-export const TokenLogo = styled(LogoCircle)`
-  position: absolute;
-  width: 103px;
-  height: 103px;
-  top: -50px;
-  left: -20px;
-`;
 
 export const TokenEmptyLogo = styled.div`
   width: 36px;

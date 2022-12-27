@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button as ButtonComponent } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
-import { ProfileImage } from '../../Common/profile';
 import { LinkIcon } from '../../Icons/linkIcon';
 
 export const OverviewComponent = styled.section`
@@ -46,13 +45,6 @@ export const TokenHeader = styled.div`
   flex-direction: column;
 `;
 
-export const TokenLogo = styled(ProfileImage)`
-  position: absolute;
-  width: 103px;
-  height: 103px;
-  top: -50px;
-  left: -20px;
-`;
 
 export const Content = styled.div`
   width: 100%;
