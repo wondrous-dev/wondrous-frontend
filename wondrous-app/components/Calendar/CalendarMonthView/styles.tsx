@@ -57,37 +57,6 @@ const styles = {
     lineHeight: '14px',
     '&:hover': { textDecoration: 'underline' },
   },
-  // modalContentWrapper: {
-  //   overflowY: 'auto',
-  //   height: '200px',
-  //   '&::-webkit-scrollbar': {
-  //     width: '4px',
-  //   },
-  //   '&::-webkit-scrollbar-track': {
-  //     background: palette.grey61,
-  //     borderRadius: '210px',
-  //   },
-  //   '&::-webkit-scrollbar-thumb': {
-  //     background: palette.grey250,
-  //     borderRadius: '210px',
-  //   },
-  // },
-  modalTask: {
-    padding: '0 4px 6px 4px',
-    transition: 'all 0.3s ease-in-out',
-
-    '&:hover': {
-      backgroundColor: palette.grey85,
-      borderRadius: '6px',
-      cursor: 'pointer',
-    },
-  },
-  modalTaskTitle: {
-    color: palette.white,
-    marginLeft: '6px',
-    fontSize: '12px',
-    fontWeight: 500,
-  },
   weekDay: {
     color: palette.white,
     fontWeight: 500,
@@ -95,6 +64,25 @@ const styles = {
     backgroundColor: palette.grey100,
     cursor: 'default',
   },
+  viewAllTasksModal: {
+    taskRow: {
+      height: '28px',
+      padding: '0 4px',
+      transition: 'all 0.3s ease-in-out',
+
+      '&:hover': {
+        backgroundColor: palette.grey85,
+        borderRadius: '6px',
+        cursor: 'pointer',
+      },
+    },
+    taskTitle: {
+      color: palette.white,
+      marginLeft: '6px',
+      fontSize: '12px',
+      fontWeight: 500,
+    },
+  }
 };
 
 export default styles;

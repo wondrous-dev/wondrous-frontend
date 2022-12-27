@@ -1,76 +1,44 @@
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import format from 'date-fns/format';
+import getWeeksInMonth from 'date-fns/getWeeksInMonth';
+import Grid from '@mui/material/Grid';
+import isFirstDayOfMonth from 'date-fns/isFirstDayOfMonth';
+import isToday from 'date-fns/isToday';
+import React, { useState } from 'react';
 import setDate from 'date-fns/setDate';
 import startOfMonth from 'date-fns/startOfMonth';
-import React, { useContext, useEffect, useState } from 'react';
-import format from 'date-fns/format';
-import isToday from 'date-fns/isToday';
-import getWeeksInMonth from 'date-fns/getWeeksInMonth';
-import isFirstDayOfMonth from 'date-fns/isFirstDayOfMonth';
-import subDays from 'date-fns/subDays';
-import addDays from 'date-fns/addDays';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { useRouter } from 'next/router';
 
 import palette from 'theme/palette';
-import { ViewType } from 'types/common';
-import { CALENDAR_CONFIG } from 'utils/constants';
-import styles from 'components/Calendar/CalendarMonthView/styles';
 import SmartLink from 'components/Common/SmartLink';
+import styles from 'components/Calendar/CalendarMonthView/styles';
+import { CALENDAR_CONFIG } from 'utils/constants';
 import { TaskInterface } from 'types/task';
-import { delQuery } from 'utils/index';
-import { CalendarContext } from 'utils/contexts';
-import ViewTasksModal from './ViewTasksModal';
+import TaskStatus from 'components/Icons/TaskStatus';
+import ViewTasksModal from 'components/Calendar/CalendarMonthView/ViewTasksModal';
 
-const CalendarMonthView = () => {
-  const {
-    taskStatusIcon,
-    router,
-    viewStartDate,
-    viewEndDate,
-    tasksMap,
-    handleTaskClick,
-    getUserTaskBoardTasksCalendar,
-    loggedInUser,
-  } = useContext(CalendarContext);
+type Props = {
+  startDate: Date;
+  tasksMap: {
+    [key: string]: TaskInterface[];
+  };
+};
+
+const CalendarMonthView = ({ startDate, tasksMap }: Props) => {
+  const router = useRouter();
   const { weekStartsOn, weekDays, maxTasksForMonthView } = CALENDAR_CONFIG;
   const [selectedDate, setSelectedDate] = useState<Date>(null);
   const [selectedDateTasks, setSelectedDateTasks] = useState<TaskInterface[]>([]);
-  const [firstDayOfCalendar, setFirstDayOfCalendar] = useState<Date>(null);
-  const [lastDayOfCalendar, setLastDayOfCalendar] = useState<Date>(null);
 
-  const weeks = getWeeksInMonth(viewStartDate);
-  const startDayOfWeek = startOfMonth(viewStartDate).getDay();
+  const weeks = getWeeksInMonth(startDate);
+  const startDayOfWeek = startOfMonth(startDate).getDay();
   const lastWeekDayIndex = weekStartsOn === 0 ? 6 : 7;
   const closeViewTasksModal = () => {
     setSelectedDate(null);
     setSelectedDateTasks([]);
   };
-
-  const dayStartIndex = format(new Date(viewStartDate), 'i');
-  const dayEndIndex = format(viewEndDate, 'i');
-
-  useEffect(() => {
-    if (dayStartIndex !== '7') {
-      setFirstDayOfCalendar(subDays(new Date(viewStartDate), +dayStartIndex));
-    } else {
-      setFirstDayOfCalendar(new Date(viewStartDate));
-    }
-
-    if (dayEndIndex !== '6') {
-      setLastDayOfCalendar(addDays(viewEndDate, +dayEndIndex === 7 ? 6 : 6 - +dayEndIndex));
-    } else {
-      setLastDayOfCalendar(new Date(viewEndDate));
-    }
-
-    // getUserTaskBoardTasksCalendar({
-    //   variables: {
-    //     userId: loggedInUser?.orgId,
-    //     fromDate: firstDayOfCalendar,
-    //     toDate: lastDayOfCalendar,
-    //   },
-    // });
-  }, [viewStartDate]);
 
   return (
     <>
@@ -87,7 +55,7 @@ const CalendarMonthView = () => {
           weekDays.map((weekDay, weekDayIndex) => {
             const day = weekIndex * 7 + weekDayIndex + 1 - startDayOfWeek;
             const key = `day-${day - weekIndex * 7 + weekDayIndex}`;
-            const date = setDate(viewStartDate, day);
+            const date = setDate(startDate, day);
             const dateIsToday = isToday(date);
             const dateFormat = isFirstDayOfMonth(date) ? 'LLL d' : 'd';
             const tasks = tasksMap[format(date, 'yyyy-MM-dd')] ?? [];
@@ -118,25 +86,37 @@ const CalendarMonthView = () => {
 
                 {/* Contains tasks and more button */}
                 <Grid container wrap="nowrap" direction="column" className="ColumnBody" sx={styles.columnBody}>
-                  {tasks.slice(0, maxTasksForMonthView).map((task) => {
-                    const viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${ViewType.Calendar}`;
+                  {tasks.slice(0, maxTasksForMonthView).map((task) => (
+                    <SmartLink
+                      asLink
+                      key={task.id}
+                      href={`${router.asPath}&task=${task.id}`}
+                      preventLinkNavigation
+                      onNavigate={() => {
+                        const query = {
+                          ...router.query,
+                          task: task.id,
+                        };
 
-                    return (
-                      <SmartLink
-                        key={task.title}
-                        href={viewUrl}
-                        preventLinkNavigation
-                        onClick={(task) => handleTaskClick(task)}
-                      >
-                        <Grid key={task.title} wrap="nowrap" mb="10px" container height="16px">
-                          <Box>{taskStatusIcon[task.status]}</Box>
-                          <Typography noWrap sx={styles.taskTitle}>
-                            {task.title}
-                          </Typography>
-                        </Grid>
-                      </SmartLink>
-                    );
-                  })}
+                        router.push({ query }, undefined, { scroll: false, shallow: true });
+                      }}
+                    >
+                      <Grid key={task.title} wrap="nowrap" mb="10px" container height="16px">
+                        <Box>
+                          <TaskStatus
+                            style={{
+                              width: '16px',
+                              height: '16px',
+                            }}
+                            status={task?.status}
+                          />
+                        </Box>
+                        <Typography noWrap sx={styles.taskTitle}>
+                          {task.title}
+                        </Typography>
+                      </Grid>
+                    </SmartLink>
+                  ))}
                   {tasks.length > maxTasksForMonthView ? (
                     <Button
                       variant="text"

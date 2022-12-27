@@ -1,119 +1,97 @@
-import startOfMonth from 'date-fns/startOfMonth';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Alert from '@mui/material/Alert';
-import startOfWeek from 'date-fns/startOfWeek';
-import endOfMonth from 'date-fns/endOfMonth';
-import subWeeks from 'date-fns/subWeeks';
-import addWeeks from 'date-fns/addWeeks';
-import subMonths from 'date-fns/subMonths';
 import addMonths from 'date-fns/addMonths';
+import addWeeks from 'date-fns/addWeeks';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import endOfMonth from 'date-fns/endOfMonth';
+import endOfWeek from 'date-fns/endOfWeek';
 import format from 'date-fns/format';
-import { useLazyQuery } from '@apollo/client';
+import Grid from '@mui/material/Grid';
+import React, { useState } from 'react';
+import startOfMonth from 'date-fns/startOfMonth';
+import startOfWeek from 'date-fns/startOfWeek';
+import subMonths from 'date-fns/subMonths';
+import subWeeks from 'date-fns/subWeeks';
+import Typography from '@mui/material/Typography';
 
-import DropdownSelect from 'components/Common/DropdownSelect';
-import CalendarWeekView from 'components/Calendar/CalendarWeekView';
-import CalendarMonthView from 'components/Calendar/CalendarMonthView';
-import WonderButton from 'components/Button';
 import ArrowLeft from 'components/Icons/ArrowLeft';
 import ArrowRight from 'components/Icons/ArrowRight';
-import { TaskInterface } from 'types/task';
-import { CALENDAR_CONFIG, CALENDAR_DAY_GRID_VIEW } from 'utils/constants';
+import CalendarMonthView from 'components/Calendar/CalendarMonthView';
+import CalendarWeekView from 'components/Calendar/CalendarWeekView';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import InfoIcon from 'components/Icons/infoIcon';
-import { Done, InProgress, InReview, ToDo } from 'components/Icons';
-import { CalendarContext } from 'utils/contexts';
-import { GET_USER_TASK_BOARD_TASKS_CALENDAR } from 'graphql/queries';
-import { useMe } from 'components/Auth/withAuth';
 import styles from './styles';
+import WonderButton from 'components/Button';
+import { CALENDAR_CONFIG, CALENDAR_DAY_GRID_VIEW } from 'utils/constants';
+import { TaskInterface } from 'types/task';
 
 type Props = {
   tasksMap: {
     [key: string]: TaskInterface[];
   };
+  startDate: Date;
+  endDate: Date;
+  // Function called when the user navigates from one view to another (e.g. from month view to week view)
+  onChange: (startDate: Date, endDate: Date) => unknown;
 };
 
-const Calendar = ({ tasksMap }: Props) => {
-  const [getUserTaskBoardTasksCalendar, { data: getUserTaskBoardTasksCalendarData }] = useLazyQuery(
-    GET_USER_TASK_BOARD_TASKS_CALENDAR,
-    { fetchPolicy: 'network-only' }
-  );
+const Calendar = ({ tasksMap, onChange, startDate, endDate }: Props) => {
   const [view, setView] = useState<CALENDAR_DAY_GRID_VIEW>(CALENDAR_CONFIG.defaultView);
-  const [viewStartDate, setViewStartDate] = useState<Date>(startOfMonth(new Date()));
-  const router = useRouter();
-  const loggedInUser = useMe();
-  const [isAlertHidden, setIsAlertHidden] = useState(localStorage.getItem('dueDatesHidden') === 'true');
-
-  const taskStatusIcon = {
-    created: <ToDo width="16" height="16" />,
-    in_progress: <InProgress width="16" height="16" />,
-    in_review: <InReview width="16" height="16" />,
-    completed: <Done width="16" height="16" />,
-  };
+  const [isAlertHidden, setIsAlertHidden] = useState<boolean>(!!localStorage.getItem('hideCalendarAlert'));
 
   // Select previous week or month
   const handlePrevClick = () => {
-    setViewStartDate((prevDate) => {
-      if (view === CALENDAR_DAY_GRID_VIEW.Month) {
-        return subMonths(prevDate, 1);
-      }
+    let newStartDate;
+    let newEndDate;
 
-      return subWeeks(prevDate, 1);
-    });
+    if (view === CALENDAR_DAY_GRID_VIEW.Month) {
+      newStartDate = subMonths(startDate, 1);
+      newEndDate = endOfMonth(newStartDate);
+    } else {
+      newStartDate = subWeeks(startDate, 1);
+      newEndDate = endOfWeek(newStartDate);
+    }
+
+    onChange(newStartDate, newEndDate);
   };
 
   // Select next week or month
   const handleNextClick = () => {
-    setViewStartDate((prevDate) => {
-      if (view === CALENDAR_DAY_GRID_VIEW.Month) {
-        return addMonths(prevDate, 1);
-      }
+    let newStartDate;
+    let newEndDate;
 
-      return addWeeks(prevDate, 1);
-    });
+    if (view === CALENDAR_DAY_GRID_VIEW.Month) {
+      newStartDate = addMonths(startDate, 1);
+      newEndDate = endOfMonth(newStartDate);
+    } else {
+      newStartDate = addWeeks(startDate, 1);
+      newEndDate = endOfWeek(newStartDate);
+    }
+
+    onChange(newStartDate, newEndDate);
   };
 
   const handleTodayClick = () => {
-    setViewStartDate(() => {
-      if (view === CALENDAR_DAY_GRID_VIEW.Month) {
-        return startOfMonth(new Date());
-      }
+    let newStartDate;
+    let newEndDate;
 
-      return startOfWeek(new Date(), { weekStartsOn: CALENDAR_CONFIG.weekStartsOn });
-    });
+    if (view === CALENDAR_DAY_GRID_VIEW.Month) {
+      newStartDate = startOfMonth(new Date());
+      newEndDate = endOfMonth(newStartDate);
+    } else {
+      newStartDate = startOfWeek(new Date(), { weekStartsOn: CALENDAR_CONFIG.weekStartsOn });
+      newEndDate = endOfWeek(newStartDate);
+    }
+
+    onChange(newStartDate, newEndDate);
   };
 
-  const viewEndDate = endOfMonth(new Date(viewStartDate));
-
   const handleAlertClose = () => {
-    localStorage.setItem('dueDatesHidden', 'true');
+    localStorage.setItem('hideCalendarAlert', 'true');
     setIsAlertHidden(true);
   };
 
-  const handleTaskClick = (task) => {
-    const query = {
-      ...router.query,
-      task: task?.id,
-    };
-
-    router.push({ query }, undefined, { scroll: false, shallow: true });
-  };
-
   return (
-    <CalendarContext.Provider
-      value={{
-        taskStatusIcon,
-        router,
-        tasksMap,
-        viewStartDate,
-        viewEndDate,
-        handleTaskClick,
-        getUserTaskBoardTasksCalendar,
-        loggedInUser,
-      }}
-    >
+    <>
       <Grid container alignItems="center" justifyContent="space-between">
         <Grid item display="flex" alignItems="center">
           <Grid item>
@@ -124,7 +102,7 @@ const Calendar = ({ tasksMap }: Props) => {
           <Grid container item display="flex" alignItems="center" sx={{ margin: '0 32px' }}>
             <Grid item sx={{ minWidth: '112px', marginRight: '24px' }}>
               <Typography color="white" fontWeight={500} fontSize="14px" textAlign="center">
-                {format(viewStartDate, 'MMMM yyyy')}
+                {format(startDate, 'MMMM yyyy')}
               </Typography>
             </Grid>
 
@@ -173,8 +151,12 @@ const Calendar = ({ tasksMap }: Props) => {
         </Grid>
       </Grid>
 
-      {view === CALENDAR_DAY_GRID_VIEW.Month ? <CalendarMonthView /> : <CalendarWeekView />}
-    </CalendarContext.Provider>
+      {view === CALENDAR_DAY_GRID_VIEW.Month ? (
+        <CalendarMonthView startDate={startDate} tasksMap={tasksMap} />
+      ) : (
+        <CalendarWeekView />
+      )}
+    </>
   );
 };
 
