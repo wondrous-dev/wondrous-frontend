@@ -66,7 +66,6 @@ export { default as like } from 'components/Icons/like';
 export { default as link } from 'components/Icons/link';
 export { default as linkedIn } from 'components/Icons/linkedIn';
 export { LinkIcon } from 'components/Icons/linkIcon';
-export { Logo } from 'components/Icons/logo';
 export { default as Logout } from 'components/Icons/logout';
 export { Matic } from 'components/Icons/matic';
 export { default as MediaTypesIconsImage } from 'components/Icons/MediaTypesIcons/image';
