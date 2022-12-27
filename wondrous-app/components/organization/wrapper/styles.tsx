@@ -1,14 +1,14 @@
 import { SafeImage } from 'components/Common/Image';
-import { Button, IconButton, Typography, ButtonBase } from '@mui/material';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import ButtonBase from '@mui/material/ButtonBase';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button as BorderButton } from 'components/Common/button';
 import { blackColors, greyColors } from 'theme/colors';
-import { BaseCard } from 'components/Common/card';
 import typography from 'theme/typography';
 import { LogoCircle } from 'components/Common/ci';
-import { LinkIcon } from 'components/Icons/linkIcon';
 
 export const OverviewComponent = styled.section`
   width: 100%;
@@ -41,22 +41,15 @@ export const HeaderImage = styled((props) => (
 export const TokenHeader = styled.div`
   position: relative;
   width: 95%;
-  padding-top: 30px;
+  margin-top: 24px;
   display: flex;
   flex-direction: column;
 `;
 
-export const TokenLogo = styled(LogoCircle)`
-  position: absolute;
-  width: 103px;
-  height: 103px;
-  top: -50px;
-  left: -20px;
-`;
 
 export const TokenEmptyLogo = styled.div`
-  width: 70px;
-  height: 70px;
+  width: 36px;
+  height: 36px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -83,54 +76,47 @@ export const ContentContainer = styled.div`
 
 export const HeaderMainBlock = styled.div`
   width: 100%;
-  min-height: 40px;
-  height: 40px;
+  min-height: 36px;
+  height: 36px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-export const HeaderTitleIcon = styled.div`
+export const HeaderTopLeftContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-left: 8px;
   width: 100%;
-  & > * {
-    margin-left: 10px;
-    :first-child {
-      margin-left: 0;
-    }
-  }
+  gap: 10px;
 `;
 
 export const HeaderTitle = styled(Typography)`
   && {
     font-weight: 500;
-    font-size: 26px;
-    display: flex;
-    align-items: center;
+    font-size: 20px;
     color: #ffffff;
-    margin-left: 10px;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
 
+// used fo org username, not used rn
 export const HeaderTag = styled(Typography)`
   && {
     color: ${palette.grey250};
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 400;
-    font-size: 18px;
+    font-size: 15px;
     line-height: 18px;
-    margin-left: 12px;
   }
 `;
 
-export const HeaderButtons = styled.div`
+export const HeaderTopRightContainer = styled.div`
   width: fit-content;
   height: 100%;
   display: flex;
-  gap: 4px;
+  gap: 14px;
 `;
 
 export const HeaderFollowButton = styled(Button)`
@@ -263,17 +249,6 @@ export const RoleButtonWrapper = styled.div`
   width: max-content;
 `;
 
-export const RoleText = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 16px;
-    color: ${palette.grey250};
-  }
-`;
-
 export const RoleButton = styled(HeaderButton)`
   && {
     border-radius: 1000px;
@@ -314,19 +289,17 @@ export const HeaderText = styled.div`
   line-height: 22px;
   letter-spacing: 0.01em;
   color: #ffffff;
-  margin-bottom: 8px;
-  margin-top: 24px;
 `;
 
-export const HeaderActivity = styled.div`
-  flex-wrap: wrap;
-  width: 100%;
-  min-height: 23px;
+export const MemberPodIconBackground = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
-  margin-top: 8px;
+  background: ${palette.grey940};
+  border-radius: 50%;
+  height: 28px;
+  width: 28px;
 `;
-
 export const HeaderActivityLink = styled.a`
   font-weight: 500;
   font-size: 16px;
@@ -334,27 +307,17 @@ export const HeaderActivityLink = styled.a`
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #ccbbff;
+  color: ${palette.highlightBlue};
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  margin-right: 12px;
-`;
-
-export const HeaderActivityLinkIcon = styled(LinkIcon)`
-  height: 23px;
-  width: 23px;
-  margin-right: 8px;
-  margin-top: 8px;
 `;
 
 export const HeaderContributors = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   cursor: pointer;
-  margin-right: 14px;
-  background: ${(props) => (props?.isInPodPage ? palette.grey950 : palette.grey98)};
-  padding: 12px;
+  background: ${palette.grey85};
+  padding: 3px 6px 3px 2px;
   border-radius: 1000px;
   transition: background 0.2s ease-in-out;
 
@@ -363,238 +326,42 @@ export const HeaderContributors = styled.div`
   }
 `;
 
+export const PrivacyContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  height: 18px;
+  width: 44px;
+  border-radius: 4px;
+  background: ${palette.grey900};
+  :hover {
+    background: ${palette.grey920};
+  }
+`;
+
+export const PrivacyText = styled(Typography)`
+  && {
+    color: ${palette.blue20};
+    font-family: 'Space Grotesk';
+    font-weight: 600;
+    font-size: 12px;
+  }
+`;
+
 export const HeaderContributorsAmount = styled(Typography)`
   && {
-    font-weight: 500;
-    font-size: 15px;
-    line-height: 150%;
-    display: flex;
-    align-items: center;
-    color: ${palette.highlightBlue};
+    font-weight: 600;
+    font-size: 13px;
+    color: ${palette.white};
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
 
 export const HeaderContributorsText = styled(HeaderContributorsAmount)`
   && {
-    color: ${palette.white};
+    color: ${palette.grey51};
+    font-weight: 600;
   }
-`;
-
-export const HeaderPods = styled(HeaderContributors)``;
-
-export const HeaderPodsAmount = styled(HeaderContributorsAmount)``;
-
-export const HeaderPodsText = styled(HeaderContributorsText)``;
-
-export const HeaderGr15Sponsor = styled.div``;
-// cardStyles
-export const PostsContainer = styled.div`
-  max-width: 680px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-`;
-
-// cardStyles
-export const PostComponent = styled(BaseCard)`
-  margin-top: 22px;
-  height: 540px;
-`;
-
-export const PostBlock = styled.div`
-  position: relative;
-  padding: 0 26px 18px;
-  border-left: 1px solid ${greyColors.grey75};
-  margin-bottom: 0 !important;
-`;
-
-export const PostSetting = styled(IconButton)`
-  && {
-    position: absolute;
-    right: -12px;
-    top: -4px;
-    width: 24px;
-    height: 24px;
-    background: #0f0f0f;
-    padding: 0;
-  }
-`;
-
-export const PostAuthor = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-`;
-
-export const PostAuthorPhoto = styled.img`
-  position: absolute;
-  left: -40px;
-  width: 28px;
-  height: 28px;
-  margin-right: 10px;
-`;
-
-export const PostAuthorNickname = styled(Typography)`
-  && {
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 20px;
-    color: #ffffff;
-  }
-`;
-
-export const PostAuthorText = styled(Typography)`
-  && {
-    font-size: 14px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
-    color: #c4c4c4;
-  }
-`;
-
-export const PostTask = styled.div`
-  max-width: 625px;
-  width: 100%;
-  padding: 14px 14px 18px;
-
-  border: 1px solid ${greyColors.grey75};
-  border-top-right-radius: 6px;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-`;
-
-export const PostTaskHeader = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-export const PostTaskHeaderText = styled(PostAuthorText)`
-  display: flex;
-  align-items: flex-end;
-  max-width: 380px;
-  width: 100%;
-`;
-
-export const PostTaskHeaderAuthor = styled(PostAuthor)`
-  display: flex;
-  justify-content: space-between;
-  max-width: 460px;
-  width: 100%;
-`;
-
-export const PostTaskHeaderAuthorNickname = styled(PostAuthorNickname)`
-  padding-right: 5px;
-`;
-
-export const PostTaskHeaderImage = styled.img`
-  width: 28px;
-  height: 28px;
-`;
-
-export const PostTaskHeaderButtons = styled.div`
-  max-width: 90px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-`;
-
-export const PostTaskHeaderCheckedButton = styled(IconButton)`
-  && {
-    width: 28px !important;
-    height: 28px !important;
-    background-color: #0f0f0f;
-    border: 1px solid #474747;
-    padding: 0;
-  }
-`;
-
-export const PostTaskHeaderButton = styled(Button)`
-  && {
-    width: 60px;
-    height: 28px;
-    padding: 7px 10px;
-    background: #363636;
-    border-radius: 300px;
-
-    //text
-    color: #fff;
-    font-weight: 500;
-    display: flex;
-    justify-content: space-between;
-  }
-`;
-
-export const PostTaskHeaderButtonImg = styled.img`
-  width: 10px;
-  height: 10px;
-`;
-
-export const PostTaskContent = styled.div``;
-
-export const PostTaskTextBlock = styled.div`
-  width: 100%;
-  min-height: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  margin-bottom: 10px;
-`;
-
-export const PostTaskTitle = styled(Typography)`
-  && {
-    width: 100%;
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 20px;
-    color: #ffffff;
-  }
-`;
-
-export const PostTaskText = styled(Typography)`
-  && {
-    font-size: 14px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
-    color: #c4c4c4;
-  }
-`;
-
-export const PostTaskImageBlock = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-export const PostTaskImage = styled.img`
-  width: 290px;
-  height: auto;
-`;
-
-export const PostLeftImage = styled.div`
-  width: 290px;
-  height: 240px;
-  background-image: url('/images/overview/gradient.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const PostActivity = styled.div`
-  //margin-top: 20px;
-  max-width: 190px;
-  width: 100%;
-  height: 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 `;
 
 export const BoardsSubheaderWrapper = styled.div`
@@ -606,24 +373,7 @@ export const BoardsSubheaderWrapper = styled.div`
 
 export const Container = styled.div`
   width: 95%;
-  margin-top: 22px;
-`;
-
-export const SettingsButton = styled(ButtonBase)`
-  && {
-    align-items: center;
-    background: ${palette.grey75};
-    border-radius: 216px;
-    color: ${palette.white};
-    cursor: pointer;
-    display: flex;
-    font-family: ${typography.fontFamily};
-    font-size: 14px;
-    font-weight: 500;
-    height: 36px;
-    justify-content: center;
-    min-width: 110px;
-  }
+  margin-top: 20px;
 `;
 
 export const InviteButton = styled(ButtonBase)`

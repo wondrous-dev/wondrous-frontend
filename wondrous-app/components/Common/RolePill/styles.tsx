@@ -3,20 +3,25 @@ import { getRoleColor } from 'components/Settings/Members/MembersTableRow/helper
 import styled from 'styled-components';
 import typography from 'theme/typography';
 
-export const MemberRolePill = styled(Typography)`
+export const MemberRolePill = styled.div`
+  display: flex;
+  align-items: center;
+  width: auto;
+  padding: 4px 12px 4px 12px;
+  border-radius: 30px;
+  border: 1px solid ${(props) => getRoleColor(props.roleName)};
+  text-align: center;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+export const RolePillText = styled(Typography)`
   && {
-    width: auto;
     max-lines: 1;
     white-space: nowrap;
     font-size: ${(props) => props.fontSize || '14px'};
-    padding: 4px 12px 4px 12px;
-    border-radius: 30px;
-    border: 1px solid ${(props) => getRoleColor(props.roleName)};
     font-family: ${typography.fontFamily};
     color: white;
-    align-items: center;
-    :hover {
-      cursor: pointer;
-    }
   }
 `;

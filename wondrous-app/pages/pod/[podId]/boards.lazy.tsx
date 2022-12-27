@@ -433,20 +433,6 @@ function BoardsPage({ meta }: Props) {
     router.push({ query }, undefined, { shallow: true, scroll: false });
   };
 
-  const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const boardColumns = [...columns];
-      if (boardColumns[0].tasks?.length > 0) {
-        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForPodBoardView];
-        setColumns(boardColumns);
-      }
-      setIsLoading(false);
-    },
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-    notifyOnNetworkStatusChange: true,
-  });
-
   const deleteUserIdFilter = () => {
     const routerQuery = { ...router.query };
     delete routerQuery.userId;
@@ -475,19 +461,6 @@ function BoardsPage({ meta }: Props) {
     },
   };
 
-  const [searchPodTasks] = useLazyQuery(SEARCH_TASKS_FOR_POD_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const tasks = data?.searchTasksForPodBoardView;
-      setColumns(dedupeColumns(populateTaskColumns(tasks, ORG_POD_COLUMNS)));
-      searchPodTaskProposals(searchPodTaskProposalsArgs);
-      if (podTaskHasMore) {
-        setPodTaskHasMore(tasks.length >= LIMIT);
-      }
-      setFirstTimeFetch(true);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
   useEffect(() => {
     if (userId) {
       getUser({ variables: { userId } });
@@ -505,32 +478,10 @@ function BoardsPage({ meta }: Props) {
     if (podId) {
       if (search) {
         if (!firstTimeFetch) {
-          const searchPodTasksArgs = {
-            variables: {
-              input: {
-                podId,
-                limit: 1000,
-                offset: 0,
-                labelId,
-                date,
-
-                // Needed to exclude proposals
-                statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
-                searchString: search,
-                ...(privacyLevel === PRIVACY_LEVEL.public && {
-                  onlyPublic: true,
-                }),
-              },
-            },
-          };
-
-          searchPodTasks(searchPodTasksArgs);
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
       } else {
-        // fetch user task boards after getting orgId from username
-
         getPodBoardTaskCount({
           variables: {
             podId,
@@ -538,7 +489,7 @@ function BoardsPage({ meta }: Props) {
         });
       }
     }
-  }, [podId, getPodBoardTaskCount, getPod, labelId, date, privacyLevel, entityType]);
+  }, [podId, getPodBoardTaskCount, getPod, labelId, date, privacyLevel, entityType, search]);
 
   function handleSearch(searchString: string) {
     const searchPodTaskProposalsArgs = {
@@ -599,65 +550,12 @@ function BoardsPage({ meta }: Props) {
 
   const handleFilterChange: any = (filtersToApply = { statuses: [], labelId: null, date: null }) => {
     setFilters(filtersToApply);
-
-    const { statuses, labelId } = filtersToApply;
-    const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
-    const searchProposals =
-      statuses?.length !== taskStatuses?.length ||
-      statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
-    const searchTasks = !(searchProposals && statuses?.length === 1);
-    if (search) {
-      const searchPodTaskProposalsArgs = {
-        variables: {
-          input: {
-            podId,
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: 1000,
-            searchString: search,
-          },
-        },
-      };
-
-      const searchPodTasksArgs = {
-        variables: {
-          input: {
-            podId,
-            limit: 1000,
-            offset: 0,
-            // Needed to exclude proposals
-            statuses: taskStatuses,
-            labelId,
-            searchString: search,
-            ...(privacyLevel === PRIVACY_LEVEL.public && {
-              onlyPublic: true,
-            }),
-          },
-        },
-      };
-
-      if (searchTasks) {
-        searchPodTasks(searchPodTasksArgs);
-      } else {
-        const newColumns = [...columns];
-        newColumns.forEach((column: any) => {
-          column.tasks = [];
-        });
-
-        setColumns(newColumns);
-      }
-
-      if (searchProposals) {
-        searchPodTaskProposals(searchPodTaskProposalsArgs);
-      }
-    }
   };
 
   const hasActiveFilters = useMemo(
     () => !!Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length)?.length,
     [filters]
   );
-
   return (
     <PodBoardContext.Provider
       value={{

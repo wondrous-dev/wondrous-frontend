@@ -1,6 +1,6 @@
 import { getRoleEmoji } from 'components/Settings/Members/MembersTableRow/helpers';
 import React from 'react';
-import { MemberRolePill } from './styles';
+import { MemberRolePill, RolePillText } from './styles';
 
 interface RolePillType {
   roleName?: String;
@@ -10,9 +10,9 @@ interface RolePillType {
 }
 
 const RolePill: React.FC<RolePillType> = ({ roleName, onClick, ...props }) => (
-  <MemberRolePill onClick={onClick} roleName={roleName} {...props}>{`${getRoleEmoji(roleName)}  ${
-    roleName || 'no role'
-  }`}</MemberRolePill>
+  <MemberRolePill onClick={onClick} roleName={roleName} {...props}>
+    <RolePillText {...props}>{`${getRoleEmoji(roleName)}  ${roleName || 'no role'}`}</RolePillText>
+  </MemberRolePill>
 );
 
 export default RolePill;

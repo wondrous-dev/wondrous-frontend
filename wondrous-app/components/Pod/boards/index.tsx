@@ -56,7 +56,6 @@ function PodBoards(props: Props) {
   const filters = ENTITIES_TYPES_FILTER_STATUSES({ orgId });
   const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
   const filterSchema: any = entityTypeFilters;
-
   return (
     <Wrapper onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
       <ColumnsContext.Provider value={{ columns, setColumns }}>

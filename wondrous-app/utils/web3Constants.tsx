@@ -152,7 +152,7 @@ export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
   ethereum: 'https://safe-transaction.mainnet.gnosis.io',
   goerli: 'https://safe-transaction.goerli.gnosis.io',
   polygon: 'https://safe-transaction.polygon.gnosis.io',
-  harmony: 'https://multisig.t.hmny.io',
+  harmony: 'https://transaction.multisig.harmony.one',
   arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
   bsc: 'https://safe-transaction.bsc.gnosis.io',
   boba: 'https://safe-transaction.mainnet.boba.network',
