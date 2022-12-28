@@ -438,7 +438,6 @@ function Wrapper(props) {
                 <HeaderContributors
                   onClick={() => {
                     setMoreInfoModalOpen(true);
-                    setShowUsers(false);
                     setShowPods(true);
                   }}
                 >
