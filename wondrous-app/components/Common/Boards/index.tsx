@@ -9,7 +9,6 @@ import BoardSearch from 'components/Common/BoardSearch';
 import { BoardsContainer } from './styles';
 
 const KanbanBoard = dynamic(() => import('../KanbanBoard/kanbanBoard'), { suspense: true });
-const Table = dynamic(() => import('components/Table'), { suspense: true });
 const ListView = dynamic(() => import('components/ListView'), { suspense: true });
 
 type Props = {
@@ -27,9 +26,6 @@ type Props = {
   entityType?: string;
 };
 
-const LIST_VIEW_MAP = {
-  [ENTITIES_TYPES.TASK]: ListView,
-};
 function Boards(props: Props) {
   const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView, entityType = ENTITIES_TYPES.TASK } = props;
   const router = useRouter();
@@ -37,15 +33,13 @@ function Boards(props: Props) {
   const view = activeView || String(router.query.view ?? ViewType.Grid);
 
   function renderBoard() {
-    const ListViewComponent = LIST_VIEW_MAP[entityType] || Table; // i think table is never used
-
     return view ? (
       <Suspense>
         {/* TEMPORARY until we come up with a list view for proposals */}
         {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
           <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
         ) : (
-          <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+          <ListView entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}
       </Suspense>
     ) : null;

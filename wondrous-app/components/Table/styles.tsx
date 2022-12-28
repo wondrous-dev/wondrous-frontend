@@ -1,5 +1,4 @@
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,11 +6,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import styled from 'styled-components';
-import { color } from 'styled-system';
-
-export const Box = styled.div`
-  ${color}
-`;
 
 export const StyledTable = styled(Table)`
   && {
@@ -90,15 +84,6 @@ export const TaskTitle = styled(Typography)`
   }
 `;
 
-export const Initials = styled.a`
-  font-size: 14px;
-  line-height: 19px;
-  letter-spacing: 0.01em;
-  text-decoration-line: underline;
-  color: #00baff;
-  cursor: pointer;
-`;
-
 export const RewardContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -124,19 +109,5 @@ export const RewardAmount = styled(Typography)`
     font-size: 13px;
     margin-left: 8px;
     line-height: 14px;
-  }
-`;
-
-export const MoreOptions = styled(Button)`
-  && {
-    width: 24px;
-    height: 24px;
-    min-width: 0;
-    border-radius: 100%;
-    color: #545454;
-  }
-
-  svg {
-    height: 24px;
   }
 `;
