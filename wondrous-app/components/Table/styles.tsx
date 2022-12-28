@@ -1,5 +1,5 @@
-import TaskStatus from 'components/Icons/TaskStatus';
-import { Button, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,7 +8,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import styled from 'styled-components';
 import { color } from 'styled-system';
-import { LinkIcon } from '../Icons/linkIcon';
 
 export const Box = styled.div`
   ${color}
@@ -91,17 +90,6 @@ export const TaskTitle = styled(Typography)`
   }
 `;
 
-export const TaskStatusIcon = styled(TaskStatus)``;
-
-export const TaskDescription = styled(Typography)`
-  && {
-    font-size: 14px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
-    color: #c4c4c4;
-  }
-`;
-
 export const Initials = styled.a`
   font-size: 14px;
   line-height: 19px;
@@ -136,46 +124,6 @@ export const RewardAmount = styled(Typography)`
     font-size: 13px;
     margin-left: 8px;
     line-height: 14px;
-  }
-`;
-
-export const DeliverableContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-export const DeliverableItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #7a7a7a;
-  width: 29px;
-  margin-left: 15px;
-
-  :first-child {
-    margin-left: 0;
-  }
-`;
-
-export const DeliverablesIconContainer = styled(Button)`
-  && {
-    width: 29px;
-    height: 29px;
-    min-width: 0;
-    background: #1d1d1b;
-    border-radius: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7px;
-  }
-`;
-
-export const StyledLinkIcon = styled(LinkIcon)`
-  && {
-    width: 28px;
-    height: 28px;
-    margin: 0;
   }
 `;
 

@@ -37,7 +37,7 @@ function Boards(props: Props) {
   const view = activeView || String(router.query.view ?? ViewType.Grid);
 
   function renderBoard() {
-    const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
+    const ListViewComponent = LIST_VIEW_MAP[entityType] || Table; // i think table is never used
 
     return view ? (
       <Suspense>

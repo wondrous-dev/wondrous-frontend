@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import Button from '@mui/material/Button';
 
 export const IconWrapper = styled.div`
   display: flex;
@@ -64,4 +65,18 @@ export const Type = styled.div`
 export const ListViewItemWrapper = styled.div`
   width: 100%;
   padding: 4px 0;
+`;
+
+export const MoreOptions = styled(Button)`
+  && {
+    width: 24px;
+    height: 24px;
+    min-width: 0;
+    border-radius: 100%;
+    color: #545454;
+  }
+
+  svg {
+    height: 24px;
+  }
 `;

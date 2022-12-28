@@ -33,7 +33,6 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
-import { MoreOptions } from 'components/Table/styles';
 import { CreateEntity } from 'components/CreateEntity';
 import { ButtonPrimary } from 'components/Common/button';
 import {
@@ -42,6 +41,7 @@ import {
   ListViewItemIconsWrapper,
   ListViewItemActions,
   Type,
+  MoreOptions,
 } from './styles';
 
 function ListViewItem({ task, entityType, isDragDisabled }) {
