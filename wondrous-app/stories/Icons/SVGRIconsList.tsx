@@ -1,5 +1,3 @@
-export { default as addDetailsDownArrow } from 'components/Icons/addDetailsDownArrow';
-export { default as addDetailsUpArrow } from 'components/Icons/addDetailsUpArrow';
 export { AddFileUpload } from 'components/Icons/addFileUpload';
 export { default as arbitrum } from 'components/Icons/arbitrum';
 export { default as arrowDropDown } from 'components/Icons/arrowDropDown';
@@ -164,7 +162,6 @@ export { default as TaskTypesTasks } from 'components/Icons/TaskTypes/task';
 export { default as toDoCircle } from 'components/Icons/toDoCircle';
 export { Twitter } from 'components/Icons/twitter';
 export { default as twitterPurple } from 'components/Icons/twitterPurple';
-export { default as upClick } from 'components/Icons/upClick';
 export { default as uploadImage } from 'components/Icons/uploadImage';
 export { USDCoin } from 'components/Icons/USDCoin';
 export { USDCoin as USDCoin2 } from 'components/Icons/USDCoinV2';
