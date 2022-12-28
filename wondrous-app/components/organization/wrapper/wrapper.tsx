@@ -438,7 +438,7 @@ function Wrapper(props) {
                 <HeaderContributors
                   onClick={() => {
                     setMoreInfoModalOpen(true);
-                    setShowUsers(true);
+                    setShowPods(true);
                   }}
                 >
                   <MemberPodIconBackground>
