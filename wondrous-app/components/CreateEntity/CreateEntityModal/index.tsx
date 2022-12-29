@@ -447,6 +447,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           const task = data?.data?.getTaskById;
           form.setFieldValue('orgId', task?.orgId);
           form.setFieldValue('podId', task?.podId);
+          form.setFieldValue('milestoneId', task?.milestoneId);
         })
         .catch((e) => console.error(e));
     }
@@ -1447,7 +1448,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                     form.setFieldValue('milestoneId', null);
                   }}
                   formValues={form.values}
-                  disabled={formValues?.milestoneId}
+                  disabled={formValues?.milestoneId || isSubtask}
                 />
               </CreateEntityWrapper>
             )}
