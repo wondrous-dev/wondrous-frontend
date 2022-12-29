@@ -363,7 +363,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   };
 
   useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
-    form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
+    existingTask
+      ? form.setFieldValue('orgId', existingTask?.orgId)
+      : form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
   );
 
   useContextValue(
