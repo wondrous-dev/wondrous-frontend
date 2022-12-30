@@ -119,3 +119,11 @@ export const OfflinePaymentButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
+
+export const MediaUploadDiv = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: -8px;
+  flex-flow: wrap;
+`;
