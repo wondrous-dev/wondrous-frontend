@@ -216,7 +216,7 @@ const CHAIN_SELECT_OPTIONS = [
   { label: 'Klaytn', value: 'klaytn', icon: <Klaytn /> },
   { label: 'Harmony', value: 'harmony', icon: <Harmony /> },
   { label: 'Boba', value: 'boba', icon: <Boba /> },
-  { label: 'Gnosis', value: 'gnosis', icon: <GnosisWalletTypeIcon /> },
+  { label: 'Gnosis', value: 'gnosis', icon: <GnosisChain /> },
 ];
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
