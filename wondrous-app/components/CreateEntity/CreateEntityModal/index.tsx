@@ -434,8 +434,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   ]);
 
   useEffect(() => {
-    form.setFieldValue('proposalVoteType', 'binary');
-  }, [form?.values?.orgId]);
+    if (isProposal) {
+      form.setFieldValue('proposalVoteType', PROPOSAL_VOTE_CHOICES.BINARY);
+    }
+  }, [form?.values?.orgId, isProposal]);
 
   useEffect(() => {
     if (isSubtask) {
