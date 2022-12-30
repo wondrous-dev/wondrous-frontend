@@ -18,7 +18,7 @@ import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
 import { usePaymentModal } from 'utils/hooks';
-import { CHAIN_TO_GNOSIS_URL_ABBR, SUPPORTED_CHAINS } from 'utils/web3Constants';
+import { SUPPORTED_CHAINS } from 'utils/web3Constants';
 import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
 import { ErrorText } from '../../Common';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
