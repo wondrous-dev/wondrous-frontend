@@ -7,7 +7,7 @@ import Optimism from 'components/Icons/Optimism';
 import Klaytn from 'components/Icons/Klaytn';
 import Polygon from 'components/Icons/polygonMaticLogo.svg';
 import Harmony from 'components/Icons/harmony';
-import { GnosisWalletTypeIcon } from 'components/Icons/walletSetupModalIcons';
+import GnosisChain from 'components/Icons/GnosisChain';
 import { Matic } from 'components/Icons/matic';
 import { USDCoin } from 'components/Icons/USDCoin';
 import { WonderCoin } from 'components/Icons/wonderCoin';
@@ -191,7 +191,7 @@ export const CHAIN_LOGO = {
   '42161': <Arbitrum />,
   '43114': <Avalanche />,
   '1666600000': <Harmony />,
-  '100': <GnosisWalletTypeIcon />,
+  '100': <GnosisChain />,
 };
 
 export const CURRENCY_SYMBOL = {
@@ -216,7 +216,7 @@ const CHAIN_SELECT_OPTIONS = [
   { label: 'Klaytn', value: 'klaytn', icon: <Klaytn /> },
   { label: 'Harmony', value: 'harmony', icon: <Harmony /> },
   { label: 'Boba', value: 'boba', icon: <Boba /> },
-  { label: 'Gnosis', value: 'gnosis', icon: <GnosisWalletTypeIcon /> },
+  { label: 'Gnosis', value: 'gnosis', icon: <GnosisChain /> },
 ];
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {

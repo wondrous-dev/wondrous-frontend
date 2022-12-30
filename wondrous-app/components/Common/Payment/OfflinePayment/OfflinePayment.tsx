@@ -79,7 +79,7 @@ export function OfflinePayment(props) {
     refetchQueries: ['getGrantApplicationById', 'getGrantById'],
     onError: (e) => {
       console.error(e);
-      setLinkPaymentError(e);
+      setLinkPaymentError('Error linking payment');
     },
   });
   const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
@@ -94,12 +94,16 @@ export function OfflinePayment(props) {
     ],
     onError: (e) => {
       console.error(e);
-      setLinkPaymentError(e);
+      setLinkPaymentError('Error linking payment');
     },
   });
 
   const handleLinkPaymentLinkClick = () => {
     setLinkPaymentError(null);
+    if (!selectedOfflineType || !offlinePaymentLink) {
+      setLinkPaymentError('Need to select a payment type and enter a link');
+      return
+    }
     const offlineLinks = [
       {
         type: selectedOfflineType,
@@ -202,7 +206,7 @@ export function OfflinePayment(props) {
       </MediaUploadDiv>
       <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
 
-      {linkPaymentError && <ErrorText>error linking payments</ErrorText>}
+      {linkPaymentError && <ErrorText>{linkPaymentError}</ErrorText>}
       <OfflinePaymentButtonWrapper>
         {!submissionPaid && (
           <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>
@@ -228,7 +232,7 @@ export function BatchOfflinePayment(props) {
     },
     onError: (e) => {
       console.error(e);
-      setLinkPaymentError(e);
+      setLinkPaymentError('Error linking payment');
     },
   });
 
@@ -238,12 +242,16 @@ export function BatchOfflinePayment(props) {
     },
     onError: (e) => {
       console.error(e);
-      setLinkPaymentError(e);
+      setLinkPaymentError('Error linking payment');
     },
   });
 
   const handleLinkPaymentLinkClick = () => {
     setLinkPaymentError(null);
+    if (!selectedOfflineType || !offlinePaymentLink) {
+      setLinkPaymentError('Need to select a payment type and enter a link');
+      return
+    }
     const offlineLinks = [
       {
         type: selectedOfflineType,
@@ -301,7 +309,7 @@ export function BatchOfflinePayment(props) {
         value={offlinePaymentLink}
         onChange={(e) => setOfflinePaymentLink(e.target.value)}
       />
-      {linkPaymentError && <ErrorText>error linking payments</ErrorText>}
+      {linkPaymentError && <ErrorText>{linkPaymentError}</ErrorText>}
       <OfflinePaymentButtonWrapper>
         {!submissionPaid && (
           <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>

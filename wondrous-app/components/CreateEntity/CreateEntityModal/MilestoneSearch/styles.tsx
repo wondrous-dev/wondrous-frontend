@@ -40,6 +40,7 @@ export const scrollBarStyles = css`
 
 export const MilestoneSearchWrapper = styled.div`
   width: 100%;
+  ${({ disabled }) => disabled && 'pointer-events: none;'}
 `;
 
 export const MilestoneSearchButton = styled(ButtonUnstyled)`
