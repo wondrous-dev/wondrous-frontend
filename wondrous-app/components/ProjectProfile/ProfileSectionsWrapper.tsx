@@ -16,6 +16,7 @@ import ProfileMemberSection from './ProfileMemberSection';
 import ProfileMilestoneSection from './ProfileMilestoneSection';
 import ProfileProposalSection from './ProfileProposalSection';
 import ProfileTaskSection from './ProfileTaskSection';
+import { CardWrapper } from './styles';
 
 const ProfileSectionsWrapper = ({ layout, orgId }) => {
   const [upsertOrgProfilePage] = useMutation(UPSERT_ORG_PROFILE_PAGE, {
@@ -87,9 +88,10 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
               return (
                 <Draggable key={index} draggableId={`${index}`} index={index} isDragDisabled={!hasFullAccess}>
                   {(provided, snapshot) => (
-                    <Grid
+                    <CardWrapper
                       container
                       item
+                      hasFullAccess={hasFullAccess}
                       flexDirection="column"
                       justifyContent="space-between"
                       height="390px"
@@ -101,7 +103,7 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
                       isDragging={snapshot.isDragging}
                     >
                       <Component key={index} />
-                    </Grid>
+                    </CardWrapper>
                   )}
                 </Draggable>
               );
