@@ -52,7 +52,7 @@ export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
   if (chain === 'boba') {
     return `https://multisig.boba.network/boba:${safeAddress}/transactions/${safeTxHash}`;
   }
-  return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
+  return `https://app.safe.global/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/queue`;
 };
 
 export const constructExplorerRedirectUrl = (chain, txHash) => `${CHAIN_TO_EXPLORER_URL[chain]}/tx/${txHash}`;
