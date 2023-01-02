@@ -1,20 +1,118 @@
-import { Button, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import SearchIcon from 'components/Icons/search';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
+export const MembersWrapper = styled(Grid)`
+  && {
+    padding: 25px 0;
+    width: 95%;
+    /* max-width: 1180px; */
+    margin: 0 auto;
+  }
+`;
+
+export const MembersHeader = styled(Grid)`
+  && {
+    display: flex;
+    align-items: baseline;
+    flex-direction: column;
+    gap: 15px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid ${palette.grey900};
+  }
+`;
+
+export const MembersHeading = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 18px;
+    letter-spacing: 0.03em;
+    color: ${palette.white};
+  }
+`;
+
+export const UserRole = styled(Grid)`
+  && {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 5px 3px 3px;
+    background: ${palette.grey900};
+    border: 1px solid ${(props) => props.borderColor};
+    border-radius: 1000px;
+
+    div {
+      padding: 2px 7px;
+    }
+
+    p {
+      font-size: 13px;
+      font-weight: 500;
+    }
+  }
+`;
+
+export const FilterMembersContainer = styled(Grid)`
+  && {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 24px 0;
+    border-bottom: 1px solid ${palette.grey900};
+  }
+`;
+
+export const FilterMembersInput = styled.input`
+  flex: 1;
+  background: ${palette.black101};
+  padding: 12px 14px 12px 42px;
+  border: 2px solid ${palette.black101};
+  border-radius: 1000px;
+  outline: none;
+  font-family: 'Space Grotesk';
+  font-size: 15px;
+  font-weight: 400;
+  color: ${palette.grey250};
+  transition: border-color 0.3s ease-in-out;
+
+  &:focus {
+    border: 2px solid ${palette.black81};
+  }
+`;
+
+export const FilterMembersInputIcon = styled(SearchIcon)`
+  && {
+    position: absolute;
+    top: 50%;
+    left: 1em;
+    transform: translateY(-50%);
+    pointer-events: none;
+
+    path {
+      stroke: ${palette.white};
+    }
+  }
+`;
+
 export const RequestsContainer = styled.div`
-  background: ${palette.black95};
-  border-radius: 6px;
-  padding: 14px;
-  width: 100%;
-  margin-bottom: 30px;
+  /* background: ${palette.black95}; */
+  /* border-radius: 6px; */
+  /* width: 100%; */
+  padding: 24px 0;
+  border-bottom: 1px solid ${palette.grey900};
 `;
 
 export const RequestHeader = styled.div`
   display: flex;
   align-items: center;
   padding-bottom: 14px;
-  border-bottom: 1px ${palette.black91} dashed;
+  /* border-bottom: 1px ${palette.black91} dashed; */
 `;
 
 export const RequestCountWrapper = styled(Typography)`
@@ -45,10 +143,12 @@ export const RequestCountWrapper = styled(Typography)`
 
 export const RequestCount = styled(Typography)`
   && {
-    color: ${palette.red750};
+    color: ${palette.blue20};
     font-family: 'Space Grotesk';
-    font-weight: 500;
-    line-height: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+    letter-spacing: 0.03em;
   }
 `;
 
@@ -61,15 +161,15 @@ export const RequestCountEmptyState = styled(RequestCount)`
 export const MemberRequestsList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 8px 0;
-  border-bottom: 1px ${palette.black91} dashed;
+  gap: 14px;
+  /* padding: 8px 0; */
+  /* border-bottom: 1px ${palette.black91} dashed; */
 `;
 
 export const MemberRequestCard = styled.div`
   display: flex;
   align-items: center;
-  padding: 8px 0;
+  /* padding: 8px 0; */
   font-family: 'Space Grotesk';
   width: 100%;
 `;
@@ -84,7 +184,7 @@ export const MemberProfileLink = styled.a`
 export const MemberName = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: ${palette.white};
   }
@@ -92,6 +192,7 @@ export const MemberName = styled(Typography)`
 
 export const MemberMessage = styled(MemberName)`
   && {
+    font-size: 15px;
     font-weight: 400;
     margin-left: 16px;
     color: ${palette.grey57};
@@ -102,11 +203,39 @@ export const MemberMessage = styled(MemberName)`
   }
 `;
 
+export const MemberRequestDetails = styled(Grid)`
+  && {
+    display: flex;
+    align-items: center;
+    gap: 42px;
+    margin-left: auto;
+    margin-right: 42px;
+
+    div {
+      padding: 2px 7px;
+
+      p {
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: capitalize;
+      }
+    }
+  }
+`;
+
+export const MemberRequestDate = styled(MemberName)`
+  && {
+    font-size: 13px;
+    font-weight: 500;
+    color: ${palette.grey51};
+  }
+`;
+
 export const RequestActionButtons = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-left: auto;
+  /* margin-left: auto; */
 `;
 
 export const RequestActionButton = styled(Button)`
@@ -176,16 +305,52 @@ export const RequestRejectButton = styled(RequestApproveButton)`
 
 export const ShowMoreButton = styled(RequestActionButton)`
   && {
-    line-height: 15px;
-    letter-spacing: 0.01em;
-    margin-top: 8px;
-    background: ${palette.highlightPurple};
-    border-radius: 6px;
-    padding: 10px;
+    margin-top: 14px;
+    background: ${palette.grey87};
+    color: ${palette.highlightBlue};
+    border-radius: 1000px;
+    padding: 9px 14px;
 
     &:hover {
-      background: ${palette.highlightPurple}b3;
+      background: ${palette.grey87}b3;
     }
+  }
+`;
+
+export const MembersContainer = styled(RequestsContainer)`
+  && {
+    border: none;
+  }
+`;
+
+export const MembersList = styled(MemberRequestsList)``;
+
+export const MemberWalletAddress = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: 500;
+    color: ${palette.grey51};
+  }
+`;
+
+export const MemberRow = styled(Grid)`
+  && {
+    display: flex;
+    align-items: center;
+  }
+`;
+
+export const MemberRowLeft = styled(MemberRow)`
+  && {
+    flex: 1;
+    gap: 14px;
+  }
+`;
+
+export const MemberRowRight = styled(MemberRow)`
+  && {
+    gap: 42px;
   }
 `;
 

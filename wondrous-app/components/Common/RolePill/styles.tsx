@@ -9,7 +9,8 @@ export const MemberRolePill = styled.div`
   width: auto;
   padding: 4px 12px 4px 12px;
   border-radius: 30px;
-  border: 1px solid ${(props) => getRoleColor(props.roleName)};
+  border: 1px solid ${(props) => (props.borderColor ? props.borderColor : getRoleColor(props.roleName))};
+  background: ${(props) => (props.backgroundColor ? props.backgroundColor : 'transparent')};
   text-align: center;
   :hover {
     cursor: pointer;

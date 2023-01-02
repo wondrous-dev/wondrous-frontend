@@ -64,6 +64,9 @@ export const GET_ORG_USERS = gql`
         firstName
         lastName
         bio
+        additionalInfo {
+          podCount
+        }
       }
       role {
         id

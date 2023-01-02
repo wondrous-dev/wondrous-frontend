@@ -7,10 +7,12 @@ interface RolePillType {
   children?: any;
   onClick?: React.MouseEventHandler<HTMLElement>;
   fontSize?: Number;
+  borderColor?: String;
+  backgroundColor?: String;
 }
 
-const RolePill: React.FC<RolePillType> = ({ roleName, onClick, ...props }) => (
-  <MemberRolePill onClick={onClick} roleName={roleName} {...props}>
+const RolePill: React.FC<RolePillType> = ({ roleName, onClick, backgroundColor, ...props }) => (
+  <MemberRolePill onClick={onClick} roleName={roleName} backgroundColor={backgroundColor} {...props}>
     <RolePillText {...props}>{`${getRoleEmoji(roleName)}  ${roleName || 'no role'}`}</RolePillText>
   </MemberRolePill>
 );
