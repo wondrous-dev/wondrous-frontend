@@ -1,37 +1,13 @@
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST, GET_ORG_USERS } from 'graphql/queries';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { useMe } from 'components/Auth/withAuth';
-import { useOrgBoard } from 'utils/hooks';
-import Wrapper from 'components/organization/wrapper/wrapper';
 import { DefaultUserImage, SafeImage } from 'components/Common/Image';
-import { SmallAvatar } from 'components/Common/AvatarList';
 import RolePill from 'components/Common/RolePill';
-import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
-import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import { NoUnderlineLink } from 'components/Common/Link/links';
 import { getRoleColor } from 'components/Settings/Members/MembersTableRow/helpers';
 import palette from 'theme/palette';
-import { format } from 'date-fns';
-import Dropdown from 'components/Common/Dropdown';
 import {
-  MemberRequestsList,
-  MemberRequestCard,
-  RequestCountWrapper,
-  RequestCountEmptyState,
-  RequestHeader,
-  RequestsContainer,
-  ShowMoreButton,
-  MemberProfileLink,
-  MemberName,
-  MemberMessage,
-  RequestActionButtons,
-  RequestDeclineButton,
-  RequestApproveButton,
-  MemberRequestsListEndMessage,
-  EmptyMemberRequestsListMessage,
   MembersWrapper,
   MembersHeading,
   MembersHeader,
@@ -39,13 +15,10 @@ import {
   FilterMembersContainer,
   FilterMembersInput,
   FilterMembersInputIcon,
-  MemberRequestDetails,
-  MemberRequestDate,
-  RequestCount,
-  MembersContainer,
 } from './styles';
 import MembershipRequests from './MembershipRequests';
 import ExistingMembers from './ExistingMembers';
+import RoleFilter from './RoleFilter';
 
 const QUERY_LIMIT = 20;
 
@@ -121,7 +94,7 @@ function MemberRequests(props) {
   const user = useMe();
   const userRole = userPermissionsContext?.orgRoles[orgId];
   const { data: orgUserMembershipRequests, fetchMore, hasMore } = useGetOrgMemberRequests(orgId);
-  const [openGR15Modal, setOpenGR15Modal] = useState(false);
+  // const [openGR15Modal, setOpenGR15Modal] = useState(false);
   // const [getOrgUsers, { fetchMore: fetchMoreOrgUsers }] = useLazyQuery(GET_ORG_USERS, {
   //   fetchPolicy: 'network-only',
   //   variables: {
@@ -129,8 +102,13 @@ function MemberRequests(props) {
   //   },
   // });
   const { data: orgUsers } = useGetOrgUsers(orgId);
+  const { data: orgRoles } = useQuery(GET_ORG_ROLES, {
+    variables: {
+      orgId,
+    },
+  });
   // console.log({ user, userRole, orgUserMembershipRequests });
-  console.log({ orgUsers });
+  console.log({ orgUsers, orgRoles });
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
   const refetchQueries = [
@@ -202,11 +180,20 @@ function MemberRequests(props) {
       <FilterMembersContainer>
         <FilterMembersInput placeholder="Search members..." />
         <FilterMembersInputIcon />
+        <RoleFilter roles={orgRoles} />
       </FilterMembersContainer>
 
-      {/* <MembershipRequests /> */}
-
       {!showEmptyState && (
+        <MembershipRequests
+          orgUserMembershipRequests={orgUserMembershipRequests}
+          hasMore={hasMore}
+          handleShowMoreRequests={handleShowMoreRequests}
+          approveRequest={approveRequest}
+          declineRequest={declineRequest}
+        />
+      )}
+
+      {/* {!showEmptyState && (
         <RequestsContainer>
           <MemberRequestsList>
             <RequestCount>{orgUserMembershipRequests?.length} Requests</RequestCount>
@@ -271,7 +258,7 @@ function MemberRequests(props) {
 
           {hasMore && <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>}
         </RequestsContainer>
-      )}
+      )} */}
 
       <ExistingMembers orgUsers={orgUsers} />
     </MembersWrapper>

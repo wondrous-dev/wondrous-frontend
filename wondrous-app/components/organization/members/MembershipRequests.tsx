@@ -1,12 +1,58 @@
-import { MemberRequestsList, RequestCount, RequestsContainer } from './styles';
+import { SmallAvatar } from 'components/Common/AvatarList';
+import { SafeImage } from 'components/Common/Image';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import { NoUnderlineLink } from 'components/Common/Link/links';
+import RolePill from 'components/Common/RolePill';
+import { format } from 'date-fns';
+import { useState } from 'react';
+import palette from 'theme/palette';
+import {
+  MemberMessage,
+  MemberName,
+  MemberProfileLink,
+  MemberRequestCard,
+  MemberRequestDate,
+  MemberRequestDetails,
+  MemberRequestsList,
+  RequestActionButtons,
+  RequestApproveButton,
+  RequestCount,
+  RequestDeclineButton,
+  RequestsContainer,
+  ShowMoreButton,
+} from './styles';
 
-type Props = {};
+type Props = {
+  orgUserMembershipRequests: Array<any>;
+  hasMore: boolean;
+  handleShowMoreRequests?: () => void;
+  declineRequest: (requestId: string) => void;
+  approveRequest: (requestId: string) => void;
+};
 
-const MembershipRequests = (props: Props) => (
-  <RequestsContainer>
-    {/* <MemberRequestsList>
-        <RequestCount>{orgUserMembershipRequests?.length} Requests</RequestCount>
+const MembershipRequests = (props: Props) => {
+  const { orgUserMembershipRequests, hasMore, handleShowMoreRequests, declineRequest, approveRequest } = props;
 
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
+
+  const handleOpenGR15Modal = (ev) => {
+    ev.preventDefault();
+    setOpenGR15Modal(true);
+  };
+
+  const getUserInitials = (name) =>
+    name
+      .split(' ')
+      .map((word) => word[0])
+      .join('');
+
+  return (
+    <RequestsContainer>
+      <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+
+      <RequestCount>{orgUserMembershipRequests?.length} Requests</RequestCount>
+      <MemberRequestsList>
         {orgUserMembershipRequests?.map((request) => (
           <MemberRequestCard key={request.id}>
             <NoUnderlineLink href={`/profile/${request.userUsername}/about`} passHref>
@@ -29,17 +75,14 @@ const MembershipRequests = (props: Props) => (
                   />
                 )}
                 {request?.checkIsGr15Contributor?.isGr15Contributor && (
-                  <>
-                    <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                    <GR15DEILogo
-                      style={{
-                        marginLeft: '-8px',
-                      }}
-                      width="28"
-                      height="28"
-                      onClick={() => setOpenGR15Modal(true)}
-                    />
-                  </>
+                  <GR15DEILogo
+                    style={{
+                      marginLeft: '-8px',
+                    }}
+                    width="28"
+                    height="28"
+                    onClick={handleOpenGR15Modal}
+                  />
                 )}
                 <MemberName>{request.userUsername}</MemberName>
               </MemberProfileLink>
@@ -65,8 +108,8 @@ const MembershipRequests = (props: Props) => (
         ))}
       </MemberRequestsList>
 
-      {hasMore && <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>} */}
-  </RequestsContainer>
-);
-
+      {hasMore && <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>}
+    </RequestsContainer>
+  );
+};
 export default MembershipRequests;

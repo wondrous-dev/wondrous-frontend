@@ -1,7 +1,9 @@
+import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import SearchIcon from 'components/Icons/search';
+import Link from 'next/link';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
@@ -100,6 +102,57 @@ export const FilterMembersInputIcon = styled(SearchIcon)`
   }
 `;
 
+const StyledSelect = styled(Select)`
+  && {
+    background: ${palette.black101};
+    color: ${palette.white};
+    height: 45px;
+    width: 245px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: border 0.2s ease-out;
+
+    :hover {
+      border: 1px solid ${palette.grey79};
+    }
+
+    svg {
+      color: ${palette.white};
+      transition: transform 0.2s ease-out;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+`;
+
+export const RoleFilterSelect = styled(({ className, ...props }) => (
+  <StyledSelect {...props} {...className} MenuProps={{ classes: { paper: className } }} />
+))`
+  &.MuiPaper-root {
+    background: ${palette.black101};
+    border: 1px solid ${palette.grey79};
+    width: 245px;
+    color: ${palette.white};
+  }
+
+  &.MuiPaper-root > .MuiList-root {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &.MuiPaper-root > .MuiList-padding {
+    padding: 12px;
+  }
+`;
+
+export const MemberRoleSelectValueDisplay = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const RequestsContainer = styled.div`
   /* background: ${palette.black95}; */
   /* border-radius: 6px; */
@@ -149,8 +202,11 @@ export const RequestCount = styled(Typography)`
     font-weight: 600;
     line-height: 18px;
     letter-spacing: 0.03em;
+    margin-bottom: 14px;
   }
 `;
+
+export const ExistingMembersCount = styled(RequestCount)``;
 
 export const RequestCountEmptyState = styled(RequestCount)`
   && {
@@ -338,12 +394,25 @@ export const MemberRow = styled(Grid)`
   && {
     display: flex;
     align-items: center;
+    /* display: grid;
+    grid-template-columns: 1fr 0.2fr; */
+  }
+`;
+
+export const MemberLink = styled.a`
+  && {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
   }
 `;
 
 export const MemberRowLeft = styled(MemberRow)`
   && {
     flex: 1;
+    /* display: flex;
+    align-items: center; */
     gap: 14px;
   }
 `;
@@ -351,6 +420,26 @@ export const MemberRowLeft = styled(MemberRow)`
 export const MemberRowRight = styled(MemberRow)`
   && {
     gap: 42px;
+    min-width: 195px;
+
+    div {
+      padding: 2px 7px;
+
+      p {
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: capitalize;
+      }
+    }
+  }
+`;
+
+export const MemberPodCount = styled(MemberName)`
+  && {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 13px;
+    color: ${palette.grey51};
   }
 `;
 
