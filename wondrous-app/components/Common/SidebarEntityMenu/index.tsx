@@ -5,7 +5,7 @@ import { ArrowIcon, Button, ButtonIcon, IconText, Text, IconWrapper } from 'comp
 import { ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
 import WorkspacePicker from 'components/WorkspacePicker';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import { useGlobalContext } from 'utils/hooks';
 
@@ -63,9 +63,8 @@ const MY_WORKSPACES = [
   '/profile/notifications',
 ];
 
-const EntityMenu = () => {
+const EntityMenu = ({ pageData }) => {
   const router = useRouter();
-  const { pageData } = useGlobalContext();
   const user = useMe();
   const activePodOrg = useMemo(() => pageData?.pod?.org, [pageData?.pod]);
 
@@ -128,4 +127,16 @@ const EntityMenu = () => {
   );
 };
 
-export default EntityMenu;
+const EntityMenuMemo = memo(
+  EntityMenu,
+  (prevProps, nextProps) =>
+    JSON.stringify(prevProps.pageData?.pod) === JSON.stringify(nextProps.pageData?.pod) &&
+    JSON.stringify(prevProps.pageData?.orgData) === JSON.stringify(nextProps.pageData?.orgData)
+);
+
+const EntityMenuWrapper = () => {
+  const { pageData } = useGlobalContext();
+  return <EntityMenuMemo pageData={pageData} />;
+};
+
+export default EntityMenuWrapper;

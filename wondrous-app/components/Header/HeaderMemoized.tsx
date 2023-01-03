@@ -22,6 +22,7 @@ import { Org } from 'types/Org';
 import { PAGE_PATHNAME } from 'utils/constants';
 import { useOutsideAlerter } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import BreadCrumbs from 'components/BreadCrumbs';
 import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
 
 type Props = {
@@ -86,6 +87,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
                 <EntityMenu />
               </Grid>
             ) : null}
+            <BreadCrumbs />
             <GlobalSearch />
             <Grid display="flex" gap="14px" position="relative" ref={activeModalType ? wrapperRef : null}>
               {displayCustomHeaderItem ? (
