@@ -64,7 +64,9 @@ const useGetOrgUsers = (orgId, searchString = '', roleIds = []) => {
   const [isInitialFetchForThePage, setIsInitialFetchForThePage] = useState(true);
 
   const [getOrgUsers, { data, fetchMore, previousData }] = useLazyQuery(GET_ORG_USERS, {
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
 
     onCompleted: ({ getOrgUsers }) => {
       const isPreviousDataValid = previousData && previousData?.getOrgUsers?.length > 1;
@@ -75,10 +77,8 @@ const useGetOrgUsers = (orgId, searchString = '', roleIds = []) => {
       if (isInitialFetchForThePage) {
         setHasMore(currentDataLength >= QUERY_LIMIT);
       } else {
-        updatedDataLength >= 0 && setHasMore(updatedDataLength >= QUERY_LIMIT); // updatedDataLength >= 0 means it's not a refetch
+        updatedDataLength >= 0 && setHasMore(updatedDataLength >= QUERY_LIMIT);
       }
-
-      console.log({ previousData });
     },
   });
   useEffect(() => {
