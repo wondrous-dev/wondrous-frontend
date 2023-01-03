@@ -29,10 +29,18 @@ type Props = {
   handleShowMoreRequests?: () => void;
   declineRequest: (requestId: string) => void;
   approveRequest: (requestId: string) => void;
+  isDataBeingSearched?: boolean;
 };
 
 const MembershipRequests = (props: Props) => {
-  const { orgUserMembershipRequests, hasMore, handleShowMoreRequests, declineRequest, approveRequest } = props;
+  const {
+    orgUserMembershipRequests,
+    hasMore,
+    handleShowMoreRequests,
+    declineRequest,
+    approveRequest,
+    isDataBeingSearched,
+  } = props;
 
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
 
@@ -106,7 +114,7 @@ const MembershipRequests = (props: Props) => {
         ))}
       </MemberRequestsList>
 
-      {hasMore && <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>}
+      {hasMore && !isDataBeingSearched && <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>}
     </RequestsContainer>
   );
 };

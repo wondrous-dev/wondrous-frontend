@@ -16,23 +16,23 @@ type Role = {
 type Props = {
   roles: Role[];
   selectedRoleIds: string[];
-  handleRoleFilterChange: (role: string) => void;
+  handleRoleFilterChange: (roleId: string) => void;
 };
 
-const RoleFilter = (props: Props) => {
+const RoleFilterSelection = (props: Props) => {
   const { roles, selectedRoleIds, handleRoleFilterChange } = props;
 
   const value = 'Showing all roles';
-  const onChange = () => {};
 
   const renderMemberRoleSelection = () => {
+    const areAllRolesSelected = selectedRoleIds?.length === roles?.length;
     const isSelectedRoleDefault = selectedRoleIds?.length === 0;
     const isSingleRoleSelected = selectedRoleIds?.length === 1;
     const correspondingRole = roles?.find((role) => role.value === selectedRoleIds[0]);
 
     return (
       <RoleFilterSelectValueDisplay>
-        {isSelectedRoleDefault ? (
+        {isSelectedRoleDefault || areAllRolesSelected ? (
           'Showing all roles'
         ) : isSingleRoleSelected ? (
           <RolePill roleName={correspondingRole?.label} />
@@ -44,9 +44,15 @@ const RoleFilter = (props: Props) => {
   };
 
   return (
-    <RoleFilterSelect renderValue={renderMemberRoleSelection} value={value} onChange={onChange}>
+    <RoleFilterSelect
+      renderValue={renderMemberRoleSelection}
+      value={value}
+      onChange={(ev) => {
+        handleRoleFilterChange(ev.target.value);
+      }}
+    >
       {roles?.map((role) => (
-        <RoleFilterSelectMenuItem key={role.value} value={role.value} onClick={handleRoleFilterChange}>
+        <RoleFilterSelectMenuItem key={role.value} value={role.value}>
           <RolePill roleName={role.label} />
           {selectedRoleIds?.includes(role.value) ? (
             <RoleFilterSelectMenuIconWrapper isSelected>
@@ -61,4 +67,4 @@ const RoleFilter = (props: Props) => {
   );
 };
 
-export default RoleFilter;
+export default RoleFilterSelection;

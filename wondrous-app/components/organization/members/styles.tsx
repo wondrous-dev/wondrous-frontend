@@ -21,7 +21,7 @@ export const MembersHeader = styled(Grid)`
     display: flex;
     align-items: baseline;
     flex-direction: column;
-    gap: 15px;
+    gap: 18px;
     padding-bottom: 24px;
     border-bottom: 1px solid ${palette.grey900};
   }
@@ -55,6 +55,20 @@ export const UserRole = styled(Grid)`
     p {
       font-size: 13px;
       font-weight: 500;
+    }
+  }
+`;
+
+export const FilteredRolesContainer = styled(Grid)`
+  && {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    p {
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: capitalize;
     }
   }
 `;

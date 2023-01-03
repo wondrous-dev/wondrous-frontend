@@ -19,10 +19,11 @@ type Props = {
   orgUsers: Array<any>;
   hasMore: boolean;
   handleShowMoreOrgUsers: () => void;
+  isDataBeingSearched?: boolean;
 };
 
 const ExistingMembers = (props: Props) => {
-  const { orgUsers, hasMore, handleShowMoreOrgUsers } = props;
+  const { orgUsers, hasMore, handleShowMoreOrgUsers, isDataBeingSearched } = props;
 
   const getMemberWalletAddress = (address: string) => {
     if (!address) {
@@ -66,7 +67,7 @@ const ExistingMembers = (props: Props) => {
         ))}
       </MembersList>
 
-      {hasMore && <ShowMoreButton onClick={handleShowMoreOrgUsers}>Show more</ShowMoreButton>}
+      {hasMore && !isDataBeingSearched && <ShowMoreButton onClick={handleShowMoreOrgUsers}>Show more</ShowMoreButton>}
     </MembersContainer>
   );
 };
