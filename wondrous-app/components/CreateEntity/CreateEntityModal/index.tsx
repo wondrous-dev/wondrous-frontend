@@ -1435,7 +1435,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
-        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.milestone)}>
+        <CreateEntityLabelSelectWrapper
+          show={entityTypeData[entityType].fields.includes(Fields.milestone) && !isSubtask}
+        >
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Milestone</CreateEntityLabel>
           </CreateEntityLabelWrapper>
