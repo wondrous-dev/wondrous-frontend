@@ -55,38 +55,36 @@ const MembershipRequests = (props: Props) => {
       <MemberRequestsList>
         {orgUserMembershipRequests?.map((request) => (
           <MemberRequestCard key={request.id}>
-            <NoUnderlineLink href={`/profile/${request.userUsername}/about`} passHref>
-              <MemberProfileLink>
-                {request.userProfilePicture ? (
-                  <SafeImage
-                    width={28}
-                    height={28}
-                    style={{ width: '28px', height: '28px', borderRadius: '50%' }}
-                    src={request.userProfilePicture}
-                    useNextImage
-                    alt="User profile picture"
-                  />
-                ) : (
-                  <SmallAvatar
-                    id={request.id}
-                    username={request.userUsername}
-                    initials={getUserInitials(request.userUsername)}
-                    style={{ width: '28px', height: '28px' }}
-                  />
-                )}
-                {request?.checkIsGr15Contributor?.isGr15Contributor && (
-                  <GR15DEILogo
-                    style={{
-                      marginLeft: '-8px',
-                    }}
-                    width="28"
-                    height="28"
-                    onClick={handleOpenGR15Modal}
-                  />
-                )}
-                <MemberName>{request.userUsername}</MemberName>
-              </MemberProfileLink>
-            </NoUnderlineLink>
+            <MemberProfileLink href={`/profile/${request.userUsername}/about`}>
+              {request.userProfilePicture ? (
+                <SafeImage
+                  width={28}
+                  height={28}
+                  style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+                  src={request.userProfilePicture}
+                  useNextImage
+                  alt="User profile picture"
+                />
+              ) : (
+                <SmallAvatar
+                  id={request.id}
+                  username={request.userUsername}
+                  initials={getUserInitials(request.userUsername)}
+                  style={{ width: '28px', height: '28px' }}
+                />
+              )}
+              {request?.checkIsGr15Contributor?.isGr15Contributor && (
+                <GR15DEILogo
+                  style={{
+                    marginLeft: '-8px',
+                  }}
+                  width="28"
+                  height="28"
+                  onClick={handleOpenGR15Modal}
+                />
+              )}
+              <MemberName>{request.userUsername}</MemberName>
+            </MemberProfileLink>
             <MemberMessage style={{ marginRight: '8px' }}>“{request.message}”</MemberMessage>
 
             <MemberRequestDetails>

@@ -1,5 +1,4 @@
 import { DefaultUserImage, SafeImage } from 'components/Common/Image';
-import { NoUnderlineLink } from 'components/Common/Link/links';
 import RolePill from 'components/Common/RolePill';
 import palette from 'theme/palette';
 import {
@@ -13,14 +12,17 @@ import {
   MembersContainer,
   MembersList,
   MemberWalletAddress,
+  ShowMoreButton,
 } from './styles';
 
 type Props = {
   orgUsers: Array<any>;
+  hasMore: boolean;
+  handleShowMoreOrgUsers: () => void;
 };
 
 const ExistingMembers = (props: Props) => {
-  const { orgUsers } = props;
+  const { orgUsers, hasMore, handleShowMoreOrgUsers } = props;
 
   const getMemberWalletAddress = (address: string) => {
     if (!address) {
@@ -37,22 +39,18 @@ const ExistingMembers = (props: Props) => {
         {orgUsers?.map(({ role, user }) => (
           <MemberRow key={user.id}>
             <MemberRowLeft>
-              <NoUnderlineLink href={`/profile/${user.username}/about`} passHref>
-                <MemberLink>
-                  <SafeImage
-                    useNextImage
-                    src={user.profilePicture || user.thumbnailPicture}
-                    placeholderComp={
-                      <DefaultUserImage style={{ width: '28px', height: '28px', borderRadius: '50%' }} />
-                    }
-                    width={40}
-                    height={40}
-                    style={{ width: '28px', height: '28px', borderRadius: '50%' }}
-                    alt="Profile picture"
-                  />
-                  <MemberName>{user.username}</MemberName>
-                </MemberLink>
-              </NoUnderlineLink>
+              <MemberLink href={`/profile/${user.username}/about`} passHref>
+                <SafeImage
+                  useNextImage
+                  src={user.profilePicture || user.thumbnailPicture}
+                  placeholderComp={<DefaultUserImage style={{ width: '28px', height: '28px', borderRadius: '50%' }} />}
+                  width={40}
+                  height={40}
+                  style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+                  alt="Profile picture"
+                />
+                <MemberName>{user.username}</MemberName>
+              </MemberLink>
 
               {!!user.activeEthAddress && (
                 <MemberWalletAddress>{getMemberWalletAddress(user.activeEthAddress)}</MemberWalletAddress>
@@ -67,6 +65,8 @@ const ExistingMembers = (props: Props) => {
           </MemberRow>
         ))}
       </MembersList>
+
+      {hasMore && <ShowMoreButton onClick={handleShowMoreOrgUsers}>Show more</ShowMoreButton>}
     </MembersContainer>
   );
 };

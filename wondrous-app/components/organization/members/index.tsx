@@ -19,20 +19,7 @@ import {
 import MembershipRequests from './MembershipRequests';
 import ExistingMembers from './ExistingMembers';
 import RoleFilter from './RoleFilter';
-
-const QUERY_LIMIT = 20;
-
-const userProfilePictureStyles = {
-  width: '32px',
-  height: '32px',
-  borderRadius: '50%',
-};
-
-const memberProfilePictureStyles = {
-  ...userProfilePictureStyles,
-  width: '32px',
-  height: '32px',
-};
+import { QUERY_LIMIT, userProfilePictureStyles } from './constants';
 
 const useGetOrgMemberRequests = (orgId) => {
   const [hasMore, setHasMore] = useState(false);
@@ -72,20 +59,44 @@ const useGetOrgMemberRequests = (orgId) => {
   return { data: data?.getOrgMembershipRequest, fetchMore, hasMore };
 };
 
-const useGetOrgUsers = (orgId) => {
-  const [getOrgUsers, { data }] = useLazyQuery(GET_ORG_USERS, {
+const useGetOrgUsers = (orgId, searchString = '', roleIds = []) => {
+  const [hasMore, setHasMore] = useState(false);
+  const [isInitialFetchForThePage, setIsInitialFetchForThePage] = useState(true);
+
+  const [getOrgUsers, { data, fetchMore, previousData }] = useLazyQuery(GET_ORG_USERS, {
     fetchPolicy: 'network-only',
-    variables: {
-      orgId,
-      limit: Number.POSITIVE_INFINITY,
+
+    onCompleted: ({ getOrgUsers }) => {
+      const isPreviousDataValid = previousData && previousData?.getOrgUsers?.length > 1;
+      const previousDataLength = previousData?.getOrgUsers?.length;
+      const currentDataLength = getOrgUsers?.length;
+      const updatedDataLength = isPreviousDataValid ? currentDataLength - previousDataLength : currentDataLength;
+
+      if (isInitialFetchForThePage) {
+        setHasMore(currentDataLength >= QUERY_LIMIT);
+      } else {
+        updatedDataLength >= 0 && setHasMore(updatedDataLength >= QUERY_LIMIT); // updatedDataLength >= 0 means it's not a refetch
+      }
+
+      console.log({ previousData });
     },
   });
   useEffect(() => {
     if (orgId) {
-      getOrgUsers();
+      getOrgUsers({
+        variables: {
+          orgId,
+          limit: QUERY_LIMIT,
+          searchString,
+          roleIds,
+        },
+      }).then(({ data }) => {
+        const requestData = data?.getOrgUsers;
+        if (requestData) setIsInitialFetchForThePage(false);
+      });
     }
   }, [orgId, getOrgUsers]);
-  return { data: data?.getOrgUsers };
+  return { data: data?.getOrgUsers, fetchMore, hasMore };
 };
 
 function MemberRequests(props) {
@@ -93,7 +104,15 @@ function MemberRequests(props) {
   const { id: orgId } = orgData;
   const user = useMe();
   const userRole = userPermissionsContext?.orgRoles[orgId];
-  const { data: orgUserMembershipRequests, fetchMore, hasMore } = useGetOrgMemberRequests(orgId);
+
+  const [selectedRoleIds, setSelectedRoleIds] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const {
+    data: orgUserMembershipRequests,
+    fetchMore: fetchMoreOrgMemberRequests,
+    hasMore: hasMoreOrgMemberRequests,
+  } = useGetOrgMemberRequests(orgId);
   // const [openGR15Modal, setOpenGR15Modal] = useState(false);
   // const [getOrgUsers, { fetchMore: fetchMoreOrgUsers }] = useLazyQuery(GET_ORG_USERS, {
   //   fetchPolicy: 'network-only',
@@ -101,14 +120,18 @@ function MemberRequests(props) {
   //     orgId,
   //   },
   // });
-  const { data: orgUsers } = useGetOrgUsers(orgId);
+  const { data: orgUsers, fetchMore: fetchMoreOrgUsers, hasMore: hasMoreOrgUsers } = useGetOrgUsers(orgId);
   const { data: orgRoles } = useQuery(GET_ORG_ROLES, {
     variables: {
       orgId,
     },
   });
+  const structuredOrgRoles = orgRoles?.getOrgRoles?.reduce((acc, role) => {
+    acc.push({ label: role.name, value: role.id });
+    return acc;
+  }, []);
   // console.log({ user, userRole, orgUserMembershipRequests });
-  console.log({ orgUsers, orgRoles });
+  // console.log({ orgUsers, structuredOrgRoles });
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
   const refetchQueries = [
@@ -122,6 +145,8 @@ function MemberRequests(props) {
     },
   ];
   const showEmptyState = orgUserMembershipRequests?.length === 0;
+
+  const handleRoleFilterChange = (role) => {};
 
   const approveRequest = (id) => {
     approveJoinOrgRequest({
@@ -143,7 +168,7 @@ function MemberRequests(props) {
   };
 
   const handleShowMoreRequests = () => {
-    fetchMore({
+    fetchMoreOrgMemberRequests({
       variables: {
         orgId,
         offset: orgUserMembershipRequests?.length,
@@ -151,11 +176,20 @@ function MemberRequests(props) {
     });
   };
 
-  const getUserInitials = (name) =>
-    name
-      .split(' ')
-      .map((word) => word[0])
-      .join('');
+  const handleShowMoreOrgUsers = () => {
+    fetchMoreOrgUsers({
+      variables: {
+        orgId,
+        offset: orgUsers?.length,
+      },
+    });
+  };
+
+  // const getUserInitials = (name) =>
+  //   name
+  //     .split(' ')
+  //     .map((word) => word[0])
+  //     .join('');
 
   return (
     <MembersWrapper>
@@ -178,15 +212,23 @@ function MemberRequests(props) {
       </MembersHeader>
 
       <FilterMembersContainer>
-        <FilterMembersInput placeholder="Search members..." />
+        <FilterMembersInput
+          value={searchQuery}
+          onChange={(ev) => setSearchQuery(ev.target.value)}
+          placeholder="Search members..."
+        />
         <FilterMembersInputIcon />
-        <RoleFilter roles={orgRoles} />
+        <RoleFilter
+          roles={structuredOrgRoles}
+          selectedRoleIds={selectedRoleIds}
+          handleRoleFilterChange={handleRoleFilterChange}
+        />
       </FilterMembersContainer>
 
       {!showEmptyState && (
         <MembershipRequests
           orgUserMembershipRequests={orgUserMembershipRequests}
-          hasMore={hasMore}
+          hasMore={hasMoreOrgMemberRequests}
           handleShowMoreRequests={handleShowMoreRequests}
           approveRequest={approveRequest}
           declineRequest={declineRequest}
@@ -260,7 +302,7 @@ function MemberRequests(props) {
         </RequestsContainer>
       )} */}
 
-      <ExistingMembers orgUsers={orgUsers} />
+      <ExistingMembers orgUsers={orgUsers} hasMore={hasMoreOrgUsers} handleShowMoreOrgUsers={handleShowMoreOrgUsers} />
     </MembersWrapper>
   );
 }

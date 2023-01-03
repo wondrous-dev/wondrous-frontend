@@ -1,17 +1,17 @@
-import Select from '@mui/material/Select';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import SearchIcon from 'components/Icons/search';
 import Link from 'next/link';
 import styled from 'styled-components';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import SearchIcon from 'components/Icons/search';
 import palette from 'theme/palette';
 
 export const MembersWrapper = styled(Grid)`
   && {
     padding: 25px 0;
     width: 95%;
-    /* max-width: 1180px; */
     margin: 0 auto;
   }
 `;
@@ -74,7 +74,7 @@ export const FilterMembersInput = styled.input`
   flex: 1;
   background: ${palette.black101};
   padding: 12px 14px 12px 42px;
-  border: 2px solid ${palette.black101};
+  border: 1px solid ${palette.black101};
   border-radius: 1000px;
   outline: none;
   font-family: 'Space Grotesk';
@@ -84,7 +84,7 @@ export const FilterMembersInput = styled.input`
   transition: border-color 0.3s ease-in-out;
 
   &:focus {
-    border: 2px solid ${palette.black81};
+    border: 1px solid ${palette.black81};
   }
 `;
 
@@ -148,15 +148,60 @@ export const RoleFilterSelect = styled(({ className, ...props }) => (
   }
 `;
 
-export const MemberRoleSelectValueDisplay = styled.div`
+export const RoleFilterSelectValueDisplay = styled(Grid)`
   display: flex;
   align-items: center;
 `;
 
+export const RoleFilterSelectMenuItem = styled(MenuItem)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: ${palette.black98} !important;
+    color: ${palette.white};
+    border-radius: 4px;
+    padding: 8px;
+    transition: background 0.2s ease-out;
+    position: relative;
+
+    :hover {
+      background: ${palette.black92} !important;
+    }
+
+    ::before {
+      position: absolute;
+      inset: 0;
+      content: '';
+      display: block;
+      padding: 1px;
+      background: ${(props) =>
+        props.isSelected
+          ? `linear-gradient(89.84deg, ${palette.highlightOrange} 5.89%, ${palette.highlightPurple} 90.32%)`
+          : 'transparent'};
+      mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      border-radius: 4px;
+      width: 100%;
+      height: 100%;
+    }
+  }
+`;
+
+export const RoleFilterSelectMenuIconWrapper = styled.div`
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  border-color: ${(props) => (props.isSelected ? palette.highlightPurple : palette.grey78)};
+  border-radius: 1000px;
+  padding: 1px;
+`;
+
 export const RequestsContainer = styled.div`
-  /* background: ${palette.black95}; */
-  /* border-radius: 6px; */
-  /* width: 100%; */
   padding: 24px 0;
   border-bottom: 1px solid ${palette.grey900};
 `;
@@ -165,7 +210,6 @@ export const RequestHeader = styled.div`
   display: flex;
   align-items: center;
   padding-bottom: 14px;
-  /* border-bottom: 1px ${palette.black91} dashed; */
 `;
 
 export const RequestCountWrapper = styled(Typography)`
@@ -218,19 +262,16 @@ export const MemberRequestsList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 14px;
-  /* padding: 8px 0; */
-  /* border-bottom: 1px ${palette.black91} dashed; */
 `;
 
 export const MemberRequestCard = styled.div`
   display: flex;
   align-items: center;
-  /* padding: 8px 0; */
   font-family: 'Space Grotesk';
   width: 100%;
 `;
 
-export const MemberProfileLink = styled.a`
+export const MemberProfileLink = styled(Link)`
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -291,7 +332,6 @@ export const RequestActionButtons = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  /* margin-left: auto; */
 `;
 
 export const RequestActionButton = styled(Button)`
@@ -394,25 +434,18 @@ export const MemberRow = styled(Grid)`
   && {
     display: flex;
     align-items: center;
-    /* display: grid;
-    grid-template-columns: 1fr 0.2fr; */
   }
 `;
 
-export const MemberLink = styled.a`
+export const MemberLink = styled(MemberProfileLink)`
   && {
-    display: flex;
-    align-items: center;
     gap: 14px;
-    text-decoration: none;
   }
 `;
 
 export const MemberRowLeft = styled(MemberRow)`
   && {
     flex: 1;
-    /* display: flex;
-    align-items: center; */
     gap: 14px;
   }
 `;
