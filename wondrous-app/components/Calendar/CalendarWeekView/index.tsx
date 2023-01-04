@@ -1,55 +1,61 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import format from 'date-fns/format';
 import addDays from 'date-fns/addDays';
 import isToday from 'date-fns/isToday';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import { useRouter } from 'next/router';
 
 import palette from 'theme/palette';
 import styles from 'components/Calendar/CalendarWeekView/styles';
 import SmartLink from 'components/Common/SmartLink';
-import { delQuery } from 'utils/index';
-import { ViewType } from 'types/common';
-import { CalendarContext } from 'utils/contexts';
+import { TaskInterface } from 'types/task';
+import TaskStatus from 'components/Icons/TaskStatus';
+import { CALENDAR_CONFIG } from 'utils/constants';
 
-const CalendarWeekView = () => {
-  const {
-    taskStatusIcon,
-    router,
-    viewStartDate,
-    tasksMap,
-    handleTaskClick,
-    getUserTaskBoardTasksCalendar,
-    loggedInUser,
-  } = useContext(CalendarContext);
+// TODO: Use common file
+type Props = {
+  startDate: Date;
+  tasksMap: {
+    [key: string]: TaskInterface[];
+  };
+};
 
-  const daysInWeek = 7;
-  const lastDayOfWeek = addDays(new Date(viewStartDate), daysInWeek - 1);
+const CalendarWeekView = ({ startDate, tasksMap }: Props) => {
+  const router = useRouter();
+  const daysInWeek = CALENDAR_CONFIG.weekDays.length;
 
-  // useEffect(() => {
-  //   getUserTaskBoardTasksCalendar({
-  //     variables: {
-  //       userId: loggedInUser?.orgId,
-  //       fromDate: viewStartDate,
-  //       toDate: lastDayOfWeek,
-  //     },
-  //   });
-  // }, [viewStartDate, lastDayOfWeek]);
+  const days: Array<{
+    date: Date;
+    dateIsToday: boolean;
+    key: string;
+  }> = useMemo(() => {
+    return new Array(daysInWeek).fill(daysInWeek).map((day, dayIndex) => {
+      const date = addDays(startDate, dayIndex);
+      const dateIsToday = isToday(date);
+      const key = `day-${format(date, 'yyyy-MM-dd')}`;
+
+      return {
+        date,
+        dateIsToday,
+        key,
+      };
+    });
+  }, [startDate]);
 
   return (
     <Grid container wrap="nowrap" sx={styles.wrapper}>
-      {new Array(daysInWeek).fill(daysInWeek).map((day, dayIndex) => {
-        const date = addDays(viewStartDate, dayIndex);
-        const dateIsToday = isToday(date);
+      {days.map(({ key, date, dateIsToday }, dayIndex) => {
         const tasks = tasksMap[format(date, 'yyyy-MM-dd')] ?? [];
 
         return (
           <Grid
-            key={date.getTime()}
+            key={key}
             container
             item
             className={dateIsToday ? 'ColumnToday' : ''}
+            flexDirection="column"
             sx={{
               borderRight: dayIndex === daysInWeek - 1 ? 'none' : `1px solid ${palette.grey101}`,
               ...styles.column,
@@ -68,17 +74,28 @@ const CalendarWeekView = () => {
             </Grid>
             <Grid container item className="ColumnBody" rowSpacing="20px" sx={styles.columnBody}>
               {tasks?.map((task) => {
-                const viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${ViewType.Calendar}`;
-
                 return (
                   <SmartLink
-                    key={task.title}
-                    href={viewUrl}
+                    key={task.id}
+                    href={`${router.asPath}&task=${task.id}`}
                     preventLinkNavigation
-                    onClick={(task) => handleTaskClick(task)}
+                    onNavigate={() => {
+                      const query = {
+                        ...router.query,
+                        task: task.id,
+                      };
+
+                      router.push({ query }, undefined, { scroll: false, shallow: true });
+                    }}
                   >
                     <Grid item display="flex" wrap="nowrap" sx={{ width: '100%' }}>
-                      <Box>{taskStatusIcon[task.status]}</Box>
+                      <TaskStatus
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                        }}
+                        status={task?.status}
+                      />
                       <Typography sx={styles.taskTitle}>{task.title}</Typography>
                     </Grid>
                   </SmartLink>

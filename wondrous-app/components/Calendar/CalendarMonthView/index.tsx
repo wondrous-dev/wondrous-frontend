@@ -19,6 +19,7 @@ import { TaskInterface } from 'types/task';
 import TaskStatus from 'components/Icons/TaskStatus';
 import ViewTasksModal from 'components/Calendar/CalendarMonthView/ViewTasksModal';
 
+// TODO: Use common file
 type Props = {
   startDate: Date;
   tasksMap: {
@@ -33,10 +34,10 @@ const CalendarMonthView = ({ startDate, tasksMap }: Props) => {
   const [taskForSelectedDate, setTaskForSelectedDate] = useState<TaskInterface[]>([]);
   const lastWeekDayIndex = weekStartsOn === 0 ? 6 : 7;
   const days: Array<{
-    key: string;
     date: Date;
     dateIsToday: boolean;
     isFirstDayOfMonth: boolean;
+    key: string;
     weekDayIndex: number;
   }> = useMemo(() => {
     const weeks = getWeeksInMonth(startDate);
@@ -52,11 +53,11 @@ const CalendarMonthView = ({ startDate, tasksMap }: Props) => {
         return [
           ...dayAcc,
           {
-            key,
             date,
             dateIsToday,
-            weekDayIndex,
             isFirstDayOfMonth: isFirstDayOfMonth(date),
+            key,
+            weekDayIndex,
           },
         ];
       }, weekAcc);

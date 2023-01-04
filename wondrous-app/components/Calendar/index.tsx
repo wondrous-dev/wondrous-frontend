@@ -154,7 +154,7 @@ const Calendar = ({ tasksMap, onChange, startDate, endDate }: Props) => {
       {view === CALENDAR_DAY_GRID_VIEW.Month ? (
         <CalendarMonthView startDate={startDate} tasksMap={tasksMap} />
       ) : (
-        <CalendarWeekView />
+        <CalendarWeekView startDate={startDate} tasksMap={tasksMap} />
       )}
     </>
   );

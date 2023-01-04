@@ -11,6 +11,7 @@ const styles = {
   column: {
     cursor: 'default',
     width: '100%',
+    minHeight: '200px',
     '&.ColumnToday .ColumnHeader, &:hover .ColumnHeader': {
       backgroundColor: palette.grey85,
       transition: 'all 0.3s ease-in-out',
