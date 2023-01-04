@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useCallback, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import debounce from 'lodash/debounce';
 
 import { useMe } from 'components/Auth/withAuth';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
-import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries';
+import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST, GET_ORG_ROLES } from 'graphql/queries';
 
 import { DefaultUserImage, SafeImage } from 'components/Common/Image';
 import RolePill from 'components/Common/RolePill';
@@ -40,9 +40,6 @@ function MemberRequests(props) {
 
   const [selectedRoleIds, setSelectedRoleIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isDataBeingSearched, setIsDataBeingSearched] = useState(false);
-  const [filteredOrgMembers, setFilteredOrgMembers] = useState([]);
-  const [filteredOrgMemberRequests, setFilteredOrgMemberRequests] = useState([]);
 
   const {
     data: orgUserMembershipRequests,
@@ -138,12 +135,10 @@ function MemberRequests(props) {
 
   const handleSearchQueryOnChange = useCallback(
     async (e) => {
-      // setIsDataBeingSearched(true);
       const searchQuery = e.target.value;
       setSearchQuery(searchQuery);
       handleSearchOrgMembershipRequests(searchQuery, selectedRoleIds);
       handleSearchOrgMembers(searchQuery, selectedRoleIds);
-      // setIsDataBeingSearched(false);
     },
     [selectedRoleIds, handleSearchOrgMembershipRequests, handleSearchOrgMembers]
   );
@@ -201,16 +196,10 @@ function MemberRequests(props) {
           handleShowMoreRequests={handleShowMoreRequests}
           approveRequest={approveRequest}
           declineRequest={declineRequest}
-          isDataBeingSearched={isDataBeingSearched}
         />
       )}
 
-      <ExistingMembers
-        orgUsers={orgUsers}
-        hasMore={hasMoreOrgUsers}
-        handleShowMoreOrgUsers={handleShowMoreOrgUsers}
-        isDataBeingSearched={isDataBeingSearched}
-      />
+      <ExistingMembers orgUsers={orgUsers} hasMore={hasMoreOrgUsers} handleShowMoreOrgUsers={handleShowMoreOrgUsers} />
     </MembersWrapper>
   );
 }

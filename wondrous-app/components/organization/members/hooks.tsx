@@ -49,7 +49,7 @@ export const useGetOrgUsers = (orgId, searchString = '', roleIds = []) => {
   const [previousSearchQuery, setPreviousSearchQuery] = useState('');
   const [previousRoleFilter, setPreviousRoleFilter] = useState([]);
 
-  const [getOrgUsers, { data, fetchMore, previousData, variables, called, client }] = useLazyQuery(GET_ORG_USERS, {
+  const [getOrgUsers, { data, fetchMore, previousData, variables }] = useLazyQuery(GET_ORG_USERS, {
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ getOrgUsers }) => {

@@ -2,7 +2,6 @@ import { SmallAvatar } from 'components/Common/AvatarList';
 import { SafeImage } from 'components/Common/Image';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import { NoUnderlineLink } from 'components/Common/Link/links';
 import RolePill from 'components/Common/RolePill';
 import { format } from 'date-fns';
 import { useState } from 'react';
@@ -29,18 +28,10 @@ type Props = {
   handleShowMoreRequests?: () => void;
   declineRequest: (requestId: string) => void;
   approveRequest: (requestId: string) => void;
-  isDataBeingSearched?: boolean;
 };
 
 const MembershipRequests = (props: Props) => {
-  const {
-    orgUserMembershipRequests,
-    hasMore,
-    handleShowMoreRequests,
-    declineRequest,
-    approveRequest,
-    isDataBeingSearched,
-  } = props;
+  const { orgUserMembershipRequests, hasMore, handleShowMoreRequests, declineRequest, approveRequest } = props;
 
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
 
@@ -114,7 +105,7 @@ const MembershipRequests = (props: Props) => {
         ))}
       </MemberRequestsList>
 
-      {hasMore && !isDataBeingSearched && <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>}
+      {hasMore && <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>}
     </RequestsContainer>
   );
 };
