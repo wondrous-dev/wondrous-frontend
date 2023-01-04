@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import * as Sentry from '@sentry/nextjs';
+import isEqual from 'lodash/isEqual';
 import { GET_ORG_MEMBERSHIP_REQUEST, GET_ORG_USERS } from 'graphql/queries';
 import { QUERY_LIMIT } from './constants';
 
@@ -45,26 +46,23 @@ export const useGetOrgMemberRequests = (orgId) => {
 export const useGetOrgUsers = (orgId, searchString = '', roleIds = []) => {
   const [hasMore, setHasMore] = useState(false);
   const [isInitialFetchForThePage, setIsInitialFetchForThePage] = useState(true);
-  const [isAFilteredSearch, setIsAFilteredSearch] = useState(false);
+  const [previousSearchQuery, setPreviousSearchQuery] = useState('');
+  const [previousRoleFilter, setPreviousRoleFilter] = useState([]);
 
-  const [getOrgUsers, { data, fetchMore, previousData, variables }] = useLazyQuery(GET_ORG_USERS, {
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
+  const [getOrgUsers, { data, fetchMore, previousData, variables, called, client }] = useLazyQuery(GET_ORG_USERS, {
+    fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ getOrgUsers }) => {
-      const isDataBeingFiltered = variables?.searchString || variables?.roleIds?.length > 0;
       const isPreviousDataValid = previousData && previousData?.getOrgUsers?.length > 1;
       const previousDataLength = previousData?.getOrgUsers?.length;
       const currentDataLength = getOrgUsers?.length;
       let updatedDataLength = isPreviousDataValid ? currentDataLength - previousDataLength : currentDataLength;
 
-      if (isDataBeingFiltered && !isAFilteredSearch) {
-        setIsAFilteredSearch(true);
-        updatedDataLength = currentDataLength;
-      }
+      const isDataBeingFiltered = variables?.searchString || variables?.roleIds?.length > 0;
+      const isANewSearch =
+        previousSearchQuery !== variables?.searchString || !isEqual(previousRoleFilter, variables?.roleIds);
 
-      if (isAFilteredSearch && !isDataBeingFiltered) {
-        setIsAFilteredSearch(false);
+      if (isANewSearch) {
         updatedDataLength = currentDataLength;
       }
 
@@ -72,6 +70,11 @@ export const useGetOrgUsers = (orgId, searchString = '', roleIds = []) => {
         setHasMore(currentDataLength >= QUERY_LIMIT);
       } else {
         updatedDataLength >= 0 && setHasMore(updatedDataLength >= QUERY_LIMIT);
+      }
+
+      if (isDataBeingFiltered) {
+        setPreviousSearchQuery(variables?.searchString);
+        setPreviousRoleFilter(variables?.roleIds);
       }
     },
     onError: (error) => {

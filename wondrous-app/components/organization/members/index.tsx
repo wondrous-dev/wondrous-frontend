@@ -49,13 +49,6 @@ function MemberRequests(props) {
     fetchMore: fetchMoreOrgMemberRequests,
     hasMore: hasMoreOrgMemberRequests,
   } = useGetOrgMemberRequests(orgId);
-  // const [openGR15Modal, setOpenGR15Modal] = useState(false);
-  // const [getOrgUsers, { fetchMore: fetchMoreOrgUsers }] = useLazyQuery(GET_ORG_USERS, {
-  //   fetchPolicy: 'network-only',
-  //   variables: {
-  //     orgId,
-  //   },
-  // });
   const { getOrgUsers, data: orgUsers, fetchMore: fetchMoreOrgUsers, hasMore: hasMoreOrgUsers } = useGetOrgUsers(orgId);
   const { data: orgRoles } = useQuery(GET_ORG_ROLES, {
     variables: {
@@ -82,14 +75,6 @@ function MemberRequests(props) {
   }, []);
 
   const showOrgMembershipRequestsEmptyState = orgUserMembershipRequests?.length === 0;
-
-  const handleRoleFilterChange = (roleId: string) => {
-    const isRoleIdAlreadySelected = selectedRoleIds.includes(roleId);
-    const updatedRoleIds = isRoleIdAlreadySelected
-      ? selectedRoleIds.filter((id) => id !== roleId)
-      : [...selectedRoleIds, roleId];
-    setSelectedRoleIds(updatedRoleIds);
-  };
 
   const approveRequest = (id) => {
     approveJoinOrgRequest({
@@ -129,6 +114,11 @@ function MemberRequests(props) {
   };
 
   const handleSearchOrgMembershipRequests = useCallback(
+    debounce(async (searchQuery = '', selectedRoleIds = []) => {}, 500),
+    []
+  );
+
+  const handleSearchOrgMembers = useCallback(
     debounce(async (searchQuery = '', selectedRoleIds = []) => {
       if (!orgId) {
         return;
@@ -143,28 +133,32 @@ function MemberRequests(props) {
         },
       });
     }, 500),
-    [orgId]
+    [orgId, QUERY_LIMIT]
   );
 
-  const handleSearchOrgMembers = useCallback(
-    debounce(async (searchQuery = '', selectedRoleIds = []) => {}, 500),
-    []
+  const handleSearchQueryOnChange = useCallback(
+    async (e) => {
+      // setIsDataBeingSearched(true);
+      const searchQuery = e.target.value;
+      setSearchQuery(searchQuery);
+      handleSearchOrgMembershipRequests(searchQuery, selectedRoleIds);
+      handleSearchOrgMembers(searchQuery, selectedRoleIds);
+      // setIsDataBeingSearched(false);
+    },
+    [selectedRoleIds, handleSearchOrgMembershipRequests, handleSearchOrgMembers]
   );
 
-  const handleSearchQueryOnChange = async (e) => {
-    setIsDataBeingSearched(true);
-    const searchQuery = e.target.value;
-    setSearchQuery(searchQuery);
-    await handleSearchOrgMembershipRequests(searchQuery);
-    await handleSearchOrgMembers(searchQuery);
-    setIsDataBeingSearched(false);
-  };
-
-  // const getUserInitials = (name) =>
-  //   name
-  //     .split(' ')
-  //     .map((word) => word[0])
-  //     .join('');
+  const handleRoleFilterChange = useCallback(
+    (roleId: string) => {
+      const isRoleIdAlreadySelected = selectedRoleIds.includes(roleId);
+      const updatedRoleIds = isRoleIdAlreadySelected
+        ? selectedRoleIds.filter((id) => id !== roleId)
+        : [...selectedRoleIds, roleId];
+      setSelectedRoleIds(updatedRoleIds);
+      handleSearchOrgMembers(searchQuery, updatedRoleIds);
+    },
+    [selectedRoleIds, searchQuery, handleSearchOrgMembers]
+  );
 
   return (
     <MembersWrapper>
@@ -210,73 +204,6 @@ function MemberRequests(props) {
           isDataBeingSearched={isDataBeingSearched}
         />
       )}
-
-      {/* {!showEmptyState && (
-        <RequestsContainer>
-          <MemberRequestsList>
-            <RequestCount>{orgUserMembershipRequests?.length} Requests</RequestCount>
-
-            {orgUserMembershipRequests?.map((request) => (
-              <MemberRequestCard key={request.id}>
-                <NoUnderlineLink href={`/profile/${request.userUsername}/about`} passHref>
-                  <MemberProfileLink>
-                    {request.userProfilePicture ? (
-                      <SafeImage
-                        width={28}
-                        height={28}
-                        style={{ width: '28px', height: '28px', borderRadius: '50%' }}
-                        src={request.userProfilePicture}
-                        useNextImage
-                        alt="User profile picture"
-                      />
-                    ) : (
-                      <SmallAvatar
-                        id={request.id}
-                        username={request.userUsername}
-                        initials={getUserInitials(request.userUsername)}
-                        style={{ width: '28px', height: '28px' }}
-                      />
-                    )}
-                    {request?.checkIsGr15Contributor?.isGr15Contributor && (
-                      <>
-                        <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                        <GR15DEILogo
-                          style={{
-                            marginLeft: '-8px',
-                          }}
-                          width="28"
-                          height="28"
-                          onClick={() => setOpenGR15Modal(true)}
-                        />
-                      </>
-                    )}
-                    <MemberName>{request.userUsername}</MemberName>
-                  </MemberProfileLink>
-                </NoUnderlineLink>
-                <MemberMessage style={{ marginRight: '8px' }}>“{request.message}”</MemberMessage>
-
-                <MemberRequestDetails>
-                  <MemberRequestDate>{format(new Date(request.createdAt), 'MMM dd, yyyy')}</MemberRequestDate>
-                  <RolePill roleName={request.roleName} backgroundColor={palette.grey85} />
-                </MemberRequestDetails>
-
-                <RequestActionButtons>
-                  <RequestDeclineButton onClick={() => declineRequest(request.id)}>Decline</RequestDeclineButton>
-                  <RequestApproveButton
-                    onClick={() => {
-                      approveRequest(request.id);
-                    }}
-                  >
-                    Approve
-                  </RequestApproveButton>
-                </RequestActionButtons>
-              </MemberRequestCard>
-            ))}
-          </MemberRequestsList>
-
-          {hasMore && <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>}
-        </RequestsContainer>
-      )} */}
 
       <ExistingMembers
         orgUsers={orgUsers}
