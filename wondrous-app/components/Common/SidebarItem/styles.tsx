@@ -28,7 +28,8 @@ export const ButtonIcon = styled.div`
     bgColor || (isActive && `${theme.palette.highlightPurple}`) || `${theme.palette.grey87}`};
   border-radius: ${({ roundedBg }) => (roundedBg ? '50%' : '4px')};
   ${ItemButton}:hover & {
-    background: ${({ theme, disableHover }) => !disableHover && theme.palette.highlightPurple};
+    background: ${({ theme, disableHover, hoverColor }) =>
+      !disableHover && (hoverColor || theme.palette.highlightPurple)};
   }
   svg {
     path {

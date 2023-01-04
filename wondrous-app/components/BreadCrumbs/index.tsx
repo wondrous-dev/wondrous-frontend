@@ -109,7 +109,6 @@ const BreadCrumbs = () => {
         const Component = ITEMS_MAP[item] || null;
         return (
           <>
-            {' '}
             <Component key={idx} pageType={pageType} />
             {idx !== config.length - 1 && <div className="separator">/</div>}
           </>

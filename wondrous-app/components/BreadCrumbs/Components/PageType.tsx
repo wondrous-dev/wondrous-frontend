@@ -23,6 +23,7 @@ import HexagonIcon from 'components/Icons/Sidebar/hexagon.svg';
 import NotificationsIcon from 'components/Icons/Sidebar/notifications.svg';
 import ReceiptIcon from 'components/Icons/Sidebar/receipt.svg';
 import WrenchIcon from 'components/Icons/wrench';
+import palette from 'theme/palette';
 import { PageTypeItemButton } from './styles';
 
 export const PAGE_TYPES = {
@@ -149,6 +150,7 @@ const PAGE_TYPES_MAP = {
   },
 };
 
+// #474747
 const PageType = ({ pageType = '' }) => {
   const { pageData = {} } = useGlobalContext();
 
@@ -159,7 +161,7 @@ const PageType = ({ pageType = '' }) => {
   return (
     <PageTypeItemButton disableRipple type="button" disableHover>
       <IconTextWrapper>
-        <ItemButtonIcon>{Icon ? <Icon /> : null}</ItemButtonIcon>
+        <ItemButtonIcon hoverColor={palette.grey78}>{Icon ? <Icon /> : null}</ItemButtonIcon>
         <ItemButtonText>{label}</ItemButtonText>
       </IconTextWrapper>
     </PageTypeItemButton>
