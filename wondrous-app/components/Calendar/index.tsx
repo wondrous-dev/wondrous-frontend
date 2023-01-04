@@ -19,10 +19,10 @@ import CalendarMonthView from 'components/Calendar/CalendarMonthView';
 import CalendarWeekView from 'components/Calendar/CalendarWeekView';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import InfoIcon from 'components/Icons/infoIcon';
-import styles from './styles';
 import WonderButton from 'components/Button';
 import { CALENDAR_CONFIG, CALENDAR_DAY_GRID_VIEW } from 'utils/constants';
 import { TaskInterface } from 'types/task';
+import styles from './styles';
 
 type Props = {
   tasksMap: {
@@ -143,11 +143,11 @@ const Calendar = ({ tasksMap, onChange, startDate, endDate }: Props) => {
         </Grid>
 
         <Grid item>
-          {!isAlertHidden ? (
+          {!isAlertHidden && (
             <Alert onClose={handleAlertClose} sx={styles.infoAlert} severity="info" icon={<InfoIcon />}>
               Only tasks with due dates are displayed
             </Alert>
-          ) : null}
+          )}
         </Grid>
       </Grid>
 

@@ -7,7 +7,6 @@ import pluralize from 'pluralize';
 import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
-import Calendar from 'components/Calendar';
 import { Chevron } from '../../Icons/sections';
 import {
   BoardsContainer,
@@ -21,6 +20,7 @@ import {
 const KanbanBoard = dynamic(() => import('../KanbanBoard/kanbanBoard'), { suspense: true });
 const Table = dynamic(() => import('components/Table'), { suspense: true });
 const ListView = dynamic(() => import('components/ListView'), { suspense: true });
+const CalendarBoard = dynamic(() => import('components/Common/CalendarBoard'), { suspense: true });
 
 type Props = {
   columns: Array<any>;
@@ -59,35 +59,17 @@ function Boards(props: Props) {
 
   function renderBoard() {
     const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
+    let board;
 
     if (view === ViewType.Calendar) {
-      // TODO: This is temporary solution
-      const tasksMap = columns.reduce((acc, col) => {
-        col.tasks.forEach((task) => {
-          if (task.dueDate) {
-            const key = task.dueDate.replace(/T.*/g, '');
-
-            acc[key] = acc[key] || [];
-            acc[key].push(task);
-          }
-        });
-
-        return acc;
-      }, {});
-
-      return <Calendar tasksMap={tasksMap} />;
+      board = <CalendarBoard />;
+    } else if (view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL) {
+      board = <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />;
+    } else {
+      board = <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />;
     }
 
-    return view ? (
-      <Suspense>
-        {/* TEMPORARY until we come up with a list view for proposals */}
-        {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
-          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
-        ) : (
-          <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
-        )}
-      </Suspense>
-    ) : null;
+    return <Suspense>{board}</Suspense>;
   }
 
   function renderSearchResults() {

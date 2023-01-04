@@ -42,6 +42,9 @@ import {
 import { OrgBoardContext } from 'utils/contexts';
 import { usePageDataContext } from 'utils/hooks';
 import Boards from 'components/organization/boards/boards';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
+import { format } from 'date-fns';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -98,7 +101,12 @@ const useGetOrgTaskBoardTasks = ({
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
           : // double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
-      const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
+      let taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
+
+      if (filters.fromDate) {
+        taskBoardLimit = 1000;
+      }
+
       getOrgTaskBoardTasks({
         variables: {
           orgId,
@@ -108,6 +116,8 @@ const useGetOrgTaskBoardTasks = ({
           statuses: taskBoardStatuses,
           limit: taskBoardLimit,
           labelId: filters?.labelId,
+          fromDate: filters.fromDate ? format(filters.fromDate, 'yyyy-MM-dd') : null,
+          toDate: filters.toDate ? format(filters.toDate, 'yyyy-MM-dd') : null,
           date: filters?.date,
           types: [entityType],
           category: filters?.category,
@@ -364,6 +374,10 @@ function BoardsPage() {
     labelId: null,
     date: null,
     privacyLevel: null,
+    // fromDate: null,
+    // toDate: null,
+    fromDate: startOfMonth(new Date()),
+    toDate: endOfMonth(new Date()),
   });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
@@ -400,6 +414,17 @@ function BoardsPage() {
     }
   }, [userId]);
 
+  const handleActiveViewChange = (newView) => {
+    if (newView === ViewType.Calendar) {
+      setFilters({ ...filters, fromDate: startOfMonth(new Date()), toDate: endOfMonth(new Date()) });
+    } else if (filters.toDate) {
+      // remove date filter if view is not calendar
+      setFilters({ ...filters, fromDate: null, toDate: null });
+    }
+
+    setActiveView(newView);
+  };
+
   const deleteUserIdFilter = () => {
     const routerQuery = { ...router.query };
     delete routerQuery.userId;
@@ -417,6 +442,7 @@ function BoardsPage() {
     if (type !== entityType) {
       setIsLoading(true);
     }
+
     const query: any = { ...router.query, entity: type };
 
     delete query.cause;
@@ -426,7 +452,7 @@ function BoardsPage() {
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
     });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
-      setActiveView(ViewType.Grid);
+      handleActiveViewChange(ViewType.Grid);
       query.view = ViewType.Grid;
     }
 
@@ -698,13 +724,14 @@ function BoardsPage() {
         entityType,
         setEntityType: handleEntityTypeChange,
         activeView,
-        setActiveView,
+        setActiveView: handleActiveViewChange,
         user: getUserData?.getUser,
         deleteUserIdFilter,
         fetchPerStatus,
         onLoadMore: fetchMore,
         hasMore: orgTaskHasMore,
         filters,
+        handleFilterChange,
         hasActiveFilters,
       }}
     >

@@ -5,7 +5,7 @@ import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import Grid from '@mui/material/Grid';
 import isFirstDayOfMonth from 'date-fns/isFirstDayOfMonth';
 import isToday from 'date-fns/isToday';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import setDate from 'date-fns/setDate';
 import startOfMonth from 'date-fns/startOfMonth';
 import Typography from '@mui/material/Typography';
@@ -30,14 +30,15 @@ const CalendarMonthView = ({ startDate, tasksMap }: Props) => {
   const router = useRouter();
   const { weekStartsOn, weekDays, maxTasksForMonthView } = CALENDAR_CONFIG;
   const [selectedDate, setSelectedDate] = useState<Date>(null);
-  const [selectedDateTasks, setSelectedDateTasks] = useState<TaskInterface[]>([]);
+  const [taskForSelectedDate, setTaskForSelectedDate] = useState<TaskInterface[]>([]);
 
-  const weeks = getWeeksInMonth(startDate);
-  const startDayOfWeek = startOfMonth(startDate).getDay();
+  const weeks = useMemo(() => getWeeksInMonth(startDate), [startDate]);
+  const startDayOfWeek = useMemo(() => startOfMonth(startDate).getDay(), [startDate]);
   const lastWeekDayIndex = weekStartsOn === 0 ? 6 : 7;
+
   const closeViewTasksModal = () => {
     setSelectedDate(null);
-    setSelectedDateTasks([]);
+    setTaskForSelectedDate([]);
   };
 
   return (
@@ -122,7 +123,7 @@ const CalendarMonthView = ({ startDate, tasksMap }: Props) => {
                       variant="text"
                       onClick={() => {
                         setSelectedDate(date);
-                        setSelectedDateTasks(tasks);
+                        setTaskForSelectedDate(tasks);
                       }}
                       sx={styles.moreButton}
                     >
@@ -138,7 +139,7 @@ const CalendarMonthView = ({ startDate, tasksMap }: Props) => {
 
       <ViewTasksModal
         selectedDate={selectedDate}
-        tasks={selectedDateTasks}
+        tasks={taskForSelectedDate}
         open={!!selectedDate}
         onClose={closeViewTasksModal}
       />
