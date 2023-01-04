@@ -309,6 +309,20 @@ function ConfigPaymentMethodModal(props) {
           <PaymentMethodSubHeader>Chain </PaymentMethodSubHeader>
           <DropdownSelect
             value={chain}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  width: '100%',
+                  maxWidth: 260,
+                  background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
+                  padding: '15px',
+
+                  '*::-webkit-scrollbar': {
+                    width: 100,
+                  },
+                },
+              },
+            }}
             setValue={setChain}
             innerStyle={{
               marginTop: 0,
