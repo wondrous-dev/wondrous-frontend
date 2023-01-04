@@ -39,7 +39,14 @@ function OrgMemberPage() {
       }}
     >
       <EntitySidebar>
-        <MemberRequests orgData={org} />
+        <MemberRequests
+          orgData={org}
+          userPermissionsContext={
+            userPermissionsContext?.getUserPermissionContext
+              ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+              : null
+          }
+        />
       </EntitySidebar>
     </OrgBoardContext.Provider>
   );

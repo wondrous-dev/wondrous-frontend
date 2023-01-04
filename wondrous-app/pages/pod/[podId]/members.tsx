@@ -29,7 +29,15 @@ function PodMembersPage() {
       }}
     >
       <EntitySidebar>
-        <MemberRequests podId={podId} podData={data?.getPodById} />
+        <MemberRequests
+          podId={podId}
+          podData={data?.getPodById}
+          userPermissionsContext={
+            userPermissionsContext?.getUserPermissionContext
+              ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+              : null
+          }
+        />
       </EntitySidebar>
     </PodBoardContext.Provider>
   );
