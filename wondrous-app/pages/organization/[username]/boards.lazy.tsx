@@ -1,5 +1,4 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
@@ -44,7 +43,11 @@ import { usePageDataContext } from 'utils/hooks';
 import Boards from 'components/organization/boards/boards';
 import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns/endOfMonth';
-import { format } from 'date-fns';
+import endOfWeek from 'date-fns/endOfWeek';
+import format from 'date-fns/format';
+import isFirstDayOfMonth from 'date-fns/isFirstDayOfMonth';
+import isLastDayOfMonth from 'date-fns/isLastDayOfMonth';
+import startOfWeek from 'date-fns/startOfWeek';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -107,17 +110,27 @@ const useGetOrgTaskBoardTasks = ({
         taskBoardLimit = 1000;
       }
 
+      let fromDate = filters.fromDate;
+      let toDate = filters.toDate;
+      // it formats dates to select start and end of the calendar
+      if (filters.fromDate) {
+        if (isFirstDayOfMonth(fromDate) && isLastDayOfMonth(toDate)) {
+          fromDate = startOfWeek(fromDate);
+          toDate = endOfWeek(toDate);
+        }
+      }
+
       getOrgTaskBoardTasks({
         variables: {
           orgId,
+          fromDate: fromDate ? format(fromDate, 'yyyy-MM-dd') : null,
+          toDate: toDate ? format(toDate, 'yyyy-MM-dd') : null,
           podIds: filters?.podIds,
           priorities: filters?.priorities,
           offset: 0,
           statuses: taskBoardStatuses,
           limit: taskBoardLimit,
           labelId: filters?.labelId,
-          fromDate: filters.fromDate ? format(filters.fromDate, 'yyyy-MM-dd') : null,
-          toDate: filters.toDate ? format(filters.toDate, 'yyyy-MM-dd') : null,
           date: filters?.date,
           types: [entityType],
           category: filters?.category,
@@ -374,10 +387,8 @@ function BoardsPage() {
     labelId: null,
     date: null,
     privacyLevel: null,
-    // fromDate: null,
-    // toDate: null,
-    fromDate: startOfMonth(new Date()),
-    toDate: endOfMonth(new Date()),
+    fromDate: view === ViewType.Calendar ? startOfMonth(new Date()) : null,
+    toDate: view === ViewType.Calendar ? endOfMonth(new Date()) : null,
   });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');

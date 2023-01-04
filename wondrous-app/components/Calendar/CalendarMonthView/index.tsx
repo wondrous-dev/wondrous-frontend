@@ -31,10 +31,37 @@ const CalendarMonthView = ({ startDate, tasksMap }: Props) => {
   const { weekStartsOn, weekDays, maxTasksForMonthView } = CALENDAR_CONFIG;
   const [selectedDate, setSelectedDate] = useState<Date>(null);
   const [taskForSelectedDate, setTaskForSelectedDate] = useState<TaskInterface[]>([]);
-
-  const weeks = useMemo(() => getWeeksInMonth(startDate), [startDate]);
-  const startDayOfWeek = useMemo(() => startOfMonth(startDate).getDay(), [startDate]);
   const lastWeekDayIndex = weekStartsOn === 0 ? 6 : 7;
+  const days: Array<{
+    key: string;
+    date: Date;
+    dateIsToday: boolean;
+    isFirstDayOfMonth: boolean;
+    weekDayIndex: number;
+  }> = useMemo(() => {
+    const weeks = getWeeksInMonth(startDate);
+    const startDayOfWeek = startOfMonth(startDate).getDay();
+
+    return new Array(weeks).fill(weeks).reduce((weekAcc, week, weekIndex) => {
+      return weekDays.reduce((dayAcc, weekDay, weekDayIndex) => {
+        const day = weekIndex * 7 + weekDayIndex + 1 - startDayOfWeek;
+        const date = setDate(startDate, day);
+        const key = `day-${format(date, 'yyyy-MM-dd')}`;
+        const dateIsToday = isToday(date);
+
+        return [
+          ...dayAcc,
+          {
+            key,
+            date,
+            dateIsToday,
+            weekDayIndex,
+            isFirstDayOfMonth: isFirstDayOfMonth(date),
+          },
+        ];
+      }, weekAcc);
+    }, []);
+  }, [startDate]);
 
   const closeViewTasksModal = () => {
     setSelectedDate(null);
@@ -52,89 +79,82 @@ const CalendarMonthView = ({ startDate, tasksMap }: Props) => {
           </Grid>
         ))}
 
-        {new Array(weeks).fill(weeks).map((week, weekIndex) =>
-          weekDays.map((weekDay, weekDayIndex) => {
-            const day = weekIndex * 7 + weekDayIndex + 1 - startDayOfWeek;
-            const key = `day-${day - weekIndex * 7 + weekDayIndex}`;
-            const date = setDate(startDate, day);
-            const dateIsToday = isToday(date);
-            const dateFormat = isFirstDayOfMonth(date) ? 'LLL d' : 'd';
-            const tasks = tasksMap[format(date, 'yyyy-MM-dd')] ?? [];
+        {days.map(({ key, date, dateIsToday, isFirstDayOfMonth, weekDayIndex }) => {
+          const tasks = tasksMap[format(date, 'yyyy-MM-dd')] ?? [];
 
-            return (
+          return (
+            <Grid
+              key={key}
+              item
+              xs={1}
+              className={dateIsToday ? 'ColumnToday' : ''}
+              sx={{
+                borderRight: weekDayIndex === lastWeekDayIndex ? 'none' : `1px solid ${palette.grey101}`,
+                ...styles.column,
+              }}
+            >
               <Grid
-                key={key}
+                className="ColumnHeader"
+                container
                 item
-                xs={1}
-                className={dateIsToday ? 'ColumnToday' : ''}
-                sx={{
-                  borderRight: weekDayIndex === lastWeekDayIndex ? 'none' : `1px solid ${palette.grey101}`,
-                  ...styles.column,
-                }}
+                justifyContent="center"
+                alignItems="center"
+                sx={styles.columnHeader}
               >
-                <Grid
-                  className="ColumnHeader"
-                  container
-                  item
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={styles.columnHeader}
-                >
-                  <Box className="ColumnHeaderText" sx={{ color: palette.grey57 }}>
-                    {format(date, dateFormat)}
-                  </Box>
-                </Grid>
-
-                {/* Contains tasks and more button */}
-                <Grid container wrap="nowrap" direction="column" className="ColumnBody" sx={styles.columnBody}>
-                  {tasks.slice(0, maxTasksForMonthView).map((task) => (
-                    <SmartLink
-                      asLink
-                      key={task.id}
-                      href={`${router.asPath}&task=${task.id}`}
-                      preventLinkNavigation
-                      onNavigate={() => {
-                        const query = {
-                          ...router.query,
-                          task: task.id,
-                        };
-
-                        router.push({ query }, undefined, { scroll: false, shallow: true });
-                      }}
-                    >
-                      <Grid key={task.title} wrap="nowrap" mb="10px" container height="16px">
-                        <Box>
-                          <TaskStatus
-                            style={{
-                              width: '16px',
-                              height: '16px',
-                            }}
-                            status={task?.status}
-                          />
-                        </Box>
-                        <Typography noWrap sx={styles.taskTitle}>
-                          {task.title}
-                        </Typography>
-                      </Grid>
-                    </SmartLink>
-                  ))}
-                  {tasks.length > maxTasksForMonthView ? (
-                    <Button
-                      variant="text"
-                      onClick={() => {
-                        setSelectedDate(date);
-                        setTaskForSelectedDate(tasks);
-                      }}
-                      sx={styles.moreButton}
-                    >
-                      {tasks.length - maxTasksForMonthView} more
-                    </Button>
-                  ) : null}
-                </Grid>
+                <Box className="ColumnHeaderText" sx={{ color: palette.grey57 }}>
+                  {format(date, isFirstDayOfMonth ? 'LLL d' : 'd')}
+                </Box>
               </Grid>
-            );
-          })
-        )}
+
+              {/* Contains tasks and more button */}
+              <Grid container wrap="nowrap" direction="column" className="ColumnBody" sx={styles.columnBody}>
+                {tasks.slice(0, maxTasksForMonthView).map((task) => (
+                  <SmartLink
+                    asLink
+                    key={task.id}
+                    href={`${router.asPath}&task=${task.id}`}
+                    preventLinkNavigation
+                    onNavigate={() => {
+                      const query = {
+                        ...router.query,
+                        task: task.id,
+                      };
+
+                      router.push({ query }, undefined, { scroll: false, shallow: true });
+                    }}
+                  >
+                    <Grid key={task.title} wrap="nowrap" mb="10px" container height="16px">
+                      <Box>
+                        <TaskStatus
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                          }}
+                          status={task?.status}
+                        />
+                      </Box>
+                      <Typography noWrap sx={styles.taskTitle}>
+                        {task.title}
+                      </Typography>
+                    </Grid>
+                  </SmartLink>
+                ))}
+                {tasks.length > maxTasksForMonthView ? (
+                  <Button
+                    variant="text"
+                    onClick={() => {
+                      setSelectedDate(date);
+                      setTaskForSelectedDate(tasks);
+                    }}
+                    sx={styles.moreButton}
+                  >
+                    {tasks.length - maxTasksForMonthView} more
+                  </Button>
+                ) : null}
+              </Grid>
+            </Grid>
+          );
+        })}
       </Grid>
 
       <ViewTasksModal
