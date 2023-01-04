@@ -1,6 +1,6 @@
-export default function OrgSettingsIcon() {
+export default function OrgSettingsIcon(props) {
   return (
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
         d="M7.78768 9.52848C8.78146 9.52848 9.58708 8.72286 9.58708 7.72908C9.58708 6.73531 8.78146 5.92969 7.78768 5.92969C6.7939 5.92969 5.98828 6.73531 5.98828 7.72908C5.98828 8.72286 6.7939 9.52848 7.78768 9.52848Z"
         stroke="white"

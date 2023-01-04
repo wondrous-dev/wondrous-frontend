@@ -1,15 +1,51 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useMemo } from 'react';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
+import { OrgSelector, PageType, PodSelector } from './Components';
+import { PAGE_TYPES } from './Components/PageType';
+import { Container } from './styles';
 
 const ORG_DEFAULT_CONFIG = ['org'];
-const POD_DEFAULT_CONFIG = ['pod'];
+const POD_DEFAULT_CONFIG = ['org', 'pod'];
 
-const items = {
-  org: () => <div>org logo</div>,
-  pod: () => <div>pod logo</div>,
-  entityType: ({ entityType }) => <div>entity type</div>,
-  settings: () => <div>settings</div>,
+const PATH_TO_COMPONENT = {
+  '/organization/[username]/home': PAGE_TYPES.HOMEPAGE,
+  '/organization/[username]/members': PAGE_TYPES.MEMBERS,
+  '/organization/[username]/analytics': PAGE_TYPES.LEADERBOARD,
+  '/organization/[username]/docs': PAGE_TYPES.DOCUMENTATION,
+  '/organization/[username]/grants': ENTITIES_TYPES.GRANT,
+  '/organization/[username]/pods': ENTITIES_TYPES.POD,
+  '/organization/[username]/collaborations': ENTITIES_TYPES.COLLAB,
+  '/organization/settings/[orgId]/general': PAGE_TYPES.SETTINGS,
+  '/organization/settings/[orgId]/wallet': PAGE_TYPES.SETTINGS_CONFIGURE_WALLET,
+  '/organization/settings/[orgId]/token-gating': PAGE_TYPES.SETTINGS_TOKEN_GATING,
+  '/organization/settings/[orgId]/integrations': PAGE_TYPES.SETTINGS_INTEGRATIONS_SETTINGS,
+  '/organization/settings/[orgId]/payment-method': PAGE_TYPES.SETTINGS_PAYMENT_METHOD,
+  '/organization/settings/[orgId]/payouts': PAGE_TYPES.SETTINGS_PAYMENT_LEDGER,
+  '/organization/settings/[orgId]/members': PAGE_TYPES.SETTINGS_MEMBERS,
+  '/organization/settings/[orgId]/roles': PAGE_TYPES.SETTINGS_ROLES,
+  '/organization/settings/[orgId]/notifications': PAGE_TYPES.SETTINGS_NOTIFICATIONS,
+  '/organization/settings/[orgId]/task-import': PAGE_TYPES.SETTINGS_TASK_IMPORT,
+  '/pod/[podId]/analytics': PAGE_TYPES.LEADERBOARD,
+  '/pod/[podId]/docs': PAGE_TYPES.DOCUMENTATION,
+  '/pod/[podId]/grants': ENTITIES_TYPES.GRANT,
+  '/pod/[podId]/members': PAGE_TYPES.MEMBERS,
+  '/pod/settings/[podId]/general': PAGE_TYPES.SETTINGS,
+  '/pod/settings/[podId]/wallet': PAGE_TYPES.SETTINGS_CONFIGURE_WALLET,
+  '/pod/settings/[podId]/github': PAGE_TYPES.SETTINGS_GITHUB,
+  '/pod/settings/[podId]/members': PAGE_TYPES.SETTINGS_MEMBERS,
+  '/pod/settings/[podId]/notifications': PAGE_TYPES.SETTINGS_NOTIFICATIONS,
+  '/pod/settings/[podId]/payouts': PAGE_TYPES.SETTINGS_PAYMENT_LEDGER,
+  '/pod/settings/[podId]/roles': PAGE_TYPES.SETTINGS_ROLES,
+  '/pod/settings/[podId]/task-import': PAGE_TYPES.SETTINGS_TASK_IMPORT,
+};
+
+const ITEMS_MAP = {
+  org: OrgSelector,
+  pod: PodSelector,
+  pageType: ({ pageType }) => <PageType pageType={pageType} />,
+  entityType: () => <PageType />,
   undefined: () => null,
 };
 
@@ -21,13 +57,12 @@ const buildConfig = (pageData, router) => {
   if (pageData?.pod) {
     config = [...POD_DEFAULT_CONFIG];
   }
-
   if (pageData?.entityType) {
     config.push('entityType');
   }
 
-  if (pageData?.isSettings) {
-    config.push('settings');
+  if (PATH_TO_COMPONENT[router.pathname]) {
+    config.push('pageType');
   }
   return config;
 };
@@ -42,8 +77,6 @@ const useConfig = () => {
   const activeOrg = pageData?.orgData;
 
   const orgOrPodExists = !!activeOrg || !!activePodOrg;
-
-  const { thumbnailPicture, profilePicture, name } = activeOrg || activePodOrg || {};
 
   useEffect(() => {
     if (!orgOrPodExists) return;
@@ -60,18 +93,6 @@ const BreadCrumbs = () => {
 
   const { config } = useConfig();
 
-  useEffect(() => {
-    router.events.on('routeChangeComplete', (url) => {
-      console.log('routeChangeComplete', url);
-      // if page is : 'settings' and 'settings' is not in history push to history
-      const path = router.pathname;
-      // const pathExists = config.find((item) => item.path === path);
-      // if (!pathExists) {
-      //     setConfig((prev) => [...prev, {path}]);
-      // }
-    });
-  }, []);
-
   const handleBack = () => {
     // go back
     const path = config[config.length - 1];
@@ -79,25 +100,22 @@ const BreadCrumbs = () => {
     router.back();
   };
 
+  const pageType = PATH_TO_COMPONENT[router.pathname];
   if (!config?.length) return null;
 
   return (
-    <div>
-      <button type="button" onClick={handleBack}>
-        Back
-      </button>
-      <button type="button">Forward</button>
+    <Container>
       {config.map((item: string, idx) => {
-        console.log(item);
-        const Component = items[item] || null;
+        const Component = ITEMS_MAP[item] || null;
         return (
-          <div key={idx}>
-            <Component />
-          </div>
+          <>
+            {' '}
+            <Component key={idx} pageType={pageType} />
+            {idx !== config.length - 1 && <div className="separator">/</div>}
+          </>
         );
       })}
-      {/* {config.map(() => items[item])} */}
-    </div>
+    </Container>
   );
 };
 
