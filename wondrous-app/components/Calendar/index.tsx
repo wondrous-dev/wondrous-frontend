@@ -20,22 +20,18 @@ import CalendarWeekView from 'components/Calendar/CalendarWeekView';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import InfoIcon from 'components/Icons/infoIcon';
 import WonderButton from 'components/Button';
-import { CALENDAR_CONFIG, CALENDAR_DAY_GRID_VIEW } from 'utils/constants';
+import { CALENDAR_CONFIG, CALENDAR_VIEW } from 'utils/constants';
+import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
 import { TaskInterface } from 'types/task';
 import styles from './styles';
 
-type Props = {
-  tasksMap: {
-    [key: string]: TaskInterface[];
-  };
-  startDate: Date;
-  endDate: Date;
+type Props = CalendarMonthAndWeekViewProps & {
   // Function called when the user navigates from one view to another (e.g. from month view to week view)
-  onChange: (startDate: Date, endDate: Date) => unknown;
+  onChange: (startDate: Date, endDate: Date) => void;
 };
 
-const Calendar = ({ tasksMap, onChange, startDate, endDate }: Props) => {
-  const [view, setView] = useState<CALENDAR_DAY_GRID_VIEW>(CALENDAR_CONFIG.defaultView);
+const Calendar = ({ tasksMap, onChange, startDate }: Props) => {
+  const [view, setView] = useState<CALENDAR_VIEW>(CALENDAR_CONFIG.defaultView);
   const [isAlertHidden, setIsAlertHidden] = useState<boolean>(!!localStorage.getItem('hideCalendarAlert'));
 
   // Select previous week or month
@@ -43,7 +39,7 @@ const Calendar = ({ tasksMap, onChange, startDate, endDate }: Props) => {
     let newStartDate;
     let newEndDate;
 
-    if (view === CALENDAR_DAY_GRID_VIEW.Month) {
+    if (view === CALENDAR_VIEW.Month) {
       newStartDate = subMonths(startDate, 1);
       newEndDate = endOfMonth(newStartDate);
     } else {
@@ -59,7 +55,7 @@ const Calendar = ({ tasksMap, onChange, startDate, endDate }: Props) => {
     let newStartDate;
     let newEndDate;
 
-    if (view === CALENDAR_DAY_GRID_VIEW.Month) {
+    if (view === CALENDAR_VIEW.Month) {
       newStartDate = addMonths(startDate, 1);
       newEndDate = endOfMonth(newStartDate);
     } else {
@@ -74,7 +70,7 @@ const Calendar = ({ tasksMap, onChange, startDate, endDate }: Props) => {
     let newStartDate;
     let newEndDate;
 
-    if (view === CALENDAR_DAY_GRID_VIEW.Month) {
+    if (view === CALENDAR_VIEW.Month) {
       newStartDate = startOfMonth(new Date());
       newEndDate = endOfMonth(newStartDate);
     } else {
@@ -151,7 +147,7 @@ const Calendar = ({ tasksMap, onChange, startDate, endDate }: Props) => {
         </Grid>
       </Grid>
 
-      {view === CALENDAR_DAY_GRID_VIEW.Month ? (
+      {view === CALENDAR_VIEW.Month ? (
         <CalendarMonthView startDate={startDate} tasksMap={tasksMap} />
       ) : (
         <CalendarWeekView startDate={startDate} tasksMap={tasksMap} />

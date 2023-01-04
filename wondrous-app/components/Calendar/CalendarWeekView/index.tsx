@@ -1,28 +1,20 @@
-import React, { useContext, useEffect, useMemo } from 'react';
-import format from 'date-fns/format';
 import addDays from 'date-fns/addDays';
-import isToday from 'date-fns/isToday';
 import Box from '@mui/material/Box';
+import format from 'date-fns/format';
 import Grid from '@mui/material/Grid';
+import isToday from 'date-fns/isToday';
+import React, { useMemo } from 'react';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 
 import palette from 'theme/palette';
-import styles from 'components/Calendar/CalendarWeekView/styles';
 import SmartLink from 'components/Common/SmartLink';
-import { TaskInterface } from 'types/task';
+import styles from 'components/Calendar/CalendarWeekView/styles';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { CALENDAR_CONFIG } from 'utils/constants';
+import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
 
-// TODO: Use common file
-type Props = {
-  startDate: Date;
-  tasksMap: {
-    [key: string]: TaskInterface[];
-  };
-};
-
-const CalendarWeekView = ({ startDate, tasksMap }: Props) => {
+const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps) => {
   const router = useRouter();
   const daysInWeek = CALENDAR_CONFIG.weekDays.length;
 

@@ -863,18 +863,18 @@ export const PAGES_WITH_NO_ENTITY_SIDEBAR = ['/explore'];
 
 export const EMPTY_RICH_TEXT_STRING = '[{"children":[{"text":""}],"type":"paragraph"}]';
 
-export enum CALENDAR_DAY_GRID_VIEW {
+export enum CALENDAR_VIEW {
   Month = 'month',
   Week = 'week',
 }
 
 export const CALENDAR_CONFIG = {
-  defaultView: CALENDAR_DAY_GRID_VIEW.Month,
+  defaultView: CALENDAR_VIEW.Month,
   weekStartsOn: 0 as 0 | 1 | 2 | 3 | 4 | 5 | 6, // the index of the first day of the week (0 - Sunday)
   maxTasksForMonthView: 3,
   weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   dayGridViews: [
-    { label: 'Month View', value: CALENDAR_DAY_GRID_VIEW.Month },
-    { label: 'Week View', value: CALENDAR_DAY_GRID_VIEW.Week },
+    { label: 'Month View', value: CALENDAR_VIEW.Month },
+    { label: 'Week View', value: CALENDAR_VIEW.Week },
   ],
 };

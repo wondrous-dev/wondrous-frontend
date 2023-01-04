@@ -14,20 +14,13 @@ import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import SmartLink from 'components/Common/SmartLink';
 import styles from 'components/Calendar/CalendarMonthView/styles';
-import { CALENDAR_CONFIG } from 'utils/constants';
-import { TaskInterface } from 'types/task';
 import TaskStatus from 'components/Icons/TaskStatus';
 import ViewTasksModal from 'components/Calendar/CalendarMonthView/ViewTasksModal';
+import { CALENDAR_CONFIG } from 'utils/constants';
+import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
+import { TaskInterface } from 'types/task';
 
-// TODO: Use common file
-type Props = {
-  startDate: Date;
-  tasksMap: {
-    [key: string]: TaskInterface[];
-  };
-};
-
-const CalendarMonthView = ({ startDate, tasksMap }: Props) => {
+const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps) => {
   const router = useRouter();
   const { weekStartsOn, weekDays, maxTasksForMonthView } = CALENDAR_CONFIG;
   const [selectedDate, setSelectedDate] = useState<Date>(null);

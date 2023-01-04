@@ -11,6 +11,7 @@ const CalendarBoard = () => {
     return columns.reduce((acc, col) => {
       col.tasks.forEach((task) => {
         if (task.dueDate) {
+          // key in format yyyy-MM-dd
           const key = task.dueDate.replace(/T.*/g, '');
 
           acc[key] = acc[key] || [];
@@ -34,7 +35,6 @@ const CalendarBoard = () => {
     <Calendar
       tasksMap={tasksMap}
       startDate={filters.fromDate}
-      endDate={filters.toDate}
       onChange={handleCalendarChange}
     />
   );
