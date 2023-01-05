@@ -2,11 +2,13 @@ import { NextRouter } from 'next/router';
 import React from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 
+export type EntitiesType = typeof ENTITIES_TYPES[keyof typeof ENTITIES_TYPES] | null;
+
 export interface IListItemProps {
   LeftComponent: React.ElementType;
   RightComponent?: React.ElementType;
   data?: object;
-  onClick?: (router: NextRouter, data?) => void;
+  onClick?: (params: { router?: NextRouter; data?; entityLink?: string }) => unknown;
 }
 
 export interface IHeaderTitleProps {
@@ -29,5 +31,3 @@ export interface ListWrapperProps {
   }>;
   ListItemProps: Omit<IListItemProps, 'data'>;
 }
-
-export type EntitiesType = typeof ENTITIES_TYPES[keyof typeof ENTITIES_TYPES] | null;

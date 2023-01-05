@@ -73,7 +73,7 @@ const useSidebarData = () => {
     ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgData?.id) || ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgId);
 
   const data = [
-    !!(orgBoard && !board?.orgData?.shared) && {
+    {
       items: [
         {
           text: 'Project Home',

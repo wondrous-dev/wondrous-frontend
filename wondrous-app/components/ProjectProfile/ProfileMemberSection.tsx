@@ -3,7 +3,7 @@ import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import RolePill from 'components/Common/RolePill';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import palette from 'theme/palette';
-import { useGetOrgUsers } from './helpers';
+import { useGetUsers } from './helpers';
 import SectionContent from './SectionContent';
 import { ProfileGrid } from './styles';
 
@@ -34,9 +34,9 @@ const ProfileMemberSection = () => (
     ListItemProps={{
       LeftComponent,
       RightComponent,
-      onClick: (router, { user }) => router.push(`/profile/${user.username}/about`),
+      onClick: ({ router, data: { user } }) => router.push(`/profile/${user.username}/about`),
     }}
-    data={useGetOrgUsers()}
+    data={useGetUsers()}
   />
 );
 
