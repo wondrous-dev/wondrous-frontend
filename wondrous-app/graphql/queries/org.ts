@@ -277,8 +277,14 @@ export const GET_JOIN_ORG_REQUESTS = gql`
 
 // used in org members tab
 export const GET_ORG_MEMBERSHIP_REQUEST = gql`
-  query getOrgMembershipRequest($orgId: ID!, $limit: Int, $offset: Int) {
-    getOrgMembershipRequest(orgId: $orgId, limit: $limit, offset: $offset) {
+  query getOrgMembershipRequest($orgId: ID!, $limit: Int, $offset: Int, $searchString: String, $roleIds: [String]) {
+    getOrgMembershipRequest(
+      orgId: $orgId
+      limit: $limit
+      offset: $offset
+      searchString: $searchString
+      roleIds: $roleIds
+    ) {
       id
       userId
       orgId

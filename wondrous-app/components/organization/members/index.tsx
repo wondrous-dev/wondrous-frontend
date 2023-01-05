@@ -42,6 +42,7 @@ function MemberRequests(props) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const {
+    getOrgUserMembershipRequests,
     data: orgUserMembershipRequests,
     fetchMore: fetchMoreOrgMemberRequests,
     hasMore: hasMoreOrgMemberRequests,
@@ -111,8 +112,21 @@ function MemberRequests(props) {
   };
 
   const handleSearchOrgMembershipRequests = useCallback(
-    debounce(async (searchQuery = '', selectedRoleIds = []) => {}, 500),
-    []
+    debounce(async (searchQuery = '', selectedRoleIds = []) => {
+      if (!orgId) {
+        return;
+      }
+
+      getOrgUserMembershipRequests({
+        variables: {
+          orgId,
+          searchString: searchQuery,
+          roleIds: selectedRoleIds,
+          limit: QUERY_LIMIT,
+        },
+      });
+    }, 500),
+    [orgId, QUERY_LIMIT]
   );
 
   const handleSearchOrgMembers = useCallback(
@@ -150,9 +164,10 @@ function MemberRequests(props) {
         ? selectedRoleIds.filter((id) => id !== roleId)
         : [...selectedRoleIds, roleId];
       setSelectedRoleIds(updatedRoleIds);
+      handleSearchOrgMembershipRequests(searchQuery, updatedRoleIds);
       handleSearchOrgMembers(searchQuery, updatedRoleIds);
     },
-    [selectedRoleIds, searchQuery, handleSearchOrgMembers]
+    [selectedRoleIds, searchQuery, handleSearchOrgMembershipRequests, handleSearchOrgMembers]
   );
 
   return (
