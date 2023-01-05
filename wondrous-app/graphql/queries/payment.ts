@@ -6,6 +6,75 @@ import {
   UnpaidSubmissionFragment,
 } from '../fragments/payment';
 
+export const GET_PAYMENT_BY_ID = gql`
+  query getPaymentById($paymentId: ID) {
+    getPaymentById(paymentId: $paymentId) {
+      createdAt
+      id
+      taskId
+      submissionId
+      grantId
+      grantApplicationId
+      orgId
+      podId
+      payeeId
+      payerWalletId
+      web3AddressId
+      recipientAddress
+      paymentMethodId
+      txHash
+      safeTxHash
+      amount
+      notes
+      payedAt
+      status
+      type
+      additionalData {
+        manualExplorerLink
+        utopiaLink
+      }
+      task {
+        title
+      }
+      submission {
+        description
+      }
+      payerWallet {
+        name
+        address
+        type
+        chain
+      }
+      payee {
+        id
+        username
+        profilePicture
+        thumbnailPicture
+      }
+      paymentMethod {
+        tokenAddress
+        chain
+        tokenName
+        symbol
+        icon
+      }
+      grant {
+        id
+        title
+      }
+      grantApplication {
+        id
+        title
+      }
+      media {
+        slug
+        name
+        type
+      }
+    }
+  }
+`;
+
 export const GET_PAYMENT_METHODS_FOR_ORG = gql`
   query getPaymentMethodsForOrg($orgId: ID!, $includeDeactivated: Boolean) {
     getPaymentMethodsForOrg(orgId: $orgId, includeDeactivated: $includeDeactivated) {

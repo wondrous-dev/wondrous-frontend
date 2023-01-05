@@ -370,6 +370,12 @@ export const PayoutItemLinkContainer = styled.a`
   }
 `;
 
+export const MoreActionDiv = styled.a`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 export const PayoutTaskTitleContainer = styled.div`
   padding: 6px 8px;
   font-family: ${typography.fontFamily};

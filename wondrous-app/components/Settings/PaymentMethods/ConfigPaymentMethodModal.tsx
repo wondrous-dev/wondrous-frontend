@@ -2,7 +2,6 @@ import { useMutation, useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
 
 import Ethereum from 'components/Icons/ethereum';
-import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
