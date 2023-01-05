@@ -1,5 +1,7 @@
+import { Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useMemo } from 'react';
+import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
 import { OrgSelector, PageType, PodSelector } from './Components';
@@ -67,7 +69,6 @@ const buildConfig = (pageData, router) => {
   return config;
 };
 const useConfig = () => {
-  const [config, setConfig] = useState<String[]>([]);
   const router = useRouter();
 
   const { pageData } = useGlobalContext();
@@ -78,31 +79,23 @@ const useConfig = () => {
 
   const orgOrPodExists = !!activeOrg || !!activePodOrg;
 
-  useEffect(() => {
-    if (!orgOrPodExists) return;
-    setConfig(buildConfig(pageData, router));
-  }, [pageData?.orgData, pageData?.pod]);
+  const config = useMemo(() => {
+    if (!orgOrPodExists) return [];
+    return buildConfig(pageData, router);
+  }, [pageData?.orgData, pageData?.pod, router, pageData?.entityType]);
 
   return { config };
 };
 
 const BreadCrumbs = () => {
-  const [forwardPath, setForwardPath] = useState('');
-  //   const [config, setConfig] = useState<Config[]>([]);
   const router = useRouter();
 
   const { config } = useConfig();
 
-  const handleBack = () => {
-    // go back
-    const path = config[config.length - 1];
-    // setForwardPath(path);
-    router.back();
-  };
-
   const pageType = PATH_TO_COMPONENT[router.pathname];
   if (!config?.length) return null;
 
+  console.log(config, 'config');
   return (
     <Container>
       {config.map((item: string, idx) => {
@@ -110,7 +103,7 @@ const BreadCrumbs = () => {
         return (
           <>
             <Component key={idx} pageType={pageType} />
-            {idx !== config.length - 1 && <div className="separator">/</div>}
+            {idx !== config.length - 1 && <Typography color={palette.grey57}>/</Typography>}
           </>
         );
       })}

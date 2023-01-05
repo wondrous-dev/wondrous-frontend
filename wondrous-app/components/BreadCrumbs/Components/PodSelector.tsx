@@ -105,10 +105,12 @@ const PodSelector = () => {
               disablePortal
               onChange={(event, value, reason) => {
                 if (reason === 'selectOption') {
-                  // onChange(value.value);
+                  const searchParams = new URLSearchParams(window.location.search);
+                  const params = Object.fromEntries(searchParams.entries());
                   router.push(
                     {
-                      pathname: `/pod/${value.id}/boards`,
+                      pathname: router.pathname,
+                      query: { ...router.query, ...params, podId: value.id },
                     },
                     undefined,
                     { shallow: true }

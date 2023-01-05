@@ -88,13 +88,13 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
               </Grid>
             ) : null}
             <BreadCrumbs />
-            <GlobalSearch />
             <Grid display="flex" gap="14px" position="relative" ref={activeModalType ? wrapperRef : null}>
               {displayCustomHeaderItem ? (
                 <HeaderItemWrapper ref={headerItemRef}>
                   <HeaderItems type={activeModalType} onClose={() => setActiveModalType(null)} />
                 </HeaderItemWrapper>
               ) : null}
+              <GlobalSearch />
               {!isMobile && (
                 <Wallet
                   isActive={activeModalType === TYPES.WALLET || !activeModalType}
