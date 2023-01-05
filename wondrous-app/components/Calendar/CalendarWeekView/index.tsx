@@ -22,19 +22,21 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
     date: Date;
     dateIsToday: boolean;
     key: string;
-  }> = useMemo(() => {
-    return new Array(daysInWeek).fill(daysInWeek).map((day, dayIndex) => {
-      const date = addDays(startDate, dayIndex);
-      const dateIsToday = isToday(date);
-      const key = `day-${format(date, 'yyyy-MM-dd')}`;
+  }> = useMemo(
+    () =>
+      new Array(daysInWeek).fill(daysInWeek).map((day, dayIndex) => {
+        const date = addDays(startDate, dayIndex);
+        const dateIsToday = isToday(date);
+        const key = `day-${format(date, 'yyyy-MM-dd')}`;
 
-      return {
-        date,
-        dateIsToday,
-        key,
-      };
-    });
-  }, [startDate]);
+        return {
+          date,
+          dateIsToday,
+          key,
+        };
+      }),
+    [startDate]
+  );
 
   return (
     <Grid container wrap="nowrap" sx={styles.wrapper}>
@@ -65,34 +67,32 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
               <Box className="ColumnHeaderText">{format(date, 'ccc d')}</Box>
             </Grid>
             <Grid container item className="ColumnBody" rowSpacing="20px" sx={styles.columnBody}>
-              {tasks?.map((task) => {
-                return (
-                  <SmartLink
-                    key={task.id}
-                    href={`${router.asPath}&task=${task.id}`}
-                    preventLinkNavigation
-                    onNavigate={() => {
-                      const query = {
-                        ...router.query,
-                        task: task.id,
-                      };
+              {tasks?.map((task) => (
+                <SmartLink
+                  key={task.id}
+                  href={`${router.asPath}&task=${task.id}`}
+                  preventLinkNavigation
+                  onNavigate={() => {
+                    const query = {
+                      ...router.query,
+                      task: task.id,
+                    };
 
-                      router.push({ query }, undefined, { scroll: false, shallow: true });
-                    }}
-                  >
-                    <Grid item display="flex" wrap="nowrap" sx={{ width: '100%' }}>
-                      <TaskStatus
-                        style={{
-                          width: '16px',
-                          height: '16px',
-                        }}
-                        status={task?.status}
-                      />
-                      <Typography sx={styles.taskTitle}>{task.title}</Typography>
-                    </Grid>
-                  </SmartLink>
-                );
-              })}
+                    router.push({ query }, undefined, { scroll: false, shallow: true });
+                  }}
+                >
+                  <Grid item display="flex" wrap="nowrap" sx={{ width: '100%' }}>
+                    <TaskStatus
+                      style={{
+                        width: '16px',
+                        height: '16px',
+                      }}
+                      status={task?.status}
+                    />
+                    <Typography sx={styles.taskTitle}>{task.title}</Typography>
+                  </Grid>
+                </SmartLink>
+              ))}
             </Grid>
           </Grid>
         );

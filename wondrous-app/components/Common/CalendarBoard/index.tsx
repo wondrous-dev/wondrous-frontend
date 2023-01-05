@@ -17,21 +17,23 @@ const CalendarBoard = () => {
   }
 
   // Convert columns into the flat structure
-  const tasksMap = useMemo(() => {
-    return columns.reduce((acc, col) => {
-      col.tasks.forEach((task) => {
-        if (task.dueDate) {
-          // key in format yyyy-MM-dd
-          const key = task.dueDate.replace(/T.*/g, '');
+  const tasksMap = useMemo(
+    () =>
+      columns.reduce((acc, col) => {
+        col.tasks.forEach((task) => {
+          if (task.dueDate) {
+            // key in format yyyy-MM-dd
+            const key = task.dueDate.replace(/T.*/g, '');
 
-          acc[key] = acc[key] || [];
-          acc[key].push(task);
-        }
-      });
+            acc[key] = acc[key] || [];
+            acc[key].push(task);
+          }
+        });
 
-      return acc;
-    }, {});
-  }, [columns]);
+        return acc;
+      }, {}),
+    [columns]
+  );
 
   const handleCalendarChange = (fromDate: Date, toDate: Date) => {
     handleFilterChange({

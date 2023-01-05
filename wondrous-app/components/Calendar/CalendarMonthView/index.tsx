@@ -36,25 +36,27 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
     const weeks = getWeeksInMonth(startDate);
     const startDayOfWeek = startOfMonth(startDate).getDay();
 
-    return new Array(weeks).fill(weeks).reduce((weekAcc, week, weekIndex) => {
-      return weekDays.reduce((dayAcc, weekDay, weekDayIndex) => {
-        const day = weekIndex * 7 + weekDayIndex + 1 - startDayOfWeek;
-        const date = setDate(startDate, day);
-        const key = `day-${format(date, 'yyyy-MM-dd')}`;
-        const dateIsToday = isToday(date);
+    return new Array(weeks).fill(weeks).reduce(
+      (weekAcc, week, weekIndex) =>
+        weekDays.reduce((dayAcc, weekDay, weekDayIndex) => {
+          const day = weekIndex * 7 + weekDayIndex + 1 - startDayOfWeek;
+          const date = setDate(startDate, day);
+          const key = `day-${format(date, 'yyyy-MM-dd')}`;
+          const dateIsToday = isToday(date);
 
-        return [
-          ...dayAcc,
-          {
-            date,
-            dateIsToday,
-            isFirstDayOfMonth: isFirstDayOfMonth(date),
-            key,
-            weekDayIndex,
-          },
-        ];
-      }, weekAcc);
-    }, []);
+          return [
+            ...dayAcc,
+            {
+              date,
+              dateIsToday,
+              isFirstDayOfMonth: isFirstDayOfMonth(date),
+              key,
+              weekDayIndex,
+            },
+          ];
+        }, weekAcc),
+      []
+    );
   }, [startDate]);
 
   const closeViewTasksModal = () => {
