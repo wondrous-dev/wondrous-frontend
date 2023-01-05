@@ -236,8 +236,14 @@ export const GET_JOIN_POD_REQUESTS = gql`
 `;
 
 export const GET_POD_MEMBERSHIP_REQUEST = gql`
-  query getPodMembershipRequest($podId: ID!, $limit: Int, $offset: Int) {
-    getPodMembershipRequest(podId: $podId, limit: $limit, offset: $offset) {
+  query getPodMembershipRequest($podId: ID!, $limit: Int, $offset: Int, $searchString: String, $roleIds: [String]) {
+    getPodMembershipRequest(
+      podId: $podId
+      limit: $limit
+      offset: $offset
+      searchString: $searchString
+      roleIds: $roleIds
+    ) {
       id
       userId
       orgId

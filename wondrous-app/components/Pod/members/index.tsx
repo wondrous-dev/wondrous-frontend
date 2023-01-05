@@ -42,6 +42,7 @@ function MemberRequests(props) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const {
+    getPodUserMembershipRequests,
     data: podUserMembershipRequests,
     fetchMore: fetchMorePodMemberRequests,
     hasMore: hasMorePodMemberRequests,
@@ -110,8 +111,21 @@ function MemberRequests(props) {
   };
 
   const handleSearchPodMembershipRequests = useCallback(
-    debounce(async (searchQuery = '', selectedRoleIds = []) => {}, 500),
-    []
+    debounce(async (searchQuery = '', selectedRoleIds = []) => {
+      if (!podId) {
+        return;
+      }
+
+      getPodUserMembershipRequests({
+        variables: {
+          podId,
+          searchString: searchQuery,
+          roleIds: selectedRoleIds,
+          limit: QUERY_LIMIT,
+        },
+      });
+    }, 500),
+    [podId, QUERY_LIMIT]
   );
 
   const handleSearchPodMembers = useCallback(
