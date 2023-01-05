@@ -4,7 +4,7 @@ import debounce from 'lodash/debounce';
 
 import { useMe } from 'components/Auth/withAuth';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
-import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST, GET_ORG_ROLES } from 'graphql/queries';
+import { GET_ORG_MEMBERSHIP_REQUEST, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries';
 
 import { DefaultUserImage, SafeImage } from 'components/Common/Image';
 import RolePill from 'components/Common/RolePill';
@@ -56,13 +56,26 @@ function MemberRequests(props) {
 
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
+
   const refetchQueries = [
-    GET_ORG_FROM_USERNAME,
     {
       query: GET_ORG_MEMBERSHIP_REQUEST,
       variables: {
         orgId,
-        limit: orgUserMembershipRequests?.length - 1 ? orgUserMembershipRequests.length - 1 : QUERY_LIMIT,
+        limit: orgUserMembershipRequests?.length >= QUERY_LIMIT ? orgUserMembershipRequests.length : QUERY_LIMIT,
+        offset: 0,
+        searchString: searchQuery,
+        roleIds: selectedRoleIds,
+      },
+    },
+    {
+      query: GET_ORG_USERS,
+      variables: {
+        orgId,
+        limit: orgUsers?.length >= QUERY_LIMIT ? orgUsers.length : QUERY_LIMIT,
+        offset: 0,
+        searchString: searchQuery,
+        roleIds: selectedRoleIds,
       },
     },
   ];
