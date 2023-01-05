@@ -27,7 +27,7 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
-import { sectionOpeningReducer } from 'utils/board';
+import {extendFiltersByView, sectionOpeningReducer} from 'utils/board';
 import {
   ENTITIES_TYPES,
   PRIVACY_LEVEL,
@@ -59,6 +59,7 @@ const useGetOrgTaskBoardTasks = ({
   setIsLoading,
   search,
   filters,
+  view,
 }) => {
   const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -106,25 +107,9 @@ const useGetOrgTaskBoardTasks = ({
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       let taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
 
-      if (filters.fromDate) {
-        taskBoardLimit = 1000;
-      }
-
-      let fromDate = filters.fromDate;
-      let toDate = filters.toDate;
-      // it formats dates to select start and end of the calendar
-      if (filters.fromDate) {
-        if (isFirstDayOfMonth(fromDate) && isLastDayOfMonth(toDate)) {
-          fromDate = startOfWeek(fromDate);
-          toDate = endOfWeek(toDate);
-        }
-      }
-
       getOrgTaskBoardTasks({
         variables: {
           orgId,
-          fromDate: fromDate ? format(fromDate, 'yyyy-MM-dd') : null,
-          toDate: toDate ? format(toDate, 'yyyy-MM-dd') : null,
           podIds: filters?.podIds,
           priorities: filters?.priorities,
           offset: 0,
@@ -134,6 +119,7 @@ const useGetOrgTaskBoardTasks = ({
           date: filters?.date,
           types: [entityType],
           category: filters?.category,
+          ...extendFiltersByView(view, filters),
           ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
@@ -355,6 +341,7 @@ const useGetOrgTaskBoard = ({
       setIsLoading,
       search,
       filters,
+      view,
     }),
     proposals: useGetOrgTaskBoardProposals({
       listView,
@@ -387,8 +374,9 @@ function BoardsPage() {
     labelId: null,
     date: null,
     privacyLevel: null,
-    fromDate: view === ViewType.Calendar ? startOfMonth(new Date()) : null,
-    toDate: view === ViewType.Calendar ? endOfMonth(new Date()) : null,
+    // for the calendar view
+    fromDate: startOfMonth(new Date()),
+    toDate: endOfMonth(new Date()),
   });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
@@ -425,17 +413,6 @@ function BoardsPage() {
     }
   }, [userId]);
 
-  const handleActiveViewChange = (newView) => {
-    if (newView === ViewType.Calendar) {
-      setFilters({ ...filters, fromDate: startOfMonth(new Date()), toDate: endOfMonth(new Date()) });
-    } else if (filters.toDate) {
-      // remove date filter if view is not calendar
-      setFilters({ ...filters, fromDate: null, toDate: null });
-    }
-
-    setActiveView(newView);
-  };
-
   const deleteUserIdFilter = () => {
     const routerQuery = { ...router.query };
     delete routerQuery.userId;
@@ -463,7 +440,7 @@ function BoardsPage() {
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
     });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
-      handleActiveViewChange(ViewType.Grid);
+      setActiveView(ViewType.Grid);
       query.view = ViewType.Grid;
     }
 
@@ -735,7 +712,7 @@ function BoardsPage() {
         entityType,
         setEntityType: handleEntityTypeChange,
         activeView,
-        setActiveView: handleActiveViewChange,
+        setActiveView,
         user: getUserData?.getUser,
         deleteUserIdFilter,
         fetchPerStatus,

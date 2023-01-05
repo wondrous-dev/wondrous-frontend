@@ -1,10 +1,20 @@
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 
 import Calendar from 'components/Calendar';
 import { useBoards } from 'utils/hooks';
 
 const CalendarBoard = () => {
-  const { board: { filters, handleFilterChange, columns } } = useBoards();
+  const {
+    board: { filters, handleFilterChange, columns },
+  } = useBoards();
+
+  if (!handleFilterChange) {
+    throw new Error('Please add handleFilterChange function to the [Org|Pod]BoardContext.Provider');
+  }
+
+  if (!filters) {
+    throw new Error('Please add filters object to the [Org|Pod]BoardContext.Provider');
+  }
 
   // Convert columns into the flat structure
   const tasksMap = useMemo(() => {
@@ -31,13 +41,7 @@ const CalendarBoard = () => {
     });
   };
 
-  return (
-    <Calendar
-      tasksMap={tasksMap}
-      startDate={filters.fromDate}
-      onChange={handleCalendarChange}
-    />
-  );
+  return <Calendar tasksMap={tasksMap} startDate={filters.fromDate} onChange={handleCalendarChange} />;
 };
 
 export default CalendarBoard;

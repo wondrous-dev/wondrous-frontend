@@ -26,7 +26,7 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
-import { sectionOpeningReducer } from 'utils/board';
+import {extendFiltersByView, sectionOpeningReducer} from 'utils/board';
 import {
   ENTITIES_TYPES,
   PRIVACY_LEVEL,
@@ -39,6 +39,8 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useGlobalContext } from 'utils/hooks';
+import startOfMonth from "date-fns/startOfMonth";
+import endOfMonth from "date-fns/endOfMonth";
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -50,6 +52,7 @@ const useGetOrgTaskBoardTasks = ({
   setIsLoading,
   search,
   filters,
+  view,
 }) => {
   const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -107,6 +110,7 @@ const useGetOrgTaskBoardTasks = ({
           labelId: filters?.labelId,
           date: filters?.date,
           types: [entityType],
+          ...extendFiltersByView(view, filters),
           ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
@@ -296,7 +300,6 @@ const useGetOrgTaskBoard = ({
   columns,
   setColumns,
   setOrgTaskHasMore,
-
   orgId,
   userId,
   view,
@@ -328,6 +331,7 @@ const useGetOrgTaskBoard = ({
       setIsLoading,
       search,
       filters,
+      view,
     }),
     proposals: useGetOrgTaskBoardProposals({
       listView,
@@ -360,6 +364,9 @@ function BoardsPage() {
     labelId: null,
     date: null,
     privacyLevel: null,
+    // for the calendar view
+    fromDate: startOfMonth(new Date()),
+    toDate: endOfMonth(new Date()),
   });
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
@@ -654,6 +661,8 @@ function BoardsPage() {
         orgData,
         setSection,
         entityType,
+        filters,
+        handleFilterChange,
         setEntityType: handleEntityTypeChange,
         activeView,
         setActiveView,
