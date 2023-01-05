@@ -112,7 +112,7 @@ function PaymentViewModal(props) {
           )}
         </PaymentViewModalBody>
         <PaymentViewModalFooter>
-          <PaymentViewFooterButton onClick={handleClose}>Cancel</PaymentViewFooterButton>
+          <PaymentViewFooterButton onClick={handleClose}>Close</PaymentViewFooterButton>
         </PaymentViewModalFooter>
       </PaymentViewModalCard>
     </PaymentViewModalWrapper>
