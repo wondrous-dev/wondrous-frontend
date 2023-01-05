@@ -76,7 +76,7 @@ const ProfileCollabSection = () => (
     ListItemProps={{
       LeftComponent,
       RightComponent,
-      onClick: (router, { username }) => router.push(`/collaboration/${username}/boards`),
+      onClick: ({ router, data: { username } }) => router.push(`/collaboration/${username}/boards`),
     }}
     data={useGetOrgCollabsForOrg()}
   />

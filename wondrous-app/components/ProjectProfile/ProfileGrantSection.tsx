@@ -80,7 +80,7 @@ const ProfileGrantSection = () => (
     ListItemProps={{
       LeftComponent,
       RightComponent,
-      onClick: (router, { id }) => router.push(`/organization/${router.query.username}/grants?grant=${id}`),
+      onClick: ({ router, data: { id }, entityLink }) => router.push(`${entityLink}/grants?grant=${id}`),
     }}
     data={useGetGrantOrgBoard()}
   />

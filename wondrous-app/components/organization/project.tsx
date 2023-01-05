@@ -21,21 +21,21 @@ const OrgProject = () => {
     },
   });
   const { getOrgFromUsername: orgData } = data || {};
-  
+
   useEffect(() => {
     if (orgData) {
       setPageData({ orgData });
     }
   }, [orgData]);
 
-  useEffect(() => () => setPageData({}), [])
+  useEffect(() => () => setPageData({}), []);
 
   const contextValue = useMemo(
     () => ({
       userPermissionsContext: userPermissionsContext?.getUserPermissionContext
         ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
         : null,
-      orgData,
+      projectData: orgData,
       orgId: orgData?.id,
     }),
     [orgData, userPermissionsContext]
@@ -45,7 +45,7 @@ const OrgProject = () => {
     <OrgBoardContext.Provider value={contextValue}>
       <EntitySidebar>
         <Wrapper orgData={orgData}>
-          <ProjectProfile orgData={orgData} />
+          <ProjectProfile />
         </Wrapper>
       </EntitySidebar>
     </OrgBoardContext.Provider>

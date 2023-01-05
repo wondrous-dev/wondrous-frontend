@@ -59,7 +59,7 @@ const useSidebarData = () => {
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
   const data = [
-    !!(orgBoard && !board?.orgData?.shared) && {
+    {
       items: [
         {
           text: 'Project Home',
