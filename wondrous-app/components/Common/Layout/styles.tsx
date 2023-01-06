@@ -8,6 +8,10 @@ export const SectionWrapper = styled.section`
   min-height: 100vh;
   position: relative;
   top: ${HEADER_HEIGHT};
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    top: 0;
+  }
 `;
 
 export const BackdropComponent = styled(Backdrop)`

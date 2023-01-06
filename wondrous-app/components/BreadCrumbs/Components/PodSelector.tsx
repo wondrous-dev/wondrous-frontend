@@ -1,5 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
-import Grid from '@mui/material/Grid';
+import { ArrowIcon, Button, ButtonIcon, IconText, Text, IconWrapper } from 'components/Common/SidebarEntityMenu/styles';
 import {
   PodSearchAutocomplete,
   PodSearchAutocompletePopper,
@@ -66,7 +66,7 @@ const PodSelector = () => {
             }}
           />
           <PodTitle>{name}</PodTitle>
-          <ChevronFilled fill="white" isOpen={open} />
+          <ArrowIcon open={open} />
         </PodSelectorWrapper>
         <PodSearchPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal>
           {loading ? (

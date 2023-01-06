@@ -83,16 +83,17 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
           <Grid display="flex" width="100%" gap="14px">
             {!isMobileScreen || router.pathname === PAGE_PATHNAME.explore ? (
               // 192px is the width of the sidebar - sidebar styles width - 14px (padding)
-              <Grid maxWidth="192px">
+              <Grid maxWidth="192px" height="fit-content">
                 <EntityMenu />
               </Grid>
             ) : null}
-            <BreadCrumbs />
+            {isMobileScreen ? null : <BreadCrumbs />}
+            <GlobalSearch />
             <Grid
               display="flex"
               gap="14px"
               position="relative"
-              width="100%"
+              width="fit-content"
               justifyContent="end"
               ref={activeModalType ? wrapperRef : null}
             >
@@ -101,7 +102,6 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
                   <HeaderItems type={activeModalType} onClose={() => setActiveModalType(null)} />
                 </HeaderItemWrapper>
               ) : null}
-              <GlobalSearch />
               {!isMobile && (
                 <Wallet
                   isActive={activeModalType === TYPES.WALLET || !activeModalType}
@@ -128,7 +128,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
                   visibility={showCreateButton}
                   data-cy="header-button-create"
                 >
-                  <CreateIconOutlined id="tour-header-create-btn" />
+                  <CreateIconOutlined id="tour-header-create-btn" height="36px" width="36px" />
                 </HeaderCreateButton>
               )}
             </Grid>
