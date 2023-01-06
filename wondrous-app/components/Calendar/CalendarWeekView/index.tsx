@@ -39,15 +39,16 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
   );
 
   return (
-    <Grid container wrap="nowrap" sx={styles.wrapper}>
+    <Grid container sx={styles.wrapper} columns={7}>
       {days.map(({ key, date, dateIsToday }, dayIndex) => {
         const tasks = tasksMap[format(date, 'yyyy-MM-dd')] ?? [];
 
         return (
           <Grid
             key={key}
-            container
             item
+            xs={7}
+            md={1}
             className={dateIsToday ? 'ColumnToday' : ''}
             flexDirection="column"
             sx={{
@@ -66,7 +67,7 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
             >
               <Box className="ColumnHeaderText">{format(date, 'ccc d')}</Box>
             </Grid>
-            <Grid container item className="ColumnBody" rowSpacing="20px" sx={styles.columnBody}>
+            <Grid container className="ColumnBody" alignItems="flex-start" sx={styles.columnBody}>
               {tasks?.map((task) => (
                 <SmartLink
                   key={task.id}
@@ -81,7 +82,7 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
                     router.push({ query }, undefined, { scroll: false, shallow: true });
                   }}
                 >
-                  <Grid item display="flex" wrap="nowrap" sx={{ width: '100%' }}>
+                  <Grid container display="flex" wrap="nowrap" alignItems="center">
                     <TaskStatus
                       style={{
                         width: '16px',
@@ -89,7 +90,9 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
                       }}
                       status={task?.status}
                     />
-                    <Typography sx={styles.taskTitle}>{task.title}</Typography>
+                    <Typography noWrap sx={styles.taskTitle}>
+                      {task.title}
+                    </Typography>
                   </Grid>
                 </SmartLink>
               ))}

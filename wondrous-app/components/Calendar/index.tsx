@@ -22,7 +22,6 @@ import InfoIcon from 'components/Icons/infoIcon';
 import WonderButton from 'components/Button';
 import { CALENDAR_CONFIG, CALENDAR_VIEW } from 'utils/constants';
 import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
-import { TaskInterface } from 'types/task';
 import styles from './styles';
 
 type Props = CalendarMonthAndWeekViewProps & {
@@ -88,7 +87,7 @@ const Calendar = ({ tasksMap, onChange, startDate }: Props) => {
 
   return (
     <>
-      <Grid container alignItems="center" justifyContent="space-between">
+      <Grid container alignItems="center" justifyContent="space-between" gap="10px">
         <Grid item display="flex" alignItems="center">
           <Grid item>
             <WonderButton color="grey" borderRadius={6} onClick={handleTodayClick}>

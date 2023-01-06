@@ -37,17 +37,14 @@ const styles = {
   },
   columnBody: {
     padding: '10px 8px',
+    height: '100%',
   },
   taskTitle: {
     color: palette.white,
     marginLeft: '6px',
     fontSize: '12px',
     fontWeight: 500,
-    display: '-webkit-box',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    '-webkit-line-clamp': '3',
-    '-webkit-box-orient': 'vertical',
+
     '&:hover': {
       cursor: 'pointer',
       textDecoration: 'underline',

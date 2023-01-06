@@ -44,6 +44,7 @@ const styles = {
       margin: 0,
       fontSize: '15px',
       color: palette.white,
+      zIndex: 1,
     },
     formSelectStyle: {
       height: 'auto',

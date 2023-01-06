@@ -158,14 +158,14 @@ export default function BoardsActivity(props) {
       active: view === ViewType.Calendar,
       disabled: board?.entityType === ENTITIES_TYPES.PROPOSAL || isAdmin,
       action: () => {
-        if (setActiveView) {
-          setActiveView(ViewType.Calendar);
-          insertUrlParam('view', ViewType.Calendar);
-        } else {
-          router.replace(
-            `${delQuery(router.asPath)}?view=${ViewType.Calendar}${statusesQuery}${podIdsQuery}${userIdQuery}`
-          );
-        }
+        setActiveView(ViewType.Calendar);
+
+        const query = {
+          ...router.query,
+          view: ViewType.Calendar,
+        };
+
+        router.push({ query }, undefined, { scroll: false, shallow: true });
       },
     },
   ];
@@ -200,14 +200,12 @@ export default function BoardsActivity(props) {
   useHotkeys(
     HOTKEYS.CALENDAR_VIEW,
     () => {
-      if (setActiveView) {
-        setActiveView(ViewType.Calendar);
-        insertUrlParam('view', ViewType.Calendar);
-      } else {
-        router.replace(
-          `${delQuery(router.asPath)}?view=${ViewType.Calendar}${statusesQuery}${podIdsQuery}${userIdQuery}`
-        );
-      }
+      const query = {
+        ...router.query,
+        view: ViewType.Calendar,
+      };
+
+      router.push({ query }, undefined, { scroll: false, shallow: true });
     },
     [view]
   );

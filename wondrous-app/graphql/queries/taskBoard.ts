@@ -320,6 +320,8 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
     $offset: Int
     $date: String
     $onlyPublic: Boolean
+    $fromDate: String
+    $toDate: String
   ) {
     getUserTaskBoardTasks(
       input: {
@@ -332,6 +334,8 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
         offset: $offset
         date: $date
         onlyPublic: $onlyPublic
+        fromDate: $fromDate
+        toDate: $toDate
       }
     ) {
       ...TaskCardFragment

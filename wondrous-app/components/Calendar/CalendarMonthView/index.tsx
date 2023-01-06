@@ -66,7 +66,7 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
 
   return (
     <>
-      <Grid container wrap="wrap" columns={7} sx={styles.wrapper}>
+      <Grid container columns={7} sx={styles.wrapper}>
         {weekDays.map((weekDay) => (
           <Grid key={weekDay} item xs={1}>
             <Grid item display="flex" justifyContent="center" alignItems="center" sx={styles.weekDay}>
@@ -119,16 +119,20 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
                       router.push({ query }, undefined, { scroll: false, shallow: true });
                     }}
                   >
-                    <Grid key={task.title} wrap="nowrap" mb="10px" container height="16px">
-                      <Box>
-                        <TaskStatus
-                          style={{
-                            width: '16px',
-                            height: '16px',
-                          }}
-                          status={task?.status}
-                        />
-                      </Box>
+                    <Grid
+                      key={task.id}
+                      wrap="nowrap"
+                      mb="10px"
+                      alignItems="center"
+                      container
+                    >
+                      <TaskStatus
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                        }}
+                        status={task?.status}
+                      />
                       <Typography noWrap sx={styles.taskTitle}>
                         {task.title}
                       </Typography>
