@@ -1,5 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
-import { ArrowIcon, Button, ButtonIcon, IconText, Text, IconWrapper } from 'components/Common/SidebarEntityMenu/styles';
+import { ArrowIcon } from 'components/Common/SidebarEntityMenu/styles';
 import {
   PodSearchAutocomplete,
   PodSearchAutocompletePopper,
@@ -16,7 +16,6 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/PodSearch/styles';
 import { Spinner } from 'components/Dashboard/bounties/styles';
 import PodIcon from 'components/Icons/podIcon';
-import { Chevron, ChevronFilled } from 'components/Icons/sections';
 import { GET_USER_AVAILABLE_PODS } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -51,7 +50,7 @@ const PodSelector = () => {
         },
       });
     }
-  }, [open]);
+  }, [open, data]);
 
   return (
     <PodSearchClickAway onClickAway={handleClickAway}>
@@ -96,7 +95,7 @@ const PodSelector = () => {
               getOptionLabel={(option) => option.name}
               renderOption={(props, option) => (
                 <PodSearchListItem {...props} isActive={option.id === selectedValue?.id}>
-                  <PodSearchDefaultImage color={option?.color ?? '#474747'} />
+                  <PodSearchDefaultImage color={option?.color ?? palette.grey78} />
                   <PodSearchLabel>{option?.name}</PodSearchLabel>
                 </PodSearchListItem>
               )}

@@ -17,7 +17,7 @@ const CollabSelector = () => {
 
   return (
     <Grid display="flex" gap="14px" justifyContent="center" alignItems="center">
-      {collab?.parentOrgs?.map((org, idx) => (
+      {collab.parentOrgs?.map((org, idx) => (
         <>
           <OrgComponent username={org.username} profilePicture={org.profilePicture} />
           {idx < collab?.parentOrgs.length - 1 && (
