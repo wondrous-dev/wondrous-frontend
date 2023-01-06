@@ -13,6 +13,6 @@ export const Container = styled.div`
   font-size: 13px;
   line-height: 10px;
   border-radius: 220px;
-  padding: 6px 12px 6px 6px;
+  padding: 6px 12px;
   gap: 14px;
 `;

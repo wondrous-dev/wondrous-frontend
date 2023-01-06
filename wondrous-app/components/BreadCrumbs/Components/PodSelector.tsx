@@ -16,11 +16,13 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/PodSearch/styles';
 import { Spinner } from 'components/Dashboard/bounties/styles';
 import PodIcon from 'components/Icons/podIcon';
+import { Chevron, ChevronFilled } from 'components/Icons/sections';
 import { GET_USER_AVAILABLE_PODS } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import palette from 'theme/palette';
 import { useGlobalContext } from 'utils/hooks';
-import { PodTitle } from './styles';
+import { PodSelectorWrapper, PodTitle } from './styles';
 
 const PodSelector = () => {
   const router = useRouter();
@@ -54,7 +56,7 @@ const PodSelector = () => {
   return (
     <PodSearchClickAway onClickAway={handleClickAway}>
       <div>
-        <Grid onClick={handleClick} display="flex" justifyContent="center" alignItems="center" gap="14px">
+        <PodSelectorWrapper onClick={handleClick} display="flex" justifyContent="center" alignItems="center" gap="8px">
           <PodIcon
             color={color}
             style={{
@@ -64,7 +66,8 @@ const PodSelector = () => {
             }}
           />
           <PodTitle>{name}</PodTitle>
-        </Grid>
+          <ChevronFilled fill="white" isOpen={open} />
+        </PodSelectorWrapper>
         <PodSearchPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal>
           {loading ? (
             <Spinner />
@@ -92,7 +95,7 @@ const PodSelector = () => {
               isOptionEqualToValue={(option, value) => option.id === value?.id}
               getOptionLabel={(option) => option.name}
               renderOption={(props, option) => (
-                <PodSearchListItem {...props}>
+                <PodSearchListItem {...props} isActive={option.id === selectedValue?.id}>
                   <PodSearchDefaultImage color={option?.color ?? '#474747'} />
                   <PodSearchLabel>{option?.name}</PodSearchLabel>
                 </PodSearchListItem>

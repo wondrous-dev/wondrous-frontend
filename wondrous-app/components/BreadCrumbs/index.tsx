@@ -1,15 +1,15 @@
 import { Typography } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
-import { OrgSelector, PageType, PodSelector } from './Components';
+import { CollabSelector, OrgSelector, PageType, PodSelector } from './Components';
 import { PAGE_TYPES } from './Components/PageType';
 import { Container } from './styles';
 
 const ORG_DEFAULT_CONFIG = ['org'];
-const POD_DEFAULT_CONFIG = ['org', 'pod'];
+const COLLAB_DEFAULT_CONFIG = ['collab'];
 
 const PATH_TO_COMPONENT = {
   '/organization/[username]/home': PAGE_TYPES.HOMEPAGE,
@@ -41,11 +41,26 @@ const PATH_TO_COMPONENT = {
   '/pod/settings/[podId]/payouts': PAGE_TYPES.SETTINGS_PAYMENT_LEDGER,
   '/pod/settings/[podId]/roles': PAGE_TYPES.SETTINGS_ROLES,
   '/pod/settings/[podId]/task-import': PAGE_TYPES.SETTINGS_TASK_IMPORT,
+  '/collaboration/[username]/analytics': PAGE_TYPES.LEADERBOARD,
+  '/collaboration/[username]/docs': PAGE_TYPES.DOCUMENTATION,
+  '/collaboration/[username]/members': PAGE_TYPES.MEMBERS,
+  '/collaboration/settings/[orgId]/general': PAGE_TYPES.SETTINGS,
+  '/collaboration/settings/[orgId]/github': PAGE_TYPES.SETTINGS_GITHUB,
+  '/collaboration/settings/[orgId]/integrations': PAGE_TYPES.SETTINGS_INTEGRATIONS_SETTINGS,
+  '/collaboration/settings/[orgId]/members': PAGE_TYPES.SETTINGS_MEMBERS,
+  '/collaboration/settings/[orgId]/notifications': PAGE_TYPES.SETTINGS_NOTIFICATIONS,
+  '/collaboration/settings/[orgId]/payouts': PAGE_TYPES.SETTINGS_PAYMENT_LEDGER,
+  '/collaboration/settings/[orgId]/roles': PAGE_TYPES.SETTINGS_ROLES,
+  '/collaboration/settings/[orgId]/task-import': PAGE_TYPES.SETTINGS_TASK_IMPORT,
+  '/collaboration/settings/[orgId]/wallet': PAGE_TYPES.SETTINGS_CONFIGURE_WALLET,
+  '/collaboration/settings/[orgId]/token-gating': PAGE_TYPES.SETTINGS_TOKEN_GATING,
+  '/collaboration/settings/[orgId]/payment-method': PAGE_TYPES.SETTINGS_PAYMENT_METHOD,
 };
 
 const ITEMS_MAP = {
   org: OrgSelector,
   pod: PodSelector,
+  collab: CollabSelector,
   pageType: ({ pageType }) => <PageType pageType={pageType} />,
   entityType: () => <PageType />,
   undefined: () => null,
@@ -54,10 +69,12 @@ const ITEMS_MAP = {
 const buildConfig = (pageData, router) => {
   let config = [];
   if (pageData?.orgData) {
-    config = [...ORG_DEFAULT_CONFIG];
+    const configToAdd = pageData?.orgData?.shared ? COLLAB_DEFAULT_CONFIG : ORG_DEFAULT_CONFIG;
+    config = [...configToAdd];
   }
   if (pageData?.pod) {
-    config = [...POD_DEFAULT_CONFIG];
+    const orgConfig = pageData?.pod?.org?.shared ? COLLAB_DEFAULT_CONFIG : ORG_DEFAULT_CONFIG;
+    config = [...orgConfig, 'pod'];
   }
   if (pageData?.entityType) {
     config.push('entityType');
@@ -95,7 +112,6 @@ const BreadCrumbs = () => {
   const pageType = PATH_TO_COMPONENT[router.pathname];
   if (!config?.length) return null;
 
-  console.log(config, 'config');
   return (
     <Container>
       {config.map((item: string, idx) => {

@@ -1,5 +1,6 @@
-import { Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { ItemButton } from 'components/Common/SidebarItem/styles';
+import { ChevronFilled } from 'components/Icons/sections';
 import styled from 'styled-components';
 
 export const PageTypeItemButton = styled(ItemButton)`
@@ -24,5 +25,24 @@ export const PodTitle = styled(Typography)`
     line-clamp: 1;
     -webkit-box-oriental: vertical;
     max-width: 5rem;
+  }
+`;
+
+export const PodSelectorWrapper = styled(Grid)`
+  && {
+    padding: 4px 6px;
+    border-radius: 100px;
+    cursor: pointer;
+    ${ChevronFilled} {
+      fill: ${({ theme, isOpen }) => {
+        console.log(isOpen, 'IS OPEN');
+        return isOpen ? theme.palette.grey950 : theme.palette.white;
+      }};
+      transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    }
+
+    &:hover {
+      background: ${({ theme }) => theme.palette.grey87};
+    }
   }
 `;

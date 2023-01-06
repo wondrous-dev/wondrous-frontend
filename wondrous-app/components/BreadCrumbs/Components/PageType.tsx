@@ -150,7 +150,6 @@ const PAGE_TYPES_MAP = {
   },
 };
 
-// #474747
 const PageType = ({ pageType = '' }) => {
   const { pageData = {} } = useGlobalContext();
 
@@ -162,7 +161,7 @@ const PageType = ({ pageType = '' }) => {
     <PageTypeItemButton disableRipple type="button" disableHover>
       <IconTextWrapper>
         <ItemButtonIcon hoverColor={palette.grey78}>{Icon ? <Icon /> : null}</ItemButtonIcon>
-        <ItemButtonText>{label}</ItemButtonText>
+        <ItemButtonText sx={{ whiteSpace: 'nowrap' }}>{label}</ItemButtonText>
       </IconTextWrapper>
     </PageTypeItemButton>
   );

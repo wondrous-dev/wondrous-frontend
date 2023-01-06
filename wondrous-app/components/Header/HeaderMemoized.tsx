@@ -88,7 +88,14 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
               </Grid>
             ) : null}
             <BreadCrumbs />
-            <Grid display="flex" gap="14px" position="relative" ref={activeModalType ? wrapperRef : null}>
+            <Grid
+              display="flex"
+              gap="14px"
+              position="relative"
+              width="100%"
+              justifyContent="end"
+              ref={activeModalType ? wrapperRef : null}
+            >
               {displayCustomHeaderItem ? (
                 <HeaderItemWrapper ref={headerItemRef}>
                   <HeaderItems type={activeModalType} onClose={() => setActiveModalType(null)} />
