@@ -6,6 +6,7 @@ import { User } from 'types/User';
 import { Backdrop } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { Button } from 'components/Common/button';
+import HelpModal from 'components/Common/HelpModal.jsx';
 import PodModal from 'components/Common/PodModal';
 import EntityMenu from 'components/Common/SidebarEntityMenu';
 import Wallet from 'components/Common/Wallet';
@@ -42,13 +43,17 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
   const { setMinimized, minimized } = useSideBar();
   const { isMobileScreen } = useMediaQuery();
   const [isPodModalOpen, setIsPodModalOpen] = useState(false);
+  const [isTutorialsModalOpen, setIsTutorialsModalOpen] = useState(false);
   const headerItemRef = useRef();
   const wrapperRef = useRef();
   const [activeModalType, setActiveModalType] = useState<TYPES | null>(null);
   const router = useRouter();
   const toggleMinimize = () => setMinimized((prev) => !prev);
 
-  useOutsideAlerter(wrapperRef, () => setActiveModalType(null));
+  useOutsideAlerter(wrapperRef, () => {
+    if (isPodModalOpen || isTutorialsModalOpen || !activeModalType) return;
+    setActiveModalType(null);
+  });
 
   const handleActiveModalType = (type: TYPES) => {
     setActiveModalType((prev) => (prev === type ? null : type));
@@ -68,9 +73,24 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
     router.push('/mission-control');
   });
 
+  const handleClosePodModal = () => {
+    setIsPodModalOpen(false);
+    if (activeModalType) {
+      setActiveModalType(null);
+    }
+  };
+
+  const handleCloseTutorialsModal = () => {
+    setIsTutorialsModalOpen(false);
+    if (activeModalType) {
+      setActiveModalType(null);
+    }
+  };
+
   return (
     <>
-      <PodModal open={isPodModalOpen} handleClose={() => setIsPodModalOpen(false)} />
+      <PodModal open={isPodModalOpen} handleClose={handleClosePodModal} />
+      <HelpModal open={isTutorialsModalOpen} handleClose={handleCloseTutorialsModal} />
 
       <HeaderBar minimized={minimized}>
         <Backdrop open={!!activeModalType && isMobileScreen} />
@@ -90,7 +110,12 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
             <Grid display="flex" gap="14px" position="relative" ref={activeModalType ? wrapperRef : null}>
               {displayCustomHeaderItem ? (
                 <HeaderItemWrapper ref={headerItemRef}>
-                  <HeaderItems type={activeModalType} onClose={() => setActiveModalType(null)} />
+                  <HeaderItems
+                    type={activeModalType}
+                    onClose={() => setActiveModalType(null)}
+                    openPodModal={() => setIsPodModalOpen(true)}
+                    openTutorialsModal={() => setIsTutorialsModalOpen(true)}
+                  />
                 </HeaderItemWrapper>
               ) : null}
               {!isMobile && (

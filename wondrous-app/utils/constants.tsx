@@ -236,7 +236,7 @@ export const PERMISSIONS = {
   MANAGE_MEMBER: 'manage_member',
   REVIEW_TASK: 'review_task', // can be set as reviewer, once approved, it' automatically done
   MANAGE_COMMENT: 'manage_comment',
-  MANAGE_POST: 'manage_post',
+  // MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
 };
 

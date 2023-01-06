@@ -212,11 +212,11 @@ const CHAIN_SELECT_OPTIONS = [
   { label: 'Optimism', value: 'optimism', icon: <Optimism /> },
   { label: 'Arbitrum', value: 'arbitrum', icon: <Arbitrum /> },
   { label: 'BNB', value: 'bsc', icon: <Binance /> },
-  { label: 'Avalanche', value: 'avalanche', icon: <Avalanche /> },
   { label: 'Klaytn', value: 'klaytn', icon: <Klaytn /> },
+  { label: 'Gnosis', value: 'gnosis', icon: <GnosisChain /> },
+  { label: 'Avalanche', value: 'avalanche', icon: <Avalanche /> },
   { label: 'Harmony', value: 'harmony', icon: <Harmony /> },
   { label: 'Boba', value: 'boba', icon: <Boba /> },
-  { label: 'Gnosis', value: 'gnosis', icon: <GnosisChain /> },
 ];
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {

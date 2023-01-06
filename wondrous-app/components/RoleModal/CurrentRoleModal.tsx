@@ -2,7 +2,6 @@ import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { ActionButton } from 'components/Common/Task/styles';
 import { useMe } from 'components/Auth/withAuth';
-import Link from 'next/link';
 import {
   GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
   GET_AUTO_CLAIMABLE_ORG_ROLES,
@@ -14,7 +13,6 @@ import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { useWonderWeb3 } from 'services/web3';
 import RolePill from 'components/Common/RolePill';
 import apollo from 'services/apollo';
-import NoRolesIcon from 'components/Icons/noRolesIcon';
 import SuccessRoleModal from 'components/RoleModal/SuccessRoleModal';
 import { IndividualRoleDisplay, RolePermissionDisplay } from 'components/RoleModal/RoleModalElement';
 import { ErrorText } from 'components/Common';
@@ -34,8 +32,6 @@ import {
   RequestModalContainer,
   RequestModalHelperContainer,
   RequestModalHelperDiv,
-  RequestModalNoRolesContainer,
-  RequestModalNoRolesSubtitle,
   RequestModalRolesSubtitle,
   RequestModalTitle,
   RequestModalTitleBar,
