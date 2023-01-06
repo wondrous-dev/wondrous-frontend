@@ -5,9 +5,7 @@ import useSideBar from 'hooks/useSideBar';
 
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import AboutEntity from 'components/Common/SidebarEntityAbout';
-import CollabsSidebar from 'components/Common/SidebarEntityCollabs';
 import SidebarEntityList from 'components/Common/SidebarEntityList';
-import RolesSidebar from 'components/Common/SidebarEntityRoles';
 import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
 import { UnstyledLink } from 'components/WorkspacePicker/styles';
 import useMediaQuery from 'hooks/useMediaQuery';
@@ -19,11 +17,6 @@ import { PodInviteLinkModal } from 'components/Common/InviteLinkModal/podInviteL
 import useCanManage from 'hooks/useCanManage';
 import JoinWorkspace from 'components/Common/JoinWorkspace';
 import { ButtonsContainer } from './styles';
-
-const SIDEBAR_COMPONENTS = {
-  collabs: () => <CollabsSidebar />,
-  roles: () => <RolesSidebar />,
-};
 
 const EntitySidebarButtons = () => {
   const orgBoard = useOrgBoard();
@@ -92,31 +85,23 @@ const EntitySidebarButtons = () => {
 
 const EntitySidebar = ({ children, renderSidebar = null }) => {
   const { minimized } = useSideBar();
-  const { query } = useRouter();
   const { isMobileScreen } = useMediaQuery();
-
-  const Sidebar = useMemo(() => {
-    if (query.roles) {
-      return SIDEBAR_COMPONENTS.roles;
-    }
-    if (query.collabs) {
-      return SIDEBAR_COMPONENTS.collabs;
-    }
-
-    return () => (
-      <>
-        <EntitySidebarButtons />
-        <SidebarEntityList />
-      </>
-    );
-  }, [query.roles, query.collabs, isMobileScreen]);
 
   return (
     <Wrapper>
       <SidebarWrapper minimized={minimized}>
         {isMobileScreen ? <AboutEntity /> : null}
 
-        <SidebarContent>{renderSidebar ? renderSidebar() : <Sidebar />}</SidebarContent>
+        <SidebarContent>
+          {renderSidebar ? (
+            renderSidebar()
+          ) : (
+            <>
+              <EntitySidebarButtons />
+              <SidebarEntityList />
+            </>
+          )}
+        </SidebarContent>
         <CollapseExpandButton />
       </SidebarWrapper>
       <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>
