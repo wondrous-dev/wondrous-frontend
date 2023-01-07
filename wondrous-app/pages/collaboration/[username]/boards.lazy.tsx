@@ -37,7 +37,7 @@ import {
   STATUSES_ON_ENTITY_TYPES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useGlobalContext } from 'utils/hooks';
+import { useGlobalContext, usePageDataContext } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -361,6 +361,7 @@ function BoardsPage() {
     privacyLevel: null,
   });
   const [orgData, setOrgData] = useState(null);
+  const { setPageData } = usePageDataContext();
   const [searchString, setSearchString] = useState('');
   const [entityType, setEntityType] = useState(activeEntityFromQuery);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
@@ -384,6 +385,14 @@ function BoardsPage() {
     search,
     filters,
   });
+
+  useEffect(() => {
+    if (orgData) {
+      setPageData({ orgData, entityType });
+    }
+  }, [orgData, entityType]);
+
+  useEffect(() => () => setPageData({}), []);
 
   useEffect(() => {
     if (userId) {

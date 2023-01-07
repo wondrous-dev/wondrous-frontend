@@ -448,9 +448,9 @@ function BoardsPage() {
 
   useEffect(() => {
     if (orgData) {
-      setPageData({ orgData });
+      setPageData({ orgData, entityType });
     }
-  }, [orgData]);
+  }, [orgData, entityType]);
 
   useEffect(() => () => setPageData({}), []);
 

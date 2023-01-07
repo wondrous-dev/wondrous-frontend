@@ -391,7 +391,7 @@ function BoardsPage({ meta }: Props) {
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
   const [getPod, { data: podData, loading: isPodDataLoading }] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: ({ getPodById }) => {
-      setPageData({ pod: getPodById });
+      setPageData({ pod: getPodById, entityType });
     },
   });
   const pod = podData?.getPodById;
@@ -429,7 +429,7 @@ function BoardsPage({ meta }: Props) {
       setActiveView(ViewType.Grid);
       query.view = ViewType.Grid;
     }
-
+    setPageData({ pod: podData?.getPodById, entityType: type });
     router.push({ query }, undefined, { shallow: true, scroll: false });
   };
 

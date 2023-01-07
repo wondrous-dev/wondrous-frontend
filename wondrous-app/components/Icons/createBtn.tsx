@@ -33,18 +33,18 @@ export default function CreateBtnIcon(props) {
 
 export function CreateIconOutlined(props) {
   return (
-    <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="1.21875" y="1" width="35" height="35" rx="17.5" fill="#282828" />
-      <path d="M23.2891 18.502H18.6942H14.1502" stroke="white" stroke-linecap="round" />
-      <path d="M18.7227 13.9297V18.4991V23.0686" stroke="white" stroke-linecap="round" />
-      <rect x="1.21875" y="1" width="35" height="35" rx="17.5" stroke="url(#paint0_linear_21396_207275)" />
+    <svg width="36" height="36" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1.44531" y="0.75415" width="35" height="35" rx="17.5" fill="#282828" />
+      <path d="M23.5156 18.257H18.9208H14.3767" stroke="white" stroke-linecap="round" />
+      <path d="M18.9492 13.6847V18.2541V22.8236" stroke="white" stroke-linecap="round" />
+      <rect x="1.44531" y="0.75415" width="35" height="35" rx="17.5" stroke="url(#paint0_linear_22443_120653)" />
       <defs>
         <linearGradient
-          id="paint0_linear_21396_207275"
-          x1="38.7438"
-          y1="18.5"
-          x2="-0.40625"
-          y2="18.5"
+          id="paint0_linear_22443_120653"
+          x1="38.9703"
+          y1="18.2542"
+          x2="-0.179687"
+          y2="18.2542"
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="#00BAFF" />
