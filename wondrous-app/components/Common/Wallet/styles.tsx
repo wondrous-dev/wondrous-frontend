@@ -28,6 +28,7 @@ export const Button = styled(ButtonBase)`
     border-radius: 150px;
     width: fit-content;
     height: 40px;
+    white-space: nowrap;
     padding: 16px;
     ${fontStyles};
     ${filterDropShadow};
