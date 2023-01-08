@@ -26,7 +26,7 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
-import {extendFiltersByView, sectionOpeningReducer} from 'utils/board';
+import { extendFiltersByView, sectionOpeningReducer } from 'utils/board';
 import {
   ENTITIES_TYPES,
   PRIVACY_LEVEL,
@@ -39,8 +39,8 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useGlobalContext } from 'utils/hooks';
-import startOfMonth from "date-fns/startOfMonth";
-import endOfMonth from "date-fns/endOfMonth";
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -421,7 +421,10 @@ function BoardsPage() {
     const query: any = { ...router.query, entity: type };
 
     setEntityType(type);
-    setFilters({});
+    setFilters({
+      fromDate: startOfMonth(new Date()),
+      toDate: endOfMonth(new Date()),
+    });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
       query.view = ViewType.Grid;
@@ -590,8 +593,14 @@ function BoardsPage() {
     }));
   }
 
-  const handleFilterChange: any = (filtersToApply = { statuses: [], podIds: [], labelId: null, date: null }) => {
-    setFilters(filtersToApply);
+  const handleFilterChange: any = (
+    filtersToApply = { statuses: [], podIds: [], labelId: null, date: null, fromDate: null, toDate: null }
+  ) => {
+    setFilters({
+      ...filtersToApply,
+      fromDate: filtersToApply.fromDate ?? filters.fromDate,
+      toDate: filtersToApply.toDate ?? filters.toDate,
+    });
 
     if (search) {
       const id = orgId || orgData?.id;
@@ -641,6 +650,15 @@ function BoardsPage() {
     }
   };
 
+  const handleActiveViewChange = (newView: ViewType) => {
+    setActiveView(newView);
+
+    if (newView === ViewType.Calendar) {
+      // Trigger getOrgTaskBoardTasks query
+      setFilters({ ...filters });
+    }
+  };
+
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
     console.log(
       'user permissions context',
@@ -665,7 +683,7 @@ function BoardsPage() {
         handleFilterChange,
         setEntityType: handleEntityTypeChange,
         activeView,
-        setActiveView,
+        setActiveView: handleActiveViewChange,
         user: getUserData?.getUser,
         deleteUserIdFilter,
         fetchPerStatus,

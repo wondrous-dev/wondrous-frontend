@@ -87,7 +87,7 @@ const Calendar = ({ tasksMap, onChange, startDate }: Props) => {
 
   return (
     <>
-      <Grid container alignItems="center" justifyContent="space-between" gap="10px">
+      <Grid container alignItems="center" justifyContent="space-between" gap="10px" mt="22px">
         <Grid item display="flex" alignItems="center">
           <Grid item>
             <WonderButton color="grey" borderRadius={6} onClick={handleTodayClick}>

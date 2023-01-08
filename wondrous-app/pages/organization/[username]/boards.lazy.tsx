@@ -27,7 +27,7 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
-import {extendFiltersByView, sectionOpeningReducer} from 'utils/board';
+import { extendFiltersByView, sectionOpeningReducer } from 'utils/board';
 import {
   ENTITIES_TYPES,
   PRIVACY_LEVEL,
@@ -438,6 +438,8 @@ function BoardsPage() {
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
+      fromDate: startOfMonth(new Date()),
+      toDate: endOfMonth(new Date()),
     });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
@@ -630,9 +632,21 @@ function BoardsPage() {
   }
 
   const handleFilterChange: any = (
-    filtersToApply = { statuses: [], podIds: [], labelId: null, date: null, category: null }
+    filtersToApply = {
+      statuses: [],
+      podIds: [],
+      labelId: null,
+      date: null,
+      category: null,
+      fromDate: null,
+      toDate: null,
+    }
   ) => {
-    setFilters(filtersToApply);
+    setFilters({
+      ...filtersToApply,
+      fromDate: filtersToApply.fromDate ?? filters.fromDate,
+      toDate: filtersToApply.toDate ?? filters.toDate,
+    });
 
     if (search) {
       const id = orgId || orgData?.id;
@@ -682,6 +696,15 @@ function BoardsPage() {
     }
   };
 
+  const handleActiveViewChange = (newView: ViewType) => {
+    setActiveView(newView);
+
+    if (newView === ViewType.Calendar) {
+      // Trigger getOrgTaskBoardTasks query
+      setFilters({ ...filters });
+    }
+  };
+
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
     console.log(
       'user permissions context',
@@ -701,6 +724,9 @@ function BoardsPage() {
       value={{
         columns,
         setColumns,
+        filters,
+        handleFilterChange,
+        hasActiveFilters,
         orgId: orgData?.id,
         taskCount: orgTaskCountData?.getPerStatusTaskCountForOrgBoard,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
@@ -712,15 +738,12 @@ function BoardsPage() {
         entityType,
         setEntityType: handleEntityTypeChange,
         activeView,
-        setActiveView,
+        setActiveView: handleActiveViewChange,
         user: getUserData?.getUser,
         deleteUserIdFilter,
         fetchPerStatus,
         onLoadMore: fetchMore,
         hasMore: orgTaskHasMore,
-        filters,
-        handleFilterChange,
-        hasActiveFilters,
       }}
     >
       <EntitySidebar>

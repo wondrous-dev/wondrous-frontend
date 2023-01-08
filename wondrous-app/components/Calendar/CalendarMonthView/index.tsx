@@ -122,7 +122,7 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
                     <Grid
                       key={task.id}
                       wrap="nowrap"
-                      mb="10px"
+                      mb="8px"
                       alignItems="center"
                       container
                     >

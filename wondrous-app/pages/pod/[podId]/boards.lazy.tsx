@@ -424,6 +424,8 @@ function BoardsPage({ meta }: Props) {
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
+      fromDate: startOfMonth(new Date()),
+      toDate: endOfMonth(new Date()),
     });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
@@ -597,8 +599,14 @@ function BoardsPage({ meta }: Props) {
     }));
   }
 
-  const handleFilterChange: any = (filtersToApply = { statuses: [], labelId: null, date: null }) => {
-    setFilters(filtersToApply);
+  const handleFilterChange: any = (
+    filtersToApply = { statuses: [], labelId: null, date: null, fromDate: null, toDate: null }
+  ) => {
+    setFilters({
+      ...filtersToApply,
+      fromDate: filtersToApply.fromDate ?? filters.fromDate,
+      toDate: filtersToApply.toDate ?? filters.toDate,
+    });
 
     const { statuses, labelId } = filtersToApply;
     const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
@@ -653,6 +661,15 @@ function BoardsPage({ meta }: Props) {
     }
   };
 
+  const handleActiveViewChange = (newView: ViewType) => {
+    setActiveView(newView);
+
+    if (newView === ViewType.Calendar) {
+      // Trigger getOrgTaskBoardTasks query
+      setFilters({ ...filters });
+    }
+  };
+
   const hasActiveFilters = useMemo(
     () => !!Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length)?.length,
     [filters]
@@ -678,7 +695,7 @@ function BoardsPage({ meta }: Props) {
         deleteUserIdFilter,
         fetchPerStatus,
         activeView,
-        setActiveView,
+        setActiveView: handleActiveViewChange,
         onLoadMore: fetchMore,
         hasMore: podTaskHasMore,
         hasActiveFilters,
