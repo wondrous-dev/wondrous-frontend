@@ -1,4 +1,5 @@
 import GitHubIcon from '@mui/icons-material/GitHub';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import GrantIcon from 'components/Icons/GrantIcon';
 import HomeIcon from 'components/Icons/home';
@@ -137,6 +138,10 @@ const PAGE_TYPES_MAP = {
   [PAGE_TYPES.SETTINGS_TASK_IMPORT]: {
     label: 'Task Import',
     Icon: FileDownloadIcon,
+  },
+  [PAGE_TYPES.ACTIVITIES]: {
+    label: 'Activities',
+    Icon: ShowChartIcon,
   },
   [PAGE_TYPES.SETTINGS_GITHUB]: {
     label: 'Github',
