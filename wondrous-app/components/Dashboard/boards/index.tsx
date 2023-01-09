@@ -27,7 +27,7 @@ const useGetUserTaskBoardTasks = ({
   loggedInUser,
   filters,
 }) => {
-  const [getUserTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
+  const [getUserTaskBoardTasks, { fetchMore, variables }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -60,6 +60,7 @@ const useGetUserTaskBoardTasks = ({
 
     fetchMore({
       variables: {
+        ...variables,
         offset: column?.tasks?.length,
         statuses: [status],
         ...(limit ? { limit } : {}),

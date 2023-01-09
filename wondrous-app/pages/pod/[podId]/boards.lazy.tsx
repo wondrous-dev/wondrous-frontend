@@ -129,6 +129,7 @@ const useGetPodTaskBoardTasks = ({
     fetchMore({
       variables: {
         input: {
+          ...variables?.input,
           podId,
           offset: columns[columnIdx]?.tasks?.length,
           statuses: [status],
