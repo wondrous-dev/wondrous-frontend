@@ -15,7 +15,7 @@ const ButtonWrapper = styled.div`
   min-height: ${(props) => props.height || 40}px;
   min-width: ${(props) => props.minWidth || 0}px;
   padding: 1px;
-  width: ${(props) => (props.fullWidth ? '100%' : props.width ? `${props.width}px` : 'auto')};
+  width: ${(props) => (props.fullWidth ? '100%' : props.width || 'auto')};
 `;
 
 const ButtonInner = styled.button`
@@ -32,7 +32,10 @@ const ButtonInner = styled.button`
   font-weight: ${(props) => props.fontWeight || 400};
   font-family: ${typography.fontFamily};
   justify-content: center;
-  padding: ${(props) => (typeof props.paddingY === 'number' ? props.paddingY : 0)}px ${(props) => (typeof props.paddingX === 'number' ? props.paddingX : 30)}px;
+  padding-left: ${(props) => props.paddingX || 30}px;
+  padding-right: ${(props) => props.paddingX || 30}px;
+  padding-top: ${(props) => props.paddingY || 0}px;
+  padding-bottom: ${(props) => props.paddingY || 0}px;
 
   &:hover:not(:disabled) {
     background: ${(props) => props?.hover?.background || props.background};
@@ -92,7 +95,6 @@ type Props = SpaceProps & {
   children: ReactNode | undefined | string;
   minWidth?: number | string; // for values such as auto, fit-content, etc.
   height?: number;
-  width?: number;
   /**
    * Button can have custom shapes defined via borderRadius prop
    */
@@ -111,9 +113,17 @@ type Props = SpaceProps & {
    */
   disabled?: boolean;
   /**
+   * Make buttons look inactive and action accueeded by adding the succeeded boolean attribute to any button element.
+   */
+  succeeded?: boolean;
+  /**
    * Create block level buttons—those that span the full width of a parent
    */
   fullWidth?: boolean;
+  /**
+   * 100% or any other value
+   */
+  width?: number | string;
   /**
    * Button has three different variants
    */
@@ -165,6 +175,12 @@ export const Button = ({
   if (buttonProps.disabled) {
     buttonProps.textColor = palette.grey60;
     buttonProps.borderColor = palette.grey60;
+    buttonProps.background = palette.background.default;
+  }
+
+  if (buttonProps.succeeded) {
+    buttonProps.textColor = palette.green30;
+    buttonProps.borderColor = palette.green30;
     buttonProps.background = palette.background.default;
   }
 

@@ -13,3 +13,4 @@ export * from './org';
 export * from './pod';
 export * from './orgCollab';
 export * from './grant';
+export * from './profilePage';

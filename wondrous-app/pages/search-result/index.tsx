@@ -1,4 +1,5 @@
 import { withAuth } from 'components/Auth/withAuth';
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import SearchResultUserCreatedTasks from 'components/SearchResultUserCreatedTasks';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -8,8 +9,15 @@ const SearchResultPage = () => {
   useEffect(() => {
     if (!router.query.suggestion) router.push('/search-result?suggestion=user-created-tasks');
   }, [router]);
-  if (router.query.suggestion === 'user-created-tasks') return <SearchResultUserCreatedTasks />;
-  return <SearchResultUserCreatedTasks />;
+
+  const Component =
+    router.query.suggestion === 'user-created-tasks' ? SearchResultUserCreatedTasks : SearchResultUserCreatedTasks;
+  return (
+    <>
+      <TaskViewModalWatcher />
+      <Component />
+    </>
+  );
 };
 
 export default withAuth(SearchResultPage);

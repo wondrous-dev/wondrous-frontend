@@ -1,25 +1,19 @@
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
-import { ActionButton } from 'components/Common/Task/styles';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries';
 import ChecklistRow from 'components/RoleModal/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
 import apollo from 'services/apollo';
-import NoRolesIcon from 'components/Icons/noRolesIcon';
-import { DiscordIcon } from 'components/Icons/discord';
-import { Tooltip, CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import useGuildXyz from 'services/guildxyz';
 
 import {
   RequestModalCheckbox,
   RequestModalCheckPillCombo,
   RequestModalHelperContainer,
-  RequestModalHelperDiv,
   RequestModalHorizontalAlign,
   RequestModalLockedIconOutline,
   SuccessLockedIconOutline,
-  RequestModalNoRolesContainer,
-  RequestModalNoRolesSubtitle,
   RequestModalRolesAbilityColumns,
   RequestModalRolesAbilityContainer,
   RequestModalRolesSubtitle,

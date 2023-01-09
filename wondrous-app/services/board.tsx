@@ -26,11 +26,11 @@ import {
 import Box from '@mui/material/Box';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { StatusDefaultIcon, InReviewIcon } from 'components/Icons/statusIcons';
-import { Proposal, Approved, Rejected } from 'components/Icons';
+import { Proposal, Approved, Rejected, TodoWithBorder } from 'components/Icons';
 import TaskStatus from 'components/Icons/TaskStatus';
 import React from 'react';
 import cloneDeep from 'lodash/cloneDeep';
-import { BountyIcon, MilestoneIcon, TaskIcon } from 'components/Icons/Search/types';
+import MilestoneIcon from 'components/Icons/milestoneField.svg';
 import { delQuery } from 'utils';
 import { GET_ORG_PODS } from 'graphql/queries/org';
 import CreatePodIcon from 'components/Icons/createPod';
@@ -840,12 +840,12 @@ export const ORG_POD_PROPOSAL_COLUMNS = [PROPOSAL_OPEN, PROPOSAL_APPROVED, PROPO
 
 export const LIMIT = 10;
 
-export const populateTaskColumns = (tasks, columns) => {
+export const populateTaskColumns = (tasks, columns, skipEmptyColumns = false, withCount = false) => {
   if (!columns) {
     return [];
   }
 
-  const newColumns = columns.map((column) => {
+  let newColumns = columns.map((column) => {
     column.tasks = [];
 
     return (
@@ -861,10 +861,22 @@ export const populateTaskColumns = (tasks, columns) => {
       }, column)
     );
   });
+  if (skipEmptyColumns) {
+    newColumns = newColumns.filter((column) => column?.tasks?.length > 0);
+  }
+  if (withCount) {
+    newColumns = newColumns.map((column) => {
+      const count = column?.tasks?.length;
+      return {
+        ...column,
+        count,
+      };
+    });
+  }
   return newColumns;
 };
 
-export const populateProposalColumns = (proposals, columns) => {
+export const populateProposalColumns = (proposals, columns, skipEmptyColumns = false, withCount = false) => {
   if (!columns) {
     return [];
   }
@@ -881,10 +893,24 @@ export const populateProposalColumns = (proposals, columns) => {
     if (!proposal.approvedAt && !proposal.closedAt) proposalsMap[STATUS_OPEN].push({ ...proposal, isProposal: true });
     if (proposal.closedAt && !proposal.approvedAt) proposalsMap[STATUS_CLOSED].push({ ...proposal, isProposal: true });
   });
-  return columns.map((column) => ({
+  let newColumns = columns.map((column) => ({
     ...column,
     tasks: [...column.tasks, ...proposalsMap[column.status]],
   }));
+  if (skipEmptyColumns) {
+    newColumns = newColumns.filter((column) => column?.tasks?.length > 0);
+  }
+  if (withCount) {
+    newColumns = newColumns.map((column) => {
+      const count = column?.tasks?.length;
+      return {
+        ...column,
+        count,
+      };
+    });
+  }
+  console.log(newColumns, 'NEW COLUMNS', withCount);
+  return newColumns;
 };
 
 export const addToTaskColumns = (newResults, columns) => {
@@ -901,17 +927,20 @@ export const addToTaskColumns = (newResults, columns) => {
   return newColumns;
 };
 
+/**
+ * @deprecated
+ * @param columns
+ */
 export const splitColsByType = (columns) => {
   let totalCount = 0;
 
   const createColumnsByType = (type) => {
     const cols: any = cloneDeep(columns);
-
     cols.tasksCount = 0;
 
     cols.forEach((col) => {
       col.tasks = col.tasks.filter((task) => {
-        if ((task.type || TASK_TYPE) === type) {
+        if ((task.type || TASK_TYPE) === type && !task.isProposal) {
           totalCount++;
           cols.tasksCount++;
           return true;
@@ -919,17 +948,6 @@ export const splitColsByType = (columns) => {
 
         return false;
       });
-      if (col.section) {
-        col.section.tasks = col.section.tasks.filter((task) => {
-          if ((task.type || TASK_TYPE) === type) {
-            totalCount++;
-            cols.tasksCount++;
-            return true;
-          }
-
-          return false;
-        });
-      }
     });
 
     return cols;
@@ -937,22 +955,16 @@ export const splitColsByType = (columns) => {
 
   const splitCols = {
     [TASK_TYPE]: {
-      name: 'task',
+      name: 'Tasks',
       showAll: false,
       columns: createColumnsByType(TASK_TYPE),
-      icon: <TaskIcon />,
+      icon: null,
     },
-    [BOUNTY_TYPE]: {
-      name: 'bounties',
+    [ENTITIES_TYPES.PROPOSAL]: {
+      name: 'Proposals',
       showAll: false,
-      columns: createColumnsByType(BOUNTY_TYPE),
-      icon: <BountyIcon />,
-    },
-    [MILESTONE_TYPE]: {
-      name: 'milestone',
-      showAll: false,
-      columns: createColumnsByType(MILESTONE_TYPE),
-      icon: <MilestoneIcon />,
+      columns: createColumnsByType(ENTITIES_TYPES.PROPOSAL),
+      icon: null,
     },
   };
 

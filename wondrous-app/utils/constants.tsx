@@ -3,6 +3,7 @@ import PriorityHighIcon from 'components/Icons/PriorityHighIcon';
 import PriorityLowIcon from 'components/Icons/PriorityLowIcon';
 import PriorityMediumIcon from 'components/Icons/PriorityMediumIcon';
 import PriorityUrgentIcon from 'components/Icons/PriorityUrgentIcon';
+import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from 'components/Icons';
 
 export const spacingUnit = 8;
 
@@ -235,7 +236,7 @@ export const PERMISSIONS = {
   MANAGE_MEMBER: 'manage_member',
   REVIEW_TASK: 'review_task', // can be set as reviewer, once approved, it' automatically done
   MANAGE_COMMENT: 'manage_comment',
-  MANAGE_POST: 'manage_post',
+  // MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
 };
 
@@ -862,6 +863,27 @@ export const GRANT_APPLY_POLICY = {
 export const PAGES_WITH_NO_ENTITY_SIDEBAR = ['/explore'];
 
 export const EMPTY_RICH_TEXT_STRING = '[{"children":[{"text":""}],"type":"paragraph"}]';
+
+export const TITLES = {
+  [TASK_STATUS_TODO]: 'To-do',
+  [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
+  [TASK_STATUS_IN_REVIEW]: 'In-Review',
+  [TASK_STATUS_DONE]: 'Done',
+  // PROPOSALS
+  [STATUS_OPEN]: 'Open',
+  [STATUS_APPROVED]: 'Approved',
+  [STATUS_CLOSED]: 'Rejected',
+};
+
+export const HEADER_ICONS = {
+  [TASK_STATUS_TODO]: ToDo,
+  [TASK_STATUS_IN_PROGRESS]: InProgress,
+  [TASK_STATUS_IN_REVIEW]: InReview,
+  [TASK_STATUS_DONE]: Done,
+  [STATUS_OPEN]: Proposal,
+  [STATUS_APPROVED]: Approved,
+  [STATUS_CLOSED]: Rejected,
+};
 
 export enum CALENDAR_VIEW {
   Month = 'month',

@@ -41,7 +41,7 @@ describe('Task Spec', () => {
     cy.dataCy(`task-card-item-${TASK_TITLE}-link`).first().click();
     cy.dataCy('button-more-actions').click();
     cy.dataCy('task-header-option-Edit').click();
-    cy.dataCy('create-entity-input-title').clear().type(`edit-${TASK_TITLE}`);
+    cy.dataCy('create-entity-input-title').clear({ force: true }).type(`edit-${TASK_TITLE}`, { force: true });
     cy.dataCy('create-entity-button-submit').click();
   });
 });

@@ -5,20 +5,16 @@ import {
   ENTITIES_TYPES,
   PERMISSIONS,
   PRIVACY_LEVEL,
-  SOCIAL_MEDIA_DISCORD,
-  SOCIAL_MEDIA_TWITTER,
-  SOCIAL_OPENSEA,
-  SOCIAL_MEDIA_LINKEDIN,
   GR15DEICategoryName,
   BOUNTY_TYPE,
   HEADER_ASPECT_RATIO,
   EMPTY_RICH_TEXT_STRING,
 } from 'utils/constants';
+import MembersIcon from 'components/Icons/members';
+import { Button as PrimaryButton } from 'components/Button';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import apollo from 'services/apollo';
-import Box from '@mui/material/Box';
 import TypeSelector from 'components/TypeSelector';
-import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
+import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import DEFAULT_HEADER from 'public/images/overview/background.png';
 import { AspectRatio } from 'react-aspect-ratio';
@@ -35,45 +31,35 @@ import {
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { RichTextViewer } from 'components/RichText';
 import RolePill from 'components/Common/RolePill';
+import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
+import { PodIconThin } from 'components/Icons/podIcon';
+import palette from 'theme/palette';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
-import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import { DiscordIcon } from '../../Icons/discord';
-import OpenSeaIcon from '../../Icons/openSea';
-import LinkedInIcon from '../../Icons/linkedIn';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { SafeImage } from '../../Common/Image';
 import {
   Content,
   ContentContainer,
-  HeaderActivity,
-  HeaderActivityLink,
-  HeaderActivityLinkIcon,
-  HeaderButtons,
+  HeaderTopRightContainer,
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
   HeaderMainBlock,
-  HeaderButton,
-  HeaderPods,
-  HeaderPodsAmount,
-  HeaderPodsText,
   HeaderText,
   HeaderTitle,
   TokenHeader,
   TokenEmptyLogo,
-  HeaderTitleIcon,
+  HeaderTopLeftContainer,
   HeaderImageWrapper,
-  HeaderTag,
   BoardsSubheaderWrapper,
+  MemberPodIconBackground,
   RoleButtonWrapper,
-  RoleText,
   Container,
-  SettingsButton,
   InviteButton,
-  HeaderGr15Sponsor,
+  PrivacyContainer,
+  PrivacyText,
 } from './styles';
 import { useMe } from '../../Auth/withAuth';
-import TwitterPurpleIcon from '../../Icons/twitterPurple';
 
 const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/OrgInviteLink'), { suspense: true });
 const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
@@ -211,7 +197,10 @@ function Wrapper(props) {
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
   const [claimedOrRequestedRole, setClaimedOrRequestedRole] = useState(null);
 
-  const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
+  const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+  });
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
   const orgProfile = orgData;
@@ -219,7 +208,6 @@ function Wrapper(props) {
   const hasGr15Bounties = orgProfile?.hasGr15TasksAndBounties?.hasGr15Bounties;
 
   const isGr15Sponsor = hasGr15Tasks || hasGr15Bounties;
-  const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const { search, entity, cause } = router.query;
@@ -374,195 +362,154 @@ function Wrapper(props) {
               {orgData?.shared && renderSharedHeader ? (
                 renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
               ) : (
-                <Box sx={{ flex: '0 0 60px' }}>
-                  <div
+                <div
+                  style={{
+                    height: '100%',
+                    position: 'relative',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <SafeImage
+                    src={orgProfile?.profilePicture}
+                    placeholderComp={
+                      <TokenEmptyLogo>
+                        <DAOEmptyIcon />
+                      </TokenEmptyLogo>
+                    }
+                    width={36}
+                    height={36}
+                    useNextImage
                     style={{
-                      position: 'relative',
-                      cursor: 'pointer',
+                      borderRadius: '6px',
                     }}
-                  >
-                    <SafeImage
-                      src={orgProfile?.profilePicture}
-                      placeholderComp={
-                        <TokenEmptyLogo>
-                          <DAOEmptyIcon />
-                        </TokenEmptyLogo>
-                      }
-                      width={50}
-                      height={50}
-                      useNextImage
-                      style={{
-                        borderRadius: '6px',
-                      }}
-                      alt="Organization logo"
-                    />
-                    {isGr15Sponsor && (
-                      <>
-                        <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                        <GR15DEILogo
-                          width="30"
-                          height="30"
-                          onClick={() => setOpenGR15Modal(true)}
-                          style={{
-                            top: '0',
-                            right: '1px',
-                            position: 'absolute',
-                            zIndex: '25',
-                          }}
-                        />
-                      </>
-                    )}
-                  </div>
-                </Box>
+                    alt="Organization logo"
+                  />
+                  {isGr15Sponsor && (
+                    <>
+                      <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                      <GR15DEILogo
+                        width="25"
+                        height="25"
+                        onClick={() => setOpenGR15Modal(true)}
+                        style={{
+                          top: '0',
+                          right: '-10px',
+                          position: 'absolute',
+                          zIndex: '25',
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
               )}
-              <HeaderTitleIcon>
+              <HeaderTopLeftContainer>
                 <HeaderTitle
                   style={{
                     ...(isGr15Sponsor && {
-                      marginLeft: '24px',
+                      marginLeft: '5px',
                     }),
                   }}
                 >
                   {orgProfile?.name}
                 </HeaderTitle>
-                {!isCollabWorkspace && <HeaderTag>@{orgProfile?.username}</HeaderTag>}
-              </HeaderTitleIcon>
-              <HeaderButtons>
-                {/* <Tooltip title="your permissions are:" > */}
-                {permissions && orgRoleName && (
-                  <RoleButtonWrapper>
-                    <RoleText>Your Role:</RoleText>
-                    <RolePill
-                      onClick={() => {
-                        setOpenCurrentRoleModal(true);
-                      }}
-                      roleName={orgRoleName}
-                    >
-                      🔑 {orgRoleName}
-                    </RolePill>
-                  </RoleButtonWrapper>
+                <PrivacyContainer>
+                  <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
+                </PrivacyContainer>
+
+                {isGr15Sponsor && (
+                  <ExploreOrgGr15
+                    onTaskPage={onTaskPage}
+                    onBountyPage={onBountyPage}
+                    hasGr15Bounties={hasGr15Bounties}
+                    hasGr15Tasks={hasGr15Tasks}
+                    onFilterChange={onFilterChange}
+                    orgProfile={orgProfile}
+                    filters={boardFilters}
+                    exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                    setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                  />
                 )}
-                <ToggleBoardPrivacyIcon
-                  isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                  tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
-                />
-                {permissions === null && (
-                  <>
-                    {userJoinRequest?.id ? (
-                      <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
-                    ) : (
-                      <HeaderButton
-                        reversed
-                        onClick={() => {
-                          setOpenCurrentRoleModal(true);
-                        }}
-                      >
-                        Join org
-                      </HeaderButton>
-                    )}
-                  </>
+              </HeaderTopLeftContainer>
+              <HeaderTopRightContainer>
+                {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (
+                  <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>
                 )}
-                {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
-                  <>
-                    <SettingsButton
-                      onClick={() => {
-                        router.push(`/${mainPath}/settings/${orgBoard?.orgId}/general`);
-                      }}
-                    >
-                      Settings
-                    </SettingsButton>
-                    <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>
-                  </>
-                )}
-              </HeaderButtons>
-            </HeaderMainBlock>
-            {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
-              <HeaderText as="div">
-                <RichTextViewer text={orgProfile?.description} />
-              </HeaderText>
-            ) : (
-              <div style={{ height: 10 }} />
-            )}
-            <div>
-              <HeaderActivity>
+
+                <HeaderContributors
+                  onClick={() => {
+                    setMoreInfoModalOpen(true);
+                    setShowPods(true);
+                  }}
+                >
+                  <MemberPodIconBackground>
+                    <PodIconThin />
+                  </MemberPodIconBackground>
+                  <HeaderContributorsAmount>{orgProfile?.podCount} </HeaderContributorsAmount>
+                  <HeaderContributorsText>Pods</HeaderContributorsText>
+                </HeaderContributors>
                 <HeaderContributors
                   onClick={() => {
                     setMoreInfoModalOpen(true);
                     setShowUsers(true);
                   }}
                 >
-                  <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
-                  <HeaderContributorsText>Contributors</HeaderContributorsText>
+                  <MemberPodIconBackground>
+                    <MembersIcon stroke={palette.blue20} />
+                  </MemberPodIconBackground>
+                  <HeaderContributorsAmount>{orgProfile?.contributorCount} </HeaderContributorsAmount>
+                  <HeaderContributorsText>Members</HeaderContributorsText>
                 </HeaderContributors>
-                <HeaderPods
-                  onClick={() => {
-                    setMoreInfoModalOpen(true);
-                    setShowPods(true);
-                  }}
-                >
-                  <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
-                  <HeaderPodsText>Pods</HeaderPodsText>
-                </HeaderPods>
-                {isGr15Sponsor && (
-                  <HeaderGr15Sponsor>
-                    <ExploreOrgGr15
-                      onTaskPage={onTaskPage}
-                      onBountyPage={onBountyPage}
-                      hasGr15Bounties={hasGr15Bounties}
-                      hasGr15Tasks={hasGr15Tasks}
-                      onFilterChange={onFilterChange}
-                      orgProfile={orgProfile}
-                      filters={boardFilters}
-                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                    />
-                  </HeaderGr15Sponsor>
-                )}
-                {links?.map((link, index) => {
-                  if (link.type === 'link') {
-                    return (
-                      <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                        <HeaderActivityLinkIcon />
-                        {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
-                      </HeaderActivityLink>
-                    );
-                  }
-                })}
 
-                {links?.map((link, index) => {
-                  if (link.type !== 'link') {
-                    let SocialIcon = null;
-                    switch (link.type) {
-                      case SOCIAL_MEDIA_DISCORD:
-                        SocialIcon = DiscordIcon;
-                        break;
-                      case SOCIAL_MEDIA_TWITTER:
-                        SocialIcon = TwitterPurpleIcon;
-                        break;
-                      case SOCIAL_MEDIA_LINKEDIN:
-                        SocialIcon = LinkedInIcon;
-                        break;
-                      case SOCIAL_OPENSEA:
-                        SocialIcon = OpenSeaIcon;
-                        break;
-                    }
-                    if (SocialIcon) {
-                      return (
-                        <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                          <SocialIcon
-                            style={{
-                              width: '20px',
-                              height: '20px',
-                            }}
-                            fill="#ccbbff"
-                          />
-                        </HeaderActivityLink>
-                      );
-                    }
-                    return null;
-                  }
-                })}
-              </HeaderActivity>
+                {permissions && orgRoleName && (
+                  <RoleButtonWrapper>
+                    <RolePill
+                      onClick={() => {
+                        setOpenCurrentRoleModal(true);
+                      }}
+                      roleName={orgRoleName}
+                    />
+                  </RoleButtonWrapper>
+                )}
+                {permissions === null && (
+                  <>
+                    {userJoinRequest?.id ? (
+                      <PrimaryButton
+                        height={36}
+                        width="max-content"
+                        variant="outlined"
+                        color="purple"
+                        succeeded
+                        paddingX={15}
+                        buttonTheme={{ fontWeight: '500', fontSize: '14px' }}
+                      >
+                        Request sent
+                      </PrimaryButton>
+                    ) : (
+                      <PrimaryButton
+                        height={36}
+                        paddingX={15}
+                        width="max-content"
+                        buttonTheme={{ fontWeight: '500', fontSize: '14px' }}
+                        onClick={() => {
+                          setOpenCurrentRoleModal(true);
+                        }}
+                      >
+                        Join org
+                      </PrimaryButton>
+                    )}
+                  </>
+                )}
+              </HeaderTopRightContainer>
+            </HeaderMainBlock>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}>
+              {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
+                <HeaderText as="div">
+                  <RichTextViewer text={orgProfile?.description} />
+                </HeaderText>
+              ) : (
+                <div style={{ height: 10 }} />
+              )}
+              <HeaderSocialLinks links={orgProfile?.links} />
             </div>
           </TokenHeader>
           <Container>

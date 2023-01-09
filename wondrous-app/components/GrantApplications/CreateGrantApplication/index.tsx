@@ -1,16 +1,9 @@
 import { useMutation } from '@apollo/client';
 import { Box, CircularProgress, Grid, Tooltip } from '@mui/material';
-import { useMe, withAuth } from 'components/Auth/withAuth';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
-import {
-  TaskModalCard,
-  TaskModalTaskData,
-  TaskModalTitleDescriptionMedia,
-  TaskSectionDisplayDiv,
-  TaskSectionDisplayDivWrapper,
-} from 'components/Common/TaskViewModal/styles';
-import { useContextValue, useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { TaskModalCard, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
+import { useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,
@@ -26,7 +19,6 @@ import {
   CreateEntitySelectErrorWrapper,
   CreateEntityTitle,
   CreateEntityWrapper,
-  EditorContainer,
   EditorPlaceholder,
   EditorToolbar,
   MediaUploadDiv,
@@ -38,7 +30,6 @@ import { GrantTextField, GrantTextFieldInput } from 'components/CreateGrant/Fiel
 import {
   Form,
   GrantDescriptionMedia,
-  GrantModalCard,
   GrantModalData,
   GrantSectionDisplayDivWrapper,
   RichTextContainer,
@@ -57,6 +48,7 @@ import {
 } from 'graphql/mutations';
 import { isEmpty, keys } from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useWonderWeb3 } from 'services/web3';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
@@ -67,8 +59,14 @@ import * as yup from 'yup';
 import { ActionButton, FooterButtonsWrapper, HeaderTypography, IconWrapper } from './styles';
 import { descriptionTemplate } from './utils';
 
-const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClose }) => {
-  const user = useMe();
+interface Props {
+  grantApplication?: any;
+  isEditMode?: boolean;
+  handleClose?: () => void;
+}
+
+const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClose }: Props) => {
+  const wonderWeb3 = useWonderWeb3();
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -103,12 +101,18 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
   const [removeGrantApplicationMedia] = useMutation(REMOVE_GRANT_APPLICATION_MEDIA);
 
   const inputRef: any = useRef();
+
+  const connectedAddress = useMemo(() => {
+    const isEns = wonderWeb3?.wallet?.addressTag.includes('.eth');
+    return isEns ? wonderWeb3?.wallet?.addressTag : wonderWeb3?.wallet?.address;
+  }, [wonderWeb3]);
+
   const initialValues = {
     title: grantApplication?.title || '',
     description: grantApplication
       ? deserializeRichText(grantApplication.description)
       : deserializeRichText(descriptionTemplate),
-    paymentAddress: grantApplication?.paymentAddress || user?.activeEthAddress || null,
+    paymentAddress: grantApplication?.paymentAddress || connectedAddress || null,
     mediaUploads: transformMediaFormat(grantApplication?.media) || [],
   };
 
@@ -145,15 +149,18 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const userMentions = extractMentions(values.description);
+      const isEns = values.paymentAddress.includes('.eth');
+      const paymentAddress = isEns ? await wonderWeb3.getAddressFromENS(values.paymentAddress) : values.paymentAddress;
+
       handleGrantApplicationSubmit({
         variables: {
           input: {
             grantId: grant.id,
             title: values.title,
             mediaUploads: values.mediaUploads,
-            paymentAddress: values.paymentAddress,
+            paymentAddress,
             description: JSON.stringify(values.description),
             userMentions,
           },
@@ -163,6 +170,19 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
   });
 
   useEffect(() => {
+    if (connectedAddress !== form.values.paymentAddress && !grantApplication) {
+      form.setFieldValue('paymentAddress', connectedAddress);
+    }
+    if (grantApplication?.paymentAddress) {
+      wonderWeb3.getENSNameFromEthAddress(grantApplication.paymentAddress).then((ensName) => {
+        if (ensName) {
+          form.setFieldValue('paymentAddress', ensName);
+        }
+      });
+    }
+  }, [connectedAddress, grantApplication]);
+
+  useEffect(() => {
     if (isEditMode && !form.values.title && !form.values.paymentAddress) {
       keys(initialValues).forEach((key) => form.setFieldValue(key, initialValues[key]));
     }
@@ -170,7 +190,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
 
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(orgId);
 
-  const handleUseConnectedButton = () => form.setFieldValue('paymentAddress', user?.activeEthAddress);
+  const handleUseConnectedButton = () => form.setFieldValue('paymentAddress', connectedAddress);
 
   const attachMedia = async (event) => {
     const fileToAdd = await handleAddFile({
@@ -365,4 +385,4 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
   );
 };
 
-export default withAuth(CreateGrantApplication);
+export default CreateGrantApplication;

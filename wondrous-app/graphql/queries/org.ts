@@ -14,6 +14,7 @@ export const GET_ORG_BY_ID = gql`
 export const GET_ORG_FROM_USERNAME = gql`
   query getOrgFromUsername($username: String!) {
     getOrgFromUsername(username: $username) {
+      layout
       ...OrgFragment
     }
   }

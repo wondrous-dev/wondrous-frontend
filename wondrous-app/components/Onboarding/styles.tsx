@@ -20,16 +20,6 @@ export const MainWrapper = styled.div`
   }
 `;
 
-export const LogoDiv = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-export const LogoImg = styled.img`
-  width: 40px;
-  height: 30px;
-`;
-
 export const InviteWelcomeBoxWrapper = styled.div`
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   border-radius: 6px;
@@ -112,15 +102,6 @@ export const OnboardingTitle = styled(Typography)`
   }
 `;
 
-export const ButtonDiv = styled.div`
-  width: 100%;
-`;
-
-export const ContinueText = styled(Typography)`
-  && {
-  }
-`;
-
 export const UsernameTitle = styled(Typography)`
   && {
     color: #ccbbff;
@@ -197,17 +178,6 @@ export const Label = styled(Typography)`
   }
 `;
 
-export const ActionButtons = styled.div`
-  width: 100%;
-  justify-content: end;
-  display: flex;
-  flex-direction: row;
-
-  @media (max-width: 640px) {
-    flex-direction: column-reverse;
-  }
-`;
-
 export const Logo = styled.div`
   text-align: center;
   margin: 20px auto;
@@ -251,26 +221,9 @@ export const Connectors = styled.div`
   }
 `;
 
-export const TwitterTitle = styled.div`
-  color: white;
-  font-size: 15px;
-  font-weight: 400;
-  margin-bottom: 93px;
-  width: 100%;
-`;
-
-export const LogoText = styled.div`
-  font-size: 20px;
-`;
 
 export const DataLink = styled.a`
   color: ${palette.highlightBlue};
   text-decoration: underline;
   font-weight: 500;
-`;
-
-export const QRCodeTwitter = styled.div`
-  width: 305px;
-  height: 328px;
-  background-color: #d9d9d9;
 `;

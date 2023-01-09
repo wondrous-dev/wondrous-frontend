@@ -363,7 +363,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   };
 
   useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
-    form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
+    existingTask
+      ? form.setFieldValue('orgId', existingTask?.orgId)
+      : form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
   );
 
   useContextValue(
@@ -432,11 +434,13 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   ]);
 
   useEffect(() => {
-    form.setFieldValue('proposalVoteType', 'binary');
-  }, [form?.values?.orgId]);
+    if (isProposal) {
+      form.setFieldValue('proposalVoteType', PROPOSAL_VOTE_CHOICES.BINARY);
+    }
+  }, [form?.values?.orgId, isProposal]);
 
   useEffect(() => {
-    if (isSubtask) {
+    if (isSubtask && parentTaskId) {
       form.setFieldValue('parentTaskId', parentTaskId);
       getTaskById({
         variables: {
@@ -447,6 +451,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           const task = data?.data?.getTaskById;
           form.setFieldValue('orgId', task?.orgId);
           form.setFieldValue('podId', task?.podId);
+          if (task?.milestoneId) {
+            form.setFieldValue('milestoneId', task?.milestoneId);
+          }
         })
         .catch((e) => console.error(e));
     }
@@ -1428,7 +1435,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
-        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.milestone)}>
+        <CreateEntityLabelSelectWrapper
+          show={entityTypeData[entityType].fields.includes(Fields.milestone) && !isSubtask}
+        >
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Milestone</CreateEntityLabel>
           </CreateEntityLabelWrapper>
@@ -1447,7 +1456,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                     form.setFieldValue('milestoneId', null);
                   }}
                   formValues={form.values}
-                  disabled={formValues?.milestoneId}
+                  disabled={formValues?.milestoneId || isSubtask}
                 />
               </CreateEntityWrapper>
             )}

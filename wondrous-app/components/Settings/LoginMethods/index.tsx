@@ -215,7 +215,7 @@ function LogInMethods(props) {
             {loggedInUser?.userInfo?.email && !loggedInUser?.userInfo?.hasPassword && (
               <IndicatorContainer>
                 <IndicatorText>
-                  No passowrd has been setup yet. Click reset password to receive a password reset email
+                  No password has been setup yet. Click Reset Password to receive a password reset email
                 </IndicatorText>
               </IndicatorContainer>
             )}

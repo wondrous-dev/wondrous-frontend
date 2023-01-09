@@ -23,7 +23,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { CHAIN_TO_GNOSIS_URL_ABBR, SUPPORTED_CHAINS } from 'utils/web3Constants';
+import { SUPPORTED_CHAINS } from 'utils/web3Constants';
 import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import { ErrorText } from '..';

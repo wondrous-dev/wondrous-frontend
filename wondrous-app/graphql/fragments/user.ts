@@ -15,10 +15,11 @@ export const LoggedinUserFragment = gql`
       discordUsername
       discordDiscriminator
       twitterUsername
-      promotionTweet
+      orbit1Tweet
     }
     signupCompleted
     lastCompletedGuide
+    mainBannerClosedAt
     links {
       url
       displayName

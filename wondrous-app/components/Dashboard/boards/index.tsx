@@ -1,4 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
+
 import { useMe } from 'components/Auth/withAuth';
 import Boards from 'components/Common/Boards';
 import {
@@ -15,18 +18,10 @@ import { LIMIT, USER_COLUMNS, populateTaskColumns, generateUserDashboardFilters 
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import { extendFiltersByView, sectionOpeningReducer } from 'utils/board';
-import {
-  TASKS_DEFAULT_STATUSES,
-  STATUS_OPEN,
-  TASK_STATUSES,
-  TASK_STATUS_IN_REVIEW,
-  PRIVACY_LEVEL,
-} from 'utils/constants';
+import { TASKS_DEFAULT_STATUSES, STATUS_OPEN, PRIVACY_LEVEL } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
 import { useGlobalContext, useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 import BoardWrapper from './BoardWrapper';
-import startOfMonth from 'date-fns/startOfMonth';
-import endOfMonth from 'date-fns/endOfMonth';
 
 const useGetUserTaskBoardTasks = ({
   contributorColumns,
@@ -183,81 +178,6 @@ const BoardsPage = (props) => {
     filters,
   });
 
-  const bindProposalsToCols = (taskProposals) => {
-    const newColumns = [...contributorColumns];
-    newColumns[0].section.tasks = [];
-    taskProposals?.forEach((taskProposal) => {
-      newColumns[0].section.tasks.push(taskProposal);
-    });
-    setContributorColumns(newColumns);
-  };
-  const [searchTasks] = useLazyQuery(SEARCH_TASKS_FOR_USER_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const tasks = data?.searchTasksForUserBoardView;
-      const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : USER_COLUMNS);
-      newColumns[0].section.tasks = [];
-      newColumns[1].section.tasks = [];
-      newColumns[2].section.tasks = [];
-
-      tasks.forEach((task) => {
-        if (task.status === TASK_STATUS_IN_REVIEW) {
-          newColumns[1].section.tasks.push(task);
-        }
-      });
-
-      if (filters?.statuses?.length) {
-        newColumns.forEach((column) => {
-          if (!filters?.statuses.includes(column.section.filter.taskType)) {
-            column.section.tasks = [];
-          }
-        });
-      }
-
-      setContributorColumns(dedupeColumns(newColumns));
-      if (hasMoreTasks) {
-        setHasMoreTasks(tasks.length > LIMIT - 1);
-      }
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-  const [searchProposals] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
-    onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForUserBoardView),
-    fetchPolicy: 'cache-and-network',
-  });
-
-  useEffect(() => {
-    if (!loggedInUser) {
-      return;
-    }
-    if (search) {
-      const searchTaskProposalsArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: [],
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: LIMIT,
-          searchString: search,
-        },
-      };
-
-      const searchTasksArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: [],
-          limit: LIMIT,
-          offset: 0,
-          // Needed to exclude proposals
-          statuses: TASKS_DEFAULT_STATUSES,
-          searchString: search,
-        },
-      };
-
-      searchTasks(searchTasksArgs);
-      searchProposals(searchTaskProposalsArgs);
-    }
-  }, [loggedInUser]);
-
   const handleLoadMore = (type = null) => {
     if (hasMoreTasks) {
       return getUserTaskBoardTasksFetchMore();
@@ -301,64 +221,17 @@ const BoardsPage = (props) => {
     ];
 
     return Promise.all(promises).then(([proposals, tasks]: any) => ({
-      proposals: proposals.data.searchProposalsForUserBoardView,
+      proposals: proposals.data.searchProposalsForUserBoardView.map((proposal) => ({ ...proposal, isProposal: true })),
       tasks: tasks.data.searchTasksForUserBoardView,
     }));
   }
 
-  const handleFilterChange = (
-    filtersToApply = { statuses: [], podIds: [], date: null, orgId: null, fromDate: null, toDate: null }
-  ) => {
+  const handleFilterChange = (filtersToApply = { statuses: [], podIds: [], date: null, orgId: null, fromDate: null, toDate: null  }) => {
     setFilters({
       ...filtersToApply,
       fromDate: filtersToApply.fromDate ?? filters.fromDate,
       toDate: filtersToApply.toDate ?? filters.toDate,
     });
-
-    if (search) {
-      const taskStatuses = filtersToApply.statuses?.filter((status) => TASK_STATUSES.includes(status));
-      const shouldSearchProposals =
-        filtersToApply.statuses?.length !== taskStatuses?.length || filtersToApply.statuses === TASKS_DEFAULT_STATUSES;
-      const shouldSearchTasks = !(searchProposals && filtersToApply.statuses?.length === 1);
-      const searchTaskProposalsArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: filtersToApply.podIds,
-          statuses: [STATUS_OPEN],
-          offset: 0,
-          limit: LIMIT,
-          searchString: search,
-        },
-      };
-
-      const searchTasksArgs = {
-        variables: {
-          userId: loggedInUser?.id,
-          podIds: filtersToApply.podIds,
-          limit: LIMIT,
-          offset: 0,
-          // Needed to exclude proposals
-          statuses: taskStatuses,
-          searchString: search,
-        },
-      };
-
-      if (shouldSearchTasks) {
-        searchTasks(searchTasksArgs);
-      } else {
-        const newColumns = [...contributorColumns];
-        newColumns.forEach((column) => {
-          column.tasks = [];
-          column.section.tasks = [];
-        });
-
-        setContributorColumns(newColumns);
-      }
-
-      if (shouldSearchProposals) {
-        searchProposals(searchTaskProposalsArgs);
-      }
-    }
   };
 
   return (

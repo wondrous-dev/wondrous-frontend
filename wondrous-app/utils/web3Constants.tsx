@@ -7,6 +7,7 @@ import Optimism from 'components/Icons/Optimism';
 import Klaytn from 'components/Icons/Klaytn';
 import Polygon from 'components/Icons/polygonMaticLogo.svg';
 import Harmony from 'components/Icons/harmony';
+import GnosisChain from 'components/Icons/GnosisChain';
 import { Matic } from 'components/Icons/matic';
 import { USDCoin } from 'components/Icons/USDCoin';
 import { WonderCoin } from 'components/Icons/wonderCoin';
@@ -24,6 +25,7 @@ const SUPPORTED_CHAINS = {
   10: 'optimism',
   8217: 'klaytn',
   43114: 'avalanche',
+  100: 'gnosis',
 };
 
 export const NATIVE_TOKEN_SYMBOL = {
@@ -37,6 +39,7 @@ export const NATIVE_TOKEN_SYMBOL = {
   10: 'OP',
   8217: 'KLAY',
   43114: 'AVAX',
+  100: 'xDai',
 };
 
 export const RPC_URLS: { [chainId: number]: string } = {
@@ -62,6 +65,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   optimism: 'Optimism Mainnet',
   klaytn: 'Klaytn Mainnet',
   avalanche: 'Avalanche',
+  gnosis: 'Gnosis Chain',
 };
 
 export const SUPPORTED_CURRENCIES = [
@@ -131,6 +135,7 @@ export const CHAIN_TO_GNOSIS_URL_ABBR = {
   arbitrum: 'arb1',
   optimism: 'opt',
   avalanche: 'avax', // TODO check thisis right
+  gnosis: 'gno', // TODO check thisis right
 };
 
 export const LIT_PROTOCOL_MESSAGE = 'signature verification to token gating';
@@ -146,18 +151,20 @@ export const CHAIN_TO_EXPLORER_URL = {
   optimism: 'https://optimistic.etherscan.io',
   klaytn: 'https://scope.klaytn.com',
   avalanche: 'https://snowtrace.io',
+  gnosis: 'https://gnosisscan.io',
 };
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
   ethereum: 'https://safe-transaction.mainnet.gnosis.io',
   goerli: 'https://safe-transaction.goerli.gnosis.io',
-  polygon: 'https://safe-transaction.polygon.gnosis.io',
-  harmony: 'https://multisig.t.hmny.io',
+  polygon: 'https://safe-transaction-polygon.safe.global',
+  harmony: 'https://transaction.multisig.harmony.one',
   arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
   bsc: 'https://safe-transaction.bsc.gnosis.io',
   boba: 'https://safe-transaction.mainnet.boba.network',
   optimism: 'https://safe-transaction.optimism.gnosis.io',
   avalanche: 'https://safe-transaction.avalanche.gnosis.io',
+  gnosis: 'https://safe-transaction.xdai.gnosis.io',
 };
 
 export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa';
@@ -184,6 +191,7 @@ export const CHAIN_LOGO = {
   '42161': <Arbitrum />,
   '43114': <Avalanche />,
   '1666600000': <Harmony />,
+  '100': <GnosisChain />,
 };
 
 export const CURRENCY_SYMBOL = {
@@ -204,8 +212,9 @@ const CHAIN_SELECT_OPTIONS = [
   { label: 'Optimism', value: 'optimism', icon: <Optimism /> },
   { label: 'Arbitrum', value: 'arbitrum', icon: <Arbitrum /> },
   { label: 'BNB', value: 'bsc', icon: <Binance /> },
-  { label: 'Avalanche', value: 'avalanche', icon: <Avalanche /> },
   { label: 'Klaytn', value: 'klaytn', icon: <Klaytn /> },
+  { label: 'Gnosis', value: 'gnosis', icon: <GnosisChain /> },
+  { label: 'Avalanche', value: 'avalanche', icon: <Avalanche /> },
   { label: 'Harmony', value: 'harmony', icon: <Harmony /> },
   { label: 'Boba', value: 'boba', icon: <Boba /> },
 ];

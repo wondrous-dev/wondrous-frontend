@@ -1,27 +1,23 @@
 import { useMutation, useQuery } from '@apollo/client';
 import LeftArrowIcon from 'components/Icons/leftArrow';
-import { CompletedIcon } from 'components/Icons/statusIcons';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
+import { useIsMobile } from 'utils/hooks';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import {
   BackButton,
   Container,
   ContinueButton,
   Later,
-  LaterButton,
   RightButtons,
 } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
 import { SET_USER_SIGNUP_COMPLETE } from 'graphql/mutations';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React from 'react';
 import { TWITTER_CHALLENGE_CODE } from 'utils/constants';
-import { useIsMobile } from 'utils/hooks';
 import TwitterSmallLogo from '../../../public/images/onboarding/twitter-logo.svg';
-import { Label, WalletConnected } from '../styles';
 
-export function ConnectTwitter({ firstOrg, firstPod }) {
+export default function ConnectTwitter({ firstOrg, firstPod }) {
   const router = useRouter();
   const { collabInvite } = router.query;
   const [setUserSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE);
@@ -29,8 +25,8 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
-      if (userData?.getLoggedinUser?.userInfo?.twitterUsername) {
-        router.push(`/mission-control`, undefined, {
+      if (data?.getLoggedinUser?.userInfo?.twitterUsername) {
+        router.push(`/twitter/verify-tweet`, undefined, {
           shallow: true,
         });
       }
@@ -39,12 +35,6 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
       }
     },
   });
-  const headerRightContent = (
-    <WalletConnected>
-      <CompletedIcon fill="none" stroke="none" style={{ width: '26px', height: '26px' }} />{' '}
-      <Label>Success! Wallet connected.</Label>
-    </WalletConnected>
-  );
 
   const collabInviteQueryString = collabInvite ? `?collabInvite=${collabInvite}` : '';
   const redirectToTwitterAuth = () => {
@@ -138,15 +128,21 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
   return (
     <OnboardingLayout
       title="Connect to Twitter"
-      description="Connect your twitter!"
-      headerRightContent={router.query.wallet ? headerRightContent : null}
+      description="Want our Orbit 1 NFT? Connect your twitter!"
       onBackClick={() => router.back()}
       displayFooter={false}
       footer={isMobile ? mobileFooter : footer}
       step={5}
     >
       <div style={{ textAlign: 'center', marginBottom: '50px', marginTop: '20px' }}>
-        <Image src="/images/onboarding/twitter.svg" width={406} height={224} alt="" />
+        <img
+          src="/images/onboarding/twitter.svg"
+          alt=""
+          style={{
+            width: '100%',
+            height: '224px',
+          }}
+        />
       </div>
     </OnboardingLayout>
   );

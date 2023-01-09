@@ -92,13 +92,14 @@ export const PodSearchInput = styled(TextField)`
     width: 100%;
     padding: 10px;
     && .MuiOutlinedInput-root {
-      background: #313131;
+      background: #0f0f0f;
       width: 100%;
+      border-radius: 6px;
       display: flex;
       padding: 0 8px;
     }
     && .MuiOutlinedInput-input {
-      height: 32px;
+      height: 36px;
       padding: 0;
       font-family: 'Space Grotesk';
       font-weight: 400;
@@ -179,12 +180,10 @@ export const PodSearchListItem = styled.li`
     :last-of-type {
       border-radius: 0 0 4px 4px;
     }
-
-    &&[aria-selected='true'],
-    &&[aria-selected='true'].Mui-focused,
-    &&.Mui-focused {
-      background: rgba(122, 122, 122, 0.2);
+    &:hover {
+      background: ${palette.black81} !important;
     }
+    color: ${({ isActive }) => (isActive ? palette.blue20 : palette.white)};
   }
 `;
 
@@ -211,7 +210,7 @@ export const PodSearchLabel = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 900;
-    color: ${palette.white};
+    color: inherit;
     margin-left: 6px;
     white-space: nowrap;
     text-overflow: ellipsis;

@@ -66,7 +66,7 @@ function MilestoneSearch({ options, onChange, value, handleClose, formValues = n
 
   return (
     <MilestoneSearchClickAway onClickAway={handleClickAway}>
-      <MilestoneSearchWrapper>
+      <MilestoneSearchWrapper disabled={disabled}>
         <MilestoneSearchButton open={isOpen} disabled={!options || disabled} onClick={handleClick} ref={anchorEl}>
           <MilestoneSearchImageLabelWrapper>
             <MilestoneSearchDefaultImage color={selectedValue?.color ?? `#474747`} />

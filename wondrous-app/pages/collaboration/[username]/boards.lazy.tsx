@@ -1,4 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
+
 import { withAuth } from 'components/Auth/withAuth';
 import { Boards } from 'components/Collaboration';
 import EntitySidebar from 'components/Common/SidebarEntity';
@@ -35,12 +38,10 @@ import {
   STATUS_CLOSED,
   STATUS_OPEN,
   STATUSES_ON_ENTITY_TYPES,
-  TASK_STATUSES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useGlobalContext } from 'utils/hooks';
-import startOfMonth from 'date-fns/startOfMonth';
-import endOfMonth from 'date-fns/endOfMonth';
+
+import { useGlobalContext, usePageDataContext } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -369,6 +370,7 @@ function BoardsPage() {
     toDate: endOfMonth(new Date()),
   });
   const [orgData, setOrgData] = useState(null);
+  const { setPageData } = usePageDataContext();
   const [searchString, setSearchString] = useState('');
   const [entityType, setEntityType] = useState(activeEntityFromQuery);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
@@ -378,7 +380,6 @@ function BoardsPage() {
   const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
   const { userPermissionsContext } = useGlobalContext();
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(true);
-
   const { fetchMore, fetchPerStatus } = useGetOrgTaskBoard({
     view: activeView,
     section,
@@ -393,6 +394,14 @@ function BoardsPage() {
     search,
     filters,
   });
+
+  useEffect(() => {
+    if (orgData) {
+      setPageData({ orgData, entityType });
+    }
+  }, [orgData, entityType]);
+
+  useEffect(() => () => setPageData({}), []);
 
   useEffect(() => {
     if (userId) {
@@ -433,22 +442,6 @@ function BoardsPage() {
     router.push({ query }, undefined, { shallow: true });
   };
 
-  const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
-    onCompleted: (data) => {
-      const boardColumns = [...columns];
-      if (boardColumns[0].tasks?.length > 0) {
-        boardColumns[0].tasks = [...boardColumns[0].tasks, ...data?.searchProposalsForOrgBoardView];
-        setColumns(boardColumns);
-      }
-      setIsLoading(false);
-    },
-    onError: (error) => {
-      console.log(error);
-      setIsLoading(false);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
   const [getOrgBoardTaskCount, { data: orgTaskCountData }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD);
 
   const searchOrgTaskProposalsArgs = {
@@ -462,20 +455,6 @@ function BoardsPage() {
       searchString: search,
     },
   };
-
-  const [searchOrgTasks] = useLazyQuery(SEARCH_TASKS_FOR_ORG_BOARD_VIEW, {
-    onCompleted: (data) => {
-      const tasks = data?.searchTasksForOrgBoardView;
-      const newColumns = populateTaskColumns(tasks, ORG_POD_COLUMNS);
-      setColumns(dedupeColumns(newColumns));
-      searchOrgTaskProposals(searchOrgTaskProposalsArgs);
-      if (orgTaskHasMore) {
-        setOrgTaskHasMore(tasks.length >= LIMIT);
-      }
-      setFirstTimeFetch(true);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
 
   const [getOrgFromUsername] = useLazyQuery(GET_ORG_FROM_USERNAME, {
     onCompleted: (data) => {
@@ -517,23 +496,6 @@ function BoardsPage() {
 
       if (search) {
         if (!firstTimeFetch) {
-          const id = orgId || orgData?.id;
-          const searchOrgTasksArgs = {
-            variables: {
-              podIds: filters?.podIds,
-              priorities: filters?.priorities,
-              orgId: id,
-              limit: 1000,
-              offset: 0,
-              // Needed to exclude proposals
-              statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
-              searchString: search,
-              ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
-                onlyPublic: true,
-              }),
-            },
-          };
-          searchOrgTasks(searchOrgTasksArgs);
           setFirstTimeFetch(true);
           setSearchString(search as string);
         }
@@ -593,61 +555,12 @@ function BoardsPage() {
     }));
   }
 
-  const handleFilterChange: any = (
-    filtersToApply = { statuses: [], podIds: [], labelId: null, date: null, fromDate: null, toDate: null }
-  ) => {
+  const handleFilterChange: any = (filtersToApply = { statuses: [], podIds: [], labelId: null, date: null, fromDate: null, toDate: null }) => {
     setFilters({
       ...filtersToApply,
       fromDate: filtersToApply.fromDate ?? filters.fromDate,
       toDate: filtersToApply.toDate ?? filters.toDate,
     });
-
-    if (search) {
-      const id = orgId || orgData?.id;
-      const taskStatuses = filtersToApply?.statuses.filter((status) => TASK_STATUSES.includes(status));
-      const searchProposals =
-        filtersToApply?.statuses.length !== taskStatuses.length ||
-        filtersToApply?.statuses === (STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT);
-      const searchTasks = !(searchProposals && filtersToApply?.statuses.length === 1);
-
-      const searchOrgTasksArgs = {
-        variables: {
-          podIds: filtersToApply?.podIds,
-          orgId: id,
-          limit: 1000,
-          labelId: filtersToApply?.labelId,
-          offset: 0,
-          // Needed to exclude proposals
-          statuses: taskStatuses,
-          search,
-          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
-            onlyPublic: true,
-          }),
-        },
-      };
-
-      if (searchTasks) {
-        searchOrgTasks(searchOrgTasksArgs);
-      } else {
-        const newColumns = [...columns];
-        newColumns.forEach((column) => {
-          column.tasks = [];
-        });
-
-        setColumns(dedupeColumns(newColumns));
-        setIsLoading(false);
-      }
-
-      if (searchProposals) {
-        const proposalArgs = {
-          ...searchOrgTaskProposalsArgs,
-          podIds: filters?.podIds,
-          priorities: filters?.priorities,
-        };
-        searchOrgTaskProposals(proposalArgs);
-        setIsLoading(false);
-      }
-    }
   };
 
   const handleActiveViewChange = (newView: ViewType) => {

@@ -57,7 +57,8 @@ export default function ListView({
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
-  const { taskCount = {}, fetchPerStatus, entityType, setColumns } = orgBoard || podBoard || userBoard;
+  const { taskCount = {}, fetchPerStatus, setColumns } = orgBoard || podBoard || userBoard;
+  const { entityType } = props || orgBoard || podBoard || userBoard;
   const isProposalEntity = entityType === ENTITIES_TYPES.PROPOSAL;
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
@@ -277,10 +278,10 @@ export default function ListView({
         />
       ) : (
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
-          {columns.map((column) => {
+          {columns?.map((column) => {
             if (!column) return null;
 
-            const count = (taskCount && taskCount[STATUS_MAP[column.status]]) || column.count || 0;
+            const count = column.count || (taskCount && taskCount[STATUS_MAP[column.status]]) || 0;
             const isDropDisabled = isTaskDragging && taskHasPayment(draggingTask) && column.status !== TASK_STATUS_DONE;
 
             return (

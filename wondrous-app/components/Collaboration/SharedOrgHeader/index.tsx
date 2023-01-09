@@ -89,7 +89,7 @@ const SharedOrgHeader = ({ parentOrgs }) => (
     {parentOrgs?.map((org, idx) => (
       <>
         <Link href={`/organization/${org?.username}/home`}>
-          <Box sx={{ minWidth: '60px', cursor: 'pointer' }} key={idx}>
+          <Box sx={{ minWidth: '36', cursor: 'pointer' }} key={idx}>
             <SafeImage
               src={org?.profilePicture}
               placeholderComp={
@@ -97,8 +97,8 @@ const SharedOrgHeader = ({ parentOrgs }) => (
                   <DAOEmptyIcon />
                 </TokenEmptyLogo>
               }
-              width={60}
-              height={60}
+              width={36}
+              height={36}
               useNextImage
               style={{
                 borderRadius: '6px',

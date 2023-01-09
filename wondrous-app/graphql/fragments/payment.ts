@@ -30,7 +30,7 @@ export const PaymentCardFragment = gql`
     txHash
     safeTxHash
     payedAt
-    status
+    paymentStatus
     notes
     amount
     symbol

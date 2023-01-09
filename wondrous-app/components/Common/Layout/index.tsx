@@ -115,11 +115,15 @@ export default function SidebarLayout({ children }) {
     [minimized, orgsList]
   );
 
-  useHotkeys(HOTKEYS.CHOOSE_ENTITY, () => {
-    if (!createFormModal) {
-      toggleCreateFormModal();
-    }
-  });
+  useHotkeys(
+    HOTKEYS.CHOOSE_ENTITY,
+    ({ altKey, ctrlKey, shiftKey, metaKey }: KeyboardEvent) => {
+      if (!createFormModal && !altKey && !ctrlKey && !shiftKey && !metaKey) {
+        toggleCreateFormModal();
+      }
+    },
+    [createFormModal]
+  );
 
   const pageDataValues = useMemo(() => ({ setPageData }), [setPageData]);
 

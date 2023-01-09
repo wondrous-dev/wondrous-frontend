@@ -1,16 +1,14 @@
 import { Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { logout, useMe } from 'components/Auth/withAuth';
-import HelpModal from 'components/Common/HelpModal.jsx';
 import { UserProfilePictureGR15 } from 'components/Common/ProfilePictureHelpers';
-import PodsIconButton from 'components/Common/SidebarMainPods';
+import { PodsIconComponent } from 'components/Common/SidebarMainPods';
 import LogoutIcon from 'components/Icons/logout';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
 import WrenchIcon from 'components/Icons/wrench';
 import { UnstyledButton, UnstyledLink } from 'components/WorkspacePicker/styles';
 import Image from 'next/image';
-import { useState } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { Wrapper } from '../CreateEntityComponent/styles';
@@ -26,45 +24,17 @@ import {
   UserHelperWrapper,
 } from './styles';
 
-const TutorialsButton = ({ onClick }) => {
-  const [openHelpModal, setOpenHelpModal] = useState(false);
+const TutorialsButton = ({ onClick }) => (
+  <UserHelperWrapper onClick={onClick}>
+    <ButtonIcon bgColor={palette.grey75}>
+      <QuestionMarkIcon />
+    </ButtonIcon>
+    <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
+      Tutorials
+    </Typography>
+  </UserHelperWrapper>
+);
 
-  const handleClick = () => {
-    setOpenHelpModal(true);
-  };
-  return (
-    <>
-      {openHelpModal && <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />}
-      <UserHelperWrapper onClick={handleClick}>
-        <ButtonIcon bgColor={palette.grey75}>
-          <QuestionMarkIcon />
-        </ButtonIcon>
-        <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
-          Tutorials
-        </Typography>
-      </UserHelperWrapper>
-    </>
-  );
-};
-
-const PAGE_SELECTOR_CONFIG = [
-  {
-    label: 'My Work',
-    key: 'my-work',
-    Icon: (
-      <GridIconWrapper>
-        <GridViewIcon />
-      </GridIconWrapper>
-    ),
-    href: '/mission-control',
-  },
-  {
-    label: 'My Pods',
-    key: 'my-pods',
-    component: <PodsIconButton />,
-    type: 'component',
-  },
-];
 const UserHelpers = ({ onClick }) => (
   <Grid display="flex" direction="column" gap="14px">
     <UnstyledLink href="/profile/settings" onClick={onClick}>
@@ -96,8 +66,27 @@ const UserHelpers = ({ onClick }) => (
   </Grid>
 );
 
-const UserProfile = ({ onClose }) => {
+const UserProfile = ({ onClose, openPodModal, openTutorialsModal }) => {
   const user = useMe();
+
+  const PAGE_SELECTOR_CONFIG = [
+    {
+      label: 'My Work',
+      key: 'my-work',
+      Icon: (
+        <GridIconWrapper>
+          <GridViewIcon />
+        </GridIconWrapper>
+      ),
+      href: '/mission-control',
+    },
+    {
+      label: 'My Pods',
+      key: 'my-pods',
+      component: <PodsIconComponent handleClick={openPodModal} isActive={false} />,
+      type: 'component',
+    },
+  ];
 
   return (
     <Wrapper>
@@ -140,7 +129,7 @@ const UserProfile = ({ onClose }) => {
         })}
       </PageSelectorWrapper>
       <div>
-        <UserHelpers onClick={onClose} />
+        <UserHelpers onClick={openTutorialsModal} />
       </div>
     </Wrapper>
   );

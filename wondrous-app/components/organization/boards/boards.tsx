@@ -55,7 +55,6 @@ function OrgBoards(props: Props) {
 
   const filterSchema = getFilterSchema(entityType, orgData?.id);
   const ActiveBoard = BOARDS_MAP[entityType];
-
   return (
     <Wrapper
       orgData={orgData}
@@ -98,6 +97,5 @@ export default memo(OrgBoards, (prevProps, nextProps) => {
     prevProps.entityType === nextProps.entityType &&
     prevProps.loading === nextProps.loading &&
     prevProps.activeView === nextProps.activeView;
-
   return areEqual;
 });

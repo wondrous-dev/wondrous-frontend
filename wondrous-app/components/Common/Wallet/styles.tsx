@@ -50,7 +50,7 @@ export const WonderBalance = styled.div`
   cursor: pointer;
   display: flex;
   gap: 10px;
-  height: 40px;
+  height: 36px;
   justify-content: center;
   padding: 0 16px;
   position: relative;
@@ -68,7 +68,7 @@ export const WalletAddress = styled.div`
   background: ${({ theme }) => theme.palette.grey87};
   border-radius: 150px;
   display: flex;
-  height: 40px;
+  height: 36px;
   justify-content: center;
   max-width: 400px;
   overflow-x: hidden;

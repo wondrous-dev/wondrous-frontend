@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
+import ReactPlayer from 'react-player';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { VERIFY_USER_TWEET } from 'graphql/mutations';
-import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
-import { CompletedIcon } from 'components/Icons/statusIcons';
 import {
   ContinueButton,
   LaterButton,
@@ -14,10 +13,11 @@ import {
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
 import Image from 'next/image';
 import { useWonderWeb3 } from 'services/web3';
+import { PlayerWrapper } from 'components/Onboarding/VerifyTweet/styles';
+import { useMe } from 'components/Auth/withAuth';
 import useEagerConnectConditional from 'services/web3/hooks/useEagerConnectConditional';
 import TwitterLogo from '../../../public/images/twitter.svg';
 import { InviteWelcomeBoxParagraph } from '../styles';
-import { useMe } from '../../Auth/withAuth';
 
 // const buttonStyle = {
 //   background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
@@ -35,7 +35,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
-      if (data?.getLoggedinUser?.userInfo && !userData?.getLoggedinUser?.userInfo?.twitterUsername) {
+      if (data?.getLoggedinUser?.userInfo && !data?.getLoggedinUser?.userInfo?.twitterUsername) {
         router.push(`/onboarding/twitter`, undefined, {
           shallow: true,
           ...(collabInvite ? { query: { collabInvite } } : {}),
@@ -53,7 +53,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
 
   useEagerConnectConditional(user?.activeEthAddress);
 
-  const userAlreadyTweeted = !!userData?.getLoggedinUser?.userInfo?.promotionTweet;
+  const userAlreadyTweeted = !!userData?.getLoggedinUser?.userInfo?.orbit1Tweet;
 
   const connectWeb3 = async () => {
     await wonderWeb3.onConnect();
@@ -71,8 +71,8 @@ function VerifyTweet({ firstOrg, firstPod }) {
     }
   }, [userAlreadyTweeted]);
 
-  const hanldeLaterClick = () => {
-    // if user is part of a org maybe redirect to org
+  const handleLaterClick = () => {
+    // if user has collabInvite token and is not a member of an org we assume they want to create a new org
     if (collabInvite && !firstOrg) {
       return router.push(`/onboarding-dao?collabInvite=${collabInvite}`, undefined, {
         shallow: true,
@@ -86,9 +86,15 @@ function VerifyTweet({ firstOrg, firstPod }) {
         shallow: true,
       });
     } else if (firstOrg) {
-      router.push(`/organization/${firstOrg.username}/home`, undefined, {
-        shallow: true,
-      });
+      router.push(
+        `/${firstOrg?.shared ? 'collaboration' : 'organization'}/${firstOrg.username}/${
+          firstOrg?.shared ? 'boards' : 'home'
+        }`,
+        undefined,
+        {
+          shallow: true,
+        }
+      );
     } else {
       router.push('/mission-control', undefined, {
         shallow: true,
@@ -100,11 +106,11 @@ function VerifyTweet({ firstOrg, firstPod }) {
     if (user?.activeEthAddress) {
       if (wonderWeb3.ensName) {
         // && wonderWeb3.address === user?.activeEthAddress ?
-        return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0AENS%3A%20${wonderWeb3.ensName}&in_reply_to=1536797296263737345`;
+        return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0AENS%3A%20${wonderWeb3.ensName}&in_reply_to=1603833807081066496`;
       }
-      return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A${user?.activeEthAddress}&in_reply_to=1536797296263737345`;
+      return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A${user?.activeEthAddress}&in_reply_to=1603833807081066496`;
     }
-    return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to=1536797296263737345`;
+    return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Orbit%201%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to=1603833807081066496`;
   };
 
   return (
@@ -115,23 +121,26 @@ function VerifyTweet({ firstOrg, firstPod }) {
         minHeight: 'unset',
       }}
     >
-      <OnboardingTitle
-        style={{
-          marginTop: 0,
-        }}
-      >
-        Get your Launch Pass NFT
-      </OnboardingTitle>
-      <InviteWelcomeBoxParagraph
-        style={{
-          textAlign: 'left',
-          width: '100%',
-          fontSize: '15px',
-          fontWeight: '400',
-        }}
-      >
-        Want to get your launch NFT? <br /> Verify your Twitter to get the password and link.
-      </InviteWelcomeBoxParagraph>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <OnboardingTitle
+          style={{
+            marginTop: 0,
+            textAlign: 'center',
+          }}
+        >
+          Get your Orbit 1 NFT
+        </OnboardingTitle>
+        <InviteWelcomeBoxParagraph
+          style={{
+            textAlign: 'center',
+            width: '100%',
+            fontSize: '15px',
+            fontWeight: '400',
+          }}
+        >
+          Want to get your Orbit 1 NFT? Tweet us!
+        </InviteWelcomeBoxParagraph>
+      </div>
       {!user?.activeEthAddress && (
         <InviteWelcomeBoxParagraph
           style={{
@@ -141,7 +150,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
             fontWeight: '400',
           }}
         >
-          If you haven&apos;t connected your wallet, please add your ENS to the tweet
+          If you haven&apos;t connected your wallet, add your address or ENS to the tweet
         </InviteWelcomeBoxParagraph>
       )}
       <div
@@ -151,7 +160,19 @@ function VerifyTweet({ firstOrg, firstPod }) {
           alignItems: 'center',
         }}
       >
-        <Image alt="Background" src="/images/poap/launch-poap.png" quality={100} width={300} height={300} />
+        <PlayerWrapper>
+          <ReactPlayer
+            style={{
+              height: '100%',
+              width: '100%',
+            }}
+            muted
+            playing
+            loop
+            controls={false}
+            url="https://stream.mux.com/TrJJODUH400xzbi00R1t2Pq5ik00zA7MwQ9y59NyU2Ailo.m3u8"
+          />
+        </PlayerWrapper>
         {!tweetVerified && (
           <div
             style={{
@@ -218,7 +239,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
                 width: '100%',
                 height: '50px',
               }}
-              onClick={hanldeLaterClick}
+              onClick={handleLaterClick}
             >
               I’ll get it later
             </Later>
@@ -246,7 +267,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
                 width: '100%',
                 height: '50px',
               }}
-              onClick={hanldeLaterClick}
+              onClick={handleLaterClick}
             >
               Continue to dashboard
             </ContinueButton>

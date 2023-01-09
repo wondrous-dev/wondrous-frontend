@@ -4,7 +4,6 @@ import { CallbackBackground, CallbackHeading, CallbackWrapper } from 'components
 import { useRouter } from 'next/router';
 import React, { useEffect, useCallback, useState } from 'react';
 import { storeAuthHeader, useMe, withAuth } from 'components/Auth/withAuth';
-import { InviteWelcomeBoxWrapper } from 'components/Onboarding/styles';
 import {
   CONNECT_USER_DISCORD,
   REDEEM_ORG_INVITE_LINK,

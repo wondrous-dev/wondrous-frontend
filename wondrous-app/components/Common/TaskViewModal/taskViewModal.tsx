@@ -728,23 +728,18 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               user={user}
                             />
                             <AssigneeField
-                              shouldDisplay={showAssignee}
-                              fetchedTask={fetchedTask}
-                              canEdit={canEdit}
-                              setFetchedTask={setFetchedTask}
-                              updateInReviewItem={updateInReviewItem}
                               boardColumns={boardColumns}
-                              handleClose={handleClose}
-                              user={user}
-                              canClaim={canClaim}
-                              isTaskProposal={isTaskProposal}
-                              updateProposalItem={updateProposalItem}
-                              updateInProgressTask={updateInProgressTask}
-                              updateTaskItem={updateTaskItem}
-                              updateCompletedItem={updateCompletedItem}
                               canApply={canApply}
+                              canClaim={canClaim}
+                              canEdit={canEdit}
+                              fetchedTask={fetchedTask}
+                              handleClose={handleClose}
+                              isTaskProposal={isTaskProposal}
                               orgId={board?.orgId}
                               podId={board?.podId}
+                              shouldDisplay={showAssignee}
+                              updateProposalItem={updateProposalItem}
+                              user={user}
                               userId={board?.userId}
                             />
                             {!isViewNft && <WatchersField fetchedTask={fetchedTask} />}

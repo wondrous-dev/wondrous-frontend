@@ -8,7 +8,7 @@ export const Separator = styled(Typography)`
   && {
     font-style: normal;
     font-weight: 900;
-    font-size: 20px;
+    font-size: 15px;
     line-height: 18px;
     letter-spacing: 0.03em;
     color: ${palette.grey57};

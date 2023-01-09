@@ -13,9 +13,15 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import React, { useContext, useState } from 'react';
+import { MediaItem } from 'components/CreateEntity/MediaItem';
+import { handleAddFile } from 'utils/media';
+import React, { useContext, useState, useRef } from 'react';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+
+import { CreateEntityAttachment, CreateEntityAttachmentIcon } from 'components/CreateEntity/CreateEntityModal/styles';
+
 import { ErrorText } from '../..';
 import { CreateFormPreviewButton } from '../../../CreateEntity/styles';
 import { SnackbarAlertContext } from '../../SnackbarAlert';
@@ -32,6 +38,7 @@ import {
   OfflinePaymentWalletWrapper,
   OfflinePaymentWarningTypography,
   OfflinePaymentWrapper,
+  MediaUploadDiv,
 } from './styles';
 
 const OFFLINE_PAYMENT_OPTIONS = [
@@ -46,10 +53,24 @@ export function OfflinePayment(props) {
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
   const [linkPaymentError, setLinkPaymentError] = useState(null);
+  const [mediaUploads, setMediaUploads] = useState([]);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [submissionPaid, setSubmissionPaid] = useState(null);
+  const inputRef: any = useRef();
+
+  const [fileUploadLoading, setFileUploadLoading] = useState(false);
+
+  const handleExistingMediaAttach = async (event) => {
+    const fileToAdd = await handleAddFile({
+      event,
+      filePrefix: 'tmp/payment/new/',
+      mediaUploads,
+      setMediaUploads: (medias) => setMediaUploads(medias),
+      setFileUploadLoading,
+    });
+  };
 
   const [lnkOffPlatformPaymentForGrantApplications] = useMutation(LINK_OFF_PLATFORM_PAYMENT_FOR_APPLICATION, {
     onCompleted: (data) => {
@@ -58,12 +79,31 @@ export function OfflinePayment(props) {
     refetchQueries: ['getGrantApplicationById', 'getGrantById'],
     onError: (e) => {
       console.error(e);
-      setLinkPaymentError(e);
+      setLinkPaymentError('Error linking payment');
+    },
+  });
+  const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
+    onCompleted: (data) => {
+      setSubmissionPaid(true);
+    },
+    refetchQueries: [
+      'getUnpaidSubmissionsForOrg',
+      'getUnpaidSubmissionsForPod',
+      'getPaymentsForOrg',
+      'getPaymentsForPod',
+    ],
+    onError: (e) => {
+      console.error(e);
+      setLinkPaymentError('Error linking payment');
     },
   });
 
   const handleLinkPaymentLinkClick = () => {
     setLinkPaymentError(null);
+    if (!selectedOfflineType || !offlinePaymentLink) {
+      setLinkPaymentError('Need to select a payment type and enter a link');
+      return
+    }
     const offlineLinks = [
       {
         type: selectedOfflineType,
@@ -85,6 +125,7 @@ export function OfflinePayment(props) {
           input: {
             submissionId: approvedSubmission.id,
             offlineLinks,
+            mediaUploads,
           },
           refetchQueries: [
             GET_UNPAID_SUBMISSIONS_FOR_POD,
@@ -110,15 +151,7 @@ export function OfflinePayment(props) {
       </Typography>
     );
   };
-  const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
-    onCompleted: (data) => {
-      setSubmissionPaid(true);
-    },
-    onError: (e) => {
-      console.error(e);
-      setLinkPaymentError(e);
-    },
-  });
+
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(`${recipientAddress}`);
     setSnackbarAlertOpen(true);
@@ -154,7 +187,26 @@ export function OfflinePayment(props) {
         value={offlinePaymentLink}
         onChange={(e) => setOfflinePaymentLink(e.target.value)}
       />
-      {linkPaymentError && <ErrorText>error linking payments</ErrorText>}
+      <MediaUploadDiv>
+        {mediaUploads?.length > 0 &&
+          mediaUploads.map((mediaItem) => (
+            <MediaItem
+              key={mediaItem?.uploadSlug}
+              mediaUploads={mediaUploads}
+              setMediaUploads={(medias) => setMediaUploads(medias)}
+              mediaItem={mediaItem}
+              removeMediaItem={() => {}}
+            />
+          ))}
+        <CreateEntityAttachment onClick={() => inputRef?.current?.click()}>
+          <CreateEntityAttachmentIcon />
+          Add Attachment
+          {fileUploadLoading && <FileLoading />}
+        </CreateEntityAttachment>
+      </MediaUploadDiv>
+      <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
+
+      {linkPaymentError && <ErrorText>{linkPaymentError}</ErrorText>}
       <OfflinePaymentButtonWrapper>
         {!submissionPaid && (
           <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>
@@ -180,7 +232,7 @@ export function BatchOfflinePayment(props) {
     },
     onError: (e) => {
       console.error(e);
-      setLinkPaymentError(e);
+      setLinkPaymentError('Error linking payment');
     },
   });
 
@@ -190,12 +242,16 @@ export function BatchOfflinePayment(props) {
     },
     onError: (e) => {
       console.error(e);
-      setLinkPaymentError(e);
+      setLinkPaymentError('Error linking payment');
     },
   });
 
   const handleLinkPaymentLinkClick = () => {
     setLinkPaymentError(null);
+    if (!selectedOfflineType || !offlinePaymentLink) {
+      setLinkPaymentError('Need to select a payment type and enter a link');
+      return
+    }
     const offlineLinks = [
       {
         type: selectedOfflineType,
@@ -253,7 +309,7 @@ export function BatchOfflinePayment(props) {
         value={offlinePaymentLink}
         onChange={(e) => setOfflinePaymentLink(e.target.value)}
       />
-      {linkPaymentError && <ErrorText>error linking payments</ErrorText>}
+      {linkPaymentError && <ErrorText>{linkPaymentError}</ErrorText>}
       <OfflinePaymentButtonWrapper>
         {!submissionPaid && (
           <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>

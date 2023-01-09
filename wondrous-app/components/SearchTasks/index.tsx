@@ -110,6 +110,9 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
         search: inputValue,
         view: 'list',
       },
+    }, undefined, {
+      scroll: false,
+      shallow: true,
     });
   }
 
