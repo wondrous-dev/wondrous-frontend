@@ -39,6 +39,11 @@ const styles = {
     padding: '10px 8px',
     height: '100%',
   },
+  taskRow: {
+    '&:not(:first-child)': {
+      marginTop: '22px',
+    },
+  },
   taskTitle: {
     color: palette.white,
     marginLeft: '6px',

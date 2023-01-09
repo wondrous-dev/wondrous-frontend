@@ -82,17 +82,16 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
                     router.push({ query }, undefined, { scroll: false, shallow: true });
                   }}
                 >
-                  <Grid container display="flex" wrap="nowrap" alignItems="center">
+                  <Grid container display="flex" wrap="nowrap" alignItems="flex-start" sx={styles.taskRow}>
                     <TaskStatus
                       style={{
                         width: '16px',
                         height: '16px',
+                        flexShrink: 0,
                       }}
                       status={task?.status}
                     />
-                    <Typography noWrap sx={styles.taskTitle}>
-                      {task.title}
-                    </Typography>
+                    <Typography sx={styles.taskTitle}>{task.title}</Typography>
                   </Grid>
                 </SmartLink>
               ))}

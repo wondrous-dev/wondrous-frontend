@@ -119,17 +119,12 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
                       router.push({ query }, undefined, { scroll: false, shallow: true });
                     }}
                   >
-                    <Grid
-                      key={task.id}
-                      wrap="nowrap"
-                      mb="8px"
-                      alignItems="center"
-                      container
-                    >
+                    <Grid key={task.id} wrap="nowrap" mb="8px" alignItems="center" container>
                       <TaskStatus
                         style={{
                           width: '16px',
                           height: '16px',
+                          flexShrink: 0,
                         }}
                         status={task?.status}
                       />
