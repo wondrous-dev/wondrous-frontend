@@ -167,6 +167,31 @@ const BlockButton: React.FC<{
   );
 };
 
+const HeaderButton: React.FC<{
+  type: MarkType;
+  icon: React.ReactNode;
+}> = ({ type, icon }) => {
+  const editor = useSlate();
+
+  const headerTypes: MarkType[] = ['headingOne', 'headingTwo', 'headingThree'];
+
+  const handleHeaderItemClick = (event) => {
+    event.preventDefault();
+    headerTypes.forEach((headerType: MarkType) => {
+      if (EditorHelpers.isMarkActive(editor, headerType)) {
+        EditorHelpers.toggleMark(editor, headerType);
+      }
+    });
+    EditorHelpers.toggleMark(editor, type);
+  };
+
+  return (
+    <ToolbarButton $active={EditorHelpers.isMarkActive(editor, type)} onClick={handleHeaderItemClick}>
+      {icon}
+    </ToolbarButton>
+  );
+};
+
 function Toolbar() {
   const editor = useSlate();
   const [selectionOverride, setSelectionOverride] = useState<BaseRange | null>(null);
@@ -191,9 +216,9 @@ function Toolbar() {
 
   return (
     <ToolbarContainer>
-      <MarkButton type="headingOne" icon={<HeaderIcon title="H1" />} />
-      <MarkButton type="headingTwo" icon={<HeaderIcon title="H2" />} />
-      <MarkButton type="headingThree" icon={<HeaderIcon title="H3" />} />
+      <HeaderButton type="headingOne" icon={<HeaderIcon title="H1" />} />
+      <HeaderButton type="headingTwo" icon={<HeaderIcon title="H2" />} />
+      <HeaderButton type="headingThree" icon={<HeaderIcon title="H3" />} />
       <MarkButton type="bold" icon={<BoldIcon />} />
       <MarkButton type="italic" icon={<ItalicIcon />} />
       <MarkButton type="underline" icon={<UnderlineIcon />} />
