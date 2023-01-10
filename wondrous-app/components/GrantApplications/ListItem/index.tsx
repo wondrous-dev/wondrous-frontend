@@ -19,16 +19,10 @@ import { DELETE_GRANT_APPLICATION } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { GRANT_APPLICATION_STATUSES, PERMISSIONS } from 'utils/constants';
+import { GRANT_APPLICATION_EDITABLE_STATUSES, GRANT_APPLICATION_DELETE_STATUSES, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { ApplicationItemContainer, ApplicationItemWrapper, Footer } from './styles';
-
-const EDITABLE_STATUSES = [
-  GRANT_APPLICATION_STATUSES.OPEN,
-  GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED,
-  GRANT_APPLICATION_STATUSES.WAITING_FOR_REVIEW,
-];
 
 const ListItem = ({ item }) => {
   const router = useRouter();
@@ -66,9 +60,13 @@ const ListItem = ({ item }) => {
     podId: item?.podId,
   });
 
-  const canEdit = item?.createdBy === user?.id && EDITABLE_STATUSES.includes(status);
+  const canEdit = item?.createdBy === user?.id && GRANT_APPLICATION_EDITABLE_STATUSES.includes(status);
+
   const canDelete =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.REVIEW_TASK) || canEdit;
+    (permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+      permissions.includes(PERMISSIONS.REVIEW_TASK) ||
+      item?.createdBy === user?.id) &&
+    GRANT_APPLICATION_DELETE_STATUSES.includes(status);
 
   return (
     <ApplicationItemWrapper>
