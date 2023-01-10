@@ -64,8 +64,8 @@ export const GET_TOKEN_INFO = gql`
 `;
 
 export const GET_NFT_INFO = gql`
-  query getNFTInfo($contractAddress: String!) {
-    getNFTInfo(contractAddress: $contractAddress) {
+  query getNFTInfo($contractAddress: String!, $tokenType: String, $chain: String, $tokenId: String) {
+    getNFTInfo(contractAddress: $contractAddress, tokenType: $tokenType, chain: $chain, tokenId: $tokenId) {
       contractAddress
       type
       logoUrl
