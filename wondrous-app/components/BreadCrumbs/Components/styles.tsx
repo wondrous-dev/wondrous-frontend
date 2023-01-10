@@ -1,7 +1,10 @@
 import { Grid, Typography } from '@mui/material';
+import { ArrowIcon } from 'components/Common/SidebarEntityMenu/styles';
 import { ItemButton } from 'components/Common/SidebarItem/styles';
-import { ChevronFilled } from 'components/Icons/sections';
+import { UnstyledButton } from 'components/WorkspacePicker/styles';
+import Link from 'next/link';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 export const PageTypeItemButton = styled(ItemButton)`
   && {
@@ -30,11 +33,29 @@ export const PodTitle = styled(Typography)`
 
 export const PodSelectorWrapper = styled(Grid)`
   && {
-    padding: 4px 6px;
+    padding: 0px 6px;
     border-radius: 100px;
     cursor: pointer;
+    ${UnstyledButton} {
+      cursor: pointer;
+    }
+    ${ArrowIcon} {
+      display: none;
+    }
     &:hover {
       background: ${({ theme }) => theme.palette.grey87};
+      ${ArrowIcon} {
+        display: flex;
+      }
     }
   }
+`;
+
+export const PodLink = styled(Link)`
+  display: flex;
+  gap: 8px;
+  text-decoration: none;
+  color: ${palette.white};
+  justify-content: center;
+  align-items: center;
 `;
