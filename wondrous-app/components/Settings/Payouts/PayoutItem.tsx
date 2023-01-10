@@ -3,6 +3,7 @@ import Link from 'next/link';
 import format from 'date-fns/format';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import MoreIcon from 'components/Icons/more';
 
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -18,6 +19,7 @@ import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWall
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { NoUnderlineLink } from 'components/Common/Link/links';
+import { PayeeDetails, PayoutTableItem } from 'components/Settings/Payouts/PayoutTable';
 import {
   PayeeAddressTag,
   PayeeAddressTagContainer,
@@ -31,9 +33,8 @@ import {
   RewardChainHalfBoxText,
   PayoutTaskCompletionDate,
   PayoutTaskCompletionDateText,
-  PayeePayButton,
-} from './styles';
-import { PayeeDetails, PayoutTableItem } from './PayoutTable';
+  MoreActionDiv,
+} from 'components/Settings/Payouts/styles';
 import { PAYMENT_TYPES } from './constants';
 
 const imageStyle = {
@@ -57,10 +58,21 @@ interface PayoutItemProps {
   canViewPaymentLink?: boolean;
   handlePay?: (payeeDetails: PayeeDetails) => void;
   handleCheck?: (item: PayoutTableItem) => void;
+  setPaymentDetailId?: (paymentId: string) => void;
 }
 
 const PayoutItem = (props: PayoutItemProps) => {
-  const { item, checked = false, org, podId, selectedItemsLength, canViewPaymentLink, handlePay, handleCheck } = props;
+  const {
+    item,
+    checked = false,
+    org,
+    podId,
+    selectedItemsLength,
+    canViewPaymentLink,
+    handlePay,
+    handleCheck,
+    setPaymentDetailId,
+  } = props;
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
 
   let link;
@@ -177,7 +189,6 @@ const PayoutItem = (props: PayoutItemProps) => {
       <StyledTableCell>
         {item?.amount ? (
           <RewardChainHalfBox isRewardBox>
-            <Ethereum />
             <RewardChainHalfBoxText>
               {item?.amount} {item?.symbol}
             </RewardChainHalfBoxText>
@@ -223,6 +234,13 @@ const PayoutItem = (props: PayoutItemProps) => {
           </PayoutTaskCompletionDate>
         )}
       </StyledTableCell>
+      {item.paymentStatus === PAYMENT_TYPES.PAID && (
+        <StyledTableCell>
+          <MoreActionDiv onClick={() => setPaymentDetailId(item.id)}>
+            <MoreIcon />
+          </MoreActionDiv>
+        </StyledTableCell>
+      )}
     </StyledTableRow>
   );
 };

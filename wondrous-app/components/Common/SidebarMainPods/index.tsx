@@ -9,29 +9,34 @@ import palette from 'theme/palette';
 import { useHotkey } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 
-export const PodsIconButton = ({ renderIcon = null }) => {
-  const [openPodModal, setOpenPodModal] = useState(false);
+export const PodsIconComponent = ({ handleClick, isActive }) => {
   const showBadge = useHotkey();
 
-  // TODO Adrian: refactor this to reuse the header pod modal
+  return (
+    <PodsItem>
+      <PodsButtonWrapper onClick={handleClick} isActive={isActive}>
+        <Badge badgeContent={HOTKEYS.OPEN_PODS} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
+          <PodsIconWrapper>
+            <PodsIcon />
+          </PodsIconWrapper>
+          <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
+            My Pods
+          </Typography>
+        </Badge>
+      </PodsButtonWrapper>
+    </PodsItem>
+  );
+};
+
+export const PodsIconButton = ({ renderIcon = null }) => {
+  const [openPodModal, setOpenPodModal] = useState(false);
   return (
     <>
       {openPodModal ? <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} /> : null}
       {renderIcon ? (
         renderIcon({ setOpenPodModal, openPodModal })
       ) : (
-        <PodsItem>
-          <PodsButtonWrapper onClick={() => setOpenPodModal(true)} isActive={openPodModal}>
-            <Badge badgeContent={HOTKEYS.OPEN_PODS} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
-              <PodsIconWrapper>
-                <PodsIcon />
-              </PodsIconWrapper>
-              <Typography color={palette.white} fontWeight={500} fontFamily={typography.fontFamily} fontSize="15px">
-                My Pods
-              </Typography>
-            </Badge>
-          </PodsButtonWrapper>
-        </PodsItem>
+        <PodsIconComponent handleClick={() => setOpenPodModal(true)} isActive={openPodModal} />
       )}
     </>
   );

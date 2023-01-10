@@ -7,7 +7,7 @@ import Button from 'components/Button';
 import QuestionMarkIcon from 'components/Icons/QuestionMarkIcon';
 import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
 import PayModal from 'components/Settings/Payouts/modal';
-
+import PaymentViewModal from 'components/Common/Payment/PaymentViewModal';
 import palette from 'theme/palette';
 
 import { PaymentModalContext } from 'utils/contexts';
@@ -39,6 +39,7 @@ export interface PayeeDetails {
 }
 
 export interface PayoutTableItem {
+  id?: string;
   taskTitle: string;
   taskId: string;
   submissionId: string;
@@ -110,6 +111,7 @@ const PayoutTable = (props: PayoutTableProps) => {
   const [payeeDetails, setPayeeDetails] = useState<PayeeDetails | null>(null);
 
   const [showPayModal, setShowPayModal] = useState(false);
+  const [paymentDetailId, setPaymentDetailId] = useState(null);
   const [showBatchPayModal, setShowBatchPayModal] = useState(false);
 
   const paymentslist = paid ? paidList : processing ? processingList : unpaidList;
@@ -216,6 +218,13 @@ const PayoutTable = (props: PayoutTableProps) => {
           },
         }}
       >
+        {paymentDetailId && (
+          <PaymentViewModal
+            open={!!paymentDetailId}
+            paymentId={paymentDetailId}
+            handleClose={() => setPaymentDetailId(null)}
+          />
+        )}
         {showPayModal && (
           <PayModal
             podId={podId}
@@ -280,11 +289,21 @@ const PayoutTable = (props: PayoutTableProps) => {
                   <div>Task title</div>
                 </Tooltip>
               </StyledTableCell>
-              <StyledTableCell align="center" width="15%">
-                <Tooltip title="Task completed on" placement="top">
-                  <div>Complete</div>
-                </Tooltip>
-              </StyledTableCell>
+              {unpaid && (
+                <StyledTableCell align="center" width="15%">
+                  <Tooltip title="Task completed on" placement="top">
+                    <div>Date</div>
+                  </Tooltip>
+                </StyledTableCell>
+              )}
+              {!unpaid && (
+                <StyledTableCell align="center" width="15%">
+                  <Tooltip title="Payment made on" placement="top">
+                    <div>Date</div>
+                  </Tooltip>
+                </StyledTableCell>
+              )}
+              {!unpaid && <StyledTableCell align="center" width="5%" />}
             </StyledTableRow>
           </StyledTableHead>
           <StyledTableBody>
@@ -299,6 +318,7 @@ const PayoutTable = (props: PayoutTableProps) => {
                 canViewPaymentLink={(canViewPaymentLink || viewingUser?.id === item?.payeeId) && !unpaid}
                 handlePay={handlePayIndividualPayee}
                 handleCheck={handleItemOnCheck}
+                setPaymentDetailId={setPaymentDetailId}
               />
             ))}
           </StyledTableBody>

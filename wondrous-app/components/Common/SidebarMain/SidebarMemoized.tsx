@@ -1,4 +1,3 @@
-import HelpModal from 'components/Common/HelpModal.jsx';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import {
@@ -47,25 +46,6 @@ type Props = {
   onLogoClick: Function;
 };
 
-const isExternal = (url) => url.includes('https://');
-
-const BOTTOM_LINKS_CONFIG = [
-  {
-    key: 'tutorials',
-    icon: QuestionMarkIcon,
-    url: 'https://linktr.ee/wonderverse',
-    tooltipLabel: 'Tutorials',
-    id: 'wonder-tutorials',
-  },
-  {
-    key: 'settings',
-    icon: StyledSettingsIcon,
-    url: '/profile/settings',
-    tooltipLabel: 'Profile Settings',
-    id: 'wonder-settings',
-  },
-];
-
 const profilePictureStyle = {
   display: 'flex',
   width: '36px',
@@ -76,7 +56,6 @@ const profilePictureStyle = {
 
 const SidebarMemoized = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
   const { minimized, setMinimized } = sidebar;
-  const [openHelpModal, setOpenHelpModal] = useState(false);
   const handleMinimize = () => setMinimized(false);
   const router = useRouter();
   const isPageActive = (str) => router.pathname.includes(str);
@@ -88,7 +67,6 @@ const SidebarMemoized = ({ orgsList, sidebar, isMobile, handleProfileClick, user
       open={minimized}
       onClose={handleMinimize}
     >
-      {openHelpModal && <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />}
       <DrawerContainer>
         <DrawerBlockWrapper>
           <SidebarMainLogo key={router.asPath} onClick={onLogoClick} isActive={isPageActive(PAGE_PATHNAME.explore)} />
@@ -148,28 +126,6 @@ const SidebarMemoized = ({ orgsList, sidebar, isMobile, handleProfileClick, user
           </ButtonWrapper>
         </DrawerBlockWrapper>
         <DrawerBlockWrapper>
-          {BOTTOM_LINKS_CONFIG.map(({ icon: Icon, url, id, tooltipLabel, key }) => {
-            const externalProps = isExternal(url) ? { target: '__blank', rel: 'noreferrer' } : {};
-            if (key === 'tutorials') {
-              // Open up modal instead
-              return (
-                <SidebarTooltip key={id} title={tooltipLabel}>
-                  <BottomButtonIcon onClick={() => setOpenHelpModal(true)}>
-                    <Icon />
-                  </BottomButtonIcon>
-                </SidebarTooltip>
-              );
-            }
-            return (
-              <SidebarTooltip key={id} title={tooltipLabel}>
-                <BottomButtonIcon>
-                  <Link href={url} {...externalProps}>
-                    <Icon />
-                  </Link>
-                </BottomButtonIcon>
-              </SidebarTooltip>
-            );
-          })}
           {minimized && (
             <Tooltip style={toolTipStyle} title="Expand Sidebar" placement="right">
               <DrawerBackButton onClick={handleMinimize}>

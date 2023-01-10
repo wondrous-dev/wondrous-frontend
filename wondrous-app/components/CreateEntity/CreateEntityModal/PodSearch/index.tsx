@@ -70,7 +70,7 @@ function PodSearch(props) {
             isOptionEqualToValue={(option, value) => option.value === value?.value}
             getOptionLabel={(option) => option.label}
             renderOption={(props, option) => (
-              <PodSearchListItem {...props}>
+              <PodSearchListItem {...props} isActive={option.value === selectedValue?.value}>
                 <PodSearchDefaultImage color={option?.color ?? '#474747'} />
                 <PodSearchLabel>{option?.label}</PodSearchLabel>
               </PodSearchListItem>

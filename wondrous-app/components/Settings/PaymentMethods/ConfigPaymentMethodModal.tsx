@@ -2,7 +2,6 @@ import { useMutation, useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
 
 import Ethereum from 'components/Icons/ethereum';
-import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
@@ -309,6 +308,20 @@ function ConfigPaymentMethodModal(props) {
           <PaymentMethodSubHeader>Chain </PaymentMethodSubHeader>
           <DropdownSelect
             value={chain}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  width: '100%',
+                  maxWidth: 260,
+                  background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
+                  padding: '15px',
+
+                  '*::-webkit-scrollbar': {
+                    width: 100,
+                  },
+                },
+              },
+            }}
             setValue={setChain}
             innerStyle={{
               marginTop: 0,

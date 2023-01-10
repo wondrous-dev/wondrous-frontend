@@ -7,7 +7,7 @@ export enum TYPES {
   CREATE_ENTITY = 'CREATE_ENTITY',
   WALLET = 'WALLET',
   NOTIFICATIONS = 'NOTIFICATIONS',
-  PROFILE = 'PROFILE'
+  PROFILE = 'PROFILE',
 }
 
 const TYPES_PER_COMPONENT = {
@@ -16,10 +16,11 @@ const TYPES_PER_COMPONENT = {
   [TYPES.WALLET]: WalletItem,
 };
 
-const HeaderItems = ({ type, onClose }) => {
+const HeaderItems = (props) => {
+  const { type, onClose, ...rest } = props;
   const Component = useMemo(() => TYPES_PER_COMPONENT[type], [type]);
 
-  return <Component onClose={onClose} />;
+  return <Component onClose={onClose} {...rest} />;
 };
 
 export default HeaderItems;

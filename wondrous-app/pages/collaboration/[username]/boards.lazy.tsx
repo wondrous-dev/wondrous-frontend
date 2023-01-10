@@ -37,7 +37,7 @@ import {
   STATUSES_ON_ENTITY_TYPES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { useGlobalContext } from 'utils/hooks';
+import { useGlobalContext, usePageDataContext } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -50,7 +50,7 @@ const useGetOrgTaskBoardTasks = ({
   search,
   filters,
 }) => {
-  const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+  const [getOrgTaskBoardTasks, { fetchMore, variables }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
@@ -119,6 +119,7 @@ const useGetOrgTaskBoardTasks = ({
     const columnIdx = columns?.findIndex((column) => column.status === status);
     fetchMore({
       variables: {
+        ...variables,
         offset: columns[columnIdx]?.tasks?.length,
         statuses: [status],
         ...(limit ? { limit } : {}),
@@ -361,6 +362,7 @@ function BoardsPage() {
     privacyLevel: null,
   });
   const [orgData, setOrgData] = useState(null);
+  const { setPageData } = usePageDataContext();
   const [searchString, setSearchString] = useState('');
   const [entityType, setEntityType] = useState(activeEntityFromQuery);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
@@ -384,6 +386,14 @@ function BoardsPage() {
     search,
     filters,
   });
+
+  useEffect(() => {
+    if (orgData) {
+      setPageData({ orgData, entityType });
+    }
+  }, [orgData, entityType]);
+
+  useEffect(() => () => setPageData({}), []);
 
   useEffect(() => {
     if (userId) {

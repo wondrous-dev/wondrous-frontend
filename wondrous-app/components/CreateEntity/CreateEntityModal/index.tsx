@@ -440,7 +440,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   }, [form?.values?.orgId, isProposal]);
 
   useEffect(() => {
-    if (isSubtask) {
+    if (isSubtask && parentTaskId) {
       form.setFieldValue('parentTaskId', parentTaskId);
       getTaskById({
         variables: {
@@ -451,7 +451,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           const task = data?.data?.getTaskById;
           form.setFieldValue('orgId', task?.orgId);
           form.setFieldValue('podId', task?.podId);
-          form.setFieldValue('milestoneId', task?.milestoneId);
+          if (task?.milestoneId) {
+            form.setFieldValue('milestoneId', task?.milestoneId);
+          }
         })
         .catch((e) => console.error(e));
     }
@@ -1433,7 +1435,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
-        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.milestone)}>
+        <CreateEntityLabelSelectWrapper
+          show={entityTypeData[entityType].fields.includes(Fields.milestone) && !isSubtask}
+        >
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Milestone</CreateEntityLabel>
           </CreateEntityLabelWrapper>

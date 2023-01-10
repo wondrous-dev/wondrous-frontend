@@ -143,18 +143,6 @@ const useSidebarData = () => {
           link: `${link}/members`,
         },
         {
-          text: 'Roles',
-          Icon: StackIcon,
-          link: {
-            pathname: router.pathname,
-            query: {
-              ...router.query,
-              roles: true,
-            },
-          },
-        },
-
-        {
           text: 'Documentation',
           Icon: FolderIcon,
           link: `${link}/docs`,
