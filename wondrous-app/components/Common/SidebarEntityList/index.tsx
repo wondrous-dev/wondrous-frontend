@@ -81,53 +81,42 @@ const useSidebarData = () => {
         },
       ],
     },
-    {
+    !isMeritCircle && {
       label: 'Work',
-      items: isMeritCircle
-        ? [
-            {
-              text: 'Proposals',
-              Icon: ContentPaste,
-              link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
-              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
-              count: taskCount.proposalCount,
-              entityType: ENTITIES_TYPES.PROPOSAL,
-            },
-          ]
-        : [
-            {
-              text: 'Tasks',
-              Icon: CheckBoxIcon,
-              link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
-              count: taskCount.taskCount,
-              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.TASK,
-              entityType: ENTITIES_TYPES.TASK,
-            },
-            {
-              text: 'Bounties',
-              Icon: StartIcon,
-              link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
-              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.BOUNTY,
-              count: taskCount.bountyCount,
-              entityType: ENTITIES_TYPES.BOUNTY,
-            },
-            {
-              text: 'Milestones',
-              Icon: FlagIcon,
-              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.MILESTONE,
-              link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
-              count: taskCount.milestoneCount,
-              entityType: ENTITIES_TYPES.MILESTONE,
-            },
-            {
-              text: 'Proposals',
-              Icon: ContentPaste,
-              link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
-              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
-              count: taskCount.proposalCount,
-              entityType: ENTITIES_TYPES.PROPOSAL,
-            },
-          ],
+      items: [
+        {
+          text: 'Tasks',
+          Icon: CheckBoxIcon,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
+          count: taskCount.taskCount,
+          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.TASK,
+          entityType: ENTITIES_TYPES.TASK,
+        },
+        {
+          text: 'Bounties',
+          Icon: StartIcon,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
+          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.BOUNTY,
+          count: taskCount.bountyCount,
+          entityType: ENTITIES_TYPES.BOUNTY,
+        },
+        {
+          text: 'Milestones',
+          Icon: FlagIcon,
+          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.MILESTONE,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
+          count: taskCount.milestoneCount,
+          entityType: ENTITIES_TYPES.MILESTONE,
+        },
+        {
+          text: 'Proposals',
+          Icon: ContentPaste,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
+          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
+          count: taskCount.proposalCount,
+          entityType: ENTITIES_TYPES.PROPOSAL,
+        },
+      ],
     },
     {
       label: 'Spaces',

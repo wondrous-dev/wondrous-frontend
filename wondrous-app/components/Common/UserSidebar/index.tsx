@@ -65,7 +65,7 @@ const useSidebarData = () => {
           check: onlyHasMeritCircle
             ? () => router.pathname === '/dashboard/proposals'
             : () => router.pathname === '/dashboard',
-          link: onlyHasMeritCircle ? '/dashboard/proposals' : '/dashboard',
+          link: '/dashboard',
         },
         {
           text: 'Operator',

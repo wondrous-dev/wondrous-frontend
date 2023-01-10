@@ -56,10 +56,9 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
   const isMeritCircle = orgId === MERIT_CIRCLE_ID;
   const Components = isMeritCircle
     ? {
-        proposal: ProfileProposalSection,
+        grant: ProfileGrantSection,
         member: ProfileMemberSection,
         collab: ProfileCollabSection,
-        grant: ProfileGrantSection,
         resource: ProfileCategorySection,
       }
     : {
