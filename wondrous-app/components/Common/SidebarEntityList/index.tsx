@@ -14,7 +14,7 @@ import StartIcon from 'components/Icons/Sidebar/star.svg';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
-import { ENTITIES_TYPES } from 'utils/constants';
+import { ENTITIES_TYPES, MERIT_CIRCLE_ID } from 'utils/constants';
 import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
@@ -68,6 +68,9 @@ const useSidebarData = () => {
   ];
 
   const taskCount = usePerTypeTaskCountForBoard();
+
+  const isMeritCircle = board?.orgData?.id === MERIT_CIRCLE_ID || board?.orgId === MERIT_CIRCLE_ID;
+
   const data = [
     !!(orgBoard && !board?.orgData?.shared) && {
       items: [
@@ -80,40 +83,51 @@ const useSidebarData = () => {
     },
     {
       label: 'Work',
-      items: [
-        {
-          text: 'Tasks',
-          Icon: CheckBoxIcon,
-          link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
-          count: taskCount.taskCount,
-          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.TASK,
-          entityType: ENTITIES_TYPES.TASK,
-        },
-        {
-          text: 'Bounties',
-          Icon: StartIcon,
-          link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
-          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.BOUNTY,
-          count: taskCount.bountyCount,
-          entityType: ENTITIES_TYPES.BOUNTY,
-        },
-        {
-          text: 'Milestones',
-          Icon: FlagIcon,
-          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.MILESTONE,
-          link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
-          count: taskCount.milestoneCount,
-          entityType: ENTITIES_TYPES.MILESTONE,
-        },
-        {
-          text: 'Proposals',
-          Icon: ContentPaste,
-          link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
-          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
-          count: taskCount.proposalCount,
-          entityType: ENTITIES_TYPES.PROPOSAL,
-        },
-      ],
+      items: isMeritCircle
+        ? [
+            {
+              text: 'Proposals',
+              Icon: ContentPaste,
+              link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
+              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
+              count: taskCount.proposalCount,
+              entityType: ENTITIES_TYPES.PROPOSAL,
+            },
+          ]
+        : [
+            {
+              text: 'Tasks',
+              Icon: CheckBoxIcon,
+              link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
+              count: taskCount.taskCount,
+              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.TASK,
+              entityType: ENTITIES_TYPES.TASK,
+            },
+            {
+              text: 'Bounties',
+              Icon: StartIcon,
+              link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
+              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.BOUNTY,
+              count: taskCount.bountyCount,
+              entityType: ENTITIES_TYPES.BOUNTY,
+            },
+            {
+              text: 'Milestones',
+              Icon: FlagIcon,
+              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.MILESTONE,
+              link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
+              count: taskCount.milestoneCount,
+              entityType: ENTITIES_TYPES.MILESTONE,
+            },
+            {
+              text: 'Proposals',
+              Icon: ContentPaste,
+              link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
+              check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
+              count: taskCount.proposalCount,
+              entityType: ENTITIES_TYPES.PROPOSAL,
+            },
+          ],
     },
     {
       label: 'Spaces',

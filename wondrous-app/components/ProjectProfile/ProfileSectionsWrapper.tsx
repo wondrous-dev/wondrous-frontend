@@ -5,7 +5,7 @@ import { UPSERT_ORG_PROFILE_PAGE } from 'graphql/mutations';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 
 import palette from 'theme/palette';
-import { PERMISSIONS } from 'utils/constants';
+import { MERIT_CIRCLE_ID, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard } from 'utils/hooks';
 import ProfileBountySection from './ProfileBountySection';
@@ -53,17 +53,25 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
     userPermissionsContext,
     orgId,
   });
-
-  const Components = {
-    task: ProfileTaskSection,
-    bounty: ProfileBountySection,
-    milestone: ProfileMilestoneSection,
-    proposal: ProfileProposalSection,
-    member: ProfileMemberSection,
-    collab: ProfileCollabSection,
-    grant: ProfileGrantSection,
-    resource: ProfileCategorySection,
-  };
+  const isMeritCircle = orgId === MERIT_CIRCLE_ID;
+  const Components = isMeritCircle
+    ? {
+        proposal: ProfileProposalSection,
+        member: ProfileMemberSection,
+        collab: ProfileCollabSection,
+        grant: ProfileGrantSection,
+        resource: ProfileCategorySection,
+      }
+    : {
+        task: ProfileTaskSection,
+        bounty: ProfileBountySection,
+        milestone: ProfileMilestoneSection,
+        proposal: ProfileProposalSection,
+        member: ProfileMemberSection,
+        collab: ProfileCollabSection,
+        grant: ProfileGrantSection,
+        resource: ProfileCategorySection,
+      };
 
   const hasFullAccess = permissions.includes(PERMISSIONS.FULL_ACCESS);
 
@@ -84,6 +92,7 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
             }}
           >
             {layout?.map((order, index) => {
+              if (!Components[order]) return null;
               const Component = Components[order];
               return (
                 <Draggable key={index} draggableId={`${index}`} index={index} isDragDisabled={!hasFullAccess}>
