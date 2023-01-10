@@ -197,6 +197,19 @@ const ViewGrantApplication = ({ onClose }) => {
         onDelete={() => {
           setSnackbarAlertOpen(true);
           setSnackbarAlertMessage(`Deleted successfully!`);
+          const query = { ...router.query };
+          delete query.grantApplicationId;
+
+          router.push(
+            {
+              pathname: router.pathname,
+              query,
+            },
+            undefined,
+            {
+              shallow: true,
+            }
+          );
         }}
       />
 
@@ -263,6 +276,7 @@ const ViewGrantApplication = ({ onClose }) => {
               canDelete={canArchive}
               canArchive={canArchive}
               setEditTask={setEditMode}
+              setDeleteTask={setDeleteTask}
             />
 
             <TaskModalHeaderCloseModal onClick={onClose} />

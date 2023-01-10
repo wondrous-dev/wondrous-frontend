@@ -163,6 +163,17 @@ export const RequestApproveButton = styled(RequestActionButton)`
   }
 `;
 
+export const RequestRejectButton = styled(RequestApproveButton)`
+  && {
+    &::before {
+      background: linear-gradient(259.59deg, ${palette.red300} 0%, ${palette.highlightPurple} 93.38%);
+    }
+    &:hover {
+      background: linear-gradient(259.59deg, ${palette.red300} 0%, ${palette.highlightPurple} 93.38%);
+    }
+  }
+`;
+
 export const ShowMoreButton = styled(RequestActionButton)`
   && {
     line-height: 15px;
