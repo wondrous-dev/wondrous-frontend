@@ -70,6 +70,27 @@ const AccessConditionDispaly = (props) => {
             variables: {
               contractAddress,
               chain: tokenAccessCondition.chain,
+              tokenType: 'ERC721',
+            },
+          })
+          .then(({ data }) => {
+            setTokenGatingInfo({
+              chain: tokenAccessCondition.chain,
+              image: data?.getNFTInfo.logoUrl,
+              nameOrAddress: data?.getNFTInfo.name || tokenAccessCondition.contractAddress,
+              minAmount: tokenAccessCondition.minValue,
+            });
+          });
+        break;
+      case 'ERC1155':
+        apollo
+          .query({
+            query: GET_NFT_INFO,
+            variables: {
+              contractAddress,
+              chain: tokenAccessCondition.chain,
+              tokenType: '1155',
+              tokenId: tokenAccessCondition.tokenIds?.[0],
             },
           })
           .then(({ data }) => {

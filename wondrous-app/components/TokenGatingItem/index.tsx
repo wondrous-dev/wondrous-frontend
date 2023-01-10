@@ -46,7 +46,7 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
           value: data?.getTokenInfo.name || tokenAccessCondition.contractAddress,
         },
         {
-          name: 'Min. amount to hold:',
+          name: 'Min. amount to hold',
           value: tokenAccessCondition.minValue,
         },
       ]);
@@ -67,7 +67,7 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
           value: data?.getNFTInfo.name || tokenAccessCondition.contractAddress,
         },
         {
-          name: 'Min. amount to hold:',
+          name: 'Min. amount to hold',
           value: tokenAccessCondition.minValue,
         },
       ]);
@@ -125,6 +125,20 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
             getNFTInfo({
               variables: {
                 contractAddress,
+                chain: tokenAccessCondition.chain,
+                tokenType: 'ERC721',
+              },
+            });
+          }
+          break;
+        case 'ERC1155':
+          {
+            getNFTInfo({
+              variables: {
+                contractAddress,
+                chain: tokenAccessCondition.chain,
+                tokenType: 'ERC1155',
+                tokenId: tokenAccessCondition.tokenIds?.[0],
               },
             });
           }
