@@ -40,7 +40,7 @@ const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimize
                   entityType = null,
                   Component = null,
                   ignoreIconStyles = false,
-                  customActiveCheck = null,
+                  check = null,
                 }) => {
                   if (Component) return <Component key={text} />;
                   return (
@@ -49,7 +49,7 @@ const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimize
                         key={text}
                         onClick={handleOnClick(link, entityType)}
                         Icon={Icon}
-                        isActive={customActiveCheck ? customActiveCheck() : isActive(entityType, link)}
+                        isActive={check ? check() : isActive(entityType, link)}
                         count={count}
                         ignoreIconStyles={ignoreIconStyles}
                       >

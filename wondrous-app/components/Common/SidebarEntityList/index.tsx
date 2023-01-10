@@ -56,7 +56,17 @@ const useSidebarData = () => {
       router.push(link);
     };
 
-  const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
+  const orgLink = board?.orgData?.shared
+    ? `/collaboration/${board?.orgData?.username}`
+    : `/organization/${board?.orgData?.username}`;
+  const link = orgBoard ? orgLink : `/pod/${board?.podId}`;
+
+  const pathnamesToCheck = [
+    '/organization/[username]/boards',
+    '/pod/[podId]/boards',
+    '/collaboration/[username]/boards',
+  ];
+
   const taskCount = usePerTypeTaskCountForBoard();
   const data = [
     !!(orgBoard && !board?.orgData?.shared) && {
@@ -76,18 +86,21 @@ const useSidebarData = () => {
           Icon: CheckBoxIcon,
           link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
           count: taskCount.taskCount,
+          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.TASK,
           entityType: ENTITIES_TYPES.TASK,
         },
         {
           text: 'Bounties',
           Icon: StartIcon,
           link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
+          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.BOUNTY,
           count: taskCount.bountyCount,
           entityType: ENTITIES_TYPES.BOUNTY,
         },
         {
           text: 'Milestones',
           Icon: FlagIcon,
+          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.MILESTONE,
           link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
           count: taskCount.milestoneCount,
           entityType: ENTITIES_TYPES.MILESTONE,
@@ -96,6 +109,7 @@ const useSidebarData = () => {
           text: 'Proposals',
           Icon: ContentPaste,
           link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
+          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
           count: taskCount.proposalCount,
           entityType: ENTITIES_TYPES.PROPOSAL,
         },
