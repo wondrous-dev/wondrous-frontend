@@ -172,10 +172,10 @@ export const StyledBadge = styled(ButtonBase)`
     cursor: pointer;
     display: flex;
     z-index: 10;
-    height: 40px;
+    height: 36px;
     justify-content: center;
     position: relative;
-    width: 40px;
+    width: 36px;
     filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
     :hover {
       background: ${({ theme }) => theme.palette.grey78};

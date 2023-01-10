@@ -58,13 +58,13 @@ const useSidebarData = () => {
         {
           text: 'Contributor',
           Icon: ContributorIcon,
-          customActiveCheck: () => router.pathname === '/dashboard',
+          check: () => router.pathname === '/dashboard',
           link: '/dashboard',
         },
         {
           text: 'Operator',
           Icon: OperatorIcon,
-          customActiveCheck: () => router.pathname === '/dashboard/admin',
+          check: () => router.pathname === '/dashboard/admin',
           link: `/dashboard/admin?boardType=${ORG_MEMBERSHIP_REQUESTS}`,
         },
       ],

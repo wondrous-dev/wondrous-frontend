@@ -23,6 +23,7 @@ import { Org } from 'types/Org';
 import { PAGE_PATHNAME } from 'utils/constants';
 import { useOutsideAlerter } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import BreadCrumbs from 'components/BreadCrumbs';
 import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
 
 type Props = {
@@ -102,12 +103,20 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
           <Grid display="flex" width="100%" gap="14px">
             {!isMobileScreen || router.pathname === PAGE_PATHNAME.explore ? (
               // 192px is the width of the sidebar - sidebar styles width - 14px (padding)
-              <Grid maxWidth="192px">
+              <Grid maxWidth="192px" height="fit-content">
                 <EntityMenu />
               </Grid>
             ) : null}
+            {isMobileScreen ? null : <BreadCrumbs />}
             <GlobalSearch />
-            <Grid display="flex" gap="14px" position="relative" ref={activeModalType ? wrapperRef : null}>
+            <Grid
+              display="flex"
+              gap="14px"
+              position="relative"
+              width="fit-content"
+              justifyContent="end"
+              ref={activeModalType ? wrapperRef : null}
+            >
               {displayCustomHeaderItem ? (
                 <HeaderItemWrapper ref={headerItemRef}>
                   <HeaderItems
@@ -144,7 +153,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
                   visibility={showCreateButton}
                   data-cy="header-button-create"
                 >
-                  <CreateIconOutlined id="tour-header-create-btn" />
+                  <CreateIconOutlined id="tour-header-create-btn" height="36px" width="36px" />
                 </HeaderCreateButton>
               )}
             </Grid>

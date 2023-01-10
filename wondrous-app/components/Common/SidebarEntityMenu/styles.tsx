@@ -26,7 +26,7 @@ export const Button = styled(ButtonBase)`
   && {
     padding: 6px;
     width: 100%;
-    height: 42px;
+    height: 36px;
     cursor: pointer;
     border-radius: 6px;
     display: flex;

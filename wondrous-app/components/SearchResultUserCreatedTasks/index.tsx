@@ -40,7 +40,7 @@ const useSearchUserCreatedTasks = () => {
       );
     },
   });
-  const { fetchMore } = useQuery(SEARCH_USER_CREATED_TASKS, {
+  const { fetchMore, variables } = useQuery(SEARCH_USER_CREATED_TASKS, {
     variables: {
       statuses: ['created', 'in_progress'],
       offset: 0,
@@ -54,6 +54,7 @@ const useSearchUserCreatedTasks = () => {
   const fetchPerStatus = (status) => {
     fetchMore({
       variables: {
+        ...variables,
         statuses: [status],
         limit: null,
       },

@@ -64,39 +64,39 @@ const PodCurrentRoleModal = (props) => {
       fetchPolicy: 'network-only',
     }
   );
-  const [litSignatureExist, { data: litSignatureExistData, loading: litSignatureLoading }] = useLazyQuery(
-    LIT_SIGNATURE_EXIST,
-    {
-      fetchPolicy: 'network-only',
-    }
-  );
-  useEffect(() => {
-    if (linkedWallet && open) {
-      litSignatureExist();
-    }
-  }, [linkedWallet, open, litSignatureExist]);
+  // const [litSignatureExist, { data: litSignatureExistData, loading: litSignatureLoading }] = useLazyQuery(
+  //   LIT_SIGNATURE_EXIST,
+  //   {
+  //     fetchPolicy: 'network-only',
+  //   }
+  // );
+  // useEffect(() => {
+  //   if (linkedWallet && open) {
+  //     litSignatureExist();
+  //   }
+  // }, [linkedWallet, open, litSignatureExist]);
 
   const saveLitSignature = async () => {
-    if (wonderWeb3.address?.toLowerCase() !== linkedWallet.toLowerCase()) {
-      setNotLinkedWalletError(true);
-      return;
-    }
-    if (!litSignatureExistData?.litSignatureExist?.exist) {
-      try {
-        const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
-        await apollo.mutate({
-          mutation: CREATE_LIT_SIGNATURE,
-          variables: {
-            input: {
-              signature: signedMessage,
-              signingAddress: wonderWeb3.address, // todo check if the address mathces the current connected address
-            },
-          },
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
+    // if (wonderWeb3.address?.toLowerCase() !== linkedWallet.toLowerCase()) {
+    //   setNotLinkedWalletError(true);
+    //   return;
+    // }
+    // if (!litSignatureExistData?.litSignatureExist?.exist) {
+    //   try {
+    //     const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
+    //     await apollo.mutate({
+    //       mutation: CREATE_LIT_SIGNATURE,
+    //       variables: {
+    //         input: {
+    //           signature: signedMessage,
+    //           signingAddress: wonderWeb3.address, // todo check if the address mathces the current connected address
+    //         },
+    //       },
+    //     });
+    //   } catch (e) {
+    //     console.error(e);
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -149,14 +149,14 @@ const PodCurrentRoleModal = (props) => {
     if (wonderWeb3.address?.toLowerCase() !== linkedWallet.toLowerCase()) {
       setNotLinkedWalletError(null);
     }
-    if (!rolesWithTokenGate || rolesWithTokenGate.length === 0) return;
-    if (litSignatureLoading) return;
-    if (!litSignatureExistData?.litSignatureExist?.exist) {
-      setLitSignatureRequired(true);
-    }
-    if (litSignatureExistData?.litSignatureExist?.exist) {
-      setLitSignatureRequired(false);
-    }
+    // if (!rolesWithTokenGate || rolesWithTokenGate.length === 0) return;
+    // if (litSignatureLoading) return;
+    // if (!litSignatureExistData?.litSignatureExist?.exist) {
+    //   setLitSignatureRequired(true);
+    // }
+    // if (litSignatureExistData?.litSignatureExist?.exist) {
+    //   setLitSignatureRequired(false);
+    // }
   }, [wonderWeb3.address, linkedWallet, rolesWithTokenGate]);
 
   const handleClose = () => {
@@ -250,14 +250,14 @@ const PodCurrentRoleModal = (props) => {
                 </ClaimRoleWarningWrapper>
               )}
 
-              {!notLinkedWalletError && litSignatureRequired && (
+              {/* {!notLinkedWalletError && litSignatureRequired && (
                 <ClaimRoleWarningWrapper>
                   <LitWarningMessage>To join via token gated role, we need a signature from you</LitWarningMessage>
                   <ActionButton style={{ marginLeft: 5 }} onClick={saveLitSignature}>
                     Click here to sign
                   </ActionButton>
                 </ClaimRoleWarningWrapper>
-              )}
+              )} */}
               {rolesWithAccessCondition?.length === 0 && (
                 <RequestModalNoRolesContainer>
                   <NoRolesIcon />

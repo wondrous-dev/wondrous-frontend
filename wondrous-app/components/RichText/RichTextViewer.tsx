@@ -47,11 +47,23 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
       case 'bulleted-list':
         return <BulletedList>{children}</BulletedList>;
       case 'headingOne':
-        return <Typography variant="h1">{children}</Typography>;
+        return (
+          <Typography variant="h1" fontSize="28px">
+            {children}
+          </Typography>
+        );
       case 'headingTwo':
-        return <Typography variant="h2">{children}</Typography>;
+        return (
+          <Typography variant="h2" fontSize="22px">
+            {children}
+          </Typography>
+        );
       case 'headingThree':
-        return <Typography variant="h3">{children}</Typography>;
+        return (
+          <Typography variant="h3" fontSize="16px">
+            {children}
+          </Typography>
+        );
       case 'numbered-list':
         return <NumberedList>{children}</NumberedList>;
       case 'list-item':

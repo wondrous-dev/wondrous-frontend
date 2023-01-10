@@ -22,7 +22,7 @@ import {
   SEARCH_POD_TASK_BOARD_PROPOSALS,
   SEARCH_TASKS_FOR_POD_BOARD_VIEW,
 } from 'graphql/queries';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations';
 import {
   generateColumns,
@@ -418,4 +418,22 @@ export const useCheckOrgPermission = () => {
   const hasFullPermission = permissions.includes(PERMISSIONS.FULL_ACCESS);
   const hasEditPermission = permissions.includes(PERMISSIONS.EDIT_TASK);
   return hasFullPermission || hasEditPermission;
+};
+
+export const usePodPageFetch = (podId: string | string[]) => {
+  const { setPageData } = usePageDataContext();
+
+  const { data } = useQuery(GET_POD_BY_ID, {
+    variables: { podId },
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    skip: !podId,
+    onCompleted: ({ getPodById }) => {
+      setPageData({ pod: getPodById });
+    },
+  });
+
+  useEffect(() => setPageData({}), []);
+
+  return { data };
 };
