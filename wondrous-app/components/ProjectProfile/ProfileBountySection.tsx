@@ -4,7 +4,7 @@ import StarIcon from 'components/Icons/Sidebar/star.svg';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 
-import { useEntityCreateButtonProps, useGetEntity } from './helpers';
+import { useEntityCreateButtonProps, useGetProjectPageBounties } from './helpers';
 import SectionContent from './SectionContent';
 
 const LeftComponent = ({ title }) => (
@@ -30,7 +30,7 @@ const ProfileBountySection = () => (
       onClick: ({ router, data: { id } }) =>
         router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
     }}
-    data={useGetEntity('bounty')}
+    data={useGetProjectPageBounties()}
   />
 );
 
