@@ -9,40 +9,52 @@ import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
+import { ENTITIES_TYPES, MERIT_CIRCLE_ID, PERMISSIONS } from 'utils/constants';
+import { GET_USER_ORGS } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext } from 'utils/hooks';
+import { useQuery } from '@apollo/client';
 import { EntityItem, HorizontalEntityItem, Label, Wrapper } from './styles';
 
 const CreateEntityComponent = ({ onClose }) => {
   const { pageData, setPageData } = useGlobalContext();
-
-
-  const BOARD_ITEMS_CONFIG = {
-    label: 'Board item',
-    items: {
-      [ENTITIES_TYPES.TASK]: {
-        icon: CheckBoxIcon,
-        label: 'Task',
-      },
-      [ENTITIES_TYPES.MILESTONE]: {
-        icon: FlagIcon,
-        label: 'Milestone',
-      },
-      [ENTITIES_TYPES.BOUNTY]: {
-        icon: StartIcon,
-        label: 'Bounty',
-      },
-      [ENTITIES_TYPES.PROPOSAL]: {
-        icon: ContentPaste,
-        label: 'Proposal',
-      },
-    },
-  };
+  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const onlyHasMeritCircle = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id === MERIT_CIRCLE_ID;
+  const BOARD_ITEMS_CONFIG = onlyHasMeritCircle
+    ? {
+        label: 'Board item',
+        items: {
+          [ENTITIES_TYPES.PROPOSAL]: {
+            icon: ContentPaste,
+            label: 'Proposal',
+          },
+        },
+      }
+    : {
+        label: 'Board item',
+        items: {
+          [ENTITIES_TYPES.TASK]: {
+            icon: CheckBoxIcon,
+            label: 'Task',
+          },
+          [ENTITIES_TYPES.MILESTONE]: {
+            icon: FlagIcon,
+            label: 'Milestone',
+          },
+          [ENTITIES_TYPES.BOUNTY]: {
+            icon: StartIcon,
+            label: 'Bounty',
+          },
+          [ENTITIES_TYPES.PROPOSAL]: {
+            icon: ContentPaste,
+            label: 'Proposal',
+          },
+        },
+      };
 
   const setEntityType = (entityType) => {
-    setPageData({...pageData, createEntityType: entityType});
-    onClose()
+    setPageData({ ...pageData, createEntityType: entityType });
+    onClose();
   };
 
   const SPACE_ITEMS_CONFIG = {
@@ -58,7 +70,7 @@ const CreateEntityComponent = ({ onClose }) => {
       },
       [ENTITIES_TYPES.COLLAB]: {
         icon: SmallDao2DaoIcon,
-        label: 'Collaboration'
+        label: 'Collaboration',
       },
     },
   };

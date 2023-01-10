@@ -884,3 +884,5 @@ export const HEADER_ICONS = {
   [STATUS_APPROVED]: Approved,
   [STATUS_CLOSED]: Rejected,
 };
+
+export const MERIT_CIRCLE_ID = '65854368194232322';
