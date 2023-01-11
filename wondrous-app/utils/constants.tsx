@@ -885,4 +885,4 @@ export const HEADER_ICONS = {
   [STATUS_CLOSED]: Rejected,
 };
 
-export const MERIT_CIRCLE_ID = '65854368194232322';
+export const ONLY_GRANTS_ENABLED_ORGS = ['63763663725527146', '48014116661493762']; // Merit Circle, SampleDAO (staging)

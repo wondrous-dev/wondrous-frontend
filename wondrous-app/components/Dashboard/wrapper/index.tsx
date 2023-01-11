@@ -3,9 +3,8 @@ import React, { useEffect } from 'react';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import { useIsMobile } from 'utils/hooks';
 import { GET_USER_ORGS } from 'graphql/queries';
-import { MERIT_CIRCLE_ID } from 'utils/constants';
+import { ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
 import { useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
 import { ErrorText } from 'components/Common';
 import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader, BannerWrapper } from './styles';
 
@@ -24,10 +23,10 @@ const CONFIG_MAP = {
 
 const Wrapper = (props) => {
   const { children, isAdmin } = props;
-  const router = useRouter();
   const config = isAdmin ? CONFIG_MAP.ADMIN : CONFIG_MAP.CONTRIBUTOR;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const onlyHasMeritCircle = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id === MERIT_CIRCLE_ID;
+  const onlyHasMeritCircle =
+    userOrgs?.getUserOrgs?.length === 1 && ONLY_GRANTS_ENABLED_ORGS.includes(userOrgs?.getUserOrgs[0]?.id);
 
   return (
     <OverviewComponent>

@@ -7,7 +7,7 @@ import {
   POD_MEMBERSHIP_REQUESTS,
   TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_PROPOSAL_REQUEST,
-  MERIT_CIRCLE_ID,
+  ONLY_GRANTS_ENABLED_ORGS,
 } from 'utils/constants';
 import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS } from 'graphql/queries';
@@ -19,7 +19,8 @@ const Tabs = (props) => {
   const router = useRouter();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
 
-  const onlyHasMeritCircle = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id === MERIT_CIRCLE_ID;
+  const onlyHasMeritCircle =
+    userOrgs?.getUserOrgs?.length === 1 && ONLY_GRANTS_ENABLED_ORGS.includes(userOrgs?.getUserOrgs[0]?.id);
   const asPath = withQueries ? router.asPath : router.asPath.split('?')[0];
   const { username, podId } = router.query;
   const entityId = username ?? podId;

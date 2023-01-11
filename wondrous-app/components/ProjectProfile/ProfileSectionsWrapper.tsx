@@ -5,7 +5,7 @@ import { UPSERT_ORG_PROFILE_PAGE } from 'graphql/mutations';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 
 import palette from 'theme/palette';
-import { MERIT_CIRCLE_ID, PERMISSIONS } from 'utils/constants';
+import { ONLY_GRANTS_ENABLED_ORGS, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard } from 'utils/hooks';
 import ProfileBountySection from './ProfileBountySection';
@@ -53,7 +53,7 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
     userPermissionsContext,
     orgId,
   });
-  const isMeritCircle = orgId === MERIT_CIRCLE_ID;
+  const isMeritCircle = ONLY_GRANTS_ENABLED_ORGS.includes(orgId);
   const Components = isMeritCircle
     ? {
         grant: ProfileGrantSection,

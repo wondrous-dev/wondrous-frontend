@@ -1,5 +1,5 @@
 import { CheckedBoxIcon } from 'components/Icons/checkedBox';
-import { ENTITIES_TYPES, MERIT_CIRCLE_ID } from 'utils/constants';
+import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import FlagIcon from 'components/Icons/createMilestone';
 import BountyIcon from 'components/Icons/TaskTypes/bounty';
@@ -24,7 +24,7 @@ export default function TaskTypeSelector({ tasksPerTypeData, setExploreGr15Tasks
   const router = useRouter();
   const board = orgBoard || podBoard;
   const { entityType, setEntityType } = board;
-  const isMeritCircle = board?.id === MERIT_CIRCLE_ID || board?.orgId === MERIT_CIRCLE_ID;
+  const isMeritCircle = ONLY_GRANTS_ENABLED_ORGS.includes(board?.id) || ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgId);
 
   const config = isMeritCircle
     ? [{ key: 'proposalCount', icon: FlagIcon, title: 'proposals', type: ENTITIES_TYPES.PROPOSAL }]

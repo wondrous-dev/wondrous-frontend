@@ -37,7 +37,7 @@ import {
   STATUS_APPROVED,
   PROPOSAL_STATUS_LIST,
   STATUS_CLOSED,
-  MERIT_CIRCLE_ID,
+  ONLY_GRANTS_ENABLED_ORGS,
 } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
@@ -477,7 +477,11 @@ function BoardsPage({ meta }: Props) {
   }, [podId, podData, isPodDataLoading]);
 
   useEffect(() => {
-    if (podData?.getPodById?.orgId === MERIT_CIRCLE_ID && podId && entityType !== ENTITIES_TYPES.PROPOSAL) {
+    if (
+      ONLY_GRANTS_ENABLED_ORGS.includes(podData?.getPodById?.orgId) &&
+      podId &&
+      entityType !== ENTITIES_TYPES.PROPOSAL
+    ) {
       router.push(`/pod/${podId}/grants`, undefined, {
         shallow: true,
       });

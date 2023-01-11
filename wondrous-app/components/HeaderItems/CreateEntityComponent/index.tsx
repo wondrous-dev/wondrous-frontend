@@ -9,7 +9,7 @@ import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { ENTITIES_TYPES, MERIT_CIRCLE_ID, PERMISSIONS } from 'utils/constants';
+import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS, PERMISSIONS } from 'utils/constants';
 import { GET_USER_ORGS } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext } from 'utils/hooks';
@@ -19,7 +19,9 @@ import { EntityItem, HorizontalEntityItem, Label, Wrapper } from './styles';
 const CreateEntityComponent = ({ onClose }) => {
   const { pageData, setPageData } = useGlobalContext();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const onlyHasMeritCircle = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id === MERIT_CIRCLE_ID;
+  const onlyHasMeritCircle =
+    userOrgs?.getUserOrgs?.length === 1 && ONLY_GRANTS_ENABLED_ORGS.includes(userOrgs?.getUserOrgs[0]?.id);
+
   const BOARD_ITEMS_CONFIG = {
     label: 'Board item',
     items: {

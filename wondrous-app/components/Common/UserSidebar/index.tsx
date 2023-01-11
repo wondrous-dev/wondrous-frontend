@@ -9,7 +9,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { GET_USER_ORGS } from 'graphql/queries';
 import { useQuery } from '@apollo/client';
-import { MERIT_CIRCLE_ID, ORG_MEMBERSHIP_REQUESTS } from 'utils/constants';
+import { ONLY_GRANTS_ENABLED_ORGS, ORG_MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { useSideBar } from 'utils/hooks';
 import { UserProfilePicture } from '../ProfilePictureHelpers';
 import SidebarEntityListMemoized from '../SidebarEntityList/SidebarEntityListMemoized';
@@ -20,7 +20,8 @@ const useSidebarData = () => {
   const { setMinimized } = useSideBar();
   const { isMobileScreen } = useMediaQuery();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const onlyHasMeritCircle = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id === MERIT_CIRCLE_ID;
+  const onlyHasMeritCircle =
+    userOrgs?.getUserOrgs?.length === 1 && ONLY_GRANTS_ENABLED_ORGS.includes(userOrgs?.getUserOrgs[0]?.id);
   const handleOnClick = (link) => () => {
     router.push(link);
     if (isMobileScreen) {
