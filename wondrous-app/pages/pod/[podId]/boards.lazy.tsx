@@ -573,8 +573,7 @@ function BoardsPage({ meta }: Props) {
   const handleActiveViewChange = (newView: ViewType) => {
     setActiveView(newView);
 
-    if (newView === ViewType.Calendar) {
-      // Trigger getOrgTaskBoardTasks query
+    if ([activeView, newView].includes(ViewType.Calendar)) {
       setFilters({ ...filters });
     }
   };
