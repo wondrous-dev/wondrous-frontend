@@ -1,13 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns/endOfMonth';
-import endOfWeek from 'date-fns/endOfWeek';
-import format from 'date-fns/format';
-import isFirstDayOfMonth from 'date-fns/isFirstDayOfMonth';
-import isLastDayOfMonth from 'date-fns/isLastDayOfMonth';
-import startOfWeek from 'date-fns/startOfWeek';
-
 import { useLazyQuery, useQuery } from '@apollo/client';
+
 import { withAuth } from 'components/Auth/withAuth';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -43,7 +38,6 @@ import {
   STATUS_CLOSED,
   STATUS_OPEN,
   STATUSES_ON_ENTITY_TYPES,
-  TASK_STATUSES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { usePageDataContext } from 'utils/hooks';

@@ -20,42 +20,35 @@ type Props = {
 const CalendarMonthView = ({ open, selectedDate, tasks, onClose }: Props) => {
   const router = useRouter();
 
+  const handleClick = (event) => {
+    const isCommandKeyPressed = event.metaKey || event.ctrlKey;
+
+    if (!isCommandKeyPressed) {
+      onClose();
+    }
+  };
+
   return (
     <WonderModal open={open} onClose={onClose} maxWidth={529} title={format(selectedDate || new Date(), 'LLL d')}>
       <Grid container rowSpacing="6px">
         {tasks.map((task) => (
-          <SmartLink
-            key={task.id}
-            href={`${router.asPath}&task=${task.id}`}
-            preventLinkNavigation
-            onNavigate={() => {
-              onClose();
-              const query = {
-                ...router.query,
-                task: task.id,
-              };
-
-              router.push({ query }, undefined, { scroll: false, shallow: true });
-            }}
-          >
-            <a href={`${router.asPath}&task=${task.id}`} style={{ textDecoration: 'none' }}>
-              <Grid item display="flex" alignItems="center" sx={styles.viewAllTasksModal.taskRow}>
-                <Grid display="flex" alignItems="center">
-                  <TaskStatus
-                    style={{
-                      width: '16px',
-                      height: '16px',
-                    }}
-                    status={task?.status}
-                  />
-                </Grid>
-                <Grid display="flex" alignItems="center" sx={{ width: '31rem' }}>
-                  <Typography noWrap sx={styles.viewAllTasksModal.taskTitle}>
-                    {task.title}
-                  </Typography>
-                </Grid>
+          <SmartLink key={task.id} href={`${router.asPath}&task=${task.id}`} asLink>
+            <Grid item display="flex" alignItems="center" sx={styles.viewAllTasksModal.taskRow} onClick={handleClick}>
+              <Grid display="flex" alignItems="center">
+                <TaskStatus
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                  }}
+                  status={task?.status}
+                />
               </Grid>
-            </a>
+              <Grid display="flex" alignItems="center" sx={{ width: '31rem' }}>
+                <Typography noWrap sx={styles.viewAllTasksModal.taskTitle}>
+                  {task.title}
+                </Typography>
+              </Grid>
+            </Grid>
           </SmartLink>
         ))}
       </Grid>
