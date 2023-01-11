@@ -8,9 +8,18 @@ module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   compiler: {
     // Enables the styled-components SWC transform
-    styledComponents: true
+    styledComponents: true,
   },
-  images: { domains: ['www.notion.so', 'storage.googleapis.com', 'pbs.twimg.com', 'avatars.githubusercontent.com', 's3.amazonaws.com'] },
+  images: {
+    domains: [
+      'www.notion.so',
+      'storage.googleapis.com',
+      'pbs.twimg.com',
+      'avatars.githubusercontent.com',
+      's3.amazonaws.com',
+      'images.mintkudos.xyz',
+    ],
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
