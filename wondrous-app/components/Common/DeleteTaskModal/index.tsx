@@ -46,7 +46,7 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
 
   const [deleteGrantApplication] = useMutation(DELETE_GRANT_APPLICATION, {
     variables: { grantApplicationId: taskId },
-    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById', 'getGrantApplicationsForGrant'],
   });
 
   const [deleteTask] = useMutation(DELETE_TASK, {
@@ -113,14 +113,14 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
         <StyledCloseButton onClick={onClose}>
           <CloseModalIcon />
         </StyledCloseButton>
-        <StyledHeader>Delete this {taskType}?</StyledHeader>
+        <StyledHeader>Delete this {taskTitle}?</StyledHeader>
         <StyledBody>You cannot undo this action.</StyledBody>
         <StyledDivider />
         <StyledButtonsContainer>
           <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
           <StyledDeleteTaskButton data-cy="button-delete" onClick={() => handleDelete()}>
             <ArchivedIcon />
-            <StyledDeleteLabel>Delete {taskType}</StyledDeleteLabel>
+            <StyledDeleteLabel>Delete {taskTitle}</StyledDeleteLabel>
           </StyledDeleteTaskButton>
         </StyledButtonsContainer>
       </StyledBox>
