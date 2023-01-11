@@ -70,6 +70,7 @@ import {
   MediaWrapper,
 } from './styles';
 import { descriptionTemplate } from './utils';
+import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from './Fields/GrantStyle';
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -171,7 +172,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
         paymentMethodId: existingGrant?.reward?.paymentMethodId || '',
         rewardAmount: existingGrant?.reward?.rewardAmount || '',
       },
-      numOfGrant: existingGrant?.numOfGrant || '',
+      numOfGrant: existingGrant?.numOfGrant,
       mediaUploads: transformMediaFormat(existingGrant?.media) || [],
       startDate: existingGrant?.startDate || null,
       endDate: existingGrant?.endDate || null,
@@ -184,6 +185,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
       podId: board?.podId || null,
       privacyLevel: existingGrant?.privacyLevel || null,
       applyPolicy: existingGrant?.applyPolicy || APPLY_POLICY_FIELDS[0].value,
+      grantStyle: getGrantStyleFromGrant(existingGrant?.numOfGrant),
     },
     validateOnChange: false,
     validateOnBlur: false,
@@ -206,7 +208,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             privacyLevel: values.privacyLevel,
             applyPolicy: values.applyPolicy,
             categories: values.categories,
-            numOfGrant: parseInt(values.numOfGrant, 10),
+            ...(values.grantStyle === GRANT_STYLE_MAP.FIXED ? { numOfGrant: parseInt(values.numOfGrant, 10) } : {}),
           },
         },
       }),
@@ -428,18 +430,23 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
           </MediaWrapper>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
+            <GrantStyle value={form.values.grantStyle} onChange={(value) => form.setFieldValue('grantStyle', value)} />
+            {form.values.grantStyle === GRANT_STYLE_MAP.FIXED && (
+              <GrantQuantity
+                value={form.values.numOfGrant}
+                onChange={(value) => form.setFieldValue('numOfGrant', value)}
+                setError={form.setFieldError}
+                error={form.errors.numOfGrant}
+              />
+            )}
             <GrantAmount
               value={form.values.reward}
               onChange={form.setFieldValue}
               setError={form.setFieldError}
               orgId={form.values.orgId}
               error={form.errors.reward}
-            />
-            <GrantQuantity
-              value={form.values.numOfGrant}
-              onChange={(value) => form.setFieldValue('numOfGrant', value)}
-              setError={form.setFieldError}
-              error={form.errors.numOfGrant}
+              grantStyle={form.values.grantStyle}
+              numOfGrant={form.values.numOfGrant}
             />
             <Dates
               startDate={form.values.startDate}
