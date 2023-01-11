@@ -55,11 +55,11 @@ const GrantAmount = ({
     if (value.rewardAmount && grantStyle) {
       const paymentMethod = activePaymentMethods?.find((method) => method.id === value.paymentMethodId);
       if (grantStyle === GRANT_STYLE_MAP.FIXED) {
-        return `You are granting ${numOfGrant} x ${value.rewardAmount} ${paymentMethod?.symbol}`;
+        return `You are granting ${numOfGrant} x ${value.rewardAmount} ${paymentMethod?.symbol} = ${
+          parseInt(value.rewardAmount) * numOfGrant
+        } ${paymentMethod?.symbol}`;
       }
-      return `You are granting from a pool ${value.rewardAmount} ${paymentMethod?.symbol} = ${
-        parseInt(value.rewardAmount) * numOfGrant
-      } ${paymentMethod?.symbol}`;
+      return `You are granting from a pool ${value.rewardAmount} ${paymentMethod?.symbol}`;
     }
   }, [grantStyle, value.rewardAmount, numOfGrant, activePaymentMethods, value.paymentMethodId]);
   return (
@@ -83,8 +83,8 @@ const GrantAmount = ({
                   name="rewards-payment-method"
                   value={value.paymentMethodId}
                   disabled={disablePaymentSelect}
-                  onChange={(value) => {
-                    onChange('reward', { ...value, paymentMethodId: value });
+                  onChange={(paymentMethodValue) => {
+                    onChange('reward', { ...value, paymentMethodId: paymentMethodValue });
                   }}
                   renderValue={(selectedItem) => {
                     if (!selectedItem?.label?.props) return null;
