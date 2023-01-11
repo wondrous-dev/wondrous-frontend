@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { CircularProgress, Grid } from '@mui/material';
 import { useEffect } from 'react';
 import { Wrapper } from './styles';
+import { SafeImage } from '../Image';
 
 const TaskViewNft = ({ taskId, getTaskMintTokenData, tokenData }) => {
   useEffect(() => {
