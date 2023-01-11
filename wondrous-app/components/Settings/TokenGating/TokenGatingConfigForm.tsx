@@ -18,7 +18,7 @@ import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } fro
 import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG, UPDATE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
 import { AccessCondition, TokenGatingCondition } from 'types/TokenGating';
 import { useTokenGatingCondition } from 'utils/hooks';
-import { ETH_NFT_LIST, HARMONY_TOKEN_LIST } from 'utils/tokenList';
+import { HARMONY_TOKEN_LIST } from 'utils/tokenList';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import {
   TokenGatingAutocompleteList,
@@ -73,8 +73,12 @@ const SUPPORTED_ACCESS_CONDITION_TYPES = [
     value: 'ERC20',
   },
   {
-    label: 'NFT',
+    label: 'ERC721',
     value: 'ERC721',
+  },
+  {
+    label: 'ERC1155',
+    value: 'ERC1155',
   },
 ];
 
@@ -134,6 +138,7 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
   const { selectedTokenGatingCondition, closeTokenGatingModal } = useTokenGatingCondition();
   const [chain, setChain] = useState(chainOptions[0].value);
   const [name, setName] = useState('');
+  const [tokenId, setTokenId] = useState('');
   const [accessConditionType, setAccessConditionType] = useState('ERC20');
   const [tokenList, setTokenList] = useState([]);
   const [nftList, setNftList] = useState([]);
@@ -161,13 +166,6 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
   const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
     onCompleted: (data) => {
       if (data?.getNFTInfo) {
-        if (
-          data?.getNFTInfo.type !== 'ERC721' &&
-          data?.getNFTInfo.type !== 'ERC1155' &&
-          data?.getNFTInfo.type !== 'UNKNOWN'
-        ) {
-          return;
-        }
         const formattedOption = {
           label: data?.getNFTInfo.name,
           value: data?.getNFTInfo.contractAddress,
@@ -180,11 +178,13 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
     fetchPolicy: 'network-only',
   });
 
-  const searchSelectedTokenInList = (contractAddress, tokenList, chain) => {
+  const searchSelectedTokenInList = (contractAddress, chain, existingList = [], tokenId = '') => {
     contractAddress = contractAddress?.toLowerCase();
-    for (const tokenInfo of tokenList) {
-      if (contractAddress === tokenInfo.value) {
-        return tokenInfo;
+    if (existingList?.length >= 0) {
+      for (const tokenInfo of existingList) {
+        if (contractAddress === tokenInfo.value) {
+          return tokenInfo;
+        }
       }
     }
     if (accessConditionType === 'ERC20') {
@@ -199,6 +199,18 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
       getNFTInfo({
         variables: {
           contractAddress,
+          chain,
+          tokenType: 'ERC721',
+        },
+      });
+    }
+    if (accessConditionType === 'ERC1155') {
+      getNFTInfo({
+        variables: {
+          contractAddress,
+          chain,
+          tokenType: 'ERC1155',
+          tokenId,
         },
       });
     }
@@ -217,10 +229,10 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
       if (selectedContractAddress) {
         let selectedTokenInfo;
         if (accessConditionType === 'ERC20') {
-          selectedTokenInfo = searchSelectedTokenInList(selectedContractAddress, tokenList, chain);
+          selectedTokenInfo = searchSelectedTokenInList(selectedContractAddress, chain, tokenList);
         }
-        if (accessConditionType === 'ERC721') {
-          selectedTokenInfo = searchSelectedTokenInList(selectedContractAddress, nftList, chain);
+        if (accessConditionType === 'ERC721' || accessConditionType === 'ERC1155') {
+          selectedTokenInfo = searchSelectedTokenInList(selectedContractAddress, chain);
         }
         if (selectedTokenInfo) {
           setSelectedToken(selectedTokenInfo);
@@ -263,16 +275,27 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
     if (newMinAmount < 0) return;
     setMinAmount(newMinAmount.toString());
   };
+
   const handleSelectedTokenInputChange = (event, value) => {
     let foundToken;
     if (value && value.length === 42 && value.startsWith('0x')) {
       if (accessConditionType === 'ERC20') {
-        foundToken = searchSelectedTokenInList(value, tokenList, chain);
-      } else if (accessConditionType === 'ERC721') {
-        foundToken = searchSelectedTokenInList(value, nftList, chain);
+        foundToken = searchSelectedTokenInList(value, chain, tokenList);
+      } else if (accessConditionType === 'ERC721' || accessConditionType === 'ERC1155') {
+        foundToken = searchSelectedTokenInList(value, chain);
       }
       if (foundToken) {
+        // this is the case for token list search
         setSelectedToken(foundToken);
+      }
+    }
+  };
+  const handleTokenIdChange = (value) => {
+    setTokenId(value);
+    const contractAddress = selectedToken?.value;
+    if (value) {
+      if ((contractAddress && accessConditionType === 'ERC721') || accessConditionType === 'ERC1155') {
+        searchSelectedTokenInList(contractAddress, chain, [], value);
       }
     }
   };
@@ -302,6 +325,7 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
               chain,
               method: 'balanceOf', // fixme this is wrong, should figure out what the method is
               minValue: minAmount.toString(),
+              tokenIds: accessConditionType === 'ERC1155' ? [tokenId] : null,
             },
           },
         },
@@ -338,6 +362,7 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
             chain,
             method: 'balanceOf', // fixme this is wrong, should figure out what the method is
             minValue: minAmount.toString(),
+            tokenIds: accessConditionType === 'ERC1155' ? [tokenId] : null,
           },
         },
       },
@@ -368,29 +393,9 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
     }
   };
 
-  async function getNFTList() {
-    setNftList([]);
-    if (chain === 'ethereum') {
-      const sorted = ETH_NFT_LIST.sort((a, b) => (a.name > b.name ? 1 : -1));
-      const formatted = sorted.map((token) => ({
-        label: token.name,
-        value: token.address,
-        icon: token.logoURI,
-      }));
-      setNftList(formatted);
-    }
-  }
-
   useEffect(() => {
     if (accessConditionType === 'ERC20') {
       getTokenList();
-      // if (tokenList && tokenList.length === 0) {
-      // }
-    }
-    if (accessConditionType === 'ERC721') {
-      if (nftList && nftList.length === 0) {
-        getNFTList();
-      }
     }
   }, [accessConditionType, chain]);
 
@@ -438,6 +443,7 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
               renderInput={(params) => (
                 <TokenGatingAutocompleteTextfieldWrapper ref={params.InputProps.ref}>
                   <TokenGatingTextfieldInput
+                    placeholder="Paste in contract address"
                     {...params.inputProps}
                     endAdornment={
                       <TokenGatingAutocompleteTextfieldButton>
@@ -477,7 +483,11 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
           </CustomField>
         </Grid>
       </Grid>
-
+      {accessConditionType === 'ERC1155' && (
+        <CustomField label="Token Id">
+          <TokenGatingTextfieldInput value={tokenId} onChange={(e) => handleTokenIdChange(e.target.value)} />
+        </CustomField>
+      )}
       <CustomField label="Name">
         <TokenGatingTextfieldInput value={name} onChange={(e) => setName(e.target.value)} />
       </CustomField>

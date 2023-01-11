@@ -134,6 +134,7 @@ const useGetPodTaskBoardTasks = ({
     fetchMore({
       variables: {
         input: {
+          ...variables?.input,
           podId,
           offset: columns[columnIdx]?.tasks?.length,
           statuses: [status],
@@ -559,7 +560,9 @@ function BoardsPage({ meta }: Props) {
     }));
   }
 
-  const handleFilterChange: any = (filtersToApply = { statuses: [], labelId: null, date: null, fromDate: null, toDate: null }) => {
+  const handleFilterChange: any = (
+    filtersToApply = { statuses: [], labelId: null, date: null, fromDate: null, toDate: null }
+  ) => {
     setFilters({
       ...filtersToApply,
       fromDate: filtersToApply.fromDate ?? filters.fromDate,

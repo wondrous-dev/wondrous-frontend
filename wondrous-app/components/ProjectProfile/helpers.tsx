@@ -94,12 +94,6 @@ export const useCreateGrantModal = () => {
   const toggleDiscardModal = () => setIsDiscardOpen((prev) => !prev);
   const CreateGrantModal = () => (
     <>
-      <CreateEntityDiscardTask
-        open={isDiscardOpen}
-        onClose={setIsDiscardOpen}
-        onCloseFormModal={handleCreateFormModal}
-        entityType={ENTITIES_TYPES.GRANT}
-      />
       <CreateFormModalOverlay open={isCreateModalOpen} onClose={toggleDiscardModal}>
         <CreateGrant
           entityType={ENTITIES_TYPES.GRANT}
@@ -107,6 +101,12 @@ export const useCreateGrantModal = () => {
           cancel={handleCreateFormModal}
         />
       </CreateFormModalOverlay>
+      <CreateEntityDiscardTask
+        open={isDiscardOpen}
+        onClose={setIsDiscardOpen}
+        onCloseFormModal={handleCreateFormModal}
+        entityType={ENTITIES_TYPES.GRANT}
+      />
     </>
   );
   return { CreateGrantModal, handleCreateFormModal };

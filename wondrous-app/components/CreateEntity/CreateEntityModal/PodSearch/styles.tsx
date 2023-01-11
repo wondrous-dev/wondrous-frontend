@@ -36,12 +36,15 @@ export const scrollBarStyles = css`
   }
 `;
 
-export const PodSearchWrapper = styled.div``;
+export const PodSearchWrapper = styled.div`
+  color: ${palette.white};
+`;
 
 export const PodSearchButton = styled(ButtonUnstyled)`
   font-family: 'Space Grotesk';
   font-weight: 500;
   font-size: 13px;
+  color: inherit;
   min-width: 130px;
   max-width: 250px;
   height: 32px;

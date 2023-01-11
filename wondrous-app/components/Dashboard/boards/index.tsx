@@ -31,7 +31,7 @@ const useGetUserTaskBoardTasks = ({
   filters,
   view,
 }) => {
-  const [getUserTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
+  const [getUserTaskBoardTasks, { fetchMore, variables }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
@@ -64,6 +64,7 @@ const useGetUserTaskBoardTasks = ({
 
     fetchMore({
       variables: {
+        ...variables,
         offset: column?.tasks?.length,
         statuses: [status],
         ...(limit ? { limit } : {}),
@@ -226,7 +227,9 @@ const BoardsPage = (props) => {
     }));
   }
 
-  const handleFilterChange = (filtersToApply = { statuses: [], podIds: [], date: null, orgId: null, fromDate: null, toDate: null  }) => {
+  const handleFilterChange = (
+    filtersToApply = { statuses: [], podIds: [], date: null, orgId: null, fromDate: null, toDate: null }
+  ) => {
     setFilters({
       ...filtersToApply,
       fromDate: filtersToApply.fromDate ?? filters.fromDate,

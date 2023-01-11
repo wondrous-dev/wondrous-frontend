@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import { Text } from 'slate';
 import { Strikethrough } from '../styles';
 
@@ -14,15 +15,27 @@ const Leaf: React.FC<{
   }
 
   if (leaf.headingOne) {
-    children = <h1>{children}</h1>;
+    children = (
+      <Typography variant="h1" fontSize="28px" color="inherit" fontFamily="inherit">
+        {children}
+      </Typography>
+    );
   }
 
   if (leaf.headingTwo) {
-    children = <h2>{children}</h2>;
+    children = (
+      <Typography variant="h2" fontSize="22px" color="inherit" fontFamily="inherit">
+        {children}
+      </Typography>
+    );
   }
 
   if (leaf.headingThree) {
-    children = <h3>{children}</h3>;
+    children = (
+      <Typography variant="h3" fontSize="16px" color="inherit" fontFamily="inherit">
+        {children}
+      </Typography>
+    );
   }
 
   if (leaf.code) {

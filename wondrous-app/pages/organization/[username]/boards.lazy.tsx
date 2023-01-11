@@ -61,7 +61,7 @@ const useGetOrgTaskBoardTasks = ({
   filters,
   view,
 }) => {
-  const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+  const [getOrgTaskBoardTasks, { fetchMore, variables }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
@@ -132,6 +132,7 @@ const useGetOrgTaskBoardTasks = ({
     const columnIdx = columns?.findIndex((column) => column.status === status);
     fetchMore({
       variables: {
+        ...variables,
         offset: columns[columnIdx]?.tasks?.length,
         statuses: [status],
         ...(limit ? { limit } : {}),
@@ -591,8 +592,15 @@ function BoardsPage() {
   }
 
   const handleFilterChange: any = (
-    filtersToApply = { statuses: [], podIds: [], labelId: null, date: null, category: null, fromDate: null,
-      toDate: null, }
+    filtersToApply = {
+      statuses: [],
+      podIds: [],
+      labelId: null,
+      date: null,
+      category: null,
+      fromDate: null,
+      toDate: null,
+    }
   ) => {
     setFilters({
       ...filtersToApply,
