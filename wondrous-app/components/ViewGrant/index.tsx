@@ -29,7 +29,7 @@ import { useBoards, useFullScreen, useGlobalContext } from 'utils/hooks';
 
 import { useQuery } from '@apollo/client';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
@@ -174,12 +174,12 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
             taskType={ENTITIES_TYPES.GRANT}
             taskId={grant?.id}
           />
-          <DeleteTaskModal
+          <DeleteEntityModal
             open={deleteTask}
             onClose={() => {
               setDeleteTask(false);
             }}
-            taskType={ENTITIES_TYPES.GRANT}
+            entityType={ENTITIES_TYPES.GRANT}
             taskId={grant?.id}
             onDelete={() => {
               setSnackbarAlertOpen(true);
