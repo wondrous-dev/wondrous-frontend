@@ -17,7 +17,13 @@ import pickBy from 'lodash/pickBy';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 import { Dispatch, SetStateAction } from 'react';
-import { CATEGORY_LABELS, ENTITIES_TYPES, GR15DEICategoryName, PRIVACY_LEVEL } from 'utils/constants';
+import {
+  CATEGORY_LABELS,
+  ENTITIES_TYPES,
+  GR15DEICategoryName,
+  ONLY_GRANTS_ENABLED_ORGS,
+  PRIVACY_LEVEL,
+} from 'utils/constants';
 import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
 import * as Yup from 'yup';
@@ -165,6 +171,13 @@ export const filterOptionsWithPermission = (
   return options
     .filter(({ id }) => {
       const listPodId = orgId ? id : undefined;
+      if (
+        ONLY_GRANTS_ENABLED_ORGS.includes(id) &&
+        (entityType === ENTITIES_TYPES.TASK ||
+          entityType === ENTITIES_TYPES.BOUNTY ||
+          entityType === ENTITIES_TYPES.MILESTONE)
+      )
+        return false;
       return (
         hasCreateTaskPermission({
           userPermissionsContext,

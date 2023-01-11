@@ -1,8 +1,10 @@
 import { CheckedBoxIcon } from 'components/Icons/checkedBox';
-import { ENTITIES_TYPES } from 'utils/constants';
+import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import FlagIcon from 'components/Icons/createMilestone';
 import BountyIcon from 'components/Icons/TaskTypes/bounty';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { Wrapper, StatItem, IconWrapper, StatValue, StatTitle } from './styles';
 
 interface TasksPerType {
@@ -16,19 +18,32 @@ interface Props {
   setExploreGr15TasksAndBounties?: any;
 }
 
-const config = [
-  { key: 'taskCount', icon: CheckedBoxIcon, title: 'tasks', type: ENTITIES_TYPES.TASK },
-  { key: 'milestoneCount', icon: FlagIcon, title: 'milestones', type: ENTITIES_TYPES.MILESTONE },
-  { key: 'bountyCount', icon: BountyIcon, title: 'bounties', type: ENTITIES_TYPES.BOUNTY },
-  { key: 'proposalCount', icon: FlagIcon, title: 'proposals', type: ENTITIES_TYPES.PROPOSAL },
-];
-
 export default function TaskTypeSelector({ tasksPerTypeData, setExploreGr15TasksAndBounties }: Props) {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
+  const router = useRouter();
   const board = orgBoard || podBoard;
   const { entityType, setEntityType } = board;
+  const isMeritCircle = ONLY_GRANTS_ENABLED_ORGS.includes(board?.id) || ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgId);
 
+  const config = isMeritCircle
+    ? [{ key: 'proposalCount', icon: FlagIcon, title: 'proposals', type: ENTITIES_TYPES.PROPOSAL }]
+    : [
+        { key: 'taskCount', icon: CheckedBoxIcon, title: 'tasks', type: ENTITIES_TYPES.TASK },
+        { key: 'milestoneCount', icon: FlagIcon, title: 'milestones', type: ENTITIES_TYPES.MILESTONE },
+        { key: 'bountyCount', icon: BountyIcon, title: 'bounties', type: ENTITIES_TYPES.BOUNTY },
+        { key: 'proposalCount', icon: FlagIcon, title: 'proposals', type: ENTITIES_TYPES.PROPOSAL },
+      ];
+  useEffect(() => {
+    if (isMeritCircle) {
+      const query = {
+        ...router.query,
+        entity: '/proposal',
+      };
+
+      router.push({ query }, undefined, { scroll: false, shallow: true });
+    }
+  }, [isMeritCircle]);
   return (
     <Wrapper>
       {config.map((stat) => {
