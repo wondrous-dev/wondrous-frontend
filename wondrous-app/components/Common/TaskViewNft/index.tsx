@@ -24,7 +24,7 @@ const TaskViewNft = ({ taskId, getTaskMintTokenData, tokenData }) => {
   const { imageUrl } = tokenData?.data?.getTaskMintTokenData;
   return (
     <Wrapper display="flex" justifyContent="center" alignItems="baseline">
-      <Image fill objectFit="contain" src={imageUrl} priority alt="NFT image" />;
+      <Image fill src={imageUrl} priority alt="NFT image" />;
     </Wrapper>
   );
 };
