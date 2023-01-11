@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { CircularProgress, Grid } from '@mui/material';
 import { useEffect } from 'react';
 import { Wrapper } from './styles';
+import { SafeImage } from '../Image';
 
 const TaskViewNft = ({ taskId, getTaskMintTokenData, tokenData }) => {
   useEffect(() => {
@@ -24,7 +25,7 @@ const TaskViewNft = ({ taskId, getTaskMintTokenData, tokenData }) => {
   const { imageUrl } = tokenData?.data?.getTaskMintTokenData;
   return (
     <Wrapper display="flex" justifyContent="center" alignItems="baseline">
-      <Image fill objectFit="contain" src={imageUrl} priority alt="NFT image" />;
+      <Image fill objectFit="contain" src="https://images.mintkudos.xyz/token/14724.png" priority alt="NFT image" />;
     </Wrapper>
   );
 };
