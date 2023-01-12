@@ -284,6 +284,7 @@ export const NOTIFICATION_TYPES = {
 
   PROPOSAL_APPROVE: 'proposal_approve',
   PROPOSAL_REJECT: 'proposal_reject',
+  GRANT_APPLICATION_APPROVED: 'grant_application_approved',
 };
 
 export const NOTIFICATION_OBJ_TYPES = {
@@ -295,6 +296,7 @@ export const NOTIFICATION_OBJ_TYPES = {
   TASK_SUBMISSION_COMMENT: 'task_submission_comment',
   POST: 'post',
   COLLABORATION: 'collaboration',
+  POD: 'pod',
 };
 
 export const COLLAB_TYPES = {

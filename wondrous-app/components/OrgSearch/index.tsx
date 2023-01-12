@@ -24,7 +24,15 @@ import {
 } from './styles';
 
 function OrgSearch(props) {
-  const { options, onChange, value, disabled, label, globalSearch } = props;
+  const {
+    options,
+    onChange,
+    value,
+    disabled,
+    label,
+    globalSearch,
+    logoStyle = { width: '42px', height: '42px' },
+  } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
   const [globalSearchOrgs, { data, error }] = useLazyQuery(SEARCH_GLOBAL_ORGS);
@@ -43,10 +51,7 @@ function OrgSearch(props) {
         <OrgSearchButton open={open} disabled={!options || disabled} onClick={handleClick}>
           <LabelWrapper>
             {/* <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} /> */}
-            <OrgProfilePicture
-              style={{ width: '42px', height: '42px' }}
-              profilePicture={selectedValue?.profilePicture}
-            />
+            <OrgProfilePicture style={logoStyle} profilePicture={selectedValue?.profilePicture} />
             {/* <PodSearchLabel>{selectedValue?.name ?? label}</PodSearchLabel> */}
             <span>{selectedValue?.name ?? label}</span>
           </LabelWrapper>

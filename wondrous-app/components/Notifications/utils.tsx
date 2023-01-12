@@ -78,6 +78,8 @@ export function getNotificationDescription(notification, link) {
       return <>finished minting a {object} </>;
     case NOTIFICATION_TYPES.PAYMENT_RECEIVED:
       return <>You just received a payment!</>;
+    case NOTIFICATION_TYPES.GRANT_APPLICATION_APPROVED:
+      return <>Your grant application has been approved!</>;
     default:
       Sentry.captureMessage(`unknow notification type: ${notification?.type}, ${objectType}`);
       return <>unknown notification type</>;
@@ -86,7 +88,9 @@ export function getNotificationDescription(notification, link) {
 
 export const getNotificationLink = (notification) => {
   let notificationLink = `/${NOTIFICATION_OBJ_TYPE_TO_LINK[notification.objectType]}/${notification.objectId}`;
-
+  if (notification.objectType === NOTIFICATION_OBJ_TYPES.POD) {
+    notificationLink = `/pod/${notification.objectId}/boards`;
+  }
   if (notification.objectType === NOTIFICATION_OBJ_TYPES.COLLABORATION) {
     const mainPath = notification.type === COLLAB_TYPES.APPROVE ? 'collaboration' : 'organization';
     notificationLink =
@@ -94,7 +98,9 @@ export const getNotificationLink = (notification) => {
         ? `/${mainPath}/${notification.additionalData.orgUsername}/home`
         : `/${mainPath}/${notification.additionalData.orgUsername}/collaborations?invite=true`;
   }
-
+  if (notification?.additionalData?.podFromGrant) {
+    if (!notification.viewedAt) notificationLink += `?viewed=false`;
+  }
   if (notification?.additionalData?.viewNft) {
     notificationLink += `/nft`;
   }

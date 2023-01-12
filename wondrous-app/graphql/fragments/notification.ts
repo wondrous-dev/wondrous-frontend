@@ -23,6 +23,8 @@ export const NotificationFragment = gql`
       taskType
       invitorOrgName
       recipientOrgName
+      grantApplicationId
+      podFromGrant
     }
   }
 `;
