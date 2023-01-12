@@ -8,7 +8,7 @@ import palette from 'theme/palette';
 import { ROLES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 
-import { useCollaborationButtonProps, useGetOrgCollabsForOrg } from './helpers';
+import { useCollaborationButtonProps, useGetOrgProjectPageOrgCollabs } from './helpers';
 import SectionContent from './SectionContent';
 
 const OrgWrapper = ({ username, profilePicture }) => (
@@ -56,7 +56,7 @@ const LeftComponent = ({ parentOrgName, childOrgName, parentOrgProfilePicture, c
 
 const RightComponent = ({ parentOrgName }) => {
   const { orgBoard } = useBoards();
-  const roleName = orgBoard.orgData.name === parentOrgName ? ROLES.OWNER : ROLES.CONTRIBUTOR;
+  const roleName = orgBoard.orgData?.name === parentOrgName ? ROLES.OWNER : ROLES.CONTRIBUTOR;
   return (
     <Grid container>
       <RolePill roleName={roleName} />
@@ -78,7 +78,7 @@ const ProfileCollabSection = () => (
       RightComponent,
       onClick: ({ router, data: { username } }) => router.push(`/collaboration/${username}/boards`),
     }}
-    data={useGetOrgCollabsForOrg()}
+    data={useGetOrgProjectPageOrgCollabs()}
   />
 );
 

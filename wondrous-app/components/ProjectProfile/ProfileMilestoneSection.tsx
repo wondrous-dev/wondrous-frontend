@@ -4,7 +4,7 @@ import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES, TASK_STATUS_DONE } from 'utils/constants';
 
-import { useEntityCreateButtonProps, useGetEntity } from './helpers';
+import { useEntityCreateButtonProps, useGetProjectPageMilestones } from './helpers';
 import SectionContent from './SectionContent';
 import MilestoneProgress from './MilestoneProgress';
 
@@ -39,7 +39,7 @@ const ProfileMilestoneSection = () => (
       onClick: ({ router, data: { id } }) =>
         router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
     }}
-    data={useGetEntity('milestone')}
+    data={useGetProjectPageMilestones()}
   />
 );
 

@@ -10,7 +10,6 @@ import {
   GET_ORG_GRANTS,
   GET_ORG_PODS_WITH_COUNT,
   GET_ORG_TASK_BOARD_PROPOSALS,
-  GET_ORG_TASK_BOARD_TASKS,
   GET_ORG_USERS,
   GET_POD_GRANTS,
   GET_POD_TASK_BOARD_PROPOSALS,
@@ -18,10 +17,17 @@ import {
   GET_POD_USERS,
 } from 'graphql/queries';
 import { GET_ORG_DOCS_CATEGORIES, GET_POD_DOCS_CATEGORIES } from 'graphql/queries/documents';
+import {
+  GET_ORG_PROJECT_PAGE_BOUNTIES,
+  GET_ORG_PROJECT_PAGE_MILESTONES,
+  GET_ORG_PROJECT_PAGE_ORG_COLLABS,
+  GET_ORG_PROJECT_PAGE_PROPOSALS,
+  GET_ORG_PROJECT_PAGE_TASKS,
+} from 'graphql/queries/projectPage';
 import sortBy from 'lodash/sortBy';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { ENTITIES_TYPES } from 'utils/constants';
+import { BOUNTY_TYPE, ENTITIES_TYPES, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
 import { useBoards, useOrgBoard, useProject } from 'utils/hooks';
 
 import { EntitiesType, ICreateButtonProps } from './types';
@@ -147,8 +153,8 @@ export const useCreateGrantButtonProps = (): ICreateButtonProps => {
 
 export const DATA_LIMIT = 6;
 
-export const useGetEntity = (type) => {
-  const { orgId, podId } = useBoards().board;
+const useGetPodTaskBoardTasks = (type) => {
+  const { podId } = useBoards().board;
   const variables = {
     offset: 0,
     statuses: ['created', 'in_progress', 'in_review', 'completed'],
@@ -157,15 +163,6 @@ export const useGetEntity = (type) => {
     date: null,
     types: [type],
   };
-  const { data: getOrgTaskBoardTasks } = useQuery(GET_ORG_TASK_BOARD_TASKS, {
-    nextFetchPolicy: 'cache-first',
-    skip: !useIsOrg(),
-    variables: {
-      ...variables,
-      podIds: [],
-      orgId,
-    },
-  });
   const { data: getPodTaskBoardTasks } = useQuery(GET_POD_TASK_BOARD_TASKS, {
     nextFetchPolicy: 'cache-first',
     skip: useIsOrg(),
@@ -173,7 +170,69 @@ export const useGetEntity = (type) => {
       input: { ...variables, podId },
     },
   });
-  const data = useIsOrg() ? getOrgTaskBoardTasks?.getOrgTaskBoardTasks : getPodTaskBoardTasks?.getPodTaskBoardTasks;
+  return getPodTaskBoardTasks?.getPodTaskBoardTasks;
+};
+
+export const useGetProjectPageTasks = () => {
+  const { orgId } = useBoards().board;
+  const variables = {
+    offset: 0,
+    limit: DATA_LIMIT,
+  };
+  const { data: getOrgProjectPageTasks } = useQuery(GET_ORG_PROJECT_PAGE_TASKS, {
+    nextFetchPolicy: 'cache-first',
+    skip: !useIsOrg(),
+    variables: {
+      input: {
+        ...variables,
+        orgId,
+      },
+    },
+  });
+  const getPodTaskBoardTasks = useGetPodTaskBoardTasks(TASK_TYPE);
+  const data = useIsOrg() ? getOrgProjectPageTasks?.getOrgProjectPageTasks : getPodTaskBoardTasks;
+  return sortBy(data, ({ id }) => id);
+};
+
+export const useGetProjectPageMilestones = () => {
+  const { orgId } = useBoards().board;
+  const variables = {
+    offset: 0,
+    limit: DATA_LIMIT,
+  };
+  const { data: getOrgProjectPageMilestones } = useQuery(GET_ORG_PROJECT_PAGE_MILESTONES, {
+    nextFetchPolicy: 'cache-first',
+    skip: !useIsOrg(),
+    variables: {
+      input: {
+        ...variables,
+        orgId,
+      },
+    },
+  });
+  const getPodTaskBoardTasks = useGetPodTaskBoardTasks(MILESTONE_TYPE);
+  const data = useIsOrg() ? getOrgProjectPageMilestones?.getOrgProjectPageMilestones : getPodTaskBoardTasks;
+  return sortBy(data, ({ id }) => id);
+};
+
+export const useGetProjectPageBounties = () => {
+  const { orgId } = useBoards().board;
+  const variables = {
+    offset: 0,
+    limit: DATA_LIMIT,
+  };
+  const { data: getOrgProjectPageBounties } = useQuery(GET_ORG_PROJECT_PAGE_BOUNTIES, {
+    nextFetchPolicy: 'cache-first',
+    skip: !useIsOrg(),
+    variables: {
+      input: {
+        ...variables,
+        orgId,
+      },
+    },
+  });
+  const getPodTaskBoardTasks = useGetPodTaskBoardTasks(BOUNTY_TYPE);
+  const data = useIsOrg() ? getOrgProjectPageBounties?.getOrgProjectPageBounties : getPodTaskBoardTasks;
   return sortBy(data, ({ id }) => id);
 };
 
@@ -182,13 +241,14 @@ export const useGetProposal = () => {
   const variables = {
     limit: DATA_LIMIT,
     offset: 0,
-    statuses: ['open', 'closed', 'approved'],
   };
-  const { data: getOrgTaskBoardProposals } = useQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+  const { data: getOrgProjectPageProposals } = useQuery(GET_ORG_PROJECT_PAGE_PROPOSALS, {
     skip: !useIsOrg(),
     variables: {
-      ...variables,
-      orgId,
+      input: {
+        ...variables,
+        orgId,
+      },
     },
   });
   const { data: getPodTaskBoardProposals } = useQuery(GET_POD_TASK_BOARD_PROPOSALS, {
@@ -196,12 +256,13 @@ export const useGetProposal = () => {
     variables: {
       input: {
         ...variables,
+        statuses: ['open', 'closed', 'approved'],
         podId,
       },
     },
   });
   const data = useIsOrg()
-    ? getOrgTaskBoardProposals?.getOrgTaskBoardProposals
+    ? getOrgProjectPageProposals?.getOrgProjectPageProposals
     : getPodTaskBoardProposals?.getPodTaskBoardProposals;
   return data;
 };
@@ -273,13 +334,17 @@ export const useGetGrantOrgBoard = () => {
   return data;
 };
 
-export const useGetOrgCollabsForOrg = () => {
+export const useGetOrgProjectPageOrgCollabs = () => {
   const { orgId } = useBoards().board;
-  const { data } = useQuery(GET_ORG_COLLABS_FOR_ORG, {
+  const { data } = useQuery(GET_ORG_PROJECT_PAGE_ORG_COLLABS, {
     skip: !orgId,
     variables: {
-      orgId,
+      input: {
+        limit: DATA_LIMIT,
+        offset: 0,
+        orgId,
+      },
     },
   });
-  return data?.getOrgCollabsForOrg;
+  return data?.getOrgProjectPageOrgCollabs;
 };
