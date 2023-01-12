@@ -7,7 +7,9 @@ import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import WrenchIcon from 'components/Icons/wrench';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
-import { ORG_MEMBERSHIP_REQUESTS } from 'utils/constants';
+import { GET_USER_ORGS } from 'graphql/queries';
+import { useQuery } from '@apollo/client';
+import { ONLY_GRANTS_ENABLED_ORGS, ORG_MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { useSideBar } from 'utils/hooks';
 import { UserProfilePicture } from '../ProfilePictureHelpers';
 import SidebarEntityListMemoized from '../SidebarEntityList/SidebarEntityListMemoized';
@@ -17,6 +19,9 @@ const useSidebarData = () => {
   const router = useRouter();
   const { setMinimized } = useSideBar();
   const { isMobileScreen } = useMediaQuery();
+  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const onlyHasMeritCircle =
+    userOrgs?.getUserOrgs?.length === 1 && ONLY_GRANTS_ENABLED_ORGS.includes(userOrgs?.getUserOrgs[0]?.id);
   const handleOnClick = (link) => () => {
     router.push(link);
     if (isMobileScreen) {
@@ -58,7 +63,9 @@ const useSidebarData = () => {
         {
           text: 'Contributor',
           Icon: ContributorIcon,
-          check: () => router.pathname === '/dashboard',
+          check: onlyHasMeritCircle
+            ? () => router.pathname === '/dashboard/proposals'
+            : () => router.pathname === '/dashboard',
           link: '/dashboard',
         },
         {

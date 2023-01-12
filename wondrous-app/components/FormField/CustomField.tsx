@@ -1,4 +1,4 @@
-import { Error, FieldLabel, FieldWrapper, InputWrapper, FieldLabelContainer } from './styles';
+import { Error, FieldLabel, FieldWrapper, FieldLabelContainer } from './styles';
 
 type Props = {
   label: string;

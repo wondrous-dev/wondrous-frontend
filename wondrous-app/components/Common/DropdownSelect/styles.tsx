@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
-import SelectDownIcon from '../../Icons/selectDownIcon';
 
 export const CreateFormSelectBlock = styled.div`
   max-width: 260px;
@@ -102,12 +101,6 @@ export const CreateFormSelect = styled(Select)`
     & svg.Mui-disabled {
       opacity: 0;
     }
-  }
-`;
-
-export const CreateFormSelectArrowIcon = styled(SelectDownIcon)`
-  && {
-    cursor: pointer;
   }
 `;
 

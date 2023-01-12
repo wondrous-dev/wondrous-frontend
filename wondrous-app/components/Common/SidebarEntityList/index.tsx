@@ -14,7 +14,7 @@ import StartIcon from 'components/Icons/Sidebar/star.svg';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
-import { ENTITIES_TYPES } from 'utils/constants';
+import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
 import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
@@ -68,6 +68,10 @@ const useSidebarData = () => {
   ];
 
   const taskCount = usePerTypeTaskCountForBoard();
+
+  const isMeritCircle =
+    ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgData?.id) || ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgId);
+
   const data = [
     !!(orgBoard && !board?.orgData?.shared) && {
       items: [
@@ -78,7 +82,7 @@ const useSidebarData = () => {
         },
       ],
     },
-    {
+    !isMeritCircle && {
       label: 'Work',
       items: [
         {

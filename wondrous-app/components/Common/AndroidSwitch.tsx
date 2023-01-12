@@ -1,6 +1,8 @@
-import { styled, Switch } from '@mui/material';
+import Switch from '@mui/material/Switch';
+import styled from 'styled-components';
 
 const AndroidSwitch = styled(Switch)(({ theme }) => ({
+  // idk why this is called android switch
   padding: 8,
   '& .MuiSwitch-track': {
     borderRadius: 22 / 2,

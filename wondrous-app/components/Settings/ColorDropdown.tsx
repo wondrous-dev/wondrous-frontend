@@ -70,7 +70,6 @@ function DropdownSelect(props) {
         )}
 
         <CreateFormSelect
-          // IconComponent={CreateFormSelectArrowIcon}
           value={value}
           onChange={handleChange}
           MenuProps={MenuProps}

@@ -93,7 +93,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
       <PodModal open={isPodModalOpen} handleClose={handleClosePodModal} />
       <HelpModal open={isTutorialsModalOpen} handleClose={handleCloseTutorialsModal} />
 
-      <HeaderBar minimized={minimized}>
+      <HeaderBar>
         <Backdrop open={!!activeModalType && isMobileScreen} />
         {/* <div style={{height: '30px', width: '30px', color: 'white', background: 'red'}}>hello</div> */}
         {isMobile && router.pathname !== PAGE_PATHNAME.explore ? (
