@@ -1,6 +1,6 @@
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import { CompleteModal } from 'components/Common/CompleteModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 import { COMPLETE_MILESTONE, COMPLETE_BOUNTY, UNARCHIVE_TASK } from 'graphql/mutations';
@@ -143,10 +143,10 @@ export default function ActionModals({
         taskType={taskType}
         taskId={fetchedTask?.id}
       />
-      <DeleteTaskModal
+      <DeleteEntityModal
         open={deleteTask}
         onClose={() => setDeleteTask(false)}
-        taskType={taskType}
+        entityType={taskType}
         taskId={fetchedTask?.id}
         onDelete={() => {
           if (handleClose) {
