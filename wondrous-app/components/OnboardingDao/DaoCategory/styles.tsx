@@ -10,10 +10,6 @@ export const CategoriesWrapper = styled(RadioGroup)`
   }
 `;
 
-export const Divider = styled.div`
-  height: 1px;
-  border-bottom: 1px dashed ${({ theme }) => theme.palette.grey75};
-`;
 
 export const Label = styled(FormControlLabel)`
   && {
