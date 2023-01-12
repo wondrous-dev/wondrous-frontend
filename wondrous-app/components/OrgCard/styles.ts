@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material';
-import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
 
 export const WhiteTypographyStyles = styled(Typography)`
