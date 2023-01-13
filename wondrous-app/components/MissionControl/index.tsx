@@ -125,11 +125,11 @@ const MissionControl = () => {
   const { setIsOpen, setCurrentStep } = useTour();
 
   useEffect(() => {
-    if (!user?.lastCompletedGuide) {
+    if (user && !user?.lastCompletedGuide) {
       setCurrentStep(0);
       setIsOpen(true);
     }
-  }, [user?.lastCompletedGuide]);
+  }, [user, user?.lastCompletedGuide]);
   const { data: adminWorkflowCount, loading: workflowCountLoading } = useQuery(
     GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT,
     {
