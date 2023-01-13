@@ -1,6 +1,6 @@
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import { Menu } from 'components/Common/TaskViewModal/helpers';
 import {
@@ -163,7 +163,6 @@ const ViewGrantApplication = ({ onClose }) => {
     permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
     grantApplication?.createdBy === user?.id;
 
-  const canDelete = canArchive && GRANT_APPLICATION_DELETE_STATUSES.includes(grantApplication?.status);
   const displayTitle = grant?.title?.slice(0, 10);
 
   const handleGrantClick = () => {
@@ -175,6 +174,8 @@ const ViewGrantApplication = ({ onClose }) => {
   };
 
   const status = useMemo(() => selectApplicationStatus(grantApplication), [grantApplication]);
+
+  const canDelete = canArchive && GRANT_APPLICATION_DELETE_STATUSES.includes(status);
 
   if (isEditMode) {
     return (
@@ -195,12 +196,12 @@ const ViewGrantApplication = ({ onClose }) => {
         taskType={ENTITIES_TYPES.GRANT_APPLICATION}
         taskId={grantApplication?.id}
       />
-      <DeleteTaskModal
+      <DeleteEntityModal
         open={deleteTask}
         onClose={() => {
           setDeleteTask(false);
         }}
-        taskType={ENTITIES_TYPES.GRANT_APPLICATION}
+        entityType={ENTITIES_TYPES.GRANT_APPLICATION}
         taskId={grantApplication?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);

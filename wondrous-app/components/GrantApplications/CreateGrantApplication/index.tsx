@@ -298,7 +298,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
           </GrantDescriptionMedia>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
-            <GrantAmount value={grant?.reward} disableInput disablePaymentSelect disableAmountOfRewards orgId={orgId} />
+            <GrantAmount value={grant?.reward} disableInput disableAmountOfRewards orgId={orgId} />
             <TaskSectionDisplayDiv alignItems="start">
               <CreateEntityLabelWrapper>
                 <CreateEntityLabel>Wallet address</CreateEntityLabel>

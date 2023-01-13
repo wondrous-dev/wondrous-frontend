@@ -14,7 +14,7 @@ import type { TaskInterface } from 'types/task';
 
 import { useMe } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { CreateEntity } from 'components/CreateEntity';
 
@@ -272,12 +272,12 @@ const Task: FC<TaskProps> = (props) => {
         taskType={type}
         taskId={task?.id}
       />
-      <DeleteTaskModal
+      <DeleteEntityModal
         open={deleteTask}
         onClose={() => {
           setDeleteTask(false);
         }}
-        taskType={type}
+        entityType={type}
         taskId={task?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);

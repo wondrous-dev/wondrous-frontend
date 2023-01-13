@@ -10,7 +10,7 @@ import {
   StyledDialog,
   StyledDivider,
   StyledHeader,
-} from 'components/Common/DeleteTaskModal/styles';
+} from 'components/Common/DeleteEntityModal/styles';
 import { DELETE_MILESTONE, DELETE_TASK } from 'graphql/mutations';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { ArchivedIcon } from '../../Icons/statusIcons';

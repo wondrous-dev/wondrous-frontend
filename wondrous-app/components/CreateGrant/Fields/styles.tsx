@@ -60,7 +60,7 @@ export const GrantTextField = styled(CreateEntityTextfield)`
   }
 `;
 
-export const ApplyPolicyWrapper = styled.div`
+export const TypeSelectorWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 32px;
@@ -70,7 +70,7 @@ export const ApplyPolicyWrapper = styled.div`
   padding: 4px;
 `;
 
-export const ApplyPolicyItemButton = styled.button`
+export const TypeSelectorButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;

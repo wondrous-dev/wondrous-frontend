@@ -898,6 +898,10 @@ export const InfoPoint = styled(TaskSectionInfoCreatorDaysAgo)`
   && {
     padding-top: 6px;
     display: block;
+    color: ${palette.grey57};
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 13px;
   }
 `;
 
