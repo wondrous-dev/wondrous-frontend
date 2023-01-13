@@ -188,3 +188,16 @@ export const CHAIN_REGEX = {
   HARMONY: /^one[a-zA-Z0-9]{39}$/gm,
   ETHEREUM: /(^0x[a-zA-Z0-9]{40}$)|(.*\.eth$)/gm,
 };
+
+export const getAddressToDisplay = (address: string): string => {
+  if (!address) {
+    return '';
+  }
+
+  const isENSName = address.endsWith('.eth');
+
+  if (isENSName) {
+    return address;
+  }
+  return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`;
+};

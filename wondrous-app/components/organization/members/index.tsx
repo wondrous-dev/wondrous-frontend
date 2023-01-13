@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import debounce from 'lodash/debounce';
 
@@ -80,12 +80,16 @@ function MemberRequests(props) {
     },
   ];
 
-  const structuredOrgRoles = orgRoles?.getOrgRoles?.reduce((acc, role) => {
-    acc.push({ label: role.name, value: role.id });
-    return acc;
-  }, []);
-
+  const structuredOrgRoles = useMemo(
+    () =>
+      orgRoles?.getOrgRoles?.reduce((acc, role) => {
+        acc.push({ label: role.name, value: role.id });
+        return acc;
+      }, []),
+    [orgRoles]
+  );
   const showOrgMembershipRequestsEmptyState = orgUserMembershipRequests?.length === 0;
+  const userRoleColor = useMemo(() => getRoleColor(userRole), [userRole]);
 
   const approveRequest = (id) => {
     approveJoinOrgRequest({
@@ -188,7 +192,7 @@ function MemberRequests(props) {
       <MembersHeader>
         <MembersHeading>Members</MembersHeading>
 
-        <UserRole borderColor={getRoleColor(userRole)}>
+        <UserRole borderColor={userRoleColor}>
           <SafeImage
             src={user?.thumbnailPicture || user?.profilePicture}
             placeholderComp={<DefaultUserImage style={userProfilePictureStyles} />}

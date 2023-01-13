@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import RolePill from 'components/Common/RolePill';
 import { Role } from 'types/common';
 import { FilteredRolesContainer } from './styles';
@@ -10,7 +11,10 @@ type Props = {
 const FilteredRoles = (props: Props) => {
   const { roles, selectedRoleIds } = props;
 
-  const selectedRoles = roles?.filter((role) => selectedRoleIds.includes(role.id));
+  const selectedRoles = useMemo(
+    () => roles?.filter((role) => selectedRoleIds.includes(role.id)),
+    [roles, selectedRoleIds]
+  );
 
   return (
     <FilteredRolesContainer>

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import debounce from 'lodash/debounce';
 
@@ -67,12 +67,16 @@ function MemberRequests(props) {
     },
   ];
 
-  const structuredPodRoles = podRoles?.getPodRoles?.reduce((acc, role) => {
-    acc.push({ label: role.name, value: role.id });
-    return acc;
-  }, []);
-
+  const structuredPodRoles = useMemo(
+    () =>
+      podRoles?.getPodRoles?.reduce((acc, role) => {
+        acc.push({ label: role.name, value: role.id });
+        return acc;
+      }, []),
+    [podRoles]
+  );
   const showPodMembershipRequestsEmptyState = podUserMembershipRequests?.length === 0;
+  const userRoleColor = useMemo(() => getRoleColor(userRole), [userRole]);
 
   const approveRequest = (requestId) => {
     approveJoinPodRequest({
@@ -174,7 +178,7 @@ function MemberRequests(props) {
       <MembersHeader>
         <MembersHeading>Members</MembersHeading>
 
-        <UserRole borderColor={getRoleColor(userRole)}>
+        <UserRole borderColor={userRoleColor}>
           <SafeImage
             src={user?.thumbnailPicture || user?.profilePicture}
             placeholderComp={<DefaultUserImage style={userProfilePictureStyles} />}
