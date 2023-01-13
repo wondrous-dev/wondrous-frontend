@@ -11,8 +11,8 @@ interface RolePillType {
   backgroundColor?: String;
 }
 
-const RolePill: React.FC<RolePillType> = ({ roleName, onClick, backgroundColor, ...props }) => (
-  <MemberRolePill onClick={onClick} roleName={roleName} backgroundColor={backgroundColor} {...props}>
+const RolePill: React.FC<RolePillType> = ({ roleName, onClick, ...props }) => (
+  <MemberRolePill onClick={onClick} roleName={roleName} {...props}>
     <RolePillText {...props}>{`${getRoleEmoji(roleName)}  ${roleName || 'no role'}`}</RolePillText>
   </MemberRolePill>
 );
