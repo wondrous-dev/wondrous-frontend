@@ -378,7 +378,7 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
   const description = deserializeRichText(existingTask.description);
   const GR15DEISelected = existingTask?.categories?.some((category) => category?.name === GR15DEICategoryName);
   const remainingCategories = existingTask?.categories?.filter((category) => category?.name !== GR15DEICategoryName);
-  console.log('existingTask', existingTask);
+
   const existingTaskValues = pick(
     {
       ...existingTask,
