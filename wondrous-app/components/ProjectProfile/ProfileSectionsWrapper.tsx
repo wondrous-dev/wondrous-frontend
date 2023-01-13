@@ -20,8 +20,8 @@ import ProfileTaskSection from './ProfileTaskSection';
 import { CardWrapper } from './styles';
 
 const ProfileSectionsWrapper = () => {
-  const { orgId, podId, projectData } = useBoards().board || {};
-  const { layout } = projectData || {};
+  const { orgId, podId, orgData, pod } = useBoards().board || {};
+  const { layout } = (podId ? pod : orgData) || {};
   const isOrg = useIsOrg();
   const { hasFullPermission } = useBoardPermission();
   const [upsertOrgProfilePage] = useMutation(UPSERT_ORG_PROFILE_PAGE, {

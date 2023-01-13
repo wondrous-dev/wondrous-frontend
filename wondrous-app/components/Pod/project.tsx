@@ -31,7 +31,6 @@ const PodProject = () => {
       userPermissionsContext: userPermissionsContext?.getUserPermissionContext
         ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
         : null,
-      projectData: getPodById,
       orgId: getPodById?.id,
       pod: getPodById,
       podId: getPodById?.id,
