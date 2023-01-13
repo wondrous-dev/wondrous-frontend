@@ -1,11 +1,11 @@
 import { DefaultUserImage, SafeImage } from 'components/Common/Image';
 import RolePill from 'components/Common/RolePill';
 import palette from 'theme/palette';
+import { getAddressToDisplay } from 'utils/helpers';
 import {
   ExistingMembersCount,
   MemberLink,
   MemberName,
-  MemberPodCount,
   MemberRow,
   MemberRowLeft,
   MemberRowRight,
@@ -23,13 +23,6 @@ type Props = {
 
 const ExistingMembers = (props: Props) => {
   const { podUsers, hasMore, handleShowMorePodUsers } = props;
-
-  const getMemberWalletAddress = (address: string) => {
-    if (!address) {
-      return '';
-    }
-    return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`;
-  };
 
   return (
     <MembersContainer>
@@ -53,13 +46,11 @@ const ExistingMembers = (props: Props) => {
               </MemberLink>
 
               {!!user.activeEthAddress && (
-                <MemberWalletAddress>{getMemberWalletAddress(user.activeEthAddress)}</MemberWalletAddress>
+                <MemberWalletAddress>{getAddressToDisplay(user.activeEthAddress)}</MemberWalletAddress>
               )}
             </MemberRowLeft>
 
             <MemberRowRight>
-              <MemberPodCount>{user?.additionalInfo?.podCount} pods</MemberPodCount>
-
               <RolePill roleName={role?.name} backgroundColor={palette.grey85} />
             </MemberRowRight>
           </MemberRow>

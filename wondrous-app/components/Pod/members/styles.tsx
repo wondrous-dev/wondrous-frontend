@@ -448,9 +448,6 @@ export const MemberRowLeft = styled(MemberRow)`
 
 export const MemberRowRight = styled(MemberRow)`
   && {
-    gap: 42px;
-    min-width: 195px;
-
     div {
       padding: 2px 7px;
 
@@ -460,15 +457,6 @@ export const MemberRowRight = styled(MemberRow)`
         text-transform: capitalize;
       }
     }
-  }
-`;
-
-export const MemberPodCount = styled(MemberName)`
-  && {
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 13px;
-    color: ${palette.grey51};
   }
 `;
 
