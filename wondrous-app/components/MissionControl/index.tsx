@@ -140,8 +140,6 @@ const MissionControl = () => {
 
   const { data: userTaskCountData, loading: taskCountLoading } = useGetPerStatusTaskCountForUserBoard(user?.id);
 
-  useEffect(() => {}, [user, user?.mainBannerClosedAt, user?.userInfo?.orbit1Tweet]);
-
   const generateCountForStats = (stats) =>
     stats.map((stat) => {
       const count =
