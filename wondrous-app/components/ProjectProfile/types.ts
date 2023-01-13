@@ -8,7 +8,7 @@ export interface IListItemProps {
   LeftComponent: React.ElementType;
   RightComponent?: React.ElementType;
   data?: object;
-  onClick?: (params: { router?: NextRouter; data?; entityLink?: string }) => unknown;
+  onClick?: (params: { router?: NextRouter; data?; entityLink?: string }) => void;
 }
 
 export interface IHeaderTitleProps {
@@ -17,7 +17,7 @@ export interface IHeaderTitleProps {
 }
 
 export interface ICreateButtonProps {
-  onClick: () => unknown;
+  onClick: () => void;
   text: string;
 }
 
