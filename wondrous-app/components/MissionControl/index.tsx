@@ -26,7 +26,6 @@ import { useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 import { KudosWidget, MyProjectsWidget } from 'components/MissionControlWidgets';
 import { ConnectWallet, Notifications } from 'components/MissionControlSidebarWidgets';
 import HighlightedCone from 'components/Icons/HighlightedCone';
-import AnnouncementModal from 'components/AnnouncementModal';
 import {
   MissionControlWrapper,
   MissionControlSidebarWrapper,
@@ -122,7 +121,6 @@ const CARDS_CONFIG = {
 
 const MissionControl = () => {
   const user = useMe();
-  const [announcementModalOpen, setAnnouncementModalOpen] = useState(false);
 
   const { setIsOpen, setCurrentStep } = useTour();
 
@@ -142,11 +140,7 @@ const MissionControl = () => {
 
   const { data: userTaskCountData, loading: taskCountLoading } = useGetPerStatusTaskCountForUserBoard(user?.id);
 
-  useEffect(() => {
-    if (user && !user?.mainBannerClosedAt && !user?.userInfo?.orbit1Tweet) {
-      setAnnouncementModalOpen(true);
-    }
-  }, [user, user?.mainBannerClosedAt, user?.userInfo?.orbit1Tweet]);
+  useEffect(() => {}, [user, user?.mainBannerClosedAt, user?.userInfo?.orbit1Tweet]);
 
   const generateCountForStats = (stats) =>
     stats.map((stat) => {
@@ -161,9 +155,6 @@ const MissionControl = () => {
   return (
     <MissionControlWrapper>
       <ChooseEntityToCreate />
-      {announcementModalOpen && (
-        <AnnouncementModal open={announcementModalOpen} onClose={() => setAnnouncementModalOpen(false)} />
-      )}
       <MissionControlWidgetsWrapper>
         {CARDS_CONFIG.workspace.map(({ label, labelGradient, img, stats, hoverImg, gradient, url }, idx) => (
           <MissionControlWorkspaceCard
