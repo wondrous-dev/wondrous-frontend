@@ -126,12 +126,12 @@ const MissionControl = () => {
 
   const { setIsOpen, setCurrentStep } = useTour();
 
-  useLayoutEffect(() => {
-    if (user && !user.lastCompletedGuide) {
+  useEffect(() => {
+    if (!user?.lastCompletedGuide) {
       setCurrentStep(0);
       setIsOpen(true);
     }
-  }, [user]);
+  }, [user?.lastCompletedGuide]);
   const { data: adminWorkflowCount, loading: workflowCountLoading } = useQuery(
     GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT,
     {
@@ -160,7 +160,7 @@ const MissionControl = () => {
 
   return (
     <MissionControlWrapper>
-      <ChooseEntityToCreate/>
+      <ChooseEntityToCreate />
       {announcementModalOpen && (
         <AnnouncementModal open={announcementModalOpen} onClose={() => setAnnouncementModalOpen(false)} />
       )}
