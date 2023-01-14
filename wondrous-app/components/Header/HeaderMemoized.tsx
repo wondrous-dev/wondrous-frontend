@@ -52,7 +52,7 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
   const toggleMinimize = () => setMinimized((prev) => !prev);
 
   useOutsideAlerter(wrapperRef, () => {
-    if (isPodModalOpen || isTutorialsModalOpen || !activeModalType) return;
+    if (isPodModalOpen || isTutorialsModalOpen) return;
     setActiveModalType(null);
   });
 
