@@ -65,6 +65,7 @@ const ListItem = ({ item }) => {
   const canDelete =
     (permissions.includes(PERMISSIONS.FULL_ACCESS) ||
       permissions.includes(PERMISSIONS.REVIEW_TASK) ||
+      permissions.includes(PERMISSIONS.MANAGE_GRANTS) ||
       item?.createdBy === user?.id) &&
     GRANT_APPLICATION_DELETE_STATUSES.includes(status);
 

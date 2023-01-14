@@ -131,7 +131,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
       : deserializeRichText(descriptionTemplate),
     paymentAddress: grantApplication?.paymentAddress || connectedAddress || null,
     mediaUploads: transformMediaFormat(grantApplication?.media) || [],
-    workspace: null,
+    org: null,
   };
 
   const handleCloseAction = () => (isEditMode ? handleClose() : toggleCreateApplicationModal());
@@ -158,11 +158,11 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
   );
 
   useEffect(() => {
-    if (grantApplication?.workspaceId && orgsSchema?.items?.length) {
-      const workspace = orgsSchema.items.find((workspace) => workspace.id === grantApplication?.workspaceId);
-      form.setFieldValue('workspace', workspace);
+    if (grantApplication?.orgId && orgsSchema?.items?.length) {
+      const org = orgsSchema.items.find((org) => org.id === grantApplication?.orgId);
+      form.setFieldValue('org', org);
     }
-  }, [orgsSchema?.items?.length, grantApplication?.workspaceId]);
+  }, [orgsSchema?.items?.length, grantApplication?.orgId]);
 
   const handleGrantApplicationSubmit = isEditMode
     ? ({ variables }) =>
@@ -188,7 +188,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
       .matches(chainToValidate, 'Wallet address is not valid')
       .required('Wallet address is required'),
     mediaUploads: yup.array(),
-    workspace: yup.object().required('Workspace is required'),
+    org: yup.object().required('Project is required'),
   });
 
   const form = useFormik({
@@ -210,7 +210,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             paymentAddress,
             description: JSON.stringify(values.description),
             userMentions,
-            workspaceId: values.workspace?.id,
+            orgId: values.org?.id,
           },
         },
       }).then(() => handleCloseAction());
@@ -421,8 +421,8 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
                     height: '24px',
                     width: '24px',
                   }}
-                  value={form.values.workspace}
-                  onChange={(workspace) => form.setFieldValue('workspace', workspace)}
+                  value={form.values.org}
+                  onChange={(org) => form.setFieldValue('org', org)}
                   label="Select project"
                 />
               </CreateGrantApplicationWorkspaceWrapper>

@@ -154,13 +154,17 @@ const ViewGrantApplication = ({ onClose }) => {
     podId: grant?.podId,
   });
 
-  const canManage = permissions?.includes(PERMISSIONS.FULL_ACCESS) || permissions?.includes(PERMISSIONS.EDIT_TASK);
+  const canManage =
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.REVIEW_TASK) ||
+    permissions?.includes(PERMISSIONS.MANAGE_GRANTS);
 
   const canEditAndComment = canManage || grantApplication?.createdBy === user?.id;
 
   const canArchive =
     permissions?.includes(PERMISSIONS.REVIEW_TASK) ||
     permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.MANAGE_GRANTS) ||
     grantApplication?.createdBy === user?.id;
 
   const canDelete = canArchive && GRANT_APPLICATION_DELETE_STATUSES.includes(grantApplication?.status);

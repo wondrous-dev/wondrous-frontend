@@ -1,10 +1,11 @@
-import React, { memo, Suspense } from 'react';
 import dynamic from 'next/dynamic';
+import React, { memo, Suspense } from 'react';
 
-import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
-import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
-import { ENTITIES_TYPES } from 'utils/constants';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
+import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
+import GrantApplicationPodCreateModal from 'components/GrantApplications/GrantApplicationPodCreateModal';
+import { ENTITIES_TYPES_FILTER_STATUSES, FILTER_STATUSES } from 'services/board';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { ColumnsContext } from 'utils/contexts';
 import Wrapper from '../wrapper';
 
@@ -57,24 +58,27 @@ function PodBoards(props: Props) {
   const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
   const filterSchema: any = entityTypeFilters;
   return (
-    <Wrapper onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
-      <ColumnsContext.Provider value={{ columns, setColumns }}>
-        {loading ? (
-          <BoardColumnsSkeleton />
-        ) : (
-          <Suspense>
-            <ActiveBoard
-              activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-              columns={columns}
-              onLoadMore={onLoadMore}
-              hasMore={hasMore}
-              setColumns={setColumns}
-              entityType={entityType}
-            />
-          </Suspense>
-        )}
-      </ColumnsContext.Provider>
-    </Wrapper>
+    <>
+      <GrantApplicationPodCreateModal />
+      <Wrapper onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
+        <ColumnsContext.Provider value={{ columns, setColumns }}>
+          {loading ? (
+            <BoardColumnsSkeleton />
+          ) : (
+            <Suspense>
+              <ActiveBoard
+                activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+                columns={columns}
+                onLoadMore={onLoadMore}
+                hasMore={hasMore}
+                setColumns={setColumns}
+                entityType={entityType}
+              />
+            </Suspense>
+          )}
+        </ColumnsContext.Provider>
+      </Wrapper>
+    </>
   );
 }
 

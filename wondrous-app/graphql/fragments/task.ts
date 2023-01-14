@@ -128,6 +128,7 @@ export const FullTaskFragment = gql`
       name
       color
       privacyLevel
+      grantApplicationId
     }
     milestone {
       title

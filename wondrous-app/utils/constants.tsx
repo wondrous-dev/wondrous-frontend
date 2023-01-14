@@ -238,6 +238,7 @@ export const PERMISSIONS = {
   MANAGE_COMMENT: 'manage_comment',
   // MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
+  MANAGE_GRANTS: 'manage_grants',
 };
 
 export const PERMISSION_TO_DISPLAY = {
@@ -251,6 +252,7 @@ export const PERMISSION_TO_DISPLAY = {
   [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
   // [PERMISSIONS.MANAGE_POST]: 'Manage post',
   [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
+  [PERMISSIONS.MANAGE_GRANTS]: 'Manage grants',
 };
 
 export const NOTIFICATION_TYPES = {
