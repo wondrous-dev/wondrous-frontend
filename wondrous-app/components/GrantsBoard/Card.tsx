@@ -8,7 +8,7 @@ import {
   BoardsCardFooter,
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SafeImage } from 'components/Common/Image';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
@@ -76,12 +76,12 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
         taskType={ENTITIES_TYPES.GRANT}
         taskId={grant?.id}
       />
-      <DeleteTaskModal
+      <DeleteEntityModal
         open={deleteTask}
         onClose={() => {
           setDeleteTask(false);
         }}
-        taskType={ENTITIES_TYPES.GRANT}
+        entityType={ENTITIES_TYPES.GRANT}
         taskId={grant?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);

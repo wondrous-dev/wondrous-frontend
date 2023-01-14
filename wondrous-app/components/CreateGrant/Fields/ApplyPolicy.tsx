@@ -1,6 +1,4 @@
-import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
-import { CreateEntityLabelWrapper, CreateEntityLabel } from 'components/CreateEntity/CreateEntityModal/styles';
-import { ApplyPolicyItemButton, ApplyPolicyWrapper } from './styles';
+import TypeSelector from './TypeSelector';
 
 export const APPLY_POLICY_FIELDS = [
   {
@@ -13,29 +11,8 @@ export const APPLY_POLICY_FIELDS = [
   },
 ];
 
-const ApplyPolicyItem = ({ isActive, label, onChange }) => (
-  <ApplyPolicyItemButton type="button" isActive={isActive} onClick={onChange}>
-    {label}
-  </ApplyPolicyItemButton>
-);
-
 const ApplyPolicy = ({ onChange, value }) => (
-  <TaskSectionDisplayDiv alignItems="start">
-    <CreateEntityLabelWrapper>
-      <CreateEntityLabel>Eligibility</CreateEntityLabel>
-    </CreateEntityLabelWrapper>
-    <ApplyPolicyWrapper>
-      {APPLY_POLICY_FIELDS.map((field) => (
-        // <div key={field.value}>{field.name}</div>
-        <ApplyPolicyItem
-          key={field.value}
-          isActive={value === field.value}
-          label={field.name}
-          onChange={() => onChange(field.value)}
-        />
-      ))}
-    </ApplyPolicyWrapper>
-  </TaskSectionDisplayDiv>
+  <TypeSelector onChange={onChange} config={APPLY_POLICY_FIELDS} value={value} label="Eligibility" />
 );
 
 export default ApplyPolicy;

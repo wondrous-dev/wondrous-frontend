@@ -4,7 +4,6 @@ import { CircularProgress, Grid } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
 import { UPDATE_TASK_SHOW_SUBMISSIONS, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import isEmpty from 'lodash/isEmpty';
-import { useRouter } from 'next/router';
 import Checkbox from 'components/Checkbox';
 import {
   ENTITIES_TYPES,
@@ -29,21 +28,34 @@ import {
   HideSubmissionsCheckBoxDiv,
   HideSubmissionsHelperText,
 } from 'components/Common/TaskSubmission/styles';
+import Wallet from 'components/Common/Wallet';
 import { TaskSubmissionsFilter } from './submissionFilter';
 import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
 import { SubmissionPayment } from './submissionPayment';
 
-export function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText = '', dataCy = 'submission' }) {
+export function SubmissionButtonWrapper({
+  onClick = null,
+  buttonText = null,
+  helperText = '',
+  dataCy = 'submission',
+  walletConnected = true,
+}) {
   return (
     <SubmissionButtonWrapperGradient>
       <SubmissionButtonWrapperBackground>
-        {buttonText && (
-          <SubmissionButtonCreate onClick={onClick} show={buttonText} data-cy={`submission-button-${dataCy}`}>
-            {buttonText}
-          </SubmissionButtonCreate>
+        {walletConnected ? (
+          <>
+            {buttonText && (
+              <SubmissionButtonCreate onClick={onClick} show={buttonText} data-cy={`submission-button-${dataCy}`}>
+                {buttonText}
+              </SubmissionButtonCreate>
+            )}
+            {helperText && <SubmissionButtonTextHelper>{helperText}</SubmissionButtonTextHelper>}
+          </>
+        ) : (
+          <Wallet />
         )}
-        {helperText && <SubmissionButtonTextHelper>{helperText}</SubmissionButtonTextHelper>}
       </SubmissionButtonWrapperBackground>
     </SubmissionButtonWrapperGradient>
   );
@@ -204,7 +216,7 @@ export function TaskSubmissions(props) {
     setShowPaymentModal,
     taskSubmissionLoading,
   } = props;
-  const router = useRouter();
+  const user = useMe();
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
     onCompleted: (data) => inProgressMoveCompleted({ boardColumns, board }, data),
   });
@@ -269,7 +281,15 @@ export function TaskSubmissions(props) {
         {isBounty &&
           fetchedTask?.status !== TASK_STATUS_DONE &&
           fetchedTask?.status !== TASK_STATUS_ARCHIVED &&
-          !!loggedInUser && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
+          !!loggedInUser && (
+            <>
+              {fetchedTask?.requireSubmitterWalletConnected && !user?.activeEthAddress ? (
+                <SubmissionButtonWrapper walletConnected={false} />
+              ) : (
+                <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />
+              )}
+            </>
+          )}
         {!isBounty && (
           <>
             <TaskSubmissionsTaskToDo

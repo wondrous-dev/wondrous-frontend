@@ -35,9 +35,9 @@ const TutorialsButton = ({ onClick }) => (
   </UserHelperWrapper>
 );
 
-const UserHelpers = ({ onClick }) => (
+const UserHelpers = ({ onClick, onClose }) => (
   <Grid display="flex" direction="column" gap="14px">
-    <UnstyledLink href="/profile/settings" onClick={onClick}>
+    <UnstyledLink href="/profile/settings" onClick={onClose}>
       <UserHelperWrapper>
         <ButtonIcon bgColor={palette.grey75}>
           <WrenchIcon />
@@ -50,7 +50,7 @@ const UserHelpers = ({ onClick }) => (
     <TutorialsButton onClick={onClick} />
     <UnstyledButton
       onClick={() => {
-        onClick();
+        onClose();
         logout();
       }}
     >
@@ -129,7 +129,7 @@ const UserProfile = ({ onClose, openPodModal, openTutorialsModal }) => {
         })}
       </PageSelectorWrapper>
       <div>
-        <UserHelpers onClick={openTutorialsModal} />
+        <UserHelpers onClick={openTutorialsModal} onClose={onClose} />
       </div>
     </Wrapper>
   );

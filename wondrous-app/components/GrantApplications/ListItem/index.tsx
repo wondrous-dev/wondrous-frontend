@@ -47,7 +47,7 @@ const ListItem = ({ item }) => {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantById'],
   });
 
-  const deleteGrant = () =>
+  const handleDeleteGrantApplicationClick = () =>
     deleteGrantApplication({
       variables: {
         grantApplicationId: item?.id,
@@ -110,8 +110,9 @@ const ListItem = ({ item }) => {
       <Footer>
         <TaskCommentIcon />
         <TaskActionAmount>{item?.commentCount}</TaskActionAmount>
-        {canDelete && <RequestDeclineButton onClick={deleteGrant}>Delete application</RequestDeclineButton>}
-
+        {canDelete && (
+          <RequestDeclineButton onClick={handleDeleteGrantApplicationClick}>Delete application</RequestDeclineButton>
+        )}
         <RequestApproveButton onClick={() => handleClick(item?.id)}>View application</RequestApproveButton>
       </Footer>
     </ApplicationItemWrapper>

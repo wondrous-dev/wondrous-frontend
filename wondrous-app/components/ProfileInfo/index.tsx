@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
 
 import { parseLinks } from 'utils/common';
-import { formatLinkDisplay } from 'utils/links';
 import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA } from 'utils/constants';
 import { CREATE_USER_INTEREST } from 'graphql/mutations';
 import { GET_USER_INTERESTS } from 'graphql/queries/user';
