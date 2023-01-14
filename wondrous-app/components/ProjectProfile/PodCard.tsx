@@ -34,7 +34,7 @@ const PodCard = ({ name, id, color = palette.grey99, contributorCount = 0 }: Pod
       },
     }}
   >
-    <Link href={`/pod/${id}/boards`} passHref>
+    <Link href={`/pod/${id}/home`} passHref>
       <PodIconName
         color={color}
         name={name}

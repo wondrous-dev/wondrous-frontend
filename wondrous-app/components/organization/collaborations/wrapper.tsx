@@ -73,7 +73,7 @@ function CollabWrapper(props) {
     )
   ) {
     if (podId && pod) {
-      router.push(`/pod/${podId}/boards`, undefined, {
+      router.push(`/pod/${podId}/home`, undefined, {
         shallow: true,
       });
     } else if (org) {
@@ -91,7 +91,7 @@ function CollabWrapper(props) {
     },
     [String(podId)]: {
       page: SettingsPage.Pod,
-      path: `/pod/${podId}/boards`,
+      path: `/pod/${podId}/home`,
       label: 'Pod',
     },
     '': {

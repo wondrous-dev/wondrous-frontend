@@ -87,7 +87,7 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const hasGR15 = hasGR15DEIIntiative(bounty?.categories);
   const goToPod = (podId) => {
-    router.push(`/pod/${podId}/boards`, undefined, {
+    router.push(`/pod/${podId}/home`, undefined, {
       shallow: true,
     });
   };
