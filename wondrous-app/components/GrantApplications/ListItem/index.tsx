@@ -13,7 +13,7 @@ import {
 import { SubmissionItemStatus, SubmissionItemUserWrapper } from 'components/Common/TaskSubmission/submissionItem';
 import { TaskDescriptionTextWrapper } from 'components/Common/TaskViewModal/helpers';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
-import { RequestApproveButton, RequestRejectButton } from 'components/organization/members/styles';
+import { RequestApproveButton, RequestDeclineButton } from 'components/Members/styles';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import { DELETE_GRANT_APPLICATION } from 'graphql/mutations';
 import { useRouter } from 'next/router';
@@ -110,7 +110,7 @@ const ListItem = ({ item }) => {
       <Footer>
         <TaskCommentIcon />
         <TaskActionAmount>{item?.commentCount}</TaskActionAmount>
-        {canDelete && <RequestRejectButton onClick={deleteGrant}>Delete application</RequestRejectButton>}
+        {canDelete && <RequestDeclineButton onClick={deleteGrant}>Delete application</RequestDeclineButton>}
 
         <RequestApproveButton onClick={() => handleClick(item?.id)}>View application</RequestApproveButton>
       </Footer>

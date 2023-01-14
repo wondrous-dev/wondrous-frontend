@@ -7,7 +7,7 @@ import { RichTextViewer } from 'components/RichText';
 import { IconsList, ICON_TYPES } from 'components/ListViewAdmin/ColumnEntry';
 import Tooltip from 'components/Tooltip';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
-import { RequestDeclineButton } from 'components/organization/members/styles';
+import { RequestDeclineButton } from 'components/Members/styles';
 import { SubmissionItemStatus } from 'components/Common/TaskSubmission/submissionItem';
 import PodIconName from 'components/Common/PodIconName';
 import {

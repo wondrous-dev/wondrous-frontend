@@ -11,7 +11,7 @@ import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon } from 'com
 import { useGlobalContext, useUserBoard } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { useMe } from 'components/Auth/withAuth';
-import { EmptyMemberRequestsListMessage } from 'components/organization/members/styles';
+import { EmptyMemberRequestsListMessage } from 'components/Members/styles';
 import { Spinner } from 'components/Dashboard/bounties/styles';
 import KudosForm from 'components/Common/KudosForm';
 import ColumnEntry from './ColumnEntry';
