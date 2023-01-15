@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import SearchTasks from 'components/SearchTasks';
 import {
   useHotkey,
@@ -23,6 +23,7 @@ import palette from 'theme/palette';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import { IsMobileContext } from 'utils/contexts';
 import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
@@ -43,6 +44,7 @@ export function BoardsActivityInlineView({
   const router = useRouter();
   const { search } = router.query;
   const board = orgBoard || podBoard || userBoard;
+  const isMobile = useContext(IsMobileContext);
 
   const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter || board?.hasActiveFilters);
 
@@ -61,11 +63,14 @@ export function BoardsActivityInlineView({
     },
     [displayFilters]
   );
+
+  const mobileDashboardPage = router.asPath.includes('/dashboard') && isMobile;
+
   return (
     <>
       <BoardsActivityInlineViewWrapper
         style={
-          search
+          search || isMobile
             ? {
                 justifyContent: 'flex-start',
               }
@@ -73,6 +78,7 @@ export function BoardsActivityInlineView({
                 justifyContent: 'flex-end',
               }
         }
+        mobileDashboardPage={mobileDashboardPage}
         displaySingleViewFilter={displaySingleViewFilter}
       >
         <SearchTasks isExpandable={isExpandable} onSearch={onSearch} />

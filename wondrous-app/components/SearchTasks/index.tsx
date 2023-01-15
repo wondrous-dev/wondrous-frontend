@@ -1,7 +1,7 @@
 import { Badge, InputAdornment } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import last from 'lodash/last';
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
@@ -12,6 +12,7 @@ import { delQuery } from 'utils';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
 import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import { IsMobileContext } from 'utils/contexts';
 import { SafeImage } from '../Common/Image';
 import { UserIconSmall } from '../Icons/Search/types';
 import BountyIcon from '../Icons/TaskTypes/bounty';
@@ -36,6 +37,7 @@ type Props = {
 let timeout;
 
 export default function SearchTasks({ onSearch, isExpandable, autocompleteComponent }: Props) {
+  const isMobile = useContext(IsMobileContext);
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -104,20 +106,28 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   function handleShowMore() {
     setOpen(false);
 
-    router.push({
-      pathname: location.pathname,
-      query: {
-        search: inputValue,
-        view: 'list',
+    router.push(
+      {
+        pathname: location.pathname,
+        query: {
+          search: inputValue,
+          view: 'list',
+        },
       },
-    }, undefined, {
-      scroll: false,
-      shallow: true,
-    });
+      undefined,
+      {
+        scroll: false,
+        shallow: true,
+      }
+    );
   }
 
   const Autocomplete = autocompleteComponent || DefaultAutocomplete;
-  const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : '30%') : '100%';
+  const autocompleteWidth = isExpandable ? (isExpanded || isMobile ? '100%' : '30%') : '100%';
+
+  const dashboardPage = router.asPath.includes('/dashboard');
+
+  const flexBasisdashboardPage = isMobile && dashboardPage ? '50%' : '';
 
   const handleBlur = (e) => setIsExpanded(false);
   const handleFocus = () => setIsExpanded(true);
@@ -138,7 +148,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
           setInputValue(searchString || '');
         }
       }}
-      style={{ width: autocompleteWidth }}
+      style={{ width: autocompleteWidth, flexBasis: flexBasisdashboardPage }}
       disableClearable
       freeSolo={!inputValue || isLoading}
       getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}

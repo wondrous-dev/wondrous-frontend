@@ -7,8 +7,8 @@ import Masonry from '@mui/lab/Masonry';
 
 export const BoardsContainer = styled.div`
   width: 100%;
-  height: 100%;
-  margin-top: 22px;
+  height: ${({ isMobile }) => (isMobile ? '' : '100%')};
+  margin-top: ${({ isMobile, dashboardPage }) => (isMobile && dashboardPage ? '75px' : '22px')};
 `;
 
 export const BoardsActivityInput = styled(TextField)({

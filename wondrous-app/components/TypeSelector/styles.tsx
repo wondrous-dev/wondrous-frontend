@@ -3,6 +3,11 @@ import palette from 'theme/palette';
 
 export const Wrapper = styled.div`
   display: flex;
+  width: 100%;
+  overflow-x: ${({ isMobile }) => (isMobile ? 'auto' : 'none')};
+  &::-webkit-scrollbar {
+    display: ${({ isMobile }) => (isMobile ? 'none' : '')};
+  }
 `;
 
 export const StatItem = styled.span`

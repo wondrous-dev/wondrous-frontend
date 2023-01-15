@@ -1,8 +1,9 @@
 import FilterIcon from 'components/Icons/filter';
 import FilterItem from 'components/Common/Filter';
-import React, { useEffect, memo, useState } from 'react';
+import React, { useEffect, memo, useState, useContext } from 'react';
 import omit from 'lodash/omit';
 import { useExploreGr15TasksAndBounties, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { IsMobileContext } from 'utils/contexts';
 import {
   BoardFiltersWrapper,
   BoardFiltersContainer,
@@ -47,12 +48,14 @@ const AppliedFilter = ({ appliedFilters, handleFilterPill }: AppliedFilterProps)
 );
 
 export function FiltersTriggerButton({ onClick, isOpen }) {
+  const isMobile = useContext(IsMobileContext);
+
   const exploreGr15TasksAndBounties = useExploreGr15TasksAndBounties();
   if (exploreGr15TasksAndBounties) return null;
   return (
     <Button className={`FiltersTrigger-button ${isOpen ? 'active' : ''}`} reversed onClick={onClick}>
       <FilterIcon stroke="white" />
-      Add filters
+      {isMobile ? null : 'Add filters'}
     </Button>
   );
 }
@@ -67,6 +70,7 @@ const generateDefaultFiltersState = (filters, filterSchema) => {
 };
 
 export default function BoardFilters({ filterSchema, onChange, showAppliedFilters = false }) {
+  const isMobile = useContext(IsMobileContext);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -119,7 +123,7 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
 
   return (
     <BoardFiltersContainer>
-      <BoardFiltersWrapper>
+      <BoardFiltersWrapper isMobile={isMobile}>
         {filterSchema.map((filter, idx) => (
           <FilterItem
             key={idx}

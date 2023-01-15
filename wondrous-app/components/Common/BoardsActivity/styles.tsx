@@ -24,6 +24,7 @@ export const BoardsActivityInlineViewWrapper = styled.div`
   align-items: center;
   gap: 18px;
   height: 34px;
+  flex-wrap: ${({ mobileDashboardPage }) => (mobileDashboardPage ? 'wrap' : 'nowrap')};
 
   ${BoardFiltersContainer} {
     width: ${({ displaySingleViewFilter }) => (displaySingleViewFilter ? 'auto' : '100%')};

@@ -46,7 +46,6 @@ export const TokenHeader = styled.div`
   flex-direction: column;
 `;
 
-
 export const TokenEmptyLogo = styled.div`
   width: 36px;
   height: 36px;
@@ -79,6 +78,7 @@ export const HeaderMainBlock = styled.div`
   min-height: 36px;
   height: 36px;
   display: flex;
+  flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
   justify-content: space-between;
   align-items: center;
 `;
@@ -366,7 +366,7 @@ export const HeaderContributorsText = styled(HeaderContributorsAmount)`
 
 export const BoardsSubheaderWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: ${({ isMobile }) => (isMobile ? 'none' : '1fr 1fr')};
   grid-row-gap: 20px;
   align-items: center;
 `;

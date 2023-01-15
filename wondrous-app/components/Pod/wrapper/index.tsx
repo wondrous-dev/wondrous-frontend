@@ -1,5 +1,5 @@
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -35,6 +35,7 @@ import MoreInfoModal from 'components/profile/modals';
 import MembersIcon from 'components/Icons/members';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { Button as PrimaryButton } from 'components/Button';
+import { IsMobileContext } from 'utils/contexts';
 import { LogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
@@ -152,6 +153,7 @@ function Wrapper(props) {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
 
   const router = useRouter();
+  const isMobile = useContext(IsMobileContext);
   const { entity, cause } = router.query;
   const loggedInUser = useMe();
   const [showUsers, setShowUsers] = useState(false);
@@ -473,7 +475,7 @@ function Wrapper(props) {
             </TokenHeader>
 
             <Container>
-              <BoardsSubheaderWrapper>
+              <BoardsSubheaderWrapper isMobile={isMobile}>
                 {podBoard?.setEntityType && !search && (
                   <TypeSelector
                     tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard}

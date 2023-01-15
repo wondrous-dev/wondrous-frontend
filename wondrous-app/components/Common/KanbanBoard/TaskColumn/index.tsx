@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
 
@@ -30,6 +30,7 @@ import EmptyStateBoards from 'components/EmptyStateBoards';
 import Droppable from 'components/StrictModeDroppable';
 import { ColumnSection } from 'components/Common/ColumnSection';
 
+import { IsMobileContext } from 'utils/contexts';
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
@@ -55,6 +56,7 @@ function TaskColumn(props: ITaskColumn) {
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
   const [ref, inView] = useInView({});
+  const isMobile = useContext(IsMobileContext);
 
   const isTaskDragging = useMemo(() => draggingTask !== null, [draggingTask]);
   const isDropDisabled = useMemo(
@@ -75,7 +77,7 @@ function TaskColumn(props: ITaskColumn) {
 
   let taskColumnWidth = '100%';
   if (!userBoard) {
-    taskColumnWidth = '25%';
+    taskColumnWidth = isMobile ? '100%' : '25%';
   }
   switch (status) {
     case TASK_STATUS_TODO:
@@ -96,15 +98,15 @@ function TaskColumn(props: ITaskColumn) {
       break;
     case STATUS_OPEN:
       number = taskCount?.proposalOpen || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     case STATUS_APPROVED:
       number = taskCount?.proposalApproved || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     case STATUS_CLOSED:
       number = taskCount?.proposalClosed || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     default:
       number = 0;
@@ -163,6 +165,7 @@ function TaskColumn(props: ITaskColumn) {
           <TaskListContainer
             highlighted={isTaskDragging && !isDropDisabled}
             ref={provided.innerRef}
+            isMobile={isMobile}
             {...provided.droppableProps}
           >
             {cardsList?.length ? (

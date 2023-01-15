@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState, Suspense, useContext } from 'react';
 import dynamic from 'next/dynamic';
 
 import {
@@ -34,7 +34,8 @@ import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { PodIconThin } from 'components/Icons/podIcon';
 import palette from 'theme/palette';
-import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
+import { ExploreGr15TasksAndBountiesContext, IsMobileContext } from 'utils/contexts';
+import { Box } from '@mui/material';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { SafeImage } from '../../Common/Image';
 import {
@@ -186,6 +187,7 @@ function Wrapper(props) {
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
+  const isMobile = useContext(IsMobileContext);
 
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
@@ -358,78 +360,85 @@ function Wrapper(props) {
       <Content>
         <ContentContainer>
           <TokenHeader>
-            <HeaderMainBlock>
-              {orgData?.shared && renderSharedHeader ? (
-                renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
-              ) : (
-                <div
-                  style={{
-                    height: '100%',
-                    position: 'relative',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <SafeImage
-                    src={orgProfile?.profilePicture}
-                    placeholderComp={
-                      <TokenEmptyLogo>
-                        <DAOEmptyIcon />
-                      </TokenEmptyLogo>
-                    }
-                    width={36}
-                    height={36}
-                    useNextImage
+            <HeaderMainBlock isMobile={isMobile}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  marginBottom: isMobile ? '10px' : 0,
+                }}
+              >
+                {orgData?.shared && renderSharedHeader ? (
+                  renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
+                ) : (
+                  <div
                     style={{
-                      borderRadius: '6px',
+                      height: '100%',
+                      position: 'relative',
+                      cursor: 'pointer',
                     }}
-                    alt="Organization logo"
-                  />
-                  {isGr15Sponsor && (
-                    <>
-                      <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                      <GR15DEILogo
-                        width="25"
-                        height="25"
-                        onClick={() => setOpenGR15Modal(true)}
-                        style={{
-                          top: '0',
-                          right: '-10px',
-                          position: 'absolute',
-                          zIndex: '25',
-                        }}
-                      />
-                    </>
-                  )}
-                </div>
-              )}
-              <HeaderTopLeftContainer>
-                <HeaderTitle
-                  style={{
-                    ...(isGr15Sponsor && {
-                      marginLeft: '5px',
-                    }),
-                  }}
-                >
-                  {orgProfile?.name}
-                </HeaderTitle>
-                <PrivacyContainer>
-                  <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
-                </PrivacyContainer>
-
-                {isGr15Sponsor && (
-                  <ExploreOrgGr15
-                    onTaskPage={onTaskPage}
-                    onBountyPage={onBountyPage}
-                    hasGr15Bounties={hasGr15Bounties}
-                    hasGr15Tasks={hasGr15Tasks}
-                    onFilterChange={onFilterChange}
-                    orgProfile={orgProfile}
-                    filters={boardFilters}
-                    exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                    setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                  />
+                  >
+                    <SafeImage
+                      src={orgProfile?.profilePicture}
+                      placeholderComp={
+                        <TokenEmptyLogo>
+                          <DAOEmptyIcon />
+                        </TokenEmptyLogo>
+                      }
+                      width={36}
+                      height={36}
+                      useNextImage
+                      style={{
+                        borderRadius: '6px',
+                      }}
+                      alt="Organization logo"
+                    />
+                    {isGr15Sponsor && (
+                      <>
+                        <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                        <GR15DEILogo
+                          width="25"
+                          height="25"
+                          onClick={() => setOpenGR15Modal(true)}
+                          style={{
+                            top: '0',
+                            right: '-10px',
+                            position: 'absolute',
+                            zIndex: '25',
+                          }}
+                        />
+                      </>
+                    )}
+                  </div>
                 )}
-              </HeaderTopLeftContainer>
+                <HeaderTopLeftContainer>
+                  <HeaderTitle
+                    style={{
+                      ...(isGr15Sponsor && {
+                        marginLeft: '5px',
+                      }),
+                    }}
+                  >
+                    {orgProfile?.name}
+                  </HeaderTitle>
+                  <PrivacyContainer>
+                    <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
+                  </PrivacyContainer>
+
+                  {isGr15Sponsor && (
+                    <ExploreOrgGr15
+                      onTaskPage={onTaskPage}
+                      onBountyPage={onBountyPage}
+                      hasGr15Bounties={hasGr15Bounties}
+                      hasGr15Tasks={hasGr15Tasks}
+                      onFilterChange={onFilterChange}
+                      orgProfile={orgProfile}
+                      filters={boardFilters}
+                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                    />
+                  )}
+                </HeaderTopLeftContainer>
+              </Box>
               <HeaderTopRightContainer>
                 {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (
                   <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>
@@ -501,7 +510,16 @@ function Wrapper(props) {
                 )}
               </HeaderTopRightContainer>
             </HeaderMainBlock>
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginTop: isMobile ? '60px' : '15px',
+                gap: 10,
+                justifyContent: isMobile ? 'center' : 'flex-start',
+                textAlign: isMobile ? 'center' : 'left',
+              }}
+            >
               {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
                 <HeaderText as="div">
                   <RichTextViewer text={orgProfile?.description} />
@@ -513,7 +531,7 @@ function Wrapper(props) {
             </div>
           </TokenHeader>
           <Container>
-            <BoardsSubheaderWrapper>
+            <BoardsSubheaderWrapper isMobile={isMobile}>
               {orgBoard?.setEntityType && !search && (
                 <TypeSelector
                   tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard}
