@@ -4,9 +4,9 @@ import { useInView } from 'react-intersection-observer';
 import { GET_POD_FEED } from 'graphql/queries';
 import isEmpty from 'lodash/isEmpty';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
+import HomePageHeader from 'components/Pod/wrapper/HomePageHeader';
 import { Post } from '../../Common/Post';
 import { Feed, FeedLoadMore } from '../../organization/activities/styles';
-import Wrapper from '../wrapper';
 
 const useGetPodFeed = (podId, inView) => {
   const [getPodFeed, { data, loading, fetchMore }] = useLazyQuery(GET_POD_FEED, {
@@ -41,7 +41,7 @@ function Activities(props) {
   const feedDataLength = feedData?.length;
   const isMoreThanOne = feedDataLength > 1;
   return (
-    <Wrapper>
+    <HomePageHeader>
       {isEmpty(feedData) && <EmptyStateGeneric content="This is where your activity will go." />}
 
       <Feed isMoreThanOne={isMoreThanOne}>
@@ -50,7 +50,7 @@ function Activities(props) {
         ))}
       </Feed>
       {!loading && <FeedLoadMore ref={ref} />}
-    </Wrapper>
+    </HomePageHeader>
   );
 }
 

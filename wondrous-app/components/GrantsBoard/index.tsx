@@ -168,9 +168,8 @@ const GrantsBoard = () => {
           </CreateFormModalOverlay>
         </>
       ) : null}
-
-      <GrantsFilters onFilterChange={handleFilterChange} activeFilter={activeFilter} />
-      <Grid display="flex" justifyContent="flex-end">
+      <Grid display="flex" justifyContent="space-between" marginBottom={2}>
+        <GrantsFilters onFilterChange={handleFilterChange} activeFilter={activeFilter} />
         <ActionButton onClick={toggleCreateFormModal}>
           <PlusIcon /> <span>Add grant</span>
         </ActionButton>

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { OrgBoardContext } from 'utils/contexts';
 import { useGetOrgFromUsername, useGlobalContext, usePageDataContext } from 'utils/hooks';
 import EntitySidebar from 'components/Common/SidebarEntity';
-import Wrapper from 'components/organization/wrapper/wrapper';
+import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
 import GrantsBoard from 'components/GrantsBoard';
 import { useEffect } from 'react';
 
@@ -17,7 +17,7 @@ const GrantsPage = () => {
     }
   }, [org]);
 
-  useEffect(() => () => setPageData({}), [])
+  useEffect(() => () => setPageData({}), []);
 
   const { userPermissionsContext } = useGlobalContext();
   return (
@@ -29,9 +29,9 @@ const GrantsPage = () => {
       }}
     >
       <EntitySidebar>
-        <Wrapper orgData={org} onSearch={() => {}}>
+        <BoardPageHeader orgData={org} onSearch={() => {}} headerTitle="Grants">
           <GrantsBoard />
-        </Wrapper>
+        </BoardPageHeader>
       </EntitySidebar>
     </OrgBoardContext.Provider>
   );

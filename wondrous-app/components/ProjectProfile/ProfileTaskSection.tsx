@@ -5,7 +5,7 @@ import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ApplyOrClaimButton from './ApplyOrClaimButton';
-import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
+import { useEntityCreateButtonProps, useGetProjectPageTasks } from './helpers';
 import SectionContent from './SectionContent';
 import { ProfileGrid } from './styles';
 
@@ -38,9 +38,10 @@ const ProfileTaskSection = () => (
     ListItemProps={{
       LeftComponent,
       RightComponent,
-      onClick: (router, { id }) => router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
+      onClick: ({ router, data: { id } }) =>
+        router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
     }}
-    data={useGetOrgEntity('task')}
+    data={useGetProjectPageTasks()}
   />
 );
 

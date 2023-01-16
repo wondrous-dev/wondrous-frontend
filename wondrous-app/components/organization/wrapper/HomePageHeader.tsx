@@ -51,7 +51,6 @@ import {
   TokenEmptyLogo,
   HeaderTopLeftContainer,
   HeaderImageWrapper,
-  BoardsSubheaderWrapper,
   MemberPodIconBackground,
   RoleButtonWrapper,
   Container,
@@ -358,7 +357,7 @@ function Wrapper(props) {
       <ContentContainer>
         <TokenHeader>
           <HeaderMainBlock>
-            {orgProfile?.shared && renderSharedHeader ? (
+            {orgData?.shared && renderSharedHeader ? (
               renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
             ) : (
               <div
@@ -412,8 +411,9 @@ function Wrapper(props) {
                 {orgProfile?.name}
               </HeaderTitle>
               <PrivacyContainer>
-                <PrivacyText>{orgProfile?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
+                <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
               </PrivacyContainer>
+
               {isGr15Sponsor && (
                 <ExploreOrgGr15
                   onTaskPage={onTaskPage}
@@ -510,19 +510,6 @@ function Wrapper(props) {
             <HeaderSocialLinks links={orgProfile?.links} />
           </div>
         </TokenHeader>
-        <BoardsSubheaderWrapper>
-          <div />
-          {!!filterSchema && (
-            <BoardsActivity
-              onSearch={onSearch}
-              filterSchema={filterSchema}
-              onFilterChange={onFilterChange}
-              statuses={statuses}
-              podIds={podIds}
-              userId={userId}
-            />
-          )}
-        </BoardsSubheaderWrapper>
         <Container>{children}</Container>
       </ContentContainer>
     </>

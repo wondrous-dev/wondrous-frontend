@@ -4,7 +4,6 @@ import PlusIcon from 'components/Icons/plus';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { useCheckOrgPermission } from 'utils/hooks';
 
 import { ICreateButtonProps } from './types';
 
@@ -87,15 +86,11 @@ export const ButtonIcon = styled(ButtonBase)`
   }
 `;
 
-const CreateButton = ({ onClick, text }: ICreateButtonProps) => {
-  const hasPermission = useCheckOrgPermission();
-  if (!hasPermission) return null;
-  return (
-    <ButtonIcon onClick={onClick} disableRipple>
-      <Icon />
-      Create {text}
-    </ButtonIcon>
-  );
-};
+const CreateButton = ({ onClick, text }: ICreateButtonProps) => (
+  <ButtonIcon onClick={onClick} disableRipple>
+    <Icon />
+    Create {text}
+  </ButtonIcon>
+);
 
 export default CreateButton;

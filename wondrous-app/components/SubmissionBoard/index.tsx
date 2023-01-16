@@ -27,7 +27,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
   const router = useRouter();
 
   const goToPod = (podId) =>
-    router.push(`/pod/${podId}/boards`, undefined, {
+    router.push(`/pod/${podId}/home`, undefined, {
       shallow: true,
     });
 
