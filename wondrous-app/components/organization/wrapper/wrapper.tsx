@@ -13,7 +13,6 @@ import {
 import MembersIcon from 'components/Icons/members';
 import { Button as PrimaryButton } from 'components/Button';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import DEFAULT_HEADER from 'public/images/overview/background.png';
@@ -38,7 +37,6 @@ import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { SafeImage } from '../../Common/Image';
 import {
-  Content,
   ContentContainer,
   RolePodMemberContainer,
   HeaderContributors,

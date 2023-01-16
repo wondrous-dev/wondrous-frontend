@@ -8,17 +8,6 @@ import palette from 'theme/palette';
 import { Button as BorderButton } from 'components/Common/button';
 import { blackColors, greyColors } from 'theme/colors';
 import typography from 'theme/typography';
-import { LogoCircle } from 'components/Common/ci';
-
-export const OverviewComponent = styled.section`
-  width: 100%;
-  min-height: 100vh;
-  height: 100%;
-  //background-color: ${palette.background.default};
-  background-color: ${greyColors.grey910};
-  transition: 0.15s all ease;
-  padding-bottom: 40px;
-`;
 
 export const HeaderImageWrapper = styled.div`
   width: 100%;
@@ -57,12 +46,6 @@ export const TokenEmptyLogo = styled.div`
   border-radius: 50px;
 
   background: ${palette.black};
-`;
-
-export const Content = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
 `;
 
 export const ContentContainer = styled.div`

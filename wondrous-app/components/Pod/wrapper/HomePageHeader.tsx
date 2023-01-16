@@ -1,12 +1,11 @@
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
 import {
   ENTITIES_TYPES,
-  GR15DEICategoryName,
   PERMISSIONS,
   PRIVACY_LEVEL,
   HEADER_ASPECT_RATIO,
@@ -19,27 +18,17 @@ import DEFAULT_HEADER from 'public/images/overview/background.png';
 import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
-import TypeSelector from 'components/TypeSelector';
 import { SafeImage } from 'components/Common/Image';
-import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
-import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
-import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import {
-  ExploreProjectsButton,
-  ExploreProjectsButtonFilled,
-} from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import MoreInfoModal from 'components/profile/modals';
 import MembersIcon from 'components/Icons/members';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { Button as PrimaryButton } from 'components/Button';
 import { LogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
-import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import {
-  Content,
   ContentContainer,
   Container,
   RolePodMemberContainer,
@@ -50,7 +39,6 @@ import {
   HeaderText,
   HeaderTitle,
   RoleButtonWrapper,
-  OverviewComponent,
   TokenHeader,
   HeaderTopLeftContainer,
   HeaderImageWrapper,
@@ -106,8 +94,6 @@ function HomePageHeader(props) {
   const [permissions, setPermissions] = useState(undefined);
   const [openInvite, setOpenInvite] = useState(false);
   const podProfile = podBoard?.pod;
-  const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
-  const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
 
   const { search } = router.query;
 
