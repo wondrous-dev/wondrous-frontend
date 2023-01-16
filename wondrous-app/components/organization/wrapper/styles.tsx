@@ -46,7 +46,6 @@ export const TokenHeader = styled.div`
   flex-direction: column;
 `;
 
-
 export const TokenEmptyLogo = styled.div`
   width: 36px;
   height: 36px;
@@ -112,9 +111,7 @@ export const HeaderTag = styled(Typography)`
   }
 `;
 
-export const HeaderTopRightContainer = styled.div`
-  width: fit-content;
-  height: 100%;
+export const RolePodMemberContainer = styled.div`
   display: flex;
   gap: 14px;
 `;
@@ -369,11 +366,13 @@ export const BoardsSubheaderWrapper = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-row-gap: 20px;
   align-items: center;
+  width: 95%;
+  margin-top: 4px;
 `;
 
 export const Container = styled.div`
   width: 95%;
-  margin-top: 20px;
+  margin-top: 24px;
 `;
 
 export const InviteButton = styled(ButtonBase)`

@@ -1,13 +1,14 @@
 import { useMutation } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import StrictModeDroppable from 'components/StrictModeDroppable';
-import { UPSERT_ORG_PROFILE_PAGE } from 'graphql/mutations';
+import { UPSERT_ORG_PROFILE_PAGE, UPSERT_POD_PROFILE_PAGE } from 'graphql/mutations';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 
 import palette from 'theme/palette';
 import { ONLY_GRANTS_ENABLED_ORGS, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useOrgBoard } from 'utils/hooks';
+import { useBoardPermission, useBoards } from 'utils/hooks';
+import { useIsOrg } from './helpers';
 import ProfileBountySection from './ProfileBountySection';
 import ProfileCategorySection from './ProfileCategorySection';
 import ProfileCollabSection from './ProfileCollabSection';
@@ -18,21 +19,34 @@ import ProfileProposalSection from './ProfileProposalSection';
 import ProfileTaskSection from './ProfileTaskSection';
 import { CardWrapper } from './styles';
 
-const ProfileSectionsWrapper = ({ layout, orgId }) => {
+const ProfileSectionsWrapper = () => {
+  const { orgId, podId, orgData, pod } = useBoards().board || {};
+  const { layout } = (podId ? pod : orgData) || {};
+  const isOrg = useIsOrg();
+  const { hasFullPermission } = useBoardPermission();
   const [upsertOrgProfilePage] = useMutation(UPSERT_ORG_PROFILE_PAGE, {
     refetchQueries: ['getOrgFromUsername'],
   });
-
-  const { userPermissionsContext } = useOrgBoard();
-  // TODO: Not used yet
-  // const [upsertPodProfilePage] = useMutation(UPSERT_POD_PROFILE_PAGE);
+  const [upsertPodProfilePage] = useMutation(UPSERT_POD_PROFILE_PAGE, {
+    refetchQueries: ['getPodById'],
+  });
 
   const upsert = (newOrder) => {
-    if (orgId) {
+    if (isOrg) {
       upsertOrgProfilePage({
         variables: {
           input: {
             orgId,
+            layout: newOrder,
+          },
+        },
+      });
+    }
+    if (!isOrg) {
+      upsertPodProfilePage({
+        variables: {
+          input: {
+            podId,
             layout: newOrder,
           },
         },
@@ -49,17 +63,13 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
 
   if (!layout) return null;
 
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext,
-    orgId,
-  });
   const isMeritCircle = ONLY_GRANTS_ENABLED_ORGS.includes(orgId);
   const Components = isMeritCircle
     ? {
         grant: ProfileGrantSection,
         member: ProfileMemberSection,
-        collab: ProfileCollabSection,
         resource: ProfileCategorySection,
+        ...(isOrg && { collab: ProfileCollabSection }),
       }
     : {
         task: ProfileTaskSection,
@@ -67,16 +77,14 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
         milestone: ProfileMilestoneSection,
         proposal: ProfileProposalSection,
         member: ProfileMemberSection,
-        collab: ProfileCollabSection,
         grant: ProfileGrantSection,
         resource: ProfileCategorySection,
+        ...(isOrg && { collab: ProfileCollabSection }),
       };
-
-  const hasFullAccess = permissions.includes(PERMISSIONS.FULL_ACCESS);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <StrictModeDroppable droppableId="droppableId" isDragDisabled={!hasFullAccess}>
+      <StrictModeDroppable droppableId="droppableId" isDragDisabled={!hasFullPermission}>
         {(provided) => (
           <Grid
             container
@@ -94,12 +102,12 @@ const ProfileSectionsWrapper = ({ layout, orgId }) => {
               if (!Components[order]) return null;
               const Component = Components[order];
               return (
-                <Draggable key={index} draggableId={`${index}`} index={index} isDragDisabled={!hasFullAccess}>
+                <Draggable key={index} draggableId={`${index}`} index={index} isDragDisabled={!hasFullPermission}>
                   {(provided, snapshot) => (
                     <CardWrapper
                       container
                       item
-                      hasFullAccess={hasFullAccess}
+                      hasFullAccess={hasFullPermission}
                       flexDirection="column"
                       justifyContent="space-between"
                       height="390px"

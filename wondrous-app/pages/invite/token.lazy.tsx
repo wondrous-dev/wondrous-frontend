@@ -70,12 +70,12 @@ function ContributorOnboardingPage({ preloadedState }: Props) {
             token,
           },
           onCompleted: (data) => {
-            router.push(`/pod/${podInfo?.id}/boards`, undefined, {
+            router.push(`/pod/${podInfo?.id}/home`, undefined, {
               shallow: true,
             });
           },
           onError: () => {
-            router.push(`/pod/${podInfo?.id}/boards`, undefined, {
+            router.push(`/pod/${podInfo?.id}/home`, undefined, {
               shallow: true,
             });
           },

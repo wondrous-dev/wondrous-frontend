@@ -56,7 +56,6 @@ export const ListViewItemHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   display: flex;
-  padding-top: 28px;
   padding-bottom: 14px;
 `;
 

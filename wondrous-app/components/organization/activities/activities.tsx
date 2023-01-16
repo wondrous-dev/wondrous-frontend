@@ -4,8 +4,8 @@ import { useInView } from 'react-intersection-observer';
 import { GET_ORG_FEED } from 'graphql/queries';
 import isEmpty from 'lodash/isEmpty';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
+import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
 import { Post } from '../../Common/Post';
-import Wrapper from '../wrapper/wrapper';
 import { Feed, FeedLoadMore } from './styles';
 
 const useGetOrgFeed = (orgId, inView) => {
@@ -43,7 +43,7 @@ function Activities(props) {
   const isMoreThanOne = feedDataLength > 1;
 
   return (
-    <Wrapper orgData={orgData}>
+    <BoardPageHeader orgData={orgData} headerTitle="Activities">
       {isEmpty(feedData) && <EmptyStateGeneric content="This is where your activity will go." />}
       <Feed isMoreThanOne={isMoreThanOne}>
         {feedData?.map((post) => (
@@ -51,7 +51,7 @@ function Activities(props) {
         ))}
       </Feed>
       {!loading && <FeedLoadMore ref={ref} />}
-    </Wrapper>
+    </BoardPageHeader>
   );
 }
 

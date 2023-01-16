@@ -368,7 +368,17 @@ export const usePermissions = (entity, isTaskProposal = false) => {
     type !== MILESTONE_TYPE &&
     status !== TASK_STATUS_DONE;
   const canApply = !canClaim && taskApplicationPermissions?.canApply;
-  return { canEdit, canArchive, canViewApplications, canDelete, canApproveProposal, canClaim, canApply };
+  return {
+    canEdit,
+    canArchive,
+    canViewApplications,
+    canDelete,
+    canApproveProposal,
+    canClaim,
+    canApply,
+    hasFullPermission,
+    hasEditPermission,
+  };
 };
 
 export const useTaskContext = () => useContext(TaskContext);
@@ -409,15 +419,20 @@ export const useKeyPress = (targetKey) => {
 };
 
 export const usePageDataContext = () => useContext(PageDataContext);
-export const useCheckOrgPermission = () => {
-  const { orgBoard } = useBoards();
+export const useBoardPermission = () => {
+  const globalContext = useGlobalContext();
+  const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
+  const userPermissionsContext = getUserPermissionContext();
+  const { orgBoard, podBoard } = useBoards();
   const permissions = parseUserPermissionContext({
-    userPermissionsContext: orgBoard?.userPermissionsContext,
-    orgId: orgBoard?.orgData?.id,
+    userPermissionsContext,
+    orgId: orgBoard?.orgId,
+    podId: podBoard?.podId,
   });
   const hasFullPermission = permissions.includes(PERMISSIONS.FULL_ACCESS);
   const hasEditPermission = permissions.includes(PERMISSIONS.EDIT_TASK);
-  return hasFullPermission || hasEditPermission;
+  const hasFullOrEditPermission = hasFullPermission || hasEditPermission;
+  return { hasFullPermission, hasEditPermission, hasFullOrEditPermission };
 };
 
 export const usePodPageFetch = (podId: string | string[]) => {
