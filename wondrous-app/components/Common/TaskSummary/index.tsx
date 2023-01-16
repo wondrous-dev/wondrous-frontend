@@ -81,7 +81,7 @@ export function TaskSummary({ task, setTask, action, taskType }) {
   const goToPod = (podId) => {
     // router query into pod
     const { username } = router.query;
-    router.push(`/pod/${podId}/boards`, undefined, {
+    router.push(`/pod/${podId}/home`, undefined, {
       shallow: true,
     });
   };

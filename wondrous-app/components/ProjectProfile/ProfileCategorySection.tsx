@@ -3,7 +3,7 @@ import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import palette from 'theme/palette';
 import { randomColors } from 'utils/common';
 
-import { useCategoriesButtonProps, useGetOrgDocumentCategories } from './helpers';
+import { useCategoriesButtonProps, useGetDocumentCategories } from './helpers';
 import SectionContent from './SectionContent';
 
 const LeftComponent = ({ name }) => (
@@ -35,9 +35,9 @@ const ProfileCategorySection = () => (
     showAllUrl="docs"
     ListItemProps={{
       LeftComponent,
-      onClick: (router, { id }) => router.push(`/organization/${router.query.username}/docs?id=${id}`),
+      onClick: ({ router, data: { id }, entityLink }) => router.push(`${entityLink}/docs?id=${id}`),
     }}
-    data={useGetOrgDocumentCategories()}
+    data={useGetDocumentCategories()}
   />
 );
 

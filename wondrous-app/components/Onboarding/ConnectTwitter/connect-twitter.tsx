@@ -53,7 +53,7 @@ export default function ConnectTwitter({ firstOrg, firstPod }) {
       return router.push(`/invite/collab/${collabInvite}`, undefined, { shallow: true });
     }
     if (firstPod) {
-      router.push(`/pod/${firstPod.id}/boards`, undefined, {
+      router.push(`/pod/${firstPod.id}/home`, undefined, {
         shallow: true,
       });
     } else if (firstOrg) {

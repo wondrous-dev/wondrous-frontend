@@ -10,7 +10,6 @@ export const ModalDescriptionText = styled(Typography)`
     font-size: 15px;
     line-height: 20px;
     letter-spacing: 0.0025em;
-
     color: ${palette.blue20};
   }
 `;

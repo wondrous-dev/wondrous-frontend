@@ -9,8 +9,8 @@ export const KanbanBoardContainer = styled.div`
   flex-direction: row;
   align-items: stretch;
   justify-content: space-between;
-  margin-top: 32px;
 `;
+
 export const LoadMore = styled.div`
   display: ${(props) => (props.hasMore ? 'block' : 'none')};
 `;

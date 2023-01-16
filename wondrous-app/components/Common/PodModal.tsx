@@ -29,7 +29,7 @@ function PodListCard(props) {
   const { pod, handleClose } = props;
   const router = useRouter();
   return (
-    <NoUnderlineLink href={`/pod/${pod?.id}/boards`} passHref>
+    <NoUnderlineLink href={`/pod/${pod?.id}/home`} passHref>
       <TaskListCardWrapper
         onClick={() => {
           if (handleClose) {
@@ -150,4 +150,4 @@ function PodModal(props: PodModalProps) {
   );
 }
 
-export default withAuth(PodModal)
+export default withAuth(PodModal);

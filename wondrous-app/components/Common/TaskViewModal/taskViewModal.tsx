@@ -600,7 +600,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               <TaskModalHeaderIconWrapper
                                 onClick={() => {
                                   handleClose();
-                                  router.push(`/pod/${fetchedTask?.podId}/boards`, undefined, {
+                                  router.push(`/pod/${fetchedTask?.podId}/home`, undefined, {
                                     shallow: true,
                                   });
                                 }}

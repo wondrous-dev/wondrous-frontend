@@ -67,11 +67,7 @@ export const formValidationSchema = Yup.object().shape({
     .nullable(),
   milestoneId: Yup.string()
     .nullable()
-    .test(
-      'emptyCheck',
-      'Please enter a valid Milestone',
-      (milestoneId) => milestoneId !== '' && milestoneId !== undefined
-    ),
+    .test('emptyCheck', 'Please enter a valid Milestone', (milestoneId) => milestoneId !== ''),
   proposalVoteType: Yup.string().nullable(),
   customProposalChoices: Yup.array().optional().nullable(),
 });
@@ -351,6 +347,7 @@ export const entityTypeData = {
       priority: null,
       categories: null,
       GR15DEISelected: false,
+      requireSubmitterWalletConnected: false,
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
@@ -390,6 +387,7 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
   const description = deserializeRichText(existingTask.description);
   const GR15DEISelected = existingTask?.categories?.some((category) => category?.name === GR15DEICategoryName);
   const remainingCategories = existingTask?.categories?.filter((category) => category?.name !== GR15DEICategoryName);
+
   const existingTaskValues = pick(
     {
       ...existingTask,

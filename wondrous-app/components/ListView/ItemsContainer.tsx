@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ENTITIES_TYPES, TASK_STATUS_TODO, HEADER_ICONS, TITLES } from 'utils/constants';
+import { ENTITIES_TYPES, TASK_STATUS_TODO, HEADER_ICONS, TITLES, ENTITIES_DISPLAY_LABEL_MAP } from 'utils/constants';
 
 import { BountyIcon } from 'components/Common/BountyBoard/styles';
 import Accordion from 'components/Common/ListViewAccordion';
@@ -14,13 +14,6 @@ import { LIMIT } from 'services/board';
 import { useRouter } from 'next/router';
 import Item from './Item';
 import { IconWrapper, ListViewItemWrapper } from './styles';
-
-const ENTITIES_LABELS_MAP = {
-  [ENTITIES_TYPES.TASK]: 'Tasks',
-  [ENTITIES_TYPES.MILESTONE]: 'Milestones',
-  [ENTITIES_TYPES.BOUNTY]: 'Bounties',
-  [ENTITIES_TYPES.PROPOSAL]: 'Proposals',
-};
 
 const ENTITIES_HEADER_ICONS = {
   [ENTITIES_TYPES.MILESTONE]: () => (
@@ -70,7 +63,7 @@ export default function ItemsContainer({
   const { status, tasks } = data;
   const router = useRouter();
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
-  const itemTitle = TITLES[status] || ENTITIES_LABELS_MAP[entityType] || '';
+  const itemTitle = TITLES[status] || ENTITIES_DISPLAY_LABEL_MAP[entityType] || '';
   const Icon = HEADER_ICONS[status] || ENTITIES_HEADER_ICONS[entityType];
 
   // onLoadMore is used for infinite loading
@@ -92,7 +85,7 @@ export default function ItemsContainer({
       </IconWrapper>
     ) : null;
   return (
-    <>
+    <div style={{ marginBottom: 15 }}>
       <CreateModalOverlay
         style={{
           height: '95vh',
@@ -132,6 +125,6 @@ export default function ItemsContainer({
         )}
         {dndPlaceholder}
       </Accordion>
-    </>
+    </div>
   );
 }

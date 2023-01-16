@@ -8,17 +8,6 @@ import palette from 'theme/palette';
 import { Button as BorderButton } from 'components/Common/button';
 import { blackColors, greyColors } from 'theme/colors';
 import typography from 'theme/typography';
-import { LogoCircle } from 'components/Common/ci';
-
-export const OverviewComponent = styled.section`
-  width: 100%;
-  min-height: 100vh;
-  height: 100%;
-  //background-color: ${palette.background.default};
-  background-color: ${greyColors.grey910};
-  transition: 0.15s all ease;
-  padding-bottom: 40px;
-`;
 
 export const HeaderImageWrapper = styled.div`
   width: 100%;
@@ -57,12 +46,6 @@ export const TokenEmptyLogo = styled.div`
   border-radius: 50px;
 
   background: ${palette.black};
-`;
-
-export const Content = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
 `;
 
 export const ContentContainer = styled.div`
@@ -111,9 +94,7 @@ export const HeaderTag = styled(Typography)`
   }
 `;
 
-export const HeaderTopRightContainer = styled.div`
-  width: fit-content;
-  height: 100%;
+export const RolePodMemberContainer = styled.div`
   display: flex;
   gap: 14px;
 `;
@@ -375,11 +356,13 @@ export const BoardsSubheaderWrapper = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-row-gap: 20px;
   align-items: center;
+  width: 95%;
+  margin-top: 4px;
 `;
 
 export const Container = styled.div`
   width: 95%;
-  margin-top: 20px;
+  margin-top: 24px;
 `;
 
 export const InviteButton = styled(ButtonBase)`

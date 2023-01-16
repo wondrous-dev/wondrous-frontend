@@ -702,7 +702,7 @@ export const StyledAutocompletePopper = styled(({ className, ...props }) => (
   <StyledAutocomplete {...props} classes={{ paper: className }} />
 ))`
   && {
-    background: #0f0f0f;
+    background: #ffffff;
   }
 
   & .MuiAutocomplete-noOptions {

@@ -65,6 +65,7 @@ export const MinimalTaskFragment = gql`
     claimPolicyRoles
     shouldUnclaimOnDueDateExpiry
     hideSubmissions
+    requireSubmitterWalletConnected
   }
 
   ${MediaFragment}
@@ -174,6 +175,7 @@ export const FullTaskFragment = gql`
     claimPolicyRoles
     shouldUnclaimOnDueDateExpiry
     hideSubmissions
+    requireSubmitterWalletConnected
     categories {
       name
     }

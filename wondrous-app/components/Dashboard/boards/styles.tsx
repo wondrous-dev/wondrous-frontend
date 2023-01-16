@@ -1,9 +1,4 @@
 import styled from 'styled-components';
-import { BoardsSubheaderWrapper } from 'components/organization/wrapper/styles';
-
-export const BoardsContainer = styled.div`
-  margin-top: 42px;
-`;
 
 export const FilterItemOrgIcon = styled.div`
   display: flex;
@@ -22,7 +17,12 @@ export const Wrapper = styled.div`
   margin-top: 30px;
 `;
 
-export const BoardsActivityWrapper = styled(BoardsSubheaderWrapper)`
+export const BoardsActivityWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row-gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
   && {
     grid-template-columns: 1fr;
     .FiltersTrigger-button {

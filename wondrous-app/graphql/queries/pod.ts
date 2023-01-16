@@ -4,6 +4,7 @@ import { PodFragment, PodInviteFragment } from '../fragments/pod';
 export const GET_POD_BY_ID = gql`
   query getPodById($podId: ID!) {
     getPodById(podId: $podId) {
+      layout
       ...PodFragment
     }
   }

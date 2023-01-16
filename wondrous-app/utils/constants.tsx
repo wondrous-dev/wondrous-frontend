@@ -154,6 +154,14 @@ export const ENTITIES_TYPES = {
   COLLAB: 'collab',
 };
 
+export const ENTITIES_DISPLAY_LABEL_MAP = {
+  [ENTITIES_TYPES.TASK]: 'Tasks',
+  [ENTITIES_TYPES.MILESTONE]: 'Milestones',
+  [ENTITIES_TYPES.BOUNTY]: 'Bounties',
+  [ENTITIES_TYPES.PROPOSAL]: 'Proposals',
+  [ENTITIES_TYPES.GRANT]: 'Grants',
+};
+
 export const MODAL_TABS_MAP = {
   CONTRIBUTORS: 'Contributors',
   PODS: 'Pods',

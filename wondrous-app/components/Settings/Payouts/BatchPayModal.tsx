@@ -10,7 +10,7 @@ import usePrevious from 'utils/hooks';
 import { PERMISSIONS } from 'utils/constants';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { GET_ORG_BY_ID, GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_ORG_BY_ID, GET_POD_BY_ID } from 'graphql/queries';
 import isEqual from 'lodash/isEqual';
 import {
   PodNameTypography,
@@ -62,9 +62,7 @@ export function BatchPayModal(props) {
     { name: 'wallet', label: 'Wallet', action: () => setSelectedTab('wallet') },
     { name: 'off_platform', label: 'Off platform', action: () => setSelectedTab('off_platform') },
   ];
-  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
-    fetchPolicy: 'cache-and-network',
-  });
+
   const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
     onCompleted: (data) => {
       setWallets(data?.getOrgWallet);
