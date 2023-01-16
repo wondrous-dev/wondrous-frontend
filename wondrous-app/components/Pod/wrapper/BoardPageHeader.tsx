@@ -210,19 +210,6 @@ function BoardPageHeader(props) {
 
         <BoardsSubheaderWrapper>
           <RolePodMemberContainer>
-            <HeaderContributors
-              onClick={() => {
-                setMoreInfoModalOpen(true);
-                setShowUsers(true);
-              }}
-            >
-              <MemberPodIconBackground>
-                <MembersIcon stroke={palette.blue20} />
-              </MemberPodIconBackground>
-              <HeaderContributorsAmount>{podProfile?.contributorCount} </HeaderContributorsAmount>
-              <HeaderContributorsText>Members</HeaderContributorsText>
-            </HeaderContributors>
-
             {permissions && podRoleName && (
               <RoleButtonWrapper>
                 <RolePill
@@ -262,6 +249,18 @@ function BoardPageHeader(props) {
                 )}
               </>
             )}
+            <HeaderContributors
+              onClick={() => {
+                setMoreInfoModalOpen(true);
+                setShowUsers(true);
+              }}
+            >
+              <MemberPodIconBackground>
+                <MembersIcon stroke={palette.blue20} />
+              </MemberPodIconBackground>
+              <HeaderContributorsAmount>{podProfile?.contributorCount} </HeaderContributorsAmount>
+              <HeaderContributorsText>Members</HeaderContributorsText>
+            </HeaderContributors>
           </RolePodMemberContainer>
 
           {!!filterSchema && (
