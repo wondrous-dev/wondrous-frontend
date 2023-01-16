@@ -386,7 +386,7 @@ export const useCreateMilestone = () => {
           board.setColumns(columns);
         }
       } else {
-        board?.setEntityType(ENTITIES_TYPES.MILESTONE);
+        // board?.setEntityType(ENTITIES_TYPES.MILESTONE);
       }
       handleClose(result);
     });

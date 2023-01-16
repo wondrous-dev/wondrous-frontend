@@ -67,11 +67,7 @@ export const formValidationSchema = Yup.object().shape({
     .nullable(),
   milestoneId: Yup.string()
     .nullable()
-    .test(
-      'emptyCheck',
-      'Please enter a valid Milestone',
-      (milestoneId) => milestoneId !== '' && milestoneId !== undefined
-    ),
+    .test('emptyCheck', 'Please enter a valid Milestone', (milestoneId) => milestoneId !== ''),
   proposalVoteType: Yup.string().nullable(),
   customProposalChoices: Yup.array().optional().nullable(),
 });
