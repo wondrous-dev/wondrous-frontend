@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import EntitySidebar from 'components/Common/SidebarEntity';
-import Wrapper from 'components/organization/wrapper/wrapper';
+import HomePageHeader from 'components/organization/wrapper/HomePageHeader';
 import ProjectProfile from 'components/ProjectProfile';
 import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
@@ -44,9 +44,9 @@ const OrgProject = () => {
   return (
     <OrgBoardContext.Provider value={contextValue}>
       <EntitySidebar>
-        <Wrapper orgData={orgData}>
+        <HomePageHeader orgData={orgData}>
           <ProjectProfile />
-        </Wrapper>
+        </HomePageHeader>
       </EntitySidebar>
     </OrgBoardContext.Provider>
   );

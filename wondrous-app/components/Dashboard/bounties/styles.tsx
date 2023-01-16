@@ -23,7 +23,8 @@ export const PageDescription = styled(Typography)`
   && {
     font-size: 15px;
     font-family: ${typography.fontFamily};
-    padding-top: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
     color: ${palette.grey79};
   }
 `;

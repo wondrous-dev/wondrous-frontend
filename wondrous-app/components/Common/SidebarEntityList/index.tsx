@@ -73,10 +73,10 @@ const useSidebarData = () => {
     ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgData?.id) || ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgId);
 
   const data = [
-    {
+    !board?.orgData?.shared && {
       items: [
         {
-          text: 'Project Home',
+          text: `${orgBoard ? 'Project Home' : 'Pod Home'}`,
           Icon: () => <HomeIcon height="12px" width="12px" />,
           link: `${link}/home`,
         },

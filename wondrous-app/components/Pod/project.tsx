@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import EntitySidebar from 'components/Common/SidebarEntity';
-import Wrapper from 'components/Pod/wrapper';
+import HomePageHeader from 'components/Pod/wrapper/HomePageHeader';
 import ProjectProfile from 'components/ProjectProfile';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
@@ -31,7 +31,7 @@ const PodProject = () => {
       userPermissionsContext: userPermissionsContext?.getUserPermissionContext
         ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
         : null,
-      orgId: getPodById?.id,
+      orgId: getPodById?.orgId,
       pod: getPodById,
       podId: getPodById?.id,
     }),
@@ -41,9 +41,9 @@ const PodProject = () => {
   return (
     <PodBoardContext.Provider value={contextValue}>
       <EntitySidebar>
-        <Wrapper>
+        <HomePageHeader>
           <ProjectProfile />
-        </Wrapper>
+        </HomePageHeader>
       </EntitySidebar>
     </PodBoardContext.Provider>
   );

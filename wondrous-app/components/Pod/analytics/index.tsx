@@ -20,6 +20,7 @@ import {
   ExportCSVButton,
   ExportCSVButtonText,
 } from 'components/organization/analytics/styles';
+import { PayoutModal } from 'components/organization/analytics/PayoutModal';
 import { SafeImage } from 'components/Common/Image';
 import { DefaultProfilePicture, UserProfilePicture } from 'components/profile/modals/styles';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -40,9 +41,15 @@ import {
 } from 'components/CreateEntity/styles';
 import palette from 'theme/palette';
 import CSVModal from 'components/organization/analytics/CSVModal';
-import { calculateCount, exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
+import {
+  calculateCount,
+  exportContributorTaskCSV,
+  getContributorTaskData,
+  calculatePoints,
+  filterUsers,
+} from 'components/organization/analytics';
 import { BOUNTY_TYPE, PRIVATE_TASK_TITLE } from 'utils/constants';
-import Wrapper from '../wrapper';
+import BoardPageHeader from 'components/Pod/wrapper/BoardPageHeader';
 import { Post } from '../../Common/Post';
 
 const UserRowPictureStyles = {
@@ -54,16 +61,6 @@ const UserRowPictureStyles = {
 
 const CaretStyle = {
   marginRight: '12px',
-};
-
-const calculatePoints = (tasks) => {
-  let points = 0;
-  tasks.forEach((task) => {
-    if (task?.points) {
-      points += Number(task?.points);
-    }
-  });
-  return points;
 };
 
 function UserRow({ contributorTask }) {
@@ -264,24 +261,11 @@ function UserRow({ contributorTask }) {
   );
 }
 
-const filterUsers = (users) => {
-  if (!users) {
-    return [];
-  }
-
-  return users.map((user) => ({
-    profilePicture: user?.thumbnailPicture || user?.profilePicture,
-    label: user?.username,
-    value: user?.id,
-  }));
-};
 function Analytics(props) {
   const { podData = {} } = props;
   const { id: podId, orgId } = podData;
-  const [ref, inView] = useInView({});
-  const [csvModal, setCSVModal] = useState(false);
-
   const [assignee, setAssignee] = useState(null);
+  const [payoutModal, setPayoutModal] = useState(false);
   const [assigneeString, setAssigneeString] = useState('');
   const [searchPodUsers, { data: podUsers }] = useLazyQuery(SEARCH_POD_USERS, {});
 
@@ -332,23 +316,15 @@ function Analytics(props) {
     });
   };
   return (
-    <Wrapper>
-      <CreateModalOverlay
-        open={csvModal}
-        onClose={() => setCSVModal(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <CSVModal
-          open={csvModal}
-          handleClose={() => setCSVModal(false)}
-          fromTime={fromTime}
-          toTime={toTime}
-          exportContributorTaskCSV={exportContributorTaskCSV}
-          contributorTaskData={contributorTaskData}
-          isPod
-        />
-      </CreateModalOverlay>
+    <BoardPageHeader headerTitle="Analytics">
+      <PayoutModal
+        open={payoutModal}
+        handleClose={() => setPayoutModal(false)}
+        orgId={orgId}
+        fromTime={fromTime}
+        toTime={toTime}
+        contributorTaskData={contributorTaskData}
+      />
       <HeaderWrapper>
         <HeaderText>Completed work from</HeaderText>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -373,6 +349,7 @@ function Analytics(props) {
         <HeaderText>by</HeaderText>
         <StyledAutocompletePopper
           options={filterUsers(podUsers?.searchPodUsers)}
+          onOpen={() => {}}
           renderInput={(params) => {
             const InputProps = {
               ...params?.InputProps,
@@ -448,6 +425,12 @@ function Analytics(props) {
             </OptionDiv>
           )}
         />
+        <div
+          style={{
+            flex: 1,
+          }}
+        />
+
         <ExportCSVButton
           style={{
             borderRadius: '8px',
@@ -469,6 +452,23 @@ function Analytics(props) {
         >
           <ExportCSVButtonText>Export Tasks</ExportCSVButtonText>
         </ExportCSVButton>
+        <ExportCSVButton
+          style={{
+            borderRadius: '8px',
+            height: '40px',
+            minHeight: '40px',
+            marginLeft: '8px',
+            border: '1px solid deepskyblue',
+          }}
+          buttonInnerStyle={{
+            borderRadius: '7px',
+          }}
+          onClick={() => {
+            setPayoutModal(true);
+          }}
+        >
+          <ExportCSVButtonText>Pay out</ExportCSVButtonText>
+        </ExportCSVButton>
       </HeaderWrapper>
       {contributorTaskData?.length === 0 && (
         <HeaderText
@@ -482,7 +482,7 @@ function Analytics(props) {
       {contributorTaskData?.map((contributorTask, index) => (
         <UserRow key={index} contributorTask={contributorTask} />
       ))}
-    </Wrapper>
+    </BoardPageHeader>
   );
 }
 

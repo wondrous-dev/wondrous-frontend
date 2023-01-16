@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import GrantsBoard from 'components/GrantsBoard';
-import Wrapper from 'components/Pod/wrapper';
+import BoardPageHeader from 'components/Pod/wrapper/BoardPageHeader';
 import { GET_POD_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -25,9 +25,9 @@ const GrantsPage = () => {
       }}
     >
       <EntitySidebar>
-        <Wrapper>
+        <BoardPageHeader headerTitle="Grants">
           <GrantsBoard />
-        </Wrapper>
+        </BoardPageHeader>
       </EntitySidebar>
     </PodBoardContext.Provider>
   );
