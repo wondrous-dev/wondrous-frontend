@@ -76,6 +76,7 @@ export const GET_GRANT_BY_ID = gql`
       applyPolicy
       privacyLevel
       applicationsCount
+      approvedApplicationsCount
       categories
       reward {
         paymentMethodId
@@ -203,4 +204,30 @@ export const GET_GRANT_APPLICATION_COMMENTS = gql`
     }
   }
   ${CommentFragment}
+`;
+export const GET_ACTIVE_GRANT_APPLICATION_PODS = gql`
+  query getActiveGrantApplicationPods($grantId: ID!, $limit: Int, $offset: Int) {
+    getActiveGrantApplicationPods(grantId: $grantId, limit: $limit, offset: $offset) {
+      id
+      name
+      username
+
+      org {
+        id
+        username
+        profilePicture
+      }
+      description
+      profilePicture
+      privacyLevel
+      grantApplicationId
+      color
+      paymentData {
+        tokenAddress
+        amount
+        chain
+        decimal
+      }
+    }
+  }
 `;

@@ -292,6 +292,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                       entity={grant}
                       commentCount={grant?.commentCount}
                       applicationsCount={grant?.applicationsCount}
+                      approvedApplicationsCount={grant?.approvedApplicationsCount}
                     />
                   </TaskModalTaskData>
                 </>

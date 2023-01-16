@@ -89,7 +89,7 @@ export function getNotificationDescription(notification, link) {
 export const getNotificationLink = (notification) => {
   let notificationLink = `/${NOTIFICATION_OBJ_TYPE_TO_LINK[notification.objectType]}/${notification.objectId}`;
   if (notification.objectType === NOTIFICATION_OBJ_TYPES.POD) {
-    notificationLink = `/pod/${notification.objectId}/boards`;
+    notificationLink = `/pod/${notification.objectId}/home`;
   }
   if (notification.objectType === NOTIFICATION_OBJ_TYPES.COLLABORATION) {
     const mainPath = notification.type === COLLAB_TYPES.APPROVE ? 'collaboration' : 'organization';
