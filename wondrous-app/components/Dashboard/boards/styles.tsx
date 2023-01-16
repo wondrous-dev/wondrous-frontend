@@ -1,9 +1,5 @@
 import styled from 'styled-components';
 
-export const BoardsContainer = styled.div`
-  margin-top: 42px;
-`;
-
 export const FilterItemOrgIcon = styled.div`
   display: flex;
   align-items: center;
