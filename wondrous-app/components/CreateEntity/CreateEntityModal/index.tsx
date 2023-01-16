@@ -1465,7 +1465,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             {form.values.milestoneId === null && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('milestoneId', '');
+                  form.setFieldValue('milestoneId', undefined);
                 }}
               >
                 <CreateEntityAddButtonIcon />
