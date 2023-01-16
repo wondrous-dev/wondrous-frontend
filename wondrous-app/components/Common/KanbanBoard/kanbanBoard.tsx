@@ -333,7 +333,7 @@ function KanbanBoard(props) {
       {isMobile ? (
         <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
           <Swiper
-            slidesPerView={1.1}
+            slidesPerView={1}
             spaceBetween={14}
             pagination={{
               clickable: true,
