@@ -511,14 +511,16 @@ function Wrapper(props) {
         <BoardsSubheaderWrapper>
           <div />
           {!!filterSchema && (
-            <BoardsActivity
-              onSearch={onSearch}
-              filterSchema={filterSchema}
-              onFilterChange={onFilterChange}
-              statuses={statuses}
-              podIds={podIds}
-              userId={userId}
-            />
+            <ExploreGr15TasksAndBountiesContext.Provider value={exploreGr15TasksAndBounties}>
+              <BoardsActivity
+                onSearch={onSearch}
+                filterSchema={filterSchema}
+                onFilterChange={onFilterChange}
+                statuses={statuses}
+                podIds={podIds}
+                userId={userId}
+              />
+            </ExploreGr15TasksAndBountiesContext.Provider>
           )}
         </BoardsSubheaderWrapper>
         <Container>{children}</Container>
