@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST } from 'graphql/queries';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
-import Wrapper from 'components/organization/wrapper/wrapper';
+import HomePageHeader from 'components/organization/wrapper/HomePageHeader';
 import { SafeImage } from 'components/Common/Image';
 import { SmallAvatar } from 'components/Common/AvatarList';
 import RolePill from 'components/Common/RolePill';
@@ -122,7 +122,7 @@ function MemberRequests(props) {
       .join('');
 
   return (
-    <Wrapper orgData={orgData}>
+    <HomePageHeader orgData={orgData}>
       <RequestsContainer>
         <RequestHeader>
           {showEmptyState ? (
@@ -205,7 +205,7 @@ function MemberRequests(props) {
           </>
         )}
       </RequestsContainer>
-    </Wrapper>
+    </HomePageHeader>
   );
 }
 

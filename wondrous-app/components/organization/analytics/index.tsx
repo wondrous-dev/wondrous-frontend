@@ -19,6 +19,7 @@ import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
 import { BOUNTY_TYPE, PRIVATE_TASK_TITLE, TASK_TYPE } from 'utils/constants';
+import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
 import { PayoutModal } from './PayoutModal';
 import {
   ContributorRow,
@@ -35,7 +36,6 @@ import {
   ExportCSVButton,
   ExportCSVButtonText,
 } from './styles';
-import Wrapper from '../wrapper/wrapper';
 
 export const filterOrgUsers = (orgUsers) => {
   if (!orgUsers) {
@@ -369,7 +369,7 @@ function UserRow({ contributorTask }) {
   );
 }
 
-const filterUsers = (users) => {
+export const filterUsers = (users) => {
   if (!users) {
     return [];
   }
@@ -469,7 +469,7 @@ function Analytics(props) {
     });
   };
   return (
-    <Wrapper orgData={orgData}>
+    <BoardPageHeader orgData={orgData} headerTitle="Analytics">
       <PayoutModal
         open={payoutModal}
         handleClose={() => setPayoutModal(false)}
@@ -634,7 +634,7 @@ function Analytics(props) {
       {contributorTaskData?.map((contributorTask, index) => (
         <UserRow key={index} contributorTask={contributorTask} />
       ))}
-    </Wrapper>
+    </BoardPageHeader>
   );
 }
 

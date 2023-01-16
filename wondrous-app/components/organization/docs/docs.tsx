@@ -20,9 +20,9 @@ import DocCategoriesSection from 'components/DocCategoriesSection';
 import DocItemsMenu from 'components/DocItemsMenu';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
 import PinnedDocsSection from 'components/PinnedDocsSection';
+import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
 import Tooltip from 'components/Tooltip';
 
-import Wrapper from '../wrapper/wrapper';
 import styles, { AddIconWrapper } from './docsStyles';
 
 const useGetOrgDocs = (orgId) => {
@@ -170,7 +170,7 @@ function Docs(props) {
       handleSelectCategory={handleSelectCategory}
       selectedCategory={selectedCategory}
     >
-      <Wrapper orgData={orgData}>
+      <BoardPageHeader orgData={orgData} headerTitle="Documents">
         {canEdit && (
           <Box sx={styles.topButtonsContainer}>
             <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
@@ -240,7 +240,7 @@ function Docs(props) {
           category={docCategory}
         />
         <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
-      </Wrapper>
+      </BoardPageHeader>
     </ResourcesSidebar>
   );
 }
