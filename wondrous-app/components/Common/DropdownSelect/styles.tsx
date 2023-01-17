@@ -61,10 +61,10 @@ export const CreateFormInputLabel = styled(InputLabel)({
 
 export const CreateFormSelect = styled(Select)`
   && {
-    background: #0f0f0f;
+    background: ${({ theme, disabled }) => (disabled ? theme.palette.grey920 : theme.palette.grey940)};
     border-radius: 6px;
     width: 100%;
-    height: 40px;
+    height: 32px;
     padding: 0 15px;
     position: relative;
     font-size: 14px;
@@ -95,6 +95,7 @@ export const CreateFormSelect = styled(Select)`
 
     & .Mui-disabled {
       color: white !important;
+      pointer-events: none;
       -webkit-text-fill-color: #c4c4c4;
     }
 
