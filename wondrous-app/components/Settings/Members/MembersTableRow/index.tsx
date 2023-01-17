@@ -9,6 +9,7 @@ import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import palette from 'theme/palette';
+import { getAddressToDisplay } from 'utils/helpers';
 import MemberRoleSelectionDropdown from './MemberRoleSelectionDropdown';
 import {
   DefaultProfilePicture,
@@ -18,7 +19,6 @@ import {
   UserWalletAddressContainer,
   WalletAddressEmptyState,
 } from './styles';
-import { getAddressToDisplay } from './helpers';
 
 const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }) => {
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);

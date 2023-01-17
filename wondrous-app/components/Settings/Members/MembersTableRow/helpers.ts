@@ -1,18 +1,5 @@
 import { PERMISSIONS, ROLE_COLORS_AND_EMOJIS, ROLES } from 'utils/constants';
 
-export const getAddressToDisplay = (address: string): string => {
-  const isENSName = address.endsWith('.eth');
-
-  if (isENSName) {
-    return address;
-  }
-
-  if (!address) {
-    return '';
-  }
-  return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`;
-};
-
 export const filterRoles = (roles, isOwner, userIsOwner) => {
   if (!roles) {
     return [];
