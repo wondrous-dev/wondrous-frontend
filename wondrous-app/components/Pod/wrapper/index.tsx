@@ -35,7 +35,8 @@ import MoreInfoModal from 'components/profile/modals';
 import MembersIcon from 'components/Icons/members';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { Button as PrimaryButton } from 'components/Button';
-import { IsMobileContext } from 'utils/contexts';
+import { IsMobileContext, IsTabletContext } from 'utils/contexts';
+import Box from '@mui/material/Box';
 import { LogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
@@ -153,7 +154,7 @@ function Wrapper(props) {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
 
   const router = useRouter();
-  const isMobile = useContext(IsMobileContext);
+  const isTablet = useContext(IsTabletContext);
   const { entity, cause } = router.query;
   const loggedInUser = useMe();
   const [showUsers, setShowUsers] = useState(false);
@@ -320,92 +321,100 @@ function Wrapper(props) {
         <Content>
           <ContentContainer>
             <TokenHeader>
-              <HeaderMainBlock>
-                <LogoWrapper>
-                  <div
-                    onClick={(e) => {
-                      e.preventDefault();
-                      router.push(`/organization/${orgData?.getOrgById?.username}/home`);
-                    }}
-                    style={{
-                      position: 'relative',
-                      cursor: 'pointer',
-                      ...(isGr15Sponsor && {
-                        marginRight: '15px',
-                      }),
-                    }}
-                  >
-                    <SafeImage
-                      src={orgData?.getOrgById?.profilePicture}
-                      placeholderComp={
-                        <TokenEmptyLogo>
-                          <DAOEmptyIcon />
-                        </TokenEmptyLogo>
-                      }
-                      width={36}
-                      height={36}
-                      useNextImage
-                      alt="Org logo"
-                      style={{
-                        borderRadius: '6px',
+              <HeaderMainBlock isTablet={isTablet}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    marginBottom: isTablet ? '10px' : 0,
+                  }}
+                >
+                  <LogoWrapper>
+                    <div
+                      onClick={(e) => {
+                        e.preventDefault();
+                        router.push(`/organization/${orgData?.getOrgById?.username}/home`);
                       }}
-                    />
-                    {isGr15Sponsor && (
-                      <>
-                        <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                        <GR15DEILogo
-                          width="25"
-                          height="25"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setOpenGR15Modal(true);
-                          }}
-                          style={{
-                            top: '0',
-                            right: '-10px',
-                            position: 'absolute',
-                            zIndex: '25',
-                          }}
-                        />
-                      </>
+                      style={{
+                        position: 'relative',
+                        cursor: 'pointer',
+                        ...(isGr15Sponsor && {
+                          marginRight: '15px',
+                        }),
+                      }}
+                    >
+                      <SafeImage
+                        src={orgData?.getOrgById?.profilePicture}
+                        placeholderComp={
+                          <TokenEmptyLogo>
+                            <DAOEmptyIcon />
+                          </TokenEmptyLogo>
+                        }
+                        width={36}
+                        height={36}
+                        useNextImage
+                        alt="Org logo"
+                        style={{
+                          borderRadius: '6px',
+                        }}
+                      />
+                      {isGr15Sponsor && (
+                        <>
+                          <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                          <GR15DEILogo
+                            width="25"
+                            height="25"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setOpenGR15Modal(true);
+                            }}
+                            style={{
+                              top: '0',
+                              right: '-10px',
+                              position: 'absolute',
+                              zIndex: '25',
+                            }}
+                          />
+                        </>
+                      )}
+                    </div>
+
+                    <ArrowForwardIosIcon style={{ color: palette.grey58 }} />
+                    {podProfile?.profilePicture ? (
+                      <PodProfileImage src={podProfile?.profilePicture} />
+                    ) : (
+                      <PodIcon
+                        color={podProfile?.color}
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: 50,
+                        }}
+                      />
                     )}
-                  </div>
+                  </LogoWrapper>
+                  {/* </Box> */}
 
-                  <ArrowForwardIosIcon style={{ color: palette.grey58 }} />
-                  {podProfile?.profilePicture ? (
-                    <PodProfileImage src={podProfile?.profilePicture} />
-                  ) : (
-                    <PodIcon
-                      color={podProfile?.color}
-                      style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: 50,
-                      }}
-                    />
-                  )}
-                </LogoWrapper>
-
-                <HeaderTopLeftContainer>
-                  <HeaderTitle>{podProfile?.name}</HeaderTitle>
-                  <PrivacyContainer>
-                    <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
-                  </PrivacyContainer>
-                  {podIsGr15Sponsor && (
-                    <ExplorePodGr15
-                      onTaskPage={onTaskPage}
-                      onBountyPage={onBountyPage}
-                      hasGr15Bounties={podHasGr15Bounties}
-                      hasGr15Tasks={podHasGr15Tasks}
-                      onFilterChange={onFilterChange}
-                      podProfile={podProfile}
-                      filters={boardFilters}
-                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                    />
-                  )}
-                </HeaderTopLeftContainer>
+                  <HeaderTopLeftContainer>
+                    <HeaderTitle>{podProfile?.name}</HeaderTitle>
+                    <PrivacyContainer>
+                      <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
+                    </PrivacyContainer>
+                    {podIsGr15Sponsor && (
+                      <ExplorePodGr15
+                        onTaskPage={onTaskPage}
+                        onBountyPage={onBountyPage}
+                        hasGr15Bounties={podHasGr15Bounties}
+                        hasGr15Tasks={podHasGr15Tasks}
+                        onFilterChange={onFilterChange}
+                        podProfile={podProfile}
+                        filters={boardFilters}
+                        exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                        setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                      />
+                    )}
+                  </HeaderTopLeftContainer>
+                </Box>
 
                 <HeaderTopRightContainer>
                   <HeaderContributors
@@ -462,7 +471,17 @@ function Wrapper(props) {
                   )}
                 </HeaderTopRightContainer>
               </HeaderMainBlock>
-              <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}>
+              {/* <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}> */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginTop: isTablet ? '60px' : '15px',
+                  gap: 10,
+                  justifyContent: isTablet ? 'center' : 'flex-start',
+                  textAlign: isTablet ? 'center' : 'left',
+                }}
+              >
                 {podProfile?.description && podProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
                   <HeaderText as="div">
                     <RichTextViewer text={podProfile?.description} />
@@ -475,7 +494,7 @@ function Wrapper(props) {
             </TokenHeader>
 
             <Container>
-              <BoardsSubheaderWrapper isMobile={isMobile}>
+              <BoardsSubheaderWrapper isTablet={isTablet}>
                 {podBoard?.setEntityType && !search && (
                   <TypeSelector
                     tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard}

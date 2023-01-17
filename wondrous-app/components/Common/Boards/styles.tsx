@@ -8,7 +8,12 @@ import Masonry from '@mui/lab/Masonry';
 export const BoardsContainer = styled.div`
   width: 100%;
   height: ${({ isMobile }) => (isMobile ? '' : '100%')};
-  margin-top: ${({ isMobile, dashboardPage }) => (isMobile && dashboardPage ? '75px' : '22px')};
+  margin-top: ${({ isTablet, dashboardPage }) => (isTablet && dashboardPage ? '75px' : '22px')};
+
+  overflow-x: ${({ isTablet }) => (isTablet ? 'auto' : 'none')};
+  &::-webkit-scrollbar {
+    display: ${({ isTablet }) => (isTablet ? 'none' : '')};
+  }
 `;
 
 export const BoardsActivityInput = styled(TextField)({

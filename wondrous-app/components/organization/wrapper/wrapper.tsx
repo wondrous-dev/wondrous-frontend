@@ -34,7 +34,7 @@ import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { PodIconThin } from 'components/Icons/podIcon';
 import palette from 'theme/palette';
-import { ExploreGr15TasksAndBountiesContext, IsMobileContext } from 'utils/contexts';
+import { ExploreGr15TasksAndBountiesContext, IsTabletContext } from 'utils/contexts';
 import { Box } from '@mui/material';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { SafeImage } from '../../Common/Image';
@@ -187,7 +187,7 @@ function Wrapper(props) {
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
-  const isMobile = useContext(IsMobileContext);
+  const isTablet = useContext(IsTabletContext);
 
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
@@ -360,11 +360,11 @@ function Wrapper(props) {
       <Content>
         <ContentContainer>
           <TokenHeader>
-            <HeaderMainBlock isMobile={isMobile}>
+            <HeaderMainBlock isTablet={isTablet}>
               <Box
                 sx={{
                   display: 'flex',
-                  marginBottom: isMobile ? '10px' : 0,
+                  marginBottom: isTablet ? '10px' : 0,
                 }}
               >
                 {orgData?.shared && renderSharedHeader ? (
@@ -514,10 +514,10 @@ function Wrapper(props) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                marginTop: isMobile ? '60px' : '15px',
+                marginTop: isTablet ? '60px' : '15px',
                 gap: 10,
-                justifyContent: isMobile ? 'center' : 'flex-start',
-                textAlign: isMobile ? 'center' : 'left',
+                justifyContent: isTablet ? 'center' : 'flex-start',
+                textAlign: isTablet ? 'center' : 'left',
               }}
             >
               {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
@@ -531,7 +531,7 @@ function Wrapper(props) {
             </div>
           </TokenHeader>
           <Container>
-            <BoardsSubheaderWrapper isMobile={isMobile}>
+            <BoardsSubheaderWrapper isTablet={isTablet}>
               {orgBoard?.setEntityType && !search && (
                 <TypeSelector
                   tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard}

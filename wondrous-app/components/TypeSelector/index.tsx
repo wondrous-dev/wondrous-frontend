@@ -4,7 +4,7 @@ import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import FlagIcon from 'components/Icons/createMilestone';
 import BountyIcon from 'components/Icons/TaskTypes/bounty';
 import { useContext } from 'react';
-import { IsMobileContext } from 'utils/contexts';
+import { IsTabletContext } from 'utils/contexts';
 import { Wrapper, StatItem, IconWrapper, StatValue, StatTitle } from './styles';
 
 interface TasksPerType {
@@ -26,14 +26,14 @@ const config = [
 ];
 
 export default function TaskTypeSelector({ tasksPerTypeData, setExploreGr15TasksAndBounties }: Props) {
-  const isMobile = useContext(IsMobileContext);
+  const isTablet = useContext(IsTabletContext);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
   const { entityType, setEntityType } = board;
 
   return (
-    <Wrapper isMobile={isMobile}>
+    <Wrapper isMobile={isTablet}>
       {config.map((stat) => {
         const isActive = entityType === stat.type;
         const Icon = stat.icon;

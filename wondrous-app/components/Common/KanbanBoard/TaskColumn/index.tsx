@@ -30,7 +30,7 @@ import EmptyStateBoards from 'components/EmptyStateBoards';
 import Droppable from 'components/StrictModeDroppable';
 import { ColumnSection } from 'components/Common/ColumnSection';
 
-import { IsMobileContext } from 'utils/contexts';
+import { IsMobileContext, IsTabletContext } from 'utils/contexts';
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
@@ -120,6 +120,7 @@ function TaskColumn(props: ITaskColumn) {
       activeEntityType={board?.entityType || ''}
       style={{
         width: taskColumnWidth,
+        minWidth: '200px',
       }}
     >
       <CreateModalOverlay

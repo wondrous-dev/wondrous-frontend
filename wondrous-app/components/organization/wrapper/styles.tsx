@@ -78,7 +78,7 @@ export const HeaderMainBlock = styled.div`
   min-height: 36px;
   height: 36px;
   display: flex;
-  flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
+  flex-direction: ${({ isTablet }) => (isTablet ? 'column' : 'row')};
   justify-content: space-between;
   align-items: center;
 `;
@@ -366,7 +366,7 @@ export const HeaderContributorsText = styled(HeaderContributorsAmount)`
 
 export const BoardsSubheaderWrapper = styled.div`
   display: grid;
-  grid-template-columns: ${({ isMobile }) => (isMobile ? 'none' : '1fr 1fr')};
+  grid-template-columns: ${({ isTablet }) => (isTablet ? 'none' : '1fr 1fr')};
   grid-row-gap: 20px;
   align-items: center;
 `;
