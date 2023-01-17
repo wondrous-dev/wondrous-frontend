@@ -8,7 +8,6 @@ import Masonry from '@mui/lab/Masonry';
 export const BoardsContainer = styled.div`
   width: 100%;
   height: 100%;
-  margin-top: 22px;
 `;
 
 export const BoardsActivityInput = styled(TextField)({
@@ -215,7 +214,6 @@ export const BoardsCardBodyDescription = styled(Typography)`
 `;
 
 export const CardsContainerInnerWrapper = styled.div`
-  margin-top: 32px;
   min-height: 100vh;
 `;
 

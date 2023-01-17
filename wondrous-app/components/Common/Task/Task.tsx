@@ -222,7 +222,7 @@ const Task: FC<TaskProps> = (props) => {
 
   const goToPod = (podId) => {
     // Filter or go to Pod Page
-    router.push(`/pod/${podId}/boards`, undefined, {
+    router.push(`/pod/${podId}/home`, undefined, {
       shallow: true,
     });
   };

@@ -48,7 +48,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
     setEditTask(false);
   };
   const goToPod = (podId) => {
-    router.push(`/pod/${podId}/boards`, undefined, {
+    router.push(`/pod/${podId}/home`, undefined, {
       shallow: true,
     });
   };

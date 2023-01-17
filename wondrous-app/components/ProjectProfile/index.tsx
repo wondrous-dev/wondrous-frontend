@@ -1,25 +1,35 @@
 import Grid from '@mui/material/Grid';
-import PodSection from 'components/ProjectProfile/PodSection';
+import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 import { ProjectContext } from 'utils/contexts';
 
-import { useCollaborationModal, useCreateEntityModal, useCreateGrantModal, useCategoriesModal } from './helpers';
+import {
+  useCollaborationModal,
+  useCreateEntityModal,
+  useCreateGrantModal,
+  useCategoriesModal,
+  useIsOrg,
+  useGetHomePageTaskObjects,
+} from './helpers';
 import ProfileSectionsWrapper from './ProfileSectionsWrapper';
 
-const ProjectProfile = ({ orgData }) => {
+const PodSection = dynamic(() => import('./PodSection'), { ssr: false });
+
+const ProjectProfile = () => {
   const { setEntityType, CreateEntityModal } = useCreateEntityModal();
   const { CollaborationModal, handleCreateModal } = useCollaborationModal();
   const { DocCategoriesModal, handleCreateNewCategory } = useCategoriesModal();
   const { CreateGrantModal, handleCreateFormModal } = useCreateGrantModal();
+  const homePageTaskObjects = useGetHomePageTaskObjects();
   const projectContextValue = useMemo(
     () => ({
       setEntityType,
       handleCreateModal,
       handleCreateNewCategory,
       handleCreateFormModal,
-      orgData,
+      homePageTaskObjects,
     }),
-    [setEntityType, handleCreateModal, handleCreateNewCategory, handleCreateFormModal, orgData]
+    [setEntityType, handleCreateModal, handleCreateNewCategory, handleCreateFormModal, homePageTaskObjects]
   );
   return (
     <ProjectContext.Provider value={projectContextValue}>
@@ -29,8 +39,8 @@ const ProjectProfile = ({ orgData }) => {
         <DocCategoriesModal />
         <CreateGrantModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
-          <PodSection />
-          <ProfileSectionsWrapper layout={orgData?.layout} orgId={orgData?.id} />
+          {useIsOrg() ? <PodSection /> : null}
+          <ProfileSectionsWrapper />
         </Grid>
       </>
     </ProjectContext.Provider>

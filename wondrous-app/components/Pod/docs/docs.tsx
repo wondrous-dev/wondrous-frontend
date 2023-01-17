@@ -11,6 +11,7 @@ import { GET_POD_DOCS, GET_POD_DOCS_CATEGORIES } from 'graphql/queries/documents
 import { PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 
+import BoardPageHeader from 'components/Pod/wrapper/BoardPageHeader';
 import AddDocumentDialog from 'components/AddDocumentDialog';
 import ResourcesSidebar from 'components/Common/SidebarResources';
 import DeleteDocDialog from 'components/DeleteDocDialog';
@@ -21,8 +22,6 @@ import EmptyStateGeneric from 'components/EmptyStateGeneric';
 import PinnedDocsSection from 'components/PinnedDocsSection';
 
 import styles, { AddIconWrapper } from 'components/organization/docs/docsStyles';
-
-import Wrapper from '../wrapper';
 
 const useGetPodDocs = (podId) => {
   const [getPodDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_POD_DOCS, {
@@ -163,7 +162,7 @@ function Docs(props) {
       handleSelectCategory={handleSelectCategory}
       selectedCategory={selectedCategory}
     >
-      <Wrapper>
+      <BoardPageHeader headerTitle="Documents">
         {canEdit && (
           <Box sx={styles.topButtonsContainer}>
             <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
@@ -225,7 +224,7 @@ function Docs(props) {
           category={docCategory}
         />
         <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
-      </Wrapper>
+      </BoardPageHeader>
     </ResourcesSidebar>
   );
 }
