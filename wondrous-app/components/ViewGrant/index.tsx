@@ -43,7 +43,7 @@ import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { TaskContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { Categories, DataDisplay, Dates, GrantAmount } from './Fields';
+import { Categories, DataDisplay, Dates, GrantPaymentData } from './Fields';
 import ViewGrantFooter from './Footer';
 import GrantMenuStatus from './GrantMenuStatus';
 import { DescriptionWrapper } from './styles';
@@ -52,7 +52,7 @@ import { canViewGrant } from './utils';
 const FIELDS_CONFIG = [
   {
     label: 'Grant amount',
-    component: ({ grant: { reward, numOfGrant } }) => <GrantAmount grantAmount={reward} numOfGrant={numOfGrant} />,
+    component: ({ grant: { reward, numOfGrant } }) => <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />,
 
     shouldDisplay: ({ grant: { reward } }): boolean => !!reward?.paymentMethodId,
   },

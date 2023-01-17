@@ -217,7 +217,6 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
     },
   });
 
-  console.log('form.values', form.values);
   useEffect(() => {
     if (connectedAddress !== form.values.paymentAddress && !grantApplication) {
       form.setFieldValue('paymentAddress', connectedAddress);
