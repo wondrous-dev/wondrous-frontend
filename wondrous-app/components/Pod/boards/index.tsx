@@ -58,28 +58,24 @@ function PodBoards(props: Props) {
   const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
   const filterSchema: any = entityTypeFilters;
   return (
-    <>
-      <GrantApplicationPodCreateModal />
-
-      <BoardPageHeader onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
-        <ColumnsContext.Provider value={{ columns, setColumns }}>
-          {loading ? (
-            <BoardColumnsSkeleton />
-          ) : (
-            <Suspense>
-              <ActiveBoard
-                activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-                columns={columns}
-                onLoadMore={onLoadMore}
-                hasMore={hasMore}
-                setColumns={setColumns}
-                entityType={entityType}
-              />
-            </Suspense>
-          )}
-        </ColumnsContext.Provider>
-      </BoardPageHeader>
-    </>
+    <BoardPageHeader onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
+      <ColumnsContext.Provider value={{ columns, setColumns }}>
+        {loading ? (
+          <BoardColumnsSkeleton />
+        ) : (
+          <Suspense>
+            <ActiveBoard
+              activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+              columns={columns}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              setColumns={setColumns}
+              entityType={entityType}
+            />
+          </Suspense>
+        )}
+      </ColumnsContext.Provider>
+    </BoardPageHeader>
   );
 }
 

@@ -162,6 +162,11 @@ export const GET_GRANT_APPLICATION_BY_ID = gql`
       description
       orgId
       podId
+      pod {
+        color
+        name
+        id
+      }
       grantId
       media {
         ...MediaFragment

@@ -6,11 +6,19 @@ import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import { ActionButton } from 'components/Common/Task/styles';
+import {
+  TaskMintDetails,
+  TaskMintDetailsTitle,
+  TaskMintWrapper,
+} from 'components/Common/TaskMint/TaskMintButton/styles';
 import Divider from 'components/Divider';
 import CopyIcon from 'components/Icons/copy';
+import PodIcon from 'components/Icons/podIcon';
+import { HeaderButton } from 'components/organization/wrapper/styles';
 import { PAYMENT_TYPES } from 'components/Settings/Payouts/constants';
 import { DataDisplayWrapper } from 'components/ViewGrant/Fields/styles';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
+import { UnstyledLink } from 'components/WorkspacePicker/styles';
 import {
   APPROVE_GRANT_APPLICATION,
   REJECT_GRANT_APPLICATION,
@@ -267,7 +275,12 @@ export const PaymentHandler = ({ grantApplication }) => {
         handleClose={() => {}}
         setShowPaymentModal={setIsPaymentModalOpen}
         fetchedTask={grantApplication?.grant}
-        approvedSubmission={grantApplication}
+        approvedSubmission={{
+          // SOURCE OF TRUTH FOR THE GRANT APPLICATION ORG / POD IS GRANT'S ORG / POD
+          ...grantApplication,
+          podId: grantApplication?.grant?.podId,
+          orgId: grantApplication?.grant?.orgId,
+        }}
         reward={grantApplication?.grant?.reward}
         entityType={ENTITIES_TYPES.GRANT_APPLICATION}
       />
@@ -292,5 +305,41 @@ export const PaymentHandler = ({ grantApplication }) => {
         <WalletAddressViewer walletAddress={grantApplication?.paymentAddress} />
       </Grid>
     </GrantApplicationStatusWrapper>
+  );
+};
+
+export const PodViewer = ({ grantApplication }) => {
+  const pod = grantApplication?.pod;
+  if (!pod) return null;
+
+  return (
+    <TaskMintWrapper>
+      <UnstyledLink href={`/pod/${pod?.id}/home`}>
+        <Grid display="flex" gap="8px" alignItems="center">
+          <PodIcon
+            color={pod?.color}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 50,
+            }}
+          />
+          <Typography fontFamily={typography.fontFamily} color={palette.white} fontSize="13px" fontWeight={500}>
+            {pod?.name}
+          </Typography>
+        </Grid>
+      </UnstyledLink>
+      <UnstyledLink href={`/pod/${pod?.id}/home`}>
+        <HeaderButton
+          reversed
+          style={{
+            width: 'fit-content',
+          }}
+          type="button"
+        >
+          Workspace
+        </HeaderButton>
+      </UnstyledLink>
+    </TaskMintWrapper>
   );
 };

@@ -62,7 +62,7 @@ import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { GrantApplicationStatusManager, PaymentHandler, WalletAddressViewer } from './Fields';
+import { GrantApplicationStatusManager, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';
 
 const GRANT_APPLICATION_STATUS_LABELS = {
@@ -98,10 +98,13 @@ const GRANT_APPLICATION_STATUS_LABELS = {
 
 const FIELDS_CONFIG = [
   {
+    component: ({ grantApplication }) => <PodViewer grantApplication={grantApplication} />,
+    shouldDisplay: ({ isApproved }) => isApproved,
+  },
+  {
     component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
     shouldDisplay: ({ hasManageRights }): boolean => hasManageRights,
   },
-
   {
     label: 'Grant amount',
     component: ({ grantApplication: { grant } }) => <GrantAmount grantAmount={grant?.reward || {}} />,

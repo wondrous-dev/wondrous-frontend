@@ -50,19 +50,26 @@ const ViewGrantFooter = ({
     );
   }, [parseUserPermissionContext, userPermissionsContext, entityType, entity]);
 
+  const tabTypes = useMemo(() => {
+    if (canViewWorkspaces) {
+      return [tabs.activeApplications, ...TYPES[entityType]];
+    }
+    return TYPES[entityType];
+  }, [canViewWorkspaces, entityType]);
+
   return (
     <TaskModalFooter fullScreen={isFullScreen}>
       <TaskSectionFooterTitleDiv>
-        {TYPES[entityType].map((tab, index) => {
+        {tabTypes.map((tab, index) => {
           const active = tab === activeTab;
           return (
             <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
               <TaskTabText isActive={active}>
                 {tab}
-                {tab === tabs.applications && entityType === ENTITIES_TYPES.GRANT && canViewWorkspaces && (
+                {tab === tabs.applications && entityType === ENTITIES_TYPES.GRANT && (
                   <TabItemCount isActive={active}>{applicationsCount}</TabItemCount>
                 )}
-                {tab === tabs.activeApplications && entityType === ENTITIES_TYPES.GRANT ? (
+                {tab === tabs.activeApplications && entityType === ENTITIES_TYPES.GRANT && canViewWorkspaces ? (
                   <TabItemCount isActive={active}>{approvedApplicationsCount}</TabItemCount>
                 ) : null}
                 {tab === tabs.discussion && <TabItemCount isActive={active}>{commentCount}</TabItemCount>}
