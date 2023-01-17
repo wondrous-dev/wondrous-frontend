@@ -247,7 +247,7 @@ function HomePageHeader(props) {
             <HeaderTopLeftContainer>
               <HeaderTitle>{podProfile?.name}</HeaderTitle>
               <PrivacyContainer>
-                <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
+                <PrivacyText>{podProfile?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
               </PrivacyContainer>
             </HeaderTopLeftContainer>
 

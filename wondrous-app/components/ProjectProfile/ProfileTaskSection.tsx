@@ -4,8 +4,9 @@ import TaskCardDate from 'components/Common/TaskCardDate';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { useProject } from 'utils/hooks';
 import ApplyOrClaimButton from './ApplyOrClaimButton';
-import { useEntityCreateButtonProps, useGetProjectPageTasks } from './helpers';
+import { useEntityCreateButtonProps } from './helpers';
 import SectionContent from './SectionContent';
 import { ProfileGrid } from './styles';
 
@@ -26,23 +27,26 @@ const RightComponent = (props) => {
   );
 };
 
-const ProfileTaskSection = () => (
-  <SectionContent
-    HeaderTitleProps={{
-      text: 'Tasks',
-      IconComponent: CheckBoxIcon,
-    }}
-    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.TASK)}
-    backgroundImageUrl="/images/project/task-empty-bg.svg"
-    showAllUrl="boards?entity=task"
-    ListItemProps={{
-      LeftComponent,
-      RightComponent,
-      onClick: ({ router, data: { id } }) =>
-        router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
-    }}
-    data={useGetProjectPageTasks()}
-  />
-);
+const ProfileTaskSection = () => {
+  const { homePageTaskObjects } = useProject();
+  return (
+    <SectionContent
+      HeaderTitleProps={{
+        text: 'Tasks',
+        IconComponent: CheckBoxIcon,
+      }}
+      CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.TASK)}
+      backgroundImageUrl="/images/project/task-empty-bg.svg"
+      showAllUrl="boards?entity=task"
+      ListItemProps={{
+        LeftComponent,
+        RightComponent,
+        onClick: ({ router, data: { id } }) =>
+          router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
+      }}
+      data={homePageTaskObjects?.tasks}
+    />
+  );
+};
 
 export default ProfileTaskSection;
