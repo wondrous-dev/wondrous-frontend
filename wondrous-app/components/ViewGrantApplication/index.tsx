@@ -1,6 +1,6 @@
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import { Menu } from 'components/Common/TaskViewModal/helpers';
 import {
@@ -39,7 +39,14 @@ import { DescriptionWrapper } from 'components/ViewGrant/styles';
 import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ENTITIES_TYPES, GRANT_APPLICATION_STATUSES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import {
+  ENTITIES_TYPES,
+  GRANT_APPLICATION_DELETE_STATUSES,
+  GRANT_APPLICATION_EDITABLE_STATUSES,
+  GRANT_APPLICATION_STATUSES,
+  PERMISSIONS,
+  PRIVACY_LEVEL,
+} from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
 
@@ -152,7 +159,7 @@ const ViewGrantApplication = ({ onClose }) => {
   const canEditAndComment = canManage || grantApplication?.createdBy === user?.id;
 
   const canArchive =
-    permissions?.includes(PERMISSIONS.MANAGE_BOARD) ||
+    permissions?.includes(PERMISSIONS.REVIEW_TASK) ||
     permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
     grantApplication?.createdBy === user?.id;
 
@@ -167,6 +174,8 @@ const ViewGrantApplication = ({ onClose }) => {
   };
 
   const status = useMemo(() => selectApplicationStatus(grantApplication), [grantApplication]);
+
+  const canDelete = canArchive && GRANT_APPLICATION_DELETE_STATUSES.includes(status);
 
   if (isEditMode) {
     return (
@@ -187,16 +196,29 @@ const ViewGrantApplication = ({ onClose }) => {
         taskType={ENTITIES_TYPES.GRANT_APPLICATION}
         taskId={grantApplication?.id}
       />
-      <DeleteTaskModal
+      <DeleteEntityModal
         open={deleteTask}
         onClose={() => {
           setDeleteTask(false);
         }}
-        taskType={ENTITIES_TYPES.GRANT_APPLICATION}
+        entityType={ENTITIES_TYPES.GRANT_APPLICATION}
         taskId={grantApplication?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);
           setSnackbarAlertMessage(`Deleted successfully!`);
+          const query = { ...router.query };
+          delete query.grantApplicationId;
+
+          router.push(
+            {
+              pathname: router.pathname,
+              query,
+            },
+            undefined,
+            {
+              shallow: true,
+            }
+          );
         }}
       />
 
@@ -260,9 +282,10 @@ const ViewGrantApplication = ({ onClose }) => {
             <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
             <Menu
               canEdit={canEditAndComment}
-              canDelete={canArchive}
+              canDelete={canDelete}
               canArchive={canArchive}
               setEditTask={setEditMode}
+              setDeleteTask={setDeleteTask}
             />
 
             <TaskModalHeaderCloseModal onClick={onClose} />

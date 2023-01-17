@@ -4,9 +4,10 @@ import { useMe } from 'components/Auth/withAuth';
 import { ButtonPrimary } from 'components/Common/button';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
-import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries';
+import { GET_ORG_TASK_BOARD_TASKS, GET_POD_TASK_BOARD_TASKS } from 'graphql/queries';
 import { useState } from 'react';
 import palette from 'theme/palette';
+import { TASK_STATUS_DONE } from 'utils/constants';
 import { usePermissions } from 'utils/hooks';
 
 const ApplyOrClaimButton = ({ task }) => {
@@ -14,6 +15,19 @@ const ApplyOrClaimButton = ({ task }) => {
   const { canClaim, canApply } = usePermissions(task);
   const [claimed, setClaimed] = useState(false);
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
+  const handleClaim = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setClaimed(true);
+    updateTaskAssignee({
+      variables: {
+        taskId: task?.id,
+        assigneeId: user?.id,
+      },
+      refetchQueries: [GET_ORG_TASK_BOARD_TASKS, GET_POD_TASK_BOARD_TASKS],
+    });
+  };
+  if (task.status === TASK_STATUS_DONE) return null;
   if (!canClaim && canApply) {
     return (
       <TaskApplicationButton
@@ -30,18 +44,7 @@ const ApplyOrClaimButton = ({ task }) => {
   if (!claimed && canClaim) {
     return (
       <ButtonPrimary
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setClaimed(true);
-          updateTaskAssignee({
-            variables: {
-              taskId: task?.id,
-              assigneeId: user?.id,
-            },
-            refetchQueries: [GET_ORG_TASK_BOARD_TASKS],
-          });
-        }}
+        onClick={handleClaim}
         style={{
           width: '82px',
         }}

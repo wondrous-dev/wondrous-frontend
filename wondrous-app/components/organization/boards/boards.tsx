@@ -3,7 +3,7 @@ import React, { memo, Suspense } from 'react';
 import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
 import dynamic from 'next/dynamic';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
-import Wrapper from 'components/organization/wrapper/wrapper';
+import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
 import { getFilterSchema } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { ColumnsContext } from 'utils/contexts';
@@ -56,7 +56,7 @@ function OrgBoards(props: Props) {
   const filterSchema = getFilterSchema(entityType, orgData?.id);
   const ActiveBoard = BOARDS_MAP[entityType];
   return (
-    <Wrapper
+    <BoardPageHeader
       orgData={orgData}
       onSearch={onSearch}
       filterSchema={filterSchema}
@@ -82,7 +82,7 @@ function OrgBoards(props: Props) {
           </Suspense>
         )}
       </ColumnsContext.Provider>
-    </Wrapper>
+    </BoardPageHeader>
   );
 }
 

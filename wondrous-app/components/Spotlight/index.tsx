@@ -105,7 +105,7 @@ const Spotlight = ({ onClose }) => {
     if (type === GLOBAL_SEARCH_TYPES.ORGS)
       return router.push(`/organization/${entity.username}/home`, undefined, { shallow: true });
     if (type === GLOBAL_SEARCH_TYPES.PODS)
-      return router.push(`/pod/${entity.id}/boards?view=grid`, undefined, { shallow: true });
+      return router.push(`/pod/${entity.id}/home`, undefined, { shallow: true });
     if (type === GLOBAL_SEARCH_TYPES.USERS)
       return router.push(`/profile/${entity.username}/about`, undefined, { shallow: true });
   };

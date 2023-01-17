@@ -7,7 +7,8 @@ import Masonry from '@mui/lab/Masonry';
 
 export const BoardsContainer = styled.div`
   width: 100%;
-  height: ${({ isMobile }) => (isMobile ? '' : '100%')};
+  height: 100%;
+
   overflow-x: ${({ isLaptop }) => (isLaptop ? 'auto' : 'none')};
   &::-webkit-scrollbar {
     display: ${({ isLaptop }) => (isLaptop ? 'none' : '')};
@@ -218,7 +219,6 @@ export const BoardsCardBodyDescription = styled(Typography)`
 `;
 
 export const CardsContainerInnerWrapper = styled.div`
-  margin-top: 32px;
   min-height: 100vh;
 `;
 

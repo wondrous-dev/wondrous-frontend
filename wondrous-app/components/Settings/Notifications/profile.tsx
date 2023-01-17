@@ -14,6 +14,7 @@ import { getDiscordUrl } from 'utils';
 import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
 import isEqual from 'lodash/isEqual';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import Switch from 'components/Common/AndroidSwitch';
 import {
   UserDiscordNotificationSettingsDiv,
   UserDiscordNotificationSettingsText,
@@ -28,7 +29,6 @@ import {
   UserDiscordNotificationSettingsContainer,
   NotificationSettingsButtonsBlock,
 } from './styles';
-import Switch from '../../Common/Switch';
 import { GeneralSettingsContainer, GeneralSettingsResetButton, GeneralSettingsSaveChangesButton } from '../styles';
 
 const discordUrlWithoutState = getDiscordUrl();

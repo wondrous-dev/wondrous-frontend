@@ -8,9 +8,34 @@ module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   compiler: {
     // Enables the styled-components SWC transform
-    styledComponents: true
+    styledComponents: true,
   },
-  images: { domains: ['www.notion.so', 'storage.googleapis.com', 'pbs.twimg.com', 'avatars.githubusercontent.com', 's3.amazonaws.com'] },
+  images: {
+    domains: [
+      'www.notion.so',
+      'storage.googleapis.com',
+      'pbs.twimg.com',
+      'avatars.githubusercontent.com',
+      's3.amazonaws.com',
+      'images.mintkudos.xyz',
+    ],
+  },
+  experimental: {
+    modularizeImports: {
+      lodash: {
+        transform: 'lodash/{{member}}',
+      },
+      '@mui/material': {
+        transform: '@mui/material/{{member}}',
+      },
+      '@mui/lab': {
+        transform: '@mui/lab/{{member}}',
+      },
+      '@mui/icons-material/?(((\\w*)?/?)*)': {
+        transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
+      },
+    },
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

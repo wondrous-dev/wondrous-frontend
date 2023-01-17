@@ -30,8 +30,6 @@ const TaskMintComponent = ({ taskMintData, taskStatus, assigneeId, setIsViewNft,
 
   const handleMintButtonClick = () => (status === TaskMintStatus.COMPLETED ? setIsViewNft(true) : toggleModal());
 
-  if (process.env.NEXT_PUBLIC_PRODUCTION) return null;
-
   return (
     <>
       <Modals isOpen={isModalOpen} onClose={toggleModal} />

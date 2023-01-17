@@ -350,6 +350,7 @@ export const useCreateMilestone = () => {
       'getPerTypeTaskCountForPodBoard',
       'getMilestones',
       'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
     ],
   });
   const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
@@ -386,7 +387,7 @@ export const useCreateMilestone = () => {
           board.setColumns(columns);
         }
       } else {
-        board?.setEntityType(ENTITIES_TYPES.MILESTONE);
+        // board?.setEntityType(ENTITIES_TYPES.MILESTONE);
       }
       handleClose(result);
     });
@@ -396,7 +397,12 @@ export const useCreateMilestone = () => {
 
 export const useCreateBounty = () => {
   const [createBounty, { loading }] = useMutation(CREATE_BOUNTY, {
-    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getOrgTaskBoardTasks'],
+    refetchQueries: () => [
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+    ],
   });
   const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createBounty({

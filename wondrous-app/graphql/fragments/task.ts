@@ -65,6 +65,7 @@ export const MinimalTaskFragment = gql`
     claimPolicyRoles
     shouldUnclaimOnDueDateExpiry
     hideSubmissions
+    requireSubmitterWalletConnected
   }
 
   ${MediaFragment}
@@ -173,6 +174,7 @@ export const FullTaskFragment = gql`
     claimPolicyRoles
     shouldUnclaimOnDueDateExpiry
     hideSubmissions
+    requireSubmitterWalletConnected
     categories {
       name
     }
@@ -248,6 +250,42 @@ export const TaskCardFragment = gql`
   ${MediaFragment}
 `;
 
+export const HomePageTaskCardFragment = gql`
+  fragment HomePageTaskCardFragment on TaskCard {
+    id
+    createdAt
+    createdBy
+    type
+    orgId
+    podId
+    title
+    description
+    assigneeId
+    assigneeUsername
+    assigneeProfilePicture
+    priority
+    dueDate
+    status
+    completedAt
+    paymentStatus
+    privacyLevel
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+    }
+    totalSubmissionsCount
+    approvedSubmissionsCount
+    points
+    taskApplicationPermissions {
+      canClaim
+      canApply
+      hasUserApplied
+    }
+  }
+`;
 export const TaskProposalCardFragment = gql`
   fragment TaskProposalCardFragment on TaskProposalCard {
     id

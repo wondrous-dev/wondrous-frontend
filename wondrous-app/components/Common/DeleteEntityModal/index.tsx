@@ -20,16 +20,24 @@ import {
   StyledHeader,
 } from './styles';
 
+/*
+
+DeleteEntityModal
+
+- is used to be able to delete a TASK, MILESTONE, PROPOSAL, GRANT, GRANT_APPLICATION
+
+*/
+
 interface IArchiveTaskModalProps {
   open: boolean;
   onClose: () => void;
-  taskType: string;
+  entityType: string;
   taskId: string;
   onDelete: () => void;
 }
 
-function DeleteTaskModal(props: IArchiveTaskModalProps) {
-  const { open, onClose, onDelete, taskType, taskId } = props;
+function DeleteEntityModal(props: IArchiveTaskModalProps) {
+  const { open, onClose, onDelete, entityType, taskId } = props;
   const refetchQueries = [
     'getPerStatusTaskCountForUserBoard',
     'getPerStatusTaskCountForOrgBoard',
@@ -46,7 +54,7 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
 
   const [deleteGrantApplication] = useMutation(DELETE_GRANT_APPLICATION, {
     variables: { grantApplicationId: taskId },
-    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById', 'getGrantApplicationsForGrant'],
   });
 
   const [deleteTask] = useMutation(DELETE_TASK, {
@@ -81,26 +89,29 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
   });
 
   const handleDelete = () => {
-    if (taskType === ENTITIES_TYPES.GRANT_APPLICATION) {
+    if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
       deleteGrantApplication();
     }
-    if (taskType === ENTITIES_TYPES.GRANT) {
+    if (entityType === ENTITIES_TYPES.GRANT) {
       deleteGrant();
     }
-    if (taskType === 'task') {
+    if (entityType === ENTITIES_TYPES.TASK) {
       deleteTask();
     }
-    if (taskType === 'milestone') {
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
       deleteMilestone();
     }
-    if (taskType === 'task proposal') {
+    if (entityType === 'task proposal') {
       deleteProposal();
     }
     onClose();
     onDelete();
   };
 
-  const taskTitle = useMemo(() => (taskType?.includes('_') ? taskType.split('_').join(' ') : taskType), [taskType]);
+  const entityTypeDisplayName = useMemo(
+    () => (entityType?.includes('_') ? entityType.split('_').join(' ') : entityType),
+    [entityType]
+  );
 
   return (
     <StyledDialog
@@ -113,14 +124,14 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
         <StyledCloseButton onClick={onClose}>
           <CloseModalIcon />
         </StyledCloseButton>
-        <StyledHeader>Delete this {taskType}?</StyledHeader>
+        <StyledHeader>Delete this {entityTypeDisplayName}?</StyledHeader>
         <StyledBody>You cannot undo this action.</StyledBody>
         <StyledDivider />
         <StyledButtonsContainer>
           <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
           <StyledDeleteTaskButton data-cy="button-delete" onClick={() => handleDelete()}>
             <ArchivedIcon />
-            <StyledDeleteLabel>Delete {taskType}</StyledDeleteLabel>
+            <StyledDeleteLabel>Delete {entityTypeDisplayName}</StyledDeleteLabel>
           </StyledDeleteTaskButton>
         </StyledButtonsContainer>
       </StyledBox>
@@ -128,4 +139,4 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
   );
 }
 
-export default DeleteTaskModal;
+export default DeleteEntityModal;
