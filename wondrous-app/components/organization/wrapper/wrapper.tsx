@@ -34,7 +34,7 @@ import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { PodIconThin } from 'components/Icons/podIcon';
 import palette from 'theme/palette';
-import { ExploreGr15TasksAndBountiesContext, IsTabletContext } from 'utils/contexts';
+import { ExploreGr15TasksAndBountiesContext, IsTabletContext, IsLaptopContext } from 'utils/contexts';
 import { Box } from '@mui/material';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { SafeImage } from '../../Common/Image';
@@ -188,6 +188,7 @@ function Wrapper(props) {
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
   const isTablet = useContext(IsTabletContext);
+  const isLaptop = useContext(IsLaptopContext);
 
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
@@ -531,7 +532,7 @@ function Wrapper(props) {
             </div>
           </TokenHeader>
           <Container>
-            <BoardsSubheaderWrapper isTablet={isTablet}>
+            <BoardsSubheaderWrapper isLaptop={isLaptop}>
               {orgBoard?.setEntityType && !search && (
                 <TypeSelector
                   tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard}

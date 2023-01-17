@@ -23,7 +23,7 @@ import palette from 'theme/palette';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { IsTabletContext } from 'utils/contexts';
+import { IsTabletContext, IsLaptopContext } from 'utils/contexts';
 import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
@@ -45,6 +45,7 @@ export function BoardsActivityInlineView({
   const { search } = router.query;
   const board = orgBoard || podBoard || userBoard;
   const isTablet = useContext(IsTabletContext);
+  const isLaptop = useContext(IsLaptopContext);
 
   const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter || board?.hasActiveFilters);
 
@@ -70,7 +71,7 @@ export function BoardsActivityInlineView({
     <>
       <BoardsActivityInlineViewWrapper
         style={
-          search || isTablet
+          search || isLaptop
             ? {
                 justifyContent: 'flex-start',
               }

@@ -366,7 +366,7 @@ export const HeaderContributorsText = styled(HeaderContributorsAmount)`
 
 export const BoardsSubheaderWrapper = styled.div`
   display: grid;
-  grid-template-columns: ${({ isTablet }) => (isTablet ? 'none' : '1fr 1fr')};
+  grid-template-columns: ${({ isLaptop }) => (isLaptop ? 'none' : '1fr 1fr')};
   grid-row-gap: 20px;
   align-items: center;
 `;

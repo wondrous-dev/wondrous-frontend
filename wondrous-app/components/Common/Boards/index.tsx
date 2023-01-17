@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { ColumnsContext, IsMobileContext, IsTabletContext } from 'utils/contexts';
+import { ColumnsContext, IsLaptopContext, IsMobileContext, IsTabletContext } from 'utils/contexts';
 import BoardSearch from 'components/Common/BoardSearch';
 import { BoardsContainer } from './styles';
 
@@ -30,6 +30,7 @@ function Boards(props: Props) {
   const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView, entityType = ENTITIES_TYPES.TASK } = props;
   const isMobile = useContext(IsMobileContext);
   const isTablet = useContext(IsTabletContext);
+  const isLaptop = useContext(IsLaptopContext);
   const router = useRouter();
   const { search: searchQuery } = router.query;
   const view = activeView || String(router.query.view ?? ViewType.Grid);
@@ -47,11 +48,9 @@ function Boards(props: Props) {
     ) : null;
   }
 
-  const dashboardPage = router.asPath.includes('/dashboard');
-
   return (
     <ColumnsContext.Provider value={{ columns, setColumns }}>
-      <BoardsContainer isMobile={isMobile} isTablet={isTablet} dashboardPage={dashboardPage}>
+      <BoardsContainer isMobile={isMobile} isLaptop={isLaptop}>
         {searchQuery ? <BoardSearch searchQuery={searchQuery} /> : renderBoard()}
       </BoardsContainer>
     </ColumnsContext.Provider>

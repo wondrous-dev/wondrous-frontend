@@ -1,3 +1,7 @@
+:root {
+  --swiper-pagination-bullet-inactive-opacity: 1;
+}
+
 /* Styles for the mui autocomplete */
 .MuiAutocomplete-paper {
   background: transparent !important;

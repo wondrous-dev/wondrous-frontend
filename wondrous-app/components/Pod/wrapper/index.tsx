@@ -35,7 +35,7 @@ import MoreInfoModal from 'components/profile/modals';
 import MembersIcon from 'components/Icons/members';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { Button as PrimaryButton } from 'components/Button';
-import { IsMobileContext, IsTabletContext } from 'utils/contexts';
+import { IsLaptopContext, IsTabletContext } from 'utils/contexts';
 import Box from '@mui/material/Box';
 import { LogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
@@ -155,6 +155,7 @@ function Wrapper(props) {
 
   const router = useRouter();
   const isTablet = useContext(IsTabletContext);
+  const isLaptop = useContext(IsLaptopContext);
   const { entity, cause } = router.query;
   const loggedInUser = useMe();
   const [showUsers, setShowUsers] = useState(false);
@@ -494,7 +495,7 @@ function Wrapper(props) {
             </TokenHeader>
 
             <Container>
-              <BoardsSubheaderWrapper isTablet={isTablet}>
+              <BoardsSubheaderWrapper isLaptop={isLaptop}>
                 {podBoard?.setEntityType && !search && (
                   <TypeSelector
                     tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard}

@@ -8,11 +8,9 @@ import Masonry from '@mui/lab/Masonry';
 export const BoardsContainer = styled.div`
   width: 100%;
   height: ${({ isMobile }) => (isMobile ? '' : '100%')};
-  margin-top: ${({ isTablet, dashboardPage }) => (isTablet && dashboardPage ? '75px' : '22px')};
-
-  overflow-x: ${({ isTablet }) => (isTablet ? 'auto' : 'none')};
+  overflow-x: ${({ isLaptop }) => (isLaptop ? 'auto' : 'none')};
   &::-webkit-scrollbar {
-    display: ${({ isTablet }) => (isTablet ? 'none' : '')};
+    display: ${({ isLaptop }) => (isLaptop ? 'none' : '')};
   }
 `;
 
