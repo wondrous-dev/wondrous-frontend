@@ -3,7 +3,6 @@ import Grid from '@mui/material/Grid';
 import { OrgComponent } from 'components/BreadCrumbs/Components/OrgSelector';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { TaskSubtaskTitle } from 'components/Common/TaskSubtask/TaskSubtaskList/styles';
-import { TaskSubTaskPrivacyIconWrapper } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import { Spinner } from 'components/Dashboard/bounties/styles';
 import { GrantsBoardCardDescription } from 'components/GrantsBoard/styles';
 import PodIcon from 'components/Icons/podIcon';
@@ -23,6 +22,7 @@ import { UnstyledLink } from 'components/WorkspacePicker/styles';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
+import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import { Card, StatItemWrapper } from './styles';
 
 const PodStats = ({ stats, podId }) => {
@@ -96,7 +96,7 @@ const ActiveApplicationItem = ({ workspace }) => {
             }}
           />
         </UnstyledLink>
-        <TaskSubTaskPrivacyIconWrapper privacyLevel={workspace?.privacyLevel} />
+        <TaskCardPrivacy privacyLevel={workspace?.privacyLevel} />
       </Grid>
       <TaskSubtaskTitle sx={{ marginTop: '0 !important' }}>{workspace?.name}</TaskSubtaskTitle>
       <GrantsBoardCardDescription>{workspace?.description}</GrantsBoardCardDescription>
