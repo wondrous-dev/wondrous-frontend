@@ -3,8 +3,9 @@ import Compensation from 'components/Common/Compensation';
 import StarIcon from 'components/Icons/Sidebar/star.svg';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { useProject } from 'utils/hooks';
 
-import { useEntityCreateButtonProps, useGetProjectPageBounties } from './helpers';
+import { useEntityCreateButtonProps } from './helpers';
 import SectionContent from './SectionContent';
 
 const LeftComponent = ({ title }) => (
@@ -15,23 +16,26 @@ const LeftComponent = ({ title }) => (
 
 const RightComponent = ({ rewards }) => <Compensation rewards={rewards} />;
 
-const ProfileBountySection = () => (
-  <SectionContent
-    HeaderTitleProps={{
-      text: 'Bounties',
-      IconComponent: StarIcon,
-    }}
-    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.BOUNTY)}
-    backgroundImageUrl="/images/project/bounty-empty-bg.svg"
-    showAllUrl="boards?entity=bounty"
-    ListItemProps={{
-      LeftComponent,
-      RightComponent,
-      onClick: ({ router, data: { id } }) =>
-        router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
-    }}
-    data={useGetProjectPageBounties()}
-  />
-);
+const ProfileBountySection = () => {
+  const { homePageTaskObjects } = useProject();
+  return (
+    <SectionContent
+      HeaderTitleProps={{
+        text: 'Bounties',
+        IconComponent: StarIcon,
+      }}
+      CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.BOUNTY)}
+      backgroundImageUrl="/images/project/bounty-empty-bg.svg"
+      showAllUrl="boards?entity=bounty"
+      ListItemProps={{
+        LeftComponent,
+        RightComponent,
+        onClick: ({ router, data: { id } }) =>
+          router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
+      }}
+      data={homePageTaskObjects?.bounties}
+    />
+  );
+};
 
 export default ProfileBountySection;

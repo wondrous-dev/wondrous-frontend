@@ -3,8 +3,9 @@ import TaskCardStatus from 'components/Common/TaskCardStatus';
 import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES, TASK_STATUS_DONE } from 'utils/constants';
+import { useProject } from 'utils/hooks';
 
-import { useEntityCreateButtonProps, useGetProjectPageMilestones } from './helpers';
+import { useEntityCreateButtonProps } from './helpers';
 import SectionContent from './SectionContent';
 import MilestoneProgress from './MilestoneProgress';
 
@@ -24,23 +25,26 @@ const RightComponent = ({ type, orgId, status, id }) => (
   </Grid>
 );
 
-const ProfileMilestoneSection = () => (
-  <SectionContent
-    HeaderTitleProps={{
-      text: 'Milestones',
-      IconComponent: FlagIcon,
-    }}
-    CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.MILESTONE)}
-    backgroundImageUrl="/images/project/milestone-empty-bg.svg"
-    showAllUrl="boards?entity=milestone"
-    ListItemProps={{
-      LeftComponent,
-      RightComponent,
-      onClick: ({ router, data: { id } }) =>
-        router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
-    }}
-    data={useGetProjectPageMilestones()}
-  />
-);
+const ProfileMilestoneSection = () => {
+  const { homePageTaskObjects } = useProject();
+  return (
+    <SectionContent
+      HeaderTitleProps={{
+        text: 'Milestones',
+        IconComponent: FlagIcon,
+      }}
+      CreateButtonProps={useEntityCreateButtonProps(ENTITIES_TYPES.MILESTONE)}
+      backgroundImageUrl="/images/project/milestone-empty-bg.svg"
+      showAllUrl="boards?entity=milestone"
+      ListItemProps={{
+        LeftComponent,
+        RightComponent,
+        onClick: ({ router, data: { id } }) =>
+          router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
+      }}
+      data={homePageTaskObjects?.milestones}
+    />
+  );
+};
 
 export default ProfileMilestoneSection;

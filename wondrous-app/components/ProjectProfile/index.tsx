@@ -9,6 +9,7 @@ import {
   useCreateGrantModal,
   useCategoriesModal,
   useIsOrg,
+  useGetHomePageTaskObjects,
 } from './helpers';
 import ProfileSectionsWrapper from './ProfileSectionsWrapper';
 
@@ -19,14 +20,16 @@ const ProjectProfile = () => {
   const { CollaborationModal, handleCreateModal } = useCollaborationModal();
   const { DocCategoriesModal, handleCreateNewCategory } = useCategoriesModal();
   const { CreateGrantModal, handleCreateFormModal } = useCreateGrantModal();
+  const homePageTaskObjects = useGetHomePageTaskObjects();
   const projectContextValue = useMemo(
     () => ({
       setEntityType,
       handleCreateModal,
       handleCreateNewCategory,
       handleCreateFormModal,
+      homePageTaskObjects,
     }),
-    [setEntityType, handleCreateModal, handleCreateNewCategory, handleCreateFormModal]
+    [setEntityType, handleCreateModal, handleCreateNewCategory, handleCreateFormModal, homePageTaskObjects]
   );
   return (
     <ProjectContext.Provider value={projectContextValue}>
