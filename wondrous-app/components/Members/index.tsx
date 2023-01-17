@@ -42,18 +42,17 @@ import {
 } from './styles';
 
 const Members = (props) => {
-  const { orgData, podData } = props;
-
-  const orgId = orgData?.id;
-  const podId = podData?.id;
-
-  const isOrg = !!orgData?.id;
-
   const user = useMe();
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
 
   const board = orgBoard || podBoard;
+  const orgData = orgBoard?.orgData;
+  const podData = podBoard?.pod;
+  const orgId = orgBoard?.orgId;
+  const podId = podBoard?.podId;
+  const isOrg = !!orgId;
+
   const userRole = useMemo(() => {
     if (isOrg) {
       return board?.userPermissionsContext?.orgRoles[orgData?.id];
@@ -85,12 +84,14 @@ const Members = (props) => {
 
   // Get roles for org or pod depending on what's being viewed
   const { data: orgRoles } = useQuery(GET_ORG_ROLES, {
+    skip: !orgId,
     variables: {
       orgId,
     },
   });
 
   const { data: podRoles } = useQuery(GET_POD_ROLES, {
+    skip: !podId,
     variables: {
       podId,
     },
@@ -378,6 +379,7 @@ const Members = (props) => {
       {!showMembershipRequestsEmptyState && (
         <MembershipRequests
           userMembershipRequests={isOrg ? orgUserMembershipRequests : podUserMembershipRequests}
+          membershipRequestsCount={isOrg ? orgData?.membershipRequestsCount : podData?.membershipRequestsCount}
           hasMore={isOrg ? hasMoreOrgMemberRequests : hasMorePodMemberRequests}
           handleShowMoreRequests={handleShowMoreMembershipRequests}
           approveRequest={handleApproveMembershipRequest}
@@ -389,6 +391,7 @@ const Members = (props) => {
         existingUsers={isOrg ? orgUsers : podUsers}
         hasMore={isOrg ? hasMoreOrgUsers : hasMorePodUsers}
         handleShowMoreUsers={handleShowMoreUsers}
+        contributorsCount={isOrg ? orgData?.contributorCount : podData?.contributorCount}
       />
     </MembersWrapper>
   );

@@ -27,6 +27,7 @@ import {
 
 type Props = {
   userMembershipRequests: Array<any>;
+  membershipRequestsCount: number;
   hasMore: boolean;
   handleShowMoreRequests?: () => void;
   declineRequest: (requestId: string) => void;
@@ -34,7 +35,14 @@ type Props = {
 };
 
 const MembershipRequests = (props: Props) => {
-  const { userMembershipRequests, hasMore, handleShowMoreRequests, declineRequest, approveRequest } = props;
+  const {
+    userMembershipRequests,
+    membershipRequestsCount,
+    hasMore,
+    handleShowMoreRequests,
+    declineRequest,
+    approveRequest,
+  } = props;
 
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
 
@@ -53,7 +61,7 @@ const MembershipRequests = (props: Props) => {
     <RequestsContainer>
       <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
 
-      <RequestCount>{userMembershipRequests?.length} Requests</RequestCount>
+      <RequestCount>{membershipRequestsCount} Requests</RequestCount>
       <MemberRequestsList>
         {userMembershipRequests?.map((request) => (
           <MemberRequestCard key={request.id}>

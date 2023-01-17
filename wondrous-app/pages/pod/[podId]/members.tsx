@@ -29,7 +29,7 @@ function PodMembersPage() {
       }}
     >
       <EntitySidebar>
-        <Members podData={data?.getPodById} />
+        <Members />
       </EntitySidebar>
     </PodBoardContext.Provider>
   );

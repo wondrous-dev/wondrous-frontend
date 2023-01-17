@@ -18,6 +18,7 @@ import {
 
 type ExistingMembersProps = {
   existingUsers: Array<any>;
+  contributorsCount: number;
   hasMore: boolean;
   handleShowMoreUsers: () => void;
 };
@@ -59,11 +60,11 @@ const ExistingMemberRow = (props: ExistingMemberRowProps) => {
 };
 
 const ExistingMembers = (props: ExistingMembersProps) => {
-  const { existingUsers, hasMore, handleShowMoreUsers } = props;
+  const { existingUsers, hasMore, handleShowMoreUsers, contributorsCount } = props;
 
   return (
     <MembersContainer>
-      <ExistingMembersCount>{existingUsers?.length} Members</ExistingMembersCount>
+      <ExistingMembersCount>{contributorsCount} Members</ExistingMembersCount>
 
       <MembersList>
         {existingUsers?.map(({ role, user }) => (

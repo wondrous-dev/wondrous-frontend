@@ -39,7 +39,7 @@ function OrgMemberPage() {
       }}
     >
       <EntitySidebar>
-        <Members orgData={org} />
+        <Members />
       </EntitySidebar>
     </OrgBoardContext.Provider>
   );
