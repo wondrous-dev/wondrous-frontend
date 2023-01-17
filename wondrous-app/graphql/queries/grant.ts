@@ -171,6 +171,12 @@ export const GET_GRANT_APPLICATION_BY_ID = gql`
       media {
         ...MediaFragment
       }
+      org {
+        username
+        profilePicture
+        name
+        id
+      }
       title
       grant {
         privacyLevel
@@ -191,6 +197,7 @@ export const GET_GRANT_APPLICATION_BY_ID = gql`
           username
           profilePicture
           name
+          id
         }
         pod {
           color

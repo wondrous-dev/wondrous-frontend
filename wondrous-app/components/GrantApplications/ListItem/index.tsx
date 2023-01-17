@@ -35,7 +35,7 @@ const ListItem = ({ item }) => {
       grantApplicationId: applicationId,
     };
 
-    router.push({ query }, undefined, { scroll: false, shallow: true });
+    router.push({ query }, undefined, { scroll: true, shallow: false });
   };
 
   const orgBoard = useOrgBoard();

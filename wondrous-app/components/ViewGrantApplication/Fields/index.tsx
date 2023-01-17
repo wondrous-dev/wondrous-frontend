@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import { OrgComponent } from 'components/BreadCrumbs/Components/OrgSelector';
 import CommentList from 'components/Comment';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -341,5 +342,28 @@ export const PodViewer = ({ grantApplication }) => {
         </HeaderButton>
       </UnstyledLink>
     </TaskMintWrapper>
+  );
+};
+
+export const OrgViewer = ({ grantApplication }) => {
+  const org = grantApplication?.org;
+
+  if (!org) return null;
+  return (
+    <WalletAddressWrapper disableHoverStroke>
+      <DataDisplayWrapper>
+        <OrgComponent
+          username={org.username}
+          profilePicture={org.profilePicture}
+          style={{
+            height: '18px',
+            width: '18px',
+          }}
+        />
+        <Typography fontFamily={typography.fontFamily} color={palette.white} fontSize="13px" fontWeight={500}>
+          {org.name}
+        </Typography>
+      </DataDisplayWrapper>
+    </WalletAddressWrapper>
   );
 };

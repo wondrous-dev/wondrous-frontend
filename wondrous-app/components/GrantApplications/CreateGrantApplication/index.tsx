@@ -158,11 +158,11 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
   );
 
   useEffect(() => {
-    if (grantApplication?.orgId && orgsSchema?.items?.length) {
-      const org = orgsSchema.items.find((org) => org.id === grantApplication?.orgId);
+    if (orgId && orgsSchema?.items?.length) {
+      const org = orgsSchema.items.find((org) => org.id === orgId);
       form.setFieldValue('org', org);
     }
-  }, [orgsSchema?.items?.length, grantApplication?.orgId]);
+  }, [orgsSchema?.items?.length, orgId]);
 
   const handleGrantApplicationSubmit = isEditMode
     ? ({ variables }) =>
@@ -346,7 +346,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
           </GrantDescriptionMedia>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
-            <GrantAmount value={grant?.reward} disableInput disableAmountOfRewards orgId={orgId} />
+            <GrantAmount value={grant?.reward} disableInput disableAmountOfRewards orgId={orgId} disablePaymentSelect />
             <TaskSectionDisplayDiv alignItems="start">
               <CreateEntityLabelWrapper>
                 <CreateEntityLabel>Wallet address</CreateEntityLabel>

@@ -10,7 +10,7 @@ export const WalletAddressWrapper = styled.div`
       background: ${palette.grey78};
       svg {
         path {
-          stroke: ${palette.highlightBlue};
+          stroke: ${({ disableHoverStroke }) => !disableHoverStroke && palette.highlightBlue};
         }
       }
     }

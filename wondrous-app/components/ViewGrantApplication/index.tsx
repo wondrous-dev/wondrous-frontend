@@ -62,7 +62,7 @@ import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { GrantApplicationStatusManager, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
+import { GrantApplicationStatusManager, OrgViewer, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';
 
 const GRANT_APPLICATION_STATUS_LABELS = {
@@ -99,7 +99,7 @@ const GRANT_APPLICATION_STATUS_LABELS = {
 const FIELDS_CONFIG = [
   {
     component: ({ grantApplication }) => <PodViewer grantApplication={grantApplication} />,
-    shouldDisplay: ({ isApproved }) => isApproved,
+    shouldDisplay: ({ isApprovedAndPaid }) => isApprovedAndPaid,
   },
   {
     component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
@@ -116,6 +116,10 @@ const FIELDS_CONFIG = [
   {
     label: 'Wallet Address',
     component: ({ grantApplication: { paymentAddress } }) => <WalletAddressViewer walletAddress={paymentAddress} />,
+  },
+  {
+    label: 'Project',
+    component: ({ grantApplication }) => <OrgViewer grantApplication={grantApplication} />,
   },
 ];
 
@@ -173,11 +177,10 @@ const ViewGrantApplication = ({ onClose }) => {
   const displayTitle = grant?.title?.slice(0, 10);
 
   const handleGrantClick = () => {
-    const query = {
-      grant: grant?.id,
-    };
+    const query = { ...router.query };
+    delete query.grantApplicationId;
 
-    router.push({ query }, undefined, { scroll: false, shallow: true });
+    router.push({ pathname: router.pathname, query }, undefined, { scroll: false, shallow: true });
   };
 
   const status = useMemo(() => selectApplicationStatus(grantApplication), [grantApplication]);
@@ -235,7 +238,7 @@ const ViewGrantApplication = ({ onClose }) => {
             <TaskModalHeaderIconWrapper
               onClick={() => {
                 onClose();
-                router.push(`/organization/${grant?.orgUsername}/home`, undefined, {
+                router.push(`/organization/${grant?.org?.username}/home`, undefined, {
                   shallow: true,
                 });
               }}
@@ -325,6 +328,11 @@ const ViewGrantApplication = ({ onClose }) => {
                     !field?.shouldDisplay({
                       hasManageRights: canManage,
                       isApproved: status === GRANT_APPLICATION_STATUSES.APPROVED,
+                      isApprovedAndPaid: [
+                        GRANT_APPLICATION_STATUSES.APPROVED,
+                        GRANT_APPLICATION_STATUSES.APPROVED_AND_PAID,
+                        GRANT_APPLICATION_STATUSES.APPROVED_AND_PROCESSING,
+                      ].includes(status),
                     })
                   ) {
                     return null;
