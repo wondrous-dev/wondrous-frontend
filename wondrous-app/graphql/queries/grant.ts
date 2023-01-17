@@ -228,10 +228,12 @@ export const GET_ACTIVE_GRANT_APPLICATION_PODS = gql`
       grantApplicationId
       color
       paymentData {
-        tokenAddress
-        amount
+        rewardAmount
+        paymentMethodId
+        symbol
+        icon
+        tokenName
         chain
-        decimal
       }
     }
   }

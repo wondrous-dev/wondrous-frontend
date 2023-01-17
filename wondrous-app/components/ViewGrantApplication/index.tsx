@@ -33,7 +33,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import GrantIcon from 'components/Icons/GrantIcon';
 import { GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
 import { RichTextViewer } from 'components/RichText';
-import { GrantAmount } from 'components/ViewGrant/Fields';
+import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import ViewGrantFooter from 'components/ViewGrant/Footer';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';
 import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
@@ -107,7 +107,7 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Grant amount',
-    component: ({ grantApplication: { grant } }) => <GrantAmount grantAmount={grant?.reward || {}} />,
+    component: ({ grantApplication: { grant } }) => <GrantPaymentData paymentData={grant?.reward || {}} />,
   },
   {
     component: ({ grantApplication }) => <PaymentHandler grantApplication={grantApplication} />,

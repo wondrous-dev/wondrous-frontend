@@ -39,7 +39,7 @@ export const Reviewers = ({ reviewers }) => (
   </MultipleDataDisplay>
 );
 
-export const GrantAmount = ({ grantAmount: { icon, rewardAmount, symbol }, numOfGrant = null }) => (
+export const GrantPaymentData = ({ paymentData: { icon, rewardAmount, symbol }, numOfGrant = null }) => (
   <GrantAmountWrapper hasNumOfGrants={!!numOfGrant}>
     <TaskSectionInfoPaymentMethodIcon src={icon} />
 

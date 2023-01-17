@@ -23,6 +23,7 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
+import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import { Card, StatItemWrapper } from './styles';
 
 const PodStats = ({ stats, podId }) => {
@@ -77,26 +78,36 @@ const ActiveApplicationItem = ({ workspace }) => {
 
   return (
     <Card gap="14px" display="flex" direction="column">
-      <Grid display="flex" gap="6px">
-        <OrgComponent
-          username={workspace?.org?.username}
-          profilePicture={workspace?.org?.profilePicture}
-          style={{
-            height: '28px',
-            width: '28px',
-          }}
-        />
-        <UnstyledLink href={`/pod/${workspace?.id}/home`}>
-          <PodIcon
-            color={workspace?.color}
+      <Grid display="flex" alignItems="center" justifyContent="space-between">
+        <Grid display="flex" gap="6px">
+          <OrgComponent
+            username={workspace?.org?.username}
+            profilePicture={workspace?.org?.profilePicture}
             style={{
-              width: 28,
-              height: 28,
-              borderRadius: 50,
+              height: '28px',
+              width: '28px',
             }}
           />
-        </UnstyledLink>
-        <TaskCardPrivacy privacyLevel={workspace?.privacyLevel} />
+          <UnstyledLink href={`/pod/${workspace?.id}/home`}>
+            <PodIcon
+              color={workspace?.color}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 50,
+              }}
+            />
+          </UnstyledLink>
+          <TaskCardPrivacy privacyLevel={workspace?.privacyLevel} />
+        </Grid>
+        <Grid>
+          {workspace?.paymentData?.map((paymentData, idx) => (
+            <GrantPaymentData
+              paymentData={paymentData}
+              key={`${paymentData?.paymentMethodId} + ${paymentData?.amount}`}
+            />
+          ))}
+        </Grid>
       </Grid>
       <TaskSubtaskTitle sx={{ marginTop: '0 !important' }}>{workspace?.name}</TaskSubtaskTitle>
       <GrantsBoardCardDescription>{workspace?.description}</GrantsBoardCardDescription>
