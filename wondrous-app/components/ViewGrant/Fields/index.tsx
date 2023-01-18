@@ -44,7 +44,7 @@ export const GrantAmount = ({ grantAmount: { icon, rewardAmount, symbol }, numOf
     <TaskSectionInfoPaymentMethodIcon src={icon} />
 
     <span>
-      {rewardAmount} {symbol}
+      Up to {rewardAmount} {symbol}
     </span>
     {!!numOfGrant && (
       <AmountWrapper>
