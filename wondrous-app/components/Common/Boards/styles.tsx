@@ -8,10 +8,10 @@ import Masonry from '@mui/lab/Masonry';
 export const BoardsContainer = styled.div`
   width: 100%;
   height: 100%;
+  overflow-x: auto;
 
-  overflow-x: ${({ isLaptop }) => (isLaptop ? 'auto' : 'none')};
   &::-webkit-scrollbar {
-    display: ${({ isLaptop }) => (isLaptop ? 'none' : '')};
+    display: none;
   }
 `;
 

@@ -1,12 +1,11 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
 import SearchTasks from 'components/SearchTasks';
 import { useHotkey, useBoards, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
-import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
 import ToggleViewButton from 'components/Common/ToggleViewButton';
 import Toggle from 'components/Common/Toggle';
-import { delQuery, insertUrlParam } from 'utils';
 import { GridViewIcon } from 'components/Icons/ViewIcons/gridView';
 import { ListViewIcon } from 'components/Icons/ViewIcons/listView';
 import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilters';
@@ -16,7 +15,6 @@ import palette from 'theme/palette';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { IsTabletContext, IsLaptopContext } from 'utils/contexts';
 import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
@@ -25,7 +23,6 @@ export function BoardsActivityInlineView({
   onChange,
   view,
   searchQuery,
-  isAdmin,
   listViewOptions,
   isExpandable = true,
   withAdminToggle,
@@ -37,8 +34,6 @@ export function BoardsActivityInlineView({
   const router = useRouter();
   const { search } = router.query;
   const board = orgBoard || podBoard || userBoard;
-  const isTablet = useContext(IsTabletContext);
-  const isLaptop = useContext(IsLaptopContext);
 
   const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter || board?.hasActiveFilters);
 
@@ -58,13 +53,11 @@ export function BoardsActivityInlineView({
     [displayFilters]
   );
 
-  const mobileDashboardPage = router.asPath.includes('/dashboard') && isTablet;
-
   return (
     <>
       <BoardsActivityInlineViewWrapper
         style={
-          search || isLaptop
+          search
             ? {
                 justifyContent: 'flex-start',
               }
@@ -72,7 +65,6 @@ export function BoardsActivityInlineView({
                 justifyContent: 'flex-end',
               }
         }
-        mobileDashboardPage={mobileDashboardPage}
         displaySingleViewFilter={displaySingleViewFilter}
       >
         <SearchTasks isExpandable={isExpandable} onSearch={onSearch} />
@@ -192,7 +184,6 @@ export default function BoardsActivity(props) {
       onChange={onFilterChange}
       view={view}
       searchQuery={searchQuery}
-      isAdmin={isAdmin}
       isExpandable={!userBoard}
       listViewOptions={listViewOptions}
       withAdminToggle={withAdminToggle}

@@ -8,7 +8,7 @@ export const BoardsActivityInlineViewWrapper = styled.div`
   align-items: center;
   gap: 18px;
   min-height: 34px;
-  flex-wrap: ${({ mobileDashboardPage }) => (mobileDashboardPage ? 'wrap' : 'nowrap')};
+  // flex-wrap: ${({ mobileDashboardPage }) => (mobileDashboardPage ? 'wrap' : 'nowrap')};
 
   ${BoardFiltersContainer} {
     width: ${({ displaySingleViewFilter }) => (displaySingleViewFilter ? 'auto' : '100%')};

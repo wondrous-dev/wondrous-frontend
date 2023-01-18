@@ -61,9 +61,13 @@ export const HeaderMainBlock = styled.div`
   min-height: 36px;
   height: 36px;
   display: flex;
-  flex-direction: ${({ isTablet }) => (isTablet ? 'column' : 'row')};
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-direction: column;
+  }
 `;
 
 export const HeaderTopLeftContainer = styled.div`
@@ -347,11 +351,15 @@ export const HeaderContributorsText = styled(HeaderContributorsAmount)`
 
 export const BoardsSubheaderWrapper = styled.div`
   display: grid;
-  grid-template-columns: ${({ isLaptop }) => (isLaptop ? 'none' : '1fr 1fr')};
+  grid-template-columns: 1fr 1fr;
   grid-row-gap: 20px;
   align-items: center;
   width: 95%;
   margin-top: 4px;
+
+  ${({ theme }) => theme.breakpoints.down('large')} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const Container = styled.div`

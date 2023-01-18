@@ -1,18 +1,15 @@
 import { Badge, InputAdornment } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import last from 'lodash/last';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { ViewType } from 'types/common';
 import { TaskInterface } from 'types/task';
-import { delQuery } from 'utils';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
 import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { IsTabletContext } from 'utils/contexts';
 import { SafeImage } from '../Common/Image';
 import { UserIconSmall } from '../Icons/Search/types';
 import BountyIcon from '../Icons/TaskTypes/bounty';
@@ -37,7 +34,6 @@ type Props = {
 let timeout;
 
 export default function SearchTasks({ onSearch, isExpandable, autocompleteComponent }: Props) {
-  const isTablet = useContext(IsTabletContext);
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -123,11 +119,6 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   }
 
   const Autocomplete = autocompleteComponent || DefaultAutocomplete;
-  const autocompleteWidth = isExpandable ? (isExpanded || isTablet ? '100%' : '30%') : '100%';
-
-  const dashboardPage = router.asPath.includes('/dashboard');
-
-  const flexBasisdashboardPage = isTablet && dashboardPage ? '50%' : '';
 
   const handleBlur = (e) => setIsExpanded(false);
   const handleFocus = () => setIsExpanded(true);
@@ -148,7 +139,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
           setInputValue(searchString || '');
         }
       }}
-      style={{ width: autocompleteWidth, flexBasis: flexBasisdashboardPage }}
+      fullWidth={!(isExpandable && !isExpanded)}
       disableClearable
       freeSolo={!inputValue || isLoading}
       getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}

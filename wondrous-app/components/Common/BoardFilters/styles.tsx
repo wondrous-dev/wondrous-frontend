@@ -8,6 +8,7 @@ export const BoardFiltersWrapper = styled.div`
   width: 100%;
   gap: 18px;
   flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
+  flex-wrap: wrap;
 `;
 
 export const BoardFiltersContainer = styled.div`

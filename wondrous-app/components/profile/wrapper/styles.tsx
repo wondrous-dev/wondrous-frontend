@@ -1,9 +1,10 @@
-import { Button, IconButton, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button as ButtonComponent } from '../../Common/button';
-import { BaseCard } from '../../Common/card';
 import { LinkIcon } from '../../Icons/linkIcon';
 
 export const OverviewComponent = styled.section`

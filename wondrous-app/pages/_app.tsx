@@ -16,7 +16,7 @@ import '../styles/globals.css';
 
 import apollo from 'services/apollo';
 import theme from 'theme';
-import { HotkeyContext, IsMobileContext, IsTabletContext, IsLaptopContext } from 'utils/contexts';
+import { HotkeyContext, IsMobileContext } from 'utils/contexts';
 import { initHotjar } from 'utils/hotjar';
 import { Web3ReactProvider } from '@web3-react/core';
 import { WonderWeb3Provider } from 'services/web3/context/WonderWeb3Context';
@@ -59,8 +59,6 @@ function MyApp({ Component, pageProps }) {
   // be server-side rendered.
   const router = useRouter();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-  const isLaptop = useMediaQuery(theme.breakpoints.down('lg'));
   const [showHotkeys, setShowHotkeys] = useState(false);
 
   useHotkeys(
@@ -103,33 +101,29 @@ function MyApp({ Component, pageProps }) {
         <link rel="shortcut icon" href="/images/favicon.ico" />
       </Head>
       <Script id="segment-script" dangerouslySetInnerHTML={{ __html: renderSnippet() }} />
-      <IsLaptopContext.Provider value={isLaptop}>
-        <IsTabletContext.Provider value={isTablet}>
-          <IsMobileContext.Provider value={isMobile}>
-            <StyledComponentProvider theme={theme}>
-              <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <ApolloProvider client={apollo}>
-                  <SnackbarAlertProvider>
-                    <Web3ReactProvider getLibrary={getLibrary}>
-                      <WonderWeb3Provider>
-                        <HotkeyContext.Provider value={showHotkeys}>
-                          <NavigationProgress />
-                          <SidebarLayout>
-                            <OnboardingTour>
-                              <Layout Component={Component} pageProps={pageProps} />≈
-                            </OnboardingTour>
-                          </SidebarLayout>
-                        </HotkeyContext.Provider>
-                      </WonderWeb3Provider>
-                    </Web3ReactProvider>
-                  </SnackbarAlertProvider>
-                </ApolloProvider>
-              </ThemeProvider>
-            </StyledComponentProvider>
-          </IsMobileContext.Provider>
-        </IsTabletContext.Provider>
-      </IsLaptopContext.Provider>
+      <IsMobileContext.Provider value={isMobile}>
+        <StyledComponentProvider theme={theme}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <ApolloProvider client={apollo}>
+              <SnackbarAlertProvider>
+                <Web3ReactProvider getLibrary={getLibrary}>
+                  <WonderWeb3Provider>
+                    <HotkeyContext.Provider value={showHotkeys}>
+                      <NavigationProgress />
+                      <SidebarLayout>
+                        <OnboardingTour>
+                          <Layout Component={Component} pageProps={pageProps} />≈
+                        </OnboardingTour>
+                      </SidebarLayout>
+                    </HotkeyContext.Provider>
+                  </WonderWeb3Provider>
+                </Web3ReactProvider>
+              </SnackbarAlertProvider>
+            </ApolloProvider>
+          </ThemeProvider>
+        </StyledComponentProvider>
+      </IsMobileContext.Provider>
     </>
   );
 }
