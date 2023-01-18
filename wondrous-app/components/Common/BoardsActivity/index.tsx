@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import SearchTasks from 'components/SearchTasks';
-import { useHotkey, useBoards, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useHotkey, useBoards, useOrgBoard, usePodBoard, useUserBoard, useIsMobile } from 'utils/hooks';
 import { ViewType } from 'types/common';
 import ToggleViewButton from 'components/Common/ToggleViewButton';
 import Toggle from 'components/Common/Toggle';
@@ -34,6 +34,7 @@ export function BoardsActivityInlineView({
   const router = useRouter();
   const { search } = router.query;
   const board = orgBoard || podBoard || userBoard;
+  const isMobile = useIsMobile();
 
   const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter || board?.hasActiveFilters);
 
@@ -65,6 +66,7 @@ export function BoardsActivityInlineView({
                 justifyContent: 'flex-end',
               }
         }
+        withAdminToggle={withAdminToggle}
         displaySingleViewFilter={displaySingleViewFilter}
       >
         <SearchTasks isExpandable={isExpandable} onSearch={onSearch} />
