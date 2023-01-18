@@ -6,7 +6,7 @@ import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { TaskModalCard, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
-import { useGetUserOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
+import { useGetLoggedInUserFullAccessOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
 import {
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,
@@ -20,7 +20,6 @@ import {
   CreateEntityLabelWrapper,
   CreateEntityOpenInFullIcon,
   CreateEntitySelectErrorWrapper,
-  CreateEntitySelectWrapper,
   CreateEntityTitle,
   CreateEntityWrapper,
   EditorPlaceholder,
@@ -115,9 +114,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
 
   const inputRef: any = useRef();
 
-  const user = useMe();
-
-  const userOrgs: any = useGetUserOrgs(user?.id);
+  const userOrgs: any = useGetLoggedInUserFullAccessOrgs();
 
   const connectedAddress = useMemo(() => {
     const isEns = wonderWeb3?.wallet?.addressTag.includes('.eth');
