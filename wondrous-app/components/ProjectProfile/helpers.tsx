@@ -265,7 +265,7 @@ export const useGetGrantOrgBoard = () => {
   return data;
 };
 
-export const useGetOrgProjectPageOrgCollabs = () => {
+export const useGetOrgHomeCollabs = () => {
   const { orgId } = useBoards().board;
   const { data } = useQuery(GET_ORG_HOME_COLLABS, {
     skip: !orgId,
@@ -277,5 +277,5 @@ export const useGetOrgProjectPageOrgCollabs = () => {
       },
     },
   });
-  return data?.getOrgProjectPageOrgCollabs;
+  return data?.getOrgHomeCollabs;
 };
