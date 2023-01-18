@@ -13,6 +13,7 @@ export const SearchIconWrapped = styled(SearchIcon)`
 
 export const Autocomplete = styled(AutocompleteComp)`
   width: ${(props) => (props.fullWidth ? '100%' : '30%')};
+  min-width: 100px;
   transition: width 0.3s;
 
   ${({ theme }) => theme.breakpoints.down('large')} {

@@ -3,13 +3,8 @@ import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper';
-// eslint-disable-next-line import/no-unresolved
-import 'swiper/css';
-// eslint-disable-next-line import/no-unresolved
-import 'swiper/css/pagination';
 
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   ENTITIES_TYPES,
   BOARD_TYPE,
@@ -313,7 +308,7 @@ function KanbanBoard(props) {
     }
   };
   return (
-    <KanbanBoardContainer isMobile={isMobile}>
+    <KanbanBoardContainer>
       <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
       <ConfirmModal
         open={!!taskToConfirm}

@@ -1,5 +1,3 @@
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import styled from 'styled-components';

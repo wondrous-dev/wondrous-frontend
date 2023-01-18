@@ -8,11 +8,6 @@ import Masonry from '@mui/lab/Masonry';
 export const BoardsContainer = styled.div`
   width: 100%;
   height: 100%;
-  overflow-x: auto;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 export const BoardsActivityInput = styled(TextField)({

@@ -123,7 +123,7 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
 
   return (
     <BoardFiltersContainer>
-      <BoardFiltersWrapper isMobile={isMobile}>
+      <BoardFiltersWrapper>
         {filterSchema.map((filter, idx) => (
           <FilterItem
             key={idx}
