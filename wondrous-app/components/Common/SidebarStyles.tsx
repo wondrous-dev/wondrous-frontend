@@ -39,9 +39,9 @@ export const SidebarContent = styled.div`
 `;
 
 export const ChildrenWrapper = styled.div`
-  margin-left: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
+  padding-left: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-left: ${({ minimized }) => (minimized ? '0px' : 'auto')};
+    padding-left: ${({ minimized }) => (minimized ? '0px' : 'auto')};
   }
   width: 100%;
 `;

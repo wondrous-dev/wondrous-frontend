@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
-import SearchTasks from 'components/SearchTasks';
-import { useHotkey, useBoards, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+
+import SearchTasks from 'components/SearchTasks';
+import { useHotkey, useBoards, useOrgBoard, usePodBoard, useUserBoard, useIsMobile } from 'utils/hooks';
 import { ViewType } from 'types/common';
 import ToggleViewButton from 'components/Common/ToggleViewButton';
 import Toggle from 'components/Common/Toggle';
-import { delQuery, insertUrlParam } from 'utils';
 import { GridViewIcon } from 'components/Icons/ViewIcons/gridView';
 import { ListViewIcon } from 'components/Icons/ViewIcons/listView';
 import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilters';
@@ -24,7 +23,6 @@ export function BoardsActivityInlineView({
   onChange,
   view,
   searchQuery,
-  isAdmin,
   listViewOptions,
   isExpandable = true,
   withAdminToggle,
@@ -36,6 +34,7 @@ export function BoardsActivityInlineView({
   const router = useRouter();
   const { search } = router.query;
   const board = orgBoard || podBoard || userBoard;
+  const isMobile = useIsMobile();
 
   const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter || board?.hasActiveFilters);
 
@@ -54,6 +53,7 @@ export function BoardsActivityInlineView({
     },
     [displayFilters]
   );
+
   return (
     <>
       <BoardsActivityInlineViewWrapper
@@ -66,6 +66,7 @@ export function BoardsActivityInlineView({
                 justifyContent: 'flex-end',
               }
         }
+        withAdminToggle={withAdminToggle}
         displaySingleViewFilter={displaySingleViewFilter}
       >
         <SearchTasks isExpandable={isExpandable} onSearch={onSearch} />
@@ -185,7 +186,6 @@ export default function BoardsActivity(props) {
       onChange={onFilterChange}
       view={view}
       searchQuery={searchQuery}
-      isAdmin={isAdmin}
       isExpandable={!userBoard}
       listViewOptions={listViewOptions}
       withAdminToggle={withAdminToggle}
