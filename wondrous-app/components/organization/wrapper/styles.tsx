@@ -346,7 +346,7 @@ export const HeaderContributorsText = styled(HeaderContributorsAmount)`
 
 export const BoardsSubheaderWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: ${({ isMobile }) => (isMobile ? 'none' : '1fr 1fr')};
   grid-row-gap: 20px;
   align-items: center;
   width: 95%;
