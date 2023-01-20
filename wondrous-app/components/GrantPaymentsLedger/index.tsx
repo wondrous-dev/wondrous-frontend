@@ -10,7 +10,7 @@ import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
 import GrantsFilters from 'components/GrantsFilters';
 import PlusIcon from 'components/Icons/plus';
-import ViewGrant from 'components/ViewGrant';
+import { Button } from 'components/Button';
 import {
   GET_UNPAID_GRANT_APPLICATIONS_FOR_ORG,
   GET_UNPAID_GRANT_APPLICATIONS_FOR_POD,
@@ -31,7 +31,6 @@ import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { delQuery } from 'utils/index';
 import EmptyGrantsBoard from './EmptyState';
 import {
-  BackToGrantButton,
   StyledTable,
   StyledTableBody,
   StyledTableCell,
@@ -92,12 +91,23 @@ const GrantPaymentsLedger = () => {
 
   return (
     <>
-      <Grid display="flex" justifyContent="space-between" marginBottom={2}>
-        <BackToGrantButton>Back to Grants</BackToGrantButton>
+      <Grid display="flex" justifyContent="space-between" alignItems="center">
+        <Button
+          buttonTheme={{
+            paddingX: 16,
+            paddingY: 7,
+            fontSize: '14px',
+            fontWeight: 500,
+          }}
+          borderRadius={6}
+          color="secondary"
+          height={28}
+        >
+          Back to Grants
+        </Button>
         <Toggle items={toggleItems} />
       </Grid>
       <CardsContainer numberOfColumns={2} isFullWidth={false}>
-        {/* <EmptyGrantsBoard /> */}
         <StyledTableContainer>
           <StyledTable>
             <StyledTableHead>
@@ -145,6 +155,7 @@ const GrantPaymentsLedger = () => {
             {/* <StyledTableBody>
           </StyledTableBody> */}
           </StyledTable>
+          <EmptyGrantsBoard />
         </StyledTableContainer>
       </CardsContainer>
     </>

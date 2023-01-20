@@ -71,9 +71,6 @@ const NotificationsBoard = forwardRef(
         return notification.actorUsername;
       }
       if (notification?.actorType === ENTITIES_TYPES.POD) {
-        if (notification?.type === NOTIFICATION_TYPES.GRANT_APPLICATION_APPROVED) {
-          return null;
-        }
         return notification?.actorUsername;
       }
       if (notification?.actorType === ENTITIES_TYPES.GRANT) {

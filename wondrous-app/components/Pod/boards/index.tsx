@@ -3,7 +3,6 @@ import React, { memo, Suspense } from 'react';
 
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
-import GrantApplicationPodCreateModal from 'components/GrantApplications/GrantApplicationPodCreateModal';
 import { ENTITIES_TYPES_FILTER_STATUSES, FILTER_STATUSES } from 'services/board';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { ColumnsContext } from 'utils/contexts';

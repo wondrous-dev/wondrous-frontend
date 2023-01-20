@@ -2,9 +2,6 @@ import { Typography, Table, TableContainer, TableCell, TableBody, TableRow, Tabl
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { Button } from 'components/Button';
-
-export const BackToGrantButton = styled(Button)``;
 
 export const EmptyStateWrapper = styled.div`
   width: 100% !important;

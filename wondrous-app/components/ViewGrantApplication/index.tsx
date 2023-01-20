@@ -99,7 +99,7 @@ const GRANT_APPLICATION_STATUS_LABELS = {
 const FIELDS_CONFIG = [
   {
     component: ({ grantApplication }) => <PodViewer grantApplication={grantApplication} />,
-    shouldDisplay: ({ isApprovedAndPaid }) => isApprovedAndPaid,
+    shouldDisplay: ({ isApproved }) => isApproved,
   },
   {
     component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
@@ -111,7 +111,7 @@ const FIELDS_CONFIG = [
   },
   {
     component: ({ grantApplication }) => <PaymentHandler grantApplication={grantApplication} />,
-    shouldDisplay: ({ isApproved }) => isApproved,
+    shouldDisplay: ({ isApproved, hasManageRights }) => isApproved && hasManageRights,
   },
   {
     label: 'Wallet Address',
@@ -328,11 +328,6 @@ const ViewGrantApplication = ({ onClose }) => {
                     !field?.shouldDisplay({
                       hasManageRights: canManage,
                       isApproved: status === GRANT_APPLICATION_STATUSES.APPROVED,
-                      isApprovedAndPaid: [
-                        GRANT_APPLICATION_STATUSES.APPROVED,
-                        GRANT_APPLICATION_STATUSES.APPROVED_AND_PAID,
-                        GRANT_APPLICATION_STATUSES.APPROVED_AND_PROCESSING,
-                      ].includes(status),
                     })
                   ) {
                     return null;

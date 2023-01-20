@@ -307,6 +307,8 @@ export const NOTIFICATION_OBJ_TYPES = {
   POST: 'post',
   COLLABORATION: 'collaboration',
   POD: 'pod',
+  GRANT: 'grant',
+  GRANT_APPLICATION: 'grant_application',
 };
 
 export const COLLAB_TYPES = {
