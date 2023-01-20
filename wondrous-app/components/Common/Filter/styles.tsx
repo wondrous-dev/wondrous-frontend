@@ -13,7 +13,6 @@ export const FilterHandle = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  width: 100%;
   height: 40px;
   padding: 1px;
   background: #1b1b1b;

@@ -12,8 +12,14 @@ export const SearchIconWrapped = styled(SearchIcon)`
 `;
 
 export const Autocomplete = styled(AutocompleteComp)`
-  width: 100%;
+  width: ${(props) => (props.fullWidth ? '100%' : '30%')};
+  min-width: 100px;
   transition: width 0.3s;
+
+  ${({ theme }) => theme.breakpoints.down('large')} {
+    width: 100%;
+  }
+
   && .MuiAutocomplete-inputRoot {
     position: relative;
     padding: 0;
