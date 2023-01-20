@@ -1,3 +1,4 @@
+import { useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -6,12 +7,7 @@ import CommentList from 'components/Comment';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import SubmittableCommentType from 'components/Common/SubmittableCommentType';
-import { ActionButton } from 'components/Common/Task/styles';
-import {
-  TaskMintDetails,
-  TaskMintDetailsTitle,
-  TaskMintWrapper,
-} from 'components/Common/TaskMint/TaskMintButton/styles';
+import { TaskMintWrapper } from 'components/Common/TaskMint/TaskMintButton/styles';
 import Divider from 'components/Divider';
 import CopyIcon from 'components/Icons/copy';
 import PodIcon from 'components/Icons/podIcon';
@@ -20,20 +16,27 @@ import { PAYMENT_TYPES } from 'components/Settings/Payouts/constants';
 import { DataDisplayWrapper } from 'components/ViewGrant/Fields/styles';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import { UnstyledLink } from 'components/WorkspacePicker/styles';
+import { useGlobalContext } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
 import {
   APPROVE_GRANT_APPLICATION,
   REJECT_GRANT_APPLICATION,
   REOPEN_GRANT_APPLICATION,
   REQUEST_CHANGE_GRANT_APPLICATION,
+  CREATE_GRANT_APPLICATION_POD,
 } from 'graphql/mutations';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useMemo, useState } from 'react';
 import { useWonderWeb3 } from 'services/web3';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { renderMentionString } from 'utils/common';
-import { ENTITIES_TYPES, GRANT_APPLICATION_COMMENT_TYPE, GRANT_APPLICATION_STATUSES } from 'utils/constants';
-import { Button, GrantApplicationStatusWrapper, WalletAddressWrapper } from './styles';
+import {
+  ENTITIES_TYPES,
+  GRANT_APPLICATION_COMMENT_TYPE,
+  GRANT_APPLICATION_STATUSES,
+  PERMISSIONS,
+} from 'utils/constants';
+import { Button, GrantApplicationStatusWrapper, WalletAddressWrapper, CreateWorkspaceWrapper } from './styles';
 
 const NOTES_LABEL = {
   [GRANT_APPLICATION_STATUSES.REJECTED]: 'Rejection Notes',
@@ -146,7 +149,10 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
       ].includes(status)
         ? 'Undo Approval'
         : 'Approve',
-      gradient: 'linear-gradient(259.59deg, #06FFA5 0%, #7427FF 93.38%)',
+      gradient:
+        status === GRANT_APPLICATION_STATUSES.APPROVED
+          ? 'linear-gradient(259.59deg, #FFD653 0%, #7427FF 93.38%)'
+          : 'linear-gradient(259.59deg, #06FFA5 0%, #7427FF 93.38%)',
       commentType: null,
       disabled:
         commentType ||
@@ -200,18 +206,23 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
 
   return (
     <GrantApplicationStatusWrapper>
-      <Grid display="flex" justifyContent="space-between" alignItems="center" gap="24px">
+      <Grid display="flex" justifyContent="space-between" alignItems="center" gap="10px">
         {!paymentExists
-          ? BUTTONS_CONFIG.map((buttonConfig, index) => (
-              <Button
-                key={index}
-                onClick={buttonConfig.action}
-                gradient={buttonConfig.gradient}
-                disabled={buttonConfig.disabled}
-              >
-                {buttonConfig.label}
-              </Button>
-            ))
+          ? BUTTONS_CONFIG.map((buttonConfig, index) => {
+              if (buttonConfig.disabled) {
+                return null;
+              }
+              return (
+                <Button
+                  key={index}
+                  onClick={buttonConfig.action}
+                  gradient={buttonConfig.gradient}
+                  disabled={buttonConfig.disabled}
+                >
+                  {buttonConfig.label}
+                </Button>
+              );
+            })
           : null}
       </Grid>
       {!!commentType || !isStatusWithNoContent ? <Divider /> : null}
@@ -291,9 +302,9 @@ export const PaymentHandler = ({ grantApplication }) => {
   return (
     <GrantApplicationStatusWrapper>
       <Grid display="flex" justifyContent="space-between" alignItems="center" gap="20px">
-        <Button onClick={togglePayments} gradient="linear-gradient(259.59deg, #06FFA5 0%, #7427FF 93.38%)">
+        <HeaderButton type="button" onClick={togglePayments}>
           Proceed to payment
-        </Button>
+        </HeaderButton>
         <Typography
           whiteSpace="nowrap"
           fontFamily={typography.fontFamily}
@@ -310,39 +321,79 @@ export const PaymentHandler = ({ grantApplication }) => {
 };
 
 export const PodViewer = ({ grantApplication }) => {
+  const router = useRouter();
   const pod = grantApplication?.pod;
-  if (!pod) return null;
+  const globalContext = useGlobalContext();
+  const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
+  const userPermissionsContext = getUserPermissionContext();
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: grantApplication?.orgId,
+  });
+  const [createGranApplicationPod] = useMutation(CREATE_GRANT_APPLICATION_POD, {
+    refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
+    onCompleted: (data) => {
+      if (data?.createGranApplicationPod?.podId) {
+        router.push(`/pod/${data?.createGranApplicationPod?.podId}/home?firstTime=true`);
+      }
+    },
+  });
 
-  return (
-    <TaskMintWrapper>
-      <UnstyledLink href={`/pod/${pod?.id}/home`}>
-        <Grid display="flex" gap="8px" alignItems="center">
-          <PodIcon
-            color={pod?.color}
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 50,
-            }}
-          />
-          <Typography fontFamily={typography.fontFamily} color={palette.white} fontSize="13px" fontWeight={500}>
-            {pod?.name}
-          </Typography>
-        </Grid>
-      </UnstyledLink>
-      <UnstyledLink href={`/pod/${pod?.id}/home`}>
+  // this is using permission from the org that's applying
+  const canCreatePod =
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.MANAGE_POD) ||
+    permissions?.includes(PERMISSIONS.MANAGE_GRANTS);
+  const handleCreateWorkspaceClick = () => {
+    createGranApplicationPod({ variables: { grantApplicationId: grantApplication?.id } });
+  };
+  if (!pod && canCreatePod)
+    return (
+      <CreateWorkspaceWrapper style>
         <HeaderButton
+          onClick={handleCreateWorkspaceClick}
           reversed
           style={{
             width: 'fit-content',
           }}
           type="button"
         >
-          Workspace
+          Create Pod Workspace
         </HeaderButton>
-      </UnstyledLink>
-    </TaskMintWrapper>
-  );
+      </CreateWorkspaceWrapper>
+    );
+  if (pod) {
+    return (
+      <TaskMintWrapper>
+        <UnstyledLink href={`/pod/${pod?.id}/home`}>
+          <Grid display="flex" gap="8px" alignItems="center">
+            <PodIcon
+              color={pod?.color}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 50,
+              }}
+            />
+            <Typography fontFamily={typography.fontFamily} color={palette.white} fontSize="13px" fontWeight={500}>
+              {pod?.name}
+            </Typography>
+          </Grid>
+        </UnstyledLink>
+        <UnstyledLink href={`/pod/${pod?.id}/home`}>
+          <HeaderButton
+            reversed
+            style={{
+              width: 'fit-content',
+            }}
+            type="button"
+          >
+            Workspace
+          </HeaderButton>
+        </UnstyledLink>
+      </TaskMintWrapper>
+    );
+  }
 };
 
 export const OrgViewer = ({ grantApplication }) => {

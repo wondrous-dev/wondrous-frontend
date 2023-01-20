@@ -24,6 +24,7 @@ const NOTIFICATION_OBJ_TYPE_TO_LINK = {
   [NOTIFICATION_OBJ_TYPES.TASK_SUBMISSION_COMMENT]: 'submissionComment',
   [NOTIFICATION_OBJ_TYPES.POST]: 'post',
   [NOTIFICATION_OBJ_TYPES.COLLABORATION]: 'collaboration',
+  [NOTIFICATION_OBJ_TYPES.GRANT_APPLICATION]: 'grantApplication',
 };
 
 export function getNotificationDescription(notification, link) {
@@ -97,9 +98,6 @@ export const getNotificationLink = (notification) => {
       notification.type === COLLAB_TYPES.APPROVE
         ? `/${mainPath}/${notification.additionalData.orgUsername}/home`
         : `/${mainPath}/${notification.additionalData.orgUsername}/collaborations?invite=true`;
-  }
-  if (notification?.additionalData?.podFromGrant) {
-    if (!notification.viewedAt) notificationLink += `?viewed=false`;
   }
   if (notification?.additionalData?.viewNft) {
     notificationLink += `/nft`;

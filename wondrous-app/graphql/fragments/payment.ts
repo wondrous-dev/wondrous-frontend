@@ -43,6 +43,35 @@ export const PaymentCardFragment = gql`
   }
 `;
 
+export const GrantApplicationPaymentFragment = gql`
+  fragment GrantApplicationPaymentFragment on GrantApplicationPaymentCard {
+    id
+    grantTitle
+    grantId
+    grantApplicationId
+    grantApplicationTitle
+    payeeId
+    payeeUsername
+    payeeProfilePicture
+    paymentAddress
+    chain
+    safeAddress
+    txHash
+    safeTxHash
+    payedAt
+    status
+    notes
+    amount
+    symbol
+    icon
+    tokenName
+    additionalData {
+      manualExplorerLink
+      utopiaLink
+    }
+  }
+`;
+
 export const UnpaidSubmissionFragment = gql`
   fragment UnpaidSubmissionFragment on UnpaidSubmission {
     taskTitle
@@ -61,6 +90,31 @@ export const UnpaidSubmissionFragment = gql`
     tokenName
     decimal
     tokenAddress
+    safeAddress
+    txHash
+    safeTxHash
+  }
+`;
+
+export const UnpaidGrantApplicationFragment = gql`
+  fragment UnpaidGrantApplicationFragment on UnpaidGrantApplication {
+    grantTitle
+    grantId
+    grantApplicationId
+    grantApplicationTitle
+    payeeId
+    payeeUsername
+    payeeProfilePicture
+    paymentAddress
+    grantApplicationApprovedAt
+    paymentStatus
+    chain
+    amount
+    symbol
+    icon
+    tokenName
+    tokenAddress
+    decimal
     safeAddress
     txHash
     safeTxHash

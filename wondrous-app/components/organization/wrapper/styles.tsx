@@ -199,6 +199,7 @@ export function HeaderManageSettingsButton(props) {
   );
 }
 
+// this is the new primary button
 export const HeaderButton = styled.button`
   border-radius: 100px;
   display: flex;

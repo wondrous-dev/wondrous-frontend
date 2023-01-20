@@ -23,13 +23,13 @@ const GrantApplicationPodCreateModal = () => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const podBoard = usePodBoard();
   const router = useRouter();
-  const { viewed } = router.query;
+  const { firstTime } = router.query;
 
   const handleClose = () => {
     const query = {
       ...router.query,
     };
-    delete query.viewed;
+    delete query.firstTime;
     router.push(
       {
         pathname: router.pathname,
@@ -39,6 +39,7 @@ const GrantApplicationPodCreateModal = () => {
       { scroll: false, shallow: true }
     );
   };
+
   const handlePodNameUpdate = (name) =>
     name
       ? updatePod({
@@ -71,7 +72,7 @@ const GrantApplicationPodCreateModal = () => {
   };
 
   return (
-    <Modal open={!!viewed} maxWidth={560} onClose={handleClose} title="Grant Application Pod">
+    <Modal open={!!firstTime} maxWidth={560} onClose={handleClose} title="Grant Application Pod">
       <Grid gap="24px" display="flex" direction="column">
         <GradientHeading>Your grant application has been approved!</GradientHeading>
         <Typography fontFamily={typography.fontFamily} fontWeight={400} fontSize="13px" color={palette.grey600}>
