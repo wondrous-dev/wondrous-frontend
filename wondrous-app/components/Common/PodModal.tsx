@@ -150,4 +150,4 @@ function PodModal(props: PodModalProps) {
   );
 }
 
-export default withAuth(PodModal)
+export default withAuth(PodModal);

@@ -84,6 +84,7 @@ const validationSchema = Yup.object().shape({
   }).required(),
   numOfGrant: Yup.number()
     .typeError('Number of grants must be a number')
+    .nullable()
     .moreThan(0, 'Number of grants must be greater than 0')
     .lessThan(1000000000, 'Number of grants must be less than 1 billion'),
   startDate: Yup.string().optional().nullable(),

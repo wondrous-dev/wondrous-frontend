@@ -4,6 +4,7 @@ export const tabs = {
   discussion: 'Discussion',
   tasks: 'Tasks',
   applications: 'Applications',
+  activeApplications: 'Active',
 };
 
 export const tabsPerType = {

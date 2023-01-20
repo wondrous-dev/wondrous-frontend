@@ -99,7 +99,7 @@ function TaskSubtaskReward({ rewards }) {
   );
 }
 
-function TaskSubTaskPrivacyIconWrapper({ privacyLevel }) {
+export function TaskSubTaskPrivacyIconWrapper({ privacyLevel }) {
   const isPrivate = privacyLevel !== PRIVACY_LEVEL.public;
   return <TaskSubtaskPrivacyIcon isPrivate={isPrivate} tooltipTitle={isPrivate ? 'Members only' : 'Public'} />;
 }

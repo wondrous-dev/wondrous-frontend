@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import EntitySidebar from 'components/Common/SidebarEntity';
+import GrantApplicationPodCreateModal from 'components/GrantApplications/GrantApplicationPodCreateModal';
 import HomePageHeader from 'components/Pod/wrapper/HomePageHeader';
 import ProjectProfile from 'components/ProjectProfile';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -40,6 +41,8 @@ const PodProject = () => {
 
   return (
     <PodBoardContext.Provider value={contextValue}>
+      <GrantApplicationPodCreateModal />
+
       <EntitySidebar>
         <HomePageHeader>
           <ProjectProfile />

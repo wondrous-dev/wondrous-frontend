@@ -18,7 +18,7 @@ import { IconWrapper } from 'components/GrantsFilters/styles';
 import CommentsIcon from 'components/Icons/comments';
 import { DueDateIcon } from 'components/Icons/taskModalIcons';
 import { RichTextViewer } from 'components/RichText';
-import { GrantAmount } from 'components/ViewGrant/Fields';
+import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import format from 'date-fns/format';
 import { useContext, useState } from 'react';
 import palette from 'theme/palette';
@@ -93,7 +93,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
           <Grid display="flex" gap="14px" alignItems="center">
             <TaskCardPrivacy privacyLevel={grant?.privacyLevel} />
 
-            <GrantAmount grantAmount={grant.reward} numOfGrant={grant.numOfGrant} />
+            <GrantPaymentData paymentData={grant.reward} numOfGrant={grant.numOfGrant} />
           </Grid>
           <Grid display="flex" gap="14px">
             <ItemPill withIcon>
