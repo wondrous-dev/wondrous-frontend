@@ -5,6 +5,12 @@ export const CREATE_GRANT = gql`
   mutation createGrant($input: GrantInput) {
     createGrant(input: $input) {
       id
+      org {
+        name
+      }
+      pod {
+        name
+      }
     }
   }
 `;

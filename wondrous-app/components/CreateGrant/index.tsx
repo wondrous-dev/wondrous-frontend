@@ -46,6 +46,7 @@ import {
 import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
+import { useCornerWidget } from 'components/Common/CornerWidget';
 import { useFormik } from 'formik';
 import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } from 'graphql/mutations/grant';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -112,6 +113,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const { setCornerWidgetValue } = useCornerWidget();
 
   const [updateGrant] = useMutation(UPDATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
@@ -132,9 +134,15 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const [attachMedia] = useMutation(ATTACH_GRANT_MEDIA);
   const [createGrant] = useMutation(CREATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
-    onCompleted: () => {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage('Grant created successfully!');
+    onCompleted: ({ createGrant: createGrantData }) => {
+      const { org, pod, id } = createGrantData;
+      setCornerWidgetValue({
+        open: true,
+        orgName: org?.name,
+        podName: pod?.name,
+        type: ENTITIES_TYPES.GRANT,
+        id,
+      });
       handleClose();
     },
     onError: () => {

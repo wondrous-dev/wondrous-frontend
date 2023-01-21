@@ -10,11 +10,12 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 
 import { CREATE_ORG_DOCUMENT, CREATE_POD_DOCUMENT, UPDATE_DOCUMENT } from 'graphql/mutations/documents';
-import { URL_REGEX } from 'utils/constants';
+import { ENTITIES_TYPES, URL_REGEX } from 'utils/constants';
 
 import DocModal from 'components/DocModal';
 import ImageUploader from 'components/ImageUploader';
 import DocPermissionSelect from 'components/DocPermissionSelect';
+import { useCornerWidget } from 'components/Common/CornerWidget';
 
 import styles, { labelStyles, inputStyles } from './AddDocumentDialogStyles';
 
@@ -30,6 +31,8 @@ function AddDocumentDialog({ open, onClose, title, orgId, podId, category, docum
     setValue,
   } = useForm();
 
+  const { setCornerWidgetValue } = useCornerWidget();
+
   const isEdit = !isEmpty(document);
 
   const handleClose = () => {
@@ -41,10 +44,30 @@ function AddDocumentDialog({ open, onClose, title, orgId, podId, category, docum
 
   const [createOrgDocument] = useMutation(CREATE_ORG_DOCUMENT, {
     refetchQueries: [docRefetchQueries[0]],
+    onCompleted: ({ createOrgDocument: createOrgDocumentData }) => {
+      const { documentCategory } = createOrgDocumentData;
+      const { name, id } = documentCategory;
+      setCornerWidgetValue({
+        open: true,
+        orgName: name,
+        type: ENTITIES_TYPES.DOC,
+        id,
+      });
+    },
   });
 
   const [createPodDocument] = useMutation(CREATE_POD_DOCUMENT, {
     refetchQueries: [docRefetchQueries[1]],
+    onCompleted: ({ createPodDocument: createPodDocumentData }) => {
+      const { documentCategory } = createPodDocumentData;
+      const { name, id } = documentCategory;
+      setCornerWidgetValue({
+        open: true,
+        podName: name,
+        type: ENTITIES_TYPES.DOC,
+        id,
+      });
+    },
   });
 
   const [updateDocument] = useMutation(UPDATE_DOCUMENT, {
