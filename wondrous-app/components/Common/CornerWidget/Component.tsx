@@ -78,8 +78,10 @@ const CornerWidgetComponent = ({ id, type, orgName, podName, handleClose }: Corn
             minWidth: 0,
             '&:hover': {
               background: 'transparent',
-              textDecoration: 'underline',
-              color: palette.highlightBlue,
+              '& > *': {
+                textDecoration: 'underline',
+                color: palette.blue40,
+              },
             },
           }}
         >
