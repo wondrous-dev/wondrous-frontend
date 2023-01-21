@@ -1,9 +1,9 @@
 import isUrl from 'is-url';
-import { Modal, Typography } from '@mui/material';
+import { Modal } from '@mui/material';
 import { Box } from '@mui/system';
 import { useSlate } from 'slate-react';
 import React, { useEffect, useState } from 'react';
-import { BaseRange, Editor, Range } from 'slate';
+import { BaseRange } from 'slate';
 
 import { Button as CommonButton } from 'components/Common/button';
 import EditorHelpers from 'components/RichText/helpers';
@@ -19,10 +19,10 @@ import CodeIcon from 'components/RichText/icons/CodeIcon';
 import { HeaderIcon } from 'components/RichText/icons/HeaderIcon';
 import { LinkModal, LinkModalInput, LinkModalTitle, ToolbarButton, ToolbarContainer } from './styles';
 
-const InsertLinkModal: React.FC<{
+export const InsertLinkModal: React.FC<{
   editor: CustomEditor;
   open: boolean;
-  selectionOverride?: BaseRange;
+  selectionOverride: BaseRange;
   initialLinkText: string;
   onClose: () => void;
 }> = ({ editor, open, selectionOverride, initialLinkText, onClose }) => {
@@ -192,27 +192,22 @@ const HeaderButton: React.FC<{
   );
 };
 
-function Toolbar() {
+type ToolbarProps = {
+  selectionOverride: BaseRange;
+  initialLinkText: string;
+  isLinkModalOpen: boolean;
+  handleInsertLink: () => void;
+  setIsLinkModalOpen: (value: boolean) => void;
+};
+
+function Toolbar({
+  selectionOverride,
+  initialLinkText,
+  isLinkModalOpen,
+  handleInsertLink,
+  setIsLinkModalOpen,
+}: ToolbarProps) {
   const editor = useSlate();
-  const [selectionOverride, setSelectionOverride] = useState<BaseRange | null>(null);
-  const [initialLinkText, setInitialLinkText] = useState('');
-  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
-
-  const handleInsertLink = () => {
-    if (EditorHelpers.isBlockActive(editor, 'link')) {
-      EditorHelpers.unwrapLink(editor);
-
-      return;
-    }
-
-    if (Range.isCollapsed(editor.selection)) {
-      setSelectionOverride(null);
-    } else {
-      setSelectionOverride(editor.selection);
-      setInitialLinkText(Editor.string(editor, editor.selection));
-    }
-    setIsLinkModalOpen(true);
-  };
 
   return (
     <ToolbarContainer>

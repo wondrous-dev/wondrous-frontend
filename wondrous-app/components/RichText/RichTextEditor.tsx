@@ -1,10 +1,13 @@
 import Typography from '@mui/material/Typography';
-import { Descendant } from 'slate';
+import { BaseRange, Descendant, Editor, Range } from 'slate';
 import { DefaultElement, RenderElementProps, Slate } from 'slate-react';
 
+import SlashCommand from 'components/RichText/features/SlashCommand/SlashCommand';
+import useSlashCommand from 'components/RichText/features/SlashCommand/useSlashCommand';
+import { useState } from 'react';
 import Portal from './components/Portal';
 import Toolbar from './components/Toolbar';
-import { Leaf, LinkElement, MentionElement } from './elements';
+import { Leaf, LinkElement, MentionElement, SlashCommandElement } from './elements';
 import Mentions from './features/mentions/Mentions';
 import useMentions from './features/mentions/useMentions';
 import EditorHelpers from './helpers';
@@ -40,6 +43,8 @@ const renderElement = (props: RenderElementProps) => {
   switch (props.element.type) {
     case 'mention':
       return <MentionElement {...props} />;
+    case 'slashCommand':
+      return <SlashCommandElement {...props} />;
     case 'link':
       return <LinkElement {...props} />;
     case 'bulleted-list':
@@ -81,7 +86,91 @@ const RichTextEditor: React.FC<Props> = ({
   onClick,
   onMentionChange,
 }) => {
+  const [selectionOverride, setSelectionOverride] = useState<BaseRange | null>(null);
+  const [initialLinkText, setInitialLinkText] = useState('');
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+
+  // const { text } = initialValue[0].children[0];
+  //
+  // let isOdd = false;
+  //
+  // const quotes = text.split('').reduce((str, char) => {
+  //   if (char === '"') {
+  //     isOdd = !isOdd;
+  //
+  //     str += isOdd ? '„' : '“';
+  //     return str;
+  //   }
+  //
+  //   return str + char;
+  // }, '');
+
+  const handleInsertLink = () => {
+    if (EditorHelpers.isBlockActive(editor, 'link')) {
+      EditorHelpers.unwrapLink(editor);
+
+      return;
+    }
+
+    if (Range.isCollapsed(editor.selection)) {
+      setSelectionOverride(null);
+    } else {
+      setSelectionOverride(editor.selection);
+      setInitialLinkText(Editor.string(editor, editor.selection));
+    }
+    setIsLinkModalOpen(true);
+  };
+
+  const slashCommandActions = [
+    {
+      name: 'Bulleted List',
+      command: 'bulleted-list',
+      action: () => EditorHelpers.toggleBlock(editor, 'bulleted-list'),
+    },
+    {
+      name: 'Numbered List',
+      command: 'numbered-list',
+      action: () => EditorHelpers.toggleBlock(editor, 'numbered-list'),
+    },
+    // {
+    //   name: 'To-do list',
+    //   command: 'list-item',
+    //   action: () => EditorHelpers.toggleBlock(editor, 'list-item'),
+    // },
+    {
+      name: 'Code',
+      command: 'code',
+      action: () => EditorHelpers.toggleMark(editor, 'code'),
+    },
+    {
+      name: 'Heading 1',
+      command: 'h1',
+      action: () => EditorHelpers.toggleMark(editor, 'headingOne'),
+    },
+    {
+      name: 'Heading 2',
+      command: 'h2',
+      action: () => EditorHelpers.toggleMark(editor, 'headingTwo'),
+    },
+    {
+      name: 'Heading 3',
+      command: 'h3',
+      action: () => EditorHelpers.toggleMark(editor, 'headingThree'),
+    },
+    {
+      name: 'Link',
+      command: 'link',
+      action: () => handleInsertLink(),
+    },
+    // {
+    //   name: 'Image',
+    //   command: 'image',
+    //   action: () => EditorHelpers.wrapLink(editor, ''),
+    // },
+  ];
+
   const mentions = useMentions({ editor, mentionables, onMentionChange });
+  const slashCommands = useSlashCommand({ editor, slashCommandActions });
 
   return (
     <Slate
@@ -94,10 +183,17 @@ const RichTextEditor: React.FC<Props> = ({
         }
 
         mentions.handlers.onChange();
+        slashCommands.handlers.onChange();
       }}
     >
       <Portal node={toolbarNode}>
-        <Toolbar />
+        <Toolbar
+          selectionOverride={selectionOverride}
+          initialLinkText={initialLinkText}
+          isLinkModalOpen={isLinkModalOpen}
+          handleInsertLink={handleInsertLink}
+          setIsLinkModalOpen={setIsLinkModalOpen}
+        />
       </Portal>
 
       <StyledEditable
@@ -109,6 +205,7 @@ const RichTextEditor: React.FC<Props> = ({
           EditorHelpers.handleStepOutOfListOnEnter(editor, event);
           EditorHelpers.handleStepOutOfHeadingOnEnter(editor, event);
           mentions.handlers.onKeyDown(event);
+          slashCommands.handlers.onKeyDown(event);
         }}
         // we use React.ReactNode placeholder, but types are not compatible, although it works fine
         placeholder={placeholder as any}
@@ -119,6 +216,12 @@ const RichTextEditor: React.FC<Props> = ({
         editorContainerNode={editorContainerNode}
         {...mentions.props}
         {...mentions.commands}
+      />
+      <SlashCommand
+        portalNode={portalNode}
+        editorContainerNode={editorContainerNode}
+        {...slashCommands.props}
+        {...slashCommands.commands}
       />
     </Slate>
   );

@@ -4,6 +4,7 @@ import { withHistory } from 'slate-history';
 import { withReact } from 'slate-react';
 import isUrl from 'is-url';
 
+import withSlashCommand from 'components/RichText/features/SlashCommand/withSlashCommand';
 import EditorHelpers from './helpers';
 import { CustomEditor, CustomElement, TogglabaleBlock } from './types';
 import withMentions from './features/mentions/withMentions';
@@ -46,7 +47,7 @@ const withDeleteEmptyBlock = (editor: CustomEditor) => {
 };
 
 // instead of nesting function calls, we can use a reducer
-const plugins = [withDeleteEmptyBlock, withLinks, withMentions, withReact, withHistory];
+const plugins = [withDeleteEmptyBlock, withLinks, withMentions, withSlashCommand, withReact, withHistory];
 const applyPlugins = (editor: CustomEditor) => plugins.reduceRight((editor, plugin) => plugin(editor), editor);
 
 const useEditor = () => {

@@ -2,6 +2,7 @@ import { BaseEditor, Descendant } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { HistoryEditor } from 'slate-history';
 
+import { SlashCommandElement } from 'components/RichText/features/SlashCommand/types';
 import { MentionElement } from './features/mentions/types';
 
 export type FormattedText = {
@@ -82,10 +83,12 @@ export type HeadingThreeElement = {
 export type TogglabaleBlock = LinkElement | NumberedListElement | BulletedListElement;
 export type ListItemElement = { type: 'list-item'; children: Descendant[]; text?: undefined };
 export type CustomMentionElement = MentionElement<CustomText[]>;
+export type CustomSlashCommandElement = SlashCommandElement<CustomText[]>;
 
 export type CustomElement =
   | ParagraphElement
   | CustomMentionElement
+  | CustomSlashCommandElement
   | LinkElement
   | NumberedListElement
   | BulletedListElement

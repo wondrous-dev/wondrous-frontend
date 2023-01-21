@@ -10,6 +10,7 @@ import {
   MarkType,
   CustomMentionElement,
   TogglabaleBlock,
+  CustomSlashCommandElement,
 } from './types';
 
 const HOTKEYS = {
@@ -162,6 +163,17 @@ const EditorHelpers = {
       children: [{ text: `@${mentionable}` }],
     };
     Transforms.insertNodes(editor, mention);
+    Transforms.move(editor);
+  },
+
+  insertSlashCommand(editor, command, action) {
+    const slashCommand: CustomSlashCommandElement = {
+      type: 'slashCommand',
+      command,
+      action,
+      children: [{ text: `` }],
+    };
+    Transforms.insertNodes(editor, slashCommand);
     Transforms.move(editor);
   },
 
