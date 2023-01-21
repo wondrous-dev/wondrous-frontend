@@ -62,13 +62,20 @@ const useGetPodDocs = (podId) => {
   };
 };
 
+const useSelectedCategory = (id: string) => {
+  const [selectedCategory, setSelectedCategory] = useState(id);
+  useEffect(() => {
+    if (id) setSelectedCategory(id);
+  }, [id]);
+  return { selectedCategory, setSelectedCategory };
+};
+
 function Docs(props) {
   const { podData = {} } = props;
   const { id: podId } = podData;
   const router = useRouter();
-
   const { docData, categoriesData } = useGetPodDocs(podId);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const { selectedCategory, setSelectedCategory } = useSelectedCategory(router.query.id as string);
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
