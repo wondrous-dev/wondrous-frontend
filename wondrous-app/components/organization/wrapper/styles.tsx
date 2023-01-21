@@ -59,7 +59,6 @@ export const ContentContainer = styled.div`
 export const HeaderMainBlock = styled.div`
   width: 100%;
   min-height: 36px;
-  height: 36px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -76,6 +75,10 @@ export const HeaderTopLeftContainer = styled.div`
   margin-left: 8px;
   width: 100%;
   gap: 10px;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    justify-content: center;
+  }
 `;
 
 export const HeaderTitle = styled(Typography)`

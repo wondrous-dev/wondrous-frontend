@@ -162,6 +162,7 @@ function Wrapper(props) {
   }, [orgBoard?.orgId]);
 
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
+
   return (
     <>
       <TaskViewModalWatcher />
