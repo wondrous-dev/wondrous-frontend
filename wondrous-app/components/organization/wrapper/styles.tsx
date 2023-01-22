@@ -204,14 +204,17 @@ export function HeaderManageSettingsButton(props) {
   );
 }
 
+// this is the new primary button
 export const HeaderButton = styled.button`
-  border-radius: 6px;
+  border-radius: 100px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   padding: 10px;
   width: max-content;
+  height: 35px;
+  padding: 8px 24px;
   ${({ reversed }) => (reversed ? `background: ${palette.highlightPurple}` : `background: transparent`)};
   border: 1px solid ${palette.highlightPurple};
   cursor: pointer;
@@ -223,7 +226,12 @@ export const HeaderButton = styled.button`
   line-height: 150%;
   margin-right: 10px;
   &:hover {
-    ${({ reversed }) => (reversed ? `background: transparent` : `background: ${palette.highlightPurple}`)};
+    ${({ reversed }) =>
+      reversed
+        ? `background: 
+    linear-gradient(270deg, ${palette.highlightBlue} 0%, ${palette.highlightPurple} 100%);
+    `
+        : `background: ${palette.highlightPurple}`};
   }
 `;
 

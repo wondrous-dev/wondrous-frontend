@@ -1,8 +1,8 @@
 import * as Constants from 'utils/constants';
 import CloseModalIcon from 'components/Icons/closeModal';
+import { Button as WonderButton } from 'components/Button';
 import {
   StyledArchivedLabel,
-  StyledArchiveTaskButton,
   StyledBody,
   StyledBox,
   StyledButtonsContainer,
@@ -12,7 +12,6 @@ import {
   StyledDivider,
   StyledHeader,
 } from 'components/Common/ArchiveTaskModal/styles';
-import { CompletedIcon } from '../../Icons/statusIcons';
 
 interface ICompleteMilestoneModalProps {
   open: boolean;
@@ -47,10 +46,9 @@ export function CompleteModal(props: ICompleteMilestoneModalProps) {
         <StyledDivider />
         <StyledButtonsContainer>
           <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-          <StyledArchiveTaskButton>
-            <CompletedIcon />
+          <WonderButton>
             <StyledArchivedLabel onClick={handleComplete}>Complete {taskType}</StyledArchivedLabel>
-          </StyledArchiveTaskButton>
+          </WonderButton>
         </StyledButtonsContainer>
       </StyledBox>
     </StyledDialog>

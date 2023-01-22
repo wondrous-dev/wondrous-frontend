@@ -133,6 +133,7 @@ const cache = new InMemoryCache({
         getGrantOrgBoard: offsetLimitPagination(['orgId', 'status']),
         getGrantPodBoard: offsetLimitPagination(['podId', 'status']),
         getGrantApplicationsForGrant: offsetLimitPagination(['grantId', 'status']),
+        getActiveGrantApplicationPods: offsetLimitPagination(['grantId']),
       },
     },
   },

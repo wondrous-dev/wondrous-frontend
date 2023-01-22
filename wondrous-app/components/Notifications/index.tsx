@@ -73,6 +73,9 @@ const NotificationsBoard = forwardRef(
       if (notification?.actorType === ENTITIES_TYPES.POD) {
         return notification?.actorUsername;
       }
+      if (notification?.actorType === ENTITIES_TYPES.GRANT) {
+        return notification?.actorUsername;
+      }
     };
     const showBadge = useHotkey();
 

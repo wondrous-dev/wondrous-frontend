@@ -1,9 +1,12 @@
 import { useMutation } from '@apollo/client';
 import { Box, CircularProgress, Grid, Tooltip } from '@mui/material';
+import { useMe } from 'components/Auth/withAuth';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { TaskModalCard, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { useGetLoggedInUserFullAccessOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
 import {
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,
@@ -35,10 +38,12 @@ import {
   RichTextContainer,
   RichTextWrapper,
 } from 'components/CreateGrant/styles';
+import { DAOIcon } from 'components/Icons/dao';
 import ArrowBackIcon from 'components/Icons/Sidebar/arrowBack.svg';
+import OrgSearch from 'components/OrgSearch';
 import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
-import { useFormik } from 'formik';
+import { Formik, useFormik } from 'formik';
 import {
   ATTACH_GRANT_APPLICATION_MEDIA,
   CREATE_GRANT_APPLICATION,
@@ -56,7 +61,14 @@ import { CHAIN_REGEX, transformMediaFormat } from 'utils/helpers';
 import { useTaskContext } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as yup from 'yup';
-import { ActionButton, FooterButtonsWrapper, HeaderTypography, IconWrapper } from './styles';
+import palette from 'theme/palette';
+import {
+  ActionButton,
+  CreateGrantApplicationWorkspaceWrapper,
+  FooterButtonsWrapper,
+  HeaderTypography,
+  IconWrapper,
+} from './styles';
 import { descriptionTemplate } from './utils';
 
 interface Props {
@@ -102,6 +114,8 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
 
   const inputRef: any = useRef();
 
+  const userOrgs: any = useGetLoggedInUserFullAccessOrgs();
+
   const connectedAddress = useMemo(() => {
     const isEns = wonderWeb3?.wallet?.addressTag.includes('.eth');
     return isEns ? wonderWeb3?.wallet?.addressTag : wonderWeb3?.wallet?.address;
@@ -114,9 +128,38 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
       : deserializeRichText(descriptionTemplate),
     paymentAddress: grantApplication?.paymentAddress || connectedAddress || null,
     mediaUploads: transformMediaFormat(grantApplication?.media) || [],
+    org: null,
   };
 
   const handleCloseAction = () => (isEditMode ? handleClose() : toggleCreateApplicationModal());
+
+  const orgsSchema = useMemo(
+    () => ({
+      name: 'org',
+      label: 'Select your project',
+      items: userOrgs?.map((org) => ({
+        ...org,
+        icon: <OrgProfilePicture profilePicture={org?.profilePicture} />,
+        pillIcon: () => <OrgProfilePicture profilePicture={org?.profilePicture} />,
+      })),
+      icon: ({ style, ...rest }) => (
+        <DAOIcon
+          encircled={false}
+          stroke={palette.blue20}
+          style={{ ...style, width: '28px', height: '28px' }}
+          {...rest}
+        />
+      ),
+    }),
+    [userOrgs]
+  );
+
+  useEffect(() => {
+    if (orgId && orgsSchema?.items?.length) {
+      const org = orgsSchema.items.find((org) => org.id === orgId);
+      form.setFieldValue('org', org);
+    }
+  }, [orgsSchema?.items?.length, orgId]);
 
   const handleGrantApplicationSubmit = isEditMode
     ? ({ variables }) =>
@@ -142,6 +185,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
       .matches(chainToValidate, 'Wallet address is not valid')
       .required('Wallet address is required'),
     mediaUploads: yup.array(),
+    org: yup.object().required('Project is required'),
   });
 
   const form = useFormik({
@@ -163,6 +207,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             paymentAddress,
             description: JSON.stringify(values.description),
             userMentions,
+            orgId: values.org?.id,
           },
         },
       }).then(() => handleCloseAction());
@@ -298,7 +343,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
           </GrantDescriptionMedia>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
-            <GrantAmount value={grant?.reward} disableInput disableAmountOfRewards orgId={orgId} />
+            <GrantAmount value={grant?.reward} disableInput disableAmountOfRewards orgId={orgId} disablePaymentSelect />
             <TaskSectionDisplayDiv alignItems="start">
               <CreateEntityLabelWrapper>
                 <CreateEntityLabel>Wallet address</CreateEntityLabel>
@@ -361,6 +406,23 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
                 <input type="file" hidden ref={inputRef} onChange={attachMedia} />
               </CreateEntityWrapper>
             </TaskSectionDisplayDiv>
+            <Grid display="flex">
+              <CreateEntityLabelWrapper>
+                <CreateEntityLabel>Project</CreateEntityLabel>
+              </CreateEntityLabelWrapper>
+              <CreateGrantApplicationWorkspaceWrapper>
+                <OrgSearch
+                  options={orgsSchema.items}
+                  logoStyle={{
+                    height: '24px',
+                    width: '24px',
+                  }}
+                  value={form.values.org}
+                  onChange={(org) => form.setFieldValue('org', org)}
+                  label="Select project"
+                />
+              </CreateGrantApplicationWorkspaceWrapper>
+            </Grid>
           </GrantSectionDisplayDivWrapper>
         </GrantModalData>
         <FooterButtonsWrapper>

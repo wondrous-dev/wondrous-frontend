@@ -95,7 +95,7 @@ const GrantAmount = ({
                           symbol={selectedItem.label.props.symbol}
                           chain={null}
                         />
-                        <CreateEntitySelectArrowIcon />
+                        {!disablePaymentSelect ? <CreateEntitySelectArrowIcon /> : null}
                       </CreateEntityPaymentMethodSelected>
                     );
                   }}
