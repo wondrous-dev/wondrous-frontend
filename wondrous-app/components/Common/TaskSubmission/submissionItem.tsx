@@ -34,7 +34,7 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import SubmittableCommentType from 'components/Common/SubmittableCommentType';
-import { PaymentButton } from 'components/Common/Task/paymentButton';
+import PaymentButton from 'components/Common/Task/paymentButton';
 import { TaskAction, TaskActionAmount } from 'components/Common/Task/styles';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
 import PlusIcon from 'components/Icons/plus';

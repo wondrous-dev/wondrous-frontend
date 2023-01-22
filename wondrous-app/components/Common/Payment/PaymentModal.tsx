@@ -63,7 +63,7 @@ const GoBackStyle = {
  * }
  */
 
-export function MakePaymentModal(props) {
+function MakePaymentModal(props) {
   const { open, handleClose, setShowPaymentModal, handleGoBack, approvedSubmission, fetchedTask, reward, entityType } =
     props;
   const [selectedTab, setSelectedTab] = useState('wallet');
@@ -74,9 +74,6 @@ export function MakePaymentModal(props) {
   const [useChangedRewardAmount, setUseChangedRewardAmount] = useState(false);
   const [submissionPaymentError, setSubmissionPaymentError] = useState(null);
   const [tokenName, setTokenName] = useState('');
-  const orgBoard = useOrgBoard();
-  const userBoard = useUserBoard();
-  const podBoard = usePodBoard();
   const [changeRewardErrorText, setChangeRewardErrorText] = useState('');
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -93,7 +90,7 @@ export function MakePaymentModal(props) {
     orgId: fetchedTask?.orgId,
     podId: fetchedTask?.podId,
   });
-  const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
+  const [getOrgWallet, { data, loading }] = useLazyQuery(GET_ORG_WALLET, {
     onCompleted: (data) => {
       setWallets(data?.getOrgWallet);
     },
@@ -162,7 +159,7 @@ export function MakePaymentModal(props) {
     setTokenName(reward?.tokenName);
   }, [fetchedTask]);
 
-  const handlePaymentInfo = () => {
+  useEffect(() => {
     if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
       getGrantApplicationPaymentInfo({
         variables: {
@@ -175,11 +172,7 @@ export function MakePaymentModal(props) {
           submissionId: approvedSubmission?.id,
         },
       });
-    }
-  };
-  useEffect(() => {
-    handlePaymentInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approvedSubmission]);
 
   const handleCloseAll = () => {
@@ -192,14 +185,15 @@ export function MakePaymentModal(props) {
   const isBountyOrGrantApplication =
     fetchedTask.type === BOUNTY_TYPE || entityType === ENTITIES_TYPES.GRANT_APPLICATION;
 
-  const payee = {
-    userId: isBountyOrGrantApplication ? approvedSubmission?.createdBy : fetchedTask?.assigneeId,
-    username: isBountyOrGrantApplication ? approvedSubmission?.creator.username : fetchedTask.assigneeUsername,
-  };
-
   const paymentInfo =
     submissionPaymentInfo?.getSubmissionPaymentInfo || grantApplicationPaymentInfo?.getGrantApplicationPaymentInfo;
 
+  if (!submissionPaymentInfo) {
+    return null;
+  }
+  if (!canPay) {
+    return null;
+  }
   return (
     <Modal open={open} onClose={handleCloseAll}>
       <PaymentModal>
@@ -231,11 +225,9 @@ export function MakePaymentModal(props) {
               <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
             </div>
           )}
-          <>
-            <PodNameTypography style={GoBackStyle} onClick={handleGoBack}>
-              Back to Task
-            </PodNameTypography>
-          </>
+          <PodNameTypography style={GoBackStyle} onClick={handleGoBack}>
+            Back to Task
+          </PodNameTypography>
         </PaymentModalHeader>
         <PaymentTitleDiv>
           <PaymentTitleTextDiv>
@@ -246,76 +238,86 @@ export function MakePaymentModal(props) {
                 {rewardAmount} {tokenName?.toUpperCase()}{' '}
               </span>
               to{' '}
-              <Link
-                href={`/profile/${payee.userId}/about`}
-                style={{
-                  color: '#ffffff',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                }}
-                target="_blank"
-              >
-                {payee.username}
-              </Link>{' '}
+              {entityType === ENTITIES_TYPES.GRANT_APPLICATION ? (
+                <Link
+                  href={`/grantApplication/${approvedSubmission?.id}`}
+                  style={{
+                    color: '#ffffff',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                  target="_blank"
+                >
+                  {approvedSubmission?.title}
+                </Link>
+              ) : (
+                <Link
+                  href={`/profile/${fetchedTask?.assigneeId}/about`}
+                  style={{
+                    color: '#ffffff',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                  target="_blank"
+                >
+                  {fetchedTask.assigneeUsername}
+                </Link>
+              )}
             </PaymentTitleText>
             <PaymentDescriptionText>Task: {fetchedTask?.title}</PaymentDescriptionText>
-            {isBountyOrGrantApplication && (
+            {isBountyOrGrantApplication && changeRewardAmount ? (
               <>
-                {changeRewardAmount ? (
-                  <>
-                    <ChangePaymentAmountDiv>
-                      <InputForm
-                        style={{
-                          marginTop: '12px',
-                          width: 'fit-content',
-                          paddingRight: '12px',
-                        }}
-                        type="number"
-                        min="0"
-                        placeholder="Enter new reward amount"
-                        search={false}
-                        value={changedRewardAmount}
-                        onChange={(e) => setChangedRewardAmount(e.target.value)}
-                      />
-                      <PaymentDescriptionText
-                        style={{
-                          marginLeft: '12px',
-                          marginTop: '12px',
-                        }}
-                      >
-                        {tokenName?.toUpperCase()}{' '}
-                      </PaymentDescriptionText>
-                      <SaveNewRewardAmountButton
-                        onClick={() => {
-                          const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
-                          const initialBigRewardAmount = new BigNumber(reward?.rewardAmount);
-                          if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
-                            setChangeRewardErrorText('New reward must be greater than minimum');
-                          } else {
-                            setRewardAmount(changedRewardAmount);
-                            setChangeRewardAmount(false);
-                            setUseChangedRewardAmount(true);
-                          }
-                        }}
-                      >
-                        Save changes
-                      </SaveNewRewardAmountButton>
-                      <CancelNewRewardAmountButton
-                        onClick={() => {
-                          setChangeRewardAmount(false);
-                        }}
-                      >
-                        Cancel
-                      </CancelNewRewardAmountButton>
-                    </ChangePaymentAmountDiv>
-                    <ErrorText>{changeRewardErrorText}</ErrorText>
-                  </>
-                ) : (
-                  <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
-                    Change payment amount
-                  </ChangePaymentButton>
-                )}
+                <ChangePaymentAmountDiv>
+                  <InputForm
+                    style={{
+                      marginTop: '12px',
+                      width: 'fit-content',
+                      paddingRight: '12px',
+                    }}
+                    type="number"
+                    min="0"
+                    placeholder="Enter new reward amount"
+                    search={false}
+                    value={changedRewardAmount}
+                    onChange={(e) => setChangedRewardAmount(e.target.value)}
+                  />
+                  <PaymentDescriptionText
+                    style={{
+                      marginLeft: '12px',
+                      marginTop: '12px',
+                    }}
+                  >
+                    {tokenName?.toUpperCase()}{' '}
+                  </PaymentDescriptionText>
+                  <SaveNewRewardAmountButton
+                    onClick={() => {
+                      const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
+                      const initialBigRewardAmount = new BigNumber(reward?.rewardAmount);
+                      if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
+                        setChangeRewardErrorText('New reward must be greater than minimum');
+                      } else {
+                        setRewardAmount(changedRewardAmount);
+                        setChangeRewardAmount(false);
+                        setUseChangedRewardAmount(true);
+                      }
+                    }}
+                  >
+                    Save changes
+                  </SaveNewRewardAmountButton>
+                  <CancelNewRewardAmountButton
+                    onClick={() => {
+                      setChangeRewardAmount(false);
+                    }}
+                  >
+                    Cancel
+                  </CancelNewRewardAmountButton>
+                </ChangePaymentAmountDiv>
+                <ErrorText>{changeRewardErrorText}</ErrorText>
               </>
+            ) : (
+              <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
+                Change payment amount
+              </ChangePaymentButton>
             )}
           </PaymentTitleTextDiv>
         </PaymentTitleDiv>
@@ -361,3 +363,5 @@ export function MakePaymentModal(props) {
     </Modal>
   );
 }
+
+export default MakePaymentModal;

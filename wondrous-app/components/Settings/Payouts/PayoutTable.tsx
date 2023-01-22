@@ -106,7 +106,7 @@ const PayoutTable = (props: PayoutTableProps) => {
     setSelectedItems,
   } = props;
   const router = useRouter();
-
+  console.log('unpaidList', unpaidList);
   const [paymentMade, setPaymentMade] = useState(false);
   const [payeeDetails, setPayeeDetails] = useState<PayeeDetails | null>(null);
 
