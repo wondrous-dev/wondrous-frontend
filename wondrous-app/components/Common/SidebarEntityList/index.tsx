@@ -4,12 +4,12 @@ import GrantIcon from 'components/Icons/GrantIcon';
 import HomeIcon from 'components/Icons/home';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
+import WonderBot from 'components/Icons/Sidebar/wonderbot.svg';
 import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
-import StackIcon from 'components/Icons/Sidebar/stack.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import useMediaQuery from 'hooks/useMediaQuery';
@@ -65,6 +65,8 @@ const useSidebarData = () => {
     '/organization/[username]/boards',
     '/pod/[podId]/boards',
     '/collaboration/[username]/boards',
+    '/organization/[username]/wonder_ai_bot',
+    '/pod/[podId]/wonder_ai_bot',
   ];
 
   const taskCount = usePerTypeTaskCountForBoard();
@@ -116,6 +118,12 @@ const useSidebarData = () => {
           check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
           count: taskCount.proposalCount,
           entityType: ENTITIES_TYPES.PROPOSAL,
+        },
+        {
+          text: 'WonderBot AI',
+          Icon: WonderBot,
+          link: `${link}/wonder_ai_bot`,
+          check: () => pathnamesToCheck.includes(router.pathname) && router.pathname.includes('wonder_ai_bot'),
         },
       ],
     },
