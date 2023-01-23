@@ -224,6 +224,9 @@ const AddTeamMembers = ({
                       }}
                       InputProps={{
                         ...params.InputProps,
+                        style: {
+                          color: 'white',
+                        },
                         endAdornment: (
                           <InputAdornment position="start">
                             {' '}
