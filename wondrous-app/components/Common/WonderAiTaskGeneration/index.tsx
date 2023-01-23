@@ -1,8 +1,8 @@
 import Grid from '@mui/material/Grid';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import { useState } from 'react';
+import RobotHand from 'components/Common/WonderAiTaskGeneration/images/robot-hand.svg';
 import { CreateEntitySelectArrowIcon } from 'components/CreateEntity/CreateEntityModal/styles';
-
 import {
   PromptBox,
   PromptBoxDescription,
@@ -15,7 +15,10 @@ import {
   PromptInputDiv,
   PromptInput,
   EntityInput,
-} from './styles';
+  RightPanelSection,
+  ActionButton,
+  ActionButtonText,
+} from 'components/Common/WonderAiTaskGeneration/styles';
 
 const GENERATION_TYPES = [
   {
@@ -37,20 +40,20 @@ const WonderAiTaskGeneration = () => {
     actionPrompt: null,
     entityDescription: null,
   });
-
+  const [taskToView, setTaskToView] = useState(null);
   return (
     <Grid container>
-      <Grid md={7} item>
+      <Grid md={8} lg={7} item>
         <PromptContainer>
           <PromptBox>
             <PromptBoxTitle fontSize={18}>{`Unleash your communities' potential with AI.`}</PromptBoxTitle>
             <PromptBoxDescription>
-              {`Write a prompt describing your intended action to generate a ${
+              {`Write a prompt describing your intended action and what your org/pod does to generate a ${
                 promptGenerationType === GENERATION_TYPES[0]?.value
-                  ? 'milestone containing tasks'
-                  : 'task containing subtasks'
+                  ? 'milestone containing tasks.'
+                  : 'task containing subtasks.'
               }`}{' '}
-              .
+              The more specific you are, the better the AI will be able to generate tasks.
             </PromptBoxDescription>
             <PromptInputDiv>
               <PromptGenerationTypeSelect
@@ -86,16 +89,19 @@ const WonderAiTaskGeneration = () => {
                 autoComplete="off"
                 name="entity-description"
                 onChange={(event) => setEntityDescription(event.target.value)}
-                placeholder="What does your org/pod do? I.e. the marketing team for a social token. Be specific!  "
+                placeholder="Describe your team - e.g. the marketing team for a social token."
                 value={entityDescription}
                 error={formErrors.entityDescription}
               />
+              <ActionButton>
+                <ActionButtonText>Generate</ActionButtonText>
+              </ActionButton>
             </PromptInputDiv>
           </PromptBox>
         </PromptContainer>
       </Grid>
-      <Grid md={5} item>
-        <div />
+      <Grid sm={0} md={4} lg={5} item>
+        <RightPanelSection>{taskToView ? <></> : <RobotHand />}</RightPanelSection>
       </Grid>
     </Grid>
   );

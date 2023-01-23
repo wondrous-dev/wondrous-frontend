@@ -157,8 +157,34 @@ export const EntityInput = styled(PromptInput)`
   && {
     width: 100%;
     margin-left: 0;
+    margin-right: 8px;
     .MuiInputBase-root {
       width: 100%;
     }
+  }
+`;
+
+export const RightPanelSection = styled.div`
+  background: ${palette.black92};
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+export const ActionButton = styled.button`
+  padding: 8px 24px;
+  background: ${palette.highlightPurple};
+  border-radius: 35px;
+  border: none;
+  cursor: pointer;
+`;
+
+export const ActionButtonText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    color: ${palette.white};
+    font-size: 15px;
+    font-weight: 500;
   }
 `;
