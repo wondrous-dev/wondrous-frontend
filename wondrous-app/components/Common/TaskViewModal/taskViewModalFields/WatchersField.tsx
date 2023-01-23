@@ -150,11 +150,12 @@ function WatchersField({ fetchedTask }: WatchersFieldProps) {
               fontSize: '14px',
               fontWeight: 500,
             }}
+            color="secondary"
             borderRadius={166}
             height={26}
             onClick={handleWatch}
           >
-            Watch this task
+            Watch
           </Button>
         )}
       </Grid>

@@ -52,6 +52,11 @@ const permissons: Permisson[] = [
   //   subTitle: 'Can post to the activity timeline as brand.',
   //   permission: PERMISSIONS.MANAGE_POST,
   // },
+  {
+    title: 'Manage grants',
+    subTitle: 'Can manage grant applications.',
+    permission: PERMISSIONS.MANAGE_GRANTS,
+  },
 ];
 
 export default permissons;

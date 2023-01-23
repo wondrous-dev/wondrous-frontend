@@ -4,6 +4,8 @@ import {
   PaymentMethodFragment,
   ProcessingPaymentFragment,
   UnpaidSubmissionFragment,
+  UnpaidGrantApplicationFragment,
+  GrantApplicationPaymentFragment,
 } from '../fragments/payment';
 
 export const GET_PAYMENT_BY_ID = gql`
@@ -192,4 +194,40 @@ export const GET_PAYMENTS_FOR_GRANT_APPLICATION = gql`
     }
   }
   ${PaymentCardFragment}
+`;
+
+export const GET_UNPAID_GRANT_APPLICATIONS_FOR_ORG = gql`
+  query getUnpaidGrantApplicationsForOrg($input: OrgPaymentQueryInput) {
+    getUnpaidSubmissionsForOrg(input: $input) {
+      ...UnpaidGrantApplicationFragment
+    }
+  }
+  ${UnpaidGrantApplicationFragment}
+`;
+
+export const GET_UNPAID_GRANT_APPLICATIONS_FOR_POD = gql`
+  query getUnpaidGrantApplicationsForPod($input: PodPaymentQueryInput) {
+    getUnpaidGrantApplicationsForPod(input: $input) {
+      ...UnpaidGrantApplicationFragment
+    }
+  }
+  ${UnpaidGrantApplicationFragment}
+`;
+
+export const GET_GRANT_APPLICATION_PAYMENTS_FOR_ORG = gql`
+  query getGrantApplicationPaymentsForOrg($input: OrgPaymentQueryInput) {
+    getGrantApplicationPaymentsForOrg(input: $input) {
+      ...GrantApplicationPaymentFragment
+    }
+  }
+  ${GrantApplicationPaymentFragment}
+`;
+
+export const GET_GRANT_APPLICATION_PAYMENTS_FOR_POD = gql`
+  query getGrantApplicationPaymentsForPod($input: PodPaymentQueryInput) {
+    getGrantApplicationPaymentsForPod(input: $input) {
+      ...PaymentCardFragment
+    }
+  }
+  ${GrantApplicationPaymentFragment}
 `;

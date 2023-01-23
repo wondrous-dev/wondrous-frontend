@@ -46,6 +46,10 @@ export const DashboardHeader = styled(Typography)`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+      font-size: 28px;
+    }
   }
 `;
 

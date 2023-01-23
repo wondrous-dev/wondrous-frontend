@@ -7,6 +7,12 @@ export const BoardFiltersWrapper = styled.div`
   display: flex;
   width: 100%;
   gap: 18px;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-direction: column;
+  }
 `;
 
 export const BoardFiltersContainer = styled.div`

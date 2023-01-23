@@ -7,7 +7,8 @@ export const BoardsActivityInlineViewWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   gap: 18px;
-  height: 34px;
+  min-height: 34px;
+  flex-wrap: ${props => props.withAdminToggle ? 'wrap' : 'nowrap'};
 
   ${BoardFiltersContainer} {
     width: ${({ displaySingleViewFilter }) => (displaySingleViewFilter ? 'auto' : '100%')};

@@ -4,6 +4,7 @@ export const tabs = {
   discussion: 'Discussion',
   tasks: 'Tasks',
   applications: 'Applications',
+  activeApplications: 'Active',
 };
 
 export const tabsPerType = {
@@ -11,7 +12,7 @@ export const tabsPerType = {
   milestoneTabs: [tabs.tasks, tabs.discussion],
   subtaskTabs: [tabs.submissions, tabs.discussion],
   bountyTabs: [tabs.submissions, tabs.discussion],
-  taskTabs: [tabs.applications, tabs.submissions, tabs.subTasks, tabs.discussion],
+  taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion, tabs.applications],
   grantTabs: [tabs.applications, tabs.discussion],
   grantApplicationTabs: [tabs.discussion],
 };

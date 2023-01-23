@@ -89,7 +89,16 @@ export const DELETE_GRANT_APPLICATION = gql`
 export const APPROVE_GRANT_APPLICATION = gql`
   mutation approveGrantApplication($grantApplicationId: ID!) {
     approveGrantApplication(grantApplicationId: $grantApplicationId) {
-      success
+      id
+    }
+  }
+`;
+
+export const CREATE_GRANT_APPLICATION_POD = gql`
+  mutation createGranApplicationPod($grantApplicationId: ID!) {
+    createGranApplicationPod(grantApplicationId: $grantApplicationId) {
+      id
+      podId
     }
   }
 `;
@@ -97,7 +106,7 @@ export const APPROVE_GRANT_APPLICATION = gql`
 export const REJECT_GRANT_APPLICATION = gql`
   mutation rejectGrantApplication($grantApplicationId: ID!) {
     rejectGrantApplication(grantApplicationId: $grantApplicationId) {
-      success
+      id
     }
   }
 `;
