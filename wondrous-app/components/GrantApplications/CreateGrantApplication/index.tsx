@@ -1,12 +1,12 @@
 import { useMutation } from '@apollo/client';
-import { Box, CircularProgress, Grid, Tooltip } from '@mui/material';
+import { Box, CircularProgress, Grid, Tooltip, Typography } from '@mui/material';
+import { useGetLoggedInUserFullAccessOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
 import { useMe } from 'components/Auth/withAuth';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { TaskModalCard, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
-import { useGetLoggedInUserFullAccessOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
 import {
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,
@@ -56,12 +56,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useWonderWeb3 } from 'services/web3';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
+import { GRANT_APPLICATION_STATUSES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
 import { CHAIN_REGEX, transformMediaFormat } from 'utils/helpers';
 import { useTaskContext } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as yup from 'yup';
-import palette from 'theme/palette';
 import {
   ActionButton,
   CreateGrantApplicationWorkspaceWrapper,
@@ -69,7 +70,7 @@ import {
   HeaderTypography,
   IconWrapper,
 } from './styles';
-import { descriptionTemplate } from './utils';
+import { descriptionTemplate, meritCircleTemplate } from './utils';
 
 interface Props {
   grantApplication?: any;
@@ -121,11 +122,11 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
     return isEns ? wonderWeb3?.wallet?.addressTag : wonderWeb3?.wallet?.address;
   }, [wonderWeb3]);
 
+  const template = ONLY_GRANTS_ENABLED_ORGS.includes(orgId) ? meritCircleTemplate : descriptionTemplate;
+
   const initialValues = {
     title: grantApplication?.title || '',
-    description: grantApplication
-      ? deserializeRichText(grantApplication.description)
-      : deserializeRichText(descriptionTemplate),
+    description: grantApplication ? deserializeRichText(grantApplication.description) : deserializeRichText(template),
     paymentAddress: grantApplication?.paymentAddress || connectedAddress || null,
     mediaUploads: transformMediaFormat(grantApplication?.media) || [],
     org: null,
@@ -297,7 +298,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
               onChange={form.handleChange('title')}
               value={form.values.title}
               name="title"
-              placeholder="Enter a title"
+              placeholder="Write a clear title"
               minRows={1}
               maxRows={3}
               error={form.errors?.title}
@@ -308,6 +309,9 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
             <EditorToolbar ref={setEditorToolbarNode} />
+            <Typography fontFamily={typography.fontFamily} color={palette.blue20} fontWeight={500} fontSize="14px">
+              Use this space below however you want. We have dropped in a suggested structure
+            </Typography>
             <RichTextWrapper>
               <RichTextContainer
                 onClick={() => {
