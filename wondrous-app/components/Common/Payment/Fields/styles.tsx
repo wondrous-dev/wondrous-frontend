@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Grid, Typography } from '@mui/material';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
+import { CreateFormMenuItemIcon } from 'components/Common/DropdownSelect/styles';
 
 export const Label = styled(Typography)`
   && {
@@ -33,4 +34,13 @@ export const TokenWrapper = styled.div`
   padding: 6px 6px 6px 12px;
   height: 32px;
   gap: 6px;
+`;
+
+export const PaymentMethodDropdown = styled.div`
+  width: 100%;
+  ${CreateFormMenuItemIcon} {
+    svg {
+      left: 2% !important;
+    }
+  }
 `;

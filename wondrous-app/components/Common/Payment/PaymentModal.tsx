@@ -369,7 +369,7 @@ export function MakePaymentModal(props) {
   // );
 
   return (
-    <Modal open={open} maxWidth={620} title="Payment">
+    <Modal open={open} maxWidth={620} title="Payment" onClose={handleCloseAll}>
       <GradientHeading fontSize={24}>Payout</GradientHeading>
       <Grid display="flex" direction="column" gap="24px">
         <PaymentDetails
@@ -380,7 +380,7 @@ export function MakePaymentModal(props) {
           error={changeRewardErrorText}
         />
         <Divider />
-        <PaymentMethod />
+        <PaymentMethod wallets={wallets} paymentInfo={submissionPaymentInfo} />
       </Grid>
     </Modal>
   );

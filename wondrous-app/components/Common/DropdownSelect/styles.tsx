@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import palette from 'theme/palette';
 
 export const CreateFormSelectBlock = styled.div`
   max-width: 260px;
@@ -70,7 +71,7 @@ export const CreateFormSelect = styled(Select)`
     font-size: 14px;
     line-height: 19px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: ${palette.white};
     margin-top: 20px;
     z-index: 100;
     cursor: pointer;
@@ -110,12 +111,11 @@ export const CreateFormMenuItem = styled(MenuItem)`
     font-size: 14px;
     line-height: 19px;
     letter-spacing: 0.01em;
-    color: #c4c4c4;
+    color: ${palette.white};
     display: flex;
     align-items: center;
     border-radius: 4px;
     margin-bottom: 4px;
-    padding-left: 0;
 
     &.Mui-selected {
       background: #000000;

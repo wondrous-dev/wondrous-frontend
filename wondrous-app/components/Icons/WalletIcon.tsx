@@ -1,7 +1,7 @@
 const WalletIcon = (props) => {
-  const { strokeColor = '#CBF' } = props;
+  const { strokeColor = '#CBF', height = '19', width = '19' } = props;
   return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="19" height="16" fill="none" viewBox="0 0 19 16">
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill="none" viewBox="0 0 19 16">
       <path
         stroke={strokeColor}
         strokeLinecap="round"
