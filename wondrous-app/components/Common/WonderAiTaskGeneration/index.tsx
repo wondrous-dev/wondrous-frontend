@@ -25,13 +25,18 @@ import {
   SuggestionRowText,
   LoadingText,
   LoadingDiv,
+  RegenerateText,
+  HeaderText,
 } from 'components/Common/WonderAiTaskGeneration/styles';
 import { useMutation } from '@apollo/client';
 import { GENERATE_GPT_TASKS } from 'graphql/mutations';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { CircularProgress } from '@mui/material';
 import palette from 'theme/palette';
-import { ErrorText } from '..';
+import { entityTypeData } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { ENTITIES_TYPES } from 'utils/constants';
+import { ErrorText, Flex } from '..';
+import RightPanel from './rightPanel';
 
 const GENERATION_TYPES = [
   {
@@ -58,11 +63,14 @@ const SuggestionRow = ({ suggestion, setActionPrompt }) => (
   </SuggestionRowContainer>
 );
 
+const initialMilestoneValues = entityTypeData[ENTITIES_TYPES.MILESTONE].initialValues;
 const WonderAiTaskGeneration = () => {
   const [promptGenerationType, setPromptGenerationType] = useState(GENERATION_TYPES[0]?.value);
   const [actionPrompt, setActionPrompt] = useState('');
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
+  const [milestone, setMilestone] = useState(null);
+  const [parentTask, setParentTask] = useState(null);
   // TODO: read from database
   const [entityDescription, setEntityDescription] = useState('');
   const [formErrors, setFormErrors] = useState({
@@ -70,12 +78,28 @@ const WonderAiTaskGeneration = () => {
     entityDescription: null,
   });
   const [taskToView, setTaskToView] = useState(null);
+  const [taskToViewType, setTaskToViewType] = useState(null);
   const [selectedList, setSelectedList] = useState([]);
+  const [fieldFunction, setFieldFunction] = useState(null);
+  const [errors, setErrors] = useState({});
+  const orgId = orgBoard?.orgId || podBoard?.pod?.orgId;
+  const podId = podBoard?.podId;
   const [
     generateGPTTasks,
     { data: generatedGPTTaskData, loading: generatedGPTTaskLoading, error: generatedGPTTaskError },
   ] = useMutation(GENERATE_GPT_TASKS);
   const generatedTaskList = generatedGPTTaskData?.generateGPTTasks || [];
+  const setMilestoneField = (field, value) => {
+    setMilestone({
+      ...milestone,
+      [field]: value,
+    });
+  };
+  const setParentTaskField = (field, value) => {
+    setParentTask({
+      ...parentTask,
+    });
+  };
 
   const handleGenerateGPTTasks = () => {
     if (!actionPrompt) {
@@ -86,8 +110,8 @@ const WonderAiTaskGeneration = () => {
           input: {
             actionPrompt,
             entityDescription,
-            orgId: orgBoard?.orgId || podBoard?.pod?.orgId,
-            ...(podBoard?.podId && { podId: podBoard?.podId }),
+            orgId,
+            ...(podId && { podId }),
           },
         },
       });
@@ -171,9 +195,38 @@ const WonderAiTaskGeneration = () => {
                 ? `WonderBot generated ${generatedTaskList?.length} tasks for your review`
                 : 'Here’s some suggestions to get you started!'}
             </HelperText>
+            <div
+              style={{
+                flex: 1,
+              }}
+            />
+            {generatedTaskList?.length > 0 && (
+              <RegenerateText onClick={handleGenerateGPTTasks}>Regenerate</RegenerateText>
+            )}
           </HelperFlexDiv>
           {generatedTaskList?.length > 0 ? (
-            <></>
+            <>
+              <HeaderText>{promptGenerationType === GENERATION_TYPES[0]?.value ? 'Milestone' : 'Task'}</HeaderText>
+              <SuggestionRowContainer
+                style={{
+                  marginLeft: '-8px',
+                }}
+                onClick={() => {
+                  if (milestone) {
+                    setTaskToView(milestone);
+                  } else {
+                    setTaskToView({
+                      ...initialMilestoneValues,
+                      title: actionPrompt,
+                    });
+                  }
+                  setTaskToViewType(ENTITIES_TYPES.MILESTONE);
+                  setFieldFunction(() => (field, value) => setMilestoneField(field, value));
+                }}
+              >
+                <SuggestionRowText>{actionPrompt}</SuggestionRowText>
+              </SuggestionRowContainer>
+            </>
           ) : (
             <>
               {generatedGPTTaskLoading ? (
@@ -198,7 +251,31 @@ const WonderAiTaskGeneration = () => {
         </PromptContainer>
       </Grid>
       <Grid sm={0} md={4} lg={5} item>
-        <RightPanelSection>{taskToView ? <></> : <RobotHand />}</RightPanelSection>
+        <RightPanelSection>
+          {taskToView ? (
+            <RightPanel
+              entityType={taskToViewType}
+              setField={(field, value) => {
+                if (taskToViewType === ENTITIES_TYPES.MILESTONE) {
+                  setMilestoneField(field, value);
+                } else {
+                  setParentTaskField(field, value);
+                }
+                setTaskToView({
+                  ...taskToView,
+                  [field]: value,
+                });
+              }}
+              orgId={orgId}
+              podId={podId}
+              existingTask={taskToView}
+              errors={errors}
+              setErrors={setErrors}
+            />
+          ) : (
+            <RobotHand />
+          )}
+        </RightPanelSection>
       </Grid>
     </Grid>
   );

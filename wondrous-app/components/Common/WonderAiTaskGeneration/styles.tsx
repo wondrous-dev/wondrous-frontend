@@ -222,6 +222,7 @@ export const SuggestionRowContainer = styled.div`
     background: ${palette.grey920};
   }
   margin-bottom: 14px;
+  border-radius: 8px;
 `;
 
 export const SuggestionRowText = styled(Typography)`
@@ -239,9 +240,26 @@ export const LoadingDiv = styled.div`
   align-items: center;
   height: 100px;
 `;
+
 export const LoadingText = styled(SuggestionRowText)`
   && {
     font-size: 13px;
     margin-left: 8px;
+  }
+`;
+
+export const RegenerateText = styled(HelperText)`
+  && {
+    color: ${palette.highlightBlue};
+  }
+`;
+
+export const HeaderText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    color: ${palette.blue20};
+    font-size: 13px;
+    margin-bottom: 8px;
+    font-weight: 600;
   }
 `;
