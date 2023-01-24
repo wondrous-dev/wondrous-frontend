@@ -49,9 +49,11 @@ const GrantPaymentsLedger = () => {
   const displayList = view === ViewType.Paid ? paidList : unpaidList;
   const { board } = useBoards();
 
+  const orgData = board?.orgData; // used for routing
+
   const { orgId, podId } = board;
   const { userPermissionsContext } = useGlobalContext();
-
+  const router = useRouter();
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId,
@@ -179,6 +181,13 @@ const GrantPaymentsLedger = () => {
       )}
       <Grid display="flex" justifyContent="space-between" alignItems="center">
         <Button
+          onClick={() =>
+            router.push(
+              { pathname: podId ? `/pod/${podId}/grants` : `/organization/${orgData?.username}/grants` },
+              undefined,
+              { shallow: true }
+            )
+          }
           buttonTheme={{
             paddingX: 16,
             paddingY: 7,
