@@ -38,7 +38,6 @@ const PaymentDetails = ({
           placeholder="Enter reward amount"
           search={false}
         />
-        {error ? <ErrorText> {error} </ErrorText> : null}
       </Grid>
       <LeftArrowIconWrapper
         style={{
@@ -55,6 +54,7 @@ const PaymentDetails = ({
         {payee?.username}
       </TokenWrapper>
     </Grid>
+    {error ? <ErrorText> {error} </ErrorText> : null}
   </Wrapper>
 );
 
