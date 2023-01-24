@@ -11,7 +11,15 @@ import { LeftArrowIconWrapper } from 'components/Common/SidebarBackButton/styles
 import { ProfilePicture } from 'components/Common/TaskViewModalAutocomplete';
 import { TokenWrapper, Wrapper } from './styles';
 
-const PaymentDetails = ({ rewardAmount, setRewardAmount, tokenName, payee, error }) => (
+const PaymentDetails = ({
+  rewardAmount,
+  onChange,
+  tokenName,
+  payee,
+  error,
+  setChangeRewardErrorText,
+  entityReward,
+}) => (
   <Wrapper
     gridStyle={{
       marginTop: '24px',
@@ -26,7 +34,7 @@ const PaymentDetails = ({ rewardAmount, setRewardAmount, tokenName, payee, error
           style={{
             height: '32px',
           }}
-          onChange={(e) => setRewardAmount(e.target.value)}
+          onChange={onChange}
           placeholder="Enter reward amount"
           search={false}
         />

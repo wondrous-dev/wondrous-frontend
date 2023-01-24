@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { GRAPHQL_ERRORS, PERMISSIONS, ENTITIES_TYPES } from 'utils/constants';
 import { useLazyQuery } from '@apollo/client';
 import { GET_GRANT_APPLICATION_PAYMENT_INFO, GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
@@ -10,6 +10,7 @@ import Divider from 'components/Divider';
 import { useGlobalContext } from 'utils/hooks';
 import { useGetOrgOrPodWallet } from 'components/Common/Payment/helper';
 import Grid from '@mui/material/Grid';
+import { BigNumber } from 'bignumber.js';
 import PaymentDetails from './Fields/PaymentDetails';
 import PaymentMethod from './Fields/PaymentMethod';
 
@@ -31,10 +32,10 @@ function MakePaymentModal(props: Props) {
   const footerLeftRef = useRef();
 
   const [rewardAmount, setRewardAmount] = useState('');
-  const [userChangedRewardAmount, setUserChangedRewardAmount] = useState(false);
   const [submissionPaymentError, setSubmissionPaymentError] = useState(null);
   const [changeRewardErrorText, setChangeRewardErrorText] = useState('');
   const { userPermissionsContext } = useGlobalContext();
+
   const wallets = useGetOrgOrPodWallet(submissionOrApplication?.podId, submissionOrApplication?.orgId);
 
   const permissions = parseUserPermissionContext({
@@ -112,13 +113,31 @@ function MakePaymentModal(props: Props) {
   const paymentInfo: SubmissionPaymentInfo =
     submissionPaymentInfo?.getSubmissionPaymentInfo || grantApplicationPaymentInfo?.getGrantApplicationPaymentInfo;
 
+  const reward = taskOrGrant?.reward || (taskOrGrant?.rewards?.length ? taskOrGrant?.rewards[0] : null);
+
+  const changedRewardAmount = useMemo(
+    () => reward?.rewardAmount !== rewardAmount,
+    [reward?.rewardAmount, rewardAmount]
+  );
+
   if (!paymentInfo) {
     return null;
   }
   if (!canPay) {
     return null;
   }
-  const reward = taskOrGrant?.reward || (taskOrGrant?.rewards?.length ? taskOrGrant?.rewards[0] : null);
+
+  const handleChange = (e) => {
+    const bigChangedRewardAmount = new BigNumber(e.target.value);
+    const initialBigRewardAmount = new BigNumber(reward?.rewardAmount);
+    const rewardIsSmaller = bigChangedRewardAmount.isLessThan(initialBigRewardAmount);
+    if (rewardIsSmaller) {
+      setChangeRewardErrorText('New reward must be greater than minimum');
+    } else if (!rewardIsSmaller && changeRewardErrorText) {
+      setChangeRewardErrorText('');
+    }
+    setRewardAmount(e.target.value);
+  };
 
   return (
     <Modal
@@ -129,12 +148,14 @@ function MakePaymentModal(props: Props) {
       footerRight={<div ref={footerRef} />}
       footerLeft={<div ref={footerLeftRef} />}
     >
-      <GradientHeading fontSize={24}>Payout</GradientHeading>
+      <GradientHeading fontSize={24}>Payment for {displayEntity}</GradientHeading>
       <Grid display="flex" direction="column" gap="24px">
         <PaymentDetails
           rewardAmount={rewardAmount}
-          setRewardAmount={setRewardAmount}
+          onChange={handleChange}
           tokenName={reward?.tokenName}
+          entityReward={reward}
+          setChangeRewardErrorText={setChangeRewardErrorText}
           payee={{
             profilePicture: submissionOrApplication?.creator?.profilePicture,
             username: submissionOrApplication?.creator?.username,
@@ -150,7 +171,7 @@ function MakePaymentModal(props: Props) {
           onClose={handleCloseAll}
           orgId={submissionOrApplication?.orgId}
           podId={submissionOrApplication?.podId}
-          changedRewardAmount={userChangedRewardAmount ? rewardAmount : null}
+          changedRewardAmount={changedRewardAmount ? rewardAmount : null}
           parentError={submissionPaymentError}
           entityType={entityType}
           reward={taskOrGrant?.reward}
