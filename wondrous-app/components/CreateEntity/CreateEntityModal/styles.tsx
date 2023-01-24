@@ -49,10 +49,6 @@ export const CreateEntityForm = styled.form`
     }
   }}
   transition: all 0.1s linear;
-
-  ${(props) => props.theme.breakpoints.down('sm')} {
-    width: 95%;
-  }
 `;
 
 export const CreateEntityHeader = styled.div`
@@ -611,10 +607,6 @@ export const CreateEntityPrivacySelectRenderLabel = styled.div`
   color: white;
   text-transform: capitalize;
   margin-left: 10px;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 export const CreateEntityPrivacySelectRenderLabelWrapper = styled.div`
@@ -675,7 +667,7 @@ export const CreateEntityCancelButton = styled(ButtonUnstyled)`
     background: #454545;
   }
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
+    display: ${(props) => (props.showOnSmallScreen ? 'flex' : 'none')};
   }
 `;
 

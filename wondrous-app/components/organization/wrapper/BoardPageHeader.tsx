@@ -8,7 +8,7 @@ import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalW
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 
-import usePrevious, { useOrgBoard } from 'utils/hooks';
+import usePrevious, { useOrgBoard, useIsMobile } from 'utils/hooks';
 import { useLazyQuery } from '@apollo/client';
 import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { useRouter } from 'next/router';
@@ -60,6 +60,7 @@ function BoardPageHeader(props) {
     inviteButtonSettings = null,
     headerTitle = null,
   } = props;
+  const isMobile = useIsMobile();
 
   const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
 
@@ -215,7 +216,7 @@ function BoardPageHeader(props) {
             </HeaderTopLeftContainer>
           </HeaderMainBlock>
         </TokenHeader>
-        <BoardsSubheaderWrapper>
+        <BoardsSubheaderWrapper isMobile={isMobile}>
           <RolePodMemberContainer>
             {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (
               <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>

@@ -96,12 +96,6 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
             <GrantPaymentData paymentData={grant.reward} numOfGrant={grant.numOfGrant} />
           </Grid>
           <Grid display="flex" gap="14px">
-            <ItemPill>
-              <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
-                {grant.applicationsCount} Applications
-              </Typography>
-            </ItemPill>
-
             <ItemPill withIcon>
               <IconWrapper>
                 <Icon />
@@ -147,7 +141,13 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
             {' '}
             <CommentsIcon />
             {grant.comments || 0}
+            <ItemPill>
+              <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                {grant.applicationsCount} Applications
+              </Typography>
+            </ItemPill>
           </Grid>
+
           <MenuWrapper display="flex" justifyContent="flex-end" flex={1}>
             <TaskCardMenu
               anchorElParent={anchorEl}

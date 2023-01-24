@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
+import Box from '@mui/material/Box';
 
 import {
   ENTITIES_TYPES,

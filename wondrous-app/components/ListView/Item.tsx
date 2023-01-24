@@ -320,8 +320,8 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
             ) : (
               <DefaultUserImage
                 style={{
-                  width: '26px',
-                  height: '26px',
+                  minWidth: '26px',
+                  minHeight: '26px',
                   borderRadius: '13px',
                   marginRight: '4px',
                 }}
