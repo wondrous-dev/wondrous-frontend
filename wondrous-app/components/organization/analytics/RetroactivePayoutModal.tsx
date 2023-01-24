@@ -32,11 +32,6 @@ import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { TableCellText } from './styles';
 import { BatchRetroactivePayment } from './BatchRetroactivePayment';
 
-enum ViewType {
-  Paid = 'paid',
-  Unpaid = 'unpaid',
-}
-
 const imageStyle = {
   width: '32px',
   height: '32px',

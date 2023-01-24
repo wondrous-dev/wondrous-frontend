@@ -189,10 +189,15 @@ export default function useWonderWeb3(): WonderWeb3 {
 
   const getENSNameFromEthAddress = async (address: string) => {
     try {
+      if (!provider) {
+        console.warn('No provider found');
+        return;
+      }
       const prov = new ethers.providers.Web3Provider(provider);
       const name = await prov.lookupAddress(address);
       return name;
     } catch (err) {
+      console.log('Error getting ENS name', err);
       return null;
     }
   };

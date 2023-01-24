@@ -285,15 +285,15 @@ export const PaymentHandler = ({ grantApplication }) => {
       <MakePaymentModal
         open={isPaymentModalOpen}
         handleClose={() => {}}
+        handleGoBack={() => setIsPaymentModalOpen(false)}
         setShowPaymentModal={setIsPaymentModalOpen}
-        fetchedTask={grantApplication?.grant}
-        approvedSubmission={{
+        taskOrGrant={grantApplication?.grant}
+        submissionOrApplication={{
           // SOURCE OF TRUTH FOR THE GRANT APPLICATION ORG / POD IS GRANT'S ORG / POD
           ...grantApplication,
           podId: grantApplication?.grant?.podId,
           orgId: grantApplication?.grant?.orgId,
         }}
-        reward={grantApplication?.grant?.reward}
         entityType={ENTITIES_TYPES.GRANT_APPLICATION}
       />
     );

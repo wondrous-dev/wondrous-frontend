@@ -1,19 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography, Tab } from '@mui/material';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { useLazyQuery } from '@apollo/client';
 import { GET_PAYMENT_METHODS_FOR_ORG, GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries/payment';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS, TASK_STATUS_DONE } from 'utils/constants';
 import { format } from 'date-fns';
 import { filterPaymentMethods } from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
-import {
-  CreateFormMainBlockTitle,
-  CreateFormRewardCurrency,
-  CreateRewardAmountDiv,
-  CreateModalOverlay,
-} from 'components/CreateEntity/styles';
+import { CreateFormRewardCurrency, CreateModalOverlay } from 'components/CreateEntity/styles';
 import InputForm from 'components/Common/InputForm/inputForm';
 import CloseModalIcon from 'components/Icons/closeModal';
 import TaskStatus from 'components/Icons/TaskStatus';
@@ -36,25 +29,10 @@ import {
   PaymentTitleTextDiv,
   PaymentTitleText,
   PaymentDescriptionText,
-  StyledTabs,
-  PaymentMethodWrapper,
 } from '../../Common/Payment/styles';
-import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
 import { ErrorText } from '../../Common';
 import { exportPaymentCSV } from './exportPaymentCsv';
 import { RetroactivePayoutModal } from './RetroactivePayoutModal';
-
-enum ViewType {
-  Paid = 'paid',
-  Unpaid = 'unpaid',
-}
-
-const imageStyle = {
-  width: '32px',
-  height: '32px',
-  borderRadius: '16px',
-  marginRight: '8px',
-};
 
 function ContributorTaskRowElement(props) {
   const {

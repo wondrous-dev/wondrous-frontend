@@ -401,11 +401,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       <MakePaymentModal
         handleGoBack={handleGoBackToTask}
         open={showPaymentModal}
-        reward={fetchedTask?.rewards[0]}
         handleClose={handleClose}
-        approvedSubmission={approvedSubmission}
+        submissionOrApplication={approvedSubmission}
         setShowPaymentModal={setShowPaymentModal}
-        fetchedTask={fetchedTask}
+        taskOrGrant={fetchedTask}
       />
     );
   }

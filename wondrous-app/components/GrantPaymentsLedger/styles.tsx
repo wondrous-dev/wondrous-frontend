@@ -1,4 +1,4 @@
-import { Table, TableContainer, TableCell, TableBody, TableRow, TableHead } from '@mui/material';
+import { Table, TableContainer, TableCell, TableBody, TableRow, TableHead, Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 

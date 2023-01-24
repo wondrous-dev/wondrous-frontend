@@ -201,10 +201,11 @@ export default function TaskCard({
         {showPaymentModal ? (
           <MakePaymentModal
             open={showPaymentModal}
-            approvedSubmission={approvedSubmission}
+            submissionOrApplication={approvedSubmission}
             handleClose={() => {}}
             setShowPaymentModal={setShowPaymentModal}
-            fetchedTask={task}
+            taskOrGrant={task}
+            handleGoBack={() => setShowPaymentModal(false)}
           />
         ) : null}
         <TaskHeader>

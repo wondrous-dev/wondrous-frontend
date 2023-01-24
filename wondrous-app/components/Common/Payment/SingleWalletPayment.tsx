@@ -36,6 +36,7 @@ import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/co
 import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { ErrorText } from 'components/Common';
+import { PaymentData } from 'components/Common/Payment/types';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
 
@@ -57,34 +58,29 @@ export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
 
 export const constructExplorerRedirectUrl = (chain, txHash) => `${CHAIN_TO_EXPLORER_URL[chain]}/tx/${txHash}`;
 
-interface SubmissionPaymentInfo {
-  submissionId: string;
-  paymentData: PaymentData[];
+interface Props {
+  orgId: string;
+  podId: string;
+  submissionOrApplicationId: string;
+  wallets: any[];
+  paymentData: PaymentData;
+  changedRewardAmount?: any; // if the amount differs from the one in payment data
+  parentError?: string;
+  entityType?: string;
+  reward?: any; // for display only
 }
 
-interface PaymentData {
-  tokenAddress: string;
-  isEthTransfer: Boolean;
-  amount: string;
-  recepientAddress: string;
-  chain: string;
-  decimal: number;
-}
-
-export function SingleWalletPayment(props) {
-  const {
-    open,
-    handleClose,
-    orgId,
-    podId,
-    approvedSubmission,
-    wallets,
-    submissionPaymentInfo,
-    changedRewardAmount,
-    parentError,
-    entityType = null,
-  } = props;
-
+export function SingleWalletPayment({
+  orgId,
+  podId,
+  submissionOrApplicationId,
+  wallets,
+  paymentData,
+  changedRewardAmount,
+  parentError,
+  entityType = null,
+  reward = null,
+}: Props) {
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
   const [selectedWalletId, setSelectedWalletId] = useState(null);
@@ -128,18 +124,18 @@ export function SingleWalletPayment(props) {
 
   useEffect(() => {
     setWrongChainError(null);
-    const chain = submissionPaymentInfo?.paymentData[0].chain;
+    const chain = paymentData?.chain;
     if (chain && currentChainId) {
       if (chain !== SUPPORTED_CHAINS[currentChainId]) {
         setWrongChainError(`currently connected to the wrong network should be on ${chain}`);
       }
     }
-  }, [currentChainId, submissionPaymentInfo]);
+  }, [currentChainId, paymentData]);
 
   useEffect(() => {
     setIncompatibleWalletError(null);
     const corrctChainWallets = [];
-    const chain = submissionPaymentInfo?.paymentData[0].chain;
+    const chain = paymentData?.chain;
     wallets.map((wallet) => {
       if (wallet.chain === chain || wallet.type === WALLET_TYPE.METAMASK) {
         const address = generateReadablePreviewForAddress(wallet.address);
@@ -152,7 +148,7 @@ export function SingleWalletPayment(props) {
     }
 
     setWalletOptions(corrctChainWallets);
-  }, [submissionPaymentInfo, wallets]);
+  }, [paymentData, wallets]);
 
   useEffect(() => {
     setNotOwnerError(null);
@@ -184,6 +180,7 @@ export function SingleWalletPayment(props) {
   const [proposeGnosisTxForGrantApplication] = useMutation(PROPOSE_GNOSIS_TX_FOR_APPLICATION, {
     onCompleted: (data) => {
       setPaymentPending(true);
+      setGnosisTransactionLoading(false);
       if (paymentModal?.onPaymentComplete) {
         paymentModal?.onPaymentComplete();
       }
@@ -197,6 +194,7 @@ export function SingleWalletPayment(props) {
   const [linkMetamaskPaymentForGrantApplication] = useMutation(LINK_METAMASK_PAYMENT_FOR_APPLICATION, {
     onCompleted: (data) => {
       setPaymentPending(true);
+      setGnosisTransactionLoading(false);
       if (paymentModal?.onPaymentComplete) {
         paymentModal?.onPaymentComplete();
       }
@@ -237,22 +235,18 @@ export function SingleWalletPayment(props) {
     }
   }, [transactionHash, currentChainId]);
 
-  const reward = props?.fetchedTask?.rewards && props?.fetchedTask?.rewards[0];
-
   const constructAndSignTransactionData = async () => {
     setSigningError(null);
     setGnosisTransactionLoading(true);
     let t1 = performance.now();
     const iface = new ethers.utils.Interface(ERC20abi);
-    const paymentData = submissionPaymentInfo?.paymentData[0];
     let transactionData;
     let finalAmount = paymentData.amount;
     if (changedRewardAmount) {
       const decimal = Number(paymentData?.decimal);
       const bigChangedAmount = new BigNumber(changedRewardAmount);
       const newDecimal = new BigNumber(10 ** decimal);
-      finalAmount = bigChangedAmount.times(newDecimal);
-      finalAmount = finalAmount.toString();
+      finalAmount = bigChangedAmount.times(newDecimal).toString();
     }
 
     if (paymentData?.isEthTransfer) {
@@ -352,9 +346,9 @@ export function SingleWalletPayment(props) {
       proposeGnosisTxForGrantApplication({
         variables: {
           input: {
-            grantApplicationId: approvedSubmission.id,
+            grantApplicationId: submissionOrApplicationId,
             walletId: selectedWalletId,
-            chain: submissionPaymentInfo?.paymentData[0].chain,
+            chain: paymentData?.chain,
             transactionData: txData,
           },
         },
@@ -363,9 +357,9 @@ export function SingleWalletPayment(props) {
       proposeGnosisTxForSubmission({
         variables: {
           input: {
-            submissionId: approvedSubmission.id,
+            submissionId: submissionOrApplicationId,
             walletId: selectedWalletId,
-            chain: submissionPaymentInfo?.paymentData[0].chain,
+            chain: paymentData?.chain,
             transactionData: txData,
           },
         },
@@ -379,12 +373,10 @@ export function SingleWalletPayment(props) {
     }
     t2 = performance.now();
     console.log(`proposeGnosisTxForSubmission took ${t2 - t1} milliseconds`);
-    setGnosisTransactionLoading(false);
   };
 
   const sendTransactionFromMetamask = async () => {
     const iface = new ethers.utils.Interface(ERC20abi);
-    const paymentData = submissionPaymentInfo?.paymentData[0];
     const chain = paymentData?.chain;
     if (chain !== SUPPORTED_CHAINS[currentChainId]) {
       setWrongChainError(`Please switch to ${chain} chain`);
@@ -400,8 +392,7 @@ export function SingleWalletPayment(props) {
       const decimal = Number(paymentData?.decimal);
       const bigChangedAmount = new BigNumber(changedRewardAmount);
       const newDecimal = new BigNumber(10 ** decimal);
-      finalAmount = bigChangedAmount.times(newDecimal);
-      finalAmount = finalAmount.toString();
+      finalAmount = bigChangedAmount.times(newDecimal).toString();
     }
     const gasPrice = await wonderWeb3.getGasPrice();
 
@@ -432,7 +423,7 @@ export function SingleWalletPayment(props) {
       return linkMetamaskPaymentForGrantApplication({
         variables: {
           input: {
-            grantApplicationId: approvedSubmission.id,
+            grantApplicationId: submissionOrApplicationId,
             walletId: selectedWalletId,
             chain,
             txHash,
@@ -443,7 +434,7 @@ export function SingleWalletPayment(props) {
     linkMetamaskPayment({
       variables: {
         input: {
-          submissionId: approvedSubmission.id,
+          submissionId: submissionOrApplicationId,
           walletId: selectedWalletId,
           chain,
           txHash,
@@ -476,6 +467,7 @@ export function SingleWalletPayment(props) {
       sendTransactionFromMetamask();
     }
   };
+
   if (walletOptions && walletOptions.length > 0) {
     return (
       <>

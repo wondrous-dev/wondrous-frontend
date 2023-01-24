@@ -1,28 +1,24 @@
-import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography, Tab } from '@mui/material';
+import Tab from '@mui/material/Tab';
 import palette from 'theme/palette';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries/payment';
 import { parseUserPermissionContext, cutString } from 'utils/helpers';
 import usePrevious from 'utils/hooks';
 import { PERMISSIONS } from 'utils/constants';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { GET_ORG_BY_ID, GET_POD_BY_ID } from 'graphql/queries';
+import { GET_ORG_BY_ID } from 'graphql/queries';
 import isEqual from 'lodash/isEqual';
+import { useGetOrgOrPodWallet, useSelectedTab } from 'components/Common/Payment/helper';
 import {
-  PodNameTypography,
   PaymentModal,
-  PaymentModalHeader,
   PaymentTitleDiv,
   PaymentTitleTextDiv,
   PaymentTitleText,
   PaymentDescriptionText,
   StyledTabs,
   PaymentMethodWrapper,
-  WarningTypography,
 } from 'components/Common/Payment/styles';
 import BatchWalletPayment from 'components/Common/Payment/BatchWalletPayment';
 import { BatchOfflinePayment } from 'components/Common/Payment/OfflinePayment/OfflinePayment';
@@ -40,11 +36,6 @@ import {
   StyledTableRow,
 } from '../../Table/styles';
 
-enum ViewType {
-  Paid = 'paid',
-  Unpaid = 'unpaid',
-}
-
 const imageStyle = {
   width: '32px',
   height: '32px',
@@ -52,74 +43,18 @@ const imageStyle = {
   marginRight: '8px',
 };
 
-export function BatchPayModal(props) {
+function BatchPayModal(props) {
   const { podId, orgId, open, handleClose, unpaidSubmissions, chain } = props;
-  const router = useRouter();
-  const [selectedTab, setSelectedTab] = useState('wallet');
-  const [wallets, setWallets] = useState([]);
+  const { selectedTab, PAYMENT_TABS } = useSelectedTab();
+  const wallets = useGetOrgOrPodWallet(podId, orgId);
+
   const [submissionsPaymentInfo, setSubmissionsPaymentInfo] = useState(null);
-  const PAYMENT_TABS = [
-    { name: 'wallet', label: 'Wallet', action: () => setSelectedTab('wallet') },
-    { name: 'off_platform', label: 'Off platform', action: () => setSelectedTab('off_platform') },
-  ];
 
-  const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getOrgWallet);
-    },
-    fetchPolicy: 'network-only',
-  });
-  const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    fetchPolicy: 'network-only',
+  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
+    variables: { orgId },
+    skip: !orgId,
   });
 
-  const [getPodById] = useLazyQuery(GET_POD_BY_ID);
-
-  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
-
-  const getWallets = useCallback(
-    async (podId, orgId) => {
-      if (podId) {
-        try {
-          const result = await getPodWallet({
-            variables: {
-              podId,
-            },
-          });
-          const wallets = result?.data?.getPodWallet;
-          if (!wallets || wallets?.length === 0) {
-            const podResult = await getPodById({
-              variables: {
-                podId,
-              },
-            });
-            const pod = podResult?.data?.getPodById;
-            getOrgWallet({
-              variables: {
-                orgId: pod?.orgId,
-              },
-            });
-          } else {
-            setWallets(wallets);
-          }
-        } catch (err) {
-          console.error(`failed to fetch wallet: ${err?.message}`);
-        }
-      } else if (orgId) {
-        getOrgWallet({
-          variables: {
-            orgId,
-          },
-        });
-        getOrgById({
-          variables: {
-            orgId,
-          },
-        });
-      }
-    },
-    [podId, orgId]
-  );
   const [getSubmissionsPaymentInfo] = useLazyQuery(GET_SUBMISSIONS_PAYMENT_INFO, {
     onCompleted: (data) => {
       setSubmissionsPaymentInfo(data?.getSubmissionsPaymentInfo);
@@ -129,10 +64,7 @@ export function BatchPayModal(props) {
   const submissionIds = unpaidSubmissions && Object.keys(unpaidSubmissions);
 
   const prevSubmissionIds = usePrevious(submissionIds);
-  useEffect(() => {
-    getWallets(podId, orgId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [podId, orgId]);
+
   useEffect(() => {
     if (!submissionIds || submissionIds.length === 0) return;
     if (!isEqual(submissionIds, prevSubmissionIds)) {
@@ -288,3 +220,5 @@ export function BatchPayModal(props) {
     </Modal>
   );
 }
+
+export default BatchPayModal;

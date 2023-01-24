@@ -296,11 +296,10 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
           <MakePaymentModal
             handleGoBack={handleGoBackToTask}
             open={showPaymentModal}
-            reward={task?.rewards[0]}
-            approvedSubmission={approvedSubmission}
+            submissionOrApplication={approvedSubmission}
             handleClose={() => {}}
             setShowPaymentModal={setShowPaymentModal}
-            fetchedTask={task}
+            taskOrGrant={task}
           />
         ) : null}
 

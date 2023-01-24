@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/client';
 import { Typography } from '@mui/material';
 import CopyIcon from 'components/Icons/copy';
 import {
-  LINK_BATCH_OFF_PLATFORM_FOR_APPLICATION,
   LINK_BATCH_OFF_PLATFORM_PAYMENT,
   LINK_OFF_PLATFORM_PAYMENT,
   LINK_OFF_PLATFORM_PAYMENT_FOR_APPLICATION,
@@ -19,6 +18,7 @@ import React, { useContext, useState, useRef } from 'react';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { PaymentData } from 'components/Common/Payment/types';
 
 import { CreateEntityAttachment, CreateEntityAttachmentIcon } from 'components/CreateEntity/CreateEntityModal/styles';
 
@@ -47,9 +47,15 @@ const OFFLINE_PAYMENT_OPTIONS = [
   { label: 'Parcel link', value: 'parcel_link' },
 ];
 
-export function OfflinePayment(props) {
-  const { handleClose, approvedSubmission, fetchedTask, submissionPaymentInfo, entityType = null } = props;
-  const recipientAddress = submissionPaymentInfo?.paymentData?.[0]?.recepientAddress;
+interface Props {
+  handleClose: () => void;
+  submissionOrApplicationId: string;
+  paymentData: PaymentData;
+  entityType?: string;
+}
+
+export function OfflinePayment({ handleClose, submissionOrApplicationId, paymentData, entityType = null }: Props) {
+  const recipientAddress = paymentData?.recepientAddress;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
   const [linkPaymentError, setLinkPaymentError] = useState(null);
@@ -102,7 +108,7 @@ export function OfflinePayment(props) {
     setLinkPaymentError(null);
     if (!selectedOfflineType || !offlinePaymentLink) {
       setLinkPaymentError('Need to select a payment type and enter a link');
-      return
+      return;
     }
     const offlineLinks = [
       {
@@ -114,7 +120,7 @@ export function OfflinePayment(props) {
       lnkOffPlatformPaymentForGrantApplications({
         variables: {
           input: {
-            grantApplicationId: approvedSubmission.id,
+            grantApplicationId: submissionOrApplicationId,
             offlineLinks,
           },
         },
@@ -123,7 +129,7 @@ export function OfflinePayment(props) {
       linkOffPlatformPayment({
         variables: {
           input: {
-            submissionId: approvedSubmission.id,
+            submissionId: submissionOrApplicationId,
             offlineLinks,
             mediaUploads,
           },
@@ -218,7 +224,7 @@ export function OfflinePayment(props) {
 }
 
 export function BatchOfflinePayment(props) {
-  const { handleClose, approvedSubmission, submissionIds, entityType = null } = props;
+  const { handleClose, submissionIds } = props;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
   const [linkPaymentError, setLinkPaymentError] = useState(null);
@@ -236,21 +242,11 @@ export function BatchOfflinePayment(props) {
     },
   });
 
-  const [linkBatchOffPlatformPaymentForGrantApplications] = useMutation(LINK_BATCH_OFF_PLATFORM_FOR_APPLICATION, {
-    onCompleted: (data) => {
-      setSubmissionPaid(true);
-    },
-    onError: (e) => {
-      console.error(e);
-      setLinkPaymentError('Error linking payment');
-    },
-  });
-
   const handleLinkPaymentLinkClick = () => {
     setLinkPaymentError(null);
     if (!selectedOfflineType || !offlinePaymentLink) {
       setLinkPaymentError('Need to select a payment type and enter a link');
-      return
+      return;
     }
     const offlineLinks = [
       {

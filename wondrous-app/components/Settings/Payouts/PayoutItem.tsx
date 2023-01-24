@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import Link from 'next/link';
 import format from 'date-fns/format';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -10,7 +9,6 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import Button from 'components/Button';
 import CalendarIcon from 'components/Icons/calendar';
 import CopyIcon from 'components/Icons/copy';
-import Ethereum from 'components/Icons/ethereumV2';
 import { LinkIcon } from 'components/Icons/taskModalIcons';
 
 import { capitalize } from 'utils/common';
@@ -19,7 +17,7 @@ import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWall
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { NoUnderlineLink } from 'components/Common/Link/links';
-import { PayeeDetails, PayoutTableItem } from 'components/Settings/Payouts/PayoutTable';
+import { PaymentSelected, PayoutTableItem } from 'components/Settings/Payouts/types';
 import {
   PayeeAddressTag,
   PayeeAddressTagContainer,
@@ -49,14 +47,11 @@ const imageStyle = {
 interface PayoutItemProps {
   item: PayoutTableItem;
   checked?: boolean;
-  org?: {
-    id: string;
-    username: string;
-  };
+  orgId?: string;
   podId?: string;
   selectedItemsLength?: number;
   canViewPaymentLink?: boolean;
-  handlePay?: (payeeDetails: PayeeDetails) => void;
+  handlePay?: (paymentSelected: PaymentSelected) => void;
   handleCheck?: (item: PayoutTableItem) => void;
   setPaymentDetailId?: (paymentId: string) => void;
 }
@@ -65,7 +60,7 @@ const PayoutItem = (props: PayoutItemProps) => {
   const {
     item,
     checked = false,
-    org,
+    orgId,
     podId,
     selectedItemsLength,
     canViewPaymentLink,
@@ -115,11 +110,13 @@ const PayoutItem = (props: PayoutItemProps) => {
 
     handlePay({
       podId,
-      orgId: org?.username,
-      assigneeId: item?.payeeId,
-      assigneeUsername: item?.payeeUsername,
+      orgId,
+      payeeId: item?.payeeId,
+      payeeUsername: item?.payeeUsername,
       taskTitle: item?.taskTitle,
       submissionId: item?.submissionId,
+      amount: item?.amount,
+      symbol: item?.symbol,
     });
   };
 

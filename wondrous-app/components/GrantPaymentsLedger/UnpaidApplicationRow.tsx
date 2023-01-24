@@ -27,15 +27,7 @@ import {
 } from 'components/Settings/Payouts/styles';
 import { imageStyle } from 'components/GrantPaymentsLedger/styles';
 import { RewardTextRightPill, RewardTextLefPill, RewardText } from 'components/Common/Payment/PaymentViewModal/styles';
-
-// interface PaymentInfo {
-//   podId?: string;
-//   orgId?: string;
-//   assigneeId: string;
-//   assigneeUsername: string;
-//   taskTitle: string;
-//   submissionId: string;
-// }
+import { GrantPaymentSelected } from 'components/Settings/Payouts/types';
 
 interface UnpaidGrantApplication {
   grantTitle: string;
@@ -65,14 +57,14 @@ interface PayoutItemProps {
   orgId?: string;
   podId?: string;
   canViewPaymentLink?: boolean;
-  handlePay?: (paymentInfo: any) => void;
+  handlePay?: (paymentInfo: GrantPaymentSelected) => void;
+  canPay: boolean;
 }
 
 const UnpaidApplicationRow = (props: PayoutItemProps) => {
-  const { item, orgId, podId, handlePay } = props;
+  const { item, orgId, podId, handlePay, canPay } = props;
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
 
-  const isPayButtonDisabled = true;
   const { ENSNameOrWalletAddress } = useGetEnsOrAddress(item?.paymentAddress);
 
   const completionDate = item?.grantApplicationApprovedAt;
@@ -97,7 +89,18 @@ const UnpaidApplicationRow = (props: PayoutItemProps) => {
   };
 
   const handlePayeePayButton = () => {
-    // handlePay();
+    if (!canPay) return;
+
+    handlePay({
+      podId,
+      orgId,
+      paymentAddress: ENSNameOrWalletAddress,
+      grantTitle: item.grantTitle,
+      grantApplicationId: item.grantApplicationId,
+      grantApplicationTitle: item.grantApplicationTitle,
+      amount: item?.amount,
+      symbol: item?.symbol,
+    });
   };
 
   return (
@@ -113,7 +116,7 @@ const UnpaidApplicationRow = (props: PayoutItemProps) => {
               }}
               minWidth="auto"
               color="purple"
-              disabled={isPayButtonDisabled}
+              disabled={!canPay}
               onClick={handlePayeePayButton}
             >
               Pay

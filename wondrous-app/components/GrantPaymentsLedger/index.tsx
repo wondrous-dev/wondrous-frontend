@@ -1,17 +1,9 @@
 import { useQuery, useLazyQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import { CardsContainer } from 'components/Common/Boards/styles';
-import { BountyBoardEmpty } from 'components/Common/BountyBoard/styles';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
-import { ActionButton } from 'components/Common/Task/styles';
-import { CreateFormModalOverlay } from 'components/CreateEntity/styles';
-import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
-import CreateGrant from 'components/CreateGrant';
 import UnpaidApplicationRow from 'components/GrantPaymentsLedger/UnpaidApplicationRow';
 import PaymentRow from 'components/GrantPaymentsLedger/PaymentRow';
-import GrantsFilters from 'components/GrantsFilters';
-import PlusIcon from 'components/Icons/plus';
 import { Button } from 'components/Button';
 import {
   GET_UNPAID_GRANT_APPLICATIONS_FOR_ORG,
@@ -21,17 +13,16 @@ import {
 } from 'graphql/queries';
 import Toggle from 'components/Common/Toggle';
 import Tooltip from 'components/Tooltip';
-import MakePaymentModal from 'components/Common/Payment/PaymentModal';
+import GrantLedgerPayModal from 'components/GrantPaymentsLedger/GrantLedgerPayModal';
+import { GrantPaymentSelected } from 'components/Settings/Payouts/types';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { PERMISSIONS } from 'utils/constants';
 
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
 import { LIMIT } from 'services/board';
 import palette from 'theme/palette';
-import typography from 'theme/typography';
-import { ENTITIES_TYPES, GRANTS_STATUSES } from 'utils/constants';
-import { useOrgBoard, usePodBoard, useBoards } from 'utils/hooks';
-import { delQuery } from 'utils/index';
+import { useGlobalContext, useBoards } from 'utils/hooks';
 import EmptyGrantsBoard from './EmptyState';
 import {
   StyledTable,
@@ -53,11 +44,22 @@ const GrantPaymentsLedger = () => {
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
   const [payModalOpen, setPaymodalOpen] = useState(false);
+  const [paymentSelected, setPaymentSelected] = useState<GrantPaymentSelected | null>(null);
+
   const displayList = view === ViewType.Paid ? paidList : unpaidList;
   const { board } = useBoards();
+
   const { orgId, podId } = board;
-  console.log('paidList', paidList);
-  console.log('unpaidList', unpaidList);
+  const { userPermissionsContext } = useGlobalContext();
+
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId,
+    podId,
+  });
+
+  const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
+
   const [getGrantApplicationPaymentsForOrg, { fetchMore: fetchMoreOrgPayments }] = useLazyQuery(
     GET_GRANT_APPLICATION_PAYMENTS_FOR_ORG,
     {
@@ -156,16 +158,25 @@ const GrantPaymentsLedger = () => {
     }
   }, [orgId, podId, view, LIMIT]);
 
-  const router = useRouter();
-  const handlePay = (paymentInfo) => {
+  const handlePay = (paymentInfo: GrantPaymentSelected) => {
+    setPaymentSelected(paymentInfo);
     setPaymodalOpen(true);
   };
   const handlePayModalClose = () => {
+    setPaymentSelected(null);
     setPaymodalOpen(false);
   };
   return (
     <>
-      {payModalOpen && <MakePaymentModal open={payModalOpen} onClose={handlePayModalClose} />}
+      {payModalOpen && (
+        <GrantLedgerPayModal
+          orgId={orgId}
+          podId={podId}
+          open={payModalOpen}
+          handleClose={handlePayModalClose}
+          paymentSelected={paymentSelected}
+        />
+      )}
       <Grid display="flex" justifyContent="space-between" alignItems="center">
         <Button
           buttonTheme={{
@@ -274,6 +285,7 @@ const GrantPaymentsLedger = () => {
                     orgId={orgId}
                     podId={podId}
                     handlePay={handlePay}
+                    canPay={canPay}
                   />
                 ))}
               {view === ViewType.Paid &&
