@@ -396,18 +396,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       },
     });
   };
-  if (showPaymentModal && approvedSubmission) {
-    return (
-      <MakePaymentModal
-        handleGoBack={handleGoBackToTask}
-        open={showPaymentModal}
-        handleClose={handleClose}
-        submissionOrApplication={approvedSubmission}
-        setShowPaymentModal={setShowPaymentModal}
-        taskOrGrant={fetchedTask}
-      />
-    );
-  }
   const userInOrg =
     userPermissionsContext?.orgPermissions && fetchedTask?.orgId in userPermissionsContext.orgPermissions;
 
@@ -550,6 +538,16 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       }}
     >
       <>
+        {showPaymentModal && approvedSubmission ? (
+          <MakePaymentModal
+            handleGoBack={handleGoBackToTask}
+            open={showPaymentModal}
+            submissionOrApplication={approvedSubmission}
+            setShowPaymentModal={setShowPaymentModal}
+            taskOrGrant={fetchedTask}
+          />
+        ) : null}
+
         {!isViewNft && (
           <ActionModals
             completeModal={completeModal}

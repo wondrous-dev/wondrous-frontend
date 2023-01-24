@@ -34,6 +34,7 @@ import {
 } from 'services/board';
 import { useWonderWeb3 } from 'services/web3';
 import { useMe } from 'components/Auth/withAuth';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -472,4 +473,16 @@ export const useGetEnsOrAddress = (ethAddress: string) => {
   }, [wonderWeb3, ethAddress]);
 
   return { ENSNameOrWalletAddress };
+};
+
+export const useCopyAddress = () => {
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
+
+  const copyAddress = (address) => {
+    navigator.clipboard.writeText(`${address}`);
+    setSnackbarAlertOpen(true);
+    setSnackbarAlertMessage('Address copied to clipboard');
+  };
+
+  return { copyAddress };
 };

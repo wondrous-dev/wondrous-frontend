@@ -40,9 +40,9 @@ import { PaymentData } from 'components/Common/Payment/types';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
 
-export const generateReadablePreviewForAddress = (address: String) => {
+export const generateReadablePreviewForAddress = (address: String, length = 4) => {
   if (address && address.length > 10) {
-    return `${address.substring(0, 4)}...${address.substring(address.length - 3)}`;
+    return `${address.substring(0, length)}...${address.substring(address.length - 3)}`;
   }
 };
 

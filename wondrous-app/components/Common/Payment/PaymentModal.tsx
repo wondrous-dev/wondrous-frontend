@@ -16,7 +16,7 @@ import PaymentMethod from './Fields/PaymentMethod';
 
 interface Props {
   open: boolean;
-  handleClose: () => void;
+  handleClose?: () => void;
   setShowPaymentModal: (showPaymentModal: boolean) => void;
   handleGoBack: any;
   submissionOrApplication: any; // taskSubmission or grantApplication
@@ -25,8 +25,7 @@ interface Props {
 }
 
 function MakePaymentModal(props: Props) {
-  const { open, handleClose, setShowPaymentModal, handleGoBack, submissionOrApplication, taskOrGrant, entityType } =
-    props;
+  const { open, handleClose, setShowPaymentModal, submissionOrApplication, taskOrGrant, entityType } = props;
 
   const footerRef = useRef();
   const footerLeftRef = useRef();
@@ -95,7 +94,9 @@ function MakePaymentModal(props: Props) {
   }, [submissionOrApplication]);
 
   const handleCloseAll = () => {
-    handleClose();
+    if (handleClose) {
+      handleClose();
+    }
     setShowPaymentModal(false);
   };
 
@@ -139,6 +140,7 @@ function MakePaymentModal(props: Props) {
     setRewardAmount(e.target.value);
   };
 
+  const paymentData = paymentInfo?.paymentData[0];
   return (
     <Modal
       open={open}
@@ -154,8 +156,8 @@ function MakePaymentModal(props: Props) {
           rewardAmount={rewardAmount}
           onChange={handleChange}
           tokenName={reward?.tokenName}
-          entityReward={reward}
-          setChangeRewardErrorText={setChangeRewardErrorText}
+          paymentData={paymentData}
+          entityType={entityType}
           payee={{
             profilePicture: submissionOrApplication?.creator?.profilePicture,
             username: submissionOrApplication?.creator?.username,
@@ -166,7 +168,7 @@ function MakePaymentModal(props: Props) {
         <PaymentMethod
           submissionOrApplicationId={submissionOrApplication?.id}
           wallets={wallets}
-          paymentData={paymentInfo?.paymentData[0]}
+          paymentData={paymentData}
           ref={footerRef}
           onClose={handleCloseAll}
           orgId={submissionOrApplication?.orgId}
