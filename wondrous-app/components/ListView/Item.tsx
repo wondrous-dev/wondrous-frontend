@@ -35,6 +35,8 @@ import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { CreateEntity } from 'components/CreateEntity';
 import { ButtonPrimary } from 'components/Common/button';
+import Typography from '@mui/material/Typography';
+
 import {
   ListViewItemBodyWrapper,
   ListViewItemDataContainer,
@@ -326,7 +328,17 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
                 }}
               />
             )}
-            {title}
+            <Typography
+              sx={{
+                color: palette.white,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                fontSize: '15px',
+                paddingRight: '5px',
+              }}
+            >
+              {title}
+            </Typography>
             {showTaskType && <Type>{task.type}</Type>}
             {!!totalSubtaskCount && (
               <ListViewItemIconsWrapper>
