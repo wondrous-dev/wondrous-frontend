@@ -198,7 +198,7 @@ export const GET_PAYMENTS_FOR_GRANT_APPLICATION = gql`
 
 export const GET_UNPAID_GRANT_APPLICATIONS_FOR_ORG = gql`
   query getUnpaidGrantApplicationsForOrg($input: OrgPaymentQueryInput) {
-    getUnpaidSubmissionsForOrg(input: $input) {
+    getUnpaidGrantApplicationsForOrg(input: $input) {
       ...UnpaidGrantApplicationFragment
     }
   }

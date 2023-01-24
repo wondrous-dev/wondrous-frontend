@@ -1,7 +1,15 @@
-import { Typography, Table, TableContainer, TableCell, TableBody, TableRow, TableHead } from '@mui/material';
+import { Table, TableContainer, TableCell, TableBody, TableRow, TableHead, Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import typography from 'theme/typography';
+
+export const imageStyle = {
+  width: '32px',
+  height: '32px',
+  minWidth: '32px',
+  minHeight: '32px',
+  borderRadius: '16px',
+  marginRight: '8px',
+};
 
 export const EmptyStateWrapper = styled.div`
   width: 100% !important;
@@ -86,47 +94,5 @@ export const StyledTableCell = styled(TableCell)`
   svg {
     width: 28px;
     height: 28px;
-  }
-`;
-
-export const RewardChainHalfBox = styled.div`
-  width: fit-content;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 8px 6px 10px;
-  background: ${(props) =>
-    props.hasNoReward ? palette.background.default : props.isRewardBox ? palette.grey85 : palette.grey900};
-  border: 1px solid ${palette.grey79};
-  border-right-width: ${(props) => (props.isRewardBox ? '0px' : '2px')};
-  border-left-width: ${(props) => (props.isRewardBox ? '2px' : '0px')};
-  border-top-left-radius: ${(props) => (props.isRewardBox ? '1000px' : '0px')};
-  border-bottom-left-radius: ${(props) => (props.isRewardBox ? '1000px' : '0px')};
-  border-top-right-radius: ${(props) => (props.isRewardBox ? '0px' : '1000px')};
-  border-bottom-right-radius: ${(props) => (props.isRewardBox ? '0px' : '1000px')};
-  margin-right: ${(props) => (props.isRewardBox && props.hasNoReward ? '-28px' : props.isRewardBox ? '-14px' : '0px')};
-  margin-left: ${(props) => (props.isRewardBox ? 'auto' : '-14px')};
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-`;
-
-export const RewardChainHalfBoxText = styled(Typography)`
-  && {
-    color: ${(props) => (props.hasNoReward ? palette.grey57 : palette.white)};
-    font-family: ${typography.fontFamily};
-    font-size: 13px;
-    font-weight: 500;
-    width: max-content;
-  }
-`;
-
-export const TableCellText = styled(Typography)`
-  && {
-    color: ${palette.white};
-    font-size: 14px;
-    text-align: center;
   }
 `;

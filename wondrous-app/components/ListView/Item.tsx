@@ -26,7 +26,7 @@ import { useMe } from 'components/Auth/withAuth';
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
-import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -51,16 +51,13 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
   const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
   const [data, setData] = useState(task);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
   const [editTask, setEditTask] = useState(false);
   const [archiveTask, setArchiveTask] = useState(false);
   const [claimed, setClaimed] = useState(false);
   const [deleteTask, setDeleteTask] = useState(false);
   const user = useMe();
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
 
   const {
     assigneeProfilePicture,
@@ -135,20 +132,25 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
   const [getTaskSubmissionsForTask] = useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK, {
     onCompleted: (data) => {
       const taskSubmissions = data?.getTaskSubmissionsForTask;
+      let approvedTaskSubmission = null;
       taskSubmissions?.map((taskSubmission) => {
         if (taskSubmission?.approvedAt) {
+          approvedTaskSubmission = taskSubmission;
           setApprovedSubmission(taskSubmission);
         }
       });
-      setTaskSubmissionLoading(false);
-      setShowPaymentModal(true);
+      if (approvedTaskSubmission) {
+        setShowPaymentModal(true);
+      } else {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage('Need to make a submission to pay');
+        setSnackbarAlertSeverity('error');
+      }
     },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
-    onError: (err) => {
-      setTaskSubmissionLoading(false);
-    },
+    onError: (err) => {},
   });
 
   const handlePaymentModal = () => {
@@ -292,15 +294,14 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
           }
         }}
       >
-        {showPaymentModal && !isTaskSubmissionLoading ? (
+        {showPaymentModal ? (
           <MakePaymentModal
             handleGoBack={handleGoBackToTask}
             open={showPaymentModal}
-            reward={task?.rewards[0]}
-            approvedSubmission={approvedSubmission}
+            submissionOrApplication={approvedSubmission}
             handleClose={() => {}}
             setShowPaymentModal={setShowPaymentModal}
-            fetchedTask={task}
+            taskOrGrant={task}
           />
         ) : null}
 

@@ -96,7 +96,7 @@ export const SubmissionButtonTextHelper = styled(Typography)`
 
 export const SubmissionButtonReviewWrapper = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 10px;
   justify-content: flex-end;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {

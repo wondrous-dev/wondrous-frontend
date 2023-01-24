@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import MenuItem from '@mui/material/MenuItem';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 import palette from 'theme/palette';
 
@@ -266,34 +267,6 @@ export const TaskModalHeaderMenuItemRed = styled(TaskModalHeaderMenuItem)`
   }
 `;
 
-const TaskSectionDisplayText = styled(Typography)`
-  && {
-    font-size: 14px;
-    border-radius: 4px;
-    ${({ theme }) => `
-    font-weight: ${theme.typography.fontWeightMedium};
-    color: ${theme.palette.blue20};
- `}
-  }
-`;
-
-export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
-  && {
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    ${({ theme }) => `
-    color: ${theme.palette.white};
- `}
-  }
-`;
-
-export const TaskSectionInfoDiv = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export const TaskSubmissionTab = styled.div`
   flex: 1;
   margin-right: 16px;
@@ -304,14 +277,6 @@ export const TaskSubmissionTab = styled.div`
     margin-right: 0;
   }
   border-bottom: ${(props) => `2px solid ${props.isActive ? '#7427FF' : '#4B4B4B'}`};
-`;
-
-export const MakePaymentDiv = styled.div`
-  background: #0f0f0f;
-  border-radius: 184px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
 `;
 
 export const TaskSubmissionHeaderCreatorText = styled(Typography)`
@@ -535,5 +500,23 @@ export const TaskActionMenu = styled.div`
   display: none;
   ${CardContent}:hover & {
     display: block;
+  }
+`;
+
+export const MakeSubmissionPaymentButton = styled(Button)`
+  && {
+    padding: 8px 12px;
+    height: 30px;
+    background: #0f0f0f;
+    border: 1px solid deepskyblue;
+    width: fit-content;
+
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+    color: #ffffff;
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      height: 42px;
+    }
   }
 `;

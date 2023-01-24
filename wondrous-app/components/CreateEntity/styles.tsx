@@ -297,14 +297,6 @@ export const CreateFormMainInputBlock = styled.div`
 
 export const CreateFormRewardCurrency = styled(DropdownSelect)``;
 
-export const CreateRewardAmountDiv = styled.div`
-  width: 50%;
-  margin-bottom: 25px;
-  :last-child {
-    margin-bottom: 0;
-  }
-`;
-
 export const CreateFormMainTitleInput = styled(TextField)({
   '& .MuiInputBase-root': {
     background: '#0F0F0F',
@@ -606,22 +598,6 @@ export const CreateFormPreviewButton = styled(Button)`
       border-color: #7a7a7a;
       cursor: not-allowed;
     }
-  }
-`;
-
-export const MakeSubmissionPaymentButton = styled(Button)`
-  && {
-    padding: 8px 12px;
-    height: 40px;
-    background: #0f0f0f;
-    border: 1px solid deepskyblue;
-    margin-left: 25px;
-
-    //text
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 150%;
-    color: #ffffff;
   }
 `;
 

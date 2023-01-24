@@ -14,12 +14,12 @@ const profilePictureStyle = {
   objectFit: 'cover' as any,
 };
 
-const ProfilePicture = ({ profilePicture }) => (
+export const ProfilePicture = ({ profilePicture, width = 24, height = 24 }) => (
   <SafeImage
     src={profilePicture}
     placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-    width={24}
-    height={24}
+    width={width}
+    height={height}
     useNextImage
     style={profilePictureStyle}
     alt="Profile picture"

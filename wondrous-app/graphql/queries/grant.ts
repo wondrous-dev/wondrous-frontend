@@ -135,6 +135,7 @@ export const GET_GRANT_APPLICATIONS = gql`
       paymentStatus
       paymentAddress
       creator {
+        id
         username
         profilePicture
       }
