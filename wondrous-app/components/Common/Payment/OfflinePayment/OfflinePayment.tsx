@@ -53,9 +53,16 @@ interface Props {
   submissionOrApplicationId: string;
   paymentData: PaymentData;
   entityType?: string;
+  renderButtons?: ({ onClick }) => void;
 }
 
-export function OfflinePayment({ handleClose, submissionOrApplicationId, paymentData, entityType = null }: Props) {
+export function OfflinePayment({
+  handleClose,
+  submissionOrApplicationId,
+  paymentData,
+  entityType = null,
+  renderButtons,
+}: Props) {
   const recipientAddress = paymentData?.recepientAddress;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
@@ -182,26 +189,31 @@ export function OfflinePayment({ handleClose, submissionOrApplicationId, payment
       </OfflinePaymentDropdownWrapper>
       <OfflinePaymentInputLabel>Wallet Link</OfflinePaymentInputLabel>
       <OfflinePaymentWalletWrapper>
-        <OfflinePaymentWallet disabled value={recipientAddress} />
+        <OfflinePaymentWallet
+          disabled
+          value={recipientAddress}
+          sx={{
+            width: '100%',
+          }}
+        />
         <Button
           onClick={handleCopyAddress}
+          borderRadius={6}
+          height={32}
           buttonTheme={{
             background: palette.grey75,
             borderColor: 'transparent',
             fontSize: '14px',
             fontWeight: 500,
-            paddingX: 24,
-            paddingY: 8,
-            height: '32px',
+            paddingX: 6,
+            paddingY: 6,
             hover: {
               background: palette.grey76,
             },
           }}
         >
-          {/* <Button highlighted onClick={handleCopyAddress}> */}
           <CopyIcon />
           Copy
-          {/* </OfflinePaymentWalletButton> */}
         </Button>
       </OfflinePaymentWalletWrapper>
       <OfflinePaymentInputLabel>Link</OfflinePaymentInputLabel>
@@ -231,7 +243,9 @@ export function OfflinePayment({ handleClose, submissionOrApplicationId, payment
 
       {linkPaymentError && <ErrorText>{linkPaymentError}</ErrorText>}
       <OfflinePaymentButtonWrapper>
-        {!submissionPaid && (
+        {renderButtons ? renderButtons({ onClick: handleLinkPaymentLinkClick }) : null}
+
+        {!submissionPaid && !renderButtons && (
           <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>
         )}
         {submissionPaid && <OfflinePaymentDescriptionText>Paid!</OfflinePaymentDescriptionText>}

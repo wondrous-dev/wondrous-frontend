@@ -126,4 +126,5 @@ export const MediaUploadDiv = styled.div`
   margin-top: 10px;
   margin-bottom: 8px;
   flex-flow: wrap;
+  gap: 8px;
 `;

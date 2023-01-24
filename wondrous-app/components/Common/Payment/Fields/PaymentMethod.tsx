@@ -29,89 +29,6 @@ const PLATFORM_TYPE = [
   },
 ];
 
-// const WalletPay = ({ wallets, paymentInfo }) => {
-//   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
-//   const wonderWeb3 = useWonderWeb3();
-//   const paymentModal = usePaymentModal();
-
-//   const walletOptions = useMemo(() => {
-//     const corrctChainWallets = [];
-//     const chain = paymentInfo?.paymentData[0].chain;
-//     wallets.map((wallet) => {
-//       if (wallet.chain === chain || wallet.type === WALLET_TYPE.METAMASK) {
-//         const address = generateReadablePreviewForAddress(wallet.address);
-//         const label = `${wallet.name}:  ${address}`;
-//         corrctChainWallets.push({ value: wallet.id, label });
-//       }
-//     });
-//     // if (corrctChainWallets.length === 0 && wallets.length > 0) {
-//     //   setIncompatibleWalletError(`Existing wallets are not on ${chain}`);
-//     // }
-
-//     return corrctChainWallets;
-//   }, [paymentInfo, wallets]);
-
-//   const setSelectedWallet = (value) =>
-//     dispatch({
-//       type: ACTION_TYPES.SET_SELECTED_WALLET,
-//       payload: walletOptions.find((wallet) => wallet.value === value),
-//     });
-
-//   const connectWeb3 = async () => {
-//     await wonderWeb3.onConnect();
-//   };
-//   useEffect(() => {
-//     connectWeb3();
-//   }, []);
-
-//   const wonderGnosis = useGnosisSdk();
-//   const connectSafeSdk = async (chain, safeAddress) => {
-//     try {
-//       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
-//     } catch (e) {
-//       console.log('error connecting to gnosis safe', selectedWallet.chain, e);
-//       dispatch({
-//         type: ACTION_TYPES.SET_SAFE_CONNECTION_ERROR,
-//         payload: `Cannot connect to safe, check if connected to  ${selectedWallet.chain}`,
-//       });
-//     }
-//   };
-
-//   // useEffect(() => {
-//   //   setNotOwnerError(null);
-//   //   setSafeConnectionError(null);
-//   //   setCurrentChainId(wonderWeb3.chain);
-//   // }, [wonderWeb3.chain, wonderWeb3.address]);
-
-//   const currentChainId = wonderWeb3.chain;
-
-//   const { selectedWallet } = state;
-
-//   const incompatibleWalletError = walletOptions?.length === 0 && wallets?.length > 0;
-
-//   console.log(state);
-
-//   return (
-//     <Wrapper label="Pay from Wallet">
-//       <PaymentMethodDropdown>
-//         <DropdownSelect
-//           options={walletOptions}
-//           setValue={setSelectedWallet}
-//           hideLabel
-//           value={selectedWallet?.value}
-//           formSelectStyle={{
-//             flex: 1,
-//             maxWidth: '100%',
-//           }}
-//           innerStyle={{
-//             marginTop: '0',
-//           }}
-//         />
-//       </PaymentMethodDropdown>
-//     </Wrapper>
-//   );
-// };
-
 const PaymentMethod = forwardRef(
   (
     {
@@ -226,6 +143,9 @@ const PaymentMethod = forwardRef(
               submissionOrApplicationId={submissionOrApplicationId}
               paymentData={paymentData}
               entityType={entityType}
+              renderButtons={({ onClick }) => {
+                buttonsRef.current = { onClick };
+              }}
             />
           ) : null}
         </WalletMethodWrapper>
