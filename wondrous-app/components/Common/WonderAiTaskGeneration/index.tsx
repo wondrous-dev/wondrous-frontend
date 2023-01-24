@@ -1,7 +1,8 @@
 import Grid from '@mui/material/Grid';
 import DropdownSelect from 'components/Common/DropdownSelect';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import RobotHand from 'components/Common/WonderAiTaskGeneration/images/robot-hand.svg';
+import SmallRobotIcon from 'components/Common/WonderAiTaskGeneration/images/small-robot-icon.svg';
 import { CreateEntitySelectArrowIcon } from 'components/CreateEntity/CreateEntityModal/styles';
 import {
   PromptBox,
@@ -18,7 +19,19 @@ import {
   RightPanelSection,
   ActionButton,
   ActionButtonText,
+  HelperFlexDiv,
+  HelperText,
+  SuggestionRowContainer,
+  SuggestionRowText,
+  LoadingText,
+  LoadingDiv,
 } from 'components/Common/WonderAiTaskGeneration/styles';
+import { useMutation } from '@apollo/client';
+import { GENERATE_GPT_TASKS } from 'graphql/mutations';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { CircularProgress } from '@mui/material';
+import palette from 'theme/palette';
+import { ErrorText } from '..';
 
 const GENERATION_TYPES = [
   {
@@ -31,9 +44,25 @@ const GENERATION_TYPES = [
   },
 ];
 
+const SUGGESTION_PROMPT_LIST = [
+  'Create a SEO strategy',
+  'Create a design sprint',
+  'Create an engineering sprint',
+  'Create a design system',
+  'Create a pitch deck',
+];
+
+const SuggestionRow = ({ suggestion, setActionPrompt }) => (
+  <SuggestionRowContainer onClick={() => setActionPrompt(suggestion)}>
+    <SuggestionRowText>{suggestion}</SuggestionRowText>
+  </SuggestionRowContainer>
+);
+
 const WonderAiTaskGeneration = () => {
   const [promptGenerationType, setPromptGenerationType] = useState(GENERATION_TYPES[0]?.value);
   const [actionPrompt, setActionPrompt] = useState('');
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
   // TODO: read from database
   const [entityDescription, setEntityDescription] = useState('');
   const [formErrors, setFormErrors] = useState({
@@ -41,6 +70,30 @@ const WonderAiTaskGeneration = () => {
     entityDescription: null,
   });
   const [taskToView, setTaskToView] = useState(null);
+  const [selectedList, setSelectedList] = useState([]);
+  const [
+    generateGPTTasks,
+    { data: generatedGPTTaskData, loading: generatedGPTTaskLoading, error: generatedGPTTaskError },
+  ] = useMutation(GENERATE_GPT_TASKS);
+  const generatedTaskList = generatedGPTTaskData?.generateGPTTasks || [];
+
+  const handleGenerateGPTTasks = () => {
+    if (!actionPrompt) {
+      setFormErrors({ ...formErrors, actionPrompt: 'This field is required' });
+    } else {
+      generateGPTTasks({
+        variables: {
+          input: {
+            actionPrompt,
+            entityDescription,
+            orgId: orgBoard?.orgId || podBoard?.pod?.orgId,
+            ...(podBoard?.podId && { podId: podBoard?.podId }),
+          },
+        },
+      });
+    }
+  };
+
   return (
     <Grid container>
       <Grid md={8} lg={7} item>
@@ -78,12 +131,25 @@ const WonderAiTaskGeneration = () => {
               <PromptInput
                 autoComplete="off"
                 name="prompt"
-                onChange={(event) => setActionPrompt(event.target.value)}
+                onChange={(event) => {
+                  setActionPrompt(event.target.value);
+                  setFormErrors({ ...formErrors, actionPrompt: null });
+                }}
                 placeholder="Enter desired action"
                 value={actionPrompt}
                 error={formErrors.actionPrompt}
               />
             </PromptInputDiv>
+            {formErrors.actionPrompt && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'end',
+                }}
+              >
+                <ErrorText>{formErrors.actionPrompt}</ErrorText>
+              </div>
+            )}
             <PromptInputDiv>
               <EntityInput
                 autoComplete="off"
@@ -93,11 +159,42 @@ const WonderAiTaskGeneration = () => {
                 value={entityDescription}
                 error={formErrors.entityDescription}
               />
-              <ActionButton>
+              <ActionButton onClick={handleGenerateGPTTasks}>
                 <ActionButtonText>Generate</ActionButtonText>
               </ActionButton>
             </PromptInputDiv>
           </PromptBox>
+          <HelperFlexDiv>
+            <SmallRobotIcon />
+            <HelperText>
+              {generatedTaskList?.length > 0
+                ? `WonderBot generated ${generatedTaskList?.length} tasks for your review`
+                : 'Here’s some suggestions to get you started!'}
+            </HelperText>
+          </HelperFlexDiv>
+          {generatedTaskList?.length > 0 ? (
+            <></>
+          ) : (
+            <>
+              {generatedGPTTaskLoading ? (
+                <LoadingDiv>
+                  <CircularProgress
+                    style={{
+                      color: palette.highlightPurple,
+                    }}
+                    size={20}
+                  />
+                  <LoadingText>Generating tasks...this may take some time</LoadingText>
+                </LoadingDiv>
+              ) : (
+                <>
+                  {SUGGESTION_PROMPT_LIST.map((suggestion) => (
+                    <SuggestionRow suggestion={suggestion} setActionPrompt={setActionPrompt} />
+                  ))}
+                </>
+              )}
+            </>
+          )}
         </PromptContainer>
       </Grid>
       <Grid sm={0} md={4} lg={5} item>

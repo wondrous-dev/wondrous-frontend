@@ -302,3 +302,12 @@ export const COMPLETE_TASK_MINT = gql`
     }
   }
 `;
+
+export const GENERATE_GPT_TASKS = gql`
+  mutation generateGPTTasks($input: GPTTaskGenerationInput!) {
+    generateGPTTasks(input: $input) {
+      title
+      description
+    }
+  }
+`;

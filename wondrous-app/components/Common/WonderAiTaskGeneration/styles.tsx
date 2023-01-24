@@ -117,6 +117,10 @@ export const PromptInputDiv = styled.div`
   margin-top: 20px;
 `;
 
+export const PromptInputContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
 export const PromptInput = styled(TextField)`
   && {
     margin-left: 14px;
@@ -150,6 +154,10 @@ export const PromptInput = styled(TextField)`
     :focus-within {
       outline: 1px solid #7a7a7a;
     }
+    .MuiInputBase-root {
+      width: 100%;
+      overflow-x: scroll;
+    }
   }
 `;
 
@@ -158,9 +166,6 @@ export const EntityInput = styled(PromptInput)`
     width: 100%;
     margin-left: 0;
     margin-right: 8px;
-    .MuiInputBase-root {
-      width: 100%;
-    }
   }
 `;
 
@@ -186,5 +191,57 @@ export const ActionButtonText = styled(Typography)`
     color: ${palette.white};
     font-size: 15px;
     font-weight: 500;
+  }
+`;
+
+export const HelperFlexDiv = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+`;
+
+export const SmallRobotImg = styled.img`
+  margin-right: 14px;
+`;
+
+export const HelperText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    color: ${palette.grey51};
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 14px;
+  }
+`;
+
+export const SuggestionRowContainer = styled.div`
+  cursor: pointer;
+  padding: 8px;
+  &:hover {
+    background: ${palette.grey920};
+  }
+  margin-bottom: 14px;
+`;
+
+export const SuggestionRowText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    color: ${palette.white};
+    font-weight: 600;
+    font-size: 15px;
+  }
+`;
+
+export const LoadingDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+`;
+export const LoadingText = styled(SuggestionRowText)`
+  && {
+    font-size: 13px;
+    margin-left: 8px;
   }
 `;
