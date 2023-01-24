@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Grid, Typography } from '@mui/material';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
-import { CreateFormMenuItemIcon } from 'components/Common/DropdownSelect/styles';
+import { CreateFormMenuItemIcon, CreateFormSelectBlock } from 'components/Common/DropdownSelect/styles';
 
 export const Label = styled(Typography)`
   && {
@@ -42,5 +42,13 @@ export const PaymentMethodDropdown = styled.div`
     svg {
       left: 2% !important;
     }
+  }
+`;
+
+export const WalletMethodWrapper = styled.div`
+  width: 100%;
+  ${CreateFormSelectBlock} {
+    height: 100%;
+    max-width: 100%;
   }
 `;

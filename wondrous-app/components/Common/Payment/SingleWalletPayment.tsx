@@ -40,7 +40,7 @@ import { PaymentData } from 'components/Common/Payment/types';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
 
-const generateReadablePreviewForAddress = (address: String) => {
+export const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
     return `${address.substring(0, 4)}...${address.substring(address.length - 3)}`;
   }
@@ -68,6 +68,9 @@ interface Props {
   parentError?: string;
   entityType?: string;
   reward?: any; // for display only
+  hidePayButton?: boolean;
+  renderButtons?: ({}: any) => void;
+  dropdownProps?: any;
 }
 
 export function SingleWalletPayment({
@@ -80,6 +83,9 @@ export function SingleWalletPayment({
   parentError,
   entityType = null,
   reward = null,
+  hidePayButton = false,
+  renderButtons = null,
+  dropdownProps = {},
 }: Props) {
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
@@ -454,6 +460,7 @@ export function SingleWalletPayment({
   };
 
   const handlePaymentClick = () => {
+    console.log('im here bra');
     if (!selectedWallet) {
       console.log('wallet not yet selected');
     }
@@ -472,24 +479,29 @@ export function SingleWalletPayment({
     return (
       <>
         <DropdownSelect
-          title="Your wallet"
+          title="Pay from Wallet"
           value={selectedWalletId}
           setValue={setSelectedWalletId}
           labelText="Choose wallet"
           options={walletOptions}
           onChange={(e) => {}}
           formSelectStyle={{
-            marginTop: '20px',
             marginBottom: '28px',
           }}
+          {...dropdownProps}
         />
+        {renderButtons
+          ? renderButtons({
+              onClick: handlePaymentClick,
+            })
+          : null}
         {selectedWallet && !paymentPending && (
           <>
             {gnosisTransactionLoading ? (
               <CircularProgress />
             ) : (
               <>
-                {!exploreRedirectUrl && !paymentPending && (
+                {!exploreRedirectUrl && !paymentPending && !hidePayButton && (
                   <CreateFormPreviewButton
                     onClick={handlePaymentClick}
                     style={{

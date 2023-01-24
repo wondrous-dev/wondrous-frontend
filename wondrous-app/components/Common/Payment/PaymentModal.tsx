@@ -65,6 +65,9 @@ function MakePaymentModal(props: Props) {
   const { open, handleClose, setShowPaymentModal, handleGoBack, submissionOrApplication, taskOrGrant, entityType } =
     props;
 
+  const footerRef = useRef();
+  const footerLeftRef = useRef();
+
   const [rewardAmount, setRewardAmount] = useState('');
   const [changeRewardAmount, setChangeRewardAmount] = useState(false);
   const [changedRewardAmount, setChangedRewardAmount] = useState(null);
@@ -107,8 +110,13 @@ function MakePaymentModal(props: Props) {
   );
 
   useEffect(() => {
-    setRewardAmount(taskOrGrant?.rewards[0]?.rewardAmount);
-  }, [taskOrGrant]);
+    if (taskOrGrant?.rewards?.length) {
+      setRewardAmount(taskOrGrant?.rewards[0]?.rewardAmount);
+    }
+    if (taskOrGrant.reward) {
+      setRewardAmount(taskOrGrant?.reward?.rewardAmount);
+    }
+  }, [taskOrGrant?.rewards?.length, taskOrGrant.reward]);
 
   useEffect(() => {
     if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
@@ -151,6 +159,8 @@ function MakePaymentModal(props: Props) {
   if (!canPay) {
     return null;
   }
+  const reward = taskOrGrant?.reward || (taskOrGrant?.rewards?.length ? taskOrGrant?.rewards[0] : null);
+
   return (
     // <Modal open={open} onClose={handleCloseAll}>
     //   <PaymentModal>
@@ -291,13 +301,20 @@ function MakePaymentModal(props: Props) {
     //     </PaymentMethodWrapper>
     //   </PaymentModal>
     // </Modal>
-    <Modal open={open} maxWidth={620} title="Payment" onClose={handleCloseAll}>
+    <Modal
+      open={open}
+      maxWidth={620}
+      title="Payment"
+      onClose={handleCloseAll}
+      footerRight={<div ref={footerRef} />}
+      footerLeft={<div ref={footerLeftRef} />}
+    >
       <GradientHeading fontSize={24}>Payout</GradientHeading>
       <Grid display="flex" direction="column" gap="24px">
         <PaymentDetails
           rewardAmount={rewardAmount}
           setRewardAmount={setRewardAmount}
-          tokenName={taskOrGrant?.rewards[0]?.tokenName}
+          tokenName={reward?.tokenName}
           payee={{
             profilePicture: submissionOrApplication?.creator?.profilePicture,
             username: submissionOrApplication?.creator?.username,
@@ -305,7 +322,19 @@ function MakePaymentModal(props: Props) {
           error={changeRewardErrorText}
         />
         <Divider />
-        <PaymentMethod wallets={wallets} paymentInfo={submissionPaymentInfo} />
+        <PaymentMethod
+          submissionOrApplicationId={submissionOrApplication?.id}
+          wallets={wallets}
+          paymentData={paymentInfo?.paymentData[0]}
+          ref={footerRef}
+          onClose={handleCloseAll}
+          orgId={submissionOrApplication?.orgId}
+          podId={submissionOrApplication?.podId}
+          changedRewardAmount={userChangedRewardAmount ? rewardAmount : null}
+          parentError={submissionPaymentError}
+          entityType={entityType}
+          reward={taskOrGrant?.reward}
+        />
       </Grid>
     </Modal>
   );

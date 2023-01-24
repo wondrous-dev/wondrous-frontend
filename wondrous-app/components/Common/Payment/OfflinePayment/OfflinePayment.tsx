@@ -1,5 +1,8 @@
 import { useMutation } from '@apollo/client';
 import { Typography } from '@mui/material';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { PaymentData } from 'components/Common/Payment/types';
+import { MediaItem } from 'components/CreateEntity/MediaItem';
 import CopyIcon from 'components/Icons/copy';
 import {
   LINK_BATCH_OFF_PLATFORM_PAYMENT,
@@ -12,20 +15,19 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { MediaItem } from 'components/CreateEntity/MediaItem';
-import { handleAddFile } from 'utils/media';
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { FileLoading } from 'components/Common/FileUpload/FileUpload';
-import { PaymentData } from 'components/Common/Payment/types';
+import { handleAddFile } from 'utils/media';
 
 import { CreateEntityAttachment, CreateEntityAttachmentIcon } from 'components/CreateEntity/CreateEntityModal/styles';
 
+import Button from 'components/Button';
 import { ErrorText } from '../..';
 import { CreateFormPreviewButton } from '../../../CreateEntity/styles';
 import { SnackbarAlertContext } from '../../SnackbarAlert';
 import {
+  MediaUploadDiv,
   OfflinePaymentButtonWrapper,
   OfflinePaymentDescriptionText,
   OfflinePaymentDropdown,
@@ -38,7 +40,6 @@ import {
   OfflinePaymentWalletWrapper,
   OfflinePaymentWarningTypography,
   OfflinePaymentWrapper,
-  MediaUploadDiv,
 } from './styles';
 
 const OFFLINE_PAYMENT_OPTIONS = [
@@ -179,13 +180,29 @@ export function OfflinePayment({ handleClose, submissionOrApplicationId, payment
           onChange={(e) => {}}
         />
       </OfflinePaymentDropdownWrapper>
-      <OfflinePaymentInputLabel>User Wallet</OfflinePaymentInputLabel>
+      <OfflinePaymentInputLabel>Wallet Link</OfflinePaymentInputLabel>
       <OfflinePaymentWalletWrapper>
         <OfflinePaymentWallet disabled value={recipientAddress} />
-        <OfflinePaymentWalletButton highlighted onClick={handleCopyAddress}>
-          <OfflinePaymentWalletButtonText>Copy Address</OfflinePaymentWalletButtonText>
+        <Button
+          onClick={handleCopyAddress}
+          buttonTheme={{
+            background: palette.grey75,
+            borderColor: 'transparent',
+            fontSize: '14px',
+            fontWeight: 500,
+            paddingX: 24,
+            paddingY: 8,
+            height: '32px',
+            hover: {
+              background: palette.grey76,
+            },
+          }}
+        >
+          {/* <Button highlighted onClick={handleCopyAddress}> */}
           <CopyIcon />
-        </OfflinePaymentWalletButton>
+          Copy
+          {/* </OfflinePaymentWalletButton> */}
+        </Button>
       </OfflinePaymentWalletWrapper>
       <OfflinePaymentInputLabel>Link</OfflinePaymentInputLabel>
       <OfflinePaymentLinkInput
