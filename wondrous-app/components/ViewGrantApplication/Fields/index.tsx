@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { OrgComponent } from 'components/BreadCrumbs/Components/OrgSelector';
 import CommentList from 'components/Comment';
-import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import { TaskMintWrapper } from 'components/Common/TaskMint/TaskMintButton/styles';
@@ -12,7 +12,6 @@ import Divider from 'components/Divider';
 import CopyIcon from 'components/Icons/copy';
 import PodIcon from 'components/Icons/podIcon';
 import { HeaderButton } from 'components/organization/wrapper/styles';
-import { PAYMENT_TYPES } from 'components/Settings/Payouts/constants';
 import { DataDisplayWrapper } from 'components/ViewGrant/Fields/styles';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import { UnstyledLink } from 'components/WorkspacePicker/styles';
@@ -35,6 +34,7 @@ import {
   GRANT_APPLICATION_COMMENT_TYPE,
   GRANT_APPLICATION_STATUSES,
   PERMISSIONS,
+  PAYMENT_STATUS,
 } from 'utils/constants';
 import { Button, GrantApplicationStatusWrapper, WalletAddressWrapper, CreateWorkspaceWrapper } from './styles';
 
@@ -113,7 +113,7 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
   });
 
   const paymentExists = useMemo(
-    () => [PAYMENT_TYPES.PAID, PAYMENT_TYPES.PROCESSING].includes(grantApplication?.paymentStatus),
+    () => [PAYMENT_STATUS.PAID, PAYMENT_STATUS.PROCESSING].includes(grantApplication?.paymentStatus),
     [grantApplication?.paymentStatus]
   );
 
@@ -285,15 +285,15 @@ export const PaymentHandler = ({ grantApplication }) => {
       <MakePaymentModal
         open={isPaymentModalOpen}
         handleClose={() => {}}
+        handleGoBack={() => setIsPaymentModalOpen(false)}
         setShowPaymentModal={setIsPaymentModalOpen}
-        fetchedTask={grantApplication?.grant}
-        approvedSubmission={{
+        taskOrGrant={grantApplication?.grant}
+        submissionOrApplication={{
           // SOURCE OF TRUTH FOR THE GRANT APPLICATION ORG / POD IS GRANT'S ORG / POD
           ...grantApplication,
           podId: grantApplication?.grant?.podId,
           orgId: grantApplication?.grant?.orgId,
         }}
-        reward={grantApplication?.grant?.reward}
         entityType={ENTITIES_TYPES.GRANT_APPLICATION}
       />
     );

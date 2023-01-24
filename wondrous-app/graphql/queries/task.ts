@@ -99,6 +99,9 @@ export const GET_TASK_SUBMISSION_BY_ID = gql`
   query getTaskSubmissionById($submissionId: ID!) {
     getTaskSubmissionById(submissionId: $submissionId) {
       ...TaskSubmissionFragment
+      task {
+        type
+      }
     }
   }
   ${TaskSubmissionFragment}

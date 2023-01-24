@@ -1,13 +1,14 @@
 import { useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { PAYMENT_STATUS, PERMISSIONS } from 'utils/constants';
+import { PAYMENT_STATUS, PERMISSIONS, ENTITIES_TYPES } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useApprovedSubmission } from 'utils/hooks';
-import { MakeSubmissionPaymentButton } from '../../CreateEntity/styles';
-import { MakePaymentModal } from '../Payment/PaymentModal';
+import { Button as WonderButton } from 'components/Button';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
+import { MakeSubmissionPaymentButton } from 'components/Common/Task/styles';
 
-export function PaymentButton(props) {
+function SubmissionPaymentButton(props) {
   const approvedSubmissionContext = useApprovedSubmission();
   const { fetchedTask, taskSubmissions, handleClose, getTaskSubmissionsForTask, submission } = props;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
@@ -61,11 +62,10 @@ export function PaymentButton(props) {
         <MakePaymentModal
           handleGoBack={handleGoBackToTask}
           open={showPaymentModal}
-          reward={fetchedTask?.rewards[0]}
           handleClose={handleClose}
-          approvedSubmission={approvedSubmission}
+          submissionOrApplication={approvedSubmission}
           setShowPaymentModal={setShowPaymentModal}
-          fetchedTask={fetchedTask}
+          taskOrGrant={fetchedTask}
         />
       )}
       {showPaymentButton && (
@@ -74,3 +74,5 @@ export function PaymentButton(props) {
     </>
   );
 }
+
+export default SubmissionPaymentButton;

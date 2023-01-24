@@ -32,6 +32,7 @@ import {
   populateProposalColumns,
   populateTaskColumns,
 } from 'services/board';
+import { useWonderWeb3 } from 'services/web3';
 import { useMe } from 'components/Auth/withAuth';
 import {
   ColumnsContext,
@@ -451,4 +452,24 @@ export const usePodPageFetch = (podId: string | string[]) => {
   useEffect(() => setPageData({}), []);
 
   return { data };
+};
+
+export const useGetEnsOrAddress = (ethAddress: string) => {
+  const [ENSNameOrWalletAddress, setENSNameOrWalletAddress] = useState('');
+
+  const wonderWeb3 = useWonderWeb3();
+
+  useEffect(() => {
+    if (ethAddress) {
+      setENSNameOrWalletAddress(ethAddress);
+
+      wonderWeb3.getENSNameFromEthAddress(ethAddress).then((ensName) => {
+        if (ensName) {
+          setENSNameOrWalletAddress(ensName);
+        }
+      });
+    }
+  }, [wonderWeb3, ethAddress]);
+
+  return { ENSNameOrWalletAddress };
 };

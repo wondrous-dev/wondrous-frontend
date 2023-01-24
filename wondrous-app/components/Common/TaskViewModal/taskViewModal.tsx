@@ -69,10 +69,9 @@ import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { RejectIcon } from 'components/Icons/taskModalIcons';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress';
-import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
-import { delQuery } from 'utils/index';
 import ActionModals from './actionModals';
 import { tabs } from './constants';
 import {
@@ -402,11 +401,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       <MakePaymentModal
         handleGoBack={handleGoBackToTask}
         open={showPaymentModal}
-        reward={fetchedTask?.rewards[0]}
         handleClose={handleClose}
-        approvedSubmission={approvedSubmission}
+        submissionOrApplication={approvedSubmission}
         setShowPaymentModal={setShowPaymentModal}
-        fetchedTask={fetchedTask}
+        taskOrGrant={fetchedTask}
       />
     );
   }

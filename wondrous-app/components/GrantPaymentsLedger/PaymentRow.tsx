@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import format from 'date-fns/format';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -9,20 +10,20 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import Button from 'components/Button';
 import CalendarIcon from 'components/Icons/calendar';
 import CopyIcon from 'components/Icons/copy';
+import Ethereum from 'components/Icons/ethereumV2';
 import { LinkIcon } from 'components/Icons/taskModalIcons';
 
 import { capitalize } from 'utils/common';
+import { useGetEnsOrAddress } from 'utils/hooks';
 import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
 
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { NoUnderlineLink } from 'components/Common/Link/links';
-import { PaymentSelected, PayoutTableItem } from 'components/Settings/Payouts/types';
 import {
   PayeeAddressTag,
   PayeeAddressTagContainer,
   PayeeProfileLink,
-  StyledCheckbox,
   StyledTableCell,
   StyledTableRow,
   RewardChainHalfBox,
@@ -34,40 +35,44 @@ import {
   MoreActionDiv,
 } from 'components/Settings/Payouts/styles';
 import { PAYMENT_STATUS } from 'utils/constants';
+import { imageStyle } from 'components/GrantPaymentsLedger/styles';
+import { RewardTextRightPill, RewardTextLefPill, RewardText } from 'components/Common/Payment/PaymentViewModal/styles';
 
-const imageStyle = {
-  width: '32px',
-  height: '32px',
-  minWidth: '32px',
-  minHeight: '32px',
-  borderRadius: '16px',
-  marginRight: '8px',
-};
+interface PaymentItem {
+  id: string;
+  grantTitle: string;
+  grantId: string;
+  grantApplicationId: string;
+  grantApplicationTitle: string;
+  payeeId: string;
+  payeeUsername: string;
+  payeeProfilePicture: string;
+  paymentAddress: string;
+  chain: string;
+  safeAddress: string;
+  txHash: string;
+  safeTxHash: string;
+  payedAt: string;
+  status: string;
+  notes: string;
+  amount: number;
+  symbol: string;
+  icon: string;
+  tokenName: string;
+  additionalData?: {
+    manualExplorerLink?: string;
+    utopiaLink?: string;
+  };
+}
 
 interface PayoutItemProps {
-  item: PayoutTableItem;
-  checked?: boolean;
-  orgId?: string;
-  podId?: string;
-  selectedItemsLength?: number;
+  item: PaymentItem;
   canViewPaymentLink?: boolean;
-  handlePay?: (paymentSelected: PaymentSelected) => void;
-  handleCheck?: (item: PayoutTableItem) => void;
   setPaymentDetailId?: (paymentId: string) => void;
 }
 
-const PayoutItem = (props: PayoutItemProps) => {
-  const {
-    item,
-    checked = false,
-    orgId,
-    podId,
-    selectedItemsLength,
-    canViewPaymentLink,
-    handlePay,
-    handleCheck,
-    setPaymentDetailId,
-  } = props;
+const PaymentRow = (props: PayoutItemProps) => {
+  const { item, canViewPaymentLink, setPaymentDetailId } = props;
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
 
   let link;
@@ -80,24 +85,21 @@ const PayoutItem = (props: PayoutItemProps) => {
     link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
   }
 
-  const completionDate = item?.submissionApprovedAt || item?.payedAt;
+  const completionDate = item?.payedAt;
+  const { ENSNameOrWalletAddress } = useGetEnsOrAddress(item?.paymentAddress);
 
-  const isPayButtonDisabled =
-    selectedItemsLength > 0 ||
-    !item?.amount ||
-    item.paymentStatus !== PAYMENT_STATUS.UNPAID ||
-    !item?.payeeActiveEthAddress;
-
-  const address = item?.payeeActiveEthAddress;
-  const addressTag = useMemo(() => {
-    if (!address) {
+  const addressDisplay = useMemo(() => {
+    if (!ENSNameOrWalletAddress) {
       return '';
     }
-    return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`;
-  }, [address]);
+    return `${ENSNameOrWalletAddress.slice(0, 6)}...${ENSNameOrWalletAddress.slice(
+      ENSNameOrWalletAddress.length - 4,
+      ENSNameOrWalletAddress.length
+    )}`;
+  }, [ENSNameOrWalletAddress]);
 
   const handleAddressCopy = () => {
-    navigator.clipboard.writeText(address);
+    navigator.clipboard.writeText(ENSNameOrWalletAddress);
     setHasAddressBeenCopied(true);
 
     setTimeout(() => {
@@ -105,54 +107,11 @@ const PayoutItem = (props: PayoutItemProps) => {
     }, 1500);
   };
 
-  const handlePayeePayButton = () => {
-    if (isPayButtonDisabled) return;
-
-    handlePay({
-      podId,
-      orgId,
-      payeeId: item?.payeeId,
-      payeeUsername: item?.payeeUsername,
-      taskTitle: item?.taskTitle,
-      submissionId: item?.submissionId,
-      amount: item?.amount,
-      symbol: item?.symbol,
-    });
-  };
-
   return (
     <StyledTableRow>
       <StyledTableCell>
         <Grid display="flex" alignItems="center" gap="12px">
           <Grid display="flex" alignItems="center" gap="8px">
-            <StyledCheckbox
-              checked={checked}
-              onChange={() => handleCheck(item)}
-              inputProps={{ 'aria-label': 'controlled' }}
-            />
-
-            {item.paymentStatus === PAYMENT_STATUS.UNPAID && (
-              <Button
-                buttonTheme={{
-                  paddingX: 16,
-                  paddingY: 7,
-                  background: palette.background.default,
-                  borderColor: isPayButtonDisabled
-                    ? palette.grey85
-                    : `linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%), linear-gradient(0deg, ${palette.background.default}, ${palette.background.default})`,
-                  fontWeight: 500,
-                  hover: {
-                    background: isPayButtonDisabled ? palette.background.default : 'transparent',
-                  },
-                }}
-                minWidth="auto"
-                disabled={isPayButtonDisabled}
-                onClick={handlePayeePayButton}
-              >
-                Pay
-              </Button>
-            )}
-
             <NoUnderlineLink href={`/profile/${item?.payeeUsername}/about`} passHref>
               <PayeeProfileLink>
                 <Grid display="flex" alignItems="center" gap="6px">
@@ -172,10 +131,10 @@ const PayoutItem = (props: PayoutItemProps) => {
               </PayeeProfileLink>
             </NoUnderlineLink>
           </Grid>
-          {!!addressTag && (
+          {!!addressDisplay && (
             <PayeeAddressTagContainer onClick={handleAddressCopy}>
               <PayeeAddressTag hasAddressBeenCopied={hasAddressBeenCopied}>
-                {hasAddressBeenCopied ? 'Address copied!' : addressTag}
+                {hasAddressBeenCopied ? 'Address copied!' : addressDisplay}
               </PayeeAddressTag>
               <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />
             </PayeeAddressTagContainer>
@@ -184,29 +143,16 @@ const PayoutItem = (props: PayoutItemProps) => {
       </StyledTableCell>
 
       <StyledTableCell>
-        {item?.amount ? (
-          <RewardChainHalfBox isRewardBox>
-            <RewardChainHalfBoxText>
-              {item?.amount} {item?.symbol}
-            </RewardChainHalfBoxText>
-          </RewardChainHalfBox>
-        ) : (
-          <RewardChainHalfBox isRewardBox hasNoReward>
-            <RewardChainHalfBoxText hasNoReward>reward</RewardChainHalfBoxText>
-          </RewardChainHalfBox>
-        )}
-      </StyledTableCell>
-
-      <StyledTableCell>
-        {item?.amount ? (
-          <RewardChainHalfBox>
-            <RewardChainHalfBoxText>{capitalize(item?.chain)}</RewardChainHalfBoxText>
-          </RewardChainHalfBox>
-        ) : (
-          <RewardChainHalfBox hasNoReward>
-            <RewardChainHalfBoxText hasNoReward>removed</RewardChainHalfBoxText>
-          </RewardChainHalfBox>
-        )}
+        <div style={{ display: 'flex' }}>
+          <RewardTextLefPill>
+            <RewardText>
+              {item?.amount} {item?.symbol}{' '}
+            </RewardText>
+          </RewardTextLefPill>
+          <RewardTextRightPill>
+            <RewardText>{capitalize(item?.chain)}</RewardText>
+          </RewardTextRightPill>
+        </div>
       </StyledTableCell>
 
       {canViewPaymentLink && (
@@ -220,7 +166,11 @@ const PayoutItem = (props: PayoutItemProps) => {
       )}
 
       <StyledTableCell>
-        <PayoutTaskTitleContainer>{item?.taskTitle}</PayoutTaskTitleContainer>
+        <PayoutTaskTitleContainer>{item?.grantTitle}</PayoutTaskTitleContainer>
+      </StyledTableCell>
+
+      <StyledTableCell>
+        <PayoutTaskTitleContainer>{item?.grantApplicationTitle}</PayoutTaskTitleContainer>
       </StyledTableCell>
 
       <StyledTableCell>
@@ -231,15 +181,13 @@ const PayoutItem = (props: PayoutItemProps) => {
           </PayoutTaskCompletionDate>
         )}
       </StyledTableCell>
-      {item.paymentStatus === PAYMENT_STATUS.PAID && (
-        <StyledTableCell>
-          <MoreActionDiv onClick={() => setPaymentDetailId(item.id)}>
-            <MoreIcon />
-          </MoreActionDiv>
-        </StyledTableCell>
-      )}
+      <StyledTableCell>
+        <MoreActionDiv onClick={() => setPaymentDetailId(item.id)}>
+          <MoreIcon />
+        </MoreActionDiv>
+      </StyledTableCell>
     </StyledTableRow>
   );
 };
 
-export default PayoutItem;
+export default PaymentRow;

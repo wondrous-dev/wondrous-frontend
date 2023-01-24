@@ -1,28 +1,26 @@
-import React, { useCallback, useEffect, useRef, useState, useContext, useMemo } from 'react';
-import { Grid, Tab } from '@mui/material';
+import React, { useEffect, useRef, useState, useContext } from 'react';
+import Tab from '@mui/material/Tab';
 import { BigNumber } from 'bignumber.js';
 import { GRAPHQL_ERRORS, BOUNTY_TYPE, PERMISSIONS, ENTITIES_TYPES } from 'utils/constants';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_GRANT_APPLICATION_PAYMENT_INFO, GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { useRouter } from 'next/router';
+import { SubmissionPaymentInfo } from 'components/Common/Payment/types';
 import Link from 'next/link';
 import palette from 'theme/palette';
-import CloseModalIcon from 'components/Icons/closeModal';
 import { ErrorText } from 'components/Onboarding/styles';
 import { Modal } from 'components/Modal';
 import GradientHeading from 'components/GradientHeading';
 import Divider from 'components/Divider';
+import { useGlobalContext } from 'utils/hooks';
+import { useGetOrgOrPodWallet, useSelectedTab } from 'components/Common/Payment/helper';
+import Grid from '@mui/material/Grid';
 import { SafeImage } from '../Image';
 import { useMe } from '../../Auth/withAuth';
 import { DAOIcon } from '../../Icons/dao';
 import OrganisationsCardNoLogo from '../../profile/about/styles';
 import { OfflinePayment } from './OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
-import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
 import InputForm from '../InputForm/inputForm';
 import {
   PodNameTypography,
@@ -34,7 +32,6 @@ import {
   PaymentDescriptionText,
   StyledTabs,
   PaymentMethodWrapper,
-  WarningTypography,
   ChangePaymentButton,
   ChangePaymentAmountDiv,
   SaveNewRewardAmountButton,
@@ -54,58 +51,34 @@ const GoBackStyle = {
 
 // TODO: Adrian - we need to refactor this to make it generic for both tasks and grants
 
-/**
- *
- * @param props {
- *  entityType: GRANT | TASK,
- *  fetchedTask: GRANT | TASK
- *  approvedSubmission: SUBMISSION | GRANT_APPLICATION
- *  reward: {
- *   tokenName,
- *   rewardAmount
- *  }
- * }
- */
+interface Props {
+  open: boolean;
+  handleClose: () => void;
+  setShowPaymentModal: (showPaymentModal: boolean) => void;
+  handleGoBack: any;
+  submissionOrApplication: any; // taskSubmission or grantApplication
+  taskOrGrant: any; // task or grant
+  entityType?: string;
+}
 
-export function MakePaymentModal(props) {
-  const { open, handleClose, setShowPaymentModal, handleGoBack, approvedSubmission, fetchedTask, reward, entityType } =
+function MakePaymentModal(props: Props) {
+  const { open, handleClose, setShowPaymentModal, handleGoBack, submissionOrApplication, taskOrGrant, entityType } =
     props;
-  const [selectedTab, setSelectedTab] = useState('wallet');
-  const [wallets, setWallets] = useState([]);
+
   const [rewardAmount, setRewardAmount] = useState('');
   const [changeRewardAmount, setChangeRewardAmount] = useState(false);
   const [changedRewardAmount, setChangedRewardAmount] = useState(null);
-  const [useChangedRewardAmount, setUseChangedRewardAmount] = useState(false);
+  const [userChangedRewardAmount, setUserChangedRewardAmount] = useState(false);
   const [submissionPaymentError, setSubmissionPaymentError] = useState(null);
-  const [tokenName, setTokenName] = useState('');
-  const orgBoard = useOrgBoard();
-  const userBoard = useUserBoard();
-  const podBoard = usePodBoard();
   const [changeRewardErrorText, setChangeRewardErrorText] = useState('');
-  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
-    fetchPolicy: 'cache-and-network',
-  });
-  const PAYMENT_TABS = [
-    { name: 'wallet', label: 'Wallet', action: () => setSelectedTab('wallet') },
-    { name: 'off_platform', label: 'Off platform', action: () => setSelectedTab('off_platform') },
-  ];
-  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
-    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
-    : null;
+  const { selectedTab, PAYMENT_TABS } = useSelectedTab();
+  const { userPermissionsContext } = useGlobalContext();
+  const wallets = useGetOrgOrPodWallet(submissionOrApplication?.podId, submissionOrApplication?.orgId);
+
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
-    orgId: fetchedTask?.orgId,
-    podId: fetchedTask?.podId,
-  });
-  const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
-    onCompleted: (data) => {
-      setWallets(data?.getOrgWallet);
-    },
-    fetchPolicy: 'network-only',
-  });
-
-  const [getPodWallet] = useLazyQuery(GET_POD_WALLET, {
-    fetchPolicy: 'network-only',
+    orgId: submissionOrApplication?.orgId,
+    podId: submissionOrApplication?.podId,
   });
 
   const [getSubmissionPaymentInfo, { data: submissionPaymentInfo }] = useLazyQuery(GET_SUBMISSION_PAYMENT_INFO, {
@@ -134,57 +107,24 @@ export function MakePaymentModal(props) {
   );
 
   useEffect(() => {
-    if (fetchedTask?.podId) {
-      getPodWallet({
-        variables: {
-          podId: fetchedTask?.podId,
-        },
-      }).then((result) => {
-        const wallets = result?.data?.getPodWallet;
-        if (!wallets || wallets?.length === 0) {
-          getOrgWallet({
-            variables: {
-              orgId: fetchedTask?.orgId,
-            },
-          });
-        } else {
-          setWallets(wallets);
-        }
-      });
-    } else if (fetchedTask?.orgId) {
-      getOrgWallet({
-        variables: {
-          orgId: fetchedTask?.orgId,
-        },
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchedTask]);
+    setRewardAmount(taskOrGrant?.rewards[0]?.rewardAmount);
+  }, [taskOrGrant]);
 
   useEffect(() => {
-    setRewardAmount(reward?.rewardAmount);
-    setTokenName(reward?.tokenName);
-  }, [fetchedTask]);
-
-  const handlePaymentInfo = () => {
     if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
       getGrantApplicationPaymentInfo({
         variables: {
-          grantApplicationId: approvedSubmission?.id,
+          grantApplicationId: submissionOrApplication?.id,
         },
       });
     } else {
       getSubmissionPaymentInfo({
         variables: {
-          submissionId: approvedSubmission?.id,
+          submissionId: submissionOrApplication?.id,
         },
       });
-    }
-  };
-  useEffect(() => {
-    handlePaymentInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [approvedSubmission]);
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submissionOrApplication]);
 
   const handleCloseAll = () => {
     handleClose();
@@ -194,189 +134,174 @@ export function MakePaymentModal(props) {
   const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
 
   const isBountyOrGrantApplication =
-    fetchedTask.type === BOUNTY_TYPE || entityType === ENTITIES_TYPES.GRANT_APPLICATION;
+    taskOrGrant?.type === ENTITIES_TYPES.BOUNTY || entityType === ENTITIES_TYPES.GRANT_APPLICATION;
+  let displayEntity = 'Task';
+  if (taskOrGrant?.type === ENTITIES_TYPES.BOUNTY) {
+    displayEntity = 'Bounty';
+  } else if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
+    displayEntity = 'Grant';
+  }
 
-  const payee = {
-    userId: isBountyOrGrantApplication ? approvedSubmission?.createdBy : fetchedTask?.assigneeId,
-    username: isBountyOrGrantApplication ? approvedSubmission?.creator.username : fetchedTask.assigneeUsername,
-    profilePicture: isBountyOrGrantApplication
-      ? approvedSubmission?.creator?.profilePicture
-      : fetchedTask.assigneeProfilePicture,
-  };
-
-  const paymentInfo =
+  const paymentInfo: SubmissionPaymentInfo =
     submissionPaymentInfo?.getSubmissionPaymentInfo || grantApplicationPaymentInfo?.getGrantApplicationPaymentInfo;
 
-  // return (
-  //   <Modal open={open} onClose={handleCloseAll}>
-  //     <PaymentModal>
-  //       <PaymentModalHeader>
-  //         {fetchedTask?.orgProfilePicture ? (
-  //           <SafeImage
-  //             useNextImage={false}
-  //             src={fetchedTask?.orgProfilePicture}
-  //             style={{
-  //               width: '29px',
-  //               height: '28px',
-  //               borderRadius: '4px',
-  //               marginRight: '8px',
-  //             }}
-  //             alt="Organization logo"
-  //           />
-  //         ) : (
-  //           <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
-  //             <DAOIcon />
-  //           </OrganisationsCardNoLogo>
-  //         )}
-  //         {fetchedTask?.podName && (
-  //           <div
-  //             style={{
-  //               display: 'flex',
-  //               alignItems: 'center',
-  //             }}
-  //           >
-  //             <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
-  //           </div>
-  //         )}
-  //         <>
-  //           <PodNameTypography style={GoBackStyle} onClick={handleGoBack}>
-  //             Back to Task
-  //           </PodNameTypography>
-  //         </>
-  //       </PaymentModalHeader>
-  //       <PaymentTitleDiv>
-  //         <PaymentTitleTextDiv>
-  //           <PaymentTitleText>
-  //             Payout
-  //             <span style={{ color: palette.blue20 }}>
-  //               {' '}
-  //               {rewardAmount} {tokenName?.toUpperCase()}{' '}
-  //             </span>
-  //             to{' '}
-  //             <Link
-  //               href={`/profile/${payee.userId}/about`}
-  //               style={{
-  //                 color: '#ffffff',
-  //                 textDecoration: 'underline',
-  //                 cursor: 'pointer',
-  //               }}
-  //               target="_blank"
-  //             >
-  //               {payee.username}
-  //             </Link>{' '}
-  //           </PaymentTitleText>
-  //           <PaymentDescriptionText>Task: {fetchedTask?.title}</PaymentDescriptionText>
-  //           {isBountyOrGrantApplication && (
-  //             <>
-  //               {changeRewardAmount ? (
-  //                 <>
-  //                   <ChangePaymentAmountDiv>
-  //                     <InputForm
-  //                       style={{
-  //                         marginTop: '12px',
-  //                         width: 'fit-content',
-  //                         paddingRight: '12px',
-  //                       }}
-  //                       type="number"
-  //                       min="0"
-  //                       placeholder="Enter new reward amount"
-  //                       search={false}
-  //                       value={changedRewardAmount}
-  //                       onChange={(e) => setChangedRewardAmount(e.target.value)}
-  //                     />
-  //                     <PaymentDescriptionText
-  //                       style={{
-  //                         marginLeft: '12px',
-  //                         marginTop: '12px',
-  //                       }}
-  //                     >
-  //                       {tokenName?.toUpperCase()}{' '}
-  //                     </PaymentDescriptionText>
-  //                     <SaveNewRewardAmountButton
-  //                       onClick={() => {
-  //                         const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
-  //                         const initialBigRewardAmount = new BigNumber(reward?.rewardAmount);
-  //                         if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
-  //                           setChangeRewardErrorText('New reward must be greater than minimum');
-  //                         } else {
-  //                           setRewardAmount(changedRewardAmount);
-  //                           setChangeRewardAmount(false);
-  //                           setUseChangedRewardAmount(true);
-  //                         }
-  //                       }}
-  //                     >
-  //                       Save changes
-  //                     </SaveNewRewardAmountButton>
-  //                     <CancelNewRewardAmountButton
-  //                       onClick={() => {
-  //                         setChangeRewardAmount(false);
-  //                       }}
-  //                     >
-  //                       Cancel
-  //                     </CancelNewRewardAmountButton>
-  //                   </ChangePaymentAmountDiv>
-  //                   <ErrorText>{changeRewardErrorText}</ErrorText>
-  //                 </>
-  //               ) : (
-  //                 <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
-  //                   Change payment amount
-  //                 </ChangePaymentButton>
-  //               )}
-  //             </>
-  //           )}
-  //         </PaymentTitleTextDiv>
-  //       </PaymentTitleDiv>
-  //       <StyledTabs value={selectedTab}>
-  //         {PAYMENT_TABS.map((tab) => (
-  //           <Tab
-  //             style={{
-  //               color: 'white !important',
-  //             }}
-  //             value={tab.name}
-  //             key={tab.name}
-  //             label={tab.label}
-  //             onClick={tab.action}
-  //           />
-  //         ))}
-  //       </StyledTabs>
-  //       <PaymentMethodWrapper>
-  //         {selectedTab === 'off_platform' && (
-  //           <OfflinePayment
-  //             handleClose={handleCloseAll}
-  //             approvedSubmission={approvedSubmission}
-  //             fetchedTask={fetchedTask}
-  //             submissionPaymentInfo={paymentInfo}
-  //             entityType={entityType}
-  //           />
-  //         )}
-  //         {selectedTab === 'wallet' && (
-  //           <SingleWalletPayment
-  //             setShowPaymentModal={setShowPaymentModal}
-  //             approvedSubmission={approvedSubmission}
-  //             fetchedTask={fetchedTask}
-  //             wallets={wallets}
-  //             submissionPaymentInfo={paymentInfo}
-  //             orgId={approvedSubmission?.orgId}
-  //             podId={approvedSubmission?.podId}
-  //             changedRewardAmount={useChangedRewardAmount ? rewardAmount : null}
-  //             parentError={submissionPaymentError}
-  //             entityType={entityType}
-  //           />
-  //         )}
-  //       </PaymentMethodWrapper>
-  //     </PaymentModal>
-  //   </Modal>
-  // );
-
+  if (!paymentInfo) {
+    return null;
+  }
+  if (!canPay) {
+    return null;
+  }
   return (
+    // <Modal open={open} onClose={handleCloseAll}>
+    //   <PaymentModal>
+    //     <PaymentModalHeader>
+    //       <PodNameTypography style={GoBackStyle} onClick={handleGoBack}>
+    //         Back to {displayEntity}
+    //       </PodNameTypography>
+    //     </PaymentModalHeader>
+    //     <PaymentTitleDiv>
+    //       <PaymentTitleTextDiv>
+    //         <PaymentTitleText>
+    //           Payout
+    //           <span style={{ color: palette.blue20 }}>
+    //             {' '}
+    //             {rewardAmount} {taskOrGrant?.rewards[0]?.tokenName?.toUpperCase()}{' '}
+    //           </span>
+    //           to{' '}
+    //           {entityType === ENTITIES_TYPES.GRANT_APPLICATION ? (
+    //             <Link
+    //               href={`/grantApplication/${submissionOrApplication?.id}`}
+    //               style={{
+    //                 color: '#ffffff',
+    //                 textDecoration: 'underline',
+    //                 cursor: 'pointer',
+    //               }}
+    //               target="_blank"
+    //             >
+    //               {submissionOrApplication?.title}
+    //             </Link>
+    //           ) : (
+    //             <Link
+    //               href={`/profile/${submissionOrApplication?.creator?.id}/about`}
+    //               style={{
+    //                 color: '#ffffff',
+    //                 textDecoration: 'underline',
+    //                 cursor: 'pointer',
+    //               }}
+    //               target="_blank"
+    //             >
+    //               {submissionOrApplication?.creator?.username}
+    //             </Link>
+    //           )}
+    //         </PaymentTitleText>
+    //         <PaymentDescriptionText>
+    //           {displayEntity}: {taskOrGrant?.title}
+    //         </PaymentDescriptionText>
+    //         {isBountyOrGrantApplication && changeRewardAmount ? (
+    //           <>
+    //             <ChangePaymentAmountDiv>
+    //               <InputForm
+    //                 style={{
+    //                   marginTop: '12px',
+    //                   width: 'fit-content',
+    //                   paddingRight: '12px',
+    //                 }}
+    //                 type="number"
+    //                 min="0"
+    //                 placeholder="Enter new reward amount"
+    //                 search={false}
+    //                 value={changedRewardAmount}
+    //                 onChange={(e) => setChangedRewardAmount(e.target.value)}
+    //               />
+    //               <PaymentDescriptionText
+    //                 style={{
+    //                   marginLeft: '12px',
+    //                   marginTop: '12px',
+    //                 }}
+    //               >
+    //                 {taskOrGrant?.rewards[0]?.tokenName?.toUpperCase()}{' '}
+    //               </PaymentDescriptionText>
+    //               <SaveNewRewardAmountButton
+    //                 onClick={() => {
+    //                   const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
+    //                   const initialBigRewardAmount = new BigNumber(taskOrGrant?.rewards[0]?.rewardAmount);
+    //                   if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
+    //                     setChangeRewardErrorText('New reward must be greater than minimum');
+    //                   } else {
+    //                     setRewardAmount(changedRewardAmount);
+    //                     setChangeRewardAmount(false);
+    //                     setUserChangedRewardAmount(true);
+    //                   }
+    //                 }}
+    //               >
+    //                 Save changes
+    //               </SaveNewRewardAmountButton>
+    //               <CancelNewRewardAmountButton
+    //                 onClick={() => {
+    //                   setChangeRewardAmount(false);
+    //                 }}
+    //               >
+    //                 Cancel
+    //               </CancelNewRewardAmountButton>
+    //             </ChangePaymentAmountDiv>
+    //             <ErrorText>{changeRewardErrorText}</ErrorText>
+    //           </>
+    //         ) : (
+    //           <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
+    //             Change payment amount
+    //           </ChangePaymentButton>
+    //         )}
+    //       </PaymentTitleTextDiv>
+    //     </PaymentTitleDiv>
+    //     <StyledTabs value={selectedTab}>
+    //       {PAYMENT_TABS.map((tab) => (
+    //         <Tab
+    //           style={{
+    //             color: 'white !important',
+    //           }}
+    //           value={tab.name}
+    //           key={tab.name}
+    //           label={tab.label}
+    //           onClick={tab.action}
+    //         />
+    //       ))}
+    //     </StyledTabs>
+    //     <PaymentMethodWrapper>
+    //       {selectedTab === 'off_platform' && (
+    //         <OfflinePayment
+    //           handleClose={handleCloseAll}
+    //           submissionOrApplicationId={submissionOrApplication?.id}
+    //           paymentData={paymentInfo?.paymentData[0]}
+    //           entityType={entityType}
+    //         />
+    //       )}
+    //       {selectedTab === 'wallet' && (
+    //         <SingleWalletPayment
+    //           submissionOrApplicationId={submissionOrApplication?.id}
+    //           wallets={wallets}
+    //           paymentData={paymentInfo?.paymentData[0]}
+    //           orgId={submissionOrApplication?.orgId}
+    //           podId={submissionOrApplication?.podId}
+    //           changedRewardAmount={userChangedRewardAmount ? rewardAmount : null}
+    //           parentError={submissionPaymentError}
+    //           entityType={entityType}
+    //           reward={taskOrGrant?.reward}
+    //         />
+    //       )}
+    //     </PaymentMethodWrapper>
+    //   </PaymentModal>
+    // </Modal>
     <Modal open={open} maxWidth={620} title="Payment" onClose={handleCloseAll}>
       <GradientHeading fontSize={24}>Payout</GradientHeading>
       <Grid display="flex" direction="column" gap="24px">
         <PaymentDetails
           rewardAmount={rewardAmount}
           setRewardAmount={setRewardAmount}
-          tokenName={tokenName}
-          payee={payee}
+          tokenName={taskOrGrant?.rewards[0]?.tokenName}
+          payee={{
+            profilePicture: submissionOrApplication?.creator?.profilePicture,
+            username: submissionOrApplication?.creator?.username,
+          }}
           error={changeRewardErrorText}
         />
         <Divider />
@@ -385,3 +310,5 @@ export function MakePaymentModal(props) {
     </Modal>
   );
 }
+
+export default MakePaymentModal;

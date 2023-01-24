@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
-import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -53,6 +54,8 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -60,17 +63,17 @@ import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity } from './Fields';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
+import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from './Fields/GrantStyle';
 import {
   Form,
   GrantDescriptionMedia,
-  RichTextContainer,
   GrantModalData,
-  RichTextWrapper,
   GrantSectionDisplayDivWrapper,
   MediaWrapper,
+  RichTextContainer,
+  RichTextWrapper,
 } from './styles';
 import { descriptionTemplate } from './utils';
-import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from './Fields/GrantStyle';
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -366,6 +369,9 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
             <EditorToolbar ref={setEditorToolbarNode} />
+            <Typography fontFamily={typography.fontFamily} color={palette.blue20} fontWeight={500} fontSize="14px">
+              Use this space below however you want. We have dropped in a suggested structure
+            </Typography>
             <RichTextWrapper>
               <RichTextContainer
                 onClick={() => {
