@@ -154,6 +154,14 @@ export const ENTITIES_TYPES = {
   COLLAB: 'collab',
 };
 
+export const ENTITIES_DISPLAY_LABEL_MAP = {
+  [ENTITIES_TYPES.TASK]: 'Tasks',
+  [ENTITIES_TYPES.MILESTONE]: 'Milestones',
+  [ENTITIES_TYPES.BOUNTY]: 'Bounties',
+  [ENTITIES_TYPES.PROPOSAL]: 'Proposals',
+  [ENTITIES_TYPES.GRANT]: 'Grants',
+};
+
 export const MODAL_TABS_MAP = {
   CONTRIBUTORS: 'Contributors',
   PODS: 'Pods',
@@ -238,6 +246,7 @@ export const PERMISSIONS = {
   MANAGE_COMMENT: 'manage_comment',
   // MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
+  MANAGE_GRANTS: 'manage_grants',
 };
 
 export const PERMISSION_TO_DISPLAY = {
@@ -251,6 +260,7 @@ export const PERMISSION_TO_DISPLAY = {
   [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
   // [PERMISSIONS.MANAGE_POST]: 'Manage post',
   [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
+  [PERMISSIONS.MANAGE_GRANTS]: 'Manage grants',
 };
 
 export const NOTIFICATION_TYPES = {
@@ -284,6 +294,7 @@ export const NOTIFICATION_TYPES = {
 
   PROPOSAL_APPROVE: 'proposal_approve',
   PROPOSAL_REJECT: 'proposal_reject',
+  GRANT_APPLICATION_APPROVED: 'grant_application_approved',
 };
 
 export const NOTIFICATION_OBJ_TYPES = {
@@ -295,6 +306,9 @@ export const NOTIFICATION_OBJ_TYPES = {
   TASK_SUBMISSION_COMMENT: 'task_submission_comment',
   POST: 'post',
   COLLABORATION: 'collaboration',
+  POD: 'pod',
+  GRANT: 'grant',
+  GRANT_APPLICATION: 'grant_application',
 };
 
 export const COLLAB_TYPES = {
@@ -885,6 +899,7 @@ export const HEADER_ICONS = {
   [STATUS_CLOSED]: Rejected,
 };
 
+export const ONLY_GRANTS_ENABLED_ORGS = ['63763663725527146', '48014116661493762']; // Merit Circle, SampleDAO (staging)
 export const GRANT_APPLICATION_EDITABLE_STATUSES = [
   GRANT_APPLICATION_STATUSES.OPEN,
   GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED,

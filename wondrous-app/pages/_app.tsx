@@ -13,6 +13,10 @@ import { Web3Provider } from '@ethersproject/providers';
 import NavigationProgress from 'components/NavigationProgress';
 import '../styles/body.css';
 import '../styles/globals.css';
+// eslint-disable-next-line import/no-unresolved
+import 'swiper/css';
+// eslint-disable-next-line import/no-unresolved
+import 'swiper/css/pagination';
 
 import apollo from 'services/apollo';
 import theme from 'theme';

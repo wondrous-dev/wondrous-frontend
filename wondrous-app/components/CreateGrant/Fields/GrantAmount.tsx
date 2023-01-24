@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 
 import {
@@ -18,9 +18,10 @@ import {
   CreateEntityLabelWrapper,
   CreateEntityError,
 } from 'components/CreateEntity/CreateEntityModal/styles';
-import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
+import { InfoPoint, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import Grid from '@mui/material/Grid';
 import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
+import { GRANT_STYLE_MAP } from './GrantStyle';
 
 const GrantAmount = ({
   value,
@@ -31,6 +32,8 @@ const GrantAmount = ({
   disablePaymentSelect = false,
   disableAmountOfRewards = false,
   disableInput = false,
+  grantStyle = null,
+  numOfGrant = null,
 }) => {
   const router = useRouter();
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
@@ -46,6 +49,19 @@ const GrantAmount = ({
     router.push(`/organization/settings/${orgId}/payment-method`);
   };
 
+  const label = grantStyle === GRANT_STYLE_MAP.FIXED ? 'Grant amount' : 'Grant total';
+
+  const helperInfo = useMemo(() => {
+    if (value.rewardAmount && grantStyle) {
+      const paymentMethod = activePaymentMethods?.find((method) => method.id === value.paymentMethodId);
+      if (grantStyle === GRANT_STYLE_MAP.FIXED) {
+        return `You are granting ${numOfGrant} x ${value.rewardAmount} ${paymentMethod?.symbol} = ${
+          parseInt(value.rewardAmount) * numOfGrant
+        } ${paymentMethod?.symbol}`;
+      }
+      return `You are granting from a pool ${value.rewardAmount} ${paymentMethod?.symbol}`;
+    }
+  }, [grantStyle, value.rewardAmount, numOfGrant, activePaymentMethods, value.paymentMethodId]);
   return (
     <TaskSectionDisplayDiv alignItems="start">
       {activePaymentMethods?.length === 0 && (
@@ -57,7 +73,7 @@ const GrantAmount = ({
       {activePaymentMethods?.length > 0 && (
         <>
           <CreateEntityLabelWrapper>
-            <CreateEntityLabel>Grant amount</CreateEntityLabel>
+            <CreateEntityLabel>{label}</CreateEntityLabel>
           </CreateEntityLabelWrapper>
 
           <CreateEntityWrapper>
@@ -67,8 +83,8 @@ const GrantAmount = ({
                   name="rewards-payment-method"
                   value={value.paymentMethodId}
                   disabled={disablePaymentSelect}
-                  onChange={(value) => {
-                    onChange('reward', { ...value, paymentMethodId: value });
+                  onChange={(paymentMethodValue) => {
+                    onChange('reward', { ...value, paymentMethodId: paymentMethodValue });
                   }}
                   renderValue={(selectedItem) => {
                     if (!selectedItem?.label?.props) return null;
@@ -79,7 +95,7 @@ const GrantAmount = ({
                           symbol={selectedItem.label.props.symbol}
                           chain={null}
                         />
-                        <CreateEntitySelectArrowIcon />
+                        {!disablePaymentSelect ? <CreateEntitySelectArrowIcon /> : null}
                       </CreateEntityPaymentMethodSelected>
                     );
                   }}
@@ -118,6 +134,7 @@ const GrantAmount = ({
                   onFocus={() => setError('reward', undefined)}
                 />
               </Grid>
+              {helperInfo ? <InfoPoint>{helperInfo}</InfoPoint> : null}
               {error?.rewardAmount ? <CreateEntityError>{error.rewardAmount}</CreateEntityError> : null}
             </Grid>
           </CreateEntityWrapper>

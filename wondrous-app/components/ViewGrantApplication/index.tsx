@@ -1,6 +1,6 @@
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import { Menu } from 'components/Common/TaskViewModal/helpers';
 import {
@@ -33,7 +33,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import GrantIcon from 'components/Icons/GrantIcon';
 import { GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
 import { RichTextViewer } from 'components/RichText';
-import { GrantAmount } from 'components/ViewGrant/Fields';
+import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import ViewGrantFooter from 'components/ViewGrant/Footer';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';
 import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
@@ -62,7 +62,7 @@ import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { GrantApplicationStatusManager, PaymentHandler, WalletAddressViewer } from './Fields';
+import { GrantApplicationStatusManager, OrgViewer, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';
 
 const GRANT_APPLICATION_STATUS_LABELS = {
@@ -98,21 +98,28 @@ const GRANT_APPLICATION_STATUS_LABELS = {
 
 const FIELDS_CONFIG = [
   {
+    component: ({ grantApplication }) => <PodViewer grantApplication={grantApplication} />,
+    shouldDisplay: ({ isApproved }) => isApproved,
+  },
+  {
     component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
     shouldDisplay: ({ hasManageRights }): boolean => hasManageRights,
   },
-
   {
     label: 'Grant amount',
-    component: ({ grantApplication: { grant } }) => <GrantAmount grantAmount={grant?.reward || {}} />,
+    component: ({ grantApplication: { grant } }) => <GrantPaymentData paymentData={grant?.reward || {}} />,
   },
   {
     component: ({ grantApplication }) => <PaymentHandler grantApplication={grantApplication} />,
-    shouldDisplay: ({ isApproved }) => isApproved,
+    shouldDisplay: ({ isApproved, hasManageRights }) => isApproved && hasManageRights,
   },
   {
     label: 'Wallet Address',
     component: ({ grantApplication: { paymentAddress } }) => <WalletAddressViewer walletAddress={paymentAddress} />,
+  },
+  {
+    label: 'Project',
+    component: ({ grantApplication }) => <OrgViewer grantApplication={grantApplication} />,
   },
 ];
 
@@ -154,27 +161,31 @@ const ViewGrantApplication = ({ onClose }) => {
     podId: grant?.podId,
   });
 
-  const canManage = permissions?.includes(PERMISSIONS.FULL_ACCESS) || permissions?.includes(PERMISSIONS.EDIT_TASK);
+  const canManage =
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.REVIEW_TASK) ||
+    permissions?.includes(PERMISSIONS.MANAGE_GRANTS);
 
   const canEditAndComment = canManage || grantApplication?.createdBy === user?.id;
 
   const canArchive =
     permissions?.includes(PERMISSIONS.REVIEW_TASK) ||
     permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.MANAGE_GRANTS) ||
     grantApplication?.createdBy === user?.id;
 
-  const canDelete = canArchive && GRANT_APPLICATION_DELETE_STATUSES.includes(grantApplication?.status);
   const displayTitle = grant?.title?.slice(0, 10);
 
   const handleGrantClick = () => {
-    const query = {
-      grant: grant?.id,
-    };
+    const query = { ...router.query };
+    delete query.grantApplicationId;
 
-    router.push({ query }, undefined, { scroll: false, shallow: true });
+    router.push({ pathname: router.pathname, query }, undefined, { scroll: false, shallow: true });
   };
 
   const status = useMemo(() => selectApplicationStatus(grantApplication), [grantApplication]);
+
+  const canDelete = canArchive && GRANT_APPLICATION_DELETE_STATUSES.includes(status);
 
   if (isEditMode) {
     return (
@@ -195,12 +206,12 @@ const ViewGrantApplication = ({ onClose }) => {
         taskType={ENTITIES_TYPES.GRANT_APPLICATION}
         taskId={grantApplication?.id}
       />
-      <DeleteTaskModal
+      <DeleteEntityModal
         open={deleteTask}
         onClose={() => {
           setDeleteTask(false);
         }}
-        taskType={ENTITIES_TYPES.GRANT_APPLICATION}
+        entityType={ENTITIES_TYPES.GRANT_APPLICATION}
         taskId={grantApplication?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);
@@ -227,7 +238,7 @@ const ViewGrantApplication = ({ onClose }) => {
             <TaskModalHeaderIconWrapper
               onClick={() => {
                 onClose();
-                router.push(`/organization/${grant?.orgUsername}/home`, undefined, {
+                router.push(`/organization/${grant?.org?.username}/home`, undefined, {
                   shallow: true,
                 });
               }}

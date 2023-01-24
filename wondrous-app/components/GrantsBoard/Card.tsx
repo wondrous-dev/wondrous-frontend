@@ -8,7 +8,7 @@ import {
   BoardsCardFooter,
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SafeImage } from 'components/Common/Image';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
@@ -18,7 +18,7 @@ import { IconWrapper } from 'components/GrantsFilters/styles';
 import CommentsIcon from 'components/Icons/comments';
 import { DueDateIcon } from 'components/Icons/taskModalIcons';
 import { RichTextViewer } from 'components/RichText';
-import { GrantAmount } from 'components/ViewGrant/Fields';
+import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import format from 'date-fns/format';
 import { useContext, useState } from 'react';
 import palette from 'theme/palette';
@@ -76,12 +76,12 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
         taskType={ENTITIES_TYPES.GRANT}
         taskId={grant?.id}
       />
-      <DeleteTaskModal
+      <DeleteEntityModal
         open={deleteTask}
         onClose={() => {
           setDeleteTask(false);
         }}
-        taskType={ENTITIES_TYPES.GRANT}
+        entityType={ENTITIES_TYPES.GRANT}
         taskId={grant?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);
@@ -93,15 +93,9 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
           <Grid display="flex" gap="14px" alignItems="center">
             <TaskCardPrivacy privacyLevel={grant?.privacyLevel} />
 
-            <GrantAmount grantAmount={grant.reward} numOfGrant={grant.numOfGrant} />
+            <GrantPaymentData paymentData={grant.reward} numOfGrant={grant.numOfGrant} />
           </Grid>
           <Grid display="flex" gap="14px">
-            <ItemPill>
-              <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
-                {grant.applicationsCount} Applications
-              </Typography>
-            </ItemPill>
-
             <ItemPill withIcon>
               <IconWrapper>
                 <Icon />
@@ -147,7 +141,13 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
             {' '}
             <CommentsIcon />
             {grant.comments || 0}
+            <ItemPill>
+              <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                {grant.applicationsCount} Applications
+              </Typography>
+            </ItemPill>
           </Grid>
+
           <MenuWrapper display="flex" justifyContent="flex-end" flex={1}>
             <TaskCardMenu
               anchorElParent={anchorEl}

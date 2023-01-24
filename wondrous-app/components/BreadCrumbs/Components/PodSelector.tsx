@@ -58,7 +58,7 @@ const PodSelector = () => {
     <PodSearchClickAway onClickAway={handleClickAway}>
       <div>
         <PodSelectorWrapper display="flex" justifyContent="center" alignItems="center" gap="8px">
-          <PodLink href={`/pod/${id}/boards`}>
+          <PodLink href={`/pod/${id}/home`}>
             <PodIcon
               color={color}
               style={{

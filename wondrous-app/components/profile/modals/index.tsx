@@ -48,7 +48,7 @@ const PodItem = forwardRef((props: any, ref) => {
     <PodWrapper
       ref={ref}
       onClick={() =>
-        router.push(`/pod/${pod?.id}/boards`, undefined, {
+        router.push(`/pod/${pod?.id}/home`, undefined, {
           shallow: true,
         })
       }

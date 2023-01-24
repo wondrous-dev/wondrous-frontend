@@ -57,6 +57,11 @@ const permissons: Permisson[] = [
     subTitle: 'Can payout members for their work.',
     permission: PERMISSIONS.APPROVE_PAYMENT,
   },
+  {
+    title: 'Manage grants',
+    subTitle: 'Can manage grant applications.',
+    permission: PERMISSIONS.MANAGE_GRANTS,
+  },
 ];
 
 export default permissons;

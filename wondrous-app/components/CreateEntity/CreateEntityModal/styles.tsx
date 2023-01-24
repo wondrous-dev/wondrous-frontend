@@ -49,10 +49,6 @@ export const CreateEntityForm = styled.form`
     }
   }}
   transition: all 0.1s linear;
-
-  ${(props) => props.theme.breakpoints.down('sm')} {
-    width: 95%;
-  }
 `;
 
 export const CreateEntityHeader = styled.div`
@@ -611,10 +607,6 @@ export const CreateEntityPrivacySelectRenderLabel = styled.div`
   color: white;
   text-transform: capitalize;
   margin-left: 10px;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 export const CreateEntityPrivacySelectRenderLabelWrapper = styled.div`
@@ -675,7 +667,7 @@ export const CreateEntityCancelButton = styled(ButtonUnstyled)`
     background: #454545;
   }
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
+    display: ${(props) => (props.showOnSmallScreen ? 'flex' : 'none')};
   }
 `;
 
@@ -1235,4 +1227,32 @@ export const CustomAddOptionButtonText = styled(Typography)`
 export const CustomAddOptionDiv = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const SubmitterWalletConnectContainer = styled.div`
+  font-family: 'Space Grotesk';
+  font-weight: 500;
+  font-size: 13px;
+  min-width: 130px;
+  max-width: 250px;
+  border-radius: 4px;
+  background: #262626;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  height: 45.5px;
+  padding-right: 12px;
+`;
+
+export const SubmitterWalletConnectText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+    color: ${palette.white};
+    margin-right: 4px;
+  }
 `;

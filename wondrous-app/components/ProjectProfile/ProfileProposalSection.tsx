@@ -6,7 +6,7 @@ import palette from 'theme/palette';
 import { getProposalStatus } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
 
-import { useEntityCreateButtonProps, useGetOrgProposal } from './helpers';
+import { useEntityCreateButtonProps, useGetProposal } from './helpers';
 import SectionContent from './SectionContent';
 import { ProfileGrid } from './styles';
 
@@ -40,10 +40,10 @@ const ProfileProposalSection = () => (
     ListItemProps={{
       LeftComponent,
       RightComponent,
-      onClick: (router, { id }) =>
+      onClick: ({ router, data: { id } }) =>
         router.push({ query: { ...router.query, taskProposal: id } }, undefined, { scroll: false }),
     }}
-    data={useGetOrgProposal()}
+    data={useGetProposal()}
   />
 );
 

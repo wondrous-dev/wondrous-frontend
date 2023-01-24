@@ -35,7 +35,7 @@ const ListItem = ({ item }) => {
       grantApplicationId: applicationId,
     };
 
-    router.push({ query }, undefined, { scroll: false, shallow: true });
+    router.push({ query }, undefined, { scroll: true, shallow: false });
   };
 
   const orgBoard = useOrgBoard();
@@ -47,7 +47,7 @@ const ListItem = ({ item }) => {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantById'],
   });
 
-  const deleteGrant = () =>
+  const handleDeleteGrantApplicationClick = () =>
     deleteGrantApplication({
       variables: {
         grantApplicationId: item?.id,
@@ -65,6 +65,7 @@ const ListItem = ({ item }) => {
   const canDelete =
     (permissions.includes(PERMISSIONS.FULL_ACCESS) ||
       permissions.includes(PERMISSIONS.REVIEW_TASK) ||
+      permissions.includes(PERMISSIONS.MANAGE_GRANTS) ||
       item?.createdBy === user?.id) &&
     GRANT_APPLICATION_DELETE_STATUSES.includes(status);
 
@@ -110,7 +111,9 @@ const ListItem = ({ item }) => {
       <Footer>
         <TaskCommentIcon />
         <TaskActionAmount>{item?.commentCount}</TaskActionAmount>
-        {canDelete && <RequestRejectButton onClick={deleteGrant}>Delete application</RequestRejectButton>}
+        {canDelete && (
+          <RequestRejectButton onClick={handleDeleteGrantApplicationClick}>Delete application</RequestRejectButton>
+        )}
 
         <RequestApproveButton onClick={() => handleClick(item?.id)}>View application</RequestApproveButton>
       </Footer>

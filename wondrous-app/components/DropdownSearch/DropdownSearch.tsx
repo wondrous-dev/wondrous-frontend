@@ -28,6 +28,7 @@ const DropdownSearch = ({
   autoFocus = false,
   onChange,
   onClose,
+  multiple = true,
 }) => {
   const anchorEl = useRef(null);
 
@@ -67,7 +68,7 @@ const DropdownSearch = ({
         </DropdownSearchButton>
         <DropdownSearchPopper open={isOpen} anchorEl={anchorEl.current} placement="bottom-start" disablePortal>
           <Autocomplete
-            multiple
+            multiple={multiple}
             value={selectedValues}
             renderInput={(params) => (
               <DropdownSearchInput

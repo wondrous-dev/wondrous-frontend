@@ -53,7 +53,7 @@ const NotificationsBoard = forwardRef(
         return `/organization/${notification.actorUsername}/home  `;
       }
       if (notification?.actorType === ENTITIES_TYPES.POD) {
-        return `/pod/${notification?.actorId}/boards`;
+        return `/pod/${notification?.actorId}/home`;
       }
     };
 
@@ -71,6 +71,9 @@ const NotificationsBoard = forwardRef(
         return notification.actorUsername;
       }
       if (notification?.actorType === ENTITIES_TYPES.POD) {
+        return notification?.actorUsername;
+      }
+      if (notification?.actorType === ENTITIES_TYPES.GRANT) {
         return notification?.actorUsername;
       }
     };

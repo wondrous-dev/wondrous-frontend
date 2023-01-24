@@ -28,6 +28,7 @@ const ButtonInner = styled.button`
   display: flex;
   flex-direction: row;
   flex: 1 1 auto;
+  gap: ${(props) => props.gap || 0};
   font-size: ${(props) => props.fontSize || '16px'};
   font-weight: ${(props) => props.fontWeight || 400};
   font-family: ${typography.fontFamily};
@@ -52,6 +53,13 @@ const theme = {
     hover: {
       background:
         'linear-gradient(270deg, rgb(204, 187, 255) -5.62%, rgb(116, 39, 255) 45.92%, rgb(0, 186, 255) 103.12%)',
+    },
+  },
+  secondary: {
+    background: palette.grey78,
+    borderColor: palette.grey78,
+    hover: {
+      background: palette.grey58,
     },
   },
   grey: {
@@ -89,7 +97,7 @@ type Props = SpaceProps & {
    * We include several predefined button styles,
    * each serving its own semantic purpose, with a few extras thrown in for more control.
    */
-  color?: 'primary' | 'grey' | 'purple' | 'blue' | 'red';
+  color?: 'primary' | 'secondary' | 'grey' | 'purple' | 'blue';
   children: ReactNode | undefined | string;
   minWidth?: number | string; // for values such as auto, fit-content, etc.
   height?: number;
@@ -126,6 +134,10 @@ type Props = SpaceProps & {
    * Button has three different variants
    */
   variant?: 'outlined' | 'contained' | 'text';
+  /**
+   * gap of elments in button
+   */
+  gap?: string;
 
   onClick?: () => unknown;
   /**

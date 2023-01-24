@@ -2,6 +2,8 @@ import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { ENTITIES_TYPES } from 'utils/constants';
+import { useIsOrg } from './helpers';
 
 import { IListItemProps } from './types';
 
@@ -33,6 +35,8 @@ const LeftComponentWrapper = styled(Grid)`
 
 const ListItem = ({ LeftComponent, RightComponent = () => null, onClick, data }: IListItemProps) => {
   const router = useRouter();
+  const entityLink = useIsOrg() ? `/organization/${router.query.username}/` : `/pod/${router.query.podId}/`;
+  const handleOnClick = () => onClick?.({ router, data, entityLink });
   return (
     <Wrapper
       container
@@ -42,7 +46,7 @@ const ListItem = ({ LeftComponent, RightComponent = () => null, onClick, data }:
       bgcolor={palette.grey950}
       height="36px"
       borderRadius="4px"
-      onClick={() => onClick?.(router, data)}
+      onClick={handleOnClick}
       sx={{
         '&:hover': {
           cursor: 'pointer',

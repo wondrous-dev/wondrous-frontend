@@ -29,7 +29,7 @@ import { useBoards, useFullScreen, useGlobalContext } from 'utils/hooks';
 
 import { useQuery } from '@apollo/client';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
@@ -43,7 +43,7 @@ import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { TaskContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { Categories, DataDisplay, Dates, GrantAmount } from './Fields';
+import { Categories, DataDisplay, Dates, GrantPaymentData } from './Fields';
 import ViewGrantFooter from './Footer';
 import GrantMenuStatus from './GrantMenuStatus';
 import { DescriptionWrapper } from './styles';
@@ -52,7 +52,7 @@ import { canViewGrant } from './utils';
 const FIELDS_CONFIG = [
   {
     label: 'Grant amount',
-    component: ({ grant: { reward, numOfGrant } }) => <GrantAmount grantAmount={reward} numOfGrant={numOfGrant} />,
+    component: ({ grant: { reward, numOfGrant } }) => <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />,
 
     shouldDisplay: ({ grant: { reward } }): boolean => !!reward?.paymentMethodId,
   },
@@ -174,12 +174,12 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
             taskType={ENTITIES_TYPES.GRANT}
             taskId={grant?.id}
           />
-          <DeleteTaskModal
+          <DeleteEntityModal
             open={deleteTask}
             onClose={() => {
               setDeleteTask(false);
             }}
-            taskType={ENTITIES_TYPES.GRANT}
+            entityType={ENTITIES_TYPES.GRANT}
             taskId={grant?.id}
             onDelete={() => {
               setSnackbarAlertOpen(true);
@@ -292,6 +292,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                       entity={grant}
                       commentCount={grant?.commentCount}
                       applicationsCount={grant?.applicationsCount}
+                      approvedApplicationsCount={grant?.approvedApplicationsCount}
                     />
                   </TaskModalTaskData>
                 </>

@@ -170,6 +170,7 @@ import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 import { TaskTemplatePickerWrapper } from './TaskTemplatePicker/styles';
 import CustomProposal from './CustomProposal';
+import SubmitterWalletConnectSelector from './Helpers/RequireSubmitterWalletconnect';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status, setFormDirty } = props;
@@ -178,6 +179,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     parentTaskId !== undefined || (existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null);
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const isTask = entityType === ENTITIES_TYPES.TASK;
+  const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -1463,7 +1465,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             {form.values.milestoneId === null && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('milestoneId', '');
+                  form.setFieldValue('milestoneId', undefined);
                 }}
               >
                 <CreateEntityAddButtonIcon />
@@ -1780,18 +1782,26 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             handleEditTemplate={handleEditTemplate}
             handleDeleteTemplate={handleDeleteTemplate}
           />
-          {!isProposal && (
+          {isBounty && (
+            <SubmitterWalletConnectSelector
+              setSubmitterWalletConnectSelected={() => {
+                form.setFieldValue('requireSubmitterWalletConnected', !form?.values?.requireSubmitterWalletConnected);
+              }}
+              submitterWalletConnectSelected={form?.values?.requireSubmitterWalletConnected}
+            />
+          )}
+          {/* {!isProposal && (
             <GR15DEICreateSelector
               setGR15DEISelected={() => {
                 form.setFieldValue('GR15DEISelected', !form?.values?.GR15DEISelected);
               }}
               GR15DEISelected={form?.values?.GR15DEISelected}
             />
-          )}
+          )} */}
         </TaskTemplatePickerWrapper>
       </CreateEntityBody>
       <CreateEntityHeader>
-        <CreateEntityHeaderWrapper>
+        <CreateEntityHeaderWrapper showOnSmallScreen>
           <CreateEntityAttachment showOnSmallScreen onClick={() => inputRef.current.click()}>
             <CreateEntityAttachmentIcon />
             {fileUploadLoading && <FileLoading />}
@@ -1825,7 +1835,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             })}
           </CreateEntityPrivacySelect>
         </CreateEntityHeaderWrapper>
-        <CreateEntityHeaderWrapper>
+        <CreateEntityHeaderWrapper showOnSmallScreen>
           {loading ? (
             <CircularProgress size={20} />
           ) : (

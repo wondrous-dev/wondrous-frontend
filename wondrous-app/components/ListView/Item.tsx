@@ -28,7 +28,7 @@ import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
@@ -263,12 +263,12 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
         taskType={type}
         taskId={task?.id}
       />
-      <DeleteTaskModal
+      <DeleteEntityModal
         open={deleteTask}
         onClose={() => {
           setDeleteTask(false);
         }}
-        taskType={type}
+        entityType={type}
         taskId={task?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);
@@ -319,8 +319,8 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
             ) : (
               <DefaultUserImage
                 style={{
-                  width: '26px',
-                  height: '26px',
+                  minWidth: '26px',
+                  minHeight: '26px',
                   borderRadius: '13px',
                   marginRight: '4px',
                 }}

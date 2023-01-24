@@ -2,7 +2,7 @@ import { Tab, Tabs } from '@mui/material';
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  width: 95%;
+  width: 100%;
 `;
 
 export const StyledTabs = styled(Tabs)`

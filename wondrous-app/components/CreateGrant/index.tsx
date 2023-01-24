@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
-import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -53,6 +54,8 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -60,14 +63,15 @@ import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity } from './Fields';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
+import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from './Fields/GrantStyle';
 import {
   Form,
   GrantDescriptionMedia,
-  RichTextContainer,
   GrantModalData,
-  RichTextWrapper,
   GrantSectionDisplayDivWrapper,
   MediaWrapper,
+  RichTextContainer,
+  RichTextWrapper,
 } from './styles';
 import { descriptionTemplate } from './utils';
 
@@ -83,9 +87,9 @@ const validationSchema = Yup.object().shape({
   }).required(),
   numOfGrant: Yup.number()
     .typeError('Number of grants must be a number')
+    .nullable()
     .moreThan(0, 'Number of grants must be greater than 0')
-    .lessThan(1000000000, 'Number of grants must be less than 1 billion')
-    .required('Quantity of grants is required'),
+    .lessThan(1000000000, 'Number of grants must be less than 1 billion'),
   startDate: Yup.string().optional().nullable(),
   endDate: Yup.string().optional().nullable(),
   applyPolicy: Yup.string().nullable(),
@@ -171,7 +175,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
         paymentMethodId: existingGrant?.reward?.paymentMethodId || '',
         rewardAmount: existingGrant?.reward?.rewardAmount || '',
       },
-      numOfGrant: existingGrant?.numOfGrant || '',
+      numOfGrant: existingGrant?.numOfGrant,
       mediaUploads: transformMediaFormat(existingGrant?.media) || [],
       startDate: existingGrant?.startDate || null,
       endDate: existingGrant?.endDate || null,
@@ -184,6 +188,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
       podId: board?.podId || null,
       privacyLevel: existingGrant?.privacyLevel || null,
       applyPolicy: existingGrant?.applyPolicy || APPLY_POLICY_FIELDS[0].value,
+      grantStyle: getGrantStyleFromGrant(existingGrant?.numOfGrant),
     },
     validateOnChange: false,
     validateOnBlur: false,
@@ -206,7 +211,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             privacyLevel: values.privacyLevel,
             applyPolicy: values.applyPolicy,
             categories: values.categories,
-            numOfGrant: parseInt(values.numOfGrant, 10),
+            ...(values.grantStyle === GRANT_STYLE_MAP.FIXED ? { numOfGrant: parseInt(values.numOfGrant, 10) } : {}),
           },
         },
       }),
@@ -364,6 +369,9 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
             <EditorToolbar ref={setEditorToolbarNode} />
+            <Typography fontFamily={typography.fontFamily} color={palette.blue20} fontWeight={500} fontSize="14px">
+              Use this space below however you want. We have dropped in a suggested structure
+            </Typography>
             <RichTextWrapper>
               <RichTextContainer
                 onClick={() => {
@@ -428,18 +436,23 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
           </MediaWrapper>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
+            <GrantStyle value={form.values.grantStyle} onChange={(value) => form.setFieldValue('grantStyle', value)} />
+            {form.values.grantStyle === GRANT_STYLE_MAP.FIXED && (
+              <GrantQuantity
+                value={form.values.numOfGrant}
+                onChange={(value) => form.setFieldValue('numOfGrant', value)}
+                setError={form.setFieldError}
+                error={form.errors.numOfGrant}
+              />
+            )}
             <GrantAmount
               value={form.values.reward}
               onChange={form.setFieldValue}
               setError={form.setFieldError}
               orgId={form.values.orgId}
               error={form.errors.reward}
-            />
-            <GrantQuantity
-              value={form.values.numOfGrant}
-              onChange={(value) => form.setFieldValue('numOfGrant', value)}
-              setError={form.setFieldError}
-              error={form.errors.numOfGrant}
+              grantStyle={form.values.grantStyle}
+              numOfGrant={form.values.numOfGrant}
             />
             <Dates
               startDate={form.values.startDate}

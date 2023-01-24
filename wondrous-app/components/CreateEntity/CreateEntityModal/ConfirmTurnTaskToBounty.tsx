@@ -9,7 +9,7 @@ import {
   StyledDialog,
   StyledDivider,
   StyledHeader,
-} from 'components/Common/DeleteTaskModal/styles';
+} from 'components/Common/DeleteEntityModal/styles';
 import CloseModalIcon from 'components/Icons/closeModal';
 
 interface IImportTaskModalProps {

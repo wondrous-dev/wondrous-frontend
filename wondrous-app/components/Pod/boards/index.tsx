@@ -1,12 +1,12 @@
-import React, { memo, Suspense } from 'react';
 import dynamic from 'next/dynamic';
+import React, { memo, Suspense } from 'react';
 
-import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
-import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
-import { ENTITIES_TYPES } from 'utils/constants';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
+import BoardColumnsSkeleton from 'components/Dashboard/boards/BoardColumnsSkeleton';
+import { ENTITIES_TYPES_FILTER_STATUSES, FILTER_STATUSES } from 'services/board';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { ColumnsContext } from 'utils/contexts';
-import Wrapper from '../wrapper';
+import BoardPageHeader from 'components/Pod/wrapper/BoardPageHeader';
 
 const Boards = dynamic(() => import('components/Common/Boards'), { suspense: true });
 const BountyBoard = dynamic(() => import('components/Common/BountyBoard'), { suspense: true });
@@ -57,7 +57,7 @@ function PodBoards(props: Props) {
   const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
   const filterSchema: any = entityTypeFilters;
   return (
-    <Wrapper onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
+    <BoardPageHeader onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
       <ColumnsContext.Provider value={{ columns, setColumns }}>
         {loading ? (
           <BoardColumnsSkeleton />
@@ -74,7 +74,7 @@ function PodBoards(props: Props) {
           </Suspense>
         )}
       </ColumnsContext.Provider>
-    </Wrapper>
+    </BoardPageHeader>
   );
 }
 

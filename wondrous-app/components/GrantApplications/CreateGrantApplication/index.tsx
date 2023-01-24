@@ -1,7 +1,10 @@
 import { useMutation } from '@apollo/client';
-import { Box, CircularProgress, Grid, Tooltip } from '@mui/material';
+import { Box, CircularProgress, Grid, Tooltip, Typography } from '@mui/material';
+import { useGetLoggedInUserFullAccessOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
+import { useMe } from 'components/Auth/withAuth';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { TaskModalCard, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
@@ -35,10 +38,12 @@ import {
   RichTextContainer,
   RichTextWrapper,
 } from 'components/CreateGrant/styles';
+import { DAOIcon } from 'components/Icons/dao';
 import ArrowBackIcon from 'components/Icons/Sidebar/arrowBack.svg';
+import OrgSearch from 'components/OrgSearch';
 import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
-import { useFormik } from 'formik';
+import { Formik, useFormik } from 'formik';
 import {
   ATTACH_GRANT_APPLICATION_MEDIA,
   CREATE_GRANT_APPLICATION,
@@ -51,13 +56,21 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useWonderWeb3 } from 'services/web3';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
+import { GRANT_APPLICATION_STATUSES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
 import { CHAIN_REGEX, transformMediaFormat } from 'utils/helpers';
 import { useTaskContext } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as yup from 'yup';
-import { ActionButton, FooterButtonsWrapper, HeaderTypography, IconWrapper } from './styles';
-import { descriptionTemplate } from './utils';
+import {
+  ActionButton,
+  CreateGrantApplicationWorkspaceWrapper,
+  FooterButtonsWrapper,
+  HeaderTypography,
+  IconWrapper,
+} from './styles';
+import { descriptionTemplate, meritCircleTemplate } from './utils';
 
 interface Props {
   grantApplication?: any;
@@ -102,21 +115,52 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
 
   const inputRef: any = useRef();
 
+  const userOrgs: any = useGetLoggedInUserFullAccessOrgs();
+
   const connectedAddress = useMemo(() => {
     const isEns = wonderWeb3?.wallet?.addressTag.includes('.eth');
     return isEns ? wonderWeb3?.wallet?.addressTag : wonderWeb3?.wallet?.address;
   }, [wonderWeb3]);
 
+  const template = ONLY_GRANTS_ENABLED_ORGS.includes(orgId) ? meritCircleTemplate : descriptionTemplate;
+
   const initialValues = {
     title: grantApplication?.title || '',
-    description: grantApplication
-      ? deserializeRichText(grantApplication.description)
-      : deserializeRichText(descriptionTemplate),
+    description: grantApplication ? deserializeRichText(grantApplication.description) : deserializeRichText(template),
     paymentAddress: grantApplication?.paymentAddress || connectedAddress || null,
     mediaUploads: transformMediaFormat(grantApplication?.media) || [],
+    org: null,
   };
 
   const handleCloseAction = () => (isEditMode ? handleClose() : toggleCreateApplicationModal());
+
+  const orgsSchema = useMemo(
+    () => ({
+      name: 'org',
+      label: 'Select your project',
+      items: userOrgs?.map((org) => ({
+        ...org,
+        icon: <OrgProfilePicture profilePicture={org?.profilePicture} />,
+        pillIcon: () => <OrgProfilePicture profilePicture={org?.profilePicture} />,
+      })),
+      icon: ({ style, ...rest }) => (
+        <DAOIcon
+          encircled={false}
+          stroke={palette.blue20}
+          style={{ ...style, width: '28px', height: '28px' }}
+          {...rest}
+        />
+      ),
+    }),
+    [userOrgs]
+  );
+
+  useEffect(() => {
+    if (orgId && orgsSchema?.items?.length) {
+      const org = orgsSchema.items.find((org) => org.id === orgId);
+      form.setFieldValue('org', org);
+    }
+  }, [orgsSchema?.items?.length, orgId]);
 
   const handleGrantApplicationSubmit = isEditMode
     ? ({ variables }) =>
@@ -142,6 +186,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
       .matches(chainToValidate, 'Wallet address is not valid')
       .required('Wallet address is required'),
     mediaUploads: yup.array(),
+    org: yup.object().required('Project is required'),
   });
 
   const form = useFormik({
@@ -163,6 +208,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             paymentAddress,
             description: JSON.stringify(values.description),
             userMentions,
+            orgId: values.org?.id,
           },
         },
       }).then(() => handleCloseAction());
@@ -252,7 +298,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
               onChange={form.handleChange('title')}
               value={form.values.title}
               name="title"
-              placeholder="Enter a title"
+              placeholder="Write a clear title"
               minRows={1}
               maxRows={3}
               error={form.errors?.title}
@@ -263,6 +309,9 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
             <EditorToolbar ref={setEditorToolbarNode} />
+            <Typography fontFamily={typography.fontFamily} color={palette.blue20} fontWeight={500} fontSize="14px">
+              Use this space below however you want. We have dropped in a suggested structure
+            </Typography>
             <RichTextWrapper>
               <RichTextContainer
                 onClick={() => {
@@ -298,7 +347,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
           </GrantDescriptionMedia>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
-            <GrantAmount value={grant?.reward} disableInput disablePaymentSelect disableAmountOfRewards orgId={orgId} />
+            <GrantAmount value={grant?.reward} disableInput disableAmountOfRewards orgId={orgId} disablePaymentSelect />
             <TaskSectionDisplayDiv alignItems="start">
               <CreateEntityLabelWrapper>
                 <CreateEntityLabel>Wallet address</CreateEntityLabel>
@@ -361,6 +410,23 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
                 <input type="file" hidden ref={inputRef} onChange={attachMedia} />
               </CreateEntityWrapper>
             </TaskSectionDisplayDiv>
+            <Grid display="flex">
+              <CreateEntityLabelWrapper>
+                <CreateEntityLabel>Project</CreateEntityLabel>
+              </CreateEntityLabelWrapper>
+              <CreateGrantApplicationWorkspaceWrapper>
+                <OrgSearch
+                  options={orgsSchema.items}
+                  logoStyle={{
+                    height: '24px',
+                    width: '24px',
+                  }}
+                  value={form.values.org}
+                  onChange={(org) => form.setFieldValue('org', org)}
+                  label="Select project"
+                />
+              </CreateGrantApplicationWorkspaceWrapper>
+            </Grid>
           </GrantSectionDisplayDivWrapper>
         </GrantModalData>
         <FooterButtonsWrapper>

@@ -98,7 +98,7 @@ export default function TaskListCard(props) {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              const newUrl = `/pod/${task?.podId}/boards`;
+              const newUrl = `/pod/${task?.podId}/home`;
               router.push(newUrl);
             }}
           >
