@@ -51,9 +51,10 @@ const GrantPaymentsLedger = () => {
 
   const orgData = board?.orgData; // used for routing
 
+  const router = useRouter();
   const { orgId, podId } = board;
   const { userPermissionsContext } = useGlobalContext();
-  const router = useRouter();
+
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId,
