@@ -69,10 +69,9 @@ import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { RejectIcon } from 'components/Icons/taskModalIcons';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress';
-import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
-import { delQuery } from 'utils/index';
 import ActionModals from './actionModals';
 import { tabs } from './constants';
 import {
@@ -397,19 +396,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       },
     });
   };
-  if (showPaymentModal && approvedSubmission) {
-    return (
-      <MakePaymentModal
-        handleGoBack={handleGoBackToTask}
-        open={showPaymentModal}
-        reward={fetchedTask?.rewards[0]}
-        handleClose={handleClose}
-        approvedSubmission={approvedSubmission}
-        setShowPaymentModal={setShowPaymentModal}
-        fetchedTask={fetchedTask}
-      />
-    );
-  }
   const userInOrg =
     userPermissionsContext?.orgPermissions && fetchedTask?.orgId in userPermissionsContext.orgPermissions;
 
@@ -552,6 +538,16 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       }}
     >
       <>
+        {showPaymentModal && approvedSubmission ? (
+          <MakePaymentModal
+            handleGoBack={handleGoBackToTask}
+            open={showPaymentModal}
+            submissionOrApplication={approvedSubmission}
+            setShowPaymentModal={setShowPaymentModal}
+            taskOrGrant={fetchedTask}
+          />
+        ) : null}
+
         {!isViewNft && (
           <ActionModals
             completeModal={completeModal}

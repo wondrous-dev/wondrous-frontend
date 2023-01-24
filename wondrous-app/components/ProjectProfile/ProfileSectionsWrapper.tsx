@@ -5,9 +5,9 @@ import { UPSERT_ORG_PROFILE_PAGE, UPSERT_POD_PROFILE_PAGE } from 'graphql/mutati
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 
 import palette from 'theme/palette';
-import { ONLY_GRANTS_ENABLED_ORGS, PERMISSIONS } from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
 import { useBoardPermission, useBoards } from 'utils/hooks';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useIsOrg } from './helpers';
 import ProfileBountySection from './ProfileBountySection';
 import ProfileCategorySection from './ProfileCategorySection';
@@ -18,8 +18,10 @@ import ProfileMilestoneSection from './ProfileMilestoneSection';
 import ProfileProposalSection from './ProfileProposalSection';
 import ProfileTaskSection from './ProfileTaskSection';
 import { CardWrapper } from './styles';
+import theme from '../../theme';
 
 const ProfileSectionsWrapper = () => {
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { orgId, podId, orgData, pod } = useBoards().board || {};
   const { layout } = (podId ? pod : orgData) || {};
   const isOrg = useIsOrg();
@@ -94,7 +96,7 @@ const ProfileSectionsWrapper = () => {
             {...provided.droppableProps}
             sx={{
               '& > *': {
-                maxWidth: 'calc(50% - 12px)',
+                maxWidth: isMobile ? 'unset' : 'calc(50% - 12px)',
               },
             }}
           >
@@ -111,6 +113,7 @@ const ProfileSectionsWrapper = () => {
                       flexDirection="column"
                       justifyContent="space-between"
                       height="390px"
+                      minWidth="238px"
                       bgcolor={palette.grey900}
                       borderRadius="6px"
                       {...provided.draggableProps}

@@ -1,12 +1,12 @@
 import { useMutation } from '@apollo/client';
 import { Box, CircularProgress, Grid, Tooltip, Typography } from '@mui/material';
-import { useGetLoggedInUserFullAccessOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
 import { useMe } from 'components/Auth/withAuth';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { TaskModalCard, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { useGetLoggedInUserFullAccessOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
 import {
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,

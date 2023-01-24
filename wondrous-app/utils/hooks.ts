@@ -32,7 +32,9 @@ import {
   populateProposalColumns,
   populateTaskColumns,
 } from 'services/board';
+import { useWonderWeb3 } from 'services/web3';
 import { useMe } from 'components/Auth/withAuth';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -451,4 +453,36 @@ export const usePodPageFetch = (podId: string | string[]) => {
   useEffect(() => setPageData({}), []);
 
   return { data };
+};
+
+export const useGetEnsOrAddress = (ethAddress: string) => {
+  const [ENSNameOrWalletAddress, setENSNameOrWalletAddress] = useState('');
+
+  const wonderWeb3 = useWonderWeb3();
+
+  useEffect(() => {
+    if (ethAddress) {
+      setENSNameOrWalletAddress(ethAddress);
+
+      wonderWeb3.getENSNameFromEthAddress(ethAddress).then((ensName) => {
+        if (ensName) {
+          setENSNameOrWalletAddress(ensName);
+        }
+      });
+    }
+  }, [wonderWeb3, ethAddress]);
+
+  return { ENSNameOrWalletAddress };
+};
+
+export const useCopyAddress = () => {
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
+
+  const copyAddress = (address) => {
+    navigator.clipboard.writeText(`${address}`);
+    setSnackbarAlertOpen(true);
+    setSnackbarAlertMessage('Address copied to clipboard');
+  };
+
+  return { copyAddress };
 };

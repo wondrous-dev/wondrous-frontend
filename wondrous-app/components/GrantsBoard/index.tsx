@@ -15,8 +15,9 @@ import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { LIMIT } from 'services/board';
-import { ENTITIES_TYPES, GRANTS_STATUSES } from 'utils/constants';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { ENTITIES_TYPES, GRANTS_STATUSES, PERMISSIONS } from 'utils/constants';
+import { useOrgBoard, usePodBoard, useGlobalContext } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
 import { delQuery } from 'utils/index';
 import PlusIconWithBackground from 'components/Common/PlusIconWithBackground';
 import GrantsBoardCard from './Card';
@@ -30,8 +31,16 @@ const GrantsBoard = () => {
   const [ref, inView] = useInView({});
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { userPermissionsContext } = useGlobalContext();
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: orgBoard?.orgId,
+    podId: podBoard?.podId,
+  });
+  const canSeeLedger = permissions.includes(PERMISSIONS.MANAGE_GRANTS) || permissions.includes(PERMISSIONS.FULL_ACCESS);
+
   const {
-    data: orgData,
+    data: orgGrants,
     refetch: orgRefetch,
     fetchMore: orgFetchMore,
     previousData: orgPreviousData,
@@ -53,7 +62,7 @@ const GrantsBoard = () => {
   });
 
   const {
-    data: podData,
+    data: podGrants,
     refetch: podGrantsRefetch,
     fetchMore: podGrantsFetchMore,
     previousData: podPreviousData,
@@ -75,20 +84,20 @@ const GrantsBoard = () => {
   });
 
   const data = useMemo(
-    () => (podBoard ? podData?.getGrantPodBoard : orgData?.getGrantOrgBoard),
-    [podBoard, podData, orgData]
+    () => (podBoard ? podGrants?.getGrantPodBoard : orgGrants?.getGrantOrgBoard),
+    [podBoard, podGrants, orgGrants]
   );
 
   const fetchMore = () =>
     podBoard
       ? podGrantsFetchMore({
           variables: {
-            offset: podData?.getGrantPodBoard?.length,
+            offset: podGrants?.getGrantPodBoard?.length,
           },
         }).then(({ data }) => setHasMore(data?.getGrantPodBoard?.length >= LIMIT))
       : orgFetchMore({
           variables: {
-            offset: orgData?.getGrantOrgBoard?.length,
+            offset: orgGrants?.getGrantOrgBoard?.length,
           },
         }).then(({ data }) => setHasMore(data?.getGrantOrgBoard?.length >= LIMIT));
 
@@ -169,19 +178,23 @@ const GrantsBoard = () => {
       <Grid display="flex" justifyContent="space-between" marginBottom={2} marginRight={2}>
         <GrantsFilters onFilterChange={handleFilterChange} activeFilter={activeFilter} />
         <div style={{ display: 'flex', gap: 12 }}>
-          <Button
-            buttonTheme={{
-              paddingX: 16,
-              paddingY: 7,
-              fontSize: '14px',
-              fontWeight: 500,
-            }}
-            color="secondary"
-            onClick={() => router.push({ pathname: `${delQuery(router.asPath)}/ledger` }, undefined, { shallow: true })}
-            height={28}
-          >
-            Ledger
-          </Button>
+          {canSeeLedger && (
+            <Button
+              buttonTheme={{
+                paddingX: 16,
+                paddingY: 7,
+                fontSize: '14px',
+                fontWeight: 500,
+              }}
+              color="secondary"
+              onClick={() =>
+                router.push({ pathname: `${delQuery(router.asPath)}/ledger` }, undefined, { shallow: true })
+              }
+              height={28}
+            >
+              Ledger
+            </Button>
+          )}
           <Button
             gap="5px"
             buttonTheme={{
