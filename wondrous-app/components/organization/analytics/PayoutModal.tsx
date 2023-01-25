@@ -24,12 +24,7 @@ import {
   PayOptionButtonWrapper,
 } from './styles';
 import CSVModal from './CSVModal';
-import {
-  PaymentTitleDiv,
-  PaymentTitleTextDiv,
-  PaymentTitleText,
-  PaymentDescriptionText,
-} from '../../Common/Payment/styles';
+import { PaymentTitleDiv, PaymentTitleText, PaymentDescriptionText } from '../../Common/Payment/styles';
 import { ErrorText } from '../../Common';
 import { exportPaymentCSV } from './exportPaymentCsv';
 import { RetroactivePayoutModal } from './RetroactivePayoutModal';
@@ -305,12 +300,12 @@ export function PayoutModal(props) {
           paymentsData={paymentsData}
         />
         <PaymentTitleDiv>
-          <PaymentTitleTextDiv>
+          <div>
             <PaymentTitleText>Pay Contributors</PaymentTitleText>
             <PaymentDescriptionText>
               Customize payouts from {format(fromTime, 'yyyy-MM-dd')} to {format(toTime, 'yyyy-MM-dd')}{' '}
             </PaymentDescriptionText>
-          </PaymentTitleTextDiv>
+          </div>
         </PaymentTitleDiv>
         {contributorTaskData?.map((contributorTask, index) => {
           if (contributorTask?.assigneeId) {

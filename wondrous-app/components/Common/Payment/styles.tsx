@@ -67,8 +67,6 @@ export const PaymentTitleDiv = styled.div`
   align-items: flex-start;
 `;
 
-export const PaymentTitleTextDiv = styled.div``;
-
 export const PaymentTitleText = styled(Typography)`
   && {
     color: ${palette.white};

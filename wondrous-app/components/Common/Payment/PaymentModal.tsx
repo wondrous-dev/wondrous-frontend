@@ -11,8 +11,8 @@ import { useGlobalContext } from 'utils/hooks';
 import { useGetOrgOrPodWallet } from 'components/Common/Payment/helper';
 import Grid from '@mui/material/Grid';
 import { BigNumber } from 'bignumber.js';
-import PaymentDetails from './Fields/PaymentDetails';
-import PaymentMethod from './Fields/PaymentMethod';
+import PaymentDetails from 'components/Common/Payment/Fields/PaymentDetails';
+import PaymentMethodSelector from 'components/Common/Payment/Fields/PaymentMethodSelector';
 
 interface Props {
   open: boolean;
@@ -30,7 +30,7 @@ function MakePaymentModal(props: Props) {
   const footerRef = useRef();
   const footerLeftRef = useRef();
 
-  const [rewardAmount, setRewardAmount] = useState('');
+  const [rewardAmount, setRewardAmount] = useState(null);
   const [submissionPaymentError, setSubmissionPaymentError] = useState(null);
   const [changeRewardErrorText, setChangeRewardErrorText] = useState('');
   const { userPermissionsContext } = useGlobalContext();
@@ -102,8 +102,6 @@ function MakePaymentModal(props: Props) {
 
   const canPay = permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
 
-  const isBountyOrGrantApplication =
-    taskOrGrant?.type === ENTITIES_TYPES.BOUNTY || entityType === ENTITIES_TYPES.GRANT_APPLICATION;
   let displayEntity = 'Task';
   if (taskOrGrant?.type === ENTITIES_TYPES.BOUNTY) {
     displayEntity = 'Bounty';
@@ -116,7 +114,7 @@ function MakePaymentModal(props: Props) {
 
   const reward = taskOrGrant?.reward || (taskOrGrant?.rewards?.length ? taskOrGrant?.rewards[0] : null);
 
-  const changedRewardAmount = useMemo(
+  const rewardAmountChanged = useMemo(
     () => reward?.rewardAmount !== rewardAmount,
     [reward?.rewardAmount, rewardAmount]
   );
@@ -128,7 +126,7 @@ function MakePaymentModal(props: Props) {
     return null;
   }
 
-  const handleChange = (e) => {
+  const handleRewardAmountChange = (e) => {
     const bigChangedRewardAmount = new BigNumber(e.target.value);
     const initialBigRewardAmount = new BigNumber(reward?.rewardAmount);
     const rewardIsSmaller = bigChangedRewardAmount.isLessThan(initialBigRewardAmount);
@@ -140,7 +138,6 @@ function MakePaymentModal(props: Props) {
     setRewardAmount(e.target.value);
   };
 
-  const paymentData = paymentInfo?.paymentData[0];
   return (
     <Modal
       open={open}
@@ -154,26 +151,27 @@ function MakePaymentModal(props: Props) {
       <Grid display="flex" direction="column" gap="24px">
         <PaymentDetails
           rewardAmount={rewardAmount}
-          onChange={handleChange}
+          onChange={handleRewardAmountChange}
           tokenName={reward?.tokenName}
-          paymentData={paymentData}
+          paymentData={paymentInfo?.paymentData[0]}
           entityType={entityType}
           payee={{
             profilePicture: submissionOrApplication?.creator?.profilePicture,
             username: submissionOrApplication?.creator?.username,
+            id: submissionOrApplication?.creator?.id,
           }}
           error={changeRewardErrorText}
         />
         <Divider />
-        <PaymentMethod
+        <PaymentMethodSelector
           submissionOrApplicationId={submissionOrApplication?.id}
           wallets={wallets}
-          paymentData={paymentData}
+          paymentData={paymentInfo?.paymentData[0]}
           ref={footerRef}
           onClose={handleCloseAll}
           orgId={submissionOrApplication?.orgId}
           podId={submissionOrApplication?.podId}
-          changedRewardAmount={changedRewardAmount ? rewardAmount : null}
+          changedRewardAmount={rewardAmountChanged ? rewardAmount : null}
           parentError={submissionPaymentError}
           entityType={entityType}
           reward={taskOrGrant?.reward}

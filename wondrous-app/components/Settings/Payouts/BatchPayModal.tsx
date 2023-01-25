@@ -14,7 +14,6 @@ import { useGetOrgOrPodWallet, useSelectedTab } from 'components/Common/Payment/
 import {
   PaymentModal,
   PaymentTitleDiv,
-  PaymentTitleTextDiv,
   PaymentTitleText,
   PaymentDescriptionText,
   StyledTabs,
@@ -81,10 +80,10 @@ function BatchPayModal(props) {
     <Modal open={open} onClose={handleClose}>
       <PaymentModal>
         <PaymentTitleDiv>
-          <PaymentTitleTextDiv>
+          <div>
             <PaymentTitleText>Batch pay</PaymentTitleText>
             <PaymentDescriptionText>Pay the following submissions</PaymentDescriptionText>
-          </PaymentTitleTextDiv>
+          </div>
         </PaymentTitleDiv>
         <StyledTabs value={selectedTab}>
           {PAYMENT_TABS.map((tab) => (
