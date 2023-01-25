@@ -18,7 +18,6 @@ import {
   GET_POD_TASK_BOARD_TASKS,
   GET_TASKS_RELATED_TO_USER_IN_POD,
   SEARCH_POD_TASK_BOARD_PROPOSALS,
-  SEARCH_TASKS_FOR_POD_BOARD_VIEW,
 } from 'graphql/queries/taskBoard';
 import apollo from 'services/apollo';
 import {
@@ -561,14 +560,14 @@ function BoardsPage({ meta }: Props) {
 
       apollo.query({
         ...searchPodTasksArgs,
-        query: SEARCH_TASKS_FOR_POD_BOARD_VIEW,
+        query: GET_POD_TASK_BOARD_TASKS,
       }),
     ];
 
     return Promise.all(promises).then(([users, proposals, tasks]: any) => ({
       users: users.data.searchPodUsers,
       proposals: proposals.data.searchProposalsForPodBoardView,
-      tasks: tasks.data.searchTasksForPodBoardView,
+      tasks: tasks.data.getPodTaskBoardTasks,
     }));
   }
 
