@@ -259,7 +259,22 @@ export const HeaderText = styled(Typography)`
     font-family: ${typography.fontFamily};
     color: ${palette.blue20};
     font-size: 13px;
-    margin-bottom: 8px;
+    margin-bottom: 0px;
     font-weight: 600;
+  }
+`;
+
+export const GeneratedTaskRowContainer = styled(SuggestionRowContainer)`
+  && {
+    display: flex;
+    align-items: center;
+    margin-left: -14px;
+    margin-bottom: 8px;
+    padding: 7px;
+  }
+`;
+
+export const GeneratedTaskRowText = styled(SuggestionRowText)`
+  && {
   }
 `;
