@@ -336,7 +336,7 @@ function KanbanBoard(props) {
             modules={[Pagination]}
           >
             {columns.map((column, index) => {
-              const { status, section, tasks } = column;
+              const { status, tasks } = column;
 
               return (
                 <SwiperSlide key={status} virtualIndex={index}>
@@ -345,7 +345,6 @@ function KanbanBoard(props) {
                     cardsList={tasks}
                     moveCard={moveCard}
                     status={status}
-                    section={section}
                     draggingTask={draggingTask}
                   />
                 </SwiperSlide>
@@ -356,7 +355,7 @@ function KanbanBoard(props) {
       ) : (
         <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
           {columns.map((column) => {
-            const { status, section, tasks } = column;
+            const { status, tasks } = column;
 
             return (
               <TaskColumn
@@ -364,7 +363,6 @@ function KanbanBoard(props) {
                 cardsList={tasks}
                 moveCard={moveCard}
                 status={status}
-                section={section}
                 draggingTask={draggingTask}
               />
             );
