@@ -1,4 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
+
 import { withAuth } from 'components/Auth/withAuth';
 import { Boards } from 'components/Collaboration';
 import EntitySidebar from 'components/Common/SidebarEntity';
@@ -26,7 +29,7 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
-import { sectionOpeningReducer } from 'utils/board';
+import { extendFiltersByView, sectionOpeningReducer } from 'utils/board';
 import {
   ENTITIES_TYPES,
   PRIVACY_LEVEL,
@@ -37,6 +40,7 @@ import {
   STATUSES_ON_ENTITY_TYPES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
+
 import { useGlobalContext, usePageDataContext } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
@@ -49,6 +53,7 @@ const useGetOrgTaskBoardTasks = ({
   setIsLoading,
   search,
   filters,
+  view,
 }) => {
   const [getOrgTaskBoardTasks, { fetchMore, variables }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -106,6 +111,7 @@ const useGetOrgTaskBoardTasks = ({
           labelId: filters?.labelId,
           date: filters?.date,
           types: [entityType],
+          ...extendFiltersByView(view, filters),
           ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
@@ -296,7 +302,6 @@ const useGetOrgTaskBoard = ({
   columns,
   setColumns,
   setOrgTaskHasMore,
-
   orgId,
   userId,
   view,
@@ -328,6 +333,7 @@ const useGetOrgTaskBoard = ({
       setIsLoading,
       search,
       filters,
+      view,
     }),
     proposals: useGetOrgTaskBoardProposals({
       listView,
@@ -360,6 +366,9 @@ function BoardsPage() {
     labelId: null,
     date: null,
     privacyLevel: null,
+    // for the calendar view
+    fromDate: startOfMonth(new Date()),
+    toDate: endOfMonth(new Date()),
   });
   const [orgData, setOrgData] = useState(null);
   const { setPageData } = usePageDataContext();
@@ -422,7 +431,10 @@ function BoardsPage() {
     const query: any = { ...router.query, entity: type };
 
     setEntityType(type);
-    setFilters({});
+    setFilters({
+      fromDate: startOfMonth(new Date()),
+      toDate: endOfMonth(new Date()),
+    });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
       query.view = ViewType.Grid;
@@ -544,8 +556,22 @@ function BoardsPage() {
     }));
   }
 
-  const handleFilterChange: any = (filtersToApply = { statuses: [], podIds: [], labelId: null, date: null }) => {
-    setFilters(filtersToApply);
+  const handleFilterChange: any = (
+    filtersToApply = { statuses: [], podIds: [], labelId: null, date: null, fromDate: null, toDate: null }
+  ) => {
+    setFilters({
+      ...filtersToApply,
+      fromDate: filtersToApply.fromDate ?? filters.fromDate,
+      toDate: filtersToApply.toDate ?? filters.toDate,
+    });
+  };
+
+  const handleActiveViewChange = (newView: ViewType) => {
+    setActiveView(newView);
+
+    if ([activeView, newView].includes(ViewType.Calendar)) {
+      setFilters({ ...filters });
+    }
   };
 
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
@@ -568,9 +594,11 @@ function BoardsPage() {
         orgData,
         setSection,
         entityType,
+        filters,
+        handleFilterChange,
         setEntityType: handleEntityTypeChange,
         activeView,
-        setActiveView,
+        setActiveView: handleActiveViewChange,
         user: getUserData?.getUser,
         deleteUserIdFilter,
         fetchPerStatus,

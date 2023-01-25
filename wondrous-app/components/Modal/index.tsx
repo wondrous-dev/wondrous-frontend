@@ -64,11 +64,23 @@ export function Modal({
 }: Props) {
   const contentRef = useRef();
 
+  const handleBackdropClick = (event) => {
+    if (event.target.dataset.backdrop) {
+      onClose();
+    }
+  }
+
   // TODO: Adrian - refactor this to use modals native API
   // useOutsideAlerter(contentRef, onClose);
   return (
-    <ModalComponent open={open} onClose={onClose}>
-      <ModalContainer tabIndex={-1} alignCenter={alignCenter}>
+    <ModalComponent
+      open={open}
+      onClose={onClose}
+      style={{
+        zIndex: 2000,
+      }}
+    >
+      <ModalContainer tabIndex={-1} data-backdrop="true" alignCenter={alignCenter} onClick={handleBackdropClick}>
         <ModalDialog maxWidth={maxWidth} alignCenter={alignCenter}>
           <ModalContent>
             <ModalHeader>

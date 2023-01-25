@@ -96,6 +96,8 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
     $labelId: String
     $date: String
     $category: String
+    $fromDate: String
+    $toDate: String
   ) {
     getOrgTaskBoardTasks(
       input: {
@@ -111,6 +113,8 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
         labelId: $labelId
         date: $date
         category: $category
+        fromDate: $fromDate
+        toDate: $toDate
       }
     ) {
       ...TaskCardFragment
@@ -316,6 +320,8 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
     $offset: Int
     $date: String
     $onlyPublic: Boolean
+    $fromDate: String
+    $toDate: String
   ) {
     getUserTaskBoardTasks(
       input: {
@@ -328,6 +334,8 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
         offset: $offset
         date: $date
         onlyPublic: $onlyPublic
+        fromDate: $fromDate
+        toDate: $toDate
       }
     ) {
       ...TaskCardFragment

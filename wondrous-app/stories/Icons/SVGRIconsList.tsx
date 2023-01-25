@@ -177,3 +177,5 @@ export { WalletConnect } from 'components/Icons/walletconnect';
 export { WonderCoin as WonderCoin2 } from 'components/Icons/wonderCoin';
 export { default as wonderToken } from 'components/Icons/wonderToken';
 export { default as wrench } from 'components/Icons/wrench';
+export { default as ArrowLeft } from 'components/Icons/ArrowLeft';
+export { default as ArrowRight } from 'components/Icons/ArrowRight';

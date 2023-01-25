@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
+
 import { ViewType } from 'types/common';
 import Boards from 'components/Pod/boards';
-import { sectionOpeningReducer } from 'utils/board';
+import { extendFiltersByView, sectionOpeningReducer } from 'utils/board';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from 'graphql/queries';
@@ -54,6 +57,7 @@ const useGetPodTaskBoardTasks = ({
   setIsLoading,
   search,
   filters,
+  view,
 }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -115,6 +119,7 @@ const useGetPodTaskBoardTasks = ({
             date: filters?.date,
             category: filters?.category,
             types: [entityType],
+            ...extendFiltersByView(view, filters),
             ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
               onlyPublic: true,
             }),
@@ -340,6 +345,7 @@ const useGetPodTaskBoard = ({
       search,
       userId,
       filters,
+      view,
     }),
     proposals: useGetPodTaskProposals({
       listView,
@@ -379,6 +385,9 @@ function BoardsPage({ meta }: Props) {
     labelId: null,
     date: null,
     privacyLevel: null,
+    // for the calendar view
+    fromDate: startOfMonth(new Date()),
+    toDate: endOfMonth(new Date()),
   });
   const [searchString, setSearchString] = useState('');
   const [entityType, setEntityType] = useState(activeEntityFromQuery);
@@ -426,6 +435,8 @@ function BoardsPage({ meta }: Props) {
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
+      fromDate: startOfMonth(new Date()),
+      toDate: endOfMonth(new Date()),
     });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
@@ -561,14 +572,29 @@ function BoardsPage({ meta }: Props) {
     }));
   }
 
-  const handleFilterChange: any = (filtersToApply = { statuses: [], labelId: null, date: null }) => {
-    setFilters(filtersToApply);
+  const handleFilterChange: any = (
+    filtersToApply = { statuses: [], labelId: null, date: null, fromDate: null, toDate: null }
+  ) => {
+    setFilters({
+      ...filtersToApply,
+      fromDate: filtersToApply.fromDate ?? filters.fromDate,
+      toDate: filtersToApply.toDate ?? filters.toDate,
+    });
+  };
+
+  const handleActiveViewChange = (newView: ViewType) => {
+    setActiveView(newView);
+
+    if ([activeView, newView].includes(ViewType.Calendar)) {
+      setFilters({ ...filters });
+    }
   };
 
   const hasActiveFilters = useMemo(
     () => !!Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length)?.length,
     [filters]
   );
+
   return (
     <PodBoardContext.Provider
       value={{
@@ -589,11 +615,12 @@ function BoardsPage({ meta }: Props) {
         deleteUserIdFilter,
         fetchPerStatus,
         activeView,
-        setActiveView,
+        setActiveView: handleActiveViewChange,
         onLoadMore: fetchMore,
         hasMore: podTaskHasMore,
         hasActiveFilters,
         filters,
+        handleFilterChange,
       }}
     >
       <EntitySidebar>

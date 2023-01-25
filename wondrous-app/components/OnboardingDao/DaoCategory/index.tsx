@@ -12,7 +12,6 @@ function CategoryItem(props) {
   return <Label checked={radioGroup?.value === value} {...props} />;
 }
 
-
 function DaoCategories(props) {
   const { name } = props;
   const [field] = useField(name);

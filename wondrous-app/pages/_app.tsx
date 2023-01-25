@@ -117,7 +117,7 @@ function MyApp({ Component, pageProps }) {
                       <NavigationProgress />
                       <SidebarLayout>
                         <OnboardingTour>
-                          <Layout Component={Component} pageProps={pageProps} />≈
+                          <Layout Component={Component} pageProps={pageProps} />
                         </OnboardingTour>
                       </SidebarLayout>
                     </HotkeyContext.Provider>

@@ -1,4 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
+
 import { useMe } from 'components/Auth/withAuth';
 import Boards from 'components/Common/Boards';
 import {
@@ -14,7 +17,7 @@ import apollo from 'services/apollo';
 import { LIMIT, USER_COLUMNS, populateTaskColumns, generateUserDashboardFilters } from 'services/board';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
-import { sectionOpeningReducer } from 'utils/board';
+import { extendFiltersByView, sectionOpeningReducer } from 'utils/board';
 import { TASKS_DEFAULT_STATUSES, STATUS_OPEN, PRIVACY_LEVEL } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
 import { useGlobalContext, useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
@@ -26,6 +29,7 @@ const useGetUserTaskBoardTasks = ({
   setHasMoreTasks,
   loggedInUser,
   filters,
+  view,
 }) => {
   const [getUserTaskBoardTasks, { fetchMore, variables }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -80,6 +84,7 @@ const useGetUserTaskBoardTasks = ({
           ? filters?.statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
           : TASKS_DEFAULT_STATUSES;
       const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
+
       getUserTaskBoardTasks({
         variables: {
           podIds: filters?.podIds,
@@ -90,6 +95,7 @@ const useGetUserTaskBoardTasks = ({
           offset: 0,
           orgId: filters?.orgId,
           date: filters?.date,
+          ...extendFiltersByView(view, filters),
           ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
@@ -117,6 +123,7 @@ const useGetUserTaskBoard = ({
     setHasMoreTasks,
     loggedInUser,
     filters,
+    view,
   });
   return {
     getUserTaskBoardTasksFetchMore,
@@ -148,6 +155,9 @@ const BoardsPage = (props) => {
     date: null,
     privacyLevel: null,
     orgId: null,
+    // for the calendar view
+    fromDate: startOfMonth(new Date()),
+    toDate: endOfMonth(new Date()),
   });
 
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
@@ -217,8 +227,14 @@ const BoardsPage = (props) => {
     }));
   }
 
-  const handleFilterChange = (filtersToApply = { statuses: [], podIds: [], date: null, orgId: null }) => {
-    setFilters(filtersToApply);
+  const handleFilterChange = (
+    filtersToApply = { statuses: [], podIds: [], date: null, orgId: null, fromDate: null, toDate: null }
+  ) => {
+    setFilters({
+      ...filtersToApply,
+      fromDate: filtersToApply.fromDate ?? filters.fromDate,
+      toDate: filtersToApply.toDate ?? filters.toDate,
+    });
   };
 
   return (
@@ -232,6 +248,8 @@ const BoardsPage = (props) => {
           : null,
         activeView,
         setActiveView,
+        handleFilterChange,
+        filters,
         loggedInUserId: loggedInUser?.id,
         setSection,
         fetchPerStatus,

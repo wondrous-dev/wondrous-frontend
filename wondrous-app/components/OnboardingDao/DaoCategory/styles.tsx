@@ -10,7 +10,6 @@ export const CategoriesWrapper = styled(RadioGroup)`
   }
 `;
 
-
 export const Label = styled(FormControlLabel)`
   && {
     display: flex;
