@@ -817,19 +817,6 @@ export const TaskBorder = styled.div`
   border-bottom: 1px dashed ${({ theme }) => theme.palette.grey75};
 `;
 
-export const TaskListModalHeader = styled(Typography)`
-  && {
-    font-size: 18px;
-    line-height: 26px;
-    margin-bottom: 20px;
-    color: ${({ theme }) => theme.palette.white};
-  }
-`;
-
-export const TaskListModalContentWrapper = styled.div`
-  padding-bottom: 30px;
-`;
-
 export const ArchivedTaskUndo = styled.span`
   text-decoration: underline;
   :hover {
