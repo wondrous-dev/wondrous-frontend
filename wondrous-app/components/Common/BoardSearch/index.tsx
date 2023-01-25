@@ -1,5 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import {
+  GET_ORG_TASK_BOARD_TASKS,
   SEARCH_ORG_TASK_BOARD_PROPOSALS,
   SEARCH_POD_TASK_BOARD_PROPOSALS,
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
@@ -94,7 +95,9 @@ const BoardSearch = ({ searchQuery }) => {
       limit: 1000,
       offset: 0,
       // Needed to exclude proposals
-      statuses: filters?.statuses || STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
+      statuses: filters?.statuses?.length
+        ? filters?.statuses
+        : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
       searchString: searchQuery,
       ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
         onlyPublic: true,
@@ -169,7 +172,7 @@ const BoardSearch = ({ searchQuery }) => {
   };
 
   const [getOrgTasks, { data: orgTasksData, refetch: refetchOrgTasksData, loading: orgTasksLoading }] = useLazyQuery(
-    SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+    GET_ORG_TASK_BOARD_TASKS,
     {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
@@ -265,7 +268,7 @@ const BoardSearch = ({ searchQuery }) => {
       userBoardProposalsData
     ) {
       const tasks =
-        orgTasksData?.searchTasksForOrgBoardView ||
+        orgTasksData?.getOrgTaskBoardTasks ||
         podTasksData?.searchTasksForPodBoardView ||
         userBoardTasksData?.searchTasksForUserBoardView;
       const proposals =
