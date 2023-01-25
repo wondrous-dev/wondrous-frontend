@@ -1,4 +1,4 @@
-import { ButtonBase, IconButton, ListItem, Menu, Typography } from '@mui/material';
+import { ButtonBase, IconButton } from '@mui/material';
 import styled, { css } from 'styled-components';
 
 const filterDropShadow = css`
@@ -79,48 +79,4 @@ export const WalletAddress = styled.div`
     background: ${({ theme }) => theme.palette.grey78};
   }
   ${fontStyles};
-`;
-
-export const CurrencySelectorItem = styled(ListItem)`
-  && {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 40px;
-    padding: 0;
-    background: ${({ selected, theme }) => selected && theme.palette.black91};
-  }
-`;
-
-export const CurrencySymbol = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-`;
-
-export const CurrencyName = styled(Typography)`
-  && {
-    ${fontStyles};
-  }
-`;
-
-export const CurrencyWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const BalanceMenu = styled(Menu)`
-  && {
-    .MuiMenu-list,
-    .MuiMenu-paper {
-      padding: 0;
-      background-color: ${({ theme }) => theme.palette.grey87};
-      min-width: 200px;
-      ${filterDropShadow};
-    }
-  }
 `;

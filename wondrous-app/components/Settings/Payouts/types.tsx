@@ -3,6 +3,7 @@ export interface PaymentSelected {
   orgId?: string;
   payeeId: string;
   payeeUsername: string;
+  payeeProfilePicture?: string;
   taskTitle: string;
   submissionId: string;
   amount: number;

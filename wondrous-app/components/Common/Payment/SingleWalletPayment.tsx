@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { TransactionData } from 'services/web3/hooks/types';
 
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import {
   GET_PAYMENTS_FOR_ORG,
@@ -67,7 +67,10 @@ interface Props {
   changedRewardAmount?: any; // if the amount differs from the one in payment data
   parentError?: string;
   entityType?: string;
-  reward?: any; // for display only
+  reward?: {
+    rewardAmount: string;
+    symbol: string;
+  }; // for display only
   hidePayButton?: boolean;
   renderButtons?: ({}: any) => void;
   dropdownProps?: any;

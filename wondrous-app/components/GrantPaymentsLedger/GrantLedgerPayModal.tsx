@@ -1,30 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Modal from '@mui/material/Modal';
-import Tab from '@mui/material/Tab';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
+import { GRAPHQL_ERRORS, PERMISSIONS, ENTITIES_TYPES } from 'utils/constants';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_GRANT_APPLICATION_PAYMENT_INFO } from 'graphql/queries/payment';
-import { useRouter } from 'next/router';
 import { GrantApplicationPaymentInfo } from 'components/Common/Payment/types';
-import { useGetOrgOrPodWallet, useSelectedTab } from 'components/Common/Payment/helper';
+import { useGetOrgOrPodWallet } from 'components/Common/Payment/helper';
 import { GrantPaymentSelected } from 'components/Settings/Payouts/types';
-import palette from 'theme/palette';
-import { OfflinePayment } from 'components/Common/Payment/OfflinePayment/OfflinePayment';
-import { SingleWalletPayment } from 'components/Common/Payment/SingleWalletPayment';
-import {
-  PaymentModal,
-  PaymentTitleDiv,
-  PaymentTitleTextDiv,
-  PaymentTitleText,
-  PaymentDescriptionText,
-  StyledTabs,
-  PaymentMethodWrapper,
-} from 'components/Common/Payment/styles';
-import { ENTITIES_TYPES } from 'utils/constants';
+import { PaymentDescriptionText } from 'components/Common/Payment/styles';
+import { Modal } from 'components/Modal';
+import GradientHeading from 'components/GradientHeading';
+import Divider from 'components/Divider';
+import Grid from '@mui/material/Grid';
+import { BigNumber } from 'bignumber.js';
+import PaymentDetails from 'components/Common/Payment/Fields/PaymentDetails';
+import PaymentMethodSelector from 'components/Common/Payment/Fields/PaymentMethodSelector';
 
-enum ViewType {
-  Paid = 'paid',
-  Unpaid = 'unpaid',
-}
 interface Props {
   orgId?: string;
   podId?: string;
@@ -36,15 +25,20 @@ interface Props {
 function GrantLedgerPayModal(props: Props) {
   // used for payment ledger, different from MakePaymentModal because availabel data is different
   const { podId, orgId, open, handleClose, paymentSelected } = props;
+  const footerRef = useRef();
+  const footerLeftRef = useRef();
+  const [rewardAmount, setRewardAmount] = useState(null);
+  const [grantPaymentError, setGrantPaymentError] = useState(null);
+  const [changeRewardErrorText, setChangeRewardErrorText] = useState('');
 
-  const router = useRouter();
-  const { selectedTab, PAYMENT_TABS } = useSelectedTab();
   const wallets = useGetOrgOrPodWallet(podId, orgId);
 
   const [getGrantApplicationPaymentInfo, { data: applicationPaymentInfo }] = useLazyQuery(
     GET_GRANT_APPLICATION_PAYMENT_INFO,
     {
-      onError: (err) => {},
+      onError: (err) => {
+        setGrantPaymentError('Error fetching payment info');
+      },
       fetchPolicy: 'network-only',
     }
   );
@@ -61,59 +55,66 @@ function GrantLedgerPayModal(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paymentSelected?.grantApplicationId]);
 
-  return (
-    <Modal open={open} onClose={handleClose}>
-      <PaymentModal>
-        <PaymentTitleDiv>
-          <PaymentTitleTextDiv>
-            <PaymentTitleText>
-              Payout
-              <span style={{ color: palette.blue20 }}>
-                {' '}
-                {paymentSelected?.amount} {paymentSelected?.symbol?.toUpperCase()}{' '}
-              </span>
-              to {paymentSelected?.paymentAddress}
-            </PaymentTitleText>
-            <PaymentDescriptionText>Grant Application: {paymentSelected?.grantApplicationTitle}</PaymentDescriptionText>
-          </PaymentTitleTextDiv>
-        </PaymentTitleDiv>
-        <StyledTabs value={selectedTab}>
-          {PAYMENT_TABS.map((tab) => (
-            <Tab value={tab.name} key={tab.name} label={tab.label} onClick={tab.action} />
-          ))}
-        </StyledTabs>
-        <PaymentMethodWrapper>
-          {selectedTab === 'off_platform' && (
-            <OfflinePayment
-              submissionOrApplicationId={paymentSelected?.grantApplicationId}
-              paymentData={paymentInfo?.paymentData[0]}
-              handleClose={() => {
-                const query = {
-                  view: ViewType.Paid,
-                };
+  useEffect(() => {
+    setRewardAmount(paymentSelected?.amount);
+  }, [paymentSelected?.amount]);
 
-                router.push({ query }, undefined, { scroll: false, shallow: true });
-                handleClose();
-              }}
-              entityType={ENTITIES_TYPES.GRANT_APPLICATION}
-            />
-          )}
-          {selectedTab === 'wallet' && (
-            <SingleWalletPayment
-              submissionOrApplicationId={paymentSelected?.grantApplicationId}
-              wallets={wallets}
-              paymentData={paymentInfo?.paymentData[0]}
-              orgId={orgId}
-              podId={podId}
-              reward={{
-                rewardAmount: paymentSelected?.amount,
-                symbol: paymentSelected?.symbol,
-              }}
-              entityType={ENTITIES_TYPES.GRANT_APPLICATION}
-            />
-          )}
-        </PaymentMethodWrapper>
-      </PaymentModal>
+  const rewardAmountChanged = useMemo(
+    () => paymentSelected?.amount !== rewardAmount,
+    [paymentSelected?.amount, rewardAmount]
+  );
+
+  const handleRewardAmountChange = (e) => {
+    const bigChangedRewardAmount = new BigNumber(e.target.value);
+    const initialBigRewardAmount = new BigNumber(paymentSelected?.amount);
+    const rewardIsSmaller = bigChangedRewardAmount.isLessThan(initialBigRewardAmount);
+    if (rewardIsSmaller) {
+      setChangeRewardErrorText('New reward must be greater than minimum');
+    } else if (!rewardIsSmaller && changeRewardErrorText) {
+      setChangeRewardErrorText('');
+    }
+    setRewardAmount(e.target.value);
+  };
+
+  return (
+    <Modal
+      open={open}
+      maxWidth={620}
+      title="Payment"
+      onClose={handleClose}
+      footerRight={<div ref={footerRef} />}
+      footerLeft={<div ref={footerLeftRef} />}
+    >
+      <GradientHeading fontSize={24}>Payment for </GradientHeading>
+      <PaymentDescriptionText>Grant Application: {paymentSelected?.grantApplicationTitle}</PaymentDescriptionText>
+
+      <Grid display="flex" direction="column" gap="24px">
+        <PaymentDetails
+          rewardAmount={rewardAmount}
+          onChange={handleRewardAmountChange}
+          tokenName={paymentSelected?.symbol}
+          paymentData={paymentInfo?.paymentData[0]}
+          entityType={ENTITIES_TYPES.GRANT_APPLICATION}
+          error={changeRewardErrorText}
+        />
+        <Divider />
+        <PaymentMethodSelector
+          submissionOrApplicationId={paymentSelected?.grantApplicationId}
+          wallets={wallets}
+          paymentData={paymentInfo?.paymentData[0]}
+          ref={footerRef}
+          onClose={handleClose}
+          orgId={paymentSelected?.orgId}
+          podId={paymentSelected?.podId}
+          changedRewardAmount={rewardAmountChanged ? rewardAmount : null}
+          parentError={grantPaymentError}
+          entityType={ENTITIES_TYPES.GRANT_APPLICATION}
+          reward={{
+            rewardAmount: paymentSelected?.amount,
+            symbol: paymentSelected?.symbol,
+          }}
+        />
+      </Grid>
     </Modal>
   );
 }
