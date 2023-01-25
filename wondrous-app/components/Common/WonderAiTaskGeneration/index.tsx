@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import RobotHand from 'components/Common/WonderAiTaskGeneration/images/robot-hand.svg';
 import SmallRobotIcon from 'components/Common/WonderAiTaskGeneration/images/small-robot-icon.svg';
 import TrashIcon from 'components/Common/WonderAiTaskGeneration/images/trash-icon.svg';
+import { Editor, Transforms } from 'slate';
 import { CreateEntitySelectArrowIcon } from 'components/CreateEntity/CreateEntityModal/styles';
 import {
   PromptBox,
@@ -39,6 +40,7 @@ import palette from 'theme/palette';
 import { entityTypeData } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import { ENTITIES_TYPES } from 'utils/constants';
 import Checkbox from 'components/Checkbox';
+import { deserializeRichText, useEditor } from 'components/RichText';
 import { ErrorText, Flex } from '..';
 import RightPanel from './rightPanel';
 
@@ -69,6 +71,26 @@ const SuggestionRow = ({ suggestion, setActionPrompt }) => (
   </SuggestionRowContainer>
 );
 
+const resetEditor = (editor, newValue) => {
+  if (editor.children.length > 0) {
+    // Delete all entries leaving 1 empty node
+    Transforms.delete(editor, {
+      at: {
+        anchor: Editor.start(editor, []),
+        focus: Editor.end(editor, []),
+      },
+    });
+
+    // Removes empty node
+    Transforms.removeNodes(editor, {
+      at: [0],
+    });
+  }
+
+  // Insert array of children nodes
+  Transforms.insertNodes(editor, newValue);
+};
+
 const GeneratedTaskRow = ({
   task,
   selectedList,
@@ -78,10 +100,12 @@ const GeneratedTaskRow = ({
   setTaskToView,
   setTaskViewType,
   setClickSelectedList,
+  editor,
 }) => {
   const checked = selectedList.find((item) => item.title === task.title);
   const onRowClick = () => {
     setTaskToView(task);
+    resetEditor(editor, task?.description);
     setTaskViewIndex(index);
     setTaskViewType(ENTITIES_TYPES.TASK);
     setClickSelectedList(true);
@@ -93,22 +117,30 @@ const GeneratedTaskRow = ({
         checked={checked}
         onChange={() => {
           if (checked) {
-            const newList = selectedList.filter((item) => item.title !== task.title);
+            const newList = selectedList.filter((item, index) => index !== task.tempId);
             setSelectedList([...newList]);
           } else {
-            setSelectedList([...selectedList, task]);
+            setSelectedList([...selectedList, task.tempId]);
           }
         }}
         inputProps={{ 'aria-label': 'controlled' }}
       />
-      <GeneratedTaskRowText onClick={onRowClick}>{task.title}</GeneratedTaskRowText>
       <div
         style={{
           flex: 1,
+          display: 'flex',
+          alignItems: 'center',
         }}
         onClick={onRowClick}
-      />
-      <TrashIcon onClick={() => console.log('huh')} />
+      >
+        <GeneratedTaskRowText>{task.title}</GeneratedTaskRowText>
+        <div
+          style={{
+            flex: 1,
+          }}
+        />
+        <TrashIcon onClick={() => console.log('huh')} />
+      </div>
     </GeneratedTaskRowContainer>
   );
 };
@@ -123,6 +155,7 @@ const WonderAiTaskGeneration = () => {
   const [milestone, setMilestone] = useState(null);
   const [parentTask, setParentTask] = useState(null);
   const [clickSelectedList, setClickSelectedList] = useState(false);
+  const editor = useEditor();
   // TODO: read from database
   const [entityDescription, setEntityDescription] = useState('');
   const [formErrors, setFormErrors] = useState({
@@ -137,8 +170,10 @@ const WonderAiTaskGeneration = () => {
   const [errors, setErrors] = useState({});
   const orgId = orgBoard?.orgId || podBoard?.pod?.orgId;
   const podId = podBoard?.podId;
-  const [generateGPTTasks, { loading: generatedGPTTaskLoading, error: generatedGPTTaskError }] =
-    useMutation(GENERATE_GPT_TASKS);
+  const [
+    generateGPTTasks,
+    { loading: generatedGPTTaskLoading, error: generatedGPTTaskError, reset: generatedGPTTaskReset },
+  ] = useMutation(GENERATE_GPT_TASKS);
   const setMilestoneField = (field, value) => {
     setMilestone({
       ...milestone,
@@ -155,6 +190,8 @@ const WonderAiTaskGeneration = () => {
     if (!actionPrompt) {
       setFormErrors({ ...formErrors, actionPrompt: 'This field is required' });
     } else {
+      console.log('we in');
+      generatedGPTTaskReset();
       generateGPTTasks({
         variables: {
           input: {
@@ -165,7 +202,13 @@ const WonderAiTaskGeneration = () => {
           },
         },
       }).then((res) => {
-        setGeneratedTaskList(res?.data?.generateGPTTasks);
+        const formattedlist = res?.data?.generateGPTTasks?.map((task, index) => ({
+          ...initialTaskValues,
+          title: task.title,
+          description: deserializeRichText(task.description),
+          tempId: index,
+        }));
+        setGeneratedTaskList(formattedlist);
       });
     }
   };
@@ -259,75 +302,83 @@ const WonderAiTaskGeneration = () => {
               }}
             />
             {generatedTaskList?.length > 0 && (
-              <RegenerateText onClick={handleGenerateGPTTasks}>Regenerate</RegenerateText>
+              <RegenerateText
+                onClick={() => {
+                  console.log('what');
+                  handleGenerateGPTTasks();
+                }}
+              >
+                Regenerate
+              </RegenerateText>
             )}
           </HelperFlexDiv>
-          {generatedTaskList?.length > 0 ? (
-            <>
-              <HeaderText>{promptGenerationType === GENERATION_TYPES[0]?.value ? 'Milestone' : 'Task'}</HeaderText>
-              <SuggestionRowContainer
+          {generatedGPTTaskLoading ? (
+            <LoadingDiv>
+              <CircularProgress
                 style={{
-                  marginLeft: '-8px',
+                  color: palette.highlightPurple,
                 }}
-                onClick={() => {
-                  if (promptGenerationType === GENERATION_TYPES[0]?.value) {
-                    if (milestone) {
-                      setTaskToView(milestone);
-                    } else {
-                      setTaskToView({
-                        ...initialMilestoneValues,
-                        title: actionPrompt,
-                      });
-                    }
-                    setTaskToViewType(ENTITIES_TYPES.MILESTONE);
-                  } else {
-                    if (parentTask) {
-                      setTaskToView(parentTask);
-                    } else {
-                      setTaskToView({
-                        ...initialTaskValues,
-                        title: actionPrompt,
-                      });
-                    }
-                    setTaskToViewType(ENTITIES_TYPES.TASK);
-                  }
-                  setClickSelectedList(false);
-                }}
-              >
-                <SuggestionRowText>{actionPrompt}</SuggestionRowText>
-              </SuggestionRowContainer>
-              <HeaderText
-                style={{
-                  marginBottom: '8px',
-                }}
-              >
-                {promptGenerationType === GENERATION_TYPES[0]?.value ? 'Tasks' : 'Subtasks'}
-              </HeaderText>
-              {generatedTaskList?.map((task, index) => (
-                <GeneratedTaskRow
-                  task={task}
-                  selectedList={selectedList}
-                  setSelectedList={setSelectedList}
-                  index={index}
-                  setTaskViewIndex={setTaskViewIndex}
-                  setTaskToView={setTaskToView}
-                  setTaskViewType={setTaskToViewType}
-                  setClickSelectedList={setClickSelectedList}
-                />
-              ))}
-            </>
+                size={20}
+              />
+              <LoadingText>Generating tasks...this may take some time</LoadingText>
+            </LoadingDiv>
           ) : (
             <>
-              {generatedGPTTaskLoading ? (
-                <LoadingDiv>
-                  <CircularProgress
+              {generatedTaskList?.length > 0 ? (
+                <>
+                  <HeaderText>{promptGenerationType === GENERATION_TYPES[0]?.value ? 'Milestone' : 'Task'}</HeaderText>
+                  <SuggestionRowContainer
                     style={{
-                      color: palette.highlightPurple,
+                      marginLeft: '-8px',
                     }}
-                    size={20}
-                  />
-                  <LoadingText>Generating tasks...this may take some time</LoadingText>
-                </LoadingDiv>
+                    onClick={() => {
+                      if (promptGenerationType === GENERATION_TYPES[0]?.value) {
+                        if (milestone) {
+                          setTaskToView(milestone);
+                        } else {
+                          setTaskToView({
+                            ...initialMilestoneValues,
+                            title: actionPrompt,
+                          });
+                        }
+                        setTaskToViewType(ENTITIES_TYPES.MILESTONE);
+                      } else {
+                        if (parentTask) {
+                          setTaskToView(parentTask);
+                        } else {
+                          setTaskToView({
+                            ...initialTaskValues,
+                            title: actionPrompt,
+                          });
+                        }
+                        setTaskToViewType(ENTITIES_TYPES.TASK);
+                      }
+                      setClickSelectedList(false);
+                    }}
+                  >
+                    <SuggestionRowText>{actionPrompt}</SuggestionRowText>
+                  </SuggestionRowContainer>
+                  <HeaderText
+                    style={{
+                      marginBottom: '8px',
+                    }}
+                  >
+                    {promptGenerationType === GENERATION_TYPES[0]?.value ? 'Tasks' : 'Subtasks'}
+                  </HeaderText>
+                  {generatedTaskList?.map((task, index) => (
+                    <GeneratedTaskRow
+                      task={task}
+                      selectedList={selectedList}
+                      setSelectedList={setSelectedList}
+                      index={index}
+                      setTaskViewIndex={setTaskViewIndex}
+                      setTaskToView={setTaskToView}
+                      setTaskViewType={setTaskToViewType}
+                      setClickSelectedList={setClickSelectedList}
+                      editor={editor}
+                    />
+                  ))}
+                </>
               ) : (
                 <>
                   {SUGGESTION_PROMPT_LIST.map((suggestion) => (
@@ -344,6 +395,7 @@ const WonderAiTaskGeneration = () => {
           {taskToView ? (
             <RightPanel
               entityType={taskToViewType}
+              editor={editor}
               setField={(field, value) => {
                 if (taskToViewType === ENTITIES_TYPES.MILESTONE) {
                   setMilestoneField(field, value);
@@ -360,6 +412,15 @@ const WonderAiTaskGeneration = () => {
                     return task;
                   });
                   setGeneratedTaskList(newTaskList);
+                  const newSelectedList = selectedList.map((task, index) => {
+                    if (task.tempId === taskViewIndex) {
+                      return {
+                        ...task,
+                        [field]: value,
+                      };
+                    }
+                  });
+                  setSelectedList(newSelectedList);
                 }
                 setTaskToView({
                   ...taskToView,

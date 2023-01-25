@@ -251,6 +251,7 @@ export const LoadingText = styled(SuggestionRowText)`
 export const RegenerateText = styled(HelperText)`
   && {
     color: ${palette.highlightBlue};
+    cursor: pointer;
   }
 `;
 

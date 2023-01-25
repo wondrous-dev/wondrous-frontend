@@ -83,7 +83,8 @@ import DropdownSearch from 'components/DropdownSearch';
 import Tags from 'components/Tags';
 
 const RightPanel = (props) => {
-  const { entityType, setField, orgId, podId, existingTask, errors, setErrors } = props;
+  const { entityType, setField, orgId, podId, existingTask, errors, setErrors, editor } = props;
+  console.log('exisgintTask', existingTask);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
@@ -109,7 +110,7 @@ const RightPanel = (props) => {
     : null;
 
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
-  const editor = useEditor();
+
   const initialPodId = !existingTask ? board?.podId : null;
   const form: any = useFormik({
     initialValues: initialValues({ entityType, existingTask, initialPodId }),
