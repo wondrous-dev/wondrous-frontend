@@ -11,7 +11,6 @@ import {
   PaymentModal,
   PaymentModalHeader,
   PaymentTitleDiv,
-  PaymentTitleTextDiv,
   PaymentTitleText,
   PaymentDescriptionText,
   StyledTabs,
@@ -106,10 +105,10 @@ export function RetroactivePayoutModal(props) {
     <Modal open={open} onClose={handleClose}>
       <PaymentModal>
         <PaymentTitleDiv>
-          <PaymentTitleTextDiv>
+          <div>
             <PaymentTitleText>Batch pay</PaymentTitleText>
             <PaymentDescriptionText>Pay the following contributors</PaymentDescriptionText>
-          </PaymentTitleTextDiv>
+          </div>
         </PaymentTitleDiv>
         <StyledTableContainer
           style={{

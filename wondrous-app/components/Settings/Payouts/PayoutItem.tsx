@@ -113,6 +113,7 @@ const PayoutItem = (props: PayoutItemProps) => {
       orgId,
       payeeId: item?.payeeId,
       payeeUsername: item?.payeeUsername,
+      payeeProfilePicture: item?.payeeProfilePicture,
       taskTitle: item?.taskTitle,
       submissionId: item?.submissionId,
       amount: item?.amount,

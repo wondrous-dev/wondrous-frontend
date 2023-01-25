@@ -12,10 +12,36 @@ import { ProfilePicture } from 'components/Common/TaskViewModalAutocomplete';
 import Tooltip from 'components/Tooltip';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useCopyAddress } from 'utils/hooks';
+import { PaymentData } from 'components/Common/Payment/types';
+import { CHAIN_TO_CHAIN_DIPLAY_NAME, CHAIN_LOGO } from 'utils/web3Constants';
 import { generateReadablePreviewForAddress } from '../SingleWalletPayment';
-import { TokenWrapper, Wrapper } from './styles';
+import { TokenWrapper, Wrapper, Label } from './styles';
 
-const PaymentDetails = ({ rewardAmount, onChange, tokenName, payee, error, paymentData, entityType }) => {
+interface Props {
+  rewardAmount: number;
+  onChange?: (e: any) => void;
+  tokenName: string;
+  error: string;
+  paymentData: PaymentData;
+  entityType?: string;
+  payee?: {
+    username: string;
+    profilePicture: string;
+    id: string;
+  };
+  disabled?: boolean;
+}
+
+const PaymentDetails = ({
+  rewardAmount,
+  onChange,
+  tokenName,
+  error,
+  paymentData,
+  entityType,
+  payee = null,
+  disabled = false,
+}: Props) => {
   const { copyAddress } = useCopyAddress();
   return (
     <Wrapper
@@ -35,6 +61,7 @@ const PaymentDetails = ({ rewardAmount, onChange, tokenName, payee, error, payme
             onChange={onChange}
             placeholder="Enter reward amount"
             search={false}
+            disabled={disabled}
           />
         </Grid>
         <LeftArrowIconWrapper
@@ -60,6 +87,11 @@ const PaymentDetails = ({ rewardAmount, onChange, tokenName, payee, error, payme
           </TokenWrapper>
         </Tooltip>
       </Grid>
+      <Grid display="flex" alignItems="center" gap="10px" width="100%">
+        <Label>Chain: </Label>
+        <Label style={{ color: '#FFFFFF' }}> {CHAIN_TO_CHAIN_DIPLAY_NAME[paymentData?.chain]} </Label>
+      </Grid>
+
       {error ? <ErrorText> {error} </ErrorText> : null}
     </Wrapper>
   );

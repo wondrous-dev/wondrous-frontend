@@ -29,7 +29,7 @@ const PLATFORM_TYPE = [
   },
 ];
 
-const PaymentMethod = forwardRef(
+const PaymentMethodSelector = forwardRef(
   (
     {
       submissionOrApplicationId,
@@ -155,4 +155,6 @@ const PaymentMethod = forwardRef(
   }
 );
 
-export default PaymentMethod;
+PaymentMethodSelector.displayName = 'PaymentMethodSelector';
+
+export default PaymentMethodSelector;

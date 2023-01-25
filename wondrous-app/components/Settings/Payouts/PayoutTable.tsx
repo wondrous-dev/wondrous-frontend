@@ -129,8 +129,8 @@ const PayoutTable = (props: PayoutTableProps) => {
     setSelectedItems({});
   };
 
-  const handlePayIndividualPayee = (paymentSelected: PaymentSelected) => {
-    setPaymentSelected(paymentSelected);
+  const handlePayIndividualPayee = (paymentInfo: PaymentSelected) => {
+    setPaymentSelected(paymentInfo);
   };
 
   const handleBatchPay = () => {
