@@ -224,33 +224,6 @@ export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
   ${TaskCardFragment}
 `;
 
-export const SEARCH_TASKS_FOR_ORG_BOARD_VIEW = gql`
-  query searchTasksForOrgBoardView(
-    $orgId: ID!
-    $statuses: [String]
-    $priorities: [String]
-    $searchString: String
-    $podIds: [String]
-    $limit: Int
-    $offset: Int
-  ) {
-    searchTasksForOrgBoardView(
-      input: {
-        orgId: $orgId
-        statuses: $statuses
-        priorities: $priorities
-        searchString: $searchString
-        podIds: $podIds
-        limit: $limit
-        offset: $offset
-      }
-    ) {
-      ...TaskCardFragment
-    }
-  }
-  ${TaskCardFragment}
-`;
-
 export const SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW = gql`
   query searchProposalsForUserBoardView(
     $userId: ID!
@@ -276,37 +249,6 @@ export const SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW = gql`
     }
   }
   ${TaskProposalCardFragment}
-`;
-
-export const SEARCH_TASKS_FOR_USER_BOARD_VIEW = gql`
-  query searchTasksForUserBoardView(
-    $userId: ID!
-    $orgId: String
-    $statuses: [String]
-    $priorities: [String]
-    $searchString: String
-    $podIds: [String]
-    $limit: Int
-    $offset: Int
-    $types: [String]
-  ) {
-    searchTasksForUserBoardView(
-      input: {
-        userId: $userId
-        orgId: $orgId
-        statuses: $statuses
-        priorities: $priorities
-        searchString: $searchString
-        podIds: $podIds
-        limit: $limit
-        offset: $offset
-        types: $types
-      }
-    ) {
-      ...TaskCardFragment
-    }
-  }
-  ${TaskCardFragment}
 `;
 
 export const GET_USER_TASK_BOARD_TASKS = gql`
@@ -399,15 +341,6 @@ export const SEARCH_POD_TASK_BOARD_PROPOSALS = gql`
 export const GET_POD_TASK_BOARD_TASKS = gql`
   query getPodTaskBoardTasks($input: PodTaskBoardQueryInput) {
     getPodTaskBoardTasks(input: $input) {
-      ...TaskCardFragment
-    }
-  }
-  ${TaskCardFragment}
-`;
-
-export const SEARCH_TASKS_FOR_POD_BOARD_VIEW = gql`
-  query searchTasksForPodBoardView($input: PodTaskBoardQueryInput) {
-    searchTasksForPodBoardView(input: $input) {
       ...TaskCardFragment
     }
   }
