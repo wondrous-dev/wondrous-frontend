@@ -8,7 +8,6 @@ import {
   GET_USER_PERMISSION_CONTEXT,
   GET_USER_TASK_BOARD_TASKS,
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
-  SEARCH_TASKS_FOR_USER_BOARD_VIEW,
 } from 'graphql/queries';
 
 import { useRouter } from 'next/router';
@@ -217,13 +216,13 @@ const BoardsPage = (props) => {
 
       apollo.query({
         ...searchTasksArgs,
-        query: SEARCH_TASKS_FOR_USER_BOARD_VIEW,
+        query: GET_USER_TASK_BOARD_TASKS,
       }),
     ];
 
     return Promise.all(promises).then(([proposals, tasks]: any) => ({
       proposals: proposals.data.searchProposalsForUserBoardView.map((proposal) => ({ ...proposal, isProposal: true })),
-      tasks: tasks.data.searchTasksForUserBoardView,
+      tasks: tasks.data.getUserTaskBoardTasks,
     }));
   }
 

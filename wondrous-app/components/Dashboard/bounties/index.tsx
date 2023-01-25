@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { UserBoardContext } from 'utils/contexts';
-import { GET_USER_BOUNTY_SUBMISSIONS, SEARCH_TASKS_FOR_USER_BOARD_VIEW } from 'graphql/queries';
+import { GET_USER_BOUNTY_SUBMISSIONS, GET_USER_TASK_BOARD_TASKS } from 'graphql/queries';
 import { LIMIT, ENTITY_TO_STATUS_MAP } from 'services/board';
 import BoardWrapper from 'components/Dashboard/boards/BoardWrapper';
 import SubmissionBoard from 'components/SubmissionBoard';
@@ -76,12 +76,12 @@ const BountiesDashboard = ({ isAdmin }) => {
     const promises: any = [
       apollo.query({
         ...searchTasksArgs,
-        query: SEARCH_TASKS_FOR_USER_BOARD_VIEW,
+        query: GET_USER_TASK_BOARD_TASKS,
       }),
     ];
 
     return Promise.all(promises).then(([tasks]: any) => ({
-      tasks: tasks.data.searchTasksForUserBoardView,
+      tasks: tasks.data.getUserTaskBoardTasks,
     }));
   }
 
