@@ -1,13 +1,14 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
 
 import Tooltip from 'components/Tooltip';
 import Button from 'components/Button';
 import QuestionMarkIcon from 'components/Icons/QuestionMarkIcon';
-import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
-import PayModal from 'components/Settings/Payouts/modal';
+import BatchPayModal from 'components/Settings/Payouts/BatchPayModal';
+import TaskLedgePayModal from 'components/Settings/Payouts/TaskLedgePayModal';
 import PaymentViewModal from 'components/Common/Payment/PaymentViewModal';
+import { PaymentSelected, PayoutTableItem } from 'components/Settings/Payouts/types';
 import palette from 'theme/palette';
 
 import { PaymentModalContext } from 'utils/contexts';
@@ -29,53 +30,13 @@ import {
   BottomActionBarMultipleChainSelectedError,
 } from './styles';
 
-export interface PayeeDetails {
-  podId?: string;
-  orgId?: string;
-  assigneeId: string;
-  assigneeUsername: string;
-  taskTitle: string;
-  submissionId: string;
-}
-
-export interface PayoutTableItem {
-  id?: string;
-  taskTitle: string;
-  taskId: string;
-  submissionId: string;
-  payeeId: string;
-  payeeUsername: string;
-  payeeProfilePicture?: string;
-  payeeActiveEthAddress?: string;
-  submissionApprovedAt?: string;
-  payedAt?: string;
-  paymentStatus: string;
-  chain: string;
-  amount: number;
-  symbol: string;
-  icon?: string;
-  tokenName?: string;
-  decimal?: number;
-  tokenAddress?: string;
-  safeAddress?: string;
-  txHash?: string;
-  safeTxHash?: string;
-  additionalData?: {
-    manualExplorerLink?: string;
-    utopiaLink?: string;
-  };
-}
-
 interface PayoutTableProps {
   paid?: boolean;
   processing?: boolean;
   paidList?: PayoutTableItem[];
   processingList?: PayoutTableItem[];
   unpaidList?: PayoutTableItem[];
-  org?: {
-    id: string;
-    username: string;
-  };
+  orgId?: string;
   podId?: string;
   selectAllFromChainSelected: string;
   handleClearSelectItemsBasedOnChain: () => void;
@@ -95,7 +56,7 @@ const PayoutTable = (props: PayoutTableProps) => {
     paidList,
     unpaidList,
     processingList,
-    org,
+    orgId,
     podId,
     selectAllFromChainSelected,
     handleClearSelectItemsBasedOnChain,
@@ -106,10 +67,8 @@ const PayoutTable = (props: PayoutTableProps) => {
     setSelectedItems,
   } = props;
   const router = useRouter();
-
   const [paymentMade, setPaymentMade] = useState(false);
-  const [payeeDetails, setPayeeDetails] = useState<PayeeDetails | null>(null);
-
+  const [paymentSelected, setPaymentSelected] = useState<PaymentSelected | null>(null);
   const [showPayModal, setShowPayModal] = useState(false);
   const [paymentDetailId, setPaymentDetailId] = useState(null);
   const [showBatchPayModal, setShowBatchPayModal] = useState(false);
@@ -144,12 +103,12 @@ const PayoutTable = (props: PayoutTableProps) => {
   }, [selectAllFromChainSelected, paymentslist]);
 
   useEffect(() => {
-    if (payeeDetails?.submissionId) {
+    if (paymentSelected?.submissionId) {
       setShowPayModal(true);
     } else {
       setShowPayModal(false);
     }
-  }, [payeeDetails?.submissionId]);
+  }, [paymentSelected?.submissionId]);
 
   const handleItemOnCheck = (item) => {
     handleClearSelectItemsBasedOnChain();
@@ -170,8 +129,8 @@ const PayoutTable = (props: PayoutTableProps) => {
     setSelectedItems({});
   };
 
-  const handlePayIndividualPayee = (payee: PayeeDetails) => {
-    setPayeeDetails(payee);
+  const handlePayIndividualPayee = (paymentInfo: PaymentSelected) => {
+    setPaymentSelected(paymentInfo);
   };
 
   const handleBatchPay = () => {
@@ -226,27 +185,25 @@ const PayoutTable = (props: PayoutTableProps) => {
           />
         )}
         {showPayModal && (
-          <PayModal
+          <TaskLedgePayModal
             podId={podId}
-            orgId={org?.id}
+            orgId={orgId}
             open={showPayModal}
             handleClose={() => {
+              setPaymentSelected(null);
               setShowPayModal(false);
               if (paymentMade) {
                 router.reload();
               }
             }}
-            assigneeId={payeeDetails?.assigneeId}
-            assigneeUsername={payeeDetails?.assigneeUsername}
-            taskTitle={payeeDetails?.taskTitle}
-            submissionId={payeeDetails?.submissionId}
+            paymentSelected={paymentSelected}
           />
         )}
         {showBatchPayModal && (
           <BatchPayModal
             chain={chainSelected}
             podId={podId}
-            orgId={org?.id}
+            orgId={orgId}
             open={showBatchPayModal}
             handleClose={() => {
               setShowBatchPayModal(false);
@@ -312,7 +269,7 @@ const PayoutTable = (props: PayoutTableProps) => {
                 key={item.submissionId}
                 item={item}
                 checked={!!selectedItems[item?.submissionId]}
-                org={org}
+                orgId={orgId}
                 podId={podId}
                 selectedItemsLength={Object.keys(selectedItems)?.length}
                 canViewPaymentLink={(canViewPaymentLink || viewingUser?.id === item?.payeeId) && !unpaid}

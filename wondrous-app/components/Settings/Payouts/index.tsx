@@ -107,8 +107,6 @@ function Payouts(props) {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
-
   const paid = view === ViewType.Paid;
   const processing = view === ViewType.Processing;
 
@@ -221,16 +219,6 @@ function Payouts(props) {
       }
     }
   }, [paidList, unpaidList, processingList, hasMore]);
-
-  useEffect(() => {
-    if (orgId) {
-      getOrgById({
-        variables: {
-          orgId,
-        },
-      });
-    }
-  }, [orgId, podId, view]);
 
   useEffect(() => {
     if (orgId && view === ViewType.Unpaid) {
@@ -447,8 +435,6 @@ function Payouts(props) {
 
   const user = useMe();
 
-  const org = orgData?.getOrgById;
-
   const toggleItems = [
     {
       label: 'Unpaid',
@@ -561,7 +547,7 @@ function Payouts(props) {
       )}
 
       <PayoutTable
-        org={org}
+        orgId={orgId}
         podId={podId}
         paid={paid}
         processing={processing}

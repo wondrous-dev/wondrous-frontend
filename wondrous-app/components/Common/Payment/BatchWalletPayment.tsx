@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
 import { CircularProgress } from '@mui/material';
-import { useQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from 'graphql/mutations/payment';
 import useGnosisSdk from 'services/payment';

@@ -11,7 +11,6 @@ import {
   PaymentModal,
   PaymentModalHeader,
   PaymentTitleDiv,
-  PaymentTitleTextDiv,
   PaymentTitleText,
   PaymentDescriptionText,
   StyledTabs,
@@ -31,11 +30,6 @@ import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { TableCellText } from './styles';
 import { BatchRetroactivePayment } from './BatchRetroactivePayment';
-
-enum ViewType {
-  Paid = 'paid',
-  Unpaid = 'unpaid',
-}
 
 const imageStyle = {
   width: '32px',
@@ -111,10 +105,10 @@ export function RetroactivePayoutModal(props) {
     <Modal open={open} onClose={handleClose}>
       <PaymentModal>
         <PaymentTitleDiv>
-          <PaymentTitleTextDiv>
+          <div>
             <PaymentTitleText>Batch pay</PaymentTitleText>
             <PaymentDescriptionText>Pay the following contributors</PaymentDescriptionText>
-          </PaymentTitleTextDiv>
+          </div>
         </PaymentTitleDiv>
         <StyledTableContainer
           style={{

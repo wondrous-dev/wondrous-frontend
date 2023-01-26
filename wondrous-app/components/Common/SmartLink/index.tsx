@@ -36,7 +36,7 @@ export default function SmartLink({
     onClick(event);
 
     // if click was by link with href attribute
-    if (event.target.href) {
+    if (event.currentTarget.href) {
       if (isCommandKeyPressed || !preventLinkNavigation) {
         return;
       }

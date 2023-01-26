@@ -13,13 +13,14 @@ import { parseUserPermissionContext } from 'utils/helpers';
 
 import BoardPageHeader from 'components/Pod/wrapper/BoardPageHeader';
 import AddDocumentDialog from 'components/AddDocumentDialog';
-import ResourcesSidebar from 'components/Common/SidebarResources';
 import DeleteDocDialog from 'components/DeleteDocDialog';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
 import DocCategoriesSection from 'components/DocCategoriesSection';
 import DocItemsMenu from 'components/DocItemsMenu';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
 import PinnedDocsSection from 'components/PinnedDocsSection';
+import EntitySidebar from 'components/Common/SidebarEntity';
+import { PodBoardContext } from 'utils/contexts';
 
 import styles, { AddIconWrapper } from 'components/organization/docs/docsStyles';
 
@@ -62,20 +63,11 @@ const useGetPodDocs = (podId) => {
   };
 };
 
-const useSelectedCategory = (id: string) => {
-  const [selectedCategory, setSelectedCategory] = useState(id);
-  useEffect(() => {
-    if (id) setSelectedCategory(id);
-  }, [id]);
-  return { selectedCategory, setSelectedCategory };
-};
-
 function Docs(props) {
   const { podData = {} } = props;
   const { id: podId } = podData;
   const router = useRouter();
   const { docData, categoriesData } = useGetPodDocs(podId);
-  const { selectedCategory, setSelectedCategory } = useSelectedCategory(router.query.id as string);
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
@@ -155,84 +147,85 @@ function Docs(props) {
 
   const pinnedDocs = docData?.filter((doc) => doc.pinned);
 
-  const filteredCategories = selectedCategory
-    ? categoriesData.filter((i) => i.id === selectedCategory)
-    : categoriesData;
+  const filteredCategories = categoriesData;
 
   const handleCreateNewCategory = () => setShowCategoriesDialog(true);
-  const handleSelectCategory = (id) => () => setSelectedCategory(id);
 
   return (
-    <ResourcesSidebar
-      docs={categoriesData}
-      handleCreateNewCategory={handleCreateNewCategory}
-      handleSelectCategory={handleSelectCategory}
-      selectedCategory={selectedCategory}
+    <PodBoardContext.Provider
+      value={{
+        pod: podData,
+        podId,
+        orgId: podData?.orgId,
+        userPermissionsContext,
+      }}
     >
-      <BoardPageHeader headerTitle="Documents">
-        {canEdit && (
-          <Box sx={styles.topButtonsContainer}>
-            <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
-              <AddIconWrapper style={styles.addIcon} />
-              Add new category
-            </Button>
-          </Box>
-        )}
+      <EntitySidebar>
+        <BoardPageHeader headerTitle="Documents">
+          {canEdit && (
+            <Box sx={styles.topButtonsContainer}>
+              <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
+                <AddIconWrapper style={styles.addIcon} />
+                Add new category
+              </Button>
+            </Box>
+          )}
 
-        {isEmpty(docData) && isEmpty(categoriesData) && (
-          <EmptyStateGeneric
-            content={`Welcome to the Documents page for ${podData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
+          {isEmpty(docData) && isEmpty(categoriesData) && (
+            <EmptyStateGeneric
+              content={`Welcome to the Documents page for ${podData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
+            />
+          )}
+
+          {!isEmpty(pinnedDocs) && (
+            <PinnedDocsSection
+              onDialogOpen={handleOpenDocDialogPinned}
+              pinnedDocs={pinnedDocs}
+              onItemClick={handleItemClick}
+            />
+          )}
+
+          {filteredCategories?.map((category) => (
+            <DocCategoriesSection
+              key={category.id}
+              category={category}
+              onItemClick={handleItemClick}
+              onOpenDocDialog={handleOpenDocDialog}
+              onCategoryDialogOpen={handleOpenCategoriesDialog}
+              docs={docData}
+              canEdit={canEdit}
+            />
+          ))}
+
+          <DocItemsMenu
+            open={openMenu}
+            anchorEl={menuAnchor}
+            onClose={handleMenuClose}
+            onDelete={handleOpenDeleteDialog}
+            onEdit={handleOpenEditDocDialog}
           />
-        )}
-
-        {!isEmpty(pinnedDocs) && (
-          <PinnedDocsSection
-            onDialogOpen={handleOpenDocDialogPinned}
-            pinnedDocs={pinnedDocs}
-            onItemClick={handleItemClick}
+          <AddDocumentDialog
+            open={showDocDialog}
+            onClose={handleCloseDocDialog}
+            title={docCategory?.name}
+            orgId={podData?.orgId}
+            podId={podId}
+            category={docCategory}
+            document={selectedDoc}
+            pinned={pinned}
           />
-        )}
-
-        {filteredCategories?.map((category) => (
-          <DocCategoriesSection
-            key={category.id}
-            category={category}
-            onItemClick={handleItemClick}
-            onOpenDocDialog={handleOpenDocDialog}
-            onCategoryDialogOpen={handleOpenCategoriesDialog}
-            docs={docData}
-            canEdit={canEdit}
+          <DocCategoriesDialog
+            open={showCategoriesDialog}
+            onClose={handleCloseCategoriesDialog}
+            orgName={router.query.username}
+            orgId={podData?.orgId}
+            podId={podId}
+            category={docCategory}
           />
-        ))}
-
-        <DocItemsMenu
-          open={openMenu}
-          anchorEl={menuAnchor}
-          onClose={handleMenuClose}
-          onDelete={handleOpenDeleteDialog}
-          onEdit={handleOpenEditDocDialog}
-        />
-        <AddDocumentDialog
-          open={showDocDialog}
-          onClose={handleCloseDocDialog}
-          title={docCategory?.name}
-          orgId={podData?.orgId}
-          podId={podId}
-          category={docCategory}
-          document={selectedDoc}
-          pinned={pinned}
-        />
-        <DocCategoriesDialog
-          open={showCategoriesDialog}
-          onClose={handleCloseCategoriesDialog}
-          orgName={router.query.username}
-          orgId={podData?.orgId}
-          podId={podId}
-          category={docCategory}
-        />
-        <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
-      </BoardPageHeader>
-    </ResourcesSidebar>
+          <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
+        </BoardPageHeader>
+      </EntitySidebar>
+    </PodBoardContext.Provider>
   );
 }
 

@@ -12,7 +12,7 @@ import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
-import MoreInfoModal from 'components/profile/modals';
+import MoreInfoModal from 'components/Common/MoreInfoModal';
 import MembersIcon from 'components/Icons/members';
 import { Button as PrimaryButton } from 'components/Button';
 import {

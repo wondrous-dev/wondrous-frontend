@@ -114,14 +114,6 @@ export const LINK_OFF_PLATFORM_PAYMENT_FOR_APPLICATION = gql`
   }
 `;
 
-export const LINK_BATCH_OFF_PLATFORM_FOR_APPLICATION = gql`
-  mutation linkBatchOffPlatformGrantApplicationPayment($input: GrantApplicationGnosisBatchPaymentInput) {
-    linkBatchOffPlatformGrantApplicationPayment(input: $input) {
-      success
-    }
-  }
-`;
-
 export const PROPOSE_GNOSIS_MULTISEND_FOR_APPLICATIONS = gql`
   mutation proposeGnosisMultisendForGrantApplications($input: GrantApplicationGnosisBatchPaymentInput) {
     proposeGnosisMultisendForGrantApplications(input: $input) {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
+import CalendarViewIcon from 'components/Icons/ViewIcons/CalendarViewIcon';
 import SearchTasks from 'components/SearchTasks';
 import { useHotkey, useBoards, useOrgBoard, usePodBoard, useUserBoard, useIsMobile } from 'utils/hooks';
 import { ViewType } from 'types/common';
@@ -141,6 +142,22 @@ export default function BoardsActivity(props) {
         router.push({ query }, undefined, { scroll: false, shallow: true });
       },
     },
+    {
+      name: 'Calendar',
+      icon: <CalendarViewIcon color={view === ViewType.Calendar ? palette.blue20 : 'white'} />,
+      active: view === ViewType.Calendar,
+      disabled: board?.entityType === ENTITIES_TYPES.PROPOSAL || isAdmin,
+      action: () => {
+        setActiveView(ViewType.Calendar);
+
+        const query = {
+          ...router.query,
+          view: ViewType.Calendar,
+        };
+
+        router.push({ query }, undefined, { scroll: false, shallow: true });
+      },
+    },
   ];
 
   useHotkeys(
@@ -169,15 +186,19 @@ export default function BoardsActivity(props) {
     [view]
   );
 
-  // TODO(pkmazarakis): When calendar PR is merged
-  // useHotkeys(HOTKEYS.CALENDAR_VIEW, () => {
-  // if (setActiveView) {
-  //   setActiveView(ViewType.Calendar);
-  //   insertUrlParam('view', ViewType.Calendar);
-  // } else {
-  //   router.replace(`${delQuery(router.asPath)}?view=${ViewType.Calendar}${statusesQuery}${podIdsQuery}${userIdQuery}`);
-  // }
-  // }, [view])
+  // TODO: Remove duplicated code
+  useHotkeys(
+    HOTKEYS.CALENDAR_VIEW,
+    () => {
+      const query = {
+        ...router.query,
+        view: ViewType.Calendar,
+      };
+
+      router.push({ query }, undefined, { scroll: false, shallow: true });
+    },
+    [view]
+  );
 
   return (
     <BoardsActivityInlineView

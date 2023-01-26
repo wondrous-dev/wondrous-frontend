@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
@@ -12,8 +12,9 @@ import { updateInProgressTask, updateTaskItem } from 'utils/board';
 import palette from 'theme/palette';
 
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import SmartLink from 'components/Common/SmartLink';
-import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
 import { SafeImage } from 'components/Common/Image';
 import { DAOIcon } from 'components/Icons/dao';
 import { ButtonPrimary } from 'components/Common/button';
@@ -85,11 +86,11 @@ export default function TaskCard({
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const totalSubtask = task?.totalSubtaskCount;
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const coverMedia = task?.media?.find((media) => media.type === 'image');
   const userProfile = useUserProfile();
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
 
   const router = useRouter();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -126,25 +127,29 @@ export default function TaskCard({
   const [getTaskSubmissionsForTask] = useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK, {
     onCompleted: (data) => {
       const taskSubmissions = data?.getTaskSubmissionsForTask;
+      let approvedTaskSubmission = null;
       taskSubmissions?.map((taskSubmission) => {
         if (taskSubmission?.approvedAt) {
+          approvedTaskSubmission = taskSubmission;
           setApprovedSubmission(taskSubmission);
         }
       });
-      setTaskSubmissionLoading(false);
-      setShowPaymentModal(true);
+      if (approvedTaskSubmission) {
+        setShowPaymentModal(true);
+      } else {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage('Need to make a submission to pay');
+        setSnackbarAlertSeverity('error');
+      }
     },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
-    onError: (err) => {
-      setTaskSubmissionLoading(false);
-    },
+    onError: (err) => {},
   });
 
   // refactor this. move this logic in a separate hook
   const displayPayButton =
-    !!task?.approvedSubmissionsCount &&
     task?.status === Constants.TASK_STATUS_DONE &&
     hasPermissionToPay &&
     (!task.paymentStatus || task.paymentStatus === 'unpaid') &&
@@ -193,14 +198,14 @@ export default function TaskCard({
       data-cy={`task-card-item-${title}`}
     >
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
-        {showPaymentModal && !isTaskSubmissionLoading ? (
+        {showPaymentModal ? (
           <MakePaymentModal
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
             open={showPaymentModal}
-            approvedSubmission={approvedSubmission}
+            submissionOrApplication={approvedSubmission}
             handleClose={() => {}}
             setShowPaymentModal={setShowPaymentModal}
-            fetchedTask={task}
+            taskOrGrant={task}
+            handleGoBack={() => setShowPaymentModal(false)}
           />
         ) : null}
         <TaskHeader>

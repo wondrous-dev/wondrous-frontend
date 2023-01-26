@@ -45,9 +45,9 @@ export const OfflinePaymentWarningTypography = styled(Typography)`
 export const OfflinePaymentInputLabel = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
-    font-size: 14px;
-    font-weight: 500;
-    color: ${palette.white} !important;
+    font-size: 12px;
+    font-weight: 600;
+    color: ${palette.blue20};
     margin-top: 20px;
   }
 `;
@@ -56,11 +56,11 @@ export const OfflinePaymentWalletWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-top: 10px;
+  gap: 12px;
 `;
 
 export const OfflinePaymentWallet = styled(InputBase)`
-  width: 165px;
-  height: 40px;
+  height: 32px;
   background: ${palette.background.default};
   border-radius: 6px;
 
@@ -102,7 +102,7 @@ export const OfflinePaymentLinkInput = styled(InputBase)`
   && {
     margin-top: 10px;
     width: 100%;
-    height: 40px;
+    height: 32px;
     border-radius: 6px;
 
     font-size: 14px;
@@ -126,4 +126,5 @@ export const MediaUploadDiv = styled.div`
   margin-top: 10px;
   margin-bottom: 8px;
   flex-flow: wrap;
+  gap: 8px;
 `;
