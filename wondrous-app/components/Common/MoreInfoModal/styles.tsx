@@ -2,8 +2,8 @@ import { Typography, Tab, Tabs } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { EXPLORE_MODAL_TABS_MAP, MODAL_TABS_MAP } from 'utils/constants';
-import { SafeImage } from '../../Common/Image';
-import DefaultUserImage from '../../Common/Image/DefaultUserImage';
+import { SafeImage } from '../Image';
+import DefaultUserImage from '../Image/DefaultUserImage';
 
 export const ActivityIndicatorContainer = styled.div`
   width: 100%;

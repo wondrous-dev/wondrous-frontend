@@ -16,7 +16,7 @@ import {
   TabText,
   Title,
   TitleSection,
-} from 'components/profile/modals/styles';
+} from 'components/Common/MoreInfoModal/styles';
 
 import { SafeImage } from 'components/Common/Image';
 import { TokenEmptyLogo } from 'components/organization/wrapper/styles';
