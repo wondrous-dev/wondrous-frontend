@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 import {
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_AWAITING_PAYMENT,
@@ -22,14 +24,9 @@ import {
 } from './index';
 import { ProposalsRemainingIcon } from './statusIcons';
 
-type StyleProps = {
-  width?: string;
-  height?: string;
-  marginRight?: string;
-};
 type Props = {
   status: string;
-  style?: StyleProps;
+  style?: CSSProperties;
 };
 
 export default function TaskStatus({ status, ...rest }: Props) {

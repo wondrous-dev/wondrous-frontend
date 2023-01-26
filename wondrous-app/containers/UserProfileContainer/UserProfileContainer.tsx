@@ -6,8 +6,8 @@ import Image from 'next/image';
 import { UserProfileContext } from 'utils/contexts';
 import useGetUserProfile from 'hooks/useGetUserProfile';
 
-import ProfileInfo from 'components/ProfileInfo';
-import ProfileUserTaskDaos from 'components/ProfileUserTaskDaos';
+import ProfileInfo from 'components/UserProfile/ProfileInfo';
+import ProfileUserTaskDaos from 'components/UserProfile/ProfileUserTaskDaos';
 
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useQuery } from '@apollo/client';
