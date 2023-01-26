@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { CREATE_POD } from 'graphql/mutations/pod';
-import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import palette from 'theme/palette';
 import { GRAPHQL_ERRORS, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
@@ -38,8 +38,6 @@ import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
   CreateFormFooterButtons,
-  CreateFormLinkAttachmentBlock,
-  CreateFormLinkAttachmentLabel,
   CreateFormMainBlockTitle,
   CreateFormMainDescriptionInputSymbolCounter,
   CreateFormMainInputBlock,
@@ -47,9 +45,6 @@ import {
   CreateFormMainSelects,
   CreateFormPreviewButton,
   CreateFormBaseModalHeaderWrapper,
-  EditorContainer,
-  EditorPlaceholder,
-  EditorToolbar,
   TextInputDiv,
 } from './styles';
 
