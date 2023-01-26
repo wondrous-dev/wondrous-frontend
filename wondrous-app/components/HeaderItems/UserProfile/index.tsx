@@ -9,6 +9,7 @@ import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
 import WrenchIcon from 'components/Icons/wrench';
 import { UnstyledButton, UnstyledLink } from 'components/WorkspacePicker/styles';
 import Image from 'next/image';
+import { SafeImage } from 'components/Common/Image';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { Wrapper } from '../CreateEntityComponent/styles';
@@ -87,13 +88,14 @@ const UserProfile = ({ onClose, openPodModal, openTutorialsModal }) => {
       type: 'component',
     },
   ];
-
+  const headerImage = user?.headerPicture || '/images/profile/profile-banner.png';
+  console.log('headerPicture', user?.headerPicture)
   return (
     <Wrapper>
       <UnstyledLink href={`/profile/${user?.username}/about`} onClick={onClose}>
         <UserContainer>
           <ImageWrapper>
-            <Image fill alt="Profile banner" src="/images/profile/profile-banner.png" />
+            <SafeImage fill alt="Profile banner" src={headerImage} />
           </ImageWrapper>
           <ProfileInfo>
             <UserProfilePictureGR15

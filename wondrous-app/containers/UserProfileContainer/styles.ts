@@ -12,7 +12,6 @@ export const UserProfileContainerWrapper = styled(Box)`
 
 export const UserProfileHeaderImageWrapper = styled(Box)`
   width: 100%;
-  height: 160px;
   overflow: hidden;
   position: relative;
 `;

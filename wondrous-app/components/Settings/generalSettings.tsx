@@ -203,7 +203,7 @@ function GeneralSettingsComponent(props: GeneralSettingsProps) {
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
 
-        {!orgProfile?.shared ? (
+        {!orgProfile?.shared && !isPod ? (
           <ImageUpload
             image={newProfile?.profilePicture}
             imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}

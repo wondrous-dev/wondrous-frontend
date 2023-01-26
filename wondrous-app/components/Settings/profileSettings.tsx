@@ -10,6 +10,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import useAlerts from 'hooks/useAlerts';
 import { UPDATE_USER, USER_DISCORD_DISCONNECT } from 'graphql/mutations';
 import { getDiscordUrl } from 'utils';
+import { ImageTypes, ImageKeyEnums } from 'types/common';
 import {
   CHAR_LIMIT_PROFILE_BIO,
   DISCORD_CONNECT_TYPES,
@@ -38,7 +39,6 @@ import {
   GeneralSettingsDAODescriptionBlock,
   GeneralSettingsDAODescriptionInput,
   GeneralSettingsDAODescriptionInputCounter,
-  GeneralSettingsDAODescriptionInputWrapper,
   GeneralSettingsDAONameBlock,
   GeneralSettingsDAONameInput,
   GeneralSettingsInputsBlock,
@@ -146,9 +146,7 @@ function ProfileSettings(props) {
   const [username, setUsername] = useState(loggedInUser?.username);
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
   const [profilePictureUrl, setProfilePictureUrl] = useState(loggedInUser?.profilePicture);
-  const [profileBannerUrl, setProfileBannerUrl] = useState(loggedInUser?.headerPicture);
-  const [profilePicture, setProfilePicture] = useState(null);
-  const [profileBanner, setProfileBanner] = useState(null);
+  const [profileHeaderUrl, setProfileHeaderUrl] = useState(loggedInUser?.headerPicture);
   const [profileBio, setProfileBio] = useState(loggedInUser?.bio);
   const [updateUserProfile] = useMutation(UPDATE_USER);
   const [disconnectDiscord] = useMutation(USER_DISCORD_DISCONNECT, {
@@ -233,20 +231,9 @@ function ProfileSettings(props) {
       input['email'] = email;
     }
 
-    // ----> Backend not Ready yet...
-    //   if(profileBanner) {
-    //     const file = profileBanner;
-    //     const fileName = profileBanner.name;
-
-    //     // get image preview
-    //     const { fileType, filename } = getFilenameAndType(fileName);
-    //     const imagePrefix = `tmp/${loggedInUser?.id}/`;
-    //     const imageUrl = imagePrefix + filename;
-
-    //     await uploadMedia({ filename: imageUrl, fileType, file });
-    //     input['headerPicture'] = imageUrl;
-    //   }
-
+    console.log('loggedInUser?.profilePicture', loggedInUser?.profilePicture)
+    console.log('loggedInUser?.headerPicture', loggedInUser?.headerPicture)
+  
     updateUserProfile({
       variables: {
         input: {
@@ -273,7 +260,6 @@ function ProfileSettings(props) {
 
   const updateImage = (imageUrl: string | null, successMessage?: string) => {
     const message = successMessage || 'User profile picture uploaded successfully';
-
     updateUserProfile({
       variables: {
         input: {
@@ -289,7 +275,25 @@ function ProfileSettings(props) {
     });
   };
 
-  async function uploadImage(file) {
+  const updateHeaderImage = (imageUrl: string | null, successMessage?: string) => {
+    const message = successMessage || 'User header picture uploaded successfully';
+
+    updateUserProfile({
+      variables: {
+        input: {
+          headerPicture: imageUrl,
+        },
+      },
+      onCompleted: (data) => {
+        setProfileHeaderUrl(data?.updateUser?.headerPicture);
+        setSnackbarAlertSeverity('success');
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(message);
+      },
+    });
+  };
+
+  async function uploadImage(file, imageType = ImageTypes.profile) {
     const fileName = file.name;
     // get image preview
     const { fileType, filename } = getFilenameAndType(fileName);
@@ -298,12 +302,22 @@ function ProfileSettings(props) {
     const imageUrl = imagePrefix + filename;
 
     await uploadMedia({ filename: imageUrl, fileType, file });
-
-    updateImage(imageUrl);
+    console.log('imageType', imageType)
+    if (imageType === ImageTypes.profile) {
+      updateImage(imageUrl);
+    }
+    if (imageType === ImageTypes.header) {
+      updateHeaderImage(imageUrl);
+    }
   }
 
-  function deleteImage() {
-    updateImage(null, 'User profile picture deleted successfully.');
+  function deleteImage(imageKey: ImageKeyEnums) {
+    if (imageKey === ImageKeyEnums.profilePicture) {
+      updateImage(null, 'User profile picture deleted successfully.');
+    }
+    if (imageKey === ImageKeyEnums.headerPicture) {
+      updateHeaderImage(null, 'User header picture deleted successfully.');
+    }
   }
 
   return (
@@ -323,17 +337,17 @@ function ProfileSettings(props) {
           </GeneralSettingsDAONameBlock>
           <GeneralSettingsDAODescriptionBlock>
             <LabelBlock>Description</LabelBlock>
-            <GeneralSettingsDAODescriptionInputWrapper>
+            <div>
               <GeneralSettingsDAODescriptionInput
                 multiline
-                rows={4}
+                rows={3}
                 value={profileBio}
                 onChange={(e) => handleProfileBioChange(e)}
               />
               <GeneralSettingsDAODescriptionInputCounter>
                 {profileBio?.length || 0} / {CHAR_LIMIT_PROFILE_BIO} characters
               </GeneralSettingsDAODescriptionInputCounter>
-            </GeneralSettingsDAODescriptionInputWrapper>
+            </div>
             {errors.description && <ErrorText>{errors.description}</ErrorText>}
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
@@ -347,18 +361,19 @@ function ProfileSettings(props) {
             imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
             image={loggedInUser?.profilePicture}
             title="Profile Pic"
-            updateFilesCb={uploadImage}
+            updateFilesCb={(file) => uploadImage(file, ImageTypes.profile)}
             avatarEditorTitle="Upload a profile image"
-            onDeleteImage={deleteImage}
+            onDeleteImage={(imageKey: ImageKeyEnums) => deleteImage(ImageKeyEnums.profilePicture)}
           />
 
-          {/* <ImageUpload
-            imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
+          <ImageUpload
             image={loggedInUser?.headerPicture}
             title="Header"
-            updateFilesCb={setProfileBanner}
+            imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
+            updateFilesCb={(headerImg) => uploadImage(headerImg, ImageTypes.header)}
             avatarEditorTitle="Upload a header image"
-          /> */}
+            onDeleteImage={(imageKey: ImageKeyEnums) => deleteImage(ImageKeyEnums.headerPicture)}
+          />
         </GeneralSettingsInputsBlock>
 
         <SettingsLinks links={links} setLinks={setLinks} />
