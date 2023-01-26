@@ -522,21 +522,6 @@ export const CreateFormMembersBlockTitle = styled(Typography)`
   }
 `;
 
-export const CreateFormLinkAttachmentBlock = styled.div`
-  width: 100%;
-  border-bottom: 1px solid #363636;
-`;
-
-export const CreateFormLinkAttachmentLabel = styled(Typography)`
-  && {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 18px;
-    letter-spacing: 0.01em;
-    color: #ccbbff;
-    margin-bottom: 10px;
-  }
-`;
 
 export const CreateFormLinkAttachmentInput = styled(CreateFormMainTitleInput)`
   width: 100%;
@@ -759,21 +744,6 @@ export const CreateFormAddTagsSection = styled.div`
   padding: 30px 40px 10px;
 `;
 
-const editorPadding = 12;
-const editorMinHeight = 100;
-export const EditorContainer = styled.div`
-  padding: ${editorPadding}px;
-  min-height: ${editorMinHeight}px;
-  border-radius: 6px;
-  background: rgb(15, 15, 15);
-  overflow: auto;
-`;
-export const EditorPlaceholder = styled.div`
-  min-height: ${editorMinHeight - editorPadding * 2}px;
-`;
-export const EditorToolbar = styled.div`
-  margin-bottom: 4px;
-`;
 
 export const TextInputDiv = styled.div`
   height: 100px;
