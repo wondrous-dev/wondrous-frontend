@@ -94,7 +94,16 @@ const UserProfile = ({ onClose, openPodModal, openTutorialsModal }) => {
       <UnstyledLink href={`/profile/${user?.username}/about`} onClick={onClose}>
         <UserContainer>
           <ImageWrapper>
-            <SafeImage fill alt="Profile banner" src={user?.headerPicture || BANNER_IMAGE} />
+            <SafeImage
+              style={{
+                objectFit: 'cover',
+                width: '100%',
+              }}
+              fill
+              useNextImage
+              alt="Profile banner"
+              src={user?.headerPicture || BANNER_IMAGE}
+            />
           </ImageWrapper>
           <ProfileInfo>
             <UserProfilePictureGR15

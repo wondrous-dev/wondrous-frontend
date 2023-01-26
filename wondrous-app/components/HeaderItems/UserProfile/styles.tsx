@@ -55,7 +55,7 @@ export const PageItemContainer = styled(ItemContainer)`
 `;
 
 export const UserContainer = styled(ItemContainer)`
-  height: 10rem;
+  height: 10em;
   overflow: hidden;
   &:hover {
     background: ${palette.grey87};
@@ -69,7 +69,7 @@ export const PageSelectorWrapper = styled.div`
 `;
 
 export const ImageWrapper = styled.div`
-  height: 50%;
+  height: 45%;
   width: auto;
   img {
     position: relative !important;
