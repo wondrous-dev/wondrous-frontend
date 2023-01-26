@@ -8,7 +8,7 @@ import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
 import WrenchIcon from 'components/Icons/wrench';
 import { UnstyledButton, UnstyledLink } from 'components/WorkspacePicker/styles';
-import Image from 'next/image';
+import BANNER_IMAGE from 'public/images/profile/profile-banner.png';
 import { SafeImage } from 'components/Common/Image';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
@@ -88,22 +88,21 @@ const UserProfile = ({ onClose, openPodModal, openTutorialsModal }) => {
       type: 'component',
     },
   ];
-  const headerImage = user?.headerPicture || '/images/profile/profile-banner.png';
-  console.log('headerPicture', user?.headerPicture)
+
   return (
     <Wrapper>
       <UnstyledLink href={`/profile/${user?.username}/about`} onClick={onClose}>
         <UserContainer>
           <ImageWrapper>
-            <SafeImage fill alt="Profile banner" src={headerImage} />
+            <SafeImage fill alt="Profile banner" src={user?.headerPicture || BANNER_IMAGE} />
           </ImageWrapper>
           <ProfileInfo>
             <UserProfilePictureGR15
-              isGr15Contributor={user?.checkIsGr15Contributor?.isGr15Contributor}
+              isGr15Contributor={false}
               avatar={user?.profilePicture}
               style={{
-                height: '90px',
-                width: '90px',
+                height: '72px',
+                width: '72px',
                 borderRadius: '100%',
               }}
             />

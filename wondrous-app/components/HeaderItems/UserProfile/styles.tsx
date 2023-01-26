@@ -26,7 +26,7 @@ export const GridIconWrapper = styled.div`
 `;
 
 export const ItemContainer = styled.div`
-  background: ${palette.grey99};
+  background: ${palette.grey920};
   width: 100%;
   border-radius: 6px;
 `;
@@ -55,7 +55,7 @@ export const PageItemContainer = styled(ItemContainer)`
 `;
 
 export const UserContainer = styled(ItemContainer)`
-  height: 12rem;
+  height: 10rem;
   overflow: hidden;
   &:hover {
     background: ${palette.grey87};
@@ -64,7 +64,7 @@ export const UserContainer = styled(ItemContainer)`
 
 export const PageSelectorWrapper = styled.div`
   display: flex;
-  gap: 14px;
+  gap: 8px;
   justify-content: space-between;
 `;
 
@@ -90,7 +90,7 @@ export const ProfileInfo = styled.div`
   display: flex;
   cursor: pointer;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
   justify-content: center;
 `;

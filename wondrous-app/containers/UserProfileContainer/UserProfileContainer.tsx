@@ -25,7 +25,6 @@ function UserProfileContainer() {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-  console.log('userProfileData', userProfileData);
   return (
     <UserProfileContext.Provider
       value={{
