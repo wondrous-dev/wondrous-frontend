@@ -270,7 +270,7 @@ export const GeneratedTaskRowContainer = styled(SuggestionRowContainer)`
     display: flex;
     align-items: center;
     margin-left: -14px;
-    margin-bottom: 8px;
+    margin-bottom: 0px;
     padding: 7px;
   }
 `;

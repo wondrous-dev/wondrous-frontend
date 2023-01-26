@@ -63,8 +63,6 @@ const SUGGESTION_PROMPT_LIST = [
   'Create a pitch deck',
 ];
 
-const SELECTED_TASK_TYPE = 'selectedTaskType';
-
 const SuggestionRow = ({ suggestion, setActionPrompt }) => (
   <SuggestionRowContainer onClick={() => setActionPrompt(suggestion)}>
     <SuggestionRowText>{suggestion}</SuggestionRowText>
@@ -335,21 +333,25 @@ const WonderAiTaskGeneration = () => {
                       if (promptGenerationType === GENERATION_TYPES[0]?.value) {
                         if (milestone) {
                           setTaskToView(milestone);
+                          resetEditor(editor, milestone?.value);
                         } else {
                           setTaskToView({
                             ...initialMilestoneValues,
                             title: actionPrompt,
                           });
+                          resetEditor(editor, initialMilestoneValues?.description);
                         }
                         setTaskToViewType(ENTITIES_TYPES.MILESTONE);
                       } else {
                         if (parentTask) {
                           setTaskToView(parentTask);
+                          resetEditor(editor, parentTask?.value);
                         } else {
                           setTaskToView({
                             ...initialTaskValues,
                             title: actionPrompt,
                           });
+                          resetEditor(editor, initialTaskValues?.description);
                         }
                         setTaskToViewType(ENTITIES_TYPES.TASK);
                       }
