@@ -87,38 +87,15 @@ const RightPanel = (props) => {
   console.log('exisgintTask', existingTask);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
-  const board = orgBoard || podBoard;
-  const initialRecurrenceValue = null;
   const router = useRouter();
-  const initialRecurrenceType =
-    existingTask?.recurringSchema &&
-    Object.keys(existingTask.recurringSchema)[
-      Object?.values(existingTask?.recurringSchema).indexOf(initialRecurrenceValue)
-    ];
-
-  const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
-  const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
 
   const [paymentMethodInactiveError, setPaymentMethodInactiveError] = useState(false);
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
-  const inputRef: any = useRef();
-  const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
-    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-    : null;
 
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
-
-  const initialPodId = !existingTask ? board?.podId : null;
-  const form: any = useFormik({
-    initialValues: initialValues({ entityType, existingTask, initialPodId }),
-    validateOnChange: false,
-    validateOnBlur: false,
-    validationSchema: formValidationSchema,
-    onSubmit: (values) => {},
-  });
 
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(orgId);
@@ -134,7 +111,6 @@ const RightPanel = (props) => {
   });
 
   const categoriesData = useGetCategories();
-  const pods = useGetAvailableUserPods(orgId);
   const roles = useGetOrgRoles(orgId);
 
   const eligibleReviewers = useGetEligibleReviewers(orgId, podId);
@@ -146,38 +122,10 @@ const RightPanel = (props) => {
   });
 
   useEffect(() => {
-    if (recurrenceType && !existingTask?.dueDate) {
-      setField('dueDAte', moment().toDate());
+    if (existingTask?.recurrenceType && !existingTask?.dueDate) {
+      setField('dueDate', moment().toDate());
     }
-  }, [existingTask?.dueDate, recurrenceType]);
-
-  // useEffect(() => {
-  //   setField(
-  //     'reviewerIds',
-  //     existingTask?.reviewers?.map((reviewer) => reviewer.id)
-  //   );
-  //   if (isTask) {
-  //     setField('claimPolicy', existingTask?.claimPolicy || null);
-  //     setField('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
-  //     setField('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
-  //   }
-  //   // TODO we should add recurring to bounties and milesstone
-  //   setField('points', existingTask?.points || null);
-  //   setField('priority', existingTask?.priority || null);
-  //   setField('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
-  //   setField(
-  //     'labelIds',
-  //     isEmpty(existingTask?.labels) ? null : existingTask?.labels?.map((label) => label.id)
-  //   );
-  // }, [
-  //   existingTask?.reviewers?.length,
-  //   existingTask?.claimPolicy,
-  //   existingTask?.shouldUnclaimOnDueDateExpiry,
-  //   existingTask?.points,
-  //   existingTask?.milestoneId,
-  //   existingTask?.labels,
-  //   isTask,
-  // ]);
+  }, [existingTask?.dueDate, existingTask?.recurrenceType]);
 
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
@@ -588,17 +536,17 @@ const RightPanel = (props) => {
               <CreateEntityDueDate
                 autoFocus={!existingTask?.dueDate}
                 setValue={(date) => setField('dueDate', date)}
-                setRecurrenceType={setRecurrenceType}
-                setRecurrenceValue={setRecurrenceValue}
+                setRecurrenceType={(value) => setField('recurrenceType', value)}
+                setRecurrenceValue={(value) => setField('recurrenceValue', value)}
                 hideRecurring={false}
                 handleClose={() => {
                   setField('dueDate', null);
-                  setRecurrenceType(null);
-                  setRecurrenceValue(null);
+                  setField('recurrenceType', null);
+                  setField('recurrenceValue', null);
                 }}
                 value={existingTask?.dueDate}
-                recurrenceType={recurrenceType}
-                recurrenceValue={recurrenceValue}
+                recurrenceType={existingTask?.recurrenceType}
+                recurrenceValue={existingTask?.recurrenceValue}
               />
             )}
             {existingTask?.dueDate === null && (

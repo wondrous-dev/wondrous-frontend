@@ -311,3 +311,11 @@ export const GENERATE_GPT_TASKS = gql`
     }
   }
 `;
+
+export const CREATE_GPT_TASKS = gql`
+  mutation createGPTTasks($input: GPTTaskCreationInput) {
+    createGPTTasks(input: $input) {
+      success
+    }
+  }
+`;

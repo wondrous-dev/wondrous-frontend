@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
 import DropdownSelect from 'components/Common/DropdownSelect';
-import { useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import RobotHand from 'components/Common/WonderAiTaskGeneration/images/robot-hand.svg';
 import SmallRobotIcon from 'components/Common/WonderAiTaskGeneration/images/small-robot-icon.svg';
 import TrashIcon from 'components/Common/WonderAiTaskGeneration/images/trash-icon.svg';
@@ -37,16 +37,27 @@ import {
   GeneratedClickableTaskRow,
 } from 'components/Common/WonderAiTaskGeneration/styles';
 import { useMutation } from '@apollo/client';
-import { GENERATE_GPT_TASKS } from 'graphql/mutations';
+import { CREATE_GPT_TASKS, GENERATE_GPT_TASKS } from 'graphql/mutations';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { CircularProgress } from '@mui/material';
 import palette from 'theme/palette';
 import { entityTypeData } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import { ENTITIES_TYPES } from 'utils/constants';
 import Checkbox from 'components/Checkbox';
-import { deserializeRichText, useEditor } from 'components/RichText';
+import { deserializeRichText, extractMentions, useEditor } from 'components/RichText';
+import { useRouter } from 'next/router';
+import { isEmpty } from 'lodash';
 import { ErrorText, Flex } from '..';
 import RightPanel from './rightPanel';
+import { SnackbarAlertContext } from '../SnackbarAlert';
+
+type CreateTaskProps = {
+  orgId: string;
+  podId: string;
+  milestone?: any;
+  parentTask?: any;
+  generatedTasks: any;
+};
 
 const GENERATION_TYPES = [
   {
@@ -93,10 +104,53 @@ const resetEditor = (editor, newValue) => {
   Transforms.insertNodes(editor, newValue);
 };
 
+const filterInput = (task) => {
+  if (!task) return null;
+  const {
+    chooseGithubIssue,
+    chooseGithubPullRequest,
+    githubIssue,
+    githubRepo,
+    recurringSchema,
+    GR15DEISelected,
+    proposalVoteType,
+    customProposalChoices,
+    recurrenceType,
+    recurrenceValue,
+    ...finalValues
+  } = task;
+  const categories = task?.categories?.map((category) => category.id || category);
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const points = parseInt(task.points, 10);
+  const rewards = isEmpty(task?.rewards)
+    ? []
+    : [{ ...task?.rewards[0], rewardAmount: parseFloat(task?.rewards[0].rewardAmount) }];
+  const userMentions = extractMentions(task?.description);
+  const input = {
+    ...finalValues,
+    reviewerIds: task?.reviewerIds,
+    points,
+    rewards,
+    timezone,
+    userMentions,
+    categories,
+    description: JSON.stringify(task.description),
+    ...(recurrenceType &&
+      recurrenceValue && {
+        recurringSchema: {
+          [recurrenceType]: recurrenceValue,
+        },
+      }),
+  };
+  return input;
+};
+
 const GeneratedTaskRow = ({
   task,
   selectedList,
   setSelectedList,
+  generatedTaskList,
+  setGeneratedTaskList,
   index,
   setTaskViewIndex,
   setTaskToView,
@@ -134,7 +188,12 @@ const GeneratedTaskRow = ({
             flex: 1,
           }}
         />
-        <TrashIcon onClick={() => console.log('huh')} />
+        <TrashIcon
+          onClick={() => {
+            const newList = generatedTaskList.filter((item) => item.tempId !== task.tempId);
+            setGeneratedTaskList(newList);
+          }}
+        />
       </GeneratedClickableTaskRow>
     </GeneratedTaskRowContainer>
   );
@@ -144,6 +203,7 @@ const initialMilestoneValues = entityTypeData[ENTITIES_TYPES.MILESTONE].initialV
 const initialTaskValues = entityTypeData[ENTITIES_TYPES.TASK].initialValues;
 const WonderAiTaskGeneration = () => {
   const [promptGenerationType, setPromptGenerationType] = useState(GENERATION_TYPES[0]?.value);
+
   const [actionPrompt, setActionPrompt] = useState('');
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
@@ -157,6 +217,7 @@ const WonderAiTaskGeneration = () => {
     actionPrompt: null,
     entityDescription: null,
   });
+  const router = useRouter();
   const [taskToView, setTaskToView] = useState(null);
   const [taskToViewType, setTaskToViewType] = useState(null);
   const [taskViewIndex, setTaskViewIndex] = useState(null);
@@ -165,10 +226,12 @@ const WonderAiTaskGeneration = () => {
   const [errors, setErrors] = useState({});
   const orgId = orgBoard?.orgId || podBoard?.pod?.orgId;
   const podId = podBoard?.podId;
-  const [
-    generateGPTTasks,
-    { loading: generatedGPTTaskLoading, error: generatedGPTTaskError, reset: generatedGPTTaskReset },
-  ] = useMutation(GENERATE_GPT_TASKS);
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [generateGPTTasks, { loading: generatedGPTTaskLoading, error: generatedGPTTaskError }] =
+    useMutation(GENERATE_GPT_TASKS);
+  const [createGPTTasks, { loading: createGPTTaskLoading, error: createGPTTaskError }] = useMutation(CREATE_GPT_TASKS);
   const setMilestoneField = (field, value) => {
     setMilestone({
       ...milestone,
@@ -185,7 +248,6 @@ const WonderAiTaskGeneration = () => {
     if (!actionPrompt) {
       setFormErrors({ ...formErrors, actionPrompt: 'This field is required' });
     } else {
-      generatedGPTTaskReset();
       generateGPTTasks({
         variables: {
           input: {
@@ -201,12 +263,61 @@ const WonderAiTaskGeneration = () => {
           title: task.title,
           description: deserializeRichText(task.description),
           tempId: index,
+          orgId,
+          podId,
         }));
         setGeneratedTaskList(formattedlist);
+        setMilestone({
+          ...initialMilestoneValues,
+          title: actionPrompt,
+          orgId,
+          podId,
+        });
+        setParentTask({
+          ...initialTaskValues,
+          title: actionPrompt,
+          orgId,
+          podId,
+        });
       });
     }
   };
-  console.log('selectedList', selectedList);
+
+  const handleBatchTaskAdd = () => {
+    const tasksToAdd = [];
+    selectedList.forEach((index) => {
+      const { tempId, ...taskToAdd } = generatedTaskList[index];
+      tasksToAdd.push(filterInput(taskToAdd));
+    });
+    const input: CreateTaskProps = {
+      orgId,
+      podId,
+      generatedTasks: tasksToAdd,
+    };
+    if (promptGenerationType === GENERATION_TYPES[0]?.value) {
+      input.milestone = filterInput(milestone);
+    } else {
+      input.parentTask = filterInput(parentTask);
+    }
+
+    createGPTTasks({
+      variables: {
+        input,
+      },
+    }).then((res) => {
+      if (res?.data?.createGPTTasks?.success) {
+        // redirect
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(<>Redirecting to work board!</>);
+        if (orgId) {
+          router.push(`/organization/${orgBoard?.orgData?.username}/home`);
+        } else if (podId) {
+          router.push(`/pod/${podBoard?.podId}/home`);
+        }
+      }
+    });
+  };
+
   return (
     <Grid container>
       <Grid md={8} lg={7} item>
@@ -374,6 +485,8 @@ const WonderAiTaskGeneration = () => {
                       setTaskViewType={setTaskToViewType}
                       setClickSelectedList={setClickSelectedList}
                       editor={editor}
+                      generatedTaskList={generatedTaskList}
+                      setGeneratedTaskList={setGeneratedTaskList}
                     />
                   ))}
                   <BottomSelectBarContainer>
@@ -386,10 +499,14 @@ const WonderAiTaskGeneration = () => {
                     <ClearSelectionButton onClick={() => setSelectedList([])}>
                       <ActionButtonText>Clear Selection</ActionButtonText>
                     </ClearSelectionButton>
-                    <ActionButton>
-                      {' '}
-                      <ActionButtonText>Add selected items to board</ActionButtonText>
-                    </ActionButton>
+                    {createGPTTaskLoading ? (
+                      <CircularProgress />
+                    ) : (
+                      <ActionButton onClick={handleBatchTaskAdd}>
+                        {' '}
+                        <ActionButtonText>Add selected items to board</ActionButtonText>
+                      </ActionButton>
+                    )}
                   </BottomSelectBarContainer>
                 </>
               ) : (
