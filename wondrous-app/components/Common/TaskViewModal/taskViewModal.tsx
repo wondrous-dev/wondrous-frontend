@@ -110,7 +110,6 @@ import {
 } from './styles';
 import {
   ApplicationField,
-  AssigneeField,
   CategoryField,
   DueDateField,
   InitativesField,
@@ -126,6 +125,7 @@ import { hasGR15DEIIntiative, openSnapshot } from './utils';
 import TaskViewNft from '../TaskViewNft';
 import ViewNftFields from '../TaskMint/ViewNftFields';
 import ReviewerField from './taskViewModalFields/ReviewerField';
+import AssigneeField from './taskViewModalFields/AssigneeField';
 
 interface ITaskListModalProps {
   open: boolean;

@@ -964,6 +964,10 @@ export const ViewFieldWrapper = styled.div`
   ${({ canEdit }) => (canEdit ? EditIconCss : ``)};
 `;
 
+export const ViewFieldContainer = styled.div`
+  width: 100%;
+`;
+
 export const ReviewerWrapper = styled.div`
   display: flex;
   gap: 6px;
@@ -972,7 +976,10 @@ export const ReviewerWrapper = styled.div`
   width: 100%;
   &:hover {
     > div:nth-last-child(2) {
-      width: calc(100% - 40px);
+      width: ${({ showAutocomplete }) => (showAutocomplete ? `` : `calc(100% - 40px);`)};
+    }
+    ${ViewFieldWrapper} {
+      width: 100%;
     }
     ${AddButtonGrid} {
       display: flex;

@@ -1,9 +1,11 @@
 import { Box, Grid } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import CloseModalIcon from 'components/Icons/closeModal';
 import SearchIcon from 'components/Icons/search';
 import { Arrow } from 'components/Icons/sections';
 import palette from 'theme/palette';
+import { CloseIcon } from '../BoardFilters/styles';
 import { ArrowWrapper, Option, PaperComponent, StyledAutocomplete, StyledTextField } from './styles';
 
 const profilePictureStyle = {
@@ -65,7 +67,13 @@ const ListboxComponent = ({ AssignToSelfProps, innerRef, children, ...props }) =
   </ul>
 );
 
-const TaskViewModalAutocomplete = ({ renderInputProps = null, ListboxProps = null, ...props }) => (
+const TaskViewModalAutocomplete = ({
+  renderInputProps = null,
+  ListboxProps = null,
+  closeAction = null,
+  renderInput = null,
+  ...props
+}) => (
   <StyledAutocomplete
     disablePortal
     fullWidth
@@ -74,12 +82,18 @@ const TaskViewModalAutocomplete = ({ renderInputProps = null, ListboxProps = nul
     ListboxComponent={ListboxComponent}
     ListboxProps={ListboxProps}
     popupIcon={
-      <Grid width="24px" height="24px">
+      <Grid width="24px" height="24px" display="flex" gap="4px" alignItems="center">
         <SearchIcon width="13" height="13" />
       </Grid>
     }
-    clearIcon={null}
-    renderInput={(params) => <StyledTextField placeholder="Assign user" {...params} {...renderInputProps} />}
+    clearIcon={() => (closeAction ? <CloseModalIcon onClick={closeAction} /> : null)}
+    renderInput={(params) =>
+      renderInput ? (
+        renderInput(params)
+      ) : (
+        <StyledTextField placeholder="Assign user" {...params} {...renderInputProps} />
+      )
+    }
     renderOption={RenderOption}
     noOptionsText="No user found"
     {...props}
