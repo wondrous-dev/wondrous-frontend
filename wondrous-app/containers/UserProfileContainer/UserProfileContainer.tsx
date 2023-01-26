@@ -8,6 +8,11 @@ import useGetUserProfile from 'hooks/useGetUserProfile';
 
 import ProfileInfo from 'components/UserProfile/ProfileInfo';
 import ProfileUserTaskDaos from 'components/UserProfile/ProfileUserTaskDaos';
+import { HEADER_ASPECT_RATIO } from 'utils/constants';
+import { SafeImage } from 'components/Common/Image';
+import DEFAULT_HEADER from 'public/images/profile/profileBackground.png';
+
+import { AspectRatio } from 'react-aspect-ratio';
 
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useQuery } from '@apollo/client';
@@ -20,7 +25,7 @@ function UserProfileContainer() {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-
+  console.log('userProfileData', userProfileData);
   return (
     <UserProfileContext.Provider
       value={{
@@ -32,14 +37,18 @@ function UserProfileContainer() {
       <TaskViewModalWatcher />
       <UserProfileContainerWrapper>
         <UserProfileHeaderImageWrapper>
-          <Image
-            src="/images/profile/profileBackground.png"
-            fill
-            style={{
-              objectFit: 'cover',
-            }}
-            alt="header-image"
-          />
+          <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
+            <SafeImage
+              src={userProfileData?.headerPicture || DEFAULT_HEADER}
+              style={{
+                objectFit: 'cover',
+                width: '100%',
+              }}
+              fill
+              useNextImage
+              alt="User header"
+            />
+          </AspectRatio>
         </UserProfileHeaderImageWrapper>
         <UserProfileContainerContent>
           <ProfileInfo userProfile={userProfileData} />
