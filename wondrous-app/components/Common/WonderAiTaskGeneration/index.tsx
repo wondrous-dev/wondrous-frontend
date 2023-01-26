@@ -31,6 +31,10 @@ import {
   HeaderText,
   GeneratedTaskRowContainer,
   GeneratedTaskRowText,
+  BottomSelectBarContainer,
+  BottomSelectCountText,
+  ClearSelectionButton,
+  GeneratedClickableTaskRow,
 } from 'components/Common/WonderAiTaskGeneration/styles';
 import { useMutation } from '@apollo/client';
 import { GENERATE_GPT_TASKS } from 'graphql/mutations';
@@ -100,7 +104,7 @@ const GeneratedTaskRow = ({
   setClickSelectedList,
   editor,
 }) => {
-  const checked = selectedList.find((item) => item.title === task.title);
+  const checked = selectedList.some((item) => item === task.tempId);
   const onRowClick = () => {
     setTaskToView(task);
     resetEditor(editor, task?.description);
@@ -110,12 +114,12 @@ const GeneratedTaskRow = ({
   };
 
   return (
-    <GeneratedTaskRowContainer>
+    <GeneratedTaskRowContainer key={task?.tempId}>
       <Checkbox
-        checked={checked}
+        checked={!!checked}
         onChange={() => {
           if (checked) {
-            const newList = selectedList.filter((item, index) => index !== task.tempId);
+            const newList = selectedList.filter((item) => item !== task.tempId);
             setSelectedList([...newList]);
           } else {
             setSelectedList([...selectedList, task.tempId]);
@@ -123,14 +127,7 @@ const GeneratedTaskRow = ({
         }}
         inputProps={{ 'aria-label': 'controlled' }}
       />
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-        }}
-        onClick={onRowClick}
-      >
+      <GeneratedClickableTaskRow onClick={onRowClick}>
         <GeneratedTaskRowText>{task.title}</GeneratedTaskRowText>
         <div
           style={{
@@ -138,7 +135,7 @@ const GeneratedTaskRow = ({
           }}
         />
         <TrashIcon onClick={() => console.log('huh')} />
-      </div>
+      </GeneratedClickableTaskRow>
     </GeneratedTaskRowContainer>
   );
 };
@@ -209,7 +206,7 @@ const WonderAiTaskGeneration = () => {
       });
     }
   };
-
+  console.log('selectedList', selectedList);
   return (
     <Grid container>
       <Grid md={8} lg={7} item>
@@ -367,6 +364,7 @@ const WonderAiTaskGeneration = () => {
                   </HeaderText>
                   {generatedTaskList?.map((task, index) => (
                     <GeneratedTaskRow
+                      key={task?.tempId}
                       task={task}
                       selectedList={selectedList}
                       setSelectedList={setSelectedList}
@@ -378,6 +376,21 @@ const WonderAiTaskGeneration = () => {
                       editor={editor}
                     />
                   ))}
+                  <BottomSelectBarContainer>
+                    <BottomSelectCountText>{`Creating ${selectedList?.length} items`}</BottomSelectCountText>
+                    <div
+                      style={{
+                        flex: 1,
+                      }}
+                    />
+                    <ClearSelectionButton onClick={() => setSelectedList([])}>
+                      <ActionButtonText>Clear Selection</ActionButtonText>
+                    </ClearSelectionButton>
+                    <ActionButton>
+                      {' '}
+                      <ActionButtonText>Add selected items to board</ActionButtonText>
+                    </ActionButton>
+                  </BottomSelectBarContainer>
                 </>
               ) : (
                 <>
@@ -397,7 +410,6 @@ const WonderAiTaskGeneration = () => {
               entityType={taskToViewType}
               editor={editor}
               setField={(field, value) => {
-                console.log('what the', clickSelectedList);
                 if (clickSelectedList) {
                   const newTaskList = generatedTaskList.map((task, index) => {
                     if (index === taskViewIndex) {

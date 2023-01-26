@@ -7,6 +7,8 @@ import typography from 'theme/typography';
 
 export const PromptContainer = styled.div`
   padding: 24px;
+  position: relative;
+  min-height: 95vh;
 `;
 
 export const PromptBox = styled.div`
@@ -121,6 +123,7 @@ export const PromptInputContainer = styled.div`
   position: relative;
   width: 100%;
 `;
+
 export const PromptInput = styled(TextField)`
   && {
     margin-left: 14px;
@@ -183,6 +186,11 @@ export const ActionButton = styled.button`
   border-radius: 35px;
   border: none;
   cursor: pointer;
+`;
+
+export const ClearSelectionButton = styled(ActionButton)`
+  background: ${palette.grey58};
+  margin-right: 14px;
 `;
 
 export const ActionButtonText = styled(Typography)`
@@ -275,7 +283,30 @@ export const GeneratedTaskRowContainer = styled(SuggestionRowContainer)`
   }
 `;
 
+export const GeneratedClickableTaskRow = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+`;
 export const GeneratedTaskRowText = styled(SuggestionRowText)`
   && {
+  }
+`;
+
+export const BottomSelectBarContainer = styled.div`
+  background: ${palette.grey900};
+  padding: 24px;
+  border-radius: 12px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+export const BottomSelectCountText = styled(Typography)`
+  && {
+    color: ${palette.grey51};
+    font-weight: bold;
+    font-size: 13px;
   }
 `;
