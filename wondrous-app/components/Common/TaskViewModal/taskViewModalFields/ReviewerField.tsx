@@ -64,12 +64,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
       <ReviewerWrapper>
         {withTaskReviewers
           ? taskReviewers.map((taskReviewer) => (
-              <Grid
-                width="100%"
-                sx={{
-                  cursor: 'pointer',
-                }}
-              >
+              <Grid width="100%">
                 <ViewFieldWrapper key={taskReviewer.id} canEdit={canEdit}>
                   <UserChip user={taskReviewer} />
                   <EditIcon stroke={palette.grey58} className="edit-icon-field" />

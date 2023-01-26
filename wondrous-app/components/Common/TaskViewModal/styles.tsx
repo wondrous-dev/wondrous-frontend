@@ -951,6 +951,7 @@ export const ViewFieldWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
   padding: 1px 4px 1px 2px;
   gap: 6px;
   height: 28px;
