@@ -1,5 +1,5 @@
 import { ButtonUnstyled } from '@mui/base';
-import { Button, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import { Button, Grid, Menu, MenuItem, Modal, Typography } from '@mui/material';
 import { Button as GradientButton } from 'components/Common/button';
 import { Button as ComponentButton } from 'components/Button';
 import { SafeImage } from 'components/Common/Image';
@@ -331,18 +331,6 @@ export const TaskModalSnapshot = styled(Button)`
 `;
 
 export const TaskModalSnapshotLogo = styled(SnapshotLogoIcon)``;
-
-// export const DiscordThreadButton = styled(Button)`
-//   && {
-//     align-items: center;
-//     background: transparent;
-//     display: flex;
-//     gap: 8px;
-//     height: 30px;
-//     margin: 0;
-//     border: 2px solid ${palette.purple400};
-//   }
-// `;
 
 export const TaskModalSnapshotText = styled(Typography)`
   && {
@@ -945,14 +933,48 @@ export const AddReviewerButton = styled(ComponentButton)`
   }
 `;
 
-export const ReviewerWrapper = styled.div`
-  width: 100%;
-  flex-wrap: wrap;
+export const AddButtonGrid = styled(Grid)`
+  && {
+    display: none;
+  }
+`;
+
+const EditIconCss = css`
+  &:hover {
+    width: 100%;
+    .edit-icon-field {
+      display: block;
+    }
+  }
+`;
+export const ViewFieldWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  > div:nth-last-child(2) {
-    max-width: ${({ showAddButton }) => showAddButton && `calc(100% - 40px)`};
+  justify-content: space-between;
+  padding: 1px 4px 1px 2px;
+  gap: 6px;
+  height: 28px;
+  border-radius: 4px;
+  width: fit-content;
+  .edit-icon-field {
+    display: none;
+  }
+  background-color: ${({ theme }) => theme.palette.grey920};
+  ${({ canEdit }) => (canEdit ? EditIconCss : ``)};
+`;
+
+export const ReviewerWrapper = styled.div`
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  &:hover {
+    > div:nth-last-child(2) {
+      width: calc(100% - 40px);
+    }
+    ${AddButtonGrid} {
+      display: flex;
+    }
   }
 `;

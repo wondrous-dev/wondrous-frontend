@@ -15,19 +15,9 @@ import {
   GET_TASK_SUBMISSIONS_FOR_TASK,
 } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSnapshot } from 'services/snapshot';
-import {
-  addTaskItem,
-  formatDateDisplay,
-  getProposalStatus,
-  updateCompletedItem,
-  updateInProgressTask,
-  updateInReviewItem,
-  updateProposalItem,
-  updateTaskItem,
-} from 'utils/board';
+import { addTaskItem, formatDateDisplay, getProposalStatus, updateProposalItem } from 'utils/board';
 import {
   BOUNTY_TYPE,
   CATEGORY_LABELS,
@@ -128,7 +118,6 @@ import {
   PointsField,
   PriorityField,
   ProposerField,
-  ReviewerField,
   TagsField,
 } from './taskViewModalFields';
 import WatchersField from './taskViewModalFields/WatchersField';
@@ -136,6 +125,7 @@ import TaskViewModalFooter from './taskViewModalFooter';
 import { hasGR15DEIIntiative, openSnapshot } from './utils';
 import TaskViewNft from '../TaskViewNft';
 import ViewNftFields from '../TaskMint/ViewNftFields';
+import ReviewerField from './taskViewModalFields/ReviewerField';
 
 interface ITaskListModalProps {
   open: boolean;
