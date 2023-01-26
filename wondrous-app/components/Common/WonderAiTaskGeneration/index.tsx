@@ -188,7 +188,6 @@ const WonderAiTaskGeneration = () => {
     if (!actionPrompt) {
       setFormErrors({ ...formErrors, actionPrompt: 'This field is required' });
     } else {
-      console.log('we in');
       generatedGPTTaskReset();
       generateGPTTasks({
         variables: {
@@ -302,7 +301,6 @@ const WonderAiTaskGeneration = () => {
             {generatedTaskList?.length > 0 && (
               <RegenerateText
                 onClick={() => {
-                  console.log('what');
                   handleGenerateGPTTasks();
                 }}
               >
@@ -399,11 +397,8 @@ const WonderAiTaskGeneration = () => {
               entityType={taskToViewType}
               editor={editor}
               setField={(field, value) => {
-                if (taskToViewType === ENTITIES_TYPES.MILESTONE) {
-                  setMilestoneField(field, value);
-                } else if (taskToViewType === ENTITIES_TYPES.TASK) {
-                  setParentTaskField(field, value);
-                } else if (clickSelectedList) {
+                console.log('what the', clickSelectedList);
+                if (clickSelectedList) {
                   const newTaskList = generatedTaskList.map((task, index) => {
                     if (index === taskViewIndex) {
                       return {
@@ -413,6 +408,7 @@ const WonderAiTaskGeneration = () => {
                     }
                     return task;
                   });
+
                   setGeneratedTaskList(newTaskList);
                   const newSelectedList = selectedList.map((task, index) => {
                     if (task.tempId === taskViewIndex) {
@@ -423,7 +419,15 @@ const WonderAiTaskGeneration = () => {
                     }
                   });
                   setSelectedList(newSelectedList);
+                } else {
+                  if (taskToViewType === ENTITIES_TYPES.MILESTONE) {
+                    setMilestoneField(field, value);
+                  }
+                  if (taskToViewType === ENTITIES_TYPES.TASK) {
+                    setParentTaskField(field, value);
+                  }
                 }
+
                 setTaskToView({
                   ...taskToView,
                   [field]: value,

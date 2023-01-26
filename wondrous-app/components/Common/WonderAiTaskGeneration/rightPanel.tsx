@@ -653,7 +653,12 @@ const RightPanel = (props) => {
                     autoComplete="off"
                     autoFocus={!existingTask?.rewards?.[0]?.rewardAmount}
                     name="rewards"
-                    onChange={handleRewardOnChange(form)}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      if (/^\d*\.?\d*$/.test(value)) {
+                        setField('rewards', [{ ...existingTask?.rewards?.[0], rewardAmount: value }]);
+                      }
+                    }}
                     placeholder="Enter rewards..."
                     value={existingTask?.rewards?.[0]?.rewardAmount}
                     fullWidth
