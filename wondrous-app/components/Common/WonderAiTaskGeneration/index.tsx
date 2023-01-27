@@ -502,7 +502,6 @@ const WonderAiTaskGeneration = () => {
                   </HeaderText>
                   {generatedTaskList?.map((task, index) => (
                     <GeneratedTaskRow
-                      key={task?.tempId}
                       task={task}
                       selectedList={selectedList}
                       setSelectedList={setSelectedList}
