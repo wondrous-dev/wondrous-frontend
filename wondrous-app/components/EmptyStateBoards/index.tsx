@@ -96,13 +96,7 @@ function EmptyStateBoards({ status, hidePlaceholder, fullWidth }: Props) {
   const boardTypeTitle = orgBoard ? 'org' : 'pod';
   return (
     <>
-      <CreateModalOverlay
-        style={{
-          height: '95vh',
-        }}
-        open={openTaskModal}
-        onClose={handleTaskModal}
-      >
+      <CreateModalOverlay open={openTaskModal} onClose={handleTaskModal}>
         <CreateEntityModal
           entityType={entityType || ENTITIES_TYPES.TASK}
           handleClose={handleTaskModal}

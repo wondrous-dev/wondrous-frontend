@@ -39,6 +39,11 @@ export const CreateModalOverlay = styled(Modal)`
   /* Hide scrollbar for IE, Edge and Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    height: 100vh;
+    padding-top: 0;
+  }
 `;
 
 export const CreateFormModalOverlay = styled(Modal)`
@@ -522,7 +527,6 @@ export const CreateFormMembersBlockTitle = styled(Typography)`
   }
 `;
 
-
 export const CreateFormLinkAttachmentInput = styled(CreateFormMainTitleInput)`
   width: 100%;
 `;
@@ -743,7 +747,6 @@ export const CreateFormAddTagsSection = styled.div`
   margin: 0 auto;
   padding: 30px 40px 10px;
 `;
-
 
 export const TextInputDiv = styled.div`
   height: 100px;
