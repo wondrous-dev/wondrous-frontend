@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { IconButton, InputAdornment, InputBase } from '@mui/material';
 import palette from 'theme/palette';
@@ -22,10 +21,13 @@ export const SearchInput = styled(InputBase)`
     align-items: center;
 
     //text
-    font-size: 14px;
-    line-height: 19px;
-    letter-spacing: 0.01em;
-    color: ${palette.white};
+    .MuiInputBase-input {
+      font-family: 'Space Grotesk';
+      font-size: 14px;
+      line-height: 19px;
+      letter-spacing: 0.01em;
+      color: ${palette.white};
+    }
   }
 `;
 

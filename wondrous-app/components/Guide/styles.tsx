@@ -103,7 +103,6 @@ export const LaunchButton = styled(Button)`
     height: 34px;
     ${GradientHighlightHorizontal}
     button {
-      text-transform: capitalize;
       min-height: 0;
       font-size: 15px;
       font-weight: 600;

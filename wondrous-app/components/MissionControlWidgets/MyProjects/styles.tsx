@@ -49,6 +49,7 @@ export const ProjectRowContainer = styled.div`
   border-radius: 6px;
   padding: 12px;
   display: flex;
+  gap: 10px;
   cursor: pointer;
   gap: 10px;
   align-items: center;

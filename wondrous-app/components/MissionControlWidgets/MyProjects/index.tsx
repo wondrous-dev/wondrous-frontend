@@ -7,7 +7,6 @@ import CreateProjectIcon from 'components/MissionControlWidgets/MyProjects/Creat
 
 import { GET_USER_ORGS } from 'graphql/queries';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
-import RolePill from 'components/Common/RolePill';
 import { useMe } from 'components/Auth/withAuth';
 import AddDaoModal from 'components/Common/AddDaoModal';
 import SmartLink from 'components/Common/SmartLink';

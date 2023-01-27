@@ -34,6 +34,7 @@ import {
   MoreActionDiv,
 } from 'components/Settings/Payouts/styles';
 import { PAYMENT_STATUS } from 'utils/constants';
+import Link from 'next/link';
 
 const imageStyle = {
   width: '32px',
@@ -120,6 +121,7 @@ const PayoutItem = (props: PayoutItemProps) => {
       symbol: item?.symbol,
     });
   };
+  const submissionLink = `/submission/${item?.submissionId}`;
 
   return (
     <StyledTableRow>
@@ -221,7 +223,9 @@ const PayoutItem = (props: PayoutItemProps) => {
       )}
 
       <StyledTableCell>
-        <PayoutTaskTitleContainer>{item?.taskTitle}</PayoutTaskTitleContainer>
+        <Link href={submissionLink} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+          <PayoutTaskTitleContainer>{item?.taskTitle}</PayoutTaskTitleContainer>
+        </Link>
       </StyledTableCell>
 
       <StyledTableCell>
