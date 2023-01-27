@@ -36,7 +36,7 @@ import {
   ClearSelectionButton,
   GeneratedClickableTaskRow,
 } from 'components/Common/WonderAiTaskGeneration/styles';
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_GPT_TASKS, GENERATE_GPT_TASKS } from 'graphql/mutations';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { CircularProgress } from '@mui/material';
@@ -47,6 +47,7 @@ import Checkbox from 'components/Checkbox';
 import { deserializeRichText, extractMentions, useEditor } from 'components/RichText';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
+import { GET_GPT_ENTITY_DESCRIPTION } from 'graphql/queries/gptEntityDescription';
 import { ErrorText, Flex } from '..';
 import RightPanel from './rightPanel';
 import { SnackbarAlertContext } from '../SnackbarAlert';
@@ -57,6 +58,7 @@ type CreateTaskProps = {
   milestone?: any;
   parentTask?: any;
   generatedTasks: any;
+  entityDescription: string;
 };
 
 const GENERATION_TYPES = [
@@ -99,9 +101,10 @@ const resetEditor = (editor, newValue) => {
       at: [0],
     });
   }
-
-  // Insert array of children nodes
-  Transforms.insertNodes(editor, newValue);
+  if (newValue) {
+    // Insert array of children nodes
+    Transforms.insertNodes(editor, newValue);
+  }
 };
 
 const filterInput = (task) => {
@@ -229,6 +232,7 @@ const WonderAiTaskGeneration = () => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const [getGptEntityDescription, { data: getGptEntityDescriptionData }] = useLazyQuery(GET_GPT_ENTITY_DESCRIPTION);
   const [generateGPTTasks, { loading: generatedGPTTaskLoading, error: generatedGPTTaskError }] =
     useMutation(GENERATE_GPT_TASKS);
   const [createGPTTasks, { loading: createGPTTaskLoading, error: createGPTTaskError }] = useMutation(CREATE_GPT_TASKS);
@@ -293,6 +297,7 @@ const WonderAiTaskGeneration = () => {
       orgId,
       podId,
       generatedTasks: tasksToAdd,
+      ...(entityDescription && { entityDescription }),
     };
     if (promptGenerationType === GENERATION_TYPES[0]?.value) {
       input.milestone = filterInput(milestone);
@@ -318,6 +323,23 @@ const WonderAiTaskGeneration = () => {
     });
   };
 
+  useEffect(() => {
+    if (podId || orgId) {
+      getGptEntityDescription({
+        variables: {
+          podId,
+          orgId,
+        },
+      });
+    }
+  }, [orgId, podId]);
+  const savedEntityDescription = getGptEntityDescriptionData?.getGptEntityDescription?.description;
+
+  useEffect(() => {
+    if (savedEntityDescription) {
+      setEntityDescription(savedEntityDescription);
+    }
+  }, [savedEntityDescription]);
   return (
     <Grid container>
       <Grid md={8} lg={7} item>
