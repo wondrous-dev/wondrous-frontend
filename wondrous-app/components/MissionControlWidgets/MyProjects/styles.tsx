@@ -51,6 +51,7 @@ export const ProjectRowContainer = styled.div`
   display: flex;
   gap: 10px;
   cursor: pointer;
+  gap: 10px;
   align-items: center;
   &:hover {
     background: ${palette.grey87};

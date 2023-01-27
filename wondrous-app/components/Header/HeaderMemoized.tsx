@@ -24,6 +24,7 @@ import { PAGE_PATHNAME } from 'utils/constants';
 import { useOutsideAlerter } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import BreadCrumbs from 'components/BreadCrumbs';
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
 
 type Props = {
@@ -90,9 +91,9 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
 
   return (
     <>
+      <TaskViewModalWatcher />
       <PodModal open={isPodModalOpen} handleClose={handleClosePodModal} />
       <HelpModal open={isTutorialsModalOpen} handleClose={handleCloseTutorialsModal} />
-
       <HeaderBar>
         <Backdrop open={!!activeModalType && isMobileScreen} />
         {/* <div style={{height: '30px', width: '30px', color: 'white', background: 'red'}}>hello</div> */}
