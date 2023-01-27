@@ -15,7 +15,7 @@ const ButtonWrapper = styled.div`
   min-height: ${(props) => props.height || 40}px;
   min-width: ${(props) => props.minWidth || 0}px;
   padding: 1px;
-  width: ${(props) => (props.fullWidth ? '100%' : props.width || 'auto')};
+  width: ${(props) => (props.fullWidth ? '100%' : props.width ? `${props.width}px` : 'auto')};
 `;
 
 const ButtonInner = styled.button`
@@ -33,10 +33,8 @@ const ButtonInner = styled.button`
   font-weight: ${(props) => props.fontWeight || 400};
   font-family: ${typography.fontFamily};
   justify-content: center;
-  padding-left: ${(props) => props.paddingX || 30}px;
-  padding-right: ${(props) => props.paddingX || 30}px;
-  padding-top: ${(props) => props.paddingY || 0}px;
-  padding-bottom: ${(props) => props.paddingY || 0}px;
+  padding: ${(props) => (typeof props.paddingY === 'number' ? props.paddingY : 0)}px
+    ${(props) => (typeof props.paddingX === 'number' ? props.paddingX : 30)}px;
 
   &:hover:not(:disabled) {
     background: ${(props) => props?.hover?.background || props.background};
