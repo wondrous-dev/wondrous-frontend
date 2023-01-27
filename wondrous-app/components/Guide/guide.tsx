@@ -1,4 +1,4 @@
-import { StepTitle, StepBody, EndGuideButton } from './styles';
+import { StepTitle, StepBody } from './styles';
 
 export const guideConfig = {
   '/mission-control': {
