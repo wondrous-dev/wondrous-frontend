@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   padding-top: 70px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 `;
 
 export const EntityItem = styled.div`
