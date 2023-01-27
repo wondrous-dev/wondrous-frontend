@@ -314,20 +314,25 @@ const WonderAiTaskGeneration = () => {
         // redirect
         setSnackbarAlertOpen(true);
         setSnackbarAlertMessage(<>Redirecting to work board!</>);
-        if (orgId) {
-          router.push(`/organization/${orgBoard?.orgData?.username}/home`);
-        } else if (podId) {
+        if (podId) {
           router.push(`/pod/${podBoard?.podId}/home`);
+        } else if (orgId) {
+          router.push(`/organization/${orgBoard?.orgData?.username}/home`);
         }
       }
     });
   };
 
   useEffect(() => {
-    if (podId || orgId) {
+    if (podId) {
       getGptEntityDescription({
         variables: {
           podId,
+        },
+      });
+    } else if (orgId) {
+      getGptEntityDescription({
+        variables: {
           orgId,
         },
       });
