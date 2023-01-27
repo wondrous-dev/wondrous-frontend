@@ -84,9 +84,6 @@ import Tags from 'components/Tags';
 
 const RightPanel = (props) => {
   const { entityType, setField, orgId, podId, existingTask, errors, setErrors, editor } = props;
-  console.log('exisgintTask', existingTask);
-  const orgBoard = useOrgBoard();
-  const podBoard = usePodBoard();
   const router = useRouter();
 
   const [paymentMethodInactiveError, setPaymentMethodInactiveError] = useState(false);

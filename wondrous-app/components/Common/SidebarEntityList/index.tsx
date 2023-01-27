@@ -188,7 +188,7 @@ const useSidebarData = () => {
       Icon: WonderBot,
       link: `${link}/wonder_ai_bot`,
       check: () => pathnamesToCheck.includes(router.pathname) && router.pathname.includes('wonder_ai_bot'),
-      entityType: ENTITIES_TYPES.WONDER_AI_BOT,
+      entityType: null,
       count: null,
     });
   }

@@ -161,7 +161,7 @@ const GeneratedTaskRow = ({
   setClickSelectedList,
   editor,
 }) => {
-  const checked = selectedList.some((item) => item === task.tempId);
+  const checked = selectedList.some((item) => item.tempId === task.tempId);
   const onRowClick = () => {
     setTaskToView(task);
     resetEditor(editor, task?.description);
@@ -176,10 +176,10 @@ const GeneratedTaskRow = ({
         checked={!!checked}
         onChange={() => {
           if (checked) {
-            const newList = selectedList.filter((item) => item !== task.tempId);
+            const newList = selectedList.filter((item) => item.tempId !== task.tempId);
             setSelectedList([...newList]);
           } else {
-            setSelectedList([...selectedList, task.tempId]);
+            setSelectedList([...selectedList, task]);
           }
         }}
         inputProps={{ 'aria-label': 'controlled' }}
@@ -191,13 +191,15 @@ const GeneratedTaskRow = ({
             flex: 1,
           }}
         />
-        <TrashIcon
-          onClick={() => {
-            const newList = generatedTaskList.filter((item) => item.tempId !== task.tempId);
-            setGeneratedTaskList(newList);
-          }}
-        />
       </GeneratedClickableTaskRow>
+      <TrashIcon
+        onClick={() => {
+          const newList = generatedTaskList.filter((item) => item.tempId !== task.tempId);
+          const newSelectedList = selectedList.filter((item) => item.tempId !== task.tempId);
+          setGeneratedTaskList([...newList]);
+          setSelectedList([...newSelectedList]);
+        }}
+      />
     </GeneratedTaskRowContainer>
   );
 };
@@ -245,6 +247,7 @@ const WonderAiTaskGeneration = () => {
   const setParentTaskField = (field, value) => {
     setParentTask({
       ...parentTask,
+      [field]: value,
     });
   };
 
@@ -289,8 +292,8 @@ const WonderAiTaskGeneration = () => {
 
   const handleBatchTaskAdd = () => {
     const tasksToAdd = [];
-    selectedList.forEach((index) => {
-      const { tempId, ...taskToAdd } = generatedTaskList[index];
+    selectedList.forEach((task) => {
+      const { tempId, ...taskToAdd } = task;
       tasksToAdd.push(filterInput(taskToAdd));
     });
     const input: CreateTaskProps = {
@@ -345,6 +348,7 @@ const WonderAiTaskGeneration = () => {
       setEntityDescription(savedEntityDescription);
     }
   }, [savedEntityDescription]);
+
   return (
     <Grid container>
       <Grid md={8} lg={7} item>
