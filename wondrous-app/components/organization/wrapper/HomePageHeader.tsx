@@ -309,11 +309,12 @@ function Wrapper(props) {
                 <>
                   {userJoinRequest?.id ? (
                     <PrimaryButton
-                      height={36}
+                      height={32}
                       width="max-content"
                       variant="outlined"
                       color="purple"
                       succeeded
+                      disabled
                       paddingX={15}
                       buttonTheme={{ fontWeight: '500', fontSize: '14px' }}
                     >
@@ -321,7 +322,7 @@ function Wrapper(props) {
                     </PrimaryButton>
                   ) : (
                     <PrimaryButton
-                      height={36}
+                      height={32}
                       paddingX={15}
                       width="max-content"
                       buttonTheme={{ fontWeight: '500', fontSize: '14px' }}

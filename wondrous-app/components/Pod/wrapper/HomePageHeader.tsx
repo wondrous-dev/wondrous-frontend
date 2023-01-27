@@ -229,19 +229,15 @@ function HomePageHeader(props) {
                 />
               </div>
 
-              <ArrowForwardIosIcon style={{ color: palette.grey58 }} />
-              {podProfile?.profilePicture ? (
-                <PodProfileImage src={podProfile?.profilePicture} />
-              ) : (
-                <PodIcon
-                  color={podProfile?.color}
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 50,
-                  }}
-                />
-              )}
+              <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 3 }} />
+              <PodIcon
+                color={podProfile?.color}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 50,
+                }}
+              />
             </LogoWrapper>
 
             <HeaderTopLeftContainer>
@@ -279,11 +275,12 @@ function HomePageHeader(props) {
                 <>
                   {userJoinRequest?.id ? (
                     <PrimaryButton
-                      height={36}
+                      height={32}
                       width="max-content"
                       variant="outlined"
                       color="purple"
                       succeeded
+                      disabled
                       paddingX={15}
                       buttonTheme={{ fontWeight: '500', fontSize: '14px' }}
                     >
@@ -291,7 +288,7 @@ function HomePageHeader(props) {
                     </PrimaryButton>
                   ) : (
                     <PrimaryButton
-                      height={36}
+                      height={32}
                       paddingX={15}
                       width="max-content"
                       buttonTheme={{ fontWeight: '500', fontSize: '14px' }}
