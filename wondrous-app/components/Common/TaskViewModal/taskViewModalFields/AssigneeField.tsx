@@ -1,8 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
-import TaskViewModalAutocomplete from 'components/Common/TaskViewModalAutocomplete';
-import TaskViewModalUserChip from 'components/Common/TaskViewModalUserChip';
 import { filterOrgUsers, useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import { Claim } from 'components/Icons/claimTask';
 import { REMOVE_TASK_ASSIGNEE, UPDATE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
@@ -10,13 +8,8 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
-import { TaskSectionLabel, TaskSectionImageContent } from '../helpers';
-import {
-  TaskSectionDisplayDiv,
-  TaskSectionInfoDiv,
-  TaskSectionInfoTakeTask,
-  TaskSectionInfoTakeTaskText,
-} from '../styles';
+import { TaskSectionLabel } from '../helpers';
+import { TaskSectionDisplayDiv, TaskSectionInfoTakeTask, TaskSectionInfoTakeTaskText } from '../styles';
 import { useUpdateTaskCardCache } from '../utils';
 import { Field } from './ReviewerField';
 
@@ -53,7 +46,6 @@ const AssigneeContent = ({
     });
   };
 
-  console.log(canClaim && canEdit, 'CAN CLAIM CAN EDIT', canClaim, canEdit);
   if (!fetchedTask?.assigneeId && canApply) {
     return <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />;
   }

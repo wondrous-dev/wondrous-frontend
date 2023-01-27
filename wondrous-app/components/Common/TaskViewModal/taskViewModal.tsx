@@ -64,14 +64,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
 import ActionModals from './actionModals';
 import { tabs } from './constants';
-import {
-  GithubButtons,
-  LockedTaskMessage,
-  Menu,
-  Rewards,
-  TaskDescriptionTextWrapper,
-  TaskSectionImageContent,
-} from './helpers';
+import { GithubButtons, LockedTaskMessage, Menu, TaskDescriptionTextWrapper, TaskSectionImageContent } from './helpers';
 import {
   SubtaskIconWrapper,
   SubtaskTitleWrapper,
@@ -111,7 +104,6 @@ import {
 import {
   ApplicationField,
   CategoryField,
-  DueDateField,
   InitativesField,
   MilestoneField,
   PointsField,
@@ -126,6 +118,8 @@ import TaskViewNft from '../TaskViewNft';
 import ViewNftFields from '../TaskMint/ViewNftFields';
 import ReviewerField from './taskViewModalFields/ReviewerField';
 import AssigneeField from './taskViewModalFields/AssigneeField';
+import DueDateField from './taskViewModalFields/DueDateField';
+import Rewards from './taskViewModalFields/RewardsField';
 
 interface ITaskListModalProps {
   open: boolean;

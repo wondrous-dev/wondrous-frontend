@@ -1,64 +1,26 @@
-import { useMutation } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import TaskApplicationButton from 'components/Common/TaskApplication/TaskApplicationButton';
 import TaskPriority from 'components/Common/TaskPriority';
-import TaskViewModalAutocomplete from 'components/Common/TaskViewModalAutocomplete';
-import TaskViewModalUserChip from 'components/Common/TaskViewModalUserChip';
-import {
-  filterOrgUsers,
-  useGetEligibleReviewers,
-  useGetOrgUsers,
-} from 'components/CreateEntity/CreateEntityModal/Helpers';
-import { Claim } from 'components/Icons/claimTask';
-import PlusIcon from 'components/Icons/plus';
-import Tooltip from 'components/Tooltip';
-import { format } from 'date-fns';
-import {
-  REMOVE_TASK_ASSIGNEE,
-  UPDATE_TASK_ASSIGNEE,
-  UPDATE_TASK_PROPOSAL_ASSIGNEE,
-  UPDATE_TASK_REVIEWERS,
-} from 'graphql/mutations';
-import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
+import { useState } from 'react';
 import palette from 'theme/palette';
-import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
 import { Typography } from '@mui/material';
 import typography from 'theme/typography';
-import EditIcon from 'components/Icons/editIcon';
-import RecurringIcon from '../../../public/images/icons/recurring.svg';
 import { TaskSectionImageContent, TaskSectionLabel } from './helpers';
 import {
   ActionButton,
-  AddButtonGrid,
-  AddReviewerButton,
-  InfoPoint,
-  ReviewerWrapper,
   Tag,
   TaskIntiativesContainer,
-  TaskSectionDisplayContentWrapper,
   TaskSectionDisplayDiv,
-  TaskSectionInfoCalendar,
-  TaskSectionInfoDiv,
   TaskSectionInfoMilestoneIcon,
-  TaskSectionInfoPoints,
   TaskSectionInfoPointsIcon,
-  TaskSectionInfoRecurringIcon,
-  TaskSectionInfoTakeTask,
-  TaskSectionInfoTakeTaskText,
   TaskSectionInfoText,
   TaskSectionInfoTextMilestone,
   TaskSectionTagWrapper,
-  ViewFieldWrapper,
 } from './styles';
-import { useUpdateTaskCardCache } from './utils';
 import { UserProfilePicture } from '../ProfilePictureHelpers';
 
 export const UserChip = ({ user }) => (
@@ -117,37 +79,6 @@ export function ProposerField({ shouldDisplay, creatorUsername, creatorProfilePi
         DefaultContent={InfoText}
       />
     </TaskSectionDisplayDiv>
-  );
-}
-
-const DueDateFieldContent = ({ recurringSchema, dueDate }) => (
-  <TaskSectionInfoText>
-    {!isEmpty(recurringSchema) && (
-      <Tooltip title="Recurring" placement="right">
-        <TaskSectionInfoRecurringIcon>
-          <RecurringIcon />
-        </TaskSectionInfoRecurringIcon>
-      </Tooltip>
-    )}
-    {format(new Date(dueDate), 'MM/dd/yyyy')}
-  </TaskSectionInfoText>
-);
-
-export function DueDateField({ shouldDisplay, dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry }) {
-  if (!shouldDisplay) return null;
-  return (
-    <div>
-      <TaskSectionDisplayDiv>
-        <TaskSectionLabel>Due Date</TaskSectionLabel>
-        <TaskSectionImageContent
-          hasContent={dueDate}
-          ContentComponent={DueDateFieldContent}
-          ContentComponentProps={{ recurringSchema, dueDate }}
-          DefaultImageComponent={() => <TaskSectionInfoCalendar />}
-        />
-      </TaskSectionDisplayDiv>
-      {shouldUnclaimOnDueDateExpiry && <InfoPoint>Assignee will be removed once the task is past due date</InfoPoint>}
-    </div>
   );
 }
 

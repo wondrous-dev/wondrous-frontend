@@ -668,6 +668,7 @@ export const TaskSectionInfoPaymentMethodIcon = styled(SafeImage).attrs({ useNex
   && {
     width: 26px;
     height: 26px;
+    border-radius: 100%;
     img[style] {
       width: 100% !important;
       height: 100% !important;
@@ -959,6 +960,9 @@ export const ViewFieldWrapper = styled.div`
   width: fit-content;
   .edit-icon-field {
     display: none;
+  }
+  &:hover {
+    width: ${({ canEdit }) => (canEdit ? '100%' : 'fit-content')};
   }
   background-color: ${({ theme }) => theme.palette.grey920};
   ${({ canEdit }) => (canEdit ? EditIconCss : ``)};
