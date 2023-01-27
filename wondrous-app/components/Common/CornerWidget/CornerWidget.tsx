@@ -17,9 +17,8 @@ export type CornerWidgetProps = {
   handleClose: () => void;
 };
 
-const useHandleOnClick = ({ id, type, pod, org }) => {
+const useHandleOnClick = ({ id, type, entityLink }) => {
   const router = useRouter();
-  const entityLink = pod?.id ? `/pod/${pod?.id}/` : `/organization/${org.username}/`;
   const handleOnClickPerType = {
     [ENTITIES_TYPES.GRANT]: () => router.push(`${entityLink}/grants?grant=${id}`),
     [ENTITIES_TYPES.PROPOSAL]: () =>
@@ -34,7 +33,8 @@ const useHandleOnClick = ({ id, type, pod, org }) => {
 
 const CornerWidget = ({ id, type, pod, org, handleClose }: CornerWidgetProps) => {
   const entityName = pod?.name || org?.name;
-  const handleOpen = useHandleOnClick({ id, type, pod, org });
+  const entityLink = pod?.id ? `/pod/${pod?.id}/` : `/organization/${org.username}/`;
+  const handleOpen = useHandleOnClick({ id, type, entityLink });
   const addedToText = type === ENTITIES_TYPES.MILESTONE ? 'launched in' : 'added to';
   const handleOnClickOpen = () => {
     handleOpen();

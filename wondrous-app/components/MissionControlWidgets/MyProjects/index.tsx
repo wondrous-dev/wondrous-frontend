@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 import ExploreProjectIcon from 'components/MissionControlWidgets/MyProjects/ExploreProjectIcon.svg';
 import CreateProjectIcon from 'components/MissionControlWidgets/MyProjects/CreateProjectIcon.svg';
 
-import { GET_USER_ORG_ROLES } from 'graphql/queries';
+import { GET_USER_ORGS } from 'graphql/queries';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import RolePill from 'components/Common/RolePill';
 import { useMe } from 'components/Auth/withAuth';
@@ -28,7 +28,7 @@ const MyProjectsWidget = () => {
   const user = useMe();
   const [openCreateDaoModal, setCreateDaoModal] = useState(false);
   const handleCreateDaoModal = (a) => () => setCreateDaoModal(a);
-  const { data, loading } = useQuery(GET_USER_ORG_ROLES, {
+  const { data } = useQuery(GET_USER_ORGS, {
     variables: {
       userId: user?.id,
       excludeSharedOrgs: true,
@@ -61,21 +61,13 @@ const MyProjectsWidget = () => {
           Explore
         </ExploreCreateButton>
       </ExploreCreateButtonsContainer>
-      {data?.getUserOrgRoles?.length > 0 && (
+      {data?.getUserOrgs?.length > 0 && (
         <MyProjectRowsContainer>
-          {data?.getUserOrgRoles?.map((orgRole, idx) => (
-            <SmartLink
-              href={`/organization/${orgRole?.org?.username}/home`}
-              key={`myproject-${orgRole?.org?.id}`}
-              asLink
-            >
+          {data?.getUserOrgs?.map((org, idx) => (
+            <SmartLink href={`/organization/${org?.username}/home`} key={`myproject-${org?.id}`} asLink>
               <ProjectRowContainer>
-                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                  <OrgProfilePicture profilePicture={orgRole?.org?.thumbnailPicture || orgRole?.org?.profilePicture} />
-                  <OrgNameTitle>{orgRole?.org?.username}</OrgNameTitle>
-                </div>
-
-                <RolePill roleName={orgRole?.role?.name} fontSize={13} onClick={() => {}} />
+                <OrgProfilePicture profilePicture={org?.thumbnailPicture || org?.profilePicture} />
+                <OrgNameTitle>{org?.username}</OrgNameTitle>
               </ProjectRowContainer>
             </SmartLink>
           ))}
