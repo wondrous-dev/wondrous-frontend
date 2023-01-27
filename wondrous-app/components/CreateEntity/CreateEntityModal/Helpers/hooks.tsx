@@ -52,6 +52,7 @@ import {
   PROPOSAL_VOTE_CHOICE_LABELS,
 } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
+import { useCornerWidget } from 'utils/hooks';
 import {
   filterGithubPullRequestsForAutocomplete,
   filterGithubReposForAutocomplete,
@@ -61,7 +62,6 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
 import { Typography } from '@mui/material';
 import { palette } from '@mui/system';
-import { useCornerWidget } from 'components/Common/CornerWidget';
 
 const HANDLE_TASKS = {
   REMOVE: {
@@ -328,16 +328,7 @@ export const useCreateTask = () => {
       SEARCH_USER_CREATED_TASKS,
       GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
     ],
-    onCompleted: ({ createTask: createTaskData }) => {
-      const { org, pod, type, id } = createTaskData;
-      setCornerWidgetValue({
-        open: true,
-        orgName: org?.name,
-        podName: pod?.name,
-        type,
-        id,
-      });
-    },
+    onCompleted: ({ createTask: createTaskData }) => setCornerWidgetValue(createTaskData),
   });
 
   const handleMutation = ({ input, board, pods, form, handleClose }) =>
@@ -365,16 +356,7 @@ export const useCreateMilestone = () => {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
     ],
-    onCompleted: ({ createMilestone: createMilestoneData }) => {
-      const { org, pod, type, id } = createMilestoneData;
-      setCornerWidgetValue({
-        open: true,
-        orgName: org?.name,
-        podName: pod?.name,
-        type,
-        id,
-      });
-    },
+    onCompleted: ({ createMilestone: createMilestoneData }) => setCornerWidgetValue(createMilestoneData),
   });
   const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
     createMilestone({
@@ -427,16 +409,7 @@ export const useCreateBounty = () => {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
     ],
-    onCompleted: ({ createBounty: createBountyData }) => {
-      const { org, pod, type, id } = createBountyData;
-      setCornerWidgetValue({
-        open: true,
-        orgName: org?.name,
-        podName: pod?.name,
-        type,
-        id,
-      });
-    },
+    onCompleted: ({ createBounty: createBountyData }) => setCornerWidgetValue(createBountyData),
   });
   const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createBounty({
@@ -607,16 +580,11 @@ export const useCreateTaskProposal = () => {
       'getPerStatusTaskCountForOrgBoard',
       'getUserTaskBoardProposals',
     ],
-    onCompleted: ({ createTaskProposal: createTaskProposalData }) => {
-      const { org, pod, id } = createTaskProposalData;
+    onCompleted: ({ createTaskProposal: createTaskProposalData }) =>
       setCornerWidgetValue({
-        open: true,
-        orgName: org?.name,
-        podName: pod?.name,
+        ...createTaskProposalData,
         type: ENTITIES_TYPES.PROPOSAL,
-        id,
-      });
-    },
+      }),
   });
 
   const handleMutation = ({ input, board, pods, form, handleClose }) =>

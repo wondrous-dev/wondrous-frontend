@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 
 import { CREATE_ORG_DOCUMENT, CREATE_POD_DOCUMENT, UPDATE_DOCUMENT } from 'graphql/mutations/documents';
-import { ENTITIES_TYPES, URL_REGEX } from 'utils/constants';
+import { URL_REGEX } from 'utils/constants';
 
 import DocModal from 'components/DocModal';
 import ImageUploader from 'components/ImageUploader';

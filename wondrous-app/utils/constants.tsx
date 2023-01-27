@@ -152,7 +152,6 @@ export const ENTITIES_TYPES = {
   GRANT: 'grant',
   GRANT_APPLICATION: 'grant_application',
   COLLAB: 'collab',
-  DOC: 'document',
 };
 
 export const ENTITIES_DISPLAY_LABEL_MAP = {

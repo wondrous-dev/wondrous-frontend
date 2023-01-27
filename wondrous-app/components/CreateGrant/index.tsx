@@ -46,7 +46,6 @@ import {
 import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
-import { useCornerWidget } from 'components/Common/CornerWidget';
 import { useFormik } from 'formik';
 import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } from 'graphql/mutations/grant';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -59,7 +58,7 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
-import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useCornerWidget, useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity } from './Fields';
@@ -135,13 +134,9 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const [createGrant] = useMutation(CREATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
     onCompleted: ({ createGrant: createGrantData }) => {
-      const { org, pod, id } = createGrantData;
       setCornerWidgetValue({
-        open: true,
-        orgName: org?.name,
-        podName: pod?.name,
+        ...createGrantData,
         type: ENTITIES_TYPES.GRANT,
-        id,
       });
       handleClose();
     },

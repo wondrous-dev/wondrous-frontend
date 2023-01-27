@@ -3,26 +3,25 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import CloseModalIcon from 'components/Icons/closeModal';
-import get from 'lodash/get';
 import { useRouter } from 'next/router';
 
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
 
-import { CornerWidgetComponentType } from './types';
-
-const addedToText = (type) => {
-  if (type === ENTITIES_TYPES.MILESTONE) return `launched in`;
-  return `added to`;
+export type CornerWidgetProps = {
+  id: string;
+  type: string;
+  org?: { username: string; name: string };
+  pod?: { id: string; name: string };
+  handleClose: () => void;
 };
 
-const useHandleOnClick = ({ id, type, orgName }) => {
+const useHandleOnClick = ({ id, type, pod, org }) => {
   const router = useRouter();
-  const entityLink = orgName ? `/organization/${router.query.username}/` : `/pod/${router.query.podId}/`;
+  const entityLink = pod?.id ? `/pod/${pod?.id}/` : `/organization/${org.username}/`;
   const handleOnClickPerType = {
     [ENTITIES_TYPES.GRANT]: () => router.push(`${entityLink}/grants?grant=${id}`),
-    [ENTITIES_TYPES.DOC]: () => router.push(`${entityLink}/docs?id=${id}`),
     [ENTITIES_TYPES.PROPOSAL]: () =>
       router.push({ query: { ...router.query, taskProposal: id } }, undefined, {
         scroll: false,
@@ -30,12 +29,13 @@ const useHandleOnClick = ({ id, type, orgName }) => {
   };
   const defaultHandleOnClick = () =>
     router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false });
-  return get(handleOnClickPerType, type, defaultHandleOnClick);
+  return handleOnClickPerType?.[type] ?? defaultHandleOnClick;
 };
 
-const CornerWidgetComponent = ({ id, type, orgName, podName, handleClose }: CornerWidgetComponentType) => {
-  const entityName = podName || orgName;
-  const handleOpen = useHandleOnClick({ id, type, orgName });
+const CornerWidget = ({ id, type, pod, org, handleClose }: CornerWidgetProps) => {
+  const entityName = pod?.name || org?.name;
+  const handleOpen = useHandleOnClick({ id, type, pod, org });
+  const addedToText = type === ENTITIES_TYPES.MILESTONE ? 'launched in' : 'added to';
   const handleOnClickOpen = () => {
     handleOpen();
     handleClose();
@@ -64,7 +64,7 @@ const CornerWidgetComponent = ({ id, type, orgName, podName, handleClose }: Corn
           >
             {type}
           </Box>{' '}
-          {addedToText(type)}
+          {addedToText}
         </Typography>
         <Typography fontFamily={typography.fontFamily} fontWeight="600" color={palette.white} fontSize="15px">
           {entityName}
@@ -119,4 +119,4 @@ const CornerWidgetComponent = ({ id, type, orgName, podName, handleClose }: Corn
   );
 };
 
-export default CornerWidgetComponent;
+export default CornerWidget;

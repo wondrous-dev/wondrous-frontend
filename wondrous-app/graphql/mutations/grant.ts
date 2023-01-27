@@ -7,8 +7,10 @@ export const CREATE_GRANT = gql`
       id
       org {
         name
+        username
       }
       pod {
+        id
         name
       }
     }

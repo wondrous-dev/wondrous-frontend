@@ -29,7 +29,7 @@ import SidebarLayout from 'components/Common/Layout';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import * as snippet from '@segment/snippet';
-import CornerWidgetProvider from 'components/Common/CornerWidget';
+import { CornerWidgetProvider } from 'components/Common/CornerWidget';
 
 declare global {
   interface Window {
