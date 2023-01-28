@@ -29,6 +29,7 @@ import SidebarLayout from 'components/Common/Layout';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import * as snippet from '@segment/snippet';
+import { CornerWidgetProvider } from 'components/Common/CornerWidget';
 
 declare global {
   interface Window {
@@ -111,18 +112,20 @@ function MyApp({ Component, pageProps }) {
             <CssBaseline />
             <ApolloProvider client={apollo}>
               <SnackbarAlertProvider>
-                <Web3ReactProvider getLibrary={getLibrary}>
-                  <WonderWeb3Provider>
-                    <HotkeyContext.Provider value={showHotkeys}>
-                      <NavigationProgress />
-                      <SidebarLayout>
-                        <OnboardingTour>
-                          <Layout Component={Component} pageProps={pageProps} />
-                        </OnboardingTour>
-                      </SidebarLayout>
-                    </HotkeyContext.Provider>
-                  </WonderWeb3Provider>
-                </Web3ReactProvider>
+                <CornerWidgetProvider>
+                  <Web3ReactProvider getLibrary={getLibrary}>
+                    <WonderWeb3Provider>
+                      <HotkeyContext.Provider value={showHotkeys}>
+                        <NavigationProgress />
+                        <SidebarLayout>
+                          <OnboardingTour>
+                            <Layout Component={Component} pageProps={pageProps} />≈
+                          </OnboardingTour>
+                        </SidebarLayout>
+                      </HotkeyContext.Provider>
+                    </WonderWeb3Provider>
+                  </Web3ReactProvider>
+                </CornerWidgetProvider>
               </SnackbarAlertProvider>
             </ApolloProvider>
           </ThemeProvider>

@@ -230,6 +230,7 @@ function BatchWalletPayment(props) {
       } else if (e.message.includes('User denied message')) {
         setSigningError(`User denied signature`);
       } else {
+        console.error(e);
         setSigningError(`Error signing transaction`);
       }
       setGnosisTransactionLoading(false);
