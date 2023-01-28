@@ -1,10 +1,8 @@
 import Snackbar from '@mui/material/Snackbar';
-import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import { CornerWidgetContext } from 'utils/contexts';
-import { CornerWidgetProps } from './CornerWidget';
+import CornerWidget, { CornerWidgetProps } from './CornerWidget';
 
-const CornerWidgetComponent = dynamic(() => import('./CornerWidget'), { ssr: false, suspense: false });
 
 type CornerWidgetState = Omit<CornerWidgetProps, 'handleClose'> | null;
 
@@ -26,7 +24,7 @@ const CornerWidgetProvider = ({ children }) => {
         onClose={handleClose}
         autoHideDuration={6000}
       >
-        <div>{open && <CornerWidgetComponent handleClose={handleClose} {...value} />}</div>
+        <div>{open && <CornerWidget handleClose={handleClose} {...value} />}</div>
       </Snackbar>
       {children}
     </CornerWidgetContext.Provider>
