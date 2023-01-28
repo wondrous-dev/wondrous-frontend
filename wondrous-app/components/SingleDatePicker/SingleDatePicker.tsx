@@ -229,9 +229,10 @@ function SingleDatePicker({
                       e.preventDefault();
                       e.stopPropagation();
                       // setAnchorEl(null);
-                      if (!isOpen) {
-                        handleClose?.();
-                      }
+                      // if (!isOpen) {
+                      //   handleClose?.();
+                      // }
+                      handleClose?.();
                       setIsOpen(false);
                     }}
                   >
@@ -275,19 +276,15 @@ function SingleDatePicker({
                   value={startDateString}
                   InputProps={{
                     readOnly: true,
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={reset}>
-                          <CloseModalIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
                   }}
-                  fullWidth
                   placeholder="Due Date"
                   sx={styles.darkTextfield}
                 />
+                <IconButton onClick={reset}>
+                  <CloseModalIcon />
+                </IconButton>
               </Box>
+
               <DayPickerSingleDateController
                 date={date}
                 initialDate={date}

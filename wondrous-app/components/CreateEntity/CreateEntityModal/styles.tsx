@@ -1013,7 +1013,6 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
                 padding: 0;
               }
               > .MuiOutlinedInput-root {
-                background: #141414;
                 height: 32px;
                 font-size: 13px;
                 font-weight: 500;
