@@ -1,125 +1,16 @@
 import { useMutation } from '@apollo/client';
-import { Grid } from '@mui/material';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import TaskViewModalAutocomplete, { ProfilePicture } from 'components/Common/TaskViewModalAutocomplete';
-import { StyledTextField } from 'components/Common/TaskViewModalAutocomplete/styles';
+import TaskViewModalAutocomplete from 'components/Common/TaskViewModalAutocomplete';
 import { useGetEligibleReviewers } from 'components/CreateEntity/CreateEntityModal/Helpers';
-import CloseModalIcon from 'components/Icons/closeModal';
-import EditIcon from 'components/Icons/editIcon';
 import PlusIcon from 'components/Icons/plus';
 import { UPDATE_TASK_REVIEWERS } from 'graphql/mutations';
 import { isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
-import { useContext, useMemo, useRef, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import palette from 'theme/palette';
-import { useOutsideAlerter } from 'utils/hooks';
 import { TaskSectionLabel } from '../helpers';
-import {
-  AddButtonGrid,
-  AddReviewerButton,
-  ReviewerWrapper,
-  TaskSectionDisplayDiv,
-  ViewFieldContainer,
-  ViewFieldWrapper,
-} from '../styles';
-import { UserChip } from '../taskViewModalFields';
-
-export const Field = ({
-  option,
-  canEdit,
-  options,
-  onDelete,
-  selfUser,
-  onSelect,
-  onAssignToSelf,
-  renderInputProps = {},
-}) => {
-  const [isEditMode, setIsEditMode] = useState(false);
-
-  const ref = useRef();
-
-  const handleClick = () => {
-    if (canEdit) setIsEditMode((prev) => !prev);
-  };
-
-  useOutsideAlerter(ref, () => {
-    setIsEditMode(false);
-  });
-
-  const defaultValue = {
-    id: option?.id,
-    label: option?.username,
-    profilePicture: option?.profilePicture,
-  };
-
-  return (
-    <ViewFieldContainer isEditMode={isEditMode} ref={isEditMode ? ref : null}>
-      {isEditMode ? (
-        <TaskViewModalAutocomplete
-          options={options}
-          closeAction={handleClick}
-          defaultValue={defaultValue}
-          renderInput={(params) => (
-            <StyledTextField
-              {...params}
-              autoFocus
-              sx={{
-                '.MuiOutlinedInput-root': {
-                  paddingRight: '4px !important',
-                },
-              }}
-              placeholder="Assign user"
-              InputProps={{
-                ...params.InputProps,
-                ...(params.inputProps.value === defaultValue.label
-                  ? {
-                      endAdornment: (
-                        <CloseModalIcon
-                          style={{
-                            cursor: 'pointer',
-                          }}
-                          onClick={() => {
-                            onDelete();
-                            setIsEditMode(false);
-                          }}
-                        />
-                      ),
-                      startAdornment: (
-                        <Grid sx={{ marginRight: '6px' }}>
-                          <ProfilePicture profilePicture={defaultValue.profilePicture} />
-                        </Grid>
-                      ),
-                    }
-                  : {}),
-              }}
-              {...renderInputProps}
-            />
-          )}
-          onChange={(_, value, reason) => {
-            if (reason === 'selectOption') {
-              onSelect(value);
-              setIsEditMode(false);
-            }
-          }}
-          ListboxProps={{
-            AssignToSelfProps: {
-              user: selfUser,
-              onClick: () => {
-                onAssignToSelf();
-                onDelete();
-              },
-            },
-          }}
-        />
-      ) : (
-        <ViewFieldWrapper key={option.id} canEdit={canEdit} onClick={handleClick}>
-          <UserChip user={option} />
-          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-        </ViewFieldWrapper>
-      )}
-    </ViewFieldContainer>
-  );
-};
+import { AddButtonGrid, AddReviewerButton, ReviewerWrapper, TaskSectionDisplayDiv } from '../styles';
+import { Field } from './Shared';
 
 export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdit = false, fetchedTask, user }) {
   const router = useRouter();
@@ -166,7 +57,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
   return (
     <TaskSectionDisplayDiv alignItems="start">
       <TaskSectionLabel>Reviewer</TaskSectionLabel>
-      <ReviewerWrapper showAutocomplete={showAutocomplete}>
+      <ReviewerWrapper showFullWidth={showAutocomplete}>
         {withTaskReviewers
           ? taskReviewers.map((taskReviewer) => (
               <Field

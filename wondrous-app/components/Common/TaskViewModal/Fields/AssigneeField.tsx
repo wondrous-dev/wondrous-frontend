@@ -11,7 +11,7 @@ import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoTakeTask, TaskSectionInfoTakeTaskText } from '../styles';
 import { useUpdateTaskCardCache } from '../utils';
-import { Field } from './ReviewerField';
+import { Field } from './Shared';
 
 const AssigneeContent = ({
   boardColumns,
@@ -135,7 +135,6 @@ const AssigneeField = ({
     setSnackbarAlertOpen(true);
     setSnackbarAlertMessage('Assignee updated successfully.');
   };
-  console.log(canEdit, 'CAN EDIT', canClaim);
   if (!shouldDisplay) return null;
   return (
     <TaskSectionDisplayDiv>

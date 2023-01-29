@@ -101,25 +101,23 @@ import {
   TaskSectionInfoTextCreator,
   TaskStatusHeaderText,
 } from './styles';
-import {
-  ApplicationField,
-  CategoryField,
-  InitativesField,
-  MilestoneField,
-  PointsField,
-  PriorityField,
-  ProposerField,
-  TagsField,
-} from './taskViewModalFields';
-import WatchersField from './taskViewModalFields/WatchersField';
+import { ApplicationField, InitativesField, ProposerField } from './taskViewModalFields';
+import WatchersField from './Fields/WatchersField';
 import TaskViewModalFooter from './taskViewModalFooter';
 import { hasGR15DEIIntiative, openSnapshot } from './utils';
 import TaskViewNft from '../TaskViewNft';
 import ViewNftFields from '../TaskMint/ViewNftFields';
-import ReviewerField from './taskViewModalFields/ReviewerField';
-import AssigneeField from './taskViewModalFields/AssigneeField';
-import DueDateField from './taskViewModalFields/DueDateField';
-import Rewards from './taskViewModalFields/RewardsField';
+import {
+  ReviewerField,
+  AssigneeField,
+  DueDateField,
+  RewardsField,
+  PointsField,
+  MilestoneField,
+  PriorityField,
+  CategoryField,
+  TagsField,
+} from './Fields';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -742,20 +740,25 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               recurringSchema={fetchedTask?.recurringSchema}
                               shouldUnclaimOnDueDateExpiry={fetchedTask?.shouldUnclaimOnDueDateExpiry}
                             />
-                            <Rewards fetchedTask={fetchedTask} user={user} />
-                            <PointsField shouldDisplay={!!fetchedTask?.points} points={fetchedTask?.points} />
+                            <RewardsField fetchedTask={fetchedTask} user={user} canEdit={canEdit} />
+                            <PointsField
+                              shouldDisplay={!!fetchedTask?.points}
+                              points={fetchedTask?.points}
+                              canEdit={canEdit}
+                            />
                             <MilestoneField
                               shouldDisplay={!!fetchedTask?.milestoneId}
                               milestoneId={fetchedTask?.milestoneId}
                               getTaskById={getTaskById}
+                              canEdit={canEdit}
+                              isSubtask={isSubtask}
+                              orgId={fetchedTask?.orgId}
+                              podId={fetchedTask?.podId}
                               milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
                             />
-                            <PriorityField priority={fetchedTask?.priority} />
-                            <CategoryField
-                              shouldDisplay={remaininTaskCategories?.length > 0}
-                              labels={remaininTaskCategories}
-                            />
-                            <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
+                            <PriorityField priority={fetchedTask?.priority} canEdit={canEdit} />
+                            <CategoryField labels={remaininTaskCategories} canEdit={canEdit} />
+                            <TagsField canEdit={canEdit} labels={fetchedTask?.labels} orgId={fetchedTask?.orgId} />
                             <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                             {isTaskProposal && (
                               <CreateFormFooterButtons>

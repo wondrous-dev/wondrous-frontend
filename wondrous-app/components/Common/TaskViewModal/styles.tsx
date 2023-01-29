@@ -507,6 +507,9 @@ export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
 
 export const TaskSectionInfoTextMilestone = styled(TaskSectionInfoText)`
   cursor: pointer;
+  :hover {
+    text-decoration: underline;
+  }
 `;
 
 export const TaskSectionInfoTextUnderlined = styled(TaskSectionDisplayText)`
@@ -980,7 +983,7 @@ export const ReviewerWrapper = styled.div`
   width: 100%;
   &:hover {
     > div:nth-last-child(2) {
-      width: ${({ showAutocomplete }) => (showAutocomplete ? `` : `calc(100% - 40px);`)};
+      width: ${({ showFullWidth }) => (showFullWidth ? `` : `calc(100% - 40px);`)};
     }
     ${ViewFieldWrapper} {
       width: 100%;

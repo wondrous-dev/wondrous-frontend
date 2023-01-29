@@ -25,7 +25,15 @@ import {
   MilestoneSearchWrapper,
 } from './styles';
 
-function MilestoneSearch({ options, onChange, value, handleClose, formValues = null, disabled, autoFocus = false }) {
+function MilestoneSearch({
+  options,
+  onChange,
+  value,
+  handleClose,
+  formValues = null,
+  disabled = false,
+  autoFocus = false,
+}) {
   const [createMilestone, setCreateMilestone] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 

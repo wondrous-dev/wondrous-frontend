@@ -1,4 +1,3 @@
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
@@ -6,9 +5,6 @@ import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15
 import TaskPriority from 'components/Common/TaskPriority';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import palette from 'theme/palette';
-import { Typography } from '@mui/material';
-import typography from 'theme/typography';
 import { TaskSectionImageContent, TaskSectionLabel } from './helpers';
 import {
   ActionButton,
@@ -21,16 +17,6 @@ import {
   TaskSectionInfoTextMilestone,
   TaskSectionTagWrapper,
 } from './styles';
-import { UserProfilePicture } from '../ProfilePictureHelpers';
-
-export const UserChip = ({ user }) => (
-  <Grid display="flex" gap="6px" alignItems="center">
-    <UserProfilePicture avatar={user?.profilePicture} />
-    <Typography color={palette.white} fontWeight={500} fontSize="13px" fontFamily={typography.fontFamily}>
-      {user?.username}
-    </Typography>
-  </Grid>
-);
 
 interface ApplicationFieldProps {
   shouldDisplay: boolean;
