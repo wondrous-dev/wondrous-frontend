@@ -15,7 +15,7 @@ const ButtonWrapper = styled.div`
   min-height: ${(props) => props.height || 40}px;
   min-width: ${(props) => props.minWidth || 0}px;
   padding: 1px;
-  width: ${(props) => (props.fullWidth ? '100%' : props.width ? `${props.width}px` : 'auto')};
+  width: ${(props) => (props.fullWidth ? '100%' : props.width || 'auto')};
 `;
 
 const ButtonInner = styled.button`
