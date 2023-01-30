@@ -67,7 +67,6 @@ function Docs(props) {
   const { podData = {} } = props;
   const { id: podId } = podData;
   const router = useRouter();
-
   const { docData, categoriesData } = useGetPodDocs(podId);
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);

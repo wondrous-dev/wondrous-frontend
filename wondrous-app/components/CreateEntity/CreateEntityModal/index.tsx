@@ -162,6 +162,7 @@ import {
   ProposalVoteSelect,
   ProposalVoteSelectMenuItem,
   ProposalVoteSelectMenuItemText,
+  CreateEntityFooter,
 } from './styles';
 
 import { MediaItem } from '../MediaItem';
@@ -1804,7 +1805,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           )} */}
         </TaskTemplatePickerWrapper>
       </CreateEntityBody>
-      <CreateEntityHeader>
+      <CreateEntityFooter>
         <CreateEntityHeaderWrapper showOnSmallScreen>
           <CreateEntityAttachment showOnSmallScreen onClick={() => inputRef.current.click()}>
             <CreateEntityAttachmentIcon />
@@ -1854,7 +1855,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             </>
           )}
         </CreateEntityHeaderWrapper>
-      </CreateEntityHeader>
+      </CreateEntityFooter>
     </CreateEntityForm>
   );
 }

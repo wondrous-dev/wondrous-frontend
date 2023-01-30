@@ -758,7 +758,7 @@ export const gridMobileStyles = {
 };
 
 export const TABS_LABELS = {
-  DAOS: 'orgs',
+  ORGS: 'orgs',
   BOUNTY: 'bounty',
   GR15_DEI: 'gr15_dei',
 };

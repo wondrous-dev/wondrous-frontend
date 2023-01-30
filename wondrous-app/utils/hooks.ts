@@ -38,6 +38,7 @@ import {
   TaskContext,
   PageDataContext,
   ProjectContext,
+  CornerWidgetContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
 
@@ -130,6 +131,8 @@ export const useTokenGatingCondition = (): {
   closeTokenGatingModal: () => void;
   selectedTokenGatingCondition: TokenGatingCondition;
 } => useContext(TokenGatingContext);
+
+export const useCornerWidget = () => useContext(CornerWidgetContext);
 
 /**
  * Hook that alerts clicks outside of the passed ref

@@ -84,6 +84,7 @@ export const blueColors = {
   blue10: '#D8EEFC',
   blue20: '#CCBBFF',
   blue30: '#8fe1ff',
+  blue40: '#62D4FF',
   blue90: '#30c7ff',
   blue100: '#00a2ff',
   blue200: '#00B7FF',

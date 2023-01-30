@@ -48,7 +48,15 @@ import {
   transformTaskToTaskCard,
   cutString,
 } from 'utils/helpers';
-import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useGlobalContext } from 'utils/hooks';
+import {
+  useCanViewTask,
+  useColumns,
+  useOrgBoard,
+  usePodBoard,
+  useUserBoard,
+  useGlobalContext,
+  useIsMobile,
+} from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
 import TaskMintComponent from 'components/Common/TaskMint';
@@ -184,6 +192,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const [initialStatus, setInitialStatus] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isViewNft, setIsViewNft] = useState(!!router?.query?.viewNft);
+  const isMobile = useIsMobile();
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
@@ -362,6 +371,12 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     }
   }, [router?.query?.viewNft]);
 
+  useEffect(() => {
+    if (isMobile) {
+      setFullScreen(false);
+    }
+  }, [isMobile]);
+
   if (editTask) {
     return (
       <CreateEntity
@@ -531,6 +546,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       };
       return newCategory;
     });
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{

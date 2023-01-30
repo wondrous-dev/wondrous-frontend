@@ -153,6 +153,11 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
   );
 }
 
+interface OrgUser {
+  value: string;
+  label?: string;
+  profilePicture?: string;
+}
 const AssigneeDefaultContent = ({
   boardColumns,
   canApply,
@@ -172,7 +177,11 @@ const AssigneeDefaultContent = ({
   useEffect(() => {
     if (inView) fetchMoreOrgUsers();
   }, [fetchMoreOrgUsers, inView]);
-  const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).filter(({ value }) => value !== user?.id);
+  const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).map((orgUser: OrgUser) => ({
+    ...orgUser,
+    hide: orgUser?.value === user?.id,
+  }));
+
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   const handleUpdateTaskAssignee = (assigneeId) => {
     updateTaskAssignee({
