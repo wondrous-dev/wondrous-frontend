@@ -736,7 +736,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             />
                             <DueDateField
                               dueDate={fetchedTask?.dueDate}
-                              shouldDisplay={fetchedTask?.dueDate}
                               recurringSchema={fetchedTask?.recurringSchema}
                               shouldUnclaimOnDueDateExpiry={fetchedTask?.shouldUnclaimOnDueDateExpiry}
                             />

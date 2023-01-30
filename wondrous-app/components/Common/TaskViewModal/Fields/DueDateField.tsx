@@ -36,7 +36,7 @@ const DueDateFieldContent = ({ recurringSchema, dueDate, canEdit, toggleEditMode
   </ViewFieldWrapper>
 );
 
-const EditableFieldContent = ({ recurringSchema, dueDate, toggleEditMode }) => {
+const EditableFieldContent = ({ recurringSchema, dueDate, toggleMode }) => {
   const initialRecurrenceValue =
     recurringSchema?.daily || recurringSchema?.weekly || recurringSchema?.monthly || recurringSchema?.periodic;
 
@@ -56,7 +56,7 @@ const EditableFieldContent = ({ recurringSchema, dueDate, toggleEditMode }) => {
       setRecurrenceValue={setRecurrenceValue}
       hideRecurring={false}
       handleClose={() => {
-        toggleEditMode();
+        toggleMode();
         setRecurrenceType(null);
         setRecurrenceValue(null);
       }}
@@ -67,30 +67,30 @@ const EditableFieldContent = ({ recurringSchema, dueDate, toggleEditMode }) => {
   );
 };
 
-const DueDateField = ({ shouldDisplay, dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry, canEdit = true }) => {
-  if (!shouldDisplay) return null;
-
-  return (
-    <>
-      <TaskSectionDisplayDiv>
-        <TaskSectionLabel>Due Date</TaskSectionLabel>
-        <TaskFieldEditableContent
-          ViewContent={({ toggleEditMode }) => (
-            <DueDateFieldContent
-              toggleEditMode={toggleEditMode}
-              recurringSchema={recurringSchema}
-              dueDate={dueDate}
-              canEdit={canEdit}
-            />
-          )}
-          EditableContent={({ toggleEditMode }) => (
-            <EditableFieldContent toggleEditMode={toggleEditMode} recurringSchema={recurringSchema} dueDate={dueDate} />
-          )}
-        />
-      </TaskSectionDisplayDiv>
-      {shouldUnclaimOnDueDateExpiry && <InfoPoint>Assignee will be removed once the task is past due date</InfoPoint>}
-    </>
-  );
-};
+const DueDateField = ({ dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry, canEdit = true }) => (
+  <>
+    <TaskSectionDisplayDiv>
+      <TaskSectionLabel>Due Date</TaskSectionLabel>
+      <TaskFieldEditableContent
+        ViewContent={({ toggleEditMode }) => (
+          <DueDateFieldContent
+            toggleEditMode={toggleEditMode}
+            recurringSchema={recurringSchema}
+            dueDate={dueDate}
+            canEdit={canEdit}
+          />
+        )}
+        AddContent={({ toggleAddMode }) => (
+          <EditableFieldContent toggleMode={toggleAddMode} recurringSchema={null} dueDate={null} />
+        )}
+        canAddItem={!dueDate && canEdit}
+        EditableContent={({ toggleEditMode }) => (
+          <EditableFieldContent toggleMode={toggleEditMode} recurringSchema={recurringSchema} dueDate={dueDate} />
+        )}
+      />
+    </TaskSectionDisplayDiv>
+    {shouldUnclaimOnDueDateExpiry && <InfoPoint>Assignee will be removed once the task is past due date</InfoPoint>}
+  </>
+);
 
 export default DueDateField;

@@ -4,7 +4,10 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import CloseModalIcon from 'components/Icons/closeModal';
 import SearchIcon from 'components/Icons/search';
 import { Arrow } from 'components/Icons/sections';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import palette from 'theme/palette';
+import { LoadMore } from 'components/SearchTasks/styles';
 import { CloseIcon } from '../BoardFilters/styles';
 import { ArrowWrapper, Option, PaperComponent, StyledAutocomplete, StyledTextField } from './styles';
 
@@ -28,7 +31,7 @@ export const ProfilePicture = ({ profilePicture, width = 24, height = 24 }) => (
   />
 );
 
-const RenderOption = (props, option) => {
+export const RenderOption = (props, option) => {
   const { profilePicture, label, hide } = option || {};
   if (hide) return null;
   return (
@@ -59,13 +62,29 @@ const AssignToSelf = ({ user, onClick }) => {
   );
 };
 
-const ListboxComponent = ({ AssignToSelfProps, innerRef, children, ...props }) => (
-  <ul {...props}>
-    <AssignToSelf {...AssignToSelfProps} />
-    {children}
-    <Box height="1px" width="100%" ref={innerRef} />
-  </ul>
-);
+export const ListboxComponent = ({
+  AssignToSelfProps,
+  innerRef,
+  children,
+  hasMore = false,
+  handleFetchMore,
+  ...props
+}) => {
+  const [inViewRef, inView] = useInView({});
+
+  useEffect(() => {
+    if (hasMore && inView) handleFetchMore();
+  }, [hasMore, inView]);
+
+  return (
+    <ul {...props}>
+      <AssignToSelf {...AssignToSelfProps} />
+      {children}
+      {!!handleFetchMore && <LoadMore ref={inViewRef} style={{ height: '1px', display: 'block' }} />}
+      <Box height="1px" width="100%" ref={innerRef} />
+    </ul>
+  );
+};
 
 const TaskViewModalAutocomplete = ({
   renderInputProps = null,

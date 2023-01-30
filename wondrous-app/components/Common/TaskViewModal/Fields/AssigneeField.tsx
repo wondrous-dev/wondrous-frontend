@@ -5,13 +5,18 @@ import { filterOrgUsers, useGetOrgUsers } from 'components/CreateEntity/CreateEn
 import { Claim } from 'components/Icons/claimTask';
 import { REMOVE_TASK_ASSIGNEE, UPDATE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
 import { useRouter } from 'next/router';
-import { useContext, useEffect } from 'react';
-import { useInView } from 'react-intersection-observer';
+import { useContext } from 'react';
 import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoTakeTask, TaskSectionInfoTakeTaskText } from '../styles';
 import { useUpdateTaskCardCache } from '../utils';
-import { Field } from './Shared';
+import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
+
+interface OrgUser {
+  value: string;
+  label?: string;
+  profilePicture?: string;
+}
 
 const AssigneeContent = ({
   boardColumns,
@@ -25,16 +30,15 @@ const AssigneeContent = ({
   updateProposalItem,
   user,
 }) => {
-  const [ref, inView] = useInView({});
   const router = useRouter();
   const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
-  const { data: orgUsersData, search, fetchMoreOrgUsers } = useGetOrgUsers(fetchedTask?.orgId);
+  const { data: orgUsersData, search, fetchMoreOrgUsers, hasMoreOrgUsers } = useGetOrgUsers(fetchedTask?.orgId);
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
 
-  useEffect(() => {
-    if (inView) fetchMoreOrgUsers();
-  }, [fetchMoreOrgUsers, inView]);
-  const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).filter(({ value }) => value !== user?.id);
+  const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).map((orgUser: OrgUser) => ({
+    ...orgUser,
+    hide: orgUser?.value === user?.id,
+  }));
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   const handleUpdateTaskAssignee = (assigneeId) => {
     updateTaskAssignee({
@@ -86,28 +90,70 @@ const AssigneeContent = ({
 
   if (fetchedTask?.assigneeId) {
     return (
-      <Field
-        option={{
-          ...fetchedTask?.assignee,
-          id: fetchedTask?.assigneeId,
-        }}
-        canEdit={canEdit}
-        options={filteredOrgUsersData}
-        onDelete={() =>
-          removeTaskAssignee({
-            variables: {
-              taskId: fetchedTask?.id,
-            },
-          })
-        }
-        selfUser={user}
-        onSelect={(value) => handleUpdateTaskAssignee(value?.value)}
-        onAssignToSelf={() => handleUpdateTaskAssignee(user?.id)}
-        renderInputProps={{
-          onChange: (e) => search(e.target.value),
-        }}
+      <TaskFieldEditableContent
+        ViewContent={({ toggleEditMode }) => (
+          <AssigneeReviewerViewContent
+            canEdit={canEdit}
+            option={{
+              ...fetchedTask?.assignee,
+              value: fetchedTask?.assigneeId,
+            }}
+            toggleEditMode={toggleEditMode}
+          />
+        )}
+        EditableContent={({ toggleEditMode }) => (
+          <ReviewerAssigneeAutocomplete
+            options={filteredOrgUsersData}
+            currentOption={{
+              ...fetchedTask.assignee,
+              value: fetchedTask.assigneeId,
+              label: fetchedTask.assignee?.username,
+            }}
+            listBoxProps={{
+              handleFetchMore: fetchMoreOrgUsers,
+              hasMore: hasMoreOrgUsers,
+            }}
+            onDelete={() => {
+              removeTaskAssignee({
+                variables: {
+                  taskId: fetchedTask?.id,
+                },
+              });
+              toggleEditMode();
+            }}
+            assignToSelfUser={user}
+            onAssignToSelfClick={() => console.log('on assign to self click')}
+            onChange={(value) => {
+              search(value);
+              console.log('on change', value);
+            }}
+          />
+        )}
       />
     );
+    // return (
+    //   <Field
+    //     option={{
+    //       ...fetchedTask?.assignee,
+    //       id: fetchedTask?.assigneeId,
+    //     }}
+    //     canEdit={canEdit}
+    //     options={filteredOrgUsersData}
+    //     onDelete={() =>
+    //       removeTaskAssignee({
+    //         variables: {
+    //           taskId: fetchedTask?.id,
+    //         },
+    //       })
+    //     }
+    //     selfUser={user}
+    //     onSelect={(value) => handleUpdateTaskAssignee(value?.value)}
+    //     onAssignToSelf={() => handleUpdateTaskAssignee(user?.id)}
+    //     renderInputProps={{
+    //       onChange: (e) => search(e.target.value),
+    //     }}
+    //   />
+    // );
   }
   return null;
 };

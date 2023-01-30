@@ -151,7 +151,7 @@ export const useTokenGatingCondition = (): {
 /**
  * Hook that alerts clicks outside of the passed ref
  */
-export const useOutsideAlerter = (ref, callback) => {
+export const useOutsideAlerter = (ref, callback, dependencies = []) => {
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
@@ -168,7 +168,7 @@ export const useOutsideAlerter = (ref, callback) => {
       // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [ref]);
+  }, [ref, ...dependencies]);
 };
 
 function usePrevious(value) {

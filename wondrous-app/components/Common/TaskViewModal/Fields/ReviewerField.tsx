@@ -1,7 +1,11 @@
 import { useMutation } from '@apollo/client';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import TaskViewModalAutocomplete from 'components/Common/TaskViewModalAutocomplete';
 import { useGetEligibleReviewers } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import {
+  CreateEntityLabelAddButton,
+  CreateEntityAddButtonIcon,
+  CreateEntityAddButtonLabel,
+} from 'components/CreateEntity/CreateEntityModal/styles';
 import PlusIcon from 'components/Icons/plus';
 import { UPDATE_TASK_REVIEWERS } from 'graphql/mutations';
 import { isEmpty } from 'lodash';
@@ -10,10 +14,9 @@ import { useContext, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import { AddButtonGrid, AddReviewerButton, ReviewerWrapper, TaskSectionDisplayDiv } from '../styles';
-import { Field } from './Shared';
+import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
 
 export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdit = false, fetchedTask, user }) {
-  const router = useRouter();
   const eligibleReviewers = useGetEligibleReviewers(fetchedTask?.orgId, fetchedTask?.podId);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
   const [showAutocomplete, setShowAutocomplete] = useState(false);
@@ -34,135 +37,79 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
   const taskReviewerIds = taskReviewers?.map(({ id }) => id);
 
   const filteredEligibleReviewers = useMemo(
-    () => eligibleReviewers.filter(({ id }) => !taskReviewerIds?.includes(id) && id !== user?.id),
+    () =>
+      eligibleReviewers.map((reviewer) => ({
+        ...reviewer,
+        value: reviewer.id,
+        hide: taskReviewerIds.includes(reviewer.id) || reviewer.id === user?.id,
+      })),
     [eligibleReviewers, taskReviewerIds, user?.id]
   );
 
   const showAutocompleteField = canEdit && (showAutocomplete || !withTaskReviewers);
-  const showNone = !canEdit && !withTaskReviewers;
   const showAddButton =
     canEdit &&
     withTaskReviewers &&
     withTaskReviewers < eligibleReviewers?.length &&
     !isEmpty(filteredEligibleReviewers);
   const selfReviewer = !taskReviewerIds?.includes(user?.id) && user;
-  const handleOnClick = (username) => () => {
-    handleClose();
-    router.push(`/profile/${username}/about`);
-  };
 
   if (!shouldDisplay) {
     return null;
   }
+
   return (
     <TaskSectionDisplayDiv alignItems="start">
       <TaskSectionLabel>Reviewer</TaskSectionLabel>
-      <ReviewerWrapper showFullWidth={showAutocomplete}>
+      <ReviewerWrapper showFullWidth>
         {withTaskReviewers
-          ? taskReviewers.map((taskReviewer) => (
-              <Field
-                option={taskReviewer}
-                canEdit={canEdit}
-                options={filteredEligibleReviewers}
-                selfUser={selfReviewer}
-                onSelect={(value) =>
-                  handleUpdateReviewers([...taskReviewerIds, value?.id].filter((id) => id !== taskReviewer.id))
-                }
-                onAssignToSelf={() => handleUpdateReviewers([...taskReviewerIds, user?.id])}
-                onDelete={() => handleUpdateReviewers(taskReviewerIds.filter((id) => id !== taskReviewer.id))}
+          ? taskReviewers.map((taskReviewer, index) => (
+              <TaskFieldEditableContent
+                ViewContent={({ toggleEditMode }) => (
+                  <AssigneeReviewerViewContent canEdit={canEdit} option={taskReviewer} toggleEditMode={toggleEditMode}>
+                    {showAddButton && !showAutocomplete && index === taskReviewerIds?.length - 1 && (
+                      <AddButtonGrid item container width="max-content">
+                        <AddReviewerButton onClick={() => setShowAutocomplete(!showAutocomplete)}>
+                          <PlusIcon fill={palette.white} />
+                        </AddReviewerButton>
+                      </AddButtonGrid>
+                    )}
+                  </AssigneeReviewerViewContent>
+                )}
+                EditableContent={({ toggleEditMode }) => (
+                  <ReviewerAssigneeAutocomplete
+                    options={filteredEligibleReviewers}
+                    currentOption={{
+                      ...taskReviewer,
+                      value: taskReviewer.id,
+                      label: taskReviewer.username,
+                    }}
+                    assignToSelfUser={selfReviewer}
+                    onAssignToSelfClick={() => console.log('on assign to self click')}
+                    onChange={(value) => console.log('on change')}
+                    onDelete={() => handleUpdateReviewers(taskReviewerIds.filter((id) => id !== taskReviewer.id))}
+                  />
+                )}
               />
             ))
           : null}
-        {showAutocomplete ? (
-          <TaskViewModalAutocomplete
+        {showAutocomplete && canEdit ? (
+          <ReviewerAssigneeAutocomplete
             options={filteredEligibleReviewers}
-            closeAction={() => setShowAutocomplete(false)}
-            onChange={(_, value, reason) => {
-              if (reason === 'selectOption') {
-                handleUpdateReviewers([...taskReviewerIds, value?.id]);
-              }
-            }}
-            ListboxProps={{
-              AssignToSelfProps: {
-                user: selfReviewer,
-                onClick: () => handleUpdateReviewers([...taskReviewerIds, user?.id]),
-              },
-            }}
+            currentOption={null}
+            assignToSelfUser={selfReviewer}
+            onAssignToSelfClick={() => console.log('on assign to self click')}
+            onChange={(value) => handleUpdateReviewers([...taskReviewerIds, value?.id])}
+            onDelete={() => setShowAutocomplete(false)}
           />
         ) : null}
-        {showAddButton && !showAutocomplete && (
-          <AddButtonGrid item container width="max-content">
-            <AddReviewerButton onClick={() => setShowAutocomplete(!showAutocomplete)}>
-              <PlusIcon fill={palette.white} />
-            </AddReviewerButton>
-          </AddButtonGrid>
-        )}
-        {/* <Grid item width="100%">
-          <TaskViewModalAutocomplete
-            options={filteredEligibleReviewers}
-            onChange={(_, value, reason) => {
-              if (reason === 'selectOption') {
-                handleUpdateReviewers([...taskReviewerIds, value?.id]);
-              }
-            }}
-            ListboxProps={{
-              AssignToSelfProps: {
-                user: selfReviewer,
-                onClick: () => handleUpdateReviewers([...taskReviewerIds, user?.id]),
-              },
-            }}
-          />
-        </Grid> */}
+        {!taskReviewerIds?.length && !showAutocomplete && canEdit ? (
+          <CreateEntityLabelAddButton onClick={() => setShowAutocomplete(true)} data-cy="button-add-assignee">
+            <CreateEntityAddButtonIcon />
+            <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+          </CreateEntityLabelAddButton>
+        ) : null}
       </ReviewerWrapper>
-
-      {/* <TaskSectionDisplayContentWrapper>
-          <ReviewerWrapper showAddButton={showAddButton}>
-            {withTaskReviewers &&
-              taskReviewers.map((taskReviewer) => (
-                <Grid key={taskReviewer.id} item container width="100%">
-                  <TaskSectionImageContent
-                    hasContent={taskReviewer.id}
-                    ContentComponent={TaskViewModalUserChip}
-                    ContentComponentProps={{
-                      user: taskReviewer,
-                      handleRemove: (e) => {
-                        e.stopPropagation();
-                        handleUpdateReviewers(taskReviewerIds.filter((id) => id !== taskReviewer.id));
-                      },
-                      canEdit,
-                      onClick: handleOnClick(taskReviewer?.username),
-                    }}
-                  />
-                </Grid>
-              ))}
-            {showAutocompleteField && (
-              <Grid item width="100%">
-                <TaskViewModalAutocomplete
-                  options={filteredEligibleReviewers}
-                  onChange={(_, value, reason) => {
-                    if (reason === 'selectOption') {
-                      handleUpdateReviewers([...taskReviewerIds, value?.id]);
-                    }
-                  }}
-                  ListboxProps={{
-                    AssignToSelfProps: {
-                      user: selfReviewer,
-                      onClick: () => handleUpdateReviewers([...taskReviewerIds, user?.id]),
-                    },
-                  }}
-                />
-              </Grid>
-            )}
-            {showNone && <TaskSectionInfoText>None</TaskSectionInfoText>}
-            {showAddButton && (
-              <Grid item container width="max-content">
-                <AddReviewerButton onClick={() => setShowAutocomplete(!showAutocomplete)}>
-                  <PlusIcon fill={palette.white} />
-                </AddReviewerButton>
-              </Grid>
-            )}
-          </ReviewerWrapper>
-        </TaskSectionDisplayContentWrapper> */}
     </TaskSectionDisplayDiv>
   );
 }

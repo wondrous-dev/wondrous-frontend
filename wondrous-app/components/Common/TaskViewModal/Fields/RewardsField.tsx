@@ -6,8 +6,11 @@ import {
   useGetPaymentMethods,
 } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
+  CreateEntityAddButtonIcon,
+  CreateEntityAddButtonLabel,
   CreateEntityAutocompletePopperRenderInputAdornment,
   CreateEntityAutocompletePopperRenderInputIcon,
+  CreateEntityLabelAddButton,
   CreateEntityPaymentMethodOption,
   CreateEntityPaymentMethodSelect,
   CreateEntityPaymentMethodSelected,
@@ -17,7 +20,9 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
 import { isEmpty } from 'lodash';
+import { useState, useRef } from 'react';
 import palette from 'theme/palette';
+import { useOutsideAlerter } from 'utils/hooks';
 import { ConnectToWallet, TaskSectionLabel } from '../helpers';
 import {
   TaskSectionDisplayDiv,
@@ -31,16 +36,17 @@ import { TaskFieldEditableContent } from './Shared';
 const CreateReward = ({ orgId, paymentMethodId, rewardAmount, toggleEditMode }) => {
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
   const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
-
+  // [{ rewardAmount: '', paymentMethodId: activePaymentMethods?.[0]?.id }]
   return (
     <CreateEntityWrapper>
       <CreateEntityPaymentMethodSelect
         name="rewards-payment-method"
-        value={paymentMethodId}
+        value={paymentMethodId || activePaymentMethods?.[0]?.id}
         onChange={(value) => {
           console.log(value);
         }}
         renderValue={(selectedItem) => {
+          console.log('selected item args', selectedItem);
           if (!selectedItem?.label?.props) return null;
           return (
             <CreateEntityPaymentMethodSelected>
@@ -110,9 +116,16 @@ const RewardField = ({ rewardAmount, symbol, icon, chain, user, hasContent, orgI
   />
 );
 
-const Rewards = ({ fetchedTask, user, canEdit = true }) => {
+const Rewards = ({ fetchedTask, user, canEdit }) => {
   const rewards = fetchedTask?.rewards;
-  if (isEmpty(rewards)) return null;
+  const [showAdd, setShowAdd] = useState(false);
+  const ref = useRef();
+  const valuesRef = useRef();
+
+  const handleReward = () => {};
+
+  useOutsideAlerter(ref, () => setShowAdd(false));
+
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Rewards</TaskSectionLabel>
@@ -124,6 +137,7 @@ const Rewards = ({ fetchedTask, user, canEdit = true }) => {
             rewardAmount={rewardAmount}
             symbol={symbol}
             icon={icon}
+            key={paymentMethodId + rewardAmount}
             chain={chain}
             user={user}
             paymentMethodId={paymentMethodId}
@@ -132,6 +146,12 @@ const Rewards = ({ fetchedTask, user, canEdit = true }) => {
           />
         );
       })}
+      {!rewards?.length && !showAdd && canEdit ? (
+        <CreateEntityLabelAddButton onClick={() => setShowAdd(true)} data-cy="button-add-assignee">
+          <CreateEntityAddButtonIcon />
+          <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+        </CreateEntityLabelAddButton>
+      ) : null}
     </TaskSectionDisplayDiv>
   );
 };

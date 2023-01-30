@@ -975,7 +975,7 @@ export const ViewFieldContainer = styled.div`
   width: 100%;
 `;
 
-export const ReviewerWrapper = styled.div`
+export const ReviewerWrapper = styled(Grid)`
   display: flex;
   gap: 6px;
   align-items: center;
