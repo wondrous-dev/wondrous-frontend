@@ -61,3 +61,64 @@
 .swiper .swiper-pagination .swiper-pagination-bullet-active {
   background: #ffffff;
 }
+
+
+/* Plate text editor */
+form .slate-HeadingToolbar {
+  padding: 4px;
+  margin: 0 0 1.25rem;
+  background: #282828;
+  border-bottom: none;
+  min-height: unset;
+  box-sizing: inherit;
+  border-radius: 4px;
+  z-index: 1000;
+  width: 100%;
+  color: #c4c4c4;
+  display: flex;
+  justify-content: space-between;
+}
+
+form .slate-ToolbarButton-active[data-testid="ToolbarButton"],
+form .slate-ToolbarButton:hover[data-testid="ToolbarButton"] {
+  color: #ffffff;
+  background: #1D1D1D;
+  border-radius: 4px;
+  height: 28px;
+}
+
+body .slate-BalloonToolbar {
+  z-index: 1300;
+  background-color: #1D1D1D;
+}
+
+form .slate-mention {
+  background-color: unset;
+  color: #00baff;
+}
+
+form :where([data-slate-editor-id="plate"]) {
+  min-height: 100px;
+}
+
+form .slate-HrElement-hr {
+  padding-top: unset;
+  padding-bottom: unset;
+  background-color: #282828;
+}
+
+form .slate-code[data-slate-leaf="true"] {
+  background-color: unset;
+  font-family: monospace;
+}
+
+form .slate-h3 {
+  color: unset;
+}
+
+.plate-tooltip {
+  color: #ffffff;
+  background-color: #282828;
+  padding: 5px;
+  border-radius: 4px;
+}
