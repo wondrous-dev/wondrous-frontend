@@ -11,7 +11,6 @@ import {
   createBlockquotePlugin,
   createHorizontalRulePlugin,
   createItalicPlugin,
-  createLinkPlugin,
   createListPlugin,
   createPlateUI,
   createResetNodePlugin,
@@ -56,13 +55,15 @@ import NumberedListIcon from 'components/RichTextPlate/icons/NumberedListIcon';
 import LinkIcon from 'components/RichTextPlate/icons/LinkIcon';
 import AddImageIcon from 'components/RichTextPlate/icons/AddImageIcon';
 import AddQuoteIcon from 'components/RichTextPlate/icons/AddQuoteIcon';
+import { createCustomLinkPlugin } from 'components/RichTextPlate/custom-components/CustomLink';
 import { exitBreakPlugin } from './exit-break/exitBreakPlugin';
 import { resetBlockTypePlugin } from './reset-node/resetBlockTypePlugin';
 import { softBreakPlugin } from './soft-break/softBreakPlugin';
 import { Toolbar } from './toolbar/Toolbar';
-import { createMyPlugins, MyEditor, MyValue } from './typescript/plateTypes';
+import { createMyPlugins, CustomElements, MyEditor, MyValue } from './typescript/plateTypes';
 import { emojiPlugin } from './emoji/emojiPlugin';
 import { linkPlugin } from './link/linkPlugin';
+import palette from '../../theme/palette';
 
 interface Props {
   inputValue?;
@@ -76,7 +77,7 @@ const components = createPlateUI({
   [ELEMENT_LINK]: withProps(StyledElement, {
     styles: {
       root: {
-        color: '#00baff',
+        color: palette.highlightBlue,
       },
     },
   }),
@@ -106,69 +107,63 @@ const RichTextEditorPlate = ({ mentionables, inputValue, onChange, mediaUploads,
   const slashCommandItems: TComboboxItem<any>[] = [
     {
       key: ELEMENT_H1,
-      // text: '',
       text: 'Heading 1',
-      // data: { icon: <HeaderIcon title="H1" />, text: 'Heading 1', value: ELEMENT_H1 },
-      data: { icon: <HeaderIcon title="H1" />, type: ELEMENT_H1 },
+      data: { icon: <HeaderIcon title="H1" /> },
     },
     {
       key: ELEMENT_H2,
-      // text: '',
       text: 'Heading 2',
-      // data: { icon: <HeaderIcon title="H2" />, text: 'Heading 2', value: ELEMENT_H2 },
-      data: { icon: <HeaderIcon title="H2" />, type: ELEMENT_H2 },
+      data: { icon: <HeaderIcon title="H2" /> },
     },
     {
       key: ELEMENT_H3,
-      // text: '',
       text: 'Heading 3',
-      // data: { icon: <HeaderIcon title="H3" />, text: 'Heading 3', value: ELEMENT_H3 },
-      data: { icon: <HeaderIcon title="H3" />, type: ELEMENT_H3 },
+      data: { icon: <HeaderIcon title="H3" /> },
     },
     {
       key: MARK_BOLD,
       text: 'Bold',
-      data: { icon: <BoldIcon />, type: MARK_BOLD },
+      data: { icon: <BoldIcon /> },
     },
     {
       key: MARK_ITALIC,
       text: 'Italics',
-      data: { icon: <ItalicIcon />, type: MARK_ITALIC },
+      data: { icon: <ItalicIcon /> },
     },
     {
       key: MARK_UNDERLINE,
       text: 'Underline',
-      data: { icon: <UnderlineIcon />, type: MARK_UNDERLINE },
+      data: { icon: <UnderlineIcon /> },
     },
     {
       key: MARK_STRIKETHROUGH,
       text: 'Strikethrough',
-      data: { icon: <StrikethroughIcon />, type: MARK_STRIKETHROUGH },
+      data: { icon: <StrikethroughIcon /> },
     },
     {
       key: ELEMENT_UL,
       text: 'Bulletted List',
-      data: { icon: <BulletedListIcon />, type: ELEMENT_UL },
+      data: { icon: <BulletedListIcon /> },
     },
     {
       key: ELEMENT_OL,
       text: 'Numbered List',
-      data: { icon: <NumberedListIcon />, type: ELEMENT_OL },
+      data: { icon: <NumberedListIcon /> },
     },
     {
       key: ELEMENT_LINK,
       text: 'Add Link',
-      data: { icon: <LinkIcon />, type: ELEMENT_LINK },
+      data: { icon: <LinkIcon /> },
     },
     {
-      key: 'image',
+      key: CustomElements.Image,
       text: 'Add Image',
-      data: { icon: <AddImageIcon />, type: 'image' },
+      data: { icon: <AddImageIcon /> },
     },
     {
       key: ELEMENT_BLOCKQUOTE,
       text: 'Add Quote',
-      data: { icon: <AddQuoteIcon />, type: ELEMENT_BLOCKQUOTE },
+      data: { icon: <AddQuoteIcon /> },
     },
   ];
 
@@ -189,7 +184,7 @@ const RichTextEditorPlate = ({ mentionables, inputValue, onChange, mediaUploads,
           createSelectOnBackspacePlugin({
             options: { query: { allow: [ELEMENT_HR] } },
           }),
-          createLinkPlugin(linkPlugin),
+          createCustomLinkPlugin(linkPlugin),
           createResetNodePlugin(resetBlockTypePlugin),
           createListPlugin(),
           createBoldPlugin(),

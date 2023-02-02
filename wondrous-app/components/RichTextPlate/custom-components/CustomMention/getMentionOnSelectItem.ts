@@ -25,15 +25,19 @@ import {
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
+  ELEMENT_LINK,
   ELEMENT_OL,
   ELEMENT_UL,
   MARK_BOLD,
   MARK_ITALIC,
   MARK_STRIKETHROUGH,
   MARK_UNDERLINE,
+  toggleList,
+  toggleMark,
   toggleNodeType,
 } from '@udecode/plate';
 
+import { triggerFloatingLink } from 'components/RichTextPlate/custom-components/CustomLink';
 import { CustomElements } from 'components/RichTextPlate/typescript/plateTypes';
 import { ELEMENT_MENTION, ELEMENT_MENTION_INPUT } from './createMentionPlugin';
 import { MentionPlugin, TMentionElement } from './types';
@@ -75,6 +79,17 @@ export const getMentionOnSelectItem =
           match: (node) => node.type === ELEMENT_MENTION_INPUT,
         })
       );
+
+      insertNodes<TMentionElement>(editor, {
+        type,
+        children: [{ text: '' }],
+        id: item.key,
+        ...props,
+      } as TMentionElement);
+
+      // move the selection after the element
+      moveSelection(editor, { unit: 'offset' });
+
       switch (item.key) {
         case ELEMENT_H1:
           toggleNodeType(editor, { activeType: ELEMENT_H1 });
@@ -86,28 +101,26 @@ export const getMentionOnSelectItem =
           toggleNodeType(editor, { activeType: ELEMENT_H3 });
           break;
         case MARK_BOLD:
-          toggleNodeType(editor, { activeType: MARK_BOLD });
+          toggleMark(editor, { key: MARK_BOLD as any });
           break;
         case MARK_ITALIC:
-          toggleNodeType(editor, { activeType: MARK_ITALIC });
-          // getPreventDefaultHandler(toggleMark, editor, { key: item.key });
-          // toggleMark(editor, { key: MARK_ITALIC as any });
+          toggleMark(editor, { key: MARK_ITALIC as any });
           break;
         case MARK_UNDERLINE:
-          toggleNodeType(editor, { activeType: MARK_UNDERLINE });
+          toggleMark(editor, { key: MARK_UNDERLINE as any });
           break;
         case MARK_STRIKETHROUGH:
-          toggleNodeType(editor, { activeType: MARK_STRIKETHROUGH });
+          toggleMark(editor, { key: MARK_STRIKETHROUGH as any });
           break;
         case ELEMENT_UL:
-          toggleNodeType(editor, { activeType: ELEMENT_UL });
+          toggleList(editor, { type: ELEMENT_UL });
           break;
         case ELEMENT_OL:
-          toggleNodeType(editor, { activeType: ELEMENT_OL });
+          toggleList(editor, { type: ELEMENT_OL });
           break;
-        // case ELEMENT_LINK:
-        //   toggleNodeType(editor, { activeType: ELEMENT_LINK });
-        //   break;
+        case ELEMENT_LINK:
+          triggerFloatingLink(editor, { focused: true });
+          break;
         case CustomElements.Image:
           const input = document.querySelector('input[type="file"]') as HTMLInputElement;
           if (input) {
@@ -120,15 +133,6 @@ export const getMentionOnSelectItem =
         default:
           break;
       }
-
-      insertNodes<TMentionElement>(editor, {
-        type,
-        children: [{ text: '' }],
-        ...props,
-      } as TMentionElement);
-
-      // move the selection after the element
-      moveSelection(editor, { unit: 'offset' });
 
       if (isBlockEnd() && insertSpaceAfterMention) {
         insertText(editor, ' ');

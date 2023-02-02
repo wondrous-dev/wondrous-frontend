@@ -1,10 +1,4 @@
-import {
-  ComboboxState,
-  ComboboxStateById,
-  ComboboxStoreById,
-  NoData,
-  TComboboxItem,
-} from '@udecode/plate-combobox';
+import { ComboboxState, ComboboxStateById, ComboboxStoreById, NoData, TComboboxItem } from '@udecode/plate-combobox';
 import { RenderFunction } from '@udecode/plate-core';
 import { StyledProps } from '@udecode/plate-styled-components';
 import { CSSProp } from 'styled-components';

@@ -4,6 +4,7 @@ import { CreateMentionNode } from './getMentionOnSelectItem';
 
 export interface TMentionElement extends TElement {
   value: string;
+  id: string;
 }
 
 export interface TMentionInputElement extends TElement {

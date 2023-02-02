@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import isEmpty from 'lodash/isEmpty';
 import keys from 'lodash/keys';
 import WalletModal from 'components/Common/Wallet/WalletModal';
-import { RichTextViewer } from 'components/RichText';
 import { GithubLink, GithubLinkText } from 'components/Settings/Github/styles';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
@@ -11,6 +10,7 @@ import Tooltip from 'components/Tooltip';
 import MoreIcon from 'components/Icons/more';
 import EmptyState from 'components/EmptyStateGeneric';
 
+import RichTextViewer from 'components/RichTextPlate/RichTextViewer';
 import {
   ConnectToWalletButton,
   GithubBlock,

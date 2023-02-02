@@ -82,14 +82,16 @@ form .slate-HeadingToolbar {
 form .slate-ToolbarButton-active[data-testid="ToolbarButton"],
 form .slate-ToolbarButton:hover[data-testid="ToolbarButton"] {
   color: #ffffff;
-  background: #1D1D1D;
+  background: #232323;
   border-radius: 4px;
   height: 28px;
 }
 
 body .slate-BalloonToolbar {
   z-index: 1300;
-  background-color: #1D1D1D;
+  background-color: #171717;
+  border: 1px solid #7A7A7A;
+  box-shadow: 12px 10px 24px 2px rgba(16, 16, 16, 0.8);
 }
 
 form .slate-mention {

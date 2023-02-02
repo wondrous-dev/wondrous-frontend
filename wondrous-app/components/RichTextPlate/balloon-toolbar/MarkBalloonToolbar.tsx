@@ -14,6 +14,8 @@ import BoldIcon from 'components/RichTextPlate/icons/BoldIcon';
 import ItalicIcon from 'components/RichTextPlate/icons/ItalicIcon';
 import UnderlineIcon from 'components/RichTextPlate/icons/UnderlineIcon';
 import StrikethroughIcon from 'components/RichTextPlate/icons/StrikethroughIcon';
+import { LinkToolbarButton } from 'components/RichTextPlate/custom-components/ui/nodes/link';
+import LinkIcon from 'components/RichText/icons/LinkIcon';
 import { useMyPlateEditorRef } from '../typescript/plateTypes';
 
 export const markTooltip: TippyProps = {
@@ -49,6 +51,7 @@ export const MarkBalloonToolbar = ({ children }: { children?: ReactNode }) => {
         tooltip={underlineTooltip}
       />
       <MarkToolbarButton type={getPluginType(editor, MARK_STRIKETHROUGH)} icon={<StrikethroughIcon />} />
+      <LinkToolbarButton icon={<LinkIcon />} />
       {children}
     </BalloonToolbar>
   );

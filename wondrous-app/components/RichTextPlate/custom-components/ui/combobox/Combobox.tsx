@@ -112,7 +112,6 @@ const ComboboxContent = <TData extends Data = NoData>(
               {trigger === '/' ? (
                 <>
                   <SlashCommandItemIcon>{item.data.icon}</SlashCommandItemIcon>
-                  {/* {item.data.text} */}
                   {item.text}
                 </>
               ) : null}

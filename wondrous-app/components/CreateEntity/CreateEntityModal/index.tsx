@@ -9,7 +9,7 @@ import apollo from 'services/apollo';
 
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import DropdownSearch from 'components/DropdownSearch';
-import { extractMentions, RichTextEditor, useEditor } from 'components/RichText';
+import { useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
 import {
@@ -31,8 +31,8 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import { Editor, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
+// import { Editor, Transforms } from 'slate';
+// import { ReactEditor } from 'slate-react';
 import {
   ENTITIES_TYPES,
   TASK_STATUS_TODO,
@@ -67,6 +67,7 @@ import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
 import { InputLabel } from '@mui/material';
 import RichTextEditorPlate from 'components/RichTextPlate/RichTextEditor';
+import { extractMentions } from 'components/RichTextPlate/utils';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -244,8 +245,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
   });
 
-  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
-  const editor = useEditor();
+  // const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
+  // const editor = useEditor();
 
   const initialPodId = !existingTask ? board?.podId || routerPodId : null;
   const form: any = useFormik({
@@ -469,7 +470,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
   const handleSubmitTemplate = (template) => {
-    editor.children = JSON.parse(template?.description);
+    // editor.children = JSON.parse(template?.description);
     form.setFieldValue('title', template?.title);
     form.setFieldValue('points', template?.points);
     form.setFieldValue('orgId', template?.orgId);
@@ -799,7 +800,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           onChange={(value) => {
             form.setFieldValue('description', value);
           }}
-          mediaUploads={() => inputRef.current.click()}
+          mediaUploads={() => {
+            inputRef.current.click();
+          }}
           placeholder="Type ‘/’ for commands"
         />
 
