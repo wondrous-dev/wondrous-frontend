@@ -161,7 +161,7 @@ const GeneratedTaskRow = ({
   setClickSelectedList,
   editor,
 }) => {
-  const checked = selectedList.some((item) => item.tempId === task.tempId);
+  const checked = selectedList.some((item) => item?.tempId === task.tempId);
   const onRowClick = () => {
     setTaskToView(task);
     resetEditor(editor, task?.description);
@@ -176,7 +176,7 @@ const GeneratedTaskRow = ({
         checked={!!checked}
         onChange={() => {
           if (checked) {
-            const newList = selectedList.filter((item) => item.tempId !== task.tempId);
+            const newList = selectedList.filter((item) => !item || item.tempId !== task.tempId);
             setSelectedList([...newList]);
           } else {
             setSelectedList([...selectedList, task]);
