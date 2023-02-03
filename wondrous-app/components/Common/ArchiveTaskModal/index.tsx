@@ -82,8 +82,6 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
           'getUserTaskBoardProposals',
           'getOrgTaskBoardProposals',
           'getPodTaskBoardProposals',
-          'getOrgTaskBoardSubmissions',
-          'getPodTaskBoardSubmissions',
           'getPerStatusTaskCountForUserBoard',
           'getPerStatusTaskCountForOrgBoard',
           'getPerStatusTaskCountForPodBoard',
