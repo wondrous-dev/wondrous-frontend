@@ -22,6 +22,7 @@ import { InfoPoint, TaskSectionDisplayDiv } from 'components/Common/TaskViewModa
 import Grid from '@mui/material/Grid';
 import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
 import { GRANT_STYLE_MAP } from './GrantStyle';
+import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
 
 const GrantAmount = ({
   value,
@@ -62,11 +63,12 @@ const GrantAmount = ({
       return `You are granting from a pool ${value.rewardAmount} ${paymentMethod?.symbol}`;
     }
   }, [grantStyle, value.rewardAmount, numOfGrant, activePaymentMethods, value.paymentMethodId]);
+
+  
   return (
     <TaskSectionDisplayDiv alignItems="start">
       {activePaymentMethods?.length === 0 && (
         <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
-          {' '}
           Set up payment method
         </StyledLink>
       )}

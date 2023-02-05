@@ -2,16 +2,17 @@ import { Grid } from '@mui/material';
 import { filterCategoryValues, useGetCategories } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import DropdownSearch from 'components/DropdownSearch';
 import EditIcon from 'components/Icons/editIcon';
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useMemo, useRef } from 'react';
 import palette from 'theme/palette';
 import { CATEGORY_LABELS } from 'utils/constants';
 import { TaskSectionLabel } from '../helpers';
 import { ReviewerWrapper, TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import { FIELDS, useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
   <ReviewerWrapper showFullWidth>
-    {labels.map(({ name = null }) => (
+    {labels?.map(({ name = null }) => (
       <Grid width="100%">
         <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
           <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
@@ -29,19 +30,15 @@ const labelsToValue = (labels) => {
   return Object.keys(CATEGORY_LABELS).filter((key) => labelValues?.includes(CATEGORY_LABELS[key]));
 };
 
-const EditableContent = forwardRef(({ toggleEditMode, labels }: any, ref: any) => {
+const EditableContent = ({ toggleEditMode, labels }) => {
   const categoriesData = useGetCategories();
-  const [categories, setCategories] = useState([]);
+  const { submit, error } = useSubmit({ field: FIELDS.CATEGORIES });
 
-  useEffect(() => {
-    setCategories(labelsToValue(labels));
-  }, [labels]);
-
-  const handleChange = (values) => {
-    const newCategories = [...categories, ...values];
-    setCategories(values);
-    ref.current = newCategories;
+  const handleChange = async (values) => {
+    await submit(values.map((value) => value.id));
   };
+
+  const filteredLabels = useMemo(() => filterCategoryValues(labelsToValue(labels)), [labels]);
 
   return (
     <DropdownSearch
@@ -49,33 +46,26 @@ const EditableContent = forwardRef(({ toggleEditMode, labels }: any, ref: any) =
       label="Select Category"
       searchPlaceholder="Search categories"
       options={categoriesData}
-      value={filterCategoryValues(categories)}
       onChange={handleChange}
       disabled={false}
+      value={filteredLabels}
       onClose={toggleEditMode}
     />
   );
-});
+};
 
-const CategoryField = ({ labels, canEdit }) => {
-  const ref = useRef();
-
-  const onClose = () => {
-    console.log('CALL API');
-    console.log(ref.current, 'REF CURRENT');
-  };
-
+const CategoryField = ({ labels = [], canEdit, shouldDisplay }) => {
+  if (!shouldDisplay) return null;
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Category</TaskSectionLabel>
       <TaskFieldEditableContent
-        onClose={onClose}
+        canAddItem={canEdit}
+        addContent={({ toggleAddMode }) => <EditableContent labels={labels} toggleEditMode={toggleAddMode} />}
         ViewContent={({ toggleEditMode }) => (
           <ViewContent toggleEditMode={toggleEditMode} canEdit={canEdit} labels={labels} />
         )}
-        EditableContent={({ toggleEditMode }) => (
-          <EditableContent ref={ref} labels={labels} toggleEditMode={toggleEditMode} />
-        )}
+        editableContent={({ toggleEditMode }) => <EditableContent labels={labels} toggleEditMode={toggleEditMode} />}
       />
     </TaskSectionDisplayDiv>
   );

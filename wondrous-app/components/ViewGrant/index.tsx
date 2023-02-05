@@ -43,29 +43,34 @@ import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { TaskContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { Categories, DataDisplay, Dates, GrantPaymentData } from './Fields';
+import { Categories, DataDisplay } from './Fields';
 import ViewGrantFooter from './Footer';
 import GrantMenuStatus from './GrantMenuStatus';
 import { DescriptionWrapper } from './styles';
 import { canViewGrant } from './utils';
+import { PaymentData, Dates, Eligibility } from './EditableFields';
 
 const FIELDS_CONFIG = [
   {
     label: 'Grant amount',
-    component: ({ grant: { reward, numOfGrant } }) => <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />,
+    component: ({ grant: { reward, numOfGrant }, canEdit }) => (
+      <PaymentData reward={reward} numOfGrant={numOfGrant} canEdit={canEdit} />
+    ),
 
-    shouldDisplay: ({ grant: { reward } }): boolean => !!reward?.paymentMethodId,
+    shouldDisplay: ({ grant: { reward }, canEdit }): boolean => !!reward?.paymentMethodId || canEdit,
   },
   {
     label: 'Dates',
-    component: ({ grant: { startDate, endDate } }) => <Dates startDate={startDate} endDate={endDate} />,
-    shouldDisplay: ({ grant: { startDate, endDate } }): boolean => !!(startDate || endDate),
+    component: ({ grant: { startDate, endDate }, canEdit }) => (
+      <Dates canEdit={canEdit} startDate={startDate} endDate={endDate} />
+    ),
+    shouldDisplay: ({ grant: { startDate, endDate }, canEdit }): boolean => {
+      return !!(startDate || endDate || canEdit);
+    },
   },
   {
     label: 'Eligibility',
-    component: ({ grant: { applyPolicy } }) => (
-      <DataDisplay label={APPLY_POLICY_FIELDS.find((policy) => policy.value === applyPolicy)?.name} />
-    ),
+    component: ({ grant: { applyPolicy }, canEdit }) => <Eligibility applyPolicy={applyPolicy} canEdit={canEdit} />,
   },
   {
     label: 'Visibility',
@@ -276,13 +281,12 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                     <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
                       <TaskSectionDisplayData>
                         {FIELDS_CONFIG.map((field, idx) => {
-                          if (field?.shouldDisplay && !field?.shouldDisplay({ grant })) {
+                          if (field?.shouldDisplay && !field?.shouldDisplay({ grant, canEdit })) {
                             return null;
                           }
                           return (
                             <TaskSectionDisplayDiv key={idx}>
-                              <TaskSectionLabel>{field.label}</TaskSectionLabel>
-                              <field.component grant={grant} />
+                              <field.component grant={grant} canEdit={canEdit} />
                             </TaskSectionDisplayDiv>
                           );
                         })}

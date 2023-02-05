@@ -5,6 +5,7 @@ import palette from 'theme/palette';
 import { PRIORITIES } from 'utils/constants';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import { FIELDS, useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
@@ -20,13 +21,16 @@ const ViewContent = ({ priorityValue, canEdit, toggleEditMode }) =>
   ) : null;
 
 const EditableContent = ({ toggleEditMode, value }) => {
-  const handleChange = (_, value) => {
-    console.log('IMPLEMENT API CALL HERE');
+  const { submit, error } = useSubmit({ field: FIELDS.PRIORITY });
+
+  const handleChange = async (_, value) => {
+    await submit(value);
     toggleEditMode();
   };
   return <TaskPriorityToggleButton value={value} setValue={handleChange} />;
 };
-const PriorityField = ({ priority, canEdit }) => {
+const PriorityField = ({ priority, canEdit, shouldDisplay }) => {
+  if(!shouldDisplay) return null;
   const priorityValue = PRIORITIES.find((prio) => prio.value === priority);
 
   return (
@@ -36,7 +40,13 @@ const PriorityField = ({ priority, canEdit }) => {
         ViewContent={({ toggleEditMode }) => (
           <ViewContent priorityValue={priorityValue} canEdit={canEdit} toggleEditMode={toggleEditMode} />
         )}
-        EditableContent={({ toggleEditMode }) => <EditableContent toggleEditMode={toggleEditMode} value={priority} />}
+        addContent={({toggleAddMode}) => (
+          <EditableContent toggleEditMode={toggleAddMode} value={null}/>
+        )}
+        canAddItem={canEdit && !priorityValue}
+        editableContent={({ toggleEditMode }) => (
+          <EditableContent toggleEditMode={toggleEditMode} value={priority} />
+        )}
       />
     </TaskSectionDisplayDiv>
   );

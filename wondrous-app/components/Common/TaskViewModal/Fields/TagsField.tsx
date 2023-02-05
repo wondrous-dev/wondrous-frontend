@@ -6,11 +6,12 @@ import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import { ReviewerWrapper, TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import { FIELDS, useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
   <ReviewerWrapper showFullWidth>
-    {labels.map(({ name = null }) => (
+    {labels?.map(({ name = null }) => (
       <Grid width="100%">
         <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
           <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
@@ -29,30 +30,18 @@ interface Props {
   orgId: string;
 }
 
-const EditableContent = forwardRef(({ labels, toggleEditMode, orgId }: Props, ref: any) => {
+const EditableContent = ({ labels, toggleEditMode, orgId }: Props) => {
   const orgLabelsData = useGetOrgLabels(orgId);
-  const [values, setValues] = useState([]);
+  const { submit, error } = useSubmit({ field: FIELDS.TAGS });
+
   const ids = useMemo(() => labels.map((label) => label.id), [labels]);
-  const handleCreateLabel = useCreateLabel(orgId, (newLabelId) => {
-    console.log(newLabelId, 'new label id');
+  const handleCreateLabel = useCreateLabel(orgId, async (newLabelId) => {
+    const newLabels = [...ids, newLabelId];
+    await submit(newLabels);
   });
 
-  useEffect(() => setValues(labels), [labels]);
-
-  //   form.setFieldValue('labelIds', [...form.values.labelIds, newLabelId])
-  // );
-
-  // const categoriesData = useGetCategories();
-  // const [categories, setCategories] = useState([]);
-
-  // useEffect(() => {
-  //   setCategories(labelsToValue(labels));
-  // }, [labels]);
-
-  const handleChange = (labels) => {
-    const newLabels = [...values, ...labels];
-    //   setValues(newLabels);
-    //   ref.current = newLabels;
+  const handleChange = async (labels) => {
+    await submit(labels);
   };
 
   return (
@@ -60,34 +49,31 @@ const EditableContent = forwardRef(({ labels, toggleEditMode, orgId }: Props, re
       autoFocus
       options={orgLabelsData || []}
       ids={ids}
+      disablePortal
       onChange={handleChange}
       onCreate={handleCreateLabel}
       limit={4}
     />
   );
-});
-const TagsField = ({ canEdit, labels, orgId }) => {
-  const ref = useRef();
+};
 
-  const onClose = () => {
-    console.log('CALL API');
-    console.log(ref.current, 'REF CURRENT');
-  };
-
-  return (
+const TagsField = ({ canEdit, labels = [], orgId, shouldDisplay }) =>
+  shouldDisplay ? (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Tags</TaskSectionLabel>
       <TaskFieldEditableContent
-        onClose={onClose}
         ViewContent={({ toggleEditMode }) => (
           <ViewContent toggleEditMode={toggleEditMode} canEdit={canEdit} labels={labels} />
         )}
-        EditableContent={({ toggleEditMode }) => (
-          <EditableContent ref={ref} labels={labels} toggleEditMode={toggleEditMode} orgId={orgId} />
+        addContent={({ toggleAddMode }) => (
+          <EditableContent toggleEditMode={toggleAddMode} labels={labels} orgId={orgId} />
+        )}
+        canAddItem={canEdit && !labels?.length}
+        editableContent={({ toggleEditMode }) => (
+          <EditableContent labels={labels} toggleEditMode={toggleEditMode} orgId={orgId} />
         )}
       />
     </TaskSectionDisplayDiv>
-  );
-};
+  ) : null;
 
 export default TagsField;

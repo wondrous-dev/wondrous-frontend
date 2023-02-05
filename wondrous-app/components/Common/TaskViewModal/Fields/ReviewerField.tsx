@@ -9,29 +9,22 @@ import {
 import PlusIcon from 'components/Icons/plus';
 import { UPDATE_TASK_REVIEWERS } from 'graphql/mutations';
 import { isEmpty } from 'lodash';
-import { useRouter } from 'next/router';
 import { useContext, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import { AddButtonGrid, AddReviewerButton, ReviewerWrapper, TaskSectionDisplayDiv } from '../styles';
+import { FIELDS, useSubmit } from './hooks/useSubmit';
 import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
 
-export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdit = false, fetchedTask, user }) {
+export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTask, user }) {
   const eligibleReviewers = useGetEligibleReviewers(fetchedTask?.orgId, fetchedTask?.podId);
-  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
   const [showAutocomplete, setShowAutocomplete] = useState(false);
-  const [updateTask] = useMutation(UPDATE_TASK_REVIEWERS);
-  const handleUpdateReviewers = (reviewerIds) => {
-    setShowAutocomplete(false);
-    updateTask({
-      variables: { taskId: fetchedTask?.id, reviewerIds },
-      refetchQueries: ['getTaskReviewers'],
-      onCompleted: () => {
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage('Reviewer updated successfully.');
-      },
-    });
+  const { submit, error } = useSubmit({ field: FIELDS.REVIEWERS, refetchQueries: ['getTaskReviewers'] });
+
+  const handleUpdateReviewers = async (reviewerIds) => {
+    await submit(reviewerIds);
   };
+
   const { getTaskReviewers: taskReviewers } = reviewerData || {};
   const withTaskReviewers = Boolean(taskReviewers?.length);
   const taskReviewerIds = taskReviewers?.map(({ id }) => id);
@@ -41,12 +34,14 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
       eligibleReviewers.map((reviewer) => ({
         ...reviewer,
         value: reviewer.id,
-        hide: taskReviewerIds.includes(reviewer.id) || reviewer.id === user?.id,
+        hide: taskReviewerIds?.includes(reviewer.id) || reviewer.id === user?.id,
       })),
     [eligibleReviewers, taskReviewerIds, user?.id]
   );
 
-  const showAutocompleteField = canEdit && (showAutocomplete || !withTaskReviewers);
+  if (!shouldDisplay) {
+    return null;
+  }
   const showAddButton =
     canEdit &&
     withTaskReviewers &&
@@ -54,9 +49,11 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
     !isEmpty(filteredEligibleReviewers);
   const selfReviewer = !taskReviewerIds?.includes(user?.id) && user;
 
-  if (!shouldDisplay) {
-    return null;
-  }
+  const handleAssignToSelfClick = () => handleUpdateReviewers([...taskReviewerIds, user?.id]);
+
+  const handleSelect = (value) => {
+    handleUpdateReviewers([...taskReviewerIds, value?.id]);
+  };
 
   return (
     <TaskSectionDisplayDiv alignItems="start">
@@ -76,7 +73,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
                     )}
                   </AssigneeReviewerViewContent>
                 )}
-                EditableContent={({ toggleEditMode }) => (
+                editableContent={({ toggleEditMode }) => (
                   <ReviewerAssigneeAutocomplete
                     options={filteredEligibleReviewers}
                     currentOption={{
@@ -85,8 +82,11 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
                       label: taskReviewer.username,
                     }}
                     assignToSelfUser={selfReviewer}
-                    onAssignToSelfClick={() => console.log('on assign to self click')}
-                    onChange={(value) => console.log('on change')}
+                    onAssignToSelfClick={handleAssignToSelfClick}
+                    onSelect={(value: any) => {
+                      console.log(value, 'value on editables');
+                      handleUpdateReviewers([...taskReviewerIds.filter((id) => id !== taskReviewer.id), value?.id]);
+                    }}
                     onDelete={() => handleUpdateReviewers(taskReviewerIds.filter((id) => id !== taskReviewer.id))}
                   />
                 )}
@@ -98,11 +98,12 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
             options={filteredEligibleReviewers}
             currentOption={null}
             assignToSelfUser={selfReviewer}
-            onAssignToSelfClick={() => console.log('on assign to self click')}
-            onChange={(value) => handleUpdateReviewers([...taskReviewerIds, value?.id])}
+            onAssignToSelfClick={handleAssignToSelfClick}
+            onSelect={handleSelect}
             onDelete={() => setShowAutocomplete(false)}
           />
         ) : null}
+        {error}
         {!taskReviewerIds?.length && !showAutocomplete && canEdit ? (
           <CreateEntityLabelAddButton onClick={() => setShowAutocomplete(true)} data-cy="button-add-assignee">
             <CreateEntityAddButtonIcon />

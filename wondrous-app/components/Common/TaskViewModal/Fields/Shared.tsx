@@ -13,29 +13,33 @@ import {
   CreateEntityLabelAddButton,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
-import { useRef, useState } from 'react';
+import { Dispatch, useEffect, useRef, useState } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { User } from 'types/User';
 import { useOutsideAlerter } from 'utils/hooks';
 import { TaskSectionInfoText, ViewFieldWrapper } from '../styles';
 
 interface TaskFieldEditableContentProps {
-  EditableContent: React.FC<{ toggleEditMode: () => void }>;
+  editableContent: React.FC<{ toggleEditMode: () => void }>;
   ViewContent: React.FC<{ toggleEditMode: () => void }>;
-  onClose?: () => void;
+  onClose?: (value?: any) => void;
   canAddItem?: boolean;
-  AddContent?: React.FC<{ toggleAddMode: () => void }>;
+  addContent?: React.FC<{ toggleAddMode: () => void }>;
+  addItemLabel?: React.FC<{}>;
 }
 
 export const TaskFieldEditableContent = ({
-  EditableContent,
+  editableContent,
   ViewContent,
-  AddContent = () => null,
+  addContent = () => null,
   onClose = null,
   canAddItem = false,
+  addItemLabel = null,
 }: TaskFieldEditableContentProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
+
   const ref = useRef();
   const toggleEditMode = () =>
     setIsEditMode((prev) => {
@@ -61,23 +65,26 @@ export const TaskFieldEditableContent = ({
   if (isAddMode) {
     return (
       <Grid ref={ref} width="100%" height="100%">
-        <AddContent toggleAddMode={toggleAddMode} />
+        {addContent({ toggleAddMode: toggleAddMode })}
       </Grid>
     );
   }
 
   if (canAddItem) {
     return (
-      <CreateEntityLabelAddButton onClick={toggleAddMode} data-cy="button-add-assignee">
-        <CreateEntityAddButtonIcon />
-        <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
-      </CreateEntityLabelAddButton>
+      <>
+        {addItemLabel?.({})}
+        <CreateEntityLabelAddButton onClick={toggleAddMode} data-cy="button-add-assignee">
+          <CreateEntityAddButtonIcon />
+          <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+        </CreateEntityLabelAddButton>
+      </>
     );
   }
   if (isEditMode) {
     return (
       <Grid ref={ref} width="100%" height="100%">
-        <EditableContent toggleEditMode={toggleEditMode} />
+        {editableContent({ toggleEditMode: toggleEditMode })}
       </Grid>
     );
   }
@@ -105,6 +112,23 @@ export const AssigneeReviewerViewContent = ({ option, canEdit, toggleEditMode, c
 
 export const InfoText = ({ content = null }) => <TaskSectionInfoText>{content || 'None'}</TaskSectionInfoText>;
 
+interface Option {
+  value: string;
+  label: string;
+  profilePicture: string;
+  hide?: boolean;
+}
+interface IReviewerAssigneeAutocompleteProps {
+  options: Option[];
+  currentOption: Option;
+  assignToSelfUser: User;
+  onAssignToSelfClick: () => void;
+  onChange?: (value: string) => void;
+  listBoxProps?: any;
+  onDelete?: () => void;
+  onSelect?: (value: string) => void;
+}
+
 export const ReviewerAssigneeAutocomplete = ({
   options,
   currentOption,
@@ -113,7 +137,8 @@ export const ReviewerAssigneeAutocomplete = ({
   onChange,
   listBoxProps = {},
   onDelete,
-}) => (
+  onSelect,
+}: IReviewerAssigneeAutocompleteProps) => (
   <>
     <CreateEntityAutocompletePopper
       openOnFocus
@@ -154,16 +179,7 @@ export const ReviewerAssigneeAutocomplete = ({
               </CreateEntityAutocompletePopperRenderInputAdornment>
             }
             endAdornment={
-              <CreateEntityAutocompletePopperRenderInputAdornment
-                position="end"
-                onClick={onDelete}
-                // onClick={() => {
-                //   onDelete()
-                //   // const newReviewers = cloneDeep(taskReviewers).filter((id, i) => i !== index);
-                //   // TODO - update reviewers
-                //   // form.setFieldValue('reviewerIds', newReviewers);
-                // }}
-              >
+              <CreateEntityAutocompletePopperRenderInputAdornment position="end" onClick={onDelete}>
                 <CreateEntityAutocompletePopperRenderInputIcon />
               </CreateEntityAutocompletePopperRenderInputAdornment>
             }
@@ -173,13 +189,9 @@ export const ReviewerAssigneeAutocomplete = ({
       renderOption={RenderOption}
       onChange={(event, value, reason) => {
         event.stopPropagation();
+        if (onChange) onChange(value);
         if (reason === 'selectOption') {
-          console.log('im in select option value');
-          onChange(value);
-          // const reviewerIds = cloneDeep(taskReviewerIds);
-          // reviewerIds[index] = value.id;
-          // TODO - update reviewers
-          // form.setFieldValue('reviewerIds', reviewerIds);
+          return onSelect(value);
         }
       }}
       blurOnSelect

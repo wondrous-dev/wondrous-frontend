@@ -118,6 +118,7 @@ import {
   CategoryField,
   TagsField,
 } from './Fields';
+import { entityTypeData, Fields } from 'components/CreateEntity/CreateEntityModal/Helpers';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -546,7 +547,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
             setSnackbarAlertMessage={setSnackbarAlertMessage}
           />
         )}
-        <TaskContext.Provider value={{ fetchedTask, refetch, tokenData }}>
+        <TaskContext.Provider value={{ fetchedTask, refetch, tokenData, entityType }}>
           <TaskModal open={open} onClose={handleModalClose}>
             <TaskModalCard fullScreen={fullScreen}>
               {!!fetchedTask && canViewTask !== null && (
@@ -698,9 +699,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               taskId={fetchedTask?.id}
                             />
                             <ReviewerField
-                              shouldDisplay={!isTaskProposal && !isMilestone}
+                              shouldDisplay={
+                                !isTaskProposal && !isMilestone && (canEdit || reviewerData?.getTaskReviewers?.length)
+                              }
                               reviewerData={reviewerData}
-                              handleClose={handleClose}
                               canEdit={canEdit}
                               fetchedTask={fetchedTask}
                               user={user}
@@ -735,18 +737,37 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               handleClose={handleClose}
                             />
                             <DueDateField
+                              shouldDisplay={
+                                entityTypeData[entityType].fields.includes(Fields.dueDate) &&
+                                (canEdit || fetchedTask?.dueDate)
+                              }
+                              canEdit={canEdit}
                               dueDate={fetchedTask?.dueDate}
                               recurringSchema={fetchedTask?.recurringSchema}
                               shouldUnclaimOnDueDateExpiry={fetchedTask?.shouldUnclaimOnDueDateExpiry}
                             />
-                            <RewardsField fetchedTask={fetchedTask} user={user} canEdit={canEdit} />
+                            <RewardsField
+                              fetchedTask={fetchedTask}
+                              user={user}
+                              canEdit={canEdit}
+                              shouldDisplay={
+                                entityTypeData[entityType].fields.includes(Fields.reward) &&
+                                (canEdit || fetchedTask?.rewards?.length)
+                              }
+                            />
                             <PointsField
-                              shouldDisplay={!!fetchedTask?.points}
+                              shouldDisplay={
+                                entityTypeData[entityType].fields.includes(Fields.points) &&
+                                (canEdit || fetchedTask?.points)
+                              }
                               points={fetchedTask?.points}
                               canEdit={canEdit}
                             />
                             <MilestoneField
-                              shouldDisplay={!!fetchedTask?.milestoneId}
+                              shouldDisplay={
+                                entityTypeData[entityType].fields.includes(Fields.milestone) &&
+                                (canEdit || fetchedTask?.milestoneId)
+                              }
                               milestoneId={fetchedTask?.milestoneId}
                               getTaskById={getTaskById}
                               canEdit={canEdit}
@@ -755,9 +776,28 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               podId={fetchedTask?.podId}
                               milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
                             />
-                            <PriorityField priority={fetchedTask?.priority} canEdit={canEdit} />
-                            <CategoryField labels={remaininTaskCategories} canEdit={canEdit} />
-                            <TagsField canEdit={canEdit} labels={fetchedTask?.labels} orgId={fetchedTask?.orgId} />
+                            <PriorityField
+                              priority={fetchedTask?.priority}
+                              canEdit={canEdit}
+                              shouldDisplay={
+                                entityTypeData[entityType].fields.includes(Fields.priority) &&
+                                (canEdit || fetchedTask?.priority)
+                              }
+                            />
+                            <CategoryField
+                              labels={remaininTaskCategories}
+                              canEdit={canEdit}
+                              shouldDisplay={canEdit || fetchedTask?.categories?.length}
+                            />
+                            <TagsField
+                              canEdit={canEdit}
+                              shouldDisplay={
+                                entityTypeData[entityType].fields.includes(Fields.tags) &&
+                                (canEdit || fetchedTask?.labels?.length)
+                              }
+                              labels={fetchedTask?.labels}
+                              orgId={fetchedTask?.orgId}
+                            />
                             <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                             {isTaskProposal && (
                               <CreateFormFooterButtons>

@@ -6,9 +6,12 @@ import {
   CreateEntityTextfield,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
+import { debounce } from 'lodash';
+import { useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoPointsIcon, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import { FIELDS, useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
@@ -24,45 +27,48 @@ const ViewContent = ({ points, toggleEditMode, canEdit }) => (
   </ViewFieldWrapper>
 );
 
-// TODO: IMPLEMENT API
-const EditContent = ({ toggleEditMode, canEdit, points }) => (
-  <CreateEntityTextfield
-    autoComplete="off"
-    autoFocus={points}
-    name="points"
-    onChange={(value) => console.log(value)}
-    fullWidth
-    value={points}
-    InputProps={{
-      inputComponent: CreateEntityTextfieldInputPointsComponent,
-      endAdornment: (
-        <CreateEntityAutocompletePopperRenderInputAdornment
-          position="end"
-          onClick={() => {
-            console.log('set fields to null');
-          }}
-        >
-          <CreateEntityAutocompletePopperRenderInputIcon />
-        </CreateEntityAutocompletePopperRenderInputAdornment>
-      ),
-    }}
-  />
-);
+const EditContent = ({ toggleEditMode, points }) => {
+  const { submit, error } = useSubmit({ field: FIELDS.POINTS });
 
-const PointsField = ({ shouldDisplay, points, canEdit }) => {
+  const debounceUpdate = debounce(submit, 500);
+  return (
+    <CreateEntityTextfield
+      autoComplete="off"
+      autoFocus
+      name="points"
+      onChange={async (e) => await debounceUpdate(parseInt(e.target.value, 10))}
+      fullWidth
+      defaultValue={points}
+      InputProps={{
+        inputComponent: CreateEntityTextfieldInputPointsComponent,
+        endAdornment: (
+          <CreateEntityAutocompletePopperRenderInputAdornment position="end" onClick={async () => {
+            await submit(null)
+            toggleEditMode();
+          }}>
+            <CreateEntityAutocompletePopperRenderInputIcon />
+          </CreateEntityAutocompletePopperRenderInputAdornment>
+        ),
+      }}
+    />
+  );
+};
+
+const PointsField = ({ shouldDisplay, points = null, canEdit }) => {
   if (!shouldDisplay) return null;
-  const onClose = () => console.log('implement API');
+
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Points</TaskSectionLabel>
       <TaskFieldEditableContent
-        onClose={onClose}
+        canAddItem={canEdit && points === null}
+        addContent={({ toggleAddMode }) => {
+          return <EditContent toggleEditMode={toggleAddMode} points={points} />;
+        }}
         ViewContent={({ toggleEditMode }) => (
           <ViewContent points={points} toggleEditMode={toggleEditMode} canEdit={canEdit} />
         )}
-        EditableContent={({ toggleEditMode }) => (
-          <EditContent points={points} toggleEditMode={toggleEditMode} canEdit={canEdit} />
-        )}
+        editableContent={({ toggleEditMode }) => <EditContent points={points} toggleEditMode={toggleEditMode} />}
       />
     </TaskSectionDisplayDiv>
   );

@@ -8,7 +8,7 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { AmountWrapper, DataDisplayWrapper, GrantAmountWrapper } from './styles';
 
-const MultipleDataDisplay = ({ children }) => (
+export const MultipleDataDisplay = ({ children }) => (
   <Grid container display="flex" gap="12px">
     {children}
   </Grid>

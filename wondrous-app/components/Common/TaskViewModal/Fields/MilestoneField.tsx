@@ -3,14 +3,16 @@ import { filterUserOptions, useGetMilestones } from 'components/CreateEntity/Cre
 import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
 import EditIcon from 'components/Icons/editIcon';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import palette from 'theme/palette';
-import { TaskSectionImageContent, TaskSectionLabel } from '../helpers';
+import { TaskSectionLabel } from '../helpers';
 import {
   TaskSectionDisplayDiv,
   TaskSectionInfoMilestoneIcon,
   TaskSectionInfoTextMilestone,
   ViewFieldWrapper,
 } from '../styles';
+import { FIELDS, useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
@@ -45,24 +47,24 @@ const MilestoneFieldContent = ({ milestoneId, getTaskById, milestoneTitle, canEd
 
 const EditMode = ({ orgId, podId, milestoneId, toggleEditMode }) => {
   const milestonesData = useGetMilestones(orgId, podId);
+  const { submit, error } = useSubmit({ field: FIELDS.MILESTONE });
 
   return (
     <MilestoneSearch
       autoFocus
       options={filterUserOptions(milestonesData)}
       value={milestoneId}
-      onChange={(milestoneId) => {
-        console.log('on change');
-      }}
-      handleClose={() => {
+      onChange={async (milestoneId) => {
+        await submit(milestoneId);
         toggleEditMode();
-        console.log(' on close, delete here');
+      }}
+      handleClose={async () => {
+        toggleEditMode();
+        await submit(null);
       }}
     />
   );
 };
-
-// TODO: IMPLEMENT API
 
 const MilestoneField = ({
   shouldDisplay,
@@ -75,9 +77,7 @@ const MilestoneField = ({
   podId,
 }) => {
   if (!shouldDisplay) return null;
-  const onClose = () => {
-    console.log('on close IMPLEMENT API');
-  };
+
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Milestone</TaskSectionLabel>
@@ -91,7 +91,11 @@ const MilestoneField = ({
             canEdit={canEdit && !isSubtask}
           />
         )}
-        EditableContent={({ toggleEditMode }) => (
+        addContent={({ toggleAddMode }) => (
+          <EditMode orgId={orgId} podId={podId} milestoneId={milestoneId} toggleEditMode={toggleAddMode} />
+        )}
+        canAddItem={canEdit && !milestoneId}
+        editableContent={({ toggleEditMode }) => (
           <EditMode orgId={orgId} podId={podId} milestoneId={milestoneId} toggleEditMode={toggleEditMode} />
         )}
       />
