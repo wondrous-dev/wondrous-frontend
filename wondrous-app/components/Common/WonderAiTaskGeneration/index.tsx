@@ -195,7 +195,7 @@ const GeneratedTaskRow = ({
       <TrashIcon
         onClick={() => {
           const newList = generatedTaskList.filter((item) => item.tempId !== task.tempId);
-          const newSelectedList = selectedList.filter((item) => item.tempId !== task.tempId);
+          const newSelectedList = selectedList.filter((item) => !item || item.tempId !== task.tempId);
           setGeneratedTaskList([...newList]);
           setSelectedList([...newSelectedList]);
         }}
@@ -570,12 +570,13 @@ const WonderAiTaskGeneration = () => {
 
                   setGeneratedTaskList(newTaskList);
                   const newSelectedList = selectedList.map((task, index) => {
-                    if (task.tempId === taskViewIndex) {
+                    if (task?.tempId === taskViewIndex) {
                       return {
                         ...task,
                         [field]: value,
                       };
                     }
+                    return task;
                   });
                   setSelectedList(newSelectedList);
                 } else {
