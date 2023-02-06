@@ -35,6 +35,7 @@ import {
   BottomSelectCountText,
   ClearSelectionButton,
   GeneratedClickableTaskRow,
+  StyledCircularProgress,
 } from 'components/Common/WonderAiTaskGeneration/styles';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_GPT_TASKS, GENERATE_GPT_TASKS } from 'graphql/mutations';
@@ -470,12 +471,7 @@ const WonderAiTaskGeneration = () => {
           </HelperFlexDiv>
           {generatedGPTTaskLoading ? (
             <LoadingDiv>
-              <CircularProgress
-                style={{
-                  color: palette.highlightPurple,
-                }}
-                size={20}
-              />
+              <StyledCircularProgress size={20} />
               <LoadingText>Generating tasks...this may take some time</LoadingText>
             </LoadingDiv>
           ) : (
@@ -576,60 +572,62 @@ const WonderAiTaskGeneration = () => {
           )}
         </PromptContainer>
       </Grid>
-      <Grid sm={0} md={4} lg={5} item>
-        <RightPanelSection>
-          {taskToView ? (
-            <RightPanel
-              entityType={taskToViewType}
-              editor={editor}
-              setField={(field, value) => {
-                if (clickSelectedList) {
-                  const newTaskList = generatedTaskList.map((task, index) => {
-                    if (index === taskViewIndex) {
-                      return {
-                        ...task,
-                        [field]: value,
-                      };
-                    }
-                    return task;
-                  });
+      {!isMobile && (
+        <Grid sm={0} md={4} lg={5} item>
+          <RightPanelSection>
+            {taskToView ? (
+              <RightPanel
+                entityType={taskToViewType}
+                editor={editor}
+                setField={(field, value) => {
+                  if (clickSelectedList) {
+                    const newTaskList = generatedTaskList.map((task, index) => {
+                      if (index === taskViewIndex) {
+                        return {
+                          ...task,
+                          [field]: value,
+                        };
+                      }
+                      return task;
+                    });
 
-                  setGeneratedTaskList(newTaskList);
-                  const newSelectedList = selectedList.map((task, index) => {
-                    if (task?.tempId === taskViewIndex) {
-                      return {
-                        ...task,
-                        [field]: value,
-                      };
+                    setGeneratedTaskList(newTaskList);
+                    const newSelectedList = selectedList.map((task, index) => {
+                      if (task?.tempId === taskViewIndex) {
+                        return {
+                          ...task,
+                          [field]: value,
+                        };
+                      }
+                      return task;
+                    });
+                    setSelectedList(newSelectedList);
+                  } else {
+                    if (taskToViewType === ENTITIES_TYPES.MILESTONE) {
+                      setMilestoneField(field, value);
                     }
-                    return task;
-                  });
-                  setSelectedList(newSelectedList);
-                } else {
-                  if (taskToViewType === ENTITIES_TYPES.MILESTONE) {
-                    setMilestoneField(field, value);
+                    if (taskToViewType === ENTITIES_TYPES.TASK) {
+                      setParentTaskField(field, value);
+                    }
                   }
-                  if (taskToViewType === ENTITIES_TYPES.TASK) {
-                    setParentTaskField(field, value);
-                  }
-                }
 
-                setTaskToView({
-                  ...taskToView,
-                  [field]: value,
-                });
-              }}
-              orgId={orgId}
-              podId={podId}
-              existingTask={taskToView}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          ) : (
-            <RobotHand />
-          )}
-        </RightPanelSection>
-      </Grid>
+                  setTaskToView({
+                    ...taskToView,
+                    [field]: value,
+                  });
+                }}
+                orgId={orgId}
+                podId={podId}
+                existingTask={taskToView}
+                errors={errors}
+                setErrors={setErrors}
+              />
+            ) : (
+              <RobotHand />
+            )}
+          </RightPanelSection>
+        </Grid>
+      )}
     </Grid>
   );
 };
