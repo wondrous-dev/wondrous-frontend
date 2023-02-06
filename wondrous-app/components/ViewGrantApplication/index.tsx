@@ -64,6 +64,7 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { GrantApplicationStatusManager, OrgViewer, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';
+import { Project, WalletAddress } from './EditableFields';
 
 const GRANT_APPLICATION_STATUS_LABELS = {
   [GRANT_APPLICATION_STATUSES.APPROVED]: {
@@ -103,7 +104,7 @@ const FIELDS_CONFIG = [
   },
   {
     component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
-    shouldDisplay: ({ hasManageRights }): boolean => hasManageRights,
+    shouldDisplay: ({ hasManageRights }) => hasManageRights,
   },
   {
     label: 'Grant amount',
@@ -115,11 +116,11 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Wallet Address',
-    component: ({ grantApplication: { paymentAddress } }) => <WalletAddressViewer walletAddress={paymentAddress} />,
+    component: ({ grantApplication: { paymentAddress }, canEdit }) => <WalletAddress canEdit={canEdit} paymentAddress={paymentAddress} />,
   },
   {
     label: 'Project',
-    component: ({ grantApplication }) => <OrgViewer grantApplication={grantApplication} />,
+    component: ({ grantApplication, canEdit }) => <Project grantApplication={grantApplication} canEdit={canEdit}/>,
   },
 ];
 
@@ -339,7 +340,7 @@ const ViewGrantApplication = ({ onClose }) => {
                           <TaskSectionDisplayLabelText>{field.label}</TaskSectionDisplayLabelText>
                         </GrantSectionDisplayLabel>
                       )}
-                      <field.component grantApplication={grantApplication} />
+                      <field.component grantApplication={grantApplication} canEdit={canEditAndComment}/>
                     </TaskSectionDisplayDiv>
                   );
                 })}

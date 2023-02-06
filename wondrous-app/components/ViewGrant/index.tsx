@@ -43,16 +43,15 @@ import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { TaskContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { Categories, DataDisplay } from './Fields';
 import ViewGrantFooter from './Footer';
 import GrantMenuStatus from './GrantMenuStatus';
 import { DescriptionWrapper } from './styles';
 import { canViewGrant } from './utils';
-import { PaymentData, Dates, Eligibility } from './EditableFields';
+import { PaymentData, Dates, Eligibility, Visibility } from './EditableFields';
+import { CategoryField } from 'components/Common/TaskViewModal/Fields';
 
 const FIELDS_CONFIG = [
   {
-    label: 'Grant amount',
     component: ({ grant: { reward, numOfGrant }, canEdit }) => (
       <PaymentData reward={reward} numOfGrant={numOfGrant} canEdit={canEdit} />
     ),
@@ -74,11 +73,11 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Visibility',
-    component: ({ grant: { privacyLevel } }) => <DataDisplay label={PRIVACY_LABELS[privacyLevel] || 'Private'} />,
+    component: ({ grant: { privacyLevel }, canEdit }) => <Visibility privacyLevel={privacyLevel} canEdit={canEdit} />,
   },
   {
     label: 'Categories',
-    component: ({ grant: { categories } }) => <Categories categories={categories} />,
+    component: ({ grant: { categories }, canEdit }) => <CategoryField labels={categories} canEdit={canEdit}/>,
     shouldDisplay: ({ grant: { categories } }): boolean => !!categories?.length,
   },
 ];
@@ -286,6 +285,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                           }
                           return (
                             <TaskSectionDisplayDiv key={idx}>
+                              {field.label ? <TaskSectionLabel>{field.label}</TaskSectionLabel> : null}
                               <field.component grant={grant} canEdit={canEdit} />
                             </TaskSectionDisplayDiv>
                           );

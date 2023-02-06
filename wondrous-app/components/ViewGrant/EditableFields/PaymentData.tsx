@@ -52,8 +52,7 @@ const PaymentData = ({ reward, numOfGrant, canEdit }) => {
         )}
         ViewContent={({ toggleEditMode }) => (
           <>  
-            <TaskSectionLabel>Grant amount</TaskSectionLabel>
-
+          <TaskSectionLabel>Grant amount</TaskSectionLabel>
             <ViewContent canEdit={canEdit} toggleEditMode={toggleEditMode} reward={reward} numOfGrant={numOfGrant} />
           </>
         )}

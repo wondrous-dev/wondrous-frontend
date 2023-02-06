@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { UPDATE_TASK } from 'graphql/mutations';
 import { useContext, useState } from 'react';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { useTaskContext } from 'utils/hooks';
 import * as Yup from 'yup';
 
@@ -74,6 +75,18 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
     }
   };
 
+  const update = async (input) => {
+    if(entityType === ENTITIES_TYPES.TASK) {
+      return await updateTask({
+        variables: {
+          taskId: fetchedTask.id,
+          input
+        }
+      })
+    }
+    return () => new Error('function not implemented for this entityType yet')
+  }
+
   const submit = async (value, restInputVariables = {}) => {
     setError(null);
     const input = {
@@ -88,12 +101,7 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
         return;
       }
     }
-    return updateTask({
-      variables: {
-        taskId: fetchedTask.id,
-        input
-      },
-    });
+    return await update(input)
   };
   return { error, submit };
 };

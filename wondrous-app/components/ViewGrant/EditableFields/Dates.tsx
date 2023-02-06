@@ -26,10 +26,9 @@ const ViewContent = ({ toggleEditMode, startDate, endDate, canEdit }) => (
   </ViewFieldWrapper>
 );
 const EditContent = ({ toggleManageMode, startDate = null, endDate = null }) => (
-  <Dates startDate={startDate} endDate={endDate} onChange={(key, value) => console.log(key, value)} />
+  <Dates hideLabel startDate={startDate} endDate={endDate} onChange={(key, value) => console.log(key, value)} />
 );
 
-const Label = () => <TaskSectionLabel>Dates</TaskSectionLabel>;
 
 const EditableDates = ({ startDate, endDate, canEdit }) => {
   return (
@@ -42,7 +41,6 @@ const EditableDates = ({ startDate, endDate, canEdit }) => {
           <ViewContent startDate={startDate} endDate={endDate} toggleEditMode={toggleEditMode} canEdit={canEdit} />
         </>
       )}
-      addItemLabel={Label}
       canAddItem={!startDate && !endDate && canEdit}
       addContent={({ toggleAddMode }) => <EditContent toggleManageMode={toggleAddMode} />}
     />
