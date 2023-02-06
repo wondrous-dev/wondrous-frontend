@@ -1,5 +1,5 @@
 import { OptionUnstyled, PopperUnstyled, SelectUnstyled } from '@mui/base';
-import { TextField, Typography } from '@mui/material';
+import { CircularProgress, TextField, Typography } from '@mui/material';
 import styled from 'styled-components';
 import scrollBarStyles from 'components/Common/ScrollbarStyles';
 import palette from 'theme/palette';
@@ -160,6 +160,14 @@ export const PromptInput = styled(TextField)`
     .MuiInputBase-root {
       width: 100%;
       overflow-x: scroll;
+      &::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+      /* Hide scrollbar for IE, Edge and Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
     }
   }
 `;
@@ -222,7 +230,11 @@ export const HelperText = styled(Typography)`
     margin-left: 14px;
   }
 `;
-
+export const StyledCircularProgress = styled(CircularProgress)`
+  .MuiCircularProgress-circle {
+    color: ${palette.highlightBlue};
+  }
+`;
 export const SuggestionRowContainer = styled.div`
   cursor: pointer;
   padding: 8px;
