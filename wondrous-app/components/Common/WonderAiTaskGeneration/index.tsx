@@ -48,7 +48,7 @@ import { deserializeRichText, extractMentions, useEditor } from 'components/Rich
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
 import { GET_GPT_ENTITY_DESCRIPTION } from 'graphql/queries/gptEntityDescription';
-import { ErrorText, Flex } from '..';
+import { ErrorText } from '..';
 import RightPanel from './rightPanel';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 

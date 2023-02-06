@@ -34,6 +34,9 @@ import {
   CreateEntityTextfield,
   CreateEntityTitle,
   CreateEntityWrapper,
+  EditorContainer,
+  EditorPlaceholder,
+  EditorToolbar,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import {} from 'components/Common/WonderAiTaskGeneration/styles';
 import { useMutation, useQuery } from '@apollo/client';
@@ -69,7 +72,6 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import moment from 'moment';
 import { cloneDeep, isEmpty, isNull } from 'lodash';
 import { useRouter } from 'next/router';
-import { EditorContainer, EditorPlaceholder, EditorToolbar } from 'components/CreateEntity/styles';
 import { ReactEditor } from 'slate-react';
 import { Editor, Transforms } from 'slate';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
