@@ -38,7 +38,7 @@ import {
 } from 'components/Common/WonderAiTaskGeneration/styles';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_GPT_TASKS, GENERATE_GPT_TASKS } from 'graphql/mutations';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { useIsMobile, useOrgBoard, usePodBoard } from 'utils/hooks';
 import { CircularProgress } from '@mui/material';
 import palette from 'theme/palette';
 import { entityTypeData } from 'components/CreateEntity/CreateEntityModal/Helpers';
@@ -348,7 +348,7 @@ const WonderAiTaskGeneration = () => {
       setEntityDescription(savedEntityDescription);
     }
   }, [savedEntityDescription]);
-
+  const isMobile = useIsMobile();
   return (
     <Grid container>
       <Grid md={8} lg={7} item>
@@ -388,17 +388,19 @@ const WonderAiTaskGeneration = () => {
                   </PromptGenerationTypePopperOption>
                 ))}
               </PromptGenerationTypeSelect>
-              <PromptInput
-                autoComplete="off"
-                name="prompt"
-                onChange={(event) => {
-                  setActionPrompt(event.target.value);
-                  setFormErrors({ ...formErrors, actionPrompt: null });
-                }}
-                placeholder="Enter desired action"
-                value={actionPrompt}
-                error={formErrors.actionPrompt}
-              />
+              {!isMobile && (
+                <PromptInput
+                  autoComplete="off"
+                  name="prompt"
+                  onChange={(event) => {
+                    setActionPrompt(event.target.value);
+                    setFormErrors({ ...formErrors, actionPrompt: null });
+                  }}
+                  placeholder="Enter desired action"
+                  value={actionPrompt}
+                  error={formErrors.actionPrompt}
+                />
+              )}
             </PromptInputDiv>
             {formErrors.actionPrompt && (
               <div
@@ -409,6 +411,25 @@ const WonderAiTaskGeneration = () => {
               >
                 <ErrorText>{formErrors.actionPrompt}</ErrorText>
               </div>
+            )}
+            {isMobile && (
+              <PromptInputDiv>
+                <PromptInput
+                  autoComplete="off"
+                  name="prompt"
+                  onChange={(event) => {
+                    setActionPrompt(event.target.value);
+                    setFormErrors({ ...formErrors, actionPrompt: null });
+                  }}
+                  placeholder="Enter desired action"
+                  value={actionPrompt}
+                  error={formErrors.actionPrompt}
+                  style={{
+                    flex: 1,
+                    marginLeft: '0',
+                  }}
+                />
+              </PromptInputDiv>
             )}
             <PromptInputDiv>
               <EntityInput
@@ -520,12 +541,17 @@ const WonderAiTaskGeneration = () => {
                     />
                   ))}
                   <BottomSelectBarContainer>
-                    <BottomSelectCountText>{`Creating ${selectedList?.length} items`}</BottomSelectCountText>
-                    <div
-                      style={{
-                        flex: 1,
-                      }}
-                    />
+                    {!isMobile && (
+                      <>
+                        <BottomSelectCountText>{`Creating ${selectedList?.length} items`}</BottomSelectCountText>
+                        <div
+                          style={{
+                            flex: 1,
+                          }}
+                        />
+                      </>
+                    )}
+
                     <ClearSelectionButton onClick={() => setSelectedList([])}>
                       <ActionButtonText>Clear Selection</ActionButtonText>
                     </ClearSelectionButton>
