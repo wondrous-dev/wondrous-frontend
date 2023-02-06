@@ -14,8 +14,9 @@ import {
   NumberedList,
   RichTextStyled,
 } from 'components/RichTextPlate/styles';
-import { isRichText } from './utils';
+import { ElementTypes } from 'components/RichTextPlate/typescript/plateTypes';
 import palette from '../../theme/palette';
+import { isRichText } from './utils';
 
 const renderNodes = (nodes) =>
   nodes.map((node, i) => {
@@ -28,7 +29,7 @@ const renderNodes = (nodes) =>
     }
     let mentionable = '';
 
-    if (node.type === 'mention' && node.value) {
+    if (node.type === ElementTypes.ELEMENT_MENTION && node.value) {
       mentionable = node.value.substring(1);
     }
 
@@ -38,8 +39,8 @@ const renderNodes = (nodes) =>
     const checkboxId = `checkbox-${i}`;
 
     switch (node.type) {
-      case 'p':
-      case 'paragraph':
+      case ElementTypes.ELEMENT_P:
+      case ElementTypes.ELEMENT_PARAGRAPH:
         if (children[0]?.props?.children) {
           return <p key={i}>{children}</p>;
         }
@@ -49,41 +50,41 @@ const renderNodes = (nodes) =>
             <p key={i}>{children}</p>
           </>
         );
-      case 'h1':
+      case ElementTypes.ELEMENT_H1:
         return (
           <Typography variant="h1" fontSize="28px" sx={{ color: palette.grey250 }}>
             {children}
           </Typography>
         );
-      case 'h2':
+      case ElementTypes.ELEMENT_H2:
         return (
           <Typography variant="h2" fontSize="22px" sx={{ color: palette.grey250 }}>
             {children}
           </Typography>
         );
-      case 'h3':
+      case ElementTypes.ELEMENT_H3:
         return (
           <Typography variant="h3" fontSize="16px" sx={{ color: palette.grey250 }}>
             {children}
           </Typography>
         );
-      case 'li':
+      case ElementTypes.ELEMENT_LI:
         return <li>{children}</li>;
-      case 'ol':
+      case ElementTypes.ELEMENT_OL:
         return <NumberedList>{children}</NumberedList>;
-      case 'ul':
+      case ElementTypes.ELEMENT_UL:
         return <BulletedList>{children}</BulletedList>;
-      case 'blockquote':
+      case ElementTypes.ELEMENT_BLOCKQUOTE:
         return <Blockquote>{children}</Blockquote>;
-      case 'a':
+      case ElementTypes.ELEMENT_LINK:
         return (
           <NoUnderlineLink key={i} href={node.url} target="_blank" rel="noopener noreferrer">
             {node.children[0]?.text}
           </NoUnderlineLink>
         );
-      case 'hr':
+      case ElementTypes.ELEMENT_HR:
         return <hr />;
-      case 'action_item':
+      case ElementTypes.ELEMENT_TODO_LI:
         return (
           <CheckboxWrapper>
             <input type="checkbox" id={checkboxId} name={checkboxId} checked={isChecked} />
@@ -92,7 +93,7 @@ const renderNodes = (nodes) =>
             </CheckboxLabel>
           </CheckboxWrapper>
         );
-      case 'mention':
+      case ElementTypes.ELEMENT_MENTION:
         return (
           <NoUnderlineLink key={i} href={`/profile/${mentionable}/about`}>
             @{mentionable}

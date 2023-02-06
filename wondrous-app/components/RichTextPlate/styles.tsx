@@ -66,11 +66,11 @@ export const RichTextStyled = styled.div`
   line-height: 24px;
 
   a {
-    color: rgb(0, 186, 255);
+    color: ${palette.highlightBlue};
     text-decoration: none;
 
     &:hover {
-      color: rgb(138, 223, 255);
+      color: ${palette.blue30};
     }
   }
 

@@ -1,10 +1,12 @@
+import { ElementTypes } from 'components/RichTextPlate/typescript/plateTypes';
+
 export const extractMentions = (nodes) => {
   const result: string[] = [];
 
   for (const node of nodes) {
     const { type, children } = node;
 
-    if (type === 'mention') {
+    if (type === ElementTypes.ELEMENT_MENTION) {
       result.push(node.id);
     } else if (children) {
       result.push(...extractMentions(children));

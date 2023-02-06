@@ -64,21 +64,6 @@
 
 
 /* Plate text editor */
-form .slate-HeadingToolbar {
-  padding: 4px;
-  margin: 0 0 1.25rem;
-  background: #282828;
-  border-bottom: none;
-  min-height: unset;
-  box-sizing: inherit;
-  border-radius: 4px;
-  z-index: 1000;
-  width: 100%;
-  color: #c4c4c4;
-  display: flex;
-  justify-content: space-between;
-}
-
 form .slate-ToolbarButton-active[data-testid="ToolbarButton"],
 form .slate-ToolbarButton:hover[data-testid="ToolbarButton"] {
   color: #ffffff;

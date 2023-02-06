@@ -12,26 +12,13 @@ import {
   EElement,
   EElementEntry,
   EElementOrText,
-  ELEMENT_BLOCKQUOTE,
   ELEMENT_CODE_BLOCK,
   ELEMENT_CODE_LINE,
-  ELEMENT_H1,
-  ELEMENT_H2,
-  ELEMENT_H3,
-  ELEMENT_HR,
-  ELEMENT_IMAGE,
-  ELEMENT_LI,
-  ELEMENT_LINK,
   ELEMENT_MEDIA_EMBED,
-  ELEMENT_MENTION,
   ELEMENT_MENTION_INPUT,
-  ELEMENT_OL,
-  ELEMENT_PARAGRAPH,
   ELEMENT_TABLE,
   ELEMENT_TD,
-  ELEMENT_TODO_LI,
   ELEMENT_TR,
-  ELEMENT_UL,
   EMarks,
   ENode,
   ENodeEntry,
@@ -55,7 +42,6 @@ import {
   SerializeHtml,
   TCommentText,
   TElement,
-  TImageElement,
   TLinkElement,
   TMediaEmbedElement,
   TMentionElement,
@@ -76,8 +62,26 @@ import {
 } from '@udecode/plate';
 import { CSSProperties } from 'styled-components';
 
-export enum CustomElements {
-  Image = 'image',
+export enum ElementTypes {
+  ELEMENT_P = 'p',
+  ELEMENT_PARAGRAPH = 'paragraph',
+  ELEMENT_H1 = 'h1',
+  ELEMENT_H2 = 'h2',
+  ELEMENT_H3 = 'h3',
+  ELEMENT_IMAGE = 'image',
+  ELEMENT_BLOCKQUOTE = 'blockquote',
+  ELEMENT_HR = 'hr',
+  ELEMENT_LI = 'li',
+  ELEMENT_OL = 'ol',
+  ELEMENT_UL = 'ul',
+  ELEMENT_TODO_LI = 'action_item',
+  ELEMENT_MENTION = 'mention',
+  ELEMENT_MENTION_INPUT = 'mention_input',
+  ELEMENT_LINK = 'a',
+  MARK_BOLD = 'bold',
+  MARK_ITALIC = 'italic',
+  MARK_UNDERLINE = 'underline',
+  MARK_STRIKETHROUGH = 'strikethrough',
 }
 
 /**
@@ -112,7 +116,7 @@ export interface RichText extends TText, TCommentText {
  */
 
 export interface MyLinkElement extends TLinkElement {
-  type: typeof ELEMENT_LINK;
+  type: typeof ElementTypes.ELEMENT_LINK;
   children: RichText[];
 }
 
@@ -122,7 +126,7 @@ export interface MyMentionInputElement extends TMentionInputElement {
 }
 
 export interface MyMentionElement extends TMentionElement {
-  type: typeof ELEMENT_MENTION;
+  type: typeof ElementTypes.ELEMENT_MENTION;
   children: [EmptyText];
 }
 
@@ -161,27 +165,28 @@ export interface MyBlockElement extends TElement, MyIndentListProps, MyLineHeigh
  */
 
 export interface MyParagraphElement extends MyBlockElement {
-  type: typeof ELEMENT_PARAGRAPH;
+  // type: typeof ELEMENT_PARAGRAPH;
+  type: typeof ElementTypes.ELEMENT_P;
   children: MyInlineChildren;
 }
 
 export interface MyH1Element extends MyBlockElement {
-  type: typeof ELEMENT_H1;
+  type: typeof ElementTypes.ELEMENT_H1;
   children: MyInlineChildren;
 }
 
 export interface MyH2Element extends MyBlockElement {
-  type: typeof ELEMENT_H2;
+  type: typeof ElementTypes.ELEMENT_H2;
   children: MyInlineChildren;
 }
 
 export interface MyH3Element extends MyBlockElement {
-  type: typeof ELEMENT_H3;
+  type: typeof ElementTypes.ELEMENT_H3;
   children: MyInlineChildren;
 }
 
 export interface MyBlockquoteElement extends MyBlockElement {
-  type: typeof ELEMENT_BLOCKQUOTE;
+  type: typeof ElementTypes.ELEMENT_BLOCKQUOTE;
   children: MyInlineChildren;
 }
 
@@ -211,28 +216,23 @@ export interface MyTableCellElement extends TElement {
 }
 
 export interface MyBulletedListElement extends TElement, MyBlockElement {
-  type: typeof ELEMENT_UL;
+  type: typeof ElementTypes.ELEMENT_UL;
   children: MyListItemElement[];
 }
 
 export interface MyNumberedListElement extends TElement, MyBlockElement {
-  type: typeof ELEMENT_OL;
+  type: typeof ElementTypes.ELEMENT_OL;
   children: MyListItemElement[];
 }
 
 export interface MyListItemElement extends TElement, MyBlockElement {
-  type: typeof ELEMENT_LI;
+  type: typeof ElementTypes.ELEMENT_LI;
   children: MyInlineChildren;
 }
 
 export interface MyTodoListElement extends TTodoListItemElement, MyBlockElement {
-  type: typeof ELEMENT_TODO_LI;
+  type: typeof ElementTypes.ELEMENT_TODO_LI;
   children: MyInlineChildren;
-}
-
-export interface MyImageElement extends TImageElement, MyBlockElement {
-  type: typeof ELEMENT_IMAGE;
-  children: [EmptyText];
 }
 
 export interface MyMediaEmbedElement extends TMediaEmbedElement, MyBlockElement {
@@ -241,16 +241,9 @@ export interface MyMediaEmbedElement extends TMediaEmbedElement, MyBlockElement 
 }
 
 export interface MyHrElement extends MyBlockElement {
-  type: typeof ELEMENT_HR;
+  type: typeof ElementTypes.ELEMENT_HR;
   children: [EmptyText];
 }
-
-// export interface MyExcalidrawElement
-//   extends TExcalidrawElement,
-//     MyBlockElement {
-//   type: typeof ELEMENT_EXCALIDRAW;
-//   children: [EmptyText];
-// }
 
 export type MyNestableBlock = MyParagraphElement;
 
@@ -268,10 +261,8 @@ export type MyRootBlock =
   | MyBulletedListElement
   | MyNumberedListElement
   | MyTodoListElement
-  | MyImageElement
   | MyMediaEmbedElement
   | MyHrElement;
-// | MyExcalidrawElement;
 
 export type MyValue = MyRootBlock[];
 
