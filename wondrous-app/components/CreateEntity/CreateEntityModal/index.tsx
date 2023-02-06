@@ -168,7 +168,6 @@ import { MediaItem } from '../MediaItem';
 import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
-import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 import { TaskTemplatePickerWrapper } from './TaskTemplatePicker/styles';
 import CustomProposal from './CustomProposal';
 import SubmitterWalletConnectSelector from './Helpers/RequireSubmitterWalletconnect';
