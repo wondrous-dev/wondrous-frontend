@@ -1,6 +1,5 @@
 import Grid from '@mui/material/Grid';
-import DropdownSelect from 'components/Common/DropdownSelect';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import RobotHand from 'components/Common/WonderAiTaskGeneration/images/robot-hand.svg';
 import SmallRobotIcon from 'components/Common/WonderAiTaskGeneration/images/small-robot-icon.svg';
 import TrashIcon from 'components/Common/WonderAiTaskGeneration/images/trash-icon.svg';
@@ -445,7 +444,11 @@ const WonderAiTaskGeneration = () => {
                 <ActionButtonText>Generate</ActionButtonText>
               </ActionButton>
             </PromptInputDiv>
-            {generatedGPTTaskError && <ErrorText>There seems to be an error on our end - please try again!</ErrorText>}
+            {generatedGPTTaskError && (
+              <ErrorText>
+                There seems to be an error - this could be due to high usage or an unclear prompt. Please try again!
+              </ErrorText>
+            )}
           </PromptBox>
           <HelperFlexDiv>
             <SmallRobotIcon />
