@@ -10,6 +10,7 @@ import {
   CreateEntityAutocompletePopperRenderInputAdornment,
   CreateEntityAutocompletePopperRenderInputIcon,
   CreateEntityDefaultUserImage,
+  CreateEntityError,
   CreateEntityLabelAddButton,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
@@ -26,7 +27,7 @@ interface TaskFieldEditableContentProps {
   onClose?: (value?: any) => void;
   canAddItem?: boolean;
   addContent?: React.FC<{ toggleAddMode: () => void }>;
-  addItemLabel?: React.FC<{}>;
+  editGridStyle?: any;
 }
 
 export const TaskFieldEditableContent = ({
@@ -35,7 +36,7 @@ export const TaskFieldEditableContent = ({
   addContent = () => null,
   onClose = null,
   canAddItem = false,
-  addItemLabel = null,
+  editGridStyle = {},
 }: TaskFieldEditableContentProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
@@ -72,18 +73,22 @@ export const TaskFieldEditableContent = ({
 
   if (canAddItem) {
     return (
-      <>
-        {addItemLabel?.({})}
-        <CreateEntityLabelAddButton onClick={toggleAddMode} data-cy="button-add-assignee">
-          <CreateEntityAddButtonIcon />
-          <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
-        </CreateEntityLabelAddButton>
-      </>
+      <CreateEntityLabelAddButton onClick={toggleAddMode} data-cy="button-add-assignee">
+        <CreateEntityAddButtonIcon />
+        <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+      </CreateEntityLabelAddButton>
     );
   }
   if (isEditMode) {
     return (
-      <Grid ref={ref} width="100%" height="100%">
+      <Grid
+        ref={ref}
+        {...{
+          width: '100%',
+          height: '100%',
+          ...editGridStyle,
+        }}
+      >
         {editableContent({ toggleEditMode: toggleEditMode })}
       </Grid>
     );
@@ -127,6 +132,7 @@ interface IReviewerAssigneeAutocompleteProps {
   listBoxProps?: any;
   onDelete?: () => void;
   onSelect?: (value: string) => void;
+  error?: string;
 }
 
 export const ReviewerAssigneeAutocomplete = ({
@@ -138,6 +144,7 @@ export const ReviewerAssigneeAutocomplete = ({
   listBoxProps = {},
   onDelete,
   onSelect,
+  error = null,
 }: IReviewerAssigneeAutocompleteProps) => (
   <>
     <CreateEntityAutocompletePopper
@@ -197,6 +204,6 @@ export const ReviewerAssigneeAutocomplete = ({
       blurOnSelect
       error={false}
     />
-    {/* {hasError && <CreateEntityError>{hasError}</CreateEntityError>} */}
+    {error ? <CreateEntityError>{error}</CreateEntityError> : null}
   </>
 );

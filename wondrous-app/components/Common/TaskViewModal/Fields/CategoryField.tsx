@@ -1,14 +1,21 @@
 import { Grid } from '@mui/material';
+import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
+import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
+import {
+  ReviewerWrapper,
+  TaskSectionDisplayDiv,
+  TaskSectionInfoText,
+  ViewFieldWrapper,
+} from 'components/Common/TaskViewModal/styles';
+import { getInterestDisplay } from 'components/Common/UserInterestModal';
 import { filterCategoryValues, useGetCategories } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import DropdownSearch from 'components/DropdownSearch';
 import EditIcon from 'components/Icons/editIcon';
-import { useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import palette from 'theme/palette';
 import { CATEGORY_LABELS } from 'utils/constants';
-import { ReviewerWrapper, TaskSectionInfoText, ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
-import { FIELDS, useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
-import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
-import { getInterestDisplay } from 'components/Common/UserInterestModal';
+import { TaskSectionLabel } from '../helpers';
+import { FIELDS } from './hooks/constants';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
   <ReviewerWrapper showFullWidth>
@@ -26,10 +33,12 @@ const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
 );
 
 const labelsToValue = (labels) => {
-  // cover both cases where labels are objects ( tasks ) and strings ( grants )
+  // COVER BOTH GRANTS & TASKS
 
   const labelValues = labels?.map((label) => label?.name || label);
-  return Object.keys(CATEGORY_LABELS).filter((key) => labelValues?.includes(CATEGORY_LABELS[key]));
+  return Object.keys(CATEGORY_LABELS).filter(
+    (key) => labelValues?.includes(CATEGORY_LABELS[key]) || labelValues?.includes(key)
+  );
 };
 
 const EditableContent = ({ toggleEditMode, labels }) => {
@@ -55,9 +64,14 @@ const EditableContent = ({ toggleEditMode, labels }) => {
   );
 };
 
-const CategoryField = ({ labels = [], canEdit, shouldDisplay = true }) => {
+const CategoryField = ({ labels = [], canEdit, shouldDisplay = true, hideLabel = false }) => {
   if (!shouldDisplay) return null;
+
+  let Wrapper = hideLabel ? Fragment : TaskSectionDisplayDiv;
+
   return (
+    <Wrapper>
+      {hideLabel ? null : <TaskSectionLabel>Category</TaskSectionLabel>}
       <TaskFieldEditableContent
         canAddItem={canEdit && !labels?.length}
         addContent={({ toggleAddMode }) => <EditableContent labels={labels} toggleEditMode={toggleAddMode} />}
@@ -66,6 +80,7 @@ const CategoryField = ({ labels = [], canEdit, shouldDisplay = true }) => {
         )}
         editableContent={({ toggleEditMode }) => <EditableContent labels={labels} toggleEditMode={toggleEditMode} />}
       />
+    </Wrapper>
   );
 };
 

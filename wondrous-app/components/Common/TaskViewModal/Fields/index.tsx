@@ -8,3 +8,6 @@ export { default as MilestoneField } from './MilestoneField';
 export { default as PriorityField } from './PriorityField';
 export { default as CategoryField } from './CategoryField';
 export { default as TagsField } from './TagsField';
+export { default as Title } from './Title';
+export {default as Description} from './Description'
+export {default as StatusField} from './StatusField'

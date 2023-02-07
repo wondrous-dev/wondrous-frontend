@@ -1,6 +1,7 @@
 import Grid from '@mui/material/Grid';
 import { filterUserOptions, useGetMilestones } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
+import { CreateEntityError } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -12,7 +13,8 @@ import {
   TaskSectionInfoTextMilestone,
   ViewFieldWrapper,
 } from '../styles';
-import { FIELDS, useSubmit } from './hooks/useSubmit';
+import { FIELDS } from './hooks/constants';
+import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
@@ -50,19 +52,22 @@ const EditMode = ({ orgId, podId, milestoneId, toggleEditMode }) => {
   const { submit, error } = useSubmit({ field: FIELDS.MILESTONE });
 
   return (
-    <MilestoneSearch
-      autoFocus
-      options={filterUserOptions(milestonesData)}
-      value={milestoneId}
-      onChange={async (milestoneId) => {
-        await submit(milestoneId);
-        toggleEditMode();
-      }}
-      handleClose={async () => {
-        toggleEditMode();
-        await submit(null);
-      }}
-    />
+    <Grid display="flex" direction="column" gap="4px">
+      <MilestoneSearch
+        autoFocus
+        options={filterUserOptions(milestonesData)}
+        value={milestoneId}
+        onChange={async (milestoneId) => {
+          await submit(milestoneId);
+          toggleEditMode();
+        }}
+        handleClose={async () => {
+          toggleEditMode();
+          await submit(null);
+        }}
+      />
+      {error ? <CreateEntityError>{error}</CreateEntityError> : null}
+    </Grid>
   );
 };
 

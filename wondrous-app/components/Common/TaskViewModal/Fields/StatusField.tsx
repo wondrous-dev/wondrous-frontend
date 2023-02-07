@@ -1,0 +1,70 @@
+import Grid from '@mui/material/Grid';
+import TaskMenuStatus, { getStatusesNonProposalEntity, getStatusesProposal } from 'components/Common/TaskMenuStatus';
+import EditIcon from 'components/Icons/editIcon';
+import { useMemo } from 'react';
+import palette from 'theme/palette';
+import { ENTITIES_TYPES } from 'utils/constants';
+import { useTaskContext } from 'utils/hooks';
+import { TaskSectionLabel } from '../helpers';
+import { TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import { TaskFieldEditableContent } from './Shared';
+import { IconWrapper } from './styles';
+
+const EditContent = ({ isTaskProposal, toggleEditMode, fetchedTask }) => {
+  return <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />;
+};
+
+const ViewContent = ({canEdit, toggleEditMode, currentStatus}) => {
+    
+    return (
+        <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
+        <TaskSectionInfoText>
+        
+        <Grid 
+        display="flex" gap="6px" alignItems="center" justifyContent="center"
+        >
+<IconWrapper style={{
+    background: 'transparent'
+}}>
+{currentStatus?.icon}
+
+</IconWrapper>
+{currentStatus?.label ?? currentStatus?.name}
+            </Grid>
+        </TaskSectionInfoText>
+        <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+    </ViewFieldWrapper>
+
+    )
+}
+const StatusField = ({ shouldDisplay, canEdit, isTaskProposal, canArchive }) => {
+    const { fetchedTask } = useTaskContext();
+  if (!shouldDisplay) return null;
+
+  const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
+
+  const status = useMemo(() => {
+    if (isTaskProposal) {
+      return getStatusesProposal({ task: fetchedTask, entityType });
+    }
+    return getStatusesNonProposalEntity({ task: fetchedTask, entityType, canArchive });
+  }, [fetchedTask, entityType, canArchive])
+
+//   const status = getStatusesNonProposalEntity({ task: fetchedTask, entityType, canArchive });
+
+//   const  = getStatusesProposal({task: fetchedTask, entityType});
+
+
+  return (
+    <TaskSectionDisplayDiv>
+      <TaskSectionLabel>Status</TaskSectionLabel>
+      <TaskFieldEditableContent 
+        ViewContent={({toggleEditMode}) => <ViewContent 
+        currentStatus={status?.currentStatus}
+        canEdit={canEdit} toggleEditMode={toggleEditMode}/>}
+        editableContent={({toggleEditMode}) => <EditContent fetchedTask={fetchedTask} toggleEditMode={toggleEditMode} isTaskProposal={isTaskProposal} />}
+      />
+    </TaskSectionDisplayDiv>
+  );
+};
+export default StatusField;

@@ -190,15 +190,18 @@ export const filterOptionsWithPermission = (
     }));
 };
 
-export const filterCategoryValues = (categories = []) =>
-  categories?.map((category) =>
-    typeof category === 'string'
-      ? {
-          id: category,
-          label: CATEGORY_LABELS[category],
-        }
-      : category
-  );
+export const filterCategoryValues = (categories = []) => {
+  console.log(categories, 'categories')
+  return   categories?.map((category) =>
+  typeof category === 'string'
+    ? {
+        id: category,
+        label: CATEGORY_LABELS[category],
+      }
+    : category
+);
+
+}
 
 export const getPodObject = (pods, podId) => {
   let justCreatedPod = null;

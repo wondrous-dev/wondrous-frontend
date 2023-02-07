@@ -11,7 +11,8 @@ import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoTakeTask, TaskSectionInfoTakeTaskText } from '../styles';
 import { useUpdateTaskCardCache } from '../utils';
-import { useSubmit, FIELDS } from './hooks/useSubmit';
+import { FIELDS } from './hooks/constants';
+import { useSubmit } from './hooks/useSubmit';
 import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
 
 interface OrgUser {
@@ -37,7 +38,6 @@ const AssigneeContent = ({
   const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
   const { data: orgUsersData, search, fetchMoreOrgUsers, hasMoreOrgUsers } = useGetOrgUsers(fetchedTask?.orgId);
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
-  console.log(error, 'error')
   const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).map((orgUser: OrgUser) => ({
     ...orgUser,
     hide: orgUser?.value === user?.id,
@@ -98,6 +98,7 @@ const AssigneeContent = ({
         editableContent={({ toggleEditMode }) => (
           <ReviewerAssigneeAutocomplete
             options={filteredOrgUsersData}
+            error={error}
             currentOption={{
               ...fetchedTask.assignee,
               value: fetchedTask.assigneeId,

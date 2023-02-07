@@ -65,6 +65,7 @@ import typography from 'theme/typography';
 import { GrantApplicationStatusManager, OrgViewer, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';
 import { Project, WalletAddress } from './EditableFields';
+import { TaskContext } from 'utils/contexts';
 
 const GRANT_APPLICATION_STATUS_LABELS = {
   [GRANT_APPLICATION_STATUSES.APPROVED]: {
@@ -116,11 +117,13 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Wallet Address',
-    component: ({ grantApplication: { paymentAddress }, canEdit }) => <WalletAddress canEdit={canEdit} paymentAddress={paymentAddress} />,
+    component: ({ grantApplication: { paymentAddress }, canEdit }) => (
+      <WalletAddress canEdit={canEdit} paymentAddress={paymentAddress} />
+    ),
   },
   {
     label: 'Project',
-    component: ({ grantApplication, canEdit }) => <Project grantApplication={grantApplication} canEdit={canEdit}/>,
+    component: ({ grantApplication, canEdit }) => <Project grantApplication={grantApplication} canEdit={canEdit} />,
   },
 ];
 
@@ -196,7 +199,11 @@ const ViewGrantApplication = ({ onClose }) => {
 
   const statusAndIcon = GRANT_APPLICATION_STATUS_LABELS[status];
   return (
-    <>
+    <TaskContext.Provider
+      value={{
+        grantApplication,
+      }}
+    >
       <ArchiveTaskModal
         open={archiveTask}
         onArchive={() => {
@@ -340,7 +347,7 @@ const ViewGrantApplication = ({ onClose }) => {
                           <TaskSectionDisplayLabelText>{field.label}</TaskSectionDisplayLabelText>
                         </GrantSectionDisplayLabel>
                       )}
-                      <field.component grantApplication={grantApplication} canEdit={canEditAndComment}/>
+                      <field.component grantApplication={grantApplication} canEdit={canEditAndComment} />
                     </TaskSectionDisplayDiv>
                   );
                 })}
@@ -357,7 +364,7 @@ const ViewGrantApplication = ({ onClose }) => {
           />
         </TaskModalTaskData>
       </TaskModalCard>
-    </>
+    </TaskContext.Provider>
   );
 };
 

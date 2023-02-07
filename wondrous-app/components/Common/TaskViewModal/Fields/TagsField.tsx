@@ -6,7 +6,8 @@ import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import { ReviewerWrapper, TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
-import { FIELDS, useSubmit } from './hooks/useSubmit';
+import { FIELDS } from './hooks/constants';
+import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (

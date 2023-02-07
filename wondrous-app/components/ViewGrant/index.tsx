@@ -77,8 +77,8 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Categories',
-    component: ({ grant: { categories }, canEdit }) => <CategoryField labels={categories} canEdit={canEdit}/>,
-    shouldDisplay: ({ grant: { categories } }): boolean => !!categories?.length,
+    component: ({ grant: { categories }, canEdit }) => <CategoryField hideLabel labels={categories} canEdit={canEdit}/>,
+    shouldDisplay: ({ grant: { categories }, canEdit }): boolean => !!categories?.length || canEdit,
   },
 ];
 

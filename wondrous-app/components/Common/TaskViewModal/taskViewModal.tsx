@@ -117,6 +117,9 @@ import {
   PriorityField,
   CategoryField,
   TagsField,
+  Title,
+  Description,
+  StatusField,
 } from './Fields';
 import { entityTypeData, Fields } from 'components/CreateEntity/CreateEntityModal/Helpers';
 
@@ -661,7 +664,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                       </TaskModalHeader>
                       <TaskModalTaskData hideRowGap={isViewNft || isTaskProposal} fullScreen={fullScreen}>
                         <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
-                          <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
+                          <Title title={fetchedTask?.title} canEdit={canEdit}/>
                           {!isViewNft ? (
                             <TaskModalTaskStatusMoreInfo>
                               {fetchedTask?.snapshotId && (
@@ -670,13 +673,16 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                   <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                                 </TaskModalSnapshot>
                               )}
-                              {canEdit && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
                               {isMilestone && (
                                 <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
                               )}
                             </TaskModalTaskStatusMoreInfo>
                           ) : null}
-                          <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
+                          <Description 
+                            canEdit={canEdit}
+                            description={fetchedTask?.description}
+                            orgId={fetchedTask?.org.id}
+                          />
                           <TaskMediaWrapper media={fetchedTask?.media} />
                           {!fullScreen && <TaskBorder />}
                           {isTaskProposal && (
@@ -698,6 +704,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               setIsViewNft={setIsViewNft}
                               taskId={fetchedTask?.id}
                             />
+                            <StatusField shouldDisplay={!isViewNft} canEdit={canEdit} isTaskProposal={isTaskProposal} canArchive={canArchive}/>
                             <ReviewerField
                               shouldDisplay={
                                 !isTaskProposal && !isMilestone && (canEdit || reviewerData?.getTaskReviewers?.length)

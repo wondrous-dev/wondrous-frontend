@@ -42,6 +42,7 @@ const EditContent = ({ org, toggleEditMode }) => {
           height: '24px',
           width: '24px',
         }}
+        autoFocus
         value={org}
         onChange={(org) => console.log('on change')}
         label="Select project"

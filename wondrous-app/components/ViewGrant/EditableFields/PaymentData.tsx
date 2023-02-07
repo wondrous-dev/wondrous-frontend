@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 const ViewContent = ({ toggleEditMode, reward, numOfGrant, canEdit }) => {
   return (
-    <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
+    <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode} background="transparent">
       <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />
       <EditIcon stroke={palette.grey58} className="edit-icon-field" />
     </ViewFieldWrapper>

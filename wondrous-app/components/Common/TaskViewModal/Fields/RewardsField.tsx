@@ -10,6 +10,7 @@ import {
   CreateEntityAddButtonLabel,
   CreateEntityAutocompletePopperRenderInputAdornment,
   CreateEntityAutocompletePopperRenderInputIcon,
+  CreateEntityError,
   CreateEntityLabelAddButton,
   CreateEntityPaymentMethodOption,
   CreateEntityPaymentMethodSelect,
@@ -20,7 +21,7 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
 import { isEmpty } from 'lodash';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import palette from 'theme/palette';
 import debounce from 'lodash/debounce';
 import { useOutsideAlerter } from 'utils/hooks';
@@ -32,12 +33,17 @@ import {
   TaskSectionInfoPaymentMethodIcon,
   ViewFieldWrapper,
 } from '../styles';
-import { FIELDS, useSubmit } from './hooks/useSubmit';
+import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
+import { FIELDS } from './hooks/constants';
 
-const CreateReward = ({ handleReward, orgId, paymentMethodId, rewardAmount, toggleEditMode }) => {
+const CreateReward = ({ handleReward, orgId, paymentMethodId, rewardAmount, toggleEditMode, error }) => {
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
   const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
+  const [input, setInput] = useState({
+    paymentMethodId: paymentMethodId,
+    rewardAmount: rewardAmount || '',
+  });
 
   const debounceHandleReward = debounce(handleReward, 200);
   if (!activePaymentMethods?.length) {
@@ -45,163 +51,156 @@ const CreateReward = ({ handleReward, orgId, paymentMethodId, rewardAmount, togg
   }
 
   const onPaymentMethodChange = (value) => {
-    debounceHandleReward({
+    const newInput = {
+      ...input,
       paymentMethodId: value,
-    });
+    };
+    setInput(newInput);
+    debounceHandleReward(newInput);
   };
 
   const onInputChange = (e) => {
     const { value } = e.target;
-    const inputObj: { rewardAmount: string; paymentMethodId?: string } = {
-      rewardAmount: value,
+    const newInput = {
+      rewardAmount: parseFloat(value),
+      paymentMethodId: input.paymentMethodId || activePaymentMethods?.[0]?.id,
     };
-    if (!paymentMethodId) {
-      inputObj.paymentMethodId = activePaymentMethods?.[0]?.id;
-    }
-    debounceHandleReward(inputObj);
+    setInput(newInput);
+    debounceHandleReward(newInput);
   };
 
   return (
-    <CreateEntityWrapper>
-      <CreateEntityPaymentMethodSelect
-        name="rewards-payment-method"
-        defaultValue={paymentMethodId || activePaymentMethods?.[0]?.id}
-        onChange={onPaymentMethodChange}
-        renderValue={(selectedItem) => {
-          if (!selectedItem?.label?.props) return null;
-          return (
-            <CreateEntityPaymentMethodSelected>
-              <CreateEntityPaymentMethodItem {...selectedItem.label.props} />
-              <CreateEntitySelectArrowIcon />
-            </CreateEntityPaymentMethodSelected>
-          );
-        }}
-      >
-        {activePaymentMethods.map(({ symbol, icon, id, chain }) => (
-          <CreateEntityPaymentMethodOption key={id} value={id}>
-            <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
-          </CreateEntityPaymentMethodOption>
-        ))}
-      </CreateEntityPaymentMethodSelect>
-      <CreateEntityTextfield
-        autoComplete="off"
-        autoFocus
-        name="rewards"
-        onChange={onInputChange}
-        placeholder="Enter rewards..."
-        defaultValue={rewardAmount}
-        fullWidth
-        InputProps={{
-          inputComponent: CreateEntityTextfieldInputRewardComponent,
-          endAdornment: (
-            <CreateEntityAutocompletePopperRenderInputAdornment
-              position="end"
-              onClick={() => {
-                handleReward(null);
-                toggleEditMode();
-              }}
-            >
-              <CreateEntityAutocompletePopperRenderInputIcon />
-            </CreateEntityAutocompletePopperRenderInputAdornment>
-          ),
-        }}
-        onFocus={() => {}}
-      />
-    </CreateEntityWrapper>
-  );
-};
-
-const RewardField = ({ rewardAmount, symbol, icon, chain, user, handleReward, orgId, paymentMethodId, canEdit }) => {
-  return (
-    <TaskFieldEditableContent
-      editableContent={({ toggleEditMode }) => (
-        <CreateReward
-          orgId={orgId}
-          paymentMethodId={paymentMethodId}
-          rewardAmount={rewardAmount}
-          toggleEditMode={toggleEditMode}
-          handleReward={handleReward}
+    <Grid display="flex" direction="column" gap="4px">
+      <CreateEntityWrapper>
+        <CreateEntityPaymentMethodSelect
+          name="rewards-payment-method"
+          defaultValue={paymentMethodId || activePaymentMethods?.[0]?.id}
+          onChange={onPaymentMethodChange}
+          renderValue={(selectedItem) => {
+            if (!selectedItem?.label?.props) return null;
+            return (
+              <CreateEntityPaymentMethodSelected>
+                <CreateEntityPaymentMethodItem {...selectedItem.label.props} />
+                <CreateEntitySelectArrowIcon />
+              </CreateEntityPaymentMethodSelected>
+            );
+          }}
+        >
+          {activePaymentMethods.map(({ symbol, icon, id, chain }) => (
+            <CreateEntityPaymentMethodOption key={id} value={id}>
+              <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
+            </CreateEntityPaymentMethodOption>
+          ))}
+        </CreateEntityPaymentMethodSelect>
+        <CreateEntityTextfield
+          autoComplete="off"
+          autoFocus
+          name="rewards"
+          onChange={onInputChange}
+          placeholder="Enter rewards..."
+          defaultValue={rewardAmount}
+          fullWidth
+          InputProps={{
+            inputComponent: CreateEntityTextfieldInputRewardComponent,
+            endAdornment: (
+              <CreateEntityAutocompletePopperRenderInputAdornment
+                position="end"
+                onClick={() => {
+                  handleReward(null);
+                  toggleEditMode();
+                }}
+              >
+                <CreateEntityAutocompletePopperRenderInputIcon />
+              </CreateEntityAutocompletePopperRenderInputAdornment>
+            ),
+          }}
+          onFocus={() => {}}
         />
-      )}
-      ViewContent={({ toggleEditMode }) => (
-        <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
-          <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
-            <TaskSectionInfoPaymentMethodIcon src={icon} />
-            <TaskSectionInfoPaymentAmount>
-              {rewardAmount} {symbol}
-            </TaskSectionInfoPaymentAmount>
-            <TaskSectionInfoPaymentMethodChain> on {chain}</TaskSectionInfoPaymentMethodChain>
-            {user ? <ConnectToWallet user={user} /> : null}
-          </Grid>
-          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-        </ViewFieldWrapper>
-      )}
-    />
+      </CreateEntityWrapper>
+      {error ? <CreateEntityError>{error}</CreateEntityError> : null}
+    </Grid>
   );
 };
 
 const Rewards = ({ fetchedTask, user, canEdit, shouldDisplay }) => {
   const rewards = fetchedTask?.rewards;
-  const [showAdd, setShowAdd] = useState(false);
   const ref = useRef();
   const { submit, error } = useSubmit({ field: FIELDS.REWARDS });
-  
-  const values = rewards.map((reward) => ({
-    paymentMethodId: reward.paymentMethodId,
-    rewardAmount: reward.rewardAmount,
-  }));
-  
-  const handleReward = (idx) => async (value) => {
+
+  const values = useMemo(
+    () =>
+      rewards.map((reward) => ({
+        paymentMethodId: reward.paymentMethodId,
+        rewardAmount: reward.rewardAmount,
+      })),
+    [rewards]
+  );
+
+  // const handleReward = async (value) => {
+  //   console.log(value);
+  // !value
+  //   ? values.splice(idx, 1)
+  //   : (values[idx] = {
+  //       ...values[idx],
+  //       ...value,
+  //     });
+  // console.log(values, ' values');
+  // await submit(values);
+  // };
+
+  const handleReward = async (value) => {
     !value
-    ? values.splice(idx, 1)
-    : (values[idx] = {
-      ...values[idx],
-      ...value,
-    });
-    console.log(values);
-    
+      ? values.splice(0, 1)
+      : (values[0] = {
+          ...values[0],
+          ...value,
+        });
     await submit(values);
   };
-  
-  useOutsideAlerter(ref, () => setShowAdd(false));
-  
-  if(!shouldDisplay) return null;
-  
+
+  if (!shouldDisplay) return null;
+
+  const { rewardAmount, symbol, icon, chain, paymentMethodId } = rewards[0] || {};
+
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Rewards</TaskSectionLabel>
-      {rewards.map((reward, index) => {
-        const { rewardAmount, symbol, icon, chain, paymentMethodId } = reward;
-        return (
-          <RewardField
-            rewardAmount={rewardAmount}
-            symbol={symbol}
-            icon={icon}
-            key={paymentMethodId + rewardAmount}
-            chain={chain}
-            user={user}
-            paymentMethodId={paymentMethodId}
-            orgId={fetchedTask?.orgId}
-            canEdit={canEdit}
-            handleReward={handleReward(index)}
-          />
-        );
-      })}
-      {!rewards?.length && !showAdd && canEdit ? (
-        <CreateEntityLabelAddButton onClick={() => setShowAdd(true)} data-cy="button-add-assignee">
-          <CreateEntityAddButtonIcon />
-          <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
-        </CreateEntityLabelAddButton>
-      ) : null}
-      {showAdd ? (
-        <CreateReward
-          orgId={fetchedTask?.orgId}
-          paymentMethodId={null}
-          rewardAmount=""
-          handleReward={handleReward(rewards.length)}
-          toggleEditMode={() => setShowAdd(false)}
+        <TaskFieldEditableContent
+          editableContent={({ toggleEditMode }) => (
+            <CreateReward
+              orgId={fetchedTask?.orgId}
+              error={error}
+              paymentMethodId={paymentMethodId}
+              rewardAmount={rewardAmount}
+              toggleEditMode={toggleEditMode}
+              handleReward={handleReward}
+            />
+          )}
+          canAddItem={canEdit && !rewards?.length}
+          addContent={({ toggleAddMode }) => (
+            <CreateReward
+              orgId={fetchedTask?.orgId}
+              error={error}
+              paymentMethodId={null}
+              rewardAmount={''}
+              toggleEditMode={toggleAddMode}
+              handleReward={handleReward}
+            />
+          )}
+          ViewContent={({ toggleEditMode }) => (
+            <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
+              <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
+                <TaskSectionInfoPaymentMethodIcon src={icon} />
+                <TaskSectionInfoPaymentAmount>
+                  {rewardAmount} {symbol}
+                </TaskSectionInfoPaymentAmount>
+                <TaskSectionInfoPaymentMethodChain> on {chain}</TaskSectionInfoPaymentMethodChain>
+                {user ? <ConnectToWallet user={user} /> : null}
+              </Grid>
+              <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+            </ViewFieldWrapper>
+          )}
         />
-      ) : null}
     </TaskSectionDisplayDiv>
   );
 };

@@ -13,7 +13,8 @@ import { useContext, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import { AddButtonGrid, AddReviewerButton, ReviewerWrapper, TaskSectionDisplayDiv } from '../styles';
-import { FIELDS, useSubmit } from './hooks/useSubmit';
+import { FIELDS } from './hooks/constants';
+import { useSubmit } from './hooks/useSubmit';
 import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
 
 export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTask, user }) {
@@ -76,6 +77,7 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
                 editableContent={({ toggleEditMode }) => (
                   <ReviewerAssigneeAutocomplete
                     options={filteredEligibleReviewers}
+                    error={error}
                     currentOption={{
                       ...taskReviewer,
                       value: taskReviewer.id,
@@ -100,10 +102,10 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
             assignToSelfUser={selfReviewer}
             onAssignToSelfClick={handleAssignToSelfClick}
             onSelect={handleSelect}
+            error={error}
             onDelete={() => setShowAutocomplete(false)}
           />
         ) : null}
-        {error}
         {!taskReviewerIds?.length && !showAutocomplete && canEdit ? (
           <CreateEntityLabelAddButton onClick={() => setShowAutocomplete(true)} data-cy="button-add-assignee">
             <CreateEntityAddButtonIcon />

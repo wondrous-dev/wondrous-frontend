@@ -965,10 +965,12 @@ export const ViewFieldWrapper = styled.div`
     display: none;
   }
   &:hover {
+    background-color: ${({ theme }) => theme.palette.grey920};
     width: ${({ canEdit }) => (canEdit ? '100%' : 'fit-content')};
   }
-  background-color: ${({ theme }) => theme.palette.grey920};
-  ${({ canEdit }) => (canEdit ? EditIconCss : ``)};
+
+  background-color: ${({ theme, background = '' }) => background || theme.palette.grey920};
+  ${({ canEdit }) => (canEdit ? EditIconCss : `pointer-events: none;`)};
 `;
 
 export const ViewFieldContainer = styled.div`

@@ -3,6 +3,7 @@ import { CreateEntityTextfieldInputPointsComponent } from 'components/CreateEnti
 import {
   CreateEntityAutocompletePopperRenderInputAdornment,
   CreateEntityAutocompletePopperRenderInputIcon,
+  CreateEntityError,
   CreateEntityTextfield,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
@@ -11,7 +12,8 @@ import { useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoPointsIcon, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
-import { FIELDS, useSubmit } from './hooks/useSubmit';
+import { FIELDS } from './hooks/constants';
+import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
@@ -32,25 +34,31 @@ const EditContent = ({ toggleEditMode, points }) => {
 
   const debounceUpdate = debounce(submit, 500);
   return (
-    <CreateEntityTextfield
-      autoComplete="off"
-      autoFocus
-      name="points"
-      onChange={async (e) => await debounceUpdate(parseInt(e.target.value, 10))}
-      fullWidth
-      defaultValue={points}
-      InputProps={{
-        inputComponent: CreateEntityTextfieldInputPointsComponent,
-        endAdornment: (
-          <CreateEntityAutocompletePopperRenderInputAdornment position="end" onClick={async () => {
-            await submit(null)
-            toggleEditMode();
-          }}>
-            <CreateEntityAutocompletePopperRenderInputIcon />
-          </CreateEntityAutocompletePopperRenderInputAdornment>
-        ),
-      }}
-    />
+    <Grid display="flex" direction="column" gap="4px">
+      <CreateEntityTextfield
+        autoComplete="off"
+        autoFocus
+        name="points"
+        onChange={async (e) => await debounceUpdate(parseInt(e.target.value, 10))}
+        fullWidth
+        defaultValue={points}
+        InputProps={{
+          inputComponent: CreateEntityTextfieldInputPointsComponent,
+          endAdornment: (
+            <CreateEntityAutocompletePopperRenderInputAdornment
+              position="end"
+              onClick={async () => {
+                await submit(null);
+                toggleEditMode();
+              }}
+            >
+              <CreateEntityAutocompletePopperRenderInputIcon />
+            </CreateEntityAutocompletePopperRenderInputAdornment>
+          ),
+        }}
+      />
+      {error ? <CreateEntityError>{error}</CreateEntityError> : null}
+    </Grid>
   );
 };
 

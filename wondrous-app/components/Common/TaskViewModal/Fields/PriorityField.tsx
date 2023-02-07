@@ -1,11 +1,13 @@
 import Grid from '@mui/material/Grid';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
+import { CreateEntityError } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
 import palette from 'theme/palette';
 import { PRIORITIES } from 'utils/constants';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
-import { FIELDS, useSubmit } from './hooks/useSubmit';
+import { FIELDS } from './hooks/constants';
+import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
@@ -27,10 +29,15 @@ const EditableContent = ({ toggleEditMode, value }) => {
     await submit(value);
     toggleEditMode();
   };
-  return <TaskPriorityToggleButton value={value} setValue={handleChange} />;
+  return (
+    <Grid display="flex" direction="column" gap="4px">
+      <TaskPriorityToggleButton value={value} setValue={handleChange} />
+      {error ? <CreateEntityError>{error}</CreateEntityError> : null}
+    </Grid>
+  );
 };
 const PriorityField = ({ priority, canEdit, shouldDisplay }) => {
-  if(!shouldDisplay) return null;
+  if (!shouldDisplay) return null;
   const priorityValue = PRIORITIES.find((prio) => prio.value === priority);
 
   return (
@@ -40,13 +47,9 @@ const PriorityField = ({ priority, canEdit, shouldDisplay }) => {
         ViewContent={({ toggleEditMode }) => (
           <ViewContent priorityValue={priorityValue} canEdit={canEdit} toggleEditMode={toggleEditMode} />
         )}
-        addContent={({toggleAddMode}) => (
-          <EditableContent toggleEditMode={toggleAddMode} value={null}/>
-        )}
+        addContent={({ toggleAddMode }) => <EditableContent toggleEditMode={toggleAddMode} value={null} />}
         canAddItem={canEdit && !priorityValue}
-        editableContent={({ toggleEditMode }) => (
-          <EditableContent toggleEditMode={toggleEditMode} value={priority} />
-        )}
+        editableContent={({ toggleEditMode }) => <EditableContent toggleEditMode={toggleEditMode} value={priority} />}
       />
     </TaskSectionDisplayDiv>
   );
