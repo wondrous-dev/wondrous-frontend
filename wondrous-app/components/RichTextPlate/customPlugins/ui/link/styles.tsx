@@ -50,11 +50,11 @@ const floatingLinkRoot = css`
 
 export const FloatingMainWrapper = styled.div`
   display: flex;
+  padding: 10px;
   flex-direction: column;
   width: 330px;
   background-color: ${palette.grey910};
   border-radius: 4px;
-  border: 1px solid ${palette.grey57};
 `;
 
 export const FloatingInputWrapper = styled.div`
@@ -83,11 +83,13 @@ export const FloatingHorizontalDivider = styled.div`
 `;
 
 export const FloatingLinkUrlInput = styled(FloatingLink.UrlInput)`
-  ${floatingLink}
+  ${floatingLink};
+  color: ${palette.white};
 `;
 
 export const FloatingLinkTextInput = styled(FloatingLink.TextInput)`
-  ${floatingLink}
+  ${floatingLink};
+  color: ${palette.white};
 `;
 
 export const FloatingLinkEditButton = styled(FloatingLink.EditButton)`

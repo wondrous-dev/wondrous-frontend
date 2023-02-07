@@ -1,6 +1,6 @@
 import { EmojiCombobox, EmojiPlugin, RenderAfterEditable } from '@udecode/plate';
-import { MyPlatePlugin, MyValue } from '../../typescript/plateTypes';
+import { CustomPlatePlugin, TextEditorValue } from '../../typescript/plateTypes';
 
-export const emojiPlugin: Partial<MyPlatePlugin<EmojiPlugin>> = {
-  renderAfterEditable: EmojiCombobox as RenderAfterEditable<MyValue>,
+export const emojiPlugin: Partial<CustomPlatePlugin<EmojiPlugin>> = {
+  renderAfterEditable: EmojiCombobox as RenderAfterEditable<TextEditorValue>,
 };

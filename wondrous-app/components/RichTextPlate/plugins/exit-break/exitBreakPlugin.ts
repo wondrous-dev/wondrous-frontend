@@ -1,7 +1,7 @@
 import { ExitBreakPlugin, KEYS_HEADING } from '@udecode/plate';
-import { MyPlatePlugin } from '../../typescript/plateTypes';
+import { CustomPlatePlugin } from '../../typescript/plateTypes';
 
-export const exitBreakPlugin: Partial<MyPlatePlugin<ExitBreakPlugin>> = {
+export const exitBreakPlugin: Partial<CustomPlatePlugin<ExitBreakPlugin>> = {
   options: {
     rules: [
       {
@@ -19,6 +19,7 @@ export const exitBreakPlugin: Partial<MyPlatePlugin<ExitBreakPlugin>> = {
           allow: KEYS_HEADING,
         },
         relative: true,
+        level: 1,
       },
     ],
   },

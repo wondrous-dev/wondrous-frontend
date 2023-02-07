@@ -39,7 +39,7 @@ const renderNodes = (nodes) =>
     const checkboxId = `checkbox-${i}`;
 
     switch (node.type) {
-      case ElementTypes.ELEMENT_P:
+      case ElementTypes.ELEMENT_DEFAULT:
       case ElementTypes.ELEMENT_PARAGRAPH:
         if (children[0]?.props?.children) {
           return <p key={i}>{children}</p>;

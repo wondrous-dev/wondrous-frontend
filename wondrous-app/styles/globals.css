@@ -82,6 +82,8 @@ body .slate-BalloonToolbar {
 form .slate-mention {
   background-color: unset;
   color: #00baff;
+  padding: 0;
+  box-shadow: none;
 }
 
 form :where([data-slate-editor-id="plate"]) {
@@ -99,8 +101,8 @@ form .slate-code[data-slate-leaf="true"] {
   font-family: monospace;
 }
 
-form .slate-h3 {
-  color: unset;
+form [data-slate-node="element"] {
+  display: flex;
 }
 
 .plate-tooltip {

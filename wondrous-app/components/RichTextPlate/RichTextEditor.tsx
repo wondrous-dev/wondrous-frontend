@@ -26,6 +26,9 @@ import {
   withProps,
   ELEMENT_MENTION_INPUT,
   TEditableProps,
+  ELEMENT_H1,
+  ELEMENT_H2,
+  ELEMENT_H3,
 } from '@udecode/plate';
 import { TComboboxItem } from '@udecode/plate-combobox';
 
@@ -49,20 +52,66 @@ import { exitBreakPlugin } from './plugins/exit-break/exitBreakPlugin';
 import { resetBlockTypePlugin } from './plugins/reset-node/resetBlockTypePlugin';
 import { softBreakPlugin } from './plugins/soft-break/softBreakPlugin';
 import { Toolbar } from './plugins/toolbar/Toolbar';
-import { createMyPlugins, ElementTypes, MyEditor, MyValue } from './typescript/plateTypes';
+import { createMyPlugins, ElementTypes, CustomEditor, TextEditorValue } from './typescript/plateTypes';
 import { emojiPlugin } from './plugins/emoji/emojiPlugin';
 import { linkPlugin } from './plugins/link/linkPlugin';
 import palette from '../../theme/palette';
 
 interface Props {
-  inputValue: MyValue;
+  inputValue: TextEditorValue;
   onChange: (value) => void;
   mentionables?: { display: string; id: string; profilePicture?: string }[];
   mediaUploads?: () => void;
   placeholder?: string;
 }
 
+const headingStyles: CSSProperties = {
+  margin: 0,
+  color: 'inherit',
+};
+
 const components = createPlateUI({
+  [ELEMENT_H1]: withProps(StyledElement, {
+    styles: {
+      root: {
+        ...headingStyles,
+        fontWeight: 700,
+        lineHeight: '60px',
+        fontSize: '28px',
+      },
+    },
+  }),
+  [ELEMENT_H1]: withProps(StyledElement, {
+    styles: {
+      root: {
+        ...headingStyles,
+        fontWeight: 700,
+        lineHeight: '60px',
+        fontSize: '28px',
+      },
+    },
+  }),
+  [ELEMENT_H2]: withProps(StyledElement, {
+    styles: {
+      root: {
+        ...headingStyles,
+        fontWeight: 900,
+        lineHeight: '48px',
+        fontSize: '22px',
+      },
+    },
+  }),
+  [ELEMENT_H3]: withProps(StyledElement, {
+    styles: {
+      root: {
+        margin: 0,
+        color: 'inherit',
+        fontWeight: 900,
+        lineHeight: '40px',
+        fontSize: '16px',
+      },
+    },
+  }),
   [ELEMENT_LINK]: withProps(StyledElement, {
     styles: {
       root: {
@@ -156,7 +205,7 @@ const RichTextEditorPlate = ({ mentionables, inputValue, onChange, mediaUploads,
     },
   ];
 
-  const editableProps: TEditableProps<MyValue> = {
+  const editableProps: TEditableProps<TextEditorValue> = {
     spellCheck: false,
     autoFocus: false,
     placeholder,
@@ -181,7 +230,9 @@ const RichTextEditorPlate = ({ mentionables, inputValue, onChange, mediaUploads,
           createItalicPlugin(),
           createUnderlinePlugin(),
           createStrikethroughPlugin(),
-          createAutoformatPlugin<AutoformatPlugin<MyValue, MyEditor>, MyValue, MyEditor>(autoformatPlugin),
+          createAutoformatPlugin<AutoformatPlugin<TextEditorValue, CustomEditor>, TextEditorValue, CustomEditor>(
+            autoformatPlugin
+          ),
           createSoftBreakPlugin(softBreakPlugin),
           createExitBreakPlugin(exitBreakPlugin),
           createComboboxPlugin(),
@@ -201,7 +252,7 @@ const RichTextEditorPlate = ({ mentionables, inputValue, onChange, mediaUploads,
   );
 
   return (
-    <PlateProvider<MyValue>
+    <PlateProvider<TextEditorValue>
       plugins={plugins}
       onChange={(value) => {
         onChange(value);

@@ -20,7 +20,7 @@ export const ToolbarButtons = ({ mediaUploads }) => (
     <ListToolbarButtons />
     <VerticalDivider />
     <LinkToolbarButton icon={<LinkIcon />} />
-    <MediaUploadButton onClick={mediaUploads}>
+    <MediaUploadButton type="button" onClick={mediaUploads}>
       <AddImageIcon />
     </MediaUploadButton>
     <VerticalDivider />

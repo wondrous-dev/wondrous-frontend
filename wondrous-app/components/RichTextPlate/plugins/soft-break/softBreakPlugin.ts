@@ -1,14 +1,15 @@
-import { ELEMENT_BLOCKQUOTE, ELEMENT_CODE_BLOCK, ELEMENT_TD, SoftBreakPlugin } from '@udecode/plate';
-import { MyPlatePlugin } from '../../typescript/plateTypes';
+import { ELEMENT_TD, SoftBreakPlugin } from '@udecode/plate';
 
-export const softBreakPlugin: Partial<MyPlatePlugin<SoftBreakPlugin>> = {
+import { ElementTypes, CustomPlatePlugin } from '../../typescript/plateTypes';
+
+export const softBreakPlugin: Partial<CustomPlatePlugin<SoftBreakPlugin>> = {
   options: {
     rules: [
       { hotkey: 'shift+enter' },
       {
         hotkey: 'enter',
         query: {
-          allow: [ELEMENT_CODE_BLOCK, ELEMENT_BLOCKQUOTE, ELEMENT_TD],
+          allow: [ElementTypes.ELEMENT_BLOCKQUOTE, ELEMENT_TD],
         },
       },
     ],

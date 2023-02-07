@@ -1,84 +1,49 @@
-import {
-  MARK_BOLD,
-  MARK_CODE,
-  MARK_HIGHLIGHT,
-  MARK_ITALIC,
-  MARK_STRIKETHROUGH,
-  MARK_SUBSCRIPT,
-  MARK_SUPERSCRIPT,
-  MARK_UNDERLINE,
-} from '@udecode/plate';
-import { MyAutoformatRule } from '../../typescript/plateTypes';
+import { ElementTypes, CustomAutoformatRule } from '../../typescript/plateTypes';
 
-export const autoformatMarks: MyAutoformatRule[] = [
+export const autoformatMarks: CustomAutoformatRule[] = [
   {
     mode: 'mark',
-    type: [MARK_BOLD, MARK_ITALIC],
+    type: [ElementTypes.MARK_BOLD, ElementTypes.MARK_ITALIC],
     match: '***',
   },
   {
     mode: 'mark',
-    type: [MARK_UNDERLINE, MARK_ITALIC],
+    type: [ElementTypes.MARK_UNDERLINE, ElementTypes.MARK_ITALIC],
     match: '__*',
   },
   {
     mode: 'mark',
-    type: [MARK_UNDERLINE, MARK_BOLD],
+    type: [ElementTypes.MARK_UNDERLINE, ElementTypes.MARK_BOLD],
     match: '__**',
   },
   {
     mode: 'mark',
-    type: [MARK_UNDERLINE, MARK_BOLD, MARK_ITALIC],
+    type: [ElementTypes.MARK_UNDERLINE, ElementTypes.MARK_BOLD, ElementTypes.MARK_ITALIC],
     match: '___***',
   },
   {
     mode: 'mark',
-    type: MARK_BOLD,
+    type: ElementTypes.MARK_BOLD,
     match: '**',
   },
   {
     mode: 'mark',
-    type: MARK_UNDERLINE,
+    type: ElementTypes.MARK_UNDERLINE,
     match: '__',
   },
   {
     mode: 'mark',
-    type: MARK_ITALIC,
+    type: ElementTypes.MARK_ITALIC,
     match: '*',
   },
   {
     mode: 'mark',
-    type: MARK_ITALIC,
+    type: ElementTypes.MARK_ITALIC,
     match: '_',
   },
   {
     mode: 'mark',
-    type: MARK_STRIKETHROUGH,
+    type: ElementTypes.MARK_STRIKETHROUGH,
     match: '~~',
-  },
-  {
-    mode: 'mark',
-    type: MARK_SUPERSCRIPT,
-    match: '^',
-  },
-  {
-    mode: 'mark',
-    type: MARK_SUBSCRIPT,
-    match: '~',
-  },
-  {
-    mode: 'mark',
-    type: MARK_HIGHLIGHT,
-    match: '==',
-  },
-  {
-    mode: 'mark',
-    type: MARK_HIGHLIGHT,
-    match: '≡',
-  },
-  {
-    mode: 'mark',
-    type: MARK_CODE,
-    match: '`',
   },
 ];

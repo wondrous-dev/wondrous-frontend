@@ -1,19 +1,12 @@
-import {
-  ELEMENT_BLOCKQUOTE,
-  ELEMENT_PARAGRAPH,
-  ELEMENT_TODO_LI,
-  isBlockAboveEmpty,
-  isSelectionAtBlockStart,
-  ResetNodePlugin,
-} from '@udecode/plate';
-import { MyPlatePlugin } from '../../typescript/plateTypes';
+import { isBlockAboveEmpty, isSelectionAtBlockStart, ResetNodePlugin } from '@udecode/plate';
+import { ElementTypes, CustomPlatePlugin } from '../../typescript/plateTypes';
 
 const resetBlockTypesCommonRule = {
-  types: [ELEMENT_BLOCKQUOTE, ELEMENT_TODO_LI],
-  defaultType: ELEMENT_PARAGRAPH,
+  types: [ElementTypes.ELEMENT_BLOCKQUOTE, ElementTypes.ELEMENT_TODO_LI],
+  defaultType: ElementTypes.ELEMENT_DEFAULT,
 };
 
-export const resetBlockTypePlugin: Partial<MyPlatePlugin<ResetNodePlugin>> = {
+export const resetBlockTypePlugin: Partial<CustomPlatePlugin<ResetNodePlugin>> = {
   options: {
     rules: [
       {

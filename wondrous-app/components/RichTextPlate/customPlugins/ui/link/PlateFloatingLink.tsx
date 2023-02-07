@@ -1,11 +1,15 @@
 import React from 'react';
-import { TEditableProps } from '@udecode/plate-core';
+import { TEditableProps, useEditorRef } from '@udecode/plate-core';
 import { FloatingVerticalDivider } from '@udecode/plate-ui-toolbar';
+import { Box } from '@mui/system';
 
-import { useFloatingLinkSelectors } from 'components/RichTextPlate/customPlugins/CustomLink';
+import {
+  floatingLinkActions,
+  submitFloatingLink,
+  useFloatingLinkSelectors,
+} from 'components/RichTextPlate/customPlugins/CustomLink';
 import LinkIcon from 'components/RichTextPlate/icons/LinkIcon';
 import {
-  FloatingHorizontalDivider,
   FloatingIconWrapper,
   FloatingInputWrapper,
   FloatingLinkEditButton,
@@ -21,30 +25,67 @@ import {
 import { ShortTextIcon } from 'components/RichTextPlate/icons/ShortTextIcon';
 import { LaunchIcon } from 'components/RichTextPlate/icons/LaunchIcon';
 import { LinkOffIcon } from 'components/RichTextPlate/icons/LinkOffIcon';
+import { Button as CommonButton } from 'components/Common/button';
 
 export const PlateFloatingLink = ({ readOnly }: TEditableProps) => {
   const isEditing = useFloatingLinkSelectors().isEditing();
 
+  const editor = useEditorRef();
+
   if (readOnly) return null;
+
+  const buttonStyle = {
+    height: '32px',
+    minHeight: '32px',
+  };
+
+  const buttonInnerStyle = {
+    fontSize: '14px',
+  };
 
   const input = (
     <FloatingMainWrapper>
       <FloatingInputWrapper>
         <FloatingIconWrapper>
-          <LinkIcon style={{ width: '18px', height: '18px' }} />
+          <LinkIcon style={{ width: '18px', height: '18px', padding: '3px' }} />
         </FloatingIconWrapper>
 
-        <FloatingLinkUrlInput placeholder="Paste link" />
+        <FloatingLinkUrlInput placeholder="URL" />
       </FloatingInputWrapper>
-
-      <FloatingHorizontalDivider />
 
       <FloatingInputWrapper>
         <FloatingIconWrapper>
           <ShortTextIcon width={18} />
         </FloatingIconWrapper>
-        <FloatingLinkTextInput placeholder="Text to display" />
+        <FloatingLinkTextInput placeholder="Link text" />
       </FloatingInputWrapper>
+
+      <Box
+        sx={{
+          display: 'grid',
+          gridGap: '8px',
+          gridAutoFlow: 'column',
+          padding: '10px 10px 5px 10px',
+        }}
+      >
+        <CommonButton
+          highlighted
+          type="button"
+          onClick={() => submitFloatingLink(editor)}
+          style={buttonStyle}
+          buttonInnerStyle={buttonInnerStyle}
+        >
+          Save
+        </CommonButton>
+        <CommonButton
+          type="button"
+          onClick={() => floatingLinkActions.hide()}
+          style={buttonStyle}
+          buttonInnerStyle={buttonInnerStyle}
+        >
+          Cancel
+        </CommonButton>
+      </Box>
     </FloatingMainWrapper>
   );
 

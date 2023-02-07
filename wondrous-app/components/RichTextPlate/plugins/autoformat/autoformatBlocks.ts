@@ -1,86 +1,41 @@
-import {
-  ELEMENT_BLOCKQUOTE,
-  ELEMENT_CODE_BLOCK,
-  ELEMENT_DEFAULT,
-  ELEMENT_H1,
-  ELEMENT_H2,
-  ELEMENT_H3,
-  ELEMENT_H4,
-  ELEMENT_H5,
-  ELEMENT_H6,
-  ELEMENT_HR,
-  getPluginType,
-  insertEmptyCodeBlock,
-  insertNodes,
-  setNodes,
-} from '@udecode/plate';
-import { MyAutoformatRule } from '../../typescript/plateTypes';
+import { insertNodes, setNodes } from '@udecode/plate';
+
+import { ElementTypes, CustomAutoformatRule } from '../../typescript/plateTypes';
 import { preFormat } from './autoformatUtils';
 
-export const autoformatBlocks: MyAutoformatRule[] = [
+export const autoformatBlocks: CustomAutoformatRule[] = [
   {
     mode: 'block',
-    type: ELEMENT_H1,
+    type: ElementTypes.ELEMENT_H1,
     match: '# ',
     preFormat,
   },
   {
     mode: 'block',
-    type: ELEMENT_H2,
+    type: ElementTypes.ELEMENT_H2,
     match: '## ',
     preFormat,
   },
   {
     mode: 'block',
-    type: ELEMENT_H3,
+    type: ElementTypes.ELEMENT_H3,
     match: '### ',
     preFormat,
   },
   {
     mode: 'block',
-    type: ELEMENT_H4,
-    match: '#### ',
-    preFormat,
-  },
-  {
-    mode: 'block',
-    type: ELEMENT_H5,
-    match: '##### ',
-    preFormat,
-  },
-  {
-    mode: 'block',
-    type: ELEMENT_H6,
-    match: '###### ',
-    preFormat,
-  },
-  {
-    mode: 'block',
-    type: ELEMENT_BLOCKQUOTE,
+    type: ElementTypes.ELEMENT_BLOCKQUOTE,
     match: '> ',
     preFormat,
   },
   {
     mode: 'block',
-    type: ELEMENT_CODE_BLOCK,
-    match: '```',
-    triggerAtBlockStart: false,
-    preFormat,
-    format: (editor) => {
-      insertEmptyCodeBlock(editor, {
-        defaultType: getPluginType(editor, ELEMENT_DEFAULT),
-        insertNodesOptions: { select: true },
-      });
-    },
-  },
-  {
-    mode: 'block',
-    type: ELEMENT_HR,
+    type: ElementTypes.ELEMENT_HR,
     match: ['---', '—-', '___ '],
     format: (editor) => {
-      setNodes(editor, { type: ELEMENT_HR });
+      setNodes(editor, { type: ElementTypes.ELEMENT_HR });
       insertNodes(editor, {
-        type: ELEMENT_DEFAULT,
+        type: ElementTypes.ELEMENT_DEFAULT,
         children: [{ text: '' }],
       });
     },
