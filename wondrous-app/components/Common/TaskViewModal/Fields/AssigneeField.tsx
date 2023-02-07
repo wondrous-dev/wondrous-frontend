@@ -10,9 +10,9 @@ import { useContext } from 'react';
 import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoTakeTask, TaskSectionInfoTakeTaskText } from '../styles';
-import { useUpdateTaskCardCache } from '../utils';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
+import {useUpdateTaskCardCache} from './hooks/useUpdateCache'
 import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
 
 interface OrgUser {
@@ -121,7 +121,7 @@ const AssigneeContent = ({
             onChange={(value) => {
               search(value);
             }}
-            onSelect={submit}
+            onSelect={handleUpdateTaskAssignee}
           />
         )}
       />
@@ -136,7 +136,6 @@ const AssigneeField = ({
   canClaim,
   canEdit,
   fetchedTask,
-  handleClose,
   isTaskProposal,
   orgId,
   podId,

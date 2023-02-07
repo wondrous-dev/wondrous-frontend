@@ -1,66 +1,12 @@
 import { useMutation } from '@apollo/client';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { TaskCardFragment } from 'graphql/fragments/task';
-import { UPDATE_TASK } from 'graphql/mutations';
-import { useContext, useMemo, useState } from 'react';
+import { UPDATE_TASK, UPDATE_TASK_PROPOSAL, UPDATE_GRANT, UPDATE_GRANT_APPLICATION } from 'graphql/mutations';
+import { useMemo, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { CHAIN_REGEX } from 'utils/helpers';
 import { useTaskContext } from 'utils/hooks';
 import * as Yup from 'yup';
+import { useUpdateTaskCardCache } from './useUpdateCache';
 import { FIELDS, GRANT_SCHEMA, TASK_SCHEMA } from './constants';
-
-let test = {
-  fields: {
-    key() {
-
-    }
-  }
-}
-
-const updateTaskEntityCache = (cache, { data }, queries, field) => {
-  const { updateTask } = data;
-  const fieldsToModify = queries.reduce((acc, query) => {
-      acc[query] = (existingItems = [], { readField }) => {
-        return existingItems.map((item) => {
-          console.log(readField('id', item), updateTask.id)
-          if (readField('id', item) === updateTask.id) {
-            return {
-              ...item,
-              [field]: updateTask[field],
-            };
-          }
-          return item;
-        });
-      };
-      return acc;
-    }, {});
-  
-    cache.modify({
-      fields: {
-        getOrgTaskBoardTasks(existingItems = [], { readField }) {
-          
-          return existingItems.map((item) => {
-            if (readField('id', item) === updateTask.id) {
-              console.log('im inside bro')
-              const taskCard = cache.readFragment({
-                id: `TaskCard:${updateTask.id}`,
-                fragment: TaskCardFragment
-              })
-              console.log(taskCard, 'taskCard')
-              // return {
-              //   ...item,
-              //   [field]: updateTask[field],
-              // };
-            }
-            return item;
-          });
-        }  
-      }
-      // fields: {
-    //   ...fieldsToModify,
-    // }
-  });
-};
 
 export const useSubmit = ({ field, refetchQueries = [] }) => {
   const [error, setError] = useState(null);
@@ -98,20 +44,29 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
       })
     : null;
 
-  const queriesToUpdate = ['getOrgTaskBoardTasks'];
+  const handleUpdateTaskCardCache = useUpdateTaskCardCache();
+
   const [updateTask] = useMutation(UPDATE_TASK, {
     onCompleted: (data) => {
-    refetch()
-    },
-    update: (cache, { data }) => {
-      updateTaskEntityCache(cache, { data }, queriesToUpdate, field);
-      // refetch();
+      handleUpdateTaskCardCache({ data: data?.updateTask });
+      refetch();
     },
     refetchQueries,
     onError: (error) => {
       setError('Something went wrong.');
     },
   });
+
+  const [updateTaskProposal] = useMutation(UPDATE_TASK_PROPOSAL, {
+    onCompleted: (data) => {
+      handleUpdateTaskCardCache({ data: data?.updateTaskProposal });
+      refetch();
+    },
+  });
+
+  const [updateGrant] = useMutation(UPDATE_GRANT);
+
+  const [updateGrantApplication] = useMutation(UPDATE_GRANT_APPLICATION);
 
   const validate = async (value) => {
     try {
@@ -131,24 +86,47 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
         },
       });
     }
+    if (entityType === ENTITIES_TYPES.PROPOSAL) {
+      return await updateTaskProposal({
+        variables: {
+          proposalId: fetchedTask.id,
+          input,
+        },
+      });
+    }
+    if (entityType === ENTITIES_TYPES.GRANT) {
+      return await updateGrant({
+        variables: {
+          grantId: fetchedTask.id,
+          input,
+        },
+      });
+    }
+    if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
+      return await updateGrantApplication({
+        variables: {
+          grantApplicationId: fetchedTask.id,
+          input,
+        },
+      });
+    }
     return () => new Error('function not implemented for this entityType yet');
   };
 
-  const submit = async (value, restInputVariables = {}) => {
+  const submit = async (value, input = null) => {
     setError(null);
-    const input = {
-      [field]: value,
-      ...restInputVariables,
-    };
+    const inputToValidate = {
+      ...(input ? {input} : {[field]: value})
+    }
 
     if (schema) {
       try {
-        await validate(input);
+        await validate(inputToValidate);
       } catch (error) {
         return;
       }
     }
-    return await update(input);
+    return await update(inputToValidate);
   };
   return { error, submit };
 };

@@ -8,7 +8,6 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
 import { debounce } from 'lodash';
-import { useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoPointsIcon, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
@@ -70,9 +69,7 @@ const PointsField = ({ shouldDisplay, points = null, canEdit }) => {
       <TaskSectionLabel>Points</TaskSectionLabel>
       <TaskFieldEditableContent
         canAddItem={canEdit && points === null}
-        addContent={({ toggleAddMode }) => {
-          return <EditContent toggleEditMode={toggleAddMode} points={points} />;
-        }}
+        addContent={({ toggleAddMode }) => <EditContent toggleEditMode={toggleAddMode} points={points} />}
         ViewContent={({ toggleEditMode }) => (
           <ViewContent points={points} toggleEditMode={toggleEditMode} canEdit={canEdit} />
         )}

@@ -11,13 +11,13 @@ export const FIELDS = {
   PRIORITY: 'priority',
   TAGS: 'labelIds',
   NUM_OF_GRANT: 'numOfGrant',
-  START_DATE: 'startDate',
-  END_DATE: 'endDate',
+  GRANT_DATES: 'grantDates',
   APPLY_POLICY: 'applyPolicy',
   PAYMENT_ADDRESS: 'paymentAddress',
   ORG: 'org',
   TITLE: 'title',
-  DESCRIPTION: 'description'
+  DESCRIPTION: 'description',
+  PRIVACY_LEVEL: 'privacyLevel'
 };
 
 export const TASK_SCHEMA = {
@@ -54,7 +54,9 @@ export const GRANT_SCHEMA = {
   .nullable()
   .moreThan(0, 'Number of grants must be greater than 0')
   .lessThan(1000000000, 'Number of grants must be less than 1 billion'),
-  [FIELDS.START_DATE]: Yup.string().optional().nullable(),
-  [FIELDS.END_DATE]: Yup.string().optional().nullable(),
+  [FIELDS.GRANT_DATES]: Yup.object({
+    startDate: Yup.string().optional().nullable(),
+    endDate: Yup.string().optional().nullable()
+  }),
   [FIELDS.APPLY_POLICY]: Yup.string().nullable(),
 }

@@ -98,7 +98,7 @@ export const GithubButtons = ({ fetchedTask }) => {
   return null;
 };
 
-export const TaskDescriptionTextWrapper = ({ text }) => {
+export const TaskDescriptionTextWrapper = ({ text, showFullByDefault = false }) => {
   const initialHeight = 100;
   const [showButton, setShowButton] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -106,13 +106,14 @@ export const TaskDescriptionTextWrapper = ({ text }) => {
   const handleExpand = () => setIsExpanded(!isExpanded);
 
   const checkRichTextHeight = useCallback((node) => {
-    if (!node) return;
+    if (!node || showFullByDefault) return;
     const hasExceeded = node?.children?.[0]?.offsetHeight > initialHeight;
     setShowButton(hasExceeded);
     setIsExpanded(!hasExceeded);
   }, []);
 
   if (!text) return null;
+                        {/* <RichTextViewer text={grant.description} /> */}
 
   return (
     <>

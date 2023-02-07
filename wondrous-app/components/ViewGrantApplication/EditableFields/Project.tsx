@@ -1,6 +1,8 @@
 import { Grid } from '@mui/material';
 import { useGetLoggedInUserFullAccessOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
+import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
 import { ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
 import { CreateGrantApplicationWorkspaceWrapper } from 'components/GrantApplications/CreateGrantApplication/styles';
@@ -12,7 +14,7 @@ import { OrgViewer } from '../Fields';
 
 const EditContent = ({ org, toggleEditMode }) => {
   const userOrgs: any = useGetLoggedInUserFullAccessOrgs();
-
+  const { submit, error } = useSubmit({ field: FIELDS.ORG });
   const orgsSchema = useMemo(
     () => ({
       name: 'org',
@@ -34,6 +36,8 @@ const EditContent = ({ org, toggleEditMode }) => {
     [userOrgs]
   );
 
+  const handleSubmit = async (value) => await submit(value);
+
   return (
     <CreateGrantApplicationWorkspaceWrapper>
       <OrgSearch
@@ -44,7 +48,7 @@ const EditContent = ({ org, toggleEditMode }) => {
         }}
         autoFocus
         value={org}
-        onChange={(org) => console.log('on change')}
+        onChange={handleSubmit}
         label="Select project"
       />
     </CreateGrantApplicationWorkspaceWrapper>

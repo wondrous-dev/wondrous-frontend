@@ -70,7 +70,7 @@ const EditableFieldContent = ({ recurringSchema, dueDate, toggleMode }: IEditabl
         },
       };
     }
-    await submit(null, input);
+    await submit(null, {...input});
   };
 
   return (

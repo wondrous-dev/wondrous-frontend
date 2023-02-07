@@ -1,28 +1,23 @@
-import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
 
+import Grid from '@mui/material/Grid';
+import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
+import { InfoPoint, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
+import { StyledLink } from 'components/Common/text';
 import {
   CreateEntityPaymentMethodItem,
   filterPaymentMethods,
-  useGetPaymentMethods,
+  useGetPaymentMethods
 } from 'components/CreateEntity/CreateEntityModal/Helpers';
-import { StyledLink } from 'components/Common/text';
 import {
-  CreateEntityWrapper,
-  CreateEntityPaymentMethodSelected,
-  CreateEntitySelectArrowIcon,
-  CreateEntityPaymentMethodOption,
   CreateEntityAutocompletePopperRenderInputAdornment,
-  CreateEntityAutocompletePopperRenderInputIcon,
-  CreateEntityLabel,
-  CreateEntityLabelWrapper,
-  CreateEntityError,
+  CreateEntityAutocompletePopperRenderInputIcon, CreateEntityError, CreateEntityLabel,
+  CreateEntityLabelWrapper, CreateEntityPaymentMethodOption, CreateEntityPaymentMethodSelected,
+  CreateEntitySelectArrowIcon, CreateEntityWrapper
 } from 'components/CreateEntity/CreateEntityModal/styles';
-import { InfoPoint, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
-import Grid from '@mui/material/Grid';
-import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
 import { GRANT_STYLE_MAP } from './GrantStyle';
-import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
+import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
 
 const GrantAmount = ({
   value,

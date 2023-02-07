@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material';
+import { StyledLink } from 'components/Common/text';
 import {
   CreateEntityPaymentMethodItem,
   CreateEntityTextfieldInputRewardComponent,
@@ -6,12 +7,9 @@ import {
   useGetPaymentMethods,
 } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
-  CreateEntityAddButtonIcon,
-  CreateEntityAddButtonLabel,
   CreateEntityAutocompletePopperRenderInputAdornment,
   CreateEntityAutocompletePopperRenderInputIcon,
   CreateEntityError,
-  CreateEntityLabelAddButton,
   CreateEntityPaymentMethodOption,
   CreateEntityPaymentMethodSelect,
   CreateEntityPaymentMethodSelected,
@@ -20,11 +18,10 @@ import {
   CreateEntityWrapper,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
-import { isEmpty } from 'lodash';
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import palette from 'theme/palette';
 import debounce from 'lodash/debounce';
-import { useOutsideAlerter } from 'utils/hooks';
+import { useRouter } from 'next/router';
+import { useMemo, useRef, useState } from 'react';
+import palette from 'theme/palette';
 import { ConnectToWallet, TaskSectionLabel } from '../helpers';
 import {
   TaskSectionDisplayDiv,
@@ -33,22 +30,28 @@ import {
   TaskSectionInfoPaymentMethodIcon,
   ViewFieldWrapper,
 } from '../styles';
+import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
-import { FIELDS } from './hooks/constants';
 
 const CreateReward = ({ handleReward, orgId, paymentMethodId, rewardAmount, toggleEditMode, error }) => {
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
   const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
   const [input, setInput] = useState({
-    paymentMethodId: paymentMethodId,
+    paymentMethodId,
     rewardAmount: rewardAmount || '',
   });
+  const router = useRouter();
+
+  const handlePaymentMethodRedirect = () => router.push(`/organization/settings/${orgId}/payment-method`);
 
   const debounceHandleReward = debounce(handleReward, 200);
-  if (!activePaymentMethods?.length) {
-    return null;
-  }
+  if (!activePaymentMethods?.length)
+    return (
+      <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
+        Set up payment method
+      </StyledLink>
+    );
 
   const onPaymentMethodChange = (value) => {
     const newInput = {
@@ -136,18 +139,6 @@ const Rewards = ({ fetchedTask, user, canEdit, shouldDisplay }) => {
     [rewards]
   );
 
-  // const handleReward = async (value) => {
-  //   console.log(value);
-  // !value
-  //   ? values.splice(idx, 1)
-  //   : (values[idx] = {
-  //       ...values[idx],
-  //       ...value,
-  //     });
-  // console.log(values, ' values');
-  // await submit(values);
-  // };
-
   const handleReward = async (value) => {
     !value
       ? values.splice(0, 1)
@@ -165,29 +156,30 @@ const Rewards = ({ fetchedTask, user, canEdit, shouldDisplay }) => {
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Rewards</TaskSectionLabel>
-        <TaskFieldEditableContent
-          editableContent={({ toggleEditMode }) => (
-            <CreateReward
-              orgId={fetchedTask?.orgId}
-              error={error}
-              paymentMethodId={paymentMethodId}
-              rewardAmount={rewardAmount}
-              toggleEditMode={toggleEditMode}
-              handleReward={handleReward}
-            />
-          )}
-          canAddItem={canEdit && !rewards?.length}
-          addContent={({ toggleAddMode }) => (
-            <CreateReward
-              orgId={fetchedTask?.orgId}
-              error={error}
-              paymentMethodId={null}
-              rewardAmount={''}
-              toggleEditMode={toggleAddMode}
-              handleReward={handleReward}
-            />
-          )}
-          ViewContent={({ toggleEditMode }) => (
+      <TaskFieldEditableContent
+        editableContent={({ toggleEditMode }) => (
+          <CreateReward
+            orgId={fetchedTask?.orgId}
+            error={error}
+            paymentMethodId={paymentMethodId}
+            rewardAmount={rewardAmount}
+            toggleEditMode={toggleEditMode}
+            handleReward={handleReward}
+          />
+        )}
+        canAddItem={canEdit && !rewards?.length}
+        addContent={({ toggleAddMode }) => (
+          <CreateReward
+            orgId={fetchedTask?.orgId}
+            error={error}
+            paymentMethodId={null}
+            rewardAmount=""
+            toggleEditMode={toggleAddMode}
+            handleReward={handleReward}
+          />
+        )}
+        ViewContent={({ toggleEditMode }) => (
+          <Grid display="flex" direction="column" gap="4px">
             <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
               <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
                 <TaskSectionInfoPaymentMethodIcon src={icon} />
@@ -195,12 +187,13 @@ const Rewards = ({ fetchedTask, user, canEdit, shouldDisplay }) => {
                   {rewardAmount} {symbol}
                 </TaskSectionInfoPaymentAmount>
                 <TaskSectionInfoPaymentMethodChain> on {chain}</TaskSectionInfoPaymentMethodChain>
-                {user ? <ConnectToWallet user={user} /> : null}
               </Grid>
               <EditIcon stroke={palette.grey58} className="edit-icon-field" />
             </ViewFieldWrapper>
-          )}
-        />
+            {user ? <ConnectToWallet user={user} /> : null}
+          </Grid>
+        )}
+      />
     </TaskSectionDisplayDiv>
   );
 };

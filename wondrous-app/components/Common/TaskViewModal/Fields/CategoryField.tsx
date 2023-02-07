@@ -33,8 +33,6 @@ const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
 );
 
 const labelsToValue = (labels) => {
-  // COVER BOTH GRANTS & TASKS
-
   const labelValues = labels?.map((label) => label?.name || label);
   return Object.keys(CATEGORY_LABELS).filter(
     (key) => labelValues?.includes(CATEGORY_LABELS[key]) || labelValues?.includes(key)

@@ -25,7 +25,7 @@ import {
   TaskSectionDisplayData,
   TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
-  TaskSectionDisplayLabelText,
+  TaskSectionDisplayLabelText
 } from 'components/Common/TaskViewModal/styles';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplication/styles';
@@ -45,7 +45,7 @@ import {
   GRANT_APPLICATION_EDITABLE_STATUSES,
   GRANT_APPLICATION_STATUSES,
   PERMISSIONS,
-  PRIVACY_LEVEL,
+  PRIVACY_LEVEL
 } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
@@ -57,15 +57,16 @@ import Typography from '@mui/material/Typography';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { IconWrapper } from 'components/Common/Status/styles';
 import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
+import { Description, Title } from 'components/Common/TaskViewModal/Fields';
 import { ItemPill } from 'components/GrantsBoard/styles';
 import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/Icons/statusIcons';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { TaskContext } from 'utils/contexts';
+import { Project, WalletAddress } from './EditableFields';
 import { GrantApplicationStatusManager, OrgViewer, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';
-import { Project, WalletAddress } from './EditableFields';
-import { TaskContext } from 'utils/contexts';
 
 const GRANT_APPLICATION_STATUS_LABELS = {
   [GRANT_APPLICATION_STATUSES.APPROVED]: {
@@ -202,6 +203,7 @@ const ViewGrantApplication = ({ onClose }) => {
     <TaskContext.Provider
       value={{
         grantApplication,
+        entityType: ENTITIES_TYPES.GRANT_APPLICATION,
       }}
     >
       <ArchiveTaskModal
@@ -312,7 +314,8 @@ const ViewGrantApplication = ({ onClose }) => {
         <TaskModalTaskData fullScreen={isFullScreen}>
           <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
             <Grid display="flex" justifyContent="space-between" alignItems="center">
-              <TaskModalTitle>{grantApplication?.title}</TaskModalTitle>
+              <Title title={grantApplication?.title} canEdit={canEditAndComment} />
+
               <ItemPill withIcon>
                 <IconWrapper>
                   <statusAndIcon.icon />
@@ -323,7 +326,13 @@ const ViewGrantApplication = ({ onClose }) => {
               </ItemPill>
             </Grid>
             <DescriptionWrapper>
-              <RichTextViewer text={grantApplication?.description} />
+              <Description
+                canEdit={canEditAndComment}
+                description={grantApplication?.description}
+                orgId={grant?.orgId}
+                showFullByDefault
+              />
+
               <TaskMediaWrapper media={grantApplication?.media} />
             </DescriptionWrapper>
           </TaskModalTitleDescriptionMedia>

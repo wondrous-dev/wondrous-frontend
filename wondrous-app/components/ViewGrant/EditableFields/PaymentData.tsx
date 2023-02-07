@@ -9,40 +9,52 @@ import { GrantAmount, GrantQuantity } from 'components/CreateGrant/Fields';
 import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from 'components/CreateGrant/Fields/GrantStyle';
 import { Grid } from '@mui/material';
 import { useState } from 'react';
+import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
+import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
 
-const ViewContent = ({ toggleEditMode, reward, numOfGrant, canEdit }) => {
-  return (
-    <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode} background="transparent">
-      <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />
-      <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-    </ViewFieldWrapper>
-  );
-};
+const ViewContent = ({ toggleEditMode, reward, numOfGrant, canEdit }) => (
+  <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode} background="transparent">
+    <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />
+    <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+  </ViewFieldWrapper>
+);
 
 const PaymentData = ({ reward, numOfGrant, canEdit }) => {
   const { grant } = useTaskContext();
 
   const [grantStyle, setGrantStyle] = useState(getGrantStyleFromGrant(numOfGrant));
+  const { submit, error } = useSubmit({ field: FIELDS.REWARDS });
+  const { submit: submitNumOfGrant, error: numOfGrantError } = useSubmit({ field: FIELDS.NUM_OF_GRANT });
 
-  return (  
+  const handleSubmitNumOfGrant = async (value) => {
+    await submitNumOfGrant(parseInt(value, 10));
+    console.log(value);
+  };
+
+  const handleSubmitReward = async (value) => {
+    const { rewardAmount, paymentMethodId } = value;
+    await submit({ rewardAmount, paymentMethodId });
+  };
+
+  const handleGrantStyle = (value) => {
+    setGrantStyle(value);
+    if (value === GRANT_STYLE_MAP.FIXED) {
+      handleSubmitNumOfGrant(1);
+    }
+  };
+  return (
     <>
       <TaskFieldEditableContent
         editableContent={({ toggleEditMode }) => (
           <Grid display="flex" gap="12px" direction="column" width="100%">
-            <GrantStyle value={grantStyle} onChange={(value) => setGrantStyle(value)} />
+            <GrantStyle value={grantStyle} onChange={handleGrantStyle} />
             {grantStyle === GRANT_STYLE_MAP.FIXED ? (
-              <GrantQuantity
-                value={numOfGrant}
-                onChange={(value) => console.log('on value grant quantity')}
-                setError={() => {}}
-                error={null}
-              />
+              <GrantQuantity value={numOfGrant} onChange={handleSubmitNumOfGrant} setError={() => {}} error={null} />
             ) : null}
 
             <GrantAmount
               value={reward}
-              onChange={(value) => console.log('on change')}
-              setError={() => console.log('error')}
+              onChange={(_, value) => handleSubmitReward(value)}
               orgId={grant?.org?.id}
               error={null}
               grantStyle={grantStyle}
@@ -51,8 +63,8 @@ const PaymentData = ({ reward, numOfGrant, canEdit }) => {
           </Grid>
         )}
         ViewContent={({ toggleEditMode }) => (
-          <>  
-          <TaskSectionLabel>Grant amount</TaskSectionLabel>
+          <>
+            <TaskSectionLabel>Grant amount</TaskSectionLabel>
             <ViewContent canEdit={canEdit} toggleEditMode={toggleEditMode} reward={reward} numOfGrant={numOfGrant} />
           </>
         )}

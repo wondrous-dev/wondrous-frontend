@@ -1,9 +1,11 @@
+import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
+import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
-import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import { TaskSectionInfoCalendar, ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
 import { Dates } from 'components/CreateGrant/Fields';
 import EditIcon from 'components/Icons/editIcon';
 import { format } from 'date-fns';
+import { useState } from 'react';
 import palette from 'theme/palette';
 import { DataDisplay, MultipleDataDisplay } from '../Fields';
 
@@ -25,26 +27,40 @@ const ViewContent = ({ toggleEditMode, startDate, endDate, canEdit }) => (
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
   </ViewFieldWrapper>
 );
-const EditContent = ({ toggleManageMode, startDate = null, endDate = null }) => (
-  <Dates hideLabel startDate={startDate} endDate={endDate} onChange={(key, value) => console.log(key, value)} />
-);
+const EditContent = ({ toggleManageMode, startDate = null, endDate = null }) => {
+  const [dates, setDates] = useState({
+    startDate,
+    endDate,
+  });
 
+  const { submit, error } = useSubmit({ field: FIELDS.GRANT_DATES });
 
-const EditableDates = ({ startDate, endDate, canEdit }) => {
-  return (
-    <TaskFieldEditableContent
-      editableContent={({ toggleEditMode }) => (
-        <EditContent startDate={startDate} endDate={endDate} toggleManageMode={toggleEditMode} />
-      )}
-      ViewContent={({ toggleEditMode }) => (
-        <>
-          <ViewContent startDate={startDate} endDate={endDate} toggleEditMode={toggleEditMode} canEdit={canEdit} />
-        </>
-      )}
-      canAddItem={!startDate && !endDate && canEdit}
-      addContent={({ toggleAddMode }) => <EditContent toggleManageMode={toggleAddMode} />}
-    />
-  );
+  const handleSubmit = async (input) => await submit(null, input);
+
+  const onChange = (key, value) => {
+    const newDates = { ...dates, [key]: value };
+    setDates({ ...dates, [key]: value });
+    if (newDates.startDate && newDates.endDate) {
+      handleSubmit(newDates);
+    }
+  };
+
+  return <Dates hideLabel startDate={startDate} endDate={endDate} onChange={onChange} />;
 };
+
+const EditableDates = ({ startDate, endDate, canEdit }) => (
+  <TaskFieldEditableContent
+    editableContent={({ toggleEditMode }) => (
+      <EditContent startDate={startDate} endDate={endDate} toggleManageMode={toggleEditMode} />
+    )}
+    ViewContent={({ toggleEditMode }) => (
+      <>
+        <ViewContent startDate={startDate} endDate={endDate} toggleEditMode={toggleEditMode} canEdit={canEdit} />
+      </>
+    )}
+    canAddItem={!startDate && !endDate && canEdit}
+    addContent={({ toggleAddMode }) => <EditContent toggleManageMode={toggleAddMode} />}
+  />
+);
 
 export default EditableDates;

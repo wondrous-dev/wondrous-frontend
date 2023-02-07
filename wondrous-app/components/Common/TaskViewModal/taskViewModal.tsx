@@ -1,4 +1,3 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import TaskMenuStatus from 'components/Common/TaskMenuStatus';
@@ -12,10 +11,11 @@ import {
   GET_MINT_TASK_TOKEN_DATA,
   GET_TASK_BY_ID,
   GET_TASK_REVIEWERS,
-  GET_TASK_SUBMISSIONS_FOR_TASK,
+  GET_TASK_SUBMISSIONS_FOR_TASK
 } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import { useRouter } from 'next/router';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSnapshot } from 'services/snapshot';
 import { addTaskItem, formatDateDisplay, getProposalStatus, updateProposalItem } from 'utils/board';
 import {
@@ -29,41 +29,48 @@ import {
   STATUS_APPROVED,
   TaskMintStatus,
   TASK_STATUS_ARCHIVED,
-  TASK_TYPE,
+  TASK_TYPE
 } from 'utils/constants';
 import { ApprovedSubmissionContext, TaskContext } from 'utils/contexts';
 import {
-  parseUserPermissionContext,
+  cutString, parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
-  transformTaskToTaskCard,
-  cutString,
+  transformTaskToTaskCard
 } from 'utils/helpers';
-import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useGlobalContext } from 'utils/hooks';
+import { useCanViewTask, useColumns, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 
-import VoteResults from 'components/Common/Votes';
 import TaskMintComponent from 'components/Common/TaskMint';
+import VoteResults from 'components/Common/Votes';
 
-import { useHotkeys } from 'react-hotkeys-hook';
-import { HOTKEYS } from 'utils/hotkeyHelper';
 import { useMe } from 'components/Auth/withAuth';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
+import { entityTypeData, Fields } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
   CreateFormFooterButtons,
-  CreateFormPreviewButton,
+  CreateFormPreviewButton
 } from 'components/CreateEntity/styles';
 import { CheckedBoxIcon } from 'components/Icons/checkedBox';
 import { DAOIcon } from 'components/Icons/dao';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { RejectIcon } from 'components/Icons/taskModalIcons';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress';
-import MakePaymentModal from 'components/Common/Payment/PaymentModal';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
+import ViewNftFields from '../TaskMint/ViewNftFields';
+import TaskViewNft from '../TaskViewNft';
 import ActionModals from './actionModals';
 import { tabs } from './constants';
+import {
+  AssigneeField, CategoryField, Description, DueDateField, MilestoneField, PointsField, PriorityField, ReviewerField, RewardsField, StatusField, TagsField,
+  Title
+} from './Fields';
+import WatchersField from './Fields/WatchersField';
 import { GithubButtons, LockedTaskMessage, Menu, TaskDescriptionTextWrapper, TaskSectionImageContent } from './helpers';
 import {
   SubtaskIconWrapper,
@@ -99,29 +106,11 @@ import {
   TaskSectionInfoCreatorDaysAgo,
   TaskSectionInfoCreatorTask,
   TaskSectionInfoTextCreator,
-  TaskStatusHeaderText,
+  TaskStatusHeaderText
 } from './styles';
 import { ApplicationField, InitativesField, ProposerField } from './taskViewModalFields';
-import WatchersField from './Fields/WatchersField';
 import TaskViewModalFooter from './taskViewModalFooter';
 import { hasGR15DEIIntiative, openSnapshot } from './utils';
-import TaskViewNft from '../TaskViewNft';
-import ViewNftFields from '../TaskMint/ViewNftFields';
-import {
-  ReviewerField,
-  AssigneeField,
-  DueDateField,
-  RewardsField,
-  PointsField,
-  MilestoneField,
-  PriorityField,
-  CategoryField,
-  TagsField,
-  Title,
-  Description,
-  StatusField,
-} from './Fields';
-import { entityTypeData, Fields } from 'components/CreateEntity/CreateEntityModal/Helpers';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -720,7 +709,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               canClaim={canClaim}
                               canEdit={canEdit}
                               fetchedTask={fetchedTask}
-                              handleClose={handleClose}
                               isTaskProposal={isTaskProposal}
                               orgId={board?.orgId}
                               podId={board?.podId}

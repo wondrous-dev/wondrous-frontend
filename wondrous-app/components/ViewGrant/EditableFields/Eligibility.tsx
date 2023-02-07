@@ -1,9 +1,10 @@
+import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
+import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
 import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import { ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
 import ApplyPolicy, { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
 import { DataDisplay } from '../Fields';
-
 
 const ViewContent = ({ toggleEditMode, applyPolicy, canEdit }) => (
   <>
@@ -13,9 +14,13 @@ const ViewContent = ({ toggleEditMode, applyPolicy, canEdit }) => (
   </>
 );
 
-const EditContent = ({ toggleEditMode, applyPolicy }) => (
-  <ApplyPolicy label={null} onChange={(value) => console.log(value)} value={applyPolicy} />
-);
+const EditContent = ({ toggleEditMode, applyPolicy }) => {
+  const { submit, error } = useSubmit({ field: FIELDS.APPLY_POLICY });
+
+  const handleSubmit = async (value) => await submit(value);
+
+  return <ApplyPolicy label={null} onChange={handleSubmit} value={applyPolicy} />;
+};
 const Eligibility = ({ applyPolicy, canEdit }) => (
   <TaskFieldEditableContent
     ViewContent={({ toggleEditMode }) => (

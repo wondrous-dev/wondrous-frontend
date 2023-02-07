@@ -31,6 +31,7 @@ import { useQuery } from '@apollo/client';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { CategoryField, Description, Title } from 'components/Common/TaskViewModal/Fields';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
 import { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
@@ -43,14 +44,21 @@ import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { TaskContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
+import { Dates, Eligibility, PaymentData, Visibility } from './EditableFields';
 import ViewGrantFooter from './Footer';
 import GrantMenuStatus from './GrantMenuStatus';
 import { DescriptionWrapper } from './styles';
 import { canViewGrant } from './utils';
-import { PaymentData, Dates, Eligibility, Visibility } from './EditableFields';
-import { CategoryField } from 'components/Common/TaskViewModal/Fields';
 
 const FIELDS_CONFIG = [
+  {
+    label: 'Reviewers',
+    component: ({ grant }, canEdit) => null,
+  },
+  {
+    label: 'Status',
+    component: ({ grant: { status }, canEdit }) => <GrantMenuStatus currentStatus={status} canEdit={canEdit} />,
+  },
   {
     component: ({ grant: { reward, numOfGrant }, canEdit }) => (
       <PaymentData reward={reward} numOfGrant={numOfGrant} canEdit={canEdit} />
@@ -63,9 +71,7 @@ const FIELDS_CONFIG = [
     component: ({ grant: { startDate, endDate }, canEdit }) => (
       <Dates canEdit={canEdit} startDate={startDate} endDate={endDate} />
     ),
-    shouldDisplay: ({ grant: { startDate, endDate }, canEdit }): boolean => {
-      return !!(startDate || endDate || canEdit);
-    },
+    shouldDisplay: ({ grant: { startDate, endDate }, canEdit }): boolean => !!(startDate || endDate || canEdit),
   },
   {
     label: 'Eligibility',
@@ -77,7 +83,9 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Categories',
-    component: ({ grant: { categories }, canEdit }) => <CategoryField hideLabel labels={categories} canEdit={canEdit}/>,
+    component: ({ grant: { categories }, canEdit }) => (
+      <CategoryField hideLabel labels={categories} canEdit={canEdit} />
+    ),
     shouldDisplay: ({ grant: { categories }, canEdit }): boolean => !!categories?.length || canEdit,
   },
 ];
@@ -157,6 +165,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
         isFullScreen,
         grant,
         setEditMode,
+        entityType: ENTITIES_TYPES.GRANT,
       }}
     >
       <CreateEntityDiscardTask
@@ -258,22 +267,14 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                   </TaskModalHeader>
                   <TaskModalTaskData fullScreen={isFullScreen}>
                     <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
-                      <TaskModalTitle>{grant?.title}</TaskModalTitle>
-                      <GrantMenuStatus
-                        canEdit={canEdit}
-                        currentStatus={grant?.status}
-                        onUpdateSuccess={() => {
-                          setSnackbarAlertMessage('Grant status updated successfully');
-                          setSnackbarAlertOpen(true);
-                        }}
-                        onUpdateError={() => {
-                          setSnackbarAlertMessage('Grant status update failed');
-                          setSnackbarAlertOpen(true);
-                        }}
-                      />
-
+                      <Title title={grant?.title} canEdit={canEdit} />
                       <DescriptionWrapper>
-                        <RichTextViewer text={grant.description} />
+                        <Description
+                          canEdit={canEdit}
+                          description={grant?.description}
+                          orgId={grant?.orgId}
+                          showFullByDefault
+                        />
                         <TaskMediaWrapper media={grant?.media} />
                       </DescriptionWrapper>
                     </TaskModalTitleDescriptionMedia>

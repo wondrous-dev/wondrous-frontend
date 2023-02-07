@@ -11,7 +11,7 @@ import {
   CreateEntityAutocompletePopperRenderInputIcon,
   CreateEntityDefaultUserImage,
   CreateEntityError,
-  CreateEntityLabelAddButton,
+  CreateEntityLabelAddButton
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
 import { Dispatch, useEffect, useRef, useState } from 'react';
@@ -66,7 +66,7 @@ export const TaskFieldEditableContent = ({
   if (isAddMode) {
     return (
       <Grid ref={ref} width="100%" height="100%">
-        {addContent({ toggleAddMode: toggleAddMode })}
+        {addContent({ toggleAddMode })}
       </Grid>
     );
   }
@@ -89,7 +89,7 @@ export const TaskFieldEditableContent = ({
           ...editGridStyle,
         }}
       >
-        {editableContent({ toggleEditMode: toggleEditMode })}
+        {editableContent({ toggleEditMode })}
       </Grid>
     );
   }
@@ -198,6 +198,7 @@ export const ReviewerAssigneeAutocomplete = ({
         event.stopPropagation();
         if (onChange) onChange(value);
         if (reason === 'selectOption') {
+          console.log(value, 'VALUE ASSIGNEE ID')
           return onSelect(value);
         }
       }}
