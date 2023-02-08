@@ -5,11 +5,13 @@ import { Box } from '@mui/system';
 
 import {
   floatingLinkActions,
+  floatingLinkSelectors,
   submitFloatingLink,
   useFloatingLinkSelectors,
 } from 'components/RichTextPlate/customPlugins/CustomLink';
 import LinkIcon from 'components/RichTextPlate/icons/LinkIcon';
 import {
+  ErrorMessage,
   FloatingIconWrapper,
   FloatingInputWrapper,
   FloatingLinkEditButton,
@@ -21,6 +23,7 @@ import {
   FloatingLinkUnlinkButton,
   FloatingLinkUrlInput,
   FloatingMainWrapper,
+  InputContainer,
 } from 'components/RichTextPlate/customPlugins/ui/link/styles';
 import { ShortTextIcon } from 'components/RichTextPlate/icons/ShortTextIcon';
 import { LaunchIcon } from 'components/RichTextPlate/icons/LaunchIcon';
@@ -31,6 +34,9 @@ export const PlateFloatingLink = ({ readOnly }: TEditableProps) => {
   const isEditing = useFloatingLinkSelectors().isEditing();
 
   const editor = useEditorRef();
+
+  const errorUrl = floatingLinkSelectors.errorMessageUrl();
+  const errorText = floatingLinkSelectors.errorMessageText();
 
   if (readOnly) return null;
 
@@ -45,20 +51,26 @@ export const PlateFloatingLink = ({ readOnly }: TEditableProps) => {
 
   const input = (
     <FloatingMainWrapper>
-      <FloatingInputWrapper>
-        <FloatingIconWrapper>
-          <LinkIcon style={{ width: '18px', height: '18px', padding: '3px' }} />
-        </FloatingIconWrapper>
+      <InputContainer>
+        <FloatingInputWrapper>
+          <FloatingIconWrapper>
+            <LinkIcon style={{ width: '18px', height: '18px', padding: '3px' }} />
+          </FloatingIconWrapper>
 
-        <FloatingLinkUrlInput placeholder="URL" />
-      </FloatingInputWrapper>
+          <FloatingLinkUrlInput placeholder="URL" />
+        </FloatingInputWrapper>
+        {errorUrl ? <ErrorMessage>Please enter valid URL</ErrorMessage> : null}
+      </InputContainer>
 
-      <FloatingInputWrapper>
-        <FloatingIconWrapper>
-          <ShortTextIcon width={18} />
-        </FloatingIconWrapper>
-        <FloatingLinkTextInput placeholder="Link text" />
-      </FloatingInputWrapper>
+      <InputContainer>
+        <FloatingInputWrapper>
+          <FloatingIconWrapper>
+            <ShortTextIcon width={18} />
+          </FloatingIconWrapper>
+          <FloatingLinkTextInput placeholder="Link text" />
+        </FloatingInputWrapper>
+        {errorText ? <ErrorMessage>Please enter link text</ErrorMessage> : null}
+      </InputContainer>
 
       <Box
         sx={{

@@ -64,6 +64,11 @@
 
 
 /* Plate text editor */
+.slate-mention_input {
+  box-shadow: none;
+  background: none;
+}
+
 form .slate-ToolbarButton-active[data-testid="ToolbarButton"],
 form .slate-ToolbarButton:hover[data-testid="ToolbarButton"] {
   color: #ffffff;
@@ -99,10 +104,6 @@ form .slate-HrElement-hr {
 form .slate-code[data-slate-leaf="true"] {
   background-color: unset;
   font-family: monospace;
-}
-
-form [data-slate-node="element"] {
-  display: flex;
 }
 
 .plate-tooltip {

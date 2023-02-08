@@ -11,6 +11,8 @@ export const floatingLinkStore = createStore('floatingLink')({
   newTab: false,
   mode: '' as FloatingLinkMode,
   isEditing: false,
+  errorMessageUrl: false,
+  errorMessageText: false,
 })
   .extendActions((set) => ({
     reset: () => {
@@ -19,6 +21,8 @@ export const floatingLinkStore = createStore('floatingLink')({
       set.newTab(false);
       set.mode('');
       set.isEditing(false);
+      set.errorMessageUrl(false);
+      set.errorMessageText(false);
     },
   }))
   .extendActions((set) => ({

@@ -1,3 +1,4 @@
+import Typography from '@mui/material/Typography';
 import React, { useCallback, useEffect } from 'react';
 import {
   comboboxActions,
@@ -21,6 +22,7 @@ import {
   ComboboxList,
   SlashCommandItemIcon,
 } from 'components/RichTextPlate/customPlugins/ui/combobox/styles';
+import palette from '../../../../../theme/palette';
 import { ComboboxProps } from './Combobox.types';
 import DefaultUserImage from '../../../../Common/Image/DefaultUserImage';
 
@@ -89,6 +91,12 @@ const ComboboxContent = <TData extends Data = NoData>(
 
         {filteredItems.length < storeItems.length || trigger === '@' ? null : (
           <BasicBlocksTitle>Basic blocks</BasicBlocksTitle>
+        )}
+
+        {!filteredItems.length && (
+          <Typography color={palette.white} fontSize="13px">
+            No records
+          </Typography>
         )}
 
         {filteredItems.map((item: any, index) => {

@@ -29,13 +29,14 @@ import {
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
+  createMentionPlugin,
 } from '@udecode/plate';
 import { TComboboxItem } from '@udecode/plate-combobox';
 
 import { ToolbarButtons } from 'components/RichTextPlate/ToolbarButtons';
 import { MarkBalloonToolbar } from 'components/RichTextPlate/plugins/balloon-toolbar/MarkBalloonToolbar';
 import { autoformatPlugin } from 'components/RichTextPlate/plugins/autoformat/autoformatPlugin';
-import { createCustomMentionPlugin } from 'components/RichTextPlate/customPlugins/CustomMention';
+// import { createCustomMentionPlugin } from 'components/RichTextPlate/customPlugins/CustomMention';
 import { MentionCombobox, MentionElement } from 'components/RichTextPlate/customPlugins/ui/mention';
 import { HeaderIcon } from 'components/RichText/icons/HeaderIcon';
 import BoldIcon from 'components/RichTextPlate/icons/BoldIcon';
@@ -122,8 +123,13 @@ const components = createPlateUI({
   [ELEMENT_MENTION_INPUT]: withProps(StyledElement, {
     styles: {
       root: {
-        boxShadow: 'none',
-        backgroundColor: 'unset',
+        marginTop: '0',
+        marginBottom: '0',
+        marginLeft: '1px',
+        marginRight: '1px',
+        padding: '0 1px',
+        verticalAlign: 'baseline',
+        display: 'inline-block',
       },
     },
   }),
@@ -236,8 +242,8 @@ const RichTextEditorPlate = ({ mentionables, inputValue, onChange, mediaUploads,
           createSoftBreakPlugin(softBreakPlugin),
           createExitBreakPlugin(exitBreakPlugin),
           createComboboxPlugin(),
-          createCustomMentionPlugin(),
-          createCustomMentionPlugin({
+          createMentionPlugin(),
+          createMentionPlugin({
             key: '/',
             component: MentionElement,
             options: { trigger: '/' },

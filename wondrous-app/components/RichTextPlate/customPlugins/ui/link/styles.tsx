@@ -77,19 +77,30 @@ export const FloatingLinkEditWrapper = styled.div`
   padding: 0.5rem;
 `;
 
+export const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ErrorMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  color: ${palette.red400};
+  padding-left: 10px;
+  font-size: 12px;
+`;
+
 export const FloatingHorizontalDivider = styled.div`
   height: 1px;
   background-color: ${palette.grey57};
 `;
 
 export const FloatingLinkUrlInput = styled(FloatingLink.UrlInput)`
-  ${floatingLink};
-  color: ${palette.white};
+  ${floatingLink}
 `;
 
 export const FloatingLinkTextInput = styled(FloatingLink.TextInput)`
-  ${floatingLink};
-  color: ${palette.white};
+  ${floatingLink}
 `;
 
 export const FloatingLinkEditButton = styled(FloatingLink.EditButton)`
