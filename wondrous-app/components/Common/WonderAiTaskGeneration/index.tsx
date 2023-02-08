@@ -356,7 +356,7 @@ const WonderAiTaskGeneration = () => {
           <PromptBox>
             <PromptBoxTitle fontSize={18}>{`Unleash your communities' potential with AI.`}</PromptBoxTitle>
             <PromptBoxDescription>
-              {`Write a prompt describing your intended action and what your org/pod does to generate a ${
+              {`Write a prompt describing work you want done and your org/pod to generate a ${
                 promptGenerationType === GENERATION_TYPES[0]?.value
                   ? 'milestone containing tasks.'
                   : 'task containing subtasks.'
@@ -396,7 +396,7 @@ const WonderAiTaskGeneration = () => {
                     setActionPrompt(event.target.value);
                     setFormErrors({ ...formErrors, actionPrompt: null });
                   }}
-                  placeholder="Enter desired action"
+                  placeholder="Enter prompt here"
                   value={actionPrompt}
                   error={formErrors.actionPrompt}
                 />
