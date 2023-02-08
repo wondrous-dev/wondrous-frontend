@@ -18,7 +18,6 @@ function Callback() {
   const state = router?.query?.state as string;
   const [connectUserDiscord] = useMutation(CONNECT_USER_DISCORD);
   const [discordSignupLogin] = useMutation(USER_DISOCRD_SIGNUP_LOGIN);
-  const [connectUserDiscordTried, setConnectUserDiscordTried] = useState(false);
   const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK);
   const [redeemPodInviteLink] = useMutation(REDEEM_POD_INVITE_LINK);
 
