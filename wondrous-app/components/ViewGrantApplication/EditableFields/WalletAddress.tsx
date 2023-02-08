@@ -10,7 +10,7 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { GrantTextField, GrantTextFieldInput } from 'components/CreateGrant/Fields/styles';
 import EditIcon from 'components/Icons/editIcon';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useWonderWeb3 } from 'services/web3';
 import palette from 'theme/palette';
 import { WalletAddressViewer } from '../Fields';
@@ -24,7 +24,7 @@ const EditContent = ({ toggleEditMode, paymentAddress, error, handleChange, hand
         name="paymentAddress"
         onChange={handleChange}
         placeholder="Enter address"
-        value={paymentAddress}
+        defaultValue={paymentAddress}
         fullWidth
         InputProps={{
           inputComponent: GrantTextFieldInput,
@@ -48,21 +48,29 @@ const WalletAddress = ({ paymentAddress, canEdit }) => {
   const { submit, error } = useSubmit({ field: FIELDS.PAYMENT_ADDRESS });
   const wonderWeb3 = useWonderWeb3();
 
-  const [address, setAddress] = useState(paymentAddress);
+  const ref = useRef({
+    paymentAddress,
+  });
 
   const connectedAddress = useMemo(() => {
     const isEns = wonderWeb3?.wallet?.addressTag.includes('.eth');
     return isEns ? wonderWeb3?.wallet?.addressTag : wonderWeb3?.wallet?.address;
   }, [wonderWeb3]);
 
-  const handleChange = (e) => setAddress(e.target.value);
+  const handleChange = (e) => {
+    ref.current = {
+      ...ref.current,
+      paymentAddress: e.target.value,
+    };
+  };
 
-  const handleUseConnectedButton = async () => setAddress(connectedAddress);
+  const handleUseConnectedButton = async () => (ref.current = { ...ref.current, paymentAddress: connectedAddress });
 
   const handleSubmit = async () => {
+    const address = ref.current.paymentAddress;
     const isEns = address.includes('.eth');
-    const paymentAddress = isEns ? await wonderWeb3.getAddressFromENS(address) : address;
-    await submit(paymentAddress);
+    const newAddress = isEns ? await wonderWeb3.getAddressFromENS(address) : address;
+    await submit(newAddress);
   };
 
   return (
@@ -78,10 +86,13 @@ const WalletAddress = ({ paymentAddress, canEdit }) => {
         />
       )}
       ViewContent={({ toggleEditMode }) => (
-        <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
-          <WalletAddressViewer walletAddress={paymentAddress} />
-          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-        </ViewFieldWrapper>
+        <Grid display="flex" direction="column" gap="8px" alignItems="flex-start" width="100%">
+          <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
+            <WalletAddressViewer walletAddress={paymentAddress} />
+            <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+          </ViewFieldWrapper>
+          {error ? <CreateEntityError>{error}</CreateEntityError> : null}
+        </Grid>
       )}
     />
   );

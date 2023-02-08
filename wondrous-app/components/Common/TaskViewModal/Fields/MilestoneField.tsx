@@ -47,7 +47,7 @@ const MilestoneFieldContent = ({ milestoneId, getTaskById, milestoneTitle, canEd
   );
 };
 
-const EditMode = ({ orgId, podId, milestoneId, toggleEditMode }) => {
+const EditMode = ({ orgId, podId, milestoneId, toggleEditMode, toggleOutsideAlerter }) => {
   const milestonesData = useGetMilestones(orgId, podId);
   const { submit, error } = useSubmit({ field: FIELDS.MILESTONE });
 
@@ -61,6 +61,7 @@ const EditMode = ({ orgId, podId, milestoneId, toggleEditMode }) => {
           await submit(milestoneId);
           toggleEditMode();
         }}
+        onNewMilestoneClick={toggleOutsideAlerter}
         handleClose={async () => {
           toggleEditMode();
           await submit(null);
@@ -96,12 +97,16 @@ const MilestoneField = ({
             canEdit={canEdit && !isSubtask}
           />
         )}
-        addContent={({ toggleAddMode }) => (
-          <EditMode orgId={orgId} podId={podId} milestoneId={milestoneId} toggleEditMode={toggleAddMode} />
+        addContent={({ toggleAddMode, toggleOutsideAlerter }) => (
+          <EditMode 
+          toggleOutsideAlerter={toggleOutsideAlerter}
+          orgId={orgId} podId={podId} milestoneId={milestoneId} toggleEditMode={toggleAddMode} />
         )}
         canAddItem={canEdit && !milestoneId}
-        editableContent={({ toggleEditMode }) => (
-          <EditMode orgId={orgId} podId={podId} milestoneId={milestoneId} toggleEditMode={toggleEditMode} />
+        editableContent={({ toggleEditMode, toggleOutsideAlerter }) => (
+          <EditMode 
+          toggleOutsideAlerter={toggleOutsideAlerter}
+          orgId={orgId} podId={podId} milestoneId={milestoneId} toggleEditMode={toggleEditMode} />
         )}
       />
     </TaskSectionDisplayDiv>

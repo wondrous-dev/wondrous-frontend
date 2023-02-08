@@ -22,7 +22,7 @@ const EditContent = ({ description, orgId }) => {
 
   const handleChange = async (value) => await submit(JSON.stringify(value));
 
-  const handleSubmit = debounce(handleChange, 200);
+  const handleSubmit = debounce(handleChange, 800);
 
   return (
     <>

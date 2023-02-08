@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from 'graphql/fragments/comments';
-import { GrantFragment } from 'graphql/fragments/grant';
+import { GrantCardFragment, GrantFragment } from 'graphql/fragments/grant';
 import { GrantApplicationFragment } from 'graphql/fragments/grantApplication';
 import { MediaFragment } from 'graphql/fragments/media';
 import { OrgFragment } from 'graphql/fragments/org';
@@ -8,61 +8,19 @@ import { OrgFragment } from 'graphql/fragments/org';
 export const GET_ORG_GRANTS = gql`
   query getGrantOrgBoard($orgId: ID!, $status: String, $limit: Int, $offset: Int) {
     getGrantOrgBoard(orgId: $orgId, status: $status, limit: $limit, offset: $offset) {
-      id
-      title
-      description
-      status
-      orgId
-      podId
-      privacyLevel
-      numOfGrant
-      applicationsCount
-      reward {
-        paymentMethodId
-        rewardAmount
-        chain
-        icon
-        tokenName
-        symbol
-      }
-      media {
-        ...MediaFragment
-      }
-      commentCount
-      endDate
+      ...GrantCardFragment
     }
   }
-  ${MediaFragment}
+  ${GrantCardFragment}
 `;
 
 export const GET_POD_GRANTS = gql`
   query getGrantPodBoard($podId: ID!, $status: String, $limit: Int, $offset: Int) {
     getGrantPodBoard(podId: $podId, status: $status, limit: $limit, offset: $offset) {
-      id
-      title
-      description
-      status
-      orgId
-      podId
-      privacyLevel
-      numOfGrant
-      applicationsCount
-      reward {
-        paymentMethodId
-        rewardAmount
-        chain
-        icon
-        tokenName
-        symbol
-      }
-      media {
-        ...MediaFragment
-      }
-      commentCount
-      endDate
+      ...GrantCardFragment
     }
   }
-  ${MediaFragment}
+  ${GrantCardFragment}
 `;
 
 export const GET_GRANT_BY_ID = gql`
@@ -153,6 +111,18 @@ export const GET_ACTIVE_GRANT_APPLICATION_PODS = gql`
         tokenName
         chain
       }
+    }
+  }
+`;
+
+export const GET_GRANT_REVIEWERS = gql`
+  query getGrantReviewers($taskId: ID!) {
+    getGrantReviewers(taskId: $taskId) {
+      id
+      profilePicture
+      firstName
+      lastName
+      username
     }
   }
 `;

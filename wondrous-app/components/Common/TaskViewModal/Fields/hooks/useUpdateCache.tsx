@@ -1,20 +1,57 @@
-import { useApolloClient } from "@apollo/client";
-import { TaskCardFragment } from "graphql/fragments/task";
-import { transformTaskToTaskCard } from "utils/helpers";
+import { useApolloClient } from '@apollo/client';
+import { GrantCardFragment } from 'graphql/fragments/grant';
+import { TaskCardFragment, TaskProposalCardFragment } from 'graphql/fragments/task';
 
-export const useUpdateTaskCardCache = () => {
-    const client = useApolloClient();
-    const handleUpdateTaskCardCache = ({ data }) => {
-      const { id } = data;
-      const transformedTaskToTaskCard = transformTaskToTaskCard(data);
-      client.writeFragment({
-        fragment: TaskCardFragment,
-        fragmentName: 'TaskCardFragment',
-        id: `TaskCard:${id}`,
-        data: transformedTaskToTaskCard,
-      });
-    };
-    return handleUpdateTaskCardCache;
+
+const transformEntityData = (existingData, newData) => {
+  const excludedFields = ['__typename', 'id']
+  const changedData = Object.keys(existingData).reduce((acc, next) => {
+    if (existingData[next] !== newData[next] && !excludedFields.includes(next) && newData[next] !== undefined) {
+      acc[next] = newData[next];
+    }
+    return acc;
+  }, {})
+  return {
+    ...existingData,
+    ...changedData,
+  }
+}
+
+export const useUpdateTaskCardCache = (
+  fragment = TaskCardFragment,
+  fragmentName = 'TaskCardFragment',
+  idLabel = 'TaskCard'
+) => {
+  const client = useApolloClient();
+  const handleUpdateTaskCardCache = ({ data }) => {
+    const { id } = data;
+    const currentData = client.readFragment({
+      fragment,
+      fragmentName,
+      id: `${idLabel}:${id}`,
+    })
+
+    const newData = transformEntityData(currentData, data);
+
+    client.writeFragment({
+      fragment,
+      fragmentName,
+      id: `${idLabel}:${id}`,
+      data: newData,
+    });
   };
+  return handleUpdateTaskCardCache;
+};
 
-// TODO same for grants & proposals
+
+export const useUpdateProposalCardCache = () => useUpdateTaskCardCache(
+  TaskProposalCardFragment,
+  'TaskProposalCardFragment',
+  'TaskProposalCard'
+);
+
+export const useUpdateGrantCardCache = () => useUpdateTaskCardCache(
+  GrantCardFragment,
+  'GrantCardFragment',
+  'GrantCard'
+)

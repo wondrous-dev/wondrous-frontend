@@ -320,7 +320,7 @@ const ViewGrantApplication = ({ onClose }) => {
                 <IconWrapper>
                   <statusAndIcon.icon />
                 </IconWrapper>
-                <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                <Typography color={palette.white} whiteSpace="nowrap" fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
                   {statusAndIcon.label}
                 </Typography>
               </ItemPill>

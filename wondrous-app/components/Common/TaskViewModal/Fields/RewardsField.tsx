@@ -179,7 +179,7 @@ const Rewards = ({ fetchedTask, user, canEdit, shouldDisplay }) => {
           />
         )}
         ViewContent={({ toggleEditMode }) => (
-          <Grid display="flex" direction="column" gap="4px">
+          <Grid display="flex" direction="column" gap="8px">
             <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
               <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
                 <TaskSectionInfoPaymentMethodIcon src={icon} />

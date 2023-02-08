@@ -42,6 +42,7 @@ interface SingleDatePickerProps {
   handleClose?(): void;
   autoFocus?: boolean;
   placement?: 'bottom' | 'top';
+  onClickAway?: () => void;
 }
 
 function SingleDatePicker({
@@ -57,6 +58,7 @@ function SingleDatePicker({
   handleClose,
   autoFocus,
   placement = 'top',
+  onClickAway = null
 }: SingleDatePickerProps) {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [showOptions, setShowOptions] = useState(false);
@@ -193,7 +195,9 @@ function SingleDatePicker({
   }, [autoFocus]);
 
   const handleClickAway = () => {
+
     setIsOpen(false);
+    onClickAway?.()
   };
 
   const handleClick = () => {

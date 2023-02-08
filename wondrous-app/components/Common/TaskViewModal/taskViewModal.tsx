@@ -205,7 +205,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     },
   });
 
-  const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
+  const [getTaskProposalById, {refetch: refetchProposal}] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
@@ -539,7 +539,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
             setSnackbarAlertMessage={setSnackbarAlertMessage}
           />
         )}
-        <TaskContext.Provider value={{ fetchedTask, refetch, tokenData, entityType }}>
+        <TaskContext.Provider value={{ fetchedTask, refetch: isTaskProposal ? refetchProposal : refetch, tokenData, entityType }}>
           <TaskModal open={open} onClose={handleModalClose}>
             <TaskModalCard fullScreen={fullScreen}>
               {!!fetchedTask && canViewTask !== null && (
@@ -782,7 +782,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             <CategoryField
                               labels={remaininTaskCategories}
                               canEdit={canEdit}
-                              shouldDisplay={canEdit || fetchedTask?.categories?.length}
+                              shouldDisplay={(canEdit || fetchedTask?.categories?.length) && entityTypeData[entityType].fields.includes(Fields.categories)}
                             />
                             <TagsField
                               canEdit={canEdit}

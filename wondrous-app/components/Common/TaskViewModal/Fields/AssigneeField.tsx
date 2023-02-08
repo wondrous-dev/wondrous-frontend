@@ -12,7 +12,7 @@ import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoTakeTask, TaskSectionInfoTakeTaskText } from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
-import {useUpdateTaskCardCache} from './hooks/useUpdateCache'
+import { useUpdateTaskCardCache } from './hooks/useUpdateCache';
 import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
 
 interface OrgUser {
@@ -43,44 +43,6 @@ const AssigneeContent = ({
     hide: orgUser?.value === user?.id,
   }));
   const handleUpdateTaskAssignee = async (assigneeId) => await submit(assigneeId);
-
-  if (!fetchedTask?.assigneeId && canApply) {
-    return <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />;
-  }
-  if (!fetchedTask?.assigneeId && canClaim) {
-    return (
-      <TaskSectionInfoTakeTask
-        onClick={() => {
-          if (!user) {
-            router.push('/signup', undefined, {
-              shallow: true,
-            });
-          } else if (isTaskProposal) {
-            updateTaskProposalAssignee({
-              variables: {
-                proposalId: fetchedTask?.id,
-                assigneeId: user?.id,
-              },
-              onCompleted: (data) => {
-                const taskProposal = data?.updateTaskProposalAssignee;
-                if (boardColumns?.setColumns && onCorrectPage) {
-                  const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {});
-                  let columns = [...boardColumns?.columns];
-                  columns = updateProposalItem(transformedTaskProposal, columns);
-                  boardColumns?.setColumns(columns);
-                }
-              },
-            });
-          } else {
-            handleUpdateTaskAssignee(user?.id);
-          }
-        }}
-      >
-        <Claim />
-        <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
-      </TaskSectionInfoTakeTask>
-    );
-  }
 
   if (fetchedTask?.assigneeId) {
     return (
@@ -117,16 +79,61 @@ const AssigneeContent = ({
               toggleEditMode();
             }}
             assignToSelfUser={user}
-            onAssignToSelfClick={() => console.log('on assign to self click')}
+            onAssignToSelfClick={() => {
+              handleUpdateTaskAssignee(user?.id);
+              toggleEditMode();
+            }}
             onChange={(value) => {
               search(value);
             }}
-            onSelect={handleUpdateTaskAssignee}
+            onSelect={(value: OrgUser) => {
+              handleUpdateTaskAssignee(value?.value);
+              toggleEditMode();
+            }}
           />
         )}
       />
     );
   }
+
+  if (!fetchedTask?.assigneeId && canClaim) {
+    return (
+      <TaskSectionInfoTakeTask
+        onClick={() => {
+          if (!user) {
+            router.push('/signup', undefined, {
+              shallow: true,
+            });
+          } else if (isTaskProposal) {
+            updateTaskProposalAssignee({
+              variables: {
+                proposalId: fetchedTask?.id,
+                assigneeId: user?.id,
+              },
+              onCompleted: (data) => {
+                const taskProposal = data?.updateTaskProposalAssignee;
+                if (boardColumns?.setColumns && onCorrectPage) {
+                  const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {});
+                  let columns = [...boardColumns?.columns];
+                  columns = updateProposalItem(transformedTaskProposal, columns);
+                  boardColumns?.setColumns(columns);
+                }
+              },
+            });
+          } else {
+            handleUpdateTaskAssignee(user?.id);
+          }
+        }}
+      >
+        <Claim />
+        <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
+      </TaskSectionInfoTakeTask>
+    );
+  }
+  if (!fetchedTask?.assigneeId && canApply) {
+    return <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />;
+  }
+
   return null;
 };
 

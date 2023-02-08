@@ -42,9 +42,15 @@ interface IEditableFieldContent {
   recurringSchema: any;
   dueDate: any;
   toggleMode: any;
+  toggleOutsideAlerter?: () => void;
 }
 
-const EditableFieldContent = ({ recurringSchema, dueDate, toggleMode }: IEditableFieldContent) => {
+const EditableFieldContent = ({
+  recurringSchema,
+  dueDate,
+  toggleMode,
+  toggleOutsideAlerter,
+}: IEditableFieldContent) => {
   const initialRecurrenceValue =
     recurringSchema?.daily || recurringSchema?.weekly || recurringSchema?.monthly || recurringSchema?.periodic;
 
@@ -56,6 +62,11 @@ const EditableFieldContent = ({ recurringSchema, dueDate, toggleMode }: IEditabl
   const [value, setValue] = useState(dueDate);
 
   const { submit, error } = useSubmit({ field: FIELDS.DUE_DATE });
+
+  useEffect(() => {
+    if (toggleOutsideAlerter) toggleOutsideAlerter();
+    return () => toggleOutsideAlerter && toggleOutsideAlerter();
+  }, []);
 
   const handleSubmit = async (value, recurrenceType, recurrenceValue) => {
     let input = {
@@ -70,7 +81,7 @@ const EditableFieldContent = ({ recurringSchema, dueDate, toggleMode }: IEditabl
         },
       };
     }
-    await submit(null, {...input});
+    await submit(null, { ...input });
   };
 
   return (
@@ -81,18 +92,17 @@ const EditableFieldContent = ({ recurringSchema, dueDate, toggleMode }: IEditabl
           setValue(value);
           handleSubmit(value, recurrenceType, recurrenceValue);
         }}
+        value={dueDate}
         setRecurrenceType={setRecurrenceType}
         setRecurrenceValue={(recurrenceValue) => {
           setRecurrenceValue(recurrenceValue);
           handleSubmit(value, recurrenceType, recurrenceValue);
         }}
         hideRecurring={false}
+        onClickAway={toggleMode}
         handleClose={() => {
-          toggleMode();
-          setRecurrenceType(null);
-          setRecurrenceValue(null);
+          handleSubmit(null, null, null);
         }}
-        defaultValue={dueDate}
         recurrenceType={recurrenceType}
         recurrenceValue={recurrenceValue}
       />
@@ -116,12 +126,22 @@ const DueDateField = ({ dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry, 
               canEdit={canEdit}
             />
           )}
-          addContent={({ toggleAddMode }) => (
-            <EditableFieldContent toggleMode={toggleAddMode} recurringSchema={null} dueDate={dueDate} />
+          addContent={({ toggleAddMode, toggleOutsideAlerter }) => (
+            <EditableFieldContent
+              toggleOutsideAlerter={toggleOutsideAlerter}
+              toggleMode={toggleAddMode}
+              recurringSchema={null}
+              dueDate={dueDate}
+            />
           )}
           canAddItem={canEdit && !dueDate}
-          editableContent={({ toggleEditMode }) => (
-            <EditableFieldContent toggleMode={toggleEditMode} recurringSchema={recurringSchema} dueDate={dueDate} />
+          editableContent={({ toggleEditMode, toggleOutsideAlerter }) => (
+            <EditableFieldContent
+              toggleOutsideAlerter={toggleOutsideAlerter}
+              toggleMode={toggleEditMode}
+              recurringSchema={recurringSchema}
+              dueDate={dueDate}
+            />
           )}
         />
       </TaskSectionDisplayDiv>

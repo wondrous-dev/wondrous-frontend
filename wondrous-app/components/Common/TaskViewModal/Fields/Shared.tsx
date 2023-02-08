@@ -22,11 +22,11 @@ import { useOutsideAlerter } from 'utils/hooks';
 import { TaskSectionInfoText, ViewFieldWrapper } from '../styles';
 
 interface TaskFieldEditableContentProps {
-  editableContent: React.FC<{ toggleEditMode: () => void }>;
+  editableContent: React.FC<{ toggleEditMode: () => void, toggleOutsideAlerter: () => void }>;
   ViewContent: React.FC<{ toggleEditMode: () => void }>;
   onClose?: (value?: any) => void;
   canAddItem?: boolean;
-  addContent?: React.FC<{ toggleAddMode: () => void }>;
+  addContent?: React.FC<{ toggleAddMode: () => void, toggleOutsideAlerter: () => void }>;
   editGridStyle?: any;
 }
 
@@ -40,6 +40,7 @@ export const TaskFieldEditableContent = ({
 }: TaskFieldEditableContentProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
+  const [isOutsideAlerterDisabled, setDisableOutsideAlerter] = useState(false);
 
   const ref = useRef();
   const toggleEditMode = () =>
@@ -50,9 +51,12 @@ export const TaskFieldEditableContent = ({
 
   const toggleAddMode = () => setIsAddMode((prev) => !prev);
 
+  const toggleOutsideAlerter = () => setDisableOutsideAlerter((prev) => !prev);
+
   useOutsideAlerter(
     ref,
     () => {
+      if(isOutsideAlerterDisabled) return;
       if (isEditMode) {
         toggleEditMode();
       }
@@ -60,13 +64,15 @@ export const TaskFieldEditableContent = ({
         toggleAddMode();
       }
     },
-    [isEditMode, isAddMode]
+    [isEditMode, isAddMode, isOutsideAlerterDisabled]
   );
 
   if (isAddMode) {
     return (
-      <Grid ref={ref} width="100%" height="100%">
-        {addContent({ toggleAddMode })}
+      <Grid 
+      ref={ref} 
+      width="100%" height="100%">
+        {addContent({ toggleAddMode, toggleOutsideAlerter })}
       </Grid>
     );
   }
@@ -89,7 +95,7 @@ export const TaskFieldEditableContent = ({
           ...editGridStyle,
         }}
       >
-        {editableContent({ toggleEditMode })}
+        {editableContent({ toggleEditMode, toggleOutsideAlerter })}
       </Grid>
     );
   }
@@ -131,7 +137,7 @@ interface IReviewerAssigneeAutocompleteProps {
   onChange?: (value: string) => void;
   listBoxProps?: any;
   onDelete?: () => void;
-  onSelect?: (value: string) => void;
+  onSelect?: (value: string | Option) => void;
   error?: string;
 }
 
@@ -198,7 +204,6 @@ export const ReviewerAssigneeAutocomplete = ({
         event.stopPropagation();
         if (onChange) onChange(value);
         if (reason === 'selectOption') {
-          console.log(value, 'VALUE ASSIGNEE ID')
           return onSelect(value);
         }
       }}

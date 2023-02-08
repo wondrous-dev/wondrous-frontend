@@ -27,7 +27,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { SnackbarAlertContext } from './SnackbarAlert';
 
-const TaskStatusMenuWrapper = styled(Menu)`
+export const TaskStatusMenuWrapper = styled(Menu)`
   && {
     .MuiMenu-list,
     .MuiMenu-paper {

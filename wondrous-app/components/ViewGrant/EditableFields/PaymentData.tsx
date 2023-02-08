@@ -11,6 +11,7 @@ import { Grid } from '@mui/material';
 import { useState } from 'react';
 import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
 import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
+import { debounce } from 'lodash';
 
 const ViewContent = ({ toggleEditMode, reward, numOfGrant, canEdit }) => (
   <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode} background="transparent">
@@ -22,19 +23,20 @@ const ViewContent = ({ toggleEditMode, reward, numOfGrant, canEdit }) => (
 const PaymentData = ({ reward, numOfGrant, canEdit }) => {
   const { grant } = useTaskContext();
 
+  const [value, setValue] = useState(reward);
   const [grantStyle, setGrantStyle] = useState(getGrantStyleFromGrant(numOfGrant));
-  const { submit, error } = useSubmit({ field: FIELDS.REWARDS });
+  const { submit, error } = useSubmit({ field: FIELDS.GRANT_REWARDS });
   const { submit: submitNumOfGrant, error: numOfGrantError } = useSubmit({ field: FIELDS.NUM_OF_GRANT });
 
-  const handleSubmitNumOfGrant = async (value) => {
-    await submitNumOfGrant(parseInt(value, 10));
-    console.log(value);
-  };
+  const handleSubmitNumOfGrant = async (value) => await submitNumOfGrant(parseInt(value, 10));
+
 
   const handleSubmitReward = async (value) => {
     const { rewardAmount, paymentMethodId } = value;
-    await submit({ rewardAmount, paymentMethodId });
+    await submit({ rewardAmount: parseFloat(rewardAmount), paymentMethodId });
   };
+
+  const debounceSubmitReward = debounce(handleSubmitReward, 500);
 
   const handleGrantStyle = (value) => {
     setGrantStyle(value);
@@ -49,12 +51,16 @@ const PaymentData = ({ reward, numOfGrant, canEdit }) => {
           <Grid display="flex" gap="12px" direction="column" width="100%">
             <GrantStyle value={grantStyle} onChange={handleGrantStyle} />
             {grantStyle === GRANT_STYLE_MAP.FIXED ? (
-              <GrantQuantity value={numOfGrant} onChange={handleSubmitNumOfGrant} setError={() => {}} error={null} />
+              <GrantQuantity defaultValue={numOfGrant} onChange={handleSubmitNumOfGrant} setError={() => {}} error={null} />
             ) : null}
 
             <GrantAmount
-              value={reward}
-              onChange={(_, value) => handleSubmitReward(value)}
+              value={value}
+              onChange={(_, value) => {
+                setValue(value);
+                if(!value.rewardAmount || !value.paymentMethodId) return;
+                debounceSubmitReward(value);
+              }}
               orgId={grant?.org?.id}
               error={null}
               grantStyle={grantStyle}

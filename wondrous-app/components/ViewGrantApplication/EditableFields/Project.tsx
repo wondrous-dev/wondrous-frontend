@@ -7,6 +7,7 @@ import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields
 import { ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
 import { CreateGrantApplicationWorkspaceWrapper } from 'components/GrantApplications/CreateGrantApplication/styles';
 import { DAOIcon } from 'components/Icons/dao';
+import EditIcon from 'components/Icons/editIcon';
 import OrgSearch from 'components/OrgSearch';
 import { useMemo } from 'react';
 import palette from 'theme/palette';
@@ -36,7 +37,7 @@ const EditContent = ({ org, toggleEditMode }) => {
     [userOrgs]
   );
 
-  const handleSubmit = async (value) => await submit(value);
+  const handleSubmit = async (value) => await submit(value?.id);
 
   return (
     <CreateGrantApplicationWorkspaceWrapper>
@@ -60,6 +61,7 @@ const Project = ({ canEdit, grantApplication }) => (
     ViewContent={({ toggleEditMode }) => (
       <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
         <OrgViewer grantApplication={grantApplication} />
+        <EditIcon stroke={palette.grey58} className="edit-icon-field" />
       </ViewFieldWrapper>
     )}
     canAddItem={false && !grantApplication?.org?.id}

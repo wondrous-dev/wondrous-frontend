@@ -8,7 +8,7 @@ import { TaskFieldEditableContent } from './Shared';
 const EditContent = ({ title, toggleEditMode }) => {
   const { submit, error } = useSubmit({ field: FIELDS.TITLE });
   const handleChange = async (e) => await submit(e.target.value);
-  const debounceChange = debounce(handleChange, 200);
+  const debounceChange = debounce(handleChange, 800);
   return (
     <>
       <CreateEntityTitle

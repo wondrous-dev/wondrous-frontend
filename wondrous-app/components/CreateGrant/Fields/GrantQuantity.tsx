@@ -10,7 +10,7 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { GrantTextField, GrantTextFieldInput } from './styles';
 
-const GrantQuantity = ({ onChange, value, error, setError }) => (
+const GrantQuantity = ({ onChange, value = null, error, setError, defaultValue = null}) => (
   <TaskSectionDisplayDiv alignItems="start">
     <CreateEntityLabelWrapper>
       <CreateEntityLabel>Quantity</CreateEntityLabel>
@@ -23,7 +23,8 @@ const GrantQuantity = ({ onChange, value, error, setError }) => (
           name="amount"
           onChange={(e) => onChange(e.target.value)}
           placeholder="How many grants are available?"
-          value={value}
+          {...(defaultValue && { defaultValue })}
+          {...(value && { value })}
           fullWidth
           InputProps={{
             inputComponent: GrantTextFieldInput,

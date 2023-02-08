@@ -9,8 +9,9 @@ import {
 import PlusIcon from 'components/Icons/plus';
 import { UPDATE_TASK_REVIEWERS } from 'graphql/mutations';
 import { isEmpty } from 'lodash';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useRef, useState } from 'react';
 import palette from 'theme/palette';
+import { useOutsideAlerter } from 'utils/hooks';
 import { TaskSectionLabel } from '../helpers';
 import { AddButtonGrid, AddReviewerButton, ReviewerWrapper, TaskSectionDisplayDiv } from '../styles';
 import { FIELDS } from './hooks/constants';
@@ -20,15 +21,15 @@ import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEdi
 export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTask, user }) {
   const eligibleReviewers = useGetEligibleReviewers(fetchedTask?.orgId, fetchedTask?.podId);
   const [showAutocomplete, setShowAutocomplete] = useState(false);
-  const { submit, error } = useSubmit({ field: FIELDS.REVIEWERS, refetchQueries: ['getTaskReviewers'] });
-
+  const { submit, error } = useSubmit({ field: FIELDS.REVIEWERS, refetchQueries: ['getTaskReviewers', 'getGrantReviewers'] });
+  const ref = useRef();
   const handleUpdateReviewers = async (reviewerIds) => {
     await submit(reviewerIds);
   };
 
   const { getTaskReviewers: taskReviewers } = reviewerData || {};
   const withTaskReviewers = Boolean(taskReviewers?.length);
-  const taskReviewerIds = taskReviewers?.map(({ id }) => id);
+  const taskReviewerIds = taskReviewers?.map(({ id }) => id) || [];
 
   const filteredEligibleReviewers = useMemo(
     () =>
@@ -39,6 +40,8 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
       })),
     [eligibleReviewers, taskReviewerIds, user?.id]
   );
+
+  useOutsideAlerter(ref, () => setShowAutocomplete(false))
 
   if (!shouldDisplay) {
     return null;
@@ -57,9 +60,9 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
   };
 
   return (
-    <TaskSectionDisplayDiv alignItems="start">
+    <TaskSectionDisplayDiv alignItems="start" style={{width: '100%'}}>
       <TaskSectionLabel>Reviewer</TaskSectionLabel>
-      <ReviewerWrapper showFullWidth>
+      <ReviewerWrapper showFullWidth ref={showAutocomplete ? ref : null}>
         {withTaskReviewers
           ? taskReviewers.map((taskReviewer, index) => (
               <TaskFieldEditableContent
@@ -85,10 +88,10 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
                     }}
                     assignToSelfUser={selfReviewer}
                     onAssignToSelfClick={handleAssignToSelfClick}
-                    onSelect={(value: any) => {
-                      console.log(value, 'value on editables');
-                      handleUpdateReviewers([...taskReviewerIds.filter((id) => id !== taskReviewer.id), value?.id]);
-                    }}
+                    onSelect={(value: any) => 
+                      handleUpdateReviewers([...taskReviewerIds.filter((id) => id !== taskReviewer.id), value?.id])
+        
+                    }
                     onDelete={() => handleUpdateReviewers(taskReviewerIds.filter((id) => id !== taskReviewer.id))}
                   />
                 )}

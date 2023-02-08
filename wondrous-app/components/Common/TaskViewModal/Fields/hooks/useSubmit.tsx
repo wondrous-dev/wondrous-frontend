@@ -5,13 +5,13 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import { CHAIN_REGEX } from 'utils/helpers';
 import { useTaskContext } from 'utils/hooks';
 import * as Yup from 'yup';
-import { useUpdateTaskCardCache } from './useUpdateCache';
+import { useUpdateGrantCardCache, useUpdateProposalCardCache, useUpdateTaskCardCache } from './useUpdateCache';
 import { FIELDS, GRANT_SCHEMA, TASK_SCHEMA } from './constants';
 
 export const useSubmit = ({ field, refetchQueries = [] }) => {
   const [error, setError] = useState(null);
 
-  const { fetchedTask, refetch, entityType, grantApplication = null } = useTaskContext();
+  const { fetchedTask, refetch, entityType, grantApplication = null, grant } = useTaskContext();
 
   const chainToValidate = useMemo(() => {
     if (grantApplication?.grant?.chain === 'harmony') {
@@ -24,7 +24,7 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
     [FIELDS.PAYMENT_ADDRESS]: Yup.string()
       .matches(chainToValidate, 'Wallet address is not valid')
       .required('Wallet address is required'),
-    [FIELDS.ORG]: Yup.object().required('Project is required'),
+    [FIELDS.ORG]: Yup.string().required('Project is required'),
   };
 
   const SCHEMAS = {
@@ -46,6 +46,10 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
 
   const handleUpdateTaskCardCache = useUpdateTaskCardCache();
 
+  const handleUpdateProposalCardCache = useUpdateProposalCardCache();
+
+  const handleUpdateGrantCardCache = useUpdateGrantCardCache();
+  
   const [updateTask] = useMutation(UPDATE_TASK, {
     onCompleted: (data) => {
       handleUpdateTaskCardCache({ data: data?.updateTask });
@@ -59,14 +63,21 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
 
   const [updateTaskProposal] = useMutation(UPDATE_TASK_PROPOSAL, {
     onCompleted: (data) => {
-      handleUpdateTaskCardCache({ data: data?.updateTaskProposal });
+      handleUpdateProposalCardCache({ data: data?.updateTaskProposal });
       refetch();
     },
   });
 
-  const [updateGrant] = useMutation(UPDATE_GRANT);
+  const [updateGrant] = useMutation(UPDATE_GRANT, {
+    onCompleted: (data) => {
+      handleUpdateGrantCardCache({ data: data?.updateGrant });
+      refetch()
+    }
+  });
 
-  const [updateGrantApplication] = useMutation(UPDATE_GRANT_APPLICATION);
+  const [updateGrantApplication] = useMutation(UPDATE_GRANT_APPLICATION, {
+    refetchQueries: ['getGrantApplicationsForGrant']
+  });
 
   const validate = async (value) => {
     try {
@@ -78,7 +89,7 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
   };
 
   const update = async (input) => {
-    if (entityType === ENTITIES_TYPES.TASK) {
+    if ([ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType)) {
       return await updateTask({
         variables: {
           taskId: fetchedTask.id,
@@ -97,7 +108,7 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
     if (entityType === ENTITIES_TYPES.GRANT) {
       return await updateGrant({
         variables: {
-          grantId: fetchedTask.id,
+          grantId: grant.id,
           input,
         },
       });
@@ -105,7 +116,7 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
     if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
       return await updateGrantApplication({
         variables: {
-          grantApplicationId: fetchedTask.id,
+          grantApplicationId: grantApplication.id,
           input,
         },
       });
@@ -114,15 +125,17 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
   };
 
   const submit = async (value, input = null) => {
+    console.log('imside maybe? ')
     setError(null);
     const inputToValidate = {
-      ...(input ? {input} : {[field]: value})
+      ...(input ? {...input} : {[field]: value})
     }
-
+    console.log(inputToValidate)
     if (schema) {
       try {
         await validate(inputToValidate);
       } catch (error) {
+        console.log(error, 'error')
         return;
       }
     }

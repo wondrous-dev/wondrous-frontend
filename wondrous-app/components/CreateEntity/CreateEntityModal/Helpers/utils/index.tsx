@@ -190,19 +190,15 @@ export const filterOptionsWithPermission = (
     }));
 };
 
-export const filterCategoryValues = (categories = []) => {
-  console.log(categories, 'categories')
-  return   categories?.map((category) =>
-  typeof category === 'string'
-    ? {
-        id: category,
-        label: CATEGORY_LABELS[category],
-      }
-    : category
+export const filterCategoryValues = (categories = []) => categories?.map((category) =>
+typeof category === 'string'
+  ? {
+      id: category,
+      label: CATEGORY_LABELS[category],
+    }
+  : category
 );
-
-}
-
+ 
 export const getPodObject = (pods, podId) => {
   let justCreatedPod = null;
   pods.forEach((testPod) => {
@@ -254,6 +250,7 @@ export enum Fields {
   priority,
   voteOptions,
   voteType,
+  categories
 }
 
 export const entityTypeData = {
@@ -271,6 +268,7 @@ export const entityTypeData = {
       Fields.priority,
       Fields.tags,
       Fields.githubPullRequest,
+      Fields.categories
     ],
     createMutation: useCreateTask,
     updateMutation: useUpdateTask,
@@ -304,7 +302,7 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
-    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags],
+    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags, Fields.categories],
     createMutation: useCreateMilestone,
     updateMutation: useUpdateMilestone,
     initialValues: {
@@ -330,6 +328,7 @@ export const entityTypeData = {
       Fields.milestone,
       Fields.priority,
       Fields.tags,
+      Fields.categories
     ],
     createMutation: useCreateBounty,
     updateMutation: useUpdateBounty,
@@ -470,6 +469,13 @@ export interface GrantCreateModalProps extends ICreateEntityModal {
     podId?: string;
     media?: any;
     privacyLevel?: string;
+    reviewers?: {
+      id: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+      profilePicture: string
+    }[]
     reward?: {
       paymentMethodId?: string;
       rewardAmount?: string;

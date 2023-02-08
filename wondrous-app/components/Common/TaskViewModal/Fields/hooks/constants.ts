@@ -14,10 +14,11 @@ export const FIELDS = {
   GRANT_DATES: 'grantDates',
   APPLY_POLICY: 'applyPolicy',
   PAYMENT_ADDRESS: 'paymentAddress',
-  ORG: 'org',
+  ORG: 'orgId',
   TITLE: 'title',
   DESCRIPTION: 'description',
-  PRIVACY_LEVEL: 'privacyLevel'
+  PRIVACY_LEVEL: 'privacyLevel',
+  GRANT_REWARDS: 'reward'
 };
 
 export const TASK_SCHEMA = {

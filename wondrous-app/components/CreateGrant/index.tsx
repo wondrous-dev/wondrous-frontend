@@ -61,7 +61,7 @@ import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
-import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity } from './Fields';
+import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity, Reviewers } from './Fields';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
 import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from './Fields/GrantStyle';
 import {
@@ -189,6 +189,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
       privacyLevel: existingGrant?.privacyLevel || null,
       applyPolicy: existingGrant?.applyPolicy || APPLY_POLICY_FIELDS[0].value,
       grantStyle: getGrantStyleFromGrant(existingGrant?.numOfGrant),
+      reviewerIds: isEmpty(existingGrant?.reviewers) ? null : existingGrant.reviewers.map((i) => i.id),
     },
     validateOnChange: false,
     validateOnBlur: false,
@@ -436,6 +437,14 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
           </MediaWrapper>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
+            <Reviewers 
+              orgId={form.values.orgId}
+              podId={form.values.podId}
+              onFocus={() => form.setFieldError('reviewerIds', undefined)}
+              reviewerIds={form.values.reviewerIds}
+              reviewerIdsErrors={form.errors.reviewerIds}
+              onChange={(reviewerIds) => form.setFieldValue('reviewerIds', reviewerIds)}
+            />
             <GrantStyle value={form.values.grantStyle} onChange={(value) => form.setFieldValue('grantStyle', value)} />
             {form.values.grantStyle === GRANT_STYLE_MAP.FIXED && (
               <GrantQuantity

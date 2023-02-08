@@ -31,9 +31,10 @@ import { useQuery } from '@apollo/client';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { CategoryField, Description, Title } from 'components/Common/TaskViewModal/Fields';
+import { CategoryField, Description, ReviewerField, Title } from 'components/Common/TaskViewModal/Fields';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
+import { Reviewers } from 'components/CreateGrant/Fields';
 import { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
 import { GrantModalCard } from 'components/CreateGrant/styles';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
@@ -52,8 +53,17 @@ import { canViewGrant } from './utils';
 
 const FIELDS_CONFIG = [
   {
-    label: 'Reviewers',
-    component: ({ grant }, canEdit) => null,
+    component: ({ grant, canEdit, user }) => (
+      <ReviewerField
+        reviewerData={{
+          getTaskReviewers: grant.reviewers,
+        }}
+        canEdit={canEdit}
+        shouldDisplay={grant.reviewers?.length > 0 || canEdit}
+        fetchedTask={grant}
+        user={user}
+      />
+    ),
   },
   {
     label: 'Status',
@@ -99,7 +109,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
 
   const router = useRouter();
   const isViewApplication = !!router.query?.grantApplicationId;
-  const { data, loading } = useQuery(GET_GRANT_BY_ID, {
+  const { data, loading, refetch } = useQuery(GET_GRANT_BY_ID, {
     variables: { grantId },
     skip: !grantId || isViewApplication,
   });
@@ -165,6 +175,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
         isFullScreen,
         grant,
         setEditMode,
+        refetch,
         entityType: ENTITIES_TYPES.GRANT,
       }}
     >
@@ -287,7 +298,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                           return (
                             <TaskSectionDisplayDiv key={idx}>
                               {field.label ? <TaskSectionLabel>{field.label}</TaskSectionLabel> : null}
-                              <field.component grant={grant} canEdit={canEdit} />
+                              <field.component grant={grant} canEdit={canEdit} user={user} />
                             </TaskSectionDisplayDiv>
                           );
                         })}
