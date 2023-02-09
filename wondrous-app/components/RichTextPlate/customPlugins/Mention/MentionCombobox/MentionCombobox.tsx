@@ -8,13 +8,11 @@ import { ElementTypes } from 'components/RichTextPlate/types';
 
 export interface MentionComboboxProps<TData extends Data = NoData> extends Partial<ComboboxProps<TData>> {
   pluginKey?: string;
-  mentionables?: any;
 }
 
 export const MentionCombobox = <TData extends Data = NoData>({
   pluginKey = ElementTypes.ELEMENT_MENTION,
   id = pluginKey,
-  mentionables,
   ...props
 }: MentionComboboxProps<TData>) => {
   const editor = usePlateEditorRef();

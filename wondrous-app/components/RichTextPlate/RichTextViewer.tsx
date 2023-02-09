@@ -27,11 +27,6 @@ const renderNodes = (nodes) =>
         </Leaf>
       );
     }
-    let mentionable = '';
-
-    if (node.type === ElementTypes.ELEMENT_MENTION && node.value) {
-      mentionable = node.value.substring(1);
-    }
 
     const children = renderNodes(node.children);
 
@@ -95,8 +90,8 @@ const renderNodes = (nodes) =>
         );
       case ElementTypes.ELEMENT_MENTION:
         return (
-          <NoUnderlineLink key={i} href={`/profile/${mentionable}/about`}>
-            @{mentionable}
+          <NoUnderlineLink key={i} href={`/profile/${node.value}/about`}>
+            @{node.value}
           </NoUnderlineLink>
         );
       default:

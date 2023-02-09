@@ -649,7 +649,15 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   }, [form, setFormDirty]);
 
   return (
-    <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={isFullScreen} data-cy="modal-create-entity">
+    <CreateEntityForm
+      onSubmit={(e) => {
+        // necessary for the plate editor
+        e.preventDefault();
+        form.handleSubmit(e);
+      }}
+      fullScreen={isFullScreen}
+      data-cy="modal-create-entity"
+    >
       <ConvertTaskToBountyModal
         open={turnTaskToBountyModal}
         onClose={() => setTurnTaskToBountyModal(false)}

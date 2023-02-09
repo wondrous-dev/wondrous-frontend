@@ -2,16 +2,18 @@ import React, { CSSProperties, useMemo } from 'react';
 import {
   AutoformatPlugin,
   createAutoformatPlugin,
+  createBlockquotePlugin,
   createBoldPlugin,
   createCodePlugin,
   createComboboxPlugin,
   createEmojiPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
-  createBlockquotePlugin,
   createHorizontalRulePlugin,
   createItalicPlugin,
+  createLinkPlugin,
   createListPlugin,
+  createMentionPlugin,
   createPlateUI,
   createResetNodePlugin,
   createSelectOnBackspacePlugin,
@@ -19,21 +21,17 @@ import {
   createStrikethroughPlugin,
   createTodoListPlugin,
   createUnderlinePlugin,
-  ELEMENT_LINK,
-  Plate,
-  PlateProvider,
-  StyledElement,
-  withProps,
-  ELEMENT_MENTION_INPUT,
-  TEditableProps,
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
-  createMentionPlugin,
-  createLinkPlugin,
+  ELEMENT_MENTION_INPUT,
+  Plate,
+  PlateProvider,
+  StyledElement,
+  TEditableProps,
+  withProps,
 } from '@udecode/plate';
 
-import palette from 'theme/palette';
 import { slashCommandItems } from 'components/RichTextPlate/constants';
 import { ToolbarButtons } from 'components/RichTextPlate/ToolbarButtons';
 import { MarkBalloonToolbar } from 'components/RichTextPlate/plugins/balloon-toolbar/MarkBalloonToolbar';
@@ -89,13 +87,6 @@ const components = createPlateUI({
         fontWeight: 900,
         lineHeight: '40px',
         fontSize: '16px',
-      },
-    },
-  }),
-  [ELEMENT_LINK]: withProps(StyledElement, {
-    styles: {
-      root: {
-        color: palette.highlightBlue,
       },
     },
   }),
@@ -173,26 +164,24 @@ const RichTextEditorPlate = ({ mentionables, inputValue, onChange, mediaUploads,
   );
 
   return (
-    <form>
-      <PlateProvider<TextEditorValue>
-        plugins={plugins}
-        onChange={(value) => {
-          onChange(value);
-        }}
-        value={inputValue}
-      >
-        <Toolbar>
-          <ToolbarButtons mediaUploads={mediaUploads} />
-        </Toolbar>
+    <PlateProvider<TextEditorValue>
+      plugins={plugins}
+      onChange={(value) => {
+        onChange(value);
+      }}
+      value={inputValue}
+    >
+      <Toolbar>
+        <ToolbarButtons mediaUploads={mediaUploads} />
+      </Toolbar>
 
-        <Plate editableProps={editableProps}>
-          <MarkBalloonToolbar />
+      <Plate editableProps={editableProps}>
+        <MarkBalloonToolbar />
 
-          <MentionCombobox items={customMentionables} />
-          <MentionCombobox pluginKey="/" items={slashCommandItems} />
-        </Plate>
-      </PlateProvider>
-    </form>
+        <MentionCombobox items={customMentionables} />
+        <MentionCombobox pluginKey="/" items={slashCommandItems} />
+      </Plate>
+    </PlateProvider>
   );
 };
 

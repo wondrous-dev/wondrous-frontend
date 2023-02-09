@@ -134,3 +134,11 @@ form div[class*="PlateFloatingLink___StyledDiv"] button:hover,
 form div[class*="PlateFloatingLink___StyledDiv"] a:hover {
   background: #454545;
 }
+
+a[data-slate-node="element"] {
+  color: #00BAFF;
+}
+
+a[data-slate-node="element"]:hover {
+  color: #8adfff;
+}

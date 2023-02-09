@@ -6,7 +6,6 @@ import BoldIcon from 'components/RichTextPlate/icons/BoldIcon';
 import ItalicIcon from 'components/RichTextPlate/icons/ItalicIcon';
 import UnderlineIcon from 'components/RichTextPlate/icons/UnderlineIcon';
 import StrikethroughIcon from 'components/RichTextPlate/icons/StrikethroughIcon';
-import LinkIcon from 'components/RichText/icons/LinkIcon';
 import { ElementTypes, useMyPlateEditorRef } from '../../types';
 
 export const markTooltip: TippyProps = {
@@ -19,7 +18,7 @@ export const markTooltip: TippyProps = {
   className: 'plate-tooltip',
 };
 
-export const MarkBalloonToolbar = ({ children }: { children?: ReactNode }) => {
+export const MarkBalloonToolbar = () => {
   const editor = useMyPlateEditorRef();
 
   const arrow = false;
@@ -31,7 +30,6 @@ export const MarkBalloonToolbar = ({ children }: { children?: ReactNode }) => {
     content: 'Underline (⌘+U)',
     ...markTooltip,
   };
-  const linkTooltip: TippyProps = { content: 'Add Link (⌘+K)', ...markTooltip };
 
   return (
     <BalloonToolbar theme={theme} arrow={arrow}>
@@ -51,11 +49,6 @@ export const MarkBalloonToolbar = ({ children }: { children?: ReactNode }) => {
         tooltip={underlineTooltip}
       />
       <MarkToolbarButton type={getPluginType(editor, ElementTypes.MARK_STRIKETHROUGH)} icon={<StrikethroughIcon />} />
-      <MarkToolbarButton
-        type={getPluginType(editor, ElementTypes.ELEMENT_LINK)}
-        icon={<LinkIcon />}
-        tooltip={linkTooltip}
-      />
     </BalloonToolbar>
   );
 };
