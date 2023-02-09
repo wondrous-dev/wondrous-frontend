@@ -119,26 +119,12 @@ form div[class*="PlateFloatingLink___StyledDiv"] {
   border: 1px solid rgb(75, 75, 75);
 }
 
-/* Customize link component */
-form div[class*="PlateFloatingLink___StyledFloatingLinkInsertRoot"] input,
-form div[class*="PlateFloatingLink___StyledFloatingLinkEditRoot"] input {
-  color: white;
-}
-
-form div[class*="PlateFloatingLink___StyledDiv"] button,
-form div[class*="PlateFloatingLink___StyledDiv"] a {
-  background: none;
-}
-
-form div[class*="PlateFloatingLink___StyledDiv"] button:hover,
-form div[class*="PlateFloatingLink___StyledDiv"] a:hover {
-  background: #454545;
-}
-
-a[data-slate-node="element"] {
+form a[data-slate-node="element"] {
   color: #00BAFF;
 }
 
-a[data-slate-node="element"]:hover {
-  color: #8adfff;
+form a[data-slate-node="element"]:hover,
+form a[data-slate-node="element"]:active,
+form a[data-slate-node="element"]:visited {
+  color: #8adfff !important;
 }
