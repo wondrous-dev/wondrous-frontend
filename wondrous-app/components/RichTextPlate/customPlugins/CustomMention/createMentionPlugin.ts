@@ -1,6 +1,6 @@
 import { createPluginFactory } from '@udecode/plate-core';
 
-import { ElementTypes } from 'components/RichTextPlate/typescript/plateTypes';
+import { ElementTypes } from 'components/RichTextPlate/types';
 import { mentionOnKeyDownHandler } from './handlers/mentionOnKeyDownHandler';
 import { isSelectionInMentionInput } from './queries';
 import { MentionPlugin } from './types';

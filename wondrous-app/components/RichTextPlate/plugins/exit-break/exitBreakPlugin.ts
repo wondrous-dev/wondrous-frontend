@@ -1,5 +1,5 @@
 import { ExitBreakPlugin, KEYS_HEADING } from '@udecode/plate';
-import { CustomPlatePlugin } from '../../typescript/plateTypes';
+import { CustomPlatePlugin } from '../../types';
 
 export const exitBreakPlugin: Partial<CustomPlatePlugin<ExitBreakPlugin>> = {
   options: {

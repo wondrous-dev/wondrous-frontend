@@ -1,6 +1,6 @@
 import { isBlock, setNodes, TTodoListItemElement } from '@udecode/plate';
 
-import { ElementTypes, CustomAutoformatRule } from '../../typescript/plateTypes';
+import { ElementTypes, CustomAutoformatRule } from '../../types';
 import { formatList, preFormat } from './autoformatUtils';
 
 export const autoformatLists: CustomAutoformatRule[] = [

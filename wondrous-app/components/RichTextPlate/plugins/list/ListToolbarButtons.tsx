@@ -3,7 +3,7 @@ import { getPluginType, ListToolbarButton } from '@udecode/plate';
 
 import BulletedListIcon from 'components/RichTextPlate/icons/BulletedListIcon';
 import NumberedListIcon from 'components/RichTextPlate/icons/NumberedListIcon';
-import { ElementTypes, useMyPlateEditorRef } from '../../typescript/plateTypes';
+import { ElementTypes, useMyPlateEditorRef } from '../../types';
 
 export const ListToolbarButtons = () => {
   const editor = useMyPlateEditorRef();

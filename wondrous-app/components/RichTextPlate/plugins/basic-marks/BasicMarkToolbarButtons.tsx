@@ -5,7 +5,7 @@ import BoldIcon from 'components/RichTextPlate/icons/BoldIcon';
 import ItalicIcon from 'components/RichTextPlate/icons/ItalicIcon';
 import UnderlineIcon from 'components/RichTextPlate/icons/UnderlineIcon';
 import StrikethroughIcon from 'components/RichTextPlate/icons/StrikethroughIcon';
-import { ElementTypes, useMyPlateEditorRef } from '../../typescript/plateTypes';
+import { ElementTypes, useMyPlateEditorRef } from '../../types';
 
 export const BasicMarkToolbarButtons = () => {
   const editor = useMyPlateEditorRef();

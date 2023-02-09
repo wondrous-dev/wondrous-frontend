@@ -1,6 +1,6 @@
 import { getPluginType, PlateEditor, TNode, Value } from '@udecode/plate-core';
 
-import { ElementTypes } from 'components/RichTextPlate/typescript/plateTypes';
+import { ElementTypes } from 'components/RichTextPlate/types';
 import { TMentionInputElement } from '../types';
 
 export const isNodeMentionInput = <V extends Value>(

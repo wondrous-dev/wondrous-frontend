@@ -1,5 +1,5 @@
 import { isBlockAboveEmpty, isSelectionAtBlockStart, ResetNodePlugin } from '@udecode/plate';
-import { ElementTypes, CustomPlatePlugin } from '../../typescript/plateTypes';
+import { ElementTypes, CustomPlatePlugin } from '../../types';
 
 const resetBlockTypesCommonRule = {
   types: [ElementTypes.ELEMENT_BLOCKQUOTE, ElementTypes.ELEMENT_TODO_LI],

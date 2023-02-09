@@ -5,8 +5,6 @@ import {
   Data,
   NoData,
   TComboboxItem,
-} from '@udecode/plate-combobox';
-import {
   getBlockAbove,
   getPlugin,
   insertNodes,
@@ -19,11 +17,13 @@ import {
   TNodeProps,
   withoutMergingHistory,
   withoutNormalizing,
-} from '@udecode/plate-core';
-import { toggleList, toggleMark, toggleNodeType } from '@udecode/plate';
+  toggleList,
+  toggleMark,
+  toggleNodeType,
+  triggerFloatingLink,
+} from '@udecode/plate';
 
-import { triggerFloatingLink } from 'components/RichTextPlate/customPlugins/CustomLink';
-import { ElementTypes } from 'components/RichTextPlate/typescript/plateTypes';
+import { ElementTypes } from 'components/RichTextPlate/types';
 import { MentionPlugin, TMentionElement } from './types';
 
 export interface CreateMentionNode<TData extends Data> {

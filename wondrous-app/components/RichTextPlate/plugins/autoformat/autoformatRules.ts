@@ -7,7 +7,7 @@ import {
   autoformatSmartQuotes,
 } from '@udecode/plate';
 
-import { CustomAutoformatRule } from '../../typescript/plateTypes';
+import { CustomAutoformatRule } from '../../types';
 import { autoformatBlocks } from './autoformatBlocks';
 import { autoformatLists } from './autoformatLists';
 import { autoformatMarks } from './autoformatMarks';

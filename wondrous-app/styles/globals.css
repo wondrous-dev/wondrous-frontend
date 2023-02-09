@@ -112,3 +112,25 @@ form .slate-code[data-slate-leaf="true"] {
   padding: 5px;
   border-radius: 4px;
 }
+
+form div[class*="PlateFloatingLink___StyledFloatingLinkInsertRoot"],
+form div[class*="PlateFloatingLink___StyledDiv"] {
+  background: #0f0f0f;
+  border: 1px solid rgb(75, 75, 75);
+}
+
+/* Customize link component */
+form div[class*="PlateFloatingLink___StyledFloatingLinkInsertRoot"] input,
+form div[class*="PlateFloatingLink___StyledFloatingLinkEditRoot"] input {
+  color: white;
+}
+
+form div[class*="PlateFloatingLink___StyledDiv"] button,
+form div[class*="PlateFloatingLink___StyledDiv"] a {
+  background: none;
+}
+
+form div[class*="PlateFloatingLink___StyledDiv"] button:hover,
+form div[class*="PlateFloatingLink___StyledDiv"] a:hover {
+  background: #454545;
+}

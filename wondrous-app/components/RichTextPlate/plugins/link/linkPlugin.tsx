@@ -1,7 +1,5 @@
-import { PlateFloatingLink } from 'components/RichTextPlate/customPlugins/ui/link';
-import { RenderAfterEditable } from '@udecode/plate';
-import { LinkPlugin } from 'components/RichTextPlate/customPlugins/CustomLink';
-import { CustomPlatePlugin, TextEditorValue } from '../../typescript/plateTypes';
+import { RenderAfterEditable, LinkPlugin, PlateFloatingLink } from '@udecode/plate';
+import { CustomPlatePlugin, TextEditorValue } from '../../types';
 
 export const linkPlugin: Partial<CustomPlatePlugin<LinkPlugin>> = {
   renderAfterEditable: PlateFloatingLink as RenderAfterEditable<TextEditorValue>,

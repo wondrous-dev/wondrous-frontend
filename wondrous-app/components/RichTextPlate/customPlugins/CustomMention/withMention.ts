@@ -17,7 +17,7 @@ import {
 } from '@udecode/plate-core';
 import { Range } from 'slate';
 
-import { ElementTypes } from 'components/RichTextPlate/typescript/plateTypes';
+import { ElementTypes } from 'components/RichTextPlate/types';
 import { removeMentionInput } from './transforms/removeMentionInput';
 import { findMentionInput, isNodeMentionInput, isSelectionInMentionInput } from './queries';
 import { MentionPlugin, TMentionInputElement } from './types';

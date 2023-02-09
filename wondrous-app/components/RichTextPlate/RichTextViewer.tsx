@@ -14,7 +14,7 @@ import {
   NumberedList,
   RichTextStyled,
 } from 'components/RichTextPlate/styles';
-import { ElementTypes } from 'components/RichTextPlate/typescript/plateTypes';
+import { ElementTypes } from 'components/RichTextPlate/types';
 import palette from '../../theme/palette';
 import { isRichText } from './utils';
 

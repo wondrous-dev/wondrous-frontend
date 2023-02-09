@@ -1,4 +1,4 @@
-import { ElementTypes } from 'components/RichTextPlate/typescript/plateTypes';
+import { ElementTypes } from 'components/RichTextPlate/types';
 
 export const extractMentions = (nodes) => {
   const result: string[] = [];

@@ -9,7 +9,7 @@ import {
   unwrapList,
 } from '@udecode/plate';
 
-import { CustomEditor, TextEditorValue } from '../../typescript/plateTypes';
+import { CustomEditor, TextEditorValue } from '../../types';
 
 export const preFormat: AutoformatBlockRule<TextEditorValue, CustomEditor>['preFormat'] = (editor) =>
   unwrapList(editor);

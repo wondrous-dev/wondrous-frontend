@@ -1,4 +1,4 @@
-import { ElementTypes, CustomAutoformatRule } from '../../typescript/plateTypes';
+import { ElementTypes, CustomAutoformatRule } from '../../types';
 
 export const autoformatMarks: CustomAutoformatRule[] = [
   {
