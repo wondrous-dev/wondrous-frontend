@@ -49,7 +49,7 @@ export const useTaskViewModalState = () => {
 
   const INITIAL_STATE = {
     editTask: false,
-    fullScreen: false,
+    fullScreen: true,
     activeTab: 0,
     archiveTask: false,
     deleteTask: false,
@@ -63,7 +63,7 @@ export const useTaskViewModalState = () => {
 
   const [state, dispatchTest] = useReducer(reducer, INITIAL_STATE);
 
-  const dispatch = () => {}
+  const dispatch = () => {};
 
   const setEditTask = (payload) => dispatchTest({ type: TYPES.SET_EDIT_TASK, payload });
   const setFullScreen = (payload) => dispatchTest({ type: TYPES.SET_FULL_SCREEN, payload });
