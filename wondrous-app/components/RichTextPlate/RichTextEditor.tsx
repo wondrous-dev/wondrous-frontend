@@ -13,7 +13,6 @@ import {
   createItalicPlugin,
   createLinkPlugin,
   createListPlugin,
-  createMentionPlugin,
   createPlateUI,
   createResetNodePlugin,
   createSelectOnBackspacePlugin,
@@ -32,6 +31,7 @@ import {
   withProps,
 } from '@udecode/plate';
 
+import { createCustomMentionPlugin } from 'components/RichTextPlate/customPlugins/CustomMention/createMentionPlugin';
 import { slashCommandItems } from 'components/RichTextPlate/constants';
 import { ToolbarButtons } from 'components/RichTextPlate/ToolbarButtons';
 import { MarkBalloonToolbar } from 'components/RichTextPlate/plugins/balloon-toolbar/MarkBalloonToolbar';
@@ -148,8 +148,8 @@ const RichTextEditorPlate = ({ mentionables, inputValue, onChange, mediaUploads,
           createSoftBreakPlugin(softBreakPlugin),
           createExitBreakPlugin(exitBreakPlugin),
           createComboboxPlugin(),
-          createMentionPlugin(),
-          createMentionPlugin({
+          createCustomMentionPlugin(),
+          createCustomMentionPlugin({
             key: '/',
             component: MentionElement,
             options: { trigger: '/' },
