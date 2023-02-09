@@ -37,7 +37,7 @@ import { slashCommandItems } from 'components/RichTextPlate/constants';
 import { ToolbarButtons } from 'components/RichTextPlate/ToolbarButtons';
 import { MarkBalloonToolbar } from 'components/RichTextPlate/plugins/balloon-toolbar/MarkBalloonToolbar';
 import { autoformatPlugin } from 'components/RichTextPlate/plugins/autoformat/autoformatPlugin';
-import { MentionCombobox, MentionElement } from 'components/RichTextPlate/customPlugins/ui/mention';
+import { MentionCombobox, MentionElement } from 'components/RichTextPlate/customPlugins/Mention';
 import { exitBreakPlugin } from './plugins/exit-break/exitBreakPlugin';
 import { resetBlockTypePlugin } from './plugins/reset-node/resetBlockTypePlugin';
 import { softBreakPlugin } from './plugins/soft-break/softBreakPlugin';

@@ -21,10 +21,10 @@ import {
   ComboboxItem,
   ComboboxList,
   SlashCommandItemIcon,
-} from 'components/RichTextPlate/customPlugins/ui/combobox/styles';
-import palette from '../../../../../theme/palette';
+} from 'components/RichTextPlate/customPlugins/Combobox/styles';
+import palette from '../../../../theme/palette';
 import { ComboboxProps } from './Combobox.types';
-import DefaultUserImage from '../../../../Common/Image/DefaultUserImage';
+import DefaultUserImage from '../../../Common/Image/DefaultUserImage';
 
 const ComboboxContent = <TData extends Data = NoData>(
   props: Omit<
