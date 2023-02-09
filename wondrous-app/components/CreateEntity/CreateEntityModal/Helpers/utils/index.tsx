@@ -27,6 +27,7 @@ import {
 import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
 import * as Yup from 'yup';
+import parseISO from 'date-fns/parseISO';
 import {
   useCreateBounty,
   useCreateMilestone,
@@ -384,6 +385,7 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
     {
       ...existingTask,
       description,
+      dueDate: existingTask.dueDate ? parseISO(existingTask.dueDate.substring(0, 10)) : null,
       mediaUploads: transformMediaFormat(existingTask?.media),
       categories: isEmpty(remainingCategories) ? null : transformCategoryFormat(remainingCategories),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
