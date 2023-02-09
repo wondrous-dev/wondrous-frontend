@@ -59,8 +59,8 @@ const EditContent = ({ org, toggleEditMode }) => {
 const Project = ({ canEdit, grantApplication }) => (
   <TaskFieldEditableContent
     ViewContent={({ toggleEditMode }) => (
-      <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
-        <OrgViewer grantApplication={grantApplication} />
+      <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+      <OrgViewer grantApplication={grantApplication} />
         <EditIcon stroke={palette.grey58} className="edit-icon-field" />
       </ViewFieldWrapper>
     )}

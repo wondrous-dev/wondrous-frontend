@@ -10,8 +10,8 @@ import palette from 'theme/palette';
 import { DataDisplay, MultipleDataDisplay } from '../Fields';
 
 const ViewContent = ({ toggleEditMode, startDate, endDate, canEdit }) => (
-  <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
-    <MultipleDataDisplay>
+  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+  <MultipleDataDisplay>
       {[startDate, endDate].map((date, idx) => (
         <DataDisplay
           key={`${date}-${idx}`}
@@ -38,7 +38,9 @@ const EditContent = ({ toggleManageMode, startDate = null, endDate = null }) => 
   const handleSubmit = async (input) => await submit(null, input);
 
   const onChange = (key, value) => {
-    const newDates = { ...dates, [key]: value };
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const newDates = { ...dates, [key]: value, timezone};
     setDates({ ...dates, [key]: value });
     if (newDates.startDate && newDates.endDate) {
       handleSubmit(newDates);

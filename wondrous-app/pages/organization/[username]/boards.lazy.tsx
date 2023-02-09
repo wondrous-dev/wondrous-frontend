@@ -61,7 +61,6 @@ const useGetOrgTaskBoardTasks = ({
     // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ getOrgTaskBoardTasks }) => {
-      console.log('am i completed?')
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
         setColumns(getOrgTaskBoardTasks);
         setIsLoading(false);
@@ -72,7 +71,6 @@ const useGetOrgTaskBoardTasks = ({
       setIsLoading(false);
     },
     onError: (error) => {
-      console.log('or am i here')
       setIsLoading(false);
       console.log(error);
     },

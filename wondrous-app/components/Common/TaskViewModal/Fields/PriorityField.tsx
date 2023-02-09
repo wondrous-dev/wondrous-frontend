@@ -13,8 +13,8 @@ import { IconWrapper } from './styles';
 
 const ViewContent = ({ priorityValue, canEdit, toggleEditMode }) =>
   priorityValue ? (
-    <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
-      <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
+    <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
         <IconWrapper>{priorityValue.icon ? priorityValue.icon : null}</IconWrapper>
         <TaskSectionInfoText>{priorityValue.label}</TaskSectionInfoText>
       </Grid>

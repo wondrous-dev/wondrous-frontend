@@ -17,8 +17,8 @@ import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
 const ViewContent = ({ points, toggleEditMode, canEdit }) => (
-  <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
-    <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
+  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+  <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
       <IconWrapper>
         <TaskSectionInfoPointsIcon />
       </IconWrapper>

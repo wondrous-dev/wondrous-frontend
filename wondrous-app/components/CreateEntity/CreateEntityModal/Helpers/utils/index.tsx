@@ -353,14 +353,7 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
-    fields: [
-      Fields.dueDate,
-      Fields.reward,
-      Fields.milestone,
-      Fields.priority,
-      Fields.voteOptions,
-      Fields.voteType,
-    ],
+    fields: [Fields.dueDate, Fields.reward, Fields.voteOptions, Fields.voteType],
     createMutation: useCreateTaskProposal,
     updateMutation: useUpdateTaskProposal,
     initialValues: {

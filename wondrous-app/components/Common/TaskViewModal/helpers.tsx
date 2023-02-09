@@ -1,20 +1,25 @@
-import { useState, useCallback } from 'react';
-import isEmpty from 'lodash/isEmpty';
-import keys from 'lodash/keys';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import WalletModal from 'components/Common/Wallet/WalletModal';
 import { RichTextViewer } from 'components/RichText';
 import { GithubLink, GithubLinkText } from 'components/Settings/Github/styles';
-import GitHubIcon from '@mui/icons-material/GitHub';
+import isEmpty from 'lodash/isEmpty';
+import keys from 'lodash/keys';
+import { useCallback, useReducer, useState } from 'react';
 
-import ErrorIcon from 'components/Icons/errorIcon.svg';
-import Tooltip from 'components/Tooltip';
-import MoreIcon from 'components/Icons/more';
 import EmptyState from 'components/EmptyStateGeneric';
+import ErrorIcon from 'components/Icons/errorIcon.svg';
+import MoreIcon from 'components/Icons/more';
+import Tooltip from 'components/Tooltip';
 
+import { useMutation } from '@apollo/client';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations';
+import { addTaskItem, getProposalStatus, updateProposalItem } from 'utils/board';
+import { STATUS_APPROVED } from 'utils/constants';
+import { transformTaskToTaskCard } from 'utils/helpers';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
-  ConnectToWalletButton,
-  GithubBlock,
-  TaskDescriptionText,
+  ActionButton, ConnectToWalletButton,
+  GithubBlock, LockedTask, TaskDescriptionText,
   TaskDescriptionTextShowAllText,
   TaskModalHeaderMenu,
   TaskModalHeaderMenuButton,
@@ -30,9 +35,7 @@ import {
   TaskSectionInfoPaymentMethodIcon,
   TaskSectionInfoPaymentWrapper,
   WalletError,
-  WalletErrorText,
-  LockedTask,
-  ActionButton,
+  WalletErrorText
 } from './styles';
 
 export const TaskSectionImageContent = ({
@@ -152,35 +155,6 @@ export const ConnectToWallet = ({ user }) => {
   );
 };
 
-export const Rewards = ({ fetchedTask, user, withLabel = true }) => {
-  const rewards = fetchedTask?.rewards;
-  if (isEmpty(rewards)) return null;
-  return (
-    <TaskSectionDisplayDiv>
-      {withLabel ? <TaskSectionLabel>Rewards</TaskSectionLabel> : null}
-      {rewards.map((reward, index) => {
-        const { rewardAmount, symbol, icon, chain } = reward;
-        return (
-          <TaskSectionImageContent
-            key={index}
-            hasContent={reward}
-            ContentComponent={() => (
-              <TaskSectionInfoPaymentWrapper>
-                <TaskSectionInfoPaymentMethodIcon src={icon} />
-                <TaskSectionInfoPaymentAmount>
-                  {rewardAmount} {symbol}
-                </TaskSectionInfoPaymentAmount>
-                <TaskSectionInfoPaymentMethodChain> On {chain}</TaskSectionInfoPaymentMethodChain>
-                {user ? <ConnectToWallet user={user} /> : null}
-              </TaskSectionInfoPaymentWrapper>
-            )}
-          />
-        );
-      })}
-    </TaskSectionDisplayDiv>
-  );
-};
-
 const TaskHeaderMenu = ({ canEdit, children }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -280,3 +254,78 @@ export const LockedTaskMessage = ({ handleClose, entityType = 'task' }) => (
     </EmptyState>
   </LockedTask>
 );
+
+export const useManageProposals = ({fetchedTask, entityType, handleClose}) => {
+  const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
+  const boardColumns = useColumns();
+
+  const approveProposal = () => {
+    approveTaskProposal({
+      variables: {
+        proposalId: fetchedTask?.id,
+      },
+      onCompleted: (data) => {
+        const taskProposal = data?.approveTaskProposal;
+
+        const fetchedTaskProposalStatus = getProposalStatus(fetchedTask);
+        let columns = [...boardColumns?.columns];
+        if (entityType) {
+          const prevStatusIndex = columns.findIndex((column) => column.status === fetchedTaskProposalStatus);
+          const approvedColumnIndex = columns.findIndex((column) => column.status === STATUS_APPROVED);
+          columns[prevStatusIndex].tasks = columns[prevStatusIndex].tasks.filter((task) => task.id !== taskProposal.id);
+          columns[approvedColumnIndex].tasks = [
+            { ...taskProposal, approvedAt: new Date(), __typename: 'TaskProposalCard', isProposal: true },
+            ...columns[approvedColumnIndex].tasks,
+          ];
+        } else {
+          // keep it for userboard
+          // Move from proposal to task
+          columns = addTaskItem(
+            transformTaskToTaskCard(
+              {
+                ...fetchedTask,
+                id: taskProposal?.associatedTaskId,
+                __typename: 'TaskCard',
+                type: 'task',
+                parentTaskId: null,
+              },
+              {}
+            ),
+            columns
+          );
+        }
+        boardColumns?.setColumns(columns);
+        document.body.setAttribute('style', `position: relative;`);
+        handleClose();
+      },
+    });
+  };
+
+  const closeProposal = () => {
+    closeTaskProposal({
+      variables: {
+        proposalId: fetchedTask?.id,
+      },
+      onCompleted: () => {
+        let columns = [...boardColumns?.columns];
+        // Move from proposal to task
+        columns = updateProposalItem(
+          {
+            ...fetchedTask,
+            changeRequestedAt: new Date(),
+          },
+          columns
+        );
+        boardColumns?.setColumns(columns);
+      },
+      refetchQueries: ['GetOrgTaskBoardProposals', 'getUserTaskBoardProposals'],
+    });
+    document.body.setAttribute('style', `position: relative;`);
+    handleClose();
+  };
+  return {
+    approveProposal,
+    closeProposal,
+  }
+}

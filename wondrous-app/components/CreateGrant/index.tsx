@@ -201,6 +201,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             title: values.title,
             description: JSON.stringify(values.description),
             orgId: values.orgId,
+            reviewerIds: values.reviewerIds,
             podId: values.podId,
             startDate: values.startDate,
             mediaUploads: values.mediaUploads,

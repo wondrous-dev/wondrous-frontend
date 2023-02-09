@@ -1,49 +1,34 @@
 import { useMutation } from '@apollo/client';
+import KudosForm from 'components/Common/KudosForm';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { DueDateIcon, LinkIcon } from 'components/Icons/taskModalIcons';
 import {
-  TASK_STATUS_SUBMISSION_REQUEST,
-  PERMISSIONS,
-  TASK_STATUS_DONE,
-  ORG_MEMBERSHIP_REQUESTS,
-  POD_MEMBERSHIP_REQUESTS,
-  TASK_STATUS_PROPOSAL_REQUEST,
-} from 'utils/constants';
-import { parseUserPermissionContext, deleteFromCache } from 'utils/helpers';
+  APPROVE_SUBMISSION, APPROVE_TASK_PROPOSAL,
+  CLOSE_TASK_PROPOSAL, REJECT_SUBMISSION, REQUEST_CHANGE_SUBMISSION
+} from 'graphql/mutations';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
-import {
-  APPROVE_TASK_PROPOSAL,
-  CLOSE_TASK_PROPOSAL,
-  APPROVE_SUBMISSION,
-  REQUEST_CHANGE_SUBMISSION,
-  REJECT_SUBMISSION,
-} from 'graphql/mutations';
-import palette from 'theme/palette';
-import KudosForm from 'components/Common/KudosForm';
 import { useContext, useState } from 'react';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { LinkIcon, DueDateIcon } from 'components/Icons/taskModalIcons';
-import { Rewards } from 'components/Common/TaskViewModal/helpers';
-import { ListViewItemBodyWrapper, ListViewItemDataContainer, ListViewItemActions } from 'components/ListView/styles';
-import { NoLogoDAO } from 'components/Common/SidebarMain/styles';
+import palette from 'theme/palette';
+import {
+  ORG_MEMBERSHIP_REQUESTS, PERMISSIONS, POD_MEMBERSHIP_REQUESTS, TASK_STATUS_DONE, TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST
+} from 'utils/constants';
+import { deleteFromCache, parseUserPermissionContext } from 'utils/helpers';
+import { Grid } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { DAOIcon } from 'components/Icons/dao';
-import PodIcon from 'components/Icons/podIcon';
-import Tooltip from 'components/Tooltip';
-import { format } from 'date-fns';
-import RolePill from 'components/Common/RolePill';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import RolePill from 'components/Common/RolePill';
+import { NoLogoDAO } from 'components/Common/SidebarMain/styles';
+import { ViewRewards } from 'components/Common/TaskViewModal/Fields/RewardsField';
+import { DAOIcon } from 'components/Icons/dao';
+import PodIcon from 'components/Icons/podIcon';
+import { ListViewItemActions, ListViewItemBodyWrapper, ListViewItemDataContainer } from 'components/ListView/styles';
+import Tooltip from 'components/Tooltip';
+import { format } from 'date-fns';
 import {
-  BoldName,
-  Description,
-  IconsWrapper,
-  IconContainer,
-  MediaIcon,
-  ApproveButton,
-  DeclineButton,
-  RequestChangesButton,
-  DueDateWrapper,
+  ApproveButton, BoldName, DeclineButton, Description, DueDateWrapper, IconContainer, IconsWrapper, MediaIcon, RequestChangesButton
 } from './styles';
 
 interface Props {
@@ -404,7 +389,21 @@ function ColumnEntry(props: Props) {
             {format(new Date(taskDueDate), 'MMM dd')}
           </DueDateWrapper>
         ) : null}
-        {rewards ? <Rewards user={null} withLabel={false} fetchedTask={{ rewards }} /> : null}
+        {rewards?.length ? (
+          <>
+            {rewards.map((reward, idx) => (
+              <Grid display="flex" direction="column" gap="4px">
+                <ViewRewards
+                  key={idx}
+                  rewardAmount={reward?.rewardAmount}
+                  symbol={reward?.symbol}
+                  icon={reward?.icon}
+                  chain={reward?.chain}
+                />
+              </Grid>
+            ))}
+          </>
+        ) : null}
         {Buttons.map((btn, idx) => {
           const Button = btn.component;
           return (

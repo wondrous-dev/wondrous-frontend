@@ -13,8 +13,8 @@ import { TaskFieldEditableContent } from './Shared';
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
   <ReviewerWrapper showFullWidth>
     {labels?.map(({ name = null }) => (
-      <Grid width="100%">
-        <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
+      <Grid width="100%" key={name}>
+        <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
           <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
             <TaskSectionInfoText>{name}</TaskSectionInfoText>
             <EditIcon stroke={palette.grey58} className="edit-icon-field" />

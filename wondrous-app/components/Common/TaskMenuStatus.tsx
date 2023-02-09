@@ -210,7 +210,6 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
     },
   });
   const handleOnChange = (newStatus) => {
-    console.log(newStatus, 'new status')
     if (newStatus === TASK_STATUS_ARCHIVED) {
       archiveTaskMutation({
         variables: {

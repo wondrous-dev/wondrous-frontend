@@ -21,7 +21,7 @@ const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
   <ReviewerWrapper showFullWidth>
     {labels?.map((label) => (
       <Grid width="100%">
-        <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
+        <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
           <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
             <TaskSectionInfoText>{label?.name || getInterestDisplay(label)}</TaskSectionInfoText>
             <EditIcon stroke={palette.grey58} className="edit-icon-field" />

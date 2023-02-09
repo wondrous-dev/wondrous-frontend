@@ -21,7 +21,7 @@ import { DataDisplay } from '../Fields';
 
 const ViewContent = ({ toggleEditMode, privacyLevel, canEdit }) => (
   <>
-    <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
+        <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
       <DataDisplay label={PRIVACY_LABELS[privacyLevel] || 'Private'} />
       <EditIcon stroke={palette.grey58} className="edit-icon-field" />
     </ViewFieldWrapper>

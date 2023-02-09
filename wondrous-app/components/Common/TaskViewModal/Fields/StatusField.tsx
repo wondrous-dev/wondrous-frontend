@@ -15,8 +15,8 @@ const EditContent = ({ isTaskProposal, toggleEditMode, fetchedTask }) => (
 );
 
 export const ViewContent = ({ canEdit, toggleEditMode, currentStatus }) => (
-  <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
-    <TaskSectionInfoText>
+  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+  <TaskSectionInfoText>
       <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
         <IconWrapper
           style={{

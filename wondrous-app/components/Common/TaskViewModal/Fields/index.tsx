@@ -9,5 +9,9 @@ export { default as PriorityField } from './PriorityField';
 export { default as CategoryField } from './CategoryField';
 export { default as TagsField } from './TagsField';
 export { default as Title } from './Title';
-export {default as Description} from './Description'
-export {default as StatusField} from './StatusField'
+export { default as Description } from './Description';
+export { default as StatusField } from './StatusField';
+export { default as ApplicationField } from './ApplicationField';
+export { default as ProposerField } from './ProposerField';
+export { default as InitiativesField } from './InitiativesField';
+export {default as ModalFields} from './ModalFields';

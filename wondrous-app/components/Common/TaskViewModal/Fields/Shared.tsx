@@ -11,7 +11,7 @@ import {
   CreateEntityAutocompletePopperRenderInputIcon,
   CreateEntityDefaultUserImage,
   CreateEntityError,
-  CreateEntityLabelAddButton
+  CreateEntityLabelAddButton,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
 import { Dispatch, useEffect, useRef, useState } from 'react';
@@ -22,11 +22,11 @@ import { useOutsideAlerter } from 'utils/hooks';
 import { TaskSectionInfoText, ViewFieldWrapper } from '../styles';
 
 interface TaskFieldEditableContentProps {
-  editableContent: React.FC<{ toggleEditMode: () => void, toggleOutsideAlerter: () => void }>;
+  editableContent: React.FC<{ toggleEditMode: () => void; toggleOutsideAlerter: () => void }>;
   ViewContent: React.FC<{ toggleEditMode: () => void }>;
   onClose?: (value?: any) => void;
   canAddItem?: boolean;
-  addContent?: React.FC<{ toggleAddMode: () => void, toggleOutsideAlerter: () => void }>;
+  addContent?: React.FC<{ toggleAddMode: () => void; toggleOutsideAlerter: () => void }>;
   editGridStyle?: any;
 }
 
@@ -49,14 +49,17 @@ export const TaskFieldEditableContent = ({
       return !prev;
     });
 
-  const toggleAddMode = () => setIsAddMode((prev) => !prev);
+  const toggleAddMode = () => setIsAddMode((prev) => {
+    if (prev && onClose) onClose();
+    return !prev;
+  });
 
   const toggleOutsideAlerter = () => setDisableOutsideAlerter((prev) => !prev);
 
   useOutsideAlerter(
     ref,
     () => {
-      if(isOutsideAlerterDisabled) return;
+      if (isOutsideAlerterDisabled) return;
       if (isEditMode) {
         toggleEditMode();
       }
@@ -69,9 +72,7 @@ export const TaskFieldEditableContent = ({
 
   if (isAddMode) {
     return (
-      <Grid 
-      ref={ref} 
-      width="100%" height="100%">
+      <Grid ref={ref} width="100%" height="100%">
         {addContent({ toggleAddMode, toggleOutsideAlerter })}
       </Grid>
     );
@@ -113,7 +114,7 @@ export const UserChip = ({ user }) => (
 
 export const AssigneeReviewerViewContent = ({ option, canEdit, toggleEditMode, children = null }) => (
   <Grid width="100%" display="flex" alignItems="center" gap="6px">
-    <ViewFieldWrapper key={option.id} canEdit={canEdit} onClick={toggleEditMode}>
+    <ViewFieldWrapper key={option.id} $canEdit={canEdit} onClick={toggleEditMode}>
       <UserChip user={option} />
       <EditIcon stroke={palette.grey58} className="edit-icon-field" />
     </ViewFieldWrapper>

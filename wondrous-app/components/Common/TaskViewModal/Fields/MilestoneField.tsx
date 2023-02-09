@@ -21,8 +21,8 @@ import { IconWrapper } from './styles';
 const MilestoneFieldContent = ({ milestoneId, getTaskById, milestoneTitle, canEdit, toggleEditMode }) => {
   const router = useRouter();
   return (
-    <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
-      <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
+    <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
         <IconWrapper>
           <TaskSectionInfoMilestoneIcon />
         </IconWrapper>

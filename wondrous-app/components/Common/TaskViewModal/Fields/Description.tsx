@@ -76,8 +76,9 @@ const ViewContent = ({ toggleEditMode, description, showFullByDefault }) => {
     </div>
   );
 };
-const Description = ({ description, orgId, canEdit, showFullByDefault = false }) => (
+const Description = ({ description, orgId, canEdit, showFullByDefault = false, editGridStyle = {} }) => (
   <TaskFieldEditableContent
+    editGridStyle={editGridStyle}
     editableContent={() => <EditContent description={description} orgId={orgId} />}
     ViewContent={({ toggleEditMode }) => (
       <ViewContent

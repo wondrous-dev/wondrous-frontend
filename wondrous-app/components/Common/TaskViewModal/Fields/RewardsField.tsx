@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material';
+import { useMe } from 'components/Auth/withAuth';
 import { StyledLink } from 'components/Common/text';
 import {
   CreateEntityPaymentMethodItem,
@@ -33,6 +34,25 @@ import {
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
+
+export const ViewRewards = ({ canEdit = false, rewardAmount, symbol, toggleEditMode = () => {}, icon, chain }) => {
+  const user = useMe();
+  return (
+    <Grid display="flex" direction="column" gap="8px">
+        <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+        <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
+          <TaskSectionInfoPaymentMethodIcon src={icon} />
+          <TaskSectionInfoPaymentAmount>
+            {rewardAmount} {symbol}
+          </TaskSectionInfoPaymentAmount>
+          <TaskSectionInfoPaymentMethodChain> on {chain}</TaskSectionInfoPaymentMethodChain>
+        </Grid>
+        <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+      </ViewFieldWrapper>
+      {user ? <ConnectToWallet user={user} /> : null}
+    </Grid>
+  );
+};
 
 const CreateReward = ({ handleReward, orgId, paymentMethodId, rewardAmount, toggleEditMode, error }) => {
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
@@ -125,9 +145,8 @@ const CreateReward = ({ handleReward, orgId, paymentMethodId, rewardAmount, togg
   );
 };
 
-const Rewards = ({ fetchedTask, user, canEdit, shouldDisplay }) => {
+const Rewards = ({ fetchedTask, canEdit, shouldDisplay }) => {
   const rewards = fetchedTask?.rewards;
-  const ref = useRef();
   const { submit, error } = useSubmit({ field: FIELDS.REWARDS });
 
   const values = useMemo(
@@ -179,19 +198,14 @@ const Rewards = ({ fetchedTask, user, canEdit, shouldDisplay }) => {
           />
         )}
         ViewContent={({ toggleEditMode }) => (
-          <Grid display="flex" direction="column" gap="8px">
-            <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode}>
-              <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
-                <TaskSectionInfoPaymentMethodIcon src={icon} />
-                <TaskSectionInfoPaymentAmount>
-                  {rewardAmount} {symbol}
-                </TaskSectionInfoPaymentAmount>
-                <TaskSectionInfoPaymentMethodChain> on {chain}</TaskSectionInfoPaymentMethodChain>
-              </Grid>
-              <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-            </ViewFieldWrapper>
-            {user ? <ConnectToWallet user={user} /> : null}
-          </Grid>
+          <ViewRewards
+            canEdit={canEdit}
+            toggleEditMode={toggleEditMode}
+            rewardAmount={rewardAmount}
+            symbol={symbol}
+            icon={icon}
+            chain={chain}
+          />
         )}
       />
     </TaskSectionDisplayDiv>

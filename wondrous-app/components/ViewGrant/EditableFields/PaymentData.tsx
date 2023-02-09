@@ -14,8 +14,8 @@ import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
 import { debounce } from 'lodash';
 
 const ViewContent = ({ toggleEditMode, reward, numOfGrant, canEdit }) => (
-  <ViewFieldWrapper canEdit={canEdit} onClick={toggleEditMode} background="transparent">
-    <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />
+  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode} $background="transparent">
+  <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
   </ViewFieldWrapper>
 );

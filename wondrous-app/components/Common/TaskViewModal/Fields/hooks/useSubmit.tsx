@@ -125,12 +125,10 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
   };
 
   const submit = async (value, input = null) => {
-    console.log('imside maybe? ')
     setError(null);
     const inputToValidate = {
       ...(input ? {...input} : {[field]: value})
     }
-    console.log(inputToValidate)
     if (schema) {
       try {
         await validate(inputToValidate);
