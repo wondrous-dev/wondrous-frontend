@@ -152,6 +152,7 @@ export const ENTITIES_TYPES = {
   GRANT: 'grant',
   GRANT_APPLICATION: 'grant_application',
   COLLAB: 'collab',
+  WONDER_AI_BOT: 'wonder_ai_bot',
 };
 
 export const ENTITIES_DISPLAY_LABEL_MAP = {
@@ -758,7 +759,7 @@ export const gridMobileStyles = {
 };
 
 export const TABS_LABELS = {
-  DAOS: 'orgs',
+  ORGS: 'orgs',
   BOUNTY: 'bounty',
   GR15_DEI: 'gr15_dei',
 };

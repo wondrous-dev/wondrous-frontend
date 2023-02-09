@@ -1,8 +1,7 @@
 import { ErrorText } from 'components/Common';
 import { useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
-import { EditorContainer } from 'components/CreateEntity/CreateEntityModal/styles';
+import { EditorContainer, EditorPlaceholder, EditorToolbar } from 'components/CreateEntity/CreateEntityModal/styles';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
-import { EditorPlaceholder, EditorToolbar } from 'components/CreateEntity/styles';
 import { RichTextWrapper } from 'components/CreateGrant/styles';
 import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
 import { debounce } from 'lodash';

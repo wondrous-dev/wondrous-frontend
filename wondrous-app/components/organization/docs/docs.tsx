@@ -13,7 +13,6 @@ import { PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 
 import AddDocumentDialog from 'components/AddDocumentDialog';
-import ResourcesSidebar from 'components/Common/SidebarResources';
 import DeleteDocDialog from 'components/DeleteDocDialog';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
 import DocCategoriesSection from 'components/DocCategoriesSection';
@@ -21,6 +20,9 @@ import DocItemsMenu from 'components/DocItemsMenu';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
 import PinnedDocsSection from 'components/PinnedDocsSection';
 import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
+import EntitySidebar from 'components/Common/SidebarEntity';
+import { OrgBoardContext } from 'utils/contexts';
+
 import Tooltip from 'components/Tooltip';
 
 import styles, { AddIconWrapper } from './docsStyles';
@@ -62,20 +64,11 @@ const useGetOrgDocs = (orgId) => {
   };
 };
 
-const useSelectedCategory = (id: string) => {
-  const [selectedCategory, setSelectedCategory] = useState(id);
-  useEffect(() => {
-    setSelectedCategory(id);
-  }, [id]);
-  return { selectedCategory, setSelectedCategory };
-};
-
 function Docs(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const router = useRouter();
   const { docData, categoriesData } = useGetOrgDocs(orgId);
-  const { selectedCategory, setSelectedCategory } = useSelectedCategory(router.query.id as string);
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
@@ -83,9 +76,7 @@ function Docs(props) {
   const [selectedDoc, setSelectedDoc] = useState({});
   const [pinned, setPinned] = useState(false);
 
-  const filteredCategories = selectedCategory
-    ? categoriesData?.filter((i) => i.id === selectedCategory)
-    : categoriesData;
+  const filteredCategories = categoriesData;
 
   const [menuAnchor, setMenuAnchor] = useState(null);
   const openMenu = Boolean(menuAnchor);
@@ -159,89 +150,82 @@ function Docs(props) {
   };
 
   const handleCreateNewCategory = () => setShowCategoriesDialog(true);
-  const handleSelectCategory = (id) => () => setSelectedCategory(id);
 
   const pinnedDocs = docData?.filter((doc) => doc.pinned);
 
   return (
-    <ResourcesSidebar
-      docs={categoriesData}
-      handleCreateNewCategory={handleCreateNewCategory}
-      handleSelectCategory={handleSelectCategory}
-      selectedCategory={selectedCategory}
+    <OrgBoardContext.Provider
+      value={{
+        orgId: orgData?.id,
+        orgData,
+        userPermissionsContext,
+      }}
     >
-      <BoardPageHeader orgData={orgData} headerTitle="Documents">
-        {canEdit && (
-          <Box sx={styles.topButtonsContainer}>
-            <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
-              <AddIconWrapper style={styles.addIcon} />
-              Add new category
-            </Button>
-          </Box>
-        )}
-
-        {isEmpty(docData) && isEmpty(categoriesData) && (
-          <EmptyStateGeneric
-            content={`Welcome to the Documents page for ${orgData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
-          />
-        )}
-        {/* {canEdit && (
-          <Tooltip title="Create new doc category" placement="top">
-            <Box sx={styles.categoryButtonContainer}>
-              <Box sx={styles.categoryButton} onClick={handleCreateNewCategory}>
-                <Image src="/images/icons/plus.svg" alt="plus icon" width={16} height={16} />
-              </Box>
+      <EntitySidebar>
+        <BoardPageHeader orgData={orgData} headerTitle="Documents">
+          {canEdit && (
+            <Box sx={styles.topButtonsContainer}>
+              <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
+                <AddIconWrapper style={styles.addIcon} />
+                Add new category
+              </Button>
             </Box>
-          </Tooltip>
-        )} */}
-        {!isEmpty(pinnedDocs) && (
-          <PinnedDocsSection
-            onDialogOpen={handleOpenDocDialogPinned}
-            pinnedDocs={pinnedDocs}
-            onItemClick={handleItemClick}
-          />
-        )}
+          )}
 
-        {filteredCategories?.map((category) => (
-          <DocCategoriesSection
-            key={category.id}
-            category={category}
-            onItemClick={handleItemClick}
-            onOpenDocDialog={handleOpenDocDialog}
-            onCategoryDialogOpen={handleOpenCategoriesDialog}
-            docs={docData}
-            canEdit={canEdit}
-          />
-        ))}
+          {isEmpty(docData) && isEmpty(categoriesData) && (
+            <EmptyStateGeneric
+              content={`Welcome to the Documents page for ${orgData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
+            />
+          )}
+          {!isEmpty(pinnedDocs) && (
+            <PinnedDocsSection
+              onDialogOpen={handleOpenDocDialogPinned}
+              pinnedDocs={pinnedDocs}
+              onItemClick={handleItemClick}
+            />
+          )}
 
-        <DocItemsMenu
-          open={openMenu}
-          anchorEl={menuAnchor}
-          onClose={handleMenuClose}
-          onDelete={handleOpenDeleteDialog}
-          onEdit={handleOpenEditDocDialog}
-        />
-        <AddDocumentDialog
-          open={showDocDialog}
-          onClose={handleCloseDocDialog}
-          title={docCategory?.name}
-          orgId={orgId}
-          podId={null}
-          category={docCategory}
-          document={selectedDoc}
-          pinned={pinned}
-        />
-        <DocCategoriesDialog
-          open={showCategoriesDialog}
-          onClose={handleCloseCategoriesDialog}
-          orgName={router.query.username}
-          orgId={orgId}
-          podId={null}
-          category={docCategory}
-        />
-        <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
-      </BoardPageHeader>
-    </ResourcesSidebar>
+          {filteredCategories?.map((category) => (
+            <DocCategoriesSection
+              key={category.id}
+              category={category}
+              onItemClick={handleItemClick}
+              onOpenDocDialog={handleOpenDocDialog}
+              onCategoryDialogOpen={handleOpenCategoriesDialog}
+              docs={docData}
+              canEdit={canEdit}
+            />
+          ))}
+
+          <DocItemsMenu
+            open={openMenu}
+            anchorEl={menuAnchor}
+            onClose={handleMenuClose}
+            onDelete={handleOpenDeleteDialog}
+            onEdit={handleOpenEditDocDialog}
+          />
+          <AddDocumentDialog
+            open={showDocDialog}
+            onClose={handleCloseDocDialog}
+            title={docCategory?.name}
+            orgId={orgId}
+            podId={null}
+            category={docCategory}
+            document={selectedDoc}
+            pinned={pinned}
+          />
+          <DocCategoriesDialog
+            open={showCategoriesDialog}
+            onClose={handleCloseCategoriesDialog}
+            orgName={router.query.username}
+            orgId={orgId}
+            podId={null}
+            category={docCategory}
+          />
+          <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
+        </BoardPageHeader>
+      </EntitySidebar>
+    </OrgBoardContext.Provider>
   );
 }
 

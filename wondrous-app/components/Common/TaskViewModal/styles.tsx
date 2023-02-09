@@ -28,6 +28,10 @@ export const TaskModal = styled(Modal)`
   justify-content: center;
   z-index: 500;
   padding: 0 24px;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding: 0;
+  }
 `;
 
 export const TaskModalCard = styled.div`
@@ -50,6 +54,10 @@ export const TaskModalCard = styled.div`
     width: 1195px;
     gap: 0;
   `}
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    height: 100vh;
+  }
 `;
 
 export const TaskModalHeader = styled.div`
@@ -132,6 +140,10 @@ export const TaskModalHeaderOpenInFullIcon = styled((props) => (
   cursor: pointer;
   svg {
     transform: scale(88%);
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
   }
 `;
 
@@ -807,19 +819,6 @@ export const TaskBorder = styled.div`
   margin-top: 18px;
   height: 1px;
   border-bottom: 1px dashed ${({ theme }) => theme.palette.grey75};
-`;
-
-export const TaskListModalHeader = styled(Typography)`
-  && {
-    font-size: 18px;
-    line-height: 26px;
-    margin-bottom: 20px;
-    color: ${({ theme }) => theme.palette.white};
-  }
-`;
-
-export const TaskListModalContentWrapper = styled.div`
-  padding-bottom: 30px;
 `;
 
 export const ArchivedTaskUndo = styled.span`

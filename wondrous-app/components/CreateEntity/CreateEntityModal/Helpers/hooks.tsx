@@ -52,6 +52,7 @@ import {
   PROPOSAL_VOTE_CHOICE_LABELS,
 } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
+import { useCornerWidget } from 'utils/hooks';
 import {
   filterGithubPullRequestsForAutocomplete,
   filterGithubReposForAutocomplete,
@@ -306,6 +307,7 @@ export const useGetProposalChoices = () =>
   }));
 
 export const useCreateTask = () => {
+  const { setCornerWidgetValue } = useCornerWidget();
   const [createTask, { loading }] = useMutation(CREATE_TASK, {
     refetchQueries: () => [
       'getPerStatusTaskCountForMilestone',
@@ -323,6 +325,7 @@ export const useCreateTask = () => {
       SEARCH_USER_CREATED_TASKS,
       GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
     ],
+    onCompleted: ({ createTask: createTaskData }) => setCornerWidgetValue(createTaskData),
   });
 
   const handleMutation = ({ input, board, pods, form, handleClose }) =>
@@ -340,6 +343,7 @@ export const useCreateTask = () => {
 };
 
 export const useCreateMilestone = () => {
+  const { setCornerWidgetValue } = useCornerWidget();
   const [createMilestone, { loading }] = useMutation(CREATE_MILESTONE, {
     refetchQueries: () => [
       'getUserTaskBoardTasks',
@@ -349,6 +353,7 @@ export const useCreateMilestone = () => {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
     ],
+    onCompleted: ({ createMilestone: createMilestoneData }) => setCornerWidgetValue(createMilestoneData),
   });
   const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
     createMilestone({
@@ -393,6 +398,7 @@ export const useCreateMilestone = () => {
 };
 
 export const useCreateBounty = () => {
+  const { setCornerWidgetValue } = useCornerWidget();
   const [createBounty, { loading }] = useMutation(CREATE_BOUNTY, {
     refetchQueries: () => [
       'getPerTypeTaskCountForOrgBoard',
@@ -400,6 +406,7 @@ export const useCreateBounty = () => {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
     ],
+    onCompleted: ({ createBounty: createBountyData }) => setCornerWidgetValue(createBountyData),
   });
   const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createBounty({
@@ -558,6 +565,7 @@ export const useUpdateBounty = () => {
 };
 
 export const useCreateTaskProposal = () => {
+  const { setCornerWidgetValue } = useCornerWidget();
   const [createTaskProposal, { loading }] = useMutation(CREATE_TASK_PROPOSAL, {
     refetchQueries: () => [
       'GetOrgTaskBoardProposals',
@@ -569,6 +577,11 @@ export const useCreateTaskProposal = () => {
       'getPerStatusTaskCountForOrgBoard',
       'getUserTaskBoardProposals',
     ],
+    onCompleted: ({ createTaskProposal: createTaskProposalData }) =>
+      setCornerWidgetValue({
+        ...createTaskProposalData,
+        type: ENTITIES_TYPES.PROPOSAL,
+      }),
   });
 
   const handleMutation = ({ input, board, pods, form, handleClose }) =>

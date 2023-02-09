@@ -18,6 +18,7 @@ import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import { removeUrlStart } from 'utils/helpers';
+import { useMe } from 'components/Auth/withAuth';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -36,7 +37,6 @@ import styles, {
   ProfileInfoInterestsChipWrapper,
   ProfileInfoEarningsInterestWrapper,
 } from './styles';
-import { useMe } from '../Auth/withAuth';
 
 const SOCIAL_ICONS = {
   [SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,

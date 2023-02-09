@@ -161,13 +161,13 @@ import {
   ProposalVoteSelect,
   ProposalVoteSelectMenuItem,
   ProposalVoteSelectMenuItemText,
+  CreateEntityFooter,
 } from './styles';
 
 import { MediaItem } from '../MediaItem';
 import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
-import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 import { TaskTemplatePickerWrapper } from './TaskTemplatePicker/styles';
 import CustomProposal from './CustomProposal';
 import SubmitterWalletConnectSelector from './Helpers/RequireSubmitterWalletconnect';
@@ -1800,7 +1800,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           )} */}
         </TaskTemplatePickerWrapper>
       </CreateEntityBody>
-      <CreateEntityHeader>
+      <CreateEntityFooter>
         <CreateEntityHeaderWrapper showOnSmallScreen>
           <CreateEntityAttachment showOnSmallScreen onClick={() => inputRef.current.click()}>
             <CreateEntityAttachmentIcon />
@@ -1850,7 +1850,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             </>
           )}
         </CreateEntityHeaderWrapper>
-      </CreateEntityHeader>
+      </CreateEntityFooter>
     </CreateEntityForm>
   );
 }

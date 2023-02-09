@@ -34,6 +34,7 @@ import {
   MoreActionDiv,
 } from 'components/Settings/Payouts/styles';
 import { PAYMENT_STATUS } from 'utils/constants';
+import Link from 'next/link';
 
 const imageStyle = {
   width: '32px',
@@ -120,6 +121,7 @@ const PayoutItem = (props: PayoutItemProps) => {
       symbol: item?.symbol,
     });
   };
+  const submissionLink = `/submission/${item?.submissionId}`;
 
   return (
     <StyledTableRow>
@@ -155,27 +157,25 @@ const PayoutItem = (props: PayoutItemProps) => {
             )}
 
             <NoUnderlineLink href={`/profile/${item?.payeeUsername}/about`} passHref>
-              <PayeeProfileLink>
-                <Grid display="flex" alignItems="center" gap="6px">
-                  <SafeImage
-                    useNextImage={false}
-                    width={32}
-                    height={32}
-                    src={item?.payeeProfilePicture}
-                    style={imageStyle}
-                    placeholderComp={<DefaultUserImage style={imageStyle} />}
-                    alt="Payee profile picture"
-                  />
-                  <Typography fontFamily={typography.fontFamily} fontSize="13px" fontWeight={700} color={palette.white}>
-                    {item?.payeeUsername}
-                  </Typography>
-                </Grid>
-              </PayeeProfileLink>
+              <Grid display="flex" alignItems="center" gap="6px">
+                <SafeImage
+                  useNextImage={false}
+                  width={32}
+                  height={32}
+                  src={item?.payeeProfilePicture}
+                  style={imageStyle}
+                  placeholderComp={<DefaultUserImage style={imageStyle} />}
+                  alt="Payee profile picture"
+                />
+                <Typography fontFamily={typography.fontFamily} fontSize="13px" fontWeight={700} color={palette.white}>
+                  {item?.payeeUsername}
+                </Typography>
+              </Grid>
             </NoUnderlineLink>
           </Grid>
           {!!addressTag && (
             <PayeeAddressTagContainer onClick={handleAddressCopy}>
-              <PayeeAddressTag hasAddressBeenCopied={hasAddressBeenCopied}>
+              <PayeeAddressTag $hasAddressBeenCopied={hasAddressBeenCopied}>
                 {hasAddressBeenCopied ? 'Address copied!' : addressTag}
               </PayeeAddressTag>
               <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />
@@ -221,7 +221,9 @@ const PayoutItem = (props: PayoutItemProps) => {
       )}
 
       <StyledTableCell>
-        <PayoutTaskTitleContainer>{item?.taskTitle}</PayoutTaskTitleContainer>
+        <Link href={submissionLink} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+          <PayoutTaskTitleContainer>{item?.taskTitle}</PayoutTaskTitleContainer>
+        </Link>
       </StyledTableCell>
 
       <StyledTableCell>

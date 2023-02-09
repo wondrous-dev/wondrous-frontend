@@ -34,7 +34,7 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { useBoards, useCanViewTask, useColumns, useGlobalContext } from 'utils/hooks';
+import { useBoards, useCanViewTask, useColumns, useGlobalContext, useIsMobile } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
 
@@ -150,6 +150,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const [getTaskSubmissionsForTask, { data: taskSubmissionsForTask, loading: taskSubmissionsForTaskLoading }] =
     useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK);
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
@@ -229,6 +230,12 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       // let columns = [...boardColumns?.columns]
     },
   });
+
+  useEffect(() => {
+    if (isMobile && fullScreen) {
+      setFullScreen(false);
+    }
+  }, [isMobile]);
 
   const { approveProposal, closeProposal } = useManageProposals({
     fetchedTask,
@@ -315,6 +322,12 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       setIsViewNft(!!router?.query?.viewNft);
     }
   }, [router?.query?.viewNft]);
+
+  useEffect(() => {
+    if (isMobile) {
+      setFullScreen(false);
+    }
+  }, [isMobile]);
 
   if (editTask) {
     return (

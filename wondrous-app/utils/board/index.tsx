@@ -303,8 +303,8 @@ export const extendFiltersByView = (view: ViewType, filters) => {
     return {};
   }
 
-  let fromDate = filters.fromDate;
-  let toDate = filters.toDate;
+  let { fromDate } = filters;
+  let { toDate } = filters;
   // it formats dates to select start and end of the calendar
   if (filters.fromDate) {
     if (isFirstDayOfMonth(fromDate) && isLastDayOfMonth(toDate)) {

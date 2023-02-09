@@ -1,5 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
-import { useIsMobile } from 'utils/hooks';
+import { createContext, useState } from 'react';
 import { StyledAlert, StyledSnackbar } from './styles';
 
 export const SnackbarAlertContext = createContext(null);
@@ -17,18 +16,6 @@ export function SnackbarAlertProvider({ children }) {
   const handleOnClose = () => {
     setSnackbarAlertOpen(false);
   };
-
-  const isMobile = useIsMobile();
-  useEffect(() => {
-    if (isMobile) {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage('Wonder currently works best on desktop. Mobile coming soon :)');
-      setSnackbarAlertAnchorOrigin({
-        vertical: 'bottom',
-        horizontal: 'center',
-      });
-    }
-  }, [isMobile]);
 
   return (
     <SnackbarAlertContext.Provider

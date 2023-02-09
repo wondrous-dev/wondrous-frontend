@@ -28,7 +28,6 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import Droppable from 'components/StrictModeDroppable';
-import { ColumnSection } from 'components/Common/ColumnSection';
 
 import { IsMobileContext } from 'utils/contexts';
 import {
@@ -44,12 +43,12 @@ interface ITaskColumn {
   cardsList: Array<any>;
   moveCard: any;
   status: string;
-  section: Array<any>;
   draggingTask: TaskInterface | null;
 }
 
 function TaskColumn(props: ITaskColumn) {
-  const { cardsList, status, section, draggingTask } = props;
+  const { cardsList, status, draggingTask } = props;
+
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -160,7 +159,6 @@ function TaskColumn(props: ITaskColumn) {
           />
         )}
       </TaskColumnContainerHeader>
-      {section && <ColumnSection section={section} setSection={() => {}} />}
       <Droppable droppableId={status} isDropDisabled={isDropDisabled}>
         {(provided) => (
           <TaskListContainer

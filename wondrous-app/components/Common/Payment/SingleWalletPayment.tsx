@@ -166,7 +166,7 @@ export function SingleWalletPayment({
     if (selectedWallet && selectedWallet.chain) {
       connectSafeSdk(selectedWallet.chain, selectedWallet.address);
     }
-  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
+  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId, wallets]);
 
   const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
     onCompleted: (data) => {
@@ -331,6 +331,7 @@ export function SingleWalletPayment({
       } else if (e.message.includes('User denied message')) {
         setSigningError(`User denied signature`);
       } else {
+        console.error(e);
         setSigningError(`Error signing transaction`);
       }
       return;

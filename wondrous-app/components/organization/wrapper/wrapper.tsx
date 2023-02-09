@@ -64,7 +64,7 @@ const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/Or
 const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
 const CurrentRoleModal = dynamic(() => import('components/RoleModal/CurrentRoleModal'), { suspense: true });
 const ChooseEntityToCreate = dynamic(() => import('components/CreateEntity'), { suspense: true });
-const MoreInfoModal = dynamic(() => import('components/profile/modals'), { suspense: true });
+const MoreInfoModal = dynamic(() => import('components/Common/MoreInfoModal'), { suspense: true });
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
@@ -413,19 +413,6 @@ function Wrapper(props) {
               <PrivacyContainer>
                 <PrivacyText>{orgProfile?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
               </PrivacyContainer>
-              {isGr15Sponsor && (
-                <ExploreOrgGr15
-                  onTaskPage={onTaskPage}
-                  onBountyPage={onBountyPage}
-                  hasGr15Bounties={hasGr15Bounties}
-                  hasGr15Tasks={hasGr15Tasks}
-                  onFilterChange={onFilterChange}
-                  orgProfile={orgProfile}
-                  filters={boardFilters}
-                  exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                  setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                />
-              )}
             </HeaderTopLeftContainer>
             <RolePodMemberContainer>
               {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (

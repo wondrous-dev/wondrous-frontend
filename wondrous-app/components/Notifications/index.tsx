@@ -202,7 +202,7 @@ const NotificationsBoard = forwardRef(
         <StyledBadge
           color="primary"
           isActive={isActive}
-          hasUnreadNotifications={unreadCount > 0}
+          $hasUnreadNotifications={unreadCount > 0}
           onClick={toggleNotifications}
         >
           <Badge

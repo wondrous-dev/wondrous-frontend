@@ -13,7 +13,6 @@ import {
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
   GET_TASKS_RELATED_TO_USER_IN_ORG,
   SEARCH_ORG_TASK_BOARD_PROPOSALS,
-  SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from 'graphql/queries/taskBoard';
 import { GET_USER } from 'graphql/queries/user';
 import { useRouter } from 'next/router';
@@ -574,14 +573,14 @@ function BoardsPage() {
 
       apollo.query({
         ...searchOrgTasksArgs,
-        query: SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+        query: GET_ORG_TASK_BOARD_TASKS,
       }),
     ];
 
     return Promise.all(promises).then(([users, proposals, tasks]: any) => ({
       users: users.data.searchOrgUsers,
       proposals: proposals.data.searchProposalsForOrgBoardView,
-      tasks: tasks.data.searchTasksForOrgBoardView,
+      tasks: tasks.data.getOrgTaskBoardTasks,
     }));
   }
 

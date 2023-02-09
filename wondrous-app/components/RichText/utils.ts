@@ -12,7 +12,14 @@ export const plainTextToRichText = (text: string): Descendant[] => {
       },
     ];
   }
-
+  if (typeof text !== 'string') {
+    return [
+      {
+        children: [{ text: '' }],
+        type: 'paragraph',
+      },
+    ];
+  }
   return text.split('\n').map((line) => {
     function parseMentionsInPlaintext(text: string): ParagraphElement['children'] {
       // looking for a string like this: @[username](id)

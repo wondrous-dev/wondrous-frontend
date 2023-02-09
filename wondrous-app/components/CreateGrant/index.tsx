@@ -58,7 +58,7 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
-import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useCornerWidget, useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity, Reviewers } from './Fields';
@@ -112,6 +112,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const { setCornerWidgetValue } = useCornerWidget();
 
   const [updateGrant] = useMutation(UPDATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
@@ -132,9 +133,11 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const [attachMedia] = useMutation(ATTACH_GRANT_MEDIA);
   const [createGrant] = useMutation(CREATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
-    onCompleted: () => {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage('Grant created successfully!');
+    onCompleted: ({ createGrant: createGrantData }) => {
+      setCornerWidgetValue({
+        ...createGrantData,
+        type: ENTITIES_TYPES.GRANT,
+      });
       handleClose();
     },
     onError: () => {
@@ -438,7 +441,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
           </MediaWrapper>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
-            <Reviewers 
+            <Reviewers
               orgId={form.values.orgId}
               podId={form.values.podId}
               onFocus={() => form.setFieldError('reviewerIds', undefined)}

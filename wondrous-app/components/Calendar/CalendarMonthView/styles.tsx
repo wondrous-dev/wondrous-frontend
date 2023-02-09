@@ -82,7 +82,7 @@ const styles = {
       fontSize: '12px',
       fontWeight: 500,
     },
-  }
+  },
 };
 
 export default styles;
