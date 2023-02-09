@@ -33,6 +33,7 @@ import {
   createLinkPlugin,
 } from '@udecode/plate';
 
+import palette from 'theme/palette';
 import { slashCommandItems } from 'components/RichTextPlate/constants';
 import { ToolbarButtons } from 'components/RichTextPlate/ToolbarButtons';
 import { MarkBalloonToolbar } from 'components/RichTextPlate/plugins/balloon-toolbar/MarkBalloonToolbar';
@@ -45,7 +46,6 @@ import { Toolbar } from './plugins/toolbar/Toolbar';
 import { createMyPlugins, ElementTypes, CustomEditor, TextEditorValue } from './types';
 import { emojiPlugin } from './plugins/emoji/emojiPlugin';
 import { linkPlugin } from './plugins/link/linkPlugin';
-import palette from 'theme/palette';
 
 interface Props {
   inputValue: TextEditorValue;
