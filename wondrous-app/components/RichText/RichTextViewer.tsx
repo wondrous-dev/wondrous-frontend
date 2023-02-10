@@ -13,6 +13,7 @@ import { isRichText } from './utils';
 import { BulletedList, NumberedList, RichTextStyled } from './styles';
 import { Leaf } from './elements';
 
+
 const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
   nodes.map((node: Descendant | FormattedText, i) => {
     if (Text.isText(node)) {
@@ -102,4 +103,7 @@ const RichTextViewer: React.FC<{ text?: string; asText?: boolean }> = ({ text, a
   );
 };
 
+/**
+ * @deprecated Use PlateRichEditor instead
+ */
 export default memo(RichTextViewer);

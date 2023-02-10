@@ -68,6 +68,8 @@ const renderElement = (props: RenderElementProps) => {
  * Before making changes to low level parts like EditorHelpers
  * it is highly recommended to read Concepts section in Slate docs.
  * See https://docs.slatejs.org/concepts/01-interfaces
+ *
+ * @deprecated Use PlateRichEditor instead
  */
 const RichTextEditor: React.FC<Props> = ({
   editor,

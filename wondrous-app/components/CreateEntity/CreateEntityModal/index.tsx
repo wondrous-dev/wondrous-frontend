@@ -65,9 +65,8 @@ import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
-import { InputLabel } from '@mui/material';
-import RichTextEditorPlate from 'components/RichTextPlate/RichTextEditor';
-import { extractMentions } from 'components/RichTextPlate/utils';
+import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
+import { extractMentions } from 'components/PlateRichEditor/utils';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -802,7 +801,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
-        <RichTextEditorPlate
+        <PlateRichEditor
           inputValue={form.values.description}
           mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
           onChange={(value) => {
@@ -814,37 +813,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           placeholder="Type ‘/’ for commands"
         />
 
-        {/* <EditorToolbar ref={setEditorToolbarNode} /> */}
-        {/* <EditorContainer */}
-        {/*   onClick={() => { */}
-        {/*     // since editor will collapse to 1 row on input, we need to emulate min-height somehow */}
-        {/*     // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click */}
-        {/*     ReactEditor.focus(editor); */}
-        {/*     // also we need to move cursor to the last position in the editor */}
-        {/*     Transforms.select(editor, { */}
-        {/*       anchor: Editor.end(editor, []), */}
-        {/*       focus: Editor.end(editor, []), */}
-        {/*     }); */}
-        {/*   }} */}
-        {/* > */}
-        {/*   /!* <RichTextEditor *!/ */}
-        {/*   /!*   editor={editor} *!/ */}
-        {/*   /!*   onMentionChange={search} *!/ */}
-        {/*   /!*   initialValue={form.values.description} *!/ */}
-        {/*   /!*   mentionables={filterOrgUsersForAutocomplete(orgUsersData)} *!/ */}
-        {/*   /!*   placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>} *!/ */}
-        {/*   /!*   toolbarNode={editorToolbarNode} *!/ */}
-        {/*   /!*   onChange={(value) => { *!/ */}
-        {/*   /!*     form.setFieldValue('description', value); *!/ */}
-        {/*   /!*   }} *!/ */}
-        {/*   /!*   editorContainerNode={document.querySelector('#modal-scrolling-container')} *!/ */}
-        {/*   /!*   onClick={(e) => { *!/ */}
-        {/*   /!*     // we need to stop click event propagation, *!/ */}
-        {/*   /!*     // since EditorContainer moves cursor to the last position in the editor on click *!/ */}
-        {/*   /!*     e.stopPropagation(); *!/ */}
-        {/*   /!*   }} *!/ */}
-        {/*   /!* /> *!/ */}
-        {/* </EditorContainer> */}
         {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
         <CreateEntityLabelSelectWrapper show>
           <MediaUploadDiv>

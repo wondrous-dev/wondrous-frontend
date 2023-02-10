@@ -10,7 +10,7 @@ import Tooltip from 'components/Tooltip';
 import MoreIcon from 'components/Icons/more';
 import EmptyState from 'components/EmptyStateGeneric';
 
-import RichTextViewer from 'components/RichTextPlate/RichTextViewer';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import {
   ConnectToWalletButton,
   GithubBlock,
