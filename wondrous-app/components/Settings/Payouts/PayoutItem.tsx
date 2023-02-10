@@ -157,7 +157,6 @@ const PayoutItem = (props: PayoutItemProps) => {
             )}
 
             <NoUnderlineLink href={`/profile/${item?.payeeUsername}/about`} passHref>
-              <PayeeProfileLink>
                 <Grid display="flex" alignItems="center" gap="6px">
                   <SafeImage
                     useNextImage={false}
@@ -172,12 +171,11 @@ const PayoutItem = (props: PayoutItemProps) => {
                     {item?.payeeUsername}
                   </Typography>
                 </Grid>
-              </PayeeProfileLink>
             </NoUnderlineLink>
           </Grid>
           {!!addressTag && (
             <PayeeAddressTagContainer onClick={handleAddressCopy}>
-              <PayeeAddressTag hasAddressBeenCopied={hasAddressBeenCopied}>
+              <PayeeAddressTag $hasAddressBeenCopied={hasAddressBeenCopied}>
                 {hasAddressBeenCopied ? 'Address copied!' : addressTag}
               </PayeeAddressTag>
               <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />

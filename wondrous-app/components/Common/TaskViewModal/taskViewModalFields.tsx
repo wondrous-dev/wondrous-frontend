@@ -17,7 +17,8 @@ import {
 import { Claim } from 'components/Icons/claimTask';
 import PlusIcon from 'components/Icons/plus';
 import Tooltip from 'components/Tooltip';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 import {
   REMOVE_TASK_ASSIGNEE,
   UPDATE_TASK_ASSIGNEE,
@@ -378,7 +379,7 @@ const DueDateFieldContent = ({ recurringSchema, dueDate }) => (
         </TaskSectionInfoRecurringIcon>
       </Tooltip>
     )}
-    {format(new Date(dueDate), 'MM/dd/yyyy')}
+    {format(parseISO(dueDate.substring(0, 10)), 'MM/dd/yyyy')}
   </TaskSectionInfoText>
 );
 

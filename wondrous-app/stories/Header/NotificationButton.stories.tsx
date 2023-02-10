@@ -16,7 +16,7 @@ export default {
         type: 'boolean',
       },
     },
-    hasUnreadNotifications: {
+    $hasUnreadNotifications: {
       control: {
         type: 'boolean',
       },
@@ -36,6 +36,6 @@ const Template: ComponentStory<typeof Button> = (args) => (
 export const NotificationsButton = Template.bind({});
 
 NotificationsButton.args = {
-  hasUnreadNotifications: true,
+  $hasUnreadNotifications: true,
   isOpen: false,
 };

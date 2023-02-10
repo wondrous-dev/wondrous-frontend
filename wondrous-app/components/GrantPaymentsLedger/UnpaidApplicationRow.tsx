@@ -148,7 +148,7 @@ const UnpaidApplicationRow = (props: PayoutItemProps) => {
       <StyledTableCell>
         {!!addressDisplay && (
           <PayeeAddressTagContainer onClick={handleAddressCopy}>
-            <PayeeAddressTag hasAddressBeenCopied={hasAddressBeenCopied}>
+            <PayeeAddressTag $hasAddressBeenCopied={hasAddressBeenCopied}>
               {hasAddressBeenCopied ? 'Address copied!' : addressDisplay}
             </PayeeAddressTag>
             <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />
