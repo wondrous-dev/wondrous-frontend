@@ -29,7 +29,7 @@ const CalendarBoard = () => {
       return columnsOrTasks.reduce((acc, task) => {
         if (task.dueDate) {
           // key in format yyyy-MM-dd
-          const key = task.dueDate.replace(/T.*/g, '');
+          const key = task.dueDate.substring(0, 10);
 
           acc[key] = acc[key] || [];
           acc[key].push(task);

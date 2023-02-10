@@ -27,6 +27,7 @@ import {
 import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
 import * as Yup from 'yup';
+import parseISO from 'date-fns/parseISO';
 import {
   useCreateBounty,
   useCreateMilestone,
@@ -190,15 +191,16 @@ export const filterOptionsWithPermission = (
     }));
 };
 
-export const filterCategoryValues = (categories = []) => categories?.map((category) =>
-typeof category === 'string'
-  ? {
-      id: category,
-      label: CATEGORY_LABELS[category],
-    }
-  : category
-);
- 
+export const filterCategoryValues = (categories = []) =>
+  categories?.map((category) =>
+    typeof category === 'string'
+      ? {
+          id: category,
+          label: CATEGORY_LABELS[category],
+        }
+      : category
+  );
+
 export const getPodObject = (pods, podId) => {
   let justCreatedPod = null;
   pods.forEach((testPod) => {
@@ -250,7 +252,7 @@ export enum Fields {
   priority,
   voteOptions,
   voteType,
-  categories
+  categories,
 }
 
 export const entityTypeData = {
@@ -268,7 +270,7 @@ export const entityTypeData = {
       Fields.priority,
       Fields.tags,
       Fields.githubPullRequest,
-      Fields.categories
+      Fields.categories,
     ],
     createMutation: useCreateTask,
     updateMutation: useUpdateTask,
@@ -328,7 +330,7 @@ export const entityTypeData = {
       Fields.milestone,
       Fields.priority,
       Fields.tags,
-      Fields.categories
+      Fields.categories,
     ],
     createMutation: useCreateBounty,
     updateMutation: useUpdateBounty,
@@ -385,6 +387,7 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
     {
       ...existingTask,
       description,
+      dueDate: existingTask.dueDate ? parseISO(existingTask.dueDate.substring(0, 10)) : null,
       mediaUploads: transformMediaFormat(existingTask?.media),
       categories: isEmpty(remainingCategories) ? null : transformCategoryFormat(remainingCategories),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
@@ -467,8 +470,8 @@ export interface GrantCreateModalProps extends ICreateEntityModal {
       username: string;
       firstName: string;
       lastName: string;
-      profilePicture: string
-    }[]
+      profilePicture: string;
+    }[];
     reward?: {
       paymentMethodId?: string;
       rewardAmount?: string;
