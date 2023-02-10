@@ -42,6 +42,8 @@ const ModalFields = ({
   entityType,
   getTaskById,
   isSubtask,
+  taskSubmissionsForTask,
+  isBounty,
 }) => {
   const user = useMe();
   const boardColumns = useColumns();
@@ -69,6 +71,8 @@ const ModalFields = ({
         isViewNft={isViewNft}
         setIsViewNft={setIsViewNft}
         taskId={fetchedTask?.id}
+        isBounty={isBounty}
+        taskSubmissionsForTask={taskSubmissionsForTask}
       />
       <StatusField
         shouldDisplay={!isViewNft}
@@ -152,7 +156,8 @@ const ModalFields = ({
         labels={remaininTaskCategories}
         canEdit={canEdit}
         shouldDisplay={
-          !!(canEdit || fetchedTask?.categories?.length) && entityTypeData[entityType].fields.includes(Fields.categories)
+          !!(canEdit || fetchedTask?.categories?.length) &&
+          entityTypeData[entityType].fields.includes(Fields.categories)
         }
       />
       <TagsField

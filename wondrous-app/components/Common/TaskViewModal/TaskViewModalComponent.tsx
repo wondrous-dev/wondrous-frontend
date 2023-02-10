@@ -623,6 +623,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               reviewerData={reviewerData}
                               canApply={canApply}
                               canClaim={canClaim}
+                              isBounty={isBounty}
+                              taskSubmissionsForTask={taskSubmissionsForTask}
                               showAssignee={showAssignee}
                               canViewApplications={canViewApplications}
                               taskApplicationCount={taskApplicationCount}
