@@ -59,7 +59,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import ViewNftFields from '../TaskMint/ViewNftFields';
 import TaskViewNft from '../TaskViewNft';
-import ActionModals from './ActionModals';
+import ActionModals from './ActionModalsComponent';
 import { tabs } from './constants';
 import { Description, ModalFields, Title } from './Fields';
 import { GithubButtons, LockedTaskMessage, useManageProposals, Menu, TaskSectionImageContent } from './helpers';
