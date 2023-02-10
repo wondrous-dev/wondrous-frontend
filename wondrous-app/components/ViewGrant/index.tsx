@@ -37,7 +37,7 @@ import { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
 import { GrantModalCard } from 'components/CreateGrant/styles';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 import { DAOIcon } from 'components/Icons/dao';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import ViewGrantApplication from 'components/ViewGrantApplication';
 import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';

@@ -3,7 +3,7 @@ import { Grid } from '@mui/material';
 import CommentList from 'components/Comment';
 import SubmissionStatus from 'components/Common/SubmissionStatus';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import Tooltip from 'components/Tooltip';
 import {
   APPROVE_BOUNTY_SUBMISSION,

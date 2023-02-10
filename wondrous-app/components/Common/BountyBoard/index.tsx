@@ -28,7 +28,7 @@ import PodIconName from 'components/Common/PodIconName';
 import { CreateEntity } from 'components/CreateEntity';
 import CommentsIcon from 'components/Icons/comments';
 import { DAOIcon } from 'components/Icons/dao';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import { ARCHIVE_TASK } from 'graphql/mutations';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { useRouter } from 'next/router';

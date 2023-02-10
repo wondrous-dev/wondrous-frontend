@@ -17,7 +17,7 @@ import { GRANTS_ICONS_LABELS_MAP } from 'components/GrantsFilters';
 import { IconWrapper } from 'components/GrantsFilters/styles';
 import CommentsIcon from 'components/Icons/comments';
 import { DueDateIcon } from 'components/Icons/taskModalIcons';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import format from 'date-fns/format';
 import { useContext, useState } from 'react';

@@ -13,7 +13,7 @@ import usePrevious, { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery } from '@apollo/client';
 import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { useRouter } from 'next/router';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { PodIconThin } from 'components/Icons/podIcon';

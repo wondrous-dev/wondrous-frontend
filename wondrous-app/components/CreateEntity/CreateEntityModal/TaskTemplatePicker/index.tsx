@@ -1,7 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import { ActionButton } from 'components/Common/Task/styles';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import { TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
 import { GET_ORG_TASK_TEMPLATES, GET_TASK_TEMPLATES_BY_USER_ID } from 'graphql/queries';
 import { useEffect, useState } from 'react';

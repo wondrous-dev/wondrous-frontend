@@ -18,7 +18,7 @@ import {
   BoardsPrivacyLabel,
 } from 'components/Common/Boards/styles';
 import TaskPriority from 'components/Common/TaskPriority';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import { SafeImage } from 'components/Common/Image';
 import PodIconName from 'components/Common/PodIconName';
 

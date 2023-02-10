@@ -32,7 +32,7 @@ import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplic
 import { DAOIcon } from 'components/Icons/dao';
 import GrantIcon from 'components/Icons/GrantIcon';
 import { GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import ViewGrantFooter from 'components/ViewGrant/Footer';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';

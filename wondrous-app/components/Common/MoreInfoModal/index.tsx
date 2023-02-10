@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
 import { useBoards } from 'utils/hooks';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { MODAL_TABS_MAP } from 'utils/constants';
 import { LIMIT } from 'services/board';

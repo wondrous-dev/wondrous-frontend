@@ -29,7 +29,7 @@ import {
   ExploreProjectsButtonFilled,
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { PodIconThin } from 'components/Icons/podIcon';

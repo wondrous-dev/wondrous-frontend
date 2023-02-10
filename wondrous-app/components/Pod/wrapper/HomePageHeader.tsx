@@ -19,7 +19,7 @@ import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } 
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
 import { SafeImage } from 'components/Common/Image';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
 import MoreInfoModal from 'components/Common/MoreInfoModal';

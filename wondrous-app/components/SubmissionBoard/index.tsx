@@ -3,7 +3,7 @@ import { SafeImage } from 'components/Common/Image';
 import { useRouter } from 'next/router';
 import { TaskAction, TaskActionAmount } from 'components/Common/Task/styles';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import { IconsList, ICON_TYPES } from 'components/ListViewAdmin/ColumnEntry';
 import Tooltip from 'components/Tooltip';
 import { TaskCommentIcon } from 'components/Icons/taskComment';

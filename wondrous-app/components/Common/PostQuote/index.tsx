@@ -1,7 +1,7 @@
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils/index';
 import { useRouter } from 'next/router';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import {
   PostContentBackground,
   PostContentBorder,

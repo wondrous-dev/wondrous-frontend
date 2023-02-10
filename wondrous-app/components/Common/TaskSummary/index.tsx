@@ -14,7 +14,7 @@ import { addTaskItem, removeProposalItem, updateProposalItem, updateSubmissionIt
 import { renderMentionString } from 'utils/common';
 import { ViewType } from 'types/common';
 import { skipForCommandKey } from 'utils/links';
-import { RichTextViewer } from 'components/RichText';
+import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import { RejectIcon } from '../../Icons/taskModalIcons';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskCommentIcon } from '../../Icons/taskComment';
