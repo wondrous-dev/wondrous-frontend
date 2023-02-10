@@ -60,7 +60,7 @@ const CreateReward = ({ handleReward, orgId, paymentMethodId, rewardAmount, togg
   const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
   const [input, setInput] = useState({
     paymentMethodId,
-    rewardAmount: rewardAmount || '',
+    rewardAmount: rewardAmount ? parseFloat(rewardAmount) : '',
   });
   const router = useRouter();
 
