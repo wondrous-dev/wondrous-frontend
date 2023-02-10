@@ -36,6 +36,7 @@ export const TitleIconWrapper = styled(IconWrapper)`
 
 export const TitleFieldWrapper = styled(ViewFieldWrapper)`
   && {
+    width: 100%;
     ${TitleIconWrapper} {
       display: none;
     }

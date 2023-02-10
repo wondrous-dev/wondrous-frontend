@@ -2,7 +2,6 @@ import { useMe } from 'components/Auth/withAuth';
 import TaskMintComponent from 'components/Common/TaskMint';
 import { entityTypeData, Fields } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import { useMemo } from 'react';
-import { updateProposalItem } from 'utils/board';
 import { CATEGORY_LABELS, GR15DEICategoryName } from 'utils/constants';
 import { useBoards, useColumns } from 'utils/hooks';
 import { hasGR15DEIIntiative } from '../utils';
@@ -93,7 +92,6 @@ const ModalFields = ({
         orgId={board?.orgId}
         podId={board?.podId}
         shouldDisplay={showAssignee}
-        updateProposalItem={updateProposalItem}
         user={user}
         userId={board?.userId}
       />
@@ -152,7 +150,8 @@ const ModalFields = ({
         labels={remaininTaskCategories}
         canEdit={canEdit}
         shouldDisplay={
-          !!(canEdit || fetchedTask?.categories?.length) && entityTypeData[entityType].fields.includes(Fields.categories)
+          !!(canEdit || fetchedTask?.categories?.length) &&
+          entityTypeData[entityType].fields.includes(Fields.categories)
         }
       />
       <TagsField

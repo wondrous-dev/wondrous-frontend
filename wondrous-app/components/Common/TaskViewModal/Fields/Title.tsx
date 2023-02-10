@@ -22,6 +22,7 @@ const EditContent = ({ title, toggleEditMode }) => {
         name="title"
         placeholder="Enter a title"
         minRows={1}
+        onFocus={(e) => e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
         maxRows={3}
         data-cy="create-entity-input-title"
         autoFocus

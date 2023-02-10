@@ -1,12 +1,10 @@
 import { useMutation } from '@apollo/client';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import { filterOrgUsers, useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import { Claim } from 'components/Icons/claimTask';
-import { useFormikContext } from 'formik';
-import { REMOVE_TASK_ASSIGNEE, UPDATE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
+import { REMOVE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { updateProposalItem } from 'utils/board';
 import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoTakeTask, TaskSectionInfoTakeTaskText } from '../styles';
@@ -27,10 +25,8 @@ const AssigneeContent = ({
   canClaim,
   canEdit,
   fetchedTask,
-  handleOnCompleted,
   isTaskProposal,
   onCorrectPage,
-  updateProposalItem,
   user,
 }) => {
   const router = useRouter();
@@ -172,7 +168,6 @@ const AssigneeField = ({
   orgId,
   podId,
   shouldDisplay,
-  updateProposalItem,
   user,
   userId,
 }) => {
@@ -191,10 +186,8 @@ const AssigneeField = ({
         canClaim={canClaim}
         canEdit={canEdit}
         fetchedTask={fetchedTask}
-        handleOnCompleted={handleOnCompleted}
         isTaskProposal={isTaskProposal}
         onCorrectPage={onCorrectPage}
-        updateProposalItem={updateProposalItem}
         user={user}
       />
     </TaskSectionDisplayDiv>
