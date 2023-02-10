@@ -46,34 +46,41 @@ const renderNodes = (nodes) =>
           </>
         );
       case ElementTypes.ELEMENT_H1:
+      case 'headingOne':
         return (
           <Typography variant="h1" fontSize="28px" sx={{ color: palette.grey250 }}>
             {children}
           </Typography>
         );
       case ElementTypes.ELEMENT_H2:
+      case 'headingTwo':
         return (
           <Typography variant="h2" fontSize="22px" sx={{ color: palette.grey250 }}>
             {children}
           </Typography>
         );
       case ElementTypes.ELEMENT_H3:
+      case 'headingThree':
         return (
           <Typography variant="h3" fontSize="16px" sx={{ color: palette.grey250 }}>
             {children}
           </Typography>
         );
       case ElementTypes.ELEMENT_LI:
+      case 'list-item':
         return <li>{children}</li>;
       case ElementTypes.ELEMENT_OL:
+      case 'numbered-list':
         return <NumberedList>{children}</NumberedList>;
       case ElementTypes.ELEMENT_UL:
+      case 'bulleted-list':
         return <BulletedList>{children}</BulletedList>;
       case ElementTypes.ELEMENT_BLOCKQUOTE:
         return <Blockquote>{children}</Blockquote>;
       case ElementTypes.ELEMENT_LINK:
+      case 'link':
         return (
-          <NoUnderlineLink key={i} href={node.url} target="_blank" rel="noopener noreferrer">
+          <NoUnderlineLink key={i} href={node.href || node.url} target="_blank" rel="noopener noreferrer">
             {node.children[0]?.text}
           </NoUnderlineLink>
         );
@@ -90,8 +97,8 @@ const renderNodes = (nodes) =>
         );
       case ElementTypes.ELEMENT_MENTION:
         return (
-          <NoUnderlineLink key={i} href={`/profile/${node.value}/about`}>
-            @{node.value}
+          <NoUnderlineLink key={i} href={`/profile/${node.mentionable}/about`}>
+            @{node.mentionable}
           </NoUnderlineLink>
         );
       default:

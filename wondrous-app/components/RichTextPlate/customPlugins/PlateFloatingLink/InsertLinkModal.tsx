@@ -8,7 +8,7 @@ import { Button as CommonButton } from 'components/Common/button';
 import { LinkModal, LinkModalInput, LinkModalTitle } from './styles';
 
 const InsertLinkModal: React.FC<{
-  initialLinkText: string;
+  initialLinkText?: string;
 }> = ({ initialLinkText }) => {
   const [linkUrl, setLinkUrl] = useState('');
   const [linkUrlError, setLinkUrlError] = useState('Error');

@@ -20,7 +20,11 @@ export const createCustomMentionPlugin = createPluginFactory<MentionPlugin>({
   withOverrides: withMention,
   options: {
     trigger: '@',
-    createMentionNode: (item: any) => ({ value: item.data.mentionType === '@' ? `@${item.text}` : '' }),
+    createMentionNode: (item: any) => {
+      const value = item.data.mentionType === '@' ? `@${item.text}` : '';
+
+      return { value, mentionable: item.text };
+    },
   },
   plugins: [
     {
@@ -32,6 +36,11 @@ export const createCustomMentionPlugin = createPluginFactory<MentionPlugin>({
   then: (editor, { key }) => ({
     options: {
       id: key,
+    },
+    inject: {
+      props: {
+        nodeKey: 'mentionable',
+      },
     },
   }),
 });

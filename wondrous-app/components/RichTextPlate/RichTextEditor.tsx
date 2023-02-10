@@ -152,7 +152,9 @@ const RichTextEditorPlate = ({ mentionables, inputValue, onChange, mediaUploads,
           createCustomMentionPlugin({
             key: '/',
             component: MentionElement,
-            options: { trigger: '/' },
+            options: {
+              trigger: '/',
+            },
           }),
           createEmojiPlugin(emojiPlugin),
         ],
