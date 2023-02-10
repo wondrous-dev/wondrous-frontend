@@ -22,7 +22,6 @@ import {
 import { cloneDeep, isEmpty, isNull } from 'lodash';
 import { useMemo } from 'react';
 
-// TODO - reuse this component on CreateEntityModal
 
 const renderOption = (props, option, reviewerIds, reviewerId) => {
   if (reviewerIds.includes(option.id) && option.id !== reviewerId) return null;

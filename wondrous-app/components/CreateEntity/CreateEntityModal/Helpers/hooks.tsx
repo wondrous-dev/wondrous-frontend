@@ -249,17 +249,9 @@ export const useGetPaymentMethods = (orgId, includeDeactivated = false) => {
 };
 
 export const useGetOrgUsers = (orgId, searchString = '') => {
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  const [searchOrgUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_ORG_USERS, {
-    onCompleted: (data) => {
-      setTimeout(() => {
-        if (!previousData) {
-          setHasMore(data.searchOrgUsers.length === LIMIT);
-        }
-      });
-    },
-  });
+  const [searchOrgUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_ORG_USERS);
 
   const fetchMoreOrgUsers = () =>
     fetchMore({ variables: { offset: data.searchOrgUsers.length } }).then(({ data }) =>
@@ -280,7 +272,12 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
         },
       });
   }, [orgId, searchOrgUsers, searchString]);
-  return { data: data?.searchOrgUsers, search, hasMoreOrgUsers: hasMore, fetchMoreOrgUsers };
+  return {
+    data: data?.searchOrgUsers,
+    search,
+    hasMoreOrgUsers: hasMore && data?.searchOrgUsers?.length >= LIMIT,
+    fetchMoreOrgUsers,
+  };
 };
 
 export const useGetMilestones = (orgId, podId) => {

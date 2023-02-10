@@ -25,9 +25,9 @@ const TypeItem: React.FC<{
 
 const TypeSelector: React.FC<Props> = ({ config, onChange, value, label }) => (
   <TaskSectionDisplayDiv alignItems="start">
-    <CreateEntityLabelWrapper>
+   {label ?  <CreateEntityLabelWrapper>
       <CreateEntityLabel>{label}</CreateEntityLabel>
-    </CreateEntityLabelWrapper>
+    </CreateEntityLabelWrapper> : null}
     <TypeSelectorWrapper>
       {config.map((field) => (
         <TypeItem

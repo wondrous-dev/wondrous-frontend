@@ -1,1 +1,1 @@
-export { TaskViewModal as default } from './taskViewModal';
+export { TaskViewModal as default } from './TaskViewModalComponent';

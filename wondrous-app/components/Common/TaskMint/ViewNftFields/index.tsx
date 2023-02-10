@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@mui/material';
-import { TaskSectionImageContent, TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
-import { InfoPoint, TaskSectionDisplayDiv, TaskSectionInfoCalendar } from 'components/Common/TaskViewModal/styles';
+import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
+import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { Polygon } from 'components/Icons/chains';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';

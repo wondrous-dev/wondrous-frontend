@@ -27,7 +27,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { SnackbarAlertContext } from './SnackbarAlert';
 
-const TaskStatusMenuWrapper = styled(Menu)`
+export const TaskStatusMenuWrapper = styled(Menu)`
   && {
     .MuiMenu-list,
     .MuiMenu-paper {
@@ -127,14 +127,14 @@ const refetchTaskProposalQueries = [
   GET_USER_TASK_BOARD_PROPOSALS,
 ];
 
-const getStatusesProposal = ({ task, entityType }) => {
+export const getStatusesProposal = ({ task, entityType }) => {
   const filterStatus = ENTITIES_TYPES_FILTER_STATUSES({ orgId: task?.orgId })[entityType]?.filters[0].items;
   const status = getProposalStatus(task);
   const currentStatus = filterStatus?.find((i) => i.id === status);
   return { filterStatus, currentStatus };
 };
 
-const getStatusesNonProposalEntity = ({ task, entityType, canArchive }) => {
+export const getStatusesNonProposalEntity = ({ task, entityType, canArchive }) => {
   const entityStatus = ENTITIES_TYPES_FILTER_STATUSES({ orgId: task?.orgId })[entityType]?.filters[0].items;
   const filterStatus = canArchive ? entityStatus : entityStatus?.filter((i) => i.id !== TASK_STATUS_ARCHIVED);
   const currentStatus = entityStatus?.find((i) => i.id === task?.status);
@@ -257,7 +257,7 @@ export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableM
         <TaskModalStatusLabel>{currentStatus?.label ?? currentStatus?.name}</TaskModalStatusLabel>
         {!disableMenu && <TaskStatusMenuButtonArrow open={open} />}
       </TaskStatusMenuButton>
-      <TaskStatusMenuWrapper anchorEl={anchorEl} open={open} onClose={handleClose}>
+      <TaskStatusMenuWrapper anchorEl={anchorEl} open={open} onClose={handleClose} disablePortal>
         {filterStatus?.map((status) => (
           <TaskStatusMenuItem key={status.id} onClick={handleItemOnClick(status)}>
             {status.icon}

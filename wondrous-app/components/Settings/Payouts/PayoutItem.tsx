@@ -157,20 +157,20 @@ const PayoutItem = (props: PayoutItemProps) => {
             )}
 
             <NoUnderlineLink href={`/profile/${item?.payeeUsername}/about`} passHref>
-                <Grid display="flex" alignItems="center" gap="6px">
-                  <SafeImage
-                    useNextImage={false}
-                    width={32}
-                    height={32}
-                    src={item?.payeeProfilePicture}
-                    style={imageStyle}
-                    placeholderComp={<DefaultUserImage style={imageStyle} />}
-                    alt="Payee profile picture"
-                  />
-                  <Typography fontFamily={typography.fontFamily} fontSize="13px" fontWeight={700} color={palette.white}>
-                    {item?.payeeUsername}
-                  </Typography>
-                </Grid>
+              <Grid display="flex" alignItems="center" gap="6px">
+                <SafeImage
+                  useNextImage={false}
+                  width={32}
+                  height={32}
+                  src={item?.payeeProfilePicture}
+                  style={imageStyle}
+                  placeholderComp={<DefaultUserImage style={imageStyle} />}
+                  alt="Payee profile picture"
+                />
+                <Typography fontFamily={typography.fontFamily} fontSize="13px" fontWeight={700} color={palette.white}>
+                  {item?.payeeUsername}
+                </Typography>
+              </Grid>
             </NoUnderlineLink>
           </Grid>
           {!!addressTag && (

@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { useGlobalContext } from 'utils/hooks';
 
-export const OrgComponent = ({ username, profilePicture, style = { height: '24px', width: '24px' } }) => (
-  <Link href={`/organization/${username}/home`}>
+export const OrgComponent = ({ username, profilePicture, style = { height: '24px', width: '24px' }, linkStyle = {} }) => (
+  <Link href={`/organization/${username}/home`} style={linkStyle}>
     <OrgProfilePicture profilePicture={profilePicture} style={style} />
   </Link>
 );

@@ -25,11 +25,11 @@ function GuidePrevButton({ currentStep, stepsLength, setIsOpen, setCurrentStep, 
               variables: {
                 guideId: guide?.id,
               },
-            })
-          } 
+            });
+          }
           router.push('/explore', undefined, {
             shallow: true,
-          });      
+          });
         }}
       >
         <LaunchButtonText>Find a project</LaunchButtonText>

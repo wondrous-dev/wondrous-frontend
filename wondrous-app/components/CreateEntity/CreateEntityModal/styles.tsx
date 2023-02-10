@@ -377,7 +377,7 @@ export const CreateEntitySelectWrapper = styled.div`
 
 export const CreateEntityTextfield = styled(TextField)`
   && {
-    min-width: 50%;
+    min-width: 45%;
     height: 32px;
     background: #141414;
     border-radius: 4px;

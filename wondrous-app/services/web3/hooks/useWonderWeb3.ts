@@ -70,7 +70,7 @@ export default function useWonderWeb3(): WonderWeb3 {
   const nativeTokenSymbol = useMemo(() => NATIVE_TOKEN_SYMBOL[chainId], [chainId]);
 
   const onConnect = () => {
-    console.log('onConnect' , connector);
+    console.log('onConnect', connector);
     if (!connector) return;
     try {
       activate(connector);
