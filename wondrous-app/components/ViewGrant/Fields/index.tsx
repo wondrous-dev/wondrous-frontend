@@ -69,11 +69,3 @@ export const Dates = ({ startDate, endDate }) => (
     ))}
   </MultipleDataDisplay>
 );
-
-export const Categories = ({ categories }) => (
-  <MultipleDataDisplay>
-    {categories?.map((category) => (
-      <DataDisplay label={getInterestDisplay(category)} />
-    ))}
-  </MultipleDataDisplay>
-);

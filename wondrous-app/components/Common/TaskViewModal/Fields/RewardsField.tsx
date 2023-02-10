@@ -34,12 +34,13 @@ import {
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
+import { RewardsWrapper } from './styles';
 
 export const ViewRewards = ({ canEdit = false, rewardAmount, symbol, toggleEditMode = () => {}, icon, chain }) => {
   const user = useMe();
   return (
     <Grid display="flex" direction="column" gap="8px">
-        <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+      <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
         <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
           <TaskSectionInfoPaymentMethodIcon src={icon} />
           <TaskSectionInfoPaymentAmount>
@@ -93,7 +94,7 @@ const CreateReward = ({ handleReward, orgId, paymentMethodId, rewardAmount, togg
   };
 
   return (
-    <Grid display="flex" direction="column" gap="4px">
+    <RewardsWrapper>
       <CreateEntityWrapper>
         <CreateEntityPaymentMethodSelect
           name="rewards-payment-method"
@@ -141,7 +142,7 @@ const CreateReward = ({ handleReward, orgId, paymentMethodId, rewardAmount, togg
         />
       </CreateEntityWrapper>
       {error ? <CreateEntityError>{error}</CreateEntityError> : null}
-    </Grid>
+    </RewardsWrapper>
   );
 };
 

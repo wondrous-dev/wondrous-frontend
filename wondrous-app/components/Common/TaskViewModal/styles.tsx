@@ -509,6 +509,7 @@ export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
   && {
     font-size: 13px;
     display: flex;
+    white-space: nowrap;
     align-items: center;
     gap: 12px;
     ${({ theme }) => `

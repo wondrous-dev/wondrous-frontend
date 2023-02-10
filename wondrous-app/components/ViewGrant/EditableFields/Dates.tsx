@@ -4,21 +4,21 @@ import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields
 import { TaskSectionInfoCalendar, ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
 import { Dates } from 'components/CreateGrant/Fields';
 import EditIcon from 'components/Icons/editIcon';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { useState } from 'react';
 import palette from 'theme/palette';
 import { DataDisplay, MultipleDataDisplay } from '../Fields';
 
 const ViewContent = ({ toggleEditMode, startDate, endDate, canEdit }) => (
   <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-  <MultipleDataDisplay>
+    <MultipleDataDisplay>
       {[startDate, endDate].map((date, idx) => (
         <DataDisplay
           key={`${date}-${idx}`}
           label={
             <>
               <TaskSectionInfoCalendar />
-              {date ? format(new Date(date), 'MM/dd/yyyy') : 'Not set'}
+              {date ? format(parseISO(date.substring(0, 10)), 'MM/dd/yyyy') : 'Not set'}
             </>
           }
         />
@@ -39,11 +39,13 @@ const EditContent = ({ toggleManageMode, startDate = null, endDate = null }) => 
 
   const onChange = (key, value) => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    const newDates = { ...dates, [key]: value, timezone};
+    const newDates = { ...dates, [key]: value, timezone };
     setDates({ ...dates, [key]: value });
     if (newDates.startDate && newDates.endDate) {
-      handleSubmit(newDates);
+      handleSubmit({
+        ...newDates,
+        [key]: value ? format(value, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
+      });
     }
   };
 
@@ -56,9 +58,7 @@ const EditableDates = ({ startDate, endDate, canEdit }) => (
       <EditContent startDate={startDate} endDate={endDate} toggleManageMode={toggleEditMode} />
     )}
     ViewContent={({ toggleEditMode }) => (
-      <>
-        <ViewContent startDate={startDate} endDate={endDate} toggleEditMode={toggleEditMode} canEdit={canEdit} />
-      </>
+      <ViewContent startDate={startDate} endDate={endDate} toggleEditMode={toggleEditMode} canEdit={canEdit} />
     )}
     canAddItem={!startDate && !endDate && canEdit}
     addContent={({ toggleAddMode }) => <EditContent toggleManageMode={toggleAddMode} />}

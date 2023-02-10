@@ -46,6 +46,8 @@ import {
 import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
+import formatDate from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 import { useFormik } from 'formik';
 import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } from 'graphql/mutations/grant';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -180,8 +182,8 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
       },
       numOfGrant: existingGrant?.numOfGrant,
       mediaUploads: transformMediaFormat(existingGrant?.media) || [],
-      startDate: existingGrant?.startDate || null,
-      endDate: existingGrant?.endDate || null,
+      startDate: existingGrant?.startDate ? parseISO(existingGrant.startDate.substring(0, 10)) : null,
+      endDate: existingGrant?.endDate ? parseISO(existingGrant.endDate.substring(0, 10)) : null,
       title: existingGrant?.title || '',
       description: existingGrant
         ? deserializeRichText(existingGrant.description)
@@ -206,9 +208,9 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             orgId: values.orgId,
             reviewerIds: values.reviewerIds,
             podId: values.podId,
-            startDate: values.startDate,
+            startDate: values.startDate ? formatDate(values.startDate, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
             mediaUploads: values.mediaUploads,
-            endDate: values.endDate,
+            endDate: values.endDate ? formatDate(values.endDate, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
             reward: {
               rewardAmount: parseInt(values.reward.rewardAmount, 10),
               paymentMethodId: values.reward.paymentMethodId,

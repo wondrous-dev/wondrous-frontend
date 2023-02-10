@@ -1,9 +1,10 @@
 import { Grid, Tooltip } from '@mui/material';
 import { CreateEntityDueDate, CreateEntityError } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
-import { format } from 'date-fns';
 import { isEmpty } from 'lodash';
 import { forwardRef, useEffect, useRef, useState } from 'react';
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 import palette from 'theme/palette';
 import RecurringIcon from '../../../../public/images/icons/recurring.svg';
 import { TaskSectionLabel } from '../helpers';
@@ -31,7 +32,7 @@ const DueDateFieldContent = ({ recurringSchema, dueDate, canEdit, toggleEditMode
             <RecurringIcon />
           </Tooltip>
         )}
-        {format(new Date(dueDate), 'MM/dd/yyyy')}
+        {format(parseISO(dueDate.substring(0, 10)), 'MM/dd/yyyy')}{' '}
       </TaskSectionInfoText>
     </Grid>
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
@@ -81,6 +82,16 @@ const EditableFieldContent = ({
   );
 };
 
+interface Input {
+  timezone: string;
+  dueDate?: string | null;
+  recurringSchema?: {
+    daily?: number;
+    weekly?: number;
+    monthly?: number;
+    periodic?: number;
+  };
+}
 const DueDateField = ({ dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry, canEdit, shouldDisplay }) => {
   const initialRecurrenceValue =
     recurringSchema?.daily || recurringSchema?.weekly || recurringSchema?.monthly || recurringSchema?.periodic;
@@ -96,9 +107,9 @@ const DueDateField = ({ dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry, 
   const handleSubmit = async () => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    let input = {
+    let input: Input = {
       timezone,
-      [FIELDS.DUE_DATE]: value,
+      [FIELDS.DUE_DATE]: value ? format(value, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
     };
 
     if (recurrenceType && recurrenceValue && value) {

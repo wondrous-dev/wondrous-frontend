@@ -44,7 +44,7 @@ const AssigneeContent = ({
   }));
   const handleUpdateTaskAssignee = async (assigneeId) => await submit(assigneeId);
 
-  if (fetchedTask?.assigneeId || canEdit) {
+  if (fetchedTask?.assigneeId || (canEdit && canClaim)) {
     return (
       <TaskFieldEditableContent
         ViewContent={({ toggleEditMode }) => (
@@ -57,7 +57,7 @@ const AssigneeContent = ({
             toggleEditMode={toggleEditMode}
           />
         )}
-        canAddItem={canEdit && !fetchedTask?.assigneeId}
+        canAddItem={canEdit && canClaim && !fetchedTask?.assigneeId}
         addContent={({ toggleAddMode }) => (
           <ReviewerAssigneeAutocomplete
             options={filteredOrgUsersData}

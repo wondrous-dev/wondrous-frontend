@@ -12,7 +12,7 @@ import { TaskFieldEditableContent } from './Shared';
 import { InlineFieldWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
-  <Grid display="flex" gap="6px">
+  <Grid display="flex" gap="6px" flexWrap="wrap">
     {labels?.map(({ name = null }) => (
       <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
         <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">

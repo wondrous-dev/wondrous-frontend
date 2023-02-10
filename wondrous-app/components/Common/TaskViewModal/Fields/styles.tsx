@@ -1,3 +1,4 @@
+import { CreateEntityPaymentMethodLabelChain } from 'components/CreateEntity/CreateEntityModal/styles';
 import Link from 'next/link';
 import styled from 'styled-components';
 import palette from 'theme/palette';
@@ -73,6 +74,17 @@ export const InlineFieldWrapper = styled(ViewFieldWrapper)`
   && {
     &:hover {
       width: fit-content;
+    }
+  }
+`;
+
+export const RewardsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    ${CreateEntityPaymentMethodLabelChain} {
+      display: none;
     }
   }
 `;
