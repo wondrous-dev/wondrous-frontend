@@ -37,6 +37,7 @@ const OrgProject = () => {
         : null,
       orgData,
       orgId: orgData?.id,
+      isHomepage: true,
     }),
     [orgData, userPermissionsContext]
   );

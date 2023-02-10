@@ -3,13 +3,22 @@ import { UPDATE_TASK, UPDATE_TASK_PROPOSAL, UPDATE_GRANT, UPDATE_GRANT_APPLICATI
 import { useMemo, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { CHAIN_REGEX } from 'utils/helpers';
-import { useTaskContext } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useTaskContext } from 'utils/hooks';
 import * as Yup from 'yup';
-import { useUpdateGrantCardCache, useUpdateProposalCardCache, useUpdateTaskCardCache } from './useUpdateCache';
+import {
+  useUpdateGrantCardCache,
+  useUpdateProposalCardCache,
+  useUpdateTaskCardCache,
+  useUpdateTaskHomepageCache,
+} from './useUpdateCache';
 import { FIELDS, GRANT_SCHEMA, TASK_SCHEMA } from './constants';
 
 export const useSubmit = ({ field, refetchQueries = [] }) => {
   const [error, setError] = useState(null);
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+
+  const { isHomepage } = podBoard || orgBoard || {};
 
   const { fetchedTask, refetch, entityType, grantApplication = null, grant } = useTaskContext();
 
@@ -49,14 +58,19 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
   const handleUpdateProposalCardCache = useUpdateProposalCardCache();
 
   const handleUpdateGrantCardCache = useUpdateGrantCardCache();
-  
+
+  const handleUpdateTaskHomepageCache = useUpdateTaskHomepageCache();
+
+  const handleUpdateTask = isHomepage ? handleUpdateTaskHomepageCache : handleUpdateTaskCardCache;
+
   const [updateTask] = useMutation(UPDATE_TASK, {
     onCompleted: (data) => {
-      handleUpdateTaskCardCache({ data: data?.updateTask });
+      handleUpdateTask({ data: data?.updateTask });
       refetch();
     },
     refetchQueries,
     onError: (error) => {
+      console.log(error, 'error');
       setError('Something went wrong.');
     },
   });
@@ -71,12 +85,12 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
   const [updateGrant] = useMutation(UPDATE_GRANT, {
     onCompleted: (data) => {
       handleUpdateGrantCardCache({ data: data?.updateGrant });
-      refetch()
-    }
+      refetch();
+    },
   });
 
   const [updateGrantApplication] = useMutation(UPDATE_GRANT_APPLICATION, {
-    refetchQueries: ['getGrantApplicationsForGrant']
+    refetchQueries: ['getGrantApplicationsForGrant'],
   });
 
   const validate = async (value) => {
@@ -127,13 +141,13 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
   const submit = async (value, input = null) => {
     setError(null);
     const inputToValidate = {
-      ...(input ? {...input} : {[field]: value})
-    }
+      ...(input ? { ...input } : { [field]: value }),
+    };
     if (schema) {
       try {
         await validate(inputToValidate);
       } catch (error) {
-        console.log(error, 'error')
+        console.log(error, 'error');
         return;
       }
     }

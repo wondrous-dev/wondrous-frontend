@@ -150,6 +150,8 @@ export const useGetHomePageTaskObjects = () => {
   };
   const { data: getOrgHomeTaskObjects } = useQuery(GET_ORG_HOME_TASK_OBJECTS, {
     skip: !useIsOrg() || !orgId,
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     variables: {
       input: {
         ...variables,
@@ -159,6 +161,8 @@ export const useGetHomePageTaskObjects = () => {
   });
   const { data: getPodHomeTaskObjects } = useQuery(GET_POD_HOME_TASK_OBJECTS, {
     skip: useIsOrg() || !podId,
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     variables: {
       input: {
         ...variables,

@@ -1,21 +1,20 @@
 import { useApolloClient } from '@apollo/client';
 import { GrantCardFragment } from 'graphql/fragments/grant';
-import { TaskCardFragment, TaskProposalCardFragment } from 'graphql/fragments/task';
-
+import { TaskCardFragment, TaskProposalCardFragment, HomePageTaskCardFragment } from 'graphql/fragments/task';
 
 const transformEntityData = (existingData, newData) => {
-  const excludedFields = ['__typename', 'id']
+  const excludedFields = ['__typename', 'id'];
   const changedData = Object.keys(existingData).reduce((acc, next) => {
     if (existingData[next] !== newData[next] && !excludedFields.includes(next) && newData[next] !== undefined) {
       acc[next] = newData[next];
     }
     return acc;
-  }, {})
+  }, {});
   return {
     ...existingData,
     ...changedData,
-  }
-}
+  };
+};
 
 export const useUpdateTaskCardCache = (
   fragment = TaskCardFragment,
@@ -29,7 +28,9 @@ export const useUpdateTaskCardCache = (
       fragment,
       fragmentName,
       id: `${idLabel}:${id}`,
-    })
+    });
+
+    if (!currentData) return;
 
     const newData = transformEntityData(currentData, data);
 
@@ -43,15 +44,11 @@ export const useUpdateTaskCardCache = (
   return handleUpdateTaskCardCache;
 };
 
+export const useUpdateTaskHomepageCache = () =>
+  useUpdateTaskCardCache(HomePageTaskCardFragment, 'HomePageTaskCardFragment', 'TaskCard');
 
-export const useUpdateProposalCardCache = () => useUpdateTaskCardCache(
-  TaskProposalCardFragment,
-  'TaskProposalCardFragment',
-  'TaskProposalCard'
-);
+export const useUpdateProposalCardCache = () =>
+  useUpdateTaskCardCache(TaskProposalCardFragment, 'TaskProposalCardFragment', 'TaskProposalCard');
 
-export const useUpdateGrantCardCache = () => useUpdateTaskCardCache(
-  GrantCardFragment,
-  'GrantCardFragment',
-  'GrantCard'
-)
+export const useUpdateGrantCardCache = () =>
+  useUpdateTaskCardCache(GrantCardFragment, 'GrantCardFragment', 'GrantCard');
