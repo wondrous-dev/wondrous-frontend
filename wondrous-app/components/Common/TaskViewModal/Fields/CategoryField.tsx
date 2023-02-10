@@ -1,12 +1,7 @@
 import { Grid } from '@mui/material';
 import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
-import {
-  ReviewerWrapper,
-  TaskSectionDisplayDiv,
-  TaskSectionInfoText,
-  ViewFieldWrapper,
-} from 'components/Common/TaskViewModal/styles';
+import { TaskSectionDisplayDiv, TaskSectionInfoText } from 'components/Common/TaskViewModal/styles';
 import { getInterestDisplay } from 'components/Common/UserInterestModal';
 import { filterCategoryValues, useGetCategories } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import DropdownSearch from 'components/DropdownSearch';
@@ -16,20 +11,19 @@ import palette from 'theme/palette';
 import { CATEGORY_LABELS } from 'utils/constants';
 import { TaskSectionLabel } from '../helpers';
 import { FIELDS } from './hooks/constants';
+import { InlineFieldWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
-  <ReviewerWrapper showFullWidth>
+  <Grid display="flex" gap="6px">
     {labels?.map((label) => (
-      <Grid width="100%">
-        <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-          <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
-            <TaskSectionInfoText>{label?.name || getInterestDisplay(label)}</TaskSectionInfoText>
-            <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-          </Grid>
-        </ViewFieldWrapper>
-      </Grid>
+      <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+        <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
+          <TaskSectionInfoText>{label?.name || getInterestDisplay(label)}</TaskSectionInfoText>
+          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+        </Grid>
+      </InlineFieldWrapper>
     ))}
-  </ReviewerWrapper>
+  </Grid>
 );
 
 const labelsToValue = (labels) => {
@@ -65,7 +59,7 @@ const EditableContent = ({ toggleEditMode, labels }) => {
 const CategoryField = ({ labels = [], canEdit, shouldDisplay = true, hideLabel = false }) => {
   if (!shouldDisplay) return null;
 
-  let Wrapper = hideLabel ? Fragment : TaskSectionDisplayDiv;
+  const Wrapper = hideLabel ? Fragment : TaskSectionDisplayDiv;
 
   return (
     <Wrapper>

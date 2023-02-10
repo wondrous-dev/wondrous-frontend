@@ -21,7 +21,7 @@ import { IconWrapper } from './styles';
 
 const DueDateFieldContent = ({ recurringSchema, dueDate, canEdit, toggleEditMode }) => (
   <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-  <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
+    <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
       <IconWrapper>
         <TaskSectionInfoCalendar />
       </IconWrapper>
@@ -38,7 +38,6 @@ const DueDateFieldContent = ({ recurringSchema, dueDate, canEdit, toggleEditMode
   </ViewFieldWrapper>
 );
 
-
 const EditableFieldContent = ({
   dueDate,
   toggleMode,
@@ -48,15 +47,12 @@ const EditableFieldContent = ({
   setRecurrenceValue,
   setRecurrenceType,
   setValue,
-  error
+  error,
 }) => {
-
-
   useEffect(() => {
     if (toggleOutsideAlerter) toggleOutsideAlerter();
     return () => toggleOutsideAlerter && toggleOutsideAlerter();
   }, []);
-
 
   return (
     <>
@@ -64,12 +60,11 @@ const EditableFieldContent = ({
         autoFocus
         setValue={(value) => {
           setValue(value);
-          // handleSubmit(value, recurrenceType, recurrenceValue);
         }}
         value={dueDate}
         setRecurrenceType={setRecurrenceType}
         setRecurrenceValue={(newRecurrenceValue) => {
-            setRecurrenceValue(newRecurrenceValue);
+          setRecurrenceValue(newRecurrenceValue);
         }}
         hideRecurring={false}
         onClickAway={toggleMode}
@@ -88,34 +83,34 @@ const EditableFieldContent = ({
 
 const DueDateField = ({ dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry, canEdit, shouldDisplay }) => {
   const initialRecurrenceValue =
-  recurringSchema?.daily || recurringSchema?.weekly || recurringSchema?.monthly || recurringSchema?.periodic;
+    recurringSchema?.daily || recurringSchema?.weekly || recurringSchema?.monthly || recurringSchema?.periodic;
 
-const initialRecurrenceType =
-  recurringSchema && Object.keys(recurringSchema)[Object?.values(recurringSchema).indexOf(initialRecurrenceValue)];
+  const initialRecurrenceType =
+    recurringSchema && Object.keys(recurringSchema)[Object?.values(recurringSchema).indexOf(initialRecurrenceValue)];
 
-const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
-const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
-const [value, setValue] = useState(dueDate);
-const { submit, error } = useSubmit({ field: FIELDS.DUE_DATE });
+  const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
+  const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
+  const [value, setValue] = useState(dueDate);
+  const { submit, error } = useSubmit({ field: FIELDS.DUE_DATE });
 
-const handleSubmit = async () => {
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const handleSubmit = async () => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  let input = {
-    timezone,
-    [FIELDS.DUE_DATE]: value,
-  };
-
-  if (recurrenceType && recurrenceValue && value) {
-    input = {
-      ...input,
-      recurringSchema: {
-        [recurrenceType]: recurrenceValue,
-      },
+    let input = {
+      timezone,
+      [FIELDS.DUE_DATE]: value,
     };
-  }
-  await submit(null, { ...input });
-};
+
+    if (recurrenceType && recurrenceValue && value) {
+      input = {
+        ...input,
+        recurringSchema: {
+          [recurrenceType]: recurrenceValue,
+        },
+      };
+    }
+    await submit(null, { ...input });
+  };
 
   if (!shouldDisplay) return null;
   return (
@@ -157,7 +152,6 @@ const handleSubmit = async () => {
               setRecurrenceType={setRecurrenceType}
               dueDate={value}
               setValue={setValue}
-
             />
           )}
         />

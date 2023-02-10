@@ -44,7 +44,7 @@ const AssigneeContent = ({
   }));
   const handleUpdateTaskAssignee = async (assigneeId) => await submit(assigneeId);
 
-  if (fetchedTask?.assigneeId) {
+  if (fetchedTask?.assigneeId || canEdit) {
     return (
       <TaskFieldEditableContent
         ViewContent={({ toggleEditMode }) => (
@@ -55,6 +55,31 @@ const AssigneeContent = ({
               value: fetchedTask?.assigneeId,
             }}
             toggleEditMode={toggleEditMode}
+          />
+        )}
+        canAddItem={canEdit && !fetchedTask?.assigneeId}
+        addContent={({ toggleAddMode }) => (
+          <ReviewerAssigneeAutocomplete
+            options={filteredOrgUsersData}
+            error={error}
+            currentOption={null}
+            listBoxProps={{
+              handleFetchMore: fetchMoreOrgUsers,
+              hasMore: hasMoreOrgUsers,
+            }}
+            onDelete={toggleAddMode}
+            assignToSelfUser={user}
+            onAssignToSelfClick={() => {
+              handleUpdateTaskAssignee(user?.id);
+              toggleAddMode();
+            }}
+            onChange={(value) => {
+              search(value);
+            }}
+            onSelect={(value: OrgUser) => {
+              handleUpdateTaskAssignee(value?.value);
+              toggleAddMode();
+            }}
           />
         )}
         editableContent={({ toggleEditMode }) => (

@@ -18,8 +18,11 @@ import { STATUS_APPROVED } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
-  ActionButton, ConnectToWalletButton,
-  GithubBlock, LockedTask, TaskDescriptionText,
+  ActionButton,
+  ConnectToWalletButton,
+  GithubBlock,
+  LockedTask,
+  TaskDescriptionText,
   TaskDescriptionTextShowAllText,
   TaskModalHeaderMenu,
   TaskModalHeaderMenuButton,
@@ -35,7 +38,7 @@ import {
   TaskSectionInfoPaymentMethodIcon,
   TaskSectionInfoPaymentWrapper,
   WalletError,
-  WalletErrorText
+  WalletErrorText,
 } from './styles';
 
 export const TaskSectionImageContent = ({
@@ -106,7 +109,10 @@ export const TaskDescriptionTextWrapper = ({ text, showFullByDefault = false }) 
   const [showButton, setShowButton] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const handleExpand = () => setIsExpanded(!isExpanded);
+  const handleExpand = (e) => {
+    e.stopPropagation();
+    setIsExpanded(!isExpanded);
+  };
 
   const checkRichTextHeight = useCallback((node) => {
     if (!node || showFullByDefault) return;
@@ -116,7 +122,9 @@ export const TaskDescriptionTextWrapper = ({ text, showFullByDefault = false }) 
   }, []);
 
   if (!text) return null;
-                        {/* <RichTextViewer text={grant.description} /> */}
+  {
+    /* <RichTextViewer text={grant.description} /> */
+  }
 
   return (
     <>
@@ -255,7 +263,7 @@ export const LockedTaskMessage = ({ handleClose, entityType = 'task' }) => (
   </LockedTask>
 );
 
-export const useManageProposals = ({fetchedTask, entityType, handleClose}) => {
+export const useManageProposals = ({ fetchedTask, entityType, handleClose }) => {
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const boardColumns = useColumns();
@@ -327,5 +335,5 @@ export const useManageProposals = ({fetchedTask, entityType, handleClose}) => {
   return {
     approveProposal,
     closeProposal,
-  }
-}
+  };
+};

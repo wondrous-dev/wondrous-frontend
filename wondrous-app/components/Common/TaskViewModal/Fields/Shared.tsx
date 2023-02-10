@@ -20,6 +20,7 @@ import typography from 'theme/typography';
 import { User } from 'types/User';
 import { useOutsideAlerter } from 'utils/hooks';
 import { TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import { UserChipWrapper } from './styles';
 
 interface TaskFieldEditableContentProps {
   editableContent: React.FC<{ toggleEditMode: () => void; toggleOutsideAlerter: () => void }>;
@@ -49,10 +50,11 @@ export const TaskFieldEditableContent = ({
       return !prev;
     });
 
-  const toggleAddMode = () => setIsAddMode((prev) => {
-    if (prev && onClose) onClose();
-    return !prev;
-  });
+  const toggleAddMode = () =>
+    setIsAddMode((prev) => {
+      if (prev && onClose) onClose();
+      return !prev;
+    });
 
   const toggleOutsideAlerter = () => setDisableOutsideAlerter((prev) => !prev);
 
@@ -104,12 +106,26 @@ export const TaskFieldEditableContent = ({
 };
 
 export const UserChip = ({ user }) => (
-  <Grid display="flex" gap="6px" alignItems="center">
-    <UserProfilePicture avatar={user?.profilePicture} />
+  <UserChipWrapper
+    display="flex"
+    gap="6px"
+    alignItems="center"
+    href={`/profile/${user?.username}/about`}
+    onClick={(e) => e.stopPropagation()}
+  >
+    <UserProfilePicture
+      avatar={user?.profilePicture}
+      style={{
+        width: '24px',
+        height: '24px',
+        borderRadius: '13px',
+        marginRight: '4px',
+      }}
+    />
     <Typography color={palette.white} fontWeight={500} fontSize="13px" fontFamily={typography.fontFamily}>
       {user?.username}
     </Typography>
-  </Grid>
+  </UserChipWrapper>
 );
 
 export const AssigneeReviewerViewContent = ({ option, canEdit, toggleEditMode, children = null }) => (

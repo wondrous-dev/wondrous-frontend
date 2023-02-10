@@ -9,9 +9,12 @@ import { useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { TaskDescriptionTextWrapper } from 'components/Common/TaskViewModal/helpers';
+import EditIcon from 'components/Icons/editIcon';
+import palette from 'theme/palette';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
+import { DescriptionIconWrapper, DescriptionWrapper, TitleIconWrapper } from './styles';
 
 const EditContent = ({ description, orgId }) => {
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
@@ -65,14 +68,20 @@ const EditContent = ({ description, orgId }) => {
   );
 };
 
-const ViewContent = ({ toggleEditMode, description, showFullByDefault }) => {
+const ViewContent = ({ toggleEditMode, description, showFullByDefault, canEdit }) => {
   const wrapperProps = {
-    ...(toggleEditMode ? { onClick: toggleEditMode } : null),
+    ...(canEdit ? { onClick: toggleEditMode, $canEdit: canEdit } : null),
   };
   return (
-    <div {...wrapperProps}>
+    <DescriptionWrapper {...wrapperProps}>
+      <DescriptionIconWrapper $canEdit={canEdit}>
+        <TitleIconWrapper>
+          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+        </TitleIconWrapper>
+      </DescriptionIconWrapper>
+
       <TaskDescriptionTextWrapper text={description} showFullByDefault={showFullByDefault} />
-    </div>
+    </DescriptionWrapper>
   );
 };
 const Description = ({ description, orgId, canEdit, showFullByDefault = false, editGridStyle = {} }) => (
@@ -82,8 +91,9 @@ const Description = ({ description, orgId, canEdit, showFullByDefault = false, e
     ViewContent={({ toggleEditMode }) => (
       <ViewContent
         showFullByDefault={showFullByDefault}
-        toggleEditMode={canEdit ? toggleEditMode : null}
+        toggleEditMode={toggleEditMode}
         description={description}
+        canEdit={canEdit}
       />
     )}
   />

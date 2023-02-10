@@ -1,9 +1,13 @@
+import Grid from '@mui/material/Grid';
 import { CreateEntityTitle, CreateEntityError } from 'components/CreateEntity/CreateEntityModal/styles';
+import EditIcon from 'components/Icons/editIcon';
 import { debounce } from 'lodash';
-import { TaskModalTitle } from '../styles';
+import palette from 'theme/palette';
+import { TaskModalTitle, ViewFieldWrapper } from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
+import { IconWrapper, TitleFieldWrapper, TitleIconWrapper } from './styles';
 
 const EditContent = ({ title, toggleEditMode }) => {
   const { submit, error } = useSubmit({ field: FIELDS.TITLE });
@@ -29,14 +33,16 @@ const EditContent = ({ title, toggleEditMode }) => {
 
 const Title = ({ title, canEdit }) => (
   <TaskFieldEditableContent
-    ViewContent={({ toggleEditMode }) => {
-      let props = {
-        ...(canEdit ? { onClick: toggleEditMode } : null),
-      };
-      return <TaskModalTitle {...props}>{title}</TaskModalTitle>;
-    }}
+    ViewContent={({ toggleEditMode }) => (
+      <TitleFieldWrapper $canEdit={canEdit} onClick={toggleEditMode} $background="transparent">
+        <TaskModalTitle>{title}</TaskModalTitle>
+        <TitleIconWrapper>
+          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+        </TitleIconWrapper>
+      </TitleFieldWrapper>
+    )}
     editGridStyle={{
-      height: 'fit-content'
+      height: 'fit-content',
     }}
     editableContent={({ toggleEditMode }) => <EditContent toggleEditMode={toggleEditMode} title={title} />}
   />

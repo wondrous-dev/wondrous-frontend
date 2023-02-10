@@ -367,7 +367,7 @@ export const TaskDescriptionText = styled(Typography)`
       return `
       font-weight: ${theme.typography.fontWeightRegular};
       height: ${isExpanded ? 'fit-content' : `${initialHeight}px`};
-      color: ${theme.palette.grey250};
+      color: inherit;
     ${
       !isExpanded &&
       `
@@ -944,7 +944,6 @@ export const AddButtonGrid = styled(Grid)`
 
 const EditIconCss = css`
   &:hover {
-    width: 100%;
     .edit-icon-field {
       display: block;
     }

@@ -2,27 +2,26 @@ import { Grid } from '@mui/material';
 import { useCreateLabel, useGetOrgLabels } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import EditIcon from 'components/Icons/editIcon';
 import Tags from 'components/Tags';
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
-import { ReviewerWrapper, TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import { TaskSectionDisplayDiv, TaskSectionInfoText } from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
+import { InlineFieldWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
-  <ReviewerWrapper showFullWidth>
+  <Grid display="flex" gap="6px">
     {labels?.map(({ name = null }) => (
-      <Grid width="100%" key={name}>
-        <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-          <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
-            <TaskSectionInfoText>{name}</TaskSectionInfoText>
-            <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-          </Grid>
-        </ViewFieldWrapper>
-      </Grid>
+      <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+        <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
+          <TaskSectionInfoText>{name}</TaskSectionInfoText>
+          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+        </Grid>
+      </InlineFieldWrapper>
     ))}
-  </ReviewerWrapper>
+  </Grid>
 );
 
 interface Props {
