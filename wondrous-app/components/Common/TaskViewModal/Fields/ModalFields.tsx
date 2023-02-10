@@ -3,7 +3,7 @@ import TaskMintComponent from 'components/Common/TaskMint';
 import { entityTypeData, Fields } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import { useMemo } from 'react';
 import { CATEGORY_LABELS, GR15DEICategoryName } from 'utils/constants';
-import { useBoards, useColumns } from 'utils/hooks';
+import { useBoards } from 'utils/hooks';
 import { hasGR15DEIIntiative } from '../utils';
 import ApplicationField from './ApplicationField';
 import AssigneeField from './AssigneeField';
@@ -43,7 +43,6 @@ const ModalFields = ({
   isSubtask,
 }) => {
   const user = useMe();
-  const boardColumns = useColumns();
   const board: any = useBoards();
 
   const remaininTaskCategories = useMemo(
@@ -83,12 +82,10 @@ const ModalFields = ({
         user={user}
       />
       <AssigneeField
-        boardColumns={boardColumns}
         canApply={canApply}
         canClaim={canClaim}
         canEdit={canEdit}
         fetchedTask={fetchedTask}
-        isTaskProposal={isTaskProposal}
         orgId={board?.orgId}
         podId={board?.podId}
         shouldDisplay={showAssignee}

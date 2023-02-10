@@ -4,8 +4,6 @@ import { filterOrgUsers, useGetOrgUsers } from 'components/CreateEntity/CreateEn
 import { Claim } from 'components/Icons/claimTask';
 import { REMOVE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
 import { useRouter } from 'next/router';
-import { updateProposalItem } from 'utils/board';
-import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
 import { TaskSectionLabel } from '../helpers';
 import { TaskSectionDisplayDiv, TaskSectionInfoTakeTask, TaskSectionInfoTakeTaskText } from '../styles';
 import { FIELDS } from './hooks/constants';
@@ -19,16 +17,7 @@ interface OrgUser {
   profilePicture: string;
 }
 
-const AssigneeContent = ({
-  boardColumns,
-  canApply,
-  canClaim,
-  canEdit,
-  fetchedTask,
-  isTaskProposal,
-  onCorrectPage,
-  user,
-}) => {
+const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => {
   const router = useRouter();
   const { error, submit } = useSubmit({ field: FIELDS.ASSIGNEE });
   const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
@@ -125,22 +114,6 @@ const AssigneeContent = ({
             router.push('/signup', undefined, {
               shallow: true,
             });
-          } else if (isTaskProposal) {
-            updateTaskProposalAssignee({
-              variables: {
-                proposalId: fetchedTask?.id,
-                assigneeId: user?.id,
-              },
-              onCompleted: (data) => {
-                const taskProposal = data?.updateTaskProposalAssignee;
-                if (boardColumns?.setColumns && onCorrectPage) {
-                  const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {});
-                  let columns = [...boardColumns?.columns];
-                  columns = updateProposalItem(transformedTaskProposal, columns);
-                  boardColumns?.setColumns(columns);
-                }
-              },
-            });
           } else {
             handleUpdateTaskAssignee(user?.id);
           }
@@ -158,19 +131,7 @@ const AssigneeContent = ({
   return null;
 };
 
-const AssigneeField = ({
-  boardColumns,
-  canApply,
-  canClaim,
-  canEdit,
-  fetchedTask,
-  isTaskProposal,
-  orgId,
-  podId,
-  shouldDisplay,
-  user,
-  userId,
-}) => {
+const AssigneeField = ({ canApply, canClaim, canEdit, fetchedTask, orgId, podId, shouldDisplay, user, userId }) => {
   const onCorrectPage = fetchedTask?.orgId === orgId || fetchedTask?.podId === podId || fetchedTask?.userId === userId;
   const handleUpdateTaskCardCache = useUpdateTaskCardCache();
   const handleOnCompleted = (data) => {
@@ -181,13 +142,10 @@ const AssigneeField = ({
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Assignee</TaskSectionLabel>
       <AssigneeContent
-        boardColumns={boardColumns}
         canApply={canApply}
         canClaim={canClaim}
         canEdit={canEdit}
         fetchedTask={fetchedTask}
-        isTaskProposal={isTaskProposal}
-        onCorrectPage={onCorrectPage}
         user={user}
       />
     </TaskSectionDisplayDiv>
