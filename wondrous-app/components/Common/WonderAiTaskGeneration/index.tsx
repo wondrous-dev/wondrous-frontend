@@ -221,6 +221,7 @@ const WonderAiTaskGeneration = () => {
   const [formErrors, setFormErrors] = useState({
     actionPrompt: null,
     entityDescription: null,
+    selectedList: null,
   });
   const router = useRouter();
   const [taskToView, setTaskToView] = useState(null);
@@ -274,6 +275,7 @@ const WonderAiTaskGeneration = () => {
           podId,
         }));
         setGeneratedTaskList(formattedlist);
+        setSelectedList(formattedlist);
         setMilestone({
           ...initialMilestoneValues,
           title: actionPrompt,
@@ -292,38 +294,42 @@ const WonderAiTaskGeneration = () => {
 
   const handleBatchTaskAdd = () => {
     const tasksToAdd = [];
-    selectedList.forEach((task) => {
-      const { tempId, ...taskToAdd } = task;
-      tasksToAdd.push(filterInput(taskToAdd));
-    });
-    const input: CreateTaskProps = {
-      orgId,
-      podId,
-      generatedTasks: tasksToAdd,
-      ...(entityDescription && { entityDescription }),
-    };
-    if (promptGenerationType === GENERATION_TYPES[0]?.value) {
-      input.milestone = filterInput(milestone);
-    } else {
-      input.parentTask = filterInput(parentTask);
-    }
-
-    createGPTTasks({
-      variables: {
-        input,
-      },
-    }).then((res) => {
-      if (res?.data?.createGPTTasks?.success) {
-        // redirect
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage(<>Redirecting to work board!</>);
-        if (podId) {
-          router.push(`/pod/${podBoard?.podId}/home`);
-        } else if (orgId) {
-          router.push(`/organization/${orgBoard?.orgData?.username}/home`);
-        }
+    if (selectedList?.length > 0) {
+      selectedList.forEach((task) => {
+        const { tempId, ...taskToAdd } = task;
+        tasksToAdd.push(filterInput(taskToAdd));
+      });
+      const input: CreateTaskProps = {
+        orgId,
+        podId,
+        generatedTasks: tasksToAdd,
+        ...(entityDescription && { entityDescription }),
+      };
+      if (promptGenerationType === GENERATION_TYPES[0]?.value) {
+        input.milestone = filterInput(milestone);
+      } else {
+        input.parentTask = filterInput(parentTask);
       }
-    });
+
+      createGPTTasks({
+        variables: {
+          input,
+        },
+      }).then((res) => {
+        if (res?.data?.createGPTTasks?.success) {
+          // redirect
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(<>Redirecting to work board!</>);
+          if (podId) {
+            router.push(`/pod/${podBoard?.podId}/home`);
+          } else if (orgId) {
+            router.push(`/organization/${orgBoard?.orgData?.username}/home`);
+          }
+        }
+      });
+    } else {
+      setFormErrors({ ...formErrors, selectedList: 'Please select at least one task or regenerate tasks' });
+    }
   };
 
   useEffect(() => {
@@ -449,6 +455,7 @@ const WonderAiTaskGeneration = () => {
                 There seems to be an error - this could be due to high usage or an unclear prompt. Please try again!
               </ErrorText>
             )}
+            {formErrors?.selectedList && <ErrorText>Please select at least one task or regenerate the list</ErrorText>}
           </PromptBox>
           <HelperFlexDiv>
             <SmallRobotIcon />
@@ -466,6 +473,7 @@ const WonderAiTaskGeneration = () => {
               <RegenerateText
                 onClick={() => {
                   handleGenerateGPTTasks();
+                  setFormErrors({ ...formErrors, selectedList: null });
                 }}
               >
                 Regenerate
