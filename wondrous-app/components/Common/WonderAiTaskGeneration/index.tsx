@@ -455,7 +455,7 @@ const WonderAiTaskGeneration = () => {
                 There seems to be an error - this could be due to high usage or an unclear prompt. Please try again!
               </ErrorText>
             )}
-            {formErrors?.selectedList && <ErrorText>Please select at least one task or regenerate the list</ErrorText>}
+            {formErrors?.selectedList && <ErrorText>{formErrors?.selectedList}</ErrorText>}
           </PromptBox>
           <HelperFlexDiv>
             <SmallRobotIcon />
