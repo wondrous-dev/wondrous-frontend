@@ -1,11 +1,11 @@
 import React from 'react';
 
-export default function EditIcon(props) {
+export default function EditIcon({ stroke = '#CCBBFF', ...props }) {
   return (
     <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
         d="M7.80841 1.71977C7.92762 1.60056 8.06915 1.50599 8.2249 1.44147C8.38066 1.37696 8.5476 1.34375 8.71619 1.34375C8.88479 1.34375 9.05173 1.37696 9.20749 1.44147C9.36324 1.50599 9.50477 1.60056 9.62398 1.71977C9.74319 1.83898 9.83776 1.98051 9.90228 2.13626C9.96679 2.29202 10 2.45896 10 2.62756C10 2.79615 9.96679 2.96309 9.90228 3.11885C9.83776 3.27461 9.74319 3.41613 9.62398 3.53534L3.49642 9.66291L1 10.3437L1.68084 7.84733L7.80841 1.71977Z"
-        stroke="#CCBBFF"
+        stroke={stroke}
         strokeLinecap="round"
         strokeLinejoin="round"
       />

@@ -1,9 +1,14 @@
 import { Box, Grid } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import CloseModalIcon from 'components/Icons/closeModal';
 import SearchIcon from 'components/Icons/search';
 import { Arrow } from 'components/Icons/sections';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import palette from 'theme/palette';
+import { LoadMore } from 'components/SearchTasks/styles';
+import { CloseIcon } from '../BoardFilters/styles';
 import { ArrowWrapper, Option, PaperComponent, StyledAutocomplete, StyledTextField } from './styles';
 
 const profilePictureStyle = {
@@ -26,7 +31,7 @@ export const ProfilePicture = ({ profilePicture, width = 24, height = 24 }) => (
   />
 );
 
-const RenderOption = (props, option) => {
+export const RenderOption = (props, option) => {
   const { profilePicture, label, hide } = option || {};
   if (hide) return null;
   return (
@@ -57,15 +62,37 @@ const AssignToSelf = ({ user, onClick }) => {
   );
 };
 
-const ListboxComponent = ({ AssignToSelfProps, innerRef, children, ...props }) => (
-  <ul {...props}>
-    <AssignToSelf {...AssignToSelfProps} />
-    {children}
-    <Box height="1px" width="100%" ref={innerRef} />
-  </ul>
-);
+export const ListboxComponent = ({
+  AssignToSelfProps,
+  innerRef,
+  children,
+  hasMore = false,
+  handleFetchMore,
+  ...props
+}) => {
+  const [inViewRef, inView] = useInView({});
 
-const TaskViewModalAutocomplete = ({ renderInputProps = null, ListboxProps = null, ...props }) => (
+  useEffect(() => {
+    if (hasMore && inView) handleFetchMore();
+  }, [hasMore, inView]);
+
+  return (
+    <ul {...props}>
+      <AssignToSelf {...AssignToSelfProps} />
+      {children}
+      {!!handleFetchMore && <LoadMore ref={inViewRef} style={{ height: '1px', display: 'block' }} />}
+      <Box height="1px" width="100%" ref={innerRef} />
+    </ul>
+  );
+};
+
+const TaskViewModalAutocomplete = ({
+  renderInputProps = null,
+  ListboxProps = null,
+  closeAction = null,
+  renderInput = null,
+  ...props
+}) => (
   <StyledAutocomplete
     disablePortal
     fullWidth
@@ -74,12 +101,18 @@ const TaskViewModalAutocomplete = ({ renderInputProps = null, ListboxProps = nul
     ListboxComponent={ListboxComponent}
     ListboxProps={ListboxProps}
     popupIcon={
-      <Grid width="24px" height="24px">
+      <Grid width="24px" height="24px" display="flex" gap="4px" alignItems="center">
         <SearchIcon width="13" height="13" />
       </Grid>
     }
-    clearIcon={null}
-    renderInput={(params) => <StyledTextField placeholder="Assign user" {...params} {...renderInputProps} />}
+    clearIcon={() => (closeAction ? <CloseModalIcon onClick={closeAction} /> : null)}
+    renderInput={(params) =>
+      renderInput ? (
+        renderInput(params)
+      ) : (
+        <StyledTextField placeholder="Assign user" {...params} {...renderInputProps} />
+      )
+    }
     renderOption={RenderOption}
     noOptionsText="No user found"
     {...props}

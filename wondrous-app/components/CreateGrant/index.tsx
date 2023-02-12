@@ -46,6 +46,8 @@ import {
 import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
+import formatDate from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 import { useFormik } from 'formik';
 import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } from 'graphql/mutations/grant';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -61,7 +63,7 @@ import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useCornerWidget, useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
-import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity } from './Fields';
+import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity, Reviewers } from './Fields';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
 import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from './Fields/GrantStyle';
 import {
@@ -180,8 +182,8 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
       },
       numOfGrant: existingGrant?.numOfGrant,
       mediaUploads: transformMediaFormat(existingGrant?.media) || [],
-      startDate: existingGrant?.startDate || null,
-      endDate: existingGrant?.endDate || null,
+      startDate: existingGrant?.startDate ? parseISO(existingGrant.startDate.substring(0, 10)) : null,
+      endDate: existingGrant?.endDate ? parseISO(existingGrant.endDate.substring(0, 10)) : null,
       title: existingGrant?.title || '',
       description: existingGrant
         ? deserializeRichText(existingGrant.description)
@@ -192,6 +194,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
       privacyLevel: existingGrant?.privacyLevel || null,
       applyPolicy: existingGrant?.applyPolicy || APPLY_POLICY_FIELDS[0].value,
       grantStyle: getGrantStyleFromGrant(existingGrant?.numOfGrant),
+      reviewerIds: isEmpty(existingGrant?.reviewers) ? null : existingGrant.reviewers.map((i) => i.id),
     },
     validateOnChange: false,
     validateOnBlur: false,
@@ -203,10 +206,11 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             title: values.title,
             description: JSON.stringify(values.description),
             orgId: values.orgId,
+            reviewerIds: values.reviewerIds,
             podId: values.podId,
-            startDate: values.startDate,
+            startDate: values.startDate ? formatDate(values.startDate, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
             mediaUploads: values.mediaUploads,
-            endDate: values.endDate,
+            endDate: values.endDate ? formatDate(values.endDate, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
             reward: {
               rewardAmount: parseInt(values.reward.rewardAmount, 10),
               paymentMethodId: values.reward.paymentMethodId,
@@ -439,6 +443,14 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
           </MediaWrapper>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
+            <Reviewers
+              orgId={form.values.orgId}
+              podId={form.values.podId}
+              onFocus={() => form.setFieldError('reviewerIds', undefined)}
+              reviewerIds={form.values.reviewerIds}
+              reviewerIdsErrors={form.errors.reviewerIds}
+              onChange={(reviewerIds) => form.setFieldValue('reviewerIds', reviewerIds)}
+            />
             <GrantStyle value={form.values.grantStyle} onChange={(value) => form.setFieldValue('grantStyle', value)} />
             {form.values.grantStyle === GRANT_STYLE_MAP.FIXED && (
               <GrantQuantity

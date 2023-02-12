@@ -1,12 +1,9 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
-import TaskMenuStatus from 'components/Common/TaskMenuStatus';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
 import { differenceInDays } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
-import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import {
   GET_MINT_TASK_TOKEN_DATA,
@@ -15,55 +12,38 @@ import {
   GET_TASK_SUBMISSIONS_FOR_TASK,
 } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useSnapshot } from 'services/snapshot';
-import {
-  addTaskItem,
-  formatDateDisplay,
-  getProposalStatus,
-  updateCompletedItem,
-  updateInProgressTask,
-  updateInReviewItem,
-  updateProposalItem,
-  updateTaskItem,
-} from 'utils/board';
+import { formatDateDisplay, getProposalStatus } from 'utils/board';
 import {
   BOUNTY_TYPE,
-  CATEGORY_LABELS,
   ENTITIES_TYPES,
-  GR15DEICategoryName,
   MILESTONE_TYPE,
   PERMISSIONS,
   PRIVACY_LEVEL,
-  STATUS_APPROVED,
+  STATUS_OPEN,
   TaskMintStatus,
   TASK_STATUS_ARCHIVED,
   TASK_TYPE,
 } from 'utils/constants';
 import { ApprovedSubmissionContext, TaskContext } from 'utils/contexts';
 import {
+  cutString,
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
-  cutString,
 } from 'utils/helpers';
-import {
-  useCanViewTask,
-  useColumns,
-  useOrgBoard,
-  usePodBoard,
-  useUserBoard,
-  useGlobalContext,
-  useIsMobile,
-} from 'utils/hooks';
+import { useBoards, useCanViewTask, useColumns, useGlobalContext, useIsMobile } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
-import TaskMintComponent from 'components/Common/TaskMint';
 
-import { useHotkeys } from 'react-hotkeys-hook';
-import { HOTKEYS } from 'utils/hotkeyHelper';
 import { useMe } from 'components/Auth/withAuth';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
@@ -75,21 +55,14 @@ import { DAOIcon } from 'components/Icons/dao';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { RejectIcon } from 'components/Icons/taskModalIcons';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress';
-import MakePaymentModal from 'components/Common/Payment/PaymentModal';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
-import ActionModals from './actionModals';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
+import ViewNftFields from '../TaskMint/ViewNftFields';
+import TaskViewNft from '../TaskViewNft';
+import ActionModals from './ActionModalsComponent';
 import { tabs } from './constants';
-import {
-  GithubButtons,
-  LockedTaskMessage,
-  Menu,
-  Rewards,
-  TaskDescriptionTextWrapper,
-  TaskSectionImageContent,
-} from './helpers';
+import { Description, ModalFields, Title } from './Fields';
+import { GithubButtons, LockedTaskMessage, useManageProposals, Menu, TaskSectionImageContent } from './helpers';
 import {
   SubtaskIconWrapper,
   SubtaskTitleWrapper,
@@ -116,7 +89,6 @@ import {
   TaskModalSnapshotText,
   TaskModalTaskData,
   TaskModalTaskStatusMoreInfo,
-  TaskModalTitle,
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayCreator,
   TaskSectionDisplayData,
@@ -126,24 +98,9 @@ import {
   TaskSectionInfoTextCreator,
   TaskStatusHeaderText,
 } from './styles';
-import {
-  ApplicationField,
-  AssigneeField,
-  CategoryField,
-  DueDateField,
-  InitativesField,
-  MilestoneField,
-  PointsField,
-  PriorityField,
-  ProposerField,
-  ReviewerField,
-  TagsField,
-} from './taskViewModalFields';
-import WatchersField from './taskViewModalFields/WatchersField';
-import TaskViewModalFooter from './taskViewModalFooter';
-import { hasGR15DEIIntiative, openSnapshot } from './utils';
-import TaskViewNft from '../TaskViewNft';
-import ViewNftFields from '../TaskMint/ViewNftFields';
+import TaskViewModalFooter from './Footer';
+import { openSnapshot } from './utils';
+import { useTaskViewModalState } from './Fields/hooks/useTaskViewModalState';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -153,45 +110,46 @@ interface ITaskListModalProps {
   back?: boolean;
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back }: ITaskListModalProps) => {
-  const [fetchedTask, setFetchedTask] = useState(null);
+  const {
+    editTask,
+    setEditTask,
+    fullScreen,
+    setFullScreen,
+    activeTab,
+    setActiveTab,
+    archiveTask,
+    setArchiveTask,
+    deleteTask,
+    setDeleteTask,
+    initialStatus,
+    setInitialStatus,
+    showPaymentModal,
+    setShowPaymentModal,
+    completeModal,
+    setCompleteModal,
+    isViewNft,
+    setIsViewNft,
+    fetchedTask,
+    setFetchedTask,
+    approvedSubmission,
+    setApprovedSubmission,
+  } = useTaskViewModalState();
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
   const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
-  const [approvedSubmission, setApprovedSubmission] = useState(null);
-  const orgBoard = useOrgBoard();
-  const userBoard = useUserBoard();
-  const podBoard = usePodBoard();
   const globalContext = useGlobalContext();
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
-  const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
-  const board = getBoard();
-  const {
-    loading: taskApplicationCountLoading,
-    error: taskApplicationCountError,
-    data: taskApplicationCount,
-  } = useTaskApplicationCount(fetchedTask?.id);
+  const board: any = useBoards();
+  const { data: taskApplicationCount } = useTaskApplicationCount(fetchedTask?.id);
 
   const [getTaskMintTokenData, tokenData] = useLazyQuery(GET_MINT_TASK_TOKEN_DATA);
   const userPermissionsContext = getUserPermissionContext();
   const boardColumns = useColumns();
   const [getTaskSubmissionsForTask, { data: taskSubmissionsForTask, loading: taskSubmissionsForTaskLoading }] =
     useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK);
-  const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
-  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
-  const [completeModal, setCompleteModal] = useState(false);
   const router = useRouter();
-  const { query } = router;
-  const [editTask, setEditTask] = useState(false);
-  const [fullScreen, setFullScreen] = useState(true);
-  const [activeTab, setActiveTab] = useState(null);
-  const [archiveTask, setArchiveTask] = useState(false);
-  const [deleteTask, setDeleteTask] = useState(false);
-  const [initialStatus, setInitialStatus] = useState('');
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [isViewNft, setIsViewNft] = useState(!!router?.query?.viewNft);
   const isMobile = useIsMobile();
 
   const permissions = parseUserPermissionContext({
@@ -239,7 +197,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     },
   });
 
-  const [getTaskProposalById] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
+  const [getTaskProposalById, { refetch: refetchProposal }] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
@@ -273,13 +231,24 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     },
   });
 
+  useEffect(() => {
+    if (isMobile && fullScreen) {
+      setFullScreen(false);
+    }
+  }, [isMobile]);
+
+  const { approveProposal, closeProposal } = useManageProposals({
+    fetchedTask,
+    entityType: board?.entityType,
+    handleClose,
+  });
   useHotkeys(HOTKEYS.CREATE_COMMENT, () => {
     setActiveTab(tabs.discussion);
   });
 
   useEffect(() => {
     if (open) {
-      if (initialStatus !== TASK_STATUS_ARCHIVED) {
+      if (initialStatus !== TASK_STATUS_ARCHIVED && fetchedTask?.status !== initialStatus) {
         setInitialStatus(fetchedTask?.status);
       }
     }
@@ -335,23 +304,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     getTaskSubmissionsForTask,
     isTaskProposal,
     getTaskProposalById,
-    open,
-  ]);
-
-  useEffect(() => {
-    if (open) {
-      if (initialStatus !== TASK_STATUS_ARCHIVED) {
-        setInitialStatus(fetchedTask?.status);
-      }
-    }
-  }, [
-    initialStatus,
-    setInitialStatus,
-    fetchedTask,
-    setSnackbarAlertOpen,
-    setSnackbarAlertMessage,
-    archiveTaskData,
-    handleClose,
     open,
   ]);
 
@@ -414,8 +366,11 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const userInOrg =
     userPermissionsContext?.orgPermissions && fetchedTask?.orgId in userPermissionsContext.orgPermissions;
 
+  const proposalStatus = getProposalStatus(fetchedTask);
+
   const canEdit =
     !isViewNft &&
+    (isTaskProposal ? proposalStatus === STATUS_OPEN : true) &&
     (permissions.includes(PERMISSIONS.FULL_ACCESS) ||
       permissions.includes(PERMISSIONS.EDIT_TASK) ||
       fetchedTask?.createdBy === user?.id ||
@@ -447,70 +402,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     }
   };
 
-  const approveProposal = () => {
-    approveTaskProposal({
-      variables: {
-        proposalId: fetchedTask?.id,
-      },
-      onCompleted: (data) => {
-        const taskProposal = data?.approveTaskProposal;
-
-        const fetchedTaskProposalStatus = getProposalStatus(fetchedTask);
-        let columns = [...boardColumns?.columns];
-        if (board?.entityType) {
-          const prevStatusIndex = columns.findIndex((column) => column.status === fetchedTaskProposalStatus);
-          const approvedColumnIndex = columns.findIndex((column) => column.status === STATUS_APPROVED);
-          columns[prevStatusIndex].tasks = columns[prevStatusIndex].tasks.filter((task) => task.id !== taskProposal.id);
-          columns[approvedColumnIndex].tasks = [
-            { ...taskProposal, approvedAt: new Date(), __typename: 'TaskProposalCard', isProposal: true },
-            ...columns[approvedColumnIndex].tasks,
-          ];
-        } else {
-          // keep it for userboard
-          // Move from proposal to task
-          columns = addTaskItem(
-            transformTaskToTaskCard(
-              {
-                ...fetchedTask,
-                id: taskProposal?.associatedTaskId,
-                __typename: 'TaskCard',
-                type: 'task',
-                parentTaskId: null,
-              },
-              {}
-            ),
-            columns
-          );
-        }
-        boardColumns?.setColumns(columns);
-        document.body.setAttribute('style', `position: relative;`);
-        handleClose();
-      },
-    });
-  };
-
-  const closeProposal = () => {
-    closeTaskProposal({
-      variables: {
-        proposalId: fetchedTask?.id,
-      },
-      onCompleted: () => {
-        let columns = [...board?.columns];
-        // Move from proposal to task
-        columns = updateProposalItem(
-          {
-            ...fetchedTask,
-            changeRequestedAt: new Date(),
-          },
-          columns
-        );
-        boardColumns?.setColumns(columns);
-      },
-      refetchQueries: ['GetOrgTaskBoardProposals', 'getUserTaskBoardProposals'],
-    });
-    document.body.setAttribute('style', `position: relative;`);
-    handleClose();
-  };
   const canClaim =
     fetchedTask?.taskApplicationPermissions?.canClaim &&
     !isViewNft &&
@@ -536,16 +427,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     setFetchedTask(null);
     handleClose();
   };
-
-  const remaininTaskCategories = fetchedTask?.categories
-    ?.filter((category) => category?.name !== GR15DEICategoryName)
-    .map((category) => {
-      const newCategory = {
-        ...category,
-        name: CATEGORY_LABELS[category?.name],
-      };
-      return newCategory;
-    });
 
   return (
     <ApprovedSubmissionContext.Provider
@@ -580,7 +461,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
             setSnackbarAlertMessage={setSnackbarAlertMessage}
           />
         )}
-        <TaskContext.Provider value={{ fetchedTask, refetch, tokenData }}>
+        <TaskContext.Provider
+          value={{ fetchedTask, refetch: isTaskProposal ? refetchProposal : refetch, tokenData, entityType }}
+        >
           <TaskModal open={open} onClose={handleModalClose}>
             <TaskModalCard fullScreen={fullScreen}>
               {!!fetchedTask && canViewTask !== null && (
@@ -694,7 +577,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                       </TaskModalHeader>
                       <TaskModalTaskData hideRowGap={isViewNft || isTaskProposal} fullScreen={fullScreen}>
                         <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
-                          <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
+                          <Title title={fetchedTask?.title} canEdit={canEdit} />
                           {!isViewNft ? (
                             <TaskModalTaskStatusMoreInfo>
                               {fetchedTask?.snapshotId && (
@@ -703,92 +586,52 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                   <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                                 </TaskModalSnapshot>
                               )}
-                              {canEdit && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
                               {isMilestone && (
                                 <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
                               )}
                             </TaskModalTaskStatusMoreInfo>
                           ) : null}
-                          <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
+                          <Description
+                            canEdit={canEdit}
+                            description={fetchedTask?.description}
+                            orgId={fetchedTask?.org.id}
+                            editGridStyle={{
+                              height: 'unset',
+                            }}
+                          />
                           <TaskMediaWrapper media={fetchedTask?.media} />
                           {!fullScreen && <TaskBorder />}
                           {isTaskProposal && (
                             <VoteResults
                               userInOrg={userInOrg}
                               fullScreen={fullScreen}
-                              proposalStatus={getProposalStatus(fetchedTask)}
+                              proposalStatus={proposalStatus}
                               proposal={fetchedTask}
                             />
                           )}
                         </TaskModalTitleDescriptionMedia>
                         <TaskSectionDisplayDivWrapper fullScreen={fullScreen}>
                           <TaskSectionDisplayData>
-                            <TaskMintComponent
-                              assigneeId={fetchedTask?.assigneeId}
-                              taskStatus={fetchedTask?.status}
-                              taskMintData={fetchedTask?.taskMint}
+                            <ModalFields
+                              fetchedTask={fetchedTask}
                               isViewNft={isViewNft}
                               setIsViewNft={setIsViewNft}
-                              taskId={fetchedTask?.id}
-                            />
-                            <ReviewerField
-                              shouldDisplay={!isTaskProposal && !isMilestone}
-                              reviewerData={reviewerData}
-                              handleClose={handleClose}
                               canEdit={canEdit}
-                              fetchedTask={fetchedTask}
-                              user={user}
-                            />
-                            <AssigneeField
-                              boardColumns={boardColumns}
+                              isTaskProposal={isTaskProposal}
+                              canArchive={canArchive}
+                              isMilestone={isMilestone}
+                              reviewerData={reviewerData}
                               canApply={canApply}
                               canClaim={canClaim}
-                              canEdit={canEdit}
-                              fetchedTask={fetchedTask}
-                              handleClose={handleClose}
-                              isTaskProposal={isTaskProposal}
-                              orgId={board?.orgId}
-                              podId={board?.podId}
-                              shouldDisplay={showAssignee}
-                              updateProposalItem={updateProposalItem}
-                              user={user}
-                              userId={board?.userId}
-                            />
-                            {!isViewNft && <WatchersField fetchedTask={fetchedTask} />}
-                            <ApplicationField
-                              shouldDisplay={
-                                canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0
-                              }
+                              showAssignee={showAssignee}
+                              canViewApplications={canViewApplications}
                               taskApplicationCount={taskApplicationCount}
                               handleReviewButton={handleReviewButton}
-                            />
-                            <ProposerField
-                              shouldDisplay={isTaskProposal && !isMilestone}
-                              creatorProfilePicture={fetchedTask?.creatorProfilePicture}
-                              creatorUsername={fetchedTask?.creatorUsername}
                               handleClose={handleClose}
-                            />
-                            <DueDateField
-                              dueDate={fetchedTask?.dueDate}
-                              shouldDisplay={fetchedTask?.dueDate}
-                              recurringSchema={fetchedTask?.recurringSchema}
-                              shouldUnclaimOnDueDateExpiry={fetchedTask?.shouldUnclaimOnDueDateExpiry}
-                            />
-                            <Rewards fetchedTask={fetchedTask} user={user} />
-                            <PointsField shouldDisplay={!!fetchedTask?.points} points={fetchedTask?.points} />
-                            <MilestoneField
-                              shouldDisplay={!!fetchedTask?.milestoneId}
-                              milestoneId={fetchedTask?.milestoneId}
+                              entityType={entityType}
                               getTaskById={getTaskById}
-                              milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
+                              isSubtask={isSubtask}
                             />
-                            <PriorityField priority={fetchedTask?.priority} />
-                            <CategoryField
-                              shouldDisplay={remaininTaskCategories?.length > 0}
-                              labels={remaininTaskCategories}
-                            />
-                            <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
-                            <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                             {isTaskProposal && (
                               <CreateFormFooterButtons>
                                 {fetchedTask?.changeRequestedAt && (
@@ -851,13 +694,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                     {fetchedTask?.createdAt && (
                                       <TaskSectionInfoCreatorDaysAgo>
                                         {formatDateDisplay(fetchedTask?.createdAt, true)}
-                                        {/* {taskCreatedBefore >= 7 ? (
-                                      <>on {format(new Date(fetchedTask?.createdAt), 'MM/dd/yyyy')}</>
-                                    ) : (
-                                      formatDistance(new Date(fetchedTask?.createdAt), new Date(), {
-                                        addSuffix: true,
-                                      })
-                                    )} */}
                                       </TaskSectionInfoCreatorDaysAgo>
                                     )}
                                   </TaskSectionInfoTextCreator>

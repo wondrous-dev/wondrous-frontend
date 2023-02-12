@@ -1,10 +1,10 @@
 import { useMutation } from '@apollo/client';
 import { TaskMenu } from 'components/Common/TaskMenuStatus';
-import GrantIcon from 'components/Icons/GrantIcon';
+import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
+import { ViewContent } from 'components/Common/TaskViewModal/Fields/StatusField';
 import { GrantStatusActiveIcon, GrantStatusCompleted } from 'components/Icons/GrantStatusIcons';
-import TaskStatus from 'components/Icons/TaskStatus';
-import { UPDATE_GRANT, UPDATE_GRANT_STATUS } from 'graphql/mutations/grant';
-import { GRANTS_STATUSES, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
+import { UPDATE_GRANT_STATUS } from 'graphql/mutations/grant';
+import { GRANTS_STATUSES } from 'utils/constants';
 import { useTaskContext } from 'utils/hooks';
 
 const STATUSES = [
@@ -20,14 +20,10 @@ const STATUSES = [
   },
 ];
 
-const GrantMenuStatus = ({ currentStatus, canEdit, onUpdateSuccess, onUpdateError }) => {
+const GrantMenuStatus = ({ currentStatus, canEdit }) => {
   const { grant } = useTaskContext();
   const status = STATUSES.find((s) => s.id === currentStatus);
-  const [updateGrantStatus] = useMutation(UPDATE_GRANT_STATUS, {
-    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
-    onCompleted: () => onUpdateSuccess(),
-    onError: () => onUpdateError(),
-  });
+  const [updateGrantStatus] = useMutation(UPDATE_GRANT_STATUS);
 
   const handleOnChange = (status) =>
     updateGrantStatus({
@@ -40,7 +36,22 @@ const GrantMenuStatus = ({ currentStatus, canEdit, onUpdateSuccess, onUpdateErro
     });
 
   return (
-    <TaskMenu currentStatus={status} filterStatus={STATUSES} handleOnChange={handleOnChange} disableMenu={!canEdit} />
+    <TaskFieldEditableContent
+      ViewContent={({ toggleEditMode }) => (
+        <ViewContent currentStatus={status} canEdit={canEdit} toggleEditMode={toggleEditMode} />
+      )}
+      editableContent={({ toggleEditMode }) => (
+        <TaskMenu
+          currentStatus={status}
+          filterStatus={STATUSES}
+          handleOnChange={(status) => {
+            handleOnChange(status);
+            toggleEditMode();
+          }}
+          disableMenu={!canEdit}
+        />
+      )}
+    />
   );
 };
 

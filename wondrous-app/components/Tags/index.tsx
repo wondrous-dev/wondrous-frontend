@@ -31,6 +31,7 @@ type Props = {
   onChange?: (ids: string[]) => unknown;
   onCreate?: (option: Option) => unknown;
   autoFocus?: boolean;
+  disablePortal?: boolean;
 };
 
 const filter = createFilterOptions({
@@ -41,7 +42,7 @@ const filter = createFilterOptions({
 const colors = Object.values(ColorTypes);
 const randomColors = shuffle(colors);
 
-function Tags({ options, onChange, onCreate, limit, ids = [], autoFocus = false }: Props) {
+function Tags({ options, onChange, onCreate, limit, ids = [], autoFocus = false, disablePortal = false }: Props) {
   const [openTags, setOpenTags] = useState(false);
   const [randomColor, setRandomColor] = useState(randomColors[0]);
 
@@ -68,6 +69,7 @@ function Tags({ options, onChange, onCreate, limit, ids = [], autoFocus = false 
       filterSelectedOptions
       freeSolo
       fullWidth
+      disablePortal={disablePortal}
       open={openTags}
       onOpen={() => setOpenTags(true)}
       onClose={() => setOpenTags(false)}

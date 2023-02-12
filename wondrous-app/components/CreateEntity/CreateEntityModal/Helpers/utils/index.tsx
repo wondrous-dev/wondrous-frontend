@@ -252,6 +252,7 @@ export enum Fields {
   priority,
   voteOptions,
   voteType,
+  categories,
 }
 
 export const entityTypeData = {
@@ -269,6 +270,7 @@ export const entityTypeData = {
       Fields.priority,
       Fields.tags,
       Fields.githubPullRequest,
+      Fields.categories,
     ],
     createMutation: useCreateTask,
     updateMutation: useUpdateTask,
@@ -302,7 +304,7 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
-    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags],
+    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags, Fields.categories],
     createMutation: useCreateMilestone,
     updateMutation: useUpdateMilestone,
     initialValues: {
@@ -328,6 +330,7 @@ export const entityTypeData = {
       Fields.milestone,
       Fields.priority,
       Fields.tags,
+      Fields.categories,
     ],
     createMutation: useCreateBounty,
     updateMutation: useUpdateBounty,
@@ -363,7 +366,6 @@ export const entityTypeData = {
       dueDate: null,
       rewards: [],
       milestoneId: null,
-      labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       categories: null,
@@ -463,6 +465,13 @@ export interface GrantCreateModalProps extends ICreateEntityModal {
     podId?: string;
     media?: any;
     privacyLevel?: string;
+    reviewers?: {
+      id: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+      profilePicture: string;
+    }[];
     reward?: {
       paymentMethodId?: string;
       rewardAmount?: string;
