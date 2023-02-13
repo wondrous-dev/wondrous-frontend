@@ -210,6 +210,7 @@ function ExploreComponent() {
               ))}
             </Box>
           </TabsWrapper>
+          {(activeTab === null || activeTab === TABS_LABELS.ORGS) && <DaoSection isMobile={isMobile} />}
           {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
             <BountySection
               bounties={bounties?.getTaskExplore}
@@ -218,7 +219,6 @@ function ExploreComponent() {
               gr15DEI={false}
             />
           )}
-          {(activeTab === null || activeTab === TABS_LABELS.ORGS) && <DaoSection isMobile={isMobile} />}
           {/* {(activeTab === null || activeTab === TABS_LABELS.GR15_DEI) && (
             <BountySection
               bounties={bounties?.getTaskExplore}
