@@ -18,7 +18,7 @@ import {
   GET_USER_TASK_BOARD_TASKS,
 } from 'graphql/queries';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
 import styled from 'styled-components';
 import { getProposalStatus } from 'utils/board';
@@ -231,7 +231,15 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
   return { handleOnChange, filterStatus, currentStatus, disableMenu: false };
 };
 
-export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableMenu, className = '' }) {
+export function TaskMenu({
+  currentStatus,
+  filterStatus,
+  handleOnChange,
+  disableMenu,
+  className = '',
+  autoFocus = false,
+  onClose = null,
+}) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (e) => {
@@ -243,6 +251,7 @@ export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableM
     e.preventDefault();
     e.stopPropagation();
     setAnchorEl(null);
+    onClose?.();
   };
   const handleItemOnClick = (status) => (e) => {
     e.preventDefault();
@@ -250,9 +259,18 @@ export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableM
     handleClose(e);
     handleOnChange(status.id);
   };
+
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (autoFocus && ref.current) {
+      setAnchorEl(ref.current);
+    }
+  }, [autoFocus, ref.current]);
+
   return (
     <span className={className}>
-      <TaskStatusMenuButton onClick={handleClick} disabled={disableMenu} open={open} disableRipple>
+      <TaskStatusMenuButton onClick={handleClick} disabled={disableMenu} open={open} disableRipple ref={ref}>
         {currentStatus?.icon}
         <TaskModalStatusLabel>{currentStatus?.label ?? currentStatus?.name}</TaskModalStatusLabel>
         {!disableMenu && <TaskStatusMenuButtonArrow open={open} />}
@@ -269,7 +287,13 @@ export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableM
   );
 }
 
-export default function TaskMenuStatus({ className = '', isTaskProposal = false, task }) {
+export default function TaskMenuStatus({
+  className = '',
+  isTaskProposal = false,
+  task,
+  autoFocus = false,
+  onClose = null,
+}) {
   const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : task?.type;
   const taskMenuStatusProposal = useTaskMenuStatusProposal({
     task,
@@ -289,6 +313,8 @@ export default function TaskMenuStatus({ className = '', isTaskProposal = false,
       handleOnChange={handleOnChange}
       disableMenu={disableMenu}
       className={className}
+      onClose={onClose}
+      autoFocus={autoFocus}
     />
   );
 }

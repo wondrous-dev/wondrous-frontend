@@ -960,6 +960,7 @@ export const ViewFieldWrapper = styled.div`
   height: 28px;
   border-radius: 4px;
   width: fit-content;
+  height: fit-content;
   .edit-icon-field {
     display: none;
   }
@@ -976,7 +977,7 @@ export const ViewFieldContainer = styled.div`
   width: 100%;
 `;
 
-export const ReviewerWrapper = styled(Grid)`
+export const UserSelectWrapper = styled(Grid)`
   display: flex;
   gap: 6px;
   align-items: center;

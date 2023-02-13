@@ -57,7 +57,7 @@ const EditableDates = ({ startDate, endDate, canEdit }) => (
     editableContent={({ toggleEditMode }) => (
       <EditContent startDate={startDate} endDate={endDate} toggleManageMode={toggleEditMode} />
     )}
-    ViewContent={({ toggleEditMode }) => (
+    viewContent={({ toggleEditMode }) => (
       <ViewContent startDate={startDate} endDate={endDate} toggleEditMode={toggleEditMode} canEdit={canEdit} />
     )}
     canAddItem={!startDate && !endDate && canEdit}

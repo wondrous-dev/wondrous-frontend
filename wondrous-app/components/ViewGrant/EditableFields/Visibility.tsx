@@ -20,12 +20,10 @@ import { PRIVACY_LABELS } from 'utils/constants';
 import { DataDisplay } from '../Fields';
 
 const ViewContent = ({ toggleEditMode, privacyLevel, canEdit }) => (
-  <>
-        <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-      <DataDisplay label={PRIVACY_LABELS[privacyLevel] || 'Private'} />
-      <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-    </ViewFieldWrapper>
-  </>
+  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <DataDisplay label={PRIVACY_LABELS[privacyLevel] || 'Private'} />
+    <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+  </ViewFieldWrapper>
 );
 
 const EditContent = ({ toggleEditMode, privacyLevel }) => {
@@ -63,7 +61,7 @@ const EditContent = ({ toggleEditMode, privacyLevel }) => {
 };
 const Visibility = ({ privacyLevel, canEdit }) => (
   <TaskFieldEditableContent
-    ViewContent={({ toggleEditMode }) => (
+    viewContent={({ toggleEditMode }) => (
       <ViewContent canEdit={canEdit} toggleEditMode={toggleEditMode} privacyLevel={privacyLevel} />
     )}
     canAddItem={canEdit && privacyLevel === null}

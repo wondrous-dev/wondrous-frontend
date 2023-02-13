@@ -198,7 +198,7 @@ const Rewards = ({ fetchedTask, canEdit, shouldDisplay }) => {
             handleReward={handleReward}
           />
         )}
-        ViewContent={({ toggleEditMode }) => (
+        viewContent={({ toggleEditMode }) => (
           <ViewRewards
             canEdit={canEdit}
             toggleEditMode={toggleEditMode}

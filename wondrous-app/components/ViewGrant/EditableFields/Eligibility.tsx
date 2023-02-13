@@ -8,12 +8,10 @@ import palette from 'theme/palette';
 import { DataDisplay } from '../Fields';
 
 const ViewContent = ({ toggleEditMode, applyPolicy, canEdit }) => (
-  <>
-    <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-      <DataDisplay label={APPLY_POLICY_FIELDS.find((policy) => policy.value === applyPolicy)?.name} />
-      <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-    </ViewFieldWrapper>
-  </>
+  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <DataDisplay label={APPLY_POLICY_FIELDS.find((policy) => policy.value === applyPolicy)?.name} />
+    <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+  </ViewFieldWrapper>
 );
 
 const EditContent = ({ toggleEditMode, applyPolicy }) => {
@@ -25,7 +23,7 @@ const EditContent = ({ toggleEditMode, applyPolicy }) => {
 };
 const Eligibility = ({ applyPolicy, canEdit }) => (
   <TaskFieldEditableContent
-    ViewContent={({ toggleEditMode }) => (
+    viewContent={({ toggleEditMode }) => (
       <ViewContent canEdit={canEdit} toggleEditMode={toggleEditMode} applyPolicy={applyPolicy} />
     )}
     editableContent={({ toggleEditMode }) => <EditContent applyPolicy={applyPolicy} toggleEditMode={toggleEditMode} />}

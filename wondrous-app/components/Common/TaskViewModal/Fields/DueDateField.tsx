@@ -63,6 +63,7 @@ const EditableFieldContent = ({
           setValue(value);
         }}
         value={dueDate}
+        placement="bottom"
         setRecurrenceType={setRecurrenceType}
         setRecurrenceValue={(newRecurrenceValue) => {
           setRecurrenceValue(newRecurrenceValue);
@@ -130,7 +131,7 @@ const DueDateField = ({ dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry, 
         <TaskSectionLabel>Due Date</TaskSectionLabel>
         <TaskFieldEditableContent
           onClose={handleSubmit}
-          ViewContent={({ toggleEditMode }) => (
+          viewContent={({ toggleEditMode }) => (
             <DueDateFieldContent
               toggleEditMode={toggleEditMode}
               recurringSchema={recurringSchema}

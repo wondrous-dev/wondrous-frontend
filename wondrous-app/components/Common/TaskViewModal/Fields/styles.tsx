@@ -37,6 +37,7 @@ export const TitleIconWrapper = styled(IconWrapper)`
 export const TitleFieldWrapper = styled(ViewFieldWrapper)`
   && {
     width: 100%;
+    height: fit-content;
     ${TitleIconWrapper} {
       display: none;
     }
@@ -73,6 +74,7 @@ export const DescriptionWrapper = styled.div`
 
 export const InlineFieldWrapper = styled(ViewFieldWrapper)`
   && {
+    padding: 8px;
     &:hover {
       width: fit-content;
     }

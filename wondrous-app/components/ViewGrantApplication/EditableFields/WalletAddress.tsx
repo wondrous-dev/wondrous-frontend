@@ -85,7 +85,7 @@ const WalletAddress = ({ paymentAddress, canEdit }) => {
           handleUseConnectedButton={handleUseConnectedButton}
         />
       )}
-      ViewContent={({ toggleEditMode }) => (
+      viewContent={({ toggleEditMode }) => (
         <Grid display="flex" direction="column" gap="8px" alignItems="flex-start" width="100%">
           <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
             <WalletAddressViewer walletAddress={paymentAddress} />

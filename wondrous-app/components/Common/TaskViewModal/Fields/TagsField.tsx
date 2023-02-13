@@ -12,7 +12,7 @@ import { TaskFieldEditableContent } from './Shared';
 import { InlineFieldWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
-  <Grid display="flex" gap="6px" flexWrap="wrap">
+  <Grid display="flex" gap="8px" flexWrap="wrap">
     {labels?.map(({ name = null }) => (
       <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
         <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
@@ -62,7 +62,7 @@ const TagsField = ({ canEdit, labels = [], orgId, shouldDisplay }) =>
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Tags</TaskSectionLabel>
       <TaskFieldEditableContent
-        ViewContent={({ toggleEditMode }) => (
+        viewContent={({ toggleEditMode }) => (
           <ViewContent toggleEditMode={toggleEditMode} canEdit={canEdit} labels={labels} />
         )}
         addContent={({ toggleAddMode }) => (
