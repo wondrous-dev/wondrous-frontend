@@ -41,6 +41,8 @@ const ModalFields = ({
   entityType,
   getTaskById,
   isSubtask,
+  taskSubmissionsForTask,
+  isBounty,
 }) => {
   const user = useMe();
   const board: any = useBoards();
@@ -67,6 +69,8 @@ const ModalFields = ({
         isViewNft={isViewNft}
         setIsViewNft={setIsViewNft}
         taskId={fetchedTask?.id}
+        isBounty={isBounty}
+        taskSubmissionsForTask={taskSubmissionsForTask}
       />
       <StatusField
         shouldDisplay={!isViewNft}
@@ -99,12 +103,12 @@ const ModalFields = ({
         taskApplicationCount={taskApplicationCount}
         handleReviewButton={handleReviewButton}
       />
-      <ProposerField
+      {/* <ProposerField
         shouldDisplay={isTaskProposal && !isMilestone}
         creatorProfilePicture={fetchedTask?.creatorProfilePicture}
         creatorUsername={fetchedTask?.creatorUsername}
         handleClose={handleClose}
-      />
+      /> */}
       <DueDateField
         shouldDisplay={entityTypeData[entityType].fields.includes(Fields.dueDate) && (canEdit || fetchedTask?.dueDate)}
         canEdit={canEdit}

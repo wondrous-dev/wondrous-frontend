@@ -15,7 +15,7 @@ import { debounce } from 'lodash';
 
 const ViewContent = ({ toggleEditMode, reward, numOfGrant, canEdit }) => (
   <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode} $background="transparent">
-  <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />
+    <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
   </ViewFieldWrapper>
 );
@@ -29,7 +29,6 @@ const PaymentData = ({ reward, numOfGrant, canEdit }) => {
   const { submit: submitNumOfGrant, error: numOfGrantError } = useSubmit({ field: FIELDS.NUM_OF_GRANT });
 
   const handleSubmitNumOfGrant = async (value) => await submitNumOfGrant(parseInt(value, 10));
-
 
   const handleSubmitReward = async (value) => {
     const { rewardAmount, paymentMethodId } = value;
@@ -45,37 +44,40 @@ const PaymentData = ({ reward, numOfGrant, canEdit }) => {
     }
   };
   return (
-    <>
-      <TaskFieldEditableContent
-        editableContent={({ toggleEditMode }) => (
-          <Grid display="flex" gap="12px" direction="column" width="100%">
-            <GrantStyle value={grantStyle} onChange={handleGrantStyle} />
-            {grantStyle === GRANT_STYLE_MAP.FIXED ? (
-              <GrantQuantity defaultValue={numOfGrant} onChange={handleSubmitNumOfGrant} setError={() => {}} error={null} />
-            ) : null}
-
-            <GrantAmount
-              value={value}
-              onChange={(_, value) => {
-                setValue(value);
-                if(!value.rewardAmount || !value.paymentMethodId) return;
-                debounceSubmitReward(value);
-              }}
-              orgId={grant?.org?.id}
+    <TaskFieldEditableContent
+      editableContent={({ toggleEditMode }) => (
+        <Grid display="flex" gap="12px" direction="column" width="100%">
+          <GrantStyle value={grantStyle} onChange={handleGrantStyle} />
+          {grantStyle === GRANT_STYLE_MAP.FIXED ? (
+            <GrantQuantity
+              defaultValue={numOfGrant}
+              onChange={handleSubmitNumOfGrant}
+              setError={() => {}}
               error={null}
-              grantStyle={grantStyle}
-              numOfGrant={grant?.numOfGrant}
             />
-          </Grid>
-        )}
-        ViewContent={({ toggleEditMode }) => (
-          <>
-            <TaskSectionLabel>Grant amount</TaskSectionLabel>
-            <ViewContent canEdit={canEdit} toggleEditMode={toggleEditMode} reward={reward} numOfGrant={numOfGrant} />
-          </>
-        )}
-      />
-    </>
+          ) : null}
+
+          <GrantAmount
+            value={value}
+            onChange={(_, value) => {
+              setValue(value);
+              if (!value.rewardAmount || !value.paymentMethodId) return;
+              debounceSubmitReward(value);
+            }}
+            orgId={grant?.org?.id}
+            error={null}
+            grantStyle={grantStyle}
+            numOfGrant={grant?.numOfGrant}
+          />
+        </Grid>
+      )}
+      viewContent={({ toggleEditMode }) => (
+        <>
+          <TaskSectionLabel>Grant amount</TaskSectionLabel>
+          <ViewContent canEdit={canEdit} toggleEditMode={toggleEditMode} reward={reward} numOfGrant={numOfGrant} />
+        </>
+      )}
+    />
   );
 };
 

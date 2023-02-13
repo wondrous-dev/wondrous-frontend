@@ -17,15 +17,14 @@ import {
   TaskModalHeaderTypography,
   TaskModalHeaderWrapper,
   TaskModalTaskData,
-  TaskModalTitle,
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayData,
   TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
 } from 'components/Common/TaskViewModal/styles';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LABELS, PRIVACY_LEVEL } from 'utils/constants';
-import { useBoards, useFullScreen, useGlobalContext } from 'utils/hooks';
+import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { useFullScreen, useGlobalContext } from 'utils/hooks';
 
 import { useQuery } from '@apollo/client';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
@@ -34,12 +33,8 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { CategoryField, Description, ReviewerField, Title } from 'components/Common/TaskViewModal/Fields';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
-import { Reviewers } from 'components/CreateGrant/Fields';
-import { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
-import { GrantModalCard } from 'components/CreateGrant/styles';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 import { DAOIcon } from 'components/Icons/dao';
-import { RichTextViewer } from 'components/RichText';
 import ViewGrantApplication from 'components/ViewGrantApplication';
 import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';

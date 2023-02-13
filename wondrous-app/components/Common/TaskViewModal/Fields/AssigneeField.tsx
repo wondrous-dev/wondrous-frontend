@@ -5,7 +5,12 @@ import { Claim } from 'components/Icons/claimTask';
 import { REMOVE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import { TaskSectionLabel } from '../helpers';
-import { TaskSectionDisplayDiv, TaskSectionInfoTakeTask, TaskSectionInfoTakeTaskText } from '../styles';
+import {
+  UserSelectWrapper,
+  TaskSectionDisplayDiv,
+  TaskSectionInfoTakeTask,
+  TaskSectionInfoTakeTaskText,
+} from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { useUpdateTaskCardCache } from './hooks/useUpdateCache';
@@ -20,7 +25,6 @@ interface OrgUser {
 const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => {
   const router = useRouter();
   const { error, submit } = useSubmit({ field: FIELDS.ASSIGNEE });
-  const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
   const { data: orgUsersData, search, fetchMoreOrgUsers, hasMoreOrgUsers } = useGetOrgUsers(fetchedTask?.orgId);
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
   const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).map((orgUser: OrgUser) => ({
@@ -32,15 +36,17 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
   if (fetchedTask?.assigneeId || (canEdit && canClaim)) {
     return (
       <TaskFieldEditableContent
-        ViewContent={({ toggleEditMode }) => (
-          <AssigneeReviewerViewContent
-            canEdit={canEdit}
-            option={{
-              ...fetchedTask?.assignee,
-              value: fetchedTask?.assigneeId,
-            }}
-            toggleEditMode={toggleEditMode}
-          />
+        viewContent={({ toggleEditMode }) => (
+          <UserSelectWrapper showFullWidth>
+            <AssigneeReviewerViewContent
+              canEdit={canEdit}
+              option={{
+                ...fetchedTask?.assignee,
+                value: fetchedTask?.assigneeId,
+              }}
+              toggleEditMode={toggleEditMode}
+            />
+          </UserSelectWrapper>
         )}
         canAddItem={canEdit && canClaim && !fetchedTask?.assigneeId}
         addContent={({ toggleAddMode }) => (

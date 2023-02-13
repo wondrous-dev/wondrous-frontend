@@ -34,7 +34,7 @@ const EditContent = ({ title, toggleEditMode }) => {
 
 const Title = ({ title, canEdit }) => (
   <TaskFieldEditableContent
-    ViewContent={({ toggleEditMode }) => (
+    viewContent={({ toggleEditMode }) => (
       <TitleFieldWrapper $canEdit={canEdit} onClick={toggleEditMode} $background="transparent">
         <TaskModalTitle>{title}</TaskModalTitle>
         <TitleIconWrapper>
