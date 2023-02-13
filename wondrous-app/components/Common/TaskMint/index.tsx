@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { TaskMintStatus, TASK_STATUS_DONE } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
 import { TaskMint } from 'types/task';
@@ -14,15 +14,32 @@ interface Props {
   isViewNft?: boolean;
   taskId?: string;
   tokenData?: any;
+  taskSubmissionsForTask?: any;
+  isBounty?: boolean;
 }
 
-const TaskMintComponent = ({ taskMintData, taskStatus, assigneeId, setIsViewNft, isViewNft, taskId }: Props) => {
+const TaskMintComponent = ({
+  taskMintData,
+  taskStatus,
+  assigneeId,
+  setIsViewNft,
+  isViewNft,
+  taskId,
+  taskSubmissionsForTask,
+  isBounty,
+}: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const tokenId = taskMintData?.tokenId;
   const status = taskMintData?.status;
   const user = useMe();
+  const canMintBounty = useMemo(() => {
+    if (!isBounty) return true;
+    const submissions = taskSubmissionsForTask?.getTaskSubmissionsForTask;
+    const submission = submissions?.find((submission) => submission?.approvedAt && submission?.createdBy === user?.id);
+    return !!submission;
+  }, [isBounty, taskSubmissionsForTask]);
 
-  if (taskStatus !== TASK_STATUS_DONE || user?.id !== assigneeId) {
+  if (taskStatus !== TASK_STATUS_DONE || (user?.id !== assigneeId && !canMintBounty)) {
     return null;
   }
 

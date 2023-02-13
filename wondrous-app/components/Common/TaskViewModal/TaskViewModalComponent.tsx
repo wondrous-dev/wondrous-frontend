@@ -631,6 +631,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               entityType={entityType}
                               getTaskById={getTaskById}
                               isSubtask={isSubtask}
+                              isBounty={isBounty}
+                              taskSubmissionsForTask={taskSubmissionsForTask}
                             />
                             {isTaskProposal && (
                               <CreateFormFooterButtons>

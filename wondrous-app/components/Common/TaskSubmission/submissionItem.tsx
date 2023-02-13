@@ -208,7 +208,7 @@ const useReopenTaskSubmission = ({ submission }) => {
   return resubmitSubmission;
 };
 
-const selectSubmissionStatus = (submission) => {
+export const selectSubmissionStatus = (submission) => {
   if (!submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt)
     return SUBMISSION_STATUS.AWAITING_REVIEW;
   if (submission?.changeRequestedAt) return SUBMISSION_STATUS.CHANGE_REQUESTED;

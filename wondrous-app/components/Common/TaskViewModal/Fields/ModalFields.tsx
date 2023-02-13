@@ -41,6 +41,8 @@ const ModalFields = ({
   entityType,
   getTaskById,
   isSubtask,
+  taskSubmissionsForTask,
+  isBounty,
 }) => {
   const user = useMe();
   const board: any = useBoards();
@@ -67,6 +69,8 @@ const ModalFields = ({
         isViewNft={isViewNft}
         setIsViewNft={setIsViewNft}
         taskId={fetchedTask?.id}
+        isBounty={isBounty}
+        taskSubmissionsForTask={taskSubmissionsForTask}
       />
       <StatusField
         shouldDisplay={!isViewNft}
