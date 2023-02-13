@@ -183,7 +183,7 @@ const useSidebarData = () => {
     },
   ];
   if (canCreateTask) {
-    data[1].items.push({
+    data[1]?.items?.push({
       text: 'WonderBot AI',
       Icon: WonderBot,
       link: `${link}/wonder_ai_bot`,
