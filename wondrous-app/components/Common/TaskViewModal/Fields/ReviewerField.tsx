@@ -56,6 +56,9 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
   const handleAssignToSelfClick = () => handleUpdateReviewers([...taskReviewerIds, user?.id]);
 
   const handleSelect = (value) => {
+    if (showAutocomplete) {
+      setShowAutocomplete(false);
+    }
     handleUpdateReviewers([...taskReviewerIds, value?.id]);
   };
 
