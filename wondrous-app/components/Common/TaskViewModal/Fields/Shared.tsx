@@ -24,7 +24,7 @@ import { UserChipWrapper } from './styles';
 
 interface TaskFieldEditableContentProps {
   editableContent: React.FC<{ toggleEditMode: () => void; toggleOutsideAlerter: () => void }>;
-  ViewContent: React.FC<{ toggleEditMode: () => void }>;
+  viewContent: React.FC<{ toggleEditMode: () => void }>;
   onClose?: (value?: any) => void;
   canAddItem?: boolean;
   addContent?: React.FC<{ toggleAddMode: () => void; toggleOutsideAlerter: () => void }>;
@@ -33,7 +33,7 @@ interface TaskFieldEditableContentProps {
 
 export const TaskFieldEditableContent = ({
   editableContent,
-  ViewContent,
+  viewContent,
   addContent = () => null,
   onClose = null,
   canAddItem = false,
@@ -102,7 +102,8 @@ export const TaskFieldEditableContent = ({
       </Grid>
     );
   }
-  return <ViewContent toggleEditMode={toggleEditMode} />;
+  // return <ViewContent toggleEditMode={toggleEditMode} />;
+  return <>{viewContent({ toggleEditMode })}</>;
 };
 
 export const UserChip = ({ user }) => (

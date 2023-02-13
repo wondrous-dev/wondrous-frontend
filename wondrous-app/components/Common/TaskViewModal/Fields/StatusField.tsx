@@ -11,12 +11,12 @@ import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
 const EditContent = ({ isTaskProposal, toggleEditMode, fetchedTask }) => (
-  <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />
+  <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} autoFocus onClose={toggleEditMode} />
 );
 
 export const ViewContent = ({ canEdit, toggleEditMode, currentStatus }) => (
   <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-  <TaskSectionInfoText>
+    <TaskSectionInfoText>
       <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
         <IconWrapper
           style={{
@@ -48,7 +48,7 @@ const StatusField = ({ shouldDisplay, canEdit, isTaskProposal, canArchive }) => 
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Status</TaskSectionLabel>
       <TaskFieldEditableContent
-        ViewContent={({ toggleEditMode }) => (
+        viewContent={({ toggleEditMode }) => (
           <ViewContent currentStatus={status?.currentStatus} canEdit={canEdit} toggleEditMode={toggleEditMode} />
         )}
         editableContent={({ toggleEditMode }) => (

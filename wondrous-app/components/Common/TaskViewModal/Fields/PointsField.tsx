@@ -77,7 +77,7 @@ const PointsField = ({ shouldDisplay, points = null, canEdit }) => {
         addContent={({ toggleAddMode }) => (
           <EditContent error={error} toggleEditMode={toggleAddMode} points={stateRef.current} setValue={setValue} />
         )}
-        ViewContent={({ toggleEditMode }) => (
+        viewContent={({ toggleEditMode }) => (
           <ViewContent points={stateRef.current} toggleEditMode={toggleEditMode} canEdit={canEdit} />
         )}
         editableContent={({ toggleEditMode }) => (

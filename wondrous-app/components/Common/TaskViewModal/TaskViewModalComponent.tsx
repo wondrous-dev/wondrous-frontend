@@ -682,7 +682,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             <GithubButtons fetchedTask={fetchedTask} />
                           </TaskSectionDisplayData>
                           <TaskSectionDisplayCreator>
-                            {fetchedTask?.creatorUsername && !isTaskProposal && (
+                            {fetchedTask?.creatorUsername && (
                               <TaskSectionImageContent
                                 hasContent={fetchedTask?.creatorUsername}
                                 imgSrc={fetchedTask?.creatorProfilePicture}
@@ -690,9 +690,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                 ContentComponent={() => (
                                   <TaskSectionInfoTextCreator>
                                     {fetchedTask?.creatorUsername}{' '}
-                                    <TaskSectionInfoCreatorTask>
-                                      created this {fetchedTask?.type}{' '}
-                                    </TaskSectionInfoCreatorTask>
+                                    <TaskSectionInfoCreatorTask>created this {entityType} </TaskSectionInfoCreatorTask>
                                     {fetchedTask?.createdAt && (
                                       <TaskSectionInfoCreatorDaysAgo>
                                         {formatDateDisplay(fetchedTask?.createdAt, true)}

@@ -22,11 +22,23 @@ const MilestoneFieldContent = ({ milestoneId, getTaskById, milestoneTitle, canEd
   const router = useRouter();
   return (
     <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-    <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
+      <Grid
+        display="flex"
+        gap="8px"
+        alignItems="center"
+        justifyContent="center"
+        sx={{
+          overflowWrap: 'anywhere',
+        }}
+      >
         <IconWrapper>
           <TaskSectionInfoMilestoneIcon />
         </IconWrapper>
         <TaskSectionInfoTextMilestone
+          sx={{
+            display: 'inline-block !important',
+            whiteSpace: 'pre-line !important',
+          }}
           onClick={() => {
             if (milestoneId) {
               router.query.task = milestoneId;
@@ -88,7 +100,7 @@ const MilestoneField = ({
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Milestone</TaskSectionLabel>
       <TaskFieldEditableContent
-        ViewContent={({ toggleEditMode }) => (
+        viewContent={({ toggleEditMode }) => (
           <MilestoneFieldContent
             milestoneId={milestoneId}
             getTaskById={getTaskById}
@@ -98,15 +110,23 @@ const MilestoneField = ({
           />
         )}
         addContent={({ toggleAddMode, toggleOutsideAlerter }) => (
-          <EditMode 
-          toggleOutsideAlerter={toggleOutsideAlerter}
-          orgId={orgId} podId={podId} milestoneId={milestoneId} toggleEditMode={toggleAddMode} />
+          <EditMode
+            toggleOutsideAlerter={toggleOutsideAlerter}
+            orgId={orgId}
+            podId={podId}
+            milestoneId={milestoneId}
+            toggleEditMode={toggleAddMode}
+          />
         )}
         canAddItem={canEdit && !milestoneId}
         editableContent={({ toggleEditMode, toggleOutsideAlerter }) => (
-          <EditMode 
-          toggleOutsideAlerter={toggleOutsideAlerter}
-          orgId={orgId} podId={podId} milestoneId={milestoneId} toggleEditMode={toggleEditMode} />
+          <EditMode
+            toggleOutsideAlerter={toggleOutsideAlerter}
+            orgId={orgId}
+            podId={podId}
+            milestoneId={milestoneId}
+            toggleEditMode={toggleEditMode}
+          />
         )}
       />
     </TaskSectionDisplayDiv>

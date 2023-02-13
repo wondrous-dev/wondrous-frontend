@@ -682,8 +682,8 @@ export const TaskSectionInfoMilestoneIcon = styled(({ className }) => (
 
 export const TaskSectionInfoPaymentMethodIcon = styled(SafeImage).attrs({ useNextImage: false })`
   && {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     border-radius: 100%;
     img[style] {
       width: 100% !important;
@@ -955,11 +955,12 @@ export const ViewFieldWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  padding: 1px 4px 1px 2px;
+  padding: 2px 4px 2px 4px;
   gap: 6px;
   height: 28px;
   border-radius: 4px;
   width: fit-content;
+  height: fit-content;
   .edit-icon-field {
     display: none;
   }
@@ -976,7 +977,7 @@ export const ViewFieldContainer = styled.div`
   width: 100%;
 `;
 
-export const ReviewerWrapper = styled(Grid)`
+export const UserSelectWrapper = styled(Grid)`
   display: flex;
   gap: 6px;
   align-items: center;

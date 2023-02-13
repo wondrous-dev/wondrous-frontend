@@ -37,17 +37,16 @@ const GrantMenuStatus = ({ currentStatus, canEdit }) => {
 
   return (
     <TaskFieldEditableContent
-      ViewContent={({ toggleEditMode }) => (
+      viewContent={({ toggleEditMode }) => (
         <ViewContent currentStatus={status} canEdit={canEdit} toggleEditMode={toggleEditMode} />
       )}
       editableContent={({ toggleEditMode }) => (
         <TaskMenu
           currentStatus={status}
+          autoFocus
+          onClose={toggleEditMode}
           filterStatus={STATUSES}
-          handleOnChange={(status) => {
-            handleOnChange(status);
-            toggleEditMode();
-          }}
+          handleOnChange={handleOnChange}
           disableMenu={!canEdit}
         />
       )}

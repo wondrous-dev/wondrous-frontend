@@ -103,12 +103,12 @@ const ModalFields = ({
         taskApplicationCount={taskApplicationCount}
         handleReviewButton={handleReviewButton}
       />
-      <ProposerField
+      {/* <ProposerField
         shouldDisplay={isTaskProposal && !isMilestone}
         creatorProfilePicture={fetchedTask?.creatorProfilePicture}
         creatorUsername={fetchedTask?.creatorUsername}
         handleClose={handleClose}
-      />
+      /> */}
       <DueDateField
         shouldDisplay={entityTypeData[entityType].fields.includes(Fields.dueDate) && (canEdit || fetchedTask?.dueDate)}
         canEdit={canEdit}
