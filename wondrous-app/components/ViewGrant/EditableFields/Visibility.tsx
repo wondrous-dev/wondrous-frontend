@@ -3,6 +3,7 @@ import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmi
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
 import { ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
 import { privacyOptions } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { InlineFieldWrapper } from 'components/Common/TaskViewModal/Fields/styles';
 import {
   CreateEntityHeaderWrapper,
   CreateEntityPrivacySelect,
@@ -20,10 +21,10 @@ import { PRIVACY_LABELS } from 'utils/constants';
 import { DataDisplay } from '../Fields';
 
 const ViewContent = ({ toggleEditMode, privacyLevel, canEdit }) => (
-  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+  <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
     <DataDisplay label={PRIVACY_LABELS[privacyLevel] || 'Private'} />
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-  </ViewFieldWrapper>
+  </InlineFieldWrapper>
 );
 
 const EditContent = ({ toggleEditMode, privacyLevel }) => {

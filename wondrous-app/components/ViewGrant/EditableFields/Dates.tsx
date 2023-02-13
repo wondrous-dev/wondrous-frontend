@@ -1,6 +1,7 @@
 import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
 import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
+import { InlineFieldWrapper } from 'components/Common/TaskViewModal/Fields/styles';
 import { TaskSectionInfoCalendar, ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
 import { Dates } from 'components/CreateGrant/Fields';
 import EditIcon from 'components/Icons/editIcon';
@@ -10,7 +11,7 @@ import palette from 'theme/palette';
 import { DataDisplay, MultipleDataDisplay } from '../Fields';
 
 const ViewContent = ({ toggleEditMode, startDate, endDate, canEdit }) => (
-  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+  <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
     <MultipleDataDisplay>
       {[startDate, endDate].map((date, idx) => (
         <DataDisplay
@@ -25,7 +26,7 @@ const ViewContent = ({ toggleEditMode, startDate, endDate, canEdit }) => (
       ))}
     </MultipleDataDisplay>
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-  </ViewFieldWrapper>
+  </InlineFieldWrapper>
 );
 const EditContent = ({ toggleManageMode, startDate = null, endDate = null }) => {
   const [dates, setDates] = useState({

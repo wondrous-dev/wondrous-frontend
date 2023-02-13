@@ -40,6 +40,7 @@ export default function Compensation({ rewards = null, ...props }) {
               style={{
                 width: '24px',
                 height: '24px',
+                borderRadius: '100%',
               }}
               alt="Icon"
             />

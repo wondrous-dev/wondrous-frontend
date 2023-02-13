@@ -74,7 +74,7 @@ export const DescriptionWrapper = styled.div`
 
 export const InlineFieldWrapper = styled(ViewFieldWrapper)`
   && {
-    padding: 8px;
+    padding: 4px 8px;
     &:hover {
       width: fit-content;
     }
