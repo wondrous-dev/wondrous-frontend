@@ -98,6 +98,9 @@ export const getMentionOnSelectItem =
         case ElementTypes.MARK_STRIKETHROUGH:
           toggleMark(editor, { key: ElementTypes.MARK_STRIKETHROUGH as any });
           break;
+        case ElementTypes.MARK_CODE:
+          toggleMark(editor, { key: ElementTypes.MARK_CODE as any });
+          break;
         case ElementTypes.ELEMENT_UL:
           toggleList(editor, { type: ElementTypes.ELEMENT_UL });
           break;

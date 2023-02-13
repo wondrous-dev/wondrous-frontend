@@ -32,6 +32,7 @@ import {
   TEditableProps,
   withProps,
 } from '@udecode/plate';
+import { Descendant } from 'slate';
 
 import { createCustomMentionPlugin } from 'components/PlateRichEditor/customPlugins/CustomMention/createMentionPlugin';
 import { slashCommandItems } from 'components/PlateRichEditor/constants';
@@ -39,6 +40,7 @@ import { ToolbarButtons } from 'components/PlateRichEditor/ToolbarButtons';
 import { MarkBalloonToolbar } from 'components/PlateRichEditor/plugins/balloonToolbar/MarkBalloonToolbar';
 import { autoformatPlugin } from 'components/PlateRichEditor/plugins/autoformat/autoformatPlugin';
 import { MentionCombobox, MentionElement } from 'components/PlateRichEditor/customPlugins/Mention';
+import { Typography } from '@mui/material';
 import { exitBreakPlugin } from './plugins/exitBreakPlugin';
 import { resetBlockTypePlugin } from './plugins/resetBlockTypePlugin';
 import { softBreakPlugin } from './plugins/softBreakPlugin';
@@ -46,13 +48,16 @@ import { Toolbar } from './plugins/Toolbar';
 import { createMyPlugins, ElementTypes, CustomEditor, TextEditorValue } from './types';
 import { emojiPlugin } from './plugins/emojiPlugin';
 import { linkPlugin } from './plugins/linkPlugin';
+import typography from '../../theme/typography';
+import palette from '../../theme/palette';
 
 interface Props {
-  inputValue: TextEditorValue;
+  inputValue: TextEditorValue | Descendant[];
   onChange: (value) => void;
   mentionables?: { display: string; id: string; profilePicture?: string }[];
   mediaUploads?: () => void;
   placeholder?: string;
+  message?: string;
 }
 
 const headingStyles: CSSProperties = {
@@ -107,10 +112,17 @@ const components = createPlateUI({
   }),
 });
 
-const PlateRichEditor = ({ mentionables, inputValue, onChange, mediaUploads, placeholder = 'Type...' }: Props) => {
+const PlateRichEditor = ({
+  mentionables,
+  inputValue,
+  onChange,
+  mediaUploads,
+  placeholder = 'Type...',
+  message,
+}: Props) => {
   const customMentionables = useMemo(
     () =>
-      mentionables.map((m) => ({
+      mentionables?.map((m) => ({
         key: m.id,
         text: m.display,
         data: { img: m.profilePicture, mentionType: '@' },
@@ -175,10 +187,14 @@ const PlateRichEditor = ({ mentionables, inputValue, onChange, mediaUploads, pla
         <Toolbar>
           <ToolbarButtons mediaUploads={mediaUploads} />
         </Toolbar>
+        {message ? (
+          <Typography fontFamily={typography.fontFamily} color={palette.blue20} fontWeight={500} fontSize="14px">
+            {message}
+          </Typography>
+        ) : null}
 
         <Plate editableProps={editableProps}>
           <MarkBalloonToolbar />
-
           <MentionCombobox items={customMentionables} />
           <MentionCombobox pluginKey="/" items={slashCommandItems} />
         </Plate>

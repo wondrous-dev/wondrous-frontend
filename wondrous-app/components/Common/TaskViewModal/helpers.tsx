@@ -10,7 +10,7 @@ import Tooltip from 'components/Tooltip';
 import MoreIcon from 'components/Icons/more';
 import EmptyState from 'components/EmptyStateGeneric';
 
-import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import {
   ConnectToWalletButton,
   GithubBlock,
@@ -117,7 +117,7 @@ export const TaskDescriptionTextWrapper = ({ text }) => {
   return (
     <>
       <TaskDescriptionText isExpanded={isExpanded} initialHeight={initialHeight} ref={checkRichTextHeight} as="div">
-        <RichTextViewer text={text} />
+        <PlateRichTextViewer text={text} />
       </TaskDescriptionText>
       {showButton && (
         <TaskDescriptionTextShowAllText onClick={handleExpand}>

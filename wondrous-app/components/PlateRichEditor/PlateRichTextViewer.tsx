@@ -108,7 +108,7 @@ const renderNodes = (nodes) =>
 
 const serialize = (nodes) => nodes.map((n) => Node.string(n)).join('\n');
 
-const PlateViewer: React.FC<{ text?: string; asText?: boolean }> = ({ text, asText = '' }) => {
+const PlateRichTextViewer: React.FC<{ text?: string; asText?: boolean }> = ({ text, asText = '' }) => {
   const router = useRouter();
 
   if (!text) {
@@ -135,4 +135,4 @@ const PlateViewer: React.FC<{ text?: string; asText?: boolean }> = ({ text, asTe
   );
 };
 
-export default memo(PlateViewer);
+export default memo(PlateRichTextViewer);

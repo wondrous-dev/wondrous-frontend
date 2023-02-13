@@ -12,6 +12,7 @@ import NumberedListIcon from 'components/PlateRichEditor/icons/NumberedListIcon'
 import StrikethroughIcon from 'components/PlateRichEditor/icons/StrikethroughIcon';
 import UnderlineIcon from 'components/PlateRichEditor/icons/UnderlineIcon';
 import { ElementTypes } from 'components/PlateRichEditor/types';
+import CodeIcon from 'components/PlateRichEditor/icons/CodeIcon';
 
 export const slashCommandItems: TComboboxItem<any>[] = [
   {
@@ -48,6 +49,11 @@ export const slashCommandItems: TComboboxItem<any>[] = [
     key: ElementTypes.MARK_STRIKETHROUGH,
     text: 'Strikethrough',
     data: { icon: <StrikethroughIcon /> },
+  },
+  {
+    key: ElementTypes.MARK_CODE,
+    text: 'Code',
+    data: { icon: <CodeIcon /> },
   },
   {
     key: ElementTypes.ELEMENT_UL,

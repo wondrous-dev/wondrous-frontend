@@ -5,6 +5,7 @@ import BoldIcon from 'components/PlateRichEditor/icons/BoldIcon';
 import ItalicIcon from 'components/PlateRichEditor/icons/ItalicIcon';
 import UnderlineIcon from 'components/PlateRichEditor/icons/UnderlineIcon';
 import StrikethroughIcon from 'components/PlateRichEditor/icons/StrikethroughIcon';
+import CodeIcon from 'components/PlateRichEditor/icons/CodeIcon';
 import { ElementTypes, useMyPlateEditorRef } from '../types';
 
 export const BasicMarkToolbarButtons = () => {
@@ -16,6 +17,7 @@ export const BasicMarkToolbarButtons = () => {
       <MarkToolbarButton type={getPluginType(editor, ElementTypes.MARK_ITALIC)} icon={<ItalicIcon />} />
       <MarkToolbarButton type={getPluginType(editor, ElementTypes.MARK_UNDERLINE)} icon={<UnderlineIcon />} />
       <MarkToolbarButton type={getPluginType(editor, ElementTypes.MARK_STRIKETHROUGH)} icon={<StrikethroughIcon />} />
+      <MarkToolbarButton type={getPluginType(editor, ElementTypes.MARK_CODE)} icon={<CodeIcon />} />
     </>
   );
 };

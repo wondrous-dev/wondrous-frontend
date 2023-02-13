@@ -29,12 +29,12 @@ import {
   ExploreProjectsButtonFilled,
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { PodIconThin } from 'components/Icons/podIcon';
 import palette from 'theme/palette';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { SafeImage } from '../../Common/Image';
 import {
@@ -501,7 +501,7 @@ function Wrapper(props) {
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}>
             {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
               <HeaderText as="div">
-                <RichTextViewer text={orgProfile?.description} />
+                <PlateRichTextViewer text={orgProfile?.description} />
               </HeaderText>
             ) : (
               <div style={{ height: 10 }} />

@@ -42,6 +42,7 @@ export enum ElementTypes {
   MARK_ITALIC = 'italic',
   MARK_UNDERLINE = 'underline',
   MARK_STRIKETHROUGH = 'strikethrough',
+  MARK_CODE = 'code',
 }
 
 /**
@@ -88,6 +89,9 @@ export interface MentionInputElement extends TMentionInputElement {
 export interface MentionElement extends TMentionElement {
   type: typeof ElementTypes.ELEMENT_MENTION;
   children: [EmptyText];
+  mentionable: string;
+  id: string;
+  value: string;
 }
 
 export type InlineElement = LinkElement | MentionElement | MentionInputElement;

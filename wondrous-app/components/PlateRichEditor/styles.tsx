@@ -93,13 +93,6 @@ export const PlateStyles = styled.div`
     height: 28px;
   }
 
-  .slate-BalloonToolbar {
-    z-index: 1300;
-    background-color: #171717;
-    border: 1px solid #7a7a7a;
-    box-shadow: 12px 10px 24px 2px rgba(16, 16, 16, 0.8);
-  }
-
   .slate-mention {
     background-color: unset;
     color: #00baff;

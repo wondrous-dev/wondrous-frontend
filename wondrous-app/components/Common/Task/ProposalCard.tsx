@@ -18,10 +18,10 @@ import {
   BoardsPrivacyLabel,
 } from 'components/Common/Boards/styles';
 import TaskPriority from 'components/Common/TaskPriority';
-import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import { SafeImage } from 'components/Common/Image';
 import PodIconName from 'components/Common/PodIconName';
 
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { CardContent, ProposalCardIcon, ProposalCardType, ProposalFooterButton } from './styles';
 
 const STATUS_ICONS = {
@@ -97,7 +97,7 @@ export default function ProposalCard({ openModal, title, description, task, goTo
             <TaskPriority value={task?.priority} />
           </Box>
           <BoardsCardBodyDescription as="div">
-            <RichTextViewer text={description} />
+            <PlateRichTextViewer text={description} />
           </BoardsCardBodyDescription>
           {coverMedia ? (
             <BoardsCardMedia>

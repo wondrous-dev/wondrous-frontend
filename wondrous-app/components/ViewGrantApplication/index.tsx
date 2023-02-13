@@ -32,7 +32,6 @@ import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplic
 import { DAOIcon } from 'components/Icons/dao';
 import GrantIcon from 'components/Icons/GrantIcon';
 import { GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
-import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import ViewGrantFooter from 'components/ViewGrant/Footer';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';
@@ -62,6 +61,7 @@ import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { GrantApplicationStatusManager, OrgViewer, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';
 
@@ -315,7 +315,7 @@ const ViewGrantApplication = ({ onClose }) => {
               </ItemPill>
             </Grid>
             <DescriptionWrapper>
-              <RichTextViewer text={grantApplication?.description} />
+              <PlateRichTextViewer text={grantApplication?.description} />
               <TaskMediaWrapper media={grantApplication?.media} />
             </DescriptionWrapper>
           </TaskModalTitleDescriptionMedia>

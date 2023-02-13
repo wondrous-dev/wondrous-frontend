@@ -1,4 +1,77 @@
-import { ElementTypes } from 'components/PlateRichEditor/types';
+import { Descendant } from 'slate';
+
+import { ElementTypes, MentionElement } from 'components/PlateRichEditor/types';
+
+/** Deserialize plain text to Slate state */
+export const plainTextToRichText = (text: string): Descendant[] => {
+  if (!text) {
+    return [
+      {
+        children: [{ text: '' }],
+        type: 'paragraph',
+      },
+    ];
+  }
+
+  return text.split('\n').map((line) => {
+    const parseMentionsInPlaintext = (text: string) => {
+      // looking for a string like this: @[username](id)
+      const mentionStartIndex = text.search(/@\[(.*?)\]\(([0-9]+?)\)/g);
+      const mentionEndIndex = text.indexOf(')', mentionStartIndex);
+
+      if (mentionStartIndex !== -1) {
+        const mention = text.slice(mentionStartIndex, mentionEndIndex + 1);
+        const username = mention.split(/[\[\]]/)[1]; // split by [ and ], username is in 1 index
+        const id = mention.split(/[\)\(]/)[1]; // split by ( and ), id is in 1 index
+
+        return [
+          { text: text.slice(0, mentionStartIndex) },
+          {
+            type: 'mention',
+            mentionable: username,
+            id,
+            children: [{ text: `@${username}` }],
+          },
+          ...parseMentionsInPlaintext(text.slice(mentionEndIndex + 1)),
+        ];
+      }
+
+      return [{ text }];
+    };
+
+    return {
+      children: parseMentionsInPlaintext(line),
+      type: 'paragraph',
+    };
+  });
+};
+
+export const deserializeRichText = (text: string = ''): Descendant[] => {
+  try {
+    const parsed = JSON.parse(text);
+
+    return parsed;
+  } catch (e) {
+    return plainTextToRichText(text);
+  }
+};
+
+export const isBlankValue = (nodes: Descendant[]): boolean => {
+  if (!nodes) {
+    return true;
+  }
+
+  for (const node of nodes) {
+    const hasTextOrMention = node.text || (node as MentionElement).mentionable;
+    const isBlank = !hasTextOrMention && isBlankValue(node.children);
+
+    if (!isBlank) {
+      return false;
+    }
+  }
+
+  return true;
+};
 
 export const extractMentions = (nodes) => {
   const result: string[] = [];
@@ -29,8 +102,8 @@ export const isRichText = (text: string) => {
   }
 };
 
-export const convertSlateNodesToPlate = (nodes) => {
-  return nodes.reduce((acc, currentValue) => {
+export const convertSlateNodesToPlate = (nodes) =>
+  nodes.reduce((acc, currentValue) => {
     const newValue = { ...currentValue };
     const heading = (newValue?.children || [])[0] || {};
 
@@ -59,4 +132,3 @@ export const convertSlateNodesToPlate = (nodes) => {
 
     return [...acc, newValue];
   }, []);
-};

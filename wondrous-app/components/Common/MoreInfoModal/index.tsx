@@ -11,12 +11,12 @@ import { useRouter } from 'next/router';
 import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
 import { useBoards } from 'utils/hooks';
-import RichTextViewer from 'components/PlateRichEditor/PlateViewer';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { MODAL_TABS_MAP } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { LoadMore } from 'components/SearchTasks/styles';
 import { useInView } from 'react-intersection-observer';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import {
   ActivityIndicatorContainer,
   CloseIconContainer,
@@ -55,7 +55,7 @@ const PodItem = forwardRef((props: any, ref) => {
     >
       <TabContainerText>{pod?.name}</TabContainerText>
       <PodExplainerText as="div">
-        <RichTextViewer text={pod?.description} />
+        <PlateRichTextViewer text={pod?.description} />
       </PodExplainerText>
     </PodWrapper>
   );
