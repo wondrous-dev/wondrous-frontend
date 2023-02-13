@@ -65,6 +65,7 @@ function OrgBoards(props: Props) {
       podIds={podIds}
       userId={userId}
       loading={loading}
+      headerTitle="Tasks"
     >
       <ColumnsContext.Provider value={{ columns, setColumns }}>
         {loading ? (

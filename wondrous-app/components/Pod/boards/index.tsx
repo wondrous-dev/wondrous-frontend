@@ -57,7 +57,13 @@ function PodBoards(props: Props) {
   const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
   const filterSchema: any = entityTypeFilters;
   return (
-    <BoardPageHeader onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
+    <BoardPageHeader
+      headerTitle="Tasks"
+      onSearch={onSearch}
+      filterSchema={filterSchema}
+      onFilterChange={onFilterChange}
+      userId={userId}
+    >
       <ColumnsContext.Provider value={{ columns, setColumns }}>
         {loading ? (
           <BoardColumnsSkeleton />
