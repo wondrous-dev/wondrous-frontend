@@ -1,4 +1,4 @@
-import React, { CSSProperties, useMemo } from 'react';
+import React, { CSSProperties, useMemo, useState } from 'react';
 import { PlateStyles } from 'components/PlateRichEditor/styles';
 import { convertSlateNodesToPlate } from 'components/PlateRichEditor/utils';
 import {
@@ -120,6 +120,8 @@ const PlateRichEditor = ({
   placeholder = 'Type...',
   message,
 }: Props) => {
+  // State to keep track of the conversion status of nodes
+  const [isNodeConversionCompleted, setNodeConversionCompleted] = useState<boolean>(false);
   const customMentionables = useMemo(
     () =>
       mentionables?.map((m) => ({
@@ -130,12 +132,30 @@ const PlateRichEditor = ({
     [mentionables]
   );
 
-  const value = useMemo(() => convertSlateNodesToPlate(inputValue), [inputValue]);
+  const value = useMemo(
+    () => (isNodeConversionCompleted ? inputValue : convertSlateNodesToPlate(inputValue)),
+    [inputValue, isNodeConversionCompleted]
+  );
 
   const editableProps: TEditableProps<TextEditorValue> = {
     spellCheck: false,
     autoFocus: false,
     placeholder,
+  };
+
+  const handleChange = (nodes) => {
+    if (!isNodeConversionCompleted) {
+      setNodeConversionCompleted(true);
+    }
+
+    if (nodes[nodes.length - 1]?.type === ElementTypes.ELEMENT_BLOCKQUOTE) {
+      nodes.push({
+        type: 'p',
+        children: [{ text: '' }],
+      });
+    }
+
+    onChange(nodes);
   };
 
   const plugins = useMemo(
@@ -183,7 +203,7 @@ const PlateRichEditor = ({
 
   return (
     <PlateStyles>
-      <PlateProvider<TextEditorValue> plugins={plugins} onChange={onChange} value={value}>
+      <PlateProvider<TextEditorValue> plugins={plugins} onChange={handleChange} value={value}>
         <Toolbar>
           <ToolbarButtons mediaUploads={mediaUploads} />
         </Toolbar>
