@@ -6,7 +6,7 @@ import Modal from '@mui/material/Modal';
 import { useMe } from 'components/Auth/withAuth';
 import PersonAddIcon from 'components/Icons/personAdd';
 import { CopyIcon, CopySuccessIcon } from 'components/Icons/copy';
-import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/OrgInviteLink';
+import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/utils';
 
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';

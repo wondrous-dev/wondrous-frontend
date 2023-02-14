@@ -311,11 +311,3 @@ export const InviteButton = styled(Button)`
     }
   }
 `;
-
-export const InviteThruEmailButtonLabel = styled(Typography)`
-  && {
-    color: ${palette.white};
-    font-size: 14px;
-    font-weight: 500;
-  }
-`;

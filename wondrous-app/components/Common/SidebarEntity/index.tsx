@@ -12,7 +12,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import Button from 'components/Button';
 import palette from 'theme/palette';
-import { OrgInviteLinkModal } from 'components/Common/InviteLinkModal/OrgInviteLink';
+import OrgInviteLinkModal from 'components/Common/InviteLinkModal/OrgInviteLink';
 import PodInviteLinkModal from 'components/Common/InviteLinkModal/PodInviteLink';
 import useCanManage from 'hooks/useCanManage';
 import JoinWorkspace from 'components/Common/JoinWorkspace';

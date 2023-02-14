@@ -4,6 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
+import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 
 import SearchIcon from 'components/Icons/search';
 import { TaskModalBaseCard } from 'components/Common/Task/styles';
@@ -22,7 +23,6 @@ import {
   CloseIconContainer,
   CommentLine,
   Container,
-  DefaultProfilePicture,
   NameText,
   OverflowBox,
   PodExplainerText,
@@ -37,7 +37,6 @@ import {
   Title,
   TitleSection,
   UserMetaDataContainer,
-  UserProfilePicture,
   UserWrapper,
 } from './styles';
 
@@ -74,11 +73,7 @@ const UserItem = forwardRef((props: any, ref) => {
         })
       }
     >
-      {user?.profilePicture ? (
-        <UserProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
-      ) : (
-        <DefaultProfilePicture />
-      )}
+      <UserProfilePicture avatar={user?.thumbnailPicture || user?.profilePicture} />
       <UserMetaDataContainer>
         <CommentTopFlexDiv>
           <NameText>{user?.username}</NameText>
