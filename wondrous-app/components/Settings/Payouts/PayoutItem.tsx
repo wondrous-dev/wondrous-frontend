@@ -138,6 +138,7 @@ const PayoutItem = (props: PayoutItemProps) => {
               <Button
                 buttonTheme={{
                   paddingX: 16,
+                  width: 'max-content',
                   paddingY: 7,
                   background: palette.background.default,
                   borderColor: isPayButtonDisabled
@@ -167,7 +168,15 @@ const PayoutItem = (props: PayoutItemProps) => {
                   placeholderComp={<DefaultUserImage style={imageStyle} />}
                   alt="Payee profile picture"
                 />
-                <Typography fontFamily={typography.fontFamily} fontSize="13px" fontWeight={700} color={palette.white}>
+                <Typography
+                  style={{
+                    width: 'max-content',
+                  }}
+                  fontFamily={typography.fontFamily}
+                  fontSize="13px"
+                  fontWeight={700}
+                  color={palette.white}
+                >
                   {item?.payeeUsername}
                 </Typography>
               </Grid>
