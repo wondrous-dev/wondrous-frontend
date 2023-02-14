@@ -141,3 +141,11 @@ export const CLAIM_ORG_ROLE = gql`
     }
   }
 `;
+
+export const SEND_ORG_EMAIL_INVITES = gql`
+  mutation sendOrgRoleInviteEmails($input: OrgInviteLinkInput) {
+    sendOrgRoleInviteEmails(input: $input) {
+      success
+    }
+  }
+`;

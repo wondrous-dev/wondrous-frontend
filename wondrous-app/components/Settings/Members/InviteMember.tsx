@@ -72,7 +72,7 @@ function InviteMember(props) {
 
   useEffect(() => {
     if (roleList) {
-      const roles = filterRoles(roleList, null, userIsOwner);
+      const roles = filterRoles(roleList, userIsOwner);
       setInviteeRole(roles[0].value);
     }
   }, [roleList]);
@@ -211,7 +211,7 @@ function InviteMember(props) {
         value={inviteeRole}
         setValue={setInviteeRole}
         labelText="Choose Role"
-        options={filterRoles(roleList, null, userIsOwner)}
+        options={filterRoles(roleList, userIsOwner)}
         style={{
           background: 'red',
         }}

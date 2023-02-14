@@ -1,15 +1,12 @@
 import format from 'date-fns/format';
 import { PERMISSIONS } from 'utils/constants';
 
-export const filterRoles = (roles, isOwner, userIsOwner) => {
+export const filterRoles = (roles, userIsOwner) => {
   if (!roles) {
     return [];
   }
   return roles
     .filter((role) => {
-      if (isOwner) {
-        return true;
-      }
       const hasOwnerPermissions = role?.permissions?.includes(PERMISSIONS.FULL_ACCESS);
       if (hasOwnerPermissions) {
         if (userIsOwner) {

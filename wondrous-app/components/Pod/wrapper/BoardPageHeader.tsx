@@ -32,7 +32,7 @@ import {
   PrivacyContainer,
   PrivacyText,
 } from '../../organization/wrapper/styles';
-import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
+import PodInviteLinkModal from '../../Common/InviteLinkModal/PodInviteLink';
 import { useMe } from '../../Auth/withAuth';
 
 function BoardPageHeader(props) {
