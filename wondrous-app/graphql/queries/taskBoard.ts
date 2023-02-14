@@ -126,6 +126,87 @@ export const GET_USER_TASK_BOARD_PROPOSALS = gql`
   }
   ${TaskProposalCardFragment}
 `;
+// TODO: fix me MULTIPOD
+
+export const GET_ORG_MILESTONE_BOARD = gql`
+  query getOrgMilestonesBoard(    $orgId: ID!
+    $statuses: [String]
+    $priorities: [String]
+    $searchString: String
+    $podId: [String]
+    $limit: Int
+    $offset: Int
+    $onlyPublic: Boolean
+    $types: [String]
+    $labelId: String
+    $date: String
+    $category: String
+    $fromDate: String
+    $toDate: String
+) {
+    getMilestonesBoard(
+      input: {
+        orgId: $orgId
+        statuses: $statuses
+        priorities: $priorities
+        searchString: $searchString
+        podId: $podId
+        limit: $limit
+        offset: $offset
+        onlyPublic: $onlyPublic
+        types: $types
+        labelId: $labelId
+        date: $date
+        category: $category
+        fromDate: $fromDate
+        toDate: $toDate
+      }
+    ) {
+      ...TaskCardFragment
+    }
+    ${TaskCardFragment}
+}
+`;
+
+export const GET_POD_MILESTONE_BOARD = gql`
+  query getMilestonesBoard(    $orgId: ID!
+    $statuses: [String]
+    $priorities: [String]
+    $searchString: String
+    $limit: Int
+    $offset: Int
+    $onlyPublic: Boolean
+    $types: [String]
+    $labelId: String
+    $date: String
+    $category: String
+    $fromDate: String
+    $toDate: String
+) {
+    getMilestonesBoard(
+      input: {
+        orgId: $orgId
+        statuses: $statuses
+        priorities: $priorities
+        searchString: $searchString
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+        onlyPublic: $onlyPublic
+        types: $types
+        labelId: $labelId
+        date: $date
+        category: $category
+        fromDate: $fromDate
+        toDate: $toDate
+      }
+    ) {
+      ...TaskCardFragment
+    }
+    ${TaskCardFragment}
+}
+`;
+
 
 export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
   query getTasksRelatedToUserInOrg(

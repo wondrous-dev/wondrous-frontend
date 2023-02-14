@@ -27,8 +27,9 @@ const DropdownSearch = ({
   searchPlaceholder = 'Search...',
   autoFocus = false,
   onChange,
-  onClose,
+  onClose = null,
   multiple = true,
+  anchorComponent = null,
 }) => {
   const anchorEl = useRef(null);
 
@@ -45,14 +46,17 @@ const DropdownSearch = ({
   const handleClickAway = () => setIsOpen(false);
 
   const selectedValues = useMemo(() => {
-    const valueIds = value?.map((v) => v.id);
-    return options.filter((option) => valueIds.includes(option.id));
+    const valueIds = value?.map((v) => v.id || v);
+    console.log(valueIds, 'VALUE IDS')
+    return options.filter((option) => valueIds?.includes(option.id));
   }, [value, options]);
-
+  console.log(selectedValues, 'selectedval', value, options)
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box width="100%">
-        <DropdownSearchButton open={isOpen} disabled={!options || disabled} onClick={handleClick} ref={anchorEl}>
+    {anchorComponent ? <div ref={anchorEl}>
+      {anchorComponent({onClick: handleClick, disabled, open: isOpen})}
+    </div> :         <DropdownSearchButton open={isOpen} disabled={!options || disabled} onClick={handleClick} ref={anchorEl}>
           <DropdownSearchImageLabelWrapper>
             {selectedValues?.length > 0 ? (
               selectedValues.map((v) => (
@@ -64,8 +68,9 @@ const DropdownSearch = ({
               <DropdownSearchLabel>{label}</DropdownSearchLabel>
             )}
           </DropdownSearchImageLabelWrapper>
-          <DropdownSearchDownIcon onClick={onClose} />
-        </DropdownSearchButton>
+          <DropdownSearchDownIcon onClick={() => onClose?.()} />
+        </DropdownSearchButton>}
+
         <DropdownSearchPopper open={isOpen} anchorEl={anchorEl.current} placement="bottom-start" disablePortal>
           <Autocomplete
             multiple={multiple}

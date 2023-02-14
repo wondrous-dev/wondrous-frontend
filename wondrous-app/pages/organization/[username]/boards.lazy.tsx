@@ -8,6 +8,7 @@ import EntitySidebar from 'components/Common/SidebarEntity';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {
+  GET_ORG_MILESTONE_BOARD,
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
@@ -297,6 +298,104 @@ const useGetOrgTaskBoardProposals = ({
   return { fetchMore: getProposalsFetchMore };
 };
 
+const useGetOrgMilestoneBoard = ({
+  columns,
+  setColumns,
+  setOrgTaskHasMore,
+
+  orgId,
+  userId,
+  view,
+  entityType,
+  setIsLoading,
+  search,
+  filters,
+}) => {
+  const [getOrgMilestoneBoard, { fetchMore, variables }] = useLazyQuery(GET_ORG_MILESTONE_BOARD, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
+    notifyOnNetworkStatusChange: true,
+    onCompleted: ({ getOrgTaskBoardTasks }) => {
+      setColumns(getOrgTaskBoardTasks);
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      setIsLoading(false);
+      console.log(error);
+    },
+  });
+  const getOrgTaskBoardTasksFetchMore = useCallback(() => {
+    fetchMore({
+      variables: {
+        offset:
+        columns.length      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        // TODO : fix me MULTIPOD
+        setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardTasks.length >= LIMIT);
+        return {
+          getOrgTaskBoardTasks: [...prev.getOrgTaskBoardTasks, ...fetchMoreResult.getOrgTaskBoardTasks],
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [columns, fetchMore, setOrgTaskHasMore]);
+
+  useEffect(() => {
+    if (!userId && entityType === ENTITIES_TYPES.MILESTONE && !search && orgId) {
+      const taskBoardStatuses =
+        filters?.statuses?.length > 0
+          ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+          : // double check in case we add new stuff and have no valid entityType.
+            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+      const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
+      getOrgMilestoneBoard({
+        variables: {
+          orgId,
+          podIds: filters?.podIds,
+          priorities: filters?.priorities,
+          offset: 0,
+          statuses: taskBoardStatuses,
+          limit: taskBoardLimit,
+          labelId: filters?.labelId,
+          date: filters?.date,
+          types: [entityType],
+          category: filters?.category,
+          ...extendFiltersByView(view, filters),
+          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
+            onlyPublic: true,
+          }),
+        },
+      });
+      setOrgTaskHasMore(true);
+    }
+  }, [getOrgMilestoneBoard, orgId, filters, setOrgTaskHasMore, userId, entityType]);
+
+  const fetchPerStatus = async (status, limit) => {
+    const columnIdx = columns?.findIndex((column) => column.status === status);
+    fetchMore({
+      variables: {
+        ...variables,
+        offset: columns[columnIdx]?.tasks?.length,
+        statuses: [status],
+        ...(limit ? { limit } : {}),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardTasks.length >= LIMIT);
+        return {
+          getOrgTaskBoardTasks: [...prev.getOrgTaskBoardTasks, ...fetchMoreResult.getOrgTaskBoardTasks],
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
+  return { fetchMore: getOrgTaskBoardTasksFetchMore, fetchPerStatus };
+
+};
+
 const useGetOrgTaskBoard = ({
   section,
   columns,
@@ -348,10 +447,24 @@ const useGetOrgTaskBoard = ({
       search,
       filters,
     }),
+    milestones: useGetOrgMilestoneBoard({
+      columns,
+      setColumns,
+      setOrgTaskHasMore,
+
+      orgId,
+      userId,
+      view,
+      entityType,
+      setIsLoading,
+      search,
+      filters,
+    }),
   };
 
+  const taskBoard = entityType === ENTITIES_TYPES.MILESTONE ? board.milestones : board.withoutUserId;
   const { fetchMore, fetchPerStatus }: any =
-    entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : userId ? board[userId] : board.withoutUserId;
+    entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : userId ? board[userId] : taskBoard;
 
   return { fetchMore, fetchPerStatus };
 };

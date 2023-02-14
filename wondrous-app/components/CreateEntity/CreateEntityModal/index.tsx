@@ -179,6 +179,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const isSubtask =
     parentTaskId !== undefined || (existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null);
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
+  const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
   const orgBoard = useOrgBoard();
@@ -335,16 +336,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const proposalChoices = useGetProposalChoices();
   const pods = useGetAvailableUserPods(form.values.orgId);
   const roles = useGetOrgRoles(form.values.orgId);
-
-  const handleOnchangePodId = (podId) => {
-    form.setValues({
-      ...form.values,
-      milestoneId: null,
-      privacyLevel: getPrivacyLevel(podId, pods),
-      podId,
-    });
-    form.setErrors({});
-  };
 
   const availablePullRequests = useGetPodPullRequests(form.values.podId);
   const availableRepos = useGetPodGithubIntegrations(form.values.podId);
@@ -538,7 +529,12 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           rewards,
           points: parseInt(form.values.points, 10),
           description,
+          ...(isMilestone ? {
+            podIds: form.values.podIds
+          } : {
           podId: form.values.podId,
+
+          })
         },
       },
     });
@@ -649,6 +645,21 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
   }, [form, setFormDirty]);
 
+  const handlePodChange = (value) => {
+    if(isMilestone) {
+      form.setFieldValue('podIds', value?.map((value) => value.id) || [])
+
+    }
+    else {
+      form.setValues({
+        ...formValues,
+        milestoneId: null,
+        privacyLevel: getPrivacyLevel(value?.id, pods),
+      })
+    }
+  }
+  const podValue = isMilestone ? form.values.podIds : form.values.podId;
+  console.log(form, 'FORM1')
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={isFullScreen} data-cy="modal-create-entity">
       <ConvertTaskToBountyModal
@@ -719,8 +730,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                   fetchedUserPermissionsContext,
                   form.values.orgId
                 )}
-                value={form.values.podId}
-                onChange={handleOnchangePodId}
+                multiple={isMilestone}
+                value={podValue}
+                onChange={handlePodChange}
                 disabled={isSubtask || formValues !== undefined}
               />
             </>
@@ -1778,7 +1790,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           <TaskTemplatePicker
             options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
             value={form.values.orgId}
-            onChange={handleOnchangePodId}
+            onChange={handlePodChange}
             disabled={formValues !== undefined}
             handleSubmitTemplate={handleSubmitTemplate}
             paymentMethods={paymentMethods}

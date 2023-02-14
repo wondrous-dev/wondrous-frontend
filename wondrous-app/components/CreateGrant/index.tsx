@@ -261,11 +261,11 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
     form.setErrors({});
   };
 
-  const handleOnchangePodId = (podId) => {
+  const handleOnchangePodId = (pod) => {
     form.setValues({
       ...form.values,
-      privacyLevel: getPrivacyLevel(podId, pods),
-      podId,
+      privacyLevel: getPrivacyLevel(pod?.value, pods),
+      podId: pod?.value,
     });
     form.setErrors({});
   };

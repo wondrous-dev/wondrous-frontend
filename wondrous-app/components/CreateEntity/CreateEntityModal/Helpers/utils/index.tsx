@@ -187,6 +187,7 @@ export const filterOptionsWithPermission = (
       imageUrl: profilePicture,
       label: name,
       value: id,
+      id,
       color,
     }));
 };
@@ -304,21 +305,18 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
-    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags, Fields.categories],
+    fields: [Fields.dueDate, Fields.priority],
     createMutation: useCreateMilestone,
     updateMutation: useUpdateMilestone,
     initialValues: {
       orgId: null,
-      podId: null,
+      podIds: [],
       title: '',
       description: plainTextToRichText(''),
       dueDate: null,
-      points: null,
-      labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       priority: null,
-      categories: null,
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
