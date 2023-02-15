@@ -220,7 +220,7 @@ function PodInviteLinkModal(props) {
       value: role?.id,
     };
   });
-  const podUserIds = podUsers.map((user) => user?.user?.id);
+  const podUserIds = podUsers?.map((user) => user?.user?.id);
 
   const filterOrgUsersForAutocomplete = (users) => {
     if (!users) {
