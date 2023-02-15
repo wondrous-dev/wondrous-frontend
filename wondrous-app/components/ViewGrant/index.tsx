@@ -257,7 +257,12 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                       )}
                     </TaskModalHeaderWrapper>
                     <TaskModalHeaderWrapperRight>
-                      <TaskModalHeaderShare fetchedTask={grant} />
+                      <TaskModalHeaderShare
+                        fetchedTask={{
+                          ...grant,
+                          type: 'grant',
+                        }}
+                      />
                       <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
                       <Menu
                         canArchive={canArchive}
