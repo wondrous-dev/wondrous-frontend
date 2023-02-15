@@ -14,9 +14,9 @@ import RolePill from 'components/Common/RolePill';
 import { InputAdornment } from '@mui/material';
 import SearchIcon from 'components/Icons/search';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import { HeaderButton } from 'components/organization/wrapper/styles';
 
 import DeleteBasketIcon from 'components/Icons/DeleteIcon';
-import Button from 'components/Button';
 import GradientHeading from 'components/GradientHeading';
 import palette from 'theme/palette';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -42,51 +42,10 @@ import {
   DeleteBox,
 } from './styles';
 
-// const handleSendInvite = () => {
-//   const usersList = selectedUsersList
-//     .filter((item) => item.type !== 'email')
-//     .map((item) => ({ userId: item.id, roleId: item.roleId }));
-//   const emailList = selectedUsersList
-//     .filter((item) => item.type === 'email')
-//     .map((item) => ({ email: item.email, roleId: item.roleId }));
-
-//   if (emailList?.length) {
-//     sendPodEmailInvites({
-//       variables: {
-//         input: {
-//           expiry: null,
-//           emailsAndRoles: emailList,
-//           podId,
-//         },
-//       },
-//     }).then(() => {
-//       if (!usersList?.length) {
-//         setSnackbarAlertMessage('Email invites sent successfully');
-//         setSnackbarAlertOpen(true);
-//         handleOnClose();
-//       }
-//     });
-//   }
-
-//   if (usersList?.length) {
-//     batchAddUsers({
-//       variables: {
-//         input: {
-//           usersRoles: usersList,
-//           podId,
-//         },
-//       },
-//     }).then(() => {
-//       setSnackbarAlertMessage('User invites sent successfully');
-//       setSnackbarAlertOpen(true);
-//       handleOnClose();
-//     });
-//   }
-// };
-
 function PodInviteLinkModal(props) {
   const { podId, open, onClose } = props;
   const isMobile = useIsMobile();
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
   const [copied, setCopied] = useState(false);
   const [activeRoleId, setActiveRoleId] = useState(null);
   const [linkType, setLinkType] = useState('public');
@@ -160,6 +119,7 @@ function PodInviteLinkModal(props) {
     setInviteLink('');
     setActiveRoleId(null);
     setInputText(null);
+    setPotentialInviteeList([]);
   };
 
   const handleOnCopy = () => {
@@ -270,6 +230,45 @@ function PodInviteLinkModal(props) {
         inviteeToRemove?.user?.username !== invitee?.user?.username || inviteeToRemove.email !== invitee?.email
     );
     setPotentialInviteeList(newList);
+  };
+  const handleSendInvite = async () => {
+    const users = potentialInviteeList.filter((invitee) => invitee?.type === 'user');
+    const emails = potentialInviteeList.filter((invitee) => invitee?.type === 'email');
+    const emailAndRoleId = emails.map((invitee) => ({
+      email: invitee.email,
+      roleId: invitee?.role?.id,
+    }));
+    const userIdandRoleId = users.map((invitee) => ({
+      userId: invitee?.user?.id,
+      roleId: invitee?.role?.id,
+    }));
+    console.log('userIdandRoleId', userIdandRoleId);
+    console.log('emailAndRoleId', emailAndRoleId);
+    let addUserPromise
+    let sendEmailPromise
+    if (userIdandRoleId?.length > 0) {
+       addUserPromise = batchAddUsers({
+        variables: {
+          input: {
+            podId,
+            usersRoles: userIdandRoleId,
+          },
+        },
+      });
+    }
+    if (emailAndRoleId?.length > 0) {
+       sendEmailPromise = sendPodEmailInvites({
+        variables: {
+          input: {
+            podId,
+            emailsAndRoles: emailAndRoleId,
+          },
+        },
+      });
+    }
+    await Promise.all([sendEmailPromise, addUserPromise])
+
+    handleOnClose();
   };
 
   return (
@@ -408,6 +407,13 @@ function PodInviteLinkModal(props) {
           ))}{' '}
         </UsersDetailsBox>
       </UserBox>
+      {potentialInviteeList?.length > 0 && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}>
+          <HeaderButton reversed onClick={handleSendInvite}>
+            Send Invite
+          </HeaderButton>
+        </div>
+      )}
     </Modal>
   );
 }

@@ -161,7 +161,7 @@ export const CONNECT_NOTION_TO_POD = gql`
 `;
 
 export const SEND_POD_EMAIL_INVITES = gql`
-  mutation sendPodRoleInviteEmails($input: PodInviteLinkInput) {
+  mutation sendPodRoleInviteEmails($input: PodEmailInviteInput) {
     sendPodRoleInviteEmails(input: $input) {
       success
     }

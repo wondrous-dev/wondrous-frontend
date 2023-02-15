@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK, SEND_ORG_EMAIL_INVITES } from 'graphql/mutations/org';
@@ -11,9 +11,9 @@ import { getRoleEmoji } from 'components/Settings/Members/MembersTableRow/helper
 import RolePill from 'components/Common/RolePill';
 import { InputAdornment } from '@mui/material';
 import SearchIcon from 'components/Icons/search';
+import { HeaderButton } from 'components/organization/wrapper/styles';
 
 import DeleteBasketIcon from 'components/Icons/DeleteIcon';
-import Button from 'components/Button';
 import GradientHeading from 'components/GradientHeading';
 import palette from 'theme/palette';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -42,6 +42,7 @@ import {
 function OrgInviteLinkModal(props) {
   const { orgId, open, onClose } = props;
   const isMobile = useIsMobile();
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
   const [copied, setCopied] = useState(false);
   const [activeRoleId, setActiveRoleId] = useState(null);
   const [linkType, setLinkType] = useState(LinkType.PUBLIC);
@@ -57,6 +58,15 @@ function OrgInviteLinkModal(props) {
     userPermissionsContext,
     orgId: board?.orgId,
     podId: board?.podId,
+  });
+
+  const [sendOrgEmailInvites] = useMutation(SEND_ORG_EMAIL_INVITES, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (e) => {
+      console.error(e);
+    },
   });
 
   const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
@@ -89,6 +99,7 @@ function OrgInviteLinkModal(props) {
     setInviteLink('');
     setActiveRoleId(null);
     setInputText(null);
+    setPotentialInviteeList([]);
   };
 
   const handleOnCopy = () => {
@@ -160,6 +171,24 @@ function OrgInviteLinkModal(props) {
     setPotentialInviteeList(newList);
   };
 
+  const handleSendInvite = () => {
+    const emailAndRoleId = potentialInviteeList.map((invitee) => ({
+      email: invitee.email,
+      roleId: invitee.role.id,
+    }));
+    sendOrgEmailInvites({
+      variables: {
+        input: {
+          orgId,
+          emailsAndRoles: emailAndRoleId,
+        },
+      },
+    }).then((res) => {
+      setSnackbarAlertMessage('Invites sent successfully');
+      setSnackbarAlertOpen(true);
+      handleOnClose();
+    });
+  };
   return (
     <Modal title="Add Members" open={open} onClose={handleOnClose} maxWidth={660}>
       <GradientHeading fontSize={24} mb="20px" gradient="89.67deg, #CCBBFF 37.16%, #00BAFF 108.05%">
@@ -278,6 +307,13 @@ function OrgInviteLinkModal(props) {
           ))}{' '}
         </UsersDetailsBox>
       </UserBox>
+      {potentialInviteeList?.length > 0 && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}>
+          <HeaderButton reversed onClick={handleSendInvite}>
+            Send Invite
+          </HeaderButton>
+        </div>
+      )}
     </Modal>
   );
 }

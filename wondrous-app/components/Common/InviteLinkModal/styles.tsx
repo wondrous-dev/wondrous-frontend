@@ -152,6 +152,7 @@ export const UserBox = styled.div`
   width: 100%;
   height: auto;
   max-height: 400px;
+  margin-bottom: 15px;
 `;
 
 export const UsersDetailsBox = styled.div`
