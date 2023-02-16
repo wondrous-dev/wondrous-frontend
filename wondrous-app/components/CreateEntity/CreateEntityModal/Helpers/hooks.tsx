@@ -62,6 +62,12 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
 import { Typography } from '@mui/material';
 import { palette } from '@mui/system';
+import {
+  GET_ORG_HOME_TASK_OBJECTS,
+  GET_POD_HOME_TASK_OBJECTS,
+  GET_ORG_HOME_PROPOSALS,
+  GET_POD_HOME_PROPOSALS,
+} from 'graphql/queries/projectPage';
 
 const HANDLE_TASKS = {
   REMOVE: {
@@ -324,6 +330,8 @@ export const useCreateTask = () => {
       'getTasksForMilestone',
       SEARCH_USER_CREATED_TASKS,
       GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
+      GET_ORG_HOME_TASK_OBJECTS,
+      GET_POD_HOME_TASK_OBJECTS,
     ],
     onCompleted: ({ createTask: createTaskData }) => setCornerWidgetValue(createTaskData),
   });
@@ -352,6 +360,8 @@ export const useCreateMilestone = () => {
       'getMilestones',
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
+      GET_ORG_HOME_TASK_OBJECTS,
+      GET_POD_HOME_TASK_OBJECTS,
     ],
     onCompleted: ({ createMilestone: createMilestoneData }) => setCornerWidgetValue(createMilestoneData),
   });
@@ -405,6 +415,8 @@ export const useCreateBounty = () => {
       'getPerTypeTaskCountForPodBoard',
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
+      GET_ORG_HOME_TASK_OBJECTS,
+      GET_POD_HOME_TASK_OBJECTS,
     ],
     onCompleted: ({ createBounty: createBountyData }) => setCornerWidgetValue(createBountyData),
   });
@@ -576,6 +588,8 @@ export const useCreateTaskProposal = () => {
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getUserTaskBoardProposals',
+      GET_ORG_HOME_PROPOSALS,
+      GET_POD_HOME_PROPOSALS,
     ],
     onCompleted: ({ createTaskProposal: createTaskProposalData }) =>
       setCornerWidgetValue({
