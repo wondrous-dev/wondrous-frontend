@@ -1,35 +1,18 @@
-import { useQuery } from '@apollo/client';
-import EntitySidebar from 'components/Common/SidebarEntity';
-import GrantsBoard from 'components/GrantsBoard';
-import BoardPageHeader from 'components/Pod/wrapper/BoardPageHeader';
-import { GET_POD_BY_ID } from 'graphql/queries';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { PodBoardContext } from 'utils/contexts';
-import { useGetPodById, useGlobalContext, usePageDataContext, usePodPageFetch } from 'utils/hooks';
+import MetaTags from 'components/MetaTags';
+import React from 'react';
 
-const GrantsPage = () => {
-  const router = useRouter();
-  const { podId } = router.query;
-  const { userPermissionsContext } = useGlobalContext();
+import BoardSkeleton from 'components/Dashboard/boards/BoardSkeleton';
+import { getServerSideProps } from 'utils/board/dataFetching';
+import lazy from 'utils/enhancements/lazy';
 
-  const { data } = usePodPageFetch(podId);
+const BoardsLazyPage = lazy(() => import('./boards.lazy'), BoardSkeleton);
 
-  return (
-    <PodBoardContext.Provider
-      value={{
-        pod: data?.getPodById,
-        podId,
-        orgId: data?.getPodById?.orgId,
-        userPermissionsContext,
-      }}
-    >
-      <EntitySidebar>
-        <BoardPageHeader headerTitle="Grants">
-          <GrantsBoard />
-        </BoardPageHeader>
-      </EntitySidebar>
-    </PodBoardContext.Provider>
-  );
-};
-export default GrantsPage;
+const BoardsPage = (props) => (
+  <>
+    <MetaTags meta={props.meta} />
+    <BoardsLazyPage {...props} />
+  </>
+);
+
+export default BoardsPage;
+export { getServerSideProps };

@@ -1,39 +1,19 @@
-import { useRouter } from 'next/router';
-import { OrgBoardContext } from 'utils/contexts';
-import { useGetOrgFromUsername, useGlobalContext, usePageDataContext } from 'utils/hooks';
-import EntitySidebar from 'components/Common/SidebarEntity';
-import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
-import GrantsBoard from 'components/GrantsBoard';
-import { useEffect } from 'react';
+import MetaTags from 'components/MetaTags';
+import React from 'react';
 
-const GrantsPage = () => {
-  const router = useRouter();
-  const { setPageData } = usePageDataContext();
-  const { username } = router.query;
-  const org = useGetOrgFromUsername(username);
-  useEffect(() => {
-    if (org) {
-      setPageData({ orgData: org });
-    }
-  }, [org]);
+import BoardSkeleton from 'components/Dashboard/boards/BoardSkeleton';
 
-  useEffect(() => () => setPageData({}), []);
+import lazy from 'utils/enhancements/lazy';
+import { getServerSideProps } from 'utils/board/dataFetching';
 
-  const { userPermissionsContext } = useGlobalContext();
-  return (
-    <OrgBoardContext.Provider
-      value={{
-        orgId: org?.id,
-        orgData: org,
-        userPermissionsContext,
-      }}
-    >
-      <EntitySidebar>
-        <BoardPageHeader orgData={org} onSearch={() => {}} headerTitle="Grants">
-          <GrantsBoard />
-        </BoardPageHeader>
-      </EntitySidebar>
-    </OrgBoardContext.Provider>
-  );
-};
-export default GrantsPage;
+const BoardsLazyPage = lazy(() => import('./boards.lazy'), BoardSkeleton);
+
+const BoardsPage = (props) => (
+  <>
+    <MetaTags meta={props.meta} />
+    <BoardsLazyPage {...props} />
+  </>
+);
+
+export default BoardsPage;
+export { getServerSideProps };
