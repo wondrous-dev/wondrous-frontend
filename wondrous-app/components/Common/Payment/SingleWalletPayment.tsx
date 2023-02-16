@@ -464,7 +464,6 @@ export function SingleWalletPayment({
   };
 
   const handlePaymentClick = () => {
-    console.log('im here bra');
     if (!selectedWallet) {
       console.log('wallet not yet selected');
     }

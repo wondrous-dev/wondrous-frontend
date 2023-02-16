@@ -929,3 +929,7 @@ export const CALENDAR_CONFIG = {
     { label: 'Week View', value: CALENDAR_VIEW.Week },
   ],
 };
+
+export const ANALYTIC_EVENTS = {
+  DOCUMENT_CLICK: 'document_click',
+};

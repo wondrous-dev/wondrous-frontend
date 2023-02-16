@@ -25,7 +25,7 @@ import {
   TaskSectionDisplayData,
   TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
-  TaskSectionDisplayLabelText
+  TaskSectionDisplayLabelText,
 } from 'components/Common/TaskViewModal/styles';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplication/styles';
@@ -45,7 +45,7 @@ import {
   GRANT_APPLICATION_EDITABLE_STATUSES,
   GRANT_APPLICATION_STATUSES,
   PERMISSIONS,
-  PRIVACY_LEVEL
+  PRIVACY_LEVEL,
 } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
@@ -298,7 +298,14 @@ const ViewGrantApplication = ({ onClose }) => {
             )}
           </TaskModalHeaderWrapper>
           <TaskModalHeaderWrapperRight>
-            {grantApplication && <TaskModalHeaderShare fetchedTask={grantApplication} />}
+            {grantApplication && (
+              <TaskModalHeaderShare
+                fetchedTask={{
+                  ...grantApplication,
+                  type: ENTITIES_TYPES.GRANT_APPLICATION,
+                }}
+              />
+            )}
             <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
             <Menu
               canEdit={canEditAndComment}
@@ -320,7 +327,13 @@ const ViewGrantApplication = ({ onClose }) => {
                 <IconWrapper>
                   <statusAndIcon.icon />
                 </IconWrapper>
-                <Typography color={palette.white} whiteSpace="nowrap" fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                <Typography
+                  color={palette.white}
+                  whiteSpace="nowrap"
+                  fontWeight={500}
+                  fontSize={14}
+                  fontFamily={typography.fontFamily}
+                >
                   {statusAndIcon.label}
                 </Typography>
               </ItemPill>

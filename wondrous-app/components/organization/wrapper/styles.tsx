@@ -357,6 +357,7 @@ export const HeaderContributorsText = styled(HeaderContributorsAmount)`
   && {
     color: ${palette.grey51};
     font-weight: 600;
+    width: max-content;
   }
 `;
 
