@@ -1,7 +1,6 @@
 import { SafeImage } from 'components/Common/Image';
 import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
 import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
-import { deserializeRichText, plainTextToRichText } from 'components/RichText';
 import { FormikValues } from 'formik';
 import assignIn from 'lodash/assignIn';
 import assignWith from 'lodash/assignWith';
@@ -27,6 +26,7 @@ import {
 import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
 import * as Yup from 'yup';
+import { deserializeRichText, plainTextToRichText } from 'components/PlateRichEditor/utils';
 import {
   useCreateBounty,
   useCreateMilestone,

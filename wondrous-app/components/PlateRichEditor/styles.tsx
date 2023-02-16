@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import palette from 'theme/palette';
 
-export const MediaUploadButton = styled.button`
+export const ToolbarButton = styled.button`
   display: flex;
   align-items: center;
   background: none;

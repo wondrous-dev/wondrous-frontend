@@ -1,7 +1,7 @@
 import React from 'react';
 import { BlockToolbarButton, getPluginType, useEventPlateId } from '@udecode/plate';
 
-import { HeaderIcon } from 'components/RichText/icons/HeaderIcon';
+import { HeaderIcon } from 'components/PlateRichEditor/icons/HeaderIcon';
 import { ElementTypes, useMyPlateEditorRef } from '../../types';
 
 export const BasicElementToolbarButtons = () => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { TComboboxItem } from '@udecode/plate-combobox';
 
-import { HeaderIcon } from 'components/RichText/icons/HeaderIcon';
 import AddImageIcon from 'components/PlateRichEditor/icons/AddImageIcon';
 import AddQuoteIcon from 'components/PlateRichEditor/icons/AddQuoteIcon';
 import BoldIcon from 'components/PlateRichEditor/icons/BoldIcon';
@@ -13,6 +12,8 @@ import StrikethroughIcon from 'components/PlateRichEditor/icons/StrikethroughIco
 import UnderlineIcon from 'components/PlateRichEditor/icons/UnderlineIcon';
 import { ElementTypes } from 'components/PlateRichEditor/types';
 import CodeIcon from 'components/PlateRichEditor/icons/CodeIcon';
+import { HeaderIcon } from 'components/PlateRichEditor/icons/HeaderIcon';
+import TodoListIcon from 'components/PlateRichEditor/icons/TodoListIcon';
 
 export const slashCommandItems: TComboboxItem<any>[] = [
   {
@@ -64,6 +65,11 @@ export const slashCommandItems: TComboboxItem<any>[] = [
     key: ElementTypes.ELEMENT_OL,
     text: 'Numbered List',
     data: { icon: <NumberedListIcon /> },
+  },
+  {
+    key: ElementTypes.ELEMENT_TODO_LI,
+    text: 'Todo List',
+    data: { icon: <TodoListIcon /> },
   },
   {
     key: ElementTypes.ELEMENT_LINK,

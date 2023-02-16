@@ -13,12 +13,14 @@ import {
   PlatePluginKey,
   removeNodes,
   select,
+  setNodes,
   TComboboxItem,
   TNodeProps,
   toggleList,
   toggleMark,
   toggleNodeType,
   triggerFloatingLink,
+  TTodoListItemElement,
   withoutMergingHistory,
   withoutNormalizing,
 } from '@udecode/plate';
@@ -106,6 +108,9 @@ export const getMentionOnSelectItem =
           break;
         case ElementTypes.ELEMENT_OL:
           toggleList(editor, { type: ElementTypes.ELEMENT_OL });
+          break;
+        case ElementTypes.ELEMENT_TODO_LI:
+          setNodes<TTodoListItemElement>(editor, { type: ElementTypes.ELEMENT_TODO_LI });
           break;
         case ElementTypes.ELEMENT_LINK:
           triggerFloatingLink(editor, { focused: true });

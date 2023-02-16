@@ -9,7 +9,6 @@ import apollo from 'services/apollo';
 
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import DropdownSearch from 'components/DropdownSearch';
-import { useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
 import {
@@ -31,8 +30,6 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-// import { Editor, Transforms } from 'slate';
-// import { ReactEditor } from 'slate-react';
 import {
   ENTITIES_TYPES,
   TASK_STATUS_TODO,
