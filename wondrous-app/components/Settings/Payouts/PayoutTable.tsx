@@ -159,7 +159,8 @@ const PayoutTable = (props: PayoutTableProps) => {
       <BottomActionBarMultipleChainSelectedError>
         <QuestionMarkIcon />
         <BottomActionBarMultipleChainSelectedErrorText>
-          You can batch pay <span>one</span> chain at a time. But you can{' '}
+          You can only batch pay <span>one</span> chain at a time. Please also make sure the selected contributors have
+          a wallet. But you can{' '}
           <button type="button" onClick={handleDownloadToCSV}>
             download CSV
           </button>{' '}
