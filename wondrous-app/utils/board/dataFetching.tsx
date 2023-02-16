@@ -6,6 +6,8 @@ import {
   GET_GRANT_BY_ID,
   GET_GRANT_APPLICATION_BY_ID,
 } from 'graphql/queries';
+import { capitalize } from 'utils/common';
+import { ENTITIES_TYPES } from 'utils/constants';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getServerSideProps = async (context) => {
@@ -17,6 +19,7 @@ export const getServerSideProps = async (context) => {
         img: '',
       };
 
+      let entityType = '';
       let entity;
 
       if (context.query?.taskProposal) {
@@ -26,6 +29,7 @@ export const getServerSideProps = async (context) => {
         });
 
         entity = data.getTaskProposalById;
+        entityType = ENTITIES_TYPES.PROPOSAL;
       }
       if (context.query?.task) {
         const { data } = await apollo.query({
@@ -34,6 +38,7 @@ export const getServerSideProps = async (context) => {
         });
 
         entity = data.getTaskById;
+        entityType = entity.type || ENTITIES_TYPES.TASK;
       }
 
       if (context.query?.grant && !context.query?.grantApplicationId) {
@@ -41,7 +46,7 @@ export const getServerSideProps = async (context) => {
           query: GET_GRANT_BY_ID,
           variables: { grantId: context.query.grant },
         });
-
+        entityType = ENTITIES_TYPES.GRANT;
         entity = data.getGrantById;
       }
 
@@ -50,6 +55,7 @@ export const getServerSideProps = async (context) => {
           query: GET_GRANT_APPLICATION_BY_ID,
           variables: { grantApplicationId: context.query.grantApplicationId },
         });
+        entityType = ENTITIES_TYPES.GRANT_APPLICATION;
         entity = data.getGrantApplicationById;
       }
       if (!entity) {
@@ -57,7 +63,9 @@ export const getServerSideProps = async (context) => {
       }
 
       meta.title = entity.title;
-      meta.description = JSON.parse(entity.description)[0]?.children[0]?.text;
+      meta.description =
+        JSON.parse(entity.description)?.[0]?.children[0]?.text ||
+        `${capitalize(entityType.split('_').join(' '))} description`;
 
       if (entity?.media.length) {
         const [media] = entity.media;
