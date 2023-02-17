@@ -3,8 +3,8 @@ import {
   PlateFloatingLink,
   RenderAfterEditable,
 } from '@udecode/plate';
-import { MyPlatePlugin, MyValue } from '../typescript/plateTypes';
+import { CustomPlatePlugin, TextEditorValue } from '../types';
 
-export const linkPlugin: Partial<MyPlatePlugin<LinkPlugin>> = {
-  renderAfterEditable: PlateFloatingLink as RenderAfterEditable<MyValue>,
+export const linkPlugin: Partial<CustomPlatePlugin<LinkPlugin>> = {
+  renderAfterEditable: PlateFloatingLink as RenderAfterEditable<TextEditorValue>,
 };
