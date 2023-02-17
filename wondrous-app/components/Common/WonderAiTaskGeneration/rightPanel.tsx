@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import RobotHand from 'components/Common/WonderAiTaskGeneration/images/robot-hand.svg';
 import SmallRobotIcon from 'components/Common/WonderAiTaskGeneration/images/small-robot-icon.svg';
 import {
@@ -38,6 +38,7 @@ import {
   EditorPlaceholder,
   EditorToolbar,
 } from 'components/CreateEntity/CreateEntityModal/styles';
+import { PlateRichEditor } from 'components/PlateRichEditor';
 import {} from 'components/Common/WonderAiTaskGeneration/styles';
 import { useMutation, useQuery } from '@apollo/client';
 import { GENERATE_GPT_TASKS } from 'graphql/mutations';
@@ -72,8 +73,6 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import moment from 'moment';
 import { cloneDeep, isEmpty, isNull } from 'lodash';
 import { useRouter } from 'next/router';
-import { ReactEditor } from 'slate-react';
-import { Editor, Transforms } from 'slate';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
 import { SafeImage } from 'components/Common/Image';
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
@@ -85,7 +84,7 @@ import DropdownSearch from 'components/DropdownSearch';
 import Tags from 'components/Tags';
 
 const RightPanel = (props) => {
-  const { entityType, setField, orgId, podId, existingTask, errors, setErrors, editor } = props;
+  const { entityType, setField, orgId, podId, existingTask, errors, setErrors } = props;
   const router = useRouter();
 
   const [paymentMethodInactiveError, setPaymentMethodInactiveError] = useState(false);
@@ -93,8 +92,6 @@ const RightPanel = (props) => {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
-
-  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
 
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(orgId);
@@ -160,37 +157,16 @@ const RightPanel = (props) => {
           autoFocus
         />
 
-        <EditorToolbar ref={setEditorToolbarNode} />
-        <EditorContainer
-          onClick={() => {
-            // since editor will collapse to 1 row on input, we need to emulate min-height somehow
-            // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
-            ReactEditor.focus(editor);
-            // also we need to move cursor to the last position in the editor
-            Transforms.select(editor, {
-              anchor: Editor.end(editor, []),
-              focus: Editor.end(editor, []),
-            });
+        <PlateRichEditor
+          id={`editor-${existingTask?.orgId}${existingTask?.tempId}`}
+          inputValue={existingTask?.description}
+          mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
+          onChange={(value) => {
+            setField('description', value);
           }}
-        >
-          <RichTextEditor
-            editor={editor}
-            onMentionChange={search}
-            initialValue={existingTask?.description}
-            mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
-            placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
-            toolbarNode={editorToolbarNode}
-            onChange={(value) => {
-              setField('description', value);
-            }}
-            editorContainerNode={document.querySelector('#modal-scrolling-container')}
-            onClick={(e) => {
-              // we need to stop click event propagation,
-              // since EditorContainer moves cursor to the last position in the editor on click
-              e.stopPropagation();
-            }}
-          />
-        </EditorContainer>
+          placeholder="Type ‘/’ for commands"
+        />
+
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reviewer)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Reviewer</CreateEntityLabel>

@@ -1,5 +1,5 @@
 import React, { CSSProperties, useMemo, useState } from 'react';
-import { PlateStyles } from 'components/PlateRichEditor/styles';
+import { PlateStyles, StickyTopSection } from 'components/PlateRichEditor/styles';
 import { convertSlateNodesToPlate } from 'components/PlateRichEditor/utils';
 import {
   AutoformatPlugin,
@@ -50,6 +50,7 @@ import { createMyPlugins, ElementTypes, CustomEditor, TextEditorValue } from './
 import { linkPlugin } from './plugins/linkPlugin';
 
 interface Props {
+  id?: string;
   inputValue: TextEditorValue | Descendant[];
   onChange: (value) => void;
   mentionables?: { display: string; id: string; profilePicture?: string }[];
@@ -112,6 +113,7 @@ const components = createPlateUI({
 
 const PlateRichEditor = ({
   mentionables,
+  id,
   inputValue,
   onChange,
   mediaUploads,
@@ -203,17 +205,19 @@ const PlateRichEditor = ({
 
   return (
     <PlateStyles>
-      <PlateProvider<TextEditorValue> plugins={plugins} onChange={handleChange} value={value}>
-        <Toolbar>
-          <ToolbarButtons mediaUploads={mediaUploads} />
-        </Toolbar>
-        {message ? (
-          <Typography fontFamily={typography.fontFamily} color={palette.blue20} fontWeight={500} fontSize="14px">
-            {message}
-          </Typography>
-        ) : null}
+      <PlateProvider<TextEditorValue> plugins={plugins} onChange={handleChange} value={value} id={id}>
+        <StickyTopSection>
+          <Toolbar>
+            <ToolbarButtons mediaUploads={mediaUploads} />
+          </Toolbar>
+          {message ? (
+            <Typography fontFamily={typography.fontFamily} color={palette.blue20} fontWeight={500} fontSize="14px">
+              {message}
+            </Typography>
+          ) : null}
+        </StickyTopSection>
 
-        <Plate editableProps={editableProps}>
+        <Plate editableProps={editableProps} id={id}>
           <MarkBalloonToolbar />
           <MentionCombobox items={customMentionables} />
           <MentionCombobox pluginKey="/" items={slashCommandItems} />

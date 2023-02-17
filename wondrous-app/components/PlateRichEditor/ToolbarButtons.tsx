@@ -1,6 +1,6 @@
 import React from 'react';
 import { KEY_EMOJI, LinkToolbarButton, setNodes, TTodoListItemElement } from '@udecode/plate';
-import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
+// import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import { usePlateEditorRef } from '@udecode/plate-core';
 
 import { ListToolbarButtons } from 'components/PlateRichEditor/plugins/ListToolbarButtons';
@@ -13,6 +13,8 @@ import { ElementTypes } from 'components/PlateRichEditor/types';
 import TodoListIcon from 'components/PlateRichEditor/icons/TodoListIcon';
 import { BasicElementToolbarButtons } from './plugins/basicElements/BasicElementToolbarButtons';
 
+// temporary disable emoji plugin due to this issue
+// https://github.com/udecode/plate/issues/2138
 export const ToolbarButtons = ({ mediaUploads }) => {
   const editor = usePlateEditorRef();
 
@@ -31,9 +33,11 @@ export const ToolbarButtons = ({ mediaUploads }) => {
       </ToolbarButton>
       <VerticalDivider />
       <LinkToolbarButton icon={<LinkIcon />} />
-      <ToolbarButton type="button" onClick={mediaUploads}>
-        <AddImageIcon />
-      </ToolbarButton>
+      {mediaUploads ? (
+        <ToolbarButton type="button" onClick={mediaUploads}>
+          <AddImageIcon />
+        </ToolbarButton>
+      ) : null}
       <VerticalDivider />
       <BlockQuoteElementToolbarButtons />
       {/*<EmojiToolbarDropdown pluginKey={KEY_EMOJI} icon={<EmojiEmotionsOutlinedIcon />} />*/}

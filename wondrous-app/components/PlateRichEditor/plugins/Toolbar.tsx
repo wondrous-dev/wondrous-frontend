@@ -2,9 +2,9 @@ import React from 'react';
 import { HeadingToolbar, ToolbarProps } from '@udecode/plate';
 import styled from 'styled-components';
 
-import palette from '../../../theme/palette';
+import palette from 'theme/palette';
 
-const HeadingToolbarStyles = styled(HeadingToolbar)`
+const HeadingToolbarStyled = styled(HeadingToolbar)`
   padding: 4px;
   margin: 0 0 1.25rem;
   background: ${palette.grey99};
@@ -14,9 +14,10 @@ const HeadingToolbarStyles = styled(HeadingToolbar)`
   border-radius: 4px;
   z-index: 1000;
   width: 100%;
+  max-width: 550px;
   color: ${palette.grey250};
   display: flex;
   justify-content: space-between;
 `;
 
-export const Toolbar = (props: ToolbarProps) => <HeadingToolbarStyles {...props} />;
+export const Toolbar = (props: ToolbarProps) => <HeadingToolbarStyled {...props} />;

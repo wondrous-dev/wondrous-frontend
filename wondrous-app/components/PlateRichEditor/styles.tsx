@@ -1,3 +1,4 @@
+import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import styled from 'styled-components';
 
 import palette from 'theme/palette';
@@ -79,7 +80,20 @@ export const RichTextStyled = styled.div`
   }
 `;
 
+export const StickyTopSection = styled.div`
+  width: 100%;
+  background: ${palette.grey900};
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+`;
+
 export const PlateStyles = styled.div`
+  height: 100%;
+  overflow-y: auto;
+  ${ScrollBarStyles};
+ 
+
   .slate-mention_input {
     box-shadow: none;
     background: none;

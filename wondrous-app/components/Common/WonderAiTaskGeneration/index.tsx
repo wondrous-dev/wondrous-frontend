@@ -1,9 +1,10 @@
 import Grid from '@mui/material/Grid';
+
+import { extractMentions, deserializeRichText } from 'components/PlateRichEditor';
 import { useContext, useEffect, useState } from 'react';
 import RobotHand from 'components/Common/WonderAiTaskGeneration/images/robot-hand.svg';
 import SmallRobotIcon from 'components/Common/WonderAiTaskGeneration/images/small-robot-icon.svg';
 import TrashIcon from 'components/Common/WonderAiTaskGeneration/images/trash-icon.svg';
-import { Editor, Transforms } from 'slate';
 import { CreateEntitySelectArrowIcon } from 'components/CreateEntity/CreateEntityModal/styles';
 import {
   PromptBox,
@@ -44,7 +45,6 @@ import palette from 'theme/palette';
 import { entityTypeData } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import { ENTITIES_TYPES } from 'utils/constants';
 import Checkbox from 'components/Checkbox';
-import { deserializeRichText, extractMentions, useEditor } from 'components/RichText';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
 import { GET_GPT_ENTITY_DESCRIPTION } from 'graphql/queries/gptEntityDescription';
@@ -85,27 +85,6 @@ const SuggestionRow = ({ suggestion, setActionPrompt }) => (
     <SuggestionRowText>{suggestion}</SuggestionRowText>
   </SuggestionRowContainer>
 );
-
-const resetEditor = (editor, newValue) => {
-  if (editor.children.length > 0) {
-    // Delete all entries leaving 1 empty node
-    Transforms.delete(editor, {
-      at: {
-        anchor: Editor.start(editor, []),
-        focus: Editor.end(editor, []),
-      },
-    });
-
-    // Removes empty node
-    Transforms.removeNodes(editor, {
-      at: [0],
-    });
-  }
-  if (newValue) {
-    // Insert array of children nodes
-    Transforms.insertNodes(editor, newValue);
-  }
-};
 
 const filterInput = (task) => {
   if (!task) return null;
@@ -159,12 +138,10 @@ const GeneratedTaskRow = ({
   setTaskToView,
   setTaskViewType,
   setClickSelectedList,
-  editor,
 }) => {
   const checked = selectedList.some((item) => item?.tempId === task.tempId);
   const onRowClick = () => {
     setTaskToView(task);
-    resetEditor(editor, task?.description);
     setTaskViewIndex(index);
     setTaskViewType(ENTITIES_TYPES.TASK);
     setClickSelectedList(true);
@@ -215,7 +192,6 @@ const WonderAiTaskGeneration = () => {
   const [milestone, setMilestone] = useState(null);
   const [parentTask, setParentTask] = useState(null);
   const [clickSelectedList, setClickSelectedList] = useState(false);
-  const editor = useEditor();
   // TODO: read from database
   const [entityDescription, setEntityDescription] = useState('');
   const [formErrors, setFormErrors] = useState({
@@ -498,25 +474,21 @@ const WonderAiTaskGeneration = () => {
                       if (promptGenerationType === GENERATION_TYPES[0]?.value) {
                         if (milestone) {
                           setTaskToView(milestone);
-                          resetEditor(editor, milestone?.value);
                         } else {
                           setTaskToView({
                             ...initialMilestoneValues,
                             title: actionPrompt,
                           });
-                          resetEditor(editor, initialMilestoneValues?.description);
                         }
                         setTaskToViewType(ENTITIES_TYPES.MILESTONE);
                       } else {
                         if (parentTask) {
                           setTaskToView(parentTask);
-                          resetEditor(editor, parentTask?.value);
                         } else {
                           setTaskToView({
                             ...initialTaskValues,
                             title: actionPrompt,
                           });
-                          resetEditor(editor, initialTaskValues?.description);
                         }
                         setTaskToViewType(ENTITIES_TYPES.TASK);
                       }
@@ -542,7 +514,6 @@ const WonderAiTaskGeneration = () => {
                       setTaskToView={setTaskToView}
                       setTaskViewType={setTaskToViewType}
                       setClickSelectedList={setClickSelectedList}
-                      editor={editor}
                       generatedTaskList={generatedTaskList}
                       setGeneratedTaskList={setGeneratedTaskList}
                     />
@@ -589,7 +560,6 @@ const WonderAiTaskGeneration = () => {
             {taskToView ? (
               <RightPanel
                 entityType={taskToViewType}
-                editor={editor}
                 setField={(field, value) => {
                   if (clickSelectedList) {
                     const newTaskList = generatedTaskList.map((task, index) => {
