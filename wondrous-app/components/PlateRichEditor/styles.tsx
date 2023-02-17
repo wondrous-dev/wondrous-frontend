@@ -138,8 +138,17 @@ export const PlateStyles = styled.div`
 
   div[class*='PlateFloatingLink___StyledFloatingLinkInsertRoot'],
   div[class*='PlateFloatingLink___StyledDiv'] {
-    background: #0f0f0f;
+    background: ${palette.grey125};
     border: 1px solid rgb(75, 75, 75);
+  }
+
+  div[class*='PlateFloatingLink___StyledDiv'] input {
+    color: ${palette.white};
+  }
+
+  div[class*='PlateFloatingLink___StyledDiv'] button,
+  div[class*='PlateFloatingLink___StyledDiv'] a{
+    background: none;
   }
 
   a[data-slate-node='element'],
