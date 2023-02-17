@@ -355,7 +355,7 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
-    fields: [Fields.dueDate, Fields.reward, Fields.voteOptions, Fields.voteType],
+    fields: [Fields.dueDate, Fields.reward, Fields.voteOptions, Fields.voteType, Fields.tags],
     createMutation: useCreateTaskProposal,
     updateMutation: useUpdateTaskProposal,
     initialValues: {
@@ -366,6 +366,7 @@ export const entityTypeData = {
       dueDate: null,
       rewards: [],
       milestoneId: null,
+      labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       categories: null,
