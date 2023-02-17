@@ -5,9 +5,9 @@ import palette from 'theme/palette';
 import { shrinkNumber } from 'utils/helpers';
 
 export default function Compensation({ rewards = null, ...props }) {
-  if (!rewards || !rewards?.[0].rewardAmount) return null;
+  const { icon, rewardAmount, symbol } = rewards?.[0] || {};
+  if (!rewards || !rewardAmount) return null;
   const { style, pillStyle = {}, id } = props;
-  const { icon, rewardAmount, symbol } = rewards[0] || {};
   const shrinkAmount = shrinkNumber(rewardAmount);
   return (
     <Grid
@@ -40,6 +40,7 @@ export default function Compensation({ rewards = null, ...props }) {
               style={{
                 width: '24px',
                 height: '24px',
+                borderRadius: '100%',
               }}
               alt="Icon"
             />

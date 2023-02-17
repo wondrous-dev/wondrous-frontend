@@ -31,6 +31,7 @@ function OrgSearch(props) {
     disabled,
     label,
     globalSearch,
+    autoFocus = false,
     logoStyle = { width: '42px', height: '42px' },
   } = props;
   const [anchorEl, setAnchorEl] = useState(null);
@@ -75,6 +76,7 @@ function OrgSearch(props) {
                 {...params}
                 ref={params.InputProps.ref}
                 disableUnderline
+                autoFocus={autoFocus}
                 placeholder="Search for any Org"
                 fullWidth
                 onChange={handleInputChange}

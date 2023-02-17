@@ -259,9 +259,8 @@ export const TURN_TASK_TO_BOUNTY = gql`
 export const CREATE_TASK_DISCORD_THREAD = gql`
   mutation createTaskDiscordThread($taskId: ID!) {
     createTaskDiscordThread(taskId: $taskId) {
-      guildIds
-
-      threadIds
+      guildId
+      threadId
     }
   }
 `;
@@ -299,6 +298,23 @@ export const MINT_TASK = gql`
 export const COMPLETE_TASK_MINT = gql`
   mutation completeTaskMint($operationId: String!) {
     completeTaskMint(operationId: $operationId) {
+      success
+    }
+  }
+`;
+
+export const GENERATE_GPT_TASKS = gql`
+  mutation generateGPTTasks($input: GPTTaskGenerationInput!) {
+    generateGPTTasks(input: $input) {
+      title
+      description
+    }
+  }
+`;
+
+export const CREATE_GPT_TASKS = gql`
+  mutation createGPTTasks($input: GPTTaskCreationInput) {
+    createGPTTasks(input: $input) {
       success
     }
   }

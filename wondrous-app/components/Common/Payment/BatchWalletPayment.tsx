@@ -129,10 +129,11 @@ function BatchWalletPayment(props) {
     setNotOwnerError(null);
     const wallet = wallets.filter((wallet) => wallet.id === selectedWalletId)[0];
     setSelectedWallet(wallet);
-    if (selectedWallet && selectedWallet.chain) {
+    if (wonderWeb3.chainName !== 'none' && selectedWallet && selectedWallet.chain) {
+      // the 'none' thing is silly
       connectSafeSdk(selectedWallet.chain, selectedWallet.address);
     }
-  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
+  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId, wonderWeb3.chainName, wallets]);
 
   const [proposeGnosisMultisendForSubmissions] = useMutation(PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS, {
     onCompleted: (data) => {

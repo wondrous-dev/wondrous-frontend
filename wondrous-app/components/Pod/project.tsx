@@ -35,6 +35,7 @@ const PodProject = () => {
       orgId: getPodById?.orgId,
       pod: getPodById,
       podId: getPodById?.id,
+      isHomepage: true,
     }),
     [getPodById, userPermissionsContext]
   );

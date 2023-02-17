@@ -138,6 +138,7 @@ const PayoutItem = (props: PayoutItemProps) => {
               <Button
                 buttonTheme={{
                   paddingX: 16,
+                  width: 'max-content',
                   paddingY: 7,
                   background: palette.background.default,
                   borderColor: isPayButtonDisabled
@@ -157,27 +158,33 @@ const PayoutItem = (props: PayoutItemProps) => {
             )}
 
             <NoUnderlineLink href={`/profile/${item?.payeeUsername}/about`} passHref>
-              <PayeeProfileLink>
-                <Grid display="flex" alignItems="center" gap="6px">
-                  <SafeImage
-                    useNextImage={false}
-                    width={32}
-                    height={32}
-                    src={item?.payeeProfilePicture}
-                    style={imageStyle}
-                    placeholderComp={<DefaultUserImage style={imageStyle} />}
-                    alt="Payee profile picture"
-                  />
-                  <Typography fontFamily={typography.fontFamily} fontSize="13px" fontWeight={700} color={palette.white}>
-                    {item?.payeeUsername}
-                  </Typography>
-                </Grid>
-              </PayeeProfileLink>
+              <Grid display="flex" alignItems="center" gap="6px">
+                <SafeImage
+                  useNextImage={false}
+                  width={32}
+                  height={32}
+                  src={item?.payeeProfilePicture}
+                  style={imageStyle}
+                  placeholderComp={<DefaultUserImage style={imageStyle} />}
+                  alt="Payee profile picture"
+                />
+                <Typography
+                  style={{
+                    width: 'max-content',
+                  }}
+                  fontFamily={typography.fontFamily}
+                  fontSize="13px"
+                  fontWeight={700}
+                  color={palette.white}
+                >
+                  {item?.payeeUsername}
+                </Typography>
+              </Grid>
             </NoUnderlineLink>
           </Grid>
           {!!addressTag && (
             <PayeeAddressTagContainer onClick={handleAddressCopy}>
-              <PayeeAddressTag hasAddressBeenCopied={hasAddressBeenCopied}>
+              <PayeeAddressTag $hasAddressBeenCopied={hasAddressBeenCopied}>
                 {hasAddressBeenCopied ? 'Address copied!' : addressTag}
               </PayeeAddressTag>
               <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />

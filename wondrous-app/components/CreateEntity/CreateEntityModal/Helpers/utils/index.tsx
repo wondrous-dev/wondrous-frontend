@@ -27,6 +27,7 @@ import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
 import * as Yup from 'yup';
 import { deserializeRichText, plainTextToRichText } from 'components/PlateRichEditor/utils';
+import parseISO from 'date-fns/parseISO';
 import {
   useCreateBounty,
   useCreateMilestone,
@@ -251,6 +252,7 @@ export enum Fields {
   priority,
   voteOptions,
   voteType,
+  categories,
 }
 
 export const entityTypeData = {
@@ -268,6 +270,7 @@ export const entityTypeData = {
       Fields.priority,
       Fields.tags,
       Fields.githubPullRequest,
+      Fields.categories,
     ],
     createMutation: useCreateTask,
     updateMutation: useUpdateTask,
@@ -301,7 +304,7 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
-    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags],
+    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags, Fields.categories],
     createMutation: useCreateMilestone,
     updateMutation: useUpdateMilestone,
     initialValues: {
@@ -327,6 +330,7 @@ export const entityTypeData = {
       Fields.milestone,
       Fields.priority,
       Fields.tags,
+      Fields.categories,
     ],
     createMutation: useCreateBounty,
     updateMutation: useUpdateBounty,
@@ -351,15 +355,7 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
-    fields: [
-      Fields.dueDate,
-      Fields.reward,
-      Fields.milestone,
-      Fields.priority,
-      Fields.tags,
-      Fields.voteOptions,
-      Fields.voteType,
-    ],
+    fields: [Fields.dueDate, Fields.reward, Fields.voteOptions, Fields.voteType],
     createMutation: useCreateTaskProposal,
     updateMutation: useUpdateTaskProposal,
     initialValues: {
@@ -370,7 +366,6 @@ export const entityTypeData = {
       dueDate: null,
       rewards: [],
       milestoneId: null,
-      labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       categories: null,
@@ -392,6 +387,7 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
     {
       ...existingTask,
       description,
+      dueDate: existingTask.dueDate ? parseISO(existingTask.dueDate.substring(0, 10)) : null,
       mediaUploads: transformMediaFormat(existingTask?.media),
       categories: isEmpty(remainingCategories) ? null : transformCategoryFormat(remainingCategories),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
@@ -469,6 +465,13 @@ export interface GrantCreateModalProps extends ICreateEntityModal {
     podId?: string;
     media?: any;
     privacyLevel?: string;
+    reviewers?: {
+      id: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+      profilePicture: string;
+    }[];
     reward?: {
       paymentMethodId?: string;
       rewardAmount?: string;

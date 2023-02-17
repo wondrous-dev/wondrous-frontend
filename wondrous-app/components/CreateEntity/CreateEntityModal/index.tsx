@@ -6,6 +6,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import apollo from 'services/apollo';
+import formatDate from 'date-fns/format';
 
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import DropdownSearch from 'components/DropdownSearch';
@@ -166,7 +167,6 @@ import { MediaItem } from '../MediaItem';
 import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
-import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 import { TaskTemplatePickerWrapper } from './TaskTemplatePicker/styles';
 import CustomProposal from './CustomProposal';
 import SubmitterWalletConnectSelector from './Helpers/RequireSubmitterWalletconnect';
@@ -264,6 +264,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
+
       const {
         chooseGithubIssue,
         chooseGithubPullRequest,
@@ -292,6 +293,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         timezone,
         userMentions,
         categories,
+        // set due date to 00:00:01 to avoid timezone issues
+        dueDate: values.dueDate ? formatDate(values.dueDate, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
         ...(isProposal && {
           voteType,
           ...(voteType === PROPOSAL_VOTE_CHOICES.CUSTOM && { voteOptions }),

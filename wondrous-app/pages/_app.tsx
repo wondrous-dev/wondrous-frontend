@@ -34,9 +34,11 @@ import { CornerWidgetProvider } from 'components/Common/CornerWidget';
 declare global {
   interface Window {
     analytics: any;
+    Localize: any;
   }
 }
 
+const LOCALIZE_KEY = process.env.NEXT_PUBLIC_LOCALIZE_KEY;
 function renderSnippet() {
   const opts = {
     apiKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || '',
@@ -106,6 +108,46 @@ function MyApp({ Component, pageProps }) {
         <link rel="shortcut icon" href="/images/favicon.ico" />
       </Head>
       <Script id="segment-script" dangerouslySetInnerHTML={{ __html: renderSnippet() }} />
+      <Script
+        id="localize"
+        src="https://global.localizecdn.com/localize.js"
+        onLoad={(a) => {
+          // eslint-disable-next-line no-unused-vars
+          !(function (a) {
+            if (!a.Localize) {
+              a.Localize = {};
+              for (
+                let e = [
+                    'translate',
+                    'untranslate',
+                    'phrase',
+                    'initialize',
+                    'translatePage',
+                    'setLanguage',
+                    'getLanguage',
+                    'getSourceLanguage',
+                    'detectLanguage',
+                    'getAvailableLanguages',
+                    'untranslatePage',
+                    'bootstrap',
+                    'prefetch',
+                    'on',
+                    'off',
+                    'hideWidget',
+                    'showWidget',
+                  ],
+                  t = 0;
+                t < e.length;
+                t++
+              )
+                a.Localize[e[t]] = function () {};
+              return true;
+            }
+          })(window);
+          // @ts-ignore
+          Localize.initialize({ key: LOCALIZE_KEY, rememberLanguage: true, autoApprove: true });
+        }}
+      />
       <IsMobileContext.Provider value={isMobile}>
         <StyledComponentProvider theme={theme}>
           <ThemeProvider theme={theme}>

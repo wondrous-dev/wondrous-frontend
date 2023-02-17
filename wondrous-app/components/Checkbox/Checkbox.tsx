@@ -7,7 +7,7 @@ import styles from './CheckboxStyles';
 
 const CheckMarkIcon = (
   <Box sx={styles.icon}>
-    <Image src="/images/icons/checkmark.svg" alt="checkmark" width={10} height={10} />
+    <Image src="/images/icons/checkmark.svg" alt="checkmark" width={12} height={12} />
   </Box>
 );
 

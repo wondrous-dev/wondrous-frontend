@@ -57,31 +57,6 @@ export const SEARCH_ORG_TASK_BOARD_PROPOSALS = gql`
   ${TaskProposalCardFragment}
 `;
 
-export const GET_ORG_TASK_BOARD_SUBMISSIONS = gql`
-  query getOrgTaskBoardSubmissions(
-    $orgId: ID!
-    $statuses: [String]
-    $searchString: String
-    $podIds: [String]
-    $limit: Int
-    $offset: Int
-  ) {
-    getOrgTaskBoardSubmissions(
-      input: {
-        orgId: $orgId
-        statuses: $statuses
-        searchString: $searchString
-        podIds: $podIds
-        limit: $limit
-        offset: $offset
-      }
-    ) {
-      ...TaskSubmissionCardFragment
-    }
-  }
-  ${TaskSubmissionCardFragment}
-`;
-
 export const GET_ORG_TASK_BOARD_TASKS = gql`
   query getOrgTaskBoardTasks(
     $orgId: ID!
@@ -347,15 +322,6 @@ export const GET_POD_TASK_BOARD_TASKS = gql`
   ${TaskCardFragment}
 `;
 
-export const GET_POD_TASK_BOARD_SUBMISSIONS = gql`
-  query getPodTaskBoardSubmissions($input: PodTaskBoardQueryInput) {
-    getPodTaskBoardSubmissions(input: $input) {
-      ...TaskSubmissionCardFragment
-    }
-  }
-  ${TaskSubmissionCardFragment}
-`;
-
 export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
   query getPerStatusTaskCountForPodBoard($podId: ID!) {
     getPerStatusTaskCountForPodBoard(podId: $podId) {
@@ -378,31 +344,3 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD = gql`
   }
   ${PerStatusTaskCountFragment}
 `;
-
-// export const GET_ORG_SIDEBAR_COUNT = gql`
-//   query getOrgSidebarCount($orgId: ID!) {
-//     getOrgSidebarCount(orgId: $orgId) {
-//       bountyCount
-//       taskCount
-//       proposalCount
-//       milestoneCount
-//       membersCount
-//       rolesCount
-//       resourcesCount
-//     }
-//   }
-// `;
-
-// export const GET_POD_SIDEBAR_COUNT = gql`
-//   query getPodSidebarCount($podId: ID!) {
-//     getPodSidebarCount(podId: $podId) {
-//       bountyCount
-//       taskCount
-//       proposalCount
-//       milestoneCount
-//       membersCount
-//       rolesCount
-//       resourcesCount
-//     }
-//   }
-// `;

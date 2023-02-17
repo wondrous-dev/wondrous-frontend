@@ -413,19 +413,6 @@ function Wrapper(props) {
               <PrivacyContainer>
                 <PrivacyText>{orgProfile?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
               </PrivacyContainer>
-              {isGr15Sponsor && (
-                <ExploreOrgGr15
-                  onTaskPage={onTaskPage}
-                  onBountyPage={onBountyPage}
-                  hasGr15Bounties={hasGr15Bounties}
-                  hasGr15Tasks={hasGr15Tasks}
-                  onFilterChange={onFilterChange}
-                  orgProfile={orgProfile}
-                  filters={boardFilters}
-                  exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                  setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                />
-              )}
             </HeaderTopLeftContainer>
             <RolePodMemberContainer>
               {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (

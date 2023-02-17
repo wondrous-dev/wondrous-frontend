@@ -38,7 +38,6 @@ export const PodFragment = gql`
     contributorCount
     tasksCompletedCount
     tasksIncompleteCount
-    milestoneCount
     links {
       url
       displayName

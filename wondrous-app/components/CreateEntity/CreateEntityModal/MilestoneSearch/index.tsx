@@ -25,7 +25,16 @@ import {
   MilestoneSearchWrapper,
 } from './styles';
 
-function MilestoneSearch({ options, onChange, value, handleClose, formValues = null, disabled, autoFocus = false }) {
+function MilestoneSearch({
+  options,
+  onChange,
+  value,
+  handleClose,
+  formValues = null,
+  disabled = false,
+  autoFocus = false,
+  onNewMilestoneClick = null,
+}) {
   const [createMilestone, setCreateMilestone] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -46,15 +55,18 @@ function MilestoneSearch({ options, onChange, value, handleClose, formValues = n
       <CreateEntity // this is a circular depency, better to instantiate this in wrapper, and apply the global watcher pattern
         entityType={ENTITIES_TYPES.MILESTONE}
         handleCloseModal={() => {
+          onNewMilestoneClick && onNewMilestoneClick();
           setCreateMilestone(false);
           handleClickAway();
         }}
         open={isOpen}
         cancel={() => {
+          onNewMilestoneClick && onNewMilestoneClick();
           setCreateMilestone(false);
           handleClickAway();
         }}
         handleClose={({ data }) => {
+          onNewMilestoneClick && onNewMilestoneClick();
           setCreateMilestone(false);
           handleClickAway();
           onChange(data?.createMilestone?.id);
@@ -114,6 +126,7 @@ function MilestoneSearch({ options, onChange, value, handleClose, formValues = n
                 <MilestoneSearchAutocompletePopper {...params}>
                   <MilestoneSearchCreateMilestoneButton
                     onClick={() => {
+                      onNewMilestoneClick && onNewMilestoneClick();
                       setCreateMilestone(true);
                     }}
                   >

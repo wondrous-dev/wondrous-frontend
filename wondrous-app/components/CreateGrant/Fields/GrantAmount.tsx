@@ -1,27 +1,28 @@
-import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
 
+import Grid from '@mui/material/Grid';
+import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
+import { InfoPoint, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
+import { StyledLink } from 'components/Common/text';
 import {
   CreateEntityPaymentMethodItem,
   filterPaymentMethods,
   useGetPaymentMethods,
 } from 'components/CreateEntity/CreateEntityModal/Helpers';
-import { StyledLink } from 'components/Common/text';
 import {
-  CreateEntityWrapper,
-  CreateEntityPaymentMethodSelected,
-  CreateEntitySelectArrowIcon,
-  CreateEntityPaymentMethodOption,
   CreateEntityAutocompletePopperRenderInputAdornment,
   CreateEntityAutocompletePopperRenderInputIcon,
+  CreateEntityError,
   CreateEntityLabel,
   CreateEntityLabelWrapper,
-  CreateEntityError,
+  CreateEntityPaymentMethodOption,
+  CreateEntityPaymentMethodSelected,
+  CreateEntitySelectArrowIcon,
+  CreateEntityWrapper,
 } from 'components/CreateEntity/CreateEntityModal/styles';
-import { InfoPoint, TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
-import Grid from '@mui/material/Grid';
-import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
 import { GRANT_STYLE_MAP } from './GrantStyle';
+import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
 
 const GrantAmount = ({
   value,
@@ -62,11 +63,11 @@ const GrantAmount = ({
       return `You are granting from a pool ${value.rewardAmount} ${paymentMethod?.symbol}`;
     }
   }, [grantStyle, value.rewardAmount, numOfGrant, activePaymentMethods, value.paymentMethodId]);
+
   return (
     <TaskSectionDisplayDiv alignItems="start">
       {activePaymentMethods?.length === 0 && (
         <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
-          {' '}
           Set up payment method
         </StyledLink>
       )}

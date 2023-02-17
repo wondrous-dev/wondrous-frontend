@@ -115,6 +115,7 @@ export const transformTaskProposalToTaskProposalCard = (taskProposal, extraData)
   orgUsername: extraData?.orgUsername || taskProposal?.org?.username,
   podName: extraData?.podName || taskProposal?.pod?.name,
   podColor: extraData?.podColor || taskProposal?.pod?.color,
+  podProfilePicture: extraData?.podProfilePicture || taskProposal?.pod?.profilePicture,
   isProposal: true,
 });
 

@@ -166,7 +166,7 @@ export function SingleWalletPayment({
     if (selectedWallet && selectedWallet.chain) {
       connectSafeSdk(selectedWallet.chain, selectedWallet.address);
     }
-  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
+  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId, wallets]);
 
   const [proposeGnosisTxForSubmission] = useMutation(PROPOSE_GNOSIS_TX_FOR_SUBMISSION, {
     onCompleted: (data) => {
@@ -464,7 +464,6 @@ export function SingleWalletPayment({
   };
 
   const handlePaymentClick = () => {
-    console.log('im here bra');
     if (!selectedWallet) {
       console.log('wallet not yet selected');
     }
