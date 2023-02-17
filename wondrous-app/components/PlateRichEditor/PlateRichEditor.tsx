@@ -32,22 +32,22 @@ import {
   withProps,
 } from '@udecode/plate';
 import { Descendant } from 'slate';
+import Typography from '@mui/material/Typography';
 
+import typography from 'theme/typography';
+import palette from 'theme/palette';
 import { createCustomMentionPlugin } from 'components/PlateRichEditor/customPlugins/CustomMention/createMentionPlugin';
 import { slashCommandItems } from 'components/PlateRichEditor/constants';
 import { ToolbarButtons } from 'components/PlateRichEditor/ToolbarButtons';
 import { MarkBalloonToolbar } from 'components/PlateRichEditor/plugins/balloonToolbar/MarkBalloonToolbar';
 import { autoformatPlugin } from 'components/PlateRichEditor/plugins/autoformat/autoformatPlugin';
 import { MentionCombobox, MentionElement } from 'components/PlateRichEditor/customPlugins/Mention';
-import { Typography } from '@mui/material';
 import { exitBreakPlugin } from './plugins/exitBreakPlugin';
 import { resetBlockTypePlugin } from './plugins/resetBlockTypePlugin';
 import { softBreakPlugin } from './plugins/softBreakPlugin';
 import { Toolbar } from './plugins/Toolbar';
 import { createMyPlugins, ElementTypes, CustomEditor, TextEditorValue } from './types';
 import { linkPlugin } from './plugins/linkPlugin';
-import typography from '../../theme/typography';
-import palette from '../../theme/palette';
 
 interface Props {
   inputValue: TextEditorValue | Descendant[];
