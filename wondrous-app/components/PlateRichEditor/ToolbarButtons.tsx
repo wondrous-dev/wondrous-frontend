@@ -1,5 +1,5 @@
 import React from 'react';
-import { EmojiToolbarDropdown, KEY_EMOJI, LinkToolbarButton, setNodes, TTodoListItemElement } from '@udecode/plate';
+import { KEY_EMOJI, LinkToolbarButton, setNodes, TTodoListItemElement } from '@udecode/plate';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import { usePlateEditorRef } from '@udecode/plate-core';
 
@@ -36,7 +36,7 @@ export const ToolbarButtons = ({ mediaUploads }) => {
       </ToolbarButton>
       <VerticalDivider />
       <BlockQuoteElementToolbarButtons />
-      <EmojiToolbarDropdown pluginKey={KEY_EMOJI} icon={<EmojiEmotionsOutlinedIcon />} />
+      {/*<EmojiToolbarDropdown pluginKey={KEY_EMOJI} icon={<EmojiEmotionsOutlinedIcon />} />*/}
     </>
   );
 };

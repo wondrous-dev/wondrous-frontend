@@ -8,7 +8,6 @@ import {
   createBoldPlugin,
   createCodePlugin,
   createComboboxPlugin,
-  createEmojiPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
   createHorizontalRulePlugin,
@@ -46,7 +45,6 @@ import { resetBlockTypePlugin } from './plugins/resetBlockTypePlugin';
 import { softBreakPlugin } from './plugins/softBreakPlugin';
 import { Toolbar } from './plugins/Toolbar';
 import { createMyPlugins, ElementTypes, CustomEditor, TextEditorValue } from './types';
-import { emojiPlugin } from './plugins/emojiPlugin';
 import { linkPlugin } from './plugins/linkPlugin';
 import typography from '../../theme/typography';
 import palette from '../../theme/palette';
@@ -170,7 +168,6 @@ const PlateRichEditor = ({
             options: { query: { allow: [ElementTypes.ELEMENT_HR] } },
           }),
           createLinkPlugin(linkPlugin),
-
           createResetNodePlugin(resetBlockTypePlugin),
           createListPlugin(),
           createBoldPlugin(),
@@ -192,7 +189,10 @@ const PlateRichEditor = ({
               trigger: '/',
             },
           }),
-          createEmojiPlugin(emojiPlugin),
+          // temporary disable emoji plugin due to this issue
+          // https://github.com/udecode/plate/issues/2138
+          // this fix doesn't work https://github.com/udecode/plate/commit/54297ef798c392bdfaa142a97dbad0fcc5fd5d94#diff-3e728fa028e44b1e4817b3bb10e775038344609e2d383663751de04ac415ffcb
+          // createEmojiPlugin(emojiPlugin),
         ],
         {
           components,

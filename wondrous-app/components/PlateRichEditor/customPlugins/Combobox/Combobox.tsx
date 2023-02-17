@@ -56,7 +56,7 @@ const ComboboxContent = <TData extends Data = NoData>(
   useEffect(() => {
     comboboxActions.filteredItems(
       storeItems
-        .filter(filter ? filter(text) : (value) => value.text.toLowerCase().startsWith(text.toLowerCase()))
+        .filter(filter ? filter(text) : (value) => value.text.toLowerCase().includes(text.toLowerCase()))
         .sort(sort?.(text))
         .slice(0, maxSuggestions)
     );
