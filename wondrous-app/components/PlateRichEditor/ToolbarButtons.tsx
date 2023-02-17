@@ -40,7 +40,7 @@ export const ToolbarButtons = ({ mediaUploads }) => {
       ) : null}
       <VerticalDivider />
       <BlockQuoteElementToolbarButtons />
-      {/*<EmojiToolbarDropdown pluginKey={KEY_EMOJI} icon={<EmojiEmotionsOutlinedIcon />} />*/}
+      {/* <EmojiToolbarDropdown pluginKey={KEY_EMOJI} icon={<EmojiEmotionsOutlinedIcon />} /> */}
     </>
   );
 };
