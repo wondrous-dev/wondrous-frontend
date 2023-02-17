@@ -1487,7 +1487,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
-        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.tags)}>
+        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.categories)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Category</CreateEntityLabel>
           </CreateEntityLabelWrapper>
