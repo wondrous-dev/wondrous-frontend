@@ -92,7 +92,6 @@ export const PlateStyles = styled.div`
   height: 100%;
   overflow-y: auto;
   ${ScrollBarStyles};
- 
 
   .slate-mention_input {
     box-shadow: none;
@@ -101,15 +100,15 @@ export const PlateStyles = styled.div`
 
   .slate-ToolbarButton-active[data-testid='ToolbarButton'],
   .slate-ToolbarButton:hover[data-testid='ToolbarButton'] {
-    color: #ffffff;
-    background: #232323;
+    color: ${palette.white};
+    background: ${palette.black92};
     border-radius: 4px;
     height: 28px;
   }
 
   .slate-mention {
     background-color: unset;
-    color: #00baff;
+    color: ${palette.highlightBlue};
     padding: 0;
     box-shadow: none;
     font-size: 14px;
@@ -122,7 +121,7 @@ export const PlateStyles = styled.div`
   .slate-HrElement-hr {
     padding-top: unset;
     padding-bottom: unset;
-    background-color: #282828;
+    background-color: ${palette.grey99};
   }
 
   .slate-code[data-slate-leaf='true'] {
@@ -131,8 +130,8 @@ export const PlateStyles = styled.div`
   }
 
   .plate-tooltip {
-    color: #ffffff;
-    background-color: #282828;
+    color: ${palette.white};
+    background-color: ${palette.grey99};
     padding: 5px;
     border-radius: 4px;
   }
@@ -147,6 +146,6 @@ export const PlateStyles = styled.div`
   a[data-slate-node='element']:hover,
   a[data-slate-node='element']:active,
   a[data-slate-node='element']:visited {
-    color: #00baff !important;
+    color: ${palette.highlightBlue} !important;
   }
 `;

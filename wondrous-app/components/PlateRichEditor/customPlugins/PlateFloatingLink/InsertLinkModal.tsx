@@ -11,9 +11,9 @@ const InsertLinkModal: React.FC<{
   initialLinkText?: string;
 }> = ({ initialLinkText }) => {
   const [linkUrl, setLinkUrl] = useState('');
-  const [linkUrlError, setLinkUrlError] = useState('Error');
+  const [linkUrlError, setLinkUrlError] = useState('');
   const [linkText, setLinkText] = useState(initialLinkText);
-  const [linkTextError, setLinkTextError] = useState('Error');
+  const [linkTextError, setLinkTextError] = useState('');
   const selectors = useFloatingLinkSelectors();
   const editor = useEditorRef();
   const mode = selectors.mode();
@@ -27,35 +27,22 @@ const InsertLinkModal: React.FC<{
     setLinkText(text);
   }, [mode, url, text]);
 
-  useEffect(() => {
-    const onEscPress = (e) => {
-      if (e.key === 'Escape') {
-        floatingLinkActions.hide();
-      }
-    };
-
-    document.addEventListener('keydown', onEscPress);
-
-    return () => document.removeEventListener('keydown', onEscPress);
-  }, []);
-
-  useEffect(() => setLinkUrlError(''), [linkUrl]);
-  useEffect(() => setLinkTextError(''), [linkText]);
-
-  const submitLink = () => {
-    let error = false;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let invalid = false;
 
     if (!linkText?.trim()) {
-      error = true;
+      invalid = true;
       setLinkTextError('Please enter link text');
     }
 
     if (!isUrl(linkUrl)) {
-      error = true;
+      invalid = true;
       setLinkUrlError('Please enter valid URL');
     }
 
-    if (!error) {
+    if (!invalid) {
       floatingLinkActions.url(linkUrl);
       floatingLinkActions.text(linkText.trim());
 
@@ -68,56 +55,46 @@ const InsertLinkModal: React.FC<{
   };
 
   return (
-    <Modal open={open} onBackdropClick={() => floatingLinkActions.hide()}>
-      <LinkModal>
-        <LinkModalTitle>Link settings</LinkModalTitle>
-        <LinkModalInput
-          placeholder="URL"
-          error={!!linkUrlError}
-          helperText={linkUrlError}
-          value={linkUrl}
-          onChange={(e) => setLinkUrl(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
-              floatingLinkActions.hide();
-            }
+    <Modal open={open}>
+      <form onSubmit={handleSubmit}>
+        <LinkModal>
+          <LinkModalTitle>Link settings</LinkModalTitle>
+          <LinkModalInput
+            placeholder="URL"
+            error={!!linkUrlError}
+            helperText={linkUrlError}
+            value={linkUrl}
+            onChange={(e) => {
+              setLinkUrlError('');
+              setLinkUrl(e.target.value);
+            }}
+            autoFocus
+          />
+          <LinkModalInput
+            placeholder="Link text"
+            error={!!linkTextError}
+            helperText={linkTextError}
+            value={linkText}
+            onChange={(e) => {
+              setLinkTextError('');
+              setLinkText(e.target.value);
+            }}
+          />
 
-            if (e.key === 'Enter') {
-              submitLink();
-            }
-          }}
-          autoFocus
-        />
-        <LinkModalInput
-          placeholder="Link text"
-          error={!!linkTextError}
-          helperText={linkTextError}
-          value={linkText}
-          onChange={(e) => setLinkText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
-              floatingLinkActions.hide();
-            }
-
-            if (e.key === 'Enter') {
-              submitLink();
-            }
-          }}
-        />
-
-        <Box
-          sx={{
-            display: 'grid',
-            gridGap: '8px',
-            gridAutoFlow: 'column',
-          }}
-        >
-          <CommonButton highlighted onClick={submitLink}>
-            Save
-          </CommonButton>
-          <CommonButton onClick={() => floatingLinkActions.hide()}>Cancel</CommonButton>
-        </Box>
-      </LinkModal>
+          <Box
+            sx={{
+              display: 'grid',
+              gridGap: '8px',
+              gridAutoFlow: 'column',
+            }}
+          >
+            <CommonButton type="submit" highlighted>
+              Save
+            </CommonButton>
+            <CommonButton onClick={() => floatingLinkActions.hide()}>Cancel</CommonButton>
+          </Box>
+        </LinkModal>
+      </form>
     </Modal>
   );
 };
