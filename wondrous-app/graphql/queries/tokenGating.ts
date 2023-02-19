@@ -27,29 +27,6 @@ export const LIT_SIGNATURE_EXIST = gql`
   }
 `;
 
-export const CHECK_ORG_TOKEN_GATING_CONDITION = gql`
-  query checkOrgTokenGatingCondition($orgId: ID!, $userId: ID!) {
-    checkOrgTokenGatingCondition(orgId: $orgId, userId: $userId) {
-      success
-    }
-  }
-`;
-
-export const CHECK_ORG_ROLE_TOKEN_GATING_CONDITION = gql`
-  query checkOrgRoleTokenGatingCondition($orgRoleId: ID!, $userId: ID!) {
-    checkOrgRoleTokenGatingCondition(orgRoleId: $orgRoleId, userId: $userId) {
-      success
-    }
-  }
-`;
-
-export const CHECK_POD_ROLE_TOKEN_GATING_CONDITION = gql`
-  query checkPodRoleTokenGatingCondition($podRoleId: ID!, $userId: ID!) {
-    checkPodRoleTokenGatingCondition(podRoleId: $podRoleId, userId: $userId) {
-      success
-    }
-  }
-`;
 
 export const GET_TOKEN_INFO = gql`
   query getTokenInfo($contractAddress: String!, $chain: String) {
