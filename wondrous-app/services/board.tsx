@@ -909,7 +909,6 @@ export const populateProposalColumns = (proposals, columns, skipEmptyColumns = f
       };
     });
   }
-  console.log(newColumns, 'NEW COLUMNS', withCount);
   return newColumns;
 };
 

@@ -7,6 +7,7 @@ import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
 import { getFilterSchema } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { ColumnsContext } from 'utils/contexts';
+import ProposalBoard from 'components/Common/ProposalBoard';
 
 const Boards = dynamic(() => import('components/Common/Boards'), { suspense: true });
 const BountyBoard = dynamic(() => import('components/Common/BountyBoard'), { suspense: true });
@@ -15,7 +16,7 @@ const MilestoneBoard = dynamic(() => import('components/Common/MilestoneBoard'),
 export const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
   [ENTITIES_TYPES.MILESTONE]: withCardsLayout(MilestoneBoard, 3),
-  [ENTITIES_TYPES.PROPOSAL]: Boards,
+  [ENTITIES_TYPES.PROPOSAL]: ProposalBoard,
   [ENTITIES_TYPES.BOUNTY]: withCardsLayout(BountyBoard, 4),
 };
 
