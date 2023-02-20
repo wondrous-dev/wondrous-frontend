@@ -21,6 +21,9 @@ import WonderSvg from 'components/Common/ProposalBoard/images/wonder.svg';
 import AddSvg from 'components/Common/ProposalBoard/images/add.svg';
 import { useState } from 'react';
 import CreateButton from 'components/ProjectProfile/CreateButton';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
+import { ENTITIES_TYPES } from 'utils/constants';
 
 const proposalStatuses = [
   {
@@ -41,48 +44,64 @@ const proposalStatuses = [
   },
 ];
 
-const NewProposalButton = () => (
-  <AddProposalButtonContainer>
+const NewProposalButton = ({ handleOpenModal }) => (
+  <AddProposalButtonContainer onClick={handleOpenModal}>
     <AddSvg />
     <AddProposalButtonContainerText>New Proposal</AddProposalButtonContainerText>
   </AddProposalButtonContainer>
 );
 
 const ProposalBoard = () => {
-  const [tab, setTab] = useState(0);
+  const [openProposalModal, setOpenProposalModal] = useState(false);
+  const [status, setStatus] = useState(proposalStatuses[0].label);
+  const handleOpenModal = () => {
+    setOpenProposalModal((prevState) => !prevState);
+  };
+
   return (
-    <ProposalBoardContainer>
-      <LeftSideContainer>
-        <LeftNewProposalContainer>
-          <NewProposalButton />
-        </LeftNewProposalContainer>
-        <LeftSideText>Status</LeftSideText>
-        <LeftSectionContainer>
-          {proposalStatuses.map((status) => (
-            <LeftSideTab key={status?.label}>
-              {status.image}
-              <LeftSideTabText>{status.label}</LeftSideTabText>
+    <>
+      <CreateModalOverlay open={openProposalModal} onClose={handleOpenModal}>
+        <CreateEntityModal
+          entityType={ENTITIES_TYPES.PROPOSAL}
+          handleClose={handleOpenModal}
+          resetEntityType={() => {}}
+          setEntityType={() => {}}
+          cancel={handleOpenModal}
+        />
+      </CreateModalOverlay>
+      <ProposalBoardContainer>
+        <LeftSideContainer>
+          <LeftNewProposalContainer>
+            <NewProposalButton handleOpenModal={handleOpenModal} />
+          </LeftNewProposalContainer>
+          <LeftSideText>Status</LeftSideText>
+          <LeftSectionContainer>
+            {proposalStatuses.map((status) => (
+              <LeftSideTab key={status?.label}>
+                {status.image}
+                <LeftSideTabText>{status.label}</LeftSideTabText>
+              </LeftSideTab>
+            ))}
+          </LeftSectionContainer>
+          <LeftSideText>Proposal type</LeftSideText>
+          <LeftSectionContainer>
+            <LeftSideTab>
+              <WonderSvg />
+              <LeftSideTabText>Wonder</LeftSideTabText>
             </LeftSideTab>
-          ))}
-        </LeftSectionContainer>
-        <LeftSideText>Proposal type</LeftSideText>
-        <LeftSectionContainer>
-          <LeftSideTab>
-            <WonderSvg />
-            <LeftSideTabText>Wonder</LeftSideTabText>
-          </LeftSideTab>
-          <LeftSideTab>
-            <SnapshotSvg />
-            <LeftSideTabText>Snapshot</LeftSideTabText>
-          </LeftSideTab>
-        </LeftSectionContainer>
-      </LeftSideContainer>
-      <RightSideContainer>
-        <EmptyDiv>
-          <NewProposalButton />
-        </EmptyDiv>
-      </RightSideContainer>
-    </ProposalBoardContainer>
+            <LeftSideTab>
+              <SnapshotSvg />
+              <LeftSideTabText>Snapshot</LeftSideTabText>
+            </LeftSideTab>
+          </LeftSectionContainer>
+        </LeftSideContainer>
+        <RightSideContainer>
+          <EmptyDiv>
+            <NewProposalButton handleOpenModal={handleOpenModal} />
+          </EmptyDiv>
+        </RightSideContainer>
+      </ProposalBoardContainer>
+    </>
   );
 };
 
