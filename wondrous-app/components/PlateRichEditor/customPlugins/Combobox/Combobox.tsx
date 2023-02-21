@@ -1,5 +1,5 @@
+import React, { useCallback, useContext, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
-import React, { useCallback, useEffect } from 'react';
 import {
   comboboxActions,
   comboboxSelectors,
@@ -22,7 +22,8 @@ import {
   ComboboxList,
   SlashCommandItemIcon,
 } from 'components/PlateRichEditor/customPlugins/Combobox/styles';
-import palette from '../../../../theme/palette';
+import usePlate from 'hooks/usePlate';
+import palette from 'theme/palette';
 import { ComboboxProps } from './Combobox.types';
 import DefaultUserImage from '../../../Common/Image/DefaultUserImage';
 
@@ -33,7 +34,7 @@ const ComboboxContent = <TData extends Data = NoData>(
   >
 ) => {
   const { component: Component, items, portalElement, onRenderItem, trigger } = props;
-
+  const { setComboboxOpen } = usePlate();
   const targetRange = useComboboxSelectors.targetRange();
   const filteredItems = useComboboxSelectors.filteredItems();
   const highlightedIndex = useComboboxSelectors.highlightedIndex();
@@ -61,6 +62,12 @@ const ComboboxContent = <TData extends Data = NoData>(
         .slice(0, maxSuggestions)
     );
   }, [filter, sort, storeItems, maxSuggestions, text]);
+
+  useEffect(() => {
+    setComboboxOpen(true);
+
+    return () => setComboboxOpen(false);
+  }, []);
 
   // Get target range rect
   const getBoundingClientRect = useCallback(

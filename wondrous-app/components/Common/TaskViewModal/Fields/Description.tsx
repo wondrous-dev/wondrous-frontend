@@ -16,7 +16,7 @@ import { DescriptionIconWrapper, DescriptionWrapper, TitleIconWrapper } from './
 import { useSubmit } from './hooks/useSubmit';
 
 const EditContent = ({ description, orgId }) => {
-  const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(orgId);
+  const { data: orgUsersData } = useGetOrgUsers(orgId);
   const { submit, error } = useSubmit({ field: FIELDS.DESCRIPTION });
 
   const handleChange = async (value) => await submit(JSON.stringify(value));
