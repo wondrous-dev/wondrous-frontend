@@ -1,4 +1,5 @@
 import 'react-aspect-ratio/aspect-ratio.css';
+import PlateProvider from 'components/PlateRichEditor/PlateProvider';
 import React, { useEffect, useState } from 'react';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
@@ -158,12 +159,14 @@ function MyApp({ Component, pageProps }) {
                   <Web3ReactProvider getLibrary={getLibrary}>
                     <WonderWeb3Provider>
                       <HotkeyContext.Provider value={showHotkeys}>
-                        <NavigationProgress />
-                        <SidebarLayout>
-                          <OnboardingTour>
-                            <Layout Component={Component} pageProps={pageProps} />≈
-                          </OnboardingTour>
-                        </SidebarLayout>
+                        <PlateProvider>
+                          <NavigationProgress />
+                          <SidebarLayout>
+                            <OnboardingTour>
+                              <Layout Component={Component} pageProps={pageProps} />≈
+                            </OnboardingTour>
+                          </SidebarLayout>
+                        </PlateProvider>
                       </HotkeyContext.Provider>
                     </WonderWeb3Provider>
                   </Web3ReactProvider>

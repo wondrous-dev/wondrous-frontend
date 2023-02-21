@@ -112,4 +112,7 @@ const RichTextViewer: React.FC<{ text?: string; asText?: boolean }> = ({ text, a
   );
 };
 
+/**
+ * @deprecated Use PlateRichEditor instead
+ */
 export default memo(RichTextViewer);

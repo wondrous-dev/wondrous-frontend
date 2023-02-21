@@ -14,4 +14,4 @@ export { default as StatusField } from './StatusField';
 export { default as ApplicationField } from './ApplicationField';
 export { default as ProposerField } from './ProposerField';
 export { default as InitiativesField } from './InitiativesField';
-export {default as ModalFields} from './ModalFields';
+export { default as ModalFields } from './ModalFields';

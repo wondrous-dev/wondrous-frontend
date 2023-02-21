@@ -44,7 +44,6 @@ import {
   MediaUploadDiv,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { MediaItem } from 'components/CreateEntity/MediaItem';
-import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
 import formatDate from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
@@ -54,8 +53,8 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Editor, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
+import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
+import { deserializeRichText } from 'components/PlateRichEditor/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -72,7 +71,6 @@ import {
   GrantModalData,
   GrantSectionDisplayDivWrapper,
   MediaWrapper,
-  RichTextContainer,
   RichTextWrapper,
 } from './styles';
 import { descriptionTemplate } from './utils';
@@ -108,8 +106,6 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const userBoard = useUserBoard();
   const { userOrgs } = useGlobalContext();
   const board = orgBoard || podBoard || userBoard;
-  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
-  const editor = useEditor();
   const [removeGrantMedia] = useMutation(REMOVE_GRANT_MEDIA);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
@@ -375,41 +371,19 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             />
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
-            <EditorToolbar ref={setEditorToolbarNode} />
-            <Typography fontFamily={typography.fontFamily} color={palette.blue20} fontWeight={500} fontSize="14px">
-              Use this space below however you want. We have dropped in a suggested structure
-            </Typography>
             <RichTextWrapper>
-              <RichTextContainer
-                onClick={() => {
-                  // since editor will collapse to 1 row on input, we need to emulate min-height somehow
-                  // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
-                  ReactEditor.focus(editor);
-                  // also we need to move cursor to the last position in the editor
-                  Transforms.select(editor, {
-                    anchor: Editor.end(editor, []),
-                    focus: Editor.end(editor, []),
-                  });
+              <PlateRichEditor
+                inputValue={form.values.description}
+                mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
+                onChange={(value) => {
+                  form.setFieldValue('description', value);
                 }}
-              >
-                <RichTextEditor
-                  editor={editor}
-                  onMentionChange={search}
-                  initialValue={form.values.description}
-                  mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
-                  placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
-                  toolbarNode={editorToolbarNode}
-                  onChange={(value) => {
-                    form.setFieldValue('description', value);
-                  }}
-                  editorContainerNode={document.querySelector('#modal-scrolling-container')}
-                  onClick={(e) => {
-                    // we need to stop click event propagation,
-                    // since EditorContainer moves cursor to the last position in the editor on click
-                    e.stopPropagation();
-                  }}
-                />
-              </RichTextContainer>
+                mediaUploads={() => {
+                  inputRef.current.click();
+                }}
+                placeholder="Type ‘/’ for commands"
+                message="Use this space below however you want. We have dropped in a suggested structure"
+              />
               {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
             </RichTextWrapper>
           </GrantDescriptionMedia>

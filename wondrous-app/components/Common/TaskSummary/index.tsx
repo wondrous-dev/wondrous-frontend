@@ -14,7 +14,7 @@ import { addTaskItem, removeProposalItem, updateProposalItem, updateSubmissionIt
 import { renderMentionString } from 'utils/common';
 import { ViewType } from 'types/common';
 import { skipForCommandKey } from 'utils/links';
-import { RichTextViewer } from 'components/RichText';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { RejectIcon } from '../../Icons/taskModalIcons';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskCommentIcon } from '../../Icons/taskComment';
@@ -228,7 +228,7 @@ export function TaskSummary({ task, setTask, action, taskType }) {
           <TaskTitle>
             <Link href={viewUrl}>{title}</Link>
           </TaskTitle>
-          <RichTextViewer text={task?.description} />
+          <PlateRichTextViewer text={task?.description} />
           {task?.podName && (
             <div
               style={{

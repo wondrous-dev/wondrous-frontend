@@ -22,8 +22,6 @@ import {
   CreateEntitySelectErrorWrapper,
   CreateEntityTitle,
   CreateEntityWrapper,
-  EditorPlaceholder,
-  EditorToolbar,
   MediaUploadDiv,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
@@ -35,13 +33,11 @@ import {
   GrantDescriptionMedia,
   GrantModalData,
   GrantSectionDisplayDivWrapper,
-  RichTextContainer,
   RichTextWrapper,
 } from 'components/CreateGrant/styles';
 import { DAOIcon } from 'components/Icons/dao';
 import ArrowBackIcon from 'components/Icons/Sidebar/arrowBack.svg';
 import OrgSearch from 'components/OrgSearch';
-import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import { Formik, useFormik } from 'formik';
 import {
@@ -52,10 +48,8 @@ import {
   UPDATE_GRANT_APPLICATION,
 } from 'graphql/mutations';
 import { isEmpty, keys } from 'lodash';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useWonderWeb3 } from 'services/web3';
-import { Editor, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { GRANT_APPLICATION_STATUSES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
@@ -63,6 +57,8 @@ import { CHAIN_REGEX, transformMediaFormat } from 'utils/helpers';
 import { useTaskContext } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as yup from 'yup';
+import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
+import { deserializeRichText, extractMentions } from 'components/PlateRichEditor/utils';
 import {
   ActionButton,
   CreateGrantApplicationWorkspaceWrapper,
@@ -80,8 +76,6 @@ interface Props {
 
 const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClose }: Props) => {
   const wonderWeb3 = useWonderWeb3();
-  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
-  const editor = useEditor();
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const [createGrantApplication] = useMutation(CREATE_GRANT_APPLICATION, {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantById'],
@@ -308,41 +302,19 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             />
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
-            <EditorToolbar ref={setEditorToolbarNode} />
-            <Typography fontFamily={typography.fontFamily} color={palette.blue20} fontWeight={500} fontSize="14px">
-              Use this space below however you want. We have dropped in a suggested structure
-            </Typography>
             <RichTextWrapper>
-              <RichTextContainer
-                onClick={() => {
-                  // since editor will collapse to 1 row on input, we need to emulate min-height somehow
-                  // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
-                  ReactEditor.focus(editor);
-                  // also we need to move cursor to the last position in the editor
-                  Transforms.select(editor, {
-                    anchor: Editor.end(editor, []),
-                    focus: Editor.end(editor, []),
-                  });
+              <PlateRichEditor
+                inputValue={form.values.description}
+                mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
+                onChange={(value) => {
+                  form.setFieldValue('description', value);
                 }}
-              >
-                <RichTextEditor
-                  editor={editor}
-                  onMentionChange={search}
-                  initialValue={form.values.description}
-                  mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
-                  placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
-                  toolbarNode={editorToolbarNode}
-                  onChange={(value) => {
-                    form.setFieldValue('description', value);
-                  }}
-                  editorContainerNode={document.querySelector('#modal-scrolling-container')}
-                  onClick={(e) => {
-                    // we need to stop click event propagation,
-                    // since EditorContainer moves cursor to the last position in the editor on click
-                    e.stopPropagation();
-                  }}
-                />
-              </RichTextContainer>
+                mediaUploads={() => {
+                  inputRef.current.click();
+                }}
+                placeholder="Type ‘/’ for commands"
+                message="Use this space below however you want. We have dropped in a suggested structure"
+              />
             </RichTextWrapper>
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
           </GrantDescriptionMedia>

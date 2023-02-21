@@ -35,4 +35,3 @@ export const hasGR15DEIIntiative = (categories) => {
   });
   return hasInitiative;
 };
-

@@ -8,13 +8,18 @@ import { StyledLink } from 'components/Common/text';
 import {
   CreateEntityPaymentMethodItem,
   filterPaymentMethods,
-  useGetPaymentMethods
+  useGetPaymentMethods,
 } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
   CreateEntityAutocompletePopperRenderInputAdornment,
-  CreateEntityAutocompletePopperRenderInputIcon, CreateEntityError, CreateEntityLabel,
-  CreateEntityLabelWrapper, CreateEntityPaymentMethodOption, CreateEntityPaymentMethodSelected,
-  CreateEntitySelectArrowIcon, CreateEntityWrapper
+  CreateEntityAutocompletePopperRenderInputIcon,
+  CreateEntityError,
+  CreateEntityLabel,
+  CreateEntityLabelWrapper,
+  CreateEntityPaymentMethodOption,
+  CreateEntityPaymentMethodSelected,
+  CreateEntitySelectArrowIcon,
+  CreateEntityWrapper,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { GRANT_STYLE_MAP } from './GrantStyle';
 import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
@@ -59,7 +64,6 @@ const GrantAmount = ({
     }
   }, [grantStyle, value.rewardAmount, numOfGrant, activePaymentMethods, value.paymentMethodId]);
 
-  
   return (
     <TaskSectionDisplayDiv alignItems="start">
       {activePaymentMethods?.length === 0 && (

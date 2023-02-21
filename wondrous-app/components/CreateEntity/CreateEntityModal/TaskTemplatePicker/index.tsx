@@ -1,7 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import { ActionButton } from 'components/Common/Task/styles';
-import { RichTextViewer } from 'components/RichText';
 import { TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
 import { GET_ORG_TASK_TEMPLATES, GET_TASK_TEMPLATES_BY_USER_ID } from 'graphql/queries';
 import { useEffect, useState } from 'react';
@@ -12,6 +11,7 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { MODAL_ACTIONS } from 'utils/constants';
 import { Typography } from '@mui/material';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import {
   CreateEntityDefaultDaoImage,
   PodSearchLabel,
@@ -144,13 +144,13 @@ function TaskTemplatePicker(props) {
                   {template?.title}
                 </TaskTemplateLabelValue>
                 <TaskTemplateLabelValue style={{ fontWeight: '400', color: '#FFFFFF' }} as="div">
-                  <RichTextViewer text={template?.description} />
+                  <PlateRichTextViewer text={template?.description} />
                 </TaskTemplateLabelValue>
 
-                {/* 
-  
+                {/*
+
                     Just in case we want to add reviewer and assignee later on:
-  
+
                     <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
                       <TaskTemplateLabelValue>{`Reviewer(s): `}</TaskTemplateLabelValue>
                       {template?.reviewer?.map((reviewer, index) => {
@@ -161,8 +161,8 @@ function TaskTemplatePicker(props) {
                         }
                       })}
                     </Grid>
-                    <TaskTemplateLabelValue>{`Assignee: ${template?.assignee?.label}`}</TaskTemplateLabelValue> 
-                    
+                    <TaskTemplateLabelValue>{`Assignee: ${template?.assignee?.label}`}</TaskTemplateLabelValue>
+
                     */}
 
                 <TaskTemplateRewardContainer>

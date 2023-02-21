@@ -32,7 +32,6 @@ import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplic
 import { DAOIcon } from 'components/Icons/dao';
 import GrantIcon from 'components/Icons/GrantIcon';
 import { GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
-import { RichTextViewer } from 'components/RichText';
 import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import ViewGrantFooter from 'components/ViewGrant/Footer';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';
@@ -64,6 +63,7 @@ import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { TaskContext } from 'utils/contexts';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { Project, WalletAddress } from './EditableFields';
 import { GrantApplicationStatusManager, OrgViewer, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';

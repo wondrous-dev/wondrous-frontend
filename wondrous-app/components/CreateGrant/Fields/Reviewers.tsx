@@ -22,7 +22,6 @@ import {
 import { cloneDeep, isEmpty, isNull } from 'lodash';
 import { useMemo } from 'react';
 
-
 const renderOption = (props, option, reviewerIds, reviewerId) => {
   if (reviewerIds.includes(option.id) && option.id !== reviewerId) return null;
   return (
