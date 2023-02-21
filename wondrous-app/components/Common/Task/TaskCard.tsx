@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 
-import { useColumns, useUserProfile } from 'utils/hooks';
+import { checkCanClaimPermissions, useColumns, useUserProfile } from 'utils/hooks';
 import { GET_TASK_SUBMISSIONS_FOR_TASK, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { DUPLICATE_TASK } from 'graphql/mutations';
 import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
@@ -164,9 +164,10 @@ export default function TaskCard({
   };
   const isUser = boardType === Constants.BOARD_TYPE.assignee;
   const isPod = boardType === Constants.BOARD_TYPE.pod;
-
+  const claimPermissions = checkCanClaimPermissions(task, userPermissionsContext);
   const canClaim =
     task?.taskApplicationPermissions?.canClaim &&
+    claimPermissions &&
     !assigneeId &&
     !isBounty &&
     !isMilestone &&
