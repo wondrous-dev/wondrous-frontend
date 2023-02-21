@@ -255,6 +255,14 @@ function OrgInviteLinkModal(props) {
             value={inputText}
             onChange={handleInputChange}
             InputLabelProps={{ shrink: false }}
+            onKeyPress={(ev) => {
+              if (ev.key === 'Enter') {
+                ev.preventDefault();
+                if (validateEmail(inputText)) {
+                  handleAddEmailToList(inputText);
+                }
+              }
+            }}
             InputProps={{
               disableUnderline: true,
               endAdornment: (

@@ -108,7 +108,7 @@ function PodInviteLinkModal(props) {
 
   const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
   const searchedUserList = searchOrgUserResults?.searchOrgUsers;
-
+  
   const [getPodUsers, { fetchMore: fetchMorePodUsers }] = useLazyQuery(GET_POD_USERS, {
     fetchPolicy: 'network-only',
   });
@@ -242,12 +242,10 @@ function PodInviteLinkModal(props) {
       userId: invitee?.user?.id,
       roleId: invitee?.role?.id,
     }));
-    console.log('userIdandRoleId', userIdandRoleId);
-    console.log('emailAndRoleId', emailAndRoleId);
     let addUserPromise
     let sendEmailPromise
     if (userIdandRoleId?.length > 0) {
-       addUserPromise = batchAddUsers({
+      addUserPromise = batchAddUsers({
         variables: {
           input: {
             podId,
@@ -257,7 +255,7 @@ function PodInviteLinkModal(props) {
       });
     }
     if (emailAndRoleId?.length > 0) {
-       sendEmailPromise = sendPodEmailInvites({
+      sendEmailPromise = sendPodEmailInvites({
         variables: {
           input: {
             podId,
@@ -337,6 +335,21 @@ function PodInviteLinkModal(props) {
             value={inputText}
             onChange={handleInputChange}
             InputLabelProps={{ shrink: false }}
+            onKeyPress={(ev) => {
+              if (ev.key === 'Enter') {
+                console.log('searchedUserList?.length')
+
+                ev.preventDefault();
+                if (validateEmail(inputText)) {
+                  handleAddUserToList(inputText, 'email');
+                }
+                else if (searchedUserList?.length) {
+                  handleAddUserToList(searchedUserList[0], 'user');
+                }
+              }
+            }
+            }
+
             InputProps={{
               disableUnderline: true,
               endAdornment: (

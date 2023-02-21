@@ -8,25 +8,25 @@ export enum LinkType {
 export const putDefaultRoleOnTop = (roles, permissions) => {
   // this also filters roles by permissions
   if (!roles) return [];
-  roles = [...roles];
-  let defaultRole;
-  let defaultRoleIndex;
-  roles.forEach((role, index) => {
-    if (role?.default) {
-      defaultRole = { ...role };
-      defaultRoleIndex = index;
-    }
-  });
-  roles.filter((role) => {
+  const newRoles = [...roles];
+  const filteredRoles = newRoles.filter((role) => {
     if (role?.permissions?.includes(PERMISSIONS.FULL_ACCESS) && !permissions.includes(PERMISSIONS.FULL_ACCESS)) {
       return false;
     }
     return true;
   });
 
+  let defaultRole;
+  let defaultRoleIndex;
+  filteredRoles.forEach((role, index) => {
+    if (role?.default) {
+      defaultRole = { ...role };
+      defaultRoleIndex = index;
+    }
+  });
   if (defaultRole && defaultRoleIndex) {
-    roles?.splice(defaultRoleIndex, 1);
-    roles?.unshift(defaultRole);
+    filteredRoles?.splice(defaultRoleIndex, 1);
+    filteredRoles?.unshift(defaultRole);
   }
-  return roles;
+  return filteredRoles;
 };
