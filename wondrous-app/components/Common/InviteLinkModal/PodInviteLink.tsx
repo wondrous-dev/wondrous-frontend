@@ -337,8 +337,6 @@ function PodInviteLinkModal(props) {
             InputLabelProps={{ shrink: false }}
             onKeyPress={(ev) => {
               if (ev.key === 'Enter') {
-                console.log('searchedUserList?.length')
-
                 ev.preventDefault();
                 if (validateEmail(inputText)) {
                   handleAddUserToList(inputText, 'email');
