@@ -46,6 +46,7 @@ export const Strikethrough = styled.span`
 export const StyledEditable = styled(Editable)`
   && {
     overflow-x: scroll;
+    height: 100%;
     &::-webkit-scrollbar {
       display: none;
       width: 0;

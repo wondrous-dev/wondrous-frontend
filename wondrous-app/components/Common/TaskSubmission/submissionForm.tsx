@@ -151,6 +151,11 @@ function SubmissionFormDescriptionField({ formik, orgId }) {
           toolbarNode={editorToolbarNode}
           onChange={(text) => formik.setFieldValue('descriptionText', text)}
           editorContainerNode={document.querySelector('#modal-scrolling-container')}
+          onClick={(e) => {
+            // we need to stop click event propagation,
+            // since EditorContainer moves cursor to the last position in the editor on click
+            e.stopPropagation();
+          }}
         />
       </SubmissionDescriptionEditor>
     </SubmissionFormDescription>
