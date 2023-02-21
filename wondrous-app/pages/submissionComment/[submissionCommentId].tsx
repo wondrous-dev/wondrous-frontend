@@ -9,12 +9,13 @@ function TaskRedirect() {
   const router = useRouter();
   const { submissionCommentId } = router.query;
   const [getTaskSubmissionById, { data: taskSubmissiondata }] = useLazyQuery(GET_TASK_SUBMISSION_BY_ID);
+
   const [getTaskSubmissionCommentById] = useLazyQuery(GET_SUBMISSION_COMMENT_BY_ID, {
     onCompleted: (data) => {
       const submissionComment = data?.getTaskSubmissionCommentById;
       getTaskSubmissionById({
         variables: {
-          submissionId: submissionComment?.submissoinId,
+          submissionId: submissionComment?.submissionId,
         },
       });
     },
