@@ -48,7 +48,7 @@ import {
   PrivacyText,
 } from '../../organization/wrapper/styles';
 import PodIcon from '../../Icons/podIcon';
-import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
+import PodInviteLinkModal from '../../Common/InviteLinkModal/PodInviteLink';
 import { useMe } from '../../Auth/withAuth';
 
 function HomePageHeader(props) {

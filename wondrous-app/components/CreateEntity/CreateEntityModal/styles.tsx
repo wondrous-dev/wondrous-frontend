@@ -15,7 +15,6 @@ import styled, { css } from 'styled-components';
 import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
 import scrollBarStyles from 'components/Common/ScrollbarStyles';
-import { StyledSelect } from 'components/Common/InviteLinkModal/styles';
 import typography from 'theme/typography';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
