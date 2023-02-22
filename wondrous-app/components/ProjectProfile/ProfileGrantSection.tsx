@@ -85,6 +85,7 @@ const ProfileGrantSection = () => (
       onClick: ({ router, data: { id }, entityLink }) => router.push(`${entityLink}/grants?grant=${id}`),
     }}
     data={useGetGrantOrgBoard()}
+    tourId="tour-header-project-grants"
   />
 );
 

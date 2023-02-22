@@ -79,6 +79,7 @@ const ProfileCollabSection = () => (
       onClick: ({ router, data: { username } }) => router.push(`/collaboration/${username}/boards`),
     }}
     data={useGetOrgHomeCollabs()}
+    tourId="tour-header-project-collabs"
   />
 );
 
