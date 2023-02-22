@@ -16,10 +16,14 @@ import { BountySignifier } from 'components/Common/Task/styles';
 import PodIconName from 'components/Common/PodIconName';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
-import { TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
 import { BOUNTY_TYPE, PRIVATE_TASK_TITLE, TASK_TYPE } from 'utils/constants';
 import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
+import LeaderboardSearch from 'components/Leaderboard/LeaderboardSearch';
+import LeaderboardDateTabs from 'components/Leaderboard/LeaderboardDateTabs';
+import LeaderboardUserRow from 'components/Leaderboard/LeaderboardUserRow';
+
 import { PayoutModal } from './PayoutModal';
 import {
   ContributorRow,
@@ -152,223 +156,6 @@ export const calculateCount = (tasks) => {
   };
 };
 
-function UserRow({ contributorTask }) {
-  const [clicked, setClicked] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
-  const [taskOpened, setTaskOpened] = useState(null);
-  const contributionCount = calculateCount(contributorTask?.tasks);
-  const bountyCount = contributionCount?.bountyCount;
-  const taskCount = contributionCount?.taskCount;
-
-  return (
-    <ContributorDiv>
-      <TaskViewModal
-        open={openModal}
-        handleClose={() => {
-          const style = document.body.getAttribute('style');
-          const top = style.match(/(top: -)(.*?)(?=px)/);
-          document.body.setAttribute('style', '');
-          if (top?.length > 0) {
-            window?.scrollTo(0, Number(top[2]));
-          }
-          setOpenModal(false);
-        }}
-        taskId={taskOpened}
-        isTaskProposal={false}
-      />
-      <ContributorRow
-        style={{
-          ...(clicked && {
-            marginBottom: '4px',
-          }),
-        }}
-        onClick={() => setClicked(!clicked)}
-      >
-        <>
-          {clicked ? <BottomArrowCaret style={CaretStyle} /> : <RightArrowCaret style={CaretStyle} />}
-          {contributorTask?.assigneeId ? (
-            <>
-              {contributorTask?.assigneeProfilePicture ? (
-                <SafeImage
-                  useNextImage={false}
-                  src={contributorTask?.assigneeProfilePicture}
-                  style={UserRowPictureStyles}
-                  alt="Assignee profile picture"
-                />
-              ) : (
-                <DefaultUserImage style={UserRowPictureStyles} />
-              )}
-              <ContributorRowText>{contributorTask?.assigneeUsername}</ContributorRowText>
-            </>
-          ) : (
-            <ContributorRowText
-              style={{
-                marginLeft: '4px',
-              }}
-            >
-              No assignee
-            </ContributorRowText>
-          )}
-          <div
-            style={{
-              flex: 1,
-            }}
-          />
-          <TaskCountWrapper>
-            <TaskCountText>
-              {taskCount}
-              <span
-                style={{
-                  color: 'rgba(108, 108, 108, 1)',
-                  marginLeft: '4px',
-                }}
-              >
-                {taskCount === 1 ? 'task' : 'tasks'}
-              </span>
-            </TaskCountText>
-          </TaskCountWrapper>
-          {bountyCount > 0 && (
-            <TaskCountWrapper
-              style={{
-                marginLeft: '12px',
-              }}
-            >
-              <TaskCountText>
-                {bountyCount}
-                <span
-                  style={{
-                    color: 'rgba(108, 108, 108, 1)',
-                    marginLeft: '4px',
-                  }}
-                >
-                  {bountyCount === 1 ? 'bounty' : 'bounties'}
-                </span>
-              </TaskCountText>
-            </TaskCountWrapper>
-          )}
-          <TaskCountWrapper
-            style={{
-              background: 'none',
-              marginLeft: '12px',
-            }}
-          >
-            <TaskCountText>
-              {calculatePoints(contributorTask?.tasks)}
-              <span
-                style={{
-                  color: 'rgba(108, 108, 108, 1)',
-                  marginLeft: '4px',
-                }}
-              >
-                {calculatePoints(contributorTask?.tasks) === 1 ? 'point' : 'points'}
-              </span>
-            </TaskCountText>
-          </TaskCountWrapper>
-        </>
-      </ContributorRow>
-      {clicked && (
-        <TasksWrapper>
-          {contributorTask?.tasks?.map((task) => {
-            const reward = (task.rewards || [])[0];
-            const podName = task?.podName || task?.pod?.name;
-            const podColor = task?.podColor || task?.podColor;
-            return (
-              <TaskRow
-                key={task?.id}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (task?.title !== PRIVATE_TASK_TITLE) {
-                    setOpenModal(true);
-                    setTaskOpened(task?.id);
-                  }
-                }}
-              >
-                <TaskTitle
-                  style={{
-                    marginRight: '24px',
-                  }}
-                >
-                  {cutString(task.title === PRIVATE_TASK_TITLE ? 'Private Task' : task.title)}
-                </TaskTitle>
-                {task?.type === BOUNTY_TYPE && <BountySignifier>bounty</BountySignifier>}
-                <div
-                  style={{
-                    flex: 1,
-                  }}
-                />
-                <RewardContainer>
-                  {/* <Reward>
-                    <SafeImage
-                      src={'https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018'}
-                      style={{
-                        width: '16px',
-                        height: '16px',
-                      }}
-                    />
-                    <RewardAmount
-                      style={{
-                        marginLeft: '4px',
-                        fontWeight: 'normal',
-                      }}
-                    >
-                      {100}
-                    </RewardAmount>
-                  </Reward> */}
-                  {podName && <PodIconName color={podColor} name={podName} />}
-                  {reward && (
-                    <Reward>
-                      <SafeImage
-                        useNextImage={false}
-                        src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018"
-                        style={{
-                          width: '16px',
-                          height: '16px',
-                        }}
-                        alt="USDC logo"
-                      />
-                      <RewardAmount
-                        style={{
-                          marginLeft: '4px',
-                          fontWeight: 'normal',
-                        }}
-                      >
-                        {shrinkNumber(reward?.rewardAmount)}
-                      </RewardAmount>
-                    </Reward>
-                  )}
-                  <RewardContainer
-                    style={{
-                      alignItems: 'center',
-                      marginRight: '8px',
-                    }}
-                  >
-                    <TaskStatus
-                      style={{
-                        width: '29px',
-                        height: '29px',
-                      }}
-                      status={task?.status}
-                    />
-                    <RewardAmount
-                      style={{
-                        marginLeft: '4px',
-                        fontWeight: 'normal',
-                      }}
-                    >
-                      {format(new Date(task?.completedAt), 'MM/dd/yyyy')}
-                    </RewardAmount>
-                  </RewardContainer>
-                </RewardContainer>
-              </TaskRow>
-            );
-          })}
-        </TasksWrapper>
-      )}
-    </ContributorDiv>
-  );
-}
-
 export const filterUsers = (users) => {
   if (!users) {
     return [];
@@ -415,59 +202,38 @@ function Analytics(props) {
   const { id: orgId } = orgData;
   const [assignee, setAssignee] = useState(null);
   const [payoutModal, setPayoutModal] = useState(false);
-  const [assigneeString, setAssigneeString] = useState('');
-  const [searchOrgUsers, { data: orgUsersData }] = useLazyQuery(SEARCH_ORG_USERS, {});
-
-  useEffect(() => {
-    if (orgId) {
-      searchOrgUsers({
-        variables: {
-          orgIds: [orgId],
-          searchString: '',
-        },
-      });
-    }
-  }, [orgId, searchOrgUsers]);
 
   const today = new Date();
   const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
   const lastTwoWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14);
   const [toTime, setToTime] = useState(tomorrow);
   const [fromTime, setFromTime] = useState(lastTwoWeek);
-  const [getCompletedTasksBetweenPeriods, { data: completedTaskData, loading }] = useLazyQuery(
+  const [getCompletedTasksBetweenPeriods, { data: completedTaskData }] = useLazyQuery(
     GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD,
     {
       fetchPolicy: 'network-only',
     }
   );
 
+  const handleGetCompletedTasksBetweenPeriods = () =>
+    getCompletedTasksBetweenPeriods({
+      variables: {
+        orgId,
+        toTime: format(toTime, 'yyyy-MM-dd'),
+        fromTime: format(fromTime, 'yyyy-MM-dd'),
+        includeBounties: true,
+        ...(assignee && {
+          assigneeId: assignee?.value,
+        }),
+      },
+    });
+
   const contributorTaskData = getContributorTaskData(completedTaskData);
 
   useEffect(() => {
-    if (orgId && fromTime && toTime) {
-      getCompletedTasksBetweenPeriods({
-        variables: {
-          orgId,
-          toTime: format(toTime, 'yyyy-MM-dd'),
-          fromTime: format(fromTime, 'yyyy-MM-dd'),
-          includeBounties: true,
-          ...(assignee && {
-            assigneeId: assignee?.value,
-          }),
-        },
-      });
-    }
+    if (orgId && fromTime && toTime) handleGetCompletedTasksBetweenPeriods();
   }, [orgId, fromTime, toTime, assignee?.value]);
 
-  const handleInputChange = (event, newInputValue) => {
-    setAssigneeString(newInputValue);
-    searchOrgUsers({
-      variables: {
-        searchString: newInputValue,
-        orgIds: [orgId],
-      },
-    });
-  };
   return (
     <BoardPageHeader orgData={orgData} headerTitle="Analytics">
       <PayoutModal
@@ -479,148 +245,34 @@ function Analytics(props) {
         contributorTaskData={contributorTaskData}
       />
       <HeaderWrapper>
-        <HeaderText>Completed work from</HeaderText>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <SelectDatePicker
-            title="Due date"
-            inputFormat="MM/dd/yyyy"
-            value={fromTime}
-            onChange={(value) => setFromTime(value)}
-            renderInput={(params) => <StyledTextField {...params} />}
-          />
-        </LocalizationProvider>
-        <HeaderText>to</HeaderText>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <SelectDatePicker
-            title="Due date"
-            inputFormat="MM/dd/yyyy"
-            value={toTime}
-            onChange={(value) => setToTime(value)}
-            renderInput={(params) => <StyledTextField {...params} />}
-          />
-        </LocalizationProvider>
-        <HeaderText>by</HeaderText>
-        <StyledAutocompletePopper
-          options={filterUsers(orgUsersData?.searchOrgUsers)}
-          onOpen={() => {}}
-          renderInput={(params) => {
-            const InputProps = {
-              ...params?.InputProps,
-              type: 'autocomplete',
-              startAdornment:
-                assignee && assigneeString ? (
-                  <StyledChip label={assigneeString} onDelete={() => setAssignee(null)} />
-                ) : (
-                  ''
-                ),
-            };
-            return (
-              <TextField
-                {...params}
-                style={{
-                  color: palette.white,
-                  fontFamily: 'Space Grotesk',
-                  fontSize: '16px',
-                  paddingLeft: '4px',
-                  width: '200px',
-                  background: '#191919',
-                  borderRadius: '8px',
-                  marginLeft: '8px',
-                }}
-                placeholder="Enter username..."
-                InputLabelProps={{ shrink: false }}
-                InputProps={InputProps}
-                inputProps={{
-                  ...params?.inputProps,
-                  style: {
-                    opacity: assignee ? '0' : '1',
-                  },
-                }}
-              />
-            );
-          }}
-          value={assignee}
-          inputValue={assigneeString}
-          onInputChange={handleInputChange}
-          onChange={(_, __, reason) => {
-            if (reason === 'clear') {
-              setAssignee(null);
-              getCompletedTasksBetweenPeriods({
-                variables: {
-                  orgId,
-                  toTime: format(toTime, 'yyyy-MM-dd'),
-                  fromTime: format(fromTime, 'yyyy-MM-dd'),
-                  includeBounties: true,
-                },
-              });
-            }
-          }}
-          renderOption={(props, option, state) => (
-            <OptionDiv
-              onClick={(event) => {
-                setAssignee(option);
-                props?.onClick(event);
-              }}
-            >
-              {option?.profilePicture && (
-                <SafeImage
-                  useNextImage={false}
-                  src={option?.profilePicture}
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '15px',
-                  }}
-                  alt="Profile picture"
-                />
-              )}
-              <OptionTypography>{option?.label}</OptionTypography>
-            </OptionDiv>
-          )}
+        {/* <HeaderText>Completed work from</HeaderText> */}
+        {/* <LocalizationProvider dateAdapter={AdapterDateFns}> */}
+        {/*   <SelectDatePicker */}
+        {/*     title="Due date" */}
+        {/*     inputFormat="MM/dd/yyyy" */}
+        {/*     value={fromTime} */}
+        {/*     onChange={(value) => setFromTime(value)} */}
+        {/*     renderInput={(params) => <StyledTextField {...params} />} */}
+        {/*   /> */}
+        {/* </LocalizationProvider> */}
+        {/* <HeaderText>to</HeaderText> */}
+        {/* <LocalizationProvider dateAdapter={AdapterDateFns}> */}
+        {/*   <SelectDatePicker */}
+        {/*     title="Due date" */}
+        {/*     inputFormat="MM/dd/yyyy" */}
+        {/*     value={toTime} */}
+        {/*     onChange={(value) => setToTime(value)} */}
+        {/*     renderInput={(params) => <StyledTextField {...params} />} */}
+        {/*   /> */}
+        {/* </LocalizationProvider> */}
+        {/* <HeaderText>by</HeaderText> */}
+        <LeaderboardDateTabs dateToday={today} setFromTime={setFromTime} />
+        <LeaderboardSearch
+          assignee={assignee}
+          setAssignee={setAssignee}
+          orgId={orgId}
+          handleGetCompletedTasksBetweenPeriods={handleGetCompletedTasksBetweenPeriods}
         />
-        <div
-          style={{
-            flex: 1,
-          }}
-        />
-        <ExportCSVButton
-          style={{
-            borderRadius: '8px',
-            height: '40px',
-            marginLeft: '12px',
-            minHeight: '40px',
-          }}
-          buttonInnerStyle={{
-            borderRadius: '7px',
-          }}
-          onClick={() =>
-            exportContributorTaskCSV({
-              contributorTaskData,
-              fromTime,
-              toTime,
-              isPod: false,
-            })
-          }
-        >
-          <ExportCSVButtonText>Export Tasks</ExportCSVButtonText>
-        </ExportCSVButton>
-        <ExportCSVButton
-          style={{
-            borderRadius: '8px',
-            height: '40px',
-            minHeight: '40px',
-            marginLeft: '8px',
-            border: '1px solid deepskyblue',
-          }}
-          buttonInnerStyle={{
-            borderRadius: '7px',
-          }}
-          onClick={() => {
-            setPayoutModal(true);
-          }}
-        >
-          <ExportCSVButtonText>Pay out</ExportCSVButtonText>
-        </ExportCSVButton>
       </HeaderWrapper>
       {contributorTaskData?.length === 0 && (
         <HeaderText
@@ -631,9 +283,11 @@ function Analytics(props) {
           Nothing found in this time period.
         </HeaderText>
       )}
-      {contributorTaskData?.map((contributorTask, index) => (
-        <UserRow key={index} contributorTask={contributorTask} />
-      ))}
+      <Grid container flexDirection="column" gap="12px">
+        {contributorTaskData?.map((contributorTask, index) => (
+          <LeaderboardUserRow key={contributorTask?.assigneeId} position={index} contributorTask={contributorTask} />
+        ))}{' '}
+      </Grid>
     </BoardPageHeader>
   );
 }
