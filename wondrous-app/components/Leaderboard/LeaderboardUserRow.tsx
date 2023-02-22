@@ -2,13 +2,13 @@ import Grid from '@mui/material/Grid';
 import { DefaultUserImage, SafeImage } from 'components/Common/Image';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import StarIcon from 'components/Icons/Sidebar/star.svg';
-import LeaderboardGoldIcon from 'components/Icons/leaderboardGold.svg';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { BOUNTY_TYPE, TASK_TYPE } from 'utils/constants';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
+
 import LeaderboardUserRowIcons from './LeaderboardUserRowIcons';
 
 const LeaderboardUserRowTasks = dynamic(() => import('./LeaderboardUserRowTasks'), { ssr: false, suspense: false });
@@ -52,10 +52,6 @@ const UserRowPictureStyles = {
   height: '30px',
   borderRadius: '15px',
   marginRight: '8px',
-};
-
-const CaretStyle = {
-  marginRight: '12px',
 };
 
 const UserRowInfo = ({ Icon, data = null, sx = null }) => (
@@ -114,7 +110,6 @@ const LeaderboardUserRow = ({ contributorTask, position }) => {
       border={`1px solid ${clicked ? palette.grey79 : 'transparent'}`}
       borderRadius="6px"
       minHeight="44px"
-      gap="8px"
       sx={{
         '&:hover': {
           bgcolor: !clicked && palette.grey920,
