@@ -1,4 +1,6 @@
 import { useQuery } from '@apollo/client';
+import { useTour } from '@reactour/tour';
+import { useMe } from 'components/Auth/withAuth';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import GrantApplicationPodCreateModal from 'components/GrantApplications/GrantApplicationPodCreateModal';
 import HomePageHeader from 'components/Pod/wrapper/HomePageHeader';
@@ -12,6 +14,8 @@ import { usePageDataContext } from 'utils/hooks';
 const PodProject = () => {
   const { podId } = useRouter().query;
   const { setPageData } = usePageDataContext();
+  const { setIsOpen, setCurrentStep } = useTour();
+  const user = useMe();
   const { data } = useQuery(GET_POD_BY_ID, {
     skip: !podId,
     variables: {
@@ -25,6 +29,12 @@ const PodProject = () => {
     fetchPolicy: 'cache-and-network',
   });
   useEffect(() => () => setPageData({}), []);
+  useEffect(() => {
+    if (user && !user?.lastCompletedProjectGuide) {
+      setCurrentStep(0);
+      setIsOpen(true);
+    }
+  }, [user]);
   const { getPodById } = data || {};
 
   const contextValue = useMemo(

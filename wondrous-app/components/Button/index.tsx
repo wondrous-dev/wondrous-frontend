@@ -97,6 +97,7 @@ type Props = SpaceProps & {
    * We include several predefined button styles,
    * each serving its own semantic purpose, with a few extras thrown in for more control.
    */
+  id?: string;
   color?: 'primary' | 'secondary' | 'grey' | 'purple' | 'blue';
   children: ReactNode | undefined | string;
   minWidth?: number | string; // for values such as auto, fit-content, etc.

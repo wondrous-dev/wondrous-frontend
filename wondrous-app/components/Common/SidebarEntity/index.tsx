@@ -71,6 +71,7 @@ const EntitySidebarButtons = () => {
               },
               ...sharedButtonTheme,
             }}
+            id="tour-header-project-settings"
           >
             Settings
           </Button>

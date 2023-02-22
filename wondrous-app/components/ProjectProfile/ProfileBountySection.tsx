@@ -34,6 +34,7 @@ const ProfileBountySection = () => {
           router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
       }}
       data={homePageTaskObjects?.bounties}
+      tourId="tour-header-project-bounties"
     />
   );
 };

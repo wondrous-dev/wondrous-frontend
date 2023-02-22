@@ -43,6 +43,7 @@ const ProfileMilestoneSection = () => {
           router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
       }}
       data={homePageTaskObjects?.milestones}
+      tourId="tour-header-project-milestones"
     />
   );
 };

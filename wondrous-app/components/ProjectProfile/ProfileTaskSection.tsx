@@ -45,6 +45,7 @@ const ProfileTaskSection = () => {
           router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
       }}
       data={homePageTaskObjects?.tasks}
+      tourId="tour-header-project-tasks"
     />
   );
 };
