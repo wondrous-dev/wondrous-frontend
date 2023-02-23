@@ -44,18 +44,6 @@ export default function ProposalCard({ openModal, title, description, task, goTo
         },
       ],
     },
-    // [Constants.STATUS_OPEN]: {
-    //   labelsAndActions: [
-    //     {
-    //       title: 'Reject',
-    //       action: () => {
-    //         if (proposalRequestChange) {
-    //           proposalRequestChange(task.id, proposalStatus);
-    //         }
-    //       },
-    //     },
-    //   ],
-    // },
     [Constants.STATUS_CLOSED]: {
       labelsAndActions: [
         {
@@ -85,9 +73,7 @@ export default function ProposalCard({ openModal, title, description, task, goTo
           <BoardsCardSubheader>
             <ProposalCardIcon />
             <ProposalCardType>Proposal</ProposalCardType>
-            <BoardsPrivacyLabel>
-              {task?.privacyLevel === Constants.PRIVACY_LEVEL.public ? 'Public' : 'Members'}
-            </BoardsPrivacyLabel>
+            <BoardsPrivacyLabel>Public</BoardsPrivacyLabel>
           </BoardsCardSubheader>
           {HeaderIcon ? <HeaderIcon /> : null}
         </BoardsCardHeader>

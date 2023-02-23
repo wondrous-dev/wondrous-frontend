@@ -538,7 +538,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               </SubtaskIconWrapper>
                             </>
                           )}
-                          {fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public && (
+                          {fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public && !isTaskProposal && (
                             <>
                               <TaskModalHeaderArrow />
                               <TaskModalHeaderPrivacyIcon
