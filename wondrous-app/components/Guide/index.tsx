@@ -100,7 +100,7 @@ export default function OnboardingGuide({ children }) {
           setIsOpen={setIsOpen}
           setCurrentStep={setCurrentStep}
           setUserCompletedGuide={setUserCompletedGuide}
-          setProjectCompletedGuide={setProjectCompletedGuide}
+          setProjectCompletedGuide={setProjectGuideComplete}
         />
       )}
     >
