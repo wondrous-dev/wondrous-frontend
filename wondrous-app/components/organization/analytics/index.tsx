@@ -1,5 +1,5 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -169,7 +169,8 @@ export const filterUsers = (users) => {
 };
 
 export const getContributorTaskData = (data) => {
-  const preFilteredcontributorTaskData = data?.getCompletedTasksBetweenPeriods || [];
+  const completedTaskData = data?.getCompletedTasksBetweenPeriods;
+  const preFilteredcontributorTaskData = completedTaskData ? [...completedTaskData] : [];
   const noAssigneeIndex = preFilteredcontributorTaskData?.findIndex((element) => !element?.assigneeId);
   const tmp = preFilteredcontributorTaskData[noAssigneeIndex];
   if (tmp) {
@@ -208,31 +209,35 @@ function Analytics(props) {
   const lastTwoWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14);
   const [toTime, setToTime] = useState(tomorrow);
   const [fromTime, setFromTime] = useState(lastTwoWeek);
-  const [getCompletedTasksBetweenPeriods, { data: completedTaskData }] = useLazyQuery(
+  const formatToTime = format(toTime, 'yyyy-MM-dd');
+  const formatFromTime = format(fromTime, 'yyyy-MM-dd');
+  const { data: completedTaskData, refetch: getCompletedTasksBetweenPeriods } = useQuery(
     GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD,
     {
-      fetchPolicy: 'network-only',
-    }
-  );
-
-  const handleGetCompletedTasksBetweenPeriods = () =>
-    getCompletedTasksBetweenPeriods({
+      fetchPolicy: 'cache-and-network',
+      skip: !(orgId && fromTime && toTime),
       variables: {
         orgId,
-        toTime: format(toTime, 'yyyy-MM-dd'),
-        fromTime: format(fromTime, 'yyyy-MM-dd'),
+        toTime: formatToTime,
+        fromTime: formatFromTime,
         includeBounties: true,
         ...(assignee && {
           assigneeId: assignee?.value,
         }),
       },
+    }
+  );
+
+  const handleGetCompletedTasksBetweenPeriods = () =>
+    getCompletedTasksBetweenPeriods({
+      toTime: formatToTime,
+      fromTime: formatFromTime,
+      ...(assignee && {
+        assigneeId: assignee?.value,
+      }),
     });
 
-  const contributorTaskData = getContributorTaskData(completedTaskData);
-
-  useEffect(() => {
-    if (orgId && fromTime && toTime) handleGetCompletedTasksBetweenPeriods();
-  }, [orgId, fromTime, toTime, assignee?.value]);
+  const contributorTaskData = useMemo(() => getContributorTaskData(completedTaskData), [completedTaskData]);
 
   return (
     <BoardPageHeader orgData={orgData} headerTitle="Analytics">
