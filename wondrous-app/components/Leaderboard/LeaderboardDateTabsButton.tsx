@@ -7,6 +7,7 @@ const LeaderBoardDateTabsButton = ({ children, selected = false, ...props }) => 
     color="grey"
     borderRadius={6}
     textColor={palette.white}
+    height={34}
     buttonTheme={{
       fontWeight: '500',
       fontSize: '13px',

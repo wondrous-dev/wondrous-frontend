@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client/react';
-import { InputAdornment } from '@mui/material';
+import { Autocomplete, InputAdornment } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { SafeImage } from 'components/Common/Image';
 import {
@@ -44,7 +44,7 @@ const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTas
     });
   };
   return (
-    <StyledAutocomplete
+    <Autocomplete
       forcePopupIcon={false}
       options={filterUsers(orgUsersData?.searchOrgUsers)}
       onOpen={() => {}}
@@ -71,6 +71,7 @@ const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTas
             {...params}
             sx={{
               color: palette.white,
+              height: '34px',
               fontFamily: 'Space Grotesk',
               fontSize: '13px',
               fontWeight: '500px',
@@ -83,6 +84,7 @@ const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTas
               },
               '& .MuiInputBase-root': {
                 padding: '0 14px',
+                height: '100%',
               },
             }}
             placeholder="Select members..."
