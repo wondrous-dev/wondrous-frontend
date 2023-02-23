@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
 
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 export const entityStyling = {
   [ENTITIES_TYPES.PROPOSAL]: {
@@ -102,4 +103,31 @@ export const TaskColumnDropContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+`;
+
+export const AISnackbarContainer = styled.div`
+  background: ${palette.purple710};
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
+  align-self: baseline;
+  width: 100%;
+  cursor: pointer;
+`;
+
+export const AISnackbarNewContainer = styled.div`
+  background: ${palette.blue150};
+  border-radius: 6px;
+  padding: 2px 4px;
+`;
+
+export const AISnackbarText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-weight: 600;
+    font-size: 13px;
+    color: ${palette.white};
+  }
 `;
