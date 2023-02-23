@@ -4,7 +4,14 @@ import { PrevButton, LaunchButton, LaunchButtonText } from './styles';
 import { guideConfig } from './guide';
 import { filterGuideSteps } from './GuideNavigationWrapper';
 
-function GuidePrevButton({ currentStep, stepsLength, setIsOpen, setCurrentStep, setUserCompletedGuide }) {
+function GuidePrevButton({
+  currentStep,
+  stepsLength,
+  setIsOpen,
+  setCurrentStep,
+  setUserCompletedGuide,
+  setProjectCompletedGuide,
+}) {
   const router = useRouter();
   const user = useMe();
   const onProjectHome = router.pathname === '/organization/[username]/home' || router.pathname === '/pod/[podId]/home';
@@ -13,7 +20,16 @@ function GuidePrevButton({ currentStep, stepsLength, setIsOpen, setCurrentStep, 
 
   const stepsData = steps[currentStep];
   const buttonTitle = stepsData?.prevButtonTitle || 'Next';
-  const action = () => {
+  const action = async () => {
+    if (stepsData.nextAction === 'finish' && onProjectHome) {
+      if (guide?.id) {
+        await setProjectCompletedGuide({
+          variables: {
+            guideId: guide?.id,
+          },
+        });
+      }
+    }
     if (currentStep === 0 || stepsData.prevAction === 'skip') {
       return setIsOpen(false);
     }

@@ -21,7 +21,6 @@ function GuideNextButton({
   const buttonTitle = stepsData?.nextButtonTitle || 'Next';
   const action = async () => {
     if (stepsData.nextAction === 'finish' && onProjectHome) {
-      console.log('hello');
       if (guide?.id) {
         await setProjectCompletedGuide({
           variables: {
