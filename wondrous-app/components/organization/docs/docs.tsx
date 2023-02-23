@@ -101,7 +101,7 @@ function Docs(props) {
       setMenuAnchor(event.currentTarget);
       setSelectedDoc(doc);
     }
-    if (window?.analytics) {
+    if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
       window?.analytics?.track(ANALYTIC_EVENTS.DOCUMENT_CLICK, {
         docId: doc?.id,
         orgId,

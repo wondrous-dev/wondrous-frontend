@@ -14,6 +14,7 @@ import {
   STATUS_CLOSED,
   HEADER_ICONS,
   TITLES,
+  ANALYTIC_EVENTS,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -35,6 +36,7 @@ import { useQuery } from '@apollo/client';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
 
+import { useMe } from 'components/Auth/withAuth';
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
@@ -61,6 +63,7 @@ function TaskColumn(props: ITaskColumn) {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const user = useMe();
   const [AISnackbarVisible, setAISnackbarVisible] = useState(true);
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
@@ -183,6 +186,13 @@ function TaskColumn(props: ITaskColumn) {
       {status === TASK_STATUS_TODO && canCreateTask && AISnackbarVisible && (
         <AISnackbarContainer
           onClick={() => {
+            if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+              window?.analytics?.track(ANALYTIC_EVENTS.AI_CREATE_TASK_SNACKBAR_CLICK, {
+                orgId: board?.orgId,
+                podId: board?.podId,
+                userId: user?.id,
+              });
+            }
             if (orgBoard) {
               router.push(`/organization/${orgBoard?.orgData?.username}/wonder_ai_bot`, undefined, { shallow: true });
             } else if (podBoard) {

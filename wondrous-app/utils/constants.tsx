@@ -932,4 +932,5 @@ export const CALENDAR_CONFIG = {
 
 export const ANALYTIC_EVENTS = {
   DOCUMENT_CLICK: 'document_click',
+  AI_CREATE_TASK_SNACKBAR_CLICK: 'ai_create_task_snackbar_click',
 };
