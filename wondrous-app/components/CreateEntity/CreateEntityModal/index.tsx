@@ -1797,34 +1797,36 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             <CreateEntityAttachmentIcon />
             {fileUploadLoading && <FileLoading />}
           </CreateEntityAttachment>
-          <CreateEntityPrivacySelect
-            className="select-tooltip"
-            name="privacyLevel"
-            value={form.values.privacyLevel}
-            onChange={(value) => {
-              form.setFieldValue('privacyLevel', value);
-            }}
-            renderValue={(value) => (
-              <Tooltip placement="top">
-                <CreateEntityPrivacySelectRender>
-                  <CreateEntityPrivacySelectRenderLabelWrapper>
-                    <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
-                  </CreateEntityPrivacySelectRenderLabelWrapper>
-                  <CreateEntitySelectArrowIcon />
-                </CreateEntityPrivacySelectRender>
-              </Tooltip>
-            )}
-          >
-            {Object.keys(privacyOptions).map((i) => {
-              const { label, value, Icon } = privacyOptions[i];
-              return (
-                <CreateEntityPrivacySelectOption key={value} value={value}>
-                  <CreateEntityPrivacyIconWrapper>{Icon && <Icon />}</CreateEntityPrivacyIconWrapper>
-                  <CreateEntityPrivacyLabel>{label}</CreateEntityPrivacyLabel>
-                </CreateEntityPrivacySelectOption>
-              );
-            })}
-          </CreateEntityPrivacySelect>
+          {!isProposal && (
+            <CreateEntityPrivacySelect
+              className="select-tooltip"
+              name="privacyLevel"
+              value={form.values.privacyLevel}
+              onChange={(value) => {
+                form.setFieldValue('privacyLevel', value);
+              }}
+              renderValue={(value) => (
+                <Tooltip placement="top">
+                  <CreateEntityPrivacySelectRender>
+                    <CreateEntityPrivacySelectRenderLabelWrapper>
+                      <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
+                    </CreateEntityPrivacySelectRenderLabelWrapper>
+                    <CreateEntitySelectArrowIcon />
+                  </CreateEntityPrivacySelectRender>
+                </Tooltip>
+              )}
+            >
+              {Object.keys(privacyOptions).map((i) => {
+                const { label, value, Icon } = privacyOptions[i];
+                return (
+                  <CreateEntityPrivacySelectOption key={value} value={value}>
+                    <CreateEntityPrivacyIconWrapper>{Icon && <Icon />}</CreateEntityPrivacyIconWrapper>
+                    <CreateEntityPrivacyLabel>{label}</CreateEntityPrivacyLabel>
+                  </CreateEntityPrivacySelectOption>
+                );
+              })}
+            </CreateEntityPrivacySelect>
+          )}
         </CreateEntityHeaderWrapper>
         <CreateEntityHeaderWrapper showOnSmallScreen>
           {loading ? (
