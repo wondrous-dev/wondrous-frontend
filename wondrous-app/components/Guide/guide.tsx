@@ -16,7 +16,7 @@ const projectHomeSteps = [
   },
   {
     selector: '#tour-header-project-settings',
-    position: 'top',
+    position: 'right',
     content: () => (
       <div>
         <StepTitle gradient="linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)">Settings</StepTitle>
