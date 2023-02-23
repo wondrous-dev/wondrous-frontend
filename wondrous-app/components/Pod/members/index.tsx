@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_POD_BY_ID, GET_POD_MEMBERSHIP_REQUEST } from 'graphql/queries';
@@ -7,8 +6,7 @@ import HomePageHeader from 'components/Pod/wrapper/HomePageHeader';
 import { SafeImage } from 'components/Common/Image';
 import { SmallAvatar } from 'components/Common/AvatarList';
 import RolePill from 'components/Common/RolePill';
-import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
-import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import {
   MemberRequestsList,
   MemberRequestCard,
@@ -24,8 +22,7 @@ import {
   RequestApproveButton,
   MemberRequestsListEndMessage,
   EmptyMemberRequestsListMessage,
-  MemberProfileLink,
-} from './styles';
+} from 'components/organization/members/styles';
 
 const QUERY_LIMIT = 3;
 
@@ -143,8 +140,8 @@ function MemberRequests(props) {
             <MemberRequestsList>
               {podUserMembershipRequests?.map((request) => (
                 <MemberRequestCard key={request.id}>
-                  <Link href={`/profile/${request.userUsername}/about`} passHref>
-                    <MemberProfileLink>
+                  <NoUnderlineLink href={`/profile/${request.userUsername}/about`} passHref>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       {request.userProfilePicture ? (
                         <SafeImage
                           width={28}
@@ -162,23 +159,10 @@ function MemberRequests(props) {
                           style={{ width: '28px', height: '28px' }}
                         />
                       )}
-                      {request?.checkIsGr15Contributor?.isGr15Contributor && (
-                        <>
-                          <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                          <GR15DEILogo
-                            style={{
-                              marginLeft: '-8px',
-                            }}
-                            width="28"
-                            height="28"
-                            onClick={() => setOpenGR15Modal(true)}
-                          />
-                        </>
-                      )}
                       <MemberName>{request.userUsername}</MemberName>
-                    </MemberProfileLink>
-                  </Link>
-                  <MemberMessage style={{ marginRight: '8px' }}>“{request.message}”</MemberMessage>
+                    </div>
+                  </NoUnderlineLink>
+                  <MemberMessage>“{request.message}”</MemberMessage>
                   <RolePill roleName={request.roleName} />
                   <RequestActionButtons>
                     <RequestDeclineButton onClick={() => declineRequest(request.id)}>Decline</RequestDeclineButton>
