@@ -1,4 +1,5 @@
-import { Grid, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import LeaderboardGoldIcon from 'components/Icons/leaderboardGold.svg';
 import LeaderboardSilverIcon from 'components/Icons/leaderboardSilver.svg';
 import LeaderboardBronzeIcon from 'components/Icons/leaderboardBronze.svg';
@@ -66,7 +67,7 @@ const LeaderboardBronze = (props) => (
 
 const LeaderboardPurple = ({ index }) => (
   <LeaderboardIcon
-    colorEnd="#F58F16"
+    colorEnd="#CCBBFF"
     colorStart="linear-gradient(180deg, #F58F16, #CCBBFF, 54.69%)"
     Icon={LeaderboardPurpleIcon}
     label={index + 1}

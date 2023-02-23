@@ -1,5 +1,7 @@
+import { Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import { Button } from 'components/Button';
 import PodIconName from 'components/Common/PodIconName';
 import CalendarIcon from 'components/Icons/calendar';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
@@ -27,6 +29,19 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
         const podName = task?.podName || task?.pod?.name;
         const podColor = task?.podColor || task?.podColor;
         const privateTask = task?.title === PRIVATE_TASK_TITLE;
+        const handleOnClickTask = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!privateTask) {
+            router.push({
+              pathname: router.pathname,
+              query: {
+                ...router.query,
+                task: task.id,
+              },
+            });
+          }
+        };
         return (
           <Grid
             container
@@ -37,19 +52,7 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
             sx={{
               cursor: !privateTask && 'pointer',
             }}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (!privateTask) {
-                router.push({
-                  pathname: router.pathname,
-                  query: {
-                    ...router.query,
-                    task: task.id,
-                  },
-                });
-              }
-            }}
+            onClick={handleOnClickTask}
           >
             <Grid container item alignItems="center" gap="14px" width="fit-content">
               <Grid
@@ -92,6 +95,23 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
           </Grid>
         );
       })}
+      <Divider
+        sx={{
+          backgroundColor: '#363636',
+          width: '100%',
+        }}
+      />
+      <Button
+        color="grey"
+        buttonTheme={{
+          paddingX: 16,
+          width: 'fit-content',
+          fontWeight: '500',
+          background: palette.grey78,
+        }}
+      >
+        Show more
+      </Button>
     </Grid>
   );
 };

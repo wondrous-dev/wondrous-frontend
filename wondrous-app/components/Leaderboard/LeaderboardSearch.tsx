@@ -2,7 +2,13 @@ import { useQuery } from '@apollo/client/react';
 import { InputAdornment } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { SafeImage } from 'components/Common/Image';
-import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
+import {
+  OptionDiv,
+  OptionTypography,
+  StyledAutocomplete,
+  StyledAutocompletePopper,
+  StyledChip,
+} from 'components/CreateEntity/styles';
 import SearchIcon from 'components/Icons/search';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import React, { useState } from 'react';
@@ -38,33 +44,33 @@ const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTas
     });
   };
   return (
-    <StyledAutocompletePopper
-      popupIcon={SearchIcon}
+    <StyledAutocomplete
+      forcePopupIcon={false}
       options={filterUsers(orgUsersData?.searchOrgUsers)}
       onOpen={() => {}}
       renderInput={(params) => {
         const InputProps = {
-          ...params?.inputProps,
           ...params?.InputProps,
           type: 'autocomplete',
           startAdornment:
             assignee && assigneeString ? <StyledChip label={assigneeString} onDelete={() => setAssignee(null)} /> : '',
           endAdornment: (
-            <InputAdornment position="end">
+            <InputAdornment
+              position="end"
+              sx={{
+                width: '14px',
+                height: '14px',
+              }}
+            >
               <SearchIcon color={palette.white} />
             </InputAdornment>
           ),
-          style: {
-            padding: 0,
-            opacity: assignee ? '0' : '1',
-          },
         };
         return (
           <TextField
             {...params}
             sx={{
               color: palette.white,
-              padding: '0 14px',
               fontFamily: 'Space Grotesk',
               fontSize: '13px',
               fontWeight: '500px',
@@ -75,10 +81,20 @@ const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTas
                 color: palette.grey58,
                 fontWeight: 500,
               },
+              '& .MuiInputBase-root': {
+                padding: '0 14px',
+              },
             }}
             placeholder="Select members..."
             InputLabelProps={{ shrink: false }}
             InputProps={InputProps}
+            inputProps={{
+              ...params.inputProps,
+              style: {
+                padding: 0,
+                opacity: assignee ? '0' : '1',
+              },
+            }}
           />
         );
       }}
