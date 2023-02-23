@@ -33,7 +33,7 @@ function MilestoneSearch({
   formValues = null,
   disabled = false,
   autoFocus = false,
-  onNewMilestoneClick = null
+  onNewMilestoneClick = null,
 }) {
   const [createMilestone, setCreateMilestone] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -55,18 +55,18 @@ function MilestoneSearch({
       <CreateEntity // this is a circular depency, better to instantiate this in wrapper, and apply the global watcher pattern
         entityType={ENTITIES_TYPES.MILESTONE}
         handleCloseModal={() => {
-          onNewMilestoneClick && onNewMilestoneClick()
+          onNewMilestoneClick && onNewMilestoneClick();
           setCreateMilestone(false);
           handleClickAway();
         }}
         open={isOpen}
         cancel={() => {
-          onNewMilestoneClick && onNewMilestoneClick()
+          onNewMilestoneClick && onNewMilestoneClick();
           setCreateMilestone(false);
           handleClickAway();
         }}
         handleClose={({ data }) => {
-          onNewMilestoneClick && onNewMilestoneClick()
+          onNewMilestoneClick && onNewMilestoneClick();
           setCreateMilestone(false);
           handleClickAway();
           onChange(data?.createMilestone?.id);

@@ -1,6 +1,5 @@
 import GitHubIcon from '@mui/icons-material/GitHub';
 import WalletModal from 'components/Common/Wallet/WalletModal';
-import { RichTextViewer } from 'components/RichText';
 import { GithubLink, GithubLinkText } from 'components/Settings/Github/styles';
 import isEmpty from 'lodash/isEmpty';
 import keys from 'lodash/keys';
@@ -11,6 +10,7 @@ import ErrorIcon from 'components/Icons/errorIcon.svg';
 import MoreIcon from 'components/Icons/more';
 import Tooltip from 'components/Tooltip';
 
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { useMutation } from '@apollo/client';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations';
 import { addTaskItem, getProposalStatus, updateProposalItem } from 'utils/board';
@@ -129,7 +129,7 @@ export const TaskDescriptionTextWrapper = ({ text, showFullByDefault = false }) 
   return (
     <>
       <TaskDescriptionText isExpanded={isExpanded} initialHeight={initialHeight} ref={checkRichTextHeight} as="div">
-        <RichTextViewer text={text} />
+        <PlateRichTextViewer text={text} />
       </TaskDescriptionText>
       {showButton && (
         <TaskDescriptionTextShowAllText onClick={handleExpand}>

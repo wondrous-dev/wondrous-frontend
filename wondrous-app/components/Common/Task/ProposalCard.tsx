@@ -18,10 +18,10 @@ import {
   BoardsPrivacyLabel,
 } from 'components/Common/Boards/styles';
 import TaskPriority from 'components/Common/TaskPriority';
-import { RichTextViewer } from 'components/RichText';
 import { SafeImage } from 'components/Common/Image';
 import PodIconName from 'components/Common/PodIconName';
 
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { CardContent, ProposalCardIcon, ProposalCardType, ProposalFooterButton } from './styles';
 
 const STATUS_ICONS = {
@@ -44,18 +44,6 @@ export default function ProposalCard({ openModal, title, description, task, goTo
         },
       ],
     },
-    // [Constants.STATUS_OPEN]: {
-    //   labelsAndActions: [
-    //     {
-    //       title: 'Reject',
-    //       action: () => {
-    //         if (proposalRequestChange) {
-    //           proposalRequestChange(task.id, proposalStatus);
-    //         }
-    //       },
-    //     },
-    //   ],
-    // },
     [Constants.STATUS_CLOSED]: {
       labelsAndActions: [
         {
@@ -85,9 +73,7 @@ export default function ProposalCard({ openModal, title, description, task, goTo
           <BoardsCardSubheader>
             <ProposalCardIcon />
             <ProposalCardType>Proposal</ProposalCardType>
-            <BoardsPrivacyLabel>
-              {task?.privacyLevel === Constants.PRIVACY_LEVEL.public ? 'Public' : 'Members'}
-            </BoardsPrivacyLabel>
+            <BoardsPrivacyLabel>Public</BoardsPrivacyLabel>
           </BoardsCardSubheader>
           {HeaderIcon ? <HeaderIcon /> : null}
         </BoardsCardHeader>
@@ -97,7 +83,7 @@ export default function ProposalCard({ openModal, title, description, task, goTo
             <TaskPriority value={task?.priority} />
           </Box>
           <BoardsCardBodyDescription as="div">
-            <RichTextViewer text={description} />
+            <PlateRichTextViewer text={description} />
           </BoardsCardBodyDescription>
           {coverMedia ? (
             <BoardsCardMedia>

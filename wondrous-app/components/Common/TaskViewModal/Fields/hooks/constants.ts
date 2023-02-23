@@ -18,7 +18,7 @@ export const FIELDS = {
   TITLE: 'title',
   DESCRIPTION: 'description',
   PRIVACY_LEVEL: 'privacyLevel',
-  GRANT_REWARDS: 'reward'
+  GRANT_REWARDS: 'reward',
 };
 
 export const TASK_SCHEMA = {
@@ -46,18 +46,18 @@ export const TASK_SCHEMA = {
     .optional()
     .nullable(),
   [FIELDS.REVIEWERS]: Yup.array().of(Yup.string().nullable()).nullable(),
-}
+};
 
 export const GRANT_SCHEMA = {
   [FIELDS.TITLE]: Yup.string().required('Title is required'),
   [FIELDS.NUM_OF_GRANT]: Yup.number()
-  .typeError('Number of grants must be a number')
-  .nullable()
-  .moreThan(0, 'Number of grants must be greater than 0')
-  .lessThan(1000000000, 'Number of grants must be less than 1 billion'),
+    .typeError('Number of grants must be a number')
+    .nullable()
+    .moreThan(0, 'Number of grants must be greater than 0')
+    .lessThan(1000000000, 'Number of grants must be less than 1 billion'),
   [FIELDS.GRANT_DATES]: Yup.object({
     startDate: Yup.string().optional().nullable(),
-    endDate: Yup.string().optional().nullable()
+    endDate: Yup.string().optional().nullable(),
   }),
   [FIELDS.APPLY_POLICY]: Yup.string().nullable(),
-}
+};

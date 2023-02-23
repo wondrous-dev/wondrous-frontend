@@ -14,6 +14,7 @@ export interface IListItemProps {
 export interface IHeaderTitleProps {
   text: string;
   IconComponent: React.ElementType;
+  tourId?: string;
 }
 
 export interface ICreateButtonProps {
@@ -26,6 +27,7 @@ export interface ListWrapperProps {
   CreateButtonProps?: ICreateButtonProps;
   HeaderTitleProps: IHeaderTitleProps;
   showAllUrl: string;
+  tourId?: string;
   data?: Array<{
     [key: string]: any;
   }>;

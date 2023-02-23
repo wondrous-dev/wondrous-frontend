@@ -3,15 +3,23 @@ import KudosForm from 'components/Common/KudosForm';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { DueDateIcon, LinkIcon } from 'components/Icons/taskModalIcons';
 import {
-  APPROVE_SUBMISSION, APPROVE_TASK_PROPOSAL,
-  CLOSE_TASK_PROPOSAL, REJECT_SUBMISSION, REQUEST_CHANGE_SUBMISSION
+  APPROVE_SUBMISSION,
+  APPROVE_TASK_PROPOSAL,
+  CLOSE_TASK_PROPOSAL,
+  REJECT_SUBMISSION,
+  REQUEST_CHANGE_SUBMISSION,
 } from 'graphql/mutations';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 import { useContext, useState } from 'react';
 import palette from 'theme/palette';
 import {
-  ORG_MEMBERSHIP_REQUESTS, PERMISSIONS, POD_MEMBERSHIP_REQUESTS, TASK_STATUS_DONE, TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST
+  ORG_MEMBERSHIP_REQUESTS,
+  PERMISSIONS,
+  POD_MEMBERSHIP_REQUESTS,
+  TASK_STATUS_DONE,
+  TASK_STATUS_PROPOSAL_REQUEST,
+  TASK_STATUS_SUBMISSION_REQUEST,
 } from 'utils/constants';
 import { deleteFromCache, parseUserPermissionContext } from 'utils/helpers';
 import { Grid } from '@mui/material';
@@ -28,7 +36,15 @@ import { ListViewItemActions, ListViewItemBodyWrapper, ListViewItemDataContainer
 import Tooltip from 'components/Tooltip';
 import { format } from 'date-fns';
 import {
-  ApproveButton, BoldName, DeclineButton, Description, DueDateWrapper, IconContainer, IconsWrapper, MediaIcon, RequestChangesButton
+  ApproveButton,
+  BoldName,
+  DeclineButton,
+  Description,
+  DueDateWrapper,
+  IconContainer,
+  IconsWrapper,
+  MediaIcon,
+  RequestChangesButton,
 } from './styles';
 
 interface Props {

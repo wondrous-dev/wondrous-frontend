@@ -2,7 +2,6 @@ import { Typography, Tab, Tabs } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { EXPLORE_MODAL_TABS_MAP, MODAL_TABS_MAP } from 'utils/constants';
-import { SafeImage } from '../Image';
 import DefaultUserImage from '../Image/DefaultUserImage';
 
 export const ActivityIndicatorContainer = styled.div`
@@ -93,14 +92,6 @@ export const Tab2 = styled.div`
     margin-right: 0;
   }
 `;
-export function UserProfilePicture(props) {
-  const { src } = props;
-  return <SafeImage src={src} style={ProfilePictureStyles} useNextImage={false} alt="User profile picture" />;
-}
-
-export function DefaultProfilePicture() {
-  return <DefaultUserImage style={ProfilePictureStyles} />;
-}
 
 export const TitleSection = styled.div`
   display: flex;

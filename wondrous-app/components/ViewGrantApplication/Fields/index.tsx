@@ -253,7 +253,7 @@ export const WalletAddressViewer = ({ walletAddress }) => {
   }, [walletAddress]);
 
   const handleAddressCopy = (e) => {
-    e.stopPropagation()
+    e.stopPropagation();
     setIsCopied(true);
     setTimeout(() => {
       setIsCopied(false);

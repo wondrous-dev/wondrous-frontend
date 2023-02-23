@@ -14,11 +14,12 @@ import {
   CreateEntityLabelAddButton,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
-import { Dispatch, useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { User } from 'types/User';
 import { useOutsideAlerter } from 'utils/hooks';
+import usePlate from 'hooks/usePlate';
 import { TaskSectionInfoText, ViewFieldWrapper } from '../styles';
 import { UserChipWrapper } from './styles';
 
@@ -39,6 +40,7 @@ export const TaskFieldEditableContent = ({
   canAddItem = false,
   editGridStyle = {},
 }: TaskFieldEditableContentProps) => {
+  const { isComboboxOpen } = usePlate();
   const [isEditMode, setIsEditMode] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
   const [isOutsideAlerterDisabled, setDisableOutsideAlerter] = useState(false);
@@ -62,14 +64,14 @@ export const TaskFieldEditableContent = ({
     ref,
     () => {
       if (isOutsideAlerterDisabled) return;
-      if (isEditMode) {
+      if (isEditMode && !isComboboxOpen) {
         toggleEditMode();
       }
       if (isAddMode) {
         toggleAddMode();
       }
     },
-    [isEditMode, isAddMode, isOutsideAlerterDisabled]
+    [isEditMode, isAddMode, isOutsideAlerterDisabled, isComboboxOpen]
   );
 
   if (isAddMode) {

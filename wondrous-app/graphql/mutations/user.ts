@@ -94,6 +94,14 @@ export const SET_USER_COMPLETED_GUIDE = gql`
   }
 `;
 
+export const SET_PROJECT_GUIDE_COMPLETE = gql`
+  mutation setProjectGuideComplete {
+    setProjectGuideComplete {
+      success
+    }
+  }
+`;
+
 export const CREATE_USER_INTEREST = gql`
   mutation createUserInterests($interests: [String]) {
     createUserInterests(interests: $interests) {

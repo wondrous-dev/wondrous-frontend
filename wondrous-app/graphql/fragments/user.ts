@@ -19,6 +19,7 @@ export const LoggedinUserFragment = gql`
     }
     signupCompleted
     lastCompletedGuide
+    projectGuideComplete
     mainBannerClosedAt
     links {
       url

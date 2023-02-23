@@ -10,7 +10,7 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { GrantTextField, GrantTextFieldInput } from './styles';
 
-const GrantQuantity = ({ onChange, value = null, error, setError, defaultValue = null}) => (
+const GrantQuantity = ({ onChange, value = null, error, setError, defaultValue = null }) => (
   <TaskSectionDisplayDiv alignItems="start">
     <CreateEntityLabelWrapper>
       <CreateEntityLabel>Quantity</CreateEntityLabel>

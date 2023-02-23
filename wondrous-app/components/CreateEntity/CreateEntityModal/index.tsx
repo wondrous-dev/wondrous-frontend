@@ -10,7 +10,6 @@ import formatDate from 'date-fns/format';
 
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import DropdownSearch from 'components/DropdownSearch';
-import { extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
 import {
@@ -32,8 +31,6 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import { Editor, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
 import {
   ENTITIES_TYPES,
   TASK_STATUS_TODO,
@@ -66,7 +63,8 @@ import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
-import { InputLabel } from '@mui/material';
+import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
+import { extractMentions } from 'components/PlateRichEditor/utils';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -243,8 +241,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
   });
 
-  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
-  const editor = useEditor();
+  // const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
+  // const editor = useEditor();
 
   const initialPodId = !existingTask ? board?.podId || routerPodId : null;
   const form: any = useFormik({
@@ -471,7 +469,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
   const handleSubmitTemplate = (template) => {
-    editor.children = JSON.parse(template?.description);
+    // editor.children = JSON.parse(template?.description);
     form.setFieldValue('title', template?.title);
     form.setFieldValue('points', template?.points);
     form.setFieldValue('orgId', template?.orgId);
@@ -650,7 +648,15 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   }, [form, setFormDirty]);
 
   return (
-    <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={isFullScreen} data-cy="modal-create-entity">
+    <CreateEntityForm
+      onSubmit={(e) => {
+        // necessary for the plate editor
+        e.preventDefault();
+        form.handleSubmit(e);
+      }}
+      fullScreen={isFullScreen}
+      data-cy="modal-create-entity"
+    >
       <ConvertTaskToBountyModal
         open={turnTaskToBountyModal}
         onClose={() => setTurnTaskToBountyModal(false)}
@@ -795,37 +801,18 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
-        <EditorToolbar ref={setEditorToolbarNode} />
-        <EditorContainer
-          onClick={() => {
-            // since editor will collapse to 1 row on input, we need to emulate min-height somehow
-            // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
-            ReactEditor.focus(editor);
-            // also we need to move cursor to the last position in the editor
-            Transforms.select(editor, {
-              anchor: Editor.end(editor, []),
-              focus: Editor.end(editor, []),
-            });
+        <PlateRichEditor
+          inputValue={form.values.description}
+          mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
+          onChange={(value) => {
+            form.setFieldValue('description', value);
           }}
-        >
-          <RichTextEditor
-            editor={editor}
-            onMentionChange={search}
-            initialValue={form.values.description}
-            mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
-            placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
-            toolbarNode={editorToolbarNode}
-            onChange={(value) => {
-              form.setFieldValue('description', value);
-            }}
-            editorContainerNode={document.querySelector('#modal-scrolling-container')}
-            onClick={(e) => {
-              // we need to stop click event propagation,
-              // since EditorContainer moves cursor to the last position in the editor on click
-              e.stopPropagation();
-            }}
-          />
-        </EditorContainer>
+          mediaUploads={() => {
+            inputRef.current.click();
+          }}
+          placeholder="Type ‘/’ for commands"
+        />
+
         {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
         <CreateEntityLabelSelectWrapper show>
           <MediaUploadDiv>
@@ -1810,34 +1797,36 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             <CreateEntityAttachmentIcon />
             {fileUploadLoading && <FileLoading />}
           </CreateEntityAttachment>
-          <CreateEntityPrivacySelect
-            className="select-tooltip"
-            name="privacyLevel"
-            value={form.values.privacyLevel}
-            onChange={(value) => {
-              form.setFieldValue('privacyLevel', value);
-            }}
-            renderValue={(value) => (
-              <Tooltip placement="top">
-                <CreateEntityPrivacySelectRender>
-                  <CreateEntityPrivacySelectRenderLabelWrapper>
-                    <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
-                  </CreateEntityPrivacySelectRenderLabelWrapper>
-                  <CreateEntitySelectArrowIcon />
-                </CreateEntityPrivacySelectRender>
-              </Tooltip>
-            )}
-          >
-            {Object.keys(privacyOptions).map((i) => {
-              const { label, value, Icon } = privacyOptions[i];
-              return (
-                <CreateEntityPrivacySelectOption key={value} value={value}>
-                  <CreateEntityPrivacyIconWrapper>{Icon && <Icon />}</CreateEntityPrivacyIconWrapper>
-                  <CreateEntityPrivacyLabel>{label}</CreateEntityPrivacyLabel>
-                </CreateEntityPrivacySelectOption>
-              );
-            })}
-          </CreateEntityPrivacySelect>
+          {!isProposal && (
+            <CreateEntityPrivacySelect
+              className="select-tooltip"
+              name="privacyLevel"
+              value={form.values.privacyLevel}
+              onChange={(value) => {
+                form.setFieldValue('privacyLevel', value);
+              }}
+              renderValue={(value) => (
+                <Tooltip placement="top">
+                  <CreateEntityPrivacySelectRender>
+                    <CreateEntityPrivacySelectRenderLabelWrapper>
+                      <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
+                    </CreateEntityPrivacySelectRenderLabelWrapper>
+                    <CreateEntitySelectArrowIcon />
+                  </CreateEntityPrivacySelectRender>
+                </Tooltip>
+              )}
+            >
+              {Object.keys(privacyOptions).map((i) => {
+                const { label, value, Icon } = privacyOptions[i];
+                return (
+                  <CreateEntityPrivacySelectOption key={value} value={value}>
+                    <CreateEntityPrivacyIconWrapper>{Icon && <Icon />}</CreateEntityPrivacyIconWrapper>
+                    <CreateEntityPrivacyLabel>{label}</CreateEntityPrivacyLabel>
+                  </CreateEntityPrivacySelectOption>
+                );
+              })}
+            </CreateEntityPrivacySelect>
+          )}
         </CreateEntityHeaderWrapper>
         <CreateEntityHeaderWrapper showOnSmallScreen>
           {loading ? (

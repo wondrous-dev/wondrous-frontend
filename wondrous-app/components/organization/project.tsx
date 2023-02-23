@@ -1,4 +1,6 @@
 import { useQuery } from '@apollo/client';
+import { useTour } from '@reactour/tour';
+import { useMe } from 'components/Auth/withAuth';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import HomePageHeader from 'components/organization/wrapper/HomePageHeader';
 import ProjectProfile from 'components/ProjectProfile';
@@ -9,7 +11,10 @@ import { OrgBoardContext } from 'utils/contexts';
 import { usePageDataContext } from 'utils/hooks';
 
 const OrgProject = () => {
-  const { username } = useRouter().query;
+  const router = useRouter();
+  const { username } = router.query;
+  const user = useMe();
+  const { setIsOpen, setCurrentStep } = useTour();
   const { setPageData } = usePageDataContext();
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -30,6 +35,12 @@ const OrgProject = () => {
 
   useEffect(() => () => setPageData({}), []);
 
+  useEffect(() => {
+    if (user && !user?.projectGuideComplete) {
+      setCurrentStep(0);
+      setIsOpen(true);
+    }
+  }, [user]);
   const contextValue = useMemo(
     () => ({
       userPermissionsContext: userPermissionsContext?.getUserPermissionContext

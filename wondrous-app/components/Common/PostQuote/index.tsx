@@ -1,7 +1,7 @@
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils/index';
 import { useRouter } from 'next/router';
-import { RichTextViewer } from 'components/RichText';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import {
   PostContentBackground,
   PostContentBorder,
@@ -49,7 +49,7 @@ export function PostQuote(props) {
               </SmartLink>
             </ReferenceTitle>
             <ReferenceDescription as="div">
-              <RichTextViewer text={referencedObject?.content} />
+              <PlateRichTextViewer text={referencedObject?.content} />
             </ReferenceDescription>
             <ReferenceMediaWrapper>
               {referencedObject?.media &&
