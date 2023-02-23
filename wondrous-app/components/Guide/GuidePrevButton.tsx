@@ -20,10 +20,18 @@ function GuidePrevButton({
 
   const stepsData = steps[currentStep];
   const buttonTitle = stepsData?.prevButtonTitle || 'Next';
-  const action = async () => {
-    if (stepsData.nextAction === 'finish' && onProjectHome) {
+  const action = () => {
+    if (onProjectHome) {
       if (guide?.id) {
-        await setProjectCompletedGuide({
+        setProjectCompletedGuide({
+          variables: {
+            guideId: guide?.id,
+          },
+        });
+      }
+    } else if (stepsData.nextAction !== 'finish') {
+      if (guide?.id) {
+        setUserCompletedGuide({
           variables: {
             guideId: guide?.id,
           },
