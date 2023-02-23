@@ -45,7 +45,7 @@ const UserRowInfo = ({ Icon, data = null, sx = null }) => (
     borderRadius="4px"
     alignItems="center"
     width="fit-content"
-    gap="8px"
+    gap="6px"
     height="22px"
     lineHeight="0px"
     minWidth="22px"
