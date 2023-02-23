@@ -30,7 +30,7 @@ const PodProject = () => {
   });
   useEffect(() => () => setPageData({}), []);
   useEffect(() => {
-    if (user && !user?.lastCompletedProjectGuide) {
+    if (user && !user?.projectGuideComplete) {
       setCurrentStep(0);
       setIsOpen(true);
     }

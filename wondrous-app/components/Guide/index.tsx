@@ -1,6 +1,6 @@
 import { TourProvider } from '@reactour/tour';
 import { useMutation } from '@apollo/client';
-import { SET_USER_COMPLETED_GUIDE, SET_PROJECT_COMPLETED_GUIDE } from 'graphql/mutations/user';
+import { SET_USER_COMPLETED_GUIDE, SET_PROJECT_GUIDE_COMPLETE } from 'graphql/mutations/user';
 import { useRouter } from 'next/router';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
@@ -16,7 +16,7 @@ export default function OnboardingGuide({ children }) {
     refetchQueries: [{ query: GET_LOGGED_IN_USER }],
   });
 
-  const [setProjectCompletedGuide] = useMutation(SET_PROJECT_COMPLETED_GUIDE, {
+  const [setProjectGuideComplete] = useMutation(SET_PROJECT_GUIDE_COMPLETE, {
     refetchQueries: [{ query: GET_LOGGED_IN_USER }],
   });
 
@@ -32,11 +32,7 @@ export default function OnboardingGuide({ children }) {
     toggleHtmlOverflow();
     if (guide?.id) {
       if (onProjectHome) {
-        setProjectCompletedGuide({
-          variables: {
-            guideId: guide?.id,
-          },
-        });
+        setProjectGuideComplete();
       } else {
         setUserCompletedGuide({
           variables: {
@@ -94,7 +90,7 @@ export default function OnboardingGuide({ children }) {
           setIsOpen={setIsOpen}
           setCurrentStep={setCurrentStep}
           setUserCompletedGuide={setUserCompletedGuide}
-          setProjectCompletedGuide={setProjectCompletedGuide}
+          setProjectGuideComplete={setProjectGuideComplete}
         />
       )}
       prevButton={({ currentStep, stepsLength, setIsOpen, setCurrentStep }) => (

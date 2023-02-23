@@ -10,7 +10,7 @@ function GuideNextButton({
   setIsOpen,
   setCurrentStep,
   setUserCompletedGuide,
-  setProjectCompletedGuide,
+  setProjectGuideComplete,
 }) {
   const router = useRouter();
   const onProjectHome = router.pathname === '/organization/[username]/home' || router.pathname === '/pod/[podId]/home';
@@ -21,9 +21,8 @@ function GuideNextButton({
   const buttonTitle = stepsData?.nextButtonTitle || 'Next';
   const action = async () => {
     if (stepsData.nextAction === 'finish' && onProjectHome) {
-      console.log('hello');
       if (guide?.id) {
-        await setProjectCompletedGuide({
+        await setProjectGuideComplete({
           variables: {
             guideId: guide?.id,
           },
