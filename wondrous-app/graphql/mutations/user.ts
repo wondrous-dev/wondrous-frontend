@@ -94,9 +94,9 @@ export const SET_USER_COMPLETED_GUIDE = gql`
   }
 `;
 
-export const SET_PROJECT_COMPLETED_GUIDE = gql`
-  mutation setProjectHomeCompletedGuide($guideId: String!) {
-    setProjectHomeCompletedGuide(guideId: $guideId) {
+export const SET_PROJECT_GUIDE_COMPLETE = gql`
+  mutation setProjectGuideComplete {
+    setProjectGuideComplete {
       success
     }
   }
