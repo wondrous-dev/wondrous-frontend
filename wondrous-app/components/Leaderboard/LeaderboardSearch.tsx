@@ -1,14 +1,9 @@
 import { useQuery } from '@apollo/client/react';
-import { Autocomplete, InputAdornment } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Autocomplete from '@mui/material/Autocomplete';
+import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
 import { SafeImage } from 'components/Common/Image';
-import {
-  OptionDiv,
-  OptionTypography,
-  StyledAutocomplete,
-  StyledAutocompletePopper,
-  StyledChip,
-} from 'components/CreateEntity/styles';
 import SearchIcon from 'components/Icons/search';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import React, { useState } from 'react';
@@ -43,63 +38,34 @@ const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTas
       orgIds: [orgId],
     });
   };
+
   return (
     <Autocomplete
-      forcePopupIcon={false}
       options={filterUsers(orgUsersData?.searchOrgUsers)}
-      onOpen={() => {}}
-      renderInput={(params) => {
-        const InputProps = {
-          ...params?.InputProps,
-          type: 'autocomplete',
-          startAdornment:
-            assignee && assigneeString ? <StyledChip label={assigneeString} onDelete={() => setAssignee(null)} /> : '',
-          endAdornment: (
-            <InputAdornment
-              position="end"
-              sx={{
-                width: '14px',
-                height: '14px',
-              }}
-            >
-              <SearchIcon color={palette.white} />
-            </InputAdornment>
-          ),
-        };
-        return (
-          <TextField
-            {...params}
-            sx={{
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          placeholder="Select members..."
+          sx={{
+            input: {
               color: palette.white,
-              height: '34px',
-              fontFamily: 'Space Grotesk',
-              fontSize: '13px',
-              fontWeight: '500px',
-              minWidth: '360px',
-              background: '#191919',
-              borderRadius: '8px',
-              '& input::placeholder': {
+              fontWeight: 500,
+              '&::placeholder': {
                 color: palette.grey58,
-                fontWeight: 500,
               },
-              '& .MuiInputBase-root': {
-                padding: '0 14px',
-                height: '100%',
-              },
-            }}
-            placeholder="Select members..."
-            InputLabelProps={{ shrink: false }}
-            InputProps={InputProps}
-            inputProps={{
-              ...params.inputProps,
-              style: {
-                padding: 0,
-                opacity: assignee ? '0' : '1',
-              },
-            }}
-          />
-        );
-      }}
+            },
+            fontFamily: 'Space Grotesk',
+            fontSize: '13px',
+            fontWeight: '500',
+            minWidth: '360px',
+            background: '#191919',
+            borderRadius: '8px',
+            '& .MuiInputBase-root': {
+              padding: '0 14px',
+            },
+          }}
+        />
+      )}
       value={assignee}
       inputValue={assigneeString}
       onInputChange={handleInputChange}
@@ -109,8 +75,21 @@ const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTas
           handleGetCompletedTasksBetweenPeriods();
         }
       }}
+      popupIcon={<SearchIcon />}
+      sx={{
+        '& .MuiAutocomplete-popupIndicator': { transform: 'none' },
+        '& .MuiAutocomplete-clearIndicator': { color: palette.grey58 },
+      }}
       renderOption={(props, option) => (
-        <OptionDiv
+        <ListItem
+          sx={{
+            display: 'flex',
+            gap: '12px',
+            '&:hover': {
+              background: palette.grey78,
+              cursor: 'pointer',
+            },
+          }}
           onClick={(event) => {
             setAssignee(option);
             props?.onClick(event);
@@ -125,11 +104,13 @@ const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTas
                 height: '30px',
                 borderRadius: '15px',
               }}
-              alt="Profile picture"
+              alt={`Profile picture ${option?.label}`}
             />
           )}
-          <OptionTypography>{option?.label}</OptionTypography>
-        </OptionDiv>
+          <Typography color={palette.white} fontWeight="500">
+            {option?.label}
+          </Typography>
+        </ListItem>
       )}
     />
   );
