@@ -74,13 +74,6 @@ export const MemberRequestCard = styled.div`
   width: 100%;
 `;
 
-export const MemberProfileLink = styled.a`
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  gap: 12px;
-`;
-
 export const MemberName = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
@@ -94,6 +87,7 @@ export const MemberMessage = styled(MemberName)`
   && {
     font-weight: 400;
     margin-left: 16px;
+    margin-right: 8px;
     color: ${palette.grey57};
     max-width: 82ch;
     text-overflow: ellipsis;
