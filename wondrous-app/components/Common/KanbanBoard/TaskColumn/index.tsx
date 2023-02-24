@@ -219,7 +219,11 @@ function TaskColumn(props: ITaskColumn) {
             style={{
               cursor: 'pointer',
             }}
-            onClick={() => setAISnackbarVisible(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setAISnackbarVisible(false);
+            }}
           />
         </AISnackbarContainer>
       )}
