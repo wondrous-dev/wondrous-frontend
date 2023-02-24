@@ -24,6 +24,7 @@ import {
   GET_MILESTONES,
   SEARCH_USER_CREATED_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
+  SEARCH_POD_USERS,
 } from 'graphql/queries';
 import { debounce } from 'lodash';
 import { useEffect, useState, useCallback, useContext } from 'react';
@@ -254,7 +255,7 @@ export const useGetPaymentMethods = (orgId, includeDeactivated = false) => {
   return data?.getPaymentMethodsForOrg;
 };
 
-export const useGetOrgUsers = (orgId, searchString = '') => {
+export const useGetOrgUsers = (orgId, searchString = '', podId = null) => {
   const [hasMore, setHasMore] = useState(true);
 
   const [searchOrgUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_ORG_USERS);
@@ -269,7 +270,7 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
   const search = (query) => refetchUsers({ searchString: query, offset: 0 });
 
   useEffect(() => {
-    if (orgId)
+    if (orgId && !podId)
       searchOrgUsers({
         variables: {
           orgIds: [orgId],
@@ -277,12 +278,42 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
           limit: LIMIT,
         },
       });
-  }, [orgId, searchOrgUsers, searchString]);
+  }, [orgId, searchOrgUsers, searchString, podId]);
   return {
     data: data?.searchOrgUsers,
     search,
     hasMoreOrgUsers: hasMore && data?.searchOrgUsers?.length >= LIMIT,
     fetchMoreOrgUsers,
+  };
+};
+
+export const useGetPodUsers = (podId, searchString = '') => {
+  const [hasMore, setHasMore] = useState(true);
+
+  const [searchPodUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_POD_USERS);
+  const fetchMorePodUsers = () =>
+    fetchMore({ variables: { offset: data.searchPodUsers.length } }).then(({ data }) =>
+      setHasMore(data?.searchPodUsers?.length === LIMIT)
+    );
+
+  const refetchUsers = useCallback(debounce(refetch, 500), []);
+  const search = (query) => refetchUsers({ searchString: query, offset: 0 });
+
+  useEffect(() => {
+    if (podId)
+      searchPodUsers({
+        variables: {
+          podId,
+          searchString,
+          limit: LIMIT,
+        },
+      });
+  }, [podId, searchPodUsers, searchString]);
+  return {
+    data: data?.searchPodUsers,
+    search,
+    hasMorePodUsers: hasMore && data?.searchPodUsers?.length >= LIMIT,
+    fetchMorePodUsers,
   };
 };
 
