@@ -1,13 +1,12 @@
-import { Box, Button } from '@mui/material';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import PodIconName from 'components/Common/PodIconName';
 import format from 'date-fns/format';
 import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
 import { cutString } from 'utils/helpers';
-import LeaderboardUserRowTasksPod from './LeaderboardUserRowTasksPod';
 
 const LeaderboardUserRowTasks = ({ contributorTask }) => {
   const router = useRouter();
