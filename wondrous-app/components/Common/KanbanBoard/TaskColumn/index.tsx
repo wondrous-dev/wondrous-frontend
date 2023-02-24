@@ -183,7 +183,7 @@ function TaskColumn(props: ITaskColumn) {
           />
         )}
       </TaskColumnContainerHeader>
-      {status === TASK_STATUS_TODO && canCreateTask && AISnackbarVisible && (
+      {status === TASK_STATUS_TODO && canCreateTask && AISnackbarVisible && (orgBoard || podBoard) && (
         <AISnackbarContainer
           onClick={() => {
             if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
@@ -215,7 +215,7 @@ function TaskColumn(props: ITaskColumn) {
               flex: 1,
             }}
           />
-          <CrossSvg
+          {/* <CrossSvg
             style={{
               cursor: 'pointer',
             }}
@@ -224,7 +224,7 @@ function TaskColumn(props: ITaskColumn) {
               e.stopPropagation();
               setAISnackbarVisible(false);
             }}
-          />
+          /> */}
         </AISnackbarContainer>
       )}
       <Droppable droppableId={status} isDropDisabled={isDropDisabled}>
