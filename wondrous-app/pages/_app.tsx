@@ -146,7 +146,7 @@ function MyApp({ Component, pageProps }) {
             }
           })(window);
           // @ts-ignore
-          Localize.initialize({ key: LOCALIZE_KEY, rememberLanguage: true, autoApprove: true });
+          Localize.initialize({ key: LOCALIZE_KEY, rememberLanguage: true });
         }}
       />
       <IsMobileContext.Provider value={isMobile}>
