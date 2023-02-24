@@ -22,3 +22,34 @@ export const handleUserOnboardingRedirect = (user, router) => {
     });
   }
 };
+
+export const handleUserFirstOnboarding = (router, collabInvite, firstOrg, firstPod) => {
+  // if user has collabInvite token and is not a member of an org we assume they want to create a new org
+  if (collabInvite && !firstOrg) {
+    return router.push(`/onboarding-dao?collabInvite=${collabInvite}`, undefined, {
+      shallow: true,
+    });
+  }
+  if (collabInvite && firstOrg) {
+    return router.push(`/invite/collab/${collabInvite}`, undefined, { shallow: true });
+  }
+  if (firstPod) {
+    router.push(`/pod/${firstPod.id}/home`, undefined, {
+      shallow: true,
+    });
+  } else if (firstOrg) {
+    router.push(
+      `/${firstOrg?.shared ? 'collaboration' : 'organization'}/${firstOrg.username}/${
+        firstOrg?.shared ? 'boards' : 'home'
+      }`,
+      undefined,
+      {
+        shallow: true,
+      }
+    );
+  } else {
+    router.push('/mission-control', undefined, {
+      shallow: true,
+    });
+  }
+};
