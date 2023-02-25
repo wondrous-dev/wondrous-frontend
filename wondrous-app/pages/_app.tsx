@@ -131,7 +131,7 @@ function MyApp({ Component, pageProps }) {
           });
         }}
       />
-      <Script
+      {/* <Script
         id="localize"
         src="https://global.localizecdn.com/localize.js"
         onLoad={(a) => {
@@ -170,7 +170,7 @@ function MyApp({ Component, pageProps }) {
           // @ts-ignore
           Localize.initialize({ key: LOCALIZE_KEY, rememberLanguage: true });
         }}
-      />
+      /> */}
       <IsMobileContext.Provider value={isMobile}>
         <StyledComponentProvider theme={theme}>
           <ThemeProvider theme={theme}>
