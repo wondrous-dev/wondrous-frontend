@@ -85,7 +85,6 @@ export const StickyTopSection = styled.div`
   background: ${palette.grey900};
   position: sticky;
   top: 0;
-  z-index: 1000;
 `;
 
 export const PlateStyles = styled.div`
@@ -147,8 +146,12 @@ export const PlateStyles = styled.div`
   }
 
   div[class*='PlateFloatingLink___StyledDiv'] button,
-  div[class*='PlateFloatingLink___StyledDiv'] a{
+  div[class*='PlateFloatingLink___StyledDiv'] a {
     background: none;
+  }
+
+  div[data-slate-node='element'] {
+    min-height: 100px;
   }
 
   a[data-slate-node='element'],
