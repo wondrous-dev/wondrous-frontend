@@ -114,24 +114,6 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <Script id="segment-script" dangerouslySetInnerHTML={{ __html: renderSnippet() }} />
       <Script
-        id="weglot"
-        src="https://cdn.weglot.com/weglot.min.js"
-        onLoad={(a) => {
-          // eslint-disable-next-line no-unused-vars
-          !(function (a) {
-            if (!a.Weglot) {
-              a.Weglot = {};
-              for (let e = [], t = 0; t < e.length; t++) a.Weglot[e[t]] = function () {};
-              return true;
-            }
-          })(window);
-          // @ts-ignore
-          Weglot.initialize({
-            api_key: WEGLOT_KEY,
-          });
-        }}
-      />
-      {/* <Script
         id="localize"
         src="https://global.localizecdn.com/localize.js"
         onLoad={(a) => {
@@ -170,7 +152,7 @@ function MyApp({ Component, pageProps }) {
           // @ts-ignore
           Localize.initialize({ key: LOCALIZE_KEY, rememberLanguage: true });
         }}
-      /> */}
+      />
       <IsMobileContext.Provider value={isMobile}>
         <StyledComponentProvider theme={theme}>
           <ThemeProvider theme={theme}>
