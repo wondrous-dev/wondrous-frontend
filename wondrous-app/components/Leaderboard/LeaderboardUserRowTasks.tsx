@@ -12,7 +12,7 @@ import { useReducer } from 'react';
 
 const LeaderboardUserRowTasks = ({ contributorTask }) => {
   const router = useRouter();
-  const { isMobileScreen } = useMediaQuery();
+  const { isTabletScreen } = useMediaQuery();
   const [taskCount, setTaskCount] = useReducer((state) => state + 10, 10);
   const contributorTasks = contributorTask?.tasks;
   const tasks = contributorTasks?.slice(0, taskCount) || [];
@@ -63,7 +63,7 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
                 </Grid>
               </Grid>
               <Grid container item width="fit-content" gap="24px" alignItems="center">
-                {podName && !isMobileScreen && (
+                {podName && !isTabletScreen && (
                   <Grid container item gap="10px" width="fit-content" alignItems="center">
                     <Box
                       width="10px"
