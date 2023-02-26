@@ -249,7 +249,7 @@ function Analytics(props) {
         toTime={toTime}
         contributorTaskData={contributorTaskData}
       />
-      <HeaderWrapper>
+      <Grid container rowGap="14px" alignItems="center" justifyContent="space-between" width="100%" marginBottom="14px">
         {/* <HeaderText>Completed work from</HeaderText> */}
         {/* <LocalizationProvider dateAdapter={AdapterDateFns}> */}
         {/*   <SelectDatePicker */}
@@ -278,7 +278,7 @@ function Analytics(props) {
           orgId={orgId}
           handleGetCompletedTasksBetweenPeriods={handleGetCompletedTasksBetweenPeriods}
         />
-      </HeaderWrapper>
+      </Grid>
       {contributorTaskData?.length === 0 && (
         <HeaderText
           style={{

@@ -7,9 +7,11 @@ import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
 import { cutString } from 'utils/helpers';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 const LeaderboardUserRowTasks = ({ contributorTask }) => {
   const router = useRouter();
+  const { isMobileScreen } = useMediaQuery();
   return (
     <Grid container item width="100%" borderRadius="0 0 6px 6px">
       <Grid container item width="100%" display="flex" gap="14px" padding="14px">
@@ -56,7 +58,7 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
                 </Grid>
               </Grid>
               <Grid container item width="fit-content" gap="24px" alignItems="center">
-                {podName && (
+                {podName && !isMobileScreen && (
                   <Grid container item gap="10px" width="fit-content" alignItems="center">
                     <Box
                       width="10px"
