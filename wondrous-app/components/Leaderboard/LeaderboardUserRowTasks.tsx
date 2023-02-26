@@ -104,7 +104,7 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
             },
           }}
           disableRipple
-          onClick={() => setTaskCount()}
+          onClick={setTaskCount}
         >
           Show more
         </Button>

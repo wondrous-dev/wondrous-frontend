@@ -105,6 +105,9 @@ export const HeaderTag = styled(Typography)`
 export const RolePodMemberContainer = styled.div`
   display: flex;
   gap: 14px;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    justify-content: space-between;
+  }
 `;
 
 export const HeaderFollowButton = styled(Button)`
@@ -337,9 +340,9 @@ export const PrivacyContainer = styled.div`
 
 export const PrivacyText = styled(Typography)`
   && {
-    color: ${palette.blue20};
+    color: ${palette.grey250};
     font-family: 'Space Grotesk';
-    font-weight: 600;
+    font-weight: 500;
     font-size: 12px;
   }
 `;
