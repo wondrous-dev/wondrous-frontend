@@ -108,11 +108,14 @@ export const GET_POD_USERS = gql`
 `;
 
 export const SEARCH_POD_USERS = gql`
-  query searchPodUsers($podId: ID!, $searchString: String!) {
-    searchPodUsers(podId: $podId, searchString: $searchString) {
+  query searchPodUsers($podId: ID!, $searchString: String!, $limit: Int, $offset: Int) {
+    searchPodUsers(podId: $podId, searchString: $searchString, limit: $limit, offset: $offset) {
       id
       username
       profilePicture
+      thumbnailPicture
+      firstName
+      lastName
       bio
     }
   }

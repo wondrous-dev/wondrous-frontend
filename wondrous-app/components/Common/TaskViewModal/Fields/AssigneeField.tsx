@@ -1,15 +1,15 @@
 import { useMutation } from '@apollo/client';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
-import { filterOrgUsers, useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { filterOrgUsers, useGetOrgUsers, useGetPodUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import { Claim } from 'components/Icons/claimTask';
 import { REMOVE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import { TaskSectionLabel } from '../helpers';
 import {
-  UserSelectWrapper,
   TaskSectionDisplayDiv,
   TaskSectionInfoTakeTask,
   TaskSectionInfoTakeTaskText,
+  UserSelectWrapper,
 } from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
@@ -22,12 +22,48 @@ interface OrgUser {
   profilePicture: string;
 }
 
+interface UserData {
+  data: {
+    id: string;
+    username: string;
+    profilePicture: string;
+    thumbnailPicture: string;
+    firstName: string;
+    lastName: string;
+    bio: string;
+  }[];
+  search: (value: string) => void;
+  fetchMore: (value: string) => void;
+  hasMore: boolean;
+}
+
 const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => {
   const router = useRouter();
   const { error, submit } = useSubmit({ field: FIELDS.ASSIGNEE });
   const { data: orgUsersData, search, fetchMoreOrgUsers, hasMoreOrgUsers } = useGetOrgUsers(fetchedTask?.orgId);
+  const {
+    data: podUsersData,
+    search: searchPodUsers,
+    fetchMorePodUsers,
+    hasMorePodUsers,
+  } = useGetPodUsers(fetchedTask?.podId);
+
+  const userData: UserData = fetchedTask?.podId
+    ? {
+        data: podUsersData,
+        search: searchPodUsers,
+        fetchMore: fetchMorePodUsers,
+        hasMore: hasMorePodUsers,
+      }
+    : {
+        data: orgUsersData,
+        search,
+        fetchMore: fetchMoreOrgUsers,
+        hasMore: hasMoreOrgUsers,
+      };
+
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
-  const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).map((orgUser: OrgUser) => ({
+  const filteredOrgUsersData = filterOrgUsers({ orgUsersData: userData.data }).map((orgUser: OrgUser) => ({
     ...orgUser,
     hide: orgUser?.value === user?.id,
   }));
@@ -55,8 +91,8 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
             error={error}
             currentOption={null}
             listBoxProps={{
-              handleFetchMore: fetchMoreOrgUsers,
-              hasMore: hasMoreOrgUsers,
+              handleFetchMore: userData.fetchMore,
+              hasMore: userData.hasMore,
             }}
             onDelete={toggleAddMode}
             assignToSelfUser={user}
@@ -65,7 +101,7 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
               toggleAddMode();
             }}
             onChange={(value) => {
-              search(value);
+              userData.search(value);
             }}
             onSelect={(value: OrgUser) => {
               handleUpdateTaskAssignee(value?.value);
@@ -83,8 +119,8 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
               label: fetchedTask.assignee?.username,
             }}
             listBoxProps={{
-              handleFetchMore: fetchMoreOrgUsers,
-              hasMore: hasMoreOrgUsers,
+              handleFetchMore: userData.fetchMore,
+              hasMore: userData.hasMore,
             }}
             onDelete={() => {
               removeTaskAssignee({
@@ -100,7 +136,7 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
               toggleEditMode();
             }}
             onChange={(value) => {
-              search(value);
+              userData.search(value);
             }}
             onSelect={(value: OrgUser) => {
               handleUpdateTaskAssignee(value?.value);
