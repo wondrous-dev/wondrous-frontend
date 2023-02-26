@@ -8,14 +8,19 @@ import palette from 'theme/palette';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
 import { cutString } from 'utils/helpers';
 import useMediaQuery from 'hooks/useMediaQuery';
+import { useReducer } from 'react';
 
 const LeaderboardUserRowTasks = ({ contributorTask }) => {
   const router = useRouter();
   const { isMobileScreen } = useMediaQuery();
+  const [taskCount, setTaskCount] = useReducer((state) => state + 10, 10);
+  const contributorTasks = contributorTask?.tasks;
+  const tasks = contributorTasks?.slice(0, taskCount) || [];
+  const showMoreButton = tasks.length < contributorTasks.length;
   return (
     <Grid container item width="100%" borderRadius="0 0 6px 6px">
       <Grid container item width="100%" display="flex" gap="14px" padding="14px">
-        {contributorTask?.tasks?.map((task) => {
+        {tasks.map((task) => {
           const podName = task?.podName || task?.pod?.name;
           const podColor = task?.podColor || task?.pod?.color || palette.grey78;
           const privateTask = task?.title === PRIVATE_TASK_TITLE;
@@ -84,23 +89,26 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
           );
         })}
       </Grid>
-      <Button
-        sx={{
-          backgroundColor: palette.grey85,
-          borderRadius: '0 0 6px 6px',
-          width: '100%',
-          height: '40px',
-          color: palette.grey250,
-          fontWeight: 500,
-          fontSize: 14,
-          '&:hover': {
-            backgroundColor: palette.grey78,
-          },
-        }}
-        disableRipple
-      >
-        Show more
-      </Button>
+      {showMoreButton && (
+        <Button
+          sx={{
+            backgroundColor: palette.grey85,
+            borderRadius: '0 0 6px 6px',
+            width: '100%',
+            height: '40px',
+            color: palette.grey250,
+            fontWeight: 500,
+            fontSize: 14,
+            '&:hover': {
+              backgroundColor: palette.grey78,
+            },
+          }}
+          disableRipple
+          onClick={() => setTaskCount()}
+        >
+          Show more
+        </Button>
+      )}
     </Grid>
   );
 };
