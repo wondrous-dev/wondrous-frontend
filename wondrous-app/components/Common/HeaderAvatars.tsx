@@ -11,7 +11,7 @@ const avatarStyle = {
   cursor: 'pointer',
 };
 
-const avatarWidthHeight = 32;
+const avatarWidthHeight = 28;
 
 const HeaderAvatars = ({ users, contributorCount, setMoreInfoModalOpen, setShowUsers }) => {
   const usersData = users.map(({ user }) => user);
