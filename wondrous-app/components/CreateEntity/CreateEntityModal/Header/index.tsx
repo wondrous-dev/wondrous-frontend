@@ -1,0 +1,92 @@
+import { Box } from '@mui/material';
+import Tooltip from 'components/Tooltip';
+
+import { ENTITIES_TYPES } from 'utils/constants';
+import { CreateEntityDropdown, filterOptionsWithPermission } from '../Helpers';
+import PodSearch from '../PodSearch';
+import {
+  CreateEntityCloseIcon,
+  CreateEntityDefaultDaoImage,
+  CreateEntityError,
+  CreateEntityHeader,
+  CreateEntityHeaderArrowIcon,
+  CreateEntityHeaderWrapper,
+  CreateEntityOpenInFullIcon,
+  CreateEntitySelectErrorWrapper,
+} from '../styles';
+
+const Header = ({
+  filteredDaoOptions,
+  form,
+  isSubtask,
+  existingTask,
+  formValues,
+  entityType,
+  fetchedUserPermissionsContext,
+  podValue,
+  handlePodChange,
+  toggleFullScreen,
+  cancel,
+  pods,
+}) => {
+  const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
+  return (
+    <CreateEntityHeader>
+      <CreateEntityHeaderWrapper showOnSmallScreen hideOnLargeScreen={false}>
+        <CreateEntitySelectErrorWrapper>
+          <CreateEntityDropdown
+            name="orgId"
+            options={filteredDaoOptions}
+            onChange={(orgId) => {
+              // NOTE: This will reset the data that depends on the orgId
+              form.setValues({
+                ...form.initialValues,
+                points: form.values.points,
+                dueDate: form.values.dueDate,
+                title: form.values.title,
+                description: form.values.description,
+                mediaUploads: form.values.mediaUploads,
+                orgId,
+              });
+              form.setErrors({});
+            }}
+            value={form.values.orgId}
+            DefaultImageComponent={CreateEntityDefaultDaoImage}
+            error={form.errors.orgId}
+            onFocus={() => form.setFieldError('orgId', undefined)}
+            disabled={isSubtask || existingTask || formValues !== undefined}
+          />
+          {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
+        </CreateEntitySelectErrorWrapper>
+        {form.values.orgId !== null && (
+          <>
+            <CreateEntityHeaderArrowIcon />
+            <PodSearch
+              options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
+              multiple={isMilestone}
+              value={podValue}
+              onChange={handlePodChange}
+              disabled={isSubtask || formValues !== undefined}
+            />
+          </>
+        )}
+      </CreateEntityHeaderWrapper>
+      <CreateEntityHeaderWrapper>
+        <Tooltip title="Full screen" placement="top">
+          <Box>
+            <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />
+          </Box>
+        </Tooltip>
+      </CreateEntityHeaderWrapper>
+      <CreateEntityHeaderWrapper showOnSmallScreen hideOnLargeScreen>
+        <Tooltip title="Close Modal" placement="top-end">
+          <Box>
+            <CreateEntityCloseIcon onClick={cancel} />
+          </Box>
+        </Tooltip>
+      </CreateEntityHeaderWrapper>
+    </CreateEntityHeader>
+  );
+};
+
+export default Header;

@@ -3,7 +3,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import cloneDeep from 'lodash/cloneDeep';
 
-import { delQuery } from 'utils';
+import { delQuery, getBoardType } from 'utils';
 import * as Constants from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -20,13 +20,6 @@ import { CreateEntity } from 'components/CreateEntity';
 
 import Card from './Card';
 import { ArchivedTaskUndo } from './styles';
-
-const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
-  if (orgBoard) return Constants.BOARD_TYPE.org;
-  if (podBoard) return Constants.BOARD_TYPE.pod;
-  if (userBoard) return Constants.BOARD_TYPE.assignee;
-  return Constants.BOARD_TYPE.org;
-};
 
 const useGetReviewers = (editTask, task) => {
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);

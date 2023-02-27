@@ -11,8 +11,8 @@ import {
   BoardsCardSubheader,
 } from 'components/Common/Boards/styles';
 import { SafeImage } from 'components/Common/Image';
-import PodIconName from 'components/Common/PodIconName';
 import { MilestoneProgress } from 'components/Common/MilestoneProgress';
+import PodIconName from 'components/Common/PodIconName';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import TaskCardDate from 'components/Common/TaskCardDate';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
@@ -24,12 +24,13 @@ import { CreateEntity } from 'components/CreateEntity';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import CommentsIcon from 'components/Icons/comments';
 import PodIcon from 'components/Icons/podIcon';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { ARCHIVE_TASK } from 'graphql/mutations';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { Fragment, useContext, useState } from 'react';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { usePermissions } from 'utils/hooks';
-import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { MilestoneCard, MilestoneProgressWrapper } from './styles';
 
 const MilestoneItem = ({ milestone, handleCardClick }) => {
@@ -117,7 +118,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
       >
         <BoardsCardHeader>
           <BoardsCardSubheader>
-            <TaskCardStatus type={milestone?.type} orgId={milestone?.orgId} status={milestone?.status} />
+            <TaskCardStatus type={ENTITIES_TYPES.MILESTONE} orgId={milestone?.orgId} status={milestone?.status} />
             <TaskCardPrivacy privacyLevel={milestone?.privacyLevel} />
           </BoardsCardSubheader>
           <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end">

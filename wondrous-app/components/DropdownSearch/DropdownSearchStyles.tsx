@@ -86,6 +86,7 @@ export const DropdownSearchDownIcon = styled(ArrowDownIcon)`
 export const DropdownSearchPopper = styled(PopperUnstyled)`
   width: ${({ anchorEl }) => `${anchorEl?.getBoundingClientRect().width}px` ?? 'auto'};
   border-radius: 4px;
+  min-width: fit-content;
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
   z-index: 9999;
@@ -97,6 +98,7 @@ export const DropdownSearchInput = styled(TextField)`
   && {
     width: 100%;
     padding: 10px;
+    max-width: 400px;
     && .MuiOutlinedInput-root {
       background: #313131;
       width: 100%;
@@ -170,6 +172,7 @@ export const DropdownSearchPaper = styled.div`
     padding: 0;
     margin: 0;
     border-radius: 0 0 4px 4px;
+    width: auto;
   }
 `;
 
@@ -214,6 +217,8 @@ export const DropdownSearchListItem = styled.li`
 export const DropdownSearchAutocompletePopper = styled.div`
   && {
     position: relative;
+    width: auto !important;
+    min-width: fit-content;
   }
   .MuiAutocomplete-noOptions {
     font-family: 'Space Grotesk';

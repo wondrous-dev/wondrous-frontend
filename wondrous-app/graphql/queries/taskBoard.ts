@@ -1,6 +1,11 @@
 import { gql } from '@apollo/client';
 
-import { TaskCardFragment, TaskProposalCardFragment, TaskSubmissionCardFragment } from '../fragments/task';
+import {
+  MilestoneCardFragment,
+  TaskCardFragment,
+  TaskProposalCardFragment,
+  TaskSubmissionCardFragment,
+} from '../fragments/task';
 import { PerStatusTaskCountFragment } from '../fragments/taskBoard';
 
 export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
@@ -12,6 +17,7 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
     $limit: Int
     $offset: Int
     $labelId: String
+    $searchString: String
   ) {
     getOrgTaskBoardProposals(
       input: {
@@ -22,6 +28,7 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
         limit: $limit
         offset: $offset
         labelId: $labelId
+        searchString: $searchString
       }
     ) {
       ...TaskProposalCardFragment
@@ -98,6 +105,56 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
   ${TaskCardFragment}
 `;
 
+export const GET_ORG_MILESTONE_BOARD_TASKS = gql`
+  query getOrgBoardMilestones(
+    $orgId: ID!
+    $statuses: [String]
+    $priorities: [String]
+    $searchString: String
+    $podIds: [String]
+    $limit: Int
+    $offset: Int
+    $onlyPublic: Boolean
+    $types: [String]
+    $labelId: String
+    $date: String
+    $category: String
+    $fromDate: String
+    $toDate: String
+  ) {
+    getOrgBoardMilestones(
+      input: {
+        orgId: $orgId
+        statuses: $statuses
+        priorities: $priorities
+        searchString: $searchString
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+        onlyPublic: $onlyPublic
+        types: $types
+        labelId: $labelId
+        date: $date
+        category: $category
+        fromDate: $fromDate
+        toDate: $toDate
+      }
+    ) {
+      ...MilestoneCardFragment
+    }
+  }
+  ${MilestoneCardFragment}
+`;
+
+export const GET_POD_MILESTONE_BOARD_TASKS = gql`
+  query getPodBoardMilestones($input: PodTaskBoardQueryInput) {
+    getPodBoardMilestones(input: $input) {
+      ...MilestoneCardFragment
+    }
+  }
+  ${MilestoneCardFragment}
+`;
+
 export const GET_USER_TASK_BOARD_PROPOSALS = gql`
   query getUserTaskBoardProposals(
     $userId: ID
@@ -108,6 +165,7 @@ export const GET_USER_TASK_BOARD_PROPOSALS = gql`
     $limit: Int
     $offset: Int
     $labelId: String
+    $searchString: String
   ) {
     getUserTaskBoardProposals(
       input: {
@@ -119,6 +177,7 @@ export const GET_USER_TASK_BOARD_PROPOSALS = gql`
         limit: $limit
         offset: $offset
         labelId: $labelId
+        searchString: $searchString
       }
     ) {
       ...TaskProposalCardFragment

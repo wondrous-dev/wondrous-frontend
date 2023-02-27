@@ -54,20 +54,61 @@ import {
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useCornerWidget } from 'utils/hooks';
 import {
-  filterGithubPullRequestsForAutocomplete,
-  filterGithubReposForAutocomplete,
-  filterUserOptions,
-  getPodObject,
-  onCorrectPage,
-} from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
-import { Typography } from '@mui/material';
-import { palette } from '@mui/system';
-import {
   GET_ORG_HOME_TASK_OBJECTS,
   GET_POD_HOME_TASK_OBJECTS,
   GET_ORG_HOME_PROPOSALS,
   GET_POD_HOME_PROPOSALS,
 } from 'graphql/queries/projectPage';
+
+const filterGithubReposForAutocomplete = (githubPullRepos) => {
+  if (!githubPullRepos) {
+    return [];
+  }
+
+  return githubPullRepos.map((githubPullRepo) => ({
+    id: githubPullRepo.githubInfo?.repoId,
+    label: githubPullRepo.githubInfo?.repoPathname,
+  }));
+};
+
+export const filterUserOptions = (options) => {
+  if (!options) return [];
+  return options.map((option) => ({
+    label: option?.username ?? option?.title,
+    id: option?.id,
+    profilePicture: option?.profilePicture,
+  }));
+};
+
+export const onCorrectPage = (existingTask, board) => {
+  if (board?.podId) return existingTask.podId === board.podId;
+  return (
+    existingTask?.orgId === board?.orgId ||
+    existingTask?.podId === board?.podId ||
+    existingTask?.userId === board?.userId
+  );
+};
+
+export const getPodObject = (pods, podId) => {
+  let justCreatedPod = null;
+  pods.forEach((testPod) => {
+    if (testPod.id === podId) {
+      justCreatedPod = testPod;
+    }
+  });
+  return justCreatedPod;
+};
+
+const filterGithubPullRequestsForAutocomplete = (githubPullRequests) => {
+  if (!githubPullRequests) {
+    return [];
+  }
+  return githubPullRequests.map((githubPullRequest) => ({
+    id: githubPullRequest.id,
+    label: githubPullRequest.title,
+    url: githubPullRequest.url,
+  }));
+};
 
 const HANDLE_TASKS = {
   REMOVE: {
@@ -365,10 +406,40 @@ export const useCreateMilestone = () => {
     ],
     onCompleted: ({ createMilestone: createMilestoneData }) => setCornerWidgetValue(createMilestoneData),
   });
-  const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
+  const handleMutation = ({ input, board, pods, form, handleClose, formValues, boardType }) => {
+    const {
+      title,
+      description,
+      orgId,
+      podIds,
+      dueDate,
+      observerIds,
+      userMentions,
+      mediaUploads,
+      privacyLevel,
+      labelIds,
+      points,
+      status,
+      timezone,
+    } = input;
     createMilestone({
       variables: {
-        input,
+        input: {
+          title,
+          description,
+          orgId,
+          podIds,
+          dueDate,
+          observerIds,
+          userMentions,
+          mediaUploads,
+          privacyLevel,
+          labelIds,
+          points,
+          status,
+          timezone,
+          board: boardType,
+        },
       },
     }).then((result) => {
       if (formValues !== undefined) {

@@ -142,7 +142,7 @@ export const IMPORT_TASKS = gql`
 `;
 
 export const CREATE_MILESTONE = gql`
-  mutation createMilestone($input: TaskInput) {
+  mutation createMilestone($input: MilestoneInput) {
     createMilestone(input: $input) {
       ...MilestoneFragment
     }

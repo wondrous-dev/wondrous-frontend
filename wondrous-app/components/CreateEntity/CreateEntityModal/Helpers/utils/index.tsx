@@ -86,15 +86,6 @@ export const privacyOptions = {
   },
 };
 
-export const filterUserOptions = (options) => {
-  if (!options) return [];
-  return options.map((option) => ({
-    label: option?.username ?? option?.title,
-    id: option?.id,
-    profilePicture: option?.profilePicture,
-  }));
-};
-
 export const filterOrgUsersForAutocomplete = (orgUsers) => {
   if (!orgUsers) {
     return [];
@@ -165,6 +156,7 @@ export const filterOptionsWithPermission = (
   if (!options) {
     return [];
   }
+  console.log(options, 'options');
   return options
     .filter(({ id }) => {
       const listPodId = orgId ? id : undefined;
@@ -188,6 +180,7 @@ export const filterOptionsWithPermission = (
       label: name,
       value: id,
       color,
+      id,
     }));
 };
 
@@ -201,40 +194,10 @@ export const filterCategoryValues = (categories = []) =>
       : category
   );
 
-export const getPodObject = (pods, podId) => {
-  let justCreatedPod = null;
-  pods.forEach((testPod) => {
-    if (testPod.id === podId) {
-      justCreatedPod = testPod;
-    }
-  });
-  return justCreatedPod;
-};
-
-export const onCorrectPage = (existingTask, board) => {
-  if (board?.podId) return existingTask.podId === board.podId;
-  return (
-    existingTask?.orgId === board?.orgId ||
-    existingTask?.podId === board?.podId ||
-    existingTask?.userId === board?.userId
-  );
-};
-
 export const getPrivacyLevel = (podId, pods) => {
   const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
   const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
   return privacyLevel;
-};
-
-export const filterGithubReposForAutocomplete = (githubPullRepos) => {
-  if (!githubPullRepos) {
-    return [];
-  }
-
-  return githubPullRepos.map((githubPullRepo) => ({
-    id: githubPullRepo.githubInfo?.repoId,
-    label: githubPullRepo.githubInfo?.repoPathname,
-  }));
 };
 
 export enum Fields {
@@ -309,16 +272,13 @@ export const entityTypeData = {
     updateMutation: useUpdateMilestone,
     initialValues: {
       orgId: null,
-      podId: null,
+      podIds: [],
       title: '',
       description: plainTextToRichText(''),
       dueDate: null,
-      points: null,
-      labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       priority: null,
-      categories: null,
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
@@ -377,7 +337,10 @@ export const entityTypeData = {
 };
 
 export const initialValues = ({ entityType, existingTask = null, initialPodId = null }) => {
-  const defaultValues = assignIn(cloneDeep(entityTypeData[entityType]?.initialValues), { podId: initialPodId });
+  const defaultValues = assignIn(
+    cloneDeep(entityTypeData[entityType]?.initialValues),
+    entityType === ENTITIES_TYPES.MILESTONE ? {} : { podId: initialPodId }
+  );
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
   const description = deserializeRichText(existingTask.description);
@@ -398,10 +361,11 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
     },
     defaultValuesKeys
   );
+  console.log(defaultValues, 'DEFAULT VALUES');
   const initialValuesData = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) =>
     isNull(srcValue) || isUndefined(srcValue) ? objValue : srcValue
   );
-
+  console.log(initialValuesData, 'INITIAL VALUES DATA');
   return initialValuesData;
 };
 
