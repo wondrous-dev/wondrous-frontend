@@ -182,6 +182,7 @@ function BoardPageHeader(props) {
             {permissions && podRoleName && (
               <RoleButtonWrapper>
                 <RolePill
+                  profilePicture={loggedInUser?.profilePicture}
                   onClick={() => {
                     setOpenCurrentRoleModal(true);
                   }}
