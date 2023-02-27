@@ -10,6 +10,7 @@ import React, { useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import Grid from '@mui/material/Grid';
 import useMediaQuery from 'hooks/useMediaQuery';
+import { SEARCH_POD_USERS } from 'graphql/queries';
 
 export const filterUsers = (users) =>
   users?.map(({ thumbnailPicture, profilePicture, username, id }) => ({
@@ -18,7 +19,7 @@ export const filterUsers = (users) =>
     value: id,
   })) || [];
 
-const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTasksBetweenPeriods }) => {
+const LeaderboardSearch = ({ orgId, podId, assignee, setAssignee, handleGetCompletedTasksBetweenPeriods }) => {
   const { isTabletScreen } = useMediaQuery();
   const [assigneeString, setAssigneeString] = useState('');
   const { data: orgUsersData, refetch: refetchSearchOrgUsers } = useQuery(SEARCH_ORG_USERS, {
@@ -30,15 +31,27 @@ const LeaderboardSearch = ({ orgId, assignee, setAssignee, handleGetCompletedTas
     },
   });
 
+  const { data: podUsersData, refetch: refetchSearchPodUsers } = useQuery(SEARCH_POD_USERS, {
+    fetchPolicy: 'cache-and-network',
+    skip: !podId,
+    variables: {
+      podId,
+      searchString: '',
+    },
+  });
+
+  const userData = podId ? podUsersData?.searchPodUsers : orgUsersData?.searchOrgUsers;
+  const refetchUserData = podId ? refetchSearchPodUsers : refetchSearchOrgUsers;
+
   const handleInputChange = (event, newInputValue) => {
     setAssigneeString(newInputValue);
-    refetchSearchOrgUsers({
+    refetchUserData({
       searchString: newInputValue,
-      orgIds: [orgId],
+      ...(podId ? { podId } : { orgIds: [orgId] }),
     });
   };
 
-  const options = useMemo(() => filterUsers(orgUsersData?.searchOrgUsers), [orgUsersData]);
+  const options = useMemo(() => filterUsers(userData), [userData]);
 
   return (
     <Grid container alignItems="center" justifyContent="end" item xs={12} md={4} width="fit-content">

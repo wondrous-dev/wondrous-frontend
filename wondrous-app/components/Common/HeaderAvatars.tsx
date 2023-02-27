@@ -1,8 +1,9 @@
-import { Box, Grid, Tooltip } from '@mui/material';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Tooltip from '@mui/material/Tooltip';
 import palette from 'theme/palette';
 import { AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
-
-import { SmallAvatar } from './AvatarList';
+import { SmallAvatar } from 'components/Common/AvatarList';
 
 const avatarStyle = {
   borderRadius: '50%',
@@ -13,6 +14,7 @@ const avatarStyle = {
 const avatarWidthHeight = 32;
 
 const HeaderAvatars = ({ users, contributorCount, setMoreInfoModalOpen, setShowUsers }) => {
+  const usersData = users.map(({ user }) => user);
   const moreUsersCount = contributorCount - AVATAR_LIST_OVERFLOW_MAX;
   return (
     <Grid
@@ -29,7 +31,7 @@ const HeaderAvatars = ({ users, contributorCount, setMoreInfoModalOpen, setShowU
         },
       }}
     >
-      {users.slice(0, AVATAR_LIST_OVERFLOW_MAX).map((user) => (
+      {usersData.slice(0, AVATAR_LIST_OVERFLOW_MAX).map((user) => (
         <Tooltip key={user.username} title={user.username} placement="top">
           <Box overflow="hidden" bgcolor={palette.grey910} borderRadius="50%">
             <SmallAvatar
@@ -45,7 +47,7 @@ const HeaderAvatars = ({ users, contributorCount, setMoreInfoModalOpen, setShowU
         </Tooltip>
       ))}
       {moreUsersCount > 0 && (
-        <Tooltip title="more users" placement="top">
+        <Tooltip title="See all users" placement="top">
           <Box
             display="flex"
             alignItems="center"

@@ -10,7 +10,6 @@ import { CreateFormRewardCurrency, CreateModalOverlay } from 'components/CreateE
 import InputForm from 'components/Common/InputForm/inputForm';
 import CloseModalIcon from 'components/Icons/closeModal';
 import TaskStatus from 'components/Icons/TaskStatus';
-import { calculatePoints, UserRowPictureStyles } from '.';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { SafeImage } from '../../Common/Image';
 import {
@@ -28,6 +27,26 @@ import { PaymentTitleDiv, PaymentTitleText, PaymentDescriptionText } from '../..
 import { ErrorText } from '../../Common';
 import { exportPaymentCSV } from './exportPaymentCsv';
 import { RetroactivePayoutModal } from './RetroactivePayoutModal';
+
+const calculatePoints = (tasks) => {
+  let points = 0;
+  if (!tasks) {
+    return points;
+  }
+  tasks.forEach((task) => {
+    if (task?.points) {
+      points += Number(task?.points);
+    }
+  });
+  return points;
+};
+
+const UserRowPictureStyles = {
+  width: '30px',
+  height: '30px',
+  borderRadius: '15px',
+  marginRight: '8px',
+};
 
 function ContributorTaskRowElement(props) {
   const {

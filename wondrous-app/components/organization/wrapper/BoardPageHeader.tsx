@@ -2,36 +2,25 @@ import React, { useEffect, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
 import { PERMISSIONS, PRIVACY_LEVEL, ENTITIES_DISPLAY_LABEL_MAP, AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
-import MembersIcon from 'components/Icons/members';
 import { Button as PrimaryButton } from 'components/Button';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 
-import usePrevious, { useOrgBoard, useIsMobile } from 'utils/hooks';
+import { useOrgBoard, useIsMobile } from 'utils/hooks';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE, GET_ORG_USERS, SEARCH_ORG_USERS } from 'graphql/queries/org';
+import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE, GET_ORG_USERS } from 'graphql/queries/org';
 import { useRouter } from 'next/router';
 import RolePill from 'components/Common/RolePill';
-import { PodIconThin } from 'components/Icons/podIcon';
-import palette from 'theme/palette';
-import { AvatarList, SmallAvatar } from 'components/Common/AvatarList';
-import { Box, Grid } from '@mui/material';
-import Tooltip from 'components/Tooltip';
+import Grid from '@mui/material/Grid';
 import HeaderAvatars from 'components/Common/HeaderAvatars';
 import { useMe } from '../../Auth/withAuth';
 import {
   ContentContainer,
   RolePodMemberContainer,
-  HeaderContributors,
-  HeaderContributorsAmount,
-  HeaderContributorsText,
-  HeaderMainBlock,
   HeaderTitle,
   TokenHeader,
-  HeaderTopLeftContainer,
   BoardsSubheaderWrapper,
-  MemberPodIconBackground,
   RoleButtonWrapper,
   Container,
   InviteButton,
@@ -159,14 +148,15 @@ function BoardPageHeader(props) {
   }, [orgBoard?.orgId]);
 
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
-  const { data: orgUsersData } = useQuery(SEARCH_ORG_USERS, {
+  const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
     skip: !orgBoard?.orgId,
     variables: {
       searchString: '',
-      orgIds: [orgBoard?.orgId],
+      orgId: orgBoard?.orgId,
       limit: AVATAR_LIST_OVERFLOW_MAX,
     },
   });
+
   return (
     <>
       <TaskViewModalWatcher />
@@ -272,9 +262,9 @@ function BoardPageHeader(props) {
                 )}
               </>
             )}
-            {orgUsersData?.searchOrgUsers && (
+            {orgUsersData?.getOrgUsers && (
               <HeaderAvatars
-                users={orgUsersData?.searchOrgUsers}
+                users={orgUsersData?.getOrgUsers}
                 contributorCount={orgProfile?.contributorCount}
                 setMoreInfoModalOpen={setMoreInfoModalOpen}
                 setShowUsers={setShowUsers}
