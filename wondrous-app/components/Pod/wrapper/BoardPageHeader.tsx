@@ -169,7 +169,7 @@ function BoardPageHeader(props) {
       <ChooseEntityToCreate />
       <ContentContainer>
         <TokenHeader>
-          <Grid container width="fit-content" alignItems="center" gap="8px">
+          <Grid container width="fit-content" alignItems="center" gap="8px" marginBottom="18px">
             <HeaderTitle>{ENTITIES_DISPLAY_LABEL_MAP[entity?.toString()] || headerTitle}</HeaderTitle>
             <PrivacyContainer>
               <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>

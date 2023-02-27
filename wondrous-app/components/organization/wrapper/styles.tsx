@@ -370,7 +370,7 @@ export const BoardsSubheaderWrapper = styled.div`
   grid-row-gap: 20px;
   align-items: center;
   width: 95%;
-  margin-top: 4px;
+  margin-top: 24px;
 
   ${({ theme }) => theme.breakpoints.down('large')} {
     grid-template-columns: 1fr;
@@ -379,7 +379,7 @@ export const BoardsSubheaderWrapper = styled.div`
 
 export const Container = styled.div`
   width: 95%;
-  margin-top: 24px;
+  margin-top: 32px;
 `;
 
 export const InviteButton = styled(ButtonBase)`

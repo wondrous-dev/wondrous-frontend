@@ -82,7 +82,7 @@ const LeaderboardWrapper = ({ orgId = '', podId = '' }) => {
 
   return (
     <>
-      <Grid container rowGap="14px" alignItems="center" justifyContent="space-between" width="100%" marginBottom="14px">
+      <Grid container rowGap="14px" alignItems="center" justifyContent="space-between" width="100%">
         <LeaderboardDateTabs dateToday={today} setFromTime={setFromTime} />
         <LeaderboardSearch
           assignee={assignee}
@@ -101,7 +101,7 @@ const LeaderboardWrapper = ({ orgId = '', podId = '' }) => {
           Nothing found in this time period.
         </HeaderText>
       )}
-      <Grid container flexDirection="column" gap="12px">
+      <Grid container flexDirection="column" gap="12px" marginTop="40px">
         {data?.map((contributorTask, index) => (
           <LeaderboardUserRow key={contributorTask?.assigneeId} position={index} contributorTask={contributorTask} />
         ))}
