@@ -86,7 +86,7 @@ export const DropdownSearchDownIcon = styled(ArrowDownIcon)`
 export const DropdownSearchPopper = styled(PopperUnstyled)`
   width: ${({ anchorEl }) => `${anchorEl?.getBoundingClientRect().width}px` ?? 'auto'};
   border-radius: 4px;
-  min-width: fit-content;
+  min-width: 300px;
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
   z-index: 9999;

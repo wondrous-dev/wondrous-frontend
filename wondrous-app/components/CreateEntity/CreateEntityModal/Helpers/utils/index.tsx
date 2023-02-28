@@ -156,7 +156,6 @@ export const filterOptionsWithPermission = (
   if (!options) {
     return [];
   }
-  console.log(options, 'options');
   return options
     .filter(({ id }) => {
       const listPodId = orgId ? id : undefined;

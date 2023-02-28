@@ -46,9 +46,12 @@ const DropdownSearch = ({
   const handleClickAway = () => setIsOpen(false);
 
   const selectedValues = useMemo(() => {
+    if (!multiple) {
+      return options?.find((option) => option.id === value?.id || option.id === value);
+    }
     const valueIds = value?.map((v) => v.id || v);
     return options?.filter((option) => valueIds?.includes(option.id));
-  }, [value, options]);
+  }, [value, options, multiple]);
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
@@ -101,7 +104,7 @@ const DropdownSearch = ({
               <DropdownSearchListItem {...props}>
                 {selected ? <DropdownSearchCheckBox /> : <DropdownSearchCheckBoxEmpty />}
                 <DropdownSearchLabel hasValue placeholder="Favorites">
-                  {option?.label}
+                  {option?.label || ''}
                 </DropdownSearchLabel>
               </DropdownSearchListItem>
             )}
@@ -115,12 +118,7 @@ const DropdownSearch = ({
             options={options}
             disablePortal
             onChange={(_, changedOptions) => {
-              onChange(
-                changedOptions.map(({ id, label: labelChanged }) => ({
-                  id,
-                  label: labelChanged,
-                }))
-              );
+              onChange(changedOptions);
             }}
             blurOnSelect
           />

@@ -41,9 +41,10 @@ function PodSearch(props) {
   const { options, onChange, value, disabled, multiple = false } = props;
   const selectedValue = useMemo(() => {
     if (multiple) return options.filter((option) => value.includes(option.id));
-    return options.find((option) => option.id === value?.id);
+    return options.find((option) => option.id === value?.id || option.id === value);
   }, [value, options, multiple]);
 
+  console.log(selectedValue, 'selected');
   return (
     <DropdownSearch
       label="Select pod"

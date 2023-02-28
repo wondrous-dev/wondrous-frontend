@@ -7,7 +7,12 @@ import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import { DiscordIcon } from 'components/Icons/discord';
 import { TextInput } from 'components/TextInput';
 import { formatDistance } from 'date-fns';
-import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
+import {
+  CREATE_MILESTONE_COMMENT,
+  CREATE_SUBMISSION_COMMENT,
+  DELETE_SUBMISSION_COMMENT,
+  DELETE_MILESTONE_COMMENT,
+} from 'graphql/mutations';
 import {
   CREATE_GRANT_APPLICATION_COMMENT,
   CREATE_GRANT_COMMENT,
@@ -77,6 +82,10 @@ function CommentBox(props) {
     refetchQueries: ['getTaskComments'],
   });
 
+  const [createMilestoneComment] = useMutation(CREATE_MILESTONE_COMMENT, {
+    refetchQueries: ['getMilestoneComments'],
+  });
+
   const [createTaskProposalComment] = useMutation(CREATE_TASK_PROPOSAL_COMMENT, {
     refetchQueries: ['getTaskProposalComments'],
   });
@@ -136,6 +145,13 @@ function CommentBox(props) {
       return createTaskProposalComment({
         variables: {
           input: { ...commentArgs, proposalId: task?.id },
+        },
+      }).then(() => setComment(''));
+    }
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
+      return createMilestoneComment({
+        variables: {
+          input: { ...commentArgs, milestoneId: task?.id },
         },
       }).then(() => setComment(''));
     }
@@ -237,6 +253,9 @@ function CommentItemWrapper(props) {
     refetchQueries: ['getTaskSubmissionComments'],
   });
 
+  const [deleteMilestoneComment] = useMutation(DELETE_MILESTONE_COMMENT, {
+    refetchQueries: ['getMilestoneComments'],
+  });
   useEffect(() => {
     if (deleteTaskCommentData?.deleteTaskComment) {
       const updatedTask = { ...task, commentCount: task.commentCount - 1 };
@@ -303,6 +322,13 @@ function CommentItemWrapper(props) {
                 proposalCommentId: id,
               },
             });
+            if (entityType === ENTITIES_TYPES.MILESTONE) {
+              return deleteMilestoneComment({
+                variables: {
+                  milestoneCommentId: id,
+                },
+              });
+            }
           } else if (submission) {
             deleteTaskSubmissionComment({
               variables: {

@@ -298,15 +298,12 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     if (isMilestone) {
       form.setFieldValue('podIds', value?.map((value) => value.id) || []);
     } else {
-      form.setValues({
-        ...formValues,
-        milestoneId: null,
-        privacyLevel: getPrivacyLevel(value?.id, pods),
-      });
+      form.setFieldValue('podId', value?.id);
+      form.setFieldValue('privacyLevel', getPrivacyLevel(value?.id, pods));
+      form.setFieldValue('milestoneId', null);
     }
   };
   const podValue = isMilestone ? form.values.podIds : form.values.podId;
-
   // snapshot integration
   const {
     getOrgSnapshotInfo,
