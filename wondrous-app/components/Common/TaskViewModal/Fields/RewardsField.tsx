@@ -152,9 +152,9 @@ const Rewards = ({ fetchedTask, canEdit, shouldDisplay }) => {
 
   const values = useMemo(
     () =>
-      rewards.map((reward) => ({
-        paymentMethodId: reward.paymentMethodId,
-        rewardAmount: reward.rewardAmount,
+      rewards?.map((reward) => ({
+        paymentMethodId: reward?.paymentMethodId,
+        rewardAmount: reward?.rewardAmount,
       })),
     [rewards]
   );

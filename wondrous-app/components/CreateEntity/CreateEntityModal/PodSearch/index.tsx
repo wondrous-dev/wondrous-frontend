@@ -20,10 +20,27 @@ import {
   PodSearchWrapper,
 } from './styles';
 
+const MultiplePodsSelected = ({ selectedValue }) => {
+  if (selectedValue?.length > 1) {
+    return (
+      <>
+        <PodSearchDefaultImage color="#474747" />
+        <PodSearchLabel>{`${selectedValue?.length} pods selected`}</PodSearchLabel>
+      </>
+    );
+  }
+  return (
+    <>
+      <PodSearchDefaultImage color={selectedValue[0]?.color ?? `#474747`} />
+      <PodSearchLabel>{selectedValue[0]?.label ?? `Select a Pod`}</PodSearchLabel>
+    </>
+  );
+};
+
 function PodSearch(props) {
   const { options, onChange, value, disabled, multiple = false } = props;
   const selectedValue = useMemo(() => {
-    if (multiple) return value;
+    if (multiple) return options.filter((option) => value.includes(option.id));
     return options.find((option) => option.id === value?.id);
   }, [value, options, multiple]);
 
@@ -35,8 +52,14 @@ function PodSearch(props) {
       anchorComponent={({ onClick, disabled, open }) => (
         <PodSearchButton open={open} disabled={disabled} onClick={onClick}>
           <PodSearchImageLabelWrapper>
-            <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
-            <PodSearchLabel>{selectedValue?.label ?? `Select a Pod`}</PodSearchLabel>
+            {multiple && selectedValue?.length ? (
+              <MultiplePodsSelected selectedValue={selectedValue} />
+            ) : (
+              <>
+                <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
+                <PodSearchLabel>{selectedValue?.label ?? `Select a Pod`}</PodSearchLabel>
+              </>
+            )}
           </PodSearchImageLabelWrapper>
           {selectedValue && !disabled ? (
             <PodSearchButtonDeleteIcon

@@ -31,6 +31,8 @@ import { useRouter } from 'next/router';
 import { Fragment, useContext, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { usePermissions } from 'utils/hooks';
+import DeleteMilestoneConfirm from '../DeleteMilestoneConfirm';
+import DisplayCrossPods from '../DisplayCrossPods';
 import { MilestoneCard, MilestoneProgressWrapper } from './styles';
 
 const MilestoneItem = ({ milestone, handleCardClick }) => {
@@ -47,11 +49,6 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
   const handleCloseModal = () => {
     setAnchorEl(null);
     setEditTask(false);
-  };
-  const goToPod = (podId) => {
-    router.push(`/pod/${podId}/home`, undefined, {
-      shallow: true,
-    });
   };
 
   const [archiveTaskMutation] = useMutation(ARCHIVE_TASK, {
@@ -81,7 +78,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
             setEditTask(false);
             handleCloseModal();
           }}
-          entityType={milestone?.type}
+          entityType={ENTITIES_TYPES.MILESTONE}
           handleClose={() => {
             setEditTask(false);
             handleCloseModal();
@@ -90,6 +87,8 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
           existingTask={
             milestone?.id && {
               ...milestone,
+              // TODO: normalize pods
+              podIds: milestone?.pods?.map((pod) => pod.podId || pod.id),
             }
           }
         />
@@ -98,14 +97,20 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
         archiveTask={archiveTask}
         archiveTaskMutation={archiveTaskMutation}
         completeModal={completeModal}
-        deleteTask={deleteTask}
         fetchedTask={milestone}
+        isMilestone
         handleOnCloseArchiveTaskModal={handleOnCloseArchiveTaskModal}
         setCompleteModal={setCompleteModal}
-        setDeleteTask={setDeleteTask}
         setSnackbarAlertMessage={setSnackbarAlertMessage}
         setSnackbarAlertOpen={setSnackbarAlertOpen}
         taskType={milestone?.type}
+        setDeleteTask={setDeleteTask}
+        deleteTask={deleteTask && milestone?.pods?.length <= 1}
+      />
+      <DeleteMilestoneConfirm
+        milestone={milestone}
+        onClose={() => setDeleteTask(false)}
+        isOpen={deleteTask && milestone?.pods?.length > 1}
       />
       <MilestoneCard
         onClick={() => handleCardClick(milestone)}
@@ -150,17 +155,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
           ) : null}
         </BoardsCardBody>
         <BoardsCardFooter>
-          {milestone?.podName && (
-            <PodIconName
-              color={milestone?.podColor}
-              name={milestone?.podName}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                goToPod(milestone?.podId);
-              }}
-            />
-          )}
+          <DisplayCrossPods pods={milestone.pods} />
           <div
             style={{
               flex: 1,

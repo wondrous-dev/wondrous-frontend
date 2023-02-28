@@ -33,8 +33,7 @@ export const ViewContent = ({ canEdit, toggleEditMode, currentStatus }) => (
 );
 
 const StatusField = ({ shouldDisplay, canEdit, isTaskProposal, canArchive }) => {
-  const { fetchedTask } = useTaskContext();
-  const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
+  const { fetchedTask, entityType } = useTaskContext();
 
   const status = useMemo(() => {
     if (isTaskProposal) {

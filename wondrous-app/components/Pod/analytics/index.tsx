@@ -85,6 +85,7 @@ function UserRow({ contributorTask }) {
           setOpenModal(false);
         }}
         taskId={taskOpened}
+        isMilestone={false}
         isTaskProposal={false}
       />
       <ContributorRow

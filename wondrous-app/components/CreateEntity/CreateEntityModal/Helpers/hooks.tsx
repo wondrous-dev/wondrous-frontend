@@ -584,14 +584,46 @@ export const useUpdateMilestone = () => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const handleMutation = ({ input, board, handleClose, existingTask }) => {
+  const handleMutation = ({ input, board, handleClose, existingTask, boardType }) => {
+    const {
+      title,
+      description,
+      orgId,
+      podIds,
+      dueDate,
+      observerIds,
+      userMentions,
+      mediaUploads,
+      privacyLevel,
+      labelIds,
+      points,
+      status,
+      timezone,
+    } = input;
+
     updateMilestone({
       variables: {
         milestoneId: existingTask?.id,
-        input,
+        input: {
+          title,
+          description,
+          orgId,
+          podIds,
+          dueDate,
+          observerIds,
+          userMentions,
+          mediaUploads,
+          privacyLevel,
+          labelIds,
+          points,
+          status,
+          timezone,
+          board: boardType,
+        },
       },
     }).then(({ data }) => {
       const milestone = data?.updateMilestone;
+      console.log(milestone, 'MILETON');
       if (board?.setColumns) {
         const transformedTask = transformTaskToTaskCard(milestone, {});
 

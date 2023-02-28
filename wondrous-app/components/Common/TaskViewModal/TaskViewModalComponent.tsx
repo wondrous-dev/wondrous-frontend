@@ -4,7 +4,7 @@ import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
 import { differenceInDays } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
-import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
+import { GET_MILESTONE_BY_ID, SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import {
   GET_MINT_TASK_TOKEN_DATA,
   GET_TASK_BY_ID,
@@ -13,7 +13,7 @@ import {
 } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import { useRouter } from 'next/router';
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { useSnapshot } from 'services/snapshot';
 import { formatDateDisplay, getProposalStatus } from 'utils/board';
 import {
@@ -108,9 +108,17 @@ interface ITaskListModalProps {
   taskId: string;
   isTaskProposal?: boolean;
   back?: boolean;
+  isMilestone: boolean;
 }
 
-export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back }: ITaskListModalProps) => {
+export const TaskViewModal = ({
+  open,
+  handleClose,
+  taskId,
+  isTaskProposal = false,
+  back,
+  isMilestone,
+}: ITaskListModalProps) => {
   const {
     editTask,
     setEditTask,
@@ -135,10 +143,13 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     approvedSubmission,
     setApprovedSubmission,
   } = useTaskViewModalState();
-  const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
-  const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
+  const entityType = useMemo(() => {
+    if (isMilestone) return ENTITIES_TYPES.MILESTONE;
+    if (isTaskProposal) return ENTITIES_TYPES.PROPOSAL;
+    return fetchedTask?.type;
+  }, [fetchedTask?.type, isTaskProposal, isMilestone]);
   const globalContext = useGlobalContext();
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const board: any = useBoards();
@@ -194,6 +205,24 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     onError: () => {
       stopPolling();
       console.error('Error fetching task');
+    },
+  });
+
+  const [getMilestoneById, { refetch: refetchMilestone }] = useLazyQuery(GET_MILESTONE_BY_ID, {
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-and-network',
+    onCompleted: (data) => {
+      const milestoneData = data?.getMilestoneById;
+      setFetchedTask(
+        transformTaskToTaskCard(milestoneData, {
+          orgProfilePicture: milestoneData?.org?.profilePicture,
+          orgName: milestoneData?.org?.name,
+          podName: milestoneData?.pod?.name,
+        })
+      );
+    },
+    onError: () => {
+      console.error('Error fetching milestone');
     },
   });
 
@@ -266,13 +295,20 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   useEffect(() => {
     if (open) {
       if (!fetchedTask || fetchedTask.id !== taskId) {
+        if (isMilestone) {
+          getMilestoneById({
+            variables: {
+              milestoneId: taskId,
+            },
+          });
+        }
         if (isTaskProposal) {
           getTaskProposalById({
             variables: {
               proposalId: taskId,
             },
           });
-        } else if (!isTaskProposal && taskId) {
+        } else if (!isTaskProposal && taskId && !isMilestone) {
           getTaskById({
             variables: {
               taskId,
@@ -428,6 +464,15 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     handleClose();
   };
 
+  const refetchEntity = (args) => {
+    if (isTaskProposal) {
+      return refetchProposal(args);
+    }
+    if (isMilestone) {
+      return refetchMilestone(args);
+    }
+    return refetch(args);
+  };
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -461,9 +506,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
             setSnackbarAlertMessage={setSnackbarAlertMessage}
           />
         )}
-        <TaskContext.Provider
-          value={{ fetchedTask, refetch: isTaskProposal ? refetchProposal : refetch, tokenData, entityType }}
-        >
+        <TaskContext.Provider value={{ fetchedTask, refetch: refetchEntity, tokenData, entityType }}>
           <TaskModal open={open} onClose={handleModalClose}>
             <TaskModalCard fullScreen={fullScreen}>
               {!!fetchedTask && canViewTask !== null && (
@@ -554,7 +597,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                           {back && (
                             <TaskModalHeaderBackToList onClick={handleClose}>Back to list</TaskModalHeaderBackToList>
                           )}
-                          <TaskModalHeaderShare fetchedTask={fetchedTask} />
+                          <TaskModalHeaderShare
+                            fetchedTask={fetchedTask}
+                            {...(isMilestone ? { type: ENTITIES_TYPES.MILESTONE } : {})}
+                          />
                           <TaskModalHeaderOpenInFullIcon
                             isFullScreen={fullScreen}
                             onClick={() => setFullScreen(!fullScreen)}

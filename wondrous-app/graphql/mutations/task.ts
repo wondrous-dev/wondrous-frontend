@@ -177,7 +177,7 @@ export const REMOVE_TASK_ASSIGNEE = gql`
 `;
 
 export const UPDATE_MILESTONE = gql`
-  mutation updateMilestone($milestoneId: ID!, $input: TaskInput) {
+  mutation updateMilestone($milestoneId: ID!, $input: MilestoneInput) {
     updateMilestone(milestoneId: $milestoneId, input: $input) {
       ...MilestoneFragment
     }

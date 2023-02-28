@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, memo } from 'react';
+import { useState, useContext, useEffect, memo, useMemo } from 'react';
 import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_DONE,
@@ -179,7 +179,12 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
     (!task.paymentStatus || task.paymentStatus === 'unpaid') &&
     task?.rewards?.length > 0;
 
-  const taskType = isProposal ? 'taskProposal' : 'task';
+  const taskType = useMemo(() => {
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
+      return ENTITIES_TYPES.MILESTONE;
+    }
+    return isProposal ? 'taskProposal' : 'task';
+  }, [isProposal]);
 
   let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
 

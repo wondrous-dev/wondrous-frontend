@@ -52,11 +52,12 @@ const useGetTaskById = (editTask, task) => {
 export type TaskProps = {
   className?: string;
   task: TaskInterface;
+  isMilestone?: boolean;
 };
 
 const Task: FC<TaskProps> = (props) => {
   // WHAT IS THIS COMPONENT? IS IT TASK CARD? POORLY NAMED
-  const { task, className } = props;
+  const { task, className, isMilestone = false } = props;
   const {
     description = '',
     rewards = null,
@@ -90,7 +91,6 @@ const Task: FC<TaskProps> = (props) => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
@@ -204,10 +204,15 @@ const Task: FC<TaskProps> = (props) => {
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
     task?.createdBy === user?.id;
 
-  const canDelete =
-    canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
+  const canDelete = canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || isMilestone);
 
-  const taskType = task?.isProposal ? 'taskProposal' : 'task';
+  const taskType = useMemo(() => {
+    if (isMilestone) {
+      return Constants.ENTITIES_TYPES.MILESTONE;
+    }
+    return task?.isProposal ? 'taskProposal' : 'task';
+  }, []);
+
   let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
   if (board?.entityType) {
     viewUrl += `&entity=${board?.entityType}`;
@@ -239,6 +244,7 @@ const Task: FC<TaskProps> = (props) => {
     ];
   }, [assigneeUsername, assigneeId, assigneeProfilePicture]);
 
+  const entityType = isMilestone ? Constants.ENTITIES_TYPES.MILESTONE : task?.type;
   return (
     <span className={className}>
       <CreateEntity
@@ -246,7 +252,7 @@ const Task: FC<TaskProps> = (props) => {
         handleCloseModal={() => {
           setEditTask(false);
         }}
-        entityType={task?.type}
+        entityType={entityType}
         handleClose={() => {
           setEditTask(false);
         }}
@@ -257,6 +263,7 @@ const Task: FC<TaskProps> = (props) => {
           reviewers: reviewerData || [],
         }}
         isTaskProposal={false}
+        isMilestone={isMilestone}
       />
       <ArchiveTaskModal
         open={archiveTask}

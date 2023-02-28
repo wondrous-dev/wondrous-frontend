@@ -59,7 +59,10 @@ const useGetPodMilestoneBoard = ({
   const getPodMilestoneBoardFetchMore = useCallback(() => {
     fetchMore({
       variables: {
-        offset: columns.length,
+        input: {
+          ...variables.input,
+          offset: columns.length,
+        },
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getPodBoardMilestones.length >= LIMIT);
@@ -82,19 +85,21 @@ const useGetPodMilestoneBoard = ({
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
       getPodBoardMilestones({
         variables: {
-          podId,
-          priorities: filters?.priorities,
-          offset: 0,
-          statuses: taskBoardStatuses,
-          limit: taskBoardLimit,
-          labelId: filters?.labelId,
-          date: filters?.date,
-          types: [entityType],
-          ...(userId ? { userId } : {}),
-          ...extendFiltersByView(view, filters),
-          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
-            onlyPublic: true,
-          }),
+          input: {
+            podId,
+            priorities: filters?.priorities,
+            offset: 0,
+            statuses: taskBoardStatuses,
+            limit: taskBoardLimit,
+            labelId: filters?.labelId,
+            date: filters?.date,
+            types: [entityType],
+            ...(userId ? { userId } : {}),
+            ...extendFiltersByView(view, filters),
+            ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
+              onlyPublic: true,
+            }),
+          },
         },
       });
       setPodTaskHasMore(true);
@@ -105,10 +110,12 @@ const useGetPodMilestoneBoard = ({
     const columnIdx = columns?.findIndex((column) => column.status === status);
     fetchMore({
       variables: {
-        ...variables,
-        offset: columns[columnIdx]?.tasks?.length,
-        statuses: [status],
-        ...(limit ? { limit } : {}),
+        input: {
+          ...variables.input,
+          offset: columns[columnIdx]?.tasks?.length,
+          statuses: [status],
+          ...(limit ? { limit } : {}),
+        },
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getPodBoardMilestones.length >= LIMIT);

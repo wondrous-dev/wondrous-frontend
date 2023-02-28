@@ -480,6 +480,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         initialRecurrenceType={initialRecurrenceType}
         existingTask={existingTask}
         pods={pods}
+        ref={inputRef}
         entityType={entityType}
         handleClose={handleClose}
         isSubtask={isSubtask}
@@ -496,6 +497,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         loading={loading}
         entityType={entityType}
         cancel={cancel}
+        ref={inputRef}
         hasExistingTask={!!existingTask}
       />
     </CreateEntityForm>

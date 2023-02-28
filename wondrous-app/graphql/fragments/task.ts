@@ -616,6 +616,7 @@ export const MilestoneFragment = gql`
     pods {
       name
       color
+      id
     }
     creator {
       username
