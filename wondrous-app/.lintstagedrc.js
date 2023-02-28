@@ -5,6 +5,6 @@ const buildEslintCommand = (filenames) =>
   `next lint --fix --file ${filenames.map((f) => path.relative(process.cwd(), f)).join(' --file ')} --quiet`;
 
 module.exports = {
-  '*.{ts,tsx}': [() => 'yarn tsc --noEmit', 'prettier --write'],
+  '*.{ts,tsx}': [() => 'yarn tsc --noEmit', buildEslintCommand, 'prettier --write'],
   '*.json': ['prettier --write'],
 };

@@ -293,20 +293,8 @@ const useGetOrgTaskBoardProposals = ({
 
 const useGetBoardHook = (entityType, userId, args) => {
   const { columns, setColumns, setOrgTaskHasMore, orgId, setIsLoading, search, filters, view } = args;
-  if (entityType === ENTITIES_TYPES.PROPOSAL) {
-    return useGetOrgTaskBoardProposals({
-      columns,
-      setColumns,
-      setOrgTaskHasMore,
-      orgId,
-      entityType,
-      setIsLoading,
-      search,
-      filters,
-    });
-  }
-  if (entityType === ENTITIES_TYPES.MILESTONE) {
-    return useGetOrgMilestoneBoard({
+  const hooks = {
+    default: useGetOrgTaskBoardTasks({
       columns,
       setColumns,
       setOrgTaskHasMore,
@@ -317,20 +305,31 @@ const useGetBoardHook = (entityType, userId, args) => {
       search,
       filters,
       view,
-    });
-  }
-  return useGetOrgTaskBoardTasks({
-    columns,
-    setColumns,
-    setOrgTaskHasMore,
-    orgId,
-    userId,
-    entityType,
-    setIsLoading,
-    search,
-    filters,
-    view,
-  });
+    }),
+    [ENTITIES_TYPES.PROPOSAL]: useGetOrgTaskBoardProposals({
+      columns,
+      setColumns,
+      setOrgTaskHasMore,
+      orgId,
+      entityType,
+      setIsLoading,
+      search,
+      filters,
+    }),
+    [ENTITIES_TYPES.MILESTONE]: useGetOrgMilestoneBoard({
+      columns,
+      setColumns,
+      setOrgTaskHasMore,
+      orgId,
+      userId,
+      entityType,
+      setIsLoading,
+      search,
+      filters,
+      view,
+    }),
+  };
+  return hooks[entityType] || hooks.default;
 };
 
 export const useGetOrgTaskBoard = ({
@@ -345,7 +344,6 @@ export const useGetOrgTaskBoard = ({
   search,
   filters,
 }) => {
-  // TODO: fix double fetching
   const hook = useGetBoardHook(entityType, userId, {
     columns,
     setColumns,

@@ -317,8 +317,8 @@ const useGetBoardHook = (userId, args) => {
     view,
     section,
   } = args;
-  if (entityType === ENTITIES_TYPES.PROPOSAL) {
-    return useGetPodTaskProposals({
+  const hooks = {
+    [ENTITIES_TYPES.PROPOSAL]: useGetPodTaskProposals({
       listView,
       section,
       setColumns,
@@ -329,10 +329,8 @@ const useGetBoardHook = (userId, args) => {
       setPodTaskHasMore,
       search,
       filters,
-    });
-  }
-  if (entityType === ENTITIES_TYPES.MILESTONE) {
-    return useGetPodMilestoneBoard({
+    }),
+    [ENTITIES_TYPES.MILESTONE]: useGetPodMilestoneBoard({
       columns,
       setColumns,
       setPodTaskHasMore,
@@ -343,20 +341,21 @@ const useGetBoardHook = (userId, args) => {
       userId,
       filters,
       view,
-    });
-  }
-  return useGetPodTaskBoardTasks({
-    columns,
-    setColumns,
-    setPodTaskHasMore,
-    podId,
-    entityType,
-    setIsLoading,
-    search,
-    userId,
-    filters,
-    view,
-  });
+    }),
+    default: useGetPodTaskBoardTasks({
+      columns,
+      setColumns,
+      setPodTaskHasMore,
+      podId,
+      entityType,
+      setIsLoading,
+      search,
+      userId,
+      filters,
+      view,
+    }),
+  };
+  return hooks[entityType] || hooks.default;
 };
 
 export const useGetPodTaskBoard = ({
