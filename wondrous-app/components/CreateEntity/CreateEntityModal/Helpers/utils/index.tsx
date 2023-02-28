@@ -267,7 +267,7 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
-    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags, Fields.categories],
+    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags],
     createMutation: useCreateMilestone,
     updateMutation: useUpdateMilestone,
     initialValues: {

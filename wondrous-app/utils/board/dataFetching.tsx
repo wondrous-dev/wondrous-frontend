@@ -84,7 +84,7 @@ export const getServerSideProps = async (context) => {
         JSON.parse(entity.description)?.[0]?.children[0]?.text ||
         `${capitalize(entityType.split('_').join(' '))} description`;
 
-      if (entity?.media.length) {
+      if (entity?.media?.length) {
         const [media] = entity.media;
         const mediaSlug = media?.slug || media?.uploadSlug;
         const previewFileData = await apollo.query({

@@ -599,6 +599,11 @@ export const MilestoneFragment = gql`
     priority
     dueDate
     status
+    labels {
+      id
+      name
+      color
+    }
     userMentions
     media {
       ...MediaFragment
