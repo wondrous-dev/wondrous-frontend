@@ -64,9 +64,7 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
               handleUpdateTaskAssignee(user?.id);
               toggleAddMode();
             }}
-            onChange={(value) => {
-              search(value);
-            }}
+            onChange={(value) => search(value)}
             onSelect={(value: OrgUser) => {
               handleUpdateTaskAssignee(value?.value);
               toggleAddMode();
@@ -99,9 +97,7 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
               handleUpdateTaskAssignee(user?.id);
               toggleEditMode();
             }}
-            onChange={(value) => {
-              search(value);
-            }}
+            onChange={(value) => search(value)}
             onSelect={(value: OrgUser) => {
               handleUpdateTaskAssignee(value?.value);
               toggleEditMode();
