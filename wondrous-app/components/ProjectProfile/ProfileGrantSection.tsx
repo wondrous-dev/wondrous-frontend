@@ -5,7 +5,7 @@ import PlantIcon from 'components/Icons/plant.svg';
 import palette from 'theme/palette';
 import { formatDateDisplay } from 'utils/board';
 
-import { useCreateGrantButtonProps, useGetGrantOrgBoard } from './helpers';
+import { useCreateGrantButtonProps, useGetHomePageGrants } from './helpers';
 import SectionContent from './SectionContent';
 
 const LeftComponent = ({ title }) => (
@@ -84,7 +84,7 @@ const ProfileGrantSection = () => (
       RightComponent,
       onClick: ({ router, data: { id }, entityLink }) => router.push(`${entityLink}/grants?grant=${id}`),
     }}
-    data={useGetGrantOrgBoard()}
+    data={useGetHomePageGrants()}
     tourId="tour-header-project-grants"
   />
 );
