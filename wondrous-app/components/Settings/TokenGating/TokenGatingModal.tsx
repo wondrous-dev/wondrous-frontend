@@ -7,6 +7,7 @@ import { Org } from 'types/Org';
 import { TOKEN_GATING_CONDITION_TYPE } from 'utils/constants';
 import { useTokenGatingCondition } from 'utils/hooks';
 import TokenGatingConfigForm from './TokenGatingConfigForm';
+import OtterspaceConfigForm from './OtterspaceConfigForm';
 import { TokenGatingFormHeaderSecondary } from './styles';
 
 type Props = {
@@ -44,14 +45,18 @@ function TokenGatingModal({ orgId, org, open }: Props) {
           tabs={[
             { label: 'Token gate', value: TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE },
             { label: 'Guild.xyz', value: TOKEN_GATING_CONDITION_TYPE.GUILD },
+            { label: 'Otterspace', value: TOKEN_GATING_CONDITION_TYPE.OTTER },
           ]}
         />
       ) : null}
-
-      {selectedTab === TOKEN_GATING_CONDITION_TYPE.GUILD ? (
+      {selectedTab === TOKEN_GATING_CONDITION_TYPE.GUILD && (
         <TokenGatingGuildForm orgId={orgId} footerRef={footerRef} />
-      ) : (
+      )}
+      {selectedTab === TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE && (
         <TokenGatingConfigForm orgId={orgId} footerRef={footerRef} />
+      )}
+      {selectedTab === TOKEN_GATING_CONDITION_TYPE.OTTER && (
+        <OtterspaceConfigForm orgId={orgId} footerRef={footerRef} />
       )}
     </Modal>
   );
