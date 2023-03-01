@@ -626,7 +626,6 @@ export const useUpdateMilestone = () => {
       },
     }).then(({ data }) => {
       const milestone = data?.updateMilestone;
-      console.log(milestone, 'MILETON');
       if (board?.setColumns) {
         const transformedTask = transformTaskToTaskCard(milestone, {});
 

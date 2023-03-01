@@ -60,7 +60,7 @@ const MediaUpload = forwardRef(
           },
 
           onCompleted: (data) => {
-            const task = data?.attachTaskMedia || data?.attachTaskProposalMedia;
+            const task = data?.attachTaskMedia || data?.attachTaskProposalMedia || data?.attachMilestoneMedia;
             //   form.setFieldValue('mediaUploads', transformMediaFormat(task?.media));
             setMediaUploadsValue(transformMediaFormat(task?.media));
             setFileUploadLoading(false);

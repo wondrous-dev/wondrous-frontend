@@ -94,7 +94,6 @@ function DeleteEntityModal(props: IArchiveTaskModalProps) {
   });
 
   const handleDelete = () => {
-    console.log('hee?', entityType);
     if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
       deleteGrantApplication();
     }

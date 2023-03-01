@@ -102,6 +102,7 @@ import {
   TaskStatusHeaderText,
 } from './styles';
 import { openSnapshot } from './utils';
+import ViewPods from './ViewPods';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -440,9 +441,7 @@ export const TaskViewModal = ({
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id;
 
-  const canDelete =
-    canArchive &&
-    (fetchedTask?.type === ENTITIES_TYPES.TASK || fetchedTask?.type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
+  const canDelete = canArchive && (fetchedTask?.type === ENTITIES_TYPES.TASK || isMilestone || isTaskProposal);
   const canApproveProposal =
     permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
 
@@ -562,7 +561,14 @@ export const TaskViewModal = ({
                             )}
                             <TaskModalHeaderTypography>{fetchedTask?.org.name}</TaskModalHeaderTypography>
                           </TaskModalHeaderIconWrapper>
-                          {fetchedTask?.podName && (
+                          <ViewPods
+                            podColor={fetchedTask?.podColor}
+                            podName={fetchedTask?.podName}
+                            podId={fetchedTask?.podId}
+                            handleClose={handleClose}
+                            pods={fetchedTask?.pods}
+                          />
+                          {/* {fetchedTask?.podName && (
                             <>
                               <TaskModalHeaderArrow />
                               <TaskModalHeaderIconWrapper
@@ -577,7 +583,8 @@ export const TaskViewModal = ({
                                 <TaskModalHeaderTypography>{fetchedTask?.podName}</TaskModalHeaderTypography>
                               </TaskModalHeaderIconWrapper>
                             </>
-                          )}
+                          )} */}
+
                           {isSubtask && fetchedTask?.type === TASK_TYPE && (
                             <>
                               <TaskModalHeaderArrow />
@@ -628,8 +635,10 @@ export const TaskViewModal = ({
                             <TaskModalHeaderBackToList onClick={handleClose}>Back to list</TaskModalHeaderBackToList>
                           )}
                           <TaskModalHeaderShare
-                            fetchedTask={fetchedTask}
-                            {...(isMilestone ? { type: ENTITIES_TYPES.MILESTONE } : {})}
+                            fetchedTask={{
+                              ...fetchedTask,
+                              ...(isMilestone ? { type: ENTITIES_TYPES.MILESTONE } : {}),
+                            }}
                           />
                           <TaskModalHeaderOpenInFullIcon
                             isFullScreen={fullScreen}

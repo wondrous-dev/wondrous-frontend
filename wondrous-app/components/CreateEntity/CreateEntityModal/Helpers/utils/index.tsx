@@ -360,11 +360,9 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
     },
     defaultValuesKeys
   );
-  console.log(defaultValues, 'DEFAULT VALUES');
   const initialValuesData = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) =>
     isNull(srcValue) || isUndefined(srcValue) ? objValue : srcValue
   );
-  console.log(initialValuesData, 'INITIAL VALUES DATA');
   return initialValuesData;
 };
 

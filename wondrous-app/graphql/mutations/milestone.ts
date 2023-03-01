@@ -46,7 +46,7 @@ export const UPDATE_MILESTONE_OBSERVERS = gql`
 `;
 
 export const REMOVE_MILESTONE_MEDIA = gql`
-  mutation removeMilestoneMedia($milestoneId: String!, $slug: String!) {
+  mutation removeMilestoneMedia($milestoneId: ID!, $slug: String!) {
     removeMilestoneMedia(milestoneId: $milestoneId, slug: $slug) {
       success
     }
@@ -54,9 +54,9 @@ export const REMOVE_MILESTONE_MEDIA = gql`
 `;
 
 export const ATTACH_MILESTONE_MEDIA = gql`
-  mutation attachMilestoneMedia($milestoneId: String!, $input: AttachMediaInput) {
+  mutation attachMilestoneMedia($milestoneId: ID!, $input: AttachMediaInput) {
     attachMilestoneMedia(milestoneId: $milestoneId, input: $input) {
-      Milestone
+      ...MilestoneFragment
     }
   }
   ${MilestoneFragment}

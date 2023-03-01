@@ -7,7 +7,31 @@ import typography from 'theme/typography';
 import { MinimalPod, multiPodNormalizr } from '../DeleteMilestoneConfirm';
 import PodIconName from '../PodIconName';
 
-const DisplayCrossPods = ({ pods }) => {
+interface Props {
+  pods: any[];
+  renderPill?: ({ onClick }) => JSX.Element;
+  anchorOrigin?: {
+    vertical: 'top' | 'bottom' | 'center';
+    horizontal: 'left' | 'right' | 'center';
+  };
+  transformOrigin?: {
+    vertical: 'top' | 'bottom' | 'center';
+    horizontal: 'left' | 'right' | 'center';
+  };
+}
+
+const DisplayCrossPods = ({
+  pods,
+  renderPill = null,
+  anchorOrigin = {
+    vertical: 'top',
+    horizontal: 'left',
+  },
+  transformOrigin = {
+    vertical: 'bottom',
+    horizontal: 'left',
+  },
+}: Props) => {
   const normalizedPods: MinimalPod[] = useMemo(() => multiPodNormalizr(pods), [pods]);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -18,7 +42,6 @@ const DisplayCrossPods = ({ pods }) => {
       shallow: true,
     });
   };
-
   if (isEmpty(normalizedPods)) return null;
   if (normalizedPods?.length > 1) {
     return (
@@ -27,19 +50,13 @@ const DisplayCrossPods = ({ pods }) => {
           open={!!anchorEl}
           anchorEl={anchorEl}
           onClose={(e) => setAnchorEl(null)}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
+          anchorOrigin={anchorOrigin}
           sx={{
             '& .MuiPopover-paper': {
               background: 'transparent',
             },
           }}
-          transformOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
+          transformOrigin={transformOrigin}
         >
           <Grid
             bgcolor={palette.grey920}
@@ -86,13 +103,22 @@ const DisplayCrossPods = ({ pods }) => {
             </Grid>
           </Grid>
         </Popover>
-        <PodIconName
-          onClick={(e) => {
-            e.stopPropagation();
-            setAnchorEl(e.currentTarget);
-          }}
-          name={`${pods?.length} pods`}
-        />
+        {renderPill ? (
+          renderPill({
+            onClick: (e) => {
+              e.stopPropagation();
+              setAnchorEl(e.currentTarget);
+            },
+          })
+        ) : (
+          <PodIconName
+            onClick={(e) => {
+              e.stopPropagation();
+              setAnchorEl(e.currentTarget);
+            }}
+            name={`${pods?.length} pods`}
+          />
+        )}
       </div>
     );
   }

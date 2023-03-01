@@ -44,7 +44,6 @@ function PodSearch(props) {
     return options.find((option) => option.id === value?.id || option.id === value);
   }, [value, options, multiple]);
 
-  console.log(selectedValue, 'selected');
   return (
     <DropdownSearch
       label="Select pod"
