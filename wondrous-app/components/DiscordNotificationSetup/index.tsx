@@ -10,10 +10,7 @@ import {
 import palette from 'theme/palette';
 import Link from 'next/link';
 
-// TODO: // replace me
-// export const BOT_URL = `https://discord.com/api/oauth2/authorize?client_id=917630803314352208&permissions=8&scope=bot`;
-
-export const BOT_URL = `https://discord.com/api/oauth2/authorize?client_id=966999136526303243&permissions=8&scope=bot`;
+export const BOT_URL = `https://discord.com/api/oauth2/authorize?client_id=917630803314352208&permissions=8&scope=bot`;
 function DiscordNotificationSetup(props) {
   const orgUsername = props?.orgUsername;
   return (
