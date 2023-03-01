@@ -14,6 +14,7 @@ const NOTIFICATION_OBJ_TYPE_TO_DISPLAY = {
   [NOTIFICATION_OBJ_TYPES.POST]: 'post',
   [NOTIFICATION_OBJ_TYPES.COLLABORATION]: 'collaboration',
   [NOTIFICATION_OBJ_TYPES.MILESTONE]: 'milestone',
+  [NOTIFICATION_OBJ_TYPES.MILESTONE_COMMENT]: 'milestone',
 };
 
 const NOTIFICATION_OBJ_TYPE_TO_LINK = {
@@ -39,6 +40,7 @@ export function getNotificationDescription(notification, link) {
       </NotificationsLink>
     </span>
   );
+  console.log('notification?.type', notification?.type);
   /// these languages are wrong potentailly need to consider the actor
   switch (notification?.type) {
     case NOTIFICATION_TYPES.MENTION:

@@ -37,7 +37,7 @@ const ProfileMilestoneSection = () => (
       LeftComponent,
       RightComponent,
       onClick: ({ router, data: { id } }) =>
-        router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false }),
+        router.push({ query: { ...router.query, milestone: id } }, undefined, { scroll: false }),
     }}
     data={useGetHomeMilestones()}
     tourId="tour-header-project-milestones"
