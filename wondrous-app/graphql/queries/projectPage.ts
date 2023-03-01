@@ -11,9 +11,6 @@ export const GET_ORG_HOME_TASK_OBJECTS = gql`
       bounties {
         ...HomePageTaskCardFragment
       }
-      milestones {
-        ...HomePageTaskCardFragment
-      }
     }
   }
   ${HomePageTaskCardFragment}
@@ -28,12 +25,47 @@ export const GET_POD_HOME_TASK_OBJECTS = gql`
       bounties {
         ...HomePageTaskCardFragment
       }
-      milestones {
-        ...HomePageTaskCardFragment
-      }
     }
   }
   ${HomePageTaskCardFragment}
+`;
+
+export const GET_ORG_HOME_MILESTONS = gql`
+  query getOrgHomeMilestones($input: OrgHomePageQueryInput) {
+    getOrgHomeMilestones(input: $input) {
+      id
+      title
+      status
+      orgId
+      podIds
+      perStatusTaskCount {
+        created
+        inProgress
+        completed
+        inReview
+        archived
+      }
+    }
+  }
+`;
+
+export const GET_POD_HOME_MILESTONS = gql`
+  query getPodHomeMilestones($input: PodHomePageQueryInput) {
+    getPodHomeMilestones(input: $input) {
+      id
+      title
+      status
+      orgId
+      podIds
+      perStatusTaskCount {
+        created
+        inProgress
+        completed
+        inReview
+        archived
+      }
+    }
+  }
 `;
 
 export const GET_ORG_HOME_PROPOSALS = gql`

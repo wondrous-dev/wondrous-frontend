@@ -1,14 +1,13 @@
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import ProgressBar from 'components/Common/ProgressBar';
-import useGetMilestoneTasksProgress from 'hooks/useGetMilestoneTasksProgress';
+import { useGetProgressFromTaskCount } from 'hooks/useGetMilestoneTasksProgress';
 import palette from 'theme/palette';
 
-const MilestoneProgress = ({ milestoneId }: { milestoneId: string }) => {
-  const { tasksTotal, tasksCompleted, progress } = useGetMilestoneTasksProgress({ milestoneId });
+const MilestoneProgress = ({ perStatusTaskCount }) => {
+  const { totalTasksCount, completedCount, progress } = useGetProgressFromTaskCount({ perStatusTaskCount });
   return (
     <Grid container alignItems="center" justifyContent="flex-end" width="160px" gap="6px">
-      {tasksTotal ? (
+      {totalTasksCount ? (
         <>
           <Grid
             container
@@ -23,8 +22,8 @@ const MilestoneProgress = ({ milestoneId }: { milestoneId: string }) => {
           </Grid>
           <Grid item container width="115px">
             <ProgressBar
-              value={tasksCompleted}
-              total={tasksTotal}
+              value={completedCount}
+              total={totalTasksCount}
               height="8px"
               color={`linear-gradient(269.75deg, ${palette.green30} -19.96%, ${palette.green30} 11.33%, ${palette.violet90} 75.55%)`}
             />
