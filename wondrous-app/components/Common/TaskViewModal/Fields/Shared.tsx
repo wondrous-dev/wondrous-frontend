@@ -199,6 +199,11 @@ export const ReviewerAssigneeAutocomplete = ({
             }}
             autoFocus
             ref={params.InputProps.ref}
+            onChange={(e) => {
+              if (onChange) {
+                onChange(e.target.value);
+              }
+            }}
             disableUnderline
             fullWidth
             placeholder="Enter username..."
