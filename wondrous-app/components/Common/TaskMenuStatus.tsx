@@ -2,8 +2,16 @@ import { useMutation } from '@apollo/client';
 import { ButtonBase, Menu, MenuItem, Typography } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
 import Arrow from 'components/Icons/arrow.svg';
-import { APPROVE_TASK_PROPOSAL, ARCHIVE_TASK, CLOSE_TASK_PROPOSAL, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import {
+  APPROVE_TASK_PROPOSAL,
+  ARCHIVE_MILESTONE,
+  ARCHIVE_TASK,
+  CLOSE_TASK_PROPOSAL,
+  UPDATE_MILESTONE_STATUS,
+  UPDATE_TASK_STATUS,
+} from 'graphql/mutations';
+import {
+  GET_MILESTONE_BY_ID,
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
@@ -115,6 +123,7 @@ const refetchNonProposalQueries = [
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_POD_TASK_BOARD_TASKS,
   GET_TASK_BY_ID,
+  GET_MILESTONE_BY_ID,
   GET_TASKS_FOR_MILESTONE,
   GET_USER_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
@@ -195,6 +204,9 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
   const [archiveTaskMutation] = useMutation(ARCHIVE_TASK, {
     refetchQueries: refetchNonProposalQueries,
   });
+  const [archiveMilestone] = useMutation(ARCHIVE_MILESTONE, {
+    refetchQueries: refetchNonProposalQueries,
+  });
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: refetchNonProposalQueries,
     onError: ({ graphQLErrors }) => {
@@ -209,7 +221,12 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
       setSnackbarAlertOpen(true);
     },
   });
-  const handleOnChange = (newStatus) => {
+
+  const [updateMilestoneStatus] = useMutation(UPDATE_MILESTONE_STATUS, {
+    refetchQueries: refetchNonProposalQueries,
+  });
+
+  const handleOnTaskStatusChange = (newStatus) => {
     if (newStatus === TASK_STATUS_ARCHIVED) {
       archiveTaskMutation({
         variables: {
@@ -227,6 +244,25 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
       },
     });
   };
+  const handleOnMilestoneStatusChange = (newStatus) => {
+    if (newStatus === TASK_STATUS_ARCHIVED) {
+      return archiveMilestone({
+        variables: {
+          milestoneId: taskId,
+        },
+      });
+    }
+    return updateMilestoneStatus({
+      variables: {
+        milestoneId: taskId,
+        input: {
+          newStatus,
+        },
+      },
+    });
+  };
+  const handleOnChange =
+    entityType === ENTITIES_TYPES.MILESTONE ? handleOnMilestoneStatusChange : handleOnTaskStatusChange;
   const { filterStatus, currentStatus } = getStatusesNonProposalEntity({ task, entityType, canArchive });
   return { handleOnChange, filterStatus, currentStatus, disableMenu: false };
 };
@@ -293,8 +329,8 @@ export default function TaskMenuStatus({
   task,
   autoFocus = false,
   onClose = null,
+  entityType,
 }) {
-  const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : task?.type;
   const taskMenuStatusProposal = useTaskMenuStatusProposal({
     task,
     entityType,

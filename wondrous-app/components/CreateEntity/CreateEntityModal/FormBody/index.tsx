@@ -75,6 +75,8 @@ import {
   REMOVE_MEDIA_FROM_TASK,
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
   REMOVE_MEDIA_FROM_TASK_PROPOSAL,
+  REMOVE_MILESTONE_MEDIA,
+  ATTACH_MILESTONE_MEDIA,
 } from 'graphql/mutations';
 import router from 'next/router';
 import MediaUpload from './MediaUpload';
@@ -150,6 +152,8 @@ const FormBody = forwardRef(
     const proposalChoices = useGetProposalChoices();
     const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK);
     const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
+    const [removeMilestoneMedia] = useMutation(REMOVE_MILESTONE_MEDIA);
+    const [attachMilestoneMedia] = useMutation(ATTACH_MILESTONE_MEDIA);
     const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL);
     const [removeTaskProposalMedia] = useMutation(REMOVE_MEDIA_FROM_TASK_PROPOSAL);
 
@@ -158,6 +162,12 @@ const FormBody = forwardRef(
         return {
           attach: attachTaskProposalMedia,
           remove: removeTaskProposalMedia,
+        };
+      }
+      if (entityType === ENTITIES_TYPES.MILESTONE) {
+        return {
+          attach: attachMilestoneMedia,
+          remove: removeMilestoneMedia,
         };
       }
       return { attach: attachMedia, remove: removeMedia };
@@ -208,6 +218,7 @@ const FormBody = forwardRef(
             setMediaUploadsValue={(mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads)}
             existingTaskId={existingTask?.id}
             isProposal={isProposal}
+            isMilestone={entityType === ENTITIES_TYPES.MILESTONE}
             fileUploadLoading={fileUploadLoading}
             handleMedia={handleMedia}
             setFileUploadLoading={setFileUploadLoading}

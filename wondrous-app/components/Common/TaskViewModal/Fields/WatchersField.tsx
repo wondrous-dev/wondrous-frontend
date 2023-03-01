@@ -11,67 +11,80 @@ import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import CloseIcon from 'components/Icons/closeModal';
 import Tooltip from 'components/Tooltip';
-import { UPDATE_TASK_OBSERVERS } from 'graphql/mutations';
+import { UPDATE_MILESTONE_OBSERVERS, UPDATE_TASK_OBSERVERS } from 'graphql/mutations';
 import useAlerts from 'hooks/useAlerts';
 import palette from 'theme/palette';
 import { TaskInterface } from 'types/task';
+import { ENTITIES_TYPES } from 'utils/constants';
 
 type WatchersFieldProps = {
   fetchedTask: TaskInterface;
+  entityType: string;
 };
 
-function WatchersField({ fetchedTask }: WatchersFieldProps) {
+function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
   const currentUser = useMe();
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
 
   const [observers, setObservers] = useState(fetchedTask.observers || []);
   const [updateTaskObservers] = useMutation(UPDATE_TASK_OBSERVERS);
 
+  const [updateMilestoneObserverse] = useMutation(UPDATE_MILESTONE_OBSERVERS);
   const isObserving = useMemo(
     () => observers.some((observer) => observer?.id === currentUser?.id),
     [observers, currentUser?.id]
   );
 
+  const updateObserverse = (observerIds: string[], type: string) => {
+    const alertMessage =
+      type === 'watch'
+        ? `You are now watching this ${entityType} and will be notified of any updates!`
+        : `You are no longer watching this ${entityType}!`;
+    if (entityType === ENTITIES_TYPES.TASK) {
+      updateTaskObservers({
+        variables: {
+          observerIds,
+          taskId: fetchedTask?.id,
+        },
+        onCompleted: () => {
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(alertMessage);
+          setSnackbarAlertAnchorOrigin({
+            vertical: 'bottom',
+            horizontal: 'center',
+          });
+        },
+      });
+    } else if (entityType === ENTITIES_TYPES.MILESTONE) {
+      updateMilestoneObserverse({
+        variables: {
+          observerIds,
+          milestoneId: fetchedTask?.id,
+        },
+        onCompleted: () => {
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(alertMessage);
+          setSnackbarAlertAnchorOrigin({
+            vertical: 'bottom',
+            horizontal: 'center',
+          });
+        },
+      });
+    }
+  };
+
   const handleWatch = () => {
     const newObservers = [...observers, currentUser];
     const observerIds = newObservers.map((observer) => observer?.id);
     setObservers(newObservers);
-
-    updateTaskObservers({
-      variables: {
-        observerIds,
-        taskId: fetchedTask?.id,
-      },
-      onCompleted: () => {
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage('You are now watching this task and will be notified of any updates!');
-        setSnackbarAlertAnchorOrigin({
-          vertical: 'bottom',
-          horizontal: 'center',
-        });
-      },
-    });
+    updateObserverse(observerIds, 'watch');
   };
 
   const handleUnwatch = () => {
     const newObservers = observers.filter((observer) => observer.id !== currentUser.id);
     const observerIds = newObservers.map((observer) => observer.id);
     setObservers(newObservers);
-
-    updateTaskObservers({
-      variables: {
-        observerIds,
-        taskId: fetchedTask?.id,
-      },
-      onCompleted: () => {
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage('You are no longer watching this task.');
-        setSnackbarAlertAnchorOrigin({
-          vertical: 'bottom',
-          horizontal: 'center',
-        });
-      },
-    });
+    updateObserverse(observerIds, 'unwatch');
   };
 
   return (

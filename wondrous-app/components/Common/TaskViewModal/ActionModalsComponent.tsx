@@ -3,7 +3,7 @@ import { CompleteModal } from 'components/Common/CompleteModal';
 import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { useCallback } from 'react';
 import { useMutation } from '@apollo/client';
-import { COMPLETE_MILESTONE, COMPLETE_BOUNTY, UNARCHIVE_TASK } from 'graphql/mutations';
+import { COMPLETE_MILESTONE, COMPLETE_BOUNTY, UNARCHIVE_TASK, UNARCHIVE_MILESTONE } from 'graphql/mutations';
 import { BOUNTY_TYPE, ENTITIES_TYPES, MILESTONE_TYPE } from 'utils/constants';
 import { ArchivedTaskUndo } from './styles';
 
@@ -45,9 +45,21 @@ export default function ActionModals({
     },
   });
 
+  const [unarchiveMilestoneMutation, { data: unarchiveMilestoneData }] = useMutation(UNARCHIVE_MILESTONE, {
+    refetchQueries: [
+      'getMilestoneById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
+    ],
+  });
+
   const [completeMilestone] = useMutation(COMPLETE_MILESTONE, {
     refetchQueries: () => [
-      'getTaskById',
+      'getMilestoneById',
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
@@ -65,6 +77,22 @@ export default function ActionModals({
     ],
   });
 
+  const handleUnarchive = () => {
+    setSnackbarAlertOpen(false);
+
+    if (isMilestone) {
+      return unarchiveMilestoneMutation({
+        variables: {
+          milestoneId: fetchedTask?.id,
+        },
+      });
+    }
+    return unarchiveTaskMutation({
+      variables: {
+        taskId: fetchedTask?.id,
+      },
+    });
+  };
   const handleOnArchive = useCallback(() => {
     archiveTaskMutation({
       variables: {
@@ -77,19 +105,7 @@ export default function ActionModals({
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage(
         <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              setSnackbarAlertOpen(false);
-              unarchiveTaskMutation({
-                variables: {
-                  taskId: fetchedTask?.id,
-                },
-              });
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
+          Task archived successfully! <ArchivedTaskUndo onClick={handleUnarchive}>Undo</ArchivedTaskUndo>
         </>
       );
     });
@@ -100,6 +116,8 @@ export default function ActionModals({
     setSnackbarAlertOpen,
     unarchiveTaskMutation,
     setSnackbarAlertMessage,
+    handleUnarchive,
+    unarchiveMilestoneMutation,
   ]);
 
   const completeCallback = useCallback(() => {

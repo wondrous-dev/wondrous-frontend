@@ -55,6 +55,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { RejectIcon } from 'components/Icons/taskModalIcons';
+import { ARCHIVE_MILESTONE } from 'graphql/mutations';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import ViewNftFields from '../TaskMint/ViewNftFields';
@@ -62,7 +63,9 @@ import TaskViewNft from '../TaskViewNft';
 import ActionModals from './ActionModalsComponent';
 import { tabs } from './constants';
 import { Description, ModalFields, Title } from './Fields';
-import { GithubButtons, LockedTaskMessage, useManageProposals, Menu, TaskSectionImageContent } from './helpers';
+import { useTaskViewModalState } from './Fields/hooks/useTaskViewModalState';
+import TaskViewModalFooter from './Footer';
+import { GithubButtons, LockedTaskMessage, Menu, TaskSectionImageContent, useManageProposals } from './helpers';
 import {
   SubtaskIconWrapper,
   SubtaskTitleWrapper,
@@ -98,9 +101,7 @@ import {
   TaskSectionInfoTextCreator,
   TaskStatusHeaderText,
 } from './styles';
-import TaskViewModalFooter from './Footer';
 import { openSnapshot } from './utils';
-import { useTaskViewModalState } from './Fields/hooks/useTaskViewModalState';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -257,6 +258,22 @@ export const TaskViewModal = ({
     onCompleted: () => {
       // TODO: Move columns
       // let columns = [...boardColumns?.columns]
+    },
+  });
+
+  const [archiveMilestoneMutation, { data: archiveMilestoneData }] = useMutation(ARCHIVE_MILESTONE, {
+    refetchQueries: [
+      'getMilestoneById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
+      SEARCH_USER_CREATED_TASKS,
+    ],
+    onError: () => {
+      console.error('Something went wrong with archiving milestone');
     },
   });
 
@@ -473,6 +490,18 @@ export const TaskViewModal = ({
     }
     return refetch(args);
   };
+
+  const archiveEntity = (variables) => {
+    if (isMilestone) {
+      return archiveMilestoneMutation({
+        variables: {
+          milestoneId: taskId,
+        },
+      });
+    }
+    return archiveTask(variables);
+  };
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -497,10 +526,11 @@ export const TaskViewModal = ({
             taskType={taskType}
             fetchedTask={fetchedTask}
             archiveTask={archiveTask}
-            archiveTaskMutation={archiveTaskMutation}
+            archiveTaskMutation={archiveEntity}
             handleOnCloseArchiveTaskModal={handleOnCloseArchiveTaskModal}
             deleteTask={deleteTask}
             setDeleteTask={setDeleteTask}
+            isMilestone={isMilestone}
             handleClose={handleClose}
             setSnackbarAlertOpen={setSnackbarAlertOpen}
             setSnackbarAlertMessage={setSnackbarAlertMessage}
@@ -765,6 +795,7 @@ export const TaskViewModal = ({
                             fullScreen={fullScreen}
                             canApply={canApply}
                             canClaim={canClaim}
+                            entityType={entityType}
                             ref={sectionRef}
                             board={board}
                             permissions={permissions}

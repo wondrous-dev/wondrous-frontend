@@ -67,7 +67,12 @@ function DeleteEntityModal(props: IArchiveTaskModalProps) {
     variables: { milestoneId: taskId },
     refetchQueries,
     update: (cache) =>
-      deleteTaskFromCache(cache, taskId, ['getUserTaskBoardTasks', 'getOrgTaskBoardTasks', 'getPodTaskBoardTasks']),
+      deleteTaskFromCache(cache, taskId, [
+        'getUserTaskBoardTasks',
+        'getOrgBoardMilestones',
+        'getPodBoardMilestones',
+        'getPodTaskBoardTasks',
+      ]),
   });
 
   const [deleteProposal] = useMutation(DELETE_TASK_PROPOSAL, {
@@ -89,6 +94,7 @@ function DeleteEntityModal(props: IArchiveTaskModalProps) {
   });
 
   const handleDelete = () => {
+    console.log('hee?', entityType);
     if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
       deleteGrantApplication();
     }

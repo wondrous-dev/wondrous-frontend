@@ -310,6 +310,8 @@ export const NOTIFICATION_OBJ_TYPES = {
   POD: 'pod',
   GRANT: 'grant',
   GRANT_APPLICATION: 'grant_application',
+  MILESTONE: 'milestone',
+  MILESTONE_COMMENT: 'milestone_comment',
 };
 
 export const COLLAB_TYPES = {

@@ -16,6 +16,7 @@ interface Props {
   tokenData?: any;
   taskSubmissionsForTask?: any;
   isBounty?: boolean;
+  isMilestone?: boolean;
 }
 
 const TaskMintComponent = ({
@@ -27,6 +28,7 @@ const TaskMintComponent = ({
   taskId,
   taskSubmissionsForTask,
   isBounty,
+  isMilestone,
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const tokenId = taskMintData?.tokenId;
@@ -39,7 +41,7 @@ const TaskMintComponent = ({
     return !!submission;
   }, [isBounty, taskSubmissionsForTask]);
 
-  if (taskStatus !== TASK_STATUS_DONE || (user?.id !== assigneeId && !canMintBounty)) {
+  if (taskStatus !== TASK_STATUS_DONE || (user?.id !== assigneeId && !canMintBounty) || isMilestone) {
     return null;
   }
 

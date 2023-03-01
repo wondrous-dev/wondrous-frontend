@@ -398,13 +398,16 @@ export const useCreateMilestone = () => {
       'getUserTaskBoardTasks',
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
-      'getMilestones',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
       GET_ORG_HOME_TASK_OBJECTS,
       GET_POD_HOME_TASK_OBJECTS,
     ],
-    onCompleted: ({ createMilestone: createMilestoneData }) => setCornerWidgetValue(createMilestoneData),
+    onCompleted: ({ createMilestone: createMilestoneData }) =>
+      setCornerWidgetValue({
+        ...createMilestoneData,
+        type: ENTITIES_TYPES.MILESTONE,
+      }),
   });
   const handleMutation = ({ input, board, pods, form, handleClose, formValues, boardType }) => {
     const {

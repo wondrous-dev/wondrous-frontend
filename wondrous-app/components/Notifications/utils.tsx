@@ -25,6 +25,8 @@ const NOTIFICATION_OBJ_TYPE_TO_LINK = {
   [NOTIFICATION_OBJ_TYPES.POST]: 'post',
   [NOTIFICATION_OBJ_TYPES.COLLABORATION]: 'collaboration',
   [NOTIFICATION_OBJ_TYPES.GRANT_APPLICATION]: 'grantApplication',
+  [NOTIFICATION_OBJ_TYPES.MILESTONE]: 'milestone',
+  [NOTIFICATION_OBJ_TYPES.MILESTONE_COMMENT]: 'milestoneComment',
 };
 
 export function getNotificationDescription(notification, link) {

@@ -70,6 +70,7 @@ const ModalFields = ({
         setIsViewNft={setIsViewNft}
         taskId={fetchedTask?.id}
         isBounty={isBounty}
+        isMilestone={isMilestone}
         taskSubmissionsForTask={taskSubmissionsForTask}
       />
       <StatusField
@@ -96,7 +97,7 @@ const ModalFields = ({
         user={user}
         userId={board?.userId}
       />
-      {!isViewNft && <WatchersField fetchedTask={fetchedTask} />}
+      {!isViewNft && <WatchersField fetchedTask={fetchedTask} entityType={entityType} />}
 
       <ApplicationField
         shouldDisplay={canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0}

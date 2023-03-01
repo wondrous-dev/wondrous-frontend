@@ -10,8 +10,14 @@ import { TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldWrapper } from '..
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
-const EditContent = ({ isTaskProposal, toggleEditMode, fetchedTask }) => (
-  <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} autoFocus onClose={toggleEditMode} />
+const EditContent = ({ isTaskProposal, toggleEditMode, fetchedTask, entityType }) => (
+  <TaskMenuStatus
+    task={fetchedTask}
+    isTaskProposal={isTaskProposal}
+    entityType={entityType}
+    autoFocus
+    onClose={toggleEditMode}
+  />
 );
 
 export const ViewContent = ({ canEdit, toggleEditMode, currentStatus }) => (
@@ -51,7 +57,12 @@ const StatusField = ({ shouldDisplay, canEdit, isTaskProposal, canArchive }) => 
           <ViewContent currentStatus={status?.currentStatus} canEdit={canEdit} toggleEditMode={toggleEditMode} />
         )}
         editableContent={({ toggleEditMode }) => (
-          <EditContent fetchedTask={fetchedTask} toggleEditMode={toggleEditMode} isTaskProposal={isTaskProposal} />
+          <EditContent
+            entityType={entityType}
+            fetchedTask={fetchedTask}
+            toggleEditMode={toggleEditMode}
+            isTaskProposal={isTaskProposal}
+          />
         )}
       />
     </TaskSectionDisplayDiv>

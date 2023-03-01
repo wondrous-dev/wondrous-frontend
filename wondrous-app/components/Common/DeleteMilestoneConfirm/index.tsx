@@ -49,20 +49,15 @@ const DeleteMilestoneConfirm = ({ milestone, onClose, isOpen, podId = null }) =>
 
   const [deleteMilestone] = useMutation(DELETE_MILESTONE, {
     variables: { milestoneId: milestone?.id },
-    refetchQueries,
+    refetchQueries: ['getMilestoneById', 'getOrgBoardMilestones', 'getPodBoardMilestones'],
     onCompleted: () => {
       onClose();
     },
-    update: (cache) =>
-      deleteTaskFromCache(cache, milestone?.id, [
-        'getUserTaskBoardTasks',
-        'getOrgTaskBoardTasks',
-        'getPodTaskBoardTasks',
-      ]),
+    update: (cache) => deleteTaskFromCache(cache, milestone?.id, ['getOrgBoardMilestones', 'getPodBoardMilestones']),
   });
 
   const [updateMilestone] = useMutation(UPDATE_MILESTONE, {
-    refetchQueries,
+    refetchQueries: ['getMilestoneById', 'getOrgBoardMilestones', 'getPodBoardMilestones'],
     onCompleted: () => {
       onClose();
     },
