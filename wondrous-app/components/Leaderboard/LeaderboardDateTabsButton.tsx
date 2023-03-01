@@ -1,4 +1,3 @@
-import Typography from '@mui/material/Typography';
 import Button from 'components/Button';
 import useMediaQuery from 'hooks/useMediaQuery';
 import palette from 'theme/palette';

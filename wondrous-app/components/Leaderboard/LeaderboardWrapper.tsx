@@ -1,9 +1,10 @@
 import { useQuery } from '@apollo/client';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { HeaderText } from 'components/organization/wrapper/styles';
 import { format } from 'date-fns';
 import { GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
 import { useMemo, useState } from 'react';
+import palette from 'theme/palette';
 import { BOUNTY_TYPE, PRIVATE_TASK_TITLE, TASK_TYPE } from 'utils/constants';
 
 import LeaderboardDateTabs from './LeaderboardDateTabs';
@@ -83,7 +84,7 @@ const LeaderboardWrapper = ({ orgId = '', podId = '' }) => {
   return (
     <>
       <Grid container rowGap="14px" alignItems="center" justifyContent="space-between" width="100%">
-        <LeaderboardDateTabs dateToday={today} setFromTime={setFromTime} />
+        <LeaderboardDateTabs dateToday={today} setFromTime={setFromTime} setToTime={setToTime} />
         <LeaderboardSearch
           assignee={assignee}
           setAssignee={setAssignee}
@@ -93,13 +94,9 @@ const LeaderboardWrapper = ({ orgId = '', podId = '' }) => {
         />
       </Grid>
       {data?.length === 0 && (
-        <HeaderText
-          style={{
-            fontWeight: 'normal',
-          }}
-        >
+        <Typography mt="40px" color={palette.white} fontWeight="500">
           Nothing found in this time period.
-        </HeaderText>
+        </Typography>
       )}
       <Grid container flexDirection="column" gap="12px" marginTop="40px">
         {data?.map((contributorTask, index) => (

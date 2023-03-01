@@ -1,4 +1,5 @@
 import Grid from '@mui/material/Grid';
+import DateRangePicker from 'components/DateRangePicker';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useState } from 'react';
 
@@ -9,19 +10,21 @@ const getStartDate = ({ duration, date }) => {
   return newDate;
 };
 
-const LeaderboardDateTabs = ({ dateToday, setFromTime }) => {
+const LeaderboardDateTabs = ({ dateToday, setFromTime, setToTime }) => {
   const { isTabletScreen } = useMediaQuery();
   const dateTabs = {
     allTime: { label: 'All time', fromTime: new Date(2021, 0, 1) },
     sevenDays: { label: '7 days', fromTime: getStartDate({ duration: 7, date: dateToday }) },
     thirtyDays: { label: '30 days', fromTime: getStartDate({ duration: 30, date: dateToday }) },
-    // TODO: custom date picker
-    custom: { label: 'Custom', fromTime: getStartDate({ duration: 30, date: dateToday }) },
   };
   const [selected, setSelected] = useState(dateTabs.allTime.label);
   const handleOnClick = ({ label, fromTime }) => {
     setSelected(label);
     setFromTime(fromTime);
+  };
+  const handleOnConfirm = (value) => {
+    setFromTime(new Date(value.startDate));
+    setToTime(new Date(value.endDate));
   };
   return (
     <Grid
@@ -43,14 +46,16 @@ const LeaderboardDateTabs = ({ dateToday, setFromTime }) => {
           {label}
         </LeaderboardDateTabsButton>
       ))}
-      {/*   <SelectDatePicker */}
-      {/*     title="Due date" */}
-      {/*     inputFormat="MM/dd/yyyy" */}
-      {/*     value={fromTime} */}
-      {/*     onChange={(value) => setFromTime(value)} */}
-      {/*     renderInput={(params) => <StyledTextField {...params} />} */}
-      {/*   /> */}
-      {/* <LeaderBoardDateTabsButton onClick={() => null}>Custom</LeaderBoardDateTabsButton> */}
+      <DateRangePicker
+        onConfirm={handleOnConfirm}
+        blockPastDates={false}
+        ButtonComponent={LeaderboardDateTabsButton}
+        ButtonComponentOnClick={() => setSelected('custom')}
+        ButtonComponentProps={{
+          selected: selected === 'custom',
+          children: 'Custom',
+        }}
+      />
     </Grid>
   );
 };
