@@ -1,11 +1,10 @@
 import { useQuery } from '@apollo/client';
-import { Grid, Typography } from '@mui/material';
-import { HeaderText } from 'components/organization/wrapper/styles';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
 import { GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
 import { useMemo, useState } from 'react';
 import palette from 'theme/palette';
-import { BOUNTY_TYPE, PRIVATE_TASK_TITLE, TASK_TYPE } from 'utils/constants';
 
 import LeaderboardDateTabs from './LeaderboardDateTabs';
 import LeaderboardSearch from './LeaderboardSearch';

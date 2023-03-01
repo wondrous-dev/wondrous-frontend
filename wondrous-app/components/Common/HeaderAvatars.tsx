@@ -4,6 +4,7 @@ import Tooltip from '@mui/material/Tooltip';
 import palette from 'theme/palette';
 import { AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
 import { SmallAvatar } from 'components/Common/AvatarList';
+import { useRouter } from 'next/router';
 
 const avatarStyle = {
   borderRadius: '50%',
@@ -14,6 +15,7 @@ const avatarStyle = {
 const avatarWidthHeight = 28;
 
 const HeaderAvatars = ({ users, contributorCount, setMoreInfoModalOpen, setShowUsers }) => {
+  const router = useRouter();
   const usersData = users.map(({ user }) => user);
   const moreUsersCount = contributorCount - AVATAR_LIST_OVERFLOW_MAX;
   return (
@@ -33,7 +35,12 @@ const HeaderAvatars = ({ users, contributorCount, setMoreInfoModalOpen, setShowU
     >
       {usersData.slice(0, AVATAR_LIST_OVERFLOW_MAX).map((user) => (
         <Tooltip key={user.username} title={user.username} placement="top">
-          <Box overflow="hidden" bgcolor={palette.grey910} borderRadius="50%">
+          <Box
+            overflow="hidden"
+            bgcolor={palette.grey910}
+            borderRadius="50%"
+            onClick={() => router.push(`/profile/${user.username}/about`)}
+          >
             <SmallAvatar
               imageWidth={avatarWidthHeight}
               imageHeight={avatarWidthHeight}

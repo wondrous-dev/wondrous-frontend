@@ -13,7 +13,7 @@ const getStartDate = ({ duration, date }) => {
 const LeaderboardDateTabs = ({ dateToday, setFromTime, setToTime }) => {
   const { isTabletScreen } = useMediaQuery();
   const dateTabs = {
-    allTime: { label: 'All time', fromTime: new Date(2021, 0, 1) },
+    allTime: { label: 'All time', fromTime: new Date(1900, 0, 1) },
     sevenDays: { label: '7 days', fromTime: getStartDate({ duration: 7, date: dateToday }) },
     thirtyDays: { label: '30 days', fromTime: getStartDate({ duration: 30, date: dateToday }) },
   };
@@ -21,6 +21,7 @@ const LeaderboardDateTabs = ({ dateToday, setFromTime, setToTime }) => {
   const handleOnClick = ({ label, fromTime }) => {
     setSelected(label);
     setFromTime(fromTime);
+    setToTime(dateToday);
   };
   const handleOnConfirm = (value) => {
     setFromTime(new Date(value.startDate));
