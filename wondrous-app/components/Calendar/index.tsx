@@ -6,7 +6,7 @@ import endOfMonth from 'date-fns/endOfMonth';
 import endOfWeek from 'date-fns/endOfWeek';
 import format from 'date-fns/format';
 import Grid from '@mui/material/Grid';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import startOfMonth from 'date-fns/startOfMonth';
 import startOfWeek from 'date-fns/startOfWeek';
 import subMonths from 'date-fns/subMonths';
@@ -31,7 +31,11 @@ type Props = CalendarMonthAndWeekViewProps & {
 
 const Calendar = ({ tasksMap, onChange, startDate }: Props) => {
   const [view, setView] = useState<CALENDAR_VIEW>(CALENDAR_CONFIG.defaultView);
-  const [isAlertHidden, setIsAlertHidden] = useState<boolean>(!!localStorage.getItem('hideCalendarAlert'));
+  const [isAlertHidden, setIsAlertHidden] = useState<boolean>(true);
+
+  useEffect(() => {
+    setIsAlertHidden(!!localStorage.getItem('hideCalendarAlert'));
+  }, []);
 
   // Select previous week or month
   const handlePrevClick = () => {

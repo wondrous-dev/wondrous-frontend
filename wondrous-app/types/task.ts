@@ -13,6 +13,7 @@ export type TaskFilter = {
   category?: string;
   fromDate?: Date | null;
   toDate?: Date | null;
+  taskTypes?: string[];
 };
 
 export interface IUser {

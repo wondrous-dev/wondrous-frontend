@@ -108,7 +108,11 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
                   <SmartLink
                     asLink
                     key={task.id}
-                    href={`${router.asPath}&task=${task.id}`}
+                    href={
+                      router.asPath === `/organization/${router.query?.username}/calendar`
+                        ? `${router.asPath}?task=${task.id}`
+                        : `${router.asPath}&task=${task.id}`
+                    }
                     preventLinkNavigation
                     onNavigate={() => {
                       const query = {

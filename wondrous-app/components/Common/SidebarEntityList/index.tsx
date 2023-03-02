@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
 import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import { hasCreateTaskPermission } from 'utils/helpers';
+import CalendarIcon from 'components/Icons/calendar';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
 const usePerTypeTaskCountForBoard = () => {
@@ -130,6 +131,11 @@ const useSidebarData = () => {
           check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
           count: taskCount.proposalCount,
           entityType: ENTITIES_TYPES.PROPOSAL,
+        },
+        {
+          text: 'Calendar',
+          Icon: CalendarIcon,
+          link: `${link}/calendar`,
         },
       ],
     },
