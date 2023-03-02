@@ -315,6 +315,11 @@ export const TaskProposalCardFragment = gql`
       icon
       tokenName
     }
+    votes {
+      counts
+      userVote
+      totalVotes
+    }
     links {
       url
       displayName

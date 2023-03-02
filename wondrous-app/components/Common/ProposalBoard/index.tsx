@@ -19,11 +19,15 @@ import GreyEclipse from 'components/Common/ProposalBoard/images/grey-eclipse.svg
 import SnapshotSvg from 'components/Common/ProposalBoard/images/snapshot.svg';
 import WonderSvg from 'components/Common/ProposalBoard/images/wonder.svg';
 import AddSvg from 'components/Common/ProposalBoard/images/add.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CreateButton from 'components/ProjectProfile/CreateButton';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { GET_ORG_TASK_BOARD_PROPOSALS } from 'graphql/queries';
+import { useLazyQuery } from '@apollo/client';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { LIMIT } from 'services/board';
 
 const proposalStatuses = [
   {
@@ -51,13 +55,48 @@ const NewProposalButton = ({ handleOpenModal }) => (
   </AddProposalButtonContainer>
 );
 
+const ProposalItem = (props) => {};
+
 const ProposalBoard = () => {
   const [openProposalModal, setOpenProposalModal] = useState(false);
   const [status, setStatus] = useState(proposalStatuses[0].label);
   const handleOpenModal = () => {
     setOpenProposalModal((prevState) => !prevState);
   };
+  const [filters, setFilters] = useState({
+    podIds: [],
+    priorities: [],
+    labelId: null,
+  });
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard;
 
+  const [getOrgTaskBoardProposals, { data, fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+    onError: (error) => {
+      // console.log(error, 'err=');
+      // setIsLoading(false);
+    },
+  });
+
+  useEffect(() => {
+    getOrgTaskBoardProposals({
+      variables: {
+        podIds: filters?.podIds,
+        priorities: filters?.priorities,
+        orgId: board?.orgId,
+        statuses: [status],
+        offset: 0,
+        labelId: filters?.labelId,
+        limit: LIMIT,
+      },
+    });
+  }, [status]);
+  const taskProposals = data?.getOrgTaskBoardProposals || [];
+  console.log('taskProposals', taskProposals);
   return (
     <>
       <CreateModalOverlay open={openProposalModal} onClose={handleOpenModal}>
@@ -96,9 +135,13 @@ const ProposalBoard = () => {
           </LeftSectionContainer>
         </LeftSideContainer>
         <RightSideContainer>
-          <EmptyDiv>
-            <NewProposalButton handleOpenModal={handleOpenModal} />
-          </EmptyDiv>
+          {taskProposals?.length > 0 ? (
+            <></>
+          ) : (
+            <EmptyDiv>
+              <NewProposalButton handleOpenModal={handleOpenModal} />
+            </EmptyDiv>
+          )}
         </RightSideContainer>
       </ProposalBoardContainer>
     </>
