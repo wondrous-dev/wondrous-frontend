@@ -126,6 +126,16 @@ const filterInput = (task) => {
   };
   return input;
 };
+const constructMilestoneInput = (milestone) => {
+  if (!milestone) return null;
+  const userMentions = extractMentions(milestone?.description);
+  const input = {
+    ...milestone,
+    userMentions,
+    description: JSON.stringify(milestone.description),
+  };
+  return input;
+};
 
 const GeneratedTaskRow = ({
   task,
@@ -282,7 +292,7 @@ const WonderAiTaskGeneration = () => {
         ...(entityDescription && { entityDescription }),
       };
       if (promptGenerationType === GENERATION_TYPES[0]?.value) {
-        input.milestone = filterInput(milestone);
+        input.milestone = constructMilestoneInput(milestone);
       } else {
         input.parentTask = filterInput(parentTask);
       }

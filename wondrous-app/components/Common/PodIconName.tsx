@@ -10,15 +10,22 @@ interface PodIconNameProps {
   name: string;
   onClick?: (e: any) => void;
   IconComponentProps?: object;
+  wrapperStyle?: object;
 }
 
-const PodIconName = ({ color = palette.grey900, name, onClick = null, IconComponentProps }: PodIconNameProps) => (
+const PodIconName = ({
+  color = palette.grey900,
+  name,
+  onClick = null,
+  IconComponentProps,
+  wrapperStyle = {},
+}: PodIconNameProps) => (
   <Tooltip title={name}>
     <Grid
       container
-      bgcolor={palette.grey99}
+      bgcolor={palette.grey79}
       borderRadius="64px"
-      padding="2px 8px 2px 2px"
+      padding="0px 8px 2px 2px"
       flex="1"
       maxWidth="fit-content"
       gap="4px"
@@ -28,6 +35,7 @@ const PodIconName = ({ color = palette.grey900, name, onClick = null, IconCompon
       sx={{
         cursor: 'pointer',
       }}
+      {...wrapperStyle}
     >
       <PodIcon
         color={color}

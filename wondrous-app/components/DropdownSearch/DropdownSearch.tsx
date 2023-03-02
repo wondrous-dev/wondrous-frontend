@@ -27,8 +27,9 @@ const DropdownSearch = ({
   searchPlaceholder = 'Search...',
   autoFocus = false,
   onChange,
-  onClose,
+  onClose = null,
   multiple = true,
+  anchorComponent = null,
 }) => {
   const anchorEl = useRef(null);
 
@@ -45,27 +46,35 @@ const DropdownSearch = ({
   const handleClickAway = () => setIsOpen(false);
 
   const selectedValues = useMemo(() => {
-    const valueIds = value?.map((v) => v.id);
-    return options.filter((option) => valueIds.includes(option.id));
-  }, [value, options]);
+    if (!multiple) {
+      return options?.find((option) => option.id === value?.id || option.id === value);
+    }
+    const valueIds = value?.map((v) => v.id || v);
+    return options?.filter((option) => valueIds?.includes(option.id));
+  }, [value, options, multiple]);
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box width="100%">
-        <DropdownSearchButton open={isOpen} disabled={!options || disabled} onClick={handleClick} ref={anchorEl}>
-          <DropdownSearchImageLabelWrapper>
-            {selectedValues?.length > 0 ? (
-              selectedValues.map((v) => (
-                <DropdownSearchLabel key={v.id} hasValue={v.id}>
-                  {v.label}
-                </DropdownSearchLabel>
-              ))
-            ) : (
-              <DropdownSearchLabel>{label}</DropdownSearchLabel>
-            )}
-          </DropdownSearchImageLabelWrapper>
-          <DropdownSearchDownIcon onClick={onClose} />
-        </DropdownSearchButton>
+        {anchorComponent ? (
+          <div ref={anchorEl}>{anchorComponent({ onClick: handleClick, disabled, open: isOpen })}</div>
+        ) : (
+          <DropdownSearchButton open={isOpen} disabled={!options || disabled} onClick={handleClick} ref={anchorEl}>
+            <DropdownSearchImageLabelWrapper>
+              {selectedValues?.length > 0 ? (
+                selectedValues.map((v) => (
+                  <DropdownSearchLabel key={v.id} hasValue={v.id}>
+                    {v.label}
+                  </DropdownSearchLabel>
+                ))
+              ) : (
+                <DropdownSearchLabel>{label}</DropdownSearchLabel>
+              )}
+            </DropdownSearchImageLabelWrapper>
+            <DropdownSearchDownIcon onClick={() => onClose?.()} />
+          </DropdownSearchButton>
+        )}
+
         <DropdownSearchPopper open={isOpen} anchorEl={anchorEl.current} placement="bottom-start" disablePortal>
           <Autocomplete
             multiple={multiple}
@@ -95,7 +104,7 @@ const DropdownSearch = ({
               <DropdownSearchListItem {...props}>
                 {selected ? <DropdownSearchCheckBox /> : <DropdownSearchCheckBoxEmpty />}
                 <DropdownSearchLabel hasValue placeholder="Favorites">
-                  {option?.label}
+                  {option?.label || ''}
                 </DropdownSearchLabel>
               </DropdownSearchListItem>
             )}
@@ -109,12 +118,7 @@ const DropdownSearch = ({
             options={options}
             disablePortal
             onChange={(_, changedOptions) => {
-              onChange(
-                changedOptions.map(({ id, label: labelChanged }) => ({
-                  id,
-                  label: labelChanged,
-                }))
-              );
+              onChange(changedOptions);
             }}
             blurOnSelect
           />

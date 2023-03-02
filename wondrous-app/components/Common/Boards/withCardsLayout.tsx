@@ -21,9 +21,10 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
     const [ref, inView] = useInView({});
 
     const handleCardClick = (task) => {
+      const queryEntityKey = entityType == ENTITIES_TYPES.MILESTONE ? 'milestone' : 'task';
       const query = {
         ...router.query,
-        task: task?.id,
+        [queryEntityKey]: task?.id,
       };
 
       router.push({ query }, undefined, { scroll: false, shallow: true });

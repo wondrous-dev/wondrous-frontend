@@ -1,16 +1,16 @@
-import React, { useCallback, useContext, useEffect, useState, memo, FC, useMemo } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { useRouter } from 'next/router';
 import cloneDeep from 'lodash/cloneDeep';
+import { useRouter } from 'next/router';
+import React, { FC, memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import { delQuery } from 'utils';
+import { ARCHIVE_TASK, UNARCHIVE_TASK, UPDATE_TASK_ASSIGNEE } from 'graphql/mutations/task';
+import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { GET_TASK_BY_ID, GET_TASK_REVIEWERS } from 'graphql/queries';
+import type { TaskInterface } from 'types/task';
+import { delQuery, getBoardType } from 'utils';
 import * as Constants from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
-import { GET_TASK_BY_ID, GET_TASK_REVIEWERS } from 'graphql/queries';
-import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import type { TaskInterface } from 'types/task';
 
 import { useMe } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
@@ -18,15 +18,9 @@ import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { CreateEntity } from 'components/CreateEntity';
 
+import { ARCHIVE_MILESTONE, UNARCHIVE_MILESTONE } from 'graphql/mutations';
 import Card from './Card';
 import { ArchivedTaskUndo } from './styles';
-
-const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
-  if (orgBoard) return Constants.BOARD_TYPE.org;
-  if (podBoard) return Constants.BOARD_TYPE.pod;
-  if (userBoard) return Constants.BOARD_TYPE.assignee;
-  return Constants.BOARD_TYPE.org;
-};
 
 const useGetReviewers = (editTask, task) => {
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
@@ -59,11 +53,12 @@ const useGetTaskById = (editTask, task) => {
 export type TaskProps = {
   className?: string;
   task: TaskInterface;
+  isMilestone?: boolean;
 };
 
 const Task: FC<TaskProps> = (props) => {
   // WHAT IS THIS COMPONENT? IS IT TASK CARD? POORLY NAMED
-  const { task, className } = props;
+  const { task, className, isMilestone = false } = props;
   const {
     description = '',
     rewards = null,
@@ -97,7 +92,6 @@ const Task: FC<TaskProps> = (props) => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
@@ -122,15 +116,49 @@ const Task: FC<TaskProps> = (props) => {
       // let columns = [...boardColumns?.columns]
     },
   });
-  const [unarchiveTaskMutation] = useMutation(UNARCHIVE_TASK, {
+  const [archiveMilestoneMutation] = useMutation(ARCHIVE_MILESTONE, {
     refetchQueries: [
-      'getTaskById',
+      'getMilestoneById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
+    ],
+    onError: () => {
+      console.error('Something went wrong with archiving tasks');
+    },
+    onCompleted: () => {
+      // TODO: Move columns
+      // let columns = [...boardColumns?.columns]
+    },
+  });
+  const [unarchiveMilestoneMutation] = useMutation(UNARCHIVE_MILESTONE, {
+    refetchQueries: [
+      'getMilestoneById',
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
       'getOrgTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForPodBoard',
+    ],
+    onError: () => {
+      console.error('Something went wrong unarchiving milestone');
+    },
+  });
+  const [unarchiveTaskMutation] = useMutation(UNARCHIVE_TASK, {
+    refetchQueries: [
+      'getTaskById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
     ],
     onError: () => {
       console.error('Something went wrong unarchiving tasks');
@@ -163,34 +191,58 @@ const Task: FC<TaskProps> = (props) => {
   };
 
   const totalSubtask = task?.totalSubtaskCount;
-  const [claimed, setClaimed] = useState(false);
-  const handleOnArchive = useCallback(() => {
-    orgBoard?.setFirstTimeFetch(false);
-    archiveTaskMutation({
+  const handleUnarchive = () => {
+    setSnackbarAlertOpen(false);
+
+    if (isMilestone) {
+      return unarchiveMilestoneMutation({
+        variables: {
+          milestoneId: id,
+        },
+      });
+    }
+    return unarchiveTaskMutation({
       variables: {
         taskId: id,
       },
-    }).then(() => {
+    });
+  };
+
+  const handleArchive = () => {
+    if (isMilestone) {
+      return archiveMilestoneMutation({
+        variables: {
+          milestoneId: id,
+        },
+      });
+    }
+    return archiveTaskMutation({
+      variables: {
+        taskId: id,
+      },
+    });
+  };
+  const [claimed, setClaimed] = useState(false);
+  const handleOnArchive = useCallback(() => {
+    orgBoard?.setFirstTimeFetch(false);
+    handleArchive().then(() => {
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage(
         <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              setSnackbarAlertOpen(false);
-              unarchiveTaskMutation({
-                variables: {
-                  taskId: id,
-                },
-              });
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
+          Task archived successfully! <ArchivedTaskUndo onClick={handleUnarchive}>Undo</ArchivedTaskUndo>
         </>
       );
     });
-  }, [id, orgBoard, archiveTaskMutation, setSnackbarAlertMessage, setSnackbarAlertOpen, unarchiveTaskMutation]);
+  }, [
+    id,
+    orgBoard,
+    archiveTaskMutation,
+    setSnackbarAlertMessage,
+    setSnackbarAlertOpen,
+    unarchiveTaskMutation,
+    handleUnarchive,
+    unarchiveMilestoneMutation,
+  ]);
 
   useEffect(() => {
     if (!initialStatus) {
@@ -211,10 +263,15 @@ const Task: FC<TaskProps> = (props) => {
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
     task?.createdBy === user?.id;
 
-  const canDelete =
-    canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || task?.type === Constants.ENTITIES_TYPES.MILESTONE);
+  const canDelete = canArchive && (task?.type === Constants.ENTITIES_TYPES.TASK || isMilestone);
 
-  const taskType = task?.isProposal ? 'taskProposal' : 'task';
+  const taskType = useMemo(() => {
+    if (isMilestone) {
+      return Constants.ENTITIES_TYPES.MILESTONE;
+    }
+    return task?.isProposal ? 'taskProposal' : 'task';
+  }, []);
+
   let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
   if (board?.entityType) {
     viewUrl += `&entity=${board?.entityType}`;
@@ -246,6 +303,7 @@ const Task: FC<TaskProps> = (props) => {
     ];
   }, [assigneeUsername, assigneeId, assigneeProfilePicture]);
 
+  const entityType = isMilestone ? Constants.ENTITIES_TYPES.MILESTONE : task?.type;
   return (
     <span className={className}>
       <CreateEntity
@@ -253,7 +311,7 @@ const Task: FC<TaskProps> = (props) => {
         handleCloseModal={() => {
           setEditTask(false);
         }}
-        entityType={task?.type}
+        entityType={entityType}
         handleClose={() => {
           setEditTask(false);
         }}
@@ -264,12 +322,13 @@ const Task: FC<TaskProps> = (props) => {
           reviewers: reviewerData || [],
         }}
         isTaskProposal={false}
+        isMilestone={isMilestone}
       />
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
         onArchive={handleOnArchive}
-        taskType={type}
+        taskType={isMilestone ? Constants.ENTITIES_TYPES.MILESTONE : type}
         taskId={task?.id}
       />
       <DeleteEntityModal
@@ -277,7 +336,7 @@ const Task: FC<TaskProps> = (props) => {
         onClose={() => {
           setDeleteTask(false);
         }}
-        entityType={type}
+        entityType={isMilestone ? Constants.ENTITIES_TYPES.MILESTONE : type}
         taskId={task?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);

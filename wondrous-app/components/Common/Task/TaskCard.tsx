@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 
 import { checkCanClaimPermissions, useColumns, useUserProfile } from 'utils/hooks';
 import { GET_TASK_SUBMISSIONS_FOR_TASK, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { DUPLICATE_TASK } from 'graphql/mutations';
+import { DUPLICATE_TASK, DUPLICATE_MILESTONE } from 'graphql/mutations';
 import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import * as Constants from 'utils/constants';
 import { updateInProgressTask, updateTaskItem } from 'utils/board';
@@ -111,6 +111,20 @@ export default function TaskCard({
     ],
   });
 
+  const [duplicateMilestone] = useMutation(DUPLICATE_MILESTONE, {
+    refetchQueries: () => [
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getSubtaskCountForTask',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
+    ],
+  });
+
   const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
     ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
     : null;
@@ -189,6 +203,20 @@ export default function TaskCard({
 
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const handleDuplicate = () => {
+    if (isMilestone) {
+      return duplicateMilestone({
+        variables: {
+          milestoneId: task?.id,
+        },
+      });
+    }
+    return duplicateTask({
+      variables: {
+        taskId: id,
+      },
+    });
+  };
   return (
     <CardContent
       onMouseEnter={() => setShowMenu(true)}
@@ -417,13 +445,7 @@ export default function TaskCard({
             setArchiveTask={setArchiveTask}
             setDeleteTask={setDeleteTask}
             setEditTask={setEditTask}
-            setDuplicate={() => {
-              duplicateTask({
-                variables: {
-                  taskId: id,
-                },
-              });
-            }}
+            setDuplicate={handleDuplicate}
             taskType={task?.type}
             open={showMenu}
           />

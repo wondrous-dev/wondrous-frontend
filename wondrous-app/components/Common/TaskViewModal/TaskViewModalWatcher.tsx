@@ -10,11 +10,11 @@ const TaskViewModalWatcher = () => {
   const router = useRouter();
   const { query } = router;
 
-  const taskId = (query.task || query.taskProposal) as string | null;
+  const taskId = (query.task || query.taskProposal || query.milestone) as string | null;
   const handleClose = () => {
     delete query.task;
     delete query.taskProposal;
-
+    delete query.milestone;
     router.push({ query }, undefined, { scroll: false, shallow: true });
   };
 
@@ -25,6 +25,7 @@ const TaskViewModalWatcher = () => {
         handleClose={handleClose}
         taskId={taskId}
         back={query.view === ViewType.List}
+        isMilestone={!!query.milestone}
         isTaskProposal={!!query.taskProposal}
       />
     </Suspense>
