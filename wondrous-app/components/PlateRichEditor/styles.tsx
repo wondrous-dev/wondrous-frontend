@@ -90,6 +90,7 @@ export const StickyTopSection = styled.div`
 
 export const PlateStyles = styled.div`
   height: 100%;
+  min-height: 150px;
   overflow-y: auto;
   ${ScrollBarStyles};
 
