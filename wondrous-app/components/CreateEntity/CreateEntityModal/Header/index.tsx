@@ -30,6 +30,7 @@ const Header = ({
   pods,
 }) => {
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
+  console.log(podValue, 'pod value');
   return (
     <CreateEntityHeader>
       <CreateEntityHeaderWrapper showOnSmallScreen hideOnLargeScreen={false}>
@@ -66,7 +67,7 @@ const Header = ({
               multiple={isMilestone}
               value={podValue}
               onChange={handlePodChange}
-              disabled={isSubtask || formValues !== undefined}
+              disabled={isSubtask}
             />
           </>
         )}

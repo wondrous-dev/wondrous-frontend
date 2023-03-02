@@ -40,7 +40,6 @@ export function getNotificationDescription(notification, link) {
       </NotificationsLink>
     </span>
   );
-  console.log('notification?.type', notification?.type);
   /// these languages are wrong potentailly need to consider the actor
   switch (notification?.type) {
     case NOTIFICATION_TYPES.MENTION:

@@ -171,7 +171,7 @@ const Rewards = ({ fetchedTask, canEdit, shouldDisplay }) => {
 
   if (!shouldDisplay) return null;
 
-  const { rewardAmount, symbol, icon, chain, paymentMethodId } = rewards[0] || {};
+  const { rewardAmount, symbol, icon, chain, paymentMethodId } = rewards?.[0] || {};
 
   return (
     <TaskSectionDisplayDiv>

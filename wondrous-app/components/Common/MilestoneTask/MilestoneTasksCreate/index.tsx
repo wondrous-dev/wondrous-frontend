@@ -10,7 +10,7 @@ import {
 } from './styles';
 
 export default function MilestoneTasksCreate({ canCreate, milestone }) {
-  const { id, orgId, podId } = milestone;
+  const { id, orgId, podIds } = milestone;
   const [open, setOpen] = useState(false);
   const handleModalStatus = () => setOpen(!open);
   if (!canCreate) return null;
@@ -24,7 +24,7 @@ export default function MilestoneTasksCreate({ canCreate, milestone }) {
         handleCloseModal={handleModalStatus}
         formValues={{
           orgId,
-          podId,
+          podId: podIds?.[0],
           milestoneId: id,
         }}
       />
