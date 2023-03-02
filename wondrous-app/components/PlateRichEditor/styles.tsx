@@ -85,11 +85,11 @@ export const StickyTopSection = styled.div`
   background: ${palette.grey900};
   position: sticky;
   top: 0;
-  z-index: 100;
 `;
 
 export const PlateStyles = styled.div`
   height: 100%;
+  min-height: 150px;
   overflow-y: auto;
   ${ScrollBarStyles};
 
