@@ -1,13 +1,11 @@
-import { useLazyQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import { filterUserOptions, useGetMilestones } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
 import { CreateEntityError } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
-import { GET_MILESTONE_BY_ID } from 'graphql/queries';
-import Link from 'next/link';
+import { UnstyledLink } from 'components/WorkspacePicker/styles';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import {
@@ -40,29 +38,29 @@ const MilestoneFieldContent = ({ milestoneId, milestoneTitle, canEdit, toggleEdi
 
   return (
     <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-      <Grid
-        display="flex"
-        gap="8px"
-        alignItems="center"
-        justifyContent="center"
-        sx={{
-          overflowWrap: 'anywhere',
-        }}
-      >
-        <Link href={link}>
+      <UnstyledLink href={link} onClick={(e) => e.stopPropagation()}>
+        <Grid
+          display="flex"
+          gap="8px"
+          alignItems="center"
+          justifyContent="center"
+          sx={{
+            overflowWrap: 'anywhere',
+          }}
+        >
           <IconWrapper>
             <TaskSectionInfoMilestoneIcon />
           </IconWrapper>
-        </Link>
-        <TaskSectionInfoTextMilestone
-          sx={{
-            display: 'inline-block !important',
-            whiteSpace: 'pre-line !important',
-          }}
-        >
-          {milestoneTitle}
-        </TaskSectionInfoTextMilestone>
-      </Grid>
+          <TaskSectionInfoTextMilestone
+            sx={{
+              display: 'inline-block !important',
+              whiteSpace: 'pre-line !important',
+            }}
+          >
+            {milestoneTitle}
+          </TaskSectionInfoTextMilestone>
+        </Grid>
+      </UnstyledLink>
       <EditIcon stroke={palette.grey58} className="edit-icon-field" />
     </ViewFieldWrapper>
   );
