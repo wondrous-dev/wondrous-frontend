@@ -716,7 +716,6 @@ export const TaskViewModal = ({
                               handleReviewButton={handleReviewButton}
                               handleClose={handleClose}
                               entityType={entityType}
-                              getTaskById={getTaskById}
                               isSubtask={isSubtask}
                               isBounty={isBounty}
                               taskSubmissionsForTask={taskSubmissionsForTask}
