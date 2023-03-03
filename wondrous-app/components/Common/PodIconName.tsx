@@ -11,6 +11,7 @@ interface PodIconNameProps {
   onClick?: (e: any) => void;
   IconComponentProps?: object;
   wrapperStyle?: object;
+  hideTitle?: boolean;
 }
 
 const PodIconName = ({
@@ -19,45 +20,49 @@ const PodIconName = ({
   onClick = null,
   IconComponentProps,
   wrapperStyle = {},
-}: PodIconNameProps) => (
-  <Tooltip title={name}>
-    <Grid
-      container
-      bgcolor={palette.grey79}
-      borderRadius="64px"
-      padding="0px 8px 2px 2px"
-      flex="1"
-      maxWidth="fit-content"
-      gap="4px"
-      height="28px"
-      onClick={onClick}
-      alignItems="center"
-      sx={{
-        cursor: 'pointer',
-      }}
-      {...wrapperStyle}
-    >
-      <PodIcon
-        color={color}
-        style={{
-          width: '26px',
-          height: '26px',
-        }}
-        {...IconComponentProps}
-      />
-      <Typography
-        fontFamily={typography.fontFamily}
-        color={palette.white}
-        fontSize="13px"
-        fontWeight="500"
-        width="fit-content"
+  hideTitle = false,
+}: PodIconNameProps) => {
+  const title = hideTitle ? '' : name;
+  return (
+    <Tooltip title={title}>
+      <Grid
+        container
+        bgcolor={palette.grey79}
+        borderRadius="64px"
+        padding="0px 8px 2px 2px"
         flex="1"
-        sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+        maxWidth="fit-content"
+        gap="4px"
+        height="28px"
+        onClick={onClick}
+        alignItems="center"
+        sx={{
+          cursor: 'pointer',
+        }}
+        {...wrapperStyle}
       >
-        {name}
-      </Typography>
-    </Grid>
-  </Tooltip>
-);
+        <PodIcon
+          color={color}
+          style={{
+            width: '26px',
+            height: '26px',
+          }}
+          {...IconComponentProps}
+        />
+        <Typography
+          fontFamily={typography.fontFamily}
+          color={palette.white}
+          fontSize="13px"
+          fontWeight="500"
+          width="fit-content"
+          flex="1"
+          sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+        >
+          {name}
+        </Typography>
+      </Grid>
+    </Tooltip>
+  );
+};
 
 export default PodIconName;

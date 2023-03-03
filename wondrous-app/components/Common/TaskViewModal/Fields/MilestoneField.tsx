@@ -1,10 +1,13 @@
+import { useLazyQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import { filterUserOptions, useGetMilestones } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
 import { CreateEntityError } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
+import { GET_MILESTONE_BY_ID } from 'graphql/queries';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import {
@@ -18,8 +21,23 @@ import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
-const MilestoneFieldContent = ({ milestoneId, getTaskById, milestoneTitle, canEdit, toggleEditMode }) => {
+const MilestoneFieldContent = ({ milestoneId, milestoneTitle, canEdit, toggleEditMode }) => {
   const router = useRouter();
+
+  const link = useMemo(() => {
+    const query: any = {
+      ...router.query,
+      milestone: milestoneId,
+    };
+
+    delete query.task;
+
+    return {
+      pathname: router.pathname,
+      query,
+    };
+  }, [router, milestoneId]);
+
   return (
     <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
       <Grid
@@ -31,24 +49,15 @@ const MilestoneFieldContent = ({ milestoneId, getTaskById, milestoneTitle, canEd
           overflowWrap: 'anywhere',
         }}
       >
-        <IconWrapper>
-          <TaskSectionInfoMilestoneIcon />
-        </IconWrapper>
+        <Link href={link}>
+          <IconWrapper>
+            <TaskSectionInfoMilestoneIcon />
+          </IconWrapper>
+        </Link>
         <TaskSectionInfoTextMilestone
           sx={{
             display: 'inline-block !important',
             whiteSpace: 'pre-line !important',
-          }}
-          onClick={() => {
-            if (milestoneId) {
-              router.query.task = milestoneId;
-              router.push(router);
-              getTaskById({
-                variables: {
-                  taskId: milestoneId,
-                },
-              });
-            }
           }}
         >
           {milestoneTitle}
@@ -84,16 +93,7 @@ const EditMode = ({ orgId, podId, milestoneId, toggleEditMode, toggleOutsideAler
   );
 };
 
-const MilestoneField = ({
-  shouldDisplay,
-  milestoneId,
-  getTaskById,
-  milestoneTitle,
-  canEdit,
-  isSubtask,
-  orgId,
-  podId,
-}) => {
+const MilestoneField = ({ shouldDisplay, milestoneId, milestoneTitle, canEdit, isSubtask, orgId, podId }) => {
   if (!shouldDisplay) return null;
 
   return (
@@ -103,7 +103,6 @@ const MilestoneField = ({
         viewContent={({ toggleEditMode }) => (
           <MilestoneFieldContent
             milestoneId={milestoneId}
-            getTaskById={getTaskById}
             milestoneTitle={milestoneTitle}
             toggleEditMode={toggleEditMode}
             canEdit={canEdit && !isSubtask}

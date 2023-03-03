@@ -150,8 +150,9 @@ export const TaskViewModal = ({
   const entityType = useMemo(() => {
     if (isMilestone) return ENTITIES_TYPES.MILESTONE;
     if (isTaskProposal) return ENTITIES_TYPES.PROPOSAL;
-    return fetchedTask?.type;
+    return fetchedTask?.type || ENTITIES_TYPES.TASK;
   }, [fetchedTask?.type, isTaskProposal, isMilestone]);
+
   const globalContext = useGlobalContext();
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const board: any = useBoards();
@@ -359,6 +360,7 @@ export const TaskViewModal = ({
     isTaskProposal,
     getTaskProposalById,
     open,
+    isMilestone,
   ]);
 
   useEffect(() => {
@@ -714,7 +716,6 @@ export const TaskViewModal = ({
                               handleReviewButton={handleReviewButton}
                               handleClose={handleClose}
                               entityType={entityType}
-                              getTaskById={getTaskById}
                               isSubtask={isSubtask}
                               isBounty={isBounty}
                               taskSubmissionsForTask={taskSubmissionsForTask}

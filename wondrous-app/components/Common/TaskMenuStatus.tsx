@@ -329,7 +329,7 @@ export default function TaskMenuStatus({
   task,
   autoFocus = false,
   onClose = null,
-  entityType,
+  entityType = ENTITIES_TYPES.TASK,
 }) {
   const taskMenuStatusProposal = useTaskMenuStatusProposal({
     task,
