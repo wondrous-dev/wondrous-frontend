@@ -46,7 +46,6 @@ function MilestoneSearch({
       setIsOpen(true);
     }
   }, [autoFocus]);
-  console.log(options, 'options');
   const selectedValue = options.find((option) => option.id === value);
 
   if (createMilestone) {
