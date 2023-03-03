@@ -30,7 +30,6 @@ const Header = ({
   pods,
 }) => {
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
-  console.log(podValue, 'pod value');
   return (
     <CreateEntityHeader>
       <CreateEntityHeaderWrapper showOnSmallScreen hideOnLargeScreen={false}>

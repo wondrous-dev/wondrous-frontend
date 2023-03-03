@@ -300,7 +300,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
   };
   const podValue = isMilestone ? form.values.podIds : form.values.podId;
-  console.log(podValue, isMilestone, form.values.podIds, form.values.podId);
   // snapshot integration
   const {
     getOrgSnapshotInfo,
