@@ -152,9 +152,9 @@ const Rewards = ({ fetchedTask, canEdit, shouldDisplay }) => {
 
   const values = useMemo(
     () =>
-      rewards.map((reward) => ({
-        paymentMethodId: reward.paymentMethodId,
-        rewardAmount: reward.rewardAmount,
+      rewards?.map((reward) => ({
+        paymentMethodId: reward?.paymentMethodId,
+        rewardAmount: reward?.rewardAmount,
       })),
     [rewards]
   );
@@ -171,7 +171,7 @@ const Rewards = ({ fetchedTask, canEdit, shouldDisplay }) => {
 
   if (!shouldDisplay) return null;
 
-  const { rewardAmount, symbol, icon, chain, paymentMethodId } = rewards[0] || {};
+  const { rewardAmount, symbol, icon, chain, paymentMethodId } = rewards?.[0] || {};
 
   return (
     <TaskSectionDisplayDiv>

@@ -43,6 +43,7 @@ interface Props {
   setFetchedTask: (task) => any;
   setShowPaymentModal: (value: boolean) => any;
   taskSubmissionsForTaskLoading: boolean;
+  entityType: string;
 }
 
 const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -70,6 +71,7 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
     setFetchedTask,
     setShowPaymentModal,
     taskSubmissionsForTaskLoading,
+    entityType,
   } = props;
 
   const podBoard = usePodBoard();
@@ -77,12 +79,12 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
   useEffect(() => {
     if (isMilestone) {
       setActiveTab(tabs.tasks);
-    } else if (isTaskProposal || router?.query?.taskCommentId) {
+    } else if (isTaskProposal || router?.query?.taskCommentId || router?.query?.milestoneCommentId) {
       setActiveTab(tabs.discussion);
     } else {
       setActiveTab(tabs.submissions);
     }
-  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
+  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId, router?.query?.milestoneCommentId]);
 
   useEffect(() => {
     if (fetchedTask?.id && !isSubtask) {
@@ -163,9 +165,7 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
           />
         )}
         {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} canCreate={canCreate} />}
-        {activeTab === tabs.discussion && (
-          <CommentList task={fetchedTask} entityType={isTaskProposal ? ENTITIES_TYPES.PROPOSAL : ENTITIES_TYPES.TASK} />
-        )}
+        {activeTab === tabs.discussion && <CommentList task={fetchedTask} entityType={entityType} />}
         {activeTab === tabs.tasks && !!fetchedTask && <MilestoneTasks canCreate={canCreate} milestone={fetchedTask} />}
       </TaskSectionContent>
     </TaskModalFooter>

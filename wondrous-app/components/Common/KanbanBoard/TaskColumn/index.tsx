@@ -250,9 +250,9 @@ function TaskColumn(props: ITaskColumn) {
                         cursor: board?.isDragDisabled ? 'default' : 'move',
                       }}
                     >
-                      {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
+                      {board?.entityType === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
                         <Milestone>
-                          <Task task={card} />
+                          <Task task={card} isMilestone />
                         </Milestone>
                       ) : (
                         <Task task={card} />

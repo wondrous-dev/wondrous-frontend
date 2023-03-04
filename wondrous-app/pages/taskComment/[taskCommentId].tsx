@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { GET_MINIMAL_TASK_BY_ID, GET_TASK_COMMENT_BY_ID } from 'graphql/queries/task';
@@ -21,6 +21,7 @@ function TaskRedirect() {
     },
     fetchPolicy: 'cache-and-network',
   });
+
   useEffect(() => {
     if (taskCommentId) {
       getTaskCommentById({
@@ -35,7 +36,7 @@ function TaskRedirect() {
 
   if (task?.org?.username) {
     router.push(
-      `/organization/${task?.org?.username}/boards?task=${task?.id}&taskCommentId=${taskCommentId}`,
+      `/organization/${task?.org?.username}/boards?task=${task?.id}&$taskCommentId=${taskCommentId}`,
       undefined,
       {
         shallow: true,

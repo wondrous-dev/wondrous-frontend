@@ -5,13 +5,20 @@ import {
   GET_PREVIEW_FILE,
   GET_GRANT_BY_ID,
   GET_GRANT_APPLICATION_BY_ID,
+  GET_MILESTONE_BY_ID,
 } from 'graphql/queries';
 import { capitalize } from 'utils/common';
 import { ENTITIES_TYPES } from 'utils/constants';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getServerSideProps = async (context) => {
-  if (context.query?.task || context.query?.taskProposal || context.query?.grant || context.query?.grantApplicationId) {
+  if (
+    context.query?.task ||
+    context.query?.taskProposal ||
+    context.query?.grant ||
+    context.query?.grantApplicationId ||
+    context.query?.milestone
+  ) {
     try {
       const meta = {
         title: '',
@@ -21,6 +28,16 @@ export const getServerSideProps = async (context) => {
 
       let entityType = '';
       let entity;
+
+      if (context.query.milestone) {
+        const { data } = await apollo.query({
+          query: GET_MILESTONE_BY_ID,
+          variables: { milestoneId: context.query.milestone },
+        });
+
+        entity = data.getMilestoneById;
+        entityType = ENTITIES_TYPES.MILESTONE;
+      }
 
       if (context.query?.taskProposal) {
         const { data } = await apollo.query({
@@ -67,7 +84,7 @@ export const getServerSideProps = async (context) => {
         JSON.parse(entity.description)?.[0]?.children[0]?.text ||
         `${capitalize(entityType.split('_').join(' '))} description`;
 
-      if (entity?.media.length) {
+      if (entity?.media?.length) {
         const [media] = entity.media;
         const mediaSlug = media?.slug || media?.uploadSlug;
         const previewFileData = await apollo.query({

@@ -37,7 +37,6 @@ function MilestoneSearch({
 }) {
   const [createMilestone, setCreateMilestone] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
   const anchorEl = useRef(null);
   const handleClick = () => setIsOpen((open) => !open);
   const handleClickAway = () => setIsOpen(false);
@@ -47,7 +46,6 @@ function MilestoneSearch({
       setIsOpen(true);
     }
   }, [autoFocus]);
-
   const selectedValue = options.find((option) => option.id === value);
 
   if (createMilestone) {

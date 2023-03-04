@@ -3,8 +3,9 @@ import { filterUserOptions, useGetMilestones } from 'components/CreateEntity/Cre
 import MilestoneSearch from 'components/CreateEntity/CreateEntityModal/MilestoneSearch';
 import { CreateEntityError } from 'components/CreateEntity/CreateEntityModal/styles';
 import EditIcon from 'components/Icons/editIcon';
+import { UnstyledLink } from 'components/WorkspacePicker/styles';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useMemo } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
 import {
@@ -18,42 +19,48 @@ import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
-const MilestoneFieldContent = ({ milestoneId, getTaskById, milestoneTitle, canEdit, toggleEditMode }) => {
+const MilestoneFieldContent = ({ milestoneId, milestoneTitle, canEdit, toggleEditMode }) => {
   const router = useRouter();
+
+  const link = useMemo(() => {
+    const query: any = {
+      ...router.query,
+      milestone: milestoneId,
+    };
+
+    delete query.task;
+
+    return {
+      pathname: router.pathname,
+      query,
+    };
+  }, [router, milestoneId]);
+
   return (
     <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-      <Grid
-        display="flex"
-        gap="8px"
-        alignItems="center"
-        justifyContent="center"
-        sx={{
-          overflowWrap: 'anywhere',
-        }}
-      >
-        <IconWrapper>
-          <TaskSectionInfoMilestoneIcon />
-        </IconWrapper>
-        <TaskSectionInfoTextMilestone
+      <UnstyledLink href={link} onClick={(e) => e.stopPropagation()}>
+        <Grid
+          display="flex"
+          gap="8px"
+          alignItems="center"
+          justifyContent="center"
           sx={{
-            display: 'inline-block !important',
-            whiteSpace: 'pre-line !important',
-          }}
-          onClick={() => {
-            if (milestoneId) {
-              router.query.task = milestoneId;
-              router.push(router);
-              getTaskById({
-                variables: {
-                  taskId: milestoneId,
-                },
-              });
-            }
+            overflowWrap: 'anywhere',
           }}
         >
-          {milestoneTitle}
-        </TaskSectionInfoTextMilestone>
-      </Grid>
+          <IconWrapper>
+            <TaskSectionInfoMilestoneIcon />
+          </IconWrapper>
+          <TaskSectionInfoTextMilestone
+            sx={{
+              display: 'inline-block !important',
+              whiteSpace: 'pre-line !important',
+            }}
+          >
+            {milestoneTitle}
+          </TaskSectionInfoTextMilestone>
+        </Grid>
+      </UnstyledLink>
       <EditIcon stroke={palette.grey58} className="edit-icon-field" />
     </ViewFieldWrapper>
   );
@@ -84,16 +91,7 @@ const EditMode = ({ orgId, podId, milestoneId, toggleEditMode, toggleOutsideAler
   );
 };
 
-const MilestoneField = ({
-  shouldDisplay,
-  milestoneId,
-  getTaskById,
-  milestoneTitle,
-  canEdit,
-  isSubtask,
-  orgId,
-  podId,
-}) => {
+const MilestoneField = ({ shouldDisplay, milestoneId, milestoneTitle, canEdit, isSubtask, orgId, podId }) => {
   if (!shouldDisplay) return null;
 
   return (
@@ -103,7 +101,6 @@ const MilestoneField = ({
         viewContent={({ toggleEditMode }) => (
           <MilestoneFieldContent
             milestoneId={milestoneId}
-            getTaskById={getTaskById}
             milestoneTitle={milestoneTitle}
             toggleEditMode={toggleEditMode}
             canEdit={canEdit && !isSubtask}

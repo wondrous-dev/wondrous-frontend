@@ -9,7 +9,7 @@ import PointsIconCustom from 'components/Icons/PointsIconCustom';
 import styled, { css } from 'styled-components';
 import { greyColors, white } from 'theme/colors';
 import palette from 'theme/palette';
-import Arrow from '../../../Icons/arrow.svg';
+import Arrow from '../../../../Icons/arrow.svg';
 
 export const scrollBarStyles = css`
   :hover {

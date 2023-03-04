@@ -1,11 +1,11 @@
 import { useLazyQuery } from '@apollo/client';
 import {
+  GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_TASKS,
+  GET_POD_TASK_BOARD_PROPOSALS,
   GET_POD_TASK_BOARD_TASKS,
+  GET_USER_TASK_BOARD_PROPOSALS,
   GET_USER_TASK_BOARD_TASKS,
-  SEARCH_ORG_TASK_BOARD_PROPOSALS,
-  SEARCH_POD_TASK_BOARD_PROPOSALS,
-  SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
 } from 'graphql/queries';
 import Accordion from 'components/Common/ListViewAccordion';
 import { Title, TitleWrapper, Wrapper } from 'components/SearchResultUserCreatedTasks/styles';
@@ -107,13 +107,15 @@ const BoardSearch = ({ searchQuery }) => {
 
   const searchOrgProposalArgs = {
     variables: {
-      podIds: filters?.podIds,
-      priorities: filters?.priorities,
-      orgId,
-      statuses: [STATUS_OPEN],
-      offset: 0,
-      limit: 1000,
-      searchString: searchQuery,
+      input: {
+        podIds: filters?.podIds,
+        priorities: filters?.priorities,
+        orgId,
+        statuses: [STATUS_OPEN],
+        offset: 0,
+        limit: 1000,
+        searchString: searchQuery,
+      },
     },
   };
 
@@ -183,7 +185,7 @@ const BoardSearch = ({ searchQuery }) => {
   );
 
   const [getOrgProposals, { data: orgProposalData, refetch: refetchOrgProposalsData, loading: orgProposalsLoading }] =
-    useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
+    useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
       notifyOnNetworkStatusChange: true,
@@ -199,7 +201,7 @@ const BoardSearch = ({ searchQuery }) => {
   );
 
   const [getPodProposals, { data: podProposalData, refetch: refetchPodProposalsData, loading: podProposalsLoading }] =
-    useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
+    useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
       notifyOnNetworkStatusChange: true,
@@ -215,7 +217,7 @@ const BoardSearch = ({ searchQuery }) => {
   const [
     getUserBoardProposals,
     { data: userBoardProposalsData, refetch: refetchUserProposalData, loading: userProposalsLoading },
-  ] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
+  ] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
@@ -274,9 +276,9 @@ const BoardSearch = ({ searchQuery }) => {
         podTasksData?.getPodTaskBoardTasks ||
         userBoardTasksData?.getUserTaskBoardTasks;
       const proposals =
-        orgProposalData?.searchProposalsForOrgBoardView ||
-        podProposalData?.searchProposalsForPodBoardView ||
-        userBoardProposalsData?.searchProposalsForUserBoardView;
+        orgProposalData?.getOrgTaskBoardProposals ||
+        podProposalData?.getPodTaskBoardProposals ||
+        userBoardProposalsData?.getUserTaskBoardProposals;
       let columnsPerTaskType = {};
       let columnsPerStatus = {};
 

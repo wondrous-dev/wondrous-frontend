@@ -39,7 +39,6 @@ const ModalFields = ({
   handleReviewButton,
   handleClose,
   entityType,
-  getTaskById,
   isSubtask,
   taskSubmissionsForTask,
   isBounty,
@@ -70,6 +69,7 @@ const ModalFields = ({
         setIsViewNft={setIsViewNft}
         taskId={fetchedTask?.id}
         isBounty={isBounty}
+        isMilestone={isMilestone}
         taskSubmissionsForTask={taskSubmissionsForTask}
       />
       <StatusField
@@ -96,19 +96,19 @@ const ModalFields = ({
         user={user}
         userId={board?.userId}
       />
-      {!isViewNft && <WatchersField fetchedTask={fetchedTask} />}
+      {!isViewNft && <WatchersField fetchedTask={fetchedTask} entityType={entityType} />}
 
       <ApplicationField
         shouldDisplay={canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0}
         taskApplicationCount={taskApplicationCount}
         handleReviewButton={handleReviewButton}
       />
-      {/* <ProposerField
+      <ProposerField
         shouldDisplay={isTaskProposal && !isMilestone}
         creatorProfilePicture={fetchedTask?.creatorProfilePicture}
         creatorUsername={fetchedTask?.creatorUsername}
         handleClose={handleClose}
-      /> */}
+      />
       <DueDateField
         shouldDisplay={entityTypeData[entityType].fields.includes(Fields.dueDate) && (canEdit || fetchedTask?.dueDate)}
         canEdit={canEdit}
@@ -133,7 +133,6 @@ const ModalFields = ({
           entityTypeData[entityType].fields.includes(Fields.milestone) && (canEdit || fetchedTask?.milestoneId)
         }
         milestoneId={fetchedTask?.milestoneId}
-        getTaskById={getTaskById}
         canEdit={canEdit}
         isSubtask={isSubtask}
         orgId={fetchedTask?.orgId}
