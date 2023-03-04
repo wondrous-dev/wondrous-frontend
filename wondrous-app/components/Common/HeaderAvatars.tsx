@@ -1,10 +1,10 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
+import Link from 'next/link';
 import palette from 'theme/palette';
 import { AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
 import { SmallAvatar } from 'components/Common/AvatarList';
-import { useRouter } from 'next/router';
 
 const avatarStyle = {
   borderRadius: '50%',
@@ -15,7 +15,6 @@ const avatarStyle = {
 const avatarWidthHeight = 28;
 
 const HeaderAvatars = ({ users, contributorCount, setMoreInfoModalOpen, setShowUsers }) => {
-  const router = useRouter();
   const usersData = users.map(({ user }) => user);
   const moreUsersCount = contributorCount - AVATAR_LIST_OVERFLOW_MAX;
   return (
@@ -35,21 +34,18 @@ const HeaderAvatars = ({ users, contributorCount, setMoreInfoModalOpen, setShowU
     >
       {usersData.slice(0, AVATAR_LIST_OVERFLOW_MAX).map((user) => (
         <Tooltip key={user.username} title={user.username} placement="top">
-          <Box
-            overflow="hidden"
-            bgcolor={palette.grey910}
-            borderRadius="50%"
-            onClick={() => router.push(`/profile/${user.username}/about`)}
-          >
-            <SmallAvatar
-              imageWidth={avatarWidthHeight}
-              imageHeight={avatarWidthHeight}
-              key={user.id}
-              initials={user.username?.substring(0, 2).toUpperCase()}
-              avatar={{ url: user.profilePicture, color: palette.grey79 }}
-              style={avatarStyle}
-              border="none"
-            />
+          <Box overflow="hidden" bgcolor={palette.grey910} borderRadius="50%">
+            <Link href={`/profile/${user.username}/about`} passHref>
+              <SmallAvatar
+                imageWidth={avatarWidthHeight}
+                imageHeight={avatarWidthHeight}
+                key={user.id}
+                initials={user.username?.substring(0, 2).toUpperCase()}
+                avatar={{ url: user.profilePicture, color: palette.grey79 }}
+                style={avatarStyle}
+                border="none"
+              />
+            </Link>
           </Box>
         </Tooltip>
       ))}

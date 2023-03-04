@@ -1,4 +1,5 @@
 import Grid from '@mui/material/Grid';
+import Link from 'next/link';
 import { DefaultUserImage, SafeImage } from 'components/Common/Image';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import StarIcon from 'components/Icons/Sidebar/star.svg';
@@ -6,7 +7,6 @@ import { BOUNTY_TYPE, TASK_TYPE } from 'utils/constants';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
-import { useRouter } from 'next/router';
 
 import LeaderboardUserRowIcons from './LeaderboardUserRowIcons';
 
@@ -80,24 +80,19 @@ const UserRowInfo = ({ Icon, data = null, sx = null }) => (
 );
 
 const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, clicked }) => {
-  const router = useRouter();
   const { assigneeId, assigneeProfilePicture, assigneeUsername } = contributorTask || {};
   const contributionCount = calculateCount(contributorTask?.tasks);
   const bountyCount = contributionCount?.bountyCount;
   const taskCount = contributionCount?.taskCount;
-  const handleUserProfileOnClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    router.push(`/profile/${assigneeUsername}/about`);
-  };
   return (
     <Grid
       container
       onClick={() => setClicked(!clicked)}
       justifyContent="space-between"
       alignItems="center"
-      padding="8px"
+      paddingX="8px"
       borderRadius="6px 6px 0 0"
+      height="44px"
       sx={{
         cursor: 'pointer',
       }}
@@ -110,7 +105,6 @@ const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, click
           alignItems="center"
           width="fit-content"
           gap="8px"
-          onClick={handleUserProfileOnClick}
           sx={{
             '&:hover': {
               color: palette.blue20,
@@ -121,26 +115,28 @@ const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, click
           }}
         >
           {assigneeId && (
-            <Grid
-              container
-              item
-              alignItems="center"
-              justifyContent="center"
-              width="fit-content"
-              borderRadius="500px"
-              padding="2px"
-            >
-              {assigneeProfilePicture ? (
-                <SafeImage
-                  useNextImage={false}
-                  src={assigneeProfilePicture}
-                  style={UserRowPictureStyles}
-                  alt="Assignee profile picture"
-                />
-              ) : (
-                <DefaultUserImage style={UserRowPictureStyles} />
-              )}
-            </Grid>
+            <Link href={`/profile/${assigneeUsername}/about`}>
+              <Grid
+                container
+                item
+                alignItems="center"
+                justifyContent="center"
+                width="fit-content"
+                borderRadius="500px"
+                padding="2px"
+              >
+                {assigneeProfilePicture ? (
+                  <SafeImage
+                    useNextImage={false}
+                    src={assigneeProfilePicture}
+                    style={UserRowPictureStyles}
+                    alt="Assignee profile picture"
+                  />
+                ) : (
+                  <DefaultUserImage style={UserRowPictureStyles} />
+                )}
+              </Grid>
+            </Link>
           )}
 
           <Typography
