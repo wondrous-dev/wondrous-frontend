@@ -89,6 +89,7 @@ export const StickyTopSection = styled.div`
 
 export const PlateStyles = styled.div`
   height: 100%;
+  min-height: 150px;
   overflow-y: auto;
   ${ScrollBarStyles};
 
@@ -148,10 +149,6 @@ export const PlateStyles = styled.div`
   div[class*='PlateFloatingLink___StyledDiv'] button,
   div[class*='PlateFloatingLink___StyledDiv'] a {
     background: none;
-  }
-
-  div[data-slate-node='element'] {
-    min-height: 100px;
   }
 
   a[data-slate-node='element'],

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import DropdownSearch from 'components/DropdownSearch';
+import { useMemo, useState } from 'react';
 import {
   PodSearchAutocomplete,
   PodSearchAutocompletePopper,
@@ -19,20 +20,46 @@ import {
   PodSearchWrapper,
 } from './styles';
 
-function PodSearch(props) {
-  const { options, onChange, value, disabled } = props;
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
-  const handleClickAway = () => setAnchorEl(null);
-  const open = Boolean(anchorEl);
-  const selectedValue = options.find((option) => option.value === value);
+const MultiplePodsSelected = ({ selectedValue }) => {
+  if (selectedValue?.length > 1) {
+    return (
+      <>
+        <PodSearchDefaultImage color="#474747" />
+        <PodSearchLabel>{`${selectedValue?.length} pods selected`}</PodSearchLabel>
+      </>
+    );
+  }
   return (
-    <PodSearchClickAway onClickAway={handleClickAway}>
-      <PodSearchWrapper>
-        <PodSearchButton open={open} disabled={!options || disabled} onClick={handleClick}>
+    <>
+      <PodSearchDefaultImage color={selectedValue[0]?.color ?? `#474747`} />
+      <PodSearchLabel>{selectedValue[0]?.label ?? `Select a Pod`}</PodSearchLabel>
+    </>
+  );
+};
+
+function PodSearch(props) {
+  const { options, onChange, value, disabled, multiple = false } = props;
+  const selectedValue = useMemo(() => {
+    if (multiple) return options.filter((option) => value.includes(option.id));
+    return options.find((option) => option.id === value?.id || option.id === value);
+  }, [value, options, multiple]);
+
+  return (
+    <DropdownSearch
+      label="Select pod"
+      searchPlaceholder="Search pods"
+      multiple={multiple}
+      anchorComponent={({ onClick, disabled, open }) => (
+        <PodSearchButton open={open} disabled={disabled} onClick={onClick}>
           <PodSearchImageLabelWrapper>
-            <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
-            <PodSearchLabel>{selectedValue?.label ?? `Select a Pod`}</PodSearchLabel>
+            {multiple && selectedValue?.length ? (
+              <MultiplePodsSelected selectedValue={selectedValue} />
+            ) : (
+              <>
+                <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
+                <PodSearchLabel>{selectedValue?.label ?? `Select a Pod`}</PodSearchLabel>
+              </>
+            )}
           </PodSearchImageLabelWrapper>
           {selectedValue && !disabled ? (
             <PodSearchButtonDeleteIcon
@@ -46,52 +73,12 @@ function PodSearch(props) {
             <PodSearchButtonArrowIcon />
           )}
         </PodSearchButton>
-        <PodSearchPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal>
-          <PodSearchAutocomplete
-            value={selectedValue}
-            renderInput={(params) => (
-              <PodSearchInput
-                {...params}
-                ref={params.InputProps.ref}
-                disableUnderline
-                fullWidth
-                autoFocus
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <PodSearchInputAdornment position="end">
-                      <PodSearchInputIcon />
-                    </PodSearchInputAdornment>
-                  ),
-                }}
-              />
-            )}
-            disableClearable
-            isOptionEqualToValue={(option, value) => option.value === value?.value}
-            getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => (
-              <PodSearchListItem {...props} isActive={option.value === selectedValue?.value}>
-                <PodSearchDefaultImage color={option?.color ?? '#474747'} />
-                <PodSearchLabel>{option?.label}</PodSearchLabel>
-              </PodSearchListItem>
-            )}
-            PaperComponent={PodSearchPaper}
-            ListboxComponent={PodSearchList}
-            PopperComponent={(params) => <PodSearchAutocompletePopper {...params} />}
-            open={open}
-            options={options}
-            disablePortal
-            onChange={(event, value, reason) => {
-              if (reason === 'selectOption') {
-                onChange(value.value);
-                handleClickAway();
-              }
-            }}
-            blurOnSelect
-          />
-        </PodSearchPopper>
-      </PodSearchWrapper>
-    </PodSearchClickAway>
+      )}
+      value={selectedValue}
+      options={options}
+      disabled={!options || disabled}
+      onChange={onChange}
+    />
   );
 }
 

@@ -1,5 +1,11 @@
 import { useMutation } from '@apollo/client';
-import { UPDATE_TASK, UPDATE_TASK_PROPOSAL, UPDATE_GRANT, UPDATE_GRANT_APPLICATION } from 'graphql/mutations';
+import {
+  UPDATE_TASK,
+  UPDATE_TASK_PROPOSAL,
+  UPDATE_GRANT,
+  UPDATE_GRANT_APPLICATION,
+  UPDATE_MILESTONE,
+} from 'graphql/mutations';
 import { useMemo, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { CHAIN_REGEX } from 'utils/helpers';
@@ -75,6 +81,17 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
     },
   });
 
+  const [updateMilestone] = useMutation(UPDATE_MILESTONE, {
+    onCompleted: (data) => {
+      handleUpdateTask({ data: data?.updateMilestone });
+      refetch();
+    },
+    refetchQueries,
+    onError: (error) => {
+      console.log(error, 'error');
+      setError('Something went wrong.');
+    },
+  });
   const [updateTaskProposal] = useMutation(UPDATE_TASK_PROPOSAL, {
     onCompleted: (data) => {
       handleUpdateProposalCardCache({ data: data?.updateTaskProposal });
@@ -103,10 +120,18 @@ export const useSubmit = ({ field, refetchQueries = [] }) => {
   };
 
   const update = async (input) => {
-    if ([ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType)) {
+    if ([ENTITIES_TYPES.TASK, ENTITIES_TYPES.BOUNTY].includes(entityType)) {
       return await updateTask({
         variables: {
           taskId: fetchedTask.id,
+          input,
+        },
+      });
+    }
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
+      return await updateMilestone({
+        variables: {
+          milestoneId: fetchedTask.id,
           input,
         },
       });

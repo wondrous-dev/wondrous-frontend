@@ -25,6 +25,10 @@ const useHandleOnClick = ({ id, type, entityLink }) => {
       router.push({ query: { ...router.query, taskProposal: id } }, undefined, {
         scroll: false,
       }),
+    [ENTITIES_TYPES.MILESTONE]: () =>
+      router.push({ query: { ...router.query, milestone: id } }, undefined, {
+        scroll: false,
+      }),
   };
   const defaultHandleOnClick = () =>
     router.push({ query: { ...router.query, task: id } }, undefined, { scroll: false });

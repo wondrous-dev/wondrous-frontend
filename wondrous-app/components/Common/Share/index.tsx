@@ -25,22 +25,34 @@ const Share = ({ fetchedTask, className }: IShareProps) => {
   const taskTypeQuery = type ? `task` : `taskProposal`;
   const taskId = id;
   const copyText = type === ENTITIES_TYPES.GRANT_APPLICATION ? 'Grant application' : capitalize(entityType);
-  const handleOnClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+
+  const handleLink = () => {
     if (type === ENTITIES_TYPES.GRANT) {
-      navigator.clipboard.writeText(`${LINK}/organization/${orgUsername || org?.username}/grants?grant=${taskId}`);
-    } else if (type === ENTITIES_TYPES.GRANT_APPLICATION) {
-      navigator.clipboard.writeText(
+      return navigator.clipboard.writeText(
+        `${LINK}/organization/${orgUsername || org?.username}/grants?grant=${taskId}`
+      );
+    }
+
+    if (type === ENTITIES_TYPES.GRANT_APPLICATION) {
+      return navigator.clipboard.writeText(
         `${LINK}/organization/${orgUsername || org?.username}/grants?grant=${
           fetchedTask?.grantId
         }&grantApplicationId=${taskId}`
       );
-    } else {
-      navigator.clipboard.writeText(
-        `${LINK}/organization/${orgUsername || org?.username}/boards?${taskTypeQuery}=${taskId}&entity=${entityType}`
+    }
+    if (type === ENTITIES_TYPES.MILESTONE) {
+      return navigator.clipboard.writeText(
+        `${LINK}/organization/${orgUsername || org?.username}/boards?milestone=${taskId}&entity=${entityType}`
       );
     }
+    return navigator.clipboard.writeText(
+      `${LINK}/organization/${orgUsername || org?.username}/boards?${taskTypeQuery}=${taskId}&entity=${entityType}`
+    );
+  };
+  const handleOnClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleLink();
     setSnackbarAlertMessage(`${copyText} link copied`);
     setSnackbarAlertOpen(true);
   };

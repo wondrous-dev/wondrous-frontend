@@ -13,6 +13,8 @@ import {
   GET_POD_HOME_PROPOSALS,
   GET_ORG_HOME_TASK_OBJECTS,
   GET_POD_HOME_TASK_OBJECTS,
+  GET_ORG_HOME_MILESTONS,
+  GET_POD_HOME_MILESTONS,
 } from 'graphql/queries/projectPage';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -174,6 +176,34 @@ export const useGetHomePageTaskObjects = () => {
   return data;
 };
 
+export const useGetHomeMilestones = () => {
+  const { orgId, podId } = useBoards().board;
+  const variables = {
+    limit: DATA_LIMIT,
+    offset: 0,
+  };
+  const { data: orgMilestoneData } = useQuery(GET_ORG_HOME_MILESTONS, {
+    skip: !useIsOrg(),
+    variables: {
+      input: {
+        ...variables,
+        orgId,
+      },
+    },
+  });
+  const { data: podMilestoneData } = useQuery(GET_POD_HOME_MILESTONS, {
+    skip: useIsOrg(),
+    variables: {
+      input: {
+        ...variables,
+        podId,
+      },
+    },
+  });
+  const data = useIsOrg() ? orgMilestoneData?.getOrgHomeMilestones : podMilestoneData?.getPodHomeMilestones;
+  return data;
+};
+
 export const useGetProposal = () => {
   const { orgId, podId } = useBoards().board;
   const variables = {
@@ -244,7 +274,7 @@ export const useGetDocumentCategories = () => {
   return data;
 };
 
-export const useGetGrantOrgBoard = () => {
+export const useGetHomePageGrants = () => {
   const { orgId, podId } = useBoards().board;
   const variables = {
     limit: DATA_LIMIT,
