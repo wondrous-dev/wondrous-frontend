@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_POD_DOCS, GET_POD_DOCS_CATEGORIES } from 'graphql/queries/documents';
-import { PERMISSIONS } from 'utils/constants';
+import { ANALYTIC_EVENTS, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 
 import BoardPageHeader from 'components/Pod/wrapper/BoardPageHeader';
@@ -23,6 +23,7 @@ import EntitySidebar from 'components/Common/SidebarEntity';
 import { PodBoardContext } from 'utils/contexts';
 
 import styles, { AddIconWrapper } from 'components/organization/docs/docsStyles';
+import { useMe } from 'components/Auth/withAuth';
 
 const useGetPodDocs = (podId) => {
   const [getPodDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_POD_DOCS, {
@@ -89,12 +90,20 @@ function Docs(props) {
     podId,
   });
   const canEdit = permissions.includes(PERMISSIONS.FULL_ACCESS);
-
+  const user = useMe();
   const handleItemClick = (event, doc) => {
     // Don't show menu if link is clicked
     if (!event.target.href && canEdit) {
       setMenuAnchor(event.currentTarget);
       setSelectedDoc(doc);
+    }
+    if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+      window?.analytics?.track(ANALYTIC_EVENTS.DOCUMENT_CLICK, {
+        docId: doc?.id,
+        orgId: podData?.orgId,
+        podId,
+        userId: user?.id,
+      });
     }
   };
   const handleMenuClose = () => {

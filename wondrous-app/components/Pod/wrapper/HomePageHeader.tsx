@@ -19,13 +19,13 @@ import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } 
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
 import { SafeImage } from 'components/Common/Image';
-import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
 import MoreInfoModal from 'components/Common/MoreInfoModal';
 import MembersIcon from 'components/Icons/members';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { Button as PrimaryButton } from 'components/Button';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { LogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import {
@@ -48,7 +48,7 @@ import {
   PrivacyText,
 } from '../../organization/wrapper/styles';
 import PodIcon from '../../Icons/podIcon';
-import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
+import PodInviteLinkModal from '../../Common/InviteLinkModal/PodInviteLink';
 import { useMe } from '../../Auth/withAuth';
 
 function HomePageHeader(props) {
@@ -306,7 +306,7 @@ function HomePageHeader(props) {
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}>
             {podProfile?.description && podProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
               <HeaderText as="div">
-                <RichTextViewer text={podProfile?.description} />
+                <PlateRichTextViewer text={podProfile?.description} />
               </HeaderText>
             ) : (
               <div style={{ height: 10 }} />

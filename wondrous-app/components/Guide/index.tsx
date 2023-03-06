@@ -1,13 +1,14 @@
 import { TourProvider } from '@reactour/tour';
 import { useMutation } from '@apollo/client';
-import { SET_USER_COMPLETED_GUIDE } from 'graphql/mutations/user';
+import { SET_USER_COMPLETED_GUIDE, SET_PROJECT_GUIDE_COMPLETE } from 'graphql/mutations/user';
 import { useRouter } from 'next/router';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import GuideNextButton from 'components/Guide/GuideNextButton';
 import GuidePrevButton from 'components/Guide/GuidePrevButton';
-import GuideNavigationWrapper from 'components/Guide/GuideNavigationWrapper';
+import GuideNavigationWrapper, { filterGuideSteps } from 'components/Guide/GuideNavigationWrapper';
 import palette from 'theme/palette';
+import { useMe } from 'components/Auth/withAuth';
 import { guideConfig } from './guide';
 
 export default function OnboardingGuide({ children }) {
@@ -15,21 +16,30 @@ export default function OnboardingGuide({ children }) {
     refetchQueries: [{ query: GET_LOGGED_IN_USER }],
   });
 
-  const router = useRouter();
+  const [setProjectGuideComplete] = useMutation(SET_PROJECT_GUIDE_COMPLETE, {
+    refetchQueries: [{ query: GET_LOGGED_IN_USER }],
+  });
 
+  const router = useRouter();
+  const user = useMe();
   const guide: any = guideConfig[router.pathname];
-  const steps = guide?.steps;
+  const onProjectHome = router.pathname === '/organization/[username]/home' || router.pathname === '/pod/[podId]/home';
+  const steps = filterGuideSteps({ steps: guide?.steps, user, router });
   const disableBody = () => {
     toggleHtmlOverflow();
   };
   const beforeClose = () => {
     toggleHtmlOverflow();
     if (guide?.id) {
-      setUserCompletedGuide({
-        variables: {
-          guideId: guide?.id,
-        },
-      });
+      if (onProjectHome) {
+        setProjectGuideComplete();
+      } else {
+        setUserCompletedGuide({
+          variables: {
+            guideId: guide?.id,
+          },
+        });
+      }
     }
   };
 
@@ -49,6 +59,8 @@ export default function OnboardingGuide({ children }) {
   };
 
   if (!guide?.id) return <>{children}</>;
+
+  if (!user) return null;
   return (
     <TourProvider
       afterOpen={disableBody}
@@ -78,6 +90,7 @@ export default function OnboardingGuide({ children }) {
           setIsOpen={setIsOpen}
           setCurrentStep={setCurrentStep}
           setUserCompletedGuide={setUserCompletedGuide}
+          setProjectGuideComplete={setProjectGuideComplete}
         />
       )}
       prevButton={({ currentStep, stepsLength, setIsOpen, setCurrentStep }) => (
@@ -87,6 +100,7 @@ export default function OnboardingGuide({ children }) {
           setIsOpen={setIsOpen}
           setCurrentStep={setCurrentStep}
           setUserCompletedGuide={setUserCompletedGuide}
+          setProjectCompletedGuide={setProjectGuideComplete}
         />
       )}
     >

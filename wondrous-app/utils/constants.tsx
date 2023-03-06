@@ -152,6 +152,7 @@ export const ENTITIES_TYPES = {
   GRANT: 'grant',
   GRANT_APPLICATION: 'grant_application',
   COLLAB: 'collab',
+  WONDER_AI_BOT: 'wonder_ai_bot',
 };
 
 export const ENTITIES_DISPLAY_LABEL_MAP = {
@@ -309,6 +310,8 @@ export const NOTIFICATION_OBJ_TYPES = {
   POD: 'pod',
   GRANT: 'grant',
   GRANT_APPLICATION: 'grant_application',
+  MILESTONE: 'milestone',
+  MILESTONE_COMMENT: 'milestone_comment',
 };
 
 export const COLLAB_TYPES = {
@@ -927,4 +930,9 @@ export const CALENDAR_CONFIG = {
     { label: 'Month View', value: CALENDAR_VIEW.Month },
     { label: 'Week View', value: CALENDAR_VIEW.Week },
   ],
+};
+
+export const ANALYTIC_EVENTS = {
+  DOCUMENT_CLICK: 'document_click',
+  AI_CREATE_TASK_SNACKBAR_CLICK: 'ai_create_task_snackbar_click',
 };

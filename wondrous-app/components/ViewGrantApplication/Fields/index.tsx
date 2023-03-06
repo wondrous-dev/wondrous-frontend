@@ -252,7 +252,8 @@ export const WalletAddressViewer = ({ walletAddress }) => {
     wonderWeb3.getENSNameFromEthAddress(walletAddress).then((ensName) => setEnsOrAddress(ensName || walletAddress));
   }, [walletAddress]);
 
-  const handleAddressCopy = () => {
+  const handleAddressCopy = (e) => {
+    e.stopPropagation();
     setIsCopied(true);
     setTimeout(() => {
       setIsCopied(false);
@@ -406,6 +407,9 @@ export const OrgViewer = ({ grantApplication }) => {
         <OrgComponent
           username={org.username}
           profilePicture={org.profilePicture}
+          linkStyle={{
+            display: 'flex',
+          }}
           style={{
             height: '18px',
             width: '18px',

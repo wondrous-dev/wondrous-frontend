@@ -40,6 +40,7 @@ interface ICreateEntity {
   privacyLevel?: string;
   proposalVoteType?: string;
   customProposalChoices?: string[];
+  isMilestone?: boolean;
 }
 
 export function CreateEntity(props: ICreateEntity) {

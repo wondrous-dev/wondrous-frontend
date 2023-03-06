@@ -1,6 +1,6 @@
+import React from 'react';
 import format from 'date-fns/format';
 import Grid from '@mui/material/Grid';
-import React, { useContext } from 'react';
 import Typography from '@mui/material/Typography';
 
 import SmartLink from 'components/Common/SmartLink';

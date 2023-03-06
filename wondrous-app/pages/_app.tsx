@@ -1,4 +1,5 @@
 import 'react-aspect-ratio/aspect-ratio.css';
+import PlateProvider from 'components/PlateRichEditor/PlateProvider';
 import React, { useEffect, useState } from 'react';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
@@ -34,9 +35,13 @@ import { CornerWidgetProvider } from 'components/Common/CornerWidget';
 declare global {
   interface Window {
     analytics: any;
+    Localize: any;
+    Weglot: any;
   }
 }
 
+const LOCALIZE_KEY = process.env.NEXT_PUBLIC_LOCALIZE_KEY;
+const WEGLOT_KEY = process.env.NEXT_PUBLIC_WEGLOT_KEY;
 function renderSnippet() {
   const opts = {
     apiKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || '',
@@ -104,8 +109,50 @@ function MyApp({ Component, pageProps }) {
         <title>Wonder</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         <link rel="shortcut icon" href="/images/favicon.ico" />
+        <link rel="alternate" hrefLang="en" href="https://app.wonderverse.xyz" />
+        <link rel="alternate" hrefLang="zh" href="https://zh.app.wonderverse.xyz" />
       </Head>
       <Script id="segment-script" dangerouslySetInnerHTML={{ __html: renderSnippet() }} />
+      <Script
+        id="localize"
+        src="https://global.localizecdn.com/localize.js"
+        onLoad={(a) => {
+          // eslint-disable-next-line no-unused-vars
+          !(function (a) {
+            if (!a.Localize) {
+              a.Localize = {};
+              for (
+                let e = [
+                    'translate',
+                    'untranslate',
+                    'phrase',
+                    'initialize',
+                    'translatePage',
+                    'setLanguage',
+                    'getLanguage',
+                    'getSourceLanguage',
+                    'detectLanguage',
+                    'getAvailableLanguages',
+                    'untranslatePage',
+                    'bootstrap',
+                    'prefetch',
+                    'on',
+                    'off',
+                    'hideWidget',
+                    'showWidget',
+                  ],
+                  t = 0;
+                t < e.length;
+                t++
+              )
+                a.Localize[e[t]] = function () {};
+              return true;
+            }
+          })(window);
+          // @ts-ignore
+          Localize.initialize({ key: LOCALIZE_KEY, rememberLanguage: true });
+        }}
+      />
       <IsMobileContext.Provider value={isMobile}>
         <StyledComponentProvider theme={theme}>
           <ThemeProvider theme={theme}>
@@ -116,12 +163,14 @@ function MyApp({ Component, pageProps }) {
                   <Web3ReactProvider getLibrary={getLibrary}>
                     <WonderWeb3Provider>
                       <HotkeyContext.Provider value={showHotkeys}>
-                        <NavigationProgress />
-                        <SidebarLayout>
-                          <OnboardingTour>
-                            <Layout Component={Component} pageProps={pageProps} />≈
-                          </OnboardingTour>
-                        </SidebarLayout>
+                        <PlateProvider>
+                          <NavigationProgress />
+                          <SidebarLayout>
+                            <OnboardingTour>
+                              <Layout Component={Component} pageProps={pageProps} />≈
+                            </OnboardingTour>
+                          </SidebarLayout>
+                        </PlateProvider>
                       </HotkeyContext.Provider>
                     </WonderWeb3Provider>
                   </Web3ReactProvider>

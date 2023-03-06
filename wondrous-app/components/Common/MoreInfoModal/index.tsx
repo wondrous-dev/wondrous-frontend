@@ -4,6 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
+import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 
 import SearchIcon from 'components/Icons/search';
 import { TaskModalBaseCard } from 'components/Common/Task/styles';
@@ -11,18 +12,17 @@ import { useRouter } from 'next/router';
 import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
 import { useBoards } from 'utils/hooks';
-import { RichTextViewer } from 'components/RichText';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { MODAL_TABS_MAP } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { LoadMore } from 'components/SearchTasks/styles';
 import { useInView } from 'react-intersection-observer';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import {
   ActivityIndicatorContainer,
   CloseIconContainer,
   CommentLine,
   Container,
-  DefaultProfilePicture,
   NameText,
   OverflowBox,
   PodExplainerText,
@@ -37,7 +37,6 @@ import {
   Title,
   TitleSection,
   UserMetaDataContainer,
-  UserProfilePicture,
   UserWrapper,
 } from './styles';
 
@@ -55,7 +54,7 @@ const PodItem = forwardRef((props: any, ref) => {
     >
       <TabContainerText>{pod?.name}</TabContainerText>
       <PodExplainerText as="div">
-        <RichTextViewer text={pod?.description} />
+        <PlateRichTextViewer text={pod?.description} />
       </PodExplainerText>
     </PodWrapper>
   );
@@ -74,11 +73,7 @@ const UserItem = forwardRef((props: any, ref) => {
         })
       }
     >
-      {user?.profilePicture ? (
-        <UserProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
-      ) : (
-        <DefaultProfilePicture />
-      )}
+      <UserProfilePicture avatar={user?.thumbnailPicture || user?.profilePicture} />
       <UserMetaDataContainer>
         <CommentTopFlexDiv>
           <NameText>{user?.username}</NameText>

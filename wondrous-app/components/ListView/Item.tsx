@@ -1,49 +1,50 @@
-import { useState, useContext, useEffect, memo } from 'react';
-import {
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_DONE,
-  ENTITIES_TYPES,
-  PERMISSIONS,
-  TASK_TYPE,
-  PAGE_PATHNAME,
-} from 'utils/constants';
-import { SafeImage } from 'components/Common/Image';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { SubtaskLightIcon } from 'components/Icons/subtask';
-import { TaskCommentIcon } from 'components/Icons/taskComment';
-import Compensation from 'components/Common/Compensation';
-import { format } from 'date-fns';
-import { DueDateText, ArchivedTaskUndo } from 'components/Common/Task/styles';
-import Tooltip from 'components/Tooltip';
-import palette from 'theme/palette';
-import { Claim } from 'components/Icons/claimTask';
-import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
-import { GET_USER_PERMISSION_CONTEXT, SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
-import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
-import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
-import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import Typography from '@mui/material/Typography';
 import { useMe } from 'components/Auth/withAuth';
-import SmartLink from 'components/Common/SmartLink';
-import { delQuery } from 'utils';
-import { useRouter } from 'next/router';
-import MakePaymentModal from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
+import { ButtonPrimary } from 'components/Common/button';
+import Compensation from 'components/Common/Compensation';
 import DeleteEntityModal from 'components/Common/DeleteEntityModal';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
-import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import { SafeImage } from 'components/Common/Image';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
+import SmartLink from 'components/Common/SmartLink';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { ArchivedTaskUndo, DueDateText } from 'components/Common/Task/styles';
 import { CreateEntity } from 'components/CreateEntity';
-import { ButtonPrimary } from 'components/Common/button';
-import Typography from '@mui/material/Typography';
-
+import { Claim } from 'components/Icons/claimTask';
+import { SubtaskLightIcon } from 'components/Icons/subtask';
+import { TaskCommentIcon } from 'components/Icons/taskComment';
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import Tooltip from 'components/Tooltip';
+import { format } from 'date-fns';
+import { ARCHIVE_TASK, UNARCHIVE_TASK, UPDATE_TASK_ASSIGNEE } from 'graphql/mutations/task';
+import { GET_USER_PERMISSION_CONTEXT, SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
+import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
+import { useRouter } from 'next/router';
+import { memo, useContext, useEffect, useMemo, useState } from 'react';
+import palette from 'theme/palette';
+import { delQuery } from 'utils';
 import {
+  ENTITIES_TYPES,
+  PAGE_PATHNAME,
+  PERMISSIONS,
+  TASK_STATUS_DONE,
+  TASK_STATUS_IN_REVIEW,
+  TASK_TYPE,
+} from 'utils/constants';
+import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
+
+import { ARCHIVE_MILESTONE, UNARCHIVE_MILESTONE } from 'graphql/mutations';
+import {
+  ListViewItemActions,
   ListViewItemBodyWrapper,
   ListViewItemDataContainer,
   ListViewItemIconsWrapper,
-  ListViewItemActions,
-  Type,
   MoreOptions,
+  Type,
 } from './styles';
 
 function ListViewItem({ task, entityType, isDragDisabled }) {
@@ -179,7 +180,12 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
     (!task.paymentStatus || task.paymentStatus === 'unpaid') &&
     task?.rewards?.length > 0;
 
-  const taskType = isProposal ? 'taskProposal' : 'task';
+  const taskType = useMemo(() => {
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
+      return ENTITIES_TYPES.MILESTONE;
+    }
+    return isProposal ? 'taskProposal' : 'task';
+  }, [isProposal]);
 
   let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
 
@@ -207,29 +213,70 @@ function ListViewItem({ task, entityType, isDragDisabled }) {
     },
   });
 
-  const handleOnArchive = () => {
-    archiveTaskMutation({
+  const [archiveMilestoneMutation, { data: archiveMilestoneData }] = useMutation(ARCHIVE_MILESTONE, {
+    refetchQueries: [
+      'getMilestoneById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
+      SEARCH_USER_CREATED_TASKS,
+    ],
+  });
+  const [unarchiveMilestoneMutation, { data: unarchiveMilestoneData }] = useMutation(UNARCHIVE_MILESTONE, {
+    refetchQueries: [
+      'getMilestoneById',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
+      'getMilestoneById',
+      SEARCH_USER_CREATED_TASKS,
+    ],
+  });
+
+  const handleUnarchive = () => {
+    setSnackbarAlertOpen(false);
+
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
+      return unarchiveMilestoneMutation({
+        variables: {
+          milestoneId: id,
+        },
+      });
+    }
+    return unarchiveTaskMutation({
       variables: {
         taskId: id,
       },
-    }).then((result) => {
+    });
+  };
+
+  const handleMutation = () => {
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
+      return archiveMilestoneMutation({
+        variables: {
+          milestoneId: id,
+        },
+      });
+    }
+    return archiveTaskMutation({
+      variables: {
+        taskId: id,
+      },
+    });
+  };
+  const handleOnArchive = () => {
+    handleMutation().then((result) => {
       setData(null);
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage(
         <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              setSnackbarAlertOpen(false);
-              unarchiveTaskMutation({
-                variables: {
-                  taskId: id,
-                },
-              });
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
+          Task archived successfully! <ArchivedTaskUndo onClick={handleUnarchive}>Undo</ArchivedTaskUndo>
         </>
       );
     });

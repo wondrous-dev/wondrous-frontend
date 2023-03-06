@@ -3,7 +3,6 @@ import { Grid } from '@mui/material';
 import CommentList from 'components/Comment';
 import SubmissionStatus from 'components/Common/SubmissionStatus';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
-import { RichTextViewer } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
 import {
   APPROVE_BOUNTY_SUBMISSION,
@@ -39,6 +38,7 @@ import { TaskAction, TaskActionAmount } from 'components/Common/Task/styles';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
 import PlusIcon from 'components/Icons/plus';
 import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import {
   GiveKudosButton,
   SubmissionButtonApprove,
@@ -208,7 +208,7 @@ const useReopenTaskSubmission = ({ submission }) => {
   return resubmitSubmission;
 };
 
-const selectSubmissionStatus = (submission) => {
+export const selectSubmissionStatus = (submission) => {
   if (!submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt)
     return SUBMISSION_STATUS.AWAITING_REVIEW;
   if (submission?.changeRequestedAt) return SUBMISSION_STATUS.CHANGE_REQUESTED;
@@ -523,7 +523,7 @@ export function SubmissionItem({
       <SubmissionDivider />
       <SubmissionItemSection>
         <SubmissionDescription as="div">
-          <RichTextViewer text={submission?.description} />
+          <PlateRichTextViewer text={submission?.description} />
         </SubmissionDescription>
         <SubmissionItemsMedia media={mediaUploads} />
         <SubmissionItemLink links={submission?.links} />

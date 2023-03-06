@@ -18,6 +18,7 @@ const SectionContent = ({
   HeaderTitleProps,
   showAllUrl,
   data,
+  tourId,
   ListItemProps,
 }: ListWrapperProps) => {
   const { hasFullOrEditPermission } = useBoardPermission();
@@ -30,7 +31,7 @@ const SectionContent = ({
     <>
       <Grid container item flexDirection="column" flexGrow="1" padding="14px" gap="14px">
         <Grid container item alignItems="center" justifyContent="space-between">
-          <HeaderTitle {...HeaderTitleProps} />
+          <HeaderTitle tourId={tourId} {...HeaderTitleProps} />
           {hasFullOrEditPermission ? <AddButton {...CreateButtonProps} {...HeaderTitleProps} /> : null}
         </Grid>
         <Grid item container flexDirection="column" gap="10px" flexGrow="1">

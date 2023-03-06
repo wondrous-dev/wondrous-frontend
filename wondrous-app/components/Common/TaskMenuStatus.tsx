@@ -2,8 +2,16 @@ import { useMutation } from '@apollo/client';
 import { ButtonBase, Menu, MenuItem, Typography } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
 import Arrow from 'components/Icons/arrow.svg';
-import { APPROVE_TASK_PROPOSAL, ARCHIVE_TASK, CLOSE_TASK_PROPOSAL, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import {
+  APPROVE_TASK_PROPOSAL,
+  ARCHIVE_MILESTONE,
+  ARCHIVE_TASK,
+  CLOSE_TASK_PROPOSAL,
+  UPDATE_MILESTONE_STATUS,
+  UPDATE_TASK_STATUS,
+} from 'graphql/mutations';
+import {
+  GET_MILESTONE_BY_ID,
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
@@ -18,7 +26,7 @@ import {
   GET_USER_TASK_BOARD_TASKS,
 } from 'graphql/queries';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
 import styled from 'styled-components';
 import { getProposalStatus } from 'utils/board';
@@ -27,7 +35,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { SnackbarAlertContext } from './SnackbarAlert';
 
-const TaskStatusMenuWrapper = styled(Menu)`
+export const TaskStatusMenuWrapper = styled(Menu)`
   && {
     .MuiMenu-list,
     .MuiMenu-paper {
@@ -115,6 +123,7 @@ const refetchNonProposalQueries = [
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_POD_TASK_BOARD_TASKS,
   GET_TASK_BY_ID,
+  GET_MILESTONE_BY_ID,
   GET_TASKS_FOR_MILESTONE,
   GET_USER_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE,
@@ -127,14 +136,14 @@ const refetchTaskProposalQueries = [
   GET_USER_TASK_BOARD_PROPOSALS,
 ];
 
-const getStatusesProposal = ({ task, entityType }) => {
+export const getStatusesProposal = ({ task, entityType }) => {
   const filterStatus = ENTITIES_TYPES_FILTER_STATUSES({ orgId: task?.orgId })[entityType]?.filters[0].items;
   const status = getProposalStatus(task);
   const currentStatus = filterStatus?.find((i) => i.id === status);
   return { filterStatus, currentStatus };
 };
 
-const getStatusesNonProposalEntity = ({ task, entityType, canArchive }) => {
+export const getStatusesNonProposalEntity = ({ task, entityType, canArchive }) => {
   const entityStatus = ENTITIES_TYPES_FILTER_STATUSES({ orgId: task?.orgId })[entityType]?.filters[0].items;
   const filterStatus = canArchive ? entityStatus : entityStatus?.filter((i) => i.id !== TASK_STATUS_ARCHIVED);
   const currentStatus = entityStatus?.find((i) => i.id === task?.status);
@@ -195,6 +204,9 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
   const [archiveTaskMutation] = useMutation(ARCHIVE_TASK, {
     refetchQueries: refetchNonProposalQueries,
   });
+  const [archiveMilestone] = useMutation(ARCHIVE_MILESTONE, {
+    refetchQueries: refetchNonProposalQueries,
+  });
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
     refetchQueries: refetchNonProposalQueries,
     onError: ({ graphQLErrors }) => {
@@ -209,7 +221,12 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
       setSnackbarAlertOpen(true);
     },
   });
-  const handleOnChange = (newStatus) => {
+
+  const [updateMilestoneStatus] = useMutation(UPDATE_MILESTONE_STATUS, {
+    refetchQueries: refetchNonProposalQueries,
+  });
+
+  const handleOnTaskStatusChange = (newStatus) => {
     if (newStatus === TASK_STATUS_ARCHIVED) {
       archiveTaskMutation({
         variables: {
@@ -227,11 +244,38 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
       },
     });
   };
+  const handleOnMilestoneStatusChange = (newStatus) => {
+    if (newStatus === TASK_STATUS_ARCHIVED) {
+      return archiveMilestone({
+        variables: {
+          milestoneId: taskId,
+        },
+      });
+    }
+    return updateMilestoneStatus({
+      variables: {
+        milestoneId: taskId,
+        input: {
+          newStatus,
+        },
+      },
+    });
+  };
+  const handleOnChange =
+    entityType === ENTITIES_TYPES.MILESTONE ? handleOnMilestoneStatusChange : handleOnTaskStatusChange;
   const { filterStatus, currentStatus } = getStatusesNonProposalEntity({ task, entityType, canArchive });
   return { handleOnChange, filterStatus, currentStatus, disableMenu: false };
 };
 
-export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableMenu, className = '' }) {
+export function TaskMenu({
+  currentStatus,
+  filterStatus,
+  handleOnChange,
+  disableMenu,
+  className = '',
+  autoFocus = false,
+  onClose = null,
+}) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (e) => {
@@ -243,6 +287,7 @@ export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableM
     e.preventDefault();
     e.stopPropagation();
     setAnchorEl(null);
+    onClose?.();
   };
   const handleItemOnClick = (status) => (e) => {
     e.preventDefault();
@@ -250,14 +295,23 @@ export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableM
     handleClose(e);
     handleOnChange(status.id);
   };
+
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (autoFocus && ref.current) {
+      setAnchorEl(ref.current);
+    }
+  }, [autoFocus, ref.current]);
+
   return (
     <span className={className}>
-      <TaskStatusMenuButton onClick={handleClick} disabled={disableMenu} open={open} disableRipple>
+      <TaskStatusMenuButton onClick={handleClick} disabled={disableMenu} open={open} disableRipple ref={ref}>
         {currentStatus?.icon}
         <TaskModalStatusLabel>{currentStatus?.label ?? currentStatus?.name}</TaskModalStatusLabel>
         {!disableMenu && <TaskStatusMenuButtonArrow open={open} />}
       </TaskStatusMenuButton>
-      <TaskStatusMenuWrapper anchorEl={anchorEl} open={open} onClose={handleClose}>
+      <TaskStatusMenuWrapper anchorEl={anchorEl} open={open} onClose={handleClose} disablePortal>
         {filterStatus?.map((status) => (
           <TaskStatusMenuItem key={status.id} onClick={handleItemOnClick(status)}>
             {status.icon}
@@ -269,8 +323,14 @@ export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableM
   );
 }
 
-export default function TaskMenuStatus({ className = '', isTaskProposal = false, task }) {
-  const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : task?.type;
+export default function TaskMenuStatus({
+  className = '',
+  isTaskProposal = false,
+  task,
+  autoFocus = false,
+  onClose = null,
+  entityType = ENTITIES_TYPES.TASK,
+}) {
   const taskMenuStatusProposal = useTaskMenuStatusProposal({
     task,
     entityType,
@@ -289,6 +349,8 @@ export default function TaskMenuStatus({ className = '', isTaskProposal = false,
       handleOnChange={handleOnChange}
       disableMenu={disableMenu}
       className={className}
+      onClose={onClose}
+      autoFocus={autoFocus}
     />
   );
 }

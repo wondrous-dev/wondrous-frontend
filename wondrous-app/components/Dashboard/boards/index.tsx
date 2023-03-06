@@ -6,6 +6,7 @@ import { useMe } from 'components/Auth/withAuth';
 import Boards from 'components/Common/Boards';
 import {
   GET_USER_PERMISSION_CONTEXT,
+  GET_USER_TASK_BOARD_PROPOSALS,
   GET_USER_TASK_BOARD_TASKS,
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
 } from 'graphql/queries';
@@ -211,7 +212,7 @@ const BoardsPage = (props) => {
     const promises: any = [
       apollo.query({
         ...searchTaskProposalsArgs,
-        query: SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
+        query: GET_USER_TASK_BOARD_PROPOSALS,
       }),
 
       apollo.query({
@@ -221,7 +222,7 @@ const BoardsPage = (props) => {
     ];
 
     return Promise.all(promises).then(([proposals, tasks]: any) => ({
-      proposals: proposals.data.searchProposalsForUserBoardView.map((proposal) => ({ ...proposal, isProposal: true })),
+      proposals: proposals.data.getUserTaskBoardProposals.map((proposal) => ({ ...proposal, isProposal: true })),
       tasks: tasks.data.getUserTaskBoardTasks,
     }));
   }

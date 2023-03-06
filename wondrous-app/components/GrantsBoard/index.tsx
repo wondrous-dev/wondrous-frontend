@@ -148,6 +148,7 @@ const GrantsBoard = () => {
   const toggleDisacrdModal = () => setIsDiscardOpen((prev) => !prev);
 
   const loading = orgLoading || podLoading;
+
   return (
     <>
       <ViewGrant

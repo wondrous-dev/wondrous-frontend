@@ -5,7 +5,7 @@ import PlantIcon from 'components/Icons/plant.svg';
 import palette from 'theme/palette';
 import { formatDateDisplay } from 'utils/board';
 
-import { useCreateGrantButtonProps, useGetGrantOrgBoard } from './helpers';
+import { useCreateGrantButtonProps, useGetHomePageGrants } from './helpers';
 import SectionContent from './SectionContent';
 
 const LeftComponent = ({ title }) => (
@@ -15,26 +15,28 @@ const LeftComponent = ({ title }) => (
 );
 
 const RightComponent = ({ numOfGrant, endDate, reward }) => {
-  const days = formatDateDisplay(new Date(endDate), false, false);
+  const days = endDate ? formatDateDisplay(new Date(endDate), false, false) : null;
   return (
     <Grid container item alignItems="center" height="28px" gap="12px">
-      <Grid
-        container
-        bgcolor={palette.grey99}
-        width="fit-content"
-        borderRadius="4px"
-        fontSize="13px"
-        fontWeight="500"
-        alignItems="center"
-        gap="4px"
-        padding="6px"
-        height="28px"
-        lineHeight="0"
-        color={palette.white}
-      >
-        <CalendarIcon width="10px" height="11px" />
-        {days}
-      </Grid>
+      {days ? (
+        <Grid
+          container
+          bgcolor={palette.grey99}
+          width="fit-content"
+          borderRadius="4px"
+          fontSize="13px"
+          fontWeight="500"
+          alignItems="center"
+          gap="4px"
+          padding="6px"
+          height="28px"
+          lineHeight="0"
+          color={palette.white}
+        >
+          <CalendarIcon width="10px" height="11px" />
+          {days}
+        </Grid>
+      ) : null}
       <Grid
         container
         item
@@ -82,7 +84,8 @@ const ProfileGrantSection = () => (
       RightComponent,
       onClick: ({ router, data: { id }, entityLink }) => router.push(`${entityLink}/grants?grant=${id}`),
     }}
-    data={useGetGrantOrgBoard()}
+    data={useGetHomePageGrants()}
+    tourId="tour-header-project-grants"
   />
 );
 

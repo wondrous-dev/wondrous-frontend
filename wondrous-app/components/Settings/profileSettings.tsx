@@ -231,9 +231,9 @@ function ProfileSettings(props) {
       input['email'] = email;
     }
 
-    console.log('loggedInUser?.profilePicture', loggedInUser?.profilePicture)
-    console.log('loggedInUser?.headerPicture', loggedInUser?.headerPicture)
-  
+    console.log('loggedInUser?.profilePicture', loggedInUser?.profilePicture);
+    console.log('loggedInUser?.headerPicture', loggedInUser?.headerPicture);
+
     updateUserProfile({
       variables: {
         input: {
@@ -302,7 +302,7 @@ function ProfileSettings(props) {
     const imageUrl = imagePrefix + filename;
 
     await uploadMedia({ filename: imageUrl, fileType, file });
-    console.log('imageType', imageType)
+    console.log('imageType', imageType);
     if (imageType === ImageTypes.profile) {
       updateImage(imageUrl);
     }

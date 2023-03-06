@@ -14,6 +14,7 @@ export const CommentFragment = gql`
     actorProfilePicture
     reactionCount
     taskId
+    milestoneId
     proposalId
     submissionId
     additionalData {

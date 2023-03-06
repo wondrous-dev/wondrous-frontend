@@ -22,7 +22,6 @@ import {
 } from 'components/organization/analytics/styles';
 import { PayoutModal } from 'components/organization/analytics/PayoutModal';
 import { SafeImage } from 'components/Common/Image';
-import { DefaultProfilePicture, UserProfilePicture } from 'components/Common/MoreInfoModal/styles';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
@@ -86,6 +85,7 @@ function UserRow({ contributorTask }) {
           setOpenModal(false);
         }}
         taskId={taskOpened}
+        isMilestone={false}
         isTaskProposal={false}
       />
       <ContributorRow

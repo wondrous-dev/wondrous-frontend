@@ -35,8 +35,8 @@ export function CreateIconOutlined(props) {
   return (
     <svg width="36" height="36" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="1.44531" y="0.75415" width="35" height="35" rx="17.5" fill="#282828" />
-      <path d="M23.5156 18.257H18.9208H14.3767" stroke="white" stroke-linecap="round" />
-      <path d="M18.9492 13.6847V18.2541V22.8236" stroke="white" stroke-linecap="round" />
+      <path d="M23.5156 18.257H18.9208H14.3767" stroke="white" strokeLinecap="round" />
+      <path d="M18.9492 13.6847V18.2541V22.8236" stroke="white" strokeLinecap="round" />
       <rect x="1.44531" y="0.75415" width="35" height="35" rx="17.5" stroke="url(#paint0_linear_22443_120653)" />
       <defs>
         <linearGradient

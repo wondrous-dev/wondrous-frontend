@@ -1,5 +1,7 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from 'graphql/fragments/comments';
+import { GrantFragment } from 'graphql/fragments/grant';
+import { GrantApplicationFragment } from 'graphql/fragments/grantApplication';
 
 export const CREATE_GRANT = gql`
   mutation createGrant($input: GrantInput) {
@@ -53,17 +55,19 @@ export const DELETE_GRANT_COMMENT = gql`
 export const UPDATE_GRANT = gql`
   mutation updateGrant($grantId: ID!, $input: GrantInput) {
     updateGrant(grantId: $grantId, input: $input) {
-      id
+      ...GrantFragment
     }
   }
+  ${GrantFragment}
 `;
 
 export const UPDATE_GRANT_STATUS = gql`
   mutation updateGrantStatus($grantId: ID!, $input: updateStatusInput!) {
     updateGrantStatus(grantId: $grantId, input: $input) {
-      id
+      ...GrantFragment
     }
   }
+  ${GrantFragment}
 `;
 
 export const CREATE_GRANT_APPLICATION = gql`
@@ -77,13 +81,10 @@ export const CREATE_GRANT_APPLICATION = gql`
 export const UPDATE_GRANT_APPLICATION = gql`
   mutation updateGrantApplication($grantApplicationId: ID!, $input: GrantApplicationInput) {
     updateGrantApplication(grantApplicationId: $grantApplicationId, input: $input) {
-      approvedAt
-      id
-      rejectedAt
-      changeRequestedAt
-      paymentStatus
+      ...GrantApplicationFragment
     }
   }
+  ${GrantApplicationFragment}
 `;
 
 export const DELETE_GRANT_APPLICATION = gql`

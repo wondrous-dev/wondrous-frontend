@@ -54,14 +54,61 @@ import {
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useCornerWidget } from 'utils/hooks';
 import {
-  filterGithubPullRequestsForAutocomplete,
-  filterGithubReposForAutocomplete,
-  filterUserOptions,
-  getPodObject,
-  onCorrectPage,
-} from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
-import { Typography } from '@mui/material';
-import { palette } from '@mui/system';
+  GET_ORG_HOME_TASK_OBJECTS,
+  GET_POD_HOME_TASK_OBJECTS,
+  GET_ORG_HOME_PROPOSALS,
+  GET_POD_HOME_PROPOSALS,
+} from 'graphql/queries/projectPage';
+
+const filterGithubReposForAutocomplete = (githubPullRepos) => {
+  if (!githubPullRepos) {
+    return [];
+  }
+
+  return githubPullRepos.map((githubPullRepo) => ({
+    id: githubPullRepo.githubInfo?.repoId,
+    label: githubPullRepo.githubInfo?.repoPathname,
+  }));
+};
+
+export const filterUserOptions = (options) => {
+  if (!options) return [];
+  return options.map((option) => ({
+    label: option?.username ?? option?.title,
+    id: option?.id,
+    profilePicture: option?.profilePicture,
+  }));
+};
+
+export const onCorrectPage = (existingTask, board) => {
+  if (board?.podId) return existingTask.podId === board.podId;
+  return (
+    existingTask?.orgId === board?.orgId ||
+    existingTask?.podId === board?.podId ||
+    existingTask?.userId === board?.userId
+  );
+};
+
+export const getPodObject = (pods, podId) => {
+  let justCreatedPod = null;
+  pods.forEach((testPod) => {
+    if (testPod.id === podId) {
+      justCreatedPod = testPod;
+    }
+  });
+  return justCreatedPod;
+};
+
+const filterGithubPullRequestsForAutocomplete = (githubPullRequests) => {
+  if (!githubPullRequests) {
+    return [];
+  }
+  return githubPullRequests.map((githubPullRequest) => ({
+    id: githubPullRequest.id,
+    label: githubPullRequest.title,
+    url: githubPullRequest.url,
+  }));
+};
 
 const HANDLE_TASKS = {
   REMOVE: {
@@ -249,17 +296,9 @@ export const useGetPaymentMethods = (orgId, includeDeactivated = false) => {
 };
 
 export const useGetOrgUsers = (orgId, searchString = '') => {
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  const [searchOrgUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_ORG_USERS, {
-    onCompleted: (data) => {
-      setTimeout(() => {
-        if (!previousData) {
-          setHasMore(data.searchOrgUsers.length === LIMIT);
-        }
-      });
-    },
-  });
+  const [searchOrgUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_ORG_USERS);
 
   const fetchMoreOrgUsers = () =>
     fetchMore({ variables: { offset: data.searchOrgUsers.length } }).then(({ data }) =>
@@ -280,7 +319,12 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
         },
       });
   }, [orgId, searchOrgUsers, searchString]);
-  return { data: data?.searchOrgUsers, search, hasMoreOrgUsers: hasMore, fetchMoreOrgUsers };
+  return {
+    data: data?.searchOrgUsers,
+    search,
+    hasMoreOrgUsers: hasMore && data?.searchOrgUsers?.length >= LIMIT,
+    fetchMoreOrgUsers,
+  };
 };
 
 export const useGetMilestones = (orgId, podId) => {
@@ -327,6 +371,8 @@ export const useCreateTask = () => {
       'getTasksForMilestone',
       SEARCH_USER_CREATED_TASKS,
       GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
+      GET_ORG_HOME_TASK_OBJECTS,
+      GET_POD_HOME_TASK_OBJECTS,
     ],
     onCompleted: ({ createTask: createTaskData }) => setCornerWidgetValue(createTaskData),
   });
@@ -352,16 +398,51 @@ export const useCreateMilestone = () => {
       'getUserTaskBoardTasks',
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
-      'getMilestones',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
+      GET_ORG_HOME_TASK_OBJECTS,
+      GET_POD_HOME_TASK_OBJECTS,
     ],
-    onCompleted: ({ createMilestone: createMilestoneData }) => setCornerWidgetValue(createMilestoneData),
+    onCompleted: ({ createMilestone: createMilestoneData }) =>
+      setCornerWidgetValue({
+        ...createMilestoneData,
+        type: ENTITIES_TYPES.MILESTONE,
+      }),
   });
-  const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
+  const handleMutation = ({ input, board, pods, form, handleClose, formValues, boardType }) => {
+    const {
+      title,
+      description,
+      orgId,
+      podIds,
+      dueDate,
+      observerIds,
+      userMentions,
+      mediaUploads,
+      privacyLevel,
+      labelIds,
+      points,
+      status,
+      timezone,
+    } = input;
     createMilestone({
       variables: {
-        input,
+        input: {
+          title,
+          description,
+          orgId,
+          podIds,
+          dueDate,
+          observerIds,
+          userMentions,
+          mediaUploads,
+          privacyLevel,
+          labelIds,
+          points,
+          status,
+          timezone,
+          board: boardType,
+        },
       },
     }).then((result) => {
       if (formValues !== undefined) {
@@ -408,6 +489,8 @@ export const useCreateBounty = () => {
       'getPerTypeTaskCountForPodBoard',
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
+      GET_ORG_HOME_TASK_OBJECTS,
+      GET_POD_HOME_TASK_OBJECTS,
     ],
     onCompleted: ({ createBounty: createBountyData }) => setCornerWidgetValue(createBountyData),
   });
@@ -504,11 +587,42 @@ export const useUpdateMilestone = () => {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const handleMutation = ({ input, board, handleClose, existingTask }) => {
+  const handleMutation = ({ input, board, handleClose, existingTask, boardType }) => {
+    const {
+      title,
+      description,
+      orgId,
+      podIds,
+      dueDate,
+      observerIds,
+      userMentions,
+      mediaUploads,
+      privacyLevel,
+      labelIds,
+      points,
+      status,
+      timezone,
+    } = input;
+
     updateMilestone({
       variables: {
         milestoneId: existingTask?.id,
-        input,
+        input: {
+          title,
+          description,
+          orgId,
+          podIds,
+          dueDate,
+          observerIds,
+          userMentions,
+          mediaUploads,
+          privacyLevel,
+          labelIds,
+          points,
+          status,
+          timezone,
+          board: boardType,
+        },
       },
     }).then(({ data }) => {
       const milestone = data?.updateMilestone;
@@ -579,6 +693,8 @@ export const useCreateTaskProposal = () => {
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getUserTaskBoardProposals',
+      GET_ORG_HOME_PROPOSALS,
+      GET_POD_HOME_PROPOSALS,
     ],
     onCompleted: ({ createTaskProposal: createTaskProposalData }) =>
       setCornerWidgetValue({

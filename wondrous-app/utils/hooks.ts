@@ -137,7 +137,7 @@ export const useCornerWidget = () => useContext(CornerWidgetContext);
 /**
  * Hook that alerts clicks outside of the passed ref
  */
-export const useOutsideAlerter = (ref, callback) => {
+export const useOutsideAlerter = (ref, callback, dependencies = []) => {
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
@@ -154,7 +154,7 @@ export const useOutsideAlerter = (ref, callback) => {
       // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [ref]);
+  }, [ref, ...dependencies]);
 };
 
 function usePrevious(value) {
@@ -330,6 +330,19 @@ export const useSteps = (defaultStep = 0) => {
   return { step, setStep, nextStep, prevStep };
 };
 
+export const checkCanClaimPermissions = (task, userPermissionsContext) => {
+  const orgId = task?.orgId;
+  const podId = task?.podId;
+  if (task?.privacyLevel === PRIVACY_LEVEL.public) return true;
+  // Task is private
+  if (
+    (podId && userPermissionsContext?.podPermissions[podId]) ||
+    (userPermissionsContext?.podPermissions[orgId] && !podId)
+  )
+    return true;
+  return false;
+};
+
 export const usePermissions = (entity, isTaskProposal = false) => {
   const globalContext = useGlobalContext();
   const { id: userId } = useMe() || {};
@@ -349,8 +362,10 @@ export const usePermissions = (entity, isTaskProposal = false) => {
   const canViewApplications = hasFullPermission || hasEditPermission || (createdByUser && type === TASK_TYPE);
   const canDelete = canArchive && (type === ENTITIES_TYPES.TASK || type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
   const canApproveProposal = hasFullPermission || permissions.includes(PERMISSIONS.CREATE_TASK);
+  const claimPermissions = checkCanClaimPermissions(entity, userPermissionsContext);
   const canClaim =
     taskApplicationPermissions?.canClaim &&
+    claimPermissions &&
     !assigneeId &&
     type !== BOUNTY_TYPE &&
     type !== MILESTONE_TYPE &&

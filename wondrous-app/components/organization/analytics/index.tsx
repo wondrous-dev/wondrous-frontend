@@ -164,6 +164,7 @@ function UserRow({ contributorTask }) {
     <ContributorDiv>
       <TaskViewModal
         open={openModal}
+        isMilestone={false}
         handleClose={() => {
           const style = document.body.getAttribute('style');
           const top = style.match(/(top: -)(.*?)(?=px)/);

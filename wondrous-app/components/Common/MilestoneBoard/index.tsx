@@ -11,25 +11,28 @@ import {
   BoardsCardSubheader,
 } from 'components/Common/Boards/styles';
 import { SafeImage } from 'components/Common/Image';
-import PodIconName from 'components/Common/PodIconName';
 import { MilestoneProgress } from 'components/Common/MilestoneProgress';
+import PodIconName from 'components/Common/PodIconName';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import TaskCardDate from 'components/Common/TaskCardDate';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import TaskCardStatus from 'components/Common/TaskCardStatus';
 import TaskPriority from 'components/Common/TaskPriority';
-import ActionModals from 'components/Common/TaskViewModal/actionModals';
+import ActionModals from 'components/Common/TaskViewModal/ActionModalsComponent';
 import { CreateEntity } from 'components/CreateEntity';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import CommentsIcon from 'components/Icons/comments';
 import PodIcon from 'components/Icons/podIcon';
-import { RichTextViewer } from 'components/RichText';
-import { ARCHIVE_TASK } from 'graphql/mutations';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
+import { ARCHIVE_TASK, ARCHIVE_MILESTONE } from 'graphql/mutations';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { Fragment, useContext, useState } from 'react';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { usePermissions } from 'utils/hooks';
+import DeleteMilestoneConfirm from '../DeleteMilestoneConfirm';
+import DisplayCrossPods from '../DisplayCrossPods';
 import { MilestoneCard, MilestoneProgressWrapper } from './styles';
 
 const MilestoneItem = ({ milestone, handleCardClick }) => {
@@ -47,28 +50,18 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
     setAnchorEl(null);
     setEditTask(false);
   };
-  const goToPod = (podId) => {
-    router.push(`/pod/${podId}/home`, undefined, {
-      shallow: true,
-    });
-  };
 
-  const [archiveTaskMutation] = useMutation(ARCHIVE_TASK, {
+  const [archiveMilestoneMutation] = useMutation(ARCHIVE_MILESTONE, {
     refetchQueries: [
-      'getTaskById',
+      'getMilestoneById',
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
-      'getOrgTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
-      'getPodTaskBoardTasks',
       'getPerStatusTaskCountForPodBoard',
-      SEARCH_USER_CREATED_TASKS,
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
     ],
-    onError: () => {
-      console.error('Something went wrong with archiving tasks');
-    },
   });
-
   const handleOnCloseArchiveTaskModal = () => setArchiveTask(false);
 
   return (
@@ -80,7 +73,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
             setEditTask(false);
             handleCloseModal();
           }}
-          entityType={milestone?.type}
+          entityType={ENTITIES_TYPES.MILESTONE}
           handleClose={() => {
             setEditTask(false);
             handleCloseModal();
@@ -89,22 +82,32 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
           existingTask={
             milestone?.id && {
               ...milestone,
+              // TODO: normalize pods
+              podIds: milestone?.pods?.map((pod) => pod.podId || pod.id),
             }
           }
         />
       )}
       <ActionModals
         archiveTask={archiveTask}
-        archiveTaskMutation={archiveTaskMutation}
+        archiveTaskMutation={({ variables }) =>
+          archiveMilestoneMutation({ variables: { milestoneId: variables.taskId } })
+        }
         completeModal={completeModal}
-        deleteTask={deleteTask}
         fetchedTask={milestone}
+        isMilestone
         handleOnCloseArchiveTaskModal={handleOnCloseArchiveTaskModal}
         setCompleteModal={setCompleteModal}
-        setDeleteTask={setDeleteTask}
         setSnackbarAlertMessage={setSnackbarAlertMessage}
         setSnackbarAlertOpen={setSnackbarAlertOpen}
         taskType={milestone?.type}
+        setDeleteTask={setDeleteTask}
+        deleteTask={deleteTask && (!milestone?.pods || milestone?.pods?.length <= 1)}
+      />
+      <DeleteMilestoneConfirm
+        milestone={milestone}
+        onClose={() => setDeleteTask(false)}
+        isOpen={deleteTask && milestone?.pods?.length > 1}
       />
       <MilestoneCard
         onClick={() => handleCardClick(milestone)}
@@ -117,7 +120,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
       >
         <BoardsCardHeader>
           <BoardsCardSubheader>
-            <TaskCardStatus type={milestone?.type} orgId={milestone?.orgId} status={milestone?.status} />
+            <TaskCardStatus type={ENTITIES_TYPES.MILESTONE} orgId={milestone?.orgId} status={milestone?.status} />
             <TaskCardPrivacy privacyLevel={milestone?.privacyLevel} />
           </BoardsCardSubheader>
           <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end">
@@ -132,7 +135,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
             </Box>
           ) : null}
           <BoardsCardBodyDescription as="div">
-            <RichTextViewer text={milestone.description} />
+            <PlateRichTextViewer text={milestone.description} />
           </BoardsCardBodyDescription>
           <MilestoneProgressWrapper>
             <MilestoneProgress milestoneId={milestone.id} />
@@ -149,17 +152,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
           ) : null}
         </BoardsCardBody>
         <BoardsCardFooter>
-          {milestone?.podName && (
-            <PodIconName
-              color={milestone?.podColor}
-              name={milestone?.podName}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                goToPod(milestone?.podId);
-              }}
-            />
-          )}
+          <DisplayCrossPods pods={milestone.pods} />
           <div
             style={{
               flex: 1,

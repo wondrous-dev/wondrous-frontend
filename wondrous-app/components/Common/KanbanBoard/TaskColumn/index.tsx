@@ -14,6 +14,7 @@ import {
   STATUS_CLOSED,
   HEADER_ICONS,
   TITLES,
+  ANALYTIC_EVENTS,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -30,6 +31,12 @@ import EmptyStateBoards from 'components/EmptyStateBoards';
 import Droppable from 'components/StrictModeDroppable';
 
 import { IsMobileContext } from 'utils/contexts';
+import { hasCreateTaskPermission } from 'utils/helpers';
+import { useQuery } from '@apollo/client';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { useRouter } from 'next/router';
+
+import { useMe } from 'components/Auth/withAuth';
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
@@ -37,7 +44,11 @@ import {
   TaskColumnContainerCount,
   TaskListContainer,
   TaskColumnItemWrapper,
+  AISnackbarContainer,
+  AISnackbarNewContainer,
+  AISnackbarText,
 } from './styles';
+import CrossSvg from './images/cross.svg';
 
 interface ITaskColumn {
   cardsList: Array<any>;
@@ -48,22 +59,35 @@ interface ITaskColumn {
 
 function TaskColumn(props: ITaskColumn) {
   const { cardsList, status, draggingTask } = props;
-
+  const router = useRouter();
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const user = useMe();
+  const [AISnackbarVisible, setAISnackbarVisible] = useState(true);
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
   const [ref, inView] = useInView({});
   const isMobile = useContext(IsMobileContext);
+  const board = orgBoard || podBoard || userBoard;
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
 
+  const permissions = userPermissionsContext?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+    : null;
   const isTaskDragging = useMemo(() => draggingTask !== null, [draggingTask]);
   const isDropDisabled = useMemo(
     () => isTaskDragging && taskHasPayment(draggingTask) && status !== TASK_STATUS_DONE,
     [draggingTask, isTaskDragging, status]
   );
 
-  const board = orgBoard || userBoard || podBoard;
+  const canCreateTask =
+    hasCreateTaskPermission({ userPermissionsContext: permissions, orgId: board?.orgId, podId: board?.podId }) ||
+    board?.entityType === ENTITIES_TYPES.PROPOSAL ||
+    userBoard;
+
   const taskCount = board?.taskCount;
   const HeaderIcon = HEADER_ICONS[status];
   let number;
@@ -114,7 +138,7 @@ function TaskColumn(props: ITaskColumn) {
 
   return (
     <TaskColumnContainer
-      onMouseEnter={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(true)}
+      onMouseEnter={() => status === TASK_STATUS_TODO && canCreateTask && setIsAddButtonVisible(true)}
       onMouseLeave={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(false)}
       activeEntityType={board?.entityType || ''}
       style={{
@@ -159,6 +183,50 @@ function TaskColumn(props: ITaskColumn) {
           />
         )}
       </TaskColumnContainerHeader>
+      {status === TASK_STATUS_TODO && canCreateTask && AISnackbarVisible && (orgBoard || podBoard) && (
+        <AISnackbarContainer
+          onClick={() => {
+            if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+              window?.analytics?.track(ANALYTIC_EVENTS.AI_CREATE_TASK_SNACKBAR_CLICK, {
+                orgId: board?.orgId,
+                podId: board?.podId,
+                userId: user?.id,
+              });
+            }
+            if (orgBoard) {
+              router.push(`/organization/${orgBoard?.orgData?.username}/wonder_ai_bot`, undefined, { shallow: true });
+            } else if (podBoard) {
+              router.push(`/pod/${podBoard?.podId}/wonder_ai_bot`, undefined, { shallow: true });
+            }
+          }}
+        >
+          <AISnackbarNewContainer>
+            <AISnackbarText>New!</AISnackbarText>
+          </AISnackbarNewContainer>
+          <AISnackbarText
+            style={{
+              marginLeft: '8px',
+            }}
+          >
+            Generate tasks with AI
+          </AISnackbarText>
+          <div
+            style={{
+              flex: 1,
+            }}
+          />
+          {/* <CrossSvg
+            style={{
+              cursor: 'pointer',
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setAISnackbarVisible(false);
+            }}
+          /> */}
+        </AISnackbarContainer>
+      )}
       <Droppable droppableId={status} isDropDisabled={isDropDisabled}>
         {(provided) => (
           <TaskListContainer
@@ -182,9 +250,9 @@ function TaskColumn(props: ITaskColumn) {
                         cursor: board?.isDragDisabled ? 'default' : 'move',
                       }}
                     >
-                      {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
+                      {board?.entityType === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
                         <Milestone>
-                          <Task task={card} />
+                          <Task task={card} isMilestone />
                         </Milestone>
                       ) : (
                         <Task task={card} />

@@ -38,6 +38,7 @@ const ProfileCategorySection = () => (
       onClick: ({ router, data: { id }, entityLink }) => router.push(`${entityLink}/docs?id=${id}`),
     }}
     data={useGetDocumentCategories()}
+    tourId="tour-header-project-docs"
   />
 );
 

@@ -32,7 +32,6 @@ import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplic
 import { DAOIcon } from 'components/Icons/dao';
 import GrantIcon from 'components/Icons/GrantIcon';
 import { GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
-import { RichTextViewer } from 'components/RichText';
 import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import ViewGrantFooter from 'components/ViewGrant/Footer';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';
@@ -57,11 +56,15 @@ import Typography from '@mui/material/Typography';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { IconWrapper } from 'components/Common/Status/styles';
 import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
+import { Description, Title } from 'components/Common/TaskViewModal/Fields';
 import { ItemPill } from 'components/GrantsBoard/styles';
 import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/Icons/statusIcons';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { TaskContext } from 'utils/contexts';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
+import { Project, WalletAddress } from './EditableFields';
 import { GrantApplicationStatusManager, OrgViewer, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';
 
@@ -103,7 +106,7 @@ const FIELDS_CONFIG = [
   },
   {
     component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
-    shouldDisplay: ({ hasManageRights }): boolean => hasManageRights,
+    shouldDisplay: ({ hasManageRights }) => hasManageRights,
   },
   {
     label: 'Grant amount',
@@ -115,11 +118,13 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Wallet Address',
-    component: ({ grantApplication: { paymentAddress } }) => <WalletAddressViewer walletAddress={paymentAddress} />,
+    component: ({ grantApplication: { paymentAddress }, canEdit }) => (
+      <WalletAddress canEdit={canEdit} paymentAddress={paymentAddress} />
+    ),
   },
   {
     label: 'Project',
-    component: ({ grantApplication }) => <OrgViewer grantApplication={grantApplication} />,
+    component: ({ grantApplication, canEdit }) => <Project grantApplication={grantApplication} canEdit={canEdit} />,
   },
 ];
 
@@ -195,7 +200,12 @@ const ViewGrantApplication = ({ onClose }) => {
 
   const statusAndIcon = GRANT_APPLICATION_STATUS_LABELS[status];
   return (
-    <>
+    <TaskContext.Provider
+      value={{
+        grantApplication,
+        entityType: ENTITIES_TYPES.GRANT_APPLICATION,
+      }}
+    >
       <ArchiveTaskModal
         open={archiveTask}
         onArchive={() => {
@@ -288,7 +298,14 @@ const ViewGrantApplication = ({ onClose }) => {
             )}
           </TaskModalHeaderWrapper>
           <TaskModalHeaderWrapperRight>
-            {grantApplication && <TaskModalHeaderShare fetchedTask={grantApplication} />}
+            {grantApplication && (
+              <TaskModalHeaderShare
+                fetchedTask={{
+                  ...grantApplication,
+                  type: ENTITIES_TYPES.GRANT_APPLICATION,
+                }}
+              />
+            )}
             <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
             <Menu
               canEdit={canEditAndComment}
@@ -304,18 +321,31 @@ const ViewGrantApplication = ({ onClose }) => {
         <TaskModalTaskData fullScreen={isFullScreen}>
           <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
             <Grid display="flex" justifyContent="space-between" alignItems="center">
-              <TaskModalTitle>{grantApplication?.title}</TaskModalTitle>
+              <Title title={grantApplication?.title} canEdit={canEditAndComment} />
+
               <ItemPill withIcon>
                 <IconWrapper>
                   <statusAndIcon.icon />
                 </IconWrapper>
-                <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                <Typography
+                  color={palette.white}
+                  whiteSpace="nowrap"
+                  fontWeight={500}
+                  fontSize={14}
+                  fontFamily={typography.fontFamily}
+                >
                   {statusAndIcon.label}
                 </Typography>
               </ItemPill>
             </Grid>
             <DescriptionWrapper>
-              <RichTextViewer text={grantApplication?.description} />
+              <Description
+                canEdit={canEditAndComment}
+                description={grantApplication?.description}
+                orgId={grant?.orgId}
+                showFullByDefault
+              />
+
               <TaskMediaWrapper media={grantApplication?.media} />
             </DescriptionWrapper>
           </TaskModalTitleDescriptionMedia>
@@ -339,7 +369,7 @@ const ViewGrantApplication = ({ onClose }) => {
                           <TaskSectionDisplayLabelText>{field.label}</TaskSectionDisplayLabelText>
                         </GrantSectionDisplayLabel>
                       )}
-                      <field.component grantApplication={grantApplication} />
+                      <field.component grantApplication={grantApplication} canEdit={canEditAndComment} />
                     </TaskSectionDisplayDiv>
                   );
                 })}
@@ -356,7 +386,7 @@ const ViewGrantApplication = ({ onClose }) => {
           />
         </TaskModalTaskData>
       </TaskModalCard>
-    </>
+    </TaskContext.Provider>
   );
 };
 

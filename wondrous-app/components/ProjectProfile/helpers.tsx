@@ -13,6 +13,8 @@ import {
   GET_POD_HOME_PROPOSALS,
   GET_ORG_HOME_TASK_OBJECTS,
   GET_POD_HOME_TASK_OBJECTS,
+  GET_ORG_HOME_MILESTONS,
+  GET_POD_HOME_MILESTONS,
 } from 'graphql/queries/projectPage';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -150,6 +152,8 @@ export const useGetHomePageTaskObjects = () => {
   };
   const { data: getOrgHomeTaskObjects } = useQuery(GET_ORG_HOME_TASK_OBJECTS, {
     skip: !useIsOrg() || !orgId,
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     variables: {
       input: {
         ...variables,
@@ -159,6 +163,8 @@ export const useGetHomePageTaskObjects = () => {
   });
   const { data: getPodHomeTaskObjects } = useQuery(GET_POD_HOME_TASK_OBJECTS, {
     skip: useIsOrg() || !podId,
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     variables: {
       input: {
         ...variables,
@@ -167,6 +173,34 @@ export const useGetHomePageTaskObjects = () => {
     },
   });
   const data = useIsOrg() ? getOrgHomeTaskObjects?.getOrgHomeTaskObjects : getPodHomeTaskObjects?.getPodHomeTaskObjects;
+  return data;
+};
+
+export const useGetHomeMilestones = () => {
+  const { orgId, podId } = useBoards().board;
+  const variables = {
+    limit: DATA_LIMIT,
+    offset: 0,
+  };
+  const { data: orgMilestoneData } = useQuery(GET_ORG_HOME_MILESTONS, {
+    skip: !useIsOrg(),
+    variables: {
+      input: {
+        ...variables,
+        orgId,
+      },
+    },
+  });
+  const { data: podMilestoneData } = useQuery(GET_POD_HOME_MILESTONS, {
+    skip: useIsOrg(),
+    variables: {
+      input: {
+        ...variables,
+        podId,
+      },
+    },
+  });
+  const data = useIsOrg() ? orgMilestoneData?.getOrgHomeMilestones : podMilestoneData?.getPodHomeMilestones;
   return data;
 };
 
@@ -240,7 +274,7 @@ export const useGetDocumentCategories = () => {
   return data;
 };
 
-export const useGetGrantOrgBoard = () => {
+export const useGetHomePageGrants = () => {
   const { orgId, podId } = useBoards().board;
   const variables = {
     limit: DATA_LIMIT,

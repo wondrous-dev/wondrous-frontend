@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { logout, useMe } from 'components/Auth/withAuth';
+import { useMe } from 'components/Auth/withAuth';
 import BackButton from 'components/Common/SidebarBackButton';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import Item from 'components/Common/SidebarItem';
@@ -21,7 +21,6 @@ import {
   Wrapper,
 } from 'components/Common/SidebarStyles';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import ExitIcon from 'components/Icons/exit';
 import RolesIcon from 'components/Icons/roles';
 import FileDownloadIcon from 'components/Icons/Sidebar/fileDownload.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
@@ -262,9 +261,6 @@ function SettingsWrapper(props) {
                     </Link>
                   );
                 })}
-                <Item Icon={ExitIcon} onClick={() => logout()}>
-                  Log out
-                </Item>
               </ListWrapper>
             </ListWrapper>
           </SidebarContent>

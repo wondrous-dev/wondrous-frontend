@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_DOCS, GET_ORG_DOCS_CATEGORIES } from 'graphql/queries/documents';
-import { PERMISSIONS } from 'utils/constants';
+import { ANALYTIC_EVENTS, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 
 import AddDocumentDialog from 'components/AddDocumentDialog';
@@ -25,6 +25,7 @@ import { OrgBoardContext } from 'utils/contexts';
 
 import Tooltip from 'components/Tooltip';
 
+import { useMe } from 'components/Auth/withAuth';
 import styles, { AddIconWrapper } from './docsStyles';
 
 const useGetOrgDocs = (orgId) => {
@@ -77,7 +78,7 @@ function Docs(props) {
   const [pinned, setPinned] = useState(false);
 
   const filteredCategories = categoriesData;
-
+  const user = useMe();
   const [menuAnchor, setMenuAnchor] = useState(null);
   const openMenu = Boolean(menuAnchor);
 
@@ -99,6 +100,13 @@ function Docs(props) {
     if (!event.target.href && canEdit) {
       setMenuAnchor(event.currentTarget);
       setSelectedDoc(doc);
+    }
+    if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+      window?.analytics?.track(ANALYTIC_EVENTS.DOCUMENT_CLICK, {
+        docId: doc?.id,
+        orgId,
+        userId: user?.id,
+      });
     }
   };
   const handleMenuClose = () => {

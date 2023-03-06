@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 import { CornerWidgetContext } from 'utils/contexts';
 import CornerWidget, { CornerWidgetProps } from './CornerWidget';
 
-
 type CornerWidgetState = Omit<CornerWidgetProps, 'handleClose'> | null;
 
 const CornerWidgetProvider = ({ children }) => {

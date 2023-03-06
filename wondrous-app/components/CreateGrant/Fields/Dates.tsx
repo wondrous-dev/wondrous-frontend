@@ -8,12 +8,14 @@ import {
 import { DisplayWrapper } from '../styles';
 import { DueDateWrapper } from './styles';
 
-export default function Dates({ startDate, endDate, onChange }) {
+export default function Dates({ startDate, endDate, onChange, hideLabel = false }) {
   return (
     <TaskSectionDisplayDiv alignItems="start">
-      <CreateEntityLabelWrapper>
-        <CreateEntityLabel>Dates</CreateEntityLabel>
-      </CreateEntityLabelWrapper>
+      {hideLabel ? null : (
+        <CreateEntityLabelWrapper>
+          <CreateEntityLabel>Dates</CreateEntityLabel>
+        </CreateEntityLabelWrapper>
+      )}
       <DisplayWrapper>
         <DueDateWrapper>
           <CreateEntityDueDate
