@@ -4,8 +4,10 @@ import { Button as MuiButton, Typography, InputBase } from '@mui/material';
 
 export const IntegrationsContainer = styled.div`
   height: 100vh;
-  width: calc(100vw - 350px);
-  max-width: 765px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 `;
 
 export const TableValueText = styled(Typography)`

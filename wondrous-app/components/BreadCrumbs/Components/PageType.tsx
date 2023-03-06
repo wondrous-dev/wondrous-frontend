@@ -112,7 +112,7 @@ const PAGE_TYPES_MAP = {
     Icon: LockIconOutline,
   },
   [PAGE_TYPES.SETTINGS_INTEGRATIONS_SETTINGS]: {
-    label: 'Integrations Settings',
+    label: 'Integrations',
     Icon: HexagonIcon,
   },
   [PAGE_TYPES.SETTINGS_PAYMENT_LEDGER]: {
