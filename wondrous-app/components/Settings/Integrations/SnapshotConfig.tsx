@@ -21,9 +21,9 @@ import { ErrorText } from '../../Common';
 function SnapshotConfigSection(props) {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
-  const { orgId, podId } = props;
+  const { orgId, podId, setConnectionParams } = props;
   const [userAddress, setUserAddress] = useState('');
-  const [enteredSnapshotId, setEnteredSnapshotId] = useState(null);
+  // const [enteredSnapshotId, setEnteredSnapshotId] = useState(null);
 
   const {
     isSnapshotAdmin,
@@ -55,21 +55,6 @@ function SnapshotConfigSection(props) {
     setUserAddress(wonderWeb3.address);
   }, []);
 
-  const handleConnectSnapshotSpace = async () => {
-    await connectSnapshotToOrg({
-      variables: {
-        orgId,
-        input: {
-          snapshotEns: snapshotSpace.id,
-          name: snapshotSpace.name,
-          symbol: snapshotSpace.symbol,
-          url: getSnapshotUrl(snapshotSpace.id),
-          network: snapshotSpace.network,
-        },
-      },
-    });
-  };
-
   const handlDisconnectSnapshotSpace = async () => {
     const confirmed = confirm('Are you sure you want to disconnect the snapshot space from org');
     if (!confirmed) {
@@ -82,35 +67,34 @@ function SnapshotConfigSection(props) {
     });
   };
 
-  const handleCheckSnapshotClick = async () => {
-    await getSnapshotSpaceAndValidateAdmin({ variables: { id: enteredSnapshotId } });
-  };
-
+  console.log(snapshotConnected, 'snapshot connected');
   return (
     <IntegrationsInputsBlock>
       <IntegrationsSnapshotBlock>
-        <LabelBlock>Snapshot Settings</LabelBlock>
+        {/* <LabelBlock>Snapshot Settings</LabelBlock> */}
         {!snapshotConnected && !(isSnapshotAdmin && snapshotSpace?.id) && (
           <>
             <IntegrationsHelperText>Enter ENS Domain to connect</IntegrationsHelperText>
             <IntegrationsSnapshotSubBlock>
               <IntegrationsSnapshotInputSubBlock>
                 <IntegrationsSnapshotENSInput
-                  value={enteredSnapshotId}
                   placeholder="ENS domain"
-                  onChange={(e) => setEnteredSnapshotId(e.target.value)}
+                  onChange={(e) =>
+                    setConnectionParams({
+                      enteredSnapshotId: e.target.value,
+                    })
+                  }
                 />
                 {getSnapshotSpaceError && <ErrorText>{getSnapshotSpaceError}</ErrorText>}
               </IntegrationsSnapshotInputSubBlock>
-              <IntegrationsConnectButton onClick={handleCheckSnapshotClick}>Check Snapshot</IntegrationsConnectButton>
             </IntegrationsSnapshotSubBlock>
           </>
         )}
-        {!snapshotConnected && isSnapshotAdmin && snapshotSpace?.id && (
+        {/* {!snapshotConnected && isSnapshotAdmin && snapshotSpace?.id && (
           <IntegrationsConnectButton onClick={handleConnectSnapshotSpace}>
             Connect Snapshot {snapshotSpace?.name}
           </IntegrationsConnectButton>
-        )}
+        )} */}
         {snapshotConnected && (
           <>
             <IntegrationsHelperText>Snapshot connected:</IntegrationsHelperText>

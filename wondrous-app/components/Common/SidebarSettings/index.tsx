@@ -269,7 +269,15 @@ function SettingsWrapper(props) {
         </SidebarWrapper>
 
         <ChildrenWrapper minimized={minimized}>
-          <SettingsChildrenWrapper>
+          <SettingsChildrenWrapper
+            style={
+              fullWidth
+                ? {
+                    padding: '24px',
+                  }
+                : {}
+            }
+          >
             <Grid {...(fullWidth ? { width: '100%', height: '100%' } : {})}>
               {showPodIcon ? (
                 <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>

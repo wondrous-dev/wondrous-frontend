@@ -7,13 +7,15 @@ import { HeaderButton } from 'components/organization/wrapper/styles';
 import Image from 'next/image';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { useState } from 'react';
+import ConnectionModal from './ConnectionModal';
 
-const ActionButton = ({ isActive, type }) => {
+const ActionButton = ({ isActive, setupAction }) => {
   if (!isActive) {
     return (
       <HeaderButton
         reversed
-        onClick={() => {}}
+        onClick={setupAction}
         style={{
           height: '28px',
         }}
@@ -57,63 +59,77 @@ const ActiveField = ({ isActive }) => (
   </Grid>
 );
 
-const IntegrationsCard = ({ integration }) => (
-  <Grid
-    maxWidth="33%"
-    flex="1 0 32%"
-    gap="12px"
-    display="flex"
-    direction="column"
-    alignItems="flex-start"
-    borderRadius="6px"
-    padding="14px"
-    bgcolor={palette.grey900}
-  >
-    <Grid display="flex" gap="14px">
-      <Image
-        src={integration?.logo}
-        alt={`${integration.title} logo`}
-        width={45}
-        height={45}
-        style={{
-          borderRadius: '6px',
-        }}
+const IntegrationsCard = ({ integration, orgId, podId }) => {
+  const [isConnectionModalOpen, setIsConnectionModalOpen] = useState(false);
+
+  const toggleModal = () => setIsConnectionModalOpen((prev) => !prev);
+  return (
+    <>
+      <ConnectionModal
+        type={integration.type}
+        isOpen={isConnectionModalOpen}
+        onClose={toggleModal}
+        orgId={orgId}
+        podId={podId}
       />
-      <Grid display="flex" direction="column" gap="4px">
+      <Grid
+        maxWidth="33%"
+        flex="1 0 32%"
+        gap="12px"
+        display="flex"
+        direction="column"
+        alignItems="flex-start"
+        borderRadius="6px"
+        padding="14px"
+        bgcolor={palette.grey900}
+      >
+        <Grid display="flex" gap="14px">
+          <Image
+            src={integration?.logo}
+            alt={`${integration.title} logo`}
+            width={45}
+            height={45}
+            style={{
+              borderRadius: '6px',
+            }}
+          />
+          <Grid display="flex" direction="column" gap="4px">
+            <Typography
+              color={palette.white}
+              fontSize="16px"
+              fontWeight={700}
+              fontFamily={typography.fontFamily}
+              lineHeight="20px"
+            >
+              {integration.title}
+            </Typography>
+            <Grid display="flex" gap="6px" alignItems="center">
+              <LinkIcon />
+              <StyledLink target="__blank" href={integration.url}>
+                {integration.linkTitle}
+              </StyledLink>
+            </Grid>
+          </Grid>
+        </Grid>
         <Typography
-          color={palette.white}
-          fontSize="16px"
-          fontWeight={700}
+          color={palette.grey250}
+          lineHeight="24px"
+          fontSize="15px"
+          minHeight="4rem"
+          fontWeight="400"
           fontFamily={typography.fontFamily}
-          lineHeight="20px"
         >
-          {integration.title}
+          {integration.text}
         </Typography>
-        <Grid display="flex" gap="6px" alignItems="center">
-          <LinkIcon />
-          <StyledLink target="__blank" href={integration.url}>
-            {integration.linkTitle}
-          </StyledLink>
+        <Divider />
+        <Grid display="flex" justifyContent="space-between" width="100%">
+          {/* footer */}
+          <ActiveField isActive={integration.active} />
+          <ActionButton isActive={integration.active} setupAction={toggleModal} />
         </Grid>
       </Grid>
-    </Grid>
-    <Typography
-      color={palette.grey250}
-      lineHeight="24px"
-      fontSize="15px"
-      minHeight="4rem"
-      fontWeight="400"
-      fontFamily={typography.fontFamily}
-    >
-      {integration.text}
-    </Typography>
-    <Divider />
-    <Grid display="flex" justifyContent="space-between" width="100%">
-      {/* footer */}
-      <ActiveField isActive />
-      <ActionButton type={integration.type} isActive />
-    </Grid>
-  </Grid>
-);
+    </>
+  );
+};
 
 export default IntegrationsCard;
