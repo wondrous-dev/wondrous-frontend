@@ -23,7 +23,6 @@ import {
 
 const Reviewer = ({ entityType, reviewerIds, setFieldError, setFieldValue, errors, orgId, podId }) => {
   const eligibleReviewers = useGetEligibleReviewers(orgId, podId);
-
   const filteredEligibleReviewers = eligibleReviewers.filter((reviewer) => !reviewerIds?.includes(reviewer.id));
 
   return (
@@ -100,7 +99,7 @@ const Reviewer = ({ entityType, reviewerIds, setFieldError, setFieldValue, error
                   if (reason === 'selectOption' && !reviewerIds.includes(value.id)) {
                     const clonedReviewerIds = cloneDeep(reviewerIds);
                     clonedReviewerIds[index] = value.id;
-                    setFieldValue('reviewerIds', clonedReviewerIds);
+                    setFieldValue(clonedReviewerIds);
                   }
                 }}
                 blurOnSelect
