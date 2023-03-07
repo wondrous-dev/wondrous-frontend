@@ -1,6 +1,6 @@
 import GitHubIcon from '@mui/icons-material/GitHub';
 import palette from 'theme/palette';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
 import CloseModalIcon from 'components/Icons/closeModal';
@@ -8,6 +8,7 @@ import { DELETE_ORG_GITHUB } from 'graphql/mutations/org';
 import { GithubLink, GithubButtonDiv } from './styles';
 import { IntegrationsInputsBlock } from '../Integrations/styles';
 import { LabelBlock } from '../styles';
+import ConnectionContext from '../Integrations/Helpers/ConnectionContext';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
 
@@ -21,21 +22,11 @@ export const getGithubCallbackUrl = () => {
   return 'http%3A%2F%2Flocalhost%3A3000%2Fgithub%2Fcallback';
 };
 
-export function GithubIntegration({ orgId }) {
+export function GithubIntegration() {
+  const {orgId} = useContext(ConnectionContext)
   const [githubConnected, setGithubConnected] = useState(false);
   const [hasGithubIntegration, { data: hasGithubIntegrationData }] = useLazyQuery(HAS_ORG_GITHUB_INTEGRATION);
   const [deleteOrgGithubIntegration] = useMutation(DELETE_ORG_GITHUB);
-  const [githubUrl, setGithubUrl] = useState(null);
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const state = JSON.stringify({
-        redirectUrl: encodeURIComponent(window.location.href),
-        orgId,
-      });
-      const redirectUrl = getGithubCallbackUrl();
-      setGithubUrl(`${GITHUB_BASE_URL}?state=${state}`);
-    }
-  }, []);
 
   useEffect(() => {
     if (orgId) {
@@ -51,10 +42,11 @@ export function GithubIntegration({ orgId }) {
     }
   }, [orgId]);
 
+  if(!githubConnected) {
+    return null
+  }
   return (
     <IntegrationsInputsBlock>
-      <LabelBlock>Github settings</LabelBlock>
-      {githubConnected ? (
         <GithubButtonDiv
           style={{
             marginLeft: '0',
@@ -62,9 +54,12 @@ export function GithubIntegration({ orgId }) {
         >
           <GithubLink
             style={{
-              backgroundColor: palette.green400,
+              backgroundColor: palette.grey900,
+              border: `1px solid ${palette.highlightPurple}`,
               cursor: 'auto',
-              border: 'none',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
             }}
           >
             <span
@@ -92,22 +87,7 @@ export function GithubIntegration({ orgId }) {
             />
           </GithubLink>
         </GithubButtonDiv>
-      ) : (
-        <GithubButtonDiv
-          style={{
-            marginLeft: '0',
-          }}
-        >
-          <GithubLink href={githubUrl}>
-            <GitHubIcon
-              style={{
-                marginRight: '8px',
-              }}
-            />
-            <span>Connect Github Organization</span>
-          </GithubLink>
-        </GithubButtonDiv>
-      )}
+      
     </IntegrationsInputsBlock>
   );
 }

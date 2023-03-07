@@ -1,11 +1,13 @@
-import { Grid, Typography } from '@mui/material';
-import GradientHeading from 'components/GradientHeading';
+import { Grid } from '@mui/material';
 import Modal from 'components/Modal';
-import Image from 'next/image';
+import { GithubIntegration } from 'components/Settings/Github';
 import { useState } from 'react';
-import palette from 'theme/palette';
-import typography from 'theme/typography';
+import GuildIntegration from '../Guild';
 import { INTEGRATION_TYPES } from './constants';
+import ConnectionContext from './Helpers/ConnectionContext';
+import GithubFooter from './Helpers/GithubFooter';
+import GuildIntegrationFooter from './Helpers/GuildIntegrationFooter';
+import ModalBody from './Helpers/ModalBody';
 import SnapshotFooter from './Helpers/SnapshotFooter';
 import SnapshotConfigSection from './SnapshotConfig';
 
@@ -14,22 +16,22 @@ const INTEGRATIONS_TYPE_CONFIG = {
     title: 'Connect Snapshot',
     text: 'Connect your Snapshot account.',
     logo: '/images/integrations/snapshot-logo.png',
-    component: ({ orgId, podId, setConnectionParams }) => (
-      <SnapshotConfigSection orgId={orgId} podId={podId} setConnectionParams={setConnectionParams} />
-    ),
-    footer: ({ onClose, connectionParams, orgId, podId }: any) => (
-      <SnapshotFooter orgId={orgId} onClose={onClose} connectionParams={connectionParams} />
-    ),
+    component: () => <SnapshotConfigSection />,
+    footer: () => <SnapshotFooter />,
   },
   [INTEGRATION_TYPES.GUILD]: {
     title: 'Connect Guild.xyz',
     text: 'Connect your Guild.xyz account for custom permissions and roles for your community.',
     logo: '/images/integrations/guild-xyz-logo.png',
+    component: () => <GuildIntegration />,
+    footer: () => <GuildIntegrationFooter />
   },
   [INTEGRATION_TYPES.GITHUB]: {
     title: 'Connect Github',
     text: 'Connect your Github account.',
     logo: '/images/integrations/github-logo.png',
+    footer: () => <GithubFooter />,
+    component: () => <GithubIntegration />
   },
   [INTEGRATION_TYPES.TELEGRAM]: {
     title: 'Connect Telegram',
@@ -42,54 +44,25 @@ const INTEGRATIONS_TYPE_CONFIG = {
     logo: '/images/integrations/discord-full-logo.png',
   },
 };
-const ConnectionModal = ({ type, isOpen, onClose, orgId, podId }) => {
+const ConnectionModal = ({ type, onClose, orgId, podId }) => {
   const config = INTEGRATIONS_TYPE_CONFIG[type];
-  const [connectionParams, setConnectionParams] = useState({});
+  const [data, setData] = useState({})
 
   return (
-    <Modal
+    <ConnectionContext.Provider value={{data, setData, orgId, podId, onClose}}>
+      <Modal
       title={config?.title}
-      open={isOpen}
+      open
       onClose={onClose}
       maxWidth={530}
-      footerRight={config?.footer && config?.footer({ onClose, connectionParams, orgId })}
+      footerRight={config?.footer?.()}
     >
       <Grid display="flex" direction="column">
-        <Grid display="flex" justifyContent="center" alignItems="center" gap="10px" direction="column">
-          <Grid display="flex" gap="10px" justifyContent="center" alignItems="center">
-            <Image
-              src="/images/wonder-logo-white.svg"
-              alt="Wonderverse logo"
-              width={45}
-              height={45}
-              style={{
-                borderRadius: '6px',
-              }}
-            />
-            <Image
-              src={config.logo}
-              alt={`${config.title} logo`}
-              width={45}
-              height={45}
-              style={{
-                borderRadius: '6px',
-              }}
-            />
-          </Grid>
-          <GradientHeading>{config?.title}</GradientHeading>
-          <Typography
-            fontFamily={typography.fontFamily}
-            fontWeight={400}
-            fontSize="15px"
-            lineHeight="24px"
-            color={palette.white}
-          >
-            {config?.text}
-          </Typography>
-        </Grid>
-        <Grid>{config?.component && config?.component({ orgId: 'orgId', podId: 'podId', setConnectionParams })}</Grid>
+        <ModalBody text={config?.text} title={config?.title} logo={config?.logo} />
+        <Grid>{config?.component?.()}</Grid>
       </Grid>
     </Modal>
+    </ConnectionContext.Provider>
   );
 };
 

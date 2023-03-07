@@ -1,21 +1,22 @@
 import { HeaderButton } from 'components/organization/wrapper/styles';
 import Button from 'components/Button';
 import palette from 'theme/palette';
-import typography from 'theme/typography';
 import { Grid } from '@mui/material';
-import { useSnapshot, getSnapshotUrl } from 'services/snapshot';
+import { getSnapshotUrl } from 'services/snapshot';
+import { useContext } from 'react';
+import ConnectionContext from './ConnectionContext';
+import FooterButtons from './FooterButtons';
 
-const SnapshotFooter = ({ onClose, connectionParams, orgId }) => {
-  const { enteredSnapshotId } = connectionParams;
+const SnapshotFooter = () => {
+  const { onClose, data, orgId } = useContext(ConnectionContext);
   const {
-    getSnapshotSpaceAndValidateAdmin,
-
+    enteredSnapshotId,
+    connectSnapshotToOrg,
+    snapshotSpace,
     snapshotConnected,
     isSnapshotAdmin,
-    snapshotSpace,
-    connectSnapshotToOrg,
-  } = useSnapshot();
-
+    getSnapshotSpaceAndValidateAdmin,
+  } = data;
   const handleCheckSnapshotClick = async () => {
     await getSnapshotSpaceAndValidateAdmin({ variables: { id: enteredSnapshotId } });
   };
@@ -38,30 +39,7 @@ const SnapshotFooter = ({ onClose, connectionParams, orgId }) => {
   const isChecked = !snapshotConnected && isSnapshotAdmin && snapshotSpace?.id;
   const title = isChecked ? `Connect Snapshot: ${snapshotSpace?.name}` : 'Check Snapshot';
   const action = isChecked ? handleConnectSnapshotSpace : handleCheckSnapshotClick;
-  return (
-    <Grid display="flex" gap="12px">
-      <Button
-        onClick={onClose}
-        buttonTheme={{
-          background: palette.grey75,
-          borderColor: 'transparent',
-          fontSize: '14px',
-          fontWeight: 500,
-          paddingX: 24,
-          paddingY: 8,
-          maxHeight: '35px',
-          hover: {
-            background: palette.grey76,
-          },
-        }}
-      >
-        Cancel
-      </Button>
-      <HeaderButton reversed onClick={action}>
-        {title}
-      </HeaderButton>
-    </Grid>
-  );
+  return <FooterButtons onClose={onClose} action={action} title={title} />;
 };
 
 export default SnapshotFooter;

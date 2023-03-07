@@ -30,6 +30,7 @@ const snapshotClientGQL = new ApolloClient({
   uri: snapshotAPI,
 });
 
+// TODO: CHANGE ME - Adrian
 export const getSnapshotUrl = (id: string): string => `hub.snapshot.org/api/spaces/${id}/`;
 
 /**

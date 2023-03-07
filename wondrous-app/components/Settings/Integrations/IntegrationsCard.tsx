@@ -26,7 +26,7 @@ const ActionButton = ({ isActive, setupAction }) => {
   }
   return (
     <Button
-      onClick={() => {}}
+      onClick={setupAction}
       buttonTheme={{
         background: palette.grey75,
         borderColor: 'transparent',
@@ -65,13 +65,12 @@ const IntegrationsCard = ({ integration, orgId, podId }) => {
   const toggleModal = () => setIsConnectionModalOpen((prev) => !prev);
   return (
     <>
-      <ConnectionModal
+      {isConnectionModalOpen && <ConnectionModal
         type={integration.type}
-        isOpen={isConnectionModalOpen}
         onClose={toggleModal}
         orgId={orgId}
         podId={podId}
-      />
+      />}
       <Grid
         maxWidth="33%"
         flex="1 0 32%"
@@ -125,7 +124,7 @@ const IntegrationsCard = ({ integration, orgId, podId }) => {
         <Grid display="flex" justifyContent="space-between" width="100%">
           {/* footer */}
           <ActiveField isActive={integration.active} />
-          <ActionButton isActive={integration.active} setupAction={toggleModal} />
+          <ActionButton isActive={integration.active} setupAction={integration?.action ? integration.action : toggleModal} />
         </Grid>
       </Grid>
     </>

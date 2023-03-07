@@ -1,32 +1,43 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-import { useRouter } from 'next/router';
-import SnapshotConfigSection from 'components/Settings/Integrations/SnapshotConfig';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import HeaderBlock from 'components/Settings/headerBlock';
+import SnapshotConfigSection from 'components/Settings/Integrations/SnapshotConfig';
+import { useRouter } from 'next/router';
 
 import { GithubIntegration } from 'components/Settings/Github';
 import GuildIntegration from 'components/Settings/Guild';
 
 import { Grid } from '@mui/material';
 
-import { useSnapshot } from 'services/snapshot';
-import useGuildXyz from 'services/guildxyz';
 import { useQuery } from '@apollo/client';
-import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_ORG_GUILD, HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
 import { Spinner, SpinnerWrapper } from 'components/Dashboard/bounties/styles';
+import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_ORG_GUILD, HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
+import useGuildXyz from 'services/guildxyz';
+import { useSnapshot } from 'services/snapshot';
+import { FILTER_TYPES, INTEGRATION_TYPES } from './constants';
 import Filters from './Filters';
 import IntegrationsCard from './IntegrationsCard';
 import { IntegrationsContainer } from './styles';
-import { FILTER_TYPES, INTEGRATION_TYPES } from './constants';
 
 function Integrations(props) {
   // TODO: add separate endpoint for getting statuses
 
   const router = useRouter();
-  const [activeFilter, setActiveFilter] = useState(FILTER_TYPES.ALL);
-  const { snapshotConnected, snapshotLoading } = useSnapshot();
   const { orgId, podId } = router.query;
+
+  const [activeFilter, setActiveFilter] = useState(FILTER_TYPES.ALL);
+  const { snapshotConnected, snapshotLoading, getOrgSnapshotInfo } = useSnapshot();
+
+
+  useEffect(() => {
+    getOrgSnapshotInfo({
+      variables: {
+        orgId: router.query.orgId,
+      }
+    })
+  }, [])
+
   const { data: orgDiscordConfig, loading: orgDiscordIntegrationLoading } = useQuery(
     GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
     {
@@ -69,6 +80,18 @@ function Integrations(props) {
       type: INTEGRATION_TYPES.DISCORD,
       logo: '/images/integrations/discord-full-logo.png',
       active: !!orgDiscordConfig?.getOrgDiscordNotificationConfig?.id,
+      action: () => {
+        if(podId) {
+          router.push(`/pod/settings/${podId}/notifications`, undefined, {
+            shallow: true,
+          });
+        }
+        else {
+          router.push(`/organization/settings/${orgId}/notifications`, undefined, {
+            shallow: true,
+          });
+        }
+      }
     },
     {
       title: 'Guild.xyz',
