@@ -37,6 +37,7 @@ export function TaskSubtaskFilter({ status, setStatus }) {
     handleClose();
   };
   const menuItems = keys(TASK_ICONS_LABELS);
+  console.log(menuItems, 'menu items');
   return (
     <>
       <TaskSubtasksFilterSelectButton onClick={handleClick} open={open}>

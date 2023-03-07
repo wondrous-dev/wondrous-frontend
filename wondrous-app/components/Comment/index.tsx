@@ -122,7 +122,6 @@ function CommentBox(props) {
       userMentions: mentionedUsers,
       previousCommenterIds,
     };
-    console.log('commentArgs', commentArgs, entityType, 'entityType');
     if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
       return createGrantApplicationComment({
         variables: {
@@ -165,7 +164,10 @@ function CommentBox(props) {
         variables: {
           input: { ...commentArgs, submissionId: submission?.id, type },
         },
-      }).then(() => onCommentCallback());
+      }).then(() => {
+        onCommentCallback();
+        setComment('');
+      });
     }
     return createTaskComment({
       variables: {

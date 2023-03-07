@@ -66,7 +66,7 @@ const Header = ({
               multiple={isMilestone}
               value={podValue}
               onChange={handlePodChange}
-              disabled={isSubtask || formValues !== undefined}
+              disabled={isSubtask}
             />
           </>
         )}

@@ -39,7 +39,6 @@ const ModalFields = ({
   handleReviewButton,
   handleClose,
   entityType,
-  getTaskById,
   isSubtask,
   taskSubmissionsForTask,
   isBounty,
@@ -134,7 +133,6 @@ const ModalFields = ({
           entityTypeData[entityType].fields.includes(Fields.milestone) && (canEdit || fetchedTask?.milestoneId)
         }
         milestoneId={fetchedTask?.milestoneId}
-        getTaskById={getTaskById}
         canEdit={canEdit}
         isSubtask={isSubtask}
         orgId={fetchedTask?.orgId}

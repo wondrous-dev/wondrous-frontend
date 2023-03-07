@@ -217,14 +217,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   useContextValue(formValues?.podId && !form.values.podId, () =>
     form.setValues({ ...form.values, podId: formValues.podId })
   );
-  useContextValue(formValues?.milestoneId && !form.values.milestoneId, () =>
-    form.setValues({
-      ...form.values,
-      orgId: formValues.orgId,
-      podId: formValues.podId,
-      milestoneId: formValues.milestoneId,
-    })
-  );
+  useContextValue(formValues?.milestoneId && !form.values.milestoneId, () => {
+    form.setFieldValue('milestoneId', formValues.milestoneId);
+    form.setFieldValue('orgId', formValues.orgId);
+  });
   useEffect(() => {
     if (recurrenceType && !form.values.dueDate) {
       form.setFieldValue('dueDate', moment().toDate());
