@@ -122,6 +122,7 @@ function CommentBox(props) {
       userMentions: mentionedUsers,
       previousCommenterIds,
     };
+    console.log('commentArgs', commentArgs, entityType, 'entityType');
     if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
       return createGrantApplicationComment({
         variables: {
