@@ -24,14 +24,14 @@ const INTEGRATIONS_TYPE_CONFIG = {
     text: 'Connect your Guild.xyz account for custom permissions and roles for your community.',
     logo: '/images/integrations/guild-xyz-logo.png',
     component: () => <GuildIntegration />,
-    footer: () => <GuildIntegrationFooter />
+    footer: () => <GuildIntegrationFooter />,
   },
   [INTEGRATION_TYPES.GITHUB]: {
     title: 'Connect Github',
     text: 'Connect your Github account.',
     logo: '/images/integrations/github-logo.png',
     footer: () => <GithubFooter />,
-    component: () => <GithubIntegration />
+    component: () => <GithubIntegration />,
   },
   [INTEGRATION_TYPES.TELEGRAM]: {
     title: 'Connect Telegram',
@@ -44,24 +44,20 @@ const INTEGRATIONS_TYPE_CONFIG = {
     logo: '/images/integrations/discord-full-logo.png',
   },
 };
-const ConnectionModal = ({ type, onClose, orgId, podId }) => {
+const ConnectionModal = ({ type, onClose, orgId, podId, isActive }) => {
   const config = INTEGRATIONS_TYPE_CONFIG[type];
-  const [data, setData] = useState({})
+  const [data, setData] = useState({
+    isActive,
+  });
 
   return (
-    <ConnectionContext.Provider value={{data, setData, orgId, podId, onClose}}>
-      <Modal
-      title={config?.title}
-      open
-      onClose={onClose}
-      maxWidth={530}
-      footerRight={config?.footer?.()}
-    >
-      <Grid display="flex" direction="column">
-        <ModalBody text={config?.text} title={config?.title} logo={config?.logo} />
-        <Grid>{config?.component?.()}</Grid>
-      </Grid>
-    </Modal>
+    <ConnectionContext.Provider value={{ data, setData, orgId, podId, onClose }}>
+      <Modal title={config?.title} open onClose={onClose} maxWidth={530} footerRight={config?.footer?.()}>
+        <Grid display="flex" direction="column">
+          <ModalBody text={config?.text} title={config?.title} logo={config?.logo} />
+          <Grid>{config?.component?.()}</Grid>
+        </Grid>
+      </Modal>
     </ConnectionContext.Provider>
   );
 };

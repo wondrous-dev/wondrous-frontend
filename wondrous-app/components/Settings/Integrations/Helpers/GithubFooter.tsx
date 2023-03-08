@@ -6,8 +6,9 @@ import FooterButtons from './FooterButtons';
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
 
 const GithubFooter = () => {
-  const { onClose, orgId } = useContext(ConnectionContext);
+  const { onClose, orgId, data } = useContext(ConnectionContext);
 
+  const { isActive } = data;
   const [githubUrl, setGithubUrl] = useState(null);
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -19,7 +20,13 @@ const GithubFooter = () => {
     }
   }, []);
 
-  return <FooterButtons title="Connect Github" onClose={onClose} action={() => window.open(githubUrl)} />;
+  return (
+    <FooterButtons
+      title={isActive ? 'Manage Github' : 'Connect Github'}
+      onClose={onClose}
+      action={() => window.open(githubUrl)}
+    />
+  );
 };
 
 export default GithubFooter;

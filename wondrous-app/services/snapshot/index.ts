@@ -18,7 +18,7 @@ const SNAPSHOT_DOCS = 'https://docs.snapshot.org/spaces/create';
 // false = hub
 const isTestSnapshot = !process.env.NEXT_PUBLIC_PRODUCTION;
 
-const hub = 'https://hub.snapshot.org';
+const hub = process.env.NEXT_PUBLIC_PRODUCTION ? 'https://hub.snapshot.org' : 'https://testnet.snapshot.org';
 const snapshotClient = new Snapshot.Client712(hub);
 
 // snapshot graphql API
@@ -30,8 +30,8 @@ const snapshotClientGQL = new ApolloClient({
   uri: snapshotAPI,
 });
 
-// TODO: CHANGE ME - Adrian
-export const getSnapshotUrl = (id: string): string => `hub.snapshot.org/api/spaces/${id}/`;
+export const getSnapshotUrl = (id: string): string =>
+  `https://${process.env.NEXT_PUBLIC_PRODUCTION ? `hub` : `testnet`}.snapshot.org/api/spaces/${id}/`;
 
 /**
  * useSnapshot -- state hooks to interact with Snapshot & Wonder's snapshot-related APIs
