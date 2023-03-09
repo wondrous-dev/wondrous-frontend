@@ -171,6 +171,7 @@ function ProfileInfo({ userProfile }) {
             <ProfileInfoIcon>
               <ProfilesCyberConnectIcon />
             </ProfileInfoIcon>
+            <ProfileInfoIcon>{`${cyberConnectHandle}`}</ProfileInfoIcon>
           </ProfileInfoLink>
         )}
         {social.map(({ url, type }) => {
