@@ -1,9 +1,13 @@
 import React from 'react';
 import { withAuth } from 'components/Auth/withAuth';
-import Integrations from '../../../../components/Settings/Integrations';
+import Integrations from 'components/Settings/Integrations';
+import { useRouter } from 'next/router';
 
 function GeneralSettingsPage() {
-  return <Integrations />;
+  const router = useRouter();
+  const { orgId, podId } = router.query;
+
+  return <Integrations orgId={orgId} />;
 }
 
 export default withAuth(GeneralSettingsPage);

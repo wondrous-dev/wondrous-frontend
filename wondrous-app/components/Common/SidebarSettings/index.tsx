@@ -84,7 +84,7 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     label: 'Integrations',
     value: 'integrations',
     href: orgId ? `/${mainPath}/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
-    page: [SettingsPage.Org],
+    page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: ReceiptIcon,
@@ -135,19 +135,19 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     href: `/profile/notifications`,
     page: [SettingsPage.Profile],
   },
-  {
-    Icon: () => (
-      <GitHubIcon
-        style={{
-          color: '#525252',
-        }}
-      />
-    ),
-    label: 'Github',
-    value: 'github',
-    href: orgId ? `/${mainPath}/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
-    page: [SettingsPage.Pod],
-  },
+  // {
+  //   Icon: () => (
+  //     <GitHubIcon
+  //       style={{
+  //         color: '#525252',
+  //       }}
+  //     />
+  //   ),
+  //   label: 'Github',
+  //   value: 'github',
+  //   href: orgId ? `/${mainPath}/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
+  //   page: [SettingsPage.Pod],
+  // },
 ];
 
 function SettingsWrapper(props) {

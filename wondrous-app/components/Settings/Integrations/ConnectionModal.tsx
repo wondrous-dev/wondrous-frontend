@@ -2,11 +2,15 @@ import { Grid } from '@mui/material';
 import Modal from 'components/Modal';
 import { GithubIntegration } from 'components/Settings/Github';
 import { useState } from 'react';
+import palette from 'theme/palette';
 import GuildIntegration from '../Guild';
 import { INTEGRATION_TYPES } from './constants';
 import ConnectionContext from './Helpers/ConnectionContext';
+import DiscordFooter from './Helpers/DiscordFooter';
+import DiscordIntegrationsBody from './Helpers/DiscordIntegrationBody';
 import GithubFooter from './Helpers/GithubFooter';
 import GuildIntegrationFooter from './Helpers/GuildIntegrationFooter';
+import IntegrationFeatures from './Helpers/IntegrationFeatures';
 import ModalBody from './Helpers/ModalBody';
 import SnapshotFooter from './Helpers/SnapshotFooter';
 import SnapshotConfigSection from './SnapshotConfig';
@@ -42,6 +46,8 @@ const INTEGRATIONS_TYPE_CONFIG = {
     title: 'Connect Discord',
     text: 'Connect your Discord account.',
     logo: '/images/integrations/discord-full-logo.png',
+    footer: () => <DiscordFooter />,
+    component: () => <DiscordIntegrationsBody />,
   },
 };
 const ConnectionModal = ({ type, onClose, orgId, podId, isActive }) => {
@@ -52,10 +58,32 @@ const ConnectionModal = ({ type, onClose, orgId, podId, isActive }) => {
 
   return (
     <ConnectionContext.Provider value={{ data, setData, orgId, podId, onClose }}>
-      <Modal title={config?.title} open onClose={onClose} maxWidth={530} footerRight={config?.footer?.()}>
-        <Grid display="flex" direction="column">
+      <Modal
+        title={config?.title}
+        open
+        onClose={onClose}
+        maxWidth={530}
+        footerRight={config?.footer?.()}
+        modalBodyStyle={{
+          padding: '24px 0px 0px',
+          background: palette.grey900,
+        }}
+      >
+        <Grid display="flex" direction="column" gap="24px">
           <ModalBody text={config?.text} title={config?.title} logo={config?.logo} />
-          <Grid>{config?.component?.()}</Grid>
+          <Grid
+            bgcolor={palette.black92}
+            sx={{
+              padding: '24px',
+              borderTop: `1px solid ${palette.grey85}`,
+            }}
+            display="flex"
+            direction="column"
+            gap="24px"
+          >
+            <IntegrationFeatures type={type} />
+            {config?.component?.()}
+          </Grid>
         </Grid>
       </Modal>
     </ConnectionContext.Provider>

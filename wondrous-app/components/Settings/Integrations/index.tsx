@@ -2,11 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import HeaderBlock from 'components/Settings/headerBlock';
-import SnapshotConfigSection from 'components/Settings/Integrations/SnapshotConfig';
 import { useRouter } from 'next/router';
-
-import { GithubIntegration } from 'components/Settings/Github';
-import GuildIntegration from 'components/Settings/Guild';
 
 import { Grid } from '@mui/material';
 
@@ -18,43 +14,50 @@ import {
   GET_POD_DISCORD_NOTIFICATION_CONFIGS,
   HAS_ORG_GITHUB_INTEGRATION,
 } from 'graphql/queries';
-import useGuildXyz from 'services/guildxyz';
 import { useSnapshot } from 'services/snapshot';
 import { FILTER_TYPES, INTEGRATION_TYPES } from './constants';
 import Filters from './Filters';
 import IntegrationsCard from './IntegrationsCard';
 import { IntegrationsContainer } from './styles';
 
-function Integrations(props) {
-  // TODO: add separate endpoint for getting statuses
+interface Props {
+  orgId: string | string[];
+  podId?: string | string[];
+}
 
-  const router = useRouter();
-  const { orgId, podId } = router.query;
-
+function Integrations({ orgId, podId }: Props) {
   const [activeFilter, setActiveFilter] = useState(FILTER_TYPES.ALL);
   const { snapshotConnected, snapshotLoading, getOrgSnapshotInfo } = useSnapshot();
 
   useEffect(() => {
+    if (podId) {
+      return;
+    }
     getOrgSnapshotInfo({
       variables: {
         orgId,
       },
     });
-  }, [orgId]);
+  }, [orgId, podId]);
 
   const { data: orgDiscordConfig, loading: orgDiscordIntegrationLoading } = useQuery(
     GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
     {
+      fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
       variables: {
         orgId,
       },
-      skip: !orgId,
+      skip: !!podId,
     }
   );
 
   const { data: podDiscordConfig, loading: podDiscordIntegrationLoading } = useQuery(
     GET_POD_DISCORD_NOTIFICATION_CONFIGS,
+
     {
+      fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
       variables: {
         podId,
       },
@@ -64,6 +67,8 @@ function Integrations(props) {
   const { data: hasGithubIntegrationData, loading: hasOrgGithubIntegrationLoading } = useQuery(
     HAS_ORG_GITHUB_INTEGRATION,
     {
+      fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
       variables: {
         orgId,
       },
@@ -75,7 +80,7 @@ function Integrations(props) {
     variables: {
       orgId,
     },
-    skip: !orgId,
+    skip: !!podId,
   });
 
   const loading =
@@ -85,6 +90,12 @@ function Integrations(props) {
     orgDiscordIntegrationLoading ||
     podDiscordIntegrationLoading;
 
+  const hasActiveDiscordIntegration = useMemo(() => {
+    if (podId) {
+      return podDiscordConfig?.getPodDiscordNotificationConfig?.find((item) => !item.disabledAt);
+    }
+    return orgDiscordConfig?.getOrgDiscordNotificationConfig?.find((item) => !item.disabledAt);
+  }, [orgId, podId, podDiscordConfig, orgDiscordConfig]);
   const INTEGRATIONS = [
     {
       title: 'Discord',
@@ -94,20 +105,7 @@ function Integrations(props) {
       type: INTEGRATION_TYPES.DISCORD,
       logo: '/images/integrations/discord-full-logo.png',
       hide: false,
-      active:
-        !!orgDiscordConfig?.getOrgDiscordNotificationConfig?.length ||
-        !!podDiscordConfig?.getPodDiscordNotificationConfig?.length,
-      action: () => {
-        if (podId) {
-          router.push(`/pod/settings/${podId}/notifications`, undefined, {
-            shallow: true,
-          });
-        } else {
-          router.push(`/organization/settings/${orgId}/notifications`, undefined, {
-            shallow: true,
-          });
-        }
-      },
+      active: hasActiveDiscordIntegration,
     },
     {
       title: 'Guild.xyz',
@@ -117,7 +115,7 @@ function Integrations(props) {
       type: INTEGRATION_TYPES.GUILD,
       logo: '/images/integrations/guild-xyz-logo.png',
       active: !!data?.getOrgGuild?.guildId,
-      hide: !orgId,
+      hide: !!podId,
     },
     {
       title: 'Github',
@@ -127,7 +125,7 @@ function Integrations(props) {
       type: INTEGRATION_TYPES.GITHUB,
       logo: '/images/integrations/github-logo.png',
       active: hasGithubIntegrationData?.hasGithubOrgIntegration?.exist,
-      hide: !orgId,
+      hide: false,
     },
     {
       title: 'Snapshot',
@@ -137,7 +135,7 @@ function Integrations(props) {
       type: INTEGRATION_TYPES.SNAPSHOT,
       logo: '/images/integrations/snapshot-logo.png',
       active: snapshotConnected,
-      hide: !orgId,
+      hide: !!podId,
     },
     {
       title: 'Telegram',

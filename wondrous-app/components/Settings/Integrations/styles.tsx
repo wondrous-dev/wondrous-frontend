@@ -35,8 +35,9 @@ export const IntegrationsAddressInput = styled(InputBase)`
 `;
 
 export const IntegrationsInputsBlock = styled.div`
-  padding: 30px 0;
-  border-bottom: 1px solid #363636;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 `;
 
 export const IntegrationsSnapshotBlock = styled.div`
@@ -176,5 +177,24 @@ export const FilterItem = styled.button`
     background: linear-gradient(272.64deg, #4f00de -5.53%, #1d1d1d 144.18%);
     border: 1px solid ${palette.highlightPurple};
     box-shadow: 0px 0px 4px ${palette.highlightPurple};
+  }
+`;
+
+export const DiscordIntegrationPanel = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 14px;
+  border-radius: 4px;
+  width: 100%;
+  background: ${palette.grey900};
+`;
+
+export const Label = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+    line-height: 13px;
+    font-weight: 500;
+    color: ${palette.blue20};
   }
 `;

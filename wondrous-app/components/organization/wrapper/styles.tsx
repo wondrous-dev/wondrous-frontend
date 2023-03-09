@@ -237,6 +237,12 @@ export const HeaderButton = styled.button`
   }
 `;
 
+export const MiniHeaderButton = styled(HeaderButton)`
+  && {
+    height: 28px;
+  }
+`;
+
 export const RoleButtonWrapper = styled.div`
   display: flex;
   align-items: center;

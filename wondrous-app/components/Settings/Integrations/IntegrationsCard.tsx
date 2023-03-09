@@ -127,10 +127,7 @@ const IntegrationsCard = ({ integration, orgId, podId }) => {
         <Grid display="flex" justifyContent="space-between" width="100%">
           {/* footer */}
           <ActiveField isActive={integration.active} />
-          <ActionButton
-            isActive={integration.active}
-            setupAction={integration?.action ? integration.action : toggleModal}
-          />
+          <ActionButton isActive={integration.active} setupAction={toggleModal} />
         </Grid>
       </Grid>
     </>

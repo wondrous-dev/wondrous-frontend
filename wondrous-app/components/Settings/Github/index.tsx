@@ -5,6 +5,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DELETE_ORG_GITHUB } from 'graphql/mutations/org';
+import { GithubIntegration as PodGithubIntegration } from 'components/Settings/Github/pod';
 import { GithubLink, GithubButtonDiv } from './styles';
 import { IntegrationsInputsBlock } from '../Integrations/styles';
 import { LabelBlock } from '../styles';
@@ -23,7 +24,7 @@ export const getGithubCallbackUrl = () => {
 };
 
 export function GithubIntegration() {
-  const {orgId} = useContext(ConnectionContext)
+  const { orgId, podId } = useContext(ConnectionContext);
   const [githubConnected, setGithubConnected] = useState(false);
   const [hasGithubIntegration, { data: hasGithubIntegrationData }] = useLazyQuery(HAS_ORG_GITHUB_INTEGRATION);
   const [deleteOrgGithubIntegration] = useMutation(DELETE_ORG_GITHUB);
@@ -42,52 +43,54 @@ export function GithubIntegration() {
     }
   }, [orgId]);
 
-  if(!githubConnected) {
-    return null
+  if (githubConnected && podId) {
+    return <PodGithubIntegration orgId={orgId} podId={podId} />;
+  }
+  if (!githubConnected) {
+    return null;
   }
   return (
     <IntegrationsInputsBlock>
-        <GithubButtonDiv
+      <GithubButtonDiv
+        style={{
+          marginLeft: '0',
+        }}
+      >
+        <GithubLink
           style={{
-            marginLeft: '0',
+            backgroundColor: palette.grey900,
+            border: `1px solid ${palette.highlightPurple}`,
+            cursor: 'auto',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
-          <GithubLink
+          <span
             style={{
-              backgroundColor: palette.grey900,
-              border: `1px solid ${palette.highlightPurple}`,
-              cursor: 'auto',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'space-between',
+              color: palette.white,
             }}
           >
-            <span
-              style={{
-                color: palette.white,
-              }}
-            >
-              Github organization connected
-            </span>
-            <CloseModalIcon
-              style={{
-                marginLeft: '16px',
-                cursor: 'pointer',
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setGithubConnected(false);
-                deleteOrgGithubIntegration({
-                  variables: {
-                    orgId,
-                  },
-                });
-              }}
-            />
-          </GithubLink>
-        </GithubButtonDiv>
-      
+            Github organization connected
+          </span>
+          <CloseModalIcon
+            style={{
+              marginLeft: '16px',
+              cursor: 'pointer',
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setGithubConnected(false);
+              deleteOrgGithubIntegration({
+                variables: {
+                  orgId,
+                },
+              });
+            }}
+          />
+        </GithubLink>
+      </GithubButtonDiv>
     </IntegrationsInputsBlock>
   );
 }

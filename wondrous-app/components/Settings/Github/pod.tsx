@@ -136,7 +136,7 @@ export function GithubIntegration({ orgId, podId }) {
   const githubIntegrations = podGithubIntegrationData?.getPodGithubRepoIntegrations;
 
   return (
-    <SettingsWrapper>
+    <>
       <ImportTaskModal
         onClose={() => setImportModalOpen(false)}
         open={importModalOpen}
@@ -186,7 +186,7 @@ export function GithubIntegration({ orgId, podId }) {
             });
         }}
       />
-      <HeaderBlock
+      {/* <HeaderBlock
         icon={
           <GitHubIcon
             width="32"
@@ -198,128 +198,116 @@ export function GithubIntegration({ orgId, podId }) {
           />
         }
         title="Add Github repos"
-      />
-      {githubConnected ? (
-        <>
-          <PodGithubExplainerText>
-            By connecting a Github repo, all existing issues from the repo will be imported and new issues will be
-            turned into tasks. You can also link PRs to tasks and create Github issues from Wonder - more information
-            here. ADD GITHUB TUTORIAL
-          </PodGithubExplainerText>
-          <AddRepoDiv>
-            <StyledAutocompletePopper
-              style={{
-                flex: 1,
-              }}
-              options={filterGithubRepo(availableReposData?.getOrgAvailableRepositories)}
-              onOpen={() => {
-                // if (pod) {
-                //   getPodUsers({
-                //     variables: {
-                //       podId: pod?.id || pod,
-                //       limit: 100, // TODO: fix autocomplete
-                //     },
-                //   });
-                // }
-              }}
-              renderInput={(params) => {
-                const InputProps = {
-                  ...params?.InputProps,
-                  type: 'autocomplete',
-                };
-                return (
-                  <TextField
-                    {...params}
-                    style={{
-                      color: palette.white,
-                      fontFamily: 'Space Grotesk',
-                      fontSize: '1px',
-                      paddingLeft: '4px',
-                    }}
-                    placeholder="Enter Github repo"
-                    InputLabelProps={{ shrink: false }}
-                    InputProps={InputProps}
-                  />
-                );
-              }}
-              value={chosenRepo}
-              inputValue={chosenRepo?.fu}
-              onInputChange={(event, newInputValue) => {
-                setChosenRepoString(newInputValue);
-              }}
-              onChange={(_, __, reason) => {
-                if (reason === 'clear') {
-                  setChosenRepo(null);
-                }
-              }}
-              renderOption={(props, option, state) => (
-                <OptionDiv
-                  onClick={(event) => {
-                    setChosenRepo(option);
-                    props?.onClick(event);
+      /> */}
+      <>
+        <PodGithubExplainerText>
+          By connecting a Github repo, all existing issues from the repo will be imported and new issues will be turned
+          into tasks. You can also link PRs to tasks and create Github issues from Wonder - more information here. ADD
+          GITHUB TUTORIAL
+        </PodGithubExplainerText>
+        <AddRepoDiv>
+          <StyledAutocompletePopper
+            style={{
+              flex: 1,
+            }}
+            options={filterGithubRepo(availableReposData?.getOrgAvailableRepositories)}
+            onOpen={() => {
+              // if (pod) {
+              //   getPodUsers({
+              //     variables: {
+              //       podId: pod?.id || pod,
+              //       limit: 100, // TODO: fix autocomplete
+              //     },
+              //   });
+              // }
+            }}
+            renderInput={(params) => {
+              const InputProps = {
+                ...params?.InputProps,
+                type: 'autocomplete',
+              };
+              return (
+                <TextField
+                  {...params}
+                  style={{
+                    color: palette.white,
+                    fontFamily: 'Space Grotesk',
+                    fontSize: '1px',
+                    paddingLeft: '4px',
                   }}
-                >
-                  {option?.profilePicture && (
-                    <SafeImage
-                      useNextImage={false}
-                      src={option?.profilePicture}
-                      style={{
-                        width: '30px',
-                        height: '30px',
-                        borderRadius: '15px',
-                      }}
-                      alt="Profile picture"
-                    />
-                  )}
-                  <OptionTypography>{option?.label}</OptionTypography>
-                </OptionDiv>
-              )}
+                  placeholder="Enter Github repo"
+                  InputLabelProps={{ shrink: false }}
+                  InputProps={InputProps}
+                />
+              );
+            }}
+            value={chosenRepo}
+            inputValue={chosenRepo?.fu}
+            onInputChange={(event, newInputValue) => {
+              setChosenRepoString(newInputValue);
+            }}
+            onChange={(_, __, reason) => {
+              if (reason === 'clear') {
+                setChosenRepo(null);
+              }
+            }}
+            renderOption={(props, option, state) => (
+              <OptionDiv
+                onClick={(event) => {
+                  setChosenRepo(option);
+                  props?.onClick(event);
+                }}
+              >
+                {option?.profilePicture && (
+                  <SafeImage
+                    useNextImage={false}
+                    src={option?.profilePicture}
+                    style={{
+                      width: '30px',
+                      height: '30px',
+                      borderRadius: '15px',
+                    }}
+                    alt="Profile picture"
+                  />
+                )}
+                <OptionTypography>{option?.label}</OptionTypography>
+              </OptionDiv>
+            )}
+          />
+          <CreateFormPreviewButton
+            disabled={!(chosenRepo?.id && chosenRepoString)}
+            onClick={() => {
+              setImportModalOpen(true);
+              // inviteUserToPod({
+              //   variables: {
+              //     userId: invitee?.id,
+              //     roleId: inviteeRole,
+              //     podId,
+              //   },
+              //   onCompleted: (data) => {
+              //     const userPod = data?.inviteUserToPod;
+              //     setUsers([userPod, ...users]);
+              //   },
+              // });
+              // setSnackbarAlertOpen(true);
+              // setSnackbarAlertMessage(<>{invitee?.username} invited!</>);
+            }}
+          >
+            Add repo
+          </CreateFormPreviewButton>
+        </AddRepoDiv>
+        {githubIntegrations?.length > 0 &&
+          githubIntegrations?.map((githubIntegration, index) => (
+            <GithubIntegrationRow
+              key={index}
+              githubIntegrationId={githubIntegration?.id}
+              githubInfo={githubIntegration?.githubInfo}
+              deletePodGithubIntegration={deletePodGithubIntegration}
             />
-            <CreateFormPreviewButton
-              disabled={!(chosenRepo?.id && chosenRepoString)}
-              onClick={() => {
-                setImportModalOpen(true);
-                // inviteUserToPod({
-                //   variables: {
-                //     userId: invitee?.id,
-                //     roleId: inviteeRole,
-                //     podId,
-                //   },
-                //   onCompleted: (data) => {
-                //     const userPod = data?.inviteUserToPod;
-                //     setUsers([userPod, ...users]);
-                //   },
-                // });
-                // setSnackbarAlertOpen(true);
-                // setSnackbarAlertMessage(<>{invitee?.username} invited!</>);
-              }}
-            >
-              Add repo
-            </CreateFormPreviewButton>
-          </AddRepoDiv>
-          {githubIntegrations?.length > 0 &&
-            githubIntegrations?.map((githubIntegration, index) => (
-              <GithubIntegrationRow
-                key={index}
-                githubIntegrationId={githubIntegration?.id}
-                githubInfo={githubIntegration?.githubInfo}
-                deletePodGithubIntegration={deletePodGithubIntegration}
-              />
-            ))}
-        </>
-      ) : (
-        <GithubButtonDiv>
-          <GithubLink href={githubUrl}>
-            <GitHubIcon
-              style={{
-                marginRight: '8px',
-              }}
-            />
-            <span>Connect Github Organization</span>
-          </GithubLink>
-        </GithubButtonDiv>
-      )}
+          ))}
+      </>
+
       {addRepoError && <ErrorText>{addRepoError}</ErrorText>}
-    </SettingsWrapper>
+    </>
   );
 }
