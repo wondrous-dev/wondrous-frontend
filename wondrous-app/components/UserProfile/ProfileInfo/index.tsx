@@ -19,6 +19,7 @@ import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import { removeUrlStart } from 'utils/helpers';
 import { useMe } from 'components/Auth/withAuth';
+import { CYBER_CONNECT_HANDLE_STORAGE } from 'components/Common/CyberConnect/api';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -36,6 +37,7 @@ import styles, {
   ProfileInfoInterestsChip,
   ProfileInfoInterestsChipWrapper,
   ProfileInfoEarningsInterestWrapper,
+  ProfilesCyberConnectIcon,
 } from './styles';
 
 const SOCIAL_ICONS = {
@@ -58,6 +60,7 @@ function ProfileInfo({ userProfile }) {
     : userProfile?.checkIsGr15Contributor?.isGr15Contributor;
 
   const twitterUrl = `https://twitter.com/${userProfile?.userInfo?.twitterUsername}`;
+  const cyberConnectHandle = localStorage.getItem(CYBER_CONNECT_HANDLE_STORAGE);
   return (
     <ProfileInfoWrapper>
       <ChooseEntityToCreate />
@@ -160,6 +163,13 @@ function ProfileInfo({ userProfile }) {
           <ProfileInfoLink key={twitterUrl} href={twitterUrl} target="_blank">
             <ProfileInfoIcon>
               <TwitterPurpleIcon fill="#ccbbff" />
+            </ProfileInfoIcon>
+          </ProfileInfoLink>
+        )}
+        {cyberConnectHandle && (
+          <ProfileInfoLink key={cyberConnectHandle} href={`https://link3.to/${cyberConnectHandle}`} target="_blank">
+            <ProfileInfoIcon>
+              <ProfilesCyberConnectIcon />
             </ProfileInfoIcon>
           </ProfileInfoLink>
         )}

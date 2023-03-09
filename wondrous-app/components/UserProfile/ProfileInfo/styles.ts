@@ -1,4 +1,5 @@
 import { Box, Chip, Link, Typography } from '@mui/material';
+import { CyberConnect } from 'components/Icons/CyberConnects';
 import LinkIcon from 'components/Icons/linkIcon.svg';
 import styled, { css } from 'styled-components';
 
@@ -34,6 +35,14 @@ export const ProfileInfoUsername = styled(WhiteTypographyStyles)`
   }
 `;
 
+export const ProfilesCyberConnectIcon = styled(CyberConnect)`
+  && {
+    width: 18px;
+    height: 18px;
+    color: #00baff;
+    margin-right: 12px;
+  }
+`;
 export const ProfileInfoBioWrapper = styled(Box)`
   margin-top: 16px;
 `;

@@ -1,9 +1,7 @@
 /* eslint-disable dot-notation */
 import { useMutation } from '@apollo/client';
-import { DiscordIcon } from 'components/Icons/discord';
 import LinkBigIcon from 'components/Icons/link';
 import OpenSeaIcon from 'components/Icons/openSea';
-import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import cloneDeep from 'lodash/cloneDeep';
 import React, { useContext, useEffect, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -27,9 +25,9 @@ import SettingsWrapper from 'components/Common/SidebarSettings';
 import HeaderBlock from 'components/Settings/headerBlock';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
+import { CYBER_CONNECT_HANDLE_STORAGE, cyberConnectSignin, getHandle } from 'components/Common/CyberConnect/api';
+import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '../Common';
-import { SafeImage } from '../Common/Image';
-import { ProfilePictureDiv } from '../Onboarding/styles';
 import ImageUpload from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
@@ -51,10 +49,10 @@ import {
   GeneralSettingsSocialsBlockRow,
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
+  GeneralSettingsCyberConnectIcon,
 } from './styles';
 
 const discordUrl = getDiscordUrl();
-
 const socialsData = [
   {
     icon: <OpenSeaIcon />,
@@ -143,6 +141,7 @@ function ProfileSettings(props) {
   const { loggedInUser } = props;
   const router = useRouter();
   const { discordUserExists, discordError } = router.query;
+  const { signMessage, address } = useWonderWeb3();
   const [username, setUsername] = useState(loggedInUser?.username);
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
   const [profilePictureUrl, setProfilePictureUrl] = useState(loggedInUser?.profilePicture);
@@ -153,6 +152,7 @@ function ProfileSettings(props) {
     refetchQueries: [GET_LOGGED_IN_USER],
   });
   const { showError } = useAlerts();
+  const [cyberConnectHandleConnected, setCyberConnectHandleConnected] = useState('');
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -230,9 +230,6 @@ function ProfileSettings(props) {
     if (email !== loggedInUser?.email) {
       input['email'] = email;
     }
-
-    console.log('loggedInUser?.profilePicture', loggedInUser?.profilePicture);
-    console.log('loggedInUser?.headerPicture', loggedInUser?.headerPicture);
 
     updateUserProfile({
       variables: {
@@ -320,6 +317,13 @@ function ProfileSettings(props) {
     }
   }
 
+  const cyberConnectHandle = typeof window !== 'undefined' && localStorage.getItem(CYBER_CONNECT_HANDLE_STORAGE);
+
+  useEffect(() => {
+    if (cyberConnectHandle) {
+      setCyberConnectHandleConnected(cyberConnectHandle);
+    }
+  }, [cyberConnectHandle]);
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -463,11 +467,70 @@ function ProfileSettings(props) {
             }}
           >
             <Tooltip title="Connect your Twitter account" placement="top">
-              <div>
+              <div
+                style={{
+                  display: 'flex',
+                }}
+              >
                 <GeneralSettingsTwitterIcon />
                 {loggedInUser?.userInfo?.twitterUsername
                   ? `Connected to ${loggedInUser?.userInfo?.twitterUsername}`
                   : 'Connect Twitter'}
+              </div>
+            </Tooltip>
+          </GeneralSettingsIntegrationsBlockButton>
+
+          <GeneralSettingsIntegrationsBlockButton
+            style={{
+              marginTop: '30px',
+
+              maxWidth: 'none',
+              width: 'fit-content',
+              ...(loggedInUser?.userInfo?.twitterUsername && {
+                borderRadius: '8px',
+              }),
+            }}
+            buttonInnerStyle={{
+              ...(loggedInUser?.userInfo?.twitterUsername && {
+                borderRadius: '8px',
+              }),
+            }}
+            highlighted
+            onClick={async () => {
+              // if (!loggedInUser?.userInfo?.twitterUsername) {
+              //   redirectToTwitterAuth();
+              // }
+              await cyberConnectSignin(address, signMessage);
+              const handle = await getHandle(address);
+              if (handle) {
+                setCyberConnectHandleConnected(handle);
+              }
+            }}
+          >
+            <Tooltip title="Connect your Link3 account" placement="top">
+              <div
+                style={{
+                  display: 'flex',
+                  paddingRight: '14px',
+                  alignItems: 'center',
+                }}
+              >
+                <GeneralSettingsCyberConnectIcon color="#00baff" />
+                {cyberConnectHandleConnected ? `Connected to ${cyberConnectHandleConnected}` : 'Connect Link3'}
+                {cyberConnectHandleConnected && (
+                  <CloseModalIcon
+                    style={{
+                      marginLeft: '16px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      localStorage.removeItem(CYBER_CONNECT_HANDLE_STORAGE);
+                      setCyberConnectHandleConnected('');
+                    }}
+                  />
+                )}
               </div>
             </Tooltip>
           </GeneralSettingsIntegrationsBlockButton>
