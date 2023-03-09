@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { CyberConnect } from 'components/Icons/CyberConnects';
 import { Button } from '../Common/button';
 import { Discord } from '../Icons/discord';
 import { Twitter } from '../Icons/twitter';
@@ -401,6 +402,15 @@ export const GeneralSettingsDiscordIcon = styled(Discord)`
 `;
 
 export const GeneralSettingsTwitterIcon = styled(Twitter)`
+  && {
+    width: 27px;
+    height: 20px;
+    color: #00baff;
+    margin-right: 12px;
+  }
+`;
+
+export const GeneralSettingsCyberConnectIcon = styled(CyberConnect)`
   && {
     width: 27px;
     height: 20px;
