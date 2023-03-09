@@ -166,21 +166,6 @@ function ProfileInfo({ userProfile }) {
             </ProfileInfoIcon>
           </ProfileInfoLink>
         )}
-        {cyberConnectHandle && (
-          <ProfileInfoLink
-            style={{
-              textDecoration: 'none',
-            }}
-            key={cyberConnectHandle}
-            href={`https://link3.to/${cyberConnectHandle}`}
-            target="_blank"
-          >
-            <ProfileInfoIcon>
-              <ProfilesCyberConnectIcon />
-            </ProfileInfoIcon>
-            <ProfileInfoIcon>{`${cyberConnectHandle}`}</ProfileInfoIcon>
-          </ProfileInfoLink>
-        )}
         {social.map(({ url, type }) => {
           if (!url) return null;
           if (type === SOCIAL_MEDIA_DISCORD) {
