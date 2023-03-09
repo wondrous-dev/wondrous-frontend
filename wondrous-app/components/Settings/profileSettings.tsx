@@ -479,61 +479,6 @@ function ProfileSettings(props) {
               </div>
             </Tooltip>
           </GeneralSettingsIntegrationsBlockButton>
-
-          <GeneralSettingsIntegrationsBlockButton
-            style={{
-              marginTop: '30px',
-
-              maxWidth: 'none',
-              width: 'fit-content',
-              ...(loggedInUser?.userInfo?.twitterUsername && {
-                borderRadius: '8px',
-              }),
-            }}
-            buttonInnerStyle={{
-              ...(loggedInUser?.userInfo?.twitterUsername && {
-                borderRadius: '8px',
-              }),
-            }}
-            highlighted
-            onClick={async () => {
-              // if (!loggedInUser?.userInfo?.twitterUsername) {
-              //   redirectToTwitterAuth();
-              // }
-              await cyberConnectSignin(address, signMessage);
-              const handle = await getHandle(address);
-              if (handle) {
-                setCyberConnectHandleConnected(handle);
-              }
-            }}
-          >
-            <Tooltip title="Connect your Link3 account" placement="top">
-              <div
-                style={{
-                  display: 'flex',
-                  paddingRight: '14px',
-                  alignItems: 'center',
-                }}
-              >
-                <GeneralSettingsCyberConnectIcon color="#00baff" />
-                {cyberConnectHandleConnected ? `Connected to ${cyberConnectHandleConnected}` : 'Connect Link3'}
-                {cyberConnectHandleConnected && (
-                  <CloseModalIcon
-                    style={{
-                      marginLeft: '16px',
-                      cursor: 'pointer',
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      localStorage.removeItem(CYBER_CONNECT_HANDLE_STORAGE);
-                      setCyberConnectHandleConnected('');
-                    }}
-                  />
-                )}
-              </div>
-            </Tooltip>
-          </GeneralSettingsIntegrationsBlockButton>
         </GeneralSettingsInputsBlock>
 
         <GeneralSettingsButtonsBlock>
