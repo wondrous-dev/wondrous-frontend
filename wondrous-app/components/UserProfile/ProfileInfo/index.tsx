@@ -60,7 +60,7 @@ function ProfileInfo({ userProfile }) {
     : userProfile?.checkIsGr15Contributor?.isGr15Contributor;
 
   const twitterUrl = `https://twitter.com/${userProfile?.userInfo?.twitterUsername}`;
-  const cyberConnectHandle = localStorage.getItem(CYBER_CONNECT_HANDLE_STORAGE);
+  const cyberConnectHandle = typeof window !== 'undefined' && localStorage.getItem(CYBER_CONNECT_HANDLE_STORAGE);
   return (
     <ProfileInfoWrapper>
       <ChooseEntityToCreate />
