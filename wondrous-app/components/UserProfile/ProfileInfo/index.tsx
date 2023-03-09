@@ -167,7 +167,14 @@ function ProfileInfo({ userProfile }) {
           </ProfileInfoLink>
         )}
         {cyberConnectHandle && (
-          <ProfileInfoLink key={cyberConnectHandle} href={`https://link3.to/${cyberConnectHandle}`} target="_blank">
+          <ProfileInfoLink
+            style={{
+              textDecoration: 'none',
+            }}
+            key={cyberConnectHandle}
+            href={`https://link3.to/${cyberConnectHandle}`}
+            target="_blank"
+          >
             <ProfileInfoIcon>
               <ProfilesCyberConnectIcon />
             </ProfileInfoIcon>
