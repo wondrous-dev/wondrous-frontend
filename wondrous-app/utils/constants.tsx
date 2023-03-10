@@ -769,7 +769,7 @@ export const TABS_LABELS = {
 export enum TOKEN_GATING_CONDITION_TYPE {
   GUILD = 'guild',
   TOKEN_GATE = 'token_gate',
-  OTTER = 'otter',
+  OTTERSPACE = 'otterspace',
 }
 
 export const GR15DEICategoryName = 'gr15_dei';

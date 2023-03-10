@@ -52,8 +52,8 @@ export const IntegrationsSnapshotSubBlock = styled.div`
 `;
 
 export const IntegrationsSnapshotInputSubBlock = styled.div`
-  width: calc(100% - 220px);
-  min-width: 200px;
+  width: calc(100% - 240px);
+  min-width: 150px;
   display: flex;
   flex-direction: column;
   @media (max-width: 683px) {

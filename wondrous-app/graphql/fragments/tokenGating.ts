@@ -20,6 +20,10 @@ export const TokenGatingConditionFragment = gql`
       guildId
       roleId
     }
+    otterspaceAccessCondition {
+      raftId
+      badgeSpecId
+    }
   }
 `;
 
@@ -33,6 +37,21 @@ export const GuildAccessConditionFragment = gql`
     accessCondition {
       guildId
       roleId
+    }
+  }
+`;
+
+
+export const OtterspaceAccessConditionFragment = gql`
+  fragment OtterspaceAccessConditionFragment on OtterspaceAccessCondition {
+    id
+    orgId
+    podId
+    name
+    type
+    accessCondition {
+      raftId
+      badgeSpecId
     }
   }
 `;

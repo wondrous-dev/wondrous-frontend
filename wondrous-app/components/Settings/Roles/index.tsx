@@ -679,11 +679,12 @@ function TokenGateRoleConfigModal(props) {
 
         <Tabs
           value={selectedTab}
-          withMargin={false}
+          $withMargin={false}
           onChange={(e, tab) => setSelectedTab(tab)}
           tabs={[
             { label: 'Token gate', value: TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE },
             { label: 'Guild.xyz', value: TOKEN_GATING_CONDITION_TYPE.GUILD },
+            { label: 'Otterspace', value: TOKEN_GATING_CONDITION_TYPE.OTTERSPACE },
           ]}
         />
 

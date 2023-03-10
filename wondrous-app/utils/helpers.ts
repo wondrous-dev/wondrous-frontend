@@ -189,3 +189,8 @@ export const CHAIN_REGEX = {
   HARMONY: /^one[a-zA-Z0-9]{39}$/gm,
   ETHEREUM: /(^0x[a-zA-Z0-9]{40}$)|(.*\.eth$)/gm,
 };
+
+export const convertIPFSUrl = (url: string) => {
+  if (!url) return '';
+  return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
+};

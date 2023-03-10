@@ -9,18 +9,22 @@ import { createPortal } from 'react-dom';
 
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
-import { CREATE_GUILD_ACCESS_CONDITION_FOR_ORG, UPDATE_GUILD_ACCESS_CONDITION } from 'graphql/mutations/tokenGating';
+import {
+  CREATE_OTTERSPACE_ACCESS_CONDITION_FOR_ORG,
+  UPDATE_OTTERSPACE_ACCESS_CONDITION,
+} from 'graphql/mutations/tokenGating';
 
 import Button from 'components/Button';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import SmartLink from 'components/Common/SmartLink';
 import CustomField from 'components/Settings/TokenGating/FormField/CustomField';
 
-import { GET_ORG_GUILD, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
-import useGuildXyz from 'services/guildxyz';
+import { GET_ORG_OTTERSPACE, GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_OTTERSPACE_RAFTS } from 'graphql/queries';
+import useOtterspace from 'services/otterspace';
 import palette from 'theme/palette';
-import { GuildAccessCondition, TokenGatingCondition } from 'types/TokenGating';
+import { OtterspaceAccessCondition, TokenGatingCondition } from 'types/TokenGating';
 import { useTokenGatingCondition } from 'utils/hooks';
+import { convertIPFSUrl } from 'utils/helpers';
 
 type Props = {
   orgId: string;
@@ -29,32 +33,41 @@ type Props = {
 
 const OtterspaceConfigForm = ({ orgId, footerRef }: Props) => {
   const { closeTokenGatingModal, selectedTokenGatingCondition } = useTokenGatingCondition();
-  const { guildAccessCondition } = (selectedTokenGatingCondition || {}) as TokenGatingCondition & {
-    guildAccessCondition: GuildAccessCondition;
+  const { otterspaceAccessCondition } = (selectedTokenGatingCondition || {}) as TokenGatingCondition & {
+    otterspaceAccessCondition: OtterspaceAccessCondition;
   };
   const [name, setName] = useState<string>(selectedTokenGatingCondition?.name);
-  const [roleId, setRoleId] = useState<string>(guildAccessCondition?.roleId);
-  const [guild, setGuild] = useState(null);
+  const [connectedRaft, setConnectedRaft] = useState(null);
+  const [availableBadges, setAvailableBadges] = useState([]);
+  const [badgeSpecId, setBadgeSpecId] = useState<string>(otterspaceAccessCondition?.badgeSpecId);
   const [creationError, setCreationError] = useState(null);
-  const { getGuildById } = useGuildXyz();
+  const { getRaftInfo, getRaftWithSpecs } = useOtterspace();
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const selectedRole = guild?.roles?.find((role) => role?.id?.toString() === roleId?.toString());
 
+  const selectedBadge = availableBadges?.find((badge) => badge.value === badgeSpecId);
   useEffect(() => {
-    setName(`Guild: ${guild?.name}, role: ${selectedRole?.name}`);
-  }, [guild, selectedRole]);
+    if (connectedRaft && selectedBadge) {
+      setName(`Community: ${connectedRaft?.metadata?.name}, Badge: ${selectedBadge?.label}`);
+    }
+  }, [selectedBadge, connectedRaft]);
 
-  const [getOrgGuild, { error: getOrgGuildError }] = useLazyQuery(GET_ORG_GUILD, {
+  const [getOrgOtterspace, { error: getOrgOtterspaceError }] = useLazyQuery(GET_ORG_OTTERSPACE, {
     onCompleted: async (data) => {
-      const id = data?.getOrgGuild?.guildId;
+      const raftId = data?.getOrgOtterspace?.raftId;
 
-      if (id) {
-        const guildById = await getGuildById(id);
-        // get guild info for all guilds that and address joined
-        setGuild(guildById);
-        setRoleId(String(guildById.roles[0]?.id));
+      if (raftId) {
+        const { raft } = await getRaftInfo(raftId);
+        const { raft: raftWithSpecs } = await getRaftWithSpecs(raftId);
+        setConnectedRaft(raft);
+        const badgeSpecs = raftWithSpecs?.specs;
+        const badgeOptions = badgeSpecs?.map((badge) => ({
+          value: badge?.id,
+          label: badge?.metadata?.name,
+          image: badge?.metadata?.image,
+        }));
+        setAvailableBadges(badgeOptions);
       }
     },
     fetchPolicy: 'network-only',
@@ -62,52 +75,48 @@ const OtterspaceConfigForm = ({ orgId, footerRef }: Props) => {
   });
 
   useEffect(() => {
-    if (guildAccessCondition?.guildId) {
-      getGuildById(guildAccessCondition?.guildId).then((guildById) => setGuild(guildById));
-    } else {
-      getOrgGuild();
+    getOrgOtterspace();
+  }, []);
+
+  const [createOtterspaceAccessConditionForOrg, { loading: creating }] = useMutation(
+    CREATE_OTTERSPACE_ACCESS_CONDITION_FOR_ORG,
+    {
+      onCompleted: () => {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage('Token gating created successfully!');
+        closeTokenGatingModal();
+      },
+      refetchQueries: [GET_TOKEN_GATING_CONDITIONS_FOR_ORG],
+      onError: () => {
+        setCreationError('Error creating token gating condition');
+      },
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [guildAccessCondition?.guildId]);
+  );
 
-  const [createGuildAccessConditionForOrg, { loading: creating }] = useMutation(CREATE_GUILD_ACCESS_CONDITION_FOR_ORG, {
+  const [updateOtterspaceAccessCondition, { loading: updating }] = useMutation(UPDATE_OTTERSPACE_ACCESS_CONDITION, {
     onCompleted: () => {
       setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage('Token gating created successfully!');
+      setSnackbarAlertMessage('Otterspace access condition update successfully!');
       closeTokenGatingModal();
     },
     refetchQueries: [GET_TOKEN_GATING_CONDITIONS_FOR_ORG],
     onError: () => {
-      setCreationError('Error creating token gating condition');
+      setCreationError('Error updating otterspace access condition');
     },
   });
 
-  const [updateGuildAccessCondition, { loading: updating }] = useMutation(UPDATE_GUILD_ACCESS_CONDITION, {
-    onCompleted: () => {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage('Guild access condition update successfully!');
-      closeTokenGatingModal();
-    },
-    refetchQueries: [GET_TOKEN_GATING_CONDITIONS_FOR_ORG],
-    onError: () => {
-      setCreationError('Error updating guild access condition');
-    },
-  });
-
-  const rolesOptions = useMemo(() => guild?.roles.map((role) => ({ value: role.id, label: role.name })), [guild]);
-
-  if (getOrgGuildError) {
+  if (getOrgOtterspaceError) {
     return (
       <Typography color="white" sx={{ a: { color: palette.highlightBlue } }}>
         <SmartLink href={`/organization/settings/${orgId}/integrations`} asLink>
           Set up
         </SmartLink>{' '}
-        integration with Guild.xyz
+        integration with Otterspace
       </Typography>
     );
   }
 
-  if (!guild) {
+  if (!connectedRaft) {
     return (
       <Grid container alignItems="center">
         <Skeleton variant="circular" width={40} height={40} sx={{ backgroundColor: palette.grey850 }} />
@@ -120,38 +129,37 @@ const OtterspaceConfigForm = ({ orgId, footerRef }: Props) => {
     );
   }
 
-  const saveGuild = () => {
+  const saveOtterspace = () => {
     const variables = {
       tokenGatingConditionId: selectedTokenGatingCondition?.id,
       input: {
         name,
-        roleId,
         orgId,
-        guildId: String(guild.id),
+        raftId: connectedRaft?.id,
+        badgeSpecId
       },
     };
 
     if (selectedTokenGatingCondition?.id) {
-      updateGuildAccessCondition({ variables });
+      updateOtterspaceAccessCondition({ variables });
     } else {
-      createGuildAccessConditionForOrg({ variables });
+      createOtterspaceAccessConditionForOrg({ variables });
     }
   };
-
   return (
     <Box>
       <Grid container alignItems="center" mb="20px">
-        <Avatar src={guild.imageUrl} variant="square" />
+        <Avatar src={convertIPFSUrl(connectedRaft?.metadata?.image)} variant="square" />
         <Typography ml="15px" color="white">
-          {guild?.name}
+          {connectedRaft?.metadata?.name}
         </Typography>
       </Grid>
 
-      <CustomField label="Role">
+      <CustomField label="Badge">
         <DropdownSelect
-          value={roleId}
-          options={rolesOptions}
-          setValue={(id) => setRoleId(String(id))}
+          value={badgeSpecId}
+          options={availableBadges}
+          setValue={(id) => setBadgeSpecId(String(id))}
           innerStyle={{
             marginTop: 0,
           }}
@@ -174,8 +182,8 @@ const OtterspaceConfigForm = ({ orgId, footerRef }: Props) => {
                 Cancel
               </Button>
 
-              <Button onClick={saveGuild} type="button" disabled={!(roleId && name) || creating || updating}>
-                {selectedTokenGatingCondition ? 'Update' : 'Create'} Guild Token Gate
+              <Button onClick={saveOtterspace} type="button" disabled={!(badgeSpecId && name) || creating || updating}>
+                {selectedTokenGatingCondition ? 'Update' : 'Create'} Otterspace Token Gate
               </Button>
             </Grid>,
             footerRef.current

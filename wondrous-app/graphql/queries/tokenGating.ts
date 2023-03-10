@@ -51,3 +51,13 @@ export const GET_NFT_INFO = gql`
     }
   }
 `;
+
+
+export const GET_OTTERSPACE_RAFTS = gql`
+  query availableOtterspaceRaftsToConnect($walletAddress: String!) {
+    availableOtterspaceRaftsToConnect(walletAddress: $walletAddress) {
+      raftId
+      raftName
+    }
+  }
+`;
