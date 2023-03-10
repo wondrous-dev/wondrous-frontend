@@ -6,15 +6,15 @@ import endOfMonth from 'date-fns/endOfMonth';
 
 import { withAuth } from 'components/Auth/withAuth';
 import {
-  GET_ORG_FROM_USERNAME,
-  GET_ORG_GRANTS,
-  GET_ORG_TASK_BOARD_PROPOSALS,
-  GET_ORG_TASK_BOARD_TASKS,
+  GET_ORG_BY_ID,
+  GET_POD_GRANTS,
+  GET_POD_TASK_BOARD_PROPOSALS,
+  GET_POD_TASK_BOARD_TASKS,
   GET_USER_PERMISSION_CONTEXT,
 } from 'graphql/queries';
-import { OrgBoardContext } from 'utils/contexts';
+import { PodBoardContext } from 'utils/contexts';
 import EntitySidebar from 'components/Common/SidebarEntity';
-import { usePageDataContext } from 'utils/hooks';
+import { usePodPageFetch } from 'utils/hooks';
 import CalendarPage from 'components/organization/calendar';
 import { TaskFilter } from 'types/task';
 import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
@@ -31,9 +31,8 @@ import {
 } from 'utils/constants';
 
 const OrgCalendarPage = () => {
-  const { setPageData } = usePageDataContext();
   const router = useRouter();
-  const { username } = router.query;
+  const { podId } = router.query;
   const [filters, setFilters] = useState<TaskFilter>({
     podIds: [],
     statuses: [],
@@ -46,7 +45,7 @@ const OrgCalendarPage = () => {
     taskTypes: [],
   });
 
-  const [getOrgTaskBoardTasks, { data: orgTaskBoardTasksData }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
+  const [getPodTaskBoardTasks, { data: podTaskBoardTasksData }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
@@ -55,7 +54,7 @@ const OrgCalendarPage = () => {
     },
   });
 
-  const [getOrgProposals, { data: orgProposalData }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+  const [getPodProposals, { data: podProposalData }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
@@ -64,7 +63,7 @@ const OrgCalendarPage = () => {
     },
   });
 
-  const [getOrgGrants, { data: orgGrantsData }] = useLazyQuery(GET_ORG_GRANTS, {
+  const [getPodGrants, { data: podGrantsData }] = useLazyQuery(GET_POD_GRANTS, {
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
     onError: (error) => {
@@ -75,57 +74,47 @@ const OrgCalendarPage = () => {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-
-  const { data } = useQuery(GET_ORG_FROM_USERNAME, {
-    skip: !username,
-    variables: {
-      username,
-    },
-  });
-  const { getOrgFromUsername: orgData } = data || {};
+  const { data } = usePodPageFetch(podId);
 
   useEffect(() => {
-    if (orgData) {
-      setPageData({ orgData });
-    }
-  }, [orgData]);
-
-  useEffect(() => () => setPageData({}), []);
-
-  useEffect(() => {
-    getOrgTaskBoardTasks({
+    getPodTaskBoardTasks({
       variables: {
-        orgId: orgData?.id,
-        offset: 0,
-        statuses: [
-          TASK_STATUS_IN_PROGRESS,
-          TASK_STATUS_TODO,
-          TASK_STATUS_IN_REVIEW,
-          TASK_STATUS_DONE,
-          TASK_STATUS_ARCHIVED,
-        ],
-        limit: 1000,
+        input: {
+          podId,
+          limit: 1000,
+          offset: 0,
+          date: filters?.date,
+          statuses: [
+            TASK_STATUS_IN_PROGRESS,
+            TASK_STATUS_TODO,
+            TASK_STATUS_IN_REVIEW,
+            TASK_STATUS_DONE,
+            TASK_STATUS_ARCHIVED,
+          ],
+        },
       },
     });
 
-    getOrgProposals({
+    getPodProposals({
       variables: {
-        orgId: orgData?.id,
-        offset: 0,
-        statuses: [STATUS_OPEN, STATUS_APPROVED, STATUS_CLOSED],
-        limit: 1000,
+        input: {
+          podId,
+          statuses: [STATUS_OPEN, STATUS_APPROVED, STATUS_CLOSED],
+          offset: 0,
+          limit: 100,
+        },
       },
     });
 
-    getOrgGrants({
+    getPodGrants({
       variables: {
-        orgId: orgData?.id,
+        podId,
         status: GRANTS_STATUSES.OPEN,
         limit: 1000,
         offset: 0,
       },
     });
-  }, [getOrgTaskBoardTasks, getOrgGrants, getOrgProposals, orgData?.id]);
+  }, [getPodTaskBoardTasks, getPodGrants, getPodProposals, podId]);
 
   const handleFilterChange: any = (
     filtersToApply = {
@@ -147,27 +136,40 @@ const OrgCalendarPage = () => {
     });
   };
 
-  const contextValue = {
-    userPermissionsContext: userPermissionsContext?.getUserPermissionContext
-      ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-      : null,
-    orgId: orgData?.id,
-    orgData,
-    tasks: orgTaskBoardTasksData?.getOrgTaskBoardTasks,
-    grants: orgGrantsData?.getGrantOrgBoard,
-    proposals: orgProposalData?.getOrgTaskBoardProposals,
-    handleFilterChange,
-    filters,
-  };
+  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
+
+  useEffect(() => {
+    if (data?.getPodById?.orgId) {
+      getOrgById({
+        variables: {
+          orgId: data?.getPodById?.orgId,
+        },
+      });
+    }
+  }, [getOrgById, data?.getPodById?.orgId]);
 
   return (
-    <OrgBoardContext.Provider value={contextValue}>
+    <PodBoardContext.Provider
+      value={{
+        pod: data?.getPodById,
+        podId,
+        orgId: data?.getPodById?.orgId,
+        userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+          ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+          : null,
+        tasks: podTaskBoardTasksData?.getPodTaskBoardTasks,
+        grants: podGrantsData?.getGrantPodBoard,
+        proposals: podProposalData?.getPodTaskBoardProposals,
+        handleFilterChange,
+        filters,
+      }}
+    >
       <EntitySidebar>
-        <BoardPageHeader orgData={orgData} headerTitle="Calendar">
+        <BoardPageHeader orgData={orgData?.getOrgById} headerTitle="Calendar">
           <CalendarPage />
         </BoardPageHeader>
       </EntitySidebar>
-    </OrgBoardContext.Provider>
+    </PodBoardContext.Provider>
   );
 };
 

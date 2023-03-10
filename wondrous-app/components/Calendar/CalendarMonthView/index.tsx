@@ -104,40 +104,56 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
 
               {/* Contains tasks and more button */}
               <Grid container wrap="nowrap" direction="column" className="ColumnBody" sx={styles.columnBody}>
-                {tasks.slice(0, maxTasksForMonthView).map((task) => (
-                  <SmartLink
-                    asLink
-                    key={task.id}
-                    href={
-                      router.asPath === `/organization/${router.query?.username}/calendar`
-                        ? `${router.asPath}?task=${task.id}`
-                        : `${router.asPath}&task=${task.id}`
-                    }
-                    preventLinkNavigation
-                    onNavigate={() => {
-                      const query = {
-                        ...router.query,
-                        task: task.id,
-                      };
+                {tasks.slice(0, maxTasksForMonthView).map((task) => {
+                  let taskType;
 
-                      router.push({ query }, undefined, { scroll: false, shallow: true });
-                    }}
-                  >
-                    <Grid key={task.id} wrap="nowrap" mb="8px" alignItems="center" container>
-                      <TaskStatus
-                        style={{
-                          width: '16px',
-                          height: '16px',
-                          flexShrink: 0,
-                        }}
-                        status={task?.status}
-                      />
-                      <Typography noWrap sx={styles.taskTitle}>
-                        {task.title}
-                      </Typography>
-                    </Grid>
-                  </SmartLink>
-                ))}
+                  switch (task.__typename) {
+                    case 'TaskProposalCard':
+                      taskType = 'taskProposal';
+                      break;
+                    case 'GrantCard':
+                      taskType = 'grant';
+                      break;
+                    default:
+                      taskType = 'task';
+                  }
+
+                  return (
+                    <SmartLink
+                      asLink
+                      key={task.id}
+                      href={
+                        router.asPath === `/organization/${router.query?.username}/calendar` ||
+                        router.asPath === `/pod/${router.query?.podId}/calendar`
+                          ? `${router.asPath}?${taskType}=${task.id}`
+                          : `${router.asPath}&task=${task.id}`
+                      }
+                      preventLinkNavigation
+                      onNavigate={() => {
+                        const query = {
+                          ...router.query,
+                          task: task.id,
+                        };
+
+                        router.push({ query }, undefined, { scroll: false, shallow: true });
+                      }}
+                    >
+                      <Grid key={task.id} wrap="nowrap" mb="8px" alignItems="center" container>
+                        <TaskStatus
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            flexShrink: 0,
+                          }}
+                          status={task?.status}
+                        />
+                        <Typography noWrap sx={styles.taskTitle}>
+                          {task.title}
+                        </Typography>
+                      </Grid>
+                    </SmartLink>
+                  );
+                })}
                 {tasks.length > maxTasksForMonthView ? (
                   <Button
                     variant="text"
