@@ -118,3 +118,11 @@ export const GET_ORG_GUILD = gql`
     }
   }
 `;
+
+export const GET_ORG_OTTERSPACE = gql`
+  query getOrgOtterspace($orgId: ID!) {
+    getOrgOtterspace(orgId: $orgId) {
+      raftId
+    }
+  }
+`;

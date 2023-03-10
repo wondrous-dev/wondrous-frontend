@@ -7,6 +7,7 @@ import HeaderBlock from 'components/Settings/headerBlock';
 
 import { GithubIntegration } from 'components/Settings/Github';
 import GuildIntegration from 'components/Settings/Guild';
+import OtterspaceIntegration from 'components/Settings/Otterspace';
 
 import { IntegrationsContainer } from './styles';
 
@@ -24,6 +25,7 @@ function Integrations(props) {
         <SnapshotConfigSection orgId={orgId} podId={podId} />
         <GithubIntegration orgId={orgId} />
         <GuildIntegration orgId={orgId} />
+        <OtterspaceIntegration orgId={orgId} />
       </IntegrationsContainer>
     </SettingsWrapper>
   );

@@ -161,3 +161,21 @@ export const CONNECT_COORDINAPE_TO_ORG = gql`
     }
   }
 `;
+
+
+
+export const CONNECT_OTTERSPACE_TO_ORG = gql`
+  mutation connectOtterspaceToOrg($orgId: ID!, $raftId: String!) {
+    connectOtterspaceToOrg(orgId: $orgId, raftId: $raftId) {
+      success
+    }
+  }
+`;
+
+export const DISCONNECT_OTTERSPACE_TO_ORG = gql`
+  mutation disconnectOtterspaceFromOrg($orgId: ID!) {
+    disconnectOtterspaceFromOrg(orgId: $orgId) {
+      success
+    }
+  }
+`;
