@@ -4,6 +4,7 @@ export const INTEGRATION_TYPES = {
   DISCORD: 'discord',
   SNAPSHOT: 'snapshot',
   TELEGRAM: 'telegram',
+  OTTERSPACE: 'otterspace',
 };
 
 export const FILTER_TYPES = {
@@ -22,4 +23,5 @@ export const INTEGRATION_FEATURES = {
   ],
   [INTEGRATION_TYPES.SNAPSHOT]: ['Link proposals to Snapshot'],
   [INTEGRATION_TYPES.TELEGRAM]: ['Receive updates every 6 hours in Telegram'],
+  [INTEGRATION_TYPES.OTTERSPACE]: ['Manage custom permissions and roles for your community'],
 };

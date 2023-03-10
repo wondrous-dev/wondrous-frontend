@@ -118,3 +118,31 @@ export const GET_ORG_GUILD = gql`
     }
   }
 `;
+
+export const GET_ORG_INTEGRATIONS = gql`
+  query getOrgIntegrations($orgId: ID!) {
+    getOrgIntegrations(orgId: $orgId) {
+      integrations {
+        discord
+        telegram
+        snapshot
+        github
+        guildxyz
+      }
+    }
+  }
+`;
+
+export const GET_POD_INTEGRATIONS = gql`
+  query getPodIntegrations($podId: ID!) {
+    getPodIntegrations(podId: $podId) {
+      integrations {
+        discord
+        telegram
+        snapshot
+        github
+        guildxyz
+      }
+    }
+  }
+`;

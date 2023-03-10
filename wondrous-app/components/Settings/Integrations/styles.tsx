@@ -198,3 +198,23 @@ export const Label = styled(Typography)`
     color: ${palette.blue20};
   }
 `;
+
+export const TelegramLabel = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 13px;
+    color: ${palette.grey250};
+  }
+`;
+
+export const TelegramBotInfo = styled(Typography)`
+  && {
+    color: ${palette.white};
+    font-family: ${typography.fontFamily};
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 17px;
+  }
+`;

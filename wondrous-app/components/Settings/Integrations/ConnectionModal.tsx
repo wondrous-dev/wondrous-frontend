@@ -13,7 +13,9 @@ import GuildIntegrationFooter from './Helpers/GuildIntegrationFooter';
 import IntegrationFeatures from './Helpers/IntegrationFeatures';
 import ModalBody from './Helpers/ModalBody';
 import SnapshotFooter from './Helpers/SnapshotFooter';
+import TelegramIntegrationFooter from './Helpers/TelegramIntegrationFooter';
 import SnapshotConfigSection from './SnapshotConfig';
+import TelegramIntegration from './TelegramIntegration';
 
 const INTEGRATIONS_TYPE_CONFIG = {
   [INTEGRATION_TYPES.SNAPSHOT]: {
@@ -41,6 +43,8 @@ const INTEGRATIONS_TYPE_CONFIG = {
     title: 'Connect Telegram',
     text: 'Connect your Telegram account.',
     logo: '/images/integrations/telegram-logo.png',
+    component: () => <TelegramIntegration />,
+    footer: () => <TelegramIntegrationFooter />,
   },
   [INTEGRATION_TYPES.DISCORD]: {
     title: 'Connect Discord',
