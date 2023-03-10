@@ -29,6 +29,7 @@ import {
   HideSubmissionsHelperText,
 } from 'components/Common/TaskSubmission/styles';
 import Wallet from 'components/Common/Wallet';
+import { useApprovedSubmission } from 'utils/hooks';
 import { TaskSubmissionsFilter } from './submissionFilter';
 import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
@@ -118,7 +119,11 @@ function TaskSubmissionsTaskInProgress({ canSubmit, taskStatus, setMakeSubmissio
 }
 
 function TaskSubmissionMakePayment({ taskStatus, fetchedTask, setShowPaymentModal, fetchedTaskSubmissions }) {
-  if (taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK) {
+  const approvedSubmissionContext = useApprovedSubmission();
+  if (
+    (taskStatus === TASK_STATUS_DONE || approvedSubmissionContext?.approvedSubmission) &&
+    fetchedTask?.type === ENTITIES_TYPES.TASK
+  ) {
     return (
       <SubmissionPayment
         fetchedTask={fetchedTask}

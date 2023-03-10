@@ -24,7 +24,7 @@ const useApprovedSubmissions = ({ taskSubmissions }) => {
         approvedSubmissionContext?.setApprovedSubmission(taskSubmission);
       }
     });
-  }, [taskSubmissions, approvedSubmissionContext]);
+  }, [taskSubmissions]);
   return (
     approvedSubmission &&
     approvedSubmission.paymentStatus !== PAYMENT_STATUS.PROCESSING &&

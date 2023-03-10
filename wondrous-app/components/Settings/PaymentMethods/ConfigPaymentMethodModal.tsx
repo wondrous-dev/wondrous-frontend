@@ -32,6 +32,7 @@ import Boba from '../../Icons/Boba';
 import Optimism from '../../Icons/Optimism';
 import PlusIcon from '../../Icons/plus';
 import { ErrorText } from '../../Common';
+import Aurora from '../../Icons/AuroraCoin.svg';
 
 const PresetTokens = [
   {
@@ -146,6 +147,23 @@ const OptimismPresetTokens = [
   },
 ];
 
+const AuroraPresetTokens = [
+  {
+    label: 'USDC',
+    icon: <USDCoin />,
+    value: 'USDC',
+  },
+  {
+    label: 'DAI',
+    icon: <DaiIcon />,
+    value: 'DAI',
+  },
+  {
+    label: 'AURORA',
+    icon: <Aurora />,
+    value: 'AURORA',
+  },
+];
 const PresetTokenPerChain = {
   ethereum: EthereumPresetTokens,
   polygon: PresetTokens,
@@ -155,7 +173,9 @@ const PresetTokenPerChain = {
   bsc: BscPresetTokens,
   optimism: OptimismPresetTokens,
   avalanche: PresetTokens,
+  aurora: AuroraPresetTokens,
 };
+
 const CHAIN_TO_USDC_ADDR = {
   ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   polygon: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
@@ -165,6 +185,7 @@ const CHAIN_TO_USDC_ADDR = {
   boba: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
   optimism: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
   avalanche: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
+  aurora: '0xb12bfca5a55806aaf64e99521918a4bf0fc40802',
 };
 
 const CHAIN_TO_DAI_ADDR = {
@@ -176,6 +197,7 @@ const CHAIN_TO_DAI_ADDR = {
   boba: '0xf74195Bb8a5cf652411867c5C2C5b8C2a402be35',
   optimism: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
   avalanche: '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70',
+  aurora: '0xe3520349f477a5f6eb06107066048508498a291b',
 };
 
 function ConfigPaymentMethodModal(props) {
@@ -255,6 +277,10 @@ function ConfigPaymentMethodModal(props) {
       tokenAddress = '0xa18bF3994C0Cc6E3b63ac420308E5383f53120D7';
       tokenName = 'Boba Token';
       symbol = 'BOBA';
+    } else if (selectedToken === 'AURORA') {
+      tokenAddress = '0x8bec47865ade3b172a928df8f990bc7f2a3b9f79';
+      tokenName = 'AURORA';
+      symbol = 'AURORA';
     } else if (selectedToken === 'custom') {
       tokenAddress = customToken?.contractAddress;
       tokenName = customToken?.name;
@@ -333,7 +359,7 @@ function ConfigPaymentMethodModal(props) {
             name="chain"
           />
           <PaymentMethodDescription>
-            for BNB and Avalanche chain please contact support@wonderverse.xyz
+            for BNB, Aurora and Avalanche chain please contact support@wonderverse.xyz
           </PaymentMethodDescription>
           <PaymentMethodSubHeader>Token </PaymentMethodSubHeader>
           <DropdownSelect
