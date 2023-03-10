@@ -14,6 +14,11 @@ export interface GuildAccessCondition {
   roleId: string;
 }
 
+export interface OtterspaceAccessCondition {
+  raftId: string;
+  badgeSpecId: string;
+}
+
 export interface TokenGatingCondition {
   __typename: string;
   id: string;
@@ -24,4 +29,5 @@ export interface TokenGatingCondition {
   type: TOKEN_GATING_CONDITION_TYPE;
   tokenAccessCondition: AccessCondition;
   guildAccessCondition: GuildAccessCondition;
+  otterspaceAccessCondition: OtterspaceAccessCondition;
 }

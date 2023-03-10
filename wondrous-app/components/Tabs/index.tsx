@@ -5,7 +5,7 @@ import { TabsProps } from '@mui/material/Tabs/Tabs';
 import { StyledTabs, styles } from './styles';
 
 type Props = TabsProps & {
-  withMargin?: boolean;
+  $withMargin?: boolean;
   tabs: Array<{
     value: string;
     label: string;
@@ -21,7 +21,7 @@ const Tabs = ({ tabs, ...props }: Props) => (
 );
 
 Tabs.defaultProps = {
-  withMargin: true,
+  $withMargin: true,
 };
 
 export default Tabs;

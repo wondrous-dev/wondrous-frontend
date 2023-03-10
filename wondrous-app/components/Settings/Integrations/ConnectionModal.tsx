@@ -4,6 +4,7 @@ import { GithubIntegration } from 'components/Settings/Github';
 import { useState } from 'react';
 import palette from 'theme/palette';
 import GuildIntegration from '../Guild';
+import OtterspaceIntegration from '../Otterspace';
 import { INTEGRATION_TYPES } from './constants';
 import ConnectionContext from './Helpers/ConnectionContext';
 import DiscordFooter from './Helpers/DiscordFooter';
@@ -52,6 +53,12 @@ const INTEGRATIONS_TYPE_CONFIG = {
     logo: '/images/integrations/discord-full-logo.png',
     footer: () => <DiscordFooter />,
     component: () => <DiscordIntegrationsBody />,
+  },
+  [INTEGRATION_TYPES.OTTERSPACE]: {
+    title: 'Connect Otterspace',
+    text: 'Connect Otterspace. Manage roles and permissions.',
+    logo: '/images/integrations/otterspace.png',
+    component: () => <OtterspaceIntegration />,
   },
 };
 const ConnectionModal = ({ type, onClose, orgId, podId, isActive }) => {

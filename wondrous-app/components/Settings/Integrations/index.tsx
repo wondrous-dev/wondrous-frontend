@@ -1,22 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import HeaderBlock from 'components/Settings/headerBlock';
-import { useRouter } from 'next/router';
 
 import { Grid } from '@mui/material';
 
 import { useQuery } from '@apollo/client';
 import { Spinner, SpinnerWrapper } from 'components/Dashboard/bounties/styles';
-import {
-  GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
-  GET_ORG_GUILD,
-  GET_ORG_INTEGRATIONS,
-  GET_POD_DISCORD_NOTIFICATION_CONFIGS,
-  GET_POD_INTEGRATIONS,
-  HAS_ORG_GITHUB_INTEGRATION,
-} from 'graphql/queries';
-import { useSnapshot } from 'services/snapshot';
+import { GET_ORG_INTEGRATIONS, GET_POD_INTEGRATIONS } from 'graphql/queries';
 import { FILTER_TYPES, INTEGRATION_TYPES } from './constants';
 import Filters from './Filters';
 import IntegrationsCard from './IntegrationsCard';
