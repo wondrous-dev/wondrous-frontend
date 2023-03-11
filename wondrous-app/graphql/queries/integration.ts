@@ -128,6 +128,7 @@ export const GET_ORG_INTEGRATIONS = gql`
         snapshot
         github
         guildxyz
+        otterspace
       }
     }
   }
@@ -142,6 +143,7 @@ export const GET_POD_INTEGRATIONS = gql`
         snapshot
         github
         guildxyz
+        otterspace
       }
     }
   }

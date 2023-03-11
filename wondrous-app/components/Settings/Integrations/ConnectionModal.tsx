@@ -13,6 +13,7 @@ import GithubFooter from './Helpers/GithubFooter';
 import GuildIntegrationFooter from './Helpers/GuildIntegrationFooter';
 import IntegrationFeatures from './Helpers/IntegrationFeatures';
 import ModalBody from './Helpers/ModalBody';
+import OtterspaceFooter from './Helpers/OtterspaceFooter';
 import SnapshotFooter from './Helpers/SnapshotFooter';
 import TelegramIntegrationFooter from './Helpers/TelegramIntegrationFooter';
 import SnapshotConfigSection from './SnapshotConfig';
@@ -59,6 +60,7 @@ const INTEGRATIONS_TYPE_CONFIG = {
     text: 'Connect Otterspace. Manage roles and permissions.',
     logo: '/images/integrations/otterspace.png',
     component: () => <OtterspaceIntegration />,
+    footer: () => <OtterspaceFooter />,
   },
 };
 const ConnectionModal = ({ type, onClose, orgId, podId, isActive }) => {
