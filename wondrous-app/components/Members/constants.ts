@@ -1,4 +1,4 @@
-export const QUERY_LIMIT = 20;
+export const QUERY_LIMIT = 8;
 
 export const userProfilePictureStyles = {
   width: '32px',

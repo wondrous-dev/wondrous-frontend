@@ -1,6 +1,7 @@
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
 
 import { useMe } from 'components/Auth/withAuth';
 import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
@@ -12,6 +13,7 @@ import {
   GET_POD_MEMBERSHIP_REQUEST,
   GET_POD_ROLES,
   GET_POD_USERS,
+  GET_ORG_FROM_USERNAME,
 } from 'graphql/queries';
 
 import { DefaultUserImage, SafeImage } from 'components/Common/Image';
@@ -29,8 +31,6 @@ import FilteredRoles from './FilteredRoles';
 
 import { QUERY_LIMIT, userProfilePictureStyles } from './constants';
 
-import { useGetOrgMemberRequests, useGetOrgUsers, useGetPodMemberRequests, useGetPodUsers } from './hooks';
-
 import {
   MembersWrapper,
   MembersHeader,
@@ -41,7 +41,7 @@ import {
   FilterMembersInputIcon,
 } from './styles';
 
-const Members = (props) => {
+const Members = () => {
   const user = useMe();
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
@@ -60,27 +60,118 @@ const Members = (props) => {
     return board?.userPermissionsContext?.podRoles[podData?.id];
   }, [isOrg, board, orgData?.id, podData?.id]);
 
+  const [previousSelectedRoleIds, setPreviousSelectedRoleIds] = useState([]);
+  const [previousSearchQuery, setPreviousSearchQuery] = useState('');
+  const [isRefetch, setIsRefetch] = useState(false);
+
   const [selectedRoleIds, setSelectedRoleIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Get membership requests for org or pod depending on what's being viewed
-  const {
-    getOrgUserMembershipRequests,
-    data: orgUserMembershipRequests,
-    fetchMore: fetchMoreOrgMemberRequests,
-    hasMore: hasMoreOrgMemberRequests,
-  } = useGetOrgMemberRequests(orgId);
+  const [hasMoreOrgMemberRequests, setHasMoreOrgMemberRequests] = useState(false);
+  const [hasMorePodMemberRequests, setHasMorePodMemberRequests] = useState(false);
 
-  const {
-    getPodUserMembershipRequests,
-    data: podUserMembershipRequests,
-    fetchMore: fetchMorePodMemberRequests,
-    hasMore: hasMorePodMemberRequests,
-  } = useGetPodMemberRequests(podId);
+  const [hasMoreOrgUsers, setHasMoreOrgUsers] = useState(false);
+  const [hasMorePodUsers, setHasMorePodUsers] = useState(false);
+
+  const handleOnCompleted = useCallback(
+    (combinedDataLength, previousDataLength, setHasMore) => {
+      const isANewSearch = previousSearchQuery !== searchQuery || !isEqual(previousSelectedRoleIds, selectedRoleIds);
+
+      const updatedDataLength =
+        isANewSearch || isRefetch ? combinedDataLength : combinedDataLength - previousDataLength;
+
+      setHasMore(updatedDataLength >= QUERY_LIMIT);
+
+      if (isANewSearch) {
+        setPreviousSearchQuery(searchQuery);
+        setPreviousSelectedRoleIds(selectedRoleIds);
+      }
+    },
+    [isRefetch, previousSearchQuery, previousSelectedRoleIds, searchQuery, selectedRoleIds]
+  );
+
+  // Get membership requests for org or pod depending on what's being viewed
+  const [getOrgUserMembershipRequests, { data: orgUserMembershipRequests, fetchMore: fetchMoreOrgMemberRequests }] =
+    useLazyQuery(GET_ORG_MEMBERSHIP_REQUEST, {
+      fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
+      onCompleted: (data) => {
+        handleOnCompleted(
+          data.getOrgMembershipRequest.length,
+          orgUserMembershipRequests?.getOrgMembershipRequest?.length || 0,
+          setHasMoreOrgMemberRequests
+        );
+      },
+    });
+  const [getPodUserMembershipRequests, { data: podUserMembershipRequests, fetchMore: fetchMorePodMemberRequests }] =
+    useLazyQuery(GET_POD_MEMBERSHIP_REQUEST, {
+      fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
+      onCompleted: (data) => {
+        handleOnCompleted(
+          data.getPodMembershipRequest.length,
+          podUserMembershipRequests?.getPodMembershipRequest?.length || 0,
+          setHasMorePodMemberRequests
+        );
+      },
+    });
 
   // Get users for org or pod depending on what's being viewed
-  const { getOrgUsers, data: orgUsers, fetchMore: fetchMoreOrgUsers, hasMore: hasMoreOrgUsers } = useGetOrgUsers(orgId);
-  const { getPodUsers, data: podUsers, fetchMore: fetchMorePodUsers, hasMore: hasMorePodUsers } = useGetPodUsers(podId);
+  const [getOrgUsers, { data: orgUsers, fetchMore: fetchMoreOrgUsers }] = useLazyQuery(GET_ORG_USERS, {
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      handleOnCompleted(data.getOrgUsers.length, orgUsers?.getOrgUsers?.length || 0, setHasMoreOrgUsers);
+    },
+  });
+  const [getPodUsers, { data: podUsers, fetchMore: fetchMorePodUsers }] = useLazyQuery(GET_POD_USERS, {
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      handleOnCompleted(data.getPodUsers.length, podUsers?.getPodUsers?.length || 0, setHasMorePodUsers);
+    },
+  });
+
+  useEffect(() => {
+    if (orgId) {
+      getOrgUserMembershipRequests({
+        variables: {
+          orgId,
+          limit: QUERY_LIMIT,
+        },
+      });
+
+      getOrgUsers({
+        variables: {
+          orgId,
+          limit: QUERY_LIMIT,
+        },
+      });
+    } else if (podId) {
+      getPodUserMembershipRequests({
+        variables: {
+          podId,
+          limit: QUERY_LIMIT,
+        },
+      });
+
+      getPodUsers({
+        variables: {
+          podId,
+          limit: QUERY_LIMIT,
+        },
+      });
+    }
+  }, [getOrgUserMembershipRequests, getOrgUsers, getPodUserMembershipRequests, getPodUsers, orgId, podId]);
+
+  // reset isRefetch state -> could probably be implemented better
+  useEffect(() => {
+    if (isRefetch) {
+      setTimeout(() => {
+        setIsRefetch(false);
+      }, 2000);
+    }
+  }, [isRefetch]);
 
   // Get roles for org or pod depending on what's being viewed
   const { data: orgRoles } = useQuery(GET_ORG_ROLES, {
@@ -106,51 +197,71 @@ const Members = (props) => {
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
 
   // Refetch queries
-  const refetchQueries = isOrg
-    ? [
-        {
-          query: GET_ORG_MEMBERSHIP_REQUEST,
-          variables: {
-            orgId,
-            limit: orgUserMembershipRequests?.length >= QUERY_LIMIT ? orgUserMembershipRequests.length : QUERY_LIMIT,
-            offset: 0,
-            searchString: searchQuery,
-            roleIds: selectedRoleIds,
-          },
-        },
-        {
-          query: GET_ORG_USERS,
-          variables: {
-            orgId,
-            limit: orgUsers?.length >= QUERY_LIMIT ? orgUsers.length : QUERY_LIMIT,
-            offset: 0,
-            searchString: searchQuery,
-            roleIds: selectedRoleIds,
-          },
-        },
-      ]
-    : [
-        {
-          query: GET_POD_MEMBERSHIP_REQUEST,
-          variables: {
-            orgId,
-            limit: podUserMembershipRequests?.length >= QUERY_LIMIT ? podUserMembershipRequests.length : QUERY_LIMIT,
-            offset: 0,
-            searchString: searchQuery,
-            roleIds: selectedRoleIds,
-          },
-        },
-        {
-          query: GET_POD_USERS,
-          variables: {
-            orgId,
-            limit: podUsers?.length >= QUERY_LIMIT ? podUsers.length : QUERY_LIMIT,
-            offset: 0,
-            searchString: searchQuery,
-            roleIds: selectedRoleIds,
-          },
-        },
-      ];
+  const refetchQueries = useMemo(
+    () =>
+      isOrg
+        ? [
+            {
+              query: GET_ORG_MEMBERSHIP_REQUEST,
+              variables: {
+                orgId,
+                limit:
+                  orgUserMembershipRequests?.getOrgMembershipRequest?.length >= QUERY_LIMIT
+                    ? orgUserMembershipRequests.getOrgMembershipRequest.length
+                    : QUERY_LIMIT,
+                offset: 0,
+                searchString: searchQuery,
+                roleIds: selectedRoleIds,
+              },
+            },
+            {
+              query: GET_ORG_USERS,
+              variables: {
+                orgId,
+                limit: orgUsers?.getOrgUsers?.length >= QUERY_LIMIT ? orgUsers.getOrgUsers.length : QUERY_LIMIT,
+                offset: 0,
+                searchString: searchQuery,
+                roleIds: selectedRoleIds,
+              },
+            },
+            GET_ORG_FROM_USERNAME,
+          ]
+        : [
+            {
+              query: GET_POD_MEMBERSHIP_REQUEST,
+              variables: {
+                orgId,
+                limit:
+                  podUserMembershipRequests?.getPodMembershipRequest?.length >= QUERY_LIMIT
+                    ? podUserMembershipRequests.getPodMembershipRequest.length
+                    : QUERY_LIMIT,
+                offset: 0,
+                searchString: searchQuery,
+                roleIds: selectedRoleIds,
+              },
+            },
+            {
+              query: GET_POD_USERS,
+              variables: {
+                orgId,
+                limit: podUsers?.getPodUsers?.length >= QUERY_LIMIT ? podUsers.getPodUsers.length : QUERY_LIMIT,
+                offset: 0,
+                searchString: searchQuery,
+                roleIds: selectedRoleIds,
+              },
+            },
+          ],
+    [
+      isOrg,
+      orgId,
+      orgUserMembershipRequests?.getOrgMembershipRequest?.length,
+      orgUsers?.getOrgUsers?.length,
+      podUserMembershipRequests?.getPodMembershipRequest?.length,
+      podUsers?.getPodUsers?.length,
+      searchQuery,
+      selectedRoleIds,
+    ]
+  );
 
   const structuredRoles = useMemo(() => {
     let roles;
@@ -168,14 +279,16 @@ const Members = (props) => {
   }, [isOrg, orgRoles, podRoles]);
 
   const showMembershipRequestsEmptyState = isOrg
-    ? orgUserMembershipRequests?.length === 0
-    : podUserMembershipRequests?.length === 0;
+    ? orgUserMembershipRequests?.getOrgMembershipRequest?.length === 0
+    : podUserMembershipRequests?.getPodMembershipRequest?.length === 0;
 
   const userRoleColor = useMemo(() => getRoleColor(userRole), [userRole]);
 
   // Approve membership request for org or pod
   const handleApproveMembershipRequest = useCallback(
     (requestId) => {
+      setIsRefetch(true);
+
       if (isOrg) {
         approveJoinOrgRequest({
           variables: {
@@ -192,12 +305,14 @@ const Members = (props) => {
         });
       }
     },
-    [isOrg, refetchQueries]
+    [approveJoinOrgRequest, approveJoinPodRequest, isOrg, refetchQueries]
   );
 
   // Decline membership request for org or pod
   const handleDeclineMembershipRequest = useCallback(
     (requestId) => {
+      setIsRefetch(true);
+
       if (isOrg) {
         rejectJoinOrgRequest({
           variables: {
@@ -214,7 +329,7 @@ const Members = (props) => {
         });
       }
     },
-    [isOrg, refetchQueries]
+    [isOrg, refetchQueries, rejectJoinOrgRequest, rejectJoinPodRequest]
   );
 
   // Load more membership requests for org or pod
@@ -223,24 +338,24 @@ const Members = (props) => {
       fetchMoreOrgMemberRequests({
         variables: {
           orgId,
-          offset: orgUserMembershipRequests?.length,
+          offset: orgUserMembershipRequests?.getOrgMembershipRequest?.length,
         },
       });
     } else {
       fetchMorePodMemberRequests({
         variables: {
           podId,
-          offset: podUserMembershipRequests?.length,
+          offset: podUserMembershipRequests?.getPodMembershipRequest?.length,
         },
       });
     }
   }, [
     orgId,
-    podId,
     fetchMoreOrgMemberRequests,
+    orgUserMembershipRequests?.getOrgMembershipRequest?.length,
     fetchMorePodMemberRequests,
-    podUserMembershipRequests?.length,
-    orgUserMembershipRequests?.length,
+    podId,
+    podUserMembershipRequests?.getPodMembershipRequest?.length,
   ]);
 
   // Load more users for org or pod
@@ -249,18 +364,25 @@ const Members = (props) => {
       fetchMoreOrgUsers({
         variables: {
           orgId,
-          offset: orgUsers?.length,
+          offset: orgUsers?.getOrgUsers?.length,
         },
       });
     } else {
       fetchMorePodUsers({
         variables: {
           podId,
-          offset: podUsers?.length,
+          offset: podUsers?.getPodUsers?.length,
         },
       });
     }
-  }, [orgId, podId, fetchMoreOrgUsers, fetchMorePodUsers, orgUsers?.length, podUsers?.length]);
+  }, [
+    orgId,
+    fetchMoreOrgUsers,
+    orgUsers?.getOrgUsers?.length,
+    fetchMorePodUsers,
+    podId,
+    podUsers?.getPodUsers?.length,
+  ]);
 
   // Search membership requests for org or pod
   const handleSearchMembershipRequests = useCallback(
@@ -378,7 +500,11 @@ const Members = (props) => {
 
       {!showMembershipRequestsEmptyState && (
         <MembershipRequests
-          userMembershipRequests={isOrg ? orgUserMembershipRequests : podUserMembershipRequests}
+          userMembershipRequests={
+            isOrg
+              ? orgUserMembershipRequests?.getOrgMembershipRequest
+              : podUserMembershipRequests?.getPodMembershipRequest
+          }
           membershipRequestsCount={isOrg ? orgData?.membershipRequestsCount : podData?.membershipRequestsCount}
           hasMore={isOrg ? hasMoreOrgMemberRequests : hasMorePodMemberRequests}
           handleShowMoreRequests={handleShowMoreMembershipRequests}
@@ -388,7 +514,7 @@ const Members = (props) => {
       )}
 
       <ExistingMembers
-        existingUsers={isOrg ? orgUsers : podUsers}
+        existingUsers={isOrg ? orgUsers?.getOrgUsers : podUsers?.getPodUsers}
         hasMore={isOrg ? hasMoreOrgUsers : hasMorePodUsers}
         handleShowMoreUsers={handleShowMoreUsers}
         contributorsCount={isOrg ? orgData?.contributorCount : podData?.contributorCount}
