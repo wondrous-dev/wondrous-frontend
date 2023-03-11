@@ -27,7 +27,6 @@ export const LIT_SIGNATURE_EXIST = gql`
   }
 `;
 
-
 export const GET_TOKEN_INFO = gql`
   query getTokenInfo($contractAddress: String!, $chain: String) {
     getTokenInfo(contractAddress: $contractAddress, chain: $chain) {

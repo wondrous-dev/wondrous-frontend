@@ -7,6 +7,8 @@ interface RolePillType {
   children?: any;
   onClick?: React.MouseEventHandler<HTMLElement>;
   fontSize?: Number;
+  borderColor?: String;
+  backgroundColor?: String;
 }
 
 const RolePill: React.FC<RolePillType> = ({ roleName, onClick, ...props }) => (

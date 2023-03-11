@@ -36,6 +36,7 @@ export const PodFragment = gql`
     color
     archivedAt
     contributorCount
+    membershipRequestsCount
     tasksCompletedCount
     tasksIncompleteCount
     links {

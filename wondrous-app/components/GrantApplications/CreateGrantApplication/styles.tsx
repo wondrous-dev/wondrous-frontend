@@ -1,10 +1,10 @@
 import { TaskModalHeaderTypography } from 'components/Common/TaskViewModal/styles';
+import { RequestApproveButton } from 'components/Members/styles';
 import {
   CreateEntityHeader,
   CreateEntitySelectWrapper,
   EditorContainer,
 } from 'components/CreateEntity/CreateEntityModal/styles';
-import { RequestApproveButton } from 'components/organization/members/styles';
 import { OrgSearchButton } from 'components/OrgSearch/styles';
 import styled from 'styled-components';
 import palette from 'theme/palette';

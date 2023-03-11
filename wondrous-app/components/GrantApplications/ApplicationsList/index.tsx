@@ -5,7 +5,7 @@ import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { TaskSubmissionItemsWrapper } from 'components/Common/TaskSubmission/styles';
 import { TaskSubmissionsLoading } from 'components/Common/TaskSubmission/submission';
 import Filters from 'components/GrantApplications/Filters';
-import { RequestApproveButton } from 'components/organization/members/styles';
+import { RequestApproveButton } from 'components/Members/styles';
 import { GET_GRANT_APPLICATIONS } from 'graphql/queries';
 import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';

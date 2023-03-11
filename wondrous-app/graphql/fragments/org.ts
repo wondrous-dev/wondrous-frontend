@@ -23,6 +23,7 @@ export const OrgFragment = gql`
     createdBy
     createdAt
     contributorCount
+    membershipRequestsCount
     podCount
     category
     shared

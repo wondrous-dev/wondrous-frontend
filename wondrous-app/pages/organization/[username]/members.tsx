@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { withAuth } from 'components/Auth/withAuth';
 import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { OrgBoardContext } from 'utils/contexts';
-import MemberRequests from 'components/organization/members';
+import Members from 'components/Members';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import { usePageDataContext } from 'utils/hooks';
 
@@ -36,7 +36,7 @@ function OrgMemberPage() {
     }
   }, [org]);
 
-  useEffect(() => () => setPageData({}), [])
+  useEffect(() => () => setPageData({}), []);
 
   return (
     <OrgBoardContext.Provider
@@ -49,7 +49,7 @@ function OrgMemberPage() {
       }}
     >
       <EntitySidebar>
-        <MemberRequests orgData={org} />
+        <Members />
       </EntitySidebar>
     </OrgBoardContext.Provider>
   );

@@ -58,8 +58,8 @@ const cache = new InMemoryCache({
         },
         getOrgFeed: offsetLimitPagination(), // NOTE: https://www.apollographql.com/docs/react/pagination/core-api/#non-paginated-read-functions
         getPodFeed: offsetLimitPagination(),
-        getOrgMembershipRequest: offsetLimitPagination(['orgId']),
-        getPodMembershipRequest: offsetLimitPagination(['podId']),
+        getOrgMembershipRequest: offsetLimitPagination(['orgId', 'searchString', 'roleIds']),
+        getPodMembershipRequest: offsetLimitPagination(['podId', 'searchString', 'roleIds']),
         getTasksForMilestone: offsetLimitPagination(['milestoneId', 'status']),
         getProposalsUserCanReview: {
           keyArgs: ['input', ['orgId', 'podIds', 'date']],
@@ -129,10 +129,11 @@ const cache = new InMemoryCache({
           keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses', 'priorities', 'searchString']],
           merge: offsetLimitPaginationInput,
         },
-        getOrgUsers: offsetLimitPagination(['orgId', 'searchString', 'roleIds', 'limit']),
+        getOrgUsers: offsetLimitPagination(['orgId', 'searchString', 'roleIds']),
         getGrantOrgBoard: offsetLimitPagination(['orgId', 'status']),
         getGrantPodBoard: offsetLimitPagination(['podId', 'status']),
         getGrantApplicationsForGrant: offsetLimitPagination(['grantId', 'status']),
+        getPodUsers: offsetLimitPagination(['podId', 'searchString', 'roleIds']),
         getActiveGrantApplicationPods: offsetLimitPagination(['grantId']),
       },
     },

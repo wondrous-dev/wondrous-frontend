@@ -143,7 +143,7 @@ export const convertSlateNodesToPlate = (nodes) =>
           newValue.url = newValue.href;
           newValue.target = '_blank';
 
-            delete newValue.href;
+          delete newValue.href;
         }
         break;
       case 'list-item':
@@ -160,7 +160,8 @@ export const convertSlateNodesToPlate = (nodes) =>
           ];
         }
         break;
-      default: break;
+      default:
+        break;
     }
 
     if (newValue.children) {

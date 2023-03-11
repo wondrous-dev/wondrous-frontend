@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import AttachFileIcon from 'components/Icons/attachFile.svg';
-import { RequestApproveButton } from 'components/organization/members/styles';
+import { RequestApproveButton } from 'components/Members/styles';
 
 export const BoldName = styled(Typography)`
   && {
