@@ -7,26 +7,35 @@ import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import { DiscordIcon } from 'components/Icons/discord';
 import { TextInput } from 'components/TextInput';
 import { formatDistance } from 'date-fns';
-import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
+import {
+  CREATE_MILESTONE_COMMENT,
+  CREATE_SUBMISSION_COMMENT,
+  DELETE_SUBMISSION_COMMENT,
+  DELETE_MILESTONE_COMMENT,
+  CREATE_TASK_COMMENT,
+  CREATE_TASK_DISCORD_THREAD,
+  DELETE_TASK_COMMENT,
+  CREATE_MILESTONE_DISCORD_THREAD,
+} from 'graphql/mutations';
 import {
   CREATE_GRANT_APPLICATION_COMMENT,
   CREATE_GRANT_COMMENT,
   DELETE_GRANT_APPLICATION_COMMENT,
   DELETE_GRANT_COMMENT,
 } from 'graphql/mutations/grant';
-import { CREATE_TASK_COMMENT, CREATE_TASK_DISCORD_THREAD, DELETE_TASK_COMMENT } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
 import { GET_GRANT_APPLICATIONS, GET_GRANT_APPLICATION_COMMENTS, GET_GRANT_COMMENTS } from 'graphql/queries';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {
   GET_COMMENTS_FOR_TASK,
+  GET_MILESTONE_COMMENTS,
   GET_TASK_REVIEWERS,
   GET_TASK_SUBMISSIONS_FOR_TASK,
   GET_TASK_SUBMISSION_COMMENTS,
 } from 'graphql/queries/task';
 import { GET_COMMENTS_FOR_TASK_PROPOSAL } from 'graphql/queries/taskProposal';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import apollo from 'services/apollo';
 import { updateTask } from 'utils/board';
 import { renderMentionString } from 'utils/common';
@@ -77,6 +86,10 @@ function CommentBox(props) {
     refetchQueries: ['getTaskComments'],
   });
 
+  const [createMilestoneComment] = useMutation(CREATE_MILESTONE_COMMENT, {
+    refetchQueries: ['getMilestoneComments'],
+  });
+
   const [createTaskProposalComment] = useMutation(CREATE_TASK_PROPOSAL_COMMENT, {
     refetchQueries: ['getTaskProposalComments'],
   });
@@ -109,6 +122,7 @@ function CommentBox(props) {
       userMentions: mentionedUsers,
       previousCommenterIds,
     };
+    console.log('commentArgs', commentArgs, entityType, 'entityType');
     if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
       return createGrantApplicationComment({
         variables: {
@@ -139,12 +153,22 @@ function CommentBox(props) {
         },
       }).then(() => setComment(''));
     }
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
+      return createMilestoneComment({
+        variables: {
+          input: { ...commentArgs, milestoneId: task?.id },
+        },
+      }).then(() => setComment(''));
+    }
     if (submission) {
       return createSubmissionComment({
         variables: {
           input: { ...commentArgs, submissionId: submission?.id, type },
         },
-      }).then(() => onCommentCallback());
+      }).then(() => {
+        onCommentCallback();
+        setComment('');
+      });
     }
     return createTaskComment({
       variables: {
@@ -215,7 +239,8 @@ function CommentItemWrapper(props) {
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const boardColumns = useColumns();
-  const isOpenedFromNotification = router?.query.taskCommentId === comment.id;
+  const isOpenedFromNotification =
+    router?.query.taskCommentId === comment.id || router?.query.milestoneCommentId === comment.id;
   const commentRef = useScrollIntoView(isOpenedFromNotification);
   const role = useSelectCommenterRole({ task, comment });
   const [deleteTaskComment, { data: deleteTaskCommentData }] = useMutation(DELETE_TASK_COMMENT, {
@@ -237,6 +262,9 @@ function CommentItemWrapper(props) {
     refetchQueries: ['getTaskSubmissionComments'],
   });
 
+  const [deleteMilestoneComment] = useMutation(DELETE_MILESTONE_COMMENT, {
+    refetchQueries: ['getMilestoneComments'],
+  });
   useEffect(() => {
     if (deleteTaskCommentData?.deleteTaskComment) {
       const updatedTask = { ...task, commentCount: task.commentCount - 1 };
@@ -248,20 +276,7 @@ function CommentItemWrapper(props) {
 
   const board = orgBoard || podBoard || userBoard;
   if (!comment) return null;
-  const {
-    id,
-    createdAt,
-    timestamp,
-    content,
-    parentCommentId,
-    actorFirstName,
-    actorLastName,
-    actorUsername,
-    userId,
-    actorProfilePicture,
-    reactionCount,
-    additionalData,
-  } = comment;
+  const { id, createdAt, content, actorUsername, userId, actorProfilePicture, additionalData } = comment;
   const permissions = parseUserPermissionContext({
     userPermissionsContext: board?.userPermissionsContext,
     orgId: task?.orgId,
@@ -294,6 +309,13 @@ function CommentItemWrapper(props) {
             return deleteGrantApplicationComment({
               variables: {
                 grantApplicationCommentId: id,
+              },
+            });
+          }
+          if (entityType === ENTITIES_TYPES.MILESTONE) {
+            return deleteMilestoneComment({
+              variables: {
+                milestoneCommentId: id,
               },
             });
           }
@@ -366,10 +388,22 @@ export default function CommentList(props) {
       setComments(commentList);
     },
   });
+  const canOpenDiscussion = useMemo(
+    () =>
+      [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType) && !task?.org?.shared,
+    [entityType]
+  );
 
   const [getTaskComments] = useLazyQuery(GET_COMMENTS_FOR_TASK, {
     onCompleted: (data) => {
       const commentList = data?.getTaskComments;
+      setComments(commentList);
+    },
+    fetchPolicy: 'network-only',
+  });
+  const [getMilestoneComments] = useLazyQuery(GET_MILESTONE_COMMENTS, {
+    onCompleted: (data) => {
+      const commentList = data?.getMilestoneComments;
       setComments(commentList);
     },
     fetchPolicy: 'network-only',
@@ -402,6 +436,13 @@ export default function CommentList(props) {
       return getGrantComments({
         variables: {
           grantId: task?.id,
+        },
+      });
+    }
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
+      return getMilestoneComments({
+        variables: {
+          milestoneId: task?.id,
         },
       });
     }
@@ -439,20 +480,38 @@ export default function CommentList(props) {
   comments?.forEach((comment) => {
     set.add(comment?.userId);
   });
+
+  const getMutation = () => {
+    if (entityType === ENTITIES_TYPES.MILESTONE) {
+      return {
+        mutation: CREATE_MILESTONE_DISCORD_THREAD,
+        variables: {
+          milestoneId: task?.id,
+        },
+        key: 'createMilestoneDiscordThread',
+      };
+    }
+    return {
+      mutation: CREATE_TASK_DISCORD_THREAD,
+      variables: {
+        taskId: task?.id,
+      },
+      key: 'createTaskDiscordThread',
+    };
+  };
   const handleDiscordButtonClick = async () => {
     try {
+      const { mutation, variables, key } = getMutation();
       const {
         data: {
-          createTaskDiscordThread: { guildIds, threadIds },
+          [key]: { guildId, threadId },
         },
       } = await apollo.mutate({
-        mutation: CREATE_TASK_DISCORD_THREAD,
-        variables: {
-          taskId: task?.id,
-        },
+        mutation,
+        variables,
       });
-
-      guildIds.forEach((guild, idx) => window.open(`discord://.com/channels/${guild}/${threadIds[idx]}`));
+      window.open(`discord://.com/channels/${guildId}/${threadId}`);
+      // guildIds.forEach((guild, idx) => window.open(`discord://.com/channels/${guild}/${threadIds[idx]}`));
     } catch (err) {
       if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.DISCORD_NOT_CONFIGURED) {
         if (task?.podId) {
@@ -466,7 +525,7 @@ export default function CommentList(props) {
 
   return (
     <CommentListWrapper>
-      {!task?.org?.shared && entityType === ENTITIES_TYPES.TASK && (
+      {canOpenDiscussion && (
         <DiscordDiscussionButtonWrapper>
           <Button onClick={handleDiscordButtonClick}>
             <DiscordIcon style={{ marginRight: 10 }} />

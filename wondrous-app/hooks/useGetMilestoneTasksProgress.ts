@@ -7,6 +7,24 @@ const calculateProgress = (completed, total) => {
   return Math.floor((parseInt(completed, 10) / parseInt(total, 10)) * 100);
 };
 
+export const useGetProgressFromTaskCount = ({ perStatusTaskCount }) => {
+  const totalTasksCount = useMemo(
+    () =>
+      perStatusTaskCount
+        ? Object.values(perStatusTaskCount)
+            ?.filter((i) => typeof i === 'number')
+            ?.reduce((a: number, b: number) => a + b, 0) ?? 0
+        : 0,
+    [perStatusTaskCount]
+  );
+  const completedCount = useMemo(
+    () => (perStatusTaskCount ? perStatusTaskCount?.completed + perStatusTaskCount?.archived : 0),
+    [perStatusTaskCount]
+  );
+  const progress = useMemo(() => calculateProgress(completedCount, totalTasksCount), [completedCount, totalTasksCount]);
+  return { totalTasksCount, completedCount, progress };
+};
+
 const useGetMilestoneTasksProgress = ({ milestoneId }) => {
   const { data } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE, {
     skip: !milestoneId,

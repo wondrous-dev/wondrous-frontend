@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
 import { CircularProgress } from '@mui/material';
-import { useQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from 'graphql/mutations/payment';
 import useGnosisSdk from 'services/payment';
@@ -129,10 +129,11 @@ function BatchWalletPayment(props) {
     setNotOwnerError(null);
     const wallet = wallets.filter((wallet) => wallet.id === selectedWalletId)[0];
     setSelectedWallet(wallet);
-    if (selectedWallet && selectedWallet.chain) {
+    if (wonderWeb3.chainName !== 'none' && selectedWallet && selectedWallet.chain) {
+      // the 'none' thing is silly
       connectSafeSdk(selectedWallet.chain, selectedWallet.address);
     }
-  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
+  }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId, wonderWeb3.chainName, wallets]);
 
   const [proposeGnosisMultisendForSubmissions] = useMutation(PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS, {
     onCompleted: (data) => {
@@ -230,6 +231,7 @@ function BatchWalletPayment(props) {
       } else if (e.message.includes('User denied message')) {
         setSigningError(`User denied signature`);
       } else {
+        console.error(e);
         setSigningError(`Error signing transaction`);
       }
       setGnosisTransactionLoading(false);

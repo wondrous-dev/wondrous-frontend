@@ -12,27 +12,52 @@ interface IShareProps {
     parentTaskId?: string;
     id: string;
     type?: string;
+    org?: any;
+    grantId?: string;
   };
   className?: Object;
 }
 
 const Share = ({ fetchedTask, className }: IShareProps) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
-  const { id, orgUsername, type } = fetchedTask;
+  const { id, orgUsername, type, org } = fetchedTask;
   const entityType = type || ENTITIES_TYPES.PROPOSAL;
   const taskTypeQuery = type ? `task` : `taskProposal`;
   const taskId = id;
+  const copyText = type === ENTITIES_TYPES.GRANT_APPLICATION ? 'Grant application' : capitalize(entityType);
+
+  const handleLink = () => {
+    if (type === ENTITIES_TYPES.GRANT) {
+      return navigator.clipboard.writeText(
+        `${LINK}/organization/${orgUsername || org?.username}/grants?grant=${taskId}`
+      );
+    }
+
+    if (type === ENTITIES_TYPES.GRANT_APPLICATION) {
+      return navigator.clipboard.writeText(
+        `${LINK}/organization/${orgUsername || org?.username}/grants?grant=${
+          fetchedTask?.grantId
+        }&grantApplicationId=${taskId}`
+      );
+    }
+    if (type === ENTITIES_TYPES.MILESTONE) {
+      return navigator.clipboard.writeText(
+        `${LINK}/organization/${orgUsername || org?.username}/boards?milestone=${taskId}&entity=${entityType}`
+      );
+    }
+    return navigator.clipboard.writeText(
+      `${LINK}/organization/${orgUsername || org?.username}/boards?${taskTypeQuery}=${taskId}&entity=${entityType}`
+    );
+  };
   const handleOnClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    navigator.clipboard.writeText(
-      `${LINK}/organization/${orgUsername}/boards?${taskTypeQuery}=${taskId}&entity=${entityType}`
-    );
-    setSnackbarAlertMessage(`${capitalize(entityType)} link copied`);
+    handleLink();
+    setSnackbarAlertMessage(`${copyText} link copied`);
     setSnackbarAlertOpen(true);
   };
   return (
-    <Tooltip title={`Share ${capitalize(entityType)}`} placement="top">
+    <Tooltip title={`Share ${copyText}`} placement="top">
       <StyledShare onClick={handleOnClick} className={className}>
         <TaskShareIcon />
       </StyledShare>

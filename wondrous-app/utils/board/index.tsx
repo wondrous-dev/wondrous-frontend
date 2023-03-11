@@ -1,19 +1,26 @@
-import { differenceInDays, format, formatDistance } from 'date-fns';
+import differenceInDays from 'date-fns/differenceInDays';
+import format from 'date-fns/format';
+import formatDistance from 'date-fns/formatDistance';
 import cloneDeep from 'lodash/cloneDeep';
 import map from 'lodash/map';
+import isFirstDayOfMonth from 'date-fns/isFirstDayOfMonth';
+import isLastDayOfMonth from 'date-fns/isLastDayOfMonth';
+import startOfWeek from 'date-fns/startOfWeek';
+import endOfWeek from 'date-fns/endOfWeek';
 
 import { COLUMNS, ENTITIES_TYPES_FILTER_STATUSES, FILTER_STATUSES } from 'services/board';
 import { TaskInterface } from 'types/task';
 
+import { ViewType } from 'types/common';
 import {
+  ENTITIES_TYPES,
+  PAYMENT_STATUS,
+  STATUS_APPROVED,
+  STATUS_CLOSED,
+  STATUS_OPEN,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
-  STATUS_APPROVED,
-  STATUS_OPEN,
-  ENTITIES_TYPES,
-  STATUS_CLOSED,
-  PAYMENT_STATUS,
 } from '../constants';
 
 export const addProposalItem = (newItem, columns) => {
@@ -289,3 +296,26 @@ export const getFilterSchema = (entityType, orgId): { [key: string]: any } => {
 
 export const taskHasPayment = (task: TaskInterface) =>
   [PAYMENT_STATUS.PROCESSING, PAYMENT_STATUS.PAID].includes(task.paymentStatus);
+
+// Goal if this extension is to avoid duplicated code for the filters in the calendar view
+export const extendFiltersByView = (view: ViewType, filters) => {
+  if (view !== ViewType.Calendar) {
+    return {};
+  }
+
+  let { fromDate } = filters;
+  let { toDate } = filters;
+  // it formats dates to select start and end of the calendar
+  if (filters.fromDate) {
+    if (isFirstDayOfMonth(fromDate) && isLastDayOfMonth(toDate)) {
+      fromDate = startOfWeek(fromDate);
+      toDate = endOfWeek(toDate);
+    }
+  }
+
+  return {
+    fromDate: fromDate ? format(fromDate, 'yyyy-MM-dd') : null,
+    toDate: toDate ? format(toDate, 'yyyy-MM-dd') : null,
+    limit: 1000,
+  };
+};

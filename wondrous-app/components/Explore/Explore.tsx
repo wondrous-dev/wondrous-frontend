@@ -112,10 +112,10 @@ function ExploreComponent() {
   const tabs = [
     {
       title: 'Explore Orgs',
-      action: () => handleTabClick(TABS_LABELS.DAOS),
+      action: () => handleTabClick(TABS_LABELS.ORGS),
       color: 'linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)',
       hoverColor: 'linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)',
-      key: TABS_LABELS.DAOS,
+      key: TABS_LABELS.ORGS,
       rotateDeg: '20deg',
       icon: <DaosCube />,
     },
@@ -131,17 +131,17 @@ function ExploreComponent() {
       icon: <BountyCone />,
       hoverColor: 'linear-gradient(88.88deg, #525252 24.45%, #FFD653 91.22%)',
     },
-    {
-      title: 'GR15 Members',
-      color: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
-      hoverColor: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
-      action: () => {
-        handleTabClick(TABS_LABELS.GR15_DEI);
-      },
-      key: TABS_LABELS.GR15_DEI,
-      rotateDeg: '-40deg',
-      icon: <GR15DEI />,
-    },
+    // {
+    //   title: 'GR15 Members',
+    //   color: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
+    //   hoverColor: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
+    //   action: () => {
+    //     handleTabClick(TABS_LABELS.GR15_DEI);
+    //   },
+    //   key: TABS_LABELS.GR15_DEI,
+    //   rotateDeg: '-40deg',
+    //   icon: <GR15DEI />,
+    // },
   ];
 
   useEffect(() => {
@@ -218,39 +218,41 @@ function ExploreComponent() {
               gr15DEI={false}
             />
           )}
-          {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
-          {(activeTab === null || activeTab === TABS_LABELS.GR15_DEI) && (
+          {(activeTab === null || activeTab === TABS_LABELS.ORGS) && <DaoSection isMobile={isMobile} />}
+          {/* {(activeTab === null || activeTab === TABS_LABELS.GR15_DEI) && (
             <BountySection
               bounties={bounties?.getTaskExplore}
               fetchMore={getTaskExploreFetchMore}
               hasMore={hasMoreBounties}
               gr15DEI
             />
-          )}
+          )} */}
         </ExplorePageContentWrapper>
       </Box>
 
-      <ExplorePageFooter>
-        <BackgroundImg src="/images/explore/explore-page-footer-bg.svg" />
-        <MetheorSvg />
-        <PartnershipRequest>
-          <PartnershipRequestHeader>Become a partner.</PartnershipRequestHeader>
-          <PartnershipRequestSubheader>Want your organization to use Wonder?</PartnershipRequestSubheader>
-          <Button marginTop="28px">
-            <a
-              style={{
-                textDecoration: 'none',
-                color: palette.white,
-              }}
-              href={`${LINK}/onboarding-dao`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Sign up here!
-            </a>
-          </Button>
-        </PartnershipRequest>
-      </ExplorePageFooter>
+      {activeTab === TABS_LABELS.ORGS && (
+        <ExplorePageFooter>
+          <BackgroundImg src="/images/explore/explore-page-footer-bg.svg" />
+          <MetheorSvg />
+          <PartnershipRequest>
+            <PartnershipRequestHeader>Launch you own project.</PartnershipRequestHeader>
+            <PartnershipRequestSubheader>Want your organization to use Wonder?</PartnershipRequestSubheader>
+            <Button marginTop="28px">
+              <a
+                style={{
+                  textDecoration: 'none',
+                  color: palette.white,
+                }}
+                href={`${LINK}/onboarding-dao`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Launch Project
+              </a>
+            </Button>
+          </PartnershipRequest>
+        </ExplorePageFooter>
+      )}
     </OverviewComponent>
   );
 }

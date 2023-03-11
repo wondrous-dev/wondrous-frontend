@@ -1,7 +1,6 @@
 import { SafeImage } from 'components/Common/Image';
 import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
 import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
-import { deserializeRichText, plainTextToRichText } from 'components/RichText';
 import { FormikValues } from 'formik';
 import assignIn from 'lodash/assignIn';
 import assignWith from 'lodash/assignWith';
@@ -27,6 +26,8 @@ import {
 import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
 import * as Yup from 'yup';
+import { deserializeRichText, plainTextToRichText } from 'components/PlateRichEditor/utils';
+import parseISO from 'date-fns/parseISO';
 import {
   useCreateBounty,
   useCreateMilestone,
@@ -67,11 +68,7 @@ export const formValidationSchema = Yup.object().shape({
     .nullable(),
   milestoneId: Yup.string()
     .nullable()
-    .test(
-      'emptyCheck',
-      'Please enter a valid Milestone',
-      (milestoneId) => milestoneId !== '' && milestoneId !== undefined
-    ),
+    .test('emptyCheck', 'Please enter a valid Milestone', (milestoneId) => milestoneId !== ''),
   proposalVoteType: Yup.string().nullable(),
   customProposalChoices: Yup.array().optional().nullable(),
 });
@@ -87,15 +84,6 @@ export const privacyOptions = {
     value: '',
     Icon: PrivacyMembersIcon,
   },
-};
-
-export const filterUserOptions = (options) => {
-  if (!options) return [];
-  return options.map((option) => ({
-    label: option?.username ?? option?.title,
-    id: option?.id,
-    profilePicture: option?.profilePicture,
-  }));
 };
 
 export const filterOrgUsersForAutocomplete = (orgUsers) => {
@@ -191,6 +179,7 @@ export const filterOptionsWithPermission = (
       label: name,
       value: id,
       color,
+      id,
     }));
 };
 
@@ -204,40 +193,10 @@ export const filterCategoryValues = (categories = []) =>
       : category
   );
 
-export const getPodObject = (pods, podId) => {
-  let justCreatedPod = null;
-  pods.forEach((testPod) => {
-    if (testPod.id === podId) {
-      justCreatedPod = testPod;
-    }
-  });
-  return justCreatedPod;
-};
-
-export const onCorrectPage = (existingTask, board) => {
-  if (board?.podId) return existingTask.podId === board.podId;
-  return (
-    existingTask?.orgId === board?.orgId ||
-    existingTask?.podId === board?.podId ||
-    existingTask?.userId === board?.userId
-  );
-};
-
 export const getPrivacyLevel = (podId, pods) => {
   const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
   const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
   return privacyLevel;
-};
-
-export const filterGithubReposForAutocomplete = (githubPullRepos) => {
-  if (!githubPullRepos) {
-    return [];
-  }
-
-  return githubPullRepos.map((githubPullRepo) => ({
-    id: githubPullRepo.githubInfo?.repoId,
-    label: githubPullRepo.githubInfo?.repoPathname,
-  }));
 };
 
 export enum Fields {
@@ -255,6 +214,7 @@ export enum Fields {
   priority,
   voteOptions,
   voteType,
+  categories,
 }
 
 export const entityTypeData = {
@@ -272,6 +232,7 @@ export const entityTypeData = {
       Fields.priority,
       Fields.tags,
       Fields.githubPullRequest,
+      Fields.categories,
     ],
     createMutation: useCreateTask,
     updateMutation: useUpdateTask,
@@ -310,16 +271,13 @@ export const entityTypeData = {
     updateMutation: useUpdateMilestone,
     initialValues: {
       orgId: null,
-      podId: null,
+      podIds: [],
       title: '',
       description: plainTextToRichText(''),
       dueDate: null,
-      points: null,
-      labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       priority: null,
-      categories: null,
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
@@ -331,6 +289,7 @@ export const entityTypeData = {
       Fields.milestone,
       Fields.priority,
       Fields.tags,
+      Fields.categories,
     ],
     createMutation: useCreateBounty,
     updateMutation: useUpdateBounty,
@@ -355,15 +314,7 @@ export const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
-    fields: [
-      Fields.dueDate,
-      Fields.reward,
-      Fields.milestone,
-      Fields.priority,
-      Fields.tags,
-      Fields.voteOptions,
-      Fields.voteType,
-    ],
+    fields: [Fields.dueDate, Fields.reward, Fields.voteOptions, Fields.voteType, Fields.tags],
     createMutation: useCreateTaskProposal,
     updateMutation: useUpdateTaskProposal,
     initialValues: {
@@ -385,7 +336,10 @@ export const entityTypeData = {
 };
 
 export const initialValues = ({ entityType, existingTask = null, initialPodId = null }) => {
-  const defaultValues = assignIn(cloneDeep(entityTypeData[entityType]?.initialValues), { podId: initialPodId });
+  const defaultValues = assignIn(
+    cloneDeep(entityTypeData[entityType]?.initialValues),
+    entityType === ENTITIES_TYPES.MILESTONE ? {} : { podId: initialPodId }
+  );
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
   const description = deserializeRichText(existingTask.description);
@@ -396,6 +350,7 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
     {
       ...existingTask,
       description,
+      dueDate: existingTask.dueDate ? parseISO(existingTask.dueDate.substring(0, 10)) : null,
       mediaUploads: transformMediaFormat(existingTask?.media),
       categories: isEmpty(remainingCategories) ? null : transformCategoryFormat(remainingCategories),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
@@ -408,7 +363,6 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
   const initialValuesData = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) =>
     isNull(srcValue) || isUndefined(srcValue) ? objValue : srcValue
   );
-
   return initialValuesData;
 };
 
@@ -473,6 +427,13 @@ export interface GrantCreateModalProps extends ICreateEntityModal {
     podId?: string;
     media?: any;
     privacyLevel?: string;
+    reviewers?: {
+      id: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+      profilePicture: string;
+    }[];
     reward?: {
       paymentMethodId?: string;
       rewardAmount?: string;

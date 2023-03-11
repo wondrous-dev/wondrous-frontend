@@ -70,11 +70,15 @@ export default function MilestoneTaskList({ data }) {
   const taskUrl = (id) => `${delQuery(asPath)}?task=${id}&view=grid&entity=milestone`;
 
   const onNavigate = (id) => {
-    const newQuery = {
-      ...query,
-      task: id,
-    };
-
+    const newQuery = Object.keys(query).reduce(
+      (acc, next) => {
+        if (next !== 'milestone') {
+          acc[next] = query[next];
+        }
+        return acc;
+      },
+      { task: id }
+    );
     push({ query: newQuery }, undefined, { scroll: false, shallow: true });
   };
 

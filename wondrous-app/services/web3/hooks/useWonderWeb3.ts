@@ -38,7 +38,7 @@ export default function useWonderWeb3(): WonderWeb3 {
 
   const isInProduction = process.env.NEXT_PUBLIC_PRODUCTION;
 
-  const chainName = useMemo(() => SUPPORTED_CHAINS[chainId] || 'none', [chainId]);
+  const chainName = useMemo(() => SUPPORTED_CHAINS[chainId] || 'none', [chainId]); // i have no idea why this needs to be 'none' but it somehow doesnt work if it's null
 
   const address = useMemo(() => account, [account]);
 
@@ -70,6 +70,7 @@ export default function useWonderWeb3(): WonderWeb3 {
   const nativeTokenSymbol = useMemo(() => NATIVE_TOKEN_SYMBOL[chainId], [chainId]);
 
   const onConnect = () => {
+    console.log('onConnect', connector);
     if (!connector) return;
     try {
       activate(connector);
@@ -189,10 +190,15 @@ export default function useWonderWeb3(): WonderWeb3 {
 
   const getENSNameFromEthAddress = async (address: string) => {
     try {
+      if (!provider) {
+        console.warn('No provider found');
+        return;
+      }
       const prov = new ethers.providers.Web3Provider(provider);
       const name = await prov.lookupAddress(address);
       return name;
     } catch (err) {
+      console.log('Error getting ENS name', err);
       return null;
     }
   };
@@ -241,6 +247,7 @@ export default function useWonderWeb3(): WonderWeb3 {
   const { setStoredConnector } = useStoredConnector();
 
   const activateAndStore = (connectorName: ConnectorName) => {
+    console.log('activateAndStore', connectorName);
     const conn = connectors[connectorName];
     activate(conn, () => {
       setStoredConnector(connectorName);

@@ -1,6 +1,6 @@
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import Item from 'components/Common/SidebarItem';
-import { ExplorePageSidebarIcon } from 'components/Icons/ExplorePageIcons';
+import { MissionControlSidebarIcon, ExplorePageMinimalIcon } from 'components/Icons/ExplorePageIcons';
 import { ContributorIcon } from 'components/Icons/Sidebar/Contributor';
 import OperatorIcon from 'components/Icons/Sidebar/Operator';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
@@ -32,11 +32,21 @@ const useSidebarData = () => {
   const user = useMe();
   const data = [
     {
+      label: 'Explore',
+      items: [
+        {
+          text: 'Explore Projects',
+          Icon: ExplorePageMinimalIcon,
+          link: '/explore',
+        },
+      ],
+    },
+    {
       label: 'My HQ',
       items: [
         {
           text: 'Mission Control',
-          Icon: ExplorePageSidebarIcon,
+          Icon: MissionControlSidebarIcon,
           link: '/mission-control',
         },
         {

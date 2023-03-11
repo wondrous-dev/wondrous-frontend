@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper';
+
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   ENTITIES_TYPES,
   BOARD_TYPE,
@@ -21,6 +23,7 @@ import { parseUserPermissionContext, enableContainerOverflow } from 'utils/helpe
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
 import ConfirmModal from 'components/Common/ConfirmModal';
+import { IsMobileContext } from 'utils/contexts';
 import { useMe } from '../../Auth/withAuth';
 import DndErrorModal from './DndErrorModal';
 import TaskColumn from './TaskColumn';
@@ -42,6 +45,7 @@ export const populateOrder = (index, tasks, field) => {
 };
 
 function KanbanBoard(props) {
+  const isMobile = useContext(IsMobileContext);
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
   const router = useRouter();
@@ -321,22 +325,50 @@ function KanbanBoard(props) {
         {null}
       </ConfirmModal>
 
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        {columns.map((column) => {
-          const { status, section, tasks } = column;
+      {isMobile ? (
+        <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+          <Swiper
+            slidesPerView={1}
+            spaceBetween={14}
+            pagination={{
+              clickable: true,
+            }}
+            modules={[Pagination]}
+          >
+            {columns.map((column, index) => {
+              const { status, tasks } = column;
 
-          return (
-            <TaskColumn
-              key={status}
-              cardsList={tasks}
-              moveCard={moveCard}
-              status={status}
-              section={section}
-              draggingTask={draggingTask}
-            />
-          );
-        })}
-      </DragDropContext>
+              return (
+                <SwiperSlide key={status} virtualIndex={index}>
+                  <TaskColumn
+                    key={status}
+                    cardsList={tasks}
+                    moveCard={moveCard}
+                    status={status}
+                    draggingTask={draggingTask}
+                  />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </DragDropContext>
+      ) : (
+        <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+          {columns.map((column) => {
+            const { status, tasks } = column;
+
+            return (
+              <TaskColumn
+                key={status}
+                cardsList={tasks}
+                moveCard={moveCard}
+                status={status}
+                draggingTask={draggingTask}
+              />
+            );
+          })}
+        </DragDropContext>
+      )}
     </KanbanBoardContainer>
   );
 }

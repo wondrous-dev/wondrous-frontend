@@ -42,6 +42,7 @@ interface SingleDatePickerProps {
   handleClose?(): void;
   autoFocus?: boolean;
   placement?: 'bottom' | 'top';
+  onClickAway?: () => void;
 }
 
 function SingleDatePicker({
@@ -57,6 +58,7 @@ function SingleDatePicker({
   handleClose,
   autoFocus,
   placement = 'top',
+  onClickAway = null,
 }: SingleDatePickerProps) {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [showOptions, setShowOptions] = useState(false);
@@ -176,15 +178,16 @@ function SingleDatePicker({
     return false;
   };
 
-  const reset = () => {
-    handleDateChange(DEFAULT_SINGLE_DATEPICKER_VALUE);
-    handleSetRepeatType(null);
-    handleSetRepeatValue(null);
-    setShowOptions(null);
-  };
-
   const [isOpen, setIsOpen] = useState(false);
   const anchorEl = useRef(null);
+
+  const reset = () => {
+    setIsOpen(false);
+    // handleDateChange(DEFAULT_SINGLE_DATEPICKER_VALUE);
+    // handleSetRepeatType(null);
+    // handleSetRepeatValue(null);
+    // setShowOptions(null);
+  };
 
   useEffect(() => {
     if (autoFocus) {
@@ -194,6 +197,7 @@ function SingleDatePicker({
 
   const handleClickAway = () => {
     setIsOpen(false);
+    onClickAway?.();
   };
 
   const handleClick = () => {
@@ -201,48 +205,51 @@ function SingleDatePicker({
   };
 
   return (
-    <>
-      <Box
-        className={className}
-        mt={4}
-        display="flex"
-        flexDirection="column"
-        maxWidth={300}
-        width={isOpen ? 300 : 'default'}
-      >
-        <TextField
-          placeholder="Choose date"
-          autoFocus={autoFocus}
-          InputProps={{
-            readOnly: true,
-            startAdornment: (
-              <InputAdornment position="start" sx={styles.calendarIcon}>
-                <Image src="/images/icons/calendar.svg" width={12} height={12} alt="calendar icon" />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // setAnchorEl(null);
-                    setIsOpen(false);
-                    handleClose?.();
-                  }}
-                >
-                  <CloseModalIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          value={displayValue}
-          onClick={handleClick}
-          ref={anchorEl}
-          sx={isOpen ? styles.mainTextfield : styles.mainTextfieldInactive}
-        />
-      </Box>
-      <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
+    <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
+      <div style={{ width: '100%' }}>
+        <Box
+          className={className}
+          mt={4}
+          display="flex"
+          flexDirection="column"
+          maxWidth={300}
+          width={isOpen ? 300 : 'default'}
+        >
+          <TextField
+            placeholder="Choose date"
+            autoFocus={autoFocus}
+            InputProps={{
+              readOnly: true,
+              startAdornment: (
+                <InputAdornment position="start" sx={styles.calendarIcon}>
+                  <Image src="/images/icons/calendar.svg" width={12} height={12} alt="calendar icon" />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      // setAnchorEl(null);
+                      // if (!isOpen) {
+                      //   handleClose?.();
+                      // }
+                      handleClose?.();
+                      setIsOpen(false);
+                    }}
+                  >
+                    <CloseModalIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            value={displayValue}
+            onClick={handleClick}
+            ref={anchorEl}
+            sx={isOpen ? styles.mainTextfield : styles.mainTextfieldInactive}
+          />
+        </Box>
         <Popper
           open={isOpen}
           anchorEl={anchorEl.current}
@@ -272,19 +279,15 @@ function SingleDatePicker({
                   value={startDateString}
                   InputProps={{
                     readOnly: true,
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={reset}>
-                          <CloseModalIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
                   }}
-                  fullWidth
                   placeholder="Due Date"
                   sx={styles.darkTextfield}
                 />
+                <IconButton onClick={reset}>
+                  <CloseModalIcon />
+                </IconButton>
               </Box>
+
               <DayPickerSingleDateController
                 date={date}
                 initialDate={date}
@@ -331,8 +334,8 @@ function SingleDatePicker({
             </Box>
           </Box>
         </Popper>
-      </ClickAwayListener>
-    </>
+      </div>
+    </ClickAwayListener>
   );
 }
 

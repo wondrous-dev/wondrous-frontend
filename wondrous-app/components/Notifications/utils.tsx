@@ -13,6 +13,8 @@ const NOTIFICATION_OBJ_TYPE_TO_DISPLAY = {
   [NOTIFICATION_OBJ_TYPES.TASK_SUBMISSION_COMMENT]: 'submission',
   [NOTIFICATION_OBJ_TYPES.POST]: 'post',
   [NOTIFICATION_OBJ_TYPES.COLLABORATION]: 'collaboration',
+  [NOTIFICATION_OBJ_TYPES.MILESTONE]: 'milestone',
+  [NOTIFICATION_OBJ_TYPES.MILESTONE_COMMENT]: 'milestone',
 };
 
 const NOTIFICATION_OBJ_TYPE_TO_LINK = {
@@ -24,6 +26,9 @@ const NOTIFICATION_OBJ_TYPE_TO_LINK = {
   [NOTIFICATION_OBJ_TYPES.TASK_SUBMISSION_COMMENT]: 'submissionComment',
   [NOTIFICATION_OBJ_TYPES.POST]: 'post',
   [NOTIFICATION_OBJ_TYPES.COLLABORATION]: 'collaboration',
+  [NOTIFICATION_OBJ_TYPES.GRANT_APPLICATION]: 'grantApplication',
+  [NOTIFICATION_OBJ_TYPES.MILESTONE]: 'milestone',
+  [NOTIFICATION_OBJ_TYPES.MILESTONE_COMMENT]: 'milestoneComment',
 };
 
 export function getNotificationDescription(notification, link) {
@@ -78,6 +83,8 @@ export function getNotificationDescription(notification, link) {
       return <>finished minting a {object} </>;
     case NOTIFICATION_TYPES.PAYMENT_RECEIVED:
       return <>You just received a payment!</>;
+    case NOTIFICATION_TYPES.GRANT_APPLICATION_APPROVED:
+      return <>Your grant application has been approved!</>;
     default:
       Sentry.captureMessage(`unknow notification type: ${notification?.type}, ${objectType}`);
       return <>unknown notification type</>;
@@ -86,7 +93,9 @@ export function getNotificationDescription(notification, link) {
 
 export const getNotificationLink = (notification) => {
   let notificationLink = `/${NOTIFICATION_OBJ_TYPE_TO_LINK[notification.objectType]}/${notification.objectId}`;
-
+  if (notification.objectType === NOTIFICATION_OBJ_TYPES.POD) {
+    notificationLink = `/pod/${notification.objectId}/home`;
+  }
   if (notification.objectType === NOTIFICATION_OBJ_TYPES.COLLABORATION) {
     const mainPath = notification.type === COLLAB_TYPES.APPROVE ? 'collaboration' : 'organization';
     notificationLink =
@@ -94,7 +103,6 @@ export const getNotificationLink = (notification) => {
         ? `/${mainPath}/${notification.additionalData.orgUsername}/home`
         : `/${mainPath}/${notification.additionalData.orgUsername}/collaborations?invite=true`;
   }
-
   if (notification?.additionalData?.viewNft) {
     notificationLink += `/nft`;
   }

@@ -113,7 +113,7 @@ export const APPROVE_JOIN_POD_REQUEST = gql`
 `;
 
 export const REJECT_JOIN_POD_REQUEST = gql`
-  mutation rejectJoinPodRequest($joinPodReqeustId: ID!) {
+  mutation rejectJoinPodRequest($joinPodRequestId: ID!) {
     rejectJoinPodRequest(joinPodRequestId: $joinPodRequestId) {
       success
     }
@@ -136,7 +136,6 @@ export const LEAVE_POD = gql`
   }
 `;
 
-
 export const ADD_POD_GITHUB_REPO = gql`
   mutation addPodGithubRepo($podId: ID!, $repoName: String!, $repoId: String!, $importTasks: Boolean) {
     addPodGithubRepo(podId: $podId, repoName: $repoName, repoId: $repoId, importTasks: $importTasks) {
@@ -156,6 +155,22 @@ export const DELETE_POD_GITHUB_REPO_INTEGRATION = gql`
 export const CONNECT_NOTION_TO_POD = gql`
   mutation connectNotionToPod($podId: ID!, $authorizationCode: String!) {
     connectNotionToPod(podId: $podId, authorizationCode: $authorizationCode) {
+      success
+    }
+  }
+`;
+
+export const SEND_POD_EMAIL_INVITES = gql`
+  mutation sendPodRoleInviteEmails($input: PodEmailInviteInput) {
+    sendPodRoleInviteEmails(input: $input) {
+      success
+    }
+  }
+`;
+
+export const BATCH_ADD_USERS_TO_POD = gql`
+  mutation batchAddUsersToPod($input: BatchAddUsersToPodInput) {
+    batchAddUsersToPod(input: $input) {
       success
     }
   }

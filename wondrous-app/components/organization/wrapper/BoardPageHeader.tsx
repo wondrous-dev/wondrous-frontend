@@ -1,57 +1,30 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
-import {
-  ENTITIES_TYPES,
-  PERMISSIONS,
-  PRIVACY_LEVEL,
-  GR15DEICategoryName,
-  BOUNTY_TYPE,
-  HEADER_ASPECT_RATIO,
-  EMPTY_RICH_TEXT_STRING,
-  ENTITIES_DISPLAY_LABEL_MAP,
-} from 'utils/constants';
+import { PERMISSIONS, PRIVACY_LEVEL, ENTITIES_DISPLAY_LABEL_MAP } from 'utils/constants';
 import MembersIcon from 'components/Icons/members';
 import { Button as PrimaryButton } from 'components/Button';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
-import DEFAULT_HEADER from 'public/images/overview/background.png';
-import { AspectRatio } from 'react-aspect-ratio';
 
-import usePrevious, { useOrgBoard } from 'utils/hooks';
+import usePrevious, { useOrgBoard, useIsMobile } from 'utils/hooks';
 import { useLazyQuery } from '@apollo/client';
 import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { useRouter } from 'next/router';
-import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
-import {
-  ExploreProjectsButton,
-  ExploreProjectsButtonFilled,
-} from 'components/Common/IntiativesModal/GR15DEIModal/styles';
-import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import { RichTextViewer } from 'components/RichText';
 import RolePill from 'components/Common/RolePill';
-import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { PodIconThin } from 'components/Icons/podIcon';
 import palette from 'theme/palette';
-import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
-import { DAOEmptyIcon } from '../../Icons/dao';
-import { SafeImage } from '../../Common/Image';
 import {
-  Content,
   ContentContainer,
   RolePodMemberContainer,
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
   HeaderMainBlock,
-  HeaderText,
   HeaderTitle,
   TokenHeader,
-  TokenEmptyLogo,
   HeaderTopLeftContainer,
-  HeaderImageWrapper,
   BoardsSubheaderWrapper,
   MemberPodIconBackground,
   RoleButtonWrapper,
@@ -66,7 +39,7 @@ const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/Or
 const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
 const CurrentRoleModal = dynamic(() => import('components/RoleModal/CurrentRoleModal'), { suspense: true });
 const ChooseEntityToCreate = dynamic(() => import('components/CreateEntity'), { suspense: true });
-const MoreInfoModal = dynamic(() => import('components/profile/modals'), { suspense: true });
+const MoreInfoModal = dynamic(() => import('components/Common/MoreInfoModal'), { suspense: true });
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
@@ -87,6 +60,7 @@ function BoardPageHeader(props) {
     inviteButtonSettings = null,
     headerTitle = null,
   } = props;
+  const isMobile = useIsMobile();
 
   const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
 
@@ -110,19 +84,12 @@ function BoardPageHeader(props) {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
-  const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
   const orgProfile = orgData;
-  const hasGr15Tasks = orgProfile?.hasGr15TasksAndBounties?.hasGr15Tasks;
-  const hasGr15Bounties = orgProfile?.hasGr15TasksAndBounties?.hasGr15Bounties;
 
-  const isGr15Sponsor = hasGr15Tasks || hasGr15Bounties;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const { search, entity, cause } = router.query;
-  const onTaskPage = entity === ENTITIES_TYPES.TASK;
-  const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
   const board = orgBoard;
-  const boardFilters = board?.filters || {};
   const { asPath } = router;
   let finalPath = '';
   if (asPath) {
@@ -249,7 +216,7 @@ function BoardPageHeader(props) {
             </HeaderTopLeftContainer>
           </HeaderMainBlock>
         </TokenHeader>
-        <BoardsSubheaderWrapper>
+        <BoardsSubheaderWrapper isMobile={isMobile}>
           <RolePodMemberContainer>
             {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (
               <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>

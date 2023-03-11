@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { useInView } from 'react-intersection-observer';
 
@@ -14,6 +14,7 @@ import {
   STATUS_CLOSED,
   HEADER_ICONS,
   TITLES,
+  ANALYTIC_EVENTS,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -28,8 +29,14 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import Droppable from 'components/StrictModeDroppable';
-import { ColumnSection } from 'components/Common/ColumnSection';
 
+import { IsMobileContext } from 'utils/contexts';
+import { hasCreateTaskPermission } from 'utils/helpers';
+import { useQuery } from '@apollo/client';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { useRouter } from 'next/router';
+
+import { useMe } from 'components/Auth/withAuth';
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
@@ -37,32 +44,50 @@ import {
   TaskColumnContainerCount,
   TaskListContainer,
   TaskColumnItemWrapper,
+  AISnackbarContainer,
+  AISnackbarNewContainer,
+  AISnackbarText,
 } from './styles';
+import CrossSvg from './images/cross.svg';
 
 interface ITaskColumn {
   cardsList: Array<any>;
   moveCard: any;
   status: string;
-  section: Array<any>;
   draggingTask: TaskInterface | null;
 }
 
 function TaskColumn(props: ITaskColumn) {
-  const { cardsList, status, section, draggingTask } = props;
+  const { cardsList, status, draggingTask } = props;
+  const router = useRouter();
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const user = useMe();
+  const [AISnackbarVisible, setAISnackbarVisible] = useState(true);
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
   const [ref, inView] = useInView({});
+  const isMobile = useContext(IsMobileContext);
+  const board = orgBoard || podBoard || userBoard;
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
 
+  const permissions = userPermissionsContext?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+    : null;
   const isTaskDragging = useMemo(() => draggingTask !== null, [draggingTask]);
   const isDropDisabled = useMemo(
     () => isTaskDragging && taskHasPayment(draggingTask) && status !== TASK_STATUS_DONE,
     [draggingTask, isTaskDragging, status]
   );
 
-  const board = orgBoard || userBoard || podBoard;
+  const canCreateTask =
+    hasCreateTaskPermission({ userPermissionsContext: permissions, orgId: board?.orgId, podId: board?.podId }) ||
+    board?.entityType === ENTITIES_TYPES.PROPOSAL ||
+    userBoard;
+
   const taskCount = board?.taskCount;
   const HeaderIcon = HEADER_ICONS[status];
   let number;
@@ -75,7 +100,7 @@ function TaskColumn(props: ITaskColumn) {
 
   let taskColumnWidth = '100%';
   if (!userBoard) {
-    taskColumnWidth = '25%';
+    taskColumnWidth = isMobile ? '100%' : '25%';
   }
   switch (status) {
     case TASK_STATUS_TODO:
@@ -96,15 +121,15 @@ function TaskColumn(props: ITaskColumn) {
       break;
     case STATUS_OPEN:
       number = taskCount?.proposalOpen || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     case STATUS_APPROVED:
       number = taskCount?.proposalApproved || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     case STATUS_CLOSED:
       number = taskCount?.proposalClosed || 0;
-      taskColumnWidth = '33.3%';
+      taskColumnWidth = isMobile ? '100%' : '33.3%';
       break;
     default:
       number = 0;
@@ -113,11 +138,12 @@ function TaskColumn(props: ITaskColumn) {
 
   return (
     <TaskColumnContainer
-      onMouseEnter={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(true)}
+      onMouseEnter={() => status === TASK_STATUS_TODO && canCreateTask && setIsAddButtonVisible(true)}
       onMouseLeave={() => status === TASK_STATUS_TODO && setIsAddButtonVisible(false)}
       activeEntityType={board?.entityType || ''}
       style={{
         width: taskColumnWidth,
+        minWidth: '266px',
       }}
     >
       <CreateModalOverlay
@@ -157,12 +183,56 @@ function TaskColumn(props: ITaskColumn) {
           />
         )}
       </TaskColumnContainerHeader>
-      {section && <ColumnSection section={section} setSection={() => {}} />}
+      {status === TASK_STATUS_TODO && canCreateTask && AISnackbarVisible && (orgBoard || podBoard) && (
+        <AISnackbarContainer
+          onClick={() => {
+            if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+              window?.analytics?.track(ANALYTIC_EVENTS.AI_CREATE_TASK_SNACKBAR_CLICK, {
+                orgId: board?.orgId,
+                podId: board?.podId,
+                userId: user?.id,
+              });
+            }
+            if (orgBoard) {
+              router.push(`/organization/${orgBoard?.orgData?.username}/wonder_ai_bot`, undefined, { shallow: true });
+            } else if (podBoard) {
+              router.push(`/pod/${podBoard?.podId}/wonder_ai_bot`, undefined, { shallow: true });
+            }
+          }}
+        >
+          <AISnackbarNewContainer>
+            <AISnackbarText>New!</AISnackbarText>
+          </AISnackbarNewContainer>
+          <AISnackbarText
+            style={{
+              marginLeft: '8px',
+            }}
+          >
+            Generate tasks with AI
+          </AISnackbarText>
+          <div
+            style={{
+              flex: 1,
+            }}
+          />
+          {/* <CrossSvg
+            style={{
+              cursor: 'pointer',
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setAISnackbarVisible(false);
+            }}
+          /> */}
+        </AISnackbarContainer>
+      )}
       <Droppable droppableId={status} isDropDisabled={isDropDisabled}>
         {(provided) => (
           <TaskListContainer
             highlighted={isTaskDragging && !isDropDisabled}
             ref={provided.innerRef}
+            isMobile={isMobile}
             {...provided.droppableProps}
           >
             {cardsList?.length ? (
@@ -180,9 +250,9 @@ function TaskColumn(props: ITaskColumn) {
                         cursor: board?.isDragDisabled ? 'default' : 'move',
                       }}
                     >
-                      {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
+                      {board?.entityType === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
                         <Milestone>
-                          <Task task={card} />
+                          <Task task={card} isMilestone />
                         </Milestone>
                       ) : (
                         <Task task={card} />

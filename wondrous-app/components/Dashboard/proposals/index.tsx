@@ -93,12 +93,12 @@ const ProposalsBoard = () => {
     const promises: any = [
       apollo.query({
         ...searchTaskProposalsArgs,
-        query: SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
+        query: GET_USER_TASK_BOARD_PROPOSALS,
       }),
     ];
 
     return Promise.all(promises).then(([proposals]: any) => ({
-      proposals: proposals.data.searchProposalsForUserBoardView,
+      proposals: proposals.data.getUserTaskBoardProposals,
     }));
   }
 

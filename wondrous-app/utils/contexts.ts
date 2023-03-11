@@ -35,4 +35,9 @@ export const ExploreGr15TasksAndBountiesContext = createContext(null);
 export const TaskContext = createContext(null);
 
 export const PageDataContext = createContext(null);
+
 export const ProjectContext = createContext(null);
+
+export const CornerWidgetContext = createContext(null);
+
+export const PlateContext = createContext(null);

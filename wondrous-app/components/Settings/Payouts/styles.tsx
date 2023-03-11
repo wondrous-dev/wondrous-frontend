@@ -339,8 +339,8 @@ export const PayeeAddressTagContainer = styled.div`
 
 export const PayeeAddressTag = styled(PayeeUsername)`
   && {
-    font-weight: ${(props) => (props.hasAddressBeenCopied ? 500 : 400)};
-    color: ${(props) => (props.hasAddressBeenCopied ? palette.green30 : palette.grey250)};
+    font-weight: ${(props) => (props.$hasAddressBeenCopied ? 500 : 400)};
+    color: ${(props) => (props.$hasAddressBeenCopied ? palette.green30 : palette.grey250)};
     width: max-content;
 
     + svg {

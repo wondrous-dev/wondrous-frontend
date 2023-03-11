@@ -63,7 +63,7 @@ const PodCards = () => {
   return (
     <Grid container bgcolor={palette.grey900} padding="14px" gap="14px" borderRadius="6px">
       <Grid container justifyContent="space-between">
-        <HeaderTitle IconComponent={PodIcon} text="Pods" />
+        <HeaderTitle tourId="tour-header-project-pods" IconComponent={PodIcon} text="Pods" />
         <ShowAllButton />
       </Grid>
       <Grid container item width="100%" height="fit-content" gap="8px" flexWrap="nowrap">

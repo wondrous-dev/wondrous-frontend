@@ -250,6 +250,80 @@ export const TaskCardFragment = gql`
   ${MediaFragment}
 `;
 
+export const MilestoneCardFragment = gql`
+  fragment MilestoneCardFragment on MilestoneCard {
+    id
+    createdAt
+    createdBy
+    orgId
+    orgProfilePicture
+    orgName
+    orgUsername
+    pods {
+      podId
+      podName
+      podColor
+    }
+    title
+    description
+    priority
+    dueDate
+    status
+    completedAt
+    commentCount
+    additionalData {
+      userMentions
+    }
+    media {
+      ...MediaFragment
+    }
+    privacyLevel
+    label {
+      id
+      name
+      color
+    }
+    points
+  }
+  ${MediaFragment}
+`;
+
+export const HomePageTaskCardFragment = gql`
+  fragment HomePageTaskCardFragment on TaskCard {
+    id
+    createdAt
+    createdBy
+    type
+    orgId
+    podId
+    title
+    description
+    assigneeId
+    assigneeUsername
+    assigneeProfilePicture
+    priority
+    dueDate
+    status
+    completedAt
+    paymentStatus
+    privacyLevel
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+    }
+    totalSubmissionsCount
+    approvedSubmissionsCount
+    points
+    taskApplicationPermissions {
+      canClaim
+      canApply
+      hasUserApplied
+    }
+  }
+`;
 export const TaskProposalCardFragment = gql`
   fragment TaskProposalCardFragment on TaskProposalCard {
     id
@@ -518,38 +592,51 @@ export const MilestoneFragment = gql`
     title
     createdAt
     createdBy
+    completedAt
     description
     orgId
-    podId
-    type
+    podIds
     priority
     dueDate
     status
-    links {
-      url
-      displayName
-      type
+    labels {
+      id
+      name
+      color
     }
     userMentions
-    creator {
-      username
-      profilePicture
+    media {
+      ...MediaFragment
     }
+    orgOrder
+    privacyLevel
+    deletedAt
+    points
+
     org {
       profilePicture
       name
       username
     }
-    pod {
+    pods {
       name
       color
+      id
     }
-    orgOrder
-    podOrder
-    assigneeOrder
+    creator {
+      username
+      profilePicture
+    }
+    observers {
+      id
+      username
+      profilePicture
+      firstName
+      lastName
+    }
     commentCount
-    privacyLevel
   }
+  ${MediaFragment}
 `;
 
 export const TaskTemplateFragment = gql`

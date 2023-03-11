@@ -99,6 +99,9 @@ export const GET_TASK_SUBMISSION_BY_ID = gql`
   query getTaskSubmissionById($submissionId: ID!) {
     getTaskSubmissionById(submissionId: $submissionId) {
       ...TaskSubmissionFragment
+      task {
+        type
+      }
     }
   }
   ${TaskSubmissionFragment}
@@ -310,4 +313,22 @@ export const GET_MINT_TASK_TOKEN_DATA = gql`
       updatedAt
     }
   }
+`;
+
+export const GET_MILESTONE_COMMENTS = gql`
+  query getMilestoneComments($milestoneId: ID!) {
+    getMilestoneComments(milestoneId: $milestoneId) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
+`;
+
+export const GET_MILESTONE_COMMENT_BY_ID = gql`
+  query getMilestoneCommentById($milestoneCommentId: ID!) {
+    getMilestoneCommentById(milestoneCommentId: $milestoneCommentId) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
 `;

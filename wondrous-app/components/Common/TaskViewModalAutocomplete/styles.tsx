@@ -26,10 +26,12 @@ export const StyledTextField = styled(TextField)`
     .MuiInputBase-root {
       background: ${palette.grey52};
       width: 100%;
-      border-radius: 300px;
-      padding-left: 10px;
+      height: 28px;
+      border-radius: 4px;
+      padding: 1px 4px 1px 2px;
       color: ${palette.white};
       font-size: 14px;
+      font-weight: 500;
     }
   }
 `;

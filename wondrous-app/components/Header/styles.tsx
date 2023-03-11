@@ -182,7 +182,7 @@ export const StyledBadge = styled(ButtonBase)`
     }
     svg {
       circle {
-        display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
+        display: ${({ $hasUnreadNotifications }) => ($hasUnreadNotifications ? 'block' : 'none')};
       }
     }
   }

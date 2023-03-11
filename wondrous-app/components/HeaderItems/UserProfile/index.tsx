@@ -8,7 +8,8 @@ import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
 import WrenchIcon from 'components/Icons/wrench';
 import { UnstyledButton, UnstyledLink } from 'components/WorkspacePicker/styles';
-import Image from 'next/image';
+import BANNER_IMAGE from 'public/images/profile/profile-banner.png';
+import { SafeImage } from 'components/Common/Image';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { Wrapper } from '../CreateEntityComponent/styles';
@@ -93,15 +94,24 @@ const UserProfile = ({ onClose, openPodModal, openTutorialsModal }) => {
       <UnstyledLink href={`/profile/${user?.username}/about`} onClick={onClose}>
         <UserContainer>
           <ImageWrapper>
-            <Image fill alt="Profile banner" src="/images/profile/profile-banner.png" />
+            <SafeImage
+              style={{
+                objectFit: 'cover',
+                width: '100%',
+              }}
+              fill
+              useNextImage
+              alt="Profile banner"
+              src={user?.headerPicture || BANNER_IMAGE}
+            />
           </ImageWrapper>
           <ProfileInfo>
             <UserProfilePictureGR15
-              isGr15Contributor={user?.checkIsGr15Contributor?.isGr15Contributor}
+              isGr15Contributor={false}
               avatar={user?.profilePicture}
               style={{
-                height: '90px',
-                width: '90px',
+                height: '72px',
+                width: '72px',
                 borderRadius: '100%',
               }}
             />

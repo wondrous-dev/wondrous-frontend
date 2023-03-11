@@ -32,8 +32,7 @@ import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplic
 import { DAOIcon } from 'components/Icons/dao';
 import GrantIcon from 'components/Icons/GrantIcon';
 import { GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
-import { RichTextViewer } from 'components/RichText';
-import { GrantAmount } from 'components/ViewGrant/Fields';
+import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import ViewGrantFooter from 'components/ViewGrant/Footer';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';
 import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
@@ -57,12 +56,16 @@ import Typography from '@mui/material/Typography';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { IconWrapper } from 'components/Common/Status/styles';
 import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
+import { Description, Title } from 'components/Common/TaskViewModal/Fields';
 import { ItemPill } from 'components/GrantsBoard/styles';
 import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/Icons/statusIcons';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { GrantApplicationStatusManager, PaymentHandler, WalletAddressViewer } from './Fields';
+import { TaskContext } from 'utils/contexts';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
+import { Project, WalletAddress } from './EditableFields';
+import { GrantApplicationStatusManager, OrgViewer, PaymentHandler, PodViewer, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel } from './styles';
 
 const GRANT_APPLICATION_STATUS_LABELS = {
@@ -98,21 +101,30 @@ const GRANT_APPLICATION_STATUS_LABELS = {
 
 const FIELDS_CONFIG = [
   {
-    component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
-    shouldDisplay: ({ hasManageRights }): boolean => hasManageRights,
-  },
-
-  {
-    label: 'Grant amount',
-    component: ({ grantApplication: { grant } }) => <GrantAmount grantAmount={grant?.reward || {}} />,
-  },
-  {
-    component: ({ grantApplication }) => <PaymentHandler grantApplication={grantApplication} />,
+    component: ({ grantApplication }) => <PodViewer grantApplication={grantApplication} />,
     shouldDisplay: ({ isApproved }) => isApproved,
   },
   {
+    component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
+    shouldDisplay: ({ hasManageRights }) => hasManageRights,
+  },
+  {
+    label: 'Grant amount',
+    component: ({ grantApplication: { grant } }) => <GrantPaymentData paymentData={grant?.reward || {}} />,
+  },
+  {
+    component: ({ grantApplication }) => <PaymentHandler grantApplication={grantApplication} />,
+    shouldDisplay: ({ isApproved, hasManageRights }) => isApproved && hasManageRights,
+  },
+  {
     label: 'Wallet Address',
-    component: ({ grantApplication: { paymentAddress } }) => <WalletAddressViewer walletAddress={paymentAddress} />,
+    component: ({ grantApplication: { paymentAddress }, canEdit }) => (
+      <WalletAddress canEdit={canEdit} paymentAddress={paymentAddress} />
+    ),
+  },
+  {
+    label: 'Project',
+    component: ({ grantApplication, canEdit }) => <Project grantApplication={grantApplication} canEdit={canEdit} />,
   },
 ];
 
@@ -154,23 +166,26 @@ const ViewGrantApplication = ({ onClose }) => {
     podId: grant?.podId,
   });
 
-  const canManage = permissions?.includes(PERMISSIONS.FULL_ACCESS) || permissions?.includes(PERMISSIONS.EDIT_TASK);
+  const canManage =
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.REVIEW_TASK) ||
+    permissions?.includes(PERMISSIONS.MANAGE_GRANTS);
 
   const canEditAndComment = canManage || grantApplication?.createdBy === user?.id;
 
   const canArchive =
     permissions?.includes(PERMISSIONS.REVIEW_TASK) ||
     permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.MANAGE_GRANTS) ||
     grantApplication?.createdBy === user?.id;
 
   const displayTitle = grant?.title?.slice(0, 10);
 
   const handleGrantClick = () => {
-    const query = {
-      grant: grant?.id,
-    };
+    const query = { ...router.query };
+    delete query.grantApplicationId;
 
-    router.push({ query }, undefined, { scroll: false, shallow: true });
+    router.push({ pathname: router.pathname, query }, undefined, { scroll: false, shallow: true });
   };
 
   const status = useMemo(() => selectApplicationStatus(grantApplication), [grantApplication]);
@@ -185,7 +200,12 @@ const ViewGrantApplication = ({ onClose }) => {
 
   const statusAndIcon = GRANT_APPLICATION_STATUS_LABELS[status];
   return (
-    <>
+    <TaskContext.Provider
+      value={{
+        grantApplication,
+        entityType: ENTITIES_TYPES.GRANT_APPLICATION,
+      }}
+    >
       <ArchiveTaskModal
         open={archiveTask}
         onArchive={() => {
@@ -228,7 +248,7 @@ const ViewGrantApplication = ({ onClose }) => {
             <TaskModalHeaderIconWrapper
               onClick={() => {
                 onClose();
-                router.push(`/organization/${grant?.orgUsername}/home`, undefined, {
+                router.push(`/organization/${grant?.org?.username}/home`, undefined, {
                   shallow: true,
                 });
               }}
@@ -278,7 +298,14 @@ const ViewGrantApplication = ({ onClose }) => {
             )}
           </TaskModalHeaderWrapper>
           <TaskModalHeaderWrapperRight>
-            {grantApplication && <TaskModalHeaderShare fetchedTask={grantApplication} />}
+            {grantApplication && (
+              <TaskModalHeaderShare
+                fetchedTask={{
+                  ...grantApplication,
+                  type: ENTITIES_TYPES.GRANT_APPLICATION,
+                }}
+              />
+            )}
             <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
             <Menu
               canEdit={canEditAndComment}
@@ -294,18 +321,31 @@ const ViewGrantApplication = ({ onClose }) => {
         <TaskModalTaskData fullScreen={isFullScreen}>
           <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
             <Grid display="flex" justifyContent="space-between" alignItems="center">
-              <TaskModalTitle>{grantApplication?.title}</TaskModalTitle>
+              <Title title={grantApplication?.title} canEdit={canEditAndComment} />
+
               <ItemPill withIcon>
                 <IconWrapper>
                   <statusAndIcon.icon />
                 </IconWrapper>
-                <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                <Typography
+                  color={palette.white}
+                  whiteSpace="nowrap"
+                  fontWeight={500}
+                  fontSize={14}
+                  fontFamily={typography.fontFamily}
+                >
                   {statusAndIcon.label}
                 </Typography>
               </ItemPill>
             </Grid>
             <DescriptionWrapper>
-              <RichTextViewer text={grantApplication?.description} />
+              <Description
+                canEdit={canEditAndComment}
+                description={grantApplication?.description}
+                orgId={grant?.orgId}
+                showFullByDefault
+              />
+
               <TaskMediaWrapper media={grantApplication?.media} />
             </DescriptionWrapper>
           </TaskModalTitleDescriptionMedia>
@@ -329,7 +369,7 @@ const ViewGrantApplication = ({ onClose }) => {
                           <TaskSectionDisplayLabelText>{field.label}</TaskSectionDisplayLabelText>
                         </GrantSectionDisplayLabel>
                       )}
-                      <field.component grantApplication={grantApplication} />
+                      <field.component grantApplication={grantApplication} canEdit={canEditAndComment} />
                     </TaskSectionDisplayDiv>
                   );
                 })}
@@ -346,7 +386,7 @@ const ViewGrantApplication = ({ onClose }) => {
           />
         </TaskModalTaskData>
       </TaskModalCard>
-    </>
+    </TaskContext.Provider>
   );
 };
 

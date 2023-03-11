@@ -1,6 +1,8 @@
-import { useEffect, Suspense } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
+
+import CalendarBoard from 'components/Common/CalendarBoard';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -19,9 +21,10 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
     const [ref, inView] = useInView({});
 
     const handleCardClick = (task) => {
+      const queryEntityKey = entityType == ENTITIES_TYPES.MILESTONE ? 'milestone' : 'task';
       const query = {
         ...router.query,
-        task: task?.id,
+        [queryEntityKey]: task?.id,
       };
 
       router.push({ query }, undefined, { scroll: false, shallow: true });
@@ -32,21 +35,27 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
       }
     }, [inView, hasMore, onLoadMore, activeView]);
 
+    if (activeView === ViewType.Calendar) {
+      return <CalendarBoard />;
+    }
+
+    if (activeView === ViewType.List) {
+      return (
+        <ListView
+          enableInfiniteLoading
+          entityType={entityType}
+          singleColumnData
+          columns={columns}
+          onLoadMore={onLoadMore}
+          hasMore={hasMore}
+        />
+      );
+    }
+
     return (
       <>
-        <CardsContainer numberOfColumns={numberOfColumns} isFullWidth={activeView === ViewType.List}>
-          {activeView === ViewType.Grid ? (
-            <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
-          ) : (
-            <ListView
-              enableInfiniteLoading
-              entityType={entityType}
-              singleColumnData
-              columns={columns}
-              onLoadMore={onLoadMore}
-              hasMore={hasMore}
-            />
-          )}
+        <CardsContainer numberOfColumns={numberOfColumns} isFullWidth={false}>
+          <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
         </CardsContainer>
         <LoadMore ref={ref} hasMore={hasMore} />
       </>

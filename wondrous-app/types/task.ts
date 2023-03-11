@@ -11,6 +11,8 @@ export type TaskFilter = {
   privacyLevel?: string;
   orgId?: string;
   category?: string;
+  fromDate?: Date | null;
+  toDate?: Date | null;
 };
 
 export interface IUser {

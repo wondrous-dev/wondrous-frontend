@@ -1,15 +1,14 @@
 /* eslint-disable dot-notation */
 import { useMutation } from '@apollo/client';
-import { DiscordIcon } from 'components/Icons/discord';
 import LinkBigIcon from 'components/Icons/link';
 import OpenSeaIcon from 'components/Icons/openSea';
-import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import cloneDeep from 'lodash/cloneDeep';
 import React, { useContext, useEffect, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import useAlerts from 'hooks/useAlerts';
 import { UPDATE_USER, USER_DISCORD_DISCONNECT } from 'graphql/mutations';
 import { getDiscordUrl } from 'utils';
+import { ImageTypes, ImageKeyEnums } from 'types/common';
 import {
   CHAR_LIMIT_PROFILE_BIO,
   DISCORD_CONNECT_TYPES,
@@ -26,9 +25,9 @@ import SettingsWrapper from 'components/Common/SidebarSettings';
 import HeaderBlock from 'components/Settings/headerBlock';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
+import { CYBER_CONNECT_HANDLE_STORAGE, cyberConnectSignin, getHandle } from 'components/Common/CyberConnect/api';
+import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '../Common';
-import { SafeImage } from '../Common/Image';
-import { ProfilePictureDiv } from '../Onboarding/styles';
 import ImageUpload from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
@@ -38,7 +37,6 @@ import {
   GeneralSettingsDAODescriptionBlock,
   GeneralSettingsDAODescriptionInput,
   GeneralSettingsDAODescriptionInputCounter,
-  GeneralSettingsDAODescriptionInputWrapper,
   GeneralSettingsDAONameBlock,
   GeneralSettingsDAONameInput,
   GeneralSettingsInputsBlock,
@@ -51,10 +49,10 @@ import {
   GeneralSettingsSocialsBlockRow,
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
+  GeneralSettingsCyberConnectIcon,
 } from './styles';
 
 const discordUrl = getDiscordUrl();
-
 const socialsData = [
   {
     icon: <OpenSeaIcon />,
@@ -143,18 +141,18 @@ function ProfileSettings(props) {
   const { loggedInUser } = props;
   const router = useRouter();
   const { discordUserExists, discordError } = router.query;
+  const { signMessage, address } = useWonderWeb3();
   const [username, setUsername] = useState(loggedInUser?.username);
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
   const [profilePictureUrl, setProfilePictureUrl] = useState(loggedInUser?.profilePicture);
-  const [profileBannerUrl, setProfileBannerUrl] = useState(loggedInUser?.headerPicture);
-  const [profilePicture, setProfilePicture] = useState(null);
-  const [profileBanner, setProfileBanner] = useState(null);
+  const [profileHeaderUrl, setProfileHeaderUrl] = useState(loggedInUser?.headerPicture);
   const [profileBio, setProfileBio] = useState(loggedInUser?.bio);
   const [updateUserProfile] = useMutation(UPDATE_USER);
   const [disconnectDiscord] = useMutation(USER_DISCORD_DISCONNECT, {
     refetchQueries: [GET_LOGGED_IN_USER],
   });
   const { showError } = useAlerts();
+  const [cyberConnectHandleConnected, setCyberConnectHandleConnected] = useState('');
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -233,20 +231,6 @@ function ProfileSettings(props) {
       input['email'] = email;
     }
 
-    // ----> Backend not Ready yet...
-    //   if(profileBanner) {
-    //     const file = profileBanner;
-    //     const fileName = profileBanner.name;
-
-    //     // get image preview
-    //     const { fileType, filename } = getFilenameAndType(fileName);
-    //     const imagePrefix = `tmp/${loggedInUser?.id}/`;
-    //     const imageUrl = imagePrefix + filename;
-
-    //     await uploadMedia({ filename: imageUrl, fileType, file });
-    //     input['headerPicture'] = imageUrl;
-    //   }
-
     updateUserProfile({
       variables: {
         input: {
@@ -273,7 +257,6 @@ function ProfileSettings(props) {
 
   const updateImage = (imageUrl: string | null, successMessage?: string) => {
     const message = successMessage || 'User profile picture uploaded successfully';
-
     updateUserProfile({
       variables: {
         input: {
@@ -289,7 +272,25 @@ function ProfileSettings(props) {
     });
   };
 
-  async function uploadImage(file) {
+  const updateHeaderImage = (imageUrl: string | null, successMessage?: string) => {
+    const message = successMessage || 'User header picture uploaded successfully';
+
+    updateUserProfile({
+      variables: {
+        input: {
+          headerPicture: imageUrl,
+        },
+      },
+      onCompleted: (data) => {
+        setProfileHeaderUrl(data?.updateUser?.headerPicture);
+        setSnackbarAlertSeverity('success');
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(message);
+      },
+    });
+  };
+
+  async function uploadImage(file, imageType = ImageTypes.profile) {
     const fileName = file.name;
     // get image preview
     const { fileType, filename } = getFilenameAndType(fileName);
@@ -298,14 +299,31 @@ function ProfileSettings(props) {
     const imageUrl = imagePrefix + filename;
 
     await uploadMedia({ filename: imageUrl, fileType, file });
-
-    updateImage(imageUrl);
+    console.log('imageType', imageType);
+    if (imageType === ImageTypes.profile) {
+      updateImage(imageUrl);
+    }
+    if (imageType === ImageTypes.header) {
+      updateHeaderImage(imageUrl);
+    }
   }
 
-  function deleteImage() {
-    updateImage(null, 'User profile picture deleted successfully.');
+  function deleteImage(imageKey: ImageKeyEnums) {
+    if (imageKey === ImageKeyEnums.profilePicture) {
+      updateImage(null, 'User profile picture deleted successfully.');
+    }
+    if (imageKey === ImageKeyEnums.headerPicture) {
+      updateHeaderImage(null, 'User header picture deleted successfully.');
+    }
   }
 
+  const cyberConnectHandle = typeof window !== 'undefined' && localStorage.getItem(CYBER_CONNECT_HANDLE_STORAGE);
+
+  useEffect(() => {
+    if (cyberConnectHandle) {
+      setCyberConnectHandleConnected(cyberConnectHandle);
+    }
+  }, [cyberConnectHandle]);
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -323,17 +341,17 @@ function ProfileSettings(props) {
           </GeneralSettingsDAONameBlock>
           <GeneralSettingsDAODescriptionBlock>
             <LabelBlock>Description</LabelBlock>
-            <GeneralSettingsDAODescriptionInputWrapper>
+            <div>
               <GeneralSettingsDAODescriptionInput
                 multiline
-                rows={4}
+                rows={3}
                 value={profileBio}
                 onChange={(e) => handleProfileBioChange(e)}
               />
               <GeneralSettingsDAODescriptionInputCounter>
                 {profileBio?.length || 0} / {CHAR_LIMIT_PROFILE_BIO} characters
               </GeneralSettingsDAODescriptionInputCounter>
-            </GeneralSettingsDAODescriptionInputWrapper>
+            </div>
             {errors.description && <ErrorText>{errors.description}</ErrorText>}
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
@@ -347,18 +365,19 @@ function ProfileSettings(props) {
             imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
             image={loggedInUser?.profilePicture}
             title="Profile Pic"
-            updateFilesCb={uploadImage}
+            updateFilesCb={(file) => uploadImage(file, ImageTypes.profile)}
             avatarEditorTitle="Upload a profile image"
-            onDeleteImage={deleteImage}
+            onDeleteImage={(imageKey: ImageKeyEnums) => deleteImage(ImageKeyEnums.profilePicture)}
           />
 
-          {/* <ImageUpload
-            imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
+          <ImageUpload
             image={loggedInUser?.headerPicture}
             title="Header"
-            updateFilesCb={setProfileBanner}
+            imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
+            updateFilesCb={(headerImg) => uploadImage(headerImg, ImageTypes.header)}
             avatarEditorTitle="Upload a header image"
-          /> */}
+            onDeleteImage={(imageKey: ImageKeyEnums) => deleteImage(ImageKeyEnums.headerPicture)}
+          />
         </GeneralSettingsInputsBlock>
 
         <SettingsLinks links={links} setLinks={setLinks} />
@@ -448,7 +467,11 @@ function ProfileSettings(props) {
             }}
           >
             <Tooltip title="Connect your Twitter account" placement="top">
-              <div>
+              <div
+                style={{
+                  display: 'flex',
+                }}
+              >
                 <GeneralSettingsTwitterIcon />
                 {loggedInUser?.userInfo?.twitterUsername
                   ? `Connected to ${loggedInUser?.userInfo?.twitterUsername}`

@@ -13,7 +13,7 @@ import { useInView } from 'react-intersection-observer';
 import { LIMIT } from 'services/board';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
 import { ENTITIES_TYPES, NOTIFICATION_TYPES } from 'utils/constants';
-import { useHotkey, useNotifications, useOutsideAlerter } from 'utils/hooks';
+import { useHotkey, useNotifications } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { SmallAvatar } from '../Common/AvatarList';
 import { HeaderItemWrapper, StyledBadge } from '../Header/styles';
@@ -23,16 +23,13 @@ import {
   NotificationItemInner,
   NotificationItemStatus,
   NotificationItemTimeline,
-  NotificationsBoardArrow,
   NotificationsBoardHeader,
-  NotificationsBoardOverArrow,
   NotificationsBoardWrapper,
   NotificationsContentPreview,
   NotificationsDot,
   NotificationsItem,
   NotificationsLink,
   NotificationsMarkRead,
-  NotificationsOverlay,
   NotificationsTitle,
   NotificationWrapper,
 } from './styles';
@@ -71,6 +68,9 @@ const NotificationsBoard = forwardRef(
         return notification.actorUsername;
       }
       if (notification?.actorType === ENTITIES_TYPES.POD) {
+        return notification?.actorUsername;
+      }
+      if (notification?.actorType === ENTITIES_TYPES.GRANT) {
         return notification?.actorUsername;
       }
     };
@@ -199,7 +199,7 @@ const NotificationsBoard = forwardRef(
         <StyledBadge
           color="primary"
           isActive={isActive}
-          hasUnreadNotifications={unreadCount > 0}
+          $hasUnreadNotifications={unreadCount > 0}
           onClick={toggleNotifications}
         >
           <Badge
@@ -275,5 +275,7 @@ const NotificationsBoard = forwardRef(
     );
   }
 );
+
+NotificationsBoard.displayName = 'NotificationsBoard';
 
 export default NotificationsBoard;

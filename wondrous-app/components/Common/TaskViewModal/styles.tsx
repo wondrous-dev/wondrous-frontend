@@ -1,5 +1,5 @@
 import { ButtonUnstyled } from '@mui/base';
-import { Button, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import { Button, Grid, Menu, MenuItem, Modal, Typography } from '@mui/material';
 import { Button as GradientButton } from 'components/Common/button';
 import { Button as ComponentButton } from 'components/Button';
 import { SafeImage } from 'components/Common/Image';
@@ -28,6 +28,10 @@ export const TaskModal = styled(Modal)`
   justify-content: center;
   z-index: 500;
   padding: 0 24px;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding: 0;
+  }
 `;
 
 export const TaskModalCard = styled.div`
@@ -50,6 +54,10 @@ export const TaskModalCard = styled.div`
     width: 1195px;
     gap: 0;
   `}
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    height: 100vh;
+  }
 `;
 
 export const TaskModalHeader = styled.div`
@@ -132,6 +140,10 @@ export const TaskModalHeaderOpenInFullIcon = styled((props) => (
   cursor: pointer;
   svg {
     transform: scale(88%);
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
   }
 `;
 
@@ -332,18 +344,6 @@ export const TaskModalSnapshot = styled(Button)`
 
 export const TaskModalSnapshotLogo = styled(SnapshotLogoIcon)``;
 
-// export const DiscordThreadButton = styled(Button)`
-//   && {
-//     align-items: center;
-//     background: transparent;
-//     display: flex;
-//     gap: 8px;
-//     height: 30px;
-//     margin: 0;
-//     border: 2px solid ${palette.purple400};
-//   }
-// `;
-
 export const TaskModalSnapshotText = styled(Typography)`
   && {
     font-size: 14px;
@@ -367,7 +367,7 @@ export const TaskDescriptionText = styled(Typography)`
       return `
       font-weight: ${theme.typography.fontWeightRegular};
       height: ${isExpanded ? 'fit-content' : `${initialHeight}px`};
-      color: ${theme.palette.grey250};
+      color: inherit;
     ${
       !isExpanded &&
       `
@@ -509,6 +509,7 @@ export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
   && {
     font-size: 13px;
     display: flex;
+    white-space: nowrap;
     align-items: center;
     gap: 12px;
     ${({ theme }) => `
@@ -519,6 +520,9 @@ export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
 
 export const TaskSectionInfoTextMilestone = styled(TaskSectionInfoText)`
   cursor: pointer;
+  :hover {
+    text-decoration: underline;
+  }
 `;
 
 export const TaskSectionInfoTextUnderlined = styled(TaskSectionDisplayText)`
@@ -678,8 +682,9 @@ export const TaskSectionInfoMilestoneIcon = styled(({ className }) => (
 
 export const TaskSectionInfoPaymentMethodIcon = styled(SafeImage).attrs({ useNextImage: false })`
   && {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
+    border-radius: 100%;
     img[style] {
       width: 100% !important;
       height: 100% !important;
@@ -817,19 +822,6 @@ export const TaskBorder = styled.div`
   border-bottom: 1px dashed ${({ theme }) => theme.palette.grey75};
 `;
 
-export const TaskListModalHeader = styled(Typography)`
-  && {
-    font-size: 18px;
-    line-height: 26px;
-    margin-bottom: 20px;
-    color: ${({ theme }) => theme.palette.white};
-  }
-`;
-
-export const TaskListModalContentWrapper = styled.div`
-  padding-bottom: 30px;
-`;
-
 export const ArchivedTaskUndo = styled.span`
   text-decoration: underline;
   :hover {
@@ -945,14 +937,61 @@ export const AddReviewerButton = styled(ComponentButton)`
   }
 `;
 
-export const ReviewerWrapper = styled.div`
-  width: 100%;
-  flex-wrap: wrap;
+export const AddButtonGrid = styled(Grid)`
+  && {
+    display: none;
+  }
+`;
+
+const EditIconCss = css`
+  &:hover {
+    .edit-icon-field {
+      display: block;
+    }
+  }
+`;
+export const ViewFieldWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  > div:nth-last-child(2) {
-    max-width: ${({ showAddButton }) => showAddButton && `calc(100% - 40px)`};
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 2px 4px 2px 4px;
+  gap: 6px;
+  height: 28px;
+  border-radius: 4px;
+  width: fit-content;
+  height: fit-content;
+  .edit-icon-field {
+    display: none;
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.grey920};
+    width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
+  }
+
+  background-color: ${({ theme, $background = '' }) => $background || theme.palette.grey920};
+  ${({ $canEdit }) => ($canEdit ? EditIconCss : `pointer-events: none;`)};
+`;
+
+export const ViewFieldContainer = styled.div`
+  width: 100%;
+`;
+
+export const UserSelectWrapper = styled(Grid)`
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  &:hover {
+    > div:nth-last-child(2) {
+      width: ${({ showFullWidth }) => (showFullWidth ? `` : `calc(100% - 40px);`)};
+    }
+    ${ViewFieldWrapper} {
+      width: 100%;
+    }
+    ${AddButtonGrid} {
+      display: flex;
+    }
   }
 `;

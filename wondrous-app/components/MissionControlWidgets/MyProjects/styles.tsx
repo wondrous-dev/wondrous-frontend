@@ -49,8 +49,9 @@ export const ProjectRowContainer = styled.div`
   border-radius: 6px;
   padding: 12px;
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
   cursor: pointer;
+  gap: 10px;
   align-items: center;
   &:hover {
     background: ${palette.grey87};

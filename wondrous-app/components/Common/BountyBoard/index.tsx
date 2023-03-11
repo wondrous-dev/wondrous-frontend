@@ -22,13 +22,12 @@ import TaskCardMenu from 'components/Common/TaskCardMenu';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import TaskCardStatus from 'components/Common/TaskCardStatus';
 import TaskPriority from 'components/Common/TaskPriority';
-import ActionModals from 'components/Common/TaskViewModal/actionModals';
+import ActionModals from 'components/Common/TaskViewModal/ActionModalsComponent';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
 import PodIconName from 'components/Common/PodIconName';
 import { CreateEntity } from 'components/CreateEntity';
 import CommentsIcon from 'components/Icons/comments';
 import { DAOIcon } from 'components/Icons/dao';
-import { RichTextViewer } from 'components/RichText';
 import { ARCHIVE_TASK } from 'graphql/mutations';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { useRouter } from 'next/router';
@@ -36,6 +35,7 @@ import { Fragment, useContext, useState } from 'react';
 import palette from 'theme/palette';
 import { usePermissions } from 'utils/hooks';
 import { TaskInterface } from 'types/task';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { BountyBoardEmpty, BountyCardWrapper } from './styles';
 
 export function SubmissionsCount({ total, approved }) {
@@ -190,7 +190,7 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
             </Box>
           ) : null}
           <BoardsCardBodyDescription as="div">
-            <RichTextViewer text={bounty.description} />
+            <PlateRichTextViewer text={bounty.description} />
           </BoardsCardBodyDescription>
           <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
           {bounty?.media?.[0] && bounty?.media?.[0]?.type === 'image' ? (

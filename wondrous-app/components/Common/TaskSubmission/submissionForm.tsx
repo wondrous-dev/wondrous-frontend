@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
 import PlusIcon from 'components/Icons/plus';
-import { deserializeRichText, isBlankValue, plainTextToRichText, RichTextEditor, useEditor } from 'components/RichText';
 import { Formik } from 'formik';
 import {
   ATTACH_SUBMISSION_MEDIA,
@@ -11,16 +10,15 @@ import {
 } from 'graphql/mutations/taskSubmission';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import isEmpty from 'lodash/isEmpty';
-import { useContext, useRef, useState } from 'react';
-import { Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
+import React, { useContext, useRef, useState } from 'react';
 import { transformMediaFormat } from 'utils/helpers';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
+import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
+import { deserializeRichText, isBlankValue, plainTextToRichText } from 'components/PlateRichEditor/utils';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
   SubmissionDescriptionEditor,
-  SubmissionDescriptionEditorEditorToolbar,
   SubmissionDisplayText,
   SubmissionDivider,
   SubmissionForm,
@@ -120,37 +118,27 @@ const handleRemoveItem =
     });
   };
 
-function SubmissionFormDescriptionField({ formik, orgId }) {
-  const { data: orgUsersData, refetch } = useQuery(SEARCH_ORG_USERS, {
+function SubmissionFormDescriptionField({ formik, orgId, inputRef }) {
+  const { data: orgUsersData } = useQuery(SEARCH_ORG_USERS, {
     variables: {
       orgIds: [orgId],
       searchString: '',
     },
   });
-  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
-  const editor = useEditor();
-
-  const handleUserMentionChange = (query) => refetch({ searchString: query });
 
   return (
     <SubmissionFormDescription>
-      <SubmissionDescriptionEditorEditorToolbar ref={setEditorToolbarNode} />
-      <SubmissionDescriptionEditor
-        onClick={() => {
-          ReactEditor.focus(editor);
-          Transforms.select(editor, [0]);
-          formik.setFieldError('descriptionText', '');
-        }}
-      >
-        <RichTextEditor
-          editor={editor}
-          onMentionChange={handleUserMentionChange}
-          initialValue={formik.values.descriptionText}
+      <SubmissionDescriptionEditor>
+        <PlateRichEditor
+          inputValue={formik.values.descriptionText}
           mentionables={filterOrgUsersForAutocomplete(orgUsersData?.searchOrgUsers)}
-          placeholder="Enter a description"
-          toolbarNode={editorToolbarNode}
-          onChange={(text) => formik.setFieldValue('descriptionText', text)}
-          editorContainerNode={document.querySelector('#modal-scrolling-container')}
+          onChange={(text) => {
+            formik.setFieldValue('descriptionText', text);
+          }}
+          mediaUploads={() => {
+            inputRef.current.click();
+          }}
+          placeholder="Type ‘/’ for commands"
         />
       </SubmissionDescriptionEditor>
     </SubmissionFormDescription>
@@ -241,10 +229,9 @@ function SubmissionFormUploadFileButtonWrapper({ onClick, loading, files }) {
   );
 }
 
-function SubmissionFormFilesField({ formik, submissionToEdit }) {
+function SubmissionFormFilesField({ formik, submissionToEdit, inputRef }) {
   const [attachTaskSubmissionMedia] = useMutation(ATTACH_SUBMISSION_MEDIA);
   const [loading, setLoading] = useState(false);
-  const inputRef = useRef(null);
   const handleInputRef = () => {
     inputRef.current.click();
     formik.setFieldError('descriptionText', '');
@@ -308,6 +295,8 @@ export function TaskSubmissionForm(props) {
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+
+  const inputRef = useRef(null);
 
   const handleSubmit = ({
     submissionToEdit,
@@ -395,9 +384,9 @@ export function TaskSubmissionForm(props) {
           <SubmissionForm onSubmit={formik.handleSubmit}>
             <SubmissionFormTitle>Make a submission</SubmissionFormTitle>
             <SubmissionFormFieldErrorText>{formik.errors.descriptionText}</SubmissionFormFieldErrorText>
-            <SubmissionFormDescriptionField formik={formik} orgId={orgId} />
+            <SubmissionFormDescriptionField formik={formik} orgId={orgId} inputRef={inputRef} />
             <SubmissionFormLinkField formik={formik} />
-            <SubmissionFormFilesField formik={formik} submissionToEdit={submissionToEdit} />
+            <SubmissionFormFilesField formik={formik} submissionToEdit={submissionToEdit} inputRef={inputRef} />
             <SubmissionDivider />
             <SubmissionFormButtonWrapper>
               <SubmissionFormCancel onClick={cancelSubmissionForm}>Cancel</SubmissionFormCancel>

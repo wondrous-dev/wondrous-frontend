@@ -155,16 +155,16 @@ export const CHAIN_TO_EXPLORER_URL = {
 };
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
-  ethereum: 'https://safe-transaction.mainnet.gnosis.io',
-  goerli: 'https://safe-transaction.goerli.gnosis.io',
+  ethereum: 'https://safe-transaction-mainnet.safe.global',
+  goerli: 'https://safe-transaction-goerli.safe.global',
   polygon: 'https://safe-transaction-polygon.safe.global',
   harmony: 'https://transaction.multisig.harmony.one',
-  arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
-  bsc: 'https://safe-transaction.bsc.gnosis.io',
+  arbitrum: 'https://safe-transaction-arbitrum.safe.global',
+  bsc: 'https://safe-transaction-bsc.safe.global',
   boba: 'https://safe-transaction.mainnet.boba.network',
-  optimism: 'https://safe-transaction.optimism.gnosis.io',
-  avalanche: 'https://safe-transaction.avalanche.gnosis.io',
-  gnosis: 'https://safe-transaction.xdai.gnosis.io',
+  optimism: 'https://safe-transaction-optimism.safe.global',
+  avalanche: 'https://safe-transaction-avalanche.safe.global',
+  gnosis: 'https://safe-transaction-gnosis-chain.safe.global',
 };
 
 export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa';

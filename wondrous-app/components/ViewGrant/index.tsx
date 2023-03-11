@@ -17,33 +17,30 @@ import {
   TaskModalHeaderTypography,
   TaskModalHeaderWrapper,
   TaskModalTaskData,
-  TaskModalTitle,
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayData,
   TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
 } from 'components/Common/TaskViewModal/styles';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LABELS, PRIVACY_LEVEL } from 'utils/constants';
-import { useBoards, useFullScreen, useGlobalContext } from 'utils/hooks';
+import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { useFullScreen, useGlobalContext } from 'utils/hooks';
 
 import { useQuery } from '@apollo/client';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { CategoryField, Description, ReviewerField, Title } from 'components/Common/TaskViewModal/Fields';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
-import { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
-import { GrantModalCard } from 'components/CreateGrant/styles';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 import { DAOIcon } from 'components/Icons/dao';
-import { RichTextViewer } from 'components/RichText';
 import ViewGrantApplication from 'components/ViewGrantApplication';
 import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { TaskContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { Categories, DataDisplay, Dates, GrantAmount } from './Fields';
+import { Dates, Eligibility, PaymentData, Visibility } from './EditableFields';
 import ViewGrantFooter from './Footer';
 import GrantMenuStatus from './GrantMenuStatus';
 import { DescriptionWrapper } from './styles';
@@ -51,30 +48,50 @@ import { canViewGrant } from './utils';
 
 const FIELDS_CONFIG = [
   {
-    label: 'Grant amount',
-    component: ({ grant: { reward, numOfGrant } }) => <GrantAmount grantAmount={reward} numOfGrant={numOfGrant} />,
-
-    shouldDisplay: ({ grant: { reward } }): boolean => !!reward?.paymentMethodId,
-  },
-  {
-    label: 'Dates',
-    component: ({ grant: { startDate, endDate } }) => <Dates startDate={startDate} endDate={endDate} />,
-    shouldDisplay: ({ grant: { startDate, endDate } }): boolean => !!(startDate || endDate),
-  },
-  {
-    label: 'Eligibility',
-    component: ({ grant: { applyPolicy } }) => (
-      <DataDisplay label={APPLY_POLICY_FIELDS.find((policy) => policy.value === applyPolicy)?.name} />
+    component: ({ grant, canEdit, user }) => (
+      <ReviewerField
+        reviewerData={{
+          getTaskReviewers: grant.reviewers,
+        }}
+        canEdit={canEdit}
+        shouldDisplay={grant.reviewers?.length > 0 || canEdit}
+        fetchedTask={grant}
+        user={user}
+      />
     ),
   },
   {
+    label: 'Status',
+    component: ({ grant: { status }, canEdit }) => <GrantMenuStatus currentStatus={status} canEdit={canEdit} />,
+  },
+  {
+    component: ({ grant: { reward, numOfGrant }, canEdit }) => (
+      <PaymentData reward={reward} numOfGrant={numOfGrant} canEdit={canEdit} />
+    ),
+
+    shouldDisplay: ({ grant: { reward }, canEdit }): boolean => !!reward?.paymentMethodId || canEdit,
+  },
+  {
+    label: 'Dates',
+    component: ({ grant: { startDate, endDate }, canEdit }) => (
+      <Dates canEdit={canEdit} startDate={startDate} endDate={endDate} />
+    ),
+    shouldDisplay: ({ grant: { startDate, endDate }, canEdit }): boolean => !!(startDate || endDate || canEdit),
+  },
+  {
+    label: 'Eligibility',
+    component: ({ grant: { applyPolicy }, canEdit }) => <Eligibility applyPolicy={applyPolicy} canEdit={canEdit} />,
+  },
+  {
     label: 'Visibility',
-    component: ({ grant: { privacyLevel } }) => <DataDisplay label={PRIVACY_LABELS[privacyLevel] || 'Private'} />,
+    component: ({ grant: { privacyLevel }, canEdit }) => <Visibility privacyLevel={privacyLevel} canEdit={canEdit} />,
   },
   {
     label: 'Categories',
-    component: ({ grant: { categories } }) => <Categories categories={categories} />,
-    shouldDisplay: ({ grant: { categories } }): boolean => !!categories?.length,
+    component: ({ grant: { categories }, canEdit }) => (
+      <CategoryField hideLabel labels={categories} canEdit={canEdit} />
+    ),
+    shouldDisplay: ({ grant: { categories }, canEdit }): boolean => !!categories?.length || canEdit,
   },
 ];
 
@@ -87,7 +104,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
 
   const router = useRouter();
   const isViewApplication = !!router.query?.grantApplicationId;
-  const { data, loading } = useQuery(GET_GRANT_BY_ID, {
+  const { data, loading, refetch } = useQuery(GET_GRANT_BY_ID, {
     variables: { grantId },
     skip: !grantId || isViewApplication,
   });
@@ -153,6 +170,8 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
         isFullScreen,
         grant,
         setEditMode,
+        refetch,
+        entityType: ENTITIES_TYPES.GRANT,
       }}
     >
       <CreateEntityDiscardTask
@@ -238,7 +257,12 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                       )}
                     </TaskModalHeaderWrapper>
                     <TaskModalHeaderWrapperRight>
-                      <TaskModalHeaderShare fetchedTask={grant} />
+                      <TaskModalHeaderShare
+                        fetchedTask={{
+                          ...grant,
+                          type: 'grant',
+                        }}
+                      />
                       <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
                       <Menu
                         canArchive={canArchive}
@@ -254,35 +278,27 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                   </TaskModalHeader>
                   <TaskModalTaskData fullScreen={isFullScreen}>
                     <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
-                      <TaskModalTitle>{grant?.title}</TaskModalTitle>
-                      <GrantMenuStatus
-                        canEdit={canEdit}
-                        currentStatus={grant?.status}
-                        onUpdateSuccess={() => {
-                          setSnackbarAlertMessage('Grant status updated successfully');
-                          setSnackbarAlertOpen(true);
-                        }}
-                        onUpdateError={() => {
-                          setSnackbarAlertMessage('Grant status update failed');
-                          setSnackbarAlertOpen(true);
-                        }}
-                      />
-
+                      <Title title={grant?.title} canEdit={canEdit} />
                       <DescriptionWrapper>
-                        <RichTextViewer text={grant.description} />
+                        <Description
+                          canEdit={canEdit}
+                          description={grant?.description}
+                          orgId={grant?.orgId}
+                          showFullByDefault
+                        />
                         <TaskMediaWrapper media={grant?.media} />
                       </DescriptionWrapper>
                     </TaskModalTitleDescriptionMedia>
                     <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
                       <TaskSectionDisplayData>
                         {FIELDS_CONFIG.map((field, idx) => {
-                          if (field?.shouldDisplay && !field?.shouldDisplay({ grant })) {
+                          if (field?.shouldDisplay && !field?.shouldDisplay({ grant, canEdit })) {
                             return null;
                           }
                           return (
                             <TaskSectionDisplayDiv key={idx}>
-                              <TaskSectionLabel>{field.label}</TaskSectionLabel>
-                              <field.component grant={grant} />
+                              {field.label ? <TaskSectionLabel>{field.label}</TaskSectionLabel> : null}
+                              <field.component grant={grant} canEdit={canEdit} user={user} />
                             </TaskSectionDisplayDiv>
                           );
                         })}
@@ -292,6 +308,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                       entity={grant}
                       commentCount={grant?.commentCount}
                       applicationsCount={grant?.applicationsCount}
+                      approvedApplicationsCount={grant?.approvedApplicationsCount}
                     />
                   </TaskModalTaskData>
                 </>

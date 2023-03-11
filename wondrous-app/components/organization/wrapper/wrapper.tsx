@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
+import Box from '@mui/material/Box';
 
 import {
   ENTITIES_TYPES,
@@ -13,7 +14,6 @@ import {
 import MembersIcon from 'components/Icons/members';
 import { Button as PrimaryButton } from 'components/Button';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import DEFAULT_HEADER from 'public/images/overview/background.png';
@@ -29,16 +29,15 @@ import {
   ExploreProjectsButtonFilled,
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import { RichTextViewer } from 'components/RichText';
 import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { PodIconThin } from 'components/Icons/podIcon';
 import palette from 'theme/palette';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { SafeImage } from '../../Common/Image';
 import {
-  Content,
   ContentContainer,
   RolePodMemberContainer,
   HeaderContributors,
@@ -65,7 +64,7 @@ const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/Or
 const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
 const CurrentRoleModal = dynamic(() => import('components/RoleModal/CurrentRoleModal'), { suspense: true });
 const ChooseEntityToCreate = dynamic(() => import('components/CreateEntity'), { suspense: true });
-const MoreInfoModal = dynamic(() => import('components/profile/modals'), { suspense: true });
+const MoreInfoModal = dynamic(() => import('components/Common/MoreInfoModal'), { suspense: true });
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
@@ -414,19 +413,6 @@ function Wrapper(props) {
               <PrivacyContainer>
                 <PrivacyText>{orgProfile?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
               </PrivacyContainer>
-              {isGr15Sponsor && (
-                <ExploreOrgGr15
-                  onTaskPage={onTaskPage}
-                  onBountyPage={onBountyPage}
-                  hasGr15Bounties={hasGr15Bounties}
-                  hasGr15Tasks={hasGr15Tasks}
-                  onFilterChange={onFilterChange}
-                  orgProfile={orgProfile}
-                  filters={boardFilters}
-                  exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                  setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                />
-              )}
             </HeaderTopLeftContainer>
             <RolePodMemberContainer>
               {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (
@@ -502,7 +488,7 @@ function Wrapper(props) {
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}>
             {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
               <HeaderText as="div">
-                <RichTextViewer text={orgProfile?.description} />
+                <PlateRichTextViewer text={orgProfile?.description} />
               </HeaderText>
             ) : (
               <div style={{ height: 10 }} />
@@ -513,14 +499,16 @@ function Wrapper(props) {
         <BoardsSubheaderWrapper>
           <div />
           {!!filterSchema && (
-            <BoardsActivity
-              onSearch={onSearch}
-              filterSchema={filterSchema}
-              onFilterChange={onFilterChange}
-              statuses={statuses}
-              podIds={podIds}
-              userId={userId}
-            />
+            <ExploreGr15TasksAndBountiesContext.Provider value={exploreGr15TasksAndBounties}>
+              <BoardsActivity
+                onSearch={onSearch}
+                filterSchema={filterSchema}
+                onFilterChange={onFilterChange}
+                statuses={statuses}
+                podIds={podIds}
+                userId={userId}
+              />
+            </ExploreGr15TasksAndBountiesContext.Provider>
           )}
         </BoardsSubheaderWrapper>
         <Container>{children}</Container>

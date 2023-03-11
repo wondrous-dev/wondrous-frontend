@@ -85,7 +85,7 @@ export default function ItemsContainer({
       </IconWrapper>
     ) : null;
   return (
-    <>
+    <div style={{ marginBottom: 15 }}>
       <CreateModalOverlay
         style={{
           height: '95vh',
@@ -125,6 +125,6 @@ export default function ItemsContainer({
         )}
         {dndPlaceholder}
       </Accordion>
-    </>
+    </div>
   );
 }

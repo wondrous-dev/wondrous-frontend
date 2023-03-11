@@ -65,6 +65,7 @@ function OrgBoards(props: Props) {
       podIds={podIds}
       userId={userId}
       loading={loading}
+      headerTitle="Tasks"
     >
       <ColumnsContext.Provider value={{ columns, setColumns }}>
         {loading ? (
@@ -95,7 +96,6 @@ export default memo(OrgBoards, (prevProps, nextProps) => {
     prevProps.podIds === nextProps.podIds &&
     prevProps.userId === nextProps.userId &&
     prevProps.entityType === nextProps.entityType &&
-    prevProps.loading === nextProps.loading &&
     prevProps.loading === nextProps.loading &&
     prevProps.activeView === nextProps.activeView;
   return areEqual;

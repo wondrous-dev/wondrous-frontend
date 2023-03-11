@@ -1,4 +1,4 @@
-import { NextRouter, useRouter } from 'next/router';
+import { NextRouter } from 'next/router';
 import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo, useCallback } from 'react';
 import apollo from 'services/apollo';
 import { TokenGatingCondition } from 'types/TokenGating';
@@ -10,29 +10,14 @@ import {
   MILESTONE_TYPE,
   ENTITIES_TYPES,
   TASK_STATUS_DONE,
-  COLUMNS_CONFIGURATION,
 } from 'utils/constants';
-import {
-  GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
-  GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
-  GET_POD_BY_ID,
-  GET_ORG_FROM_USERNAME,
-  SEARCH_ORG_TASK_BOARD_PROPOSALS,
-  SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
-  SEARCH_POD_TASK_BOARD_PROPOSALS,
-  SEARCH_TASKS_FOR_POD_BOARD_VIEW,
-} from 'graphql/queries';
+import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, GET_POD_BY_ID, GET_ORG_FROM_USERNAME } from 'graphql/queries';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations';
-import {
-  generateColumns,
-  LIMIT,
-  ORG_POD_COLUMNS,
-  ORG_POD_PROPOSAL_COLUMNS,
-  populateProposalColumns,
-  populateTaskColumns,
-} from 'services/board';
+import { LIMIT } from 'services/board';
+import { useWonderWeb3 } from 'services/web3';
 import { useMe } from 'components/Auth/withAuth';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -53,6 +38,7 @@ import {
   TaskContext,
   PageDataContext,
   ProjectContext,
+  CornerWidgetContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
 
@@ -146,10 +132,12 @@ export const useTokenGatingCondition = (): {
   selectedTokenGatingCondition: TokenGatingCondition;
 } => useContext(TokenGatingContext);
 
+export const useCornerWidget = () => useContext(CornerWidgetContext);
+
 /**
  * Hook that alerts clicks outside of the passed ref
  */
-export const useOutsideAlerter = (ref, callback) => {
+export const useOutsideAlerter = (ref, callback, dependencies = []) => {
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
@@ -166,7 +154,7 @@ export const useOutsideAlerter = (ref, callback) => {
       // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [ref]);
+  }, [ref, ...dependencies]);
 };
 
 function usePrevious(value) {
@@ -342,6 +330,19 @@ export const useSteps = (defaultStep = 0) => {
   return { step, setStep, nextStep, prevStep };
 };
 
+export const checkCanClaimPermissions = (task, userPermissionsContext) => {
+  const orgId = task?.orgId;
+  const podId = task?.podId;
+  if (task?.privacyLevel === PRIVACY_LEVEL.public) return true;
+  // Task is private
+  if (
+    (podId && userPermissionsContext?.podPermissions[podId]) ||
+    (userPermissionsContext?.podPermissions[orgId] && !podId)
+  )
+    return true;
+  return false;
+};
+
 export const usePermissions = (entity, isTaskProposal = false) => {
   const globalContext = useGlobalContext();
   const { id: userId } = useMe() || {};
@@ -361,8 +362,10 @@ export const usePermissions = (entity, isTaskProposal = false) => {
   const canViewApplications = hasFullPermission || hasEditPermission || (createdByUser && type === TASK_TYPE);
   const canDelete = canArchive && (type === ENTITIES_TYPES.TASK || type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
   const canApproveProposal = hasFullPermission || permissions.includes(PERMISSIONS.CREATE_TASK);
+  const claimPermissions = checkCanClaimPermissions(entity, userPermissionsContext);
   const canClaim =
     taskApplicationPermissions?.canClaim &&
+    claimPermissions &&
     !assigneeId &&
     type !== BOUNTY_TYPE &&
     type !== MILESTONE_TYPE &&
@@ -451,4 +454,36 @@ export const usePodPageFetch = (podId: string | string[]) => {
   useEffect(() => setPageData({}), []);
 
   return { data };
+};
+
+export const useGetEnsOrAddress = (ethAddress: string) => {
+  const [ENSNameOrWalletAddress, setENSNameOrWalletAddress] = useState('');
+
+  const wonderWeb3 = useWonderWeb3();
+
+  useEffect(() => {
+    if (ethAddress) {
+      setENSNameOrWalletAddress(ethAddress);
+
+      wonderWeb3.getENSNameFromEthAddress(ethAddress).then((ensName) => {
+        if (ensName) {
+          setENSNameOrWalletAddress(ensName);
+        }
+      });
+    }
+  }, [wonderWeb3, ethAddress]);
+
+  return { ENSNameOrWalletAddress };
+};
+
+export const useCopyAddress = () => {
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
+
+  const copyAddress = (address) => {
+    navigator.clipboard.writeText(`${address}`);
+    setSnackbarAlertOpen(true);
+    setSnackbarAlertMessage('Address copied to clipboard');
+  };
+
+  return { copyAddress };
 };

@@ -142,7 +142,7 @@ export const IMPORT_TASKS = gql`
 `;
 
 export const CREATE_MILESTONE = gql`
-  mutation createMilestone($input: TaskInput) {
+  mutation createMilestone($input: MilestoneInput) {
     createMilestone(input: $input) {
       ...MilestoneFragment
     }
@@ -177,7 +177,7 @@ export const REMOVE_TASK_ASSIGNEE = gql`
 `;
 
 export const UPDATE_MILESTONE = gql`
-  mutation updateMilestone($milestoneId: ID!, $input: TaskInput) {
+  mutation updateMilestone($milestoneId: ID!, $input: MilestoneInput) {
     updateMilestone(milestoneId: $milestoneId, input: $input) {
       ...MilestoneFragment
     }
@@ -259,9 +259,8 @@ export const TURN_TASK_TO_BOUNTY = gql`
 export const CREATE_TASK_DISCORD_THREAD = gql`
   mutation createTaskDiscordThread($taskId: ID!) {
     createTaskDiscordThread(taskId: $taskId) {
-      guildIds
-
-      threadIds
+      guildId
+      threadId
     }
   }
 `;
@@ -299,6 +298,23 @@ export const MINT_TASK = gql`
 export const COMPLETE_TASK_MINT = gql`
   mutation completeTaskMint($operationId: String!) {
     completeTaskMint(operationId: $operationId) {
+      success
+    }
+  }
+`;
+
+export const GENERATE_GPT_TASKS = gql`
+  mutation generateGPTTasks($input: GPTTaskGenerationInput!) {
+    generateGPTTasks(input: $input) {
+      title
+      description
+    }
+  }
+`;
+
+export const CREATE_GPT_TASKS = gql`
+  mutation createGPTTasks($input: GPTTaskCreationInput) {
+    createGPTTasks(input: $input) {
       success
     }
   }

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { CyberConnect } from 'components/Icons/CyberConnects';
 import { Button } from '../Common/button';
 import { Discord } from '../Icons/discord';
 import { Twitter } from '../Icons/twitter';
@@ -312,20 +313,9 @@ export const GeneralSettingsDAODescriptionBlock = styled.div`
   position: relative;
 `;
 
-export const GeneralSettingsDAODescriptionInputWrapper = styled.div`
-  border: 1px solid pink;
-  border: 1px solid #4b4b4b;
-  border-radius: 6px;
-`;
-
 export const GeneralSettingsDAODescriptionInput = styled(GeneralSettingsDAONameInput)`
   && {
     height: 80px;
-    font-size: 14px;
-    line-height: 21px;
-    letter-spacing: 0.01em;
-    color: ${palette.white};
-    padding: 10px 15px;
     border: none;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
@@ -339,7 +329,8 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
     color: ${palette.grey57};
     width: 100%;
     text-align: right;
-    padding: 8px;
+    padding-bottom: 2px;
+    padding-right: 10px;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
   }
@@ -411,6 +402,15 @@ export const GeneralSettingsDiscordIcon = styled(Discord)`
 `;
 
 export const GeneralSettingsTwitterIcon = styled(Twitter)`
+  && {
+    width: 27px;
+    height: 20px;
+    color: #00baff;
+    margin-right: 12px;
+  }
+`;
+
+export const GeneralSettingsCyberConnectIcon = styled(CyberConnect)`
   && {
     width: 27px;
     height: 20px;

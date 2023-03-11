@@ -44,6 +44,7 @@ const ProfileProposalSection = () => (
         router.push({ query: { ...router.query, taskProposal: id } }, undefined, { scroll: false }),
     }}
     data={useGetProposal()}
+    tourId="tour-header-project-proposals"
   />
 );
 

@@ -17,8 +17,7 @@ import { GRANTS_ICONS_LABELS_MAP } from 'components/GrantsFilters';
 import { IconWrapper } from 'components/GrantsFilters/styles';
 import CommentsIcon from 'components/Icons/comments';
 import { DueDateIcon } from 'components/Icons/taskModalIcons';
-import { RichTextViewer } from 'components/RichText';
-import { GrantAmount } from 'components/ViewGrant/Fields';
+import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import format from 'date-fns/format';
 import { useContext, useState } from 'react';
 import palette from 'theme/palette';
@@ -27,6 +26,7 @@ import { formatDateDisplay } from 'utils/board';
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { BoardWrapper, EndingSoonPill, GrantsBoardCardDescription, ItemPill, MenuWrapper } from './styles';
 
 const GrantsBoardCard = ({ grant, handleCardClick }) => {
@@ -93,15 +93,9 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
           <Grid display="flex" gap="14px" alignItems="center">
             <TaskCardPrivacy privacyLevel={grant?.privacyLevel} />
 
-            <GrantAmount grantAmount={grant.reward} numOfGrant={grant.numOfGrant} />
+            <GrantPaymentData paymentData={grant.reward} numOfGrant={grant.numOfGrant} />
           </Grid>
           <Grid display="flex" gap="14px">
-            <ItemPill>
-              <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
-                {grant.applicationsCount} Applications
-              </Typography>
-            </ItemPill>
-
             <ItemPill withIcon>
               <IconWrapper>
                 <Icon />
@@ -115,7 +109,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
         <BoardsCardBody>
           <BoardsCardBodyTitle>{grant.title}</BoardsCardBodyTitle>
           <GrantsBoardCardDescription>
-            <RichTextViewer text={grant.description} asText />
+            <PlateRichTextViewer text={grant.description} asText />
           </GrantsBoardCardDescription>
           {coverMedia ? (
             <BoardsCardMedia>
@@ -147,7 +141,13 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
             {' '}
             <CommentsIcon />
             {grant.comments || 0}
+            <ItemPill>
+              <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                {grant.applicationsCount} Applications
+              </Typography>
+            </ItemPill>
           </Grid>
+
           <MenuWrapper display="flex" justifyContent="flex-end" flex={1}>
             <TaskCardMenu
               anchorElParent={anchorEl}

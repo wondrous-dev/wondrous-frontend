@@ -19,8 +19,8 @@ const HeaderText = styled(Typography)`
   }
 `;
 
-const HeaderTitle = ({ text, IconComponent }: IHeaderTitleProps) => (
-  <Grid container width="fit-content" height="36px" gap="8px" alignItems="center" justifyContent="center">
+const HeaderTitle = ({ text, IconComponent, tourId }: IHeaderTitleProps) => (
+  <Grid id={tourId} container width="fit-content" height="36px" gap="8px" alignItems="center" justifyContent="center">
     <Tooltip title="Drag to move" placement="top">
       <DndIconWrapper
         container

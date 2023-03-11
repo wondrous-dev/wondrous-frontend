@@ -1,8 +1,10 @@
 import { useMutation } from '@apollo/client';
 import { Typography } from '@mui/material';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { PaymentData } from 'components/Common/Payment/types';
+import { MediaItem } from 'components/CreateEntity/MediaItem';
 import CopyIcon from 'components/Icons/copy';
 import {
-  LINK_BATCH_OFF_PLATFORM_FOR_APPLICATION,
   LINK_BATCH_OFF_PLATFORM_PAYMENT,
   LINK_OFF_PLATFORM_PAYMENT,
   LINK_OFF_PLATFORM_PAYMENT_FOR_APPLICATION,
@@ -13,19 +15,19 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { MediaItem } from 'components/CreateEntity/MediaItem';
-import { handleAddFile } from 'utils/media';
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { handleAddFile } from 'utils/media';
 
 import { CreateEntityAttachment, CreateEntityAttachmentIcon } from 'components/CreateEntity/CreateEntityModal/styles';
 
+import Button from 'components/Button';
 import { ErrorText } from '../..';
 import { CreateFormPreviewButton } from '../../../CreateEntity/styles';
 import { SnackbarAlertContext } from '../../SnackbarAlert';
 import {
+  MediaUploadDiv,
   OfflinePaymentButtonWrapper,
   OfflinePaymentDescriptionText,
   OfflinePaymentDropdown,
@@ -38,7 +40,6 @@ import {
   OfflinePaymentWalletWrapper,
   OfflinePaymentWarningTypography,
   OfflinePaymentWrapper,
-  MediaUploadDiv,
 } from './styles';
 
 const OFFLINE_PAYMENT_OPTIONS = [
@@ -47,9 +48,22 @@ const OFFLINE_PAYMENT_OPTIONS = [
   { label: 'Parcel link', value: 'parcel_link' },
 ];
 
-export function OfflinePayment(props) {
-  const { handleClose, approvedSubmission, fetchedTask, submissionPaymentInfo, entityType = null } = props;
-  const recipientAddress = submissionPaymentInfo?.paymentData?.[0]?.recepientAddress;
+interface Props {
+  handleClose: () => void;
+  submissionOrApplicationId: string;
+  paymentData: PaymentData;
+  entityType?: string;
+  renderButtons?: ({ onClick }) => void;
+}
+
+export function OfflinePayment({
+  handleClose,
+  submissionOrApplicationId,
+  paymentData,
+  entityType = null,
+  renderButtons,
+}: Props) {
+  const recipientAddress = paymentData?.recepientAddress;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
   const [linkPaymentError, setLinkPaymentError] = useState(null);
@@ -102,7 +116,7 @@ export function OfflinePayment(props) {
     setLinkPaymentError(null);
     if (!selectedOfflineType || !offlinePaymentLink) {
       setLinkPaymentError('Need to select a payment type and enter a link');
-      return
+      return;
     }
     const offlineLinks = [
       {
@@ -114,7 +128,7 @@ export function OfflinePayment(props) {
       lnkOffPlatformPaymentForGrantApplications({
         variables: {
           input: {
-            grantApplicationId: approvedSubmission.id,
+            grantApplicationId: submissionOrApplicationId,
             offlineLinks,
           },
         },
@@ -123,7 +137,7 @@ export function OfflinePayment(props) {
       linkOffPlatformPayment({
         variables: {
           input: {
-            submissionId: approvedSubmission.id,
+            submissionId: submissionOrApplicationId,
             offlineLinks,
             mediaUploads,
           },
@@ -173,13 +187,34 @@ export function OfflinePayment(props) {
           onChange={(e) => {}}
         />
       </OfflinePaymentDropdownWrapper>
-      <OfflinePaymentInputLabel>User Wallet</OfflinePaymentInputLabel>
+      <OfflinePaymentInputLabel>Wallet Link</OfflinePaymentInputLabel>
       <OfflinePaymentWalletWrapper>
-        <OfflinePaymentWallet disabled value={recipientAddress} />
-        <OfflinePaymentWalletButton highlighted onClick={handleCopyAddress}>
-          <OfflinePaymentWalletButtonText>Copy Address</OfflinePaymentWalletButtonText>
+        <OfflinePaymentWallet
+          disabled
+          value={recipientAddress}
+          sx={{
+            width: '100%',
+          }}
+        />
+        <Button
+          onClick={handleCopyAddress}
+          borderRadius={6}
+          height={32}
+          buttonTheme={{
+            background: palette.grey75,
+            borderColor: 'transparent',
+            fontSize: '14px',
+            fontWeight: 500,
+            paddingX: 6,
+            paddingY: 6,
+            hover: {
+              background: palette.grey76,
+            },
+          }}
+        >
           <CopyIcon />
-        </OfflinePaymentWalletButton>
+          Copy
+        </Button>
       </OfflinePaymentWalletWrapper>
       <OfflinePaymentInputLabel>Link</OfflinePaymentInputLabel>
       <OfflinePaymentLinkInput
@@ -208,7 +243,9 @@ export function OfflinePayment(props) {
 
       {linkPaymentError && <ErrorText>{linkPaymentError}</ErrorText>}
       <OfflinePaymentButtonWrapper>
-        {!submissionPaid && (
+        {renderButtons ? renderButtons({ onClick: handleLinkPaymentLinkClick }) : null}
+
+        {!submissionPaid && !renderButtons && (
           <CreateFormPreviewButton onClick={handleLinkPaymentLinkClick}>Link Payment</CreateFormPreviewButton>
         )}
         {submissionPaid && <OfflinePaymentDescriptionText>Paid!</OfflinePaymentDescriptionText>}
@@ -218,7 +255,7 @@ export function OfflinePayment(props) {
 }
 
 export function BatchOfflinePayment(props) {
-  const { handleClose, approvedSubmission, submissionIds, entityType = null } = props;
+  const { handleClose, submissionIds } = props;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
   const [linkPaymentError, setLinkPaymentError] = useState(null);
@@ -236,21 +273,11 @@ export function BatchOfflinePayment(props) {
     },
   });
 
-  const [linkBatchOffPlatformPaymentForGrantApplications] = useMutation(LINK_BATCH_OFF_PLATFORM_FOR_APPLICATION, {
-    onCompleted: (data) => {
-      setSubmissionPaid(true);
-    },
-    onError: (e) => {
-      console.error(e);
-      setLinkPaymentError('Error linking payment');
-    },
-  });
-
   const handleLinkPaymentLinkClick = () => {
     setLinkPaymentError(null);
     if (!selectedOfflineType || !offlinePaymentLink) {
       setLinkPaymentError('Need to select a payment type and enter a link');
-      return
+      return;
     }
     const offlineLinks = [
       {

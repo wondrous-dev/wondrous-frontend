@@ -8,17 +8,6 @@ import palette from 'theme/palette';
 import { Button as BorderButton } from 'components/Common/button';
 import { blackColors, greyColors } from 'theme/colors';
 import typography from 'theme/typography';
-import { LogoCircle } from 'components/Common/ci';
-
-export const OverviewComponent = styled.section`
-  width: 100%;
-  min-height: 100vh;
-  height: 100%;
-  //background-color: ${palette.background.default};
-  background-color: ${greyColors.grey910};
-  transition: 0.15s all ease;
-  padding-bottom: 40px;
-`;
 
 export const HeaderImageWrapper = styled.div`
   width: 100%;
@@ -59,12 +48,6 @@ export const TokenEmptyLogo = styled.div`
   background: ${palette.black};
 `;
 
-export const Content = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`;
-
 export const ContentContainer = styled.div`
   max-width: 100%;
   display: flex;
@@ -76,10 +59,14 @@ export const ContentContainer = styled.div`
 export const HeaderMainBlock = styled.div`
   width: 100%;
   min-height: 36px;
-  height: 36px;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-direction: column;
+  }
 `;
 
 export const HeaderTopLeftContainer = styled.div`
@@ -88,6 +75,10 @@ export const HeaderTopLeftContainer = styled.div`
   margin-left: 8px;
   width: 100%;
   gap: 10px;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    justify-content: center;
+  }
 `;
 
 export const HeaderTitle = styled(Typography)`
@@ -216,14 +207,17 @@ export function HeaderManageSettingsButton(props) {
   );
 }
 
+// this is the new primary button
 export const HeaderButton = styled.button`
-  border-radius: 6px;
+  border-radius: 100px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   padding: 10px;
   width: max-content;
+  height: 35px;
+  padding: 8px 24px;
   ${({ reversed }) => (reversed ? `background: ${palette.highlightPurple}` : `background: transparent`)};
   border: 1px solid ${palette.highlightPurple};
   cursor: pointer;
@@ -235,7 +229,12 @@ export const HeaderButton = styled.button`
   line-height: 150%;
   margin-right: 10px;
   &:hover {
-    ${({ reversed }) => (reversed ? `background: transparent` : `background: ${palette.highlightPurple}`)};
+    ${({ reversed }) =>
+      reversed
+        ? `background: 
+    linear-gradient(270deg, ${palette.highlightBlue} 0%, ${palette.highlightPurple} 100%);
+    `
+        : `background: ${palette.highlightPurple}`};
   }
 `;
 
@@ -358,16 +357,21 @@ export const HeaderContributorsText = styled(HeaderContributorsAmount)`
   && {
     color: ${palette.grey51};
     font-weight: 600;
+    width: max-content;
   }
 `;
 
 export const BoardsSubheaderWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: ${({ isMobile }) => (isMobile ? 'none' : '1fr 1fr')};
   grid-row-gap: 20px;
   align-items: center;
   width: 95%;
   margin-top: 4px;
+
+  ${({ theme }) => theme.breakpoints.down('large')} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const Container = styled.div`

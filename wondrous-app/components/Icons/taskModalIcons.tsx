@@ -127,9 +127,9 @@ export function MilestoneIcon(props) {
 }
 
 export function LinkIcon(props) {
-  const { style, stroke = '#CCBBFF' } = props;
+  const { style, stroke = '#CCBBFF', width = '13', height = '13' } = props;
   return (
-    <svg style={style} width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg style={style} width={width} height={height} viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M5.65967 7.0009C5.89721 7.31847 6.20028 7.58124 6.54831 7.77138C6.89634 7.96153 7.2812 8.0746 7.67677 8.10293C8.07234 8.13126 8.46938 8.07419 8.84096 7.93558C9.21253 7.79697 9.54995 7.58007 9.83033 7.29959L11.4897 5.64018C11.9935 5.11856 12.2723 4.41994 12.266 3.69478C12.2597 2.96963 11.9688 2.27596 11.4561 1.76318C10.9433 1.2504 10.2496 0.959531 9.52445 0.95323C8.79929 0.946928 8.10067 1.22569 7.57906 1.72949L6.62766 2.67535"
         stroke={stroke}

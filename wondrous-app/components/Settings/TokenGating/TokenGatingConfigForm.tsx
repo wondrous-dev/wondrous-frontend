@@ -12,7 +12,7 @@ import Optimism from 'components/Icons/Optimism';
 import Avalanche from 'components/Icons/Avalanche';
 import Binance from 'components/Icons/binace';
 import Button from 'components/Button';
-import CustomField from 'components/FormField/CustomField';
+import CustomField from 'components/Settings/TokenGating/FormField/CustomField';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG, UPDATE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';

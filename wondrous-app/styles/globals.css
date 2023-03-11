@@ -1,3 +1,7 @@
+:root {
+  --swiper-pagination-bullet-inactive-opacity: 1;
+}
+
 /* Styles for the mui autocomplete */
 .MuiAutocomplete-paper {
   background: transparent !important;
@@ -16,4 +20,52 @@
   padding: 10px 12px;
   font-size: 14px;
   color: #c4c4c4;
+}
+
+/* Swiper Carousel */
+.swiper {
+  height: 80vh;
+}
+
+.swiper .swiper-wrapper .swiper-slide {
+  height: 82vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.swiper-slide::-webkit-scrollbar {
+  display: none;
+}
+
+.swiper-slide-next {
+  opacity: 0.2;
+}
+
+.swiper .swiper-pagination-bullets.swiper-pagination-horizontal {
+  transform: translate(-50%, 0%);
+  width: fit-content;
+  background: #474747;
+  border-radius: 300px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  left: 50%;
+  padding: 0 6px 0;
+}
+
+.swiper .swiper-pagination .swiper-pagination-bullet {
+  border: 1px solid #7A7A7A;
+  background: none;
+}
+
+.swiper .swiper-pagination .swiper-pagination-bullet-active {
+  background: #ffffff;
+}
+
+/* PlateRichEditor */
+div[class*='BalloonToolbar___StyledToolbarBase'] {
+  z-index: 1300;
+  background-color: #171717;
+  border: 1px solid #7a7a7a;
+  box-shadow: 12px 10px 24px 2px rgba(16, 16, 16, 0.8);
 }

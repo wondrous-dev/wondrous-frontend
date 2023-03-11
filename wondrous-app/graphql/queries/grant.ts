@@ -1,109 +1,35 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from 'graphql/fragments/comments';
+import { GrantCardFragment, GrantFragment } from 'graphql/fragments/grant';
+import { GrantApplicationFragment } from 'graphql/fragments/grantApplication';
 import { MediaFragment } from 'graphql/fragments/media';
 import { OrgFragment } from 'graphql/fragments/org';
 
 export const GET_ORG_GRANTS = gql`
   query getGrantOrgBoard($orgId: ID!, $status: String, $limit: Int, $offset: Int) {
     getGrantOrgBoard(orgId: $orgId, status: $status, limit: $limit, offset: $offset) {
-      id
-      title
-      description
-      status
-      orgId
-      podId
-      privacyLevel
-      numOfGrant
-      applicationsCount
-      reward {
-        paymentMethodId
-        rewardAmount
-        chain
-        icon
-        tokenName
-        symbol
-      }
-      media {
-        ...MediaFragment
-      }
-      commentCount
-      endDate
+      ...GrantCardFragment
     }
   }
-  ${MediaFragment}
+  ${GrantCardFragment}
 `;
 
 export const GET_POD_GRANTS = gql`
   query getGrantPodBoard($podId: ID!, $status: String, $limit: Int, $offset: Int) {
     getGrantPodBoard(podId: $podId, status: $status, limit: $limit, offset: $offset) {
-      id
-      title
-      description
-      status
-      orgId
-      podId
-      privacyLevel
-      numOfGrant
-      applicationsCount
-      reward {
-        paymentMethodId
-        rewardAmount
-        chain
-        icon
-        tokenName
-        symbol
-      }
-      media {
-        ...MediaFragment
-      }
-      commentCount
-      endDate
+      ...GrantCardFragment
     }
   }
-  ${MediaFragment}
+  ${GrantCardFragment}
 `;
 
 export const GET_GRANT_BY_ID = gql`
   query getGrantById($grantId: ID!) {
     getGrantById(grantId: $grantId) {
-      id
-      title
-      description
-      status
-      numOfGrant
-      commentCount
-      createdBy
-      applyPolicy
-      privacyLevel
-      applicationsCount
-      categories
-      reward {
-        paymentMethodId
-        rewardAmount
-        chain
-        icon
-        tokenName
-        symbol
-      }
-      media {
-        ...MediaFragment
-      }
-      commentCount
-      startDate
-      endDate
-      org {
-        ...OrgFragment
-      }
-      pod {
-        id
-        name
-        color
-        privacyLevel
-      }
+      ...GrantFragment
     }
   }
-  ${MediaFragment}
-  ${OrgFragment}
+  ${GrantFragment}
 `;
 
 export const GET_GRANT_COMMENTS = gql`
@@ -134,6 +60,7 @@ export const GET_GRANT_APPLICATIONS = gql`
       paymentStatus
       paymentAddress
       creator {
+        id
         username
         profilePicture
       }
@@ -145,55 +72,10 @@ export const GET_GRANT_APPLICATIONS = gql`
 export const GET_GRANT_APPLICATION_BY_ID = gql`
   query getGrantApplicationById($grantApplicationId: ID!) {
     getGrantApplicationById(grantApplicationId: $grantApplicationId) {
-      id
-      paymentAddress
-      approvedAt
-      createdBy
-      creator {
-        username
-        profilePicture
-      }
-      changeRequestedAt
-      commentCount
-      rejectedAt
-      lastReviewedBy
-      paymentStatus
-      description
-      orgId
-      podId
-      grantId
-      media {
-        ...MediaFragment
-      }
-      title
-      grant {
-        privacyLevel
-        orgId
-        podId
-        createdBy
-        title
-        reward {
-          paymentMethodId
-          rewardAmount
-          chain
-          icon
-          tokenName
-          symbol
-        }
-        id
-        org {
-          username
-          profilePicture
-          name
-        }
-        pod {
-          color
-          name
-        }
-      }
+      ...GrantApplicationFragment
     }
   }
-  ${MediaFragment}
+  ${GrantApplicationFragment}
 `;
 
 export const GET_GRANT_APPLICATION_COMMENTS = gql`
@@ -203,4 +85,44 @@ export const GET_GRANT_APPLICATION_COMMENTS = gql`
     }
   }
   ${CommentFragment}
+`;
+export const GET_ACTIVE_GRANT_APPLICATION_PODS = gql`
+  query getActiveGrantApplicationPods($grantId: ID!, $limit: Int, $offset: Int) {
+    getActiveGrantApplicationPods(grantId: $grantId, limit: $limit, offset: $offset) {
+      id
+      name
+      username
+
+      org {
+        id
+        username
+        profilePicture
+      }
+      description
+      profilePicture
+      privacyLevel
+      grantApplicationId
+      color
+      paymentData {
+        rewardAmount
+        paymentMethodId
+        symbol
+        icon
+        tokenName
+        chain
+      }
+    }
+  }
+`;
+
+export const GET_GRANT_REVIEWERS = gql`
+  query getGrantReviewers($taskId: ID!) {
+    getGrantReviewers(taskId: $taskId) {
+      id
+      profilePicture
+      firstName
+      lastName
+      username
+    }
+  }
 `;

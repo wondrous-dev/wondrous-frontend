@@ -1,21 +1,11 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
-import {
-  ENTITIES_TYPES,
-  PERMISSIONS,
-  PRIVACY_LEVEL,
-  GR15DEICategoryName,
-  BOUNTY_TYPE,
-  HEADER_ASPECT_RATIO,
-  EMPTY_RICH_TEXT_STRING,
-} from 'utils/constants';
+import { PERMISSIONS, PRIVACY_LEVEL, HEADER_ASPECT_RATIO, EMPTY_RICH_TEXT_STRING } from 'utils/constants';
 import MembersIcon from 'components/Icons/members';
 import { Button as PrimaryButton } from 'components/Button';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
-import BoardsActivity from 'components/Common/BoardsActivity';
 import DEFAULT_HEADER from 'public/images/overview/background.png';
 import { AspectRatio } from 'react-aspect-ratio';
 
@@ -23,22 +13,14 @@ import usePrevious, { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery } from '@apollo/client';
 import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { useRouter } from 'next/router';
-import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
-import {
-  ExploreProjectsButton,
-  ExploreProjectsButtonFilled,
-} from 'components/Common/IntiativesModal/GR15DEIModal/styles';
-import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import { RichTextViewer } from 'components/RichText';
 import RolePill from 'components/Common/RolePill';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
 import { PodIconThin } from 'components/Icons/podIcon';
 import palette from 'theme/palette';
-import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { SafeImage } from '../../Common/Image';
 import {
-  Content,
   ContentContainer,
   RolePodMemberContainer,
   HeaderContributors,
@@ -64,103 +46,11 @@ const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/Or
 const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
 const CurrentRoleModal = dynamic(() => import('components/RoleModal/CurrentRoleModal'), { suspense: true });
 const ChooseEntityToCreate = dynamic(() => import('components/CreateEntity'), { suspense: true });
-const MoreInfoModal = dynamic(() => import('components/profile/modals'), { suspense: true });
+const MoreInfoModal = dynamic(() => import('components/Common/MoreInfoModal'), { suspense: true });
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
   CONTRIBUTOR: 'contributor',
-};
-
-const ExploreOrgGr15 = ({
-  onTaskPage,
-  onBountyPage,
-  hasGr15Tasks,
-  hasGr15Bounties,
-  orgProfile,
-  onFilterChange,
-  filters,
-  exploreGr15TasksAndBounties,
-  setExploreGr15TasksAndBounties,
-}) => {
-  const router = useRouter();
-  const ExploreButton = exploreGr15TasksAndBounties ? ExploreProjectsButtonFilled : ExploreProjectsButton;
-  if (onTaskPage && !hasGr15Tasks && hasGr15Bounties) {
-    return (
-      <ExploreButton
-        style={{
-          marginTop: 0,
-          marginRight: '8px',
-        }}
-        onClick={() => {
-          router.push(`/organization/${orgProfile?.username}/boards?entity=${BOUNTY_TYPE}`, undefined, {
-            shallow: true,
-          });
-        }}
-      >
-        Explore GR15 Bounties
-      </ExploreButton>
-    );
-  }
-  if (onBountyPage && !hasGr15Bounties && hasGr15Tasks) {
-    return (
-      <ExploreButton
-        style={{
-          marginTop: 0,
-          marginRight: '8px',
-        }}
-        onClick={() => {
-          router.push(
-            `/organization/${orgProfile?.username}/boards?entity=task&cause=${GR15DEICategoryName}`,
-            undefined,
-            {
-              shallow: true,
-            }
-          );
-        }}
-      >
-        Explore GR15 Tasks
-      </ExploreButton>
-    );
-  }
-  if (onTaskPage && hasGr15Tasks) {
-    return (
-      <ExploreButton
-        style={{
-          marginTop: 0,
-          marginRight: '8px',
-        }}
-        onClick={() => {
-          setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
-          onFilterChange({
-            ...filters,
-            category: exploreGr15TasksAndBounties ? null : GR15DEICategoryName,
-          });
-        }}
-      >
-        Explore GR15 tasks
-      </ExploreButton>
-    );
-  }
-  if (onBountyPage && hasGr15Bounties) {
-    return (
-      <ExploreButton
-        style={{
-          marginTop: 0,
-          marginRight: '8px',
-        }}
-        onClick={() => {
-          setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
-          onFilterChange({
-            ...filters,
-            category: exploreGr15TasksAndBounties ? null : GR15DEICategoryName,
-          });
-        }}
-      >
-        Explore GR15 bounties
-      </ExploreButton>
-    );
-  }
-  return null;
 };
 
 function Wrapper(props) {
@@ -200,18 +90,11 @@ function Wrapper(props) {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
-  const [openGR15Modal, setOpenGR15Modal] = useState(false);
-  const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
   const orgProfile = orgData;
-  const hasGr15Tasks = orgProfile?.hasGr15TasksAndBounties?.hasGr15Tasks;
-  const hasGr15Bounties = orgProfile?.hasGr15TasksAndBounties?.hasGr15Bounties;
 
-  const isGr15Sponsor = hasGr15Tasks || hasGr15Bounties;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const { search, entity, cause } = router.query;
-  const onTaskPage = entity === ENTITIES_TYPES.TASK;
-  const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
   const board = orgBoard;
   const boardFilters = board?.filters || {};
   const { asPath } = router;
@@ -232,15 +115,6 @@ function Wrapper(props) {
       }
     }
   }, [tasksPerTypeData, entity, finalPath]);
-
-  useEffect(() => {
-    if (cause === GR15DEICategoryName) {
-      onFilterChange({
-        category: GR15DEICategoryName,
-      });
-      setExploreGr15TasksAndBounties(true);
-    }
-  }, [cause, setExploreGr15TasksAndBounties]);
 
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
@@ -288,6 +162,7 @@ function Wrapper(props) {
   }, [orgBoard?.orgId]);
 
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
+
   return (
     <>
       <TaskViewModalWatcher />
@@ -382,51 +257,13 @@ function Wrapper(props) {
                   }}
                   alt="Organization logo"
                 />
-                {isGr15Sponsor && (
-                  <>
-                    <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                    <GR15DEILogo
-                      width="25"
-                      height="25"
-                      onClick={() => setOpenGR15Modal(true)}
-                      style={{
-                        top: '0',
-                        right: '-10px',
-                        position: 'absolute',
-                        zIndex: '25',
-                      }}
-                    />
-                  </>
-                )}
               </div>
             )}
             <HeaderTopLeftContainer>
-              <HeaderTitle
-                style={{
-                  ...(isGr15Sponsor && {
-                    marginLeft: '5px',
-                  }),
-                }}
-              >
-                {orgProfile?.name}
-              </HeaderTitle>
+              <HeaderTitle>{orgProfile?.name}</HeaderTitle>
               <PrivacyContainer>
                 <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
               </PrivacyContainer>
-
-              {isGr15Sponsor && (
-                <ExploreOrgGr15
-                  onTaskPage={onTaskPage}
-                  onBountyPage={onBountyPage}
-                  hasGr15Bounties={hasGr15Bounties}
-                  hasGr15Tasks={hasGr15Tasks}
-                  onFilterChange={onFilterChange}
-                  orgProfile={orgProfile}
-                  filters={boardFilters}
-                  exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                  setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                />
-              )}
             </HeaderTopLeftContainer>
             <RolePodMemberContainer>
               {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (
@@ -472,11 +309,12 @@ function Wrapper(props) {
                 <>
                   {userJoinRequest?.id ? (
                     <PrimaryButton
-                      height={36}
+                      height={32}
                       width="max-content"
                       variant="outlined"
                       color="purple"
                       succeeded
+                      disabled
                       paddingX={15}
                       buttonTheme={{ fontWeight: '500', fontSize: '14px' }}
                     >
@@ -484,7 +322,7 @@ function Wrapper(props) {
                     </PrimaryButton>
                   ) : (
                     <PrimaryButton
-                      height={36}
+                      height={32}
                       paddingX={15}
                       width="max-content"
                       buttonTheme={{ fontWeight: '500', fontSize: '14px' }}
@@ -502,7 +340,7 @@ function Wrapper(props) {
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px', gap: 10 }}>
             {orgProfile?.description && orgProfile?.description !== EMPTY_RICH_TEXT_STRING ? (
               <HeaderText as="div">
-                <RichTextViewer text={orgProfile?.description} />
+                <PlateRichTextViewer text={orgProfile?.description} />
               </HeaderText>
             ) : (
               <div style={{ height: 10 }} />

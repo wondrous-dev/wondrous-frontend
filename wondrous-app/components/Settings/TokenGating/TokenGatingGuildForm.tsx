@@ -14,7 +14,7 @@ import { CREATE_GUILD_ACCESS_CONDITION_FOR_ORG, UPDATE_GUILD_ACCESS_CONDITION } 
 import Button from 'components/Button';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import SmartLink from 'components/Common/SmartLink';
-import CustomField from 'components/FormField/CustomField';
+import CustomField from 'components/Settings/TokenGating/FormField/CustomField';
 
 import { GET_ORG_GUILD, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
 import useGuildXyz from 'services/guildxyz';

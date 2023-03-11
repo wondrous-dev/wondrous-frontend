@@ -6,7 +6,7 @@ import Modal from '@mui/material/Modal';
 import { useMe } from 'components/Auth/withAuth';
 import PersonAddIcon from 'components/Icons/personAdd';
 import { CopyIcon, CopySuccessIcon } from 'components/Icons/copy';
-import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/OrgInviteLink';
+import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/utils';
 
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
@@ -42,7 +42,7 @@ const ORG_TYPES_PATHS = {
   [ORG_TYPES.ORG]: 'invite',
   [ORG_TYPES.COLLAB]: 'invite/collab/members',
 };
-export function NewInviteLinkModal(props) {
+function NewInviteLinkModal(props) {
   const { orgOrPodName, orgId, podId, open, onClose, orgType = ORG_TYPES.ORG } = props;
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
@@ -223,28 +223,10 @@ export function NewInviteLinkModal(props) {
         </InviteThruLinkInputWrapper>
 
         <StyledDivider />
-        {/* <InviteThruEmailLabel>Invite through email</InviteThruEmailLabel>
-        <InviteThruEmailTextFieldButtonWrapper>
-          <InviteThruEmailTextFieldSelectWrapper>
-            <InviteThruEmailTextField placeholder="Enter email address" />
-          </InviteThruEmailTextFieldSelectWrapper>
-          <InviteThruLinkFormControlSelect>
-            <InviteThruLinkSelect value={role} onChange={handleRoleChange}>
-              {roles &&
-                roles.map((role) => (
-                  <InviteThruLinkMenuItem key={role.id} value={role.id}>
-                    {role.name}
-                  </InviteThruLinkMenuItem>
-                ))}
-            </InviteThruLinkSelect>
-          </InviteThruLinkFormControlSelect>
-          <InviteButton justifyCenter={true}>
-            <InviteThruEmailButtonLabel>Send invite</InviteThruEmailButtonLabel>
-          </InviteButton>
-        </InviteThruEmailTextFieldButtonWrapper>
-        <StyledDivider /> */}
         <LinkSwitch label="One time use" checked={linkOneTimeUse} onClick={handleLinkOneTimeUseChange} />
       </StyledBox>
     </Modal>
   );
 }
+
+export default NewInviteLinkModal;

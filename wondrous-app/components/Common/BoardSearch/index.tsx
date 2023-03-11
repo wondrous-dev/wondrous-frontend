@@ -1,11 +1,11 @@
 import { useLazyQuery } from '@apollo/client';
 import {
-  SEARCH_ORG_TASK_BOARD_PROPOSALS,
-  SEARCH_POD_TASK_BOARD_PROPOSALS,
-  SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
-  SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
-  SEARCH_TASKS_FOR_POD_BOARD_VIEW,
-  SEARCH_TASKS_FOR_USER_BOARD_VIEW,
+  GET_ORG_TASK_BOARD_PROPOSALS,
+  GET_ORG_TASK_BOARD_TASKS,
+  GET_POD_TASK_BOARD_PROPOSALS,
+  GET_POD_TASK_BOARD_TASKS,
+  GET_USER_TASK_BOARD_PROPOSALS,
+  GET_USER_TASK_BOARD_TASKS,
 } from 'graphql/queries';
 import Accordion from 'components/Common/ListViewAccordion';
 import { Title, TitleWrapper, Wrapper } from 'components/SearchResultUserCreatedTasks/styles';
@@ -21,6 +21,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   COLUMNS_CONFIGURATION,
+  DEFAULT_STATUSES,
   ENTITIES_TYPES,
   PRIVACY_LEVEL,
   STATUSES_ON_ENTITY_TYPES,
@@ -94,7 +95,9 @@ const BoardSearch = ({ searchQuery }) => {
       limit: 1000,
       offset: 0,
       // Needed to exclude proposals
-      statuses: filters?.statuses || STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
+      statuses: filters?.statuses?.length
+        ? filters?.statuses
+        : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
       searchString: searchQuery,
       ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
         onlyPublic: true,
@@ -104,13 +107,15 @@ const BoardSearch = ({ searchQuery }) => {
 
   const searchOrgProposalArgs = {
     variables: {
-      podIds: filters?.podIds,
-      priorities: filters?.priorities,
-      orgId,
-      statuses: [STATUS_OPEN],
-      offset: 0,
-      limit: 1000,
-      searchString: searchQuery,
+      input: {
+        podIds: filters?.podIds,
+        priorities: filters?.priorities,
+        orgId,
+        statuses: [STATUS_OPEN],
+        offset: 0,
+        limit: 1000,
+        searchString: searchQuery,
+      },
     },
   };
 
@@ -124,7 +129,9 @@ const BoardSearch = ({ searchQuery }) => {
         date: filters?.date,
 
         // Needed to exclude proposals
-        statuses: filters?.statuses || STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
+        statuses: filters?.statuses?.length
+          ? filters?.statuses
+          : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
         searchString: searchQuery,
         ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
           onlyPublic: true,
@@ -152,7 +159,7 @@ const BoardSearch = ({ searchQuery }) => {
       limit: LIMIT,
       offset: 0,
       // Needed to exclude proposals
-      statuses: filters?.statuses,
+      statuses: filters?.statuses?.length ? filters?.statuses : DEFAULT_STATUSES,
       searchString: searchQuery,
     },
   };
@@ -169,7 +176,7 @@ const BoardSearch = ({ searchQuery }) => {
   };
 
   const [getOrgTasks, { data: orgTasksData, refetch: refetchOrgTasksData, loading: orgTasksLoading }] = useLazyQuery(
-    SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
+    GET_ORG_TASK_BOARD_TASKS,
     {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
@@ -178,14 +185,14 @@ const BoardSearch = ({ searchQuery }) => {
   );
 
   const [getOrgProposals, { data: orgProposalData, refetch: refetchOrgProposalsData, loading: orgProposalsLoading }] =
-    useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
+    useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
       notifyOnNetworkStatusChange: true,
     });
 
   const [getPodTasks, { data: podTasksData, refetch: refetchPodTasksData, loading: podTasksLoading }] = useLazyQuery(
-    SEARCH_TASKS_FOR_POD_BOARD_VIEW,
+    GET_POD_TASK_BOARD_TASKS,
     {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
@@ -194,14 +201,14 @@ const BoardSearch = ({ searchQuery }) => {
   );
 
   const [getPodProposals, { data: podProposalData, refetch: refetchPodProposalsData, loading: podProposalsLoading }] =
-    useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
+    useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
       notifyOnNetworkStatusChange: true,
     });
 
   const [getUserBoardTasks, { data: userBoardTasksData, refetch: refetchUserTaskData, loading: userTasksLoading }] =
-    useLazyQuery(SEARCH_TASKS_FOR_USER_BOARD_VIEW, {
+    useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
       notifyOnNetworkStatusChange: true,
@@ -210,7 +217,7 @@ const BoardSearch = ({ searchQuery }) => {
   const [
     getUserBoardProposals,
     { data: userBoardProposalsData, refetch: refetchUserProposalData, loading: userProposalsLoading },
-  ] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
+  ] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
@@ -265,13 +272,13 @@ const BoardSearch = ({ searchQuery }) => {
       userBoardProposalsData
     ) {
       const tasks =
-        orgTasksData?.searchTasksForOrgBoardView ||
-        podTasksData?.searchTasksForPodBoardView ||
-        userBoardTasksData?.searchTasksForUserBoardView;
+        orgTasksData?.getOrgTaskBoardTasks ||
+        podTasksData?.getPodTaskBoardTasks ||
+        userBoardTasksData?.getUserTaskBoardTasks;
       const proposals =
-        orgProposalData?.searchProposalsForOrgBoardView ||
-        podProposalData?.searchProposalsForPodBoardView ||
-        userBoardProposalsData?.searchProposalsForUserBoardView;
+        orgProposalData?.getOrgTaskBoardProposals ||
+        podProposalData?.getPodTaskBoardProposals ||
+        userBoardProposalsData?.getUserTaskBoardProposals;
       let columnsPerTaskType = {};
       let columnsPerStatus = {};
 

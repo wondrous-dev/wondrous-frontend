@@ -1,6 +1,5 @@
 import { ButtonBase, List, Typography } from '@mui/material';
 import ScrollBarStyles from 'components/Common/ScrollbarStyles';
-import AddIcon from 'components/Icons/add.svg';
 import styled from 'styled-components';
 
 export const mainSidebarWidth = '84px';
@@ -39,9 +38,9 @@ export const SidebarContent = styled.div`
 `;
 
 export const ChildrenWrapper = styled.div`
-  margin-left: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
+  padding-left: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-left: ${({ minimized }) => (minimized ? '0px' : 'auto')};
+    padding-left: ${({ minimized }) => (minimized ? '0px' : 'auto')};
   }
   width: 100%;
 `;
@@ -70,32 +69,6 @@ export const ListWrapper = styled(List)`
       justify-content: center;
       align-items: center;
     `})}
-  }
-`;
-
-export const AddIconWrapper = styled((props) => (
-  <div {...props}>
-    <div>
-      <AddIcon />
-    </div>
-  </div>
-))`
-  align-items: center;
-  background: ${({ theme }) =>
-    `linear-gradient(270deg, ${theme.palette.highlightBlue} -5.62%, ${theme.palette.highlightPurple} 45.92%, ${theme.palette.blue20} 103.12%)`};
-  display: flex;
-  height: 22px;
-  justify-content: center;
-  width: 22px;
-  border-radius: 50px;
-  > div {
-    border-radius: 50px;
-    align-items: center;
-    background: ${({ theme }) => theme.palette.background.default};
-    display: flex;
-    height: 20px;
-    justify-content: center;
-    width: 20px;
   }
 `;
 

@@ -152,6 +152,7 @@ export const ENTITIES_TYPES = {
   GRANT: 'grant',
   GRANT_APPLICATION: 'grant_application',
   COLLAB: 'collab',
+  WONDER_AI_BOT: 'wonder_ai_bot',
 };
 
 export const ENTITIES_DISPLAY_LABEL_MAP = {
@@ -246,6 +247,7 @@ export const PERMISSIONS = {
   MANAGE_COMMENT: 'manage_comment',
   // MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
+  MANAGE_GRANTS: 'manage_grants',
 };
 
 export const PERMISSION_TO_DISPLAY = {
@@ -259,6 +261,7 @@ export const PERMISSION_TO_DISPLAY = {
   [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
   // [PERMISSIONS.MANAGE_POST]: 'Manage post',
   [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
+  [PERMISSIONS.MANAGE_GRANTS]: 'Manage grants',
 };
 
 export const NOTIFICATION_TYPES = {
@@ -292,6 +295,7 @@ export const NOTIFICATION_TYPES = {
 
   PROPOSAL_APPROVE: 'proposal_approve',
   PROPOSAL_REJECT: 'proposal_reject',
+  GRANT_APPLICATION_APPROVED: 'grant_application_approved',
 };
 
 export const NOTIFICATION_OBJ_TYPES = {
@@ -303,6 +307,11 @@ export const NOTIFICATION_OBJ_TYPES = {
   TASK_SUBMISSION_COMMENT: 'task_submission_comment',
   POST: 'post',
   COLLABORATION: 'collaboration',
+  POD: 'pod',
+  GRANT: 'grant',
+  GRANT_APPLICATION: 'grant_application',
+  MILESTONE: 'milestone',
+  MILESTONE_COMMENT: 'milestone_comment',
 };
 
 export const COLLAB_TYPES = {
@@ -618,6 +627,13 @@ export const FEATURED_LIST = [
     name: 'Bankless Africa',
   },
   {
+    username: 'merit_circle',
+    imageUrl: 'thumbnail/zMPyNEoOiXbdYw.png',
+    bio: 'Investing, gaming, building and trading in web3.',
+    headerUrl: 'org/header/63763663725527146/_aJDcWHLrTM6PQ.png',
+    name: 'Merit Circle',
+  },
+  {
     username: 'clubraredao',
     imageUrl: 'thumbnail/8d9bECvHKIueHQ.png',
     headerUrl: 'org/header/54613035730337824/D6pAiyPBzl3N5w.png',
@@ -625,25 +641,32 @@ export const FEATURED_LIST = [
     name: 'ClubRare DAO',
   },
   {
-    username: 'radicle',
-    imageUrl: 'thumbnail/6l_gQZS35SPfhg.jpg',
-    bio: 'A peer-to-peer stack for building software together 🌞',
-    headerUrl: 'org/header/50273256794488843/goDoVovapvFl6Q.jpeg',
-    name: 'Radicle',
+    username: 'yup',
+    imageUrl: 'thumbnail/pHu07-T3OVr2BQ.png',
+    bio: '✺ curate ✺ NFTs, Tweets, Videos, Tokens, Articles, Songs... you get the idea',
+    headerUrl: 'org/header/51007906165817360/8B1kRfVzQ9SmXA.jpeg',
+    name: 'Yup',
   },
   {
-    username: 'krausehouse',
-    imageUrl: 'thumbnail/XwUv2LYsgjNeYQ.png',
-    headerUrl: 'org/header/65027352575344779/A5twi91TXWxkQw.jpeg',
-    name: 'Krause House',
-    bio: 'Community of hoops fanatics that are crazy enough to purchase & operate an NBA team as a DAO',
+    username: 'layer2dao',
+    imageUrl: 'thumbnail/7ym4a22gWHMa6Q.jpg',
+    headerUrl: 'org/header/56980676447043635/n5WWpDaLTX7DUQ.jpeg',
+    bio: 'Layer2DAO invests in promising L2 ecosystem projects.',
+    name: 'Layer2 DAO',
   },
   {
-    username: 'guildxyz',
-    imageUrl: 'thumbnail/HdF7Ss_VUfvrLg.jpg',
-    headerUrl: 'org/header/55783761101455400/yvQH5IATqpGKGA.png',
-    name: 'Guild',
-    bio: 'platformless memberships and quests',
+    username: 'peopledao',
+    imageUrl: 'thumbnail/KDWyi8V2W9b4zA.png',
+    headerUrl: 'org/header/73998449654104436/XnDaTHBCUltLEg.png',
+    name: 'PeopleDAO',
+    bio: 'PeopleDAO is a metaDAO governed by $PEOPLE . From the people, To the people, For the people. (📜,🤝)',
+  },
+  {
+    username: 'theRAWDAO',
+    imageUrl: 'thumbnail/NSH6BAcqaTOVAw.jpg',
+    headerUrl: 'org/header/57093429215100980/eafq4IqOHxIxwQ.png',
+    name: 'The RAW DAO',
+    bio: 'an ecosystem that is educating, networking & transforming physical creations 2 digital assets🍏',
   },
   {
     username: 'unlock',
@@ -653,11 +676,11 @@ export const FEATURED_LIST = [
     name: 'Unlock Protocol',
   },
   {
-    username: 'asraya',
-    imageUrl: 'thumbnail/-r_Xydyp17RCHg.png',
-    bio: 'A community serving Visionaries & Entrepreneurs through Web3 tech to future-proof our businesses & heal our planet.',
-    headerUrl: 'org/header/58691516186492993/fQ9hmq-dAecc8Q.png',
-    name: 'Asraya',
+    username: 'builder',
+    imageUrl: 'thumbnail/c3qJBBY45jDE2Q.png',
+    bio: 'Web3 Digital Marketing Data Service Provider, focus on DID & Web3 Digital Marketing Tools',
+    headerUrl: 'org/header/81556780460540000/Iz8ShtFvFT6Zbw.png',
+    name: 'dmgdata',
   },
   {
     username: 'dydx',
@@ -681,13 +704,6 @@ export const FEATURED_LIST = [
     name: 'Prime DAO',
   },
   {
-    username: 'layer2dao',
-    imageUrl: 'thumbnail/7ym4a22gWHMa6Q.jpg',
-    headerUrl: 'org/header/56980676447043635/n5WWpDaLTX7DUQ.jpeg',
-    bio: 'Layer2DAO invests in promising L2 ecosystem projects.',
-    name: 'Layer2 DAO',
-  },
-  {
     username: 'landx',
     imageUrl: 'thumbnail/IlNy6Yfaj_0kAQ.jpg',
     bio: 'The Perpetual Commodity Vaults Protocol ',
@@ -709,25 +725,18 @@ export const FEATURED_LIST = [
     name: 'MetricsDAO',
   },
   {
-    username: 'yup',
-    imageUrl: 'thumbnail/pHu07-T3OVr2BQ.png',
-    bio: '✺ curate ✺ NFTs, Tweets, Videos, Tokens, Articles, Songs... you get the idea',
-    headerUrl: 'org/header/51007906165817360/8B1kRfVzQ9SmXA.jpeg',
-    name: 'Yup',
+    username: 'breadchain',
+    imageUrl: 'thumbnail/oy3CWe7QTRT_3w.png',
+    bio: 'Breadchain is a collective federation of decentralized cooperative projects looking to forge solidarity through blockchain to advance a progressive vision for the technology and its effect on society.',
+    name: 'Breadchain',
+    headerUrl: 'org/header/80226660554637384/9aqZ_gEHQEG7mQ.png',
   },
   {
-    username: 'readyplayerdao',
-    imageUrl: 'thumbnail/2VCr8n3GnqhnDg.jpg',
-    bio: 'The future of gaming is decentralized and permissionless, and this time, the players are in charge.',
-    name: 'Ready Player DAO',
-    headerUrl: 'org/header/45956704739786755/UNAOtLUAB524uw.png',
-  },
-  {
-    username: 'stems',
-    imageUrl: 'thumbnail/jihSHZagJ5Gdog.png',
+    username: '40acres',
+    imageUrl: 'thumbnail/opqtdvRTiogZoA.jpg',
     headerUrl: 'org/header/48189639775748102/_b9SyvjC0hWSTw.jpeg',
-    bio: 'make music with your favorite artist',
-    name: 'StemsDAO',
+    bio: '40acres is the premier social impact DAO for building self sustaining communities of color using blockchain tech.',
+    name: '40acres DAO',
   },
   {
     username: 'blu3dao',
@@ -737,11 +746,11 @@ export const FEATURED_LIST = [
     name: 'Blu3 DAO',
   },
   {
-    username: 'rvrsprotocol',
-    name: 'Reverse Protocol',
-    imageUrl: 'thumbnail/-Q-HabZ7gJkrKw.png',
-    headerUrl: 'org/header/56156210349473838/MtLalTJmk1BL8g.png',
-    bio: '#DeFi 2.0 protocol generating passive income for $RVRS stakers through a community governed treasury ',
+    username: 'kleomedes',
+    name: 'Kleomedes',
+    imageUrl: 'thumbnail/gpbRqF7PH_MqYQ.png',
+    headerUrl: 'org/header/79974708365230138/4crj14njtkVGYQ.png',
+    bio: 'Validator Enterprise Building a Decentralized Network of Governance Contributors',
   },
 ];
 
@@ -752,7 +761,7 @@ export const gridMobileStyles = {
 };
 
 export const TABS_LABELS = {
-  DAOS: 'orgs',
+  ORGS: 'orgs',
   BOUNTY: 'bounty',
   GR15_DEI: 'gr15_dei',
 };
@@ -906,3 +915,24 @@ export const GRANT_APPLICATION_DELETE_STATUSES = [
   GRANT_APPLICATION_STATUSES.WAITING_FOR_REVIEW,
   GRANT_APPLICATION_STATUSES.REJECTED,
 ];
+
+export enum CALENDAR_VIEW {
+  Month = 'month',
+  Week = 'week',
+}
+
+export const CALENDAR_CONFIG = {
+  defaultView: CALENDAR_VIEW.Month,
+  weekStartsOn: 0 as 0 | 1 | 2 | 3 | 4 | 5 | 6, // the index of the first day of the week (0 - Sunday)
+  maxTasksForMonthView: 3,
+  weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  dayGridViews: [
+    { label: 'Month View', value: CALENDAR_VIEW.Month },
+    { label: 'Week View', value: CALENDAR_VIEW.Week },
+  ],
+};
+
+export const ANALYTIC_EVENTS = {
+  DOCUMENT_CLICK: 'document_click',
+  AI_CREATE_TASK_SNACKBAR_CLICK: 'ai_create_task_snackbar_click',
+};

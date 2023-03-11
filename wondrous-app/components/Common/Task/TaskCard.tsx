@@ -1,19 +1,20 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 
-import { useColumns, useUserProfile } from 'utils/hooks';
+import { checkCanClaimPermissions, useColumns, useUserProfile } from 'utils/hooks';
 import { GET_TASK_SUBMISSIONS_FOR_TASK, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { DUPLICATE_TASK } from 'graphql/mutations';
+import { DUPLICATE_TASK, DUPLICATE_MILESTONE } from 'graphql/mutations';
 import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import * as Constants from 'utils/constants';
 import { updateInProgressTask, updateTaskItem } from 'utils/board';
 import palette from 'theme/palette';
 
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import SmartLink from 'components/Common/SmartLink';
-import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import MakePaymentModal from 'components/Common/Payment/PaymentModal';
 import { SafeImage } from 'components/Common/Image';
 import { DAOIcon } from 'components/Icons/dao';
 import { ButtonPrimary } from 'components/Common/button';
@@ -85,11 +86,11 @@ export default function TaskCard({
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const totalSubtask = task?.totalSubtaskCount;
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const coverMedia = task?.media?.find((media) => media.type === 'image');
   const userProfile = useUserProfile();
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
 
   const router = useRouter();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -110,6 +111,20 @@ export default function TaskCard({
     ],
   });
 
+  const [duplicateMilestone] = useMutation(DUPLICATE_MILESTONE, {
+    refetchQueries: () => [
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getSubtaskCountForTask',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getOrgBoardMilestones',
+      'getPodBoardMilestones',
+    ],
+  });
+
   const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
     ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
     : null;
@@ -126,25 +141,29 @@ export default function TaskCard({
   const [getTaskSubmissionsForTask] = useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK, {
     onCompleted: (data) => {
       const taskSubmissions = data?.getTaskSubmissionsForTask;
+      let approvedTaskSubmission = null;
       taskSubmissions?.map((taskSubmission) => {
         if (taskSubmission?.approvedAt) {
+          approvedTaskSubmission = taskSubmission;
           setApprovedSubmission(taskSubmission);
         }
       });
-      setTaskSubmissionLoading(false);
-      setShowPaymentModal(true);
+      if (approvedTaskSubmission) {
+        setShowPaymentModal(true);
+      } else {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage('Need to make a submission to pay');
+        setSnackbarAlertSeverity('error');
+      }
     },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
-    onError: (err) => {
-      setTaskSubmissionLoading(false);
-    },
+    onError: (err) => {},
   });
 
   // refactor this. move this logic in a separate hook
   const displayPayButton =
-    !!task?.approvedSubmissionsCount &&
     task?.status === Constants.TASK_STATUS_DONE &&
     hasPermissionToPay &&
     (!task.paymentStatus || task.paymentStatus === 'unpaid') &&
@@ -159,9 +178,10 @@ export default function TaskCard({
   };
   const isUser = boardType === Constants.BOARD_TYPE.assignee;
   const isPod = boardType === Constants.BOARD_TYPE.pod;
-
+  const claimPermissions = checkCanClaimPermissions(task, userPermissionsContext);
   const canClaim =
     task?.taskApplicationPermissions?.canClaim &&
+    claimPermissions &&
     !assigneeId &&
     !isBounty &&
     !isMilestone &&
@@ -183,6 +203,20 @@ export default function TaskCard({
 
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const handleDuplicate = () => {
+    if (isMilestone) {
+      return duplicateMilestone({
+        variables: {
+          milestoneId: task?.id,
+        },
+      });
+    }
+    return duplicateTask({
+      variables: {
+        taskId: id,
+      },
+    });
+  };
   return (
     <CardContent
       onMouseEnter={() => setShowMenu(true)}
@@ -193,14 +227,14 @@ export default function TaskCard({
       data-cy={`task-card-item-${title}`}
     >
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
-        {showPaymentModal && !isTaskSubmissionLoading ? (
+        {showPaymentModal ? (
           <MakePaymentModal
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
             open={showPaymentModal}
-            approvedSubmission={approvedSubmission}
+            submissionOrApplication={approvedSubmission}
             handleClose={() => {}}
             setShowPaymentModal={setShowPaymentModal}
-            fetchedTask={task}
+            taskOrGrant={task}
+            handleGoBack={() => setShowPaymentModal(false)}
           />
         ) : null}
         <TaskHeader>
@@ -411,13 +445,7 @@ export default function TaskCard({
             setArchiveTask={setArchiveTask}
             setDeleteTask={setDeleteTask}
             setEditTask={setEditTask}
-            setDuplicate={() => {
-              duplicateTask({
-                variables: {
-                  taskId: id,
-                },
-              });
-            }}
+            setDuplicate={handleDuplicate}
             taskType={task?.type}
             open={showMenu}
           />

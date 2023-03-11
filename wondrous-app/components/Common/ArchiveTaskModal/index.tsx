@@ -34,7 +34,6 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
   const { open, onClose, onArchive, taskType, taskId = '' } = props;
   const board = useOrgBoard();
   const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
-
   const [archiveGrant] = useMutation(ARCHIVE_GRANT, {
     refetchQueries: [
       'getGrantOrgBoard',
@@ -82,8 +81,6 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
           'getUserTaskBoardProposals',
           'getOrgTaskBoardProposals',
           'getPodTaskBoardProposals',
-          'getOrgTaskBoardSubmissions',
-          'getPodTaskBoardSubmissions',
           'getPerStatusTaskCountForUserBoard',
           'getPerStatusTaskCountForOrgBoard',
           'getPerStatusTaskCountForPodBoard',

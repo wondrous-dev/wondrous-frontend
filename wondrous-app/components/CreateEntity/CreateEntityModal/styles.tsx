@@ -15,7 +15,6 @@ import styled, { css } from 'styled-components';
 import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
 import scrollBarStyles from 'components/Common/ScrollbarStyles';
-import { StyledSelect } from 'components/Common/InviteLinkModal/styles';
 import typography from 'theme/typography';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
@@ -34,7 +33,7 @@ const fullScreenStyle = css`
 
 export const CreateEntityForm = styled.form`
   max-height: 95vh;
-  max-width: 561px;
+  max-width: 599px;
   width: 100%;
   border-radius: 6px;
   overflow-y: auto;
@@ -50,8 +49,8 @@ export const CreateEntityForm = styled.form`
   }}
   transition: all 0.1s linear;
 
-  ${(props) => props.theme.breakpoints.down('sm')} {
-    width: 95%;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    max-height: 100vh;
   }
 `;
 
@@ -62,6 +61,13 @@ export const CreateEntityHeader = styled.div`
   align-items: flex-start;
   padding: 12px 24px;
   justify-content: space-between;
+`;
+
+export const CreateEntityFooter = styled(CreateEntityHeader)`
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    position: sticky;
+    bottom: 0;
+  }
 `;
 
 export const CreateEntitySelectRoot = styled.button`
@@ -370,7 +376,7 @@ export const CreateEntitySelectWrapper = styled.div`
 
 export const CreateEntityTextfield = styled(TextField)`
   && {
-    min-width: 50%;
+    min-width: 45%;
     height: 32px;
     background: #141414;
     border-radius: 4px;
@@ -611,10 +617,6 @@ export const CreateEntityPrivacySelectRenderLabel = styled.div`
   color: white;
   text-transform: capitalize;
   margin-left: 10px;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 export const CreateEntityPrivacySelectRenderLabelWrapper = styled.div`
@@ -675,7 +677,7 @@ export const CreateEntityCancelButton = styled(ButtonUnstyled)`
     background: #454545;
   }
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
+    display: ${(props) => (props.showOnSmallScreen ? 'flex' : 'none')};
   }
 `;
 
@@ -1021,7 +1023,6 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
                 padding: 0;
               }
               > .MuiOutlinedInput-root {
-                background: #141414;
                 height: 32px;
                 font-size: 13px;
                 font-weight: 500;

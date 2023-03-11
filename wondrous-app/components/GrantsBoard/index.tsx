@@ -4,23 +4,22 @@ import Typography from '@mui/material/Typography';
 import { CardsContainer } from 'components/Common/Boards/styles';
 import { BountyBoardEmpty } from 'components/Common/BountyBoard/styles';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
-import { ActionButton } from 'components/Common/Task/styles';
+import { Button } from 'components/Button';
 import { CreateFormModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
 import GrantsFilters from 'components/GrantsFilters';
-import PlusIcon from 'components/Icons/plus';
 import ViewGrant from 'components/ViewGrant';
 import { GET_ORG_GRANTS, GET_POD_GRANTS } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { LIMIT } from 'services/board';
-import palette from 'theme/palette';
-import typography from 'theme/typography';
-import { ENTITIES_TYPES, GRANTS_STATUSES } from 'utils/constants';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { ENTITIES_TYPES, GRANTS_STATUSES, PERMISSIONS } from 'utils/constants';
+import { useOrgBoard, usePodBoard, useGlobalContext } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
 import { delQuery } from 'utils/index';
+import PlusIconWithBackground from 'components/Common/PlusIconWithBackground';
 import GrantsBoardCard from './Card';
 import EmptyGrantsBoard from './EmptyState';
 
@@ -32,8 +31,16 @@ const GrantsBoard = () => {
   const [ref, inView] = useInView({});
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { userPermissionsContext } = useGlobalContext();
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: orgBoard?.orgId,
+    podId: podBoard?.podId,
+  });
+  const canSeeLedger = permissions.includes(PERMISSIONS.MANAGE_GRANTS) || permissions.includes(PERMISSIONS.FULL_ACCESS);
+
   const {
-    data: orgData,
+    data: orgGrants,
     refetch: orgRefetch,
     fetchMore: orgFetchMore,
     previousData: orgPreviousData,
@@ -55,7 +62,7 @@ const GrantsBoard = () => {
   });
 
   const {
-    data: podData,
+    data: podGrants,
     refetch: podGrantsRefetch,
     fetchMore: podGrantsFetchMore,
     previousData: podPreviousData,
@@ -77,20 +84,20 @@ const GrantsBoard = () => {
   });
 
   const data = useMemo(
-    () => (podBoard ? podData?.getGrantPodBoard : orgData?.getGrantOrgBoard),
-    [podBoard, podData, orgData]
+    () => (podBoard ? podGrants?.getGrantPodBoard : orgGrants?.getGrantOrgBoard),
+    [podBoard, podGrants, orgGrants]
   );
 
   const fetchMore = () =>
     podBoard
       ? podGrantsFetchMore({
           variables: {
-            offset: podData?.getGrantPodBoard?.length,
+            offset: podGrants?.getGrantPodBoard?.length,
           },
         }).then(({ data }) => setHasMore(data?.getGrantPodBoard?.length >= LIMIT))
       : orgFetchMore({
           variables: {
-            offset: orgData?.getGrantOrgBoard?.length,
+            offset: orgGrants?.getGrantOrgBoard?.length,
           },
         }).then(({ data }) => setHasMore(data?.getGrantOrgBoard?.length >= LIMIT));
 
@@ -141,6 +148,7 @@ const GrantsBoard = () => {
   const toggleDisacrdModal = () => setIsDiscardOpen((prev) => !prev);
 
   const loading = orgLoading || podLoading;
+
   return (
     <>
       <ViewGrant
@@ -168,11 +176,41 @@ const GrantsBoard = () => {
           </CreateFormModalOverlay>
         </>
       ) : null}
-      <Grid display="flex" justifyContent="space-between" marginBottom={2}>
+      <Grid display="flex" justifyContent="space-between" marginBottom={2} marginRight={2}>
         <GrantsFilters onFilterChange={handleFilterChange} activeFilter={activeFilter} />
-        <ActionButton onClick={toggleCreateFormModal}>
-          <PlusIcon /> <span>Add grant</span>
-        </ActionButton>
+        <div style={{ display: 'flex', gap: 12 }}>
+          {canSeeLedger && (
+            <Button
+              buttonTheme={{
+                paddingX: 16,
+                paddingY: 7,
+                fontSize: '14px',
+                fontWeight: 500,
+              }}
+              color="secondary"
+              onClick={() =>
+                router.push({ pathname: `${delQuery(router.asPath)}/ledger` }, undefined, { shallow: true })
+              }
+              height={28}
+            >
+              Ledger
+            </Button>
+          )}
+          <Button
+            gap="5px"
+            buttonTheme={{
+              paddingX: 7,
+              paddingY: 7,
+              fontSize: '14px',
+              fontWeight: 500,
+            }}
+            color="secondary"
+            height={28}
+            onClick={toggleCreateFormModal}
+          >
+            <PlusIconWithBackground width="20px" height="20px" /> <span> Add grant</span>
+          </Button>
+        </div>
       </Grid>
       <CardsContainer numberOfColumns={2} isFullWidth={false}>
         {data?.map((grant, idx) => (

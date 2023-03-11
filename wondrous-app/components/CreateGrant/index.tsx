@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
-import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -43,34 +44,36 @@ import {
   MediaUploadDiv,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { MediaItem } from 'components/CreateEntity/MediaItem';
-import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
+import formatDate from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 import { useFormik } from 'formik';
 import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } from 'graphql/mutations/grant';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Editor, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
+import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
+import { deserializeRichText } from 'components/PlateRichEditor/utils';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
-import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useCornerWidget, useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
-import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity } from './Fields';
+import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity, Reviewers } from './Fields';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
+import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from './Fields/GrantStyle';
 import {
   Form,
   GrantDescriptionMedia,
-  RichTextContainer,
   GrantModalData,
-  RichTextWrapper,
   GrantSectionDisplayDivWrapper,
   MediaWrapper,
+  RichTextWrapper,
 } from './styles';
 import { descriptionTemplate } from './utils';
-import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from './Fields/GrantStyle';
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -84,6 +87,7 @@ const validationSchema = Yup.object().shape({
   }).required(),
   numOfGrant: Yup.number()
     .typeError('Number of grants must be a number')
+    .nullable()
     .moreThan(0, 'Number of grants must be greater than 0')
     .lessThan(1000000000, 'Number of grants must be less than 1 billion'),
   startDate: Yup.string().optional().nullable(),
@@ -102,12 +106,11 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const userBoard = useUserBoard();
   const { userOrgs } = useGlobalContext();
   const board = orgBoard || podBoard || userBoard;
-  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
-  const editor = useEditor();
   const [removeGrantMedia] = useMutation(REMOVE_GRANT_MEDIA);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const { setCornerWidgetValue } = useCornerWidget();
 
   const [updateGrant] = useMutation(UPDATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
@@ -128,9 +131,11 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const [attachMedia] = useMutation(ATTACH_GRANT_MEDIA);
   const [createGrant] = useMutation(CREATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
-    onCompleted: () => {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage('Grant created successfully!');
+    onCompleted: ({ createGrant: createGrantData }) => {
+      setCornerWidgetValue({
+        ...createGrantData,
+        type: ENTITIES_TYPES.GRANT,
+      });
       handleClose();
     },
     onError: () => {
@@ -173,8 +178,8 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
       },
       numOfGrant: existingGrant?.numOfGrant,
       mediaUploads: transformMediaFormat(existingGrant?.media) || [],
-      startDate: existingGrant?.startDate || null,
-      endDate: existingGrant?.endDate || null,
+      startDate: existingGrant?.startDate ? parseISO(existingGrant.startDate.substring(0, 10)) : null,
+      endDate: existingGrant?.endDate ? parseISO(existingGrant.endDate.substring(0, 10)) : null,
       title: existingGrant?.title || '',
       description: existingGrant
         ? deserializeRichText(existingGrant.description)
@@ -185,6 +190,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
       privacyLevel: existingGrant?.privacyLevel || null,
       applyPolicy: existingGrant?.applyPolicy || APPLY_POLICY_FIELDS[0].value,
       grantStyle: getGrantStyleFromGrant(existingGrant?.numOfGrant),
+      reviewerIds: isEmpty(existingGrant?.reviewers) ? null : existingGrant.reviewers.map((i) => i.id),
     },
     validateOnChange: false,
     validateOnBlur: false,
@@ -196,10 +202,11 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             title: values.title,
             description: JSON.stringify(values.description),
             orgId: values.orgId,
+            reviewerIds: values.reviewerIds,
             podId: values.podId,
-            startDate: values.startDate,
+            startDate: values.startDate ? formatDate(values.startDate, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
             mediaUploads: values.mediaUploads,
-            endDate: values.endDate,
+            endDate: values.endDate ? formatDate(values.endDate, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
             reward: {
               rewardAmount: parseInt(values.reward.rewardAmount, 10),
               paymentMethodId: values.reward.paymentMethodId,
@@ -364,38 +371,19 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             />
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
-            <EditorToolbar ref={setEditorToolbarNode} />
             <RichTextWrapper>
-              <RichTextContainer
-                onClick={() => {
-                  // since editor will collapse to 1 row on input, we need to emulate min-height somehow
-                  // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
-                  ReactEditor.focus(editor);
-                  // also we need to move cursor to the last position in the editor
-                  Transforms.select(editor, {
-                    anchor: Editor.end(editor, []),
-                    focus: Editor.end(editor, []),
-                  });
+              <PlateRichEditor
+                inputValue={form.values.description}
+                mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
+                onChange={(value) => {
+                  form.setFieldValue('description', value);
                 }}
-              >
-                <RichTextEditor
-                  editor={editor}
-                  onMentionChange={search}
-                  initialValue={form.values.description}
-                  mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
-                  placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
-                  toolbarNode={editorToolbarNode}
-                  onChange={(value) => {
-                    form.setFieldValue('description', value);
-                  }}
-                  editorContainerNode={document.querySelector('#modal-scrolling-container')}
-                  onClick={(e) => {
-                    // we need to stop click event propagation,
-                    // since EditorContainer moves cursor to the last position in the editor on click
-                    e.stopPropagation();
-                  }}
-                />
-              </RichTextContainer>
+                mediaUploads={() => {
+                  inputRef.current.click();
+                }}
+                placeholder="Type ‘/’ for commands"
+                message="Use this space below however you want. We have dropped in a suggested structure"
+              />
               {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
             </RichTextWrapper>
           </GrantDescriptionMedia>
@@ -429,6 +417,14 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
           </MediaWrapper>
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
+            <Reviewers
+              orgId={form.values.orgId}
+              podId={form.values.podId}
+              onFocus={() => form.setFieldError('reviewerIds', undefined)}
+              reviewerIds={form.values.reviewerIds}
+              reviewerIdsErrors={form.errors.reviewerIds}
+              onChange={(reviewerIds) => form.setFieldValue('reviewerIds', reviewerIds)}
+            />
             <GrantStyle value={form.values.grantStyle} onChange={(value) => form.setFieldValue('grantStyle', value)} />
             {form.values.grantStyle === GRANT_STYLE_MAP.FIXED && (
               <GrantQuantity

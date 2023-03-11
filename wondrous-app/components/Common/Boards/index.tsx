@@ -10,6 +10,7 @@ import { BoardsContainer } from './styles';
 
 const KanbanBoard = dynamic(() => import('../KanbanBoard/kanbanBoard'), { suspense: true });
 const ListView = dynamic(() => import('components/ListView'), { suspense: true });
+const CalendarBoard = dynamic(() => import('components/Common/CalendarBoard'), { suspense: true });
 
 type Props = {
   columns: Array<any>;
@@ -33,16 +34,17 @@ function Boards(props: Props) {
   const view = activeView || String(router.query.view ?? ViewType.Grid);
 
   function renderBoard() {
-    return view ? (
-      <Suspense>
-        {/* TEMPORARY until we come up with a list view for proposals */}
-        {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
-          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
-        ) : (
-          <ListView entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
-        )}
-      </Suspense>
-    ) : null;
+    let board;
+
+    if (view === ViewType.Calendar) {
+      board = <CalendarBoard />;
+    } else if (view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL) {
+      board = <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />;
+    } else {
+      board = <ListView entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />;
+    }
+
+    return <Suspense>{board}</Suspense>;
   }
 
   return (
