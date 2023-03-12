@@ -294,6 +294,7 @@ export const TaskProposalCardFragment = gql`
     createdBy
     creatorUsername
     creatorProfilePicture
+    commentCount
     orgId
     orgProfilePicture
     orgName

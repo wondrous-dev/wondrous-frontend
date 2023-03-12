@@ -159,6 +159,7 @@ export const ProposalItemContainer = styled.div`
   background: ${palette.grey900};
   padding: 16px;
   margin-bottom: 24px;
+  cursor: pointer;
 `;
 
 export const ProposalHeaderDiv = styled.div`
@@ -168,4 +169,10 @@ export const ProposalHeaderDiv = styled.div`
 
 export const ProposalCreatorLink = styled.a`
   color: ${palette.white};
+`;
+
+export const ProposalItemFooter = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
 `;

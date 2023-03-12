@@ -20,6 +20,7 @@ import {
   TotalVoteNumber,
   VoteText,
   ProposalCreatorLink,
+  ProposalItemFooter,
 } from 'components/Common/ProposalBoard/styles';
 import GreenEclipse from 'components/Common/ProposalBoard/images/green-eclipse.svg';
 import RedEclipse from 'components/Common/ProposalBoard/images/red-eclipse.svg';
@@ -40,8 +41,13 @@ import { LIMIT } from 'services/board';
 import { formatDateDisplay } from 'utils/board';
 import { formatDistance } from 'date-fns';
 import { useRouter } from 'next/router';
+import { Tooltip } from '@mui/material';
+import { TaskCommentIcon } from 'components/Icons/taskComment';
+import { delQuery } from 'utils/index';
 import SmartLink from '../SmartLink';
 import VoteResults from '../Votes';
+import PodIconName from '../PodIconName';
+import { TaskAction, TaskActionAmount } from '../Task/styles';
 
 const PROPOSAL_TYPES = {
   WONDER: 'wonder',
@@ -76,43 +82,83 @@ const NewProposalButton = ({ handleOpenModal }) => (
 
 const ProposalItem = (props) => {
   const { proposalVoteType, proposal, proposalStatus } = props;
-
+  console.log('proposal', proposal);
   const router = useRouter();
   const globalContext = useGlobalContext();
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const userPermissionsContext = getUserPermissionContext();
   const userInOrg = userPermissionsContext?.orgPermissions && proposal?.orgId in userPermissionsContext.orgPermissions;
+  const viewUrl = `${delQuery(router.asPath)}?taskProposal=${proposal?.id}&entity=proposal`;
+
   return (
-    <ProposalItemContainer>
-      <ProposalHeaderDiv>
-        {proposalVoteType === 'snapshot' ? <SnapshotSvg /> : <WonderSvg />}
-        <ProposalItemCreatorSafeImg src={proposal?.creatorProfilePicture} />
-        <ProposalItemCreatorText>
-          By{' '}
-          <ProposalCreatorLink href={`/profile/${proposal?.creatorUsername}/about`} target="_blank">
-            <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>{proposal?.creatorUsername}</span>
-          </ProposalCreatorLink>{' '}
-        </ProposalItemCreatorText>
-        <ProposalItemCreatedTimeago>
-          {formatDistance(new Date(proposal?.createdAt), new Date(), {
-            addSuffix: true,
-          })}
-        </ProposalItemCreatedTimeago>
-        <div
-          style={{
-            flex: 1,
-          }}
-        />
-        <TotalVoteContainer>
-          <TotalVoteNumber>
-            {proposal?.votes?.totalVotes || 0}
-            {` `}
-          </TotalVoteNumber>
-          <VoteText>votes</VoteText>
-        </TotalVoteContainer>
-      </ProposalHeaderDiv>
-      <VoteResults userInOrg={userInOrg} fullScreen={false} proposalStatus={proposalStatus} proposal={proposal} />
-    </ProposalItemContainer>
+    <SmartLink
+      href={viewUrl}
+      preventLinkNavigation
+      onNavigate={() => {
+        const query = {
+          ...router.query,
+          taskProposal: proposal.id,
+        };
+        router.push({ query }, undefined, { scroll: false, shallow: true });
+      }}
+    >
+      <ProposalItemContainer>
+        <ProposalHeaderDiv>
+          {proposalVoteType === 'snapshot' ? <SnapshotSvg /> : <WonderSvg />}
+          <ProposalItemCreatorSafeImg src={proposal?.creatorProfilePicture} />
+          <ProposalItemCreatorText>
+            By{' '}
+            <ProposalCreatorLink href={`/profile/${proposal?.creatorUsername}/about`} target="_blank">
+              {proposal?.creatorUsername}
+            </ProposalCreatorLink>{' '}
+          </ProposalItemCreatorText>
+          <ProposalItemCreatedTimeago>
+            {formatDistance(new Date(proposal?.createdAt), new Date(), {
+              addSuffix: true,
+            })}
+          </ProposalItemCreatedTimeago>
+          <div
+            style={{
+              flex: 1,
+            }}
+          />
+          <TotalVoteContainer>
+            <TotalVoteNumber>
+              {proposal?.votes?.totalVotes || 0}
+              {` `}
+            </TotalVoteNumber>
+            <VoteText>votes</VoteText>
+          </TotalVoteContainer>
+        </ProposalHeaderDiv>
+        <VoteResults userInOrg={userInOrg} fullScreen={false} proposalStatus={proposalStatus} proposal={proposal} />
+        <ProposalItemFooter>
+          {proposal?.podName && (
+            <PodIconName
+              color={proposal?.podColor}
+              name={proposal?.podName}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/pod/${proposal?.podId}/home`, undefined, {
+                  shallow: true,
+                });
+              }}
+            />
+          )}
+          <div
+            style={{
+              flex: 1,
+            }}
+          />
+          <Tooltip title="View comments" placement="top">
+            <TaskAction>
+              <TaskCommentIcon />
+              <TaskActionAmount>{proposal?.commentCount}</TaskActionAmount>
+            </TaskAction>
+          </Tooltip>
+        </ProposalItemFooter>
+      </ProposalItemContainer>
+    </SmartLink>
   );
 };
 
@@ -156,7 +202,7 @@ const ProposalBoard = () => {
     });
   }, [status]);
   const taskProposals = data?.getOrgTaskBoardProposals || [];
-  console.log('taskProposals', taskProposals);
+
   return (
     <>
       <CreateModalOverlay open={openProposalModal} onClose={handleOpenModal}>

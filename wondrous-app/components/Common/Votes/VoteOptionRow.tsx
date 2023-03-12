@@ -24,7 +24,13 @@ export default function VoteOptionRow({ votes, option, handleVote, handleUndoVot
   }
   return (
     <VoteRowWrapper key={`${option}`}>
-      <VoteRowContentWrapper onClick={() => handleVote(option)}>
+      <VoteRowContentWrapper
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleVote(option);
+        }}
+      >
         <div style={{ display: 'flex', gap: 5 }}>
           <VoteLabel color={palette.blue20}>{percentage}%</VoteLabel>
           <VoteLabel color={palette.white} weight={500}>
