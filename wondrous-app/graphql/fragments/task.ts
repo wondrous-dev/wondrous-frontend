@@ -325,6 +325,8 @@ export const TaskProposalCardFragment = gql`
       displayName
       type
     }
+    voteType
+    voteOptions
     media {
       ...MediaFragment
     }

@@ -11,6 +11,15 @@ import {
   RightSideContainer,
   EmptyDiv,
   EmptyDivText,
+  ProposalItemContainer,
+  ProposalHeaderDiv,
+  ProposalItemCreatorSafeImg,
+  ProposalItemCreatorText,
+  ProposalItemCreatedTimeago,
+  TotalVoteContainer,
+  TotalVoteNumber,
+  VoteText,
+  ProposalCreatorLink,
 } from 'components/Common/ProposalBoard/styles';
 import GreenEclipse from 'components/Common/ProposalBoard/images/green-eclipse.svg';
 import RedEclipse from 'components/Common/ProposalBoard/images/red-eclipse.svg';
@@ -19,15 +28,25 @@ import GreyEclipse from 'components/Common/ProposalBoard/images/grey-eclipse.svg
 import SnapshotSvg from 'components/Common/ProposalBoard/images/snapshot.svg';
 import WonderSvg from 'components/Common/ProposalBoard/images/wonder.svg';
 import AddSvg from 'components/Common/ProposalBoard/images/add.svg';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import CreateButton from 'components/ProjectProfile/CreateButton';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { GET_ORG_TASK_BOARD_PROPOSALS } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { useGlobalContext, useOrgBoard, usePodBoard } from 'utils/hooks';
 import { LIMIT } from 'services/board';
+import { formatDateDisplay } from 'utils/board';
+import { formatDistance } from 'date-fns';
+import { useRouter } from 'next/router';
+import SmartLink from '../SmartLink';
+import VoteResults from '../Votes';
+
+const PROPOSAL_TYPES = {
+  WONDER: 'wonder',
+  SNAPSHOT: 'snapshot',
+};
 
 const proposalStatuses = [
   {
@@ -55,11 +74,52 @@ const NewProposalButton = ({ handleOpenModal }) => (
   </AddProposalButtonContainer>
 );
 
-const ProposalItem = (props) => {};
+const ProposalItem = (props) => {
+  const { proposalVoteType, proposal, proposalStatus } = props;
+
+  const router = useRouter();
+  const globalContext = useGlobalContext();
+  const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
+  const userPermissionsContext = getUserPermissionContext();
+  const userInOrg = userPermissionsContext?.orgPermissions && proposal?.orgId in userPermissionsContext.orgPermissions;
+  return (
+    <ProposalItemContainer>
+      <ProposalHeaderDiv>
+        {proposalVoteType === 'snapshot' ? <SnapshotSvg /> : <WonderSvg />}
+        <ProposalItemCreatorSafeImg src={proposal?.creatorProfilePicture} />
+        <ProposalItemCreatorText>
+          By{' '}
+          <ProposalCreatorLink href={`/profile/${proposal?.creatorUsername}/about`} target="_blank">
+            <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>{proposal?.creatorUsername}</span>
+          </ProposalCreatorLink>{' '}
+        </ProposalItemCreatorText>
+        <ProposalItemCreatedTimeago>
+          {formatDistance(new Date(proposal?.createdAt), new Date(), {
+            addSuffix: true,
+          })}
+        </ProposalItemCreatedTimeago>
+        <div
+          style={{
+            flex: 1,
+          }}
+        />
+        <TotalVoteContainer>
+          <TotalVoteNumber>
+            {proposal?.votes?.totalVotes || 0}
+            {` `}
+          </TotalVoteNumber>
+          <VoteText>votes</VoteText>
+        </TotalVoteContainer>
+      </ProposalHeaderDiv>
+      <VoteResults userInOrg={userInOrg} fullScreen={false} proposalStatus={proposalStatus} proposal={proposal} />
+    </ProposalItemContainer>
+  );
+};
 
 const ProposalBoard = () => {
   const [openProposalModal, setOpenProposalModal] = useState(false);
   const [status, setStatus] = useState(proposalStatuses[0].label);
+  const [proposalType, setProposalType] = useState(PROPOSAL_TYPES.WONDER);
   const handleOpenModal = () => {
     setOpenProposalModal((prevState) => !prevState);
   };
@@ -136,7 +196,11 @@ const ProposalBoard = () => {
         </LeftSideContainer>
         <RightSideContainer>
           {taskProposals?.length > 0 ? (
-            <></>
+            <>
+              {taskProposals?.map((proposal) => (
+                <ProposalItem proposal={proposal} proposalStatus={status} />
+              ))}
+            </>
           ) : (
             <EmptyDiv>
               <NewProposalButton handleOpenModal={handleOpenModal} />

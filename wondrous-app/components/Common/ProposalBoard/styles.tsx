@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button, Typography, Tabs, InputBase } from '@mui/material';
+import typography from 'theme/typography';
+import { SafeImage } from '../Image';
 
 export const ProposalBoardContainer = styled.div`
   display: flex;
@@ -98,4 +100,72 @@ export const EmptyDivText = styled(Typography)`
     font-size: 13px;
     color: ${palette.white};
   }
+`;
+
+export const ProposalItemCreatorSafeImg = styled(SafeImage)`
+  && {
+    width: 28px;
+    height: 28px;
+    radius: 14px;
+    margin-left: 8px;
+  }
+`;
+
+export const ProposalItemCreatorText = styled(Typography)`
+  && {
+    color: ${palette.grey600};
+    font-family: ${typography.fontFamily};
+    font-size: 15px;
+    margin-left: 8px;
+    font-weight: 600;
+  }
+`;
+
+export const ProposalItemCreatedTimeago = styled(ProposalItemCreatorText)`
+  && {
+    color: ${palette.grey58};
+    margin-left: 8px;
+  }
+`;
+
+export const TotalVoteContainer = styled.div`
+  && {
+    background: ${palette.grey85};
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 64px;
+  }
+`;
+
+export const TotalVoteNumber = styled(Typography)`
+  && {
+    color: ${palette.blue20};
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+`;
+
+export const VoteText = styled(TotalVoteNumber)`
+  && {
+    color: ${palette.white};
+  }
+`;
+
+export const ProposalItemContainer = styled.div`
+  background: ${palette.grey900};
+  padding: 16px;
+  margin-bottom: 24px;
+`;
+
+export const ProposalHeaderDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const ProposalCreatorLink = styled.a`
+  color: ${palette.white};
 `;

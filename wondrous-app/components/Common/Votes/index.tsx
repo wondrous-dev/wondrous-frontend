@@ -5,6 +5,7 @@ import { useMe } from 'components/Auth/withAuth';
 import palette from 'theme/palette';
 import VoteOptionRow from 'components/Common/Votes/VoteOptionRow';
 
+import { GET_ORG_TASK_BOARD_PROPOSALS, GET_POD_TASK_BOARD_PROPOSALS, GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries';
 import { VoteResultsWrapper, VoteLabel } from './styles';
 
 interface Props {
@@ -38,7 +39,7 @@ export default function VoteResults({ userInOrg, proposal, fullScreen, proposalS
   const user = useMe();
 
   const canVote = user && userInOrg && proposalStatus === STATUS_OPEN; // TODO add logic for private pod proposals?
-  const proposalRefetchQueries = ['getTaskProposalById'];
+  const proposalRefetchQueries = [GET_TASK_PROPOSAL_BY_ID, GET_ORG_TASK_BOARD_PROPOSALS, GET_POD_TASK_BOARD_PROPOSALS];
   const [voteForProposal] = useMutation(VOTE_FOR_PROPOSAL, {
     refetchQueries: proposalRefetchQueries,
   });
