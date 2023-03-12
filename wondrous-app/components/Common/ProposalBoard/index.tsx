@@ -21,6 +21,8 @@ import {
   VoteText,
   ProposalCreatorLink,
   ProposalItemFooter,
+  ProposalItemTitle,
+  ProposalItemDescription,
 } from 'components/Common/ProposalBoard/styles';
 import GreenEclipse from 'components/Common/ProposalBoard/images/green-eclipse.svg';
 import RedEclipse from 'components/Common/ProposalBoard/images/red-eclipse.svg';
@@ -44,6 +46,8 @@ import { useRouter } from 'next/router';
 import { Tooltip } from '@mui/material';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { delQuery } from 'utils/index';
+import palette from 'theme/palette';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import SmartLink from '../SmartLink';
 import VoteResults from '../Votes';
 import PodIconName from '../PodIconName';
@@ -106,12 +110,7 @@ const ProposalItem = (props) => {
         <ProposalHeaderDiv>
           {proposalVoteType === 'snapshot' ? <SnapshotSvg /> : <WonderSvg />}
           <ProposalItemCreatorSafeImg src={proposal?.creatorProfilePicture} />
-          <ProposalItemCreatorText>
-            By{' '}
-            <ProposalCreatorLink href={`/profile/${proposal?.creatorUsername}/about`} target="_blank">
-              {proposal?.creatorUsername}
-            </ProposalCreatorLink>{' '}
-          </ProposalItemCreatorText>
+          <ProposalItemCreatorText>By {proposal?.creatorUsername}</ProposalItemCreatorText>
           <ProposalItemCreatedTimeago>
             {formatDistance(new Date(proposal?.createdAt), new Date(), {
               addSuffix: true,
@@ -127,9 +126,15 @@ const ProposalItem = (props) => {
               {proposal?.votes?.totalVotes || 0}
               {` `}
             </TotalVoteNumber>
-            <VoteText>votes</VoteText>
+            <VoteText>{proposal?.votes?.totalVotes !== 1 ? 'votes' : 'vote'}</VoteText>
           </TotalVoteContainer>
         </ProposalHeaderDiv>
+        <ProposalItemTitle>{proposal?.title}</ProposalItemTitle>
+        {proposal?.description && (
+          <ProposalItemDescription>
+            <PlateRichTextViewer text={proposal?.description} />
+          </ProposalItemDescription>
+        )}
         <VoteResults userInOrg={userInOrg} fullScreen={false} proposalStatus={proposalStatus} proposal={proposal} />
         <ProposalItemFooter>
           {proposal?.podName && (
@@ -221,20 +226,36 @@ const ProposalBoard = () => {
           </LeftNewProposalContainer>
           <LeftSideText>Status</LeftSideText>
           <LeftSectionContainer>
-            {proposalStatuses.map((status) => (
-              <LeftSideTab key={status?.label}>
-                {status.image}
-                <LeftSideTabText>{status.label}</LeftSideTabText>
+            {proposalStatuses.map((proposalStatus) => (
+              <LeftSideTab
+                key={proposalStatus?.label}
+                onClick={() => setStatus(proposalStatus?.label)}
+                style={{
+                  background: proposalStatus?.label === status ? palette.grey87 : palette.grey900,
+                }}
+              >
+                {proposalStatus.image}
+                <LeftSideTabText>{proposalStatus.label}</LeftSideTabText>
               </LeftSideTab>
             ))}
           </LeftSectionContainer>
           <LeftSideText>Proposal type</LeftSideText>
           <LeftSectionContainer>
-            <LeftSideTab>
+            <LeftSideTab
+              onClick={() => setProposalType(PROPOSAL_TYPES.WONDER)}
+              style={{
+                background: proposalType === PROPOSAL_TYPES.WONDER ? palette.grey87 : palette.grey900,
+              }}
+            >
               <WonderSvg />
               <LeftSideTabText>Wonder</LeftSideTabText>
             </LeftSideTab>
-            <LeftSideTab>
+            <LeftSideTab
+              onClick={() => setProposalType(PROPOSAL_TYPES.SNAPSHOT)}
+              style={{
+                background: proposalType === PROPOSAL_TYPES.SNAPSHOT ? palette.grey87 : palette.grey900,
+              }}
+            >
               <SnapshotSvg />
               <LeftSideTabText>Snapshot</LeftSideTabText>
             </LeftSideTab>
@@ -249,7 +270,17 @@ const ProposalBoard = () => {
             </>
           ) : (
             <EmptyDiv>
-              <NewProposalButton handleOpenModal={handleOpenModal} />
+              {status === proposalStatuses[0].label ? (
+                <NewProposalButton handleOpenModal={handleOpenModal} />
+              ) : (
+                <LeftSideTabText
+                  style={{
+                    textTransform: 'none',
+                  }}
+                >
+                  There are no {status} proposals currently
+                </LeftSideTabText>
+              )}
             </EmptyDiv>
           )}
         </RightSideContainer>

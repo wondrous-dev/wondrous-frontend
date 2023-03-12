@@ -117,7 +117,7 @@ export const ProposalItemCreatorText = styled(Typography)`
     font-family: ${typography.fontFamily};
     font-size: 15px;
     margin-left: 8px;
-    font-weight: 600;
+    font-weight: 500;
   }
 `;
 
@@ -144,7 +144,7 @@ export const TotalVoteNumber = styled(Typography)`
     color: ${palette.blue20};
     font-family: ${typography.fontFamily};
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     margin-right: 4px;
   }
 `;
@@ -175,4 +175,27 @@ export const ProposalItemFooter = styled.div`
   display: flex;
   align-items: center;
   margin-top: 12px;
+`;
+
+export const ProposalItemTitle = styled(Typography)`
+  && {
+    color: ${palette.white};
+    font-family: ${typography.fontFamily};
+    font-weight: 600;
+    font-size: 17px;
+    margin-bottom: 8px;
+    margin-top: 4px;
+  }
+`;
+export const ProposalItemDescription = styled(ProposalItemTitle)`
+  && {
+    color: ${palette.grey250};
+    overflow: hidden;
+    overflow-wrap: break-word;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
 `;
