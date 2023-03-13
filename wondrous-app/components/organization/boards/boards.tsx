@@ -7,11 +7,11 @@ import BoardPageHeader from 'components/organization/wrapper/BoardPageHeader';
 import { getFilterSchema } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { ColumnsContext } from 'utils/contexts';
-import ProposalBoard from 'components/Common/ProposalBoard';
 
 const Boards = dynamic(() => import('components/Common/Boards'), { suspense: true });
 const BountyBoard = dynamic(() => import('components/Common/BountyBoard'), { suspense: true });
 const MilestoneBoard = dynamic(() => import('components/Common/MilestoneBoard'), { suspense: true });
+const ProposalBoard = dynamic(() => import('components/Common/ProposalBoard'), { suspense: true });
 
 export const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
@@ -21,19 +21,19 @@ export const BOARDS_MAP = {
 };
 
 export type Props = {
-  onSearch: (searchString: string) => Promise<any>;
-  onFilterChange: ({}) => any;
+  onSearch?: (searchString: string) => Promise<any>;
+  onFilterChange?: ({}) => any;
   columns: Array<any>;
   onLoadMore: any;
-  orgData: any;
+  orgData?: any;
   hasMore: any;
-  searchString: string;
-  statuses: string[];
-  podIds: string[];
-  setColumns: React.Dispatch<React.SetStateAction<{}>>;
+  searchString?: string;
+  statuses?: string[];
+  podIds?: string[];
+  setColumns?: React.Dispatch<React.SetStateAction<{}>>;
   userId?: string;
   entityType: string;
-  loading: boolean;
+  loading?: boolean;
   activeView: string | string[];
 };
 
