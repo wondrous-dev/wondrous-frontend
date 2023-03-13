@@ -26,7 +26,7 @@ import {
   TASK_TYPE,
 } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
-import { useBoards, useColumns, useScrollIntoView } from 'utils/hooks';
+import { useApprovedSubmission, useBoards, useColumns, useScrollIntoView } from 'utils/hooks';
 import { formatDateDisplay } from 'utils/board';
 
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -203,7 +203,7 @@ const useReopenTaskSubmission = ({ submission }) => {
     variables: {
       submissionId: submission?.id,
     },
-    refetchQueries: ['getTaskSubmissionsForTask', GET_ORG_TASK_BOARD_TASKS],
+    refetchQueries: ['getTaskSubmissionsForTask', 'getTaskById', GET_ORG_TASK_BOARD_TASKS],
   });
   return resubmitSubmission;
 };
@@ -359,12 +359,16 @@ function ResubmitTaskSubmissionButton({
 }
 
 function ReopenTaskSubmission({ submission, setCommentType, onClick }) {
+  const approvedSubmissionContext = useApprovedSubmission();
   const { approvedAt, rejectedAt, paymentStatus } = submission;
   if (!(approvedAt || rejectedAt) || paymentStatus === TASK_STATUS_PAID) return null;
   const text = approvedAt ? 'Undo approval' : 'Undo rejection';
   const handleOnClick = () => {
     setCommentType(null);
     onClick();
+    if (approvedAt) {
+      approvedSubmissionContext?.setApprovedSubmission(null);
+    }
   };
   return (
     <SubmissionButtonRequestChange onClick={handleOnClick} selected>
@@ -384,9 +388,13 @@ function SubmissionApproveTaskButton({
 }) {
   const selected = commentType ? commentType === SUBMISSION_COMMENT_TYPE.APPROVED : true;
   const { approvedAt, rejectedAt } = submission;
+  const approvedSubmissionContext = useApprovedSubmission();
   const handleOnClick = () => {
     setCommentType(SUBMISSION_COMMENT_TYPE.APPROVED);
     approveSubmission();
+    if (approvedSubmissionContext && !approvedSubmissionContext?.approvedSubmission) {
+      approvedSubmissionContext?.setApprovedSubmission(submission);
+    }
     setShowComments(false);
     setShowCommentBox(false);
   };
