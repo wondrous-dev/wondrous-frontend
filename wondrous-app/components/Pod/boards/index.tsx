@@ -11,11 +11,11 @@ import BoardPageHeader from 'components/Pod/wrapper/BoardPageHeader';
 const Boards = dynamic(() => import('components/Common/Boards'), { suspense: true });
 const BountyBoard = dynamic(() => import('components/Common/BountyBoard'), { suspense: true });
 const MilestoneBoard = dynamic(() => import('components/Common/MilestoneBoard'), { suspense: true });
-
+const ProposalBoard = dynamic(() => import('components/Common/ProposalBoard'), { suspense: true });
 const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
   [ENTITIES_TYPES.MILESTONE]: withCardsLayout(MilestoneBoard, 3),
-  [ENTITIES_TYPES.PROPOSAL]: Boards,
+  [ENTITIES_TYPES.PROPOSAL]: ProposalBoard,
   [ENTITIES_TYPES.BOUNTY]: withCardsLayout(BountyBoard, 4),
 };
 

@@ -9,7 +9,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import apollo from 'services/apollo';
 import { useWonderWeb3 } from '../web3';
-import { GET_SPACE } from './gql';
+import { GET_SNAPSHOT_PROPOSALS, GET_SPACE } from './gql';
 
 const SNAPSHOT_DOCS = 'https://docs.snapshot.org/spaces/create';
 
@@ -18,7 +18,10 @@ const SNAPSHOT_DOCS = 'https://docs.snapshot.org/spaces/create';
 // false = hub
 const isTestSnapshot = !process.env.NEXT_PUBLIC_PRODUCTION;
 
-const hub = process.env.NEXT_PUBLIC_PRODUCTION ? 'https://hub.snapshot.org' : 'https://testnet.snapshot.org';
+const hub =
+  process.env.NEXT_PUBLIC_PRODUCTION || process.env.NEXT_PUBLIC_STAGING
+    ? 'https://hub.snapshot.org'
+    : 'https://testnet.snapshot.org';
 const snapshotClient = new Snapshot.Client712(hub);
 
 // snapshot graphql API
@@ -31,7 +34,9 @@ const snapshotClientGQL = new ApolloClient({
 });
 
 export const getSnapshotUrl = (id: string): string =>
-  `https://${process.env.NEXT_PUBLIC_PRODUCTION ? `hub` : `testnet`}.snapshot.org/api/spaces/${id}/`;
+  `https://${
+    process.env.NEXT_PUBLIC_PRODUCTION || process.env.NEXT_PUBLIC_STAGING ? `hub` : `testnet`
+  }.snapshot.org/api/spaces/${id}/`;
 
 /**
  * useSnapshot -- state hooks to interact with Snapshot & Wonder's snapshot-related APIs
@@ -50,6 +55,7 @@ export const useSnapshot = () => {
   const isTest = isTestSnapshot;
   // an object representing the org snapshot from db
   const [orgSnapshot, setOrgSnapshot] = useState(null);
+
   // a boolean value representing whether snapshot is valid, to be used in validation
   const [isSnapshotAdmin, setIsSnapshotAdmin] = useState(false);
   // a boolean value representing whether the snapshot space has been connected to Wonder Org in db
@@ -66,6 +72,15 @@ export const useSnapshot = () => {
   // wonder's web3 hook
   const wonderWeb3 = useWonderWeb3();
 
+  const [getSnapshotProposals, { data: getSnapshotProposalData, fetchMore: fetchMoreSnapshotProposalData }] =
+    useLazyQuery(GET_SNAPSHOT_PROPOSALS, {
+      client: snapshotClientGQL,
+      fetchPolicy: 'cache-and-network',
+      nextFetchPolicy: 'cache-first',
+      notifyOnNetworkStatusChange: true,
+    });
+
+  const snapshotProposals = getSnapshotProposalData?.proposals;
   // gets Snapshot 'Space' via Snapshot API, doesn't udpate local state
   const [getSnapshotSpace, { loading: getSnapshotSpaceLoading }] = useLazyQuery(GET_SPACE, {
     client: snapshotClientGQL,
@@ -173,15 +188,13 @@ export const useSnapshot = () => {
 
     const numWeeks = 1;
     const weekLater = new Date();
-    RENDER_RICH_TEXT;
-    console.log(typeof proposal.description);
     const { data: renderRichTextData } = await apollo.query({
       query: RENDER_RICH_TEXT,
       variables: {
         jsonText: proposal.description,
       },
     });
-    console.log(renderRichTextData);
+
     weekLater.setDate(weekLater.getDate() + numWeeks * 7);
     const proposalToValidate = {
       name: proposal.title,
@@ -305,5 +318,8 @@ export const useSnapshot = () => {
     cancelProposal,
     snapshotLoading,
     isTest, // for testing purposes
+    snapshotProposals,
+    getSnapshotProposals,
+    fetchMoreSnapshotProposalData,
   };
 };
