@@ -90,7 +90,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   };
 
   function handleTaskClick(task) {
-    const taskType = task.__typename === 'TaskProposalCard' ? 'proposal' : 'task';
+    const taskType = task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task';
     const query = {
       ...router.query,
       [taskType]: task?.id,
