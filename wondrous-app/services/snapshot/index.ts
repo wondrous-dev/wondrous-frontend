@@ -16,10 +16,12 @@ const SNAPSHOT_DOCS = 'https://docs.snapshot.org/spaces/create';
 // set to configure which snapshot API to use
 // true = testnet
 // false = hub
-export const SNAPSHOT_QUERY_LIMIT = 20;
 const isTestSnapshot = !process.env.NEXT_PUBLIC_PRODUCTION;
 
-const hub = process.env.NEXT_PUBLIC_PRODUCTION ? 'https://hub.snapshot.org' : 'https://hub.snapshot.org';
+const hub =
+  process.env.NEXT_PUBLIC_PRODUCTION || process.env.NEXT_PUBLIC_STAGING
+    ? 'https://hub.snapshot.org'
+    : 'https://testnet.snapshot.org';
 const snapshotClient = new Snapshot.Client712(hub);
 
 // snapshot graphql API
@@ -32,7 +34,9 @@ const snapshotClientGQL = new ApolloClient({
 });
 
 export const getSnapshotUrl = (id: string): string =>
-  `https://${process.env.NEXT_PUBLIC_PRODUCTION ? `hub` : `hub`}.snapshot.org/api/spaces/${id}/`;
+  `https://${
+    process.env.NEXT_PUBLIC_PRODUCTION || process.env.NEXT_PUBLIC_STAGING ? `hub` : `testnet`
+  }.snapshot.org/api/spaces/${id}/`;
 
 /**
  * useSnapshot -- state hooks to interact with Snapshot & Wonder's snapshot-related APIs
