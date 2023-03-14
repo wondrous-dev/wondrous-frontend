@@ -13,6 +13,13 @@ export const PaddedParagraph = styled.p`
 export const StyledLink = styled.a`
   && {
     color: ${palette.highlightBlue};
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 

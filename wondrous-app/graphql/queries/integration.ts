@@ -118,3 +118,41 @@ export const GET_ORG_GUILD = gql`
     }
   }
 `;
+
+export const GET_ORG_INTEGRATIONS = gql`
+  query getOrgIntegrations($orgId: ID!) {
+    getOrgIntegrations(orgId: $orgId) {
+      integrations {
+        discord
+        telegram
+        snapshot
+        github
+        guildxyz
+        otterspace
+      }
+    }
+  }
+`;
+
+export const GET_POD_INTEGRATIONS = gql`
+  query getPodIntegrations($podId: ID!) {
+    getPodIntegrations(podId: $podId) {
+      integrations {
+        discord
+        telegram
+        snapshot
+        github
+        guildxyz
+        otterspace
+      }
+    }
+  }
+`;
+
+export const GET_ORG_OTTERSPACE = gql`
+  query getOrgOtterspace($orgId: ID!) {
+    getOrgOtterspace(orgId: $orgId) {
+      raftId
+    }
+  }
+`;

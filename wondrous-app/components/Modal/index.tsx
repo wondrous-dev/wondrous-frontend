@@ -49,6 +49,7 @@ type Props = {
   alignCenter?: boolean;
 
   footerCenter?: React.ReactNode;
+  modalBodyStyle?: React.CSSProperties;
 };
 
 export function Modal({
@@ -61,6 +62,7 @@ export function Modal({
   maxWidth,
   children,
   alignCenter = false,
+  modalBodyStyle = {},
 }: Props) {
   const contentRef = useRef();
 
@@ -82,7 +84,7 @@ export function Modal({
               {onClose && <CloseModalBtn onClick={onClose} />}
             </ModalHeader>
 
-            <ModalBody>{children}</ModalBody>
+            <ModalBody style={modalBodyStyle}>{children}</ModalBody>
 
             {!!footerLeft || !!footerRight || !!footerCenter ? (
               <ModalFooter alignCenter={!!footerCenter}>

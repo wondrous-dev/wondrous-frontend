@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const StyledTabs = styled(Tabs)`
   && {
     color: #fff;
-    ${({ withMargin = true }) => withMargin && 'margin-bottom: 30px'};
+    ${({ $withMargin = true }) => $withMargin && 'margin-bottom: 30px'};
     width: 100%;
   }
   .MuiTabs-flexContainer {

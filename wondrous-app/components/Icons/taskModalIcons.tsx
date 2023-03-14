@@ -218,3 +218,16 @@ export function RejectIcon(props) {
     </svg>
   );
 }
+
+export function NewTabIcon(props) {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M4.2227 2.43464H1.98054C1.19252 2.43464 0.553711 3.07345 0.553711 3.86147V9.56878C0.553711 10.3568 1.19252 10.9956 1.98054 10.9956H7.68785C8.47586 10.9956 9.11468 10.3568 9.11468 9.56878V6.868M10.5415 1.00781H7.68785M10.5415 1.00781V3.86147M10.5415 1.00781L3.40737 8.14195"
+        stroke="#CCBBFF"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

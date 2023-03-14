@@ -27,7 +27,6 @@ export const LIT_SIGNATURE_EXIST = gql`
   }
 `;
 
-
 export const GET_TOKEN_INFO = gql`
   query getTokenInfo($contractAddress: String!, $chain: String) {
     getTokenInfo(contractAddress: $contractAddress, chain: $chain) {
@@ -48,6 +47,15 @@ export const GET_NFT_INFO = gql`
       logoUrl
       name
       symbol
+    }
+  }
+`;
+
+export const GET_OTTERSPACE_RAFTS = gql`
+  query availableOtterspaceRaftsToConnect($walletAddress: String!) {
+    availableOtterspaceRaftsToConnect(walletAddress: $walletAddress) {
+      raftId
+      raftName
     }
   }
 `;

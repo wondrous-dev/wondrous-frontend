@@ -35,7 +35,7 @@ const ButtonInner = styled.button`
   justify-content: center;
   padding: ${(props) => (typeof props.paddingY === 'number' ? props.paddingY : 0)}px
     ${(props) => (typeof props.paddingX === 'number' ? props.paddingX : 30)}px;
-
+  max-height: ${(props) => (props.maxHeight ? props.maxHeight : 'inherit')};
   &:hover:not(:disabled) {
     background: ${(props) => props?.hover?.background || props.background};
     color: ${(props) => props?.hover?.textColor || props.textColor};
@@ -153,6 +153,7 @@ type Props = SpaceProps & {
     fontWeight?: number | string;
     width?: number | string;
     height?: number | string;
+    maxHeight?: number | string;
     hover?: {
       background?: string;
       textColor?: string;

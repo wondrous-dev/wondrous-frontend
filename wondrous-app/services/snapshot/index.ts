@@ -144,6 +144,7 @@ export const useSnapshot = () => {
   const [connectSnapshotToOrg, { loading: connectSnapshotSpaceLoading }] = useMutation(CONNECT_SNAPSHOT_TO_ORG, {
     onCompleted: (data) => {
       const { snapshotEns, name, symbol, url, network } = data.connectSnapshotToOrg;
+      console.log('imheree??');
       setOrgSnapshot({ snapshotEns, name, symbol, url, network });
       setSnapshotConnected(true);
     },

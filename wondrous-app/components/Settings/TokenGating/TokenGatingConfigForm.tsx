@@ -380,16 +380,20 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
       return formatted;
     }
     if (chain === 'ethereum') {
-      const erc20Url = 'https://tokens.coingecko.com/uniswap/all.json';
-      const erc20Promise = fetch(erc20Url).then((r2) => r2.json());
-      const [erc20s] = await Promise.all([erc20Promise]);
-      const sorted = [...erc20s.tokens].sort((a, b) => (a.name > b.name ? 1 : -1));
-      const formatted = sorted.map((token) => ({
-        label: token.name,
-        value: token.address,
-        icon: token.logoURI,
-      }));
-      setTokenList(formatted);
+      try {
+        const erc20Url = 'https://tokens.coingecko.com/uniswap/all.json';
+        const erc20Promise = fetch(erc20Url).then((r2) => r2.json());
+        const [erc20s] = await Promise.all([erc20Promise]);
+        const sorted = [...erc20s.tokens].sort((a, b) => (a.name > b.name ? 1 : -1));
+        const formatted = sorted.map((token) => ({
+          label: token.name,
+          value: token.address,
+          icon: token.logoURI,
+        }));
+        setTokenList(formatted);
+      } catch (e) {
+        console.error('failed to fetch');
+      }
     }
   };
 
