@@ -42,7 +42,6 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
       image?: string;
     }>
   >([]);
-  console.log('accessConditions', accessConditions);
   const [getTokenInfo] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
       setAccessConditions([
@@ -183,7 +182,6 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
       getTokenDisplayInfo();
     }
   }, [tokenAccessCondition?.contractAddress]);
-  console.log(accessConditions);
   return (
     <Box
       sx={{

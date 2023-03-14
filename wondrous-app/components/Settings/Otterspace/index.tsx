@@ -50,14 +50,14 @@ export default function OtterspaceIntegration() {
   });
 
   const getAvailableRafts = async () => {
-    console.log('wonderWeb3?.address', wonderWeb3?.address);
-    const { data } = await getOtterspaceRafts({
-      variables: { walletAddress: '0x304C6479a657A073DaaB19Ff37E1641d766083A9' },
-    });
+    try {
+      const { data } = await getOtterspaceRafts({
+        variables: { walletAddress: wonderWeb3?.address },
+      });
 
-    const { availableOtterspaceRaftsToConnect } = data;
-    console.log('availableOtterspaceRaftsToConnect', availableOtterspaceRaftsToConnect);
-    setAvailableRafts(availableOtterspaceRaftsToConnect);
+      const { availableOtterspaceRaftsToConnect } = data;
+      setAvailableRafts(availableOtterspaceRaftsToConnect);
+    } catch (error) {}
   };
   const raftOptions = availableRafts.map((raft) => ({ value: raft.raftId, label: raft.raftName }));
 

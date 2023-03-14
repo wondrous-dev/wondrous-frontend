@@ -16,7 +16,6 @@ function TokenGatingConditionList({ orgId }: Props) {
   const [tokenGatingConditions, setTokenGatingConditions] = useState([]);
   const { editTokenGating, deleteTokenGating } = useTokenGatingCondition();
   const [selectedTab, setSelectedTab] = useState(TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE);
-  console.log('tokenGatingConditions', tokenGatingConditions);
   const [getTokenGatingConditionsForOrg] = useLazyQuery(GET_TOKEN_GATING_CONDITIONS_FOR_ORG, {
     onCompleted: (data) => {
       setTokenGatingConditions(data?.getTokenGatingConditionsForOrg);

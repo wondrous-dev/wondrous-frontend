@@ -1,92 +1,58 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useLazyQuery, ApolloClient, InMemoryCache } from '@apollo/client';
+import { GET_BADGE_SPEC, GET_RAFT_INFO, GET_RAFT_WITH_SPECS } from 'graphql/queries';
 
-import { useWonderWeb3 } from '../web3';
+const OTTERSPACE_URI = 'https://api.thegraph.com/subgraphs/name/otterspace-xyz/badges-goerli';
 
-const GUILD_BASE_URL = 'https://api.thegraph.com/subgraphs/name/otterspace-xyz/badges-goerli';
+const cache = new InMemoryCache();
+const otterspaceClientGQL = new ApolloClient({
+  cache,
+  uri: OTTERSPACE_URI,
+});
 
 const useOtterspace = () => {
+  const [getRaftInfoData] = useLazyQuery(GET_RAFT_INFO, {
+    client: otterspaceClientGQL,
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const [getRaftInfoWithSpecs] = useLazyQuery(GET_RAFT_WITH_SPECS, {
+    client: otterspaceClientGQL,
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const [getOtterspaceBadgeSpec] = useLazyQuery(GET_BADGE_SPEC, {
+    client: otterspaceClientGQL,
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+  });
   const getRaftInfo = async (raftId: string) => {
-    const url = GUILD_BASE_URL;
-    const query = `
-    {
-      raft(id: "${raftId}") {
-        id
-        metadata {
-          name
-          image
-        }
-      }
+    try {
+      const { data } = await getRaftInfoData({ variables: { id: raftId } });
+      return data;
+    } catch (error) {
+      console.log(error, 'error');
+      return {};
     }
-    `;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query,
-      }),
-    });
-    const res = await response.json();
-    return res?.data;
   };
 
   const getRaftWithSpecs = async (raftId: string) => {
-    const url = GUILD_BASE_URL;
-    const query = `
-    {
-      raft(id: "${raftId}") {
-        id
-        metadata {
-          name
-        }
-        totalSpecsCount
-        totalBadgesCount
-        specs {
-          id
-          totalBadgesCount
-          metadata {
-            name
-            image
-          }
-        }
-      }
+    try {
+      const { data } = await getRaftInfoWithSpecs({ variables: { id: raftId } });
+      return data;
+    } catch (error) {
+      console.log(error, 'error');
     }
-    
-    
-    `;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query,
-      }),
-    });
-    const res = await response.json();
-    return res?.data;
   };
 
   const getBadgeSpec = async (badgeId: string) => {
-    const url = GUILD_BASE_URL;
-    const query = `
-    {
-      badgeSpec(id: "${badgeId}") {
-        id
-        metadata {
-          name
-          description
-          image
-        }
-      }
-    }    `;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query,
-      }),
-    });
-    const res = await response.json();
-    return res?.data;
+    try {
+      const { data } = await getOtterspaceBadgeSpec({ variables: { id: badgeId } });
+      return data;
+    } catch (error) {
+      console.log(error, 'error');
+    }
   };
 
   return {

@@ -156,3 +156,49 @@ export const GET_ORG_OTTERSPACE = gql`
     }
   }
 `;
+
+export const GET_RAFT_INFO = gql`
+  query Raft($id: String!) {
+    raft(id: $id) {
+      id
+      metadata {
+        name
+        image
+      }
+    }
+  }
+`;
+
+export const GET_RAFT_WITH_SPECS = gql`
+  query Raft($id: String!) {
+    raft(id: $id) {
+      id
+      metadata {
+        name
+      }
+      totalSpecsCount
+      totalBadgesCount
+      specs {
+        id
+        totalBadgesCount
+        metadata {
+          name
+          image
+        }
+      }
+    }
+  }
+`;
+
+export const GET_BADGE_SPEC = gql`
+  query BadgeSpec($id: String!) {
+    badgeSpec(id: $id) {
+      id
+      metadata {
+        name
+        image
+        description
+      }
+    }
+  }
+`;
