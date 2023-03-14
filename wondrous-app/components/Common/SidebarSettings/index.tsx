@@ -135,19 +135,6 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     href: `/profile/notifications`,
     page: [SettingsPage.Profile],
   },
-  // {
-  //   Icon: () => (
-  //     <GitHubIcon
-  //       style={{
-  //         color: '#525252',
-  //       }}
-  //     />
-  //   ),
-  //   label: 'Github',
-  //   value: 'github',
-  //   href: orgId ? `/${mainPath}/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
-  //   page: [SettingsPage.Pod],
-  // },
 ];
 
 function SettingsWrapper(props) {

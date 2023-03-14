@@ -211,16 +211,6 @@ export function GithubIntegration({ orgId, podId }) {
               flex: 1,
             }}
             options={filterGithubRepo(availableReposData?.getOrgAvailableRepositories)}
-            onOpen={() => {
-              // if (pod) {
-              //   getPodUsers({
-              //     variables: {
-              //       podId: pod?.id || pod,
-              //       limit: 100, // TODO: fix autocomplete
-              //     },
-              //   });
-              // }
-            }}
             renderInput={(params) => {
               const InputProps = {
                 ...params?.InputProps,
@@ -278,19 +268,6 @@ export function GithubIntegration({ orgId, podId }) {
             disabled={!(chosenRepo?.id && chosenRepoString)}
             onClick={() => {
               setImportModalOpen(true);
-              // inviteUserToPod({
-              //   variables: {
-              //     userId: invitee?.id,
-              //     roleId: inviteeRole,
-              //     podId,
-              //   },
-              //   onCompleted: (data) => {
-              //     const userPod = data?.inviteUserToPod;
-              //     setUsers([userPod, ...users]);
-              //   },
-              // });
-              // setSnackbarAlertOpen(true);
-              // setSnackbarAlertMessage(<>{invitee?.username} invited!</>);
             }}
           >
             Add repo
