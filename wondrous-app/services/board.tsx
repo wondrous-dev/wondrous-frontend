@@ -544,7 +544,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
           icon: ({ style, ...rest }) => <TagsIcon {...rest} style={{ ...style, padding: '5px' }} viewBox="0 0 14 12" />,
           query: GET_ORG_LABELS,
           variables: { orgId },
-          disabled: true,
+          disabled: false,
           mutate: (items) =>
             items.map((tag) => ({
               ...tag,
