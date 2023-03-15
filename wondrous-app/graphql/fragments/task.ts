@@ -332,6 +332,7 @@ export const TaskProposalCardFragment = gql`
     createdBy
     creatorUsername
     creatorProfilePicture
+    commentCount
     orgId
     orgProfilePicture
     orgName
@@ -353,11 +354,18 @@ export const TaskProposalCardFragment = gql`
       icon
       tokenName
     }
+    votes {
+      counts
+      userVote
+      totalVotes
+    }
     links {
       url
       displayName
       type
     }
+    voteType
+    voteOptions
     media {
       ...MediaFragment
     }

@@ -507,6 +507,7 @@ export const TaskViewModal = ({
     <ApprovedSubmissionContext.Provider
       value={{
         setApprovedSubmission,
+        approvedSubmission,
       }}
     >
       <>

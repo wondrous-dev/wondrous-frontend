@@ -217,7 +217,6 @@ export const HeaderButton = styled.button`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 10px;
   width: max-content;
   height: 35px;
   padding: 8px 24px;
@@ -238,6 +237,12 @@ export const HeaderButton = styled.button`
     linear-gradient(270deg, ${palette.highlightBlue} 0%, ${palette.highlightPurple} 100%);
     `
         : `background: ${palette.highlightPurple}`};
+  }
+`;
+
+export const MiniHeaderButton = styled(HeaderButton)`
+  && {
+    height: 28px;
   }
 `;
 

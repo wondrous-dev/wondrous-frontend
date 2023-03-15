@@ -11,28 +11,29 @@ import { ColumnsContext } from 'utils/contexts';
 const Boards = dynamic(() => import('components/Common/Boards'), { suspense: true });
 const BountyBoard = dynamic(() => import('components/Common/BountyBoard'), { suspense: true });
 const MilestoneBoard = dynamic(() => import('components/Common/MilestoneBoard'), { suspense: true });
+const ProposalBoard = dynamic(() => import('components/Common/ProposalBoard'), { suspense: true });
 
 export const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
   [ENTITIES_TYPES.MILESTONE]: withCardsLayout(MilestoneBoard, 3),
-  [ENTITIES_TYPES.PROPOSAL]: Boards,
+  [ENTITIES_TYPES.PROPOSAL]: ProposalBoard,
   [ENTITIES_TYPES.BOUNTY]: withCardsLayout(BountyBoard, 4),
 };
 
 export type Props = {
-  onSearch: (searchString: string) => Promise<any>;
-  onFilterChange: ({}) => any;
+  onSearch?: (searchString: string) => Promise<any>;
+  onFilterChange?: ({}) => any;
   columns: Array<any>;
   onLoadMore: any;
-  orgData: any;
+  orgData?: any;
   hasMore: any;
-  searchString: string;
-  statuses: string[];
-  podIds: string[];
-  setColumns: React.Dispatch<React.SetStateAction<{}>>;
+  searchString?: string;
+  statuses?: string[];
+  podIds?: string[];
+  setColumns?: React.Dispatch<React.SetStateAction<{}>>;
   userId?: string;
   entityType: string;
-  loading: boolean;
+  loading?: boolean;
   activeView: string | string[];
 };
 

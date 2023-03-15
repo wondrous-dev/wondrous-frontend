@@ -118,3 +118,87 @@ export const GET_ORG_GUILD = gql`
     }
   }
 `;
+
+export const GET_ORG_INTEGRATIONS = gql`
+  query getOrgIntegrations($orgId: ID!) {
+    getOrgIntegrations(orgId: $orgId) {
+      integrations {
+        discord
+        telegram
+        snapshot
+        github
+        guildxyz
+        otterspace
+      }
+    }
+  }
+`;
+
+export const GET_POD_INTEGRATIONS = gql`
+  query getPodIntegrations($podId: ID!) {
+    getPodIntegrations(podId: $podId) {
+      integrations {
+        discord
+        telegram
+        snapshot
+        github
+        guildxyz
+        otterspace
+      }
+    }
+  }
+`;
+
+export const GET_ORG_OTTERSPACE = gql`
+  query getOrgOtterspace($orgId: ID!) {
+    getOrgOtterspace(orgId: $orgId) {
+      raftId
+    }
+  }
+`;
+
+export const GET_RAFT_INFO = gql`
+  query Raft($id: String!) {
+    raft(id: $id) {
+      id
+      metadata {
+        name
+        image
+      }
+    }
+  }
+`;
+
+export const GET_RAFT_WITH_SPECS = gql`
+  query Raft($id: String!) {
+    raft(id: $id) {
+      id
+      metadata {
+        name
+      }
+      totalSpecsCount
+      totalBadgesCount
+      specs {
+        id
+        totalBadgesCount
+        metadata {
+          name
+          image
+        }
+      }
+    }
+  }
+`;
+
+export const GET_BADGE_SPEC = gql`
+  query BadgeSpec($id: String!) {
+    badgeSpec(id: $id) {
+      id
+      metadata {
+        name
+        image
+        description
+      }
+    }
+  }
+`;

@@ -165,7 +165,10 @@ function CommentBox(props) {
         variables: {
           input: { ...commentArgs, submissionId: submission?.id, type },
         },
-      }).then(() => onCommentCallback());
+      }).then(() => {
+        onCommentCallback();
+        setComment('');
+      });
     }
     return createTaskComment({
       variables: {

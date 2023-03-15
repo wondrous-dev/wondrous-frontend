@@ -7,9 +7,16 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import useGuildXyz from 'services/guildxyz';
+import useOtterspace from 'services/otterspace';
+import { convertIPFSUrl } from 'utils/helpers';
 
 import palette from 'theme/palette';
-import { AccessCondition, GuildAccessCondition, TokenGatingCondition } from 'types/TokenGating';
+import {
+  AccessCondition,
+  GuildAccessCondition,
+  TokenGatingCondition,
+  OtterspaceAccessCondition,
+} from 'types/TokenGating';
 import { ErrorText } from 'components/Common';
 import TokenGateActionMenu from './TokenGatingActionMenu';
 
@@ -22,9 +29,12 @@ type Props = {
 
 function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Props) {
   const { getGuildById } = useGuildXyz();
+  const { getBadgeSpec } = useOtterspace();
   const guildAccessCondition = tokenGatingCondition?.guildAccessCondition as GuildAccessCondition;
+  const otterspaceAccessCondition = tokenGatingCondition?.otterspaceAccessCondition as OtterspaceAccessCondition;
   const tokenAccessCondition = tokenGatingCondition?.tokenAccessCondition?.[0] as AccessCondition;
   const [guildFetchError, setGuildFetchError] = useState(null);
+  const [otterspaceFetchError, setOtterspaceFetchError] = useState(null);
   const [accessConditions, setAccessConditions] = useState<
     Array<{
       name: string;
@@ -32,7 +42,6 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
       image?: string;
     }>
   >([]);
-
   const [getTokenInfo] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
       setAccessConditions([
@@ -74,6 +83,29 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
     },
     fetchPolicy: 'network-only',
   });
+
+  useEffect(() => {
+    const fetchOtterspaceInfo = async () => {
+      let badgeSpec;
+      try {
+        const res = await getBadgeSpec(otterspaceAccessCondition?.badgeSpecId);
+        badgeSpec = res?.badgeSpec;
+      } catch (e) {
+        setOtterspaceFetchError('Guild not found, the guild might be deleted');
+        return;
+      }
+      setAccessConditions([
+        {
+          image: convertIPFSUrl(badgeSpec?.metadata?.image),
+          name: 'Badge',
+          value: badgeSpec?.metadata?.name,
+        },
+      ]);
+    };
+    if (otterspaceAccessCondition) {
+      fetchOtterspaceInfo();
+    }
+  }, [otterspaceAccessCondition]);
 
   useEffect(() => {
     const fetchGuildRole = async () => {
@@ -150,7 +182,6 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
       getTokenDisplayInfo();
     }
   }, [tokenAccessCondition?.contractAddress]);
-
   return (
     <Box
       sx={{
