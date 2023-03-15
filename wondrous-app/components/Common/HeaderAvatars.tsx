@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
@@ -15,7 +16,7 @@ const avatarStyle = {
 const avatarWidthHeight = 28;
 
 const HeaderAvatars = ({ users, contributorCount, setMoreInfoModalOpen, setShowUsers }) => {
-  const usersData = users.map(({ user }) => user);
+  const usersData = useMemo(() => users.map(({ user }) => user), [users]);
   const moreUsersCount = contributorCount - AVATAR_LIST_OVERFLOW_MAX;
   return (
     <Grid

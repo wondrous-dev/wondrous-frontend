@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import Grid from '@mui/material/Grid';
 import Link from 'next/link';
 import { DefaultUserImage, SafeImage } from 'components/Common/Image';
@@ -13,11 +14,12 @@ import LeaderboardUserRowIcons from './LeaderboardUserRowIcons';
 const calculateCount = (tasks) => {
   let taskCount = 0;
   let bountyCount = 0;
-  if (!tasks)
+  if (!tasks) {
     return {
       taskCount,
       bountyCount,
     };
+  }
 
   tasks.forEach((task) => {
     if (task?.type === BOUNTY_TYPE) {
@@ -81,7 +83,7 @@ const UserRowInfo = ({ Icon, data = null, sx = null }) => (
 
 const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, clicked }) => {
   const { assigneeId, assigneeProfilePicture, assigneeUsername } = contributorTask || {};
-  const contributionCount = calculateCount(contributorTask?.tasks);
+  const contributionCount = useMemo(() => calculateCount(contributorTask?.tasks), [contributorTask]);
   const bountyCount = contributionCount?.bountyCount;
   const taskCount = contributionCount?.taskCount;
   return (
