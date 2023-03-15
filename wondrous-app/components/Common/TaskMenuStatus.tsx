@@ -27,7 +27,7 @@ import {
 } from 'graphql/queries';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
+import { ENTITIES_TYPES_FILTER_STATUSES, PROPOSAL_TYPE_STATUS_FILTERS } from 'services/board';
 import styled from 'styled-components';
 import { getProposalStatus } from 'utils/board';
 import { ENTITIES_TYPES, PERMISSIONS, STATUS_APPROVED, STATUS_CLOSED, TASK_STATUS_ARCHIVED } from 'utils/constants';
@@ -137,7 +137,7 @@ const refetchTaskProposalQueries = [
 ];
 
 export const getStatusesProposal = ({ task, entityType }) => {
-  const filterStatus = ENTITIES_TYPES_FILTER_STATUSES({ orgId: task?.orgId })[entityType]?.filters[0].items;
+  const filterStatus = PROPOSAL_TYPE_STATUS_FILTERS.items;
   const status = getProposalStatus(task);
   const currentStatus = filterStatus?.find((i) => i.id === status);
   return { filterStatus, currentStatus };
