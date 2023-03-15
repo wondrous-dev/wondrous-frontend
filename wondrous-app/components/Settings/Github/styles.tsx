@@ -2,10 +2,7 @@ import { Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
-export const GithubButtonDiv = styled.div`
-  margin-top: 32px;
-  margin-left: 48px;
-`;
+export const GithubButtonDiv = styled.div``;
 
 export const GithubLink = styled.a`
   border: 1px solid #298fca;

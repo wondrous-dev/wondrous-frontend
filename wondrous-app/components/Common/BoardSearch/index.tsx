@@ -107,15 +107,13 @@ const BoardSearch = ({ searchQuery }) => {
 
   const searchOrgProposalArgs = {
     variables: {
-      input: {
-        podIds: filters?.podIds,
-        priorities: filters?.priorities,
-        orgId,
-        statuses: [STATUS_OPEN],
-        offset: 0,
-        limit: 1000,
-        searchString: searchQuery,
-      },
+      podIds: filters?.podIds,
+      priorities: filters?.priorities,
+      orgId,
+      statuses: [STATUS_OPEN],
+      offset: 0,
+      limit: 1000,
+      searchString: searchQuery,
     },
   };
 

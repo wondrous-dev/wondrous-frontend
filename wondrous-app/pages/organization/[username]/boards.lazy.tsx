@@ -115,15 +115,13 @@ function BoardsPage() {
 
   const searchOrgTaskProposalsArgs = {
     variables: {
-      input: {
-        podIds: filters?.podIds,
-        priorities: filters?.priorities,
-        orgId: orgId || orgData?.id,
-        statuses: [STATUS_OPEN],
-        offset: 0,
-        limit: 1000,
-        searchString: search,
-      },
+      podIds: filters?.podIds,
+      priorities: filters?.priorities,
+      orgId: orgId || orgData?.id,
+      statuses: [STATUS_OPEN],
+      offset: 0,
+      limit: 1000,
+      searchString: search,
     },
   };
 
