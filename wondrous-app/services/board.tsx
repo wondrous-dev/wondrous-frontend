@@ -536,7 +536,6 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
     },
     [ENTITIES_TYPES.PROPOSAL]: {
       filters: [
-        PROPOSAL_TYPE_STATUS_FILTERS,
         ...(enablePodFilter ? addPodFilter(orgId) : []),
         {
           name: 'labelId',
@@ -552,36 +551,6 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
               gradient: `linear-gradient(270deg, #7427FF -11.62%, ${tag?.color} 103.12%)`,
               pillIcon: TagsIcon,
             })),
-        },
-        PRIORITY_FILTERS,
-        {
-          name: 'date',
-          label: 'Dates',
-          disabled: true,
-          icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
-          items: [
-            {
-              id: TASK_DATE_OVERDUE,
-              name: 'Overdue',
-              icon: () => <CalendarIcon style={{ padding: '3px' }} stroke="#F93701" />,
-              pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
-              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-            },
-            {
-              id: TASK_DATE_DUE_THIS_WEEK,
-              name: 'Due this week',
-              icon: () => <CalendarIcon style={{ padding: '3px' }} stroke="#FFD653" />,
-              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
-              pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
-            },
-            {
-              id: TASK_DATE_DUE_NEXT_WEEK,
-              name: 'Due next week',
-              icon: () => <CalendarIcon style={{ padding: '3px' }} stroke="#00BAFF" />,
-              gradient: 'linear-gradient(270deg, #7427FF -11.62%, #00BAFF 103.12%)',
-              pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
-            },
-          ],
         },
       ],
     },
