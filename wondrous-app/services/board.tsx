@@ -361,7 +361,7 @@ const MILESTONE_TYPE_STATUS_FILTERS = {
   ],
 };
 
-const PROPOSAL_TYPE_STATUS_FILTERS = {
+export const PROPOSAL_TYPE_STATUS_FILTERS = {
   name: 'statuses',
   label: 'Status',
   icon: ({ style, ...rest }) => <StatusDefaultIcon style={{ ...style, padding: '3px' }} {...rest} />,
