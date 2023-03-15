@@ -24,6 +24,8 @@ import { StatusDefaultIcon } from 'components/Icons/statusIcons';
 import { Rejected } from 'components/Icons';
 import ProposalIcon from 'components/Icons/proposalIcon';
 import GrantIcon from 'components/Icons/GrantIcon';
+import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
+import StartIcon from 'components/Icons/Sidebar/star.svg';
 
 const firstGradient = 'linear-gradient(270deg, #7427FF -11.62%, #FFFFFF 103.12%)';
 const secondGradient = 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)';
@@ -39,13 +41,13 @@ export const CALENDAR_FILTER_SCHEMA = ({ orgId }) => ({
           id: ENTITIES_TYPES.TASK,
           name: ENTITIES_DISPLAY_LABEL_MAP[ENTITIES_TYPES.TASK],
           gradient: firstGradient,
-          icon: null,
+          icon: <CheckBoxIcon />,
         },
         {
           id: ENTITIES_TYPES.BOUNTY,
           name: ENTITIES_DISPLAY_LABEL_MAP[ENTITIES_TYPES.BOUNTY],
           gradient: firstGradient,
-          icon: <StarIcon />,
+          icon: <StartIcon />,
         },
         {
           id: ENTITIES_TYPES.MILESTONE,

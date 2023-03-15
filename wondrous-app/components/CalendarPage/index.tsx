@@ -36,8 +36,8 @@ import {
 } from 'utils/constants';
 
 type CalendarTaskFilter = TaskFilter & {
-  types: Array<number>
-}
+  types: Array<number>;
+};
 
 const OrgCalendarPage = () => {
   const { setPageData } = usePageDataContext();
@@ -180,7 +180,7 @@ const OrgCalendarPage = () => {
       types: [],
     }
   ) => {
-    console.log(filtersToApply, '-------->>>filtersToApply')
+    console.log(filtersToApply, '-------->>>filtersToApply');
 
     setFilters({
       ...filtersToApply,

@@ -29,70 +29,95 @@ const CalendarPage = () => {
 
   const calendarFilterSchema = CALENDAR_FILTER_SCHEMA({ orgId });
   const filterSchema = calendarFilterSchema.filters;
+  //
+  // const filterTasks = (tasks, filters) =>
+  //   tasks.reduce((acc, task) => {
+  //     let taskType;
+  //     let taskStatus;
+  //
+  //     // TODO: remove this after we have type and status field for all tasks
+  //     if (task.__typename === 'TaskProposalCard') {
+  //       taskType = ENTITIES_TYPES.PROPOSAL;
+  //     } else if (task.__typename === 'GrantCard') {
+  //       taskType = ENTITIES_TYPES.GRANT;
+  //       taskStatus = TASK_STATUS_TODO;
+  //     } else {
+  //       taskType = task.type;
+  //       taskStatus = task.status;
+  //     }
+  //
+  //     const isTypeTaskMatch = filters.taskTypes?.length ? filters.taskTypes.includes(taskType) : true;
+  //     // TODO: field status is not in proposals
+  //     const isStatusMatch = filters.statuses?.length && task.status ? filters.statuses.includes(taskStatus) : true;
+  //     const isPodsMatch = filters.podIds?.length ? filters.podIds.includes(task.podId) : true;
+  //     const isPriorityMatch = filters.priorities?.length ? filters.priorities.includes(task.priority) : true;
+  //     const isPrivacyLevelMatch = filters.privacyLevel ? filters.privacyLevel === task.privacyLevel : true;
+  //
+  //     if (isTypeTaskMatch && isStatusMatch && isPodsMatch && isPriorityMatch && isPrivacyLevelMatch) {
+  //       acc.push(task);
+  //     }
+  //
+  //     return acc;
+  //   }, []);
+  //
+  // useEffect(() => {
+  //   const allTasks = tasks && grants && proposals ? [...tasks, ...grants, ...proposals] : [];
+  //   setTasksOfSelectedTypes(allTasks ? filterTasks(allTasks, filters) : []);
+  // }, [tasks, filters, grants]);
 
-  const filterTasks = (tasks, filters) =>
-    tasks.reduce((acc, task) => {
-      let taskType;
-      let taskStatus;
+  // const tasksMap = useMemo(
+  //   () =>
+  //     tasksOfSelectedTypes?.reduce((acc, task) => {
+  //       if (task.dueDate) {
+  //         // key in format yyyy-MM-dd
+  //         const key = task.dueDate.replace(/T.*/g, '');
+  //         acc[key] = acc[key] || [];
+  //         acc[key].push(task);
+  //       }
+  //
+  //       // TODO: grants do not have a startDate field, so we use the endDate field temporarily
+  //       if (task.__typename === 'GrantCard' && task.endDate) {
+  //         const key = task.endDate.replace(/T.*/g, '');
+  //         acc[key] = acc[key] || [];
+  //         acc[key].push(task);
+  //       }
+  //
+  //       // TODO: proposals do not have a dueDate field, so we use the createdAt field temporarily
+  //       if (task.__typename === 'TaskProposalCard' && task.createdAt) {
+  //         const key = task.createdAt.replace(/T.*/g, '');
+  //         acc[key] = acc[key] || [];
+  //         acc[key].push(task);
+  //       }
+  //
+  //       return acc;
+  //     }, {}),
+  //   [tasksOfSelectedTypes]
+  // );
 
-      // TODO: remove this after we have type and status field for all tasks
-      if (task.__typename === 'TaskProposalCard') {
-        taskType = ENTITIES_TYPES.PROPOSAL;
-      } else if (task.__typename === 'GrantCard') {
-        taskType = ENTITIES_TYPES.GRANT;
-        taskStatus = TASK_STATUS_TODO;
-      } else {
-        taskType = task.type;
-        taskStatus = task.status;
-      }
+  console.log(tasks, '--------');
 
-      const isTypeTaskMatch = filters.taskTypes?.length ? filters.taskTypes.includes(taskType) : true;
-      // TODO: field status is not in proposals
-      const isStatusMatch = filters.statuses?.length && task.status ? filters.statuses.includes(taskStatus) : true;
-      const isPodsMatch = filters.podIds?.length ? filters.podIds.includes(task.podId) : true;
-      const isPriorityMatch = filters.priorities?.length ? filters.priorities.includes(task.priority) : true;
-      const isPrivacyLevelMatch = filters.privacyLevel ? filters.privacyLevel === task.privacyLevel : true;
+  // Convert columns into the flat structure
+  const tasksMap = useMemo(() => {
+    const addTask = (acc, date, task) => {
+      // key in format yyyy-MM-dd
+      const key = date.substring(0, 10);
 
-      if (isTypeTaskMatch && isStatusMatch && isPodsMatch && isPriorityMatch && isPrivacyLevelMatch) {
-        acc.push(task);
+      acc[key] = acc[key] || [];
+      acc[key].push(task);
+    };
+
+    return (tasks || []).reduce((acc, task) => {
+      if (task.dueDate) {
+        addTask(acc, task.dueDate, task);
+      } else if (task.startDate) {
+        // This is for grants
+        addTask(acc, task.startDate, task);
+        addTask(acc, task.endDate, task);
       }
 
       return acc;
-    }, []);
-
-  useEffect(() => {
-    const allTasks = tasks && grants && proposals ? [...tasks, ...grants, ...proposals] : [];
-    setTasksOfSelectedTypes(allTasks ? filterTasks(allTasks, filters) : []);
-  }, [tasks, filters, grants]);
-
-  const tasksMap = useMemo(
-    () =>
-      tasksOfSelectedTypes?.reduce((acc, task) => {
-        if (task.dueDate) {
-          // key in format yyyy-MM-dd
-          const key = task.dueDate.replace(/T.*/g, '');
-          acc[key] = acc[key] || [];
-          acc[key].push(task);
-        }
-
-        // TODO: grants do not have a startDate field, so we use the endDate field temporarily
-        if (task.__typename === 'GrantCard' && task.endDate) {
-          const key = task.endDate.replace(/T.*/g, '');
-          acc[key] = acc[key] || [];
-          acc[key].push(task);
-        }
-
-        // TODO: proposals do not have a dueDate field, so we use the createdAt field temporarily
-        if (task.__typename === 'TaskProposalCard' && task.createdAt) {
-          const key = task.createdAt.replace(/T.*/g, '');
-          acc[key] = acc[key] || [];
-          acc[key].push(task);
-        }
-
-        return acc;
-      }, {}),
-    [tasksOfSelectedTypes]
-  );
+    }, {});
+  }, [tasks]);
 
   const handleCalendarChange = (fromDate: Date, toDate: Date) => {
     handleFilterChange({

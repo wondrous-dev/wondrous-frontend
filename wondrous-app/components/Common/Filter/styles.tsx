@@ -191,10 +191,6 @@ export const FilterItem = styled.div`
   }`}
   &:hover {
     background: none;
-
-    rect {
-      fill: ${palette.background.default};
-    }
   }
 `;
 
@@ -203,12 +199,15 @@ export const FilterItemIcon = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   margin-right: 7px;
 
-  & svg {
-    width: 24px;
-    height: 24px;
+  svg {
+    width: 13px;
+    height: 13px;
+    
+    path {
+      stroke: white;
+    }
   }
 `;
 

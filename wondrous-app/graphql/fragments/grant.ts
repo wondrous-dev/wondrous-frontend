@@ -77,6 +77,7 @@ export const GrantCardFragment = gql`
     }
     commentCount
     endDate
+    startDate
   }
   ${MediaFragment}
 `;

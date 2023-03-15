@@ -67,6 +67,7 @@ const generateDefaultFiltersState = (filters, filterSchema) => {
   const activeFilters = Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length);
 
   const activeSchema = filterSchema?.filter((schema) => activeFilters.includes(schema.name));
+
   return activeSchema.reduce((acc, next) => {
     acc[next.name] = next?.items?.filter((item) => filters[next.name].includes(item.id));
     return acc;
@@ -80,6 +81,8 @@ const CalendarFilters = ({ filterSchema, onChange, showAppliedFilters = false })
 
   const calendarFilters = filters || {};
   const [appliedFilters, setAppliedFilters] = useState<any>(generateDefaultFiltersState(calendarFilters, filterSchema));
+
+  console.log(appliedFilters, '--------appliedFilters')
 
   const applyFilter = (filters) => {
     setAppliedFilters(filters);
