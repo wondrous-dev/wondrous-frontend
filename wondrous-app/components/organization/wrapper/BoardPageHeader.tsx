@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import RolePill from 'components/Common/RolePill';
 import Grid from '@mui/material/Grid';
 import HeaderAvatars from 'components/Common/HeaderAvatars';
+import { PodIconThin } from 'components/Icons/podIcon';
 import { useMe } from '../../Auth/withAuth';
 import {
   ContentContainer,
@@ -26,6 +27,10 @@ import {
   InviteButton,
   PrivacyContainer,
   PrivacyText,
+  HeaderContributors,
+  MemberPodIconBackground,
+  HeaderContributorsAmount,
+  HeaderContributorsText,
 } from './styles';
 
 const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/OrgInviteLink'), { suspense: true });
@@ -262,6 +267,18 @@ function BoardPageHeader(props) {
                 )}
               </>
             )}
+            <HeaderContributors
+              onClick={() => {
+                setMoreInfoModalOpen(true);
+                setShowPods(true);
+              }}
+            >
+              <MemberPodIconBackground>
+                <PodIconThin />
+              </MemberPodIconBackground>
+              <HeaderContributorsAmount>{orgProfile?.podCount} </HeaderContributorsAmount>
+              <HeaderContributorsText>Pods</HeaderContributorsText>
+            </HeaderContributors>
             {orgUsersData?.getOrgUsers && (
               <HeaderAvatars
                 users={orgUsersData?.getOrgUsers}
