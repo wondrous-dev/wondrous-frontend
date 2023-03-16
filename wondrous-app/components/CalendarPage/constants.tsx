@@ -5,27 +5,23 @@ import {
   ENTITIES_DISPLAY_LABEL_MAP,
   ENTITIES_TYPES,
   PRIORITIES,
-  STATUS_CLOSED,
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_TODO,
 } from 'utils/constants';
-import StarIcon from 'components/Icons/starIcon';
-import FlagIcon from 'components/Icons/flag';
-import PriorityIcon from 'components/Icons/PriorityIcon';
-import { GET_ORG_LABELS, GET_ORG_PODS } from 'graphql/queries';
-import CreatePodIcon from 'components/Icons/createPod';
-import { PublicEyeIcon } from 'components/Icons/userpass';
-import TagsIcon from 'components/Icons/tagsIcon';
-import TaskStatus from 'components/Icons/TaskStatus';
-import { StatusDefaultIcon } from 'components/Icons/statusIcons';
-import { Rejected } from 'components/Icons';
-import ProposalIcon from 'components/Icons/proposalIcon';
-import GrantIcon from 'components/Icons/GrantIcon';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
+import CreatePodIcon from 'components/Icons/createPod';
+import FlagIcon from 'components/Icons/flag';
+import GrantIcon from 'components/Icons/GrantIcon';
+import PriorityIcon from 'components/Icons/PriorityIcon';
+import ProposalIcon from 'components/Icons/proposalIcon';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
+import TaskStatus from 'components/Icons/TaskStatus';
+import { GET_ORG_PODS } from 'graphql/queries';
+import { PublicEyeIcon } from 'components/Icons/userpass';
+import { StatusDefaultIcon } from 'components/Icons/statusIcons';
 
 const firstGradient = 'linear-gradient(270deg, #7427FF -11.62%, #FFFFFF 103.12%)';
 const secondGradient = 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)';
@@ -34,8 +30,8 @@ export const CALENDAR_FILTER_SCHEMA = ({ orgId }) => ({
   filters: [
     {
       multiChoice: true,
-      label: 'Task types',
-      name: 'taskTypes',
+      label: 'Entity Types',
+      name: 'types',
       items: [
         {
           id: ENTITIES_TYPES.TASK,

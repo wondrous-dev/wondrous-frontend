@@ -16,6 +16,7 @@ import SmartLink from 'components/Common/SmartLink';
 import styles from 'components/Calendar/CalendarMonthView/styles';
 import TaskStatus from 'components/Icons/TaskStatus';
 import ViewTasksModal from 'components/Calendar/CalendarMonthView/ViewTasksModal';
+import { getTaskType } from 'utils/board';
 import { CALENDAR_CONFIG } from 'utils/constants';
 import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
 import { TaskInterface } from 'types/task';
@@ -105,18 +106,7 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
               {/* Contains tasks and more button */}
               <Grid container wrap="nowrap" direction="column" className="ColumnBody" sx={styles.columnBody}>
                 {tasks.slice(0, maxTasksForMonthView).map((task) => {
-                  let taskType;
-
-                  switch (task.__typename) {
-                    case 'TaskProposalCard':
-                      taskType = 'taskProposal';
-                      break;
-                    case 'GrantCard':
-                      taskType = 'grant';
-                      break;
-                    default:
-                      taskType = 'task';
-                  }
+                  const taskType = getTaskType(task);
 
                   return (
                     <SmartLink

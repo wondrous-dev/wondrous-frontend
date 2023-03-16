@@ -32,6 +32,7 @@ interface IFilterProps {
   selected?: any;
   key?: number;
   withSearch?: boolean;
+  listenSelected?: boolean;
 }
 
 function Filter(props: IFilterProps) {
@@ -42,6 +43,7 @@ function Filter(props: IFilterProps) {
     schemaLength,
     onRemove,
     selected,
+    listenSelected = true,
     withSearch = false,
   } = props;
   const { query, variables } = filterSchema;
@@ -103,12 +105,17 @@ function Filter(props: IFilterProps) {
       handleRemove(filterSchema.name, false);
       return;
     }
+
     if (selected) {
       handleChange(selected, false);
     }
   };
 
   useEffect(() => {
+    if (!listenSelected) {
+      return;
+    }
+
     if (filterSchema?.multiChoice) {
       removeFilterFromMultiChoice(selected);
       return;
@@ -120,7 +127,7 @@ function Filter(props: IFilterProps) {
     if (!selected && filterExists) {
       handleRemove(filterSchema.name);
     }
-  }, [selected]);
+  }, [selected, listenSelected]);
 
   const clearItems = () => onRemove(filterSchema.name);
 

@@ -3,17 +3,18 @@ import { PAYMENT_STATUS } from 'utils/constants';
 import { ValueOf } from 'types/common';
 
 export type TaskFilter = {
-  priorities?: string[];
-  statuses?: any[];
-  podIds?: any[];
-  labelId?: string;
-  date?: string;
-  privacyLevel?: string;
-  orgId?: string;
   category?: string;
+  date?: string;
   fromDate?: Date | null;
+  labelId?: string;
+  limit?: number;
+  offset?: number;
+  orgId?: string;
+  podIds?: any[];
+  priorities?: string[];
+  privacyLevel?: string;
+  statuses?: any[];
   toDate?: Date | null;
-  taskTypes?: string[];
 };
 
 export interface IUser {
@@ -66,6 +67,7 @@ export interface TaskInterface {
   createdBy: string;
   description: string;
   dueDate?: any;
+  endDate?: string;
   id: string;
   links?: any;
   media?: any;
@@ -85,6 +87,7 @@ export interface TaskInterface {
   reactionCount?: any;
   rewards?: any;
   status: string;
+  startDate: string;
   title: string;
   type: string;
   taskMint?: TaskMint;

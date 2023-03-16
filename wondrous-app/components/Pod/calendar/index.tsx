@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Calendar from 'components/Calendar';
 import { useBoards } from 'utils/hooks';
 import { CALENDAR_FILTER_SCHEMA } from 'components/organization/calendar/constants';
-import CalendarFilters from 'components/organization/calendar/CalendarFilters';
+import CalendarFilters from 'components/CalendarPage/CalendarFilters';
 import { ENTITIES_TYPES, TASK_STATUS_TODO } from 'utils/constants';
 
 const CalendarPage = () => {

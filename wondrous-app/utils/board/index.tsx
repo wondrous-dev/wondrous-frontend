@@ -319,3 +319,23 @@ export const extendFiltersByView = (view: ViewType, filters) => {
     limit: 1000,
   };
 };
+
+export const getTaskType = (task: TaskInterface) => {
+  let taskType;
+
+  switch (task.__typename) {
+    case 'TaskProposalCard':
+      taskType = 'taskProposal';
+      break;
+    case 'GrantCard':
+      taskType = 'grant';
+      break;
+    case 'MilestoneCard':
+      taskType = 'milestone';
+      break;
+    default:
+      taskType = 'task';
+  }
+
+  return taskType;
+};

@@ -3,7 +3,7 @@ import omit from 'lodash/omit';
 
 import FilterIcon from 'components/Icons/filter';
 import FilterItem from 'components/Common/Filter';
-import { useBoards, useExploreGr15TasksAndBounties } from 'utils/hooks';
+import { useExploreGr15TasksAndBounties } from 'utils/hooks';
 import { IsMobileContext } from 'utils/contexts';
 import {
   BoardFiltersWrapper,
@@ -74,15 +74,8 @@ const generateDefaultFiltersState = (filters, filterSchema) => {
   }, {});
 };
 
-const CalendarFilters = ({ filterSchema, onChange, showAppliedFilters = false }) => {
-  const {
-    board: { filters },
-  } = useBoards();
-
-  const calendarFilters = filters || {};
-  const [appliedFilters, setAppliedFilters] = useState<any>(generateDefaultFiltersState(calendarFilters, filterSchema));
-
-  console.log(appliedFilters, '--------appliedFilters')
+const CalendarFilters = ({ filterSchema, onChange, showAppliedFilters = false, filters }) => {
+  const [appliedFilters, setAppliedFilters] = useState<any>(generateDefaultFiltersState(filters, filterSchema));
 
   const applyFilter = (filters) => {
     setAppliedFilters(filters);
@@ -132,6 +125,7 @@ const CalendarFilters = ({ filterSchema, onChange, showAppliedFilters = false })
             filterSchema={filter}
             onChange={handleFilterChange}
             onRemove={removeAppliedFilter}
+            listenSelected={false}
           />
         ))}
       </BoardFiltersWrapper>
