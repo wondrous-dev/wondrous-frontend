@@ -6,6 +6,7 @@ import { GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
 import { useMemo, useState } from 'react';
 import palette from 'theme/palette';
 
+import { StyledCircularProgress } from 'components/Common/WonderAiTaskGeneration/styles';
 import LeaderboardDateTabs from './LeaderboardDateTabs';
 import LeaderboardSearch from './LeaderboardSearch';
 import LeaderboardUserRow from './LeaderboardUserRow';
@@ -44,27 +45,27 @@ const LeaderboardWrapper = ({ orgId = '', podId = '' }) => {
   const [assignee, setAssignee] = useState(null);
   const today = new Date();
   const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-  const lastTwoWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14);
   const [toTime, setToTime] = useState(tomorrow);
-  const [fromTime, setFromTime] = useState(lastTwoWeek);
+  const [fromTime, setFromTime] = useState(new Date(1900, 0, 1));
   const formatToTime = format(toTime, 'yyyy-MM-dd');
   const formatFromTime = format(fromTime, 'yyyy-MM-dd');
-  const { data: getCompletedTasksBetweenPeriodsData, refetch: refetchGetCompletedTasksBetweenPeriods } = useQuery(
-    GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD,
-    {
-      fetchPolicy: 'cache-and-network',
-      skip: !((podId || orgId) && fromTime && toTime),
-      variables: {
-        toTime: formatToTime,
-        fromTime: formatFromTime,
-        includeBounties: true,
-        ...(podId ? { podId } : { orgId }),
-        ...(assignee && {
-          assigneeId: assignee?.value,
-        }),
-      },
-    }
-  );
+  const {
+    data: getCompletedTasksBetweenPeriodsData,
+    loading: getCompleteTasksLoading,
+    refetch: refetchGetCompletedTasksBetweenPeriods,
+  } = useQuery(GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, {
+    fetchPolicy: 'cache-and-network',
+    skip: !((podId || orgId) && fromTime && toTime),
+    variables: {
+      toTime: formatToTime,
+      fromTime: formatFromTime,
+      includeBounties: true,
+      ...(podId ? { podId } : { orgId }),
+      ...(assignee && {
+        assigneeId: assignee?.value,
+      }),
+    },
+  });
 
   const data = useMemo(
     () => getContributorTaskData(getCompletedTasksBetweenPeriodsData),
@@ -92,16 +93,32 @@ const LeaderboardWrapper = ({ orgId = '', podId = '' }) => {
           handleGetCompletedTasksBetweenPeriods={handleGetCompletedTasksBetweenPeriods}
         />
       </Grid>
-      {data?.length === 0 && (
-        <Typography mt="40px" color={palette.white} fontWeight="500">
-          Nothing found in this time period.
-        </Typography>
+      {getCompleteTasksLoading ? (
+        <StyledCircularProgress
+          style={{
+            marginTop: '24px',
+            width: '24px',
+            height: '24px',
+          }}
+        />
+      ) : (
+        <>
+          {data?.length === 0 && (
+            <Typography mt="40px" color={palette.white} fontWeight="500">
+              Nothing found in this time period.
+            </Typography>
+          )}
+          <Grid container flexDirection="column" gap="12px" marginTop="40px">
+            {data?.map((contributorTask, index) => (
+              <LeaderboardUserRow
+                key={contributorTask?.assigneeId}
+                position={index}
+                contributorTask={contributorTask}
+              />
+            ))}
+          </Grid>
+        </>
       )}
-      <Grid container flexDirection="column" gap="12px" marginTop="40px">
-        {data?.map((contributorTask, index) => (
-          <LeaderboardUserRow key={contributorTask?.assigneeId} position={index} contributorTask={contributorTask} />
-        ))}
-      </Grid>
     </>
   );
 };
