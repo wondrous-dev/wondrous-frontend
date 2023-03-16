@@ -44,9 +44,8 @@ const LeaderboardWrapper = ({ orgId = '', podId = '' }) => {
   const [assignee, setAssignee] = useState(null);
   const today = new Date();
   const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-  const lastTwoWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14);
   const [toTime, setToTime] = useState(tomorrow);
-  const [fromTime, setFromTime] = useState(lastTwoWeek);
+  const [fromTime, setFromTime] = useState(new Date(1900, 0, 1));
   const formatToTime = format(toTime, 'yyyy-MM-dd');
   const formatFromTime = format(fromTime, 'yyyy-MM-dd');
   const { data: getCompletedTasksBetweenPeriodsData, refetch: refetchGetCompletedTasksBetweenPeriods } = useQuery(
