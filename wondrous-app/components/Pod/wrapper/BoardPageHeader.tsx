@@ -15,6 +15,8 @@ import RolePill from 'components/Common/RolePill';
 import MoreInfoModal from 'components/Common/MoreInfoModal';
 import HeaderAvatars from 'components/Common/HeaderAvatars';
 import { Button as PrimaryButton } from 'components/Button';
+import MembersIcon from 'components/Icons/members';
+import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
 import {
   ContentContainer,
@@ -26,6 +28,10 @@ import {
   BoardsSubheaderWrapper,
   PrivacyContainer,
   PrivacyText,
+  HeaderContributors,
+  MemberPodIconBackground,
+  HeaderContributorsAmount,
+  HeaderContributorsText,
 } from '../../organization/wrapper/styles';
 import PodInviteLinkModal from '../../Common/InviteLinkModal/PodInviteLink';
 
@@ -219,14 +225,18 @@ function BoardPageHeader(props) {
                 )}
               </>
             )}
-            {podUsersData?.getPodUsers && (
-              <HeaderAvatars
-                users={podUsersData?.getPodUsers}
-                contributorCount={podProfile?.contributorCount}
-                setMoreInfoModalOpen={setMoreInfoModalOpen}
-                setShowUsers={setShowUsers}
-              />
-            )}
+            <HeaderContributors
+              onClick={() => {
+                setMoreInfoModalOpen(true);
+                setShowUsers(true);
+              }}
+            >
+              <MemberPodIconBackground>
+                <MembersIcon stroke={palette.blue20} />
+              </MemberPodIconBackground>
+              <HeaderContributorsAmount>{podProfile?.contributorCount} </HeaderContributorsAmount>
+              <HeaderContributorsText>Members</HeaderContributorsText>
+            </HeaderContributors>
           </RolePodMemberContainer>
 
           {!!filterSchema && (
