@@ -1,39 +1,33 @@
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import React, { useEffect, useState } from 'react';
+import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
-import { useLazyQuery } from '@apollo/client';
-import palette from 'theme/palette';
-import { PERMISSIONS, PRIVACY_LEVEL, ENTITIES_DISPLAY_LABEL_MAP } from 'utils/constants';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { PERMISSIONS, PRIVACY_LEVEL, ENTITIES_DISPLAY_LABEL_MAP, AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { usePodBoard } from 'utils/hooks';
-import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
+import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD, GET_POD_USERS } from 'graphql/queries';
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
 import MoreInfoModal from 'components/Common/MoreInfoModal';
-import MembersIcon from 'components/Icons/members';
+import HeaderAvatars from 'components/Common/HeaderAvatars';
 import { Button as PrimaryButton } from 'components/Button';
+import { useMe } from '../../Auth/withAuth';
 import {
   ContentContainer,
   Container,
   RolePodMemberContainer,
-  HeaderContributors,
-  HeaderContributorsAmount,
-  HeaderContributorsText,
-  HeaderMainBlock,
   HeaderTitle,
   RoleButtonWrapper,
   TokenHeader,
-  HeaderTopLeftContainer,
   BoardsSubheaderWrapper,
-  MemberPodIconBackground,
   PrivacyContainer,
   PrivacyText,
 } from '../../organization/wrapper/styles';
 import PodInviteLinkModal from '../../Common/InviteLinkModal/PodInviteLink';
-import { useMe } from '../../Auth/withAuth';
 
 function BoardPageHeader(props) {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId, headerTitle = null } = props;
@@ -126,6 +120,15 @@ function BoardPageHeader(props) {
     }
   }, [podBoard?.podId]);
 
+  const { data: podUsersData } = useQuery(GET_POD_USERS, {
+    skip: !podBoard?.podId,
+    variables: {
+      searchString: '',
+      podId: podBoard?.podId,
+      limit: AVATAR_LIST_OVERFLOW_MAX,
+    },
+  });
+
   return (
     <>
       <TaskViewModalWatcher />
@@ -166,14 +169,12 @@ function BoardPageHeader(props) {
       <ChooseEntityToCreate />
       <ContentContainer>
         <TokenHeader>
-          <HeaderMainBlock>
-            <HeaderTopLeftContainer>
-              <HeaderTitle>{ENTITIES_DISPLAY_LABEL_MAP[entity?.toString()] || headerTitle}</HeaderTitle>
-              <PrivacyContainer>
-                <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
-              </PrivacyContainer>
-            </HeaderTopLeftContainer>
-          </HeaderMainBlock>
+          <Grid container width="fit-content" alignItems="center" gap="8px">
+            <HeaderTitle>{ENTITIES_DISPLAY_LABEL_MAP[entity?.toString()] || headerTitle}</HeaderTitle>
+            <PrivacyContainer>
+              <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
+            </PrivacyContainer>
+          </Grid>
         </TokenHeader>
 
         <BoardsSubheaderWrapper>
@@ -181,6 +182,7 @@ function BoardPageHeader(props) {
             {permissions && podRoleName && (
               <RoleButtonWrapper>
                 <RolePill
+                  profilePicture={loggedInUser?.profilePicture}
                   onClick={() => {
                     setOpenCurrentRoleModal(true);
                   }}
@@ -217,18 +219,14 @@ function BoardPageHeader(props) {
                 )}
               </>
             )}
-            <HeaderContributors
-              onClick={() => {
-                setMoreInfoModalOpen(true);
-                setShowUsers(true);
-              }}
-            >
-              <MemberPodIconBackground>
-                <MembersIcon stroke={palette.blue20} />
-              </MemberPodIconBackground>
-              <HeaderContributorsAmount>{podProfile?.contributorCount} </HeaderContributorsAmount>
-              <HeaderContributorsText>Members</HeaderContributorsText>
-            </HeaderContributors>
+            {podUsersData?.getPodUsers && (
+              <HeaderAvatars
+                users={podUsersData?.getPodUsers}
+                contributorCount={podProfile?.contributorCount}
+                setMoreInfoModalOpen={setMoreInfoModalOpen}
+                setShowUsers={setShowUsers}
+              />
+            )}
           </RolePodMemberContainer>
 
           {!!filterSchema && (

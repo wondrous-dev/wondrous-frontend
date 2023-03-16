@@ -31,14 +31,26 @@ function ContributorOnboardingPage({ path = 'organization' }) {
             token,
           },
           onCompleted: (data) => {
-            router.push(`/${path}/${orgInfo?.username}/home`, undefined, {
-              shallow: true,
-            });
+            if (orgInfo?.shared) {
+              router.push(`/${path}/${orgInfo?.username}/boards`, undefined, {
+                shallow: true,
+              });
+            } else {
+              router.push(`/${path}/${orgInfo?.username}/home`, undefined, {
+                shallow: true,
+              });
+            }
           },
           onError: () => {
-            router.push(`/${path}/${orgInfo?.username}/home`, undefined, {
-              shallow: true,
-            });
+            if (orgInfo?.shared) {
+              router.push(`/${path}/${orgInfo?.username}/boards`, undefined, {
+                shallow: true,
+              });
+            } else {
+              router.push(`/${path}/${orgInfo?.username}/home`, undefined, {
+                shallow: true,
+              });
+            }
           },
         });
       }
