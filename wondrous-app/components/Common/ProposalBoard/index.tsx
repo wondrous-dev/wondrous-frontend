@@ -263,15 +263,11 @@ const ProposalBoard = (props: Props) => {
   const handleOpenModal = () => {
     setOpenProposalModal((prevState) => !prevState);
   };
-  const [filters, setFilters] = useState({
-    podIds: [],
-    priorities: [],
-    labelId: null,
-  });
+
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
-
+  const filters = board?.filters;
   const [getOrgTaskBoardProposals, { data, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
     GET_ORG_TASK_BOARD_PROPOSALS,
     {
