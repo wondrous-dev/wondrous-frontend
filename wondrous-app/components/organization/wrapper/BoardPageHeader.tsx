@@ -15,6 +15,8 @@ import RolePill from 'components/Common/RolePill';
 import Grid from '@mui/material/Grid';
 import HeaderAvatars from 'components/Common/HeaderAvatars';
 import { PodIconThin } from 'components/Icons/podIcon';
+import MembersIcon from 'components/Icons/members';
+import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
 import {
   ContentContainer,
@@ -279,14 +281,18 @@ function BoardPageHeader(props) {
               <HeaderContributorsAmount>{orgProfile?.podCount} </HeaderContributorsAmount>
               <HeaderContributorsText>Pods</HeaderContributorsText>
             </HeaderContributors>
-            {orgUsersData?.getOrgUsers && (
-              <HeaderAvatars
-                users={orgUsersData?.getOrgUsers}
-                contributorCount={orgProfile?.contributorCount}
-                setMoreInfoModalOpen={setMoreInfoModalOpen}
-                setShowUsers={setShowUsers}
-              />
-            )}
+            <HeaderContributors
+              onClick={() => {
+                setMoreInfoModalOpen(true);
+                setShowUsers(true);
+              }}
+            >
+              <MemberPodIconBackground>
+                <MembersIcon stroke={palette.blue20} />
+              </MemberPodIconBackground>
+              <HeaderContributorsAmount>{orgProfile?.contributorCount} </HeaderContributorsAmount>
+              <HeaderContributorsText>Members</HeaderContributorsText>
+            </HeaderContributors>
           </RolePodMemberContainer>
 
           {!!filterSchema && (
