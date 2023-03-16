@@ -54,14 +54,26 @@ function ContributorOnboardingPage({ preloadedState }: Props) {
             token,
           },
           onCompleted: (data) => {
-            router.push(`/organization/${orgInfo?.username}/home`, undefined, {
-              shallow: true,
-            });
+            if (orgInfo?.shared) {
+              router.push(`/organization/${orgInfo?.username}/boards`, undefined, {
+                shallow: true,
+              });
+            } else {
+              router.push(`/organization/${orgInfo?.username}/home`, undefined, {
+                shallow: true,
+              });
+            }
           },
           onError: () => {
-            router.push(`/organization/${orgInfo?.username}/home`, undefined, {
-              shallow: true,
-            });
+            if (orgInfo?.shared) {
+              router.push(`/organization/${orgInfo?.username}/boards`, undefined, {
+                shallow: true,
+              });
+            } else {
+              router.push(`/organization/${orgInfo?.username}/home`, undefined, {
+                shallow: true,
+              });
+            }
           },
         });
       } else if (podInfo) {
