@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { DayPickerRangeController } from 'react-dates';
 import moment from 'moment';
 import 'react-dates/initialize';
@@ -6,30 +6,76 @@ import 'react-dates/lib/css/_datepicker.css';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import Dialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
 
-import {
-  DATEPICKER_FIELDS,
-  DATEPICKER_OPTIONS,
-  MONTH_DAY_FULL_YEAR,
-  DAY_STRING_MONTH_SHORT_YEAR,
-  DEFAULT_DATEPICKER_VALUE,
-  WEEK_DAYS,
-} from 'utils/constants';
+import { DATEPICKER_FIELDS, MONTH_DAY_FULL_YEAR, DEFAULT_DATEPICKER_VALUE } from 'utils/constants';
 
-import DatePickerRecurringUtilities from 'components/DatePickerRecurringUtilities';
 import DatePickerNavButton from 'components/DatePickerNavButton';
 import CalendarDay from 'components/CalendarDay';
+import CloseIcon from 'components/Icons/close.svg';
+import ClearIcon from 'components/Icons/clear.svg';
+import Button from 'components/Button';
 
-import styles from './DateRangePickerStyles';
+import palette from 'theme/palette';
 
-function DateRangePicker({ sx }) {
+const textFieldInputProps = ({ dateString, onClick }) => ({
+  readOnly: true,
+  endAdornment: dateString && (
+    <Grid
+      onClick={onClick}
+      container
+      alignItems="center"
+      justifyContent="center"
+      width="12px"
+      sx={{
+        '&:hover': {
+          cursor: 'pointer',
+        },
+        svg: {
+          transform: 'scale(0.8)',
+          path: {
+            fill: palette.white,
+          },
+        },
+      }}
+    >
+      <CloseIcon />
+    </Grid>
+  ),
+  sx: {
+    color: palette.white,
+    background: palette.background.default,
+    borderRadius: '6px',
+    height: '35px',
+    fontSize: '15px',
+    fontWeight: '500',
+    padding: '8px',
+    '& .MuiInputBase-input': {
+      padding: '0',
+    },
+  },
+});
+
+type DateRangePickerProps = {
+  hideRecurring?: boolean;
+  blockPastDates?: boolean;
+  onConfirm: (dateRange) => void;
+  ButtonComponent: React.ComponentType<any>;
+  ButtonComponentOnClick?: () => void;
+  ButtonComponentProps?: { [key: string]: any };
+};
+
+const DateRangePicker = ({
+  blockPastDates = true,
+  onConfirm,
+  ButtonComponent,
+  ButtonComponentOnClick,
+  ButtonComponentProps,
+}: DateRangePickerProps) => {
   const [dateRange, setDateRange] = useState(DEFAULT_DATEPICKER_VALUE);
   const [focusedInput, setFocusedInput] = useState(null);
-  const [showOptions, setShowOptions] = useState(false);
-  const [repeatType, setRepeatType] = useState();
-  const [repeatValue, setRepeatValue] = useState();
-  const [weekDaysSelected, setWeekDaysSelected] = useState(WEEK_DAYS);
-  const [monthInView, setMonthInView] = useState();
 
   moment.updateLocale('en', {
     week: {
@@ -37,102 +83,41 @@ function DateRangePicker({ sx }) {
     },
   });
 
-  const parsedWeekDays = Object.values(weekDaysSelected)
-    .map((item, idx) => (item ? idx : null))
-    .filter((item) => item || item === 0);
-
-  const handleWeekDaysChange = (event) => {
-    setWeekDaysSelected({
-      ...weekDaysSelected,
-      [event.target.name]: event.target.checked,
-    });
-  };
-
   const startDateString = dateRange?.startDate?.format(MONTH_DAY_FULL_YEAR) || '';
   const endDateString = dateRange?.endDate?.format(MONTH_DAY_FULL_YEAR) || '';
 
   const todayMoment = moment();
 
-  const displayValue = useMemo(() => {
-    const start = dateRange?.startDate?.format(DAY_STRING_MONTH_SHORT_YEAR);
-    const end = dateRange?.endDate?.format(DAY_STRING_MONTH_SHORT_YEAR);
-
-    if (!start && !end && !repeatType) return '';
-
-    return `${start ? `${start} - ` : ''} ${end || ''} ${repeatType || ''}`;
-  }, [dateRange, repeatType]);
-
-  const setDateAtStartDate = () => {
-    if (dateRange.startDate) return setDateRange({ ...dateRange, endDate: null });
-    return setDateRange({ startDate: dateRange.endDate, endDate: null });
+  const handleOnClose = () => {
+    setFocusedInput(null);
+    setDateRange(DEFAULT_DATEPICKER_VALUE);
   };
 
-  const setDateAtEndDate = () => {
-    if (dateRange.endDate) return setDateRange({ ...dateRange, startDate: null });
-    return setDateRange({ endDate: dateRange.startDate, startDate: null });
+  const handleOnConfirm = () => {
+    onConfirm(dateRange);
+    setFocusedInput(null);
   };
-
-  const highlightDay = (day) => {
-    const initialDate = dateRange.startDate || todayMoment;
-    const dayOfyear = day.dayOfYear();
-    const initialDayOfYear = initialDate.dayOfYear();
-
-    if (repeatType === DATEPICKER_OPTIONS.DAILY) {
-      setFocusedInput(DATEPICKER_FIELDS.START_DATE);
-      return day.isSameOrAfter(dateRange.startDate || todayMoment);
-    }
-    if (repeatType === DATEPICKER_OPTIONS.WEEKLY) {
-      setFocusedInput(DATEPICKER_FIELDS.START_DATE);
-
-      return parsedWeekDays.includes(day.weekday()) && dayOfyear > initialDayOfYear;
-    }
-    if (repeatType === DATEPICKER_OPTIONS.MONTHLY) {
-      setFocusedInput(DATEPICKER_FIELDS.START_DATE);
-      return day.date() === repeatValue && dayOfyear > initialDayOfYear;
-    }
-    if (repeatType === DATEPICKER_OPTIONS.PERIODICALLY) {
-      setFocusedInput(DATEPICKER_FIELDS.START_DATE);
-
-      const rest = (dayOfyear + initialDayOfYear) % Number(repeatValue);
-
-      return rest === 0 && dayOfyear > initialDayOfYear;
-    }
-    return false;
-  };
-
-  useEffect(() => {
-    if (repeatType === DATEPICKER_OPTIONS.DAILY) {
-      setDateAtStartDate();
-    }
-    if (repeatType === DATEPICKER_OPTIONS.MONTHLY) {
-      setDateAtStartDate();
-    }
-    if (repeatType === DATEPICKER_OPTIONS.PERIODICALLY) {
-      setDateAtStartDate();
-    }
-  }, [repeatType]);
 
   return (
-    <Box mt={4} display="flex" flexDirection="column" maxWidth={300}>
-      <TextField
-        onClick={() => setFocusedInput(DATEPICKER_FIELDS.END_DATE)}
-        placeholder="Choose date"
-        InputProps={{
-          readOnly: true,
+    <>
+      <ButtonComponent
+        onClick={() => {
+          setFocusedInput(DATEPICKER_FIELDS.START_DATE);
+          ButtonComponentOnClick?.();
         }}
-        value={displayValue}
+        {...ButtonComponentProps}
       />
-
-      {focusedInput && (
-        <Box>
-          <Box display="flex">
+      <Dialog open={Boolean(focusedInput)} onClose={handleOnClose} sx={{}}>
+        <Box width="302px" bgcolor={palette.black92} border={`1px solid ${palette.grey79}`}>
+          <Box gap="10px" sx={{ background: palette.black92 }} padding="12px 25px" display="flex">
             <TextField
               type="text"
               name="start date"
               value={startDateString}
-              InputProps={{
-                readOnly: true,
-              }}
+              InputProps={textFieldInputProps({
+                dateString: startDateString,
+                onClick: () => setDateRange({ ...dateRange, startDate: null }),
+              })}
               placeholder="Start Date"
               onClick={() => setFocusedInput(DATEPICKER_FIELDS.START_DATE)}
             />
@@ -140,15 +125,48 @@ function DateRangePicker({ sx }) {
               type="text"
               name="end date"
               value={endDateString}
-              InputProps={{
-                readOnly: true,
-              }}
+              InputProps={textFieldInputProps({
+                dateString: endDateString,
+                onClick: () => setDateRange({ ...dateRange, endDate: null }),
+              })}
               placeholder="End Date"
               onClick={() => setFocusedInput(DATEPICKER_FIELDS.END_DATE)}
+              sx={{
+                background: palette.background.default,
+                borderRadius: '6px',
+                height: '35px',
+                maxWidth: '50%',
+              }}
             />
           </Box>
-          <Box sx={{ ...sx }}>
+          <Box
+            sx={{
+              '& .DayPicker': {
+                width: '300px !important',
+                background: palette.black92,
+              },
+              '& .CalendarMonthGrid': {
+                background: palette.black92,
+              },
+              '& .CalendarMonth': {
+                background: palette.black92,
+                '& .CalendarMonth_caption': {
+                  fontSize: 13,
+                  color: palette.blue20,
+                  fontWeight: 500,
+                },
+              },
+              '& .DayPicker_transitionContainer': {
+                height: '250px !important',
+              },
+            }}
+          >
             <DayPickerRangeController
+              renderWeekHeaderElement={(day) => (
+                <Typography fontWeight="700" fontSize="13px" color={palette.blue20}>
+                  {day.toUpperCase()}
+                </Typography>
+              )}
               startDate={dateRange.startDate}
               startDateId="your_unique_start_date_id"
               endDate={dateRange.endDate}
@@ -160,42 +178,71 @@ function DateRangePicker({ sx }) {
               displayFormat="MM/DD/yyyy"
               daySize={36}
               minimumNights={0}
-              hideKeyboardShortcutsPanel
+              hideKeyboardhortcutPanel
               enableOutsideDays
               navPrev={<DatePickerNavButton prev />}
               navNext={<DatePickerNavButton next />}
-              onPrevMonthClick={(month) => {
-                setMonthInView(month);
-              }}
-              onNextMonthClick={(month) => {
-                setMonthInView(month);
-              }}
-              customArrowIcon={<></>}
-              isDayHighlighted={(day) => highlightDay(day)}
-              isDayBlocked={(day) => day.isBefore(todayMoment)}
+              noBorder
+              hideKeyboardShortcutsPanel
+              customArrowIcon={null}
+              isDayBlocked={(day) => blockPastDates && day.isBefore(todayMoment)}
               renderCalendarDay={(props) => <CalendarDay {...props} />}
               renderCalendarInfo={() => (
-                <DatePickerRecurringUtilities
-                  repeatValue={repeatValue}
-                  showOptions={showOptions}
-                  setShowOptions={setShowOptions}
-                  setDateRange={setDateRange}
-                  setRepeatType={setRepeatType}
-                  repeatType={repeatType}
-                  setRepeatValue={setRepeatValue}
-                  dateRange={dateRange}
-                  todayMoment={todayMoment}
-                  onWeekDaysChange={handleWeekDaysChange}
-                  weekDaysSelected={weekDaysSelected}
-                  monthInView={monthInView}
-                />
+                <Grid container padding="0 25px">
+                  <Grid
+                    container
+                    item
+                    justifyContent="space-between"
+                    padding="12px 0"
+                    borderTop={`1px solid ${palette.grey79}`}
+                  >
+                    <Button
+                      onClick={() => {
+                        setDateRange({ startDate: null, endDate: null });
+                      }}
+                      color="secondary"
+                      borderRadius={6}
+                      height={28}
+                      width="fit-content"
+                      buttonTheme={{
+                        fontWeight: 500,
+                        fontSize: 13,
+                        paddingX: 6,
+                        paddingY: 8,
+                      }}
+                    >
+                      <Grid container alignItems="center" width="fit-content" sx={{ svg: { transform: 'scale(0.6)' } }}>
+                        <ClearIcon />
+                        <Typography fontWeight="500" fontSize="13px" color={palette.white}>
+                          Clear
+                        </Typography>
+                      </Grid>
+                    </Button>
+                    <Button
+                      disabled={!dateRange.startDate || !dateRange.endDate}
+                      onClick={handleOnConfirm}
+                      color="purple"
+                      borderRadius={200}
+                      width="fit-content"
+                      height={28}
+                      buttonTheme={{
+                        paddingY: 8,
+                        paddingX: 16,
+                        fontWeight: 500,
+                        fontSize: 13,
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Grid>
+                </Grid>
               )}
             />
           </Box>
         </Box>
-      )}
-    </Box>
+      </Dialog>
+    </>
   );
-}
+};
 
 export default DateRangePicker;

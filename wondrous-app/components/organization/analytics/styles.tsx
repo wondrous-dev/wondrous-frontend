@@ -85,7 +85,7 @@ export const StyledTextField = styled(TextField)`
 
 export const ContributorDiv = styled.div`
   border: 1px solid rgb(54, 54, 54);
-  background: #1d1d1d;
+  background: ${palette.grey910};
   padding: 8px 16px;
   width: 100%;
   border-radius: 8px;

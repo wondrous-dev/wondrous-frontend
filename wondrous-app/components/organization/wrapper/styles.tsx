@@ -105,6 +105,9 @@ export const HeaderTag = styled(Typography)`
 export const RolePodMemberContainer = styled.div`
   display: flex;
   gap: 14px;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    justify-content: space-between;
+  }
 `;
 
 export const HeaderFollowButton = styled(Button)`
@@ -342,9 +345,9 @@ export const PrivacyContainer = styled.div`
 
 export const PrivacyText = styled(Typography)`
   && {
-    color: ${palette.blue20};
+    color: ${palette.grey250};
     font-family: 'Space Grotesk';
-    font-weight: 600;
+    font-weight: 500;
     font-size: 12px;
   }
 `;
@@ -372,7 +375,7 @@ export const BoardsSubheaderWrapper = styled.div`
   grid-row-gap: 20px;
   align-items: center;
   width: 95%;
-  margin-top: 4px;
+  margin-top: 24px;
 
   ${({ theme }) => theme.breakpoints.down('large')} {
     grid-template-columns: 1fr;
@@ -381,7 +384,7 @@ export const BoardsSubheaderWrapper = styled.div`
 
 export const Container = styled.div`
   width: 95%;
-  margin-top: 24px;
+  margin-top: 32px;
 `;
 
 export const InviteButton = styled(ButtonBase)`
