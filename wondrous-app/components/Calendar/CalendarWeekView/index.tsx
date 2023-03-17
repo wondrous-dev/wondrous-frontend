@@ -11,6 +11,7 @@ import palette from 'theme/palette';
 import SmartLink from 'components/Common/SmartLink';
 import styles from 'components/Calendar/CalendarWeekView/styles';
 import TaskStatus from 'components/Icons/TaskStatus';
+import { getTaskType } from 'utils/board';
 import { CALENDAR_CONFIG } from 'utils/constants';
 import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
 
@@ -68,33 +69,37 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
               <Box className="ColumnHeaderText">{format(date, 'ccc d')}</Box>
             </Grid>
             <Grid container className="ColumnBody" alignItems="flex-start" sx={styles.columnBody}>
-              {tasks?.map((task) => (
-                <SmartLink
-                  key={task.id}
-                  href={`${router.asPath}&task=${task.id}`}
-                  preventLinkNavigation
-                  onNavigate={() => {
-                    const query = {
-                      ...router.query,
-                      task: task.id,
-                    };
+              {tasks?.map((task) => {
+                const taskType = getTaskType(task);
 
-                    router.push({ query }, undefined, { scroll: false, shallow: true });
-                  }}
-                >
-                  <Grid container display="flex" wrap="nowrap" alignItems="flex-start" sx={styles.taskRow}>
-                    <TaskStatus
-                      style={{
-                        width: '16px',
-                        height: '16px',
-                        flexShrink: 0,
-                      }}
-                      status={task?.status}
-                    />
-                    <Typography sx={styles.taskTitle}>{task.title}</Typography>
-                  </Grid>
-                </SmartLink>
-              ))}
+                return (
+                  <SmartLink
+                    key={task.id}
+                    href={`${router.asPath}${router.asPath.includes('?') ? '&' : '?'}${taskType}=${task.id}`}
+                    preventLinkNavigation
+                    onNavigate={() => {
+                      const query = {
+                        ...router.query,
+                        [taskType]: task.id,
+                      };
+
+                      router.push({ query }, undefined, { scroll: false, shallow: true });
+                    }}
+                  >
+                    <Grid container display="flex" wrap="nowrap" alignItems="flex-start" sx={styles.taskRow}>
+                      <TaskStatus
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                          flexShrink: 0,
+                        }}
+                        status={task?.status}
+                      />
+                      <Typography sx={styles.taskTitle}>{task.title}</Typography>
+                    </Grid>
+                  </SmartLink>
+                );
+              })}
             </Grid>
           </Grid>
         );

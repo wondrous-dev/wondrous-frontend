@@ -110,7 +110,7 @@ const CalendarFilters = ({ filterSchema, onChange, showAppliedFilters = false, f
 
   const clearAll = () => {
     setAppliedFilters({});
-    onChange({ taskTypes: [] });
+    onChange({ types: [] });
   };
 
   return (

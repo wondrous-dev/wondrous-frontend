@@ -22,8 +22,15 @@ export const GET_ORG_GRANTS = gql`
 `;
 
 export const GET_POD_GRANTS = gql`
-  query getGrantPodBoard($podId: ID!, $status: String, $limit: Int, $offset: Int) {
-    getGrantPodBoard(podId: $podId, status: $status, limit: $limit, offset: $offset) {
+  query getGrantPodBoard($podId: ID!, $status: String, $fromDate: String, $toDate: String, $limit: Int, $offset: Int) {
+    getGrantPodBoard(
+      podId: $podId
+      status: $status
+      fromDate: $fromDate
+      toDate: $toDate
+      limit: $limit
+      offset: $offset
+    ) {
       ...GrantCardFragment
     }
   }

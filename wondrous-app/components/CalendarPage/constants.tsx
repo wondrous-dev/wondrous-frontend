@@ -1,3 +1,4 @@
+import { DocumentNode } from 'graphql';
 import React from 'react';
 import Box from '@mui/material/Box';
 
@@ -26,8 +27,55 @@ import { StatusDefaultIcon } from 'components/Icons/statusIcons';
 const firstGradient = 'linear-gradient(270deg, #7427FF -11.62%, #FFFFFF 103.12%)';
 const secondGradient = 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)';
 
-export const CALENDAR_FILTER_SCHEMA = ({ orgId }) => ({
-  filters: [
+interface FilterItem {
+  id: string;
+  name: string;
+  gradient: string;
+  icon: React.ReactNode;
+  pillIcon?: React.ComponentType<unknown>;
+}
+
+interface FilterSchema {
+  name: string;
+  label: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  multiChoice?: boolean;
+  items: FilterItem[];
+  query?: DocumentNode;
+  variables?: Record<string, unknown>;
+  mutate?: (items: FilterItem[]) => FilterItem[];
+}
+
+interface Filter {
+  types: string[];
+  statuses: string[];
+  labelId?: string[];
+}
+
+interface FilterProps {
+  orgId: string;
+  podId: string;
+  filter: Filter;
+  onChangeFilter: (filter: Filter) => void;
+}
+
+export const getFilterSchema = ({ orgId, podId }): ({ multiChoice: boolean; name: string; label: string; items: ({ gradient: string; name: any; icon: JSX.Element; id: string } | { gradient: string; name: any; icon: JSX.Element; id: string } | { gradient: string; name: any; icon: JSX.Element; id: string } | { gradient: string; name: any; icon: JSX.Element; id: string } | { gradient: string; name: any; icon: JSX.Element; id: string })[] } | {
+  multiChoice: boolean; name: string; icon: ({
+                                               style,
+                                               ...rest
+                                             }: { style: any; [p: string]: any }) => JSX.Element; label: string; items: ({ pillIcon: (props) => JSX.Element; gradient: string; name: string; icon: JSX.Element; id: string } | { pillIcon: (props) => JSX.Element; gradient: string; name: string; icon: JSX.Element; id: string } | { pillIcon: (props) => JSX.Element; gradient: string; name: string; icon: JSX.Element; id: string } | { pillIcon: (props) => JSX.Element; gradient: string; name: string; icon: JSX.Element; id: string } | { pillIcon: (props) => JSX.Element; gradient: string; name: string; icon: JSX.Element; id: string })[]
+} | {
+  multiChoice: boolean; name: string; icon: ({
+                                               style,
+                                               ...rest
+                                             }: { style: any; [p: string]: any }) => JSX.Element; label: string; items: { pillIcon: () => JSX.Element; color: string; name: JSX.Element; icon: JSX.Element; id: string }[]
+} | {
+  name: string; icon: ({
+                         style,
+                         ...rest
+                       }: { style: any; [p: string]: any }) => JSX.Element; label: string; items: ({ pillIcon: (props) => JSX.Element; gradient: string; name: string; id: string } | { pillIcon: (props) => JSX.Element; gradient: string; name: string; id: string })[]
+})[] => {
+  const filters = [
     {
       multiChoice: true,
       label: 'Entity Types',
@@ -117,32 +165,6 @@ export const CALENDAR_FILTER_SCHEMA = ({ orgId }) => ({
         // },
       ],
     },
-    {
-      name: 'podIds',
-      label: 'Pods',
-      items: [],
-      query: GET_ORG_PODS,
-      variables: { orgId },
-      icon: CreatePodIcon,
-      multiChoice: true,
-      mutate: (items) =>
-        items.map((pod) => ({
-          ...pod,
-          gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
-          icon: (
-            <CreatePodIcon
-              style={{
-                width: '26px',
-                height: '26px',
-                marginRight: '8px',
-                background: pod?.color,
-                borderRadius: '100%',
-              }}
-            />
-          ),
-          pillIcon: CreatePodIcon,
-        })),
-    },
     // {
     //   name: 'labelId',
     //   label: 'Tags',
@@ -189,5 +211,36 @@ export const CALENDAR_FILTER_SCHEMA = ({ orgId }) => ({
         },
       ],
     },
-  ],
-});
+  ];
+
+  if (!podId) {
+    filters.splice(1, 0, {
+      name: 'podIds',
+      label: 'Pods',
+      items: [],
+      query: GET_ORG_PODS,
+      variables: { orgId },
+      icon: CreatePodIcon,
+      multiChoice: true,
+      mutate: (items) =>
+        items.map((pod) => ({
+          ...pod,
+          gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
+          icon: (
+            <CreatePodIcon
+              style={{
+                width: '26px',
+                height: '26px',
+                marginRight: '8px',
+                background: pod?.color,
+                borderRadius: '100%',
+              }}
+            />
+          ),
+          pillIcon: CreatePodIcon,
+        })),
+    } as any);
+  }
+
+  return filters;
+};

@@ -7,4 +7,5 @@ export type CalendarTaskFilter = TaskFilter & {
 
 export enum CalendarProvidedIn {
   ORGANIZATION = 'organization',
+  POD = 'pod',
 }
