@@ -1,41 +1,41 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
-import { PERMISSIONS, PRIVACY_LEVEL, ENTITIES_DISPLAY_LABEL_MAP } from 'utils/constants';
-import MembersIcon from 'components/Icons/members';
+import { PERMISSIONS, PRIVACY_LEVEL, ENTITIES_DISPLAY_LABEL_MAP, AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
 import { Button as PrimaryButton } from 'components/Button';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 
-import usePrevious, { useOrgBoard, useIsMobile } from 'utils/hooks';
-import { useLazyQuery } from '@apollo/client';
-import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
+import { useOrgBoard, useIsMobile } from 'utils/hooks';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE, GET_ORG_USERS } from 'graphql/queries/org';
 import { useRouter } from 'next/router';
 import RolePill from 'components/Common/RolePill';
+import Grid from '@mui/material/Grid';
+import HeaderAvatars from 'components/Common/HeaderAvatars';
 import { PodIconThin } from 'components/Icons/podIcon';
+import MembersIcon from 'components/Icons/members';
 import palette from 'theme/palette';
 import ViewGrant from 'components/ViewGrant';
-import { delQuery } from 'utils/index';
+import { delQuery } from 'utils';
+import { useMe } from '../../Auth/withAuth';
 import {
   ContentContainer,
   RolePodMemberContainer,
-  HeaderContributors,
-  HeaderContributorsAmount,
-  HeaderContributorsText,
-  HeaderMainBlock,
   HeaderTitle,
   TokenHeader,
-  HeaderTopLeftContainer,
   BoardsSubheaderWrapper,
-  MemberPodIconBackground,
   RoleButtonWrapper,
   Container,
   InviteButton,
   PrivacyContainer,
   PrivacyText,
+  HeaderContributors,
+  MemberPodIconBackground,
+  HeaderContributorsAmount,
+  HeaderContributorsText,
 } from './styles';
-import { useMe } from '../../Auth/withAuth';
 
 const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/OrgInviteLink'), { suspense: true });
 const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
@@ -157,6 +157,15 @@ function BoardPageHeader(props) {
   }, [orgBoard?.orgId]);
 
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
+  const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
+    skip: !orgBoard?.orgId,
+    variables: {
+      searchString: '',
+      orgId: orgBoard?.orgId,
+      limit: AVATAR_LIST_OVERFLOW_MAX,
+    },
+  });
+
   const handleGrantModalClose = () => {
     router.push({ pathname: `${delQuery(router.asPath)}` }, undefined, { scroll: false, shallow: true });
   };
@@ -219,14 +228,12 @@ function BoardPageHeader(props) {
       )}
       <ContentContainer>
         <TokenHeader>
-          <HeaderMainBlock>
-            <HeaderTopLeftContainer>
-              <HeaderTitle>{ENTITIES_DISPLAY_LABEL_MAP[entity?.toString()] || headerTitle}</HeaderTitle>
-              <PrivacyContainer>
-                <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
-              </PrivacyContainer>
-            </HeaderTopLeftContainer>
-          </HeaderMainBlock>
+          <Grid container width="fit-content" alignItems="center" gap="8px">
+            <HeaderTitle>{ENTITIES_DISPLAY_LABEL_MAP[entity?.toString()] || headerTitle}</HeaderTitle>
+            <PrivacyContainer>
+              <PrivacyText>{orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}</PrivacyText>
+            </PrivacyContainer>
+          </Grid>
         </TokenHeader>
         <BoardsSubheaderWrapper isMobile={isMobile}>
           <RolePodMemberContainer>
@@ -241,6 +248,7 @@ function BoardPageHeader(props) {
                     setOpenCurrentRoleModal(true);
                   }}
                   roleName={orgRoleName}
+                  profilePicture={loggedInUser?.profilePicture}
                 />
               </RoleButtonWrapper>
             )}

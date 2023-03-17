@@ -1,33 +1,30 @@
-import { useRouter } from 'next/router';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import palette from 'theme/palette';
-import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_ORG_GUILD } from 'graphql/queries';
-import { CONNECT_GUILD_TO_ORG, DISCONNECT_GUILD_FROM_ORG } from 'graphql/mutations';
+import { ErrorText } from 'components/Common';
+import DropdownSelect from 'components/Common/DropdownSelect';
+import { StyledLink, StyledNextLink } from 'components/Common/text';
 import {
-  IntegrationsInputsBlock,
   IntegrationsHelperText,
-  IntegrationsSnapshotSubBlock,
-  IntegrationsSnapshotInputSubBlock,
-  IntegrationsConnectButton,
-  IntegrationsDisconnectButton,
+  IntegrationsInputsBlock,
   IntegrationsSnapshotENSInput,
+  IntegrationsSnapshotInputSubBlock,
+  IntegrationsSnapshotSubBlock,
 } from 'components/Settings/Integrations/styles';
 import { LabelBlock } from 'components/Settings/styles';
-import { useWonderWeb3 } from 'services/web3';
+import { DISCONNECT_GUILD_FROM_ORG } from 'graphql/mutations';
+import { GET_ORG_GUILD } from 'graphql/queries';
+import { useContext, useEffect, useState } from 'react';
 import useGuildXyz from 'services/guildxyz';
-import DropdownSelect from 'components/Common/DropdownSelect';
-import { ErrorText } from 'components/Common';
+import { useWonderWeb3 } from 'services/web3';
+import ConnectionContext from '../Integrations/Helpers/ConnectionContext';
 
-export default function GuildIntegration({ orgId }) {
-  const [selectedGuildId, setSelectedGuildId] = useState(null);
-  const [connectedGuildId, setConnectedGuildId] = useState(null);
+export default function GuildIntegration() {
+  const { orgId, data, setData, podId } = useContext(ConnectionContext);
+  const { connectedGuild = null, selectedGuildId = null } = data;
   const [orgGuildQueryRan, setOrgGuildQueryRan] = useState(false); // indicate if query was completed
-  const [connectedGuild, setConnectedGuild] = useState(null);
   const [noGuildsJoinedError, setNoGuildsJoinedError] = useState(null);
   const [guildOptions, setGuildOptions] = useState([]);
   const wonderWeb3 = useWonderWeb3();
+
   const connectWeb3 = async () => {
     await wonderWeb3.onConnect();
   };
@@ -50,7 +47,6 @@ export default function GuildIntegration({ orgId }) {
     setGuildOptions(joinedGuilds);
   };
 
-  const [connectGuildToOrg] = useMutation(CONNECT_GUILD_TO_ORG, { refetchQueries: [GET_ORG_GUILD] });
   const [disconnectGuildFromOrg] = useMutation(DISCONNECT_GUILD_FROM_ORG, { refetchQueries: [GET_ORG_GUILD] });
 
   const [getOrgGuild] = useLazyQuery(GET_ORG_GUILD, {
@@ -59,18 +55,17 @@ export default function GuildIntegration({ orgId }) {
 
       getGuildById(guildId)
         .then((data) => {
-          setConnectedGuild(data);
+          setData((prev) => ({ ...prev, connectedGuild: data }));
         })
         .catch((err) => {
           console.error('error getting guild info', err);
-          setConnectedGuild(null);
+          setData((prev) => ({ ...prev, connectedGuild: null }));
         });
-
-      setConnectedGuildId(guildId);
+      setData((prev) => ({ ...prev, connectedGuild: guildId }));
       setOrgGuildQueryRan(true);
     },
     onError: () => {
-      setConnectedGuildId(null);
+      setData((prev) => ({ ...prev, connectedGuild: null }));
       setOrgGuildQueryRan(true);
     },
     fetchPolicy: 'network-only',
@@ -82,7 +77,7 @@ export default function GuildIntegration({ orgId }) {
 
   useEffect(() => {
     setNoGuildsJoinedError(null);
-    if (orgGuildQueryRan && !connectedGuildId && wonderWeb3.address) {
+    if (orgGuildQueryRan && !connectedGuild && wonderWeb3.address) {
       setGuildOptions([]);
       getAvailableGuildInfo(wonderWeb3.address);
     }
@@ -94,58 +89,50 @@ export default function GuildIntegration({ orgId }) {
     }
   }, [orgId]);
   useEffect(() => {}, []);
-  const handleGuildConnect = () => {
-    if (!selectedGuildId) return;
-    if (connectedGuildId) return;
-    connectGuildToOrg({
-      variables: {
-        orgId,
-        guildId: selectedGuildId.toString(),
-      },
-    });
-  };
-  const handleGuildDisconnect = () => {
-    if (!connectedGuildId) return;
+  const handleGuildDisconnect = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!connectedGuild) return;
     disconnectGuildFromOrg({
       variables: {
         orgId,
-        guildId: connectedGuildId,
+        guildId: connectedGuild,
       },
     });
   };
   return (
     <IntegrationsInputsBlock>
       <LabelBlock>Guild.xyz Config</LabelBlock>
-      {connectedGuildId && (
+      {connectedGuild && (
         <div>
           <IntegrationsHelperText>Connected Guild:</IntegrationsHelperText>
           <IntegrationsSnapshotSubBlock>
             <IntegrationsSnapshotInputSubBlock>
               <IntegrationsSnapshotENSInput value={connectedGuild?.name} />
             </IntegrationsSnapshotInputSubBlock>
-            <IntegrationsDisconnectButton onClick={handleGuildDisconnect}>
-              Disconnect Guild
-            </IntegrationsDisconnectButton>
+            <StyledLink onClick={handleGuildDisconnect}>Disconnect Guild</StyledLink>
           </IntegrationsSnapshotSubBlock>
         </div>
       )}
-      {!connectedGuildId && (
+      {!connectedGuild && (
         <div>
           <IntegrationsHelperText>Guilds you are in</IntegrationsHelperText>
           <IntegrationsSnapshotSubBlock>
             <DropdownSelect
               value={selectedGuildId}
               options={guildOptions}
-              setValue={setSelectedGuildId}
+              setValue={(value) => setData((prev) => ({ ...prev, selectedGuildId: value }))}
               formSelectStyle={{
                 height: 'auto',
+                width: '100%',
+                maxWidth: '100%',
               }}
               innerStyle={{
                 marginTop: '0',
                 background: '#272729',
               }}
             />
-            <IntegrationsConnectButton onClick={handleGuildConnect}>Connect Guild</IntegrationsConnectButton>
+            {/* <IntegrationsConnectButton onClick={handleGuildConnect}>Connect Guild</IntegrationsConnectButton> */}
           </IntegrationsSnapshotSubBlock>
           {noGuildsJoinedError && (
             <ErrorText>
@@ -159,6 +146,7 @@ export default function GuildIntegration({ orgId }) {
           )}
         </div>
       )}
+      <StyledNextLink href={`/organization/settings/${orgId}/token-gating`}>Set up Guild role gating</StyledNextLink>
     </IntegrationsInputsBlock>
   );
 }

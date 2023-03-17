@@ -1,13 +1,15 @@
 import GitHubIcon from '@mui/icons-material/GitHub';
 import palette from 'theme/palette';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DELETE_ORG_GITHUB } from 'graphql/mutations/org';
+import { GithubIntegration as PodGithubIntegration } from 'components/Settings/Github/pod';
 import { GithubLink, GithubButtonDiv } from './styles';
 import { IntegrationsInputsBlock } from '../Integrations/styles';
 import { LabelBlock } from '../styles';
+import ConnectionContext from '../Integrations/Helpers/ConnectionContext';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
 
@@ -21,21 +23,11 @@ export const getGithubCallbackUrl = () => {
   return 'http%3A%2F%2Flocalhost%3A3000%2Fgithub%2Fcallback';
 };
 
-export function GithubIntegration({ orgId }) {
+export function GithubIntegration() {
+  const { orgId, podId } = useContext(ConnectionContext);
   const [githubConnected, setGithubConnected] = useState(false);
   const [hasGithubIntegration, { data: hasGithubIntegrationData }] = useLazyQuery(HAS_ORG_GITHUB_INTEGRATION);
   const [deleteOrgGithubIntegration] = useMutation(DELETE_ORG_GITHUB);
-  const [githubUrl, setGithubUrl] = useState(null);
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const state = JSON.stringify({
-        redirectUrl: encodeURIComponent(window.location.href),
-        orgId,
-      });
-      const redirectUrl = getGithubCallbackUrl();
-      setGithubUrl(`${GITHUB_BASE_URL}?state=${state}`);
-    }
-  }, []);
 
   useEffect(() => {
     if (orgId) {
@@ -51,63 +43,54 @@ export function GithubIntegration({ orgId }) {
     }
   }, [orgId]);
 
+  if (githubConnected && podId) {
+    return <PodGithubIntegration orgId={orgId} podId={podId} />;
+  }
+  if (!githubConnected) {
+    return null;
+  }
   return (
     <IntegrationsInputsBlock>
-      <LabelBlock>Github settings</LabelBlock>
-      {githubConnected ? (
-        <GithubButtonDiv
+      <GithubButtonDiv
+        style={{
+          marginLeft: '0',
+        }}
+      >
+        <GithubLink
           style={{
-            marginLeft: '0',
+            backgroundColor: palette.grey900,
+            border: `1px solid ${palette.highlightPurple}`,
+            cursor: 'auto',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
-          <GithubLink
+          <span
             style={{
-              backgroundColor: palette.green400,
-              cursor: 'auto',
-              border: 'none',
+              color: palette.white,
             }}
           >
-            <span
-              style={{
-                color: palette.white,
-              }}
-            >
-              Github organization connected
-            </span>
-            <CloseModalIcon
-              style={{
-                marginLeft: '16px',
-                cursor: 'pointer',
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setGithubConnected(false);
-                deleteOrgGithubIntegration({
-                  variables: {
-                    orgId,
-                  },
-                });
-              }}
-            />
-          </GithubLink>
-        </GithubButtonDiv>
-      ) : (
-        <GithubButtonDiv
-          style={{
-            marginLeft: '0',
-          }}
-        >
-          <GithubLink href={githubUrl}>
-            <GitHubIcon
-              style={{
-                marginRight: '8px',
-              }}
-            />
-            <span>Connect Github Organization</span>
-          </GithubLink>
-        </GithubButtonDiv>
-      )}
+            Github organization connected
+          </span>
+          <CloseModalIcon
+            style={{
+              marginLeft: '16px',
+              cursor: 'pointer',
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setGithubConnected(false);
+              deleteOrgGithubIntegration({
+                variables: {
+                  orgId,
+                },
+              });
+            }}
+          />
+        </GithubLink>
+      </GithubButtonDiv>
     </IntegrationsInputsBlock>
   );
 }

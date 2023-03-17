@@ -15,6 +15,25 @@ const computePercentage = (votes, type) => {
   return Math.round((100 * amount) / votes.totalVotes) || 0;
 };
 
+export const SnapshotVoteOptionRow = ({ voteNumber, totalVotes, optionDisplayName }) => {
+  const percentage = Math.round((100 * voteNumber) / totalVotes) || 0;
+  return (
+    <VoteRowWrapper key={`${optionDisplayName}`}>
+      <VoteRowContentWrapper>
+        <div style={{ display: 'flex', gap: 5 }}>
+          <VoteLabel color={palette.blue20}>{percentage}%</VoteLabel>
+          <VoteLabel color={palette.white} weight={500}>
+            {optionDisplayName}
+          </VoteLabel>
+        </div>
+      </VoteRowContentWrapper>
+      <VoteProgressBar>
+        <VoteCurrentProgress color="linear-gradient(90deg, #4F00DE 65%, #06FFA5 100%)" width={`${percentage}%`} />
+      </VoteProgressBar>
+    </VoteRowWrapper>
+  );
+};
+
 export default function VoteOptionRow({ votes, option, handleVote, handleUndoVote, user, voteType, canVote }) {
   const percentage = computePercentage(votes, option);
   const userVotedFor = votes?.userVote === option;
@@ -24,7 +43,13 @@ export default function VoteOptionRow({ votes, option, handleVote, handleUndoVot
   }
   return (
     <VoteRowWrapper key={`${option}`}>
-      <VoteRowContentWrapper onClick={() => handleVote(option)}>
+      <VoteRowContentWrapper
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleVote(option);
+        }}
+      >
         <div style={{ display: 'flex', gap: 5 }}>
           <VoteLabel color={palette.blue20}>{percentage}%</VoteLabel>
           <VoteLabel color={palette.white} weight={500}>

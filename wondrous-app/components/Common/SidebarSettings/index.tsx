@@ -1,5 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import Grid from '@mui/material/Grid';
 import { useMe } from 'components/Auth/withAuth';
 import BackButton from 'components/Common/SidebarBackButton';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
@@ -80,10 +81,10 @@ const createListItems = ({ orgId, podId, mainPath }) => [
   },
   {
     Icon: HexagonIcon, // need icon
-    label: 'Integrations Settings',
+    label: 'Integrations',
     value: 'integrations',
     href: orgId ? `/${mainPath}/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
-    page: [SettingsPage.Org],
+    page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: ReceiptIcon,
@@ -134,23 +135,10 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     href: `/profile/notifications`,
     page: [SettingsPage.Profile],
   },
-  {
-    Icon: () => (
-      <GitHubIcon
-        style={{
-          color: '#525252',
-        }}
-      />
-    ),
-    label: 'Github',
-    value: 'github',
-    href: orgId ? `/${mainPath}/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
-    page: [SettingsPage.Pod],
-  },
 ];
 
 function SettingsWrapper(props) {
-  const { children, showPodIcon = true } = props;
+  const { children, showPodIcon = true, fullWidth = false } = props;
 
   const router = useRouter();
   const user = useMe();
@@ -268,8 +256,16 @@ function SettingsWrapper(props) {
         </SidebarWrapper>
 
         <ChildrenWrapper minimized={minimized}>
-          <SettingsChildrenWrapper>
-            <div>
+          <SettingsChildrenWrapper
+            style={
+              fullWidth
+                ? {
+                    padding: '24px',
+                  }
+                : {}
+            }
+          >
+            <Grid {...(fullWidth ? { width: '100%', height: '100%' } : {})}>
               {showPodIcon ? (
                 <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
                   <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
@@ -281,7 +277,7 @@ function SettingsWrapper(props) {
                 </SettingsDaoPodIndicator>
               ) : null}
               {children}
-            </div>
+            </Grid>
           </SettingsChildrenWrapper>
         </ChildrenWrapper>
       </Wrapper>

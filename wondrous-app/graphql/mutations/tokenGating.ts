@@ -1,5 +1,9 @@
 import { gql } from '@apollo/client';
-import { TokenGatingConditionFragment, GuildAccessConditionFragment } from 'graphql/fragments/tokenGating';
+import {
+  TokenGatingConditionFragment,
+  GuildAccessConditionFragment,
+  OtterspaceAccessConditionFragment,
+} from 'graphql/fragments/tokenGating';
 
 export const CREATE_LIT_SIGNATURE = gql`
   mutation createLitSignature($input: LitSignatureCreateInput!) {
@@ -27,6 +31,15 @@ export const CREATE_GUILD_ACCESS_CONDITION_FOR_ORG = gql`
   ${GuildAccessConditionFragment}
 `;
 
+export const CREATE_OTTERSPACE_ACCESS_CONDITION_FOR_ORG = gql`
+  mutation createOtterspaceAccessConditionForOrg($input: OtterspaceAccessConditionInput!) {
+    createOtterspaceAccessConditionForOrg(input: $input) {
+      ...OtterspaceAccessConditionFragment
+    }
+  }
+  ${OtterspaceAccessConditionFragment}
+`;
+
 export const DELETE_TOKEN_GATING_CONDITION = gql`
   mutation deleteTokenGatingCondition($tokenGatingConditionId: ID!) {
     deleteTokenGatingCondition(tokenGatingConditionId: $tokenGatingConditionId) {
@@ -47,6 +60,15 @@ export const UPDATE_TOKEN_GATING_CONDITION = gql`
 export const UPDATE_GUILD_ACCESS_CONDITION = gql`
   mutation updateGuildAccessCondition($tokenGatingConditionId: ID!, $input: GuildAccessConditionInput!) {
     updateGuildAccessCondition(tokenGatingConditionId: $tokenGatingConditionId, input: $input) {
+      ...TokenGatingConditionFragment
+    }
+  }
+  ${TokenGatingConditionFragment}
+`;
+
+export const UPDATE_OTTERSPACE_ACCESS_CONDITION = gql`
+  mutation updateOtterspaceAccessCondition($tokenGatingConditionId: ID!, $input: OtterspaceAccessConditionInput!) {
+    updateOtterspaceAccessCondition(tokenGatingConditionId: $tokenGatingConditionId, input: $input) {
       ...TokenGatingConditionFragment
     }
   }

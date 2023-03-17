@@ -11,6 +11,7 @@ import GnosisChain from 'components/Icons/GnosisChain';
 import { Matic } from 'components/Icons/matic';
 import { USDCoin } from 'components/Icons/USDCoin';
 import { WonderCoin } from 'components/Icons/wonderCoin';
+import Aurora from 'components/Icons/AuroraCoin.svg';
 
 export enum SupportedChainType {
   ETH = 'eth', // should be evm
@@ -26,6 +27,7 @@ const SUPPORTED_CHAINS = {
   8217: 'klaytn',
   43114: 'avalanche',
   100: 'gnosis',
+  1313161554: 'aurora',
 };
 
 export const NATIVE_TOKEN_SYMBOL = {
@@ -40,6 +42,7 @@ export const NATIVE_TOKEN_SYMBOL = {
   8217: 'KLAY',
   43114: 'AVAX',
   100: 'xDai',
+  1313161554: 'AURORA',
 };
 
 export const RPC_URLS: { [chainId: number]: string } = {
@@ -52,6 +55,7 @@ export const RPC_URLS: { [chainId: number]: string } = {
   288: process.env.NEXT_PUBLIC_RPC_URL_BOBA,
   10: process.env.NEXT_PUBLIC_RPC_URL_OPTIMISM,
   43114: process.env.NEXT_PUBLIC_RPC_URL_AVALANCHE,
+  1313161554: process.env.NEXT_PUBLIC_RPC_URL_AURORA,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -66,6 +70,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   klaytn: 'Klaytn Mainnet',
   avalanche: 'Avalanche',
   gnosis: 'Gnosis Chain',
+  aurora: 'Aurora',
 };
 
 export const SUPPORTED_CURRENCIES = [
@@ -136,6 +141,7 @@ export const CHAIN_TO_GNOSIS_URL_ABBR = {
   optimism: 'opt',
   avalanche: 'avax', // TODO check thisis right
   gnosis: 'gno', // TODO check thisis right
+  aurora: 'aurora',
 };
 
 export const LIT_PROTOCOL_MESSAGE = 'signature verification to token gating';
@@ -152,6 +158,7 @@ export const CHAIN_TO_EXPLORER_URL = {
   klaytn: 'https://scope.klaytn.com',
   avalanche: 'https://snowtrace.io',
   gnosis: 'https://gnosisscan.io',
+  aurora: 'https://explorer.mainnet.aurora.dev',
 };
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
@@ -165,6 +172,7 @@ export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
   optimism: 'https://safe-transaction-optimism.safe.global',
   avalanche: 'https://safe-transaction-avalanche.safe.global',
   gnosis: 'https://safe-transaction-gnosis-chain.safe.global',
+  aurora: 'https://safe-transaction-aurora.safe.global',
 };
 
 export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa';
@@ -192,6 +200,7 @@ export const CHAIN_LOGO = {
   '43114': <Avalanche />,
   '1666600000': <Harmony />,
   '100': <GnosisChain />,
+  '1313161554': <Aurora />,
 };
 
 export const CURRENCY_SYMBOL = {
@@ -204,6 +213,7 @@ export const CURRENCY_SYMBOL = {
   BNB: <Binance />,
   OP: <Optimism />,
   AVAX: <Avalanche />,
+  AURORA: <Aurora />,
 };
 
 const CHAIN_SELECT_OPTIONS = [
@@ -217,6 +227,7 @@ const CHAIN_SELECT_OPTIONS = [
   { label: 'Avalanche', value: 'avalanche', icon: <Avalanche /> },
   { label: 'Harmony', value: 'harmony', icon: <Harmony /> },
   { label: 'Boba', value: 'boba', icon: <Boba /> },
+  { label: 'Aurora', value: 'aurora', icon: <Aurora /> },
 ];
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
