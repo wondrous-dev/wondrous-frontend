@@ -11,7 +11,7 @@ import palette from 'theme/palette';
 import SmartLink from 'components/Common/SmartLink';
 import styles from 'components/Calendar/CalendarWeekView/styles';
 import TaskStatus from 'components/Icons/TaskStatus';
-import { getTaskType } from 'utils/board';
+import { buildTaskUrl, getTaskType } from 'utils/board';
 import { CALENDAR_CONFIG } from 'utils/constants';
 import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
 
@@ -75,7 +75,7 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
                 return (
                   <SmartLink
                     key={task.id}
-                    href={`${router.asPath}${router.asPath.includes('?') ? '&' : '?'}${taskType}=${task.id}`}
+                    href={buildTaskUrl(router, task)}
                     preventLinkNavigation
                     onNavigate={() => {
                       const query = {

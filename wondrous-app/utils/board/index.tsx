@@ -339,3 +339,9 @@ export const getTaskType = (task: TaskInterface) => {
 
   return taskType;
 };
+
+export const buildTaskUrl = (router, task: TaskInterface) => {
+  const taskType = getTaskType(task);
+
+  return `${router.asPath}${router.asPath.includes('?') ? '&' : '?'}${taskType}=${task.id}`;
+};
