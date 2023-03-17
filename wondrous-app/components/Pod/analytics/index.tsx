@@ -7,7 +7,7 @@ function Analytics(props) {
 
   return (
     <BoardPageHeader headerTitle="Analytics">
-      <LeaderboardWrapper podId={podId} />
+      <LeaderboardWrapper podId={podId} podData={podData} />
     </BoardPageHeader>
   );
 }
