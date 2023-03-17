@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
 import { GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 
 import { StyledCircularProgress } from 'components/Common/WonderAiTaskGeneration/styles';
@@ -41,7 +41,7 @@ const getContributorTaskData = (data) => {
   return contributorTaskData;
 };
 
-const LeaderboardWrapper = ({ orgId = '', podId = '' }) => {
+const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = null }) => {
   const [assignee, setAssignee] = useState(null);
   const today = new Date();
   const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
@@ -66,6 +66,14 @@ const LeaderboardWrapper = ({ orgId = '', podId = '' }) => {
       }),
     },
   });
+
+  useEffect(() => {
+    if (orgData?.createdAt) {
+      setFromTime(new Date(orgData?.createdAt));
+    } else if (podData?.createdAt) {
+      setFromTime(new Date(podData?.createdAt));
+    }
+  }, [orgData?.createdAt, podData?.createdAt]);
 
   const data = useMemo(
     () => getContributorTaskData(getCompletedTasksBetweenPeriodsData),
