@@ -11,22 +11,30 @@ import { debounce } from 'lodash';
 import { useCallback, useRef, useState } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
-import { TaskSectionDisplayDiv, TaskSectionInfoPointsIcon, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import {
+  TaskSectionDisplayDiv,
+  TaskSectionInfoPointsIcon,
+  TaskSectionInfoText,
+  ViewFieldHoverWrapper,
+  ViewFieldWrapper,
+} from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
 const ViewContent = ({ points, toggleEditMode, canEdit }) => (
-  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-    <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
-      <IconWrapper>
-        <TaskSectionInfoPointsIcon />
-      </IconWrapper>
-      <TaskSectionInfoText>{points}</TaskSectionInfoText>
-    </Grid>
+  <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <ViewFieldWrapper>
+      <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
+        <IconWrapper>
+          <TaskSectionInfoPointsIcon />
+        </IconWrapper>
+        <TaskSectionInfoText>{points}</TaskSectionInfoText>
+      </Grid>
+    </ViewFieldWrapper>
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-  </ViewFieldWrapper>
+  </ViewFieldHoverWrapper>
 );
 
 const EditContent = ({ toggleEditMode, points, setValue, error }) => (

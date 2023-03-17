@@ -1,7 +1,11 @@
 import { Grid } from '@mui/material';
 import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
-import { TaskSectionDisplayDiv, TaskSectionInfoText } from 'components/Common/TaskViewModal/styles';
+import {
+  TaskSectionDisplayDiv,
+  TaskSectionInfoText,
+  ViewFieldHoverWrapper,
+} from 'components/Common/TaskViewModal/styles';
 import { getInterestDisplay } from 'components/Common/UserInterestModal';
 import { filterCategoryValues, useGetCategories } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import DropdownSearch from 'components/DropdownSearch';
@@ -14,16 +18,20 @@ import { FIELDS } from './hooks/constants';
 import { InlineFieldWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
-  <Grid display="flex" gap="8px" flexWrap="wrap">
-    {labels?.map((label) => (
-      <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-        <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
-          <TaskSectionInfoText>{label?.name || getInterestDisplay(label)}</TaskSectionInfoText>
-          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-        </Grid>
-      </InlineFieldWrapper>
-    ))}
-  </Grid>
+  <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <Grid container gap="8px" alignItems="center" width="100%" flexWrap="wrap">
+      {labels?.map((label) => (
+        <InlineFieldWrapper>
+          <Grid container alignItems="center" justifyContent="flex-end" width="100%">
+            <TaskSectionInfoText>{label?.name || getInterestDisplay(label)}</TaskSectionInfoText>
+          </Grid>
+        </InlineFieldWrapper>
+      ))}
+    </Grid>
+    <Grid container item display="flex" gap="6px" alignItems="center" justifyContent="end" width="fit-content">
+      <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+    </Grid>
+  </ViewFieldHoverWrapper>
 );
 
 const labelsToValue = (labels) => {

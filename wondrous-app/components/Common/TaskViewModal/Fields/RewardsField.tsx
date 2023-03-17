@@ -29,6 +29,7 @@ import {
   TaskSectionInfoPaymentAmount,
   TaskSectionInfoPaymentMethodChain,
   TaskSectionInfoPaymentMethodIcon,
+  ViewFieldHoverWrapper,
   ViewFieldWrapper,
 } from '../styles';
 import { FIELDS } from './hooks/constants';
@@ -40,16 +41,18 @@ export const ViewRewards = ({ canEdit = false, rewardAmount, symbol, toggleEditM
   const user = useMe();
   return (
     <Grid display="flex" direction="column" gap="8px">
-      <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-        <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
-          <TaskSectionInfoPaymentMethodIcon src={icon} />
-          <TaskSectionInfoPaymentAmount>
-            {rewardAmount} {symbol}
-          </TaskSectionInfoPaymentAmount>
-          <TaskSectionInfoPaymentMethodChain> on {chain}</TaskSectionInfoPaymentMethodChain>
-        </Grid>
+      <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+        <ViewFieldWrapper>
+          <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
+            <TaskSectionInfoPaymentMethodIcon src={icon} />
+            <TaskSectionInfoPaymentAmount>
+              {rewardAmount} {symbol}
+            </TaskSectionInfoPaymentAmount>
+            <TaskSectionInfoPaymentMethodChain> on {chain}</TaskSectionInfoPaymentMethodChain>
+          </Grid>
+        </ViewFieldWrapper>
         <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-      </ViewFieldWrapper>
+      </ViewFieldHoverWrapper>
       {user ? <ConnectToWallet user={user} /> : null}
     </Grid>
   );

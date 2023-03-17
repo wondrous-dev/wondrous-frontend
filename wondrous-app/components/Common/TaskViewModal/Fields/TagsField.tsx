@@ -5,23 +5,27 @@ import Tags from 'components/Tags';
 import { useMemo } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
-import { TaskSectionDisplayDiv, TaskSectionInfoText } from '../styles';
+import { TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldHoverWrapper } from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
 import { InlineFieldWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
-  <Grid display="flex" gap="8px" flexWrap="wrap">
-    {labels?.map(({ name = null }) => (
-      <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-        <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
-          <TaskSectionInfoText>{name}</TaskSectionInfoText>
-          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-        </Grid>
-      </InlineFieldWrapper>
-    ))}
-  </Grid>
+  <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <Grid display="flex" gap="8px" flexWrap="wrap">
+      {labels?.map(({ name = null }) => (
+        <InlineFieldWrapper>
+          <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
+            <TaskSectionInfoText>{name}</TaskSectionInfoText>
+          </Grid>
+        </InlineFieldWrapper>
+      ))}
+    </Grid>
+    <Grid item container display="flex" gap="6px" alignItems="center" justifyContent="end" width="fit-content">
+      <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+    </Grid>
+  </ViewFieldHoverWrapper>
 );
 
 interface Props {

@@ -20,7 +20,7 @@ import typography from 'theme/typography';
 import { User } from 'types/User';
 import { useOutsideAlerter } from 'utils/hooks';
 import usePlate from 'hooks/usePlate';
-import { TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import { TaskSectionInfoText, ViewFieldHoverWrapper, ViewFieldWrapper } from '../styles';
 import { UserChipWrapper } from './styles';
 
 interface TaskFieldEditableContentProps {
@@ -133,10 +133,12 @@ export const UserChip = ({ user }) => (
 
 export const AssigneeReviewerViewContent = ({ option, canEdit, toggleEditMode, children = null }) => (
   <Grid width="100%" display="flex" alignItems="center" gap="6px">
-    <ViewFieldWrapper key={option.id} $canEdit={canEdit} onClick={toggleEditMode}>
-      <UserChip user={option} />
+    <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+      <ViewFieldWrapper key={option.id}>
+        <UserChip user={option} />
+      </ViewFieldWrapper>
       <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-    </ViewFieldWrapper>
+    </ViewFieldHoverWrapper>
     {children}
   </Grid>
 );

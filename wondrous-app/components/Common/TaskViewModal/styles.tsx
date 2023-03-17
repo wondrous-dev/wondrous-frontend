@@ -950,6 +950,26 @@ const EditIconCss = css`
     }
   }
 `;
+
+export const ViewFieldHoverWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  padding-right: 6px;
+  border-radius: 4px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  .edit-icon-field {
+    display: none;
+  }
+  :hover {
+    background-color: ${({ theme }) => theme.palette.grey920};
+    width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
+  }
+  ${({ $canEdit }) => ($canEdit ? EditIconCss : `pointer-events: none;`)};
+`;
+
 export const ViewFieldWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -961,16 +981,7 @@ export const ViewFieldWrapper = styled.div`
   border-radius: 4px;
   width: fit-content;
   height: fit-content;
-  .edit-icon-field {
-    display: none;
-  }
-  &:hover {
-    background-color: ${({ theme }) => theme.palette.grey920};
-    width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
-  }
-
   background-color: ${({ theme, $background = '' }) => $background || theme.palette.grey920};
-  ${({ $canEdit }) => ($canEdit ? EditIconCss : `pointer-events: none;`)};
 `;
 
 export const ViewFieldContainer = styled.div`
