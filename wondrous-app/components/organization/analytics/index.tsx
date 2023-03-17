@@ -6,7 +6,7 @@ function Analytics(props) {
   const { id: orgId } = orgData;
   return (
     <BoardPageHeader orgData={orgData} headerTitle="Analytics">
-      <LeaderboardWrapper orgId={orgId} />
+      <LeaderboardWrapper orgId={orgId} orgData={orgData} />
     </BoardPageHeader>
   );
 }
