@@ -530,7 +530,6 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/twitter/callback',
   '/twitter/verify-tweet',
   '/reset-password',
-  '/onboarding-dao',
   '/new-task',
   '/apps/install/coordinape',
   '/invite/collab/[token]',

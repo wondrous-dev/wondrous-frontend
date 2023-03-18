@@ -1,131 +1,35 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { withAuth } from 'components/Auth/withAuth';
-import { AddImages, CreateDao, DaoCategory, InviteCommunity, Review, StepWrapper } from 'components/OnboardingDao';
-import { STEP_ACTIONS } from 'components/OnboardingDao/constants';
-import { Form, Formik } from 'formik';
-import { CREATE_ORG, REDEEM_COLLAB_TOKEN } from 'graphql/mutations';
-import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS, IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import { useReducer, useState } from 'react';
 import * as Yup from 'yup';
+import { withAuth } from 'components/Auth/withAuth';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import palette from 'theme/palette';
+import { Grid, Typography } from '@mui/material';
+import { ProjectCreateForm, GuidesPage, BasicsSetup } from 'components/ProjectOnboarding';
+import { STEP_ACTIONS } from 'components/OnboardingDao/constants';
+import ReactPlayer from 'react-player/lazy';
 
-export const FIELD_SETS = [
-  {
-    title: 'Create Workspace',
-    subtitle: 'Use the power of web3 to launch and scale your project.',
-    Component: CreateDao,
-    hideLater: true,
-    fields: {
-      name: { name: 'name', label: 'Enter Org name', placeholder: "What is the org's title?" },
-      username: {
-        name: 'username',
-        label: 'Enter Org username',
-        placeholder: `What is the org's username?`,
-      },
-      description: {
-        name: 'description',
-        label: 'Enter description',
-        placeholder: 'What is your organization about?',
-        multiline: true,
-        maxLength: 200,
-      },
-    },
-  },
-  {
-    title: 'Add images',
-    subtitle: 'Add your dOrgs logo and header to personalize your boards.',
-    Component: AddImages,
-    fields: {
-      headerPicture: { name: 'headerPicture', label: 'Header Picture' },
-      profilePicture: { name: 'profilePicture', label: 'Profile Picture' },
-    },
-  },
-  {
-    title: 'Org category',
-    subtitle: 'How would you categorize what your organization does?',
-    Component: DaoCategory,
-    hideLater: true,
-    fields: {
-      category: { name: 'category', label: 'Enter custom goal', placeholder: "What is your Org's goal?" },
-    },
-  },
-  // NOTE: not in used yet
-  // {
-  //   title: 'Import tasks',
-  //   subtitle: 'Set up your workflow so members can begin contributing.',
-  //   Component: ImportTasks,
-  // },
-  {
-    title: 'Discord Integration',
-    subtitle: `For private channels, please ensure that the bot is added as a role.`,
-    Component: InviteCommunity,
-    fields: {
-      guildId: { name: 'guildId', label: '1. Paste Invite Link', placeholder: 'Paste invite link from Discord' },
-      addBot: { name: 'addBot', label: '2. Add bot', placeholder: 'Add Wonder Bot' },
-      channelId: {
-        name: 'channelId',
-        label: '3.  Select Channel',
-        placeholder: 'Where do you want to add the Wonder Bot?',
-      },
-    },
-  },
-  {
-    title: 'Review',
-    subtitle: `Review your org details and then let's launch!`,
-    Component: Review,
-    hoverContinue: true,
-    fields: {
-      name: { name: 'name', label: 'Org name' },
-      username: { name: 'username', label: 'Org username' },
-      description: {
-        name: 'description',
-        label: 'Description',
-        multiline: true,
-        maxLength: 200,
-      },
-    },
-  },
-] as const;
+import { useReducer, useState } from 'react';
+import { ProjectOnboardingContext } from 'components/ProjectOnboarding/Shared/context';
+import { useFormik } from 'formik';
+import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS, IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
+import { REDEEM_COLLAB_TOKEN, CREATE_ORG } from 'graphql/mutations';
+import PostCreate from 'components/ProjectOnboarding/ProjectCreate/PostCreate';
+import { CONFIG } from 'components/ProjectOnboarding/Shared/constants';
 
-const fieldSetsLength = FIELD_SETS.length;
+// const handleStep = (step, { action, hasError = false }) => {
+//   if (hasError) return step;
+//   const actions = {
+//     [STEP_ACTIONS.next]: step + 1,
+//     [STEP_ACTIONS.prev]: step - 1,
+//     [STEP_ACTIONS.]
+//   };
+//   return actions[action] ?? step;
+// };
 
-const handleStep = (step, { action, hasError = false }) => {
-  if (hasError) return step;
-  const actions = {
-    [STEP_ACTIONS.next]: step + 1,
-    [STEP_ACTIONS.prev]: step - 1,
-  };
-  return actions[action] ?? step;
-};
-
-const useCreateOrg = () => {
-  const router = useRouter();
-  const { collabInvite } = router.query;
-
-  const [redeemCollabToken, { loading: redeemLoading }] = useMutation(REDEEM_COLLAB_TOKEN, {
-    notifyOnNetworkStatusChange: true,
-    onCompleted: ({ redeemOrgCollabRequestInviteToken }) => {
-      const { username } = redeemOrgCollabRequestInviteToken;
-      router.push(`/collaboration/${username}/boards`);
-    },
-  });
-  const [mutation, { loading }] = useMutation(CREATE_ORG, {
-    refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS],
-    onCompleted: ({ createOrg }) => {
-      const { username, id } = createOrg;
-      if (!collabInvite) {
-        router.push(`organization/${username}/home`);
-      } else {
-        redeemCollabToken({ variables: { orgId: id, token: collabInvite } });
-      }
-    },
-  });
-  const handleMutation = async (values) => {
-    const { addBot, ...rest } = values;
-    await mutation({ variables: { input: rest } });
-  };
-  return { handleCreateOrg: handleMutation, loading: loading || redeemLoading };
-};
+interface ProjectData {
+  username?: string;
+  name?: string;
+}
 
 const useIsOrgUsernameTaken = () => {
   const [isOrgUsernameTaken] = useLazyQuery(IS_ORG_USERNAME_TAKEN, {
@@ -174,34 +78,93 @@ const useSchema = () => {
   return schema;
 };
 
-const OnboardingCreateDao = () => {
-  const [step, setStep] = useReducer(handleStep, 0);
-  const [tempState, setTempState] = useState({});
-  const currentFieldSet = FIELD_SETS[step];
-  const { handleCreateOrg, loading } = useCreateOrg();
+const useCreateOrg = () => {
+  const router = useRouter();
+  const { collabInvite } = router.query;
+
+  const [redeemCollabToken, { loading: redeemLoading }] = useMutation(REDEEM_COLLAB_TOKEN, {
+    notifyOnNetworkStatusChange: true,
+    onCompleted: ({ redeemOrgCollabRequestInviteToken }) => {
+      const { username } = redeemOrgCollabRequestInviteToken;
+      router.push(`/collaboration/${username}/boards`);
+    },
+  });
+  const [mutation, { loading }] = useMutation(CREATE_ORG, {
+    refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS],
+    onCompleted: ({ createOrg }) => {
+      const { username, id } = createOrg;
+      if (collabInvite) {
+        redeemCollabToken({ variables: { orgId: id, token: collabInvite } });
+      }
+    },
+  });
+  const handleMutation = async (values) => {
+    const { addBot, ...rest } = values;
+    return await mutation({ variables: { input: rest } });
+  };
+  return { handleMutation, loading: loading || redeemLoading };
+};
+
+const ProjectOnboarding = () => {
+  const [step, setStep] = useState(0);
+  // const [step, setStep] = useReducer(handleStep, 0);
+  const { handleMutation, loading } = useCreateOrg();
+
+  const moveForward = () => setStep((prev) => prev + 1);
+
+  const moveBackwards = () => setStep((prev) => prev - 1);
+
+  const { LeftPanel, RightPanel } = CONFIG[step];
+
+  const form = useFormik({
+    initialValues: {},
+    validationSchema: useSchema(),
+    onSubmit: (values) => {},
+  });
+
+  const projectData = form.values as ProjectData;
+
+  const handleOrgCreate = async (e) => {
+    e.stopPropagation();
+    try {
+      moveForward();
+      // const {data} = await handleMutation(form.values);
+      setTimeout(() => moveForward(), 1000);
+    } catch (error) {
+      console.log(error, 'error');
+    }
+  };
   return (
-    <Formik
-      initialValues={{
-        category: 'social_good',
+    <ProjectOnboardingContext.Provider
+      value={{
+        projectData,
+        form,
+        setStep,
+        createOrg: handleOrgCreate,
+        loading,
       }}
-      onSubmit={handleCreateOrg}
-      validationSchema={useSchema()}
-      validateOnMount
     >
-      <Form>
-        <StepWrapper
-          key={step}
-          {...currentFieldSet}
-          handleStep={({ action, hasError = false }) => setStep({ action, hasError })}
-          loading={loading}
-          step={step + 1}
-          fieldSetsLength={fieldSetsLength}
-          tempState={tempState}
-          setTempState={setTempState}
-        />
-      </Form>
-    </Formik>
+      <Grid
+        display="flex"
+        width="100%"
+        height="100%"
+        minHeight="inherit"
+        sx={{
+          flexDirection: {
+            xs: 'column',
+            md: 'row',
+          },
+        }}
+      >
+        {LeftPanel ? <LeftPanel /> : null}
+        {RightPanel ? <RightPanel /> : null}
+        {/* {position === 'left' ?  <Grid bgcolor={palette.grey920} flexGrow={1}>
+          <Component />
+        </Grid> : null} */}
+        {/* {position === 'right' ?   : null} */}
+      </Grid>
+    </ProjectOnboardingContext.Provider>
   );
 };
 
-export default withAuth(OnboardingCreateDao);
+export default withAuth(ProjectOnboarding);
