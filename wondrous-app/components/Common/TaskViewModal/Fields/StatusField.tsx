@@ -27,6 +27,8 @@ export const ViewContent = ({ canEdit, toggleEditMode, currentStatus }) => (
           <IconWrapper
             style={{
               background: 'transparent',
+              height: '18px',
+              width: '18px',
             }}
           >
             {currentStatus?.icon}
