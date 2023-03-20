@@ -954,17 +954,18 @@ const EditIconCss = css`
 export const ViewFieldHoverWrapper = styled.div`
   display: flex;
   gap: 8px;
-  padding-right: 6px;
+  padding: 2px 6px 2px 2px;
   border-radius: 4px;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  min-height: 28px;
   cursor: pointer;
   .edit-icon-field {
     display: none;
   }
   :hover {
-    background-color: ${({ theme }) => theme.palette.grey920};
+    background-color: ${({ theme }) => theme.palette.grey87};
     width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
   }
   ${({ $canEdit }) => ($canEdit ? EditIconCss : `pointer-events: none;`)};
@@ -982,6 +983,9 @@ export const ViewFieldWrapper = styled.div`
   width: fit-content;
   height: fit-content;
   background-color: ${({ theme, $background = '' }) => $background || theme.palette.grey920};
+  ${ViewFieldHoverWrapper}:hover & {
+    background: ${palette.grey87};
+  }
 `;
 
 export const ViewFieldContainer = styled.div`

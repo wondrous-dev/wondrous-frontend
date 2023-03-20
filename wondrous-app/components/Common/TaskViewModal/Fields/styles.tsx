@@ -2,7 +2,7 @@ import { CreateEntityPaymentMethodLabelChain } from 'components/CreateEntity/Cre
 import Link from 'next/link';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { TaskModalTitle, ViewFieldWrapper } from '../styles';
+import { TaskModalTitle, ViewFieldHoverWrapper, ViewFieldWrapper } from '../styles';
 
 export const IconWrapper = styled.div`
   display: flex;
@@ -74,7 +74,11 @@ export const DescriptionWrapper = styled.div`
 
 export const InlineFieldWrapper = styled(ViewFieldWrapper)`
   && {
+    height: 20px;
     padding: 4px 8px;
+    ${ViewFieldHoverWrapper}:hover & {
+      background: ${palette.grey78};
+    }
     &:hover {
       width: fit-content;
     }
