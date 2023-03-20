@@ -13,7 +13,12 @@ import { TaskSectionLabel } from '../helpers';
 import { AddButtonGrid, AddReviewerButton, UserSelectWrapper, TaskSectionDisplayDiv } from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
-import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
+import {
+  AssigneeReviewerViewContent,
+  EmptyLabel,
+  ReviewerAssigneeAutocomplete,
+  TaskFieldEditableContent,
+} from './Shared';
 
 export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTask, user }) {
   const eligibleReviewers = useGetEligibleReviewers(fetchedTask?.orgId, fetchedTask?.podId);
@@ -115,6 +120,7 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
             <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
           </CreateEntityLabelAddButton>
         ) : null}
+        {!taskReviewerIds?.length && !canEdit && <EmptyLabel />}
       </UserSelectWrapper>
     </TaskSectionDisplayDiv>
   );

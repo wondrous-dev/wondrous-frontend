@@ -79,7 +79,7 @@ const ModalFields = ({
         canArchive={canArchive}
       />
       <ReviewerField
-        shouldDisplay={!isTaskProposal && !isMilestone && (canEdit || reviewerData?.getTaskReviewers?.length)}
+        shouldDisplay
         reviewerData={reviewerData}
         canEdit={canEdit}
         fetchedTask={fetchedTask}
@@ -110,7 +110,7 @@ const ModalFields = ({
         handleClose={handleClose}
       />
       <DueDateField
-        shouldDisplay={entityTypeData[entityType].fields.includes(Fields.dueDate) && (canEdit || fetchedTask?.dueDate)}
+        shouldDisplay={entityTypeData[entityType].fields.includes(Fields.dueDate)}
         canEdit={canEdit}
         dueDate={fetchedTask?.dueDate}
         recurringSchema={fetchedTask?.recurringSchema}
@@ -119,19 +119,15 @@ const ModalFields = ({
       <RewardsField
         fetchedTask={fetchedTask}
         canEdit={canEdit}
-        shouldDisplay={
-          entityTypeData[entityType].fields.includes(Fields.reward) && (canEdit || fetchedTask?.rewards?.length)
-        }
+        shouldDisplay={entityTypeData[entityType].fields.includes(Fields.reward)}
       />
       <PointsField
-        shouldDisplay={entityTypeData[entityType].fields.includes(Fields.points) && (canEdit || fetchedTask?.points)}
+        shouldDisplay={entityTypeData[entityType].fields.includes(Fields.points)}
         points={fetchedTask?.points}
         canEdit={canEdit}
       />
       <MilestoneField
-        shouldDisplay={
-          entityTypeData[entityType].fields.includes(Fields.milestone) && (canEdit || fetchedTask?.milestoneId)
-        }
+        shouldDisplay={entityTypeData[entityType].fields.includes(Fields.milestone)}
         milestoneId={fetchedTask?.milestoneId}
         canEdit={canEdit}
         isSubtask={isSubtask}
@@ -142,23 +138,16 @@ const ModalFields = ({
       <PriorityField
         priority={fetchedTask?.priority}
         canEdit={canEdit}
-        shouldDisplay={
-          entityTypeData[entityType].fields.includes(Fields.priority) && (canEdit || fetchedTask?.priority)
-        }
+        shouldDisplay={entityTypeData[entityType].fields.includes(Fields.priority)}
       />
       <CategoryField
         labels={remaininTaskCategories}
         canEdit={canEdit}
-        shouldDisplay={
-          !!(canEdit || fetchedTask?.categories?.length) &&
-          entityTypeData[entityType].fields.includes(Fields.categories)
-        }
+        shouldDisplay={entityTypeData[entityType].fields.includes(Fields.categories)}
       />
       <TagsField
         canEdit={canEdit}
-        shouldDisplay={
-          entityTypeData[entityType].fields.includes(Fields.tags) && (canEdit || fetchedTask?.labels?.length)
-        }
+        shouldDisplay={entityTypeData[entityType].fields.includes(Fields.tags)}
         labels={fetchedTask?.labels}
         orgId={fetchedTask?.orgId}
       />

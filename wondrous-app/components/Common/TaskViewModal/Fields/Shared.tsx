@@ -28,14 +28,32 @@ interface TaskFieldEditableContentProps {
   viewContent: React.FC<{ toggleEditMode: () => void }>;
   onClose?: (value?: any) => void;
   canAddItem?: boolean;
-  addContent?: React.FC<{ toggleAddMode: () => void; toggleOutsideAlerter: () => void }>;
+  addContent?: null | React.FC<{ toggleAddMode: () => void; toggleOutsideAlerter: () => void }>;
   editGridStyle?: any;
 }
+
+export const EmptyLabel = () => (
+  <Grid
+    container
+    width="fit-content"
+    alignItems="center"
+    justifyContent="center"
+    bgcolor={palette.grey87}
+    color={palette.grey58}
+    borderRadius="4px"
+    padding="4px"
+    height="28px"
+    lineHeight="0"
+    fontWeight="500"
+  >
+    Empty
+  </Grid>
+);
 
 export const TaskFieldEditableContent = ({
   editableContent,
   viewContent,
-  addContent = () => null,
+  addContent = null,
   onClose = null,
   canAddItem = false,
   editGridStyle = {},
@@ -82,7 +100,7 @@ export const TaskFieldEditableContent = ({
     );
   }
 
-  if (canAddItem) {
+  if (addContent && canAddItem) {
     return (
       <CreateEntityLabelAddButton onClick={toggleAddMode} data-cy="button-add-assignee">
         <CreateEntityAddButtonIcon />
@@ -90,6 +108,11 @@ export const TaskFieldEditableContent = ({
       </CreateEntityLabelAddButton>
     );
   }
+
+  if (addContent && !canAddItem) {
+    return <EmptyLabel />;
+  }
+
   if (isEditMode) {
     return (
       <Grid

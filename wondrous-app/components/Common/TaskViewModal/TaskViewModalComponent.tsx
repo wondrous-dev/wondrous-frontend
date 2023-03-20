@@ -437,7 +437,7 @@ export const TaskViewModal = ({
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
     (fetchedTask?.createdBy === user?.id && fetchedTask?.type === TASK_TYPE);
 
-  const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
+  // const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const canArchive =
     (!isViewNft && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -711,7 +711,7 @@ export const TaskViewModal = ({
                               reviewerData={reviewerData}
                               canApply={canApply}
                               canClaim={canClaim}
-                              showAssignee={showAssignee}
+                              showAssignee
                               canViewApplications={canViewApplications}
                               taskApplicationCount={taskApplicationCount}
                               handleReviewButton={handleReviewButton}
