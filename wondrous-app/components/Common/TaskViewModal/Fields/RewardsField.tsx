@@ -40,7 +40,7 @@ import { RewardsWrapper } from './styles';
 export const ViewRewards = ({ canEdit = false, rewardAmount, symbol, toggleEditMode = () => {}, icon, chain }) => {
   const user = useMe();
   return (
-    <Grid display="flex" direction="column" gap="8px">
+    <Grid container display="flex" direction="column" gap="8px">
       <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
         <ViewFieldWrapper>
           <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
