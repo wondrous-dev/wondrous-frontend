@@ -11,10 +11,15 @@ export const StyledAutocomplete = styled(Autocomplete).attrs(() => ({
 }))`
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%
   background: #141414;
   border-radius: 6px;
-  min-height: 32px;
+  min-height: 28px;
+  height: 28px
   color: ${palette.white};
+  outline: 1px solid ${palette.highlightPurple};
+  padding: 0 4px;
 `;
 
 export const TagAutocompletePopper = styled(({ className, ...props }) => (
@@ -95,7 +100,6 @@ export const StyledChipTag = styled(Chip)`
 export const TagsTextField = styled(TextField)`
   && {
     .MuiOutlinedInput-root {
-      padding: 6px;
       color: ${palette.white};
       font-family: 'Space Grotesk';
       font-size: 13px;
@@ -106,7 +110,6 @@ export const TagsTextField = styled(TextField)`
 
       .MuiOutlinedInput-notchedOutline {
         border: none;
-        outline: 1px solid ${palette.highlightPurple};
       }
       .MuiOutlinedInput-input {
         min-width: 100px;
