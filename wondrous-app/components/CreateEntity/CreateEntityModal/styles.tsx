@@ -1,6 +1,16 @@
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
 import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
-import { Autocomplete, Input, InputAdornment, InputBase, MenuItem, Select, TextField, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Input,
+  InputAdornment,
+  InputBase,
+  MenuItem,
+  Popper,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -395,7 +405,7 @@ export const CreateEntityTextfield = styled(TextField)`
       border: none;
     }
     :focus-within {
-      outline: 1px solid #7a7a7a;
+      outline: 1px solid ${palette.highlightPurple};
     }
   }
 `;
@@ -455,9 +465,17 @@ export const CreateEntityAutocomplete = styled(Autocomplete)`
 `;
 
 export const CreateEntityAutocompletePopper = styled(({ className, ...props }) => (
-  <CreateEntityAutocomplete {...props} classes={{ paper: className }} />
+  <CreateEntityAutocomplete
+    {...props}
+    classes={{ paper: className }}
+    sx={{
+      '&&:focus-within': [{ outline: `1px solid ${palette.highlightPurple}` }],
+    }}
+    tabIndex={0}
+  />
 ))`
   .MuiAutocomplete-listbox {
+    margin-top: 8px;
     border-color: #7a7a7a;
     scroll-padding-right: 0;
     max-height: 200px;
@@ -487,6 +505,9 @@ export const CreateEntityAutocompletePopperRenderInput = styled(Input)`
       padding: 0;
     }
   }
+  /* &:focus-within { */
+  /*   outline: 1px solid ${palette.highlightPurple}; */
+  /* } */
 `;
 
 export const CreateEntityAutocompletePopperRenderInputAdornment = styled(InputAdornment)`
@@ -809,7 +830,7 @@ export const CreateEntityPaymentMethodRoot = styled.button`
   height: 32px;
   border-radius: 4px;
   background: #141414;
-  border: 1px solid ${(props) => (props['aria-expanded'] ? `#7a7a7a` : `transparent`)};
+  border: 1px solid ${(props) => (props['aria-expanded'] ? palette.highlightPurple : `transparent`)};
   :hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
@@ -862,7 +883,20 @@ export const CreateEntityPaymentMethodList = styled.ul`
   padding: 0;
 `;
 
-export const CreateEntityPaymentMethodPopper = styled(PopperUnstyled)`
+export const CreateEntityPaymentMethodPopper = styled((props) => (
+  <Popper
+    {...props}
+    modifiers={[
+      {
+        name: 'offset',
+        enabled: true,
+        options: {
+          offset: [0, 8],
+        },
+      },
+    ]}
+  />
+))`
   max-height: 222px;
   width: 200px;
   border-radius: 4px;
@@ -978,7 +1012,7 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
       border-radius: 4px;
       padding: 0;
       :focus-within {
-        outline: 1px solid #7a7a7a;
+        outline: 1px solid ${palette.highlightPurple};
       }
       .MuiInputBase-input {
         padding: 0;

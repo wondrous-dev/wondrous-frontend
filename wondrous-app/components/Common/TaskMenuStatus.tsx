@@ -90,7 +90,7 @@ const TaskStatusMenuButtonArrow = styled((props) => (
 
 export const TaskStatusMenuButton = styled(ButtonBase)`
   && {
-    outline: ${({ open, theme }) => open && `1px solid ${theme.palette.grey79}`};
+    outline: ${({ open, theme }) => open && `1px solid ${theme.palette.highlightPurple}`};
     background-color: ${({ theme }) => theme.palette.midnight};
     width: 100%;
     min-width: fit-content;
@@ -310,7 +310,7 @@ export function TaskMenu({
   }, [autoFocus, ref.current]);
 
   return (
-    <Grid className={className}>
+    <Grid className={className} position="relative">
       <TaskStatusMenuButton onClick={handleClick} disabled={disableMenu} open={open} disableRipple ref={ref}>
         <Grid container item alignItems="center" gap="8px">
           {currentStatus?.icon}
@@ -323,6 +323,15 @@ export function TaskMenu({
         open={open}
         onClose={handleClose}
         disablePortal
+        modifiers={[
+          {
+            name: 'offset',
+            enabled: true,
+            options: {
+              offset: [0, 8],
+            },
+          },
+        ]}
         sx={{
           width: anchorEl?.clientWidth,
         }}

@@ -46,7 +46,7 @@ export const DropdownSearchButton = styled(ButtonUnstyled)`
   height: 32px;
   border-radius: 4px;
   background: #141414;
-  border: 1px solid ${({ open }) => (open ? `#7a7a7a` : `transparent`)};
+  border: 1px solid ${({ open }) => (open ? palette.highlightPurple : `transparent`)};
   display: flex;
   align-items: center;
   justify-content: space-between;

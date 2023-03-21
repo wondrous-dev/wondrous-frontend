@@ -106,6 +106,7 @@ export const TagsTextField = styled(TextField)`
 
       .MuiOutlinedInput-notchedOutline {
         border: none;
+        outline: 1px solid ${palette.highlightPurple};
       }
       .MuiOutlinedInput-input {
         min-width: 100px;

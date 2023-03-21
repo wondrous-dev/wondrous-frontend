@@ -75,7 +75,21 @@ const DropdownSearch = ({
           </DropdownSearchButton>
         )}
 
-        <DropdownSearchPopper open={isOpen} anchorEl={anchorEl.current} placement="bottom-start" disablePortal>
+        <DropdownSearchPopper
+          open={isOpen}
+          anchorEl={anchorEl.current}
+          placement="bottom-start"
+          disablePortal
+          modifiers={[
+            {
+              name: 'offset',
+              enabled: true,
+              options: {
+                offset: [0, 8],
+              },
+            },
+          ]}
+        >
           <Autocomplete
             multiple={multiple}
             value={selectedValues}
