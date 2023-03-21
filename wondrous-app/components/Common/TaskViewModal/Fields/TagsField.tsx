@@ -73,6 +73,7 @@ const TagsField = ({ canEdit, labels = [], orgId, shouldDisplay }) =>
           <EditableContent toggleEditMode={toggleAddMode} labels={labels} orgId={orgId} />
         )}
         canAddItem={canEdit && !labels?.length}
+        content={labels?.length}
         editableContent={({ toggleEditMode }) => (
           <EditableContent labels={labels} toggleEditMode={toggleEditMode} orgId={orgId} />
         )}

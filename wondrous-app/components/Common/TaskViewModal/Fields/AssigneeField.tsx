@@ -57,6 +57,7 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
           </UserSelectWrapper>
         )}
         canAddItem={canEdit && canClaim && !fetchedTask?.assigneeId}
+        content={fetchedTask?.assigneeId}
         addContent={({ toggleAddMode }) => (
           <ReviewerAssigneeAutocomplete
             options={filteredOrgUsersData}

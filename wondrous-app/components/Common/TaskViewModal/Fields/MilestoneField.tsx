@@ -119,6 +119,7 @@ const MilestoneField = ({ shouldDisplay, milestoneId, milestoneTitle, canEdit, i
           />
         )}
         canAddItem={canEdit && !milestoneId}
+        content={milestoneId}
         editableContent={({ toggleEditMode, toggleOutsideAlerter }) => (
           <EditMode
             toggleOutsideAlerter={toggleOutsideAlerter}

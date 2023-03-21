@@ -156,6 +156,7 @@ const DueDateField = ({ dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry, 
             />
           )}
           canAddItem={canEdit && !dueDate}
+          content={dueDate}
           editableContent={({ toggleEditMode, toggleOutsideAlerter }) => (
             <EditableFieldContent
               toggleOutsideAlerter={toggleOutsideAlerter}

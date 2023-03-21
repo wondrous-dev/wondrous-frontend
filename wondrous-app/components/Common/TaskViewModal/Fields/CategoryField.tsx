@@ -74,6 +74,7 @@ const CategoryField = ({ labels = [], canEdit, shouldDisplay = true, hideLabel =
       {hideLabel ? null : <TaskSectionLabel>Category</TaskSectionLabel>}
       <TaskFieldEditableContent
         canAddItem={canEdit && !labels?.length}
+        content={labels?.length}
         addContent={({ toggleAddMode }) => <EditableContent labels={labels} toggleEditMode={toggleAddMode} />}
         viewContent={({ toggleEditMode }) => (
           <ViewContent toggleEditMode={toggleEditMode} canEdit={canEdit} labels={labels} />

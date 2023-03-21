@@ -82,6 +82,7 @@ const PointsField = ({ shouldDisplay, points = null, canEdit }) => {
       <TaskFieldEditableContent
         onClose={() => onClose()}
         canAddItem={canEdit && stateRef.current === null}
+        content={stateRef.current}
         addContent={({ toggleAddMode }) => (
           <EditContent error={error} toggleEditMode={toggleAddMode} points={stateRef.current} setValue={setValue} />
         )}

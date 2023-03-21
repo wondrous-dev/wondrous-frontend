@@ -191,6 +191,7 @@ const Rewards = ({ fetchedTask, canEdit, shouldDisplay }) => {
           />
         )}
         canAddItem={canEdit && !rewards?.length}
+        content={rewards.length}
         addContent={({ toggleAddMode }) => (
           <CreateReward
             orgId={fetchedTask?.orgId}

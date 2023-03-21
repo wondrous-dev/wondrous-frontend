@@ -30,6 +30,7 @@ interface TaskFieldEditableContentProps {
   canAddItem?: boolean;
   addContent?: null | React.FC<{ toggleAddMode: () => void; toggleOutsideAlerter: () => void }>;
   editGridStyle?: any;
+  content?: string | number | boolean | null;
 }
 
 export const EmptyLabel = () => (
@@ -57,6 +58,7 @@ export const TaskFieldEditableContent = ({
   onClose = null,
   canAddItem = false,
   editGridStyle = {},
+  content = null,
 }: TaskFieldEditableContentProps) => {
   const { isComboboxOpen } = usePlate();
   const [isEditMode, setIsEditMode] = useState(false);
@@ -100,16 +102,15 @@ export const TaskFieldEditableContent = ({
     );
   }
 
-  if (addContent && canAddItem) {
-    return (
-      <CreateEntityLabelAddButton onClick={toggleAddMode} data-cy="button-add-assignee">
-        <CreateEntityAddButtonIcon />
-        <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
-      </CreateEntityLabelAddButton>
-    );
-  }
-
-  if (addContent && !canAddItem) {
+  if (!content && addContent) {
+    if (canAddItem) {
+      return (
+        <CreateEntityLabelAddButton onClick={toggleAddMode} data-cy="button-add-assignee">
+          <CreateEntityAddButtonIcon />
+          <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+        </CreateEntityLabelAddButton>
+      );
+    }
     return <EmptyLabel />;
   }
 

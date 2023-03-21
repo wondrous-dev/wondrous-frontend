@@ -51,6 +51,7 @@ const PriorityField = ({ priority, canEdit, shouldDisplay }) => {
         )}
         addContent={({ toggleAddMode }) => <EditableContent toggleEditMode={toggleAddMode} value={null} />}
         canAddItem={canEdit && !priorityValue}
+        content={priorityValue?.label}
         editableContent={({ toggleEditMode }) => <EditableContent toggleEditMode={toggleEditMode} value={priority} />}
       />
     </TaskSectionDisplayDiv>
