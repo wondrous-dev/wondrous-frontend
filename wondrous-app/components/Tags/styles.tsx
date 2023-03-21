@@ -27,6 +27,9 @@ export const TagAutocompletePopper = styled(({ className, ...props }) => (
   .MuiAutocomplete-listbox {
     border-color: #7a7a7a;
     max-height: 200px;
+    .Mui-focused {
+      background: ${palette.grey79};
+    }
   }
   .MuiAutocomplete-noOptions {
     background: #1f1f1f !important;
@@ -41,7 +44,7 @@ export const TagAutocompletePopper = styled(({ className, ...props }) => (
 export const OptionItem = styled.li`
   && {
     height: 36px;
-    background: #1f1f1f;
+    background: ${palette.black92};
     font-family: 'Space Grotesk';
     font-size: 14px;
     padding: 12px;
