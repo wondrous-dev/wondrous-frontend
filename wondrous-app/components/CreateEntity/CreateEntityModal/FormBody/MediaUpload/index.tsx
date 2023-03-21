@@ -47,7 +47,7 @@ const MediaUpload = forwardRef(
         event,
         filePrefix: 'tmp/task/new/',
         mediaUploads,
-        setMediaUploads: (mediaUploads) => setFileUploadLoading(mediaUploads),
+        setMediaUploads: (mediaUploads) => setMediaUploadsValue(mediaUploads),
         setFileUploadLoading,
       });
       if (existingTaskId) {
