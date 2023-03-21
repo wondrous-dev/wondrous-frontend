@@ -56,7 +56,7 @@ export const OptionItem = styled.li`
 
 export const StyledChipTag = styled(Chip)`
   &&& {
-    background: #4000b5;
+    background: ${palette.grey85};
     border: 0;
     border-radius: 4px;
     height: 20px;
