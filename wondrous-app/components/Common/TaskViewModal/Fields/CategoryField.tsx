@@ -18,7 +18,7 @@ import { FIELDS } from './hooks/constants';
 import { InlineFieldWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
-  <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+  <ViewFieldHoverWrapper height="fit-content" $canEdit={canEdit} onClick={toggleEditMode}>
     <Grid container gap="8px" alignItems="center" width="100%" flexWrap="wrap">
       {labels?.map((label) => (
         <InlineFieldWrapper>
