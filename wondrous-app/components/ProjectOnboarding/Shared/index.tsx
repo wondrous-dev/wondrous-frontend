@@ -3,8 +3,12 @@ import palette from 'theme/palette';
 import { styled } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
+import LeftArrowIcon from 'components/Icons/leftArrow';
+
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import { BackButton } from 'components/OnboardingDao/StepWrapper/styles';
+
 import Check from '@mui/icons-material/Check';
 import SettingsIcon from '@mui/icons-material/Settings';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
@@ -14,9 +18,8 @@ import { StepIconProps } from '@mui/material/StepIcon';
 
 import typography from 'theme/typography';
 import { HeaderButton } from 'components/organization/wrapper/styles';
-import { data } from 'cypress/types/jquery';
 import Button from 'components/Button';
-import { RightSideWrapper } from './styles';
+import { PageLabel, RightSideWrapper } from './styles';
 
 export const GenericArtPanel = ({ img }) => (
   <Grid
@@ -212,3 +215,56 @@ export const ButtonsPanel = ({ onContinue = null, onSkip = null }) =>
       </Box>
     </Grid>
   ) : null;
+
+export const GenericSetupLeftWrapper = ({
+  children,
+  handleBackwards,
+  steps,
+  currentStep,
+  index,
+  title,
+  subtitle = null,
+}) => (
+  <GenericLeftWrapper>
+    <Grid display="flex" justifyContent="space-between" alignItems="center">
+      <Grid display="flex" alignItems="center" gap="14px">
+        <BackButton color={palette.tundora} onClick={handleBackwards}>
+          <LeftArrowIcon />
+        </BackButton>
+        <Typography color={palette.white} fontWeight={700} fontSize="16px" lineHeight="20px">
+          Back
+        </Typography>
+      </Grid>
+      <Box width="30%">
+        <StepperWrapper steps={steps} currentStep={currentStep} />
+      </Box>
+    </Grid>
+    <Grid display="flex" alignItems="center" gap="8px">
+      <PageLabel>
+        {index}.{currentStep + 1}
+      </PageLabel>
+      <Typography
+        color={palette.white}
+        fontSize="24px"
+        fontFamily={typography.fontFamily}
+        fontWeight={700}
+        lineHeight="31px"
+      >
+        {title}
+      </Typography>
+    </Grid>
+    {subtitle ? (
+      <Typography
+        fontFamily={typography.fontFamily}
+        fontSize="15px"
+        lineHeight="24px"
+        color={palette.grey250}
+        fontWeight={400}
+        letterSpacing="0.01em"
+      >
+        {subtitle}
+      </Typography>
+    ) : null}
+    {children}
+  </GenericLeftWrapper>
+);

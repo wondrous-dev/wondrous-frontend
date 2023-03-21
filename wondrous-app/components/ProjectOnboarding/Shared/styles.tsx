@@ -55,3 +55,14 @@ export const TextArea = styled.textarea`
   }
   ${ScrollBarStyles}
 `;
+
+export const ActionItemWrapper = styled.button`
+  border-radius: 6px;
+  max-height: 26px;
+  max-width: 26px;
+  background: ${palette.grey940};
+  border: none;
+  &:hover {
+    background: ${palette.grey900};
+  }
+`;
