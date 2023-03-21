@@ -48,7 +48,7 @@ export const MilestoneSearchButton = styled(ButtonUnstyled)`
   font-weight: 500;
   font-size: 13px;
   width: 100%;
-  height: 32px;
+  height: 28px;
   border-radius: 4px;
   background: #141414;
   border: 1px solid ${(props) => (props.open ? palette.highlightPurple : `transparent`)};

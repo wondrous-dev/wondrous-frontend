@@ -3,7 +3,7 @@ import palette from 'theme/palette';
 const styles = {
   grid: {
     padding: '4px',
-    minHeight: '32px',
+    height: '28px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

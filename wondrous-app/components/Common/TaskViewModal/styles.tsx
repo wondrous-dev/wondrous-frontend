@@ -463,7 +463,7 @@ export const TaskSectionDisplayLabelText = styled(Typography)`
     background: #282828;
     padding: 4px 8px;
     font-size: 14px;
-    height: 26px;
+    height: 28px;
     border-radius: 4px;
     display: flex;
     align-items: center;

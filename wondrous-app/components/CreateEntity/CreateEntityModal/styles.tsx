@@ -387,7 +387,7 @@ export const CreateEntitySelectWrapper = styled.div`
 export const CreateEntityTextfield = styled(TextField)`
   && {
     min-width: 45%;
-    height: 32px;
+    height: 28px;
     background: #141414;
     border-radius: 4px;
     display: flex;
@@ -399,7 +399,7 @@ export const CreateEntityTextfield = styled(TextField)`
       padding: 0 6px;
     }
     .MuiTextField-root {
-      height: 32px;
+      height: 28px;
     }
     .MuiOutlinedInput-notchedOutline {
       border: none;
@@ -470,6 +470,7 @@ export const CreateEntityAutocompletePopper = styled(({ className, ...props }) =
     classes={{ paper: className }}
     sx={{
       '&&:focus-within': [{ outline: `1px solid ${palette.highlightPurple}` }],
+      height: '28px',
     }}
     tabIndex={0}
   />
@@ -496,7 +497,7 @@ export const CreateEntityAutocompletePopperRenderInput = styled(Input)`
   && {
     border: none;
     outline: none;
-    height: 32px;
+    height: 28px;
     color: #c4c4c4;
     font-family: 'Space Grotesk';
     font-size: 13px;
@@ -827,7 +828,7 @@ export const CreateEntityWrapper = styled.div`
 export const CreateEntityPaymentMethodRoot = styled.button`
   padding: 0;
   max-width: fit-content;
-  height: 32px;
+  height: 28px;
   border-radius: 4px;
   background: #141414;
   border: 1px solid ${(props) => (props['aria-expanded'] ? palette.highlightPurple : `transparent`)};
@@ -1005,6 +1006,7 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
   // This is to override the default styles of the SingleDatePicker
   && {
     margin: 0;
+    height: 28px;
     width: 100%;
     max-width: 100%;
     > .MuiFormControl-root {
