@@ -19,7 +19,6 @@ export const StyledAutocomplete = styled(Autocomplete).attrs(() => ({
   height: 28px
   color: ${palette.white};
   outline: 1px solid ${palette.highlightPurple};
-  padding: 0 4px;
 `;
 
 export const TagAutocompletePopper = styled(({ className, ...props }) => (
@@ -100,6 +99,7 @@ export const StyledChipTag = styled(Chip)`
 export const TagsTextField = styled(TextField)`
   && {
     .MuiOutlinedInput-root {
+      padding: 0 4px;
       color: ${palette.white};
       font-family: 'Space Grotesk';
       font-size: 13px;
