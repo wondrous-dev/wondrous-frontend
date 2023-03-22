@@ -39,13 +39,11 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
 
   const filteredEligibleReviewers = useMemo(
     () =>
-      eligibleReviewers.length === taskReviewerIds.length
-        ? []
-        : eligibleReviewers.map((reviewer) => ({
-            ...reviewer,
-            value: reviewer.id,
-            hide: taskReviewerIds?.includes(reviewer.id) || reviewer.id === user?.id,
-          })),
+      eligibleReviewers.map((reviewer) => ({
+        ...reviewer,
+        value: reviewer.id,
+        hide: taskReviewerIds?.includes(reviewer.id) || reviewer.id === user?.id,
+      })),
     [eligibleReviewers, taskReviewerIds, user?.id]
   );
 
@@ -99,6 +97,7 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
             )}
             editableContent={({ toggleEditMode }) => (
               <ReviewerAssigneeAutocomplete
+                disabled
                 options={filteredEligibleReviewers}
                 error={error}
                 currentOption={{

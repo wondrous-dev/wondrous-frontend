@@ -190,6 +190,7 @@ interface IReviewerAssigneeAutocompleteProps {
   onDelete?: () => void;
   onSelect?: (value: string | Option) => void;
   error?: string;
+  disabled?: boolean;
 }
 
 export const ReviewerAssigneeAutocomplete = ({
@@ -202,9 +203,11 @@ export const ReviewerAssigneeAutocomplete = ({
   onDelete,
   onSelect,
   error = null,
+  disabled = false,
 }: IReviewerAssigneeAutocompleteProps) => (
   <>
     <CreateEntityAutocompletePopper
+      disabled={disabled}
       openOnFocus
       options={options}
       disablePortal
