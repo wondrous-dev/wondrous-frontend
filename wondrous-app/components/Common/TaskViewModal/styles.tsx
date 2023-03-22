@@ -1,5 +1,5 @@
 import { ButtonUnstyled } from '@mui/base';
-import { Button, Grid, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import { Button, Grid, Menu, MenuItem, Modal, Tooltip, Typography } from '@mui/material';
 import { Button as GradientButton } from 'components/Common/button';
 import { Button as ComponentButton } from 'components/Button';
 import { SafeImage } from 'components/Common/Image';
@@ -964,13 +964,28 @@ export const ViewFieldHoverWrapper = styled.div`
   .edit-icon-field {
     display: none;
   }
-  :hover {
+  &:hover {
     background-color: ${({ theme }) => theme.palette.grey87};
     width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
   }
   ${({ $canEdit }) => ($canEdit ? EditIconCss : `pointer-events: none;`)};
 `;
 
+export const AssigneeReviewerContentWrapper = styled(Grid)`
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  &:hover {
+    ${AddButtonGrid} {
+      display: flex;
+    }
+    ${ViewFieldHoverWrapper} {
+      background-color: ${({ theme }) => theme.palette.grey87};
+      width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
+    }
+  }
+`;
 export const ViewFieldWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -998,14 +1013,33 @@ export const UserSelectWrapper = styled(Grid)`
   flex-wrap: wrap;
   width: 100%;
   &:hover {
-    > div:nth-last-child(2) {
-      width: ${({ showFullWidth }) => (showFullWidth ? `` : `calc(100% - 40px);`)};
-    }
-    ${ViewFieldWrapper} {
+    ${AssigneeReviewerContentWrapper} {
       width: 100%;
     }
-    ${AddButtonGrid} {
+  }
+`;
+
+export const ReviewerTooltip = styled(({ className, children, title, ...props }) => (
+  <Tooltip {...props} title={title} classes={{ popper: className }}>
+    {children}
+  </Tooltip>
+))`
+  && {
+    & .MuiTooltip-tooltipArrow {
       display: flex;
+      align-items: center;
+      justify-content: center;
+      background: ${palette.blue150};
+      height: 28px;
+      min-height: 0;
+      color: ${palette.white};
+      font-weight: 500;
+      padding: 4px;
+    }
+    & .MuiTooltip-arrow {
+      &:before {
+        background: ${palette.blue150};
+      }
     }
   }
 `;
