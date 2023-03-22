@@ -500,7 +500,7 @@ export const TaskViewModal = ({
         },
       });
     }
-    return archiveTask(variables);
+    return archiveTaskMutation(variables);
   };
 
   return (
