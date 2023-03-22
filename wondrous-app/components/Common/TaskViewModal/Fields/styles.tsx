@@ -74,7 +74,7 @@ export const DescriptionWrapper = styled.div`
 
 export const InlineFieldWrapper = styled(ViewFieldWrapper)`
   && {
-    height: 20px;
+    height: 28px;
     padding: 4px 8px;
     ${ViewFieldHoverWrapper}:hover & {
       background: ${palette.grey78};

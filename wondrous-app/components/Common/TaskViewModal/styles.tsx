@@ -959,6 +959,7 @@ export const ViewFieldHoverWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  min-height: 28px;
   height: ${({ height }) => height ?? '28px'};
   cursor: pointer;
   .edit-icon-field {
