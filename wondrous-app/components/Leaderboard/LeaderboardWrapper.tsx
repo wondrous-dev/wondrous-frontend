@@ -7,6 +7,8 @@ import { useEffect, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 
 import { StyledCircularProgress } from 'components/Common/WonderAiTaskGeneration/styles';
+import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import { ExportCSVButton, ExportCSVButtonText } from 'components/organization/analytics/styles';
 import LeaderboardDateTabs from './LeaderboardDateTabs';
 import LeaderboardSearch from './LeaderboardSearch';
 import LeaderboardUserRow from './LeaderboardUserRow';
@@ -88,11 +90,18 @@ const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = 
         assigneeId: assignee?.value,
       }),
     });
-
   return (
     <>
       <Grid container rowGap="14px" alignItems="center" justifyContent="space-between" width="100%">
-        <LeaderboardDateTabs dateToday={today} setFromTime={setFromTime} setToTime={setToTime} />
+        <LeaderboardDateTabs
+          dateToday={today}
+          setFromTime={setFromTime}
+          setToTime={setToTime}
+          fromTime={fromTime}
+          toTime={toTime}
+          contributorTaskData={data}
+          orgId={orgData?.id || podData?.orgId}
+        />
         <LeaderboardSearch
           assignee={assignee}
           setAssignee={setAssignee}

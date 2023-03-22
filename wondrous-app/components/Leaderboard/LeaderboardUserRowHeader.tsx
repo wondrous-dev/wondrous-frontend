@@ -14,10 +14,12 @@ import LeaderboardUserRowIcons from './LeaderboardUserRowIcons';
 const calculateCount = (tasks) => {
   let taskCount = 0;
   let bountyCount = 0;
+  let pointCount = 0;
   if (!tasks) {
     return {
       taskCount,
       bountyCount,
+      pointCount,
     };
   }
 
@@ -27,10 +29,14 @@ const calculateCount = (tasks) => {
     } else if (task?.type === TASK_TYPE) {
       taskCount += 1;
     }
+    if (task?.points && task?.points > 0) {
+      pointCount += task.points;
+    }
   });
   return {
     taskCount,
     bountyCount,
+    pointCount,
   };
 };
 
@@ -40,7 +46,7 @@ const UserRowPictureStyles = {
   borderRadius: '15px',
 };
 
-const UserRowInfo = ({ Icon, data = null, sx = null }) => (
+const UserRowInfo = ({ Icon = null, data = null, sx = null }) => (
   <Grid
     container
     padding="0 6px"
@@ -71,11 +77,12 @@ const UserRowInfo = ({ Icon, data = null, sx = null }) => (
         },
       }}
     >
-      <Icon />
+      {Icon && <Icon />}
     </Grid>
     {typeof data === 'number' && (
       <Typography color={palette.white} fontSize="15px" fontWeight="500">
         {data}
+        {!Icon && ` pts`}
       </Typography>
     )}
   </Grid>
@@ -86,6 +93,7 @@ const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, click
   const contributionCount = useMemo(() => calculateCount(contributorTask?.tasks), [contributorTask]);
   const bountyCount = contributionCount?.bountyCount;
   const taskCount = contributionCount?.taskCount;
+  const pointCount = contributionCount?.pointCount;
   return (
     <Grid
       container
@@ -155,6 +163,7 @@ const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, click
       <Grid item container width="fit-content" gap="14px">
         <UserRowInfo Icon={CheckBoxIcon} data={taskCount} />
         <UserRowInfo Icon={StarIcon} data={bountyCount} />
+        <UserRowInfo data={pointCount} />
         <UserRowInfo
           Icon={BottomArrowCaret}
           sx={{
