@@ -168,11 +168,13 @@ export const PayContributorButton = styled(Button)`
     margin-left: 25px;
 
     //text
-    font-weight: 500;
     font-size: 16px;
     line-height: 150%;
     color: #ffffff;
-
+    button {
+      font-weight: 500;
+      background: none;
+    }
     .MuiCircularProgress-root {
       margin-right: 10px;
     }
