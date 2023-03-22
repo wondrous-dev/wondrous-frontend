@@ -14,6 +14,7 @@ import {
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import scrollBarStyles from 'components/Common/ScrollbarStyles';
 import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DAOIcon } from 'components/Icons/dao';
@@ -24,11 +25,10 @@ import SingleDatePicker from 'components/SingleDatePicker';
 import styled, { css } from 'styled-components';
 import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
-import scrollBarStyles from 'components/Common/ScrollbarStyles';
 import typography from 'theme/typography';
+import { CloseIcon } from '../../Common/BoardFilters/styles';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
-import { CloseIcon } from '../../Common/BoardFilters/styles';
 
 const fullScreenStyle = css`
   max-height: 100vh;
@@ -484,12 +484,15 @@ export const CreateEntityAutocompletePopper = styled(({ className, ...props }) =
   }
 
   .MuiAutocomplete-noOptions {
-    background: #1f1f1f !important;
+    background: ${palette.grey79} !important;
     font-family: 'Space Grotesk';
-    font-size: 14px;
     color: ${palette.white};
     font-weight: 500;
     border-color: #7a7a7a;
+    padding: 8px;
+    font-size: 13px;
+    margin-top: 8px;
+  }
   }
 `;
 
