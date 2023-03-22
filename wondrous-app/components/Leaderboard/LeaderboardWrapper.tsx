@@ -82,12 +82,10 @@ const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = 
   });
 
   useEffect(() => {
-    if (orgData?.createdAt) {
-      setFromTime(new Date(orgData?.createdAt));
-    } else if (podData?.createdAt) {
-      setFromTime(new Date(podData?.createdAt));
+    if (!fromTime) {
+      setFromTime(getStartDate({ duration: 30, date: new Date() }));
     }
-  }, [orgData?.createdAt, podData?.createdAt]);
+  }, [fromTime]);
 
   const data = useMemo(
     () => getContributorTaskData(getCompletedTasksBetweenPeriodsData, sortByPoints),
@@ -106,7 +104,7 @@ const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = 
     <>
       <Grid container rowGap="14px" alignItems="center" justifyContent="space-between" width="100%">
         <LeaderboardDateTabs
-          dateToday={today}
+          dateToday={tomorrow}
           setFromTime={setFromTime}
           setToTime={setToTime}
           fromTime={fromTime}
@@ -115,6 +113,8 @@ const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = 
           orgId={orgData?.id || podData?.orgId}
           sortByPoints={sortByPoints}
           setSortByPoints={setSortByPoints}
+          orgData={orgData}
+          podData={podData}
         />
         <LeaderboardSearch
           assignee={assignee}
