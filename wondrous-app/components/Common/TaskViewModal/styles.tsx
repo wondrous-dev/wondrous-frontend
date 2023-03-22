@@ -981,7 +981,6 @@ export const ViewFieldWrapper = styled.div`
   height: 28px;
   border-radius: 4px;
   width: fit-content;
-  height: fit-content;
   background-color: ${({ theme, $background = '' }) => $background || theme.palette.grey920};
   ${ViewFieldHoverWrapper}:hover & {
     background: ${palette.grey87};

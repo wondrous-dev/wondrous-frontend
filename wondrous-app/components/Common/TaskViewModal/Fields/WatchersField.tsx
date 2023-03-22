@@ -102,8 +102,8 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
               <Tooltip key={user.username} title={user.username} placement="top">
                 <Box ml="-6px" overflow="hidden">
                   <SmallAvatar
-                    imageWidth={22}
-                    imageHeight={22}
+                    imageWidth={28}
+                    imageHeight={28}
                     key={user.id}
                     initials={user.username.substring(0, 2).toUpperCase()}
                     avatar={{ url: user.profilePicture }}
@@ -132,7 +132,7 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
                   justifyContent: 'flex-end',
                   alignItems: 'center',
                   width: '48px',
-                  height: '26px',
+                  height: '28px',
                   background: palette.grey99,
                   borderRadius: '224px',
                 }}
@@ -165,7 +165,7 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
             }}
             color="secondary"
             borderRadius={166}
-            height={26}
+            height={28}
             onClick={handleWatch}
           >
             Watch
