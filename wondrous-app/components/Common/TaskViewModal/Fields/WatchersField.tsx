@@ -91,7 +91,7 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Observer</TaskSectionLabel>
       <Grid container alignItems="center" gap={`${observers.length ? 8 : 0}px`}>
-        <Grid container alignItems="center" width="auto">
+        <Grid container alignItems="center" width="auto" paddingLeft="6px">
           {observers.slice(0, 6).map((user, index) => {
             // To show current user at the end of the list
             if (user?.id === currentUser?.id || index > (isObserving ? 4 : 5)) {
@@ -122,7 +122,7 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
                 imageHeight={22}
                 initials={currentUser?.username.substring(0, 2).toUpperCase()}
                 avatar={{ url: currentUser?.profilePicture }}
-                style={{ borderRadius: '50%', border: `2px solid ${palette.grey99}`, cursor: 'default' }}
+                style={{ borderRadius: '50%', border: `2px solid ${palette.grey85}`, cursor: 'default' }}
                 border="none"
               />
               <Box
@@ -133,7 +133,7 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
                   alignItems: 'center',
                   width: '48px',
                   height: '28px',
-                  background: palette.grey99,
+                  background: palette.grey85,
                   borderRadius: '224px',
                 }}
               >

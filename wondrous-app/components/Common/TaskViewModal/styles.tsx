@@ -14,7 +14,7 @@ import MilestoneIcon from 'components/Icons/milestoneField.svg';
 import OpenInFullIcon from 'components/Icons/openInFull.svg';
 import OpenInMinimizedViewIcon from 'components/Icons/openInMinimizedView.svg';
 import PodIcon from 'components/Icons/podIcon';
-import PointsIcon from 'components/Icons/pointsIcon.svg';
+import PointsIcon from 'components/Icons/pointsIcon2.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
@@ -629,7 +629,6 @@ export const TaskSectionInfoPointsIcon = styled(({ className }) => (
     <PointsIcon />
   </div>
 ))`
-  background-color: #282828;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -674,10 +673,17 @@ export const TaskSectionInfoMilestoneIcon = styled(({ className }) => (
     <MilestoneIcon />
   </div>
 ))`
-  background-color: #b8255f;
   display: flex;
   align-items: center;
   justify-content: center;
+  svg {
+    rect {
+      fill: transparent;
+    }
+    path {
+      stroke: ${palette.blue20};
+    }
+  }
 `;
 
 export const TaskSectionInfoPaymentMethodIcon = styled(SafeImage).attrs({ useNextImage: false })`

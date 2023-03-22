@@ -16,7 +16,17 @@ const ViewContent = ({ priorityValue, canEdit, toggleEditMode }) =>
     <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
       <ViewFieldWrapper>
         <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
-          <IconWrapper>{priorityValue.icon ? priorityValue.icon : null}</IconWrapper>
+          <IconWrapper
+            sx={{
+              '& svg': {
+                rect: {
+                  fill: 'transparent',
+                },
+              },
+            }}
+          >
+            {priorityValue.icon ? priorityValue.icon : null}
+          </IconWrapper>
           <TaskSectionInfoText>{priorityValue.label}</TaskSectionInfoText>
         </Grid>
       </ViewFieldWrapper>

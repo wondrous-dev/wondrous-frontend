@@ -13,7 +13,7 @@ import { InlineFieldWrapper, TagsWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
   <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-    <Grid container display="flex" gap="8px" flexWrap="wrap" height="fit-content" padding="2px">
+    <Grid container display="flex" gap="8px" flexWrap="wrap" height="fit-content">
       {labels?.map(({ name = null }) => (
         <TagsWrapper>
           <TaskSectionInfoText>{name}</TaskSectionInfoText>
