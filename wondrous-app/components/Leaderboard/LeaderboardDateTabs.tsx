@@ -8,7 +8,7 @@ import { PRIVATE_TASK_TITLE } from 'utils/constants';
 import { PayoutModal } from 'components/organization/analytics/PayoutModal';
 import LeaderboardDateTabsButton from './LeaderboardDateTabsButton';
 
-const getStartDate = ({ duration, date }) => {
+export const getStartDate = ({ duration, date }) => {
   const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - duration);
   return newDate;
 };
@@ -71,7 +71,17 @@ export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime
   link.click();
 };
 
-const LeaderboardDateTabs = ({ dateToday, setFromTime, setToTime, fromTime, toTime, contributorTaskData, orgId }) => {
+const LeaderboardDateTabs = ({
+  dateToday,
+  setFromTime,
+  setToTime,
+  fromTime,
+  toTime,
+  contributorTaskData,
+  orgId,
+  setSortByPoints,
+  sortByPoints,
+}) => {
   const { isTabletScreen } = useMediaQuery();
   const [payoutModal, setPayoutModal] = useState(false);
   const dateTabs = {
@@ -79,7 +89,7 @@ const LeaderboardDateTabs = ({ dateToday, setFromTime, setToTime, fromTime, toTi
     sevenDays: { label: '7 days', fromTime: getStartDate({ duration: 7, date: dateToday }) },
     thirtyDays: { label: '30 days', fromTime: getStartDate({ duration: 30, date: dateToday }) },
   };
-  const [selected, setSelected] = useState(dateTabs.allTime.label);
+  const [selected, setSelected] = useState(dateTabs.thirtyDays.label);
   const handleOnClick = ({ label, fromTime }) => {
     setSelected(label);
     setFromTime(fromTime);
@@ -98,7 +108,7 @@ const LeaderboardDateTabs = ({ dateToday, setFromTime, setToTime, fromTime, toTi
       width="fit-content"
       gap="14px"
       xs={12}
-      md={8}
+      md={9}
     >
       <PayoutModal
         open={payoutModal}
@@ -127,6 +137,10 @@ const LeaderboardDateTabs = ({ dateToday, setFromTime, setToTime, fromTime, toTi
           children: 'Custom',
         }}
       />
+
+      <LeaderboardDateTabsButton onClick={() => setSortByPoints(!sortByPoints)}>{`Sort by ${
+        sortByPoints ? `tasks` : 'points'
+      }`}</LeaderboardDateTabsButton>
       <div
         style={{
           flex: 1,
