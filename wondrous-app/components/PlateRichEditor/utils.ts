@@ -1,8 +1,27 @@
-import { Descendant } from 'slate';
+import { Descendant, Editor, Transforms } from 'slate';
 import cloneDeep from 'lodash/cloneDeep';
 
 import { ElementTypes, MentionElement } from 'components/PlateRichEditor/types';
 
+export const resetEditor = (editor, newValue) => {
+  if (editor.children.length > 0) {
+    // Delete all entries leaving 1 empty node
+    Transforms.delete(editor, {
+      at: {
+        anchor: Editor.start(editor, []),
+        focus: Editor.end(editor, []),
+      },
+    });
+
+    // Removes empty node
+    Transforms.removeNodes(editor, {
+      at: [0],
+    });
+  }
+
+  // Insert array of children nodes
+  Transforms.insertNodes(editor, newValue);
+};
 /** Deserialize plain text to Slate state */
 export const plainTextToRichText = (text: string): Descendant[] => {
   if (!text) {
@@ -143,7 +162,7 @@ export const convertSlateNodesToPlate = (nodes) =>
           newValue.url = newValue.href;
           newValue.target = '_blank';
 
-            delete newValue.href;
+          delete newValue.href;
         }
         break;
       case 'list-item':
@@ -160,7 +179,8 @@ export const convertSlateNodesToPlate = (nodes) =>
           ];
         }
         break;
-      default: break;
+      default:
+        break;
     }
 
     if (newValue.children) {
