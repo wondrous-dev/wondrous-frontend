@@ -34,20 +34,12 @@ import {
   CreateEntityTextfield,
   CreateEntityTitle,
   CreateEntityWrapper,
-  EditorContainer,
-  EditorPlaceholder,
-  EditorToolbar,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { PlateRichEditor } from 'components/PlateRichEditor';
 import {} from 'components/Common/WonderAiTaskGeneration/styles';
-import { useMutation, useQuery } from '@apollo/client';
-import { GENERATE_GPT_TASKS } from 'graphql/mutations';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
-import { Checkbox, CircularProgress, Tooltip } from '@mui/material';
-import palette from 'theme/palette';
+import { useQuery } from '@apollo/client';
+import { Checkbox, Tooltip } from '@mui/material';
 import { APPLICATION_POLICY, APPLICATION_POLICY_LABELS_MAP, ENTITIES_TYPES, PRIORITIES } from 'utils/constants';
-import { RichTextEditor, useEditor } from 'components/RichText';
-import { useFormik } from 'formik';
 import {
   CreateEntityPaymentMethodItem,
   CreateEntityTextfieldInputPointsComponent,
@@ -56,11 +48,7 @@ import {
   entityTypeData,
   filterCategoryValues,
   filterPaymentMethods,
-  formValidationSchema,
-  handleRewardOnChange,
-  initialValues,
   useCreateLabel,
-  useGetAvailableUserPods,
   useGetCategories,
   useGetEligibleReviewers,
   useGetOrgLabels,
