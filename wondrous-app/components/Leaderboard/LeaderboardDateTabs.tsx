@@ -81,11 +81,20 @@ const LeaderboardDateTabs = ({
   orgId,
   setSortByPoints,
   sortByPoints,
+  orgData = null,
+  podData = null,
 }) => {
   const { isTabletScreen } = useMediaQuery();
   const [payoutModal, setPayoutModal] = useState(false);
   const dateTabs = {
-    allTime: { label: 'All time', fromTime: new Date(1900, 0, 1) },
+    allTime: {
+      label: 'All time',
+      fromTime: podData?.createdAt
+        ? new Date(podData?.createdAt)
+        : orgData?.createdAt
+        ? new Date(orgData?.createdAt)
+        : new Date(1900, 0, 1),
+    },
     sevenDays: { label: '7 days', fromTime: getStartDate({ duration: 7, date: dateToday }) },
     thirtyDays: { label: '30 days', fromTime: getStartDate({ duration: 30, date: dateToday }) },
   };
