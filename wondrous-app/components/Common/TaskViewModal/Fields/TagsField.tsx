@@ -9,17 +9,15 @@ import { TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldHoverWrapper } fro
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
-import { InlineFieldWrapper } from './styles';
+import { InlineFieldWrapper, TagsWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
   <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-    <Grid display="flex" gap="8px" flexWrap="wrap">
+    <Grid container display="flex" gap="8px" flexWrap="wrap" height="fit-content" padding="2px">
       {labels?.map(({ name = null }) => (
-        <InlineFieldWrapper>
-          <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
-            <TaskSectionInfoText>{name}</TaskSectionInfoText>
-          </Grid>
-        </InlineFieldWrapper>
+        <TagsWrapper>
+          <TaskSectionInfoText>{name}</TaskSectionInfoText>
+        </TagsWrapper>
       ))}
     </Grid>
     <Grid item container display="flex" gap="6px" alignItems="center" justifyContent="end" width="fit-content">

@@ -75,12 +75,25 @@ export const DescriptionWrapper = styled.div`
 export const InlineFieldWrapper = styled(ViewFieldWrapper)`
   && {
     height: 28px;
-    padding: 4px 8px;
+    padding: 3px 6px;
     ${ViewFieldHoverWrapper}:hover & {
       background: ${palette.grey78};
     }
     &:hover {
       width: fit-content;
+    }
+  }
+`;
+
+export const TagsWrapper = styled(ViewFieldWrapper)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    ${ViewFieldHoverWrapper}:hover & {
+      background: ${palette.grey78};
+      height: 20px;
     }
   }
 `;
