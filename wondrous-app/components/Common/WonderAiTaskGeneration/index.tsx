@@ -48,6 +48,12 @@ import Checkbox from 'components/Checkbox';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
 import { GET_GPT_ENTITY_DESCRIPTION } from 'graphql/queries/gptEntityDescription';
+import {
+  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+  GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
+  GET_TASKS_PER_TYPE,
+  GET_TASKS_PER_TYPE_FOR_POD,
+} from 'graphql/queries';
 import { ErrorText } from '..';
 import RightPanel from './rightPanel';
 import { SnackbarAlertContext } from '../SnackbarAlert';
@@ -224,7 +230,14 @@ const WonderAiTaskGeneration = () => {
   const [getGptEntityDescription, { data: getGptEntityDescriptionData }] = useLazyQuery(GET_GPT_ENTITY_DESCRIPTION);
   const [generateGPTTasks, { loading: generatedGPTTaskLoading, error: generatedGPTTaskError }] =
     useMutation(GENERATE_GPT_TASKS);
-  const [createGPTTasks, { loading: createGPTTaskLoading, error: createGPTTaskError }] = useMutation(CREATE_GPT_TASKS);
+  const [createGPTTasks, { loading: createGPTTaskLoading, error: createGPTTaskError }] = useMutation(CREATE_GPT_TASKS, {
+    refetchQueries: [
+      GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+      GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
+      GET_TASKS_PER_TYPE,
+      GET_TASKS_PER_TYPE_FOR_POD,
+    ],
+  });
   const setMilestoneField = (field, value) => {
     setMilestone({
       ...milestone,
@@ -309,7 +322,11 @@ const WonderAiTaskGeneration = () => {
           if (podId) {
             router.push(`/pod/${podBoard?.podId}/home`);
           } else if (orgId) {
-            router.push(`/organization/${orgBoard?.orgData?.username}/home`);
+            if (orgBoard?.orgData?.shared) {
+              router.push(`/collaboration/${orgBoard?.orgData?.username}/boards`);
+            } else {
+              router.push(`/organization/${orgBoard?.orgData?.username}/home`);
+            }
           }
         }
       });
