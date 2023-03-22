@@ -492,6 +492,7 @@ export const CreateEntityAutocompletePopper = styled(({ className, ...props }) =
     padding: 8px;
     font-size: 13px;
     margin-top: 8px;
+    font-size: 14px;
   }
   }
 `;
