@@ -90,8 +90,8 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Observer</TaskSectionLabel>
-      <Grid container alignItems="center" gap={`${observers.length ? 8 : 0}px`}>
-        <Grid container alignItems="center" width="auto" paddingLeft="6px">
+      <Grid container alignItems="center" justifyContent="flex-start" gap={`${observers.length ? 8 : 0}px`}>
+        <Grid container item alignItems="center" width="fit-content" marginLeft="8px">
           {observers.slice(0, 6).map((user, index) => {
             // To show current user at the end of the list
             if (user?.id === currentUser?.id || index > (isObserving ? 4 : 5)) {
@@ -154,23 +154,25 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
           ) : null}
         </Grid>
 
-        {isObserving ? (
-          <Box sx={{ color: palette.grey250 }}>{`${observers.length} watching`}</Box>
-        ) : (
-          <Button
-            buttonTheme={{
-              paddingX: 14,
-              fontSize: '14px',
-              fontWeight: 500,
-            }}
-            color="secondary"
-            borderRadius={166}
-            height={28}
-            onClick={handleWatch}
-          >
-            Watch
-          </Button>
-        )}
+        <Grid container item width="fit-content">
+          {isObserving ? (
+            <Box sx={{ color: palette.grey250 }}>{`${observers.length} watching`}</Box>
+          ) : (
+            <Button
+              buttonTheme={{
+                paddingX: 14,
+                fontSize: '14px',
+                fontWeight: 500,
+              }}
+              color="secondary"
+              borderRadius={166}
+              height={28}
+              onClick={handleWatch}
+            >
+              Watch
+            </Button>
+          )}
+        </Grid>
       </Grid>
     </TaskSectionDisplayDiv>
   );

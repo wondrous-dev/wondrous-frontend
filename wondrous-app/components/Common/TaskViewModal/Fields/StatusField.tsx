@@ -22,20 +22,21 @@ const EditContent = ({ isTaskProposal, toggleEditMode, fetchedTask, entityType }
 export const ViewContent = ({ canEdit, toggleEditMode, currentStatus }) => (
   <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
     <ViewFieldWrapper>
-      <TaskSectionInfoText>
-        <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
-          <IconWrapper
-            style={{
-              background: 'transparent',
-              height: '18px',
-              width: '18px',
-            }}
-          >
-            {currentStatus?.icon}
-          </IconWrapper>
-          {currentStatus?.label ?? currentStatus?.name}
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="center"
+        height="fit-content"
+        width="18px"
+        sx={{
+          transform: 'scale(0.7)',
+        }}
+      >
+        <Grid container item height="fit-content" width="fit-content">
+          {currentStatus?.icon}
         </Grid>
-      </TaskSectionInfoText>
+      </Grid>
+      <TaskSectionInfoText>{currentStatus?.label ?? currentStatus?.name}</TaskSectionInfoText>
     </ViewFieldWrapper>
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
   </ViewFieldHoverWrapper>
