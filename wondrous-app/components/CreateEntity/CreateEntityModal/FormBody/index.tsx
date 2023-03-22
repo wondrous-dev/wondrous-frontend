@@ -232,7 +232,6 @@ const FormBody = forwardRef(
               />
               <CreateEntityAttachment
                 style={{
-                  marginTop: '8px',
                   marginLeft: '16px',
                   alignSelf: 'flex-start',
                 }}
