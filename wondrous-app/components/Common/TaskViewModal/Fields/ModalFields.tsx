@@ -79,7 +79,7 @@ const ModalFields = ({
         canArchive={canArchive}
       />
       <ReviewerField
-        shouldDisplay
+        shouldDisplay={!(isMilestone || isTaskProposal)}
         reviewerData={reviewerData}
         canEdit={canEdit}
         fetchedTask={fetchedTask}
@@ -92,7 +92,7 @@ const ModalFields = ({
         fetchedTask={fetchedTask}
         orgId={board?.orgId}
         podId={board?.podId}
-        shouldDisplay={showAssignee}
+        shouldDisplay={showAssignee && !(isMilestone || isTaskProposal)}
         user={user}
         userId={board?.userId}
       />
