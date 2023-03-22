@@ -314,49 +314,34 @@ export const CreateEntityLabel = styled.div`
 `;
 
 export const CreateEntityLabelAddButton = styled(ButtonUnstyled)`
-  height: 32px;
+  height: 28px;
   max-width: max-content;
   width: max-content;
-  background: #282828;
+  background: ${palette.grey920};
   border-radius: 4px;
   padding: 4px 8px;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  ${({ disabled }) =>
-    !disabled &&
-    `:hover {
-    cursor: pointer;
-    color: ${palette.white};
-    background: #454545;
-    svg {
-    path {
-      fill: #CCBBFF;
-    }
-  }
-  }
-  `}
-  svg {
-    path {
-      fill: #474747;
-    }
-  }
+  gap: 8px;
+  color: ${palette.white};
+  cursor: pointer;
+  font-weight: 400;
 `;
 
 export const CreateEntityAddButtonIcon = styled(PlusIcon)`
-  transform: scale(70%);
   path {
-    fill: #ccbbff;
+    fill: ${palette.grey250};
   }
 `;
 
 export const CreateEntityAddButtonLabel = styled(Typography)`
   && {
-    color: #7a7a7a;
+    color: ${palette.grey58};
     font-family: 'Space Grotesk';
     font-weight: 500;
-    margin-left: 4px;
+    font-size: 13px;
   }
 `;
 
