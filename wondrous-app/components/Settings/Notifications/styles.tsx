@@ -191,7 +191,7 @@ const styles = {
     },
   },
   connectDiscord: {
-    backgroundColor: palette.black90,
+    backgroundColor: palette.grey87,
     borderRadius: '6px',
     padding: '15px',
     gap: '10px',

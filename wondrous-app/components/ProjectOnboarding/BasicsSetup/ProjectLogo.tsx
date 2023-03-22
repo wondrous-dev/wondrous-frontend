@@ -1,9 +1,7 @@
 import { Grid } from '@mui/material';
 import ImageUpload from 'components/Settings/imageUpload';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
-import { FieldInputDao } from 'components/OnboardingDao/CreateDao/styles';
-import { InputWrapper, DescriptionCharacterLength } from 'components/TextField/styles';
-import { useMemo, useRef } from 'react';
+import { InputWrapper } from 'components/TextField/styles';
 import { PageLabel, TextArea } from '../Shared/styles';
 import { ButtonsPanel } from '../Shared';
 import useProjectOnboardingContext from '../Shared/context';
@@ -13,7 +11,6 @@ const ProjectLogo = ({ updateData, data }) => {
   const { setStep } = useProjectOnboardingContext();
   const handleChange = (value, name) => updateData((prev) => ({ ...prev, [name]: value }));
 
-  const ref = useRef();
   const FIELDS = [
     {
       name: 'profilePicture',
@@ -30,7 +27,7 @@ const ProjectLogo = ({ updateData, data }) => {
       label: 'Bio',
       Component: (
         <InputWrapper>
-          <TextArea ref={ref} multiline maxLength={200} placeholder="Enter a bio" />
+          <TextArea multiline maxLength={200} placeholder="Enter a bio" />
         </InputWrapper>
       ),
     },
@@ -38,7 +35,6 @@ const ProjectLogo = ({ updateData, data }) => {
 
   const onClick = () => {
     setStep(CONFIG.findIndex((item) => item.type === TYPES.GUIDES));
-    console.log(ref, 'REF VAL');
   };
 
   const onSkip = () => {

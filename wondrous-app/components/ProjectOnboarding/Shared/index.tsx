@@ -177,7 +177,7 @@ export const StepperWrapper = ({ steps, currentStep }) => (
   </Stepper>
 );
 
-export const ButtonsPanel = ({ onContinue = null, onSkip = null }) =>
+export const ButtonsPanel = ({ onContinue = null, onSkip = null, nextTitle = 'Continue' }) =>
   onContinue || onSkip ? (
     <Grid
       bgcolor={palette.black92}
@@ -209,7 +209,7 @@ export const ButtonsPanel = ({ onContinue = null, onSkip = null }) =>
         ) : null}
         {onContinue ? (
           <HeaderButton reversed onClick={onContinue}>
-            Continue
+            {nextTitle}
           </HeaderButton>
         ) : null}
       </Box>

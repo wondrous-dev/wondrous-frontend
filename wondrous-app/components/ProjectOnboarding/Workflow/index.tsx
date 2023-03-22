@@ -1,12 +1,13 @@
-import { Fragment } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useSteps } from 'utils/hooks';
+import { CONFIG, TYPES } from '../Shared/constants';
 import { GenericArtPanel, GenericSetupLeftWrapper } from '../Shared';
 import AddEntity from './AddEntity';
+import useProjectOnboardingContext from '../Shared/context';
 
 const RightPanel = () => <GenericArtPanel img="/images/project-onboarding/guides-artwork.png" />;
 
-const CONFIG = [
+const ENTITY_CONFIGS = [
   {
     label: 'Pods',
     title: 'Project Pods',
@@ -42,11 +43,18 @@ const CONFIG = [
 ];
 
 const LeftPanel = () => {
+  const { setStep } = useProjectOnboardingContext();
   const { step, nextStep, prevStep } = useSteps();
 
-  const { title, subtitle, entityType } = CONFIG[step];
+  const { title, subtitle, entityType } = ENTITY_CONFIGS[step];
 
-  const STEPS = CONFIG.map(({ label }) => ({ label }));
+  const handleStep = () => {
+    if (step + 1 === ENTITY_CONFIGS.length) {
+      return setStep(CONFIG.findIndex((item) => item.type === TYPES.GUIDES));
+    }
+    nextStep();
+  };
+  const STEPS = ENTITY_CONFIGS.map(({ label }) => ({ label }));
   return (
     <GenericSetupLeftWrapper
       subtitle={subtitle}
@@ -56,7 +64,7 @@ const LeftPanel = () => {
       index={2}
       title={title}
     >
-      <AddEntity entityType={entityType} nextStep={nextStep} />
+      <AddEntity entityType={entityType} nextStep={handleStep} />
     </GenericSetupLeftWrapper>
   );
 };

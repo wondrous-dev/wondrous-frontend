@@ -58,11 +58,17 @@ export const TextArea = styled.textarea`
 
 export const ActionItemWrapper = styled.button`
   border-radius: 6px;
-  max-height: 26px;
-  max-width: 26px;
+  height: 26px;
+  padding: 0;
+  width: 26px;
   background: ${palette.grey940};
   border: none;
   &:hover {
     background: ${palette.grey900};
+  }
+  svg {
+    rect {
+      fill: transparent;
+    }
   }
 `;
