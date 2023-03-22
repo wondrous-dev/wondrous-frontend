@@ -54,6 +54,8 @@ import {
   GET_TASKS_PER_TYPE,
   GET_TASKS_PER_TYPE_FOR_POD,
 } from 'graphql/queries';
+import { useEditor } from 'components/RichText';
+import { resetEditor } from 'components/PlateRichEditor/utils';
 import { ErrorText } from '..';
 import RightPanel from './rightPanel';
 import { SnackbarAlertContext } from '../SnackbarAlert';
@@ -154,6 +156,7 @@ const GeneratedTaskRow = ({
   setTaskToView,
   setTaskViewType,
   setClickSelectedList,
+  editor,
 }) => {
   const checked = selectedList.some((item) => item?.tempId === task.tempId);
   const onRowClick = () => {
@@ -161,6 +164,7 @@ const GeneratedTaskRow = ({
     setTaskViewIndex(index);
     setTaskViewType(ENTITIES_TYPES.TASK);
     setClickSelectedList(true);
+    resetEditor(editor, task?.description);
   };
 
   return (
@@ -358,6 +362,7 @@ const WonderAiTaskGeneration = () => {
     }
   }, [savedEntityDescription]);
   const isMobile = useIsMobile();
+  const editor = useEditor();
   return (
     <Grid container>
       <Grid md={8} lg={7} item>
@@ -501,21 +506,25 @@ const WonderAiTaskGeneration = () => {
                       if (promptGenerationType === GENERATION_TYPES[0]?.value) {
                         if (milestone) {
                           setTaskToView(milestone);
+                          resetEditor(editor, milestone?.value);
                         } else {
                           setTaskToView({
                             ...initialMilestoneValues,
                             title: actionPrompt,
                           });
                         }
+                        resetEditor(editor, initialMilestoneValues?.description);
                         setTaskToViewType(ENTITIES_TYPES.MILESTONE);
                       } else {
                         if (parentTask) {
                           setTaskToView(parentTask);
+                          resetEditor(editor, parentTask?.value);
                         } else {
                           setTaskToView({
                             ...initialTaskValues,
                             title: actionPrompt,
                           });
+                          resetEditor(editor, initialTaskValues?.description);
                         }
                         setTaskToViewType(ENTITIES_TYPES.TASK);
                       }
@@ -543,6 +552,7 @@ const WonderAiTaskGeneration = () => {
                       setClickSelectedList={setClickSelectedList}
                       generatedTaskList={generatedTaskList}
                       setGeneratedTaskList={setGeneratedTaskList}
+                      editor={editor}
                     />
                   ))}
                   <BottomSelectBarContainer>
