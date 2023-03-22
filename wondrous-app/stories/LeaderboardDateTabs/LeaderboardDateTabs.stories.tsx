@@ -16,6 +16,8 @@ const Template = () => (
     toTime={null}
     orgId={null}
     contributorTaskData={null}
+    sortByPoints={null}
+    setSortByPoints={null}
   />
 );
 
