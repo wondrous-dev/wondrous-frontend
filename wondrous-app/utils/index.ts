@@ -88,3 +88,10 @@ export const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
   if (userBoard) return BOARD_TYPE.assignee;
   return BOARD_TYPE.org;
 };
+
+export const getTelegramBotLink = () => {
+  if (process.env.NEXT_PUBLIC_PRODUCTION) {
+    return 'https://t.me/wonderverse_bot';
+  }
+  return 'https://t.me/wonderverse_staging_bot';
+};
