@@ -20,7 +20,7 @@ import CloseModalIcon from 'components/Icons/closeModal';
 import { DAOIcon } from 'components/Icons/dao';
 import PlusIcon from 'components/Icons/plus';
 import PodIcon from 'components/Icons/podIcon';
-import PointsIcon from 'components/Icons/pointsIcon.svg';
+import PointsIcon from 'components/Icons/pointsIcon2.svg';
 import SingleDatePicker from 'components/SingleDatePicker';
 import styled, { css } from 'styled-components';
 import { greyColors } from 'theme/colors';
@@ -400,22 +400,15 @@ export const CreateEntityTextfieldInputPoints = styled(TextField)`
     padding: 0;
   }
   .MuiOutlinedInput-root {
+    display: flex;
+    gap: 6px;
     height: inherit;
     padding: 0;
-    width: 75px;
+    width: auto;
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
     color: #ffffff;
-    background: -webkit-linear-gradient(#ffffff, #ffd653);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    .MuiOutlinedInput-input {
-      padding: 0;
-    }
-    .MuiOutlinedInput-notchedOutline {
-      border: none;
-    }
   }
 `;
 

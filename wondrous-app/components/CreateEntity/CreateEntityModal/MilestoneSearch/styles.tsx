@@ -47,6 +47,7 @@ export const MilestoneSearchButton = styled(ButtonUnstyled)`
   font-family: 'Space Grotesk';
   font-weight: 500;
   font-size: 13px;
+  padding: 0 4px;
   width: 100%;
   height: 28px;
   border-radius: 4px;
@@ -194,11 +195,17 @@ export const MilestoneSearchDefaultImage = styled((props) => (
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25px;
-  height: 25px;
+  background: ${palette.grey900};
+  border-radius: 4px;
+  height: 24px;
+  width: 24px;
   svg {
-    width: 100%;
-    height: 100%;
+    rect {
+      fill: transparent;
+    }
+    path {
+      stroke: ${palette.blue20};
+    }
   }
 `;
 
