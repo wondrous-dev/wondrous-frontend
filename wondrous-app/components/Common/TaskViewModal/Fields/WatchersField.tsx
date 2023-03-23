@@ -91,30 +91,32 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Observer</TaskSectionLabel>
       <Grid container alignItems="center" justifyContent="flex-start" gap={`${observers.length ? 8 : 0}px`}>
-        <Grid container item alignItems="center" width="fit-content" marginLeft="8px">
-          {observers.slice(0, 6).map((user, index) => {
-            // To show current user at the end of the list
-            if (user?.id === currentUser?.id || index > (isObserving ? 4 : 5)) {
-              return null;
-            }
+        {observers.length ? (
+          <Grid container item alignItems="center" width="fit-content" marginLeft="8px">
+            {observers.slice(0, 6).map((user, index) => {
+              // To show current user at the end of the list
+              if (user?.id === currentUser?.id || index > (isObserving ? 4 : 5)) {
+                return null;
+              }
 
-            return (
-              <Tooltip key={user.username} title={user.username} placement="top">
-                <Box ml="-6px" overflow="hidden">
-                  <SmallAvatar
-                    imageWidth={28}
-                    imageHeight={28}
-                    key={user.id}
-                    initials={user.username.substring(0, 2).toUpperCase()}
-                    avatar={{ url: user.profilePicture }}
-                    style={{ borderRadius: '50%', border: `2px solid ${palette.grey910}`, cursor: 'default' }}
-                    border="none"
-                  />
-                </Box>
-              </Tooltip>
-            );
-          })}
-        </Grid>
+              return (
+                <Tooltip key={user.username} title={user.username} placement="top">
+                  <Box ml="-6px" overflow="hidden">
+                    <SmallAvatar
+                      imageWidth={28}
+                      imageHeight={28}
+                      key={user.id}
+                      initials={user.username.substring(0, 2).toUpperCase()}
+                      avatar={{ url: user.profilePicture }}
+                      style={{ borderRadius: '50%', border: `2px solid ${palette.grey910}`, cursor: 'default' }}
+                      border="none"
+                    />
+                  </Box>
+                </Tooltip>
+              );
+            })}
+          </Grid>
+        ) : null}
         {isObserving ? (
           <Grid container width="fit-content" marginLeft="-16px">
             <SmallAvatar
