@@ -4,7 +4,7 @@ import { InputAdornment, TextField, Typography } from '@mui/material';
 
 import palette from 'theme/palette';
 
-import ArrowDownIcon from 'components/Icons/arrowDropDown';
+import ArrowDownIcon from 'components/Icons/arrow.svg';
 import SearchIcon from 'components/Icons/search';
 import CheckBoxIcon from 'components/Icons/checkBox.svg';
 import CheckBoxEmptyIcon from 'components/Icons/checkBoxEmpty.svg';
@@ -77,9 +77,9 @@ export const DropdownSearchLabel = styled(Typography)`
 `;
 
 export const DropdownSearchDownIcon = styled(ArrowDownIcon)`
-  transform: rotate(45deg);
+  transform: rotate(90deg);
   path {
-    fill: #7a7a7a;
+    fill: ${palette.white};
   }
 `;
 
