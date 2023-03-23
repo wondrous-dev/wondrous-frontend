@@ -114,46 +114,44 @@ function WatchersField({ fetchedTask, entityType }: WatchersFieldProps) {
               </Tooltip>
             );
           })}
-
-          {isObserving ? (
-            <>
-              <SmallAvatar
-                imageWidth={22}
-                imageHeight={22}
-                initials={currentUser?.username.substring(0, 2).toUpperCase()}
-                avatar={{ url: currentUser?.profilePicture }}
-                style={{ borderRadius: '50%', border: `2px solid ${palette.grey85}`, cursor: 'default' }}
-                border="none"
-              />
-              <Box
-                sx={{
-                  marginLeft: '-26px',
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  alignItems: 'center',
-                  width: '48px',
-                  height: '28px',
-                  background: palette.grey85,
-                  borderRadius: '224px',
-                }}
-              >
-                <Tooltip title="Stop Watching" placement="top">
-                  <IconButton
-                    onClick={handleUnwatch}
-                    sx={{
-                      padding: '2px',
-                      marginRight: '5px',
-                      '&:hover': { background: palette.grey75 },
-                    }}
-                  >
-                    <CloseIcon width="10px" height="10px" />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </>
-          ) : null}
         </Grid>
-
+        {isObserving ? (
+          <Grid container width="fit-content" marginLeft="-16px">
+            <SmallAvatar
+              imageWidth={22}
+              imageHeight={22}
+              initials={currentUser?.username.substring(0, 2).toUpperCase()}
+              avatar={{ url: currentUser?.profilePicture }}
+              style={{ borderRadius: '50%', border: `2px solid ${palette.grey85}`, cursor: 'default' }}
+              border="none"
+            />
+            <Box
+              sx={{
+                marginLeft: '-26px',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                width: '48px',
+                height: '28px',
+                background: palette.grey85,
+                borderRadius: '224px',
+              }}
+            >
+              <Tooltip title="Stop Watching" placement="top">
+                <IconButton
+                  onClick={handleUnwatch}
+                  sx={{
+                    padding: '2px',
+                    marginRight: '5px',
+                    '&:hover': { background: palette.grey75 },
+                  }}
+                >
+                  <CloseIcon width="10px" height="10px" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </Grid>
+        ) : null}
         <Grid container item width="fit-content">
           {isObserving ? (
             <Box sx={{ color: palette.grey250 }}>{`${observers.length} watching`}</Box>
