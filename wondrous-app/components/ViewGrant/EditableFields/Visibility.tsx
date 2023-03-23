@@ -70,6 +70,7 @@ const Visibility = ({ privacyLevel, canEdit }) => (
     editableContent={({ toggleEditMode }) => (
       <EditContent privacyLevel={privacyLevel} toggleEditMode={toggleEditMode} />
     )}
+    content={privacyLevel}
   />
 );
 

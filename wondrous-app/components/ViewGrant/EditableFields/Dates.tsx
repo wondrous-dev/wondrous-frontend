@@ -63,6 +63,7 @@ const EditableDates = ({ startDate, endDate, canEdit }) => (
     )}
     canAddItem={!startDate && !endDate && canEdit}
     addContent={({ toggleAddMode }) => <EditContent toggleManageMode={toggleAddMode} />}
+    content={startDate || endDate}
   />
 );
 
