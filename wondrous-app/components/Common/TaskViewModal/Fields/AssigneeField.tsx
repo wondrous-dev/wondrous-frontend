@@ -45,7 +45,7 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
     return (
       <TaskFieldEditableContent
         viewContent={({ toggleEditMode }) => (
-          <UserSelectWrapper showFullWidth>
+          <UserSelectWrapper showFullWidth canEdit={canEdit}>
             <AssigneeReviewerViewContent
               canEdit={canEdit}
               option={{

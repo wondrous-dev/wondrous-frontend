@@ -71,7 +71,7 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
   return (
     <TaskSectionDisplayDiv alignItems="start" style={{ width: '100%' }}>
       <TaskSectionLabel>Reviewer</TaskSectionLabel>
-      <UserSelectWrapper showFullWidth ref={showAutocomplete ? ref : null}>
+      <UserSelectWrapper showFullWidth ref={showAutocomplete ? ref : null} canEdit={canEdit}>
         {taskReviewers?.map((taskReviewer, index) => (
           <TaskFieldEditableContent
             key={taskReviewer.id}

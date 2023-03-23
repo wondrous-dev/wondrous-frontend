@@ -987,7 +987,7 @@ export const AssigneeReviewerContentWrapper = styled(Grid)`
       display: flex;
     }
     ${ViewFieldHoverWrapper} {
-      background-color: ${({ theme }) => theme.palette.grey87};
+      background-color: ${({ theme, canEdit }) => canEdit && theme.palette.grey87};
       width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
     }
   }
@@ -1020,7 +1020,7 @@ export const UserSelectWrapper = styled(Grid)`
   width: 100%;
   &:hover {
     ${AssigneeReviewerContentWrapper} {
-      width: 100%;
+      width: ${({ canEdit }) => canEdit && '100%'};
     }
   }
 `;
