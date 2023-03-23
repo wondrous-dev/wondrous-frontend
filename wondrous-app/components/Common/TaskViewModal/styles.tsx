@@ -985,7 +985,7 @@ export const AssigneeReviewerContentWrapper = styled(Grid)`
       display: flex;
     }
     ${ViewFieldHoverWrapper} {
-      background-color: ${({ theme, canEdit }) => canEdit && theme.palette.grey87};
+      background-color: ${({ $canEdit }) => $canEdit && palette.grey87};
       width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
     }
   }

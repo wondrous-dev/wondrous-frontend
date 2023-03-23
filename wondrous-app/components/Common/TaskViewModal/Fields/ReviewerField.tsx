@@ -36,6 +36,7 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
   const { getTaskReviewers: taskReviewers } = reviewerData || {};
   const withTaskReviewers = Boolean(taskReviewers?.length);
   const taskReviewerIds = useMemo(() => taskReviewers?.map(({ id }) => id) || [], [taskReviewers]);
+  const selfReviewer = !taskReviewerIds?.includes(user?.id) && user;
 
   const filteredEligibleReviewers = useMemo(
     () =>
@@ -56,10 +57,14 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
     canEdit &&
     withTaskReviewers &&
     withTaskReviewers < eligibleReviewers?.length &&
-    !isEmpty(filteredEligibleReviewers);
-  const selfReviewer = !taskReviewerIds?.includes(user?.id) && user;
+    (!isEmpty(filteredEligibleReviewers.filter((i) => !i.hide)) || Boolean(selfReviewer));
 
-  const handleAssignToSelfClick = () => handleUpdateReviewers([...taskReviewerIds, user?.id]);
+  const handleAssignToSelfClick = () => {
+    if (showAutocomplete) {
+      setShowAutocomplete(false);
+    }
+    handleUpdateReviewers([...taskReviewerIds, user?.id]);
+  };
 
   const handleSelect = (value) => {
     if (showAutocomplete) {
