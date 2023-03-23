@@ -259,7 +259,7 @@ export const CreateEntitySelectArrowIcon = styled(Arrow)`
   margin-left: 10px;
   transform: rotate(90deg);
   path {
-    fill: #7a7a7a;
+    fill: ${palette.white};
   }
 `;
 
@@ -829,7 +829,7 @@ export const CreateEntityTextfieldInputReward = styled(TextField)`
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
-    color: #06ffa5;
+    color: ${palette.white};
     .MuiOutlinedInput-input {
       padding: 0;
     }

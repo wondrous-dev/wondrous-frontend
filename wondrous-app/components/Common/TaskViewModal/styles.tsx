@@ -717,9 +717,7 @@ export const TaskSectionInfoPaymentWrapper = styled.div`
 export const TaskSectionInfoPaymentAmount = styled(TaskSectionInfoText)`
   && {
     text-transform: capitalize;
-    ${({ theme }) => `
-      color: ${theme.palette.green800};
-    `}
+    color: ${palette.white};
   }
 `;
 
