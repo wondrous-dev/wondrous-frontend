@@ -67,7 +67,7 @@ const useGetPodMilestoneBoard = ({
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getPodBoardMilestones.length >= LIMIT);
         return {
-          getOrgTaskBoardTasks: [...prev.getPodBoardMilestones, ...fetchMoreResult.getPodBoardMilestones],
+          getPodBoardMilestones: [...prev.getPodBoardMilestones, ...fetchMoreResult.getPodBoardMilestones],
         };
       },
     }).catch((error) => {

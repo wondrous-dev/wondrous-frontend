@@ -8,6 +8,7 @@ import CopyIcon from 'components/Icons/copy';
 import { useContext, useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CONNECT_TELEGRAM } from 'graphql/mutations';
+import { getTelegramBotLink } from 'utils/index';
 import { TelegramBotInfo, TelegramLabel } from './styles';
 import ConnectionContext from './Helpers/ConnectionContext';
 
@@ -36,11 +37,13 @@ const TelegramIntegration = () => {
     setCopied(true);
   };
 
+  const tgLink = getTelegramBotLink();
+
   return (
     <Grid display="flex" direction="column" gap="12px">
       <GradientHeading fontSize={16}>Setup instructions</GradientHeading>
       <TelegramLabel>Step 1 speak to our bot</TelegramLabel>
-      <UnstyledLink href="https://t.me/wonderverse_bot" target="__blank">
+      <UnstyledLink href={tgLink} target="__blank">
         <Grid
           display="flex"
           gap="8px"
