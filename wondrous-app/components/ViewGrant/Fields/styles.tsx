@@ -36,7 +36,7 @@ export const GrantAmountWrapper = styled.div`
 `;
 
 export const AmountWrapper = styled.div`
-  background: ${palette.grey99};
+  background: ${palette.grey920};
   padding: 0px 10px 0px 6px;
   border-radius: 0px 300px 300px 0px;
   height: 26px;
