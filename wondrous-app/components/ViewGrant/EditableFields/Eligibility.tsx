@@ -1,18 +1,19 @@
 import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
 import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
-import { InlineFieldWrapper } from 'components/Common/TaskViewModal/Fields/styles';
-import { ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
+import { ViewFieldHoverWrapper, ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
 import ApplyPolicy, { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
 import EditIcon from 'components/Icons/editIcon';
 import palette from 'theme/palette';
 import { DataDisplay } from '../Fields';
 
 const ViewContent = ({ toggleEditMode, applyPolicy, canEdit }) => (
-  <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-    <DataDisplay label={APPLY_POLICY_FIELDS.find((policy) => policy.value === applyPolicy)?.name} />
+  <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <ViewFieldWrapper>
+      <DataDisplay label={APPLY_POLICY_FIELDS.find((policy) => policy.value === applyPolicy)?.name} />
+    </ViewFieldWrapper>
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-  </InlineFieldWrapper>
+  </ViewFieldHoverWrapper>
 );
 
 const EditContent = ({ toggleEditMode, applyPolicy }) => {

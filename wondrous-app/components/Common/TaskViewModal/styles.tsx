@@ -427,6 +427,7 @@ export const TaskSectionDisplayData = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  line-height: 0;
 `;
 
 export const TaskSectionDisplayDiv = styled.div`
