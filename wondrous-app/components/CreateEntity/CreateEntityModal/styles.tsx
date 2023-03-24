@@ -560,11 +560,12 @@ export const CreateEntityLabelSelectWrapper = styled.div`
 
 export const CreateEntityPrivacyRoot = styled.button`
   padding: 0;
-  min-width: 120px;
-  height: 32px;
+  width: ${({ width }) => width ?? 'fit-content'};
+  height: 28px;
   border-radius: 4px;
   background: #1f1f1f;
-  border: 1px solid ${(props) => (props['aria-expanded'] ? `#7a7a7a` : `transparent`)};
+  border: 0;
+  outline: 1px solid ${(props) => (props['aria-expanded'] ? palette.highlightPurple : `transparent`)};
   opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
   :hover {
     cursor: pointer;
@@ -578,10 +579,24 @@ export const CreateEntityPrivacyList = styled.ul`
   padding: 0;
 `;
 
-export const CreateEntityPrivacyPopper = styled(PopperUnstyled)`
+export const CreateEntityPrivacyPopper = styled((props) => (
+  <PopperUnstyled
+    {...props}
+    disablePortal
+    modifiers={[
+      {
+        name: 'offset',
+        enabled: true,
+        options: {
+          offset: [0, 8],
+        },
+      },
+    ]}
+  />
+))`
   max-height: 222px;
   min-width: 132px;
-  border-radius: 4px;
+  width: ${({ width }) => width};
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
   z-index: 100;
@@ -597,6 +612,17 @@ export function CreateEntityPrivacySelect(props) {
 
   return <SelectUnstyled {...props} components={components} />;
 }
+
+export const EditEntityPrivacySelect = (props) => {
+  const components = {
+    Root: CreateEntityPrivacyRoot,
+    Listbox: CreateEntityPrivacyList,
+    Popper: (popperProps) => <CreateEntityPrivacyPopper {...popperProps} open={props.open} width={props.width} />,
+    ...props.components,
+  };
+
+  return <SelectUnstyled {...props} components={components} />;
+};
 
 export const CreateEntityPrivacySelectRender = styled.div`
   display: flex;
@@ -620,7 +646,6 @@ export const CreateEntityPrivacySelectRenderLabel = styled.div`
   align-items: center;
   color: white;
   text-transform: capitalize;
-  margin-left: 10px;
 `;
 
 export const CreateEntityPrivacySelectRenderLabelWrapper = styled.div`
