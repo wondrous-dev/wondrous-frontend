@@ -565,7 +565,7 @@ export const CreateEntityPrivacyRoot = styled.button`
   border-radius: 4px;
   background: #1f1f1f;
   border: 0;
-  outline: 1px solid ${(props) => (props['aria-expanded'] ? palette.highlightPurple : `transparent`)};
+  outline: 1px solid ${(props) => (props['aria-expanded'] || props.open ? palette.highlightPurple : `transparent`)};
   opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
   :hover {
     cursor: pointer;
@@ -1017,6 +1017,7 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
     width: 100%;
     max-width: 100%;
     > .MuiFormControl-root {
+      height: 28px
       width: 100%;
       border-radius: 4px;
       padding: 0;

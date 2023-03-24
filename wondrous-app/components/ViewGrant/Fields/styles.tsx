@@ -15,14 +15,14 @@ export const DataDisplayWrapper = styled.div`
 `;
 
 export const GrantAmountWrapper = styled.div`
-  background: ${palette.grey78};
+  background: ${palette.grey920};
   color: ${palette.white};
   font-family: ${typography.fontFamily};
   font-size: 13px;
-  line-height: 18px;
+  line-height: 0;
   font-weight: 500;
   display: flex;
-  border-radius: 300px;
+  border-radius: 6px;
   justify-content: space-between;
   align-items: center;
   height: 28px;
