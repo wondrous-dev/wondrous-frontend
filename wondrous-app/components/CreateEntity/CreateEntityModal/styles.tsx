@@ -449,6 +449,9 @@ export const CreateEntityAutocompletePopper = styled(({ className, ...props }) =
     sx={{
       '&&:focus-within': [{ outline: `1px solid ${palette.highlightPurple}` }],
       height: '28px',
+      '.Mui-disabled': {
+        color: palette.white,
+      },
     }}
     tabIndex={0}
   />
