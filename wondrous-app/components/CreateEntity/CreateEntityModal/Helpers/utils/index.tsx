@@ -338,7 +338,7 @@ export const entityTypeData = {
 export const initialValues = ({ entityType, existingTask = null, initialPodId = null }) => {
   const defaultValues = assignIn(
     cloneDeep(entityTypeData[entityType]?.initialValues),
-    entityType === ENTITIES_TYPES.MILESTONE ? {} : { podId: initialPodId }
+    entityType === ENTITIES_TYPES.MILESTONE ? { podIds: [initialPodId] } : { podId: initialPodId }
   );
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
