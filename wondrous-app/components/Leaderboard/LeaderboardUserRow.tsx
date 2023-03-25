@@ -4,15 +4,15 @@ import { useEffect, useState } from 'react';
 import palette from 'theme/palette';
 import { GET_COMPLETED_TASK_LIST_BETWEEN_TIME_PERIOD } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
+import { StyledCircularProgress } from 'components/Common/WonderAiTaskGeneration/styles';
 import LeaderboardUserRowHeader from './LeaderboardUserRowHeader';
 
 const LeaderboardUserRowTasks = dynamic(() => import('./LeaderboardUserRowTasks'), { ssr: false, suspense: false });
 
 const LeaderboardUserRow = ({ contributorTask, position, toTime, fromTime, podId = null, orgId = null }) => {
   const [clicked, setClicked] = useState(false);
-  const [getCompletedTaskListBetweenPeriods, { data: getContributorTasksData }] = useLazyQuery(
-    GET_COMPLETED_TASK_LIST_BETWEEN_TIME_PERIOD
-  );
+  const [getCompletedTaskListBetweenPeriods, { data: getContributorTasksData, loading: getContributorTaskLoading }] =
+    useLazyQuery(GET_COMPLETED_TASK_LIST_BETWEEN_TIME_PERIOD);
   useEffect(() => {
     if (clicked) {
       getCompletedTaskListBetweenPeriods({
@@ -47,6 +47,11 @@ const LeaderboardUserRow = ({ contributorTask, position, toTime, fromTime, podId
         clicked={clicked}
         setClicked={setClicked}
       />
+      {getContributorTaskLoading && (
+        <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
+          <StyledCircularProgress size={20} />
+        </div>
+      )}
       {clicked && <LeaderboardUserRowTasks contributorTasks={contributorTasks || []} />}
     </Grid>
   );
