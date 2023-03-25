@@ -11,35 +11,6 @@ import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 
 import LeaderboardUserRowIcons from './LeaderboardUserRowIcons';
 
-const calculateCount = (tasks) => {
-  let taskCount = 0;
-  let bountyCount = 0;
-  let pointCount = 0;
-  if (!tasks) {
-    return {
-      taskCount,
-      bountyCount,
-      pointCount,
-    };
-  }
-
-  tasks.forEach((task) => {
-    if (task?.type === BOUNTY_TYPE) {
-      bountyCount += 1;
-    } else if (task?.type === TASK_TYPE) {
-      taskCount += 1;
-    }
-    if (task?.points && task?.points > 0) {
-      pointCount += task.points;
-    }
-  });
-  return {
-    taskCount,
-    bountyCount,
-    pointCount,
-  };
-};
-
 const UserRowPictureStyles = {
   width: '30px',
   height: '30px',
@@ -89,11 +60,8 @@ const UserRowInfo = ({ Icon = null, data = null, sx = null }) => (
 );
 
 const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, clicked }) => {
-  const { assigneeId, assigneeProfilePicture, assigneeUsername } = contributorTask || {};
-  const contributionCount = useMemo(() => calculateCount(contributorTask?.tasks), [contributorTask]);
-  const bountyCount = contributionCount?.bountyCount;
-  const taskCount = contributionCount?.taskCount;
-  const pointCount = contributionCount?.pointCount;
+  const { assigneeId, assigneeProfilePicture, assigneeUsername, numTasks, numBounties, totalPoints } =
+    contributorTask || {};
   return (
     <Grid
       container
@@ -161,9 +129,9 @@ const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, click
         </Grid>
       </Grid>
       <Grid item container width="fit-content" gap="14px">
-        <UserRowInfo Icon={CheckBoxIcon} data={taskCount} />
-        <UserRowInfo Icon={StarIcon} data={bountyCount} />
-        <UserRowInfo data={pointCount} />
+        <UserRowInfo Icon={CheckBoxIcon} data={numTasks} />
+        <UserRowInfo Icon={StarIcon} data={numBounties} />
+        <UserRowInfo data={totalPoints} />
         <UserRowInfo
           Icon={BottomArrowCaret}
           sx={{

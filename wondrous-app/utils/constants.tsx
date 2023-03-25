@@ -459,7 +459,7 @@ export enum ColorTypes {
 }
 
 export const PRIVATE_TASK_TITLE = '_private_task';
-
+export const PRIVATE_BOUNTY_TITLE = '_private_bounty';
 export const APPLICATION_POLICY = {
   ALL_MEMBERS: {
     title: 'All members need to apply',
