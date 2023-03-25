@@ -6,7 +6,6 @@ import { GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
 import { useEffect, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 
-import { calculatePoints } from 'components/organization/analytics/PayoutModal';
 import { StyledCircularProgress } from 'components/Common/WonderAiTaskGeneration/styles';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
 import { ExportCSVButton, ExportCSVButtonText } from 'components/organization/analytics/styles';
@@ -30,19 +29,19 @@ const getContributorTaskData = (data, sortByPoints) => {
     : preFilteredcontributorTaskData;
   contributorTaskData.sort((a, b) => {
     if (sortByPoints) {
-      if (calculatePoints(a?.tasks) > calculatePoints(b?.tasks)) {
+      if (a?.totalPoints > b.totalPoints) {
         return -1;
       }
-      if (calculatePoints(a?.tasks) < calculatePoints(b?.tasks)) {
+      if (a?.totalPoints < b.totalPoints) {
         return 1;
       }
       return 0;
     }
 
-    if (a?.tasks?.length > b?.tasks?.length) {
+    if (Number(a?.numTasks) + Number(a?.numBounties) > Number(b?.numTasks) + Number(b?.numBounties)) {
       return -1;
     }
-    if (a?.tasks?.length < b?.tasks?.length) {
+    if (Number(a?.numTasks) + Number(a?.numBounties) < Number(b?.numTasks) + Number(b?.numBounties)) {
       return 1;
     }
     return 0;
@@ -80,7 +79,6 @@ const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = 
       }),
     },
   });
-
   useEffect(() => {
     if (!fromTime) {
       setFromTime(getStartDate({ duration: 30, date: new Date() }));
@@ -145,6 +143,10 @@ const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = 
                 key={contributorTask?.assigneeId}
                 position={index}
                 contributorTask={contributorTask}
+                toTime={formatToTime}
+                fromTime={formatFromTime}
+                podId={podId}
+                orgId={orgId}
               />
             ))}
           </Grid>

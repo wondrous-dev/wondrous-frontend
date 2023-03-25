@@ -5,16 +5,15 @@ import Typography from '@mui/material/Typography';
 import format from 'date-fns/format';
 import { useRouter } from 'next/router';
 import palette from 'theme/palette';
-import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import { PRIVATE_BOUNTY_TITLE, PRIVATE_TASK_TITLE } from 'utils/constants';
 import { cutString } from 'utils/helpers';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useReducer } from 'react';
 
-const LeaderboardUserRowTasks = ({ contributorTask }) => {
+const LeaderboardUserRowTasks = ({ contributorTasks }) => {
   const router = useRouter();
   // const { isTabletScreen } = useMediaQuery();
   const [taskCount, setTaskCount] = useReducer((state) => state + 10, 10);
-  const contributorTasks = contributorTask?.tasks;
   const tasks = contributorTasks?.slice(0, taskCount) || [];
   const showMoreButton = tasks.length < contributorTasks.length;
   return (
@@ -24,6 +23,8 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
           // const podName = task?.podName || task?.pod?.name;
           // const podColor = task?.podColor || task?.pod?.color || palette.grey78;
           const privateTask = task?.title === PRIVATE_TASK_TITLE;
+          const privateBounty = task?.title === PRIVATE_BOUNTY_TITLE;
+          const title = privateBounty ? 'Private Bounty' : privateTask ? 'Private Task' : task?.title;
           const handleOnClickTask = (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -58,7 +59,7 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
               <Grid container item alignItems="center" gap="14px" width="fit-content">
                 <Grid container item alignItems="center" justifyContent="center" width="fit-content">
                   <Typography color={palette.white} fontSize="15px" fontWeight="500">
-                    {cutString(privateTask ? 'Private Task' : task.title)}
+                    {cutString(title)}
                   </Typography>
                 </Grid>
               </Grid>

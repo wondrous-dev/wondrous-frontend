@@ -215,6 +215,28 @@ export const GET_SUBTASKS_FOR_TASK = gql`
   ${MediaFragment}
 `;
 
+export const GET_COMPLETED_TASK_LIST_BETWEEN_TIME_PERIOD = gql`
+  query getCompletedTaskListBetweenPeriods(
+    $fromTime: String!
+    $toTime: String!
+    $orgId: ID
+    $podId: ID
+    $assigneeId: ID
+    $includeBounties: Boolean
+  ) {
+    getCompletedTaskListBetweenPeriods(
+      fromTime: $fromTime
+      toTime: $toTime
+      orgId: $orgId
+      podId: $podId
+      assigneeId: $assigneeId
+      includeBounties: $includeBounties
+    ) {
+      ...MinimalTaskFragment
+    }
+  }
+  ${MinimalTaskFragment}
+`;
 export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
   query getCompletedTasksBetweenPeriods(
     $fromTime: String!
@@ -236,22 +258,9 @@ export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
       assigneeUsername
       assigneeProfilePicture
       assigneeWallet
-      tasks {
-        id
-        title
-        status
-        completedAt
-        orgId
-        rewards {
-          rewardAmount
-          paymentMethodId
-          symbol
-          icon
-          tokenName
-        }
-        points
-        type
-      }
+      numTasks
+      numBounties
+      totalPoints
     }
   }
 `;
