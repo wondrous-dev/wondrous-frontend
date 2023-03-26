@@ -92,7 +92,7 @@ const ModalFields = ({
         fetchedTask={fetchedTask}
         orgId={board?.orgId}
         podId={board?.podId}
-        shouldDisplay={showAssignee && !(isMilestone || isTaskProposal || isBounty)}
+        shouldDisplay={showAssignee}
         user={user}
         userId={board?.userId}
       />
