@@ -17,7 +17,7 @@ const UserRowPictureStyles = {
   borderRadius: '15px',
 };
 
-const UserRowInfo = ({ Icon = null, data = null, sx = null }) => (
+const UserRowInfo = ({ Icon = null, data = null, sx = null, usdPayout = null }) => (
   <Grid
     container
     padding="0 6px"
@@ -56,10 +56,15 @@ const UserRowInfo = ({ Icon = null, data = null, sx = null }) => (
         {!Icon && ` pts`}
       </Typography>
     )}
+    {usdPayout !== null && (
+      <Typography color={palette.green30} fontSize="15px" fontWeight="500">
+        {usdPayout} USD
+      </Typography>
+    )}
   </Grid>
 );
 
-const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, clicked }) => {
+const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, clicked, usdPayout }) => {
   const { assigneeId, assigneeProfilePicture, assigneeUsername, numTasks, numBounties, totalPoints } =
     contributorTask || {};
   return (
@@ -132,6 +137,7 @@ const LeaderboardUserRowHeader = ({ contributorTask, position, setClicked, click
         <UserRowInfo Icon={CheckBoxIcon} data={numTasks} />
         <UserRowInfo Icon={StarIcon} data={numBounties} />
         <UserRowInfo data={totalPoints} />
+        <UserRowInfo usdPayout={usdPayout} />
         <UserRowInfo
           Icon={BottomArrowCaret}
           sx={{
