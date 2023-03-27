@@ -1,44 +1,54 @@
 import { Box, Grid, Typography } from '@mui/material';
-import palette from 'theme/palette';
-import { styled } from '@mui/material/styles';
-import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
+import { styled } from '@mui/material/styles';
 import LeftArrowIcon from 'components/Icons/leftArrow';
+import palette from 'theme/palette';
 
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import { BackButton } from 'components/OnboardingDao/StepWrapper/styles';
 
-import Check from '@mui/icons-material/Check';
-import SettingsIcon from '@mui/icons-material/Settings';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import VideoLabelIcon from '@mui/icons-material/VideoLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
-import { StepIconProps } from '@mui/material/StepIcon';
 
-import typography from 'theme/typography';
-import { HeaderButton } from 'components/organization/wrapper/styles';
 import Button from 'components/Button';
+import { HeaderButton } from 'components/organization/wrapper/styles';
+import { useEffect, useRef } from 'react';
+import typography from 'theme/typography';
 import { PageLabel, RightSideWrapper } from './styles';
 
-export const GenericArtPanel = ({ img }) => (
-  <Grid
-    maxWidth={{
-      xs: '100%',
-      md: '40%',
-    }}
-  >
-    <RightSideWrapper>
-      <img
-        src={img}
-        style={{
-          maxWidth: '70%',
-        }}
-      />
-    </RightSideWrapper>
-  </Grid>
-);
+export const GenericArtPanel = ({ url, mediaType = null }) => {
+  const videoRef = useRef(null);
 
+  useEffect(() => {
+    videoRef.current?.load();
+  }, [url]);
+
+  return (
+    <Grid
+      maxWidth={{
+        xs: '100%',
+        md: '40%',
+      }}
+    >
+      <RightSideWrapper>
+        {mediaType === 'video' ? (
+          <Grid maxWidth="70%">
+            <video width="100%" height="auto" autoPlay loop muted ref={videoRef}>
+              <source src={url} type="video/webm" />
+            </video>
+          </Grid>
+        ) : (
+          <img
+            src={url}
+            style={{
+              maxWidth: '70%',
+            }}
+          />
+        )}
+      </RightSideWrapper>
+    </Grid>
+  );
+};
 export const GenericLeftWrapper = ({ children }) => (
   <Grid
     display="flex"
@@ -47,7 +57,10 @@ export const GenericLeftWrapper = ({ children }) => (
     gap="24px"
     bgcolor={palette.grey920}
     flexGrow={1}
-    padding="42px"
+    padding={{
+      xs: '18px 24px 24px 24px',
+      sm: '42px',
+    }}
   >
     {children}
   </Grid>
@@ -56,7 +69,7 @@ export const GenericLeftWrapper = ({ children }) => (
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 15,
-    left: 'calc(-50%)',
+    left: 'calc(-25%)',
     right: 'calc(50%)',
   },
   [`& .${stepConnectorClasses.line}`]: {
@@ -66,50 +79,6 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     borderRadius: 1,
   },
 }));
-
-const ColorlibStepIconRoot = styled('div')<{
-  ownerState: { completed?: boolean; active?: boolean };
-}>(({ theme, ownerState }) => ({
-  backgroundColor: palette.highlightPurple,
-  zIndex: 1,
-  // color: '#fff',
-  color: palette.blue20,
-  width: 'auto',
-  height: 29,
-  minWidth: 29,
-  display: 'flex',
-  borderRadius: '50%',
-  justifyContent: 'center',
-  alignItems: 'center',
-  ...(ownerState.active && {
-    color: palette.white,
-    backgroundColor: palette.violet100,
-    border: `1px solid ${palette.highlightPurple}`,
-
-    // backgroundImage: 'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
-    // boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
-  }),
-  ...(ownerState.completed &&
-    {
-      // backgroundImage: 'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
-    }),
-}));
-
-// function ColorlibStepIcon(props: StepIconProps) {
-//   const { active, completed, className } = props;
-
-//   const icons: { [index: string]: React.ReactElement } = {
-//     1: <SettingsIcon />,
-//     2: <GroupAddIcon />,
-//     3: <VideoLabelIcon />,
-//   };
-
-//   return (
-//     <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
-//       4
-//     </ColorlibStepIconRoot>
-//   );
-// }
 
 const sharedTypographyStyles = {
   fontFamily: typography.fontFamily,
@@ -125,7 +94,6 @@ const IndexTypography = ({ idx }) => (
 
 const StepItem = (props) => {
   const { active, completed, className, label, icon } = props;
-  console.log(props, 'props');
 
   if (active) {
     return (
@@ -183,11 +151,20 @@ export const ButtonsPanel = ({ onContinue = null, onSkip = null, nextTitle = 'Co
       bgcolor={palette.black92}
       borderRadius="12px"
       padding="24px"
+      marginBottom="5%"
       width="100%"
       alignItems="center"
       justifyContent="flex-end"
     >
-      <Box display="flex" justifyContent="flex-end" gap="12px">
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        gap="12px"
+        flexDirection={{
+          xs: 'column',
+          sm: 'row',
+        }}
+      >
         {onSkip ? (
           <Button
             onClick={onSkip}
@@ -208,9 +185,17 @@ export const ButtonsPanel = ({ onContinue = null, onSkip = null, nextTitle = 'Co
           </Button>
         ) : null}
         {onContinue ? (
-          <HeaderButton reversed onClick={onContinue}>
-            {nextTitle}
-          </HeaderButton>
+          <Grid>
+            <HeaderButton
+              reversed
+              onClick={onContinue}
+              style={{
+                width: '100%',
+              }}
+            >
+              {nextTitle}
+            </HeaderButton>
+          </Grid>
         ) : null}
       </Box>
     </Grid>
@@ -226,7 +211,19 @@ export const GenericSetupLeftWrapper = ({
   subtitle = null,
 }) => (
   <GenericLeftWrapper>
-    <Grid display="flex" justifyContent="space-between" alignItems="center">
+    <Grid
+      display="flex"
+      gap="14px"
+      flexDirection={{
+        xs: 'column',
+        sm: 'row',
+      }}
+      justifyContent="space-between"
+      alignItems={{
+        xs: 'flex-start',
+        sm: 'center',
+      }}
+    >
       <Grid display="flex" alignItems="center" gap="14px">
         <BackButton color={palette.tundora} onClick={handleBackwards}>
           <LeftArrowIcon />
@@ -235,7 +232,13 @@ export const GenericSetupLeftWrapper = ({
           Back
         </Typography>
       </Grid>
-      <Box width="30%">
+      <Box
+        width="30%"
+        display={{
+          xs: 'none',
+          sm: 'block',
+        }}
+      >
         <StepperWrapper steps={steps} currentStep={currentStep} />
       </Box>
     </Grid>
@@ -245,7 +248,10 @@ export const GenericSetupLeftWrapper = ({
       </PageLabel>
       <Typography
         color={palette.white}
-        fontSize="24px"
+        fontSize={{
+          xs: '16px',
+          sm: '24px',
+        }}
         fontFamily={typography.fontFamily}
         fontWeight={700}
         lineHeight="31px"
@@ -267,4 +273,22 @@ export const GenericSetupLeftWrapper = ({
     ) : null}
     {children}
   </GenericLeftWrapper>
+);
+
+export const Container = ({ children, sx = {} }) => (
+  <Grid
+    display="flex"
+    width="100%"
+    height="100%"
+    minHeight="100vh"
+    sx={{
+      flexDirection: {
+        xs: 'column',
+        md: 'row',
+      },
+      ...sx,
+    }}
+  >
+    {children}
+  </Grid>
 );

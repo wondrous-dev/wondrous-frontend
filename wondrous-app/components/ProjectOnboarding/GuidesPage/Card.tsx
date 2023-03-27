@@ -2,20 +2,12 @@ import { Grid, Typography } from '@mui/material';
 import { HeaderButton } from 'components/organization/wrapper/styles';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { Image } from './styles';
+import { CardWrapper, Image } from './styles';
 import { PageLabel } from '../Shared/styles';
 
-const Card = ({ isDue, index, title, body, artwork, onClick }) => (
-  <Grid
+const Card = ({ index, title, body, artwork, onClick }) => (
+  <CardWrapper
     display="flex"
-    bgcolor={palette.grey900}
-    padding="14px"
-    justifyContent="space-between"
-    border={isDue ? `1px solid ${palette.highlightPurple}` : ''}
-    sx={{
-      opacity: isDue ? 1 : 0.5,
-    }}
-    borderRadius="12px"
     flexDirection={{
       xs: 'column',
       md: 'row',
@@ -56,12 +48,24 @@ const Card = ({ isDue, index, title, body, artwork, onClick }) => (
           {body}
         </Typography>
       </Grid>
-      <HeaderButton reversed onClick={onClick} disabled={!isDue}>
+      <HeaderButton reversed onClick={onClick}>
         Begin
       </HeaderButton>
     </Grid>
-    <Image src={artwork} />
-  </Grid>
+    <Grid
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      overflow="hidden"
+      borderRadius="12px"
+      width={{
+        xs: '100%',
+        sm: '50%',
+      }}
+    >
+      <Image src={artwork} />
+    </Grid>
+  </CardWrapper>
 );
 
 export default Card;

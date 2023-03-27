@@ -40,7 +40,6 @@ interface Props {
 
 export default function ImageUpload(props: Props) {
   const { image, title, updateFilesCb, imageType, avatarEditorTitle, onDeleteImage, onReplace, multiple } = props;
-
   const imageInputField = useRef(null);
   const [files, setFiles] = useState({ file: null });
 
@@ -134,6 +133,7 @@ export default function ImageUpload(props: Props) {
   };
 
   const renderImage = () => {
+    console.log('here?', image);
     if (imageType === AVATAR_EDITOR_TYPES.HEADER_IMAGE) {
       return (
         <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 75 }}>

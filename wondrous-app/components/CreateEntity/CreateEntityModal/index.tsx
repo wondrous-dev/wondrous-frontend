@@ -85,6 +85,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     podBoard,
     userBoard,
   });
+
   const initialRecurrenceValue =
     existingTask?.recurringSchema?.daily ||
     existingTask?.recurringSchema?.weekly ||

@@ -36,6 +36,9 @@ export const PageLabel = styled(Typography)`
     font-size: ${({ fontSize }) => fontSize || '20px'};
     font-weight: ${({ fontWeight }) => fontWeight || '700'};
     line-height: 24px;
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      font-size: 16px;
+    }
   }
 `;
 
@@ -61,6 +64,7 @@ export const ActionItemWrapper = styled.button`
   height: 26px;
   padding: 0;
   width: 26px;
+  cursor: pointer;
   background: ${palette.grey940};
   border: none;
   &:hover {

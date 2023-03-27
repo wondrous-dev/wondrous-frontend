@@ -1,7 +1,6 @@
-import { useSteps } from 'utils/hooks';
-import { GenericArtPanel, GenericSetupLeftWrapper } from '../Shared';
+import { useOrgBoard, useSteps } from 'utils/hooks';
+import { Container, GenericArtPanel, GenericSetupLeftWrapper } from '../Shared';
 import { CONFIG, TYPES } from '../Shared/constants';
-import useProjectOnboardingContext from '../Shared/context';
 import DiscordIntegration from './Discord';
 import InviteCollaborators from './Invite';
 
@@ -10,19 +9,23 @@ const COMMUNITY_CONFIGS = [
     label: 'Connect Discord',
     title: 'Connect Discord',
     component: DiscordIntegration,
+    mediaUrl: '/images/project-onboarding/discord-icon.webm',
+    mediaType: 'video',
   },
   {
+    label: 'Collaborators',
     title: 'Invite collaborators',
-    label: 'Invite collaborators',
     component: InviteCollaborators,
+    mediaUrl: '/images/project-onboarding/collab-icon.webm',
+    mediaType: 'video',
   },
 ];
 
-const LeftPanel = () => {
-  const { setStep: setOnboardingStep } = useProjectOnboardingContext();
-  const { step, nextStep, prevStep } = useSteps();
+const Community = () => {
+  const { setStep: setOnboardingStep } = useOrgBoard();
 
-  const { title, component: Component } = COMMUNITY_CONFIGS[step];
+  const { step, nextStep, prevStep } = useSteps();
+  const { title, component: Component, mediaUrl, mediaType } = COMMUNITY_CONFIGS[step];
 
   const STEPS = COMMUNITY_CONFIGS.map(({ label }) => ({ label }));
 
@@ -32,18 +35,28 @@ const LeftPanel = () => {
     }
     nextStep();
   };
+
+  const handlePrevStep = () => {
+    if (step - 1 < 0) {
+      return setOnboardingStep(CONFIG.findIndex((i) => i.type === TYPES.GUIDES));
+    }
+    prevStep();
+  };
+
   return (
-    <GenericSetupLeftWrapper handleBackwards={prevStep} steps={STEPS} currentStep={step} index={3} title={title}>
-      <Component nextStep={handleNextStep} />
-    </GenericSetupLeftWrapper>
+    <Container>
+      <GenericSetupLeftWrapper
+        handleBackwards={handlePrevStep}
+        steps={STEPS}
+        currentStep={step}
+        index={3}
+        title={title}
+      >
+        <Component nextStep={handleNextStep} />
+      </GenericSetupLeftWrapper>
+      <GenericArtPanel mediaType={mediaType} url={mediaUrl} />;
+    </Container>
   );
-};
-
-const RightPanel = () => <GenericArtPanel img="/images/project-onboarding/guides-artwork.png" />;
-
-const Community = {
-  LeftPanel,
-  RightPanel,
 };
 
 export default Community;

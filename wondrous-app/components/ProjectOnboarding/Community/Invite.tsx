@@ -3,7 +3,7 @@ import { OrgInviteLinkComponent } from 'components/Common/InviteLinkModal/OrgInv
 import { ButtonsPanel } from '../Shared';
 
 const InviteCollaborators = ({ nextStep }) => (
-  <Grid container justifyContent="space-between" direction="column" height="100%">
+  <Grid container justifyContent="space-between" direction="column" height="100%" gap="42px">
     <Grid gap="14px" display="flex" flexDirection="column">
       <OrgInviteLinkComponent
         gradientStyles={{

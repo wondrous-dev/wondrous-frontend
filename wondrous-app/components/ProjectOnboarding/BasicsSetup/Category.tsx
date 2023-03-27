@@ -1,32 +1,42 @@
 import { Box, Grid, Typography } from '@mui/material';
 import { HeaderButton } from 'components/organization/wrapper/styles';
+import { useState } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { DAO_CATEGORIES } from 'utils/constants';
+import { useOrgBoard } from 'utils/hooks';
 import { ButtonsPanel } from '../Shared';
 
-const Category = ({ onClick, updateData, data }) => {
+const Category = ({ handleNextStep }) => {
+  const { updateOrg, orgData } = useOrgBoard();
+  const [orgCategory, setOrgCategory] = useState(orgData?.category || null);
   const handleCategoryClick = (category) => {
-    const newCategory = category === data.category ? '' : category;
-
-    updateData((prev) => ({
-      ...prev,
-      category: newCategory,
-    }));
+    const newCategory = category === orgCategory ? '' : category;
+    setOrgCategory(newCategory);
   };
+
+  const handleCategoryUpdate = async () => {
+    if (orgData?.category !== orgCategory) {
+      await updateOrg({ category: orgCategory });
+    }
+
+    handleNextStep();
+  };
+
   return (
-    <Grid container direction="column" height="100%" justifyContent="space-between">
+    <Grid container direction="column" height="100%" justifyContent="space-between" gap="42px">
       <Grid display="flex" gap="14px" flexWrap="wrap">
-        {Object.keys(DAO_CATEGORIES).map((category, index) => (
+        {Object.keys(DAO_CATEGORIES).map((item, index) => (
           <Grid
-            key={category}
-            bgcolor={data.category === category ? palette.grey79 : palette.grey85}
+            key={item}
+            bgcolor={orgCategory === item ? palette.grey79 : palette.grey85}
             flexBasis={{
-              xs: '48%',
+              xs: '47%',
               sm: '32%',
               md: '23%',
             }}
-            onClick={() => handleCategoryClick(category)}
+            flexGrow={1}
+            onClick={() => handleCategoryClick(item)}
             sx={{
               cursor: 'pointer',
               '&:hover': {
@@ -46,12 +56,12 @@ const Category = ({ onClick, updateData, data }) => {
               lineHeight="13px"
               fontSize="13px"
             >
-              {DAO_CATEGORIES[category]}
+              {DAO_CATEGORIES[item]}
             </Typography>
           </Grid>
         ))}
       </Grid>
-      <ButtonsPanel onContinue={onClick} />
+      <ButtonsPanel onContinue={handleCategoryUpdate} />
     </Grid>
   );
 };

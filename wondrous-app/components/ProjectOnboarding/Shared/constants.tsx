@@ -1,4 +1,4 @@
-import { ProjectCreateForm } from '..';
+import ProjectCreateForm from '../ProjectCreate';
 import BasicsSetup from '../BasicsSetup';
 import Community from '../Community';
 import GuidesPage from '../GuidesPage';
@@ -20,35 +20,30 @@ export const FEATURES_TYPES = {
 };
 export const CONFIG = [
   {
-    LeftPanel: ProjectCreateForm.LeftPanel,
-    RightPanel: ProjectCreateForm.RightPanel,
+    Component: ProjectCreateForm,
   },
   {
-    RightPanel: PostCreate,
+    Component: PostCreate,
   },
   {
-    LeftPanel: GuidesPage.LeftPanel,
-    RightPanel: GuidesPage.RightPanel,
+    Component: GuidesPage,
     type: TYPES.GUIDES,
   },
   {
     type: TYPES.BASICS,
-    LeftPanel: BasicsSetup.LeftPanel,
-    RightPanel: BasicsSetup.RightPanel,
+    Component: BasicsSetup,
   },
   {
     type: TYPES.WORKFLOW,
-    LeftPanel: Workflow.LeftPanel,
-    RightPanel: Workflow.RightPanel,
+    Component: Workflow,
   },
   {
     type: TYPES.COMMUNITY,
-    LeftPanel: Community.LeftPanel,
-    RightPanel: Community.RightPanel,
+    Component: Community,
   },
   {
     type: TYPES.SUMMARY,
-    RightPanel: Summary,
+    Component: Summary,
   },
 ];
 
