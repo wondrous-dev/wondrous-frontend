@@ -223,6 +223,8 @@ export const GET_COMPLETED_TASK_LIST_BETWEEN_TIME_PERIOD = gql`
     $podId: ID
     $assigneeId: ID
     $includeBounties: Boolean
+    $limit: Int
+    $offset: Int
   ) {
     getCompletedTaskListBetweenPeriods(
       fromTime: $fromTime
@@ -231,6 +233,8 @@ export const GET_COMPLETED_TASK_LIST_BETWEEN_TIME_PERIOD = gql`
       podId: $podId
       assigneeId: $assigneeId
       includeBounties: $includeBounties
+      limit: $limit
+      offset: $offset
     ) {
       ...MinimalTaskFragment
     }

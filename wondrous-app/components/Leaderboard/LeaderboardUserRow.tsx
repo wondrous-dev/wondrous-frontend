@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import palette from 'theme/palette';
 import { GET_COMPLETED_TASK_LIST_BETWEEN_TIME_PERIOD } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
@@ -11,8 +11,10 @@ const LeaderboardUserRowTasks = dynamic(() => import('./LeaderboardUserRowTasks'
 
 const LeaderboardUserRow = ({ contributorTask, position, toTime, fromTime, podId = null, orgId = null }) => {
   const [clicked, setClicked] = useState(false);
-  const [getCompletedTaskListBetweenPeriods, { data: getContributorTasksData, loading: getContributorTaskLoading }] =
-    useLazyQuery(GET_COMPLETED_TASK_LIST_BETWEEN_TIME_PERIOD);
+  const [
+    getCompletedTaskListBetweenPeriods,
+    { data: getContributorTasksData, loading: getContributorTaskLoading, fetchMore },
+  ] = useLazyQuery(GET_COMPLETED_TASK_LIST_BETWEEN_TIME_PERIOD);
   useEffect(() => {
     if (clicked) {
       getCompletedTaskListBetweenPeriods({
@@ -20,13 +22,33 @@ const LeaderboardUserRow = ({ contributorTask, position, toTime, fromTime, podId
           toTime,
           fromTime,
           includeBounties: true,
+          limit: 10,
+          offset: 0,
           ...(podId ? { podId } : { orgId }),
           assigneeId: contributorTask?.assigneeId,
         },
       });
     }
   }, [clicked]);
+
   const contributorTasks = getContributorTasksData?.getCompletedTaskListBetweenPeriods;
+  const getMoreCompletedTaskListBetweenPeriod = useCallback(() => {
+    fetchMore({
+      variables: {
+        offset: contributorTasks?.length,
+        limit: 10,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => ({
+        getCompletedTaskListBetweenPeriods: [
+          ...prev.getCompletedTaskListBetweenPeriods,
+          ...fetchMoreResult.getCompletedTaskListBetweenPeriods,
+        ],
+      }),
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [contributorTasks, fetchMore]);
+
   return (
     <Grid
       container
@@ -52,7 +74,12 @@ const LeaderboardUserRow = ({ contributorTask, position, toTime, fromTime, podId
           <StyledCircularProgress size={20} />
         </div>
       )}
-      {clicked && <LeaderboardUserRowTasks contributorTasks={contributorTasks || []} />}
+      {clicked && (
+        <LeaderboardUserRowTasks
+          getMoreCompletedTaskListBetweenPeriod={getMoreCompletedTaskListBetweenPeriod}
+          contributorTasks={contributorTasks || []}
+        />
+      )}
     </Grid>
   );
 };

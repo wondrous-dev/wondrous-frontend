@@ -10,16 +10,14 @@ import { cutString } from 'utils/helpers';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useReducer } from 'react';
 
-const LeaderboardUserRowTasks = ({ contributorTasks }) => {
+const LeaderboardUserRowTasks = ({ contributorTasks, getMoreCompletedTaskListBetweenPeriod }) => {
   const router = useRouter();
-  // const { isTabletScreen } = useMediaQuery();
-  const [taskCount, setTaskCount] = useReducer((state) => state + 10, 10);
-  const tasks = contributorTasks?.slice(0, taskCount) || [];
-  const showMoreButton = tasks.length < contributorTasks.length;
+
+  const showMoreButton = contributorTasks.length >= 10;
   return (
     <Grid container item width="100%" borderRadius="0 0 6px 6px">
       <Grid container item width="100%" display="flex" gap="14px" padding="14px">
-        {tasks.map((task) => {
+        {contributorTasks.map((task) => {
           // const podName = task?.podName || task?.pod?.name;
           // const podColor = task?.podColor || task?.pod?.color || palette.grey78;
           const privateTask = task?.title === PRIVATE_TASK_TITLE;
@@ -105,7 +103,7 @@ const LeaderboardUserRowTasks = ({ contributorTasks }) => {
             },
           }}
           disableRipple
-          onClick={setTaskCount}
+          onClick={() => getMoreCompletedTaskListBetweenPeriod()}
         >
           Show more
         </Button>
