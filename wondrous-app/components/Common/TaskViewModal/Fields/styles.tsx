@@ -1,10 +1,11 @@
+import { Grid } from '@mui/material';
 import { CreateEntityPaymentMethodLabelChain } from 'components/CreateEntity/CreateEntityModal/styles';
 import Link from 'next/link';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { TaskModalTitle, ViewFieldWrapper } from '../styles';
+import { TaskModalTitle, ViewFieldHoverWrapper, ViewFieldWrapper } from '../styles';
 
-export const IconWrapper = styled.div`
+export const IconWrapper = styled(Grid)`
   display: flex;
   width: 24px;
   height: 24px;
@@ -74,9 +75,27 @@ export const DescriptionWrapper = styled.div`
 
 export const InlineFieldWrapper = styled(ViewFieldWrapper)`
   && {
-    padding: 4px 8px;
+    height: 28px;
+    padding: 3px 6px;
+    ${ViewFieldHoverWrapper}:hover & {
+      background: ${palette.grey78};
+    }
     &:hover {
       width: fit-content;
+    }
+  }
+`;
+
+export const TagsWrapper = styled(ViewFieldWrapper)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    min-width: 28px;
+    ${ViewFieldHoverWrapper}:hover & {
+      background: ${palette.grey78};
+      height: 20px;
     }
   }
 `;

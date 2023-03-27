@@ -5,23 +5,25 @@ import Tags from 'components/Tags';
 import { useMemo } from 'react';
 import palette from 'theme/palette';
 import { TaskSectionLabel } from '../helpers';
-import { TaskSectionDisplayDiv, TaskSectionInfoText } from '../styles';
+import { TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldHoverWrapper } from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
-import { InlineFieldWrapper } from './styles';
+import { InlineFieldWrapper, TagsWrapper } from './styles';
 
 const ViewContent = ({ toggleEditMode, labels, canEdit }) => (
-  <Grid display="flex" gap="8px" flexWrap="wrap">
-    {labels?.map(({ name = null }) => (
-      <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-        <Grid display="flex" gap="6px" alignItems="center" justifyContent="space-between" width="100%">
+  <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <Grid container display="flex" gap="8px" flexWrap="wrap" height="fit-content">
+      {labels?.map(({ name = null }) => (
+        <TagsWrapper>
           <TaskSectionInfoText>{name}</TaskSectionInfoText>
-          <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-        </Grid>
-      </InlineFieldWrapper>
-    ))}
-  </Grid>
+        </TagsWrapper>
+      ))}
+    </Grid>
+    <Grid item container display="flex" gap="6px" alignItems="center" justifyContent="end" width="fit-content">
+      <EditIcon stroke={palette.grey58} className="edit-icon-field" />
+    </Grid>
+  </ViewFieldHoverWrapper>
 );
 
 interface Props {
@@ -69,6 +71,7 @@ const TagsField = ({ canEdit, labels = [], orgId, shouldDisplay }) =>
           <EditableContent toggleEditMode={toggleAddMode} labels={labels} orgId={orgId} />
         )}
         canAddItem={canEdit && !labels?.length}
+        content={labels?.length}
         editableContent={({ toggleEditMode }) => (
           <EditableContent labels={labels} toggleEditMode={toggleEditMode} orgId={orgId} />
         )}

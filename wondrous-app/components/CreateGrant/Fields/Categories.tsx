@@ -10,15 +10,15 @@ import {
   CreateEntitySelectWrapper,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import DropdownSearch from 'components/DropdownSearch';
+import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
+import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 
 export default function Categories({ categories, onChange }) {
   const categoriesData = useGetCategories();
 
   return (
-    <Grid display="flex">
-      <CreateEntityLabelWrapper>
-        <CreateEntityLabel>Category</CreateEntityLabel>
-      </CreateEntityLabelWrapper>
+    <TaskSectionDisplayDiv alignItems="start">
+      <TaskSectionLabel>Category</TaskSectionLabel>
       <CreateEntitySelectWrapper>
         {categories !== null && (
           <DropdownSearch
@@ -44,6 +44,6 @@ export default function Categories({ categories, onChange }) {
           </CreateEntityLabelAddButton>
         )}
       </CreateEntitySelectWrapper>
-    </Grid>
+    </TaskSectionDisplayDiv>
   );
 }

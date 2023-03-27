@@ -14,7 +14,12 @@ import {
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { useUpdateTaskCardCache } from './hooks/useUpdateCache';
-import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
+import {
+  AssigneeReviewerViewContent,
+  EmptyLabel,
+  ReviewerAssigneeAutocomplete,
+  TaskFieldEditableContent,
+} from './Shared';
 
 interface OrgUser {
   value: string;
@@ -33,11 +38,14 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
   }));
   const handleUpdateTaskAssignee = async (assigneeId) => await submit(assigneeId);
 
+  if (!fetchedTask?.assigneeId && !canEdit && !canClaim) {
+    return <EmptyLabel />;
+  }
   if (fetchedTask?.assigneeId || (canEdit && canClaim)) {
     return (
       <TaskFieldEditableContent
         viewContent={({ toggleEditMode }) => (
-          <UserSelectWrapper showFullWidth>
+          <UserSelectWrapper showFullWidth canEdit={canEdit}>
             <AssigneeReviewerViewContent
               canEdit={canEdit}
               option={{
@@ -49,6 +57,7 @@ const AssigneeContent = ({ canApply, canClaim, canEdit, fetchedTask, user }) => 
           </UserSelectWrapper>
         )}
         canAddItem={canEdit && canClaim && !fetchedTask?.assigneeId}
+        content={fetchedTask?.assigneeId}
         addContent={({ toggleAddMode }) => (
           <ReviewerAssigneeAutocomplete
             options={filteredOrgUsersData}

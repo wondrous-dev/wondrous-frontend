@@ -1,6 +1,7 @@
 import React from 'react';
 import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { CreateEntityLabelWrapper, CreateEntityLabel } from 'components/CreateEntity/CreateEntityModal/styles';
+import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import { TypeSelectorButton, TypeSelectorWrapper } from './styles';
 
 interface Props {
@@ -25,11 +26,7 @@ const TypeItem: React.FC<{
 
 const TypeSelector: React.FC<Props> = ({ config, onChange, value, label }) => (
   <TaskSectionDisplayDiv alignItems="start">
-    {label ? (
-      <CreateEntityLabelWrapper>
-        <CreateEntityLabel>{label}</CreateEntityLabel>
-      </CreateEntityLabelWrapper>
-    ) : null}
+    {label ? <TaskSectionLabel>{label}</TaskSectionLabel> : null}
     <TypeSelectorWrapper>
       {config.map((field) => (
         <TypeItem

@@ -37,6 +37,7 @@ const TaskPriorityToggleButton = ({ value, setValue }: Props) => {
                 color: priority.textColor,
                 border: `1px solid ${priority.borderColor}`,
                 borderRadius: '4px',
+                zIndex: 1000,
               },
             }}
           >

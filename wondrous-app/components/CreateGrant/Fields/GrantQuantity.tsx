@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material';
+import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import {
   CreateEntityAutocompletePopperRenderInputAdornment,
@@ -12,9 +13,7 @@ import { GrantTextField, GrantTextFieldInput } from './styles';
 
 const GrantQuantity = ({ onChange, value = null, error, setError, defaultValue = null }) => (
   <TaskSectionDisplayDiv alignItems="start">
-    <CreateEntityLabelWrapper>
-      <CreateEntityLabel>Quantity</CreateEntityLabel>
-    </CreateEntityLabelWrapper>
+    <TaskSectionLabel>Quantity</TaskSectionLabel>
     <CreateEntityWrapper>
       <Grid display="flex" direction="column" gap="4px" width="100%">
         <GrantTextField

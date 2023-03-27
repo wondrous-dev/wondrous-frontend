@@ -5,7 +5,7 @@ import EditIcon from 'components/Icons/editIcon';
 import palette from 'theme/palette';
 import { PRIORITIES } from 'utils/constants';
 import { TaskSectionLabel } from '../helpers';
-import { TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import { TaskSectionDisplayDiv, TaskSectionInfoText, ViewFieldHoverWrapper, ViewFieldWrapper } from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
 import { TaskFieldEditableContent } from './Shared';
@@ -13,13 +13,25 @@ import { IconWrapper } from './styles';
 
 const ViewContent = ({ priorityValue, canEdit, toggleEditMode }) =>
   priorityValue ? (
-    <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-      <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
-        <IconWrapper>{priorityValue.icon ? priorityValue.icon : null}</IconWrapper>
-        <TaskSectionInfoText>{priorityValue.label}</TaskSectionInfoText>
-      </Grid>
+    <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+      <ViewFieldWrapper>
+        <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
+          <IconWrapper
+            sx={{
+              '& svg': {
+                rect: {
+                  fill: 'transparent',
+                },
+              },
+            }}
+          >
+            {priorityValue.icon ? priorityValue.icon : null}
+          </IconWrapper>
+          <TaskSectionInfoText>{priorityValue.label}</TaskSectionInfoText>
+        </Grid>
+      </ViewFieldWrapper>
       <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-    </ViewFieldWrapper>
+    </ViewFieldHoverWrapper>
   ) : null;
 
 const EditableContent = ({ toggleEditMode, value }) => {
@@ -49,6 +61,7 @@ const PriorityField = ({ priority, canEdit, shouldDisplay }) => {
         )}
         addContent={({ toggleAddMode }) => <EditableContent toggleEditMode={toggleAddMode} value={null} />}
         canAddItem={canEdit && !priorityValue}
+        content={priorityValue?.label}
         editableContent={({ toggleEditMode }) => <EditableContent toggleEditMode={toggleEditMode} value={priority} />}
       />
     </TaskSectionDisplayDiv>

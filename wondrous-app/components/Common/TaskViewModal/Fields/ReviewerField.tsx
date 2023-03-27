@@ -1,3 +1,4 @@
+import { Tooltip } from '@mui/material';
 import { useGetEligibleReviewers } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
   CreateEntityLabelAddButton,
@@ -10,10 +11,15 @@ import { useMemo, useRef, useState } from 'react';
 import palette from 'theme/palette';
 import { useOutsideAlerter } from 'utils/hooks';
 import { TaskSectionLabel } from '../helpers';
-import { AddButtonGrid, AddReviewerButton, UserSelectWrapper, TaskSectionDisplayDiv } from '../styles';
+import { AddButtonGrid, AddReviewerButton, UserSelectWrapper, TaskSectionDisplayDiv, ReviewerTooltip } from '../styles';
 import { FIELDS } from './hooks/constants';
 import { useSubmit } from './hooks/useSubmit';
-import { AssigneeReviewerViewContent, ReviewerAssigneeAutocomplete, TaskFieldEditableContent } from './Shared';
+import {
+  AssigneeReviewerViewContent,
+  EmptyLabel,
+  ReviewerAssigneeAutocomplete,
+  TaskFieldEditableContent,
+} from './Shared';
 
 export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTask, user }) {
   const eligibleReviewers = useGetEligibleReviewers(fetchedTask?.orgId, fetchedTask?.podId);
@@ -29,7 +35,8 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
 
   const { getTaskReviewers: taskReviewers } = reviewerData || {};
   const withTaskReviewers = Boolean(taskReviewers?.length);
-  const taskReviewerIds = taskReviewers?.map(({ id }) => id) || [];
+  const taskReviewerIds = useMemo(() => taskReviewers?.map(({ id }) => id) || [], [taskReviewers]);
+  const selfReviewer = !taskReviewerIds?.includes(user?.id) && user;
 
   const filteredEligibleReviewers = useMemo(
     () =>
@@ -50,10 +57,14 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
     canEdit &&
     withTaskReviewers &&
     withTaskReviewers < eligibleReviewers?.length &&
-    !isEmpty(filteredEligibleReviewers);
-  const selfReviewer = !taskReviewerIds?.includes(user?.id) && user;
+    (!isEmpty(filteredEligibleReviewers.filter((i) => !i.hide)) || Boolean(selfReviewer));
 
-  const handleAssignToSelfClick = () => handleUpdateReviewers([...taskReviewerIds, user?.id]);
+  const handleAssignToSelfClick = () => {
+    if (showAutocomplete) {
+      setShowAutocomplete(false);
+    }
+    handleUpdateReviewers([...taskReviewerIds, user?.id]);
+  };
 
   const handleSelect = (value) => {
     if (showAutocomplete) {
@@ -65,22 +76,33 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
   return (
     <TaskSectionDisplayDiv alignItems="start" style={{ width: '100%' }}>
       <TaskSectionLabel>Reviewer</TaskSectionLabel>
-      <UserSelectWrapper showFullWidth ref={showAutocomplete ? ref : null}>
+      <UserSelectWrapper showFullWidth ref={showAutocomplete ? ref : null} canEdit={canEdit}>
         {taskReviewers?.map((taskReviewer, index) => (
           <TaskFieldEditableContent
+            key={taskReviewer.id}
             viewContent={({ toggleEditMode }) => (
               <AssigneeReviewerViewContent canEdit={canEdit} option={taskReviewer} toggleEditMode={toggleEditMode}>
-                {showAddButton && !showAutocomplete && index === taskReviewerIds?.length - 1 && (
-                  <AddButtonGrid item container width="max-content">
-                    <AddReviewerButton onClick={() => setShowAutocomplete(!showAutocomplete)}>
-                      <PlusIcon fill={palette.white} />
-                    </AddReviewerButton>
-                  </AddButtonGrid>
+                {showAddButton && !showAutocomplete && (
+                  <ReviewerTooltip
+                    PopperComponents={{
+                      disablePortal: true,
+                    }}
+                    title="Add Reviewer"
+                    arrow
+                    placement="top"
+                  >
+                    <AddButtonGrid item container width="max-content">
+                      <AddReviewerButton onClick={() => setShowAutocomplete(!showAutocomplete)}>
+                        <PlusIcon fill={palette.white} />
+                      </AddReviewerButton>
+                    </AddButtonGrid>
+                  </ReviewerTooltip>
                 )}
               </AssigneeReviewerViewContent>
             )}
             editableContent={({ toggleEditMode }) => (
               <ReviewerAssigneeAutocomplete
+                disabled
                 options={filteredEligibleReviewers}
                 error={error}
                 currentOption={{
@@ -115,6 +137,7 @@ export function ReviewerField({ reviewerData, shouldDisplay, canEdit, fetchedTas
             <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
           </CreateEntityLabelAddButton>
         ) : null}
+        {!taskReviewerIds?.length && !canEdit && <EmptyLabel />}
       </UserSelectWrapper>
     </TaskSectionDisplayDiv>
   );

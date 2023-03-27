@@ -1,8 +1,13 @@
+import { Grid } from '@mui/material';
 import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
 import { useSubmit } from 'components/Common/TaskViewModal/Fields/hooks/useSubmit';
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
 import { InlineFieldWrapper } from 'components/Common/TaskViewModal/Fields/styles';
-import { TaskSectionInfoCalendar, ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
+import {
+  TaskSectionInfoCalendar,
+  ViewFieldHoverWrapper,
+  ViewFieldWrapper,
+} from 'components/Common/TaskViewModal/styles';
 import { Dates } from 'components/CreateGrant/Fields';
 import EditIcon from 'components/Icons/editIcon';
 import { format, parseISO } from 'date-fns';
@@ -11,23 +16,32 @@ import palette from 'theme/palette';
 import { DataDisplay, MultipleDataDisplay } from '../Fields';
 
 const ViewContent = ({ toggleEditMode, startDate, endDate, canEdit }) => (
-  <InlineFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-    <MultipleDataDisplay>
+  <ViewFieldHoverWrapper height="fit-content" $canEdit={canEdit} onClick={toggleEditMode}>
+    <Grid container gap="8px">
       {[startDate, endDate].map((date, idx) => (
         <DataDisplay
           key={`${date}-${idx}`}
           label={
-            <>
+            <Grid
+              container
+              bgcolor={palette.grey920}
+              height="28px"
+              alignItems="center"
+              gap="8px"
+              borderRadius="6px"
+              padding="4px"
+            >
               <TaskSectionInfoCalendar />
               {date ? format(parseISO(date.substring(0, 10)), 'MM/dd/yyyy') : 'Not set'}
-            </>
+            </Grid>
           }
         />
       ))}
-    </MultipleDataDisplay>
+    </Grid>
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-  </InlineFieldWrapper>
+  </ViewFieldHoverWrapper>
 );
+
 const EditContent = ({ toggleManageMode, startDate = null, endDate = null }) => {
   const [dates, setDates] = useState({
     startDate,
@@ -63,6 +77,7 @@ const EditableDates = ({ startDate, endDate, canEdit }) => (
     )}
     canAddItem={!startDate && !endDate && canEdit}
     addContent={({ toggleAddMode }) => <EditContent toggleManageMode={toggleAddMode} />}
+    content={startDate || endDate}
   />
 );
 

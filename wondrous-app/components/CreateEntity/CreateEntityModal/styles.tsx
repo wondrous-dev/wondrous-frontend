@@ -1,24 +1,34 @@
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
 import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
-import { Autocomplete, Input, InputAdornment, InputBase, MenuItem, Select, TextField, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Input,
+  InputAdornment,
+  InputBase,
+  MenuItem,
+  Popper,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import scrollBarStyles from 'components/Common/ScrollbarStyles';
 import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DAOIcon } from 'components/Icons/dao';
 import PlusIcon from 'components/Icons/plus';
 import PodIcon from 'components/Icons/podIcon';
-import PointsIcon from 'components/Icons/pointsIcon.svg';
+import PointsIcon from 'components/Icons/pointsIcon2.svg';
 import SingleDatePicker from 'components/SingleDatePicker';
 import styled, { css } from 'styled-components';
 import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
-import scrollBarStyles from 'components/Common/ScrollbarStyles';
 import typography from 'theme/typography';
+import { CloseIcon } from '../../Common/BoardFilters/styles';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
-import { CloseIcon } from '../../Common/BoardFilters/styles';
 
 const fullScreenStyle = css`
   max-height: 100vh;
@@ -249,7 +259,7 @@ export const CreateEntitySelectArrowIcon = styled(Arrow)`
   margin-left: 10px;
   transform: rotate(90deg);
   path {
-    fill: #7a7a7a;
+    fill: ${palette.white};
   }
 `;
 
@@ -304,49 +314,34 @@ export const CreateEntityLabel = styled.div`
 `;
 
 export const CreateEntityLabelAddButton = styled(ButtonUnstyled)`
-  height: 32px;
+  height: 28px;
   max-width: max-content;
   width: max-content;
-  background: #282828;
+  background: ${palette.grey920};
   border-radius: 4px;
   padding: 4px 8px;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  ${({ disabled }) =>
-    !disabled &&
-    `:hover {
-    cursor: pointer;
-    color: ${palette.white};
-    background: #454545;
-    svg {
-    path {
-      fill: #CCBBFF;
-    }
-  }
-  }
-  `}
-  svg {
-    path {
-      fill: #474747;
-    }
-  }
+  gap: 8px;
+  color: ${palette.white};
+  cursor: pointer;
+  font-weight: 400;
 `;
 
 export const CreateEntityAddButtonIcon = styled(PlusIcon)`
-  transform: scale(70%);
   path {
-    fill: #ccbbff;
+    fill: ${palette.grey250};
   }
 `;
 
 export const CreateEntityAddButtonLabel = styled(Typography)`
   && {
-    color: #7a7a7a;
+    color: ${palette.grey58};
     font-family: 'Space Grotesk';
     font-weight: 500;
-    margin-left: 4px;
+    font-size: 13px;
   }
 `;
 
@@ -377,7 +372,7 @@ export const CreateEntitySelectWrapper = styled.div`
 export const CreateEntityTextfield = styled(TextField)`
   && {
     min-width: 45%;
-    height: 32px;
+    height: 28px;
     background: #141414;
     border-radius: 4px;
     display: flex;
@@ -389,13 +384,13 @@ export const CreateEntityTextfield = styled(TextField)`
       padding: 0 6px;
     }
     .MuiTextField-root {
-      height: 32px;
+      height: 28px;
     }
     .MuiOutlinedInput-notchedOutline {
       border: none;
     }
     :focus-within {
-      outline: 1px solid #7a7a7a;
+      outline: 1px solid ${palette.highlightPurple};
     }
   }
 `;
@@ -405,22 +400,15 @@ export const CreateEntityTextfieldInputPoints = styled(TextField)`
     padding: 0;
   }
   .MuiOutlinedInput-root {
+    display: flex;
+    gap: 6px;
     height: inherit;
     padding: 0;
-    width: 75px;
+    width: auto;
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
     color: #ffffff;
-    background: -webkit-linear-gradient(#ffffff, #ffd653);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    .MuiOutlinedInput-input {
-      padding: 0;
-    }
-    .MuiOutlinedInput-notchedOutline {
-      border: none;
-    }
   }
 `;
 
@@ -455,9 +443,21 @@ export const CreateEntityAutocomplete = styled(Autocomplete)`
 `;
 
 export const CreateEntityAutocompletePopper = styled(({ className, ...props }) => (
-  <CreateEntityAutocomplete {...props} classes={{ paper: className }} />
+  <CreateEntityAutocomplete
+    {...props}
+    classes={{ paper: className }}
+    sx={{
+      '&&:focus-within': [{ outline: `1px solid ${palette.highlightPurple}` }],
+      height: '28px',
+      '.Mui-disabled': {
+        color: palette.white,
+      },
+    }}
+    tabIndex={0}
+  />
 ))`
   .MuiAutocomplete-listbox {
+    margin-top: 8px;
     border-color: #7a7a7a;
     scroll-padding-right: 0;
     max-height: 200px;
@@ -465,12 +465,16 @@ export const CreateEntityAutocompletePopper = styled(({ className, ...props }) =
   }
 
   .MuiAutocomplete-noOptions {
-    background: #1f1f1f !important;
+    background: ${palette.grey79} !important;
     font-family: 'Space Grotesk';
-    font-size: 14px;
     color: ${palette.white};
     font-weight: 500;
     border-color: #7a7a7a;
+    padding: 8px;
+    font-size: 13px;
+    margin-top: 8px;
+    font-size: 14px;
+  }
   }
 `;
 
@@ -478,7 +482,7 @@ export const CreateEntityAutocompletePopperRenderInput = styled(Input)`
   && {
     border: none;
     outline: none;
-    height: 32px;
+    height: 28px;
     color: #c4c4c4;
     font-family: 'Space Grotesk';
     font-size: 13px;
@@ -487,6 +491,9 @@ export const CreateEntityAutocompletePopperRenderInput = styled(Input)`
       padding: 0;
     }
   }
+  /* &:focus-within { */
+  /*   outline: 1px solid ${palette.highlightPurple}; */
+  /* } */
 `;
 
 export const CreateEntityAutocompletePopperRenderInputAdornment = styled(InputAdornment)`
@@ -556,11 +563,12 @@ export const CreateEntityLabelSelectWrapper = styled.div`
 
 export const CreateEntityPrivacyRoot = styled.button`
   padding: 0;
-  min-width: 120px;
-  height: 32px;
+  width: ${({ width }) => width ?? 'fit-content'};
+  height: 28px;
   border-radius: 4px;
   background: #1f1f1f;
-  border: 1px solid ${(props) => (props['aria-expanded'] ? `#7a7a7a` : `transparent`)};
+  border: 0;
+  outline: 1px solid ${(props) => (props['aria-expanded'] || props.open ? palette.highlightPurple : `transparent`)};
   opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
   :hover {
     cursor: pointer;
@@ -574,10 +582,24 @@ export const CreateEntityPrivacyList = styled.ul`
   padding: 0;
 `;
 
-export const CreateEntityPrivacyPopper = styled(PopperUnstyled)`
+export const CreateEntityPrivacyPopper = styled((props) => (
+  <PopperUnstyled
+    {...props}
+    disablePortal
+    modifiers={[
+      {
+        name: 'offset',
+        enabled: true,
+        options: {
+          offset: [0, 8],
+        },
+      },
+    ]}
+  />
+))`
   max-height: 222px;
   min-width: 132px;
-  border-radius: 4px;
+  width: ${({ width }) => width};
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
   z-index: 100;
@@ -593,6 +615,17 @@ export function CreateEntityPrivacySelect(props) {
 
   return <SelectUnstyled {...props} components={components} />;
 }
+
+export const EditEntityPrivacySelect = (props) => {
+  const components = {
+    Root: CreateEntityPrivacyRoot,
+    Listbox: CreateEntityPrivacyList,
+    Popper: (popperProps) => <CreateEntityPrivacyPopper {...popperProps} open={props.open} width={props.width} />,
+    ...props.components,
+  };
+
+  return <SelectUnstyled {...props} components={components} />;
+};
 
 export const CreateEntityPrivacySelectRender = styled.div`
   display: flex;
@@ -616,7 +649,6 @@ export const CreateEntityPrivacySelectRenderLabel = styled.div`
   align-items: center;
   color: white;
   text-transform: capitalize;
-  margin-left: 10px;
 `;
 
 export const CreateEntityPrivacySelectRenderLabelWrapper = styled.div`
@@ -806,10 +838,10 @@ export const CreateEntityWrapper = styled.div`
 export const CreateEntityPaymentMethodRoot = styled.button`
   padding: 0;
   max-width: fit-content;
-  height: 32px;
+  height: 28px;
   border-radius: 4px;
   background: #141414;
-  border: 1px solid ${(props) => (props['aria-expanded'] ? `#7a7a7a` : `transparent`)};
+  border: 1px solid ${(props) => (props['aria-expanded'] ? palette.highlightPurple : `transparent`)};
   :hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
@@ -825,7 +857,7 @@ export const CreateEntityTextfieldInputReward = styled(TextField)`
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
-    color: #06ffa5;
+    color: ${palette.white};
     .MuiOutlinedInput-input {
       padding: 0;
     }
@@ -862,7 +894,20 @@ export const CreateEntityPaymentMethodList = styled.ul`
   padding: 0;
 `;
 
-export const CreateEntityPaymentMethodPopper = styled(PopperUnstyled)`
+export const CreateEntityPaymentMethodPopper = styled((props) => (
+  <Popper
+    {...props}
+    modifiers={[
+      {
+        name: 'offset',
+        enabled: true,
+        options: {
+          offset: [0, 8],
+        },
+      },
+    ]}
+  />
+))`
   max-height: 222px;
   width: 200px;
   border-radius: 4px;
@@ -971,14 +1016,16 @@ export const CreateEntityDueDate = styled(({ className, ...props }) => (
   // This is to override the default styles of the SingleDatePicker
   && {
     margin: 0;
+    height: 28px;
     width: 100%;
     max-width: 100%;
     > .MuiFormControl-root {
+      height: 28px
       width: 100%;
       border-radius: 4px;
       padding: 0;
       :focus-within {
-        outline: 1px solid #7a7a7a;
+        outline: 1px solid ${palette.highlightPurple};
       }
       .MuiInputBase-input {
         padding: 0;

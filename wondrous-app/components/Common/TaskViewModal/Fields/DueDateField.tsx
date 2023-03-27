@@ -13,6 +13,7 @@ import {
   TaskSectionDisplayDiv,
   TaskSectionInfoCalendar,
   TaskSectionInfoText,
+  ViewFieldHoverWrapper,
   ViewFieldWrapper,
 } from '../styles';
 import { FIELDS } from './hooks/constants';
@@ -21,22 +22,24 @@ import { TaskFieldEditableContent } from './Shared';
 import { IconWrapper } from './styles';
 
 const DueDateFieldContent = ({ recurringSchema, dueDate, canEdit, toggleEditMode }) => (
-  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-    <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
-      <IconWrapper>
-        <TaskSectionInfoCalendar />
-      </IconWrapper>
-      <TaskSectionInfoText>
-        {!isEmpty(recurringSchema) && (
-          <Tooltip title="Recurring" placement="right">
-            <RecurringIcon />
-          </Tooltip>
-        )}
-        {format(parseISO(dueDate.substring(0, 10)), 'MM/dd/yyyy')}{' '}
-      </TaskSectionInfoText>
-    </Grid>
+  <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+    <ViewFieldWrapper>
+      <Grid display="flex" gap="6px" alignItems="center" justifyContent="center">
+        <IconWrapper>
+          <TaskSectionInfoCalendar />
+        </IconWrapper>
+        <TaskSectionInfoText>
+          {!isEmpty(recurringSchema) && (
+            <Tooltip title="Recurring" placement="right">
+              <RecurringIcon />
+            </Tooltip>
+          )}
+          {format(parseISO(dueDate.substring(0, 10)), 'MM/dd/yyyy')}{' '}
+        </TaskSectionInfoText>
+      </Grid>
+    </ViewFieldWrapper>
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-  </ViewFieldWrapper>
+  </ViewFieldHoverWrapper>
 );
 
 const EditableFieldContent = ({
@@ -153,6 +156,7 @@ const DueDateField = ({ dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry, 
             />
           )}
           canAddItem={canEdit && !dueDate}
+          content={dueDate}
           editableContent={({ toggleEditMode, toggleOutsideAlerter }) => (
             <EditableFieldContent
               toggleOutsideAlerter={toggleOutsideAlerter}

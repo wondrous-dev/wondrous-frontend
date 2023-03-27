@@ -2,8 +2,7 @@ import palette from 'theme/palette';
 
 const styles = {
   grid: {
-    padding: '4px',
-    minHeight: '32px',
+    height: '28px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -13,25 +12,26 @@ const styles = {
   },
   toggleButton: {
     width: '100%',
-    minHeight: '24px',
+    minHeight: '28px',
     padding: '4px 8px',
     color: palette.grey57,
-    backgroundColor: palette.grey99,
+    backgroundColor: palette.background,
     fontSize: '14px',
-    fontWeight: 500,
+    fontWeight: 400,
     border: `1px solid ${palette.grey99}`,
 
     '&&.MuiToggleButtonGroup-grouped': {
       border: '1px solid transparent',
       borderRadius: '4px',
       margin: 0,
+      height: '28px',
     },
   },
 
   toggleButtonGroup: {
-    maxHeight: '24px',
+    maxHeight: '28px',
     gap: '2px',
-    backgroundColor: palette.grey99,
+    backgroundColor: palette.background.default,
     width: '100%',
   },
 };
