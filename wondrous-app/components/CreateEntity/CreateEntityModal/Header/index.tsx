@@ -2,6 +2,8 @@ import { Box } from '@mui/material';
 import Tooltip from 'components/Tooltip';
 
 import { ENTITIES_TYPES } from 'utils/constants';
+import Button from 'components/Button';
+import palette from 'theme/palette';
 import { CreateEntityDropdown, filterOptionsWithPermission } from '../Helpers';
 import PodSearch from '../PodSearch';
 import {
@@ -28,6 +30,8 @@ const Header = ({
   toggleFullScreen,
   cancel,
   pods,
+  showTemplates,
+  setShowTemplates,
 }) => {
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   return (
@@ -72,6 +76,25 @@ const Header = ({
         )}
       </CreateEntityHeaderWrapper>
       <CreateEntityHeaderWrapper>
+        <Button
+          color="grey"
+          borderRadius={6}
+          textColor={palette.white}
+          height={34}
+          buttonTheme={{
+            fontWeight: '500',
+            fontSize: '13px',
+            paddingX: 10,
+          }}
+          // @ts-ignore
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            setShowTemplates(!showTemplates);
+          }}
+        >
+          {showTemplates ? 'Hide' : 'Show'} templates
+        </Button>
         <Tooltip title="Full screen" placement="top">
           <Box>
             <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />

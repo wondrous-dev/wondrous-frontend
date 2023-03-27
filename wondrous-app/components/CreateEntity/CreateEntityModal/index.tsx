@@ -54,8 +54,19 @@ import FormBody from './FormBody';
 import Header from './Header';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status, setFormDirty } = props;
+  const {
+    entityType,
+    handleClose,
+    cancel,
+    existingTask,
+    parentTaskId,
+    formValues,
+    status,
+    setFormDirty,
+    shouldShowTemplates,
+  } = props;
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(shouldShowTemplates);
   const isSubtask =
     parentTaskId !== undefined || (existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null);
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
@@ -429,6 +440,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         handlePodChange={handlePodChange}
         toggleFullScreen={toggleFullScreen}
         cancel={cancel}
+        showTemplates={showTemplates}
+        setShowTemplates={setShowTemplates}
       />
       {snapshotConnected && isProposal && (
         <SnapshotButtonBlock>
