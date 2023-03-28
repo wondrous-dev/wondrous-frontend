@@ -1,3 +1,4 @@
+import { Popper } from '@mui/material';
 import { createFilterOptions } from '@mui/material/Autocomplete';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import shuffle from 'lodash/shuffle';
@@ -42,6 +43,21 @@ const filter = createFilterOptions({
 const colors = Object.values(ColorTypes);
 const randomColors = shuffle(colors);
 
+const PopperComponent = (props) => (
+  <Popper
+    {...props}
+    modifiers={[
+      {
+        name: 'offset',
+        enabled: true,
+        options: {
+          offset: [0, 8],
+        },
+      },
+    ]}
+  />
+);
+
 function Tags({ options, onChange, onCreate, limit, ids = [], autoFocus = false, disablePortal = false }: Props) {
   const [openTags, setOpenTags] = useState(false);
   const [randomColor, setRandomColor] = useState(randomColors[0]);
@@ -71,6 +87,7 @@ function Tags({ options, onChange, onCreate, limit, ids = [], autoFocus = false,
       fullWidth
       disablePortal={disablePortal}
       open={openTags}
+      PopperComponent={PopperComponent}
       onOpen={() => setOpenTags(true)}
       onClose={() => setOpenTags(false)}
       onChange={(e, tags) => {

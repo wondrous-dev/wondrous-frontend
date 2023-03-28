@@ -86,7 +86,21 @@ function MilestoneSearch({
           </MilestoneSearchImageLabelWrapper>
           <MilestoneSearchButtonCloseIcon onClick={handleClose} />
         </MilestoneSearchButton>
-        <MilestoneSearchPopper open={isOpen} anchorEl={anchorEl.current} placement="bottom-start" disablePortal>
+        <MilestoneSearchPopper
+          open={isOpen}
+          anchorEl={anchorEl.current}
+          placement="bottom-start"
+          modifiers={[
+            {
+              name: 'offset',
+              enabled: true,
+              options: {
+                offset: [0, 8],
+              },
+            },
+          ]}
+          disablePortal
+        >
           <MilestoneSearchAutocomplete
             name="milestoneId"
             value={selectedValue}

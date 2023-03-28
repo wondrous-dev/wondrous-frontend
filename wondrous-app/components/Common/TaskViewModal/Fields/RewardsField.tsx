@@ -29,6 +29,7 @@ import {
   TaskSectionInfoPaymentAmount,
   TaskSectionInfoPaymentMethodChain,
   TaskSectionInfoPaymentMethodIcon,
+  ViewFieldHoverWrapper,
   ViewFieldWrapper,
 } from '../styles';
 import { FIELDS } from './hooks/constants';
@@ -39,17 +40,19 @@ import { RewardsWrapper } from './styles';
 export const ViewRewards = ({ canEdit = false, rewardAmount, symbol, toggleEditMode = () => {}, icon, chain }) => {
   const user = useMe();
   return (
-    <Grid display="flex" direction="column" gap="8px">
-      <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-        <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
-          <TaskSectionInfoPaymentMethodIcon src={icon} />
-          <TaskSectionInfoPaymentAmount>
-            {rewardAmount} {symbol}
-          </TaskSectionInfoPaymentAmount>
-          <TaskSectionInfoPaymentMethodChain> on {chain}</TaskSectionInfoPaymentMethodChain>
-        </Grid>
+    <Grid container display="flex" direction="column" gap="8px">
+      <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+        <ViewFieldWrapper>
+          <Grid gap="6px" display="flex" justifyContent="center" alignItems="center">
+            <TaskSectionInfoPaymentMethodIcon src={icon} />
+            <TaskSectionInfoPaymentAmount>
+              {rewardAmount} {symbol}
+            </TaskSectionInfoPaymentAmount>
+            <TaskSectionInfoPaymentMethodChain> on {chain}</TaskSectionInfoPaymentMethodChain>
+          </Grid>
+        </ViewFieldWrapper>
         <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-      </ViewFieldWrapper>
+      </ViewFieldHoverWrapper>
       {user ? <ConnectToWallet user={user} /> : null}
     </Grid>
   );
@@ -188,6 +191,7 @@ const Rewards = ({ fetchedTask, canEdit, shouldDisplay }) => {
           />
         )}
         canAddItem={canEdit && !rewards?.length}
+        content={rewards?.length}
         addContent={({ toggleAddMode }) => (
           <CreateReward
             orgId={fetchedTask?.orgId}

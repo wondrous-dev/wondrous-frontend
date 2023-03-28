@@ -20,7 +20,12 @@ import typography from 'theme/typography';
 import { User } from 'types/User';
 import { useOutsideAlerter } from 'utils/hooks';
 import usePlate from 'hooks/usePlate';
-import { TaskSectionInfoText, ViewFieldWrapper } from '../styles';
+import {
+  TaskSectionInfoText,
+  ViewFieldHoverWrapper,
+  ViewFieldWrapper,
+  AssigneeReviewerContentWrapper,
+} from '../styles';
 import { UserChipWrapper } from './styles';
 
 interface TaskFieldEditableContentProps {
@@ -28,17 +33,37 @@ interface TaskFieldEditableContentProps {
   viewContent: React.FC<{ toggleEditMode: () => void }>;
   onClose?: (value?: any) => void;
   canAddItem?: boolean;
-  addContent?: React.FC<{ toggleAddMode: () => void; toggleOutsideAlerter: () => void }>;
+  addContent?: null | React.FC<{ toggleAddMode: () => void; toggleOutsideAlerter: () => void }>;
   editGridStyle?: any;
+  content?: string | number | boolean | null;
 }
+
+export const EmptyLabel = () => (
+  <Grid
+    container
+    width="fit-content"
+    alignItems="center"
+    justifyContent="center"
+    bgcolor={palette.grey87}
+    color={palette.grey58}
+    borderRadius="4px"
+    padding="4px"
+    height="28px"
+    lineHeight="0"
+    fontWeight="500"
+  >
+    Empty
+  </Grid>
+);
 
 export const TaskFieldEditableContent = ({
   editableContent,
   viewContent,
-  addContent = () => null,
+  addContent = null,
   onClose = null,
   canAddItem = false,
   editGridStyle = {},
+  content = null,
 }: TaskFieldEditableContentProps) => {
   const { isComboboxOpen } = usePlate();
   const [isEditMode, setIsEditMode] = useState(false);
@@ -82,14 +107,18 @@ export const TaskFieldEditableContent = ({
     );
   }
 
-  if (canAddItem) {
-    return (
-      <CreateEntityLabelAddButton onClick={toggleAddMode} data-cy="button-add-assignee">
-        <CreateEntityAddButtonIcon />
-        <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
-      </CreateEntityLabelAddButton>
-    );
+  if (!content && addContent) {
+    if (canAddItem) {
+      return (
+        <CreateEntityLabelAddButton onClick={toggleAddMode} data-cy="button-add-assignee">
+          <CreateEntityAddButtonIcon />
+          <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+        </CreateEntityLabelAddButton>
+      );
+    }
+    return <EmptyLabel />;
   }
+
   if (isEditMode) {
     return (
       <Grid
@@ -132,13 +161,15 @@ export const UserChip = ({ user }) => (
 );
 
 export const AssigneeReviewerViewContent = ({ option, canEdit, toggleEditMode, children = null }) => (
-  <Grid width="100%" display="flex" alignItems="center" gap="6px">
-    <ViewFieldWrapper key={option.id} $canEdit={canEdit} onClick={toggleEditMode}>
-      <UserChip user={option} />
+  <AssigneeReviewerContentWrapper $canEdit={canEdit}>
+    <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+      <ViewFieldWrapper key={option.id}>
+        <UserChip user={option} />
+      </ViewFieldWrapper>
       <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-    </ViewFieldWrapper>
+    </ViewFieldHoverWrapper>
     {children}
-  </Grid>
+  </AssigneeReviewerContentWrapper>
 );
 
 export const InfoText = ({ content = null }) => <TaskSectionInfoText>{content || 'None'}</TaskSectionInfoText>;
@@ -159,6 +190,7 @@ interface IReviewerAssigneeAutocompleteProps {
   onDelete?: () => void;
   onSelect?: (value: string | Option) => void;
   error?: string;
+  disabled?: boolean;
 }
 
 export const ReviewerAssigneeAutocomplete = ({
@@ -171,9 +203,11 @@ export const ReviewerAssigneeAutocomplete = ({
   onDelete,
   onSelect,
   error = null,
+  disabled = false,
 }: IReviewerAssigneeAutocompleteProps) => (
   <>
     <CreateEntityAutocompletePopper
+      disabled={disabled}
       openOnFocus
       options={options}
       disablePortal

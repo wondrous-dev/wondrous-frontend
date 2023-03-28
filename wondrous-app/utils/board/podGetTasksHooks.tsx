@@ -183,7 +183,7 @@ const useGetPodTaskBoardTasks = ({
   }, [columns, fetchMore, setPodTaskHasMore, variables]);
 
   useEffect(() => {
-    if (entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search && podId) {
+    if (![ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.PROPOSAL].includes(entityType) && podId && !search && podId) {
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))

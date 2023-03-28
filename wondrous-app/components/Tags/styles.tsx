@@ -11,10 +11,14 @@ export const StyledAutocomplete = styled(Autocomplete).attrs(() => ({
 }))`
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%
   background: #141414;
   border-radius: 6px;
-  min-height: 32px;
+  min-height: 28px;
+  height: 28px
   color: ${palette.white};
+  outline: 1px solid ${palette.highlightPurple};
 `;
 
 export const TagAutocompletePopper = styled(({ className, ...props }) => (
@@ -23,6 +27,9 @@ export const TagAutocompletePopper = styled(({ className, ...props }) => (
   .MuiAutocomplete-listbox {
     border-color: #7a7a7a;
     max-height: 200px;
+    .Mui-focused {
+      background: ${palette.grey79};
+    }
   }
   .MuiAutocomplete-noOptions {
     background: #1f1f1f !important;
@@ -37,7 +44,7 @@ export const TagAutocompletePopper = styled(({ className, ...props }) => (
 export const OptionItem = styled.li`
   && {
     height: 36px;
-    background: #1f1f1f;
+    background: ${palette.black92};
     font-family: 'Space Grotesk';
     font-size: 14px;
     padding: 12px;
@@ -56,7 +63,7 @@ export const OptionItem = styled.li`
 
 export const StyledChipTag = styled(Chip)`
   &&& {
-    background: #4000b5;
+    background: ${palette.grey85};
     border: 0;
     border-radius: 4px;
     height: 20px;
@@ -95,7 +102,7 @@ export const StyledChipTag = styled(Chip)`
 export const TagsTextField = styled(TextField)`
   && {
     .MuiOutlinedInput-root {
-      padding: 6px;
+      padding: 0 4px;
       color: ${palette.white};
       font-family: 'Space Grotesk';
       font-size: 13px;

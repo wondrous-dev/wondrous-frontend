@@ -17,6 +17,7 @@ import {
   CreateEntitySelectRootValueWrapper,
   CreateEntitySelectArrowIcon,
 } from 'components/CreateEntity/CreateEntityModal/styles';
+import palette from 'theme/palette';
 
 export function CreateEntityDropdownRenderOptions(value) {
   return (
@@ -86,13 +87,21 @@ export const CreateEntityTextfieldInputPointsComponent = React.forwardRef((props
     }}
     InputProps={{
       startAdornment: (
-        <CreateEntityAutocompletePopperRenderInputAdornment position="start">
+        <CreateEntityAutocompletePopperRenderInputAdornment
+          position="start"
+          sx={{
+            background: palette.grey900,
+            height: '24px',
+            width: '24px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '4px',
+            margin: '0',
+            minWidth: '24px',
+            minHeight: '24px',
+          }}
+        >
           <CreateEntityTextfieldPoints />
-        </CreateEntityAutocompletePopperRenderInputAdornment>
-      ),
-      endAdornment: (
-        <CreateEntityAutocompletePopperRenderInputAdornment position="end">
-          <CreateEntityTextfieldInputLabel>PTS</CreateEntityTextfieldInputLabel>
         </CreateEntityAutocompletePopperRenderInputAdornment>
       ),
     }}

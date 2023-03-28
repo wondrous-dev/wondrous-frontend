@@ -63,7 +63,7 @@ export const GrantTextField = styled(CreateEntityTextfield)`
 export const TypeSelectorWrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 32px;
+  height: 28px;
   align-items: center;
   border-radius: 4px;
   background: ${palette.grey99};

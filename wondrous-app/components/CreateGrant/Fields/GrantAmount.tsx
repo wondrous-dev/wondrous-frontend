@@ -21,6 +21,7 @@ import {
   CreateEntitySelectArrowIcon,
   CreateEntityWrapper,
 } from 'components/CreateEntity/CreateEntityModal/styles';
+import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import { GRANT_STYLE_MAP } from './GrantStyle';
 import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
 
@@ -73,72 +74,67 @@ const GrantAmount = ({
       )}
       {activePaymentMethods?.length > 0 && (
         <>
-          <CreateEntityLabelWrapper>
-            <CreateEntityLabel>{label}</CreateEntityLabel>
-          </CreateEntityLabelWrapper>
-
-          <CreateEntityWrapper>
-            <Grid display="flex" direction="column" gap="4px" width="100%">
-              <Grid display="flex" gap="6px">
-                <GrantChainSelect
-                  name="rewards-payment-method"
-                  value={value.paymentMethodId}
-                  disabled={disablePaymentSelect}
-                  onChange={(paymentMethodValue) => {
-                    onChange('reward', { ...value, paymentMethodId: paymentMethodValue });
-                  }}
-                  renderValue={(selectedItem) => {
-                    if (!selectedItem?.label?.props) return null;
-                    return (
-                      <CreateEntityPaymentMethodSelected>
-                        <CreateEntityPaymentMethodItem
-                          icon={selectedItem.label.props.icon}
-                          symbol={selectedItem.label.props.symbol}
-                          chain={null}
-                        />
-                        {!disablePaymentSelect ? <CreateEntitySelectArrowIcon /> : null}
-                      </CreateEntityPaymentMethodSelected>
-                    );
-                  }}
-                >
-                  {activePaymentMethods.map(({ symbol, icon, id, chain }) => (
-                    <CreateEntityPaymentMethodOption key={id} value={id}>
-                      <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
-                    </CreateEntityPaymentMethodOption>
-                  ))}
-                </GrantChainSelect>
-                <GrantTextField
-                  autoComplete="off"
-                  readOnly={disableInput}
-                  autoFocus={!value.rewardAmount}
-                  name="rewardAmount"
-                  onChange={(e) => {
-                    onChange('reward', { ...value, rewardAmount: e.target.value });
-                  }}
-                  placeholder="Enter grant amount"
-                  value={value.rewardAmount}
-                  fullWidth
-                  InputProps={{
-                    inputComponent: GrantTextFieldInput,
-                    type: 'number',
-                    disabled: disableInput,
-                    endAdornment: !disableInput && (
-                      <CreateEntityAutocompletePopperRenderInputAdornment
-                        position="end"
-                        onClick={() => onChange('reward', { ...value, rewardAmount: '' })}
-                      >
-                        <CreateEntityAutocompletePopperRenderInputIcon />
-                      </CreateEntityAutocompletePopperRenderInputAdornment>
-                    ),
-                  }}
-                  error={error}
-                  onFocus={() => setError('reward', undefined)}
-                />
-              </Grid>
-              {helperInfo ? <InfoPoint>{helperInfo}</InfoPoint> : null}
-              {error?.rewardAmount ? <CreateEntityError>{error.rewardAmount}</CreateEntityError> : null}
+          <TaskSectionLabel>{label}</TaskSectionLabel>
+          <Grid container direction="column" gap="4px" fit-content>
+            <Grid container gap="6px" width="fit-content">
+              <GrantChainSelect
+                name="rewards-payment-method"
+                value={value.paymentMethodId}
+                disabled={disablePaymentSelect}
+                onChange={(paymentMethodValue) => {
+                  onChange('reward', { ...value, paymentMethodId: paymentMethodValue });
+                }}
+                renderValue={(selectedItem) => {
+                  if (!selectedItem?.label?.props) return null;
+                  return (
+                    <CreateEntityPaymentMethodSelected>
+                      <CreateEntityPaymentMethodItem
+                        icon={selectedItem.label.props.icon}
+                        symbol={selectedItem.label.props.symbol}
+                        chain={null}
+                      />
+                      {!disablePaymentSelect ? <CreateEntitySelectArrowIcon /> : null}
+                    </CreateEntityPaymentMethodSelected>
+                  );
+                }}
+              >
+                {activePaymentMethods.map(({ symbol, icon, id, chain }) => (
+                  <CreateEntityPaymentMethodOption key={id} value={id}>
+                    <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
+                  </CreateEntityPaymentMethodOption>
+                ))}
+              </GrantChainSelect>
+              <GrantTextField
+                autoComplete="off"
+                readOnly={disableInput}
+                autoFocus={!value.rewardAmount}
+                name="rewardAmount"
+                onChange={(e) => {
+                  onChange('reward', { ...value, rewardAmount: e.target.value });
+                }}
+                placeholder="Enter grant amount"
+                value={value.rewardAmount}
+                fullWidth
+                InputProps={{
+                  inputComponent: GrantTextFieldInput,
+                  type: 'number',
+                  disabled: disableInput,
+                  endAdornment: !disableInput && (
+                    <CreateEntityAutocompletePopperRenderInputAdornment
+                      position="end"
+                      onClick={() => onChange('reward', { ...value, rewardAmount: '' })}
+                    >
+                      <CreateEntityAutocompletePopperRenderInputIcon />
+                    </CreateEntityAutocompletePopperRenderInputAdornment>
+                  ),
+                }}
+                error={error}
+                onFocus={() => setError('reward', undefined)}
+              />
             </Grid>
-          </CreateEntityWrapper>
+            {helperInfo ? <InfoPoint>{helperInfo}</InfoPoint> : null}
+            {error?.rewardAmount ? <CreateEntityError>{error.rewardAmount}</CreateEntityError> : null}
+          </Grid>
         </>
       )}
     </TaskSectionDisplayDiv>

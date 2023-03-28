@@ -1,7 +1,7 @@
 import { TaskFieldEditableContent } from 'components/Common/TaskViewModal/Fields/Shared';
 import { GrantPaymentData } from 'components/ViewGrant/Fields';
 import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
-import { ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
+import { ViewFieldHoverWrapper, ViewFieldWrapper } from 'components/Common/TaskViewModal/styles';
 import EditIcon from 'components/Icons/editIcon';
 import palette from 'theme/palette';
 import { useTaskContext } from 'utils/hooks';
@@ -14,10 +14,10 @@ import { FIELDS } from 'components/Common/TaskViewModal/Fields/hooks/constants';
 import { debounce } from 'lodash';
 
 const ViewContent = ({ toggleEditMode, reward, numOfGrant, canEdit }) => (
-  <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode} $background="transparent">
+  <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
     <GrantPaymentData paymentData={reward} numOfGrant={numOfGrant} />
     <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-  </ViewFieldWrapper>
+  </ViewFieldHoverWrapper>
 );
 
 const PaymentData = ({ reward, numOfGrant, canEdit }) => {

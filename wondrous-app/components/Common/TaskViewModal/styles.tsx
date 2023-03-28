@@ -1,5 +1,5 @@
 import { ButtonUnstyled } from '@mui/base';
-import { Button, Grid, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import { Button, Grid, Menu, MenuItem, Modal, Tooltip, Typography } from '@mui/material';
 import { Button as GradientButton } from 'components/Common/button';
 import { Button as ComponentButton } from 'components/Button';
 import { SafeImage } from 'components/Common/Image';
@@ -14,7 +14,7 @@ import MilestoneIcon from 'components/Icons/milestoneField.svg';
 import OpenInFullIcon from 'components/Icons/openInFull.svg';
 import OpenInMinimizedViewIcon from 'components/Icons/openInMinimizedView.svg';
 import PodIcon from 'components/Icons/podIcon';
-import PointsIcon from 'components/Icons/pointsIcon.svg';
+import PointsIcon from 'components/Icons/pointsIcon2.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
@@ -463,7 +463,7 @@ export const TaskSectionDisplayLabelText = styled(Typography)`
     background: #282828;
     padding: 4px 8px;
     font-size: 14px;
-    height: 26px;
+    height: 28px;
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -629,7 +629,6 @@ export const TaskSectionInfoPointsIcon = styled(({ className }) => (
     <PointsIcon />
   </div>
 ))`
-  background-color: #282828;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -674,10 +673,17 @@ export const TaskSectionInfoMilestoneIcon = styled(({ className }) => (
     <MilestoneIcon />
   </div>
 ))`
-  background-color: #b8255f;
   display: flex;
   align-items: center;
   justify-content: center;
+  svg {
+    rect {
+      fill: transparent;
+    }
+    path {
+      stroke: ${palette.blue20};
+    }
+  }
 `;
 
 export const TaskSectionInfoPaymentMethodIcon = styled(SafeImage).attrs({ useNextImage: false })`
@@ -711,9 +717,7 @@ export const TaskSectionInfoPaymentWrapper = styled.div`
 export const TaskSectionInfoPaymentAmount = styled(TaskSectionInfoText)`
   && {
     text-transform: capitalize;
-    ${({ theme }) => `
-      color: ${theme.palette.green800};
-    `}
+    color: ${palette.white};
   }
 `;
 
@@ -950,6 +954,42 @@ const EditIconCss = css`
     }
   }
 `;
+
+export const ViewFieldHoverWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 2px 6px 2px 2px;
+  border-radius: 4px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: ${({ height }) => height ?? '28px'};
+  cursor: pointer;
+  .edit-icon-field {
+    display: none;
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.grey87};
+    width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
+  }
+  ${({ $canEdit }) => ($canEdit ? EditIconCss : `pointer-events: none;`)};
+`;
+
+export const AssigneeReviewerContentWrapper = styled(Grid)`
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  &:hover {
+    ${AddButtonGrid} {
+      display: flex;
+    }
+    ${ViewFieldHoverWrapper} {
+      background-color: ${({ $canEdit }) => $canEdit && palette.grey87};
+      width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
+    }
+  }
+`;
 export const ViewFieldWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -960,17 +1000,10 @@ export const ViewFieldWrapper = styled.div`
   height: 28px;
   border-radius: 4px;
   width: fit-content;
-  height: fit-content;
-  .edit-icon-field {
-    display: none;
-  }
-  &:hover {
-    background-color: ${({ theme }) => theme.palette.grey920};
-    width: ${({ $canEdit }) => ($canEdit ? '100%' : 'fit-content')};
-  }
-
   background-color: ${({ theme, $background = '' }) => $background || theme.palette.grey920};
-  ${({ $canEdit }) => ($canEdit ? EditIconCss : `pointer-events: none;`)};
+  ${ViewFieldHoverWrapper}:hover & {
+    background: ${palette.grey87};
+  }
 `;
 
 export const ViewFieldContainer = styled.div`
@@ -984,14 +1017,33 @@ export const UserSelectWrapper = styled(Grid)`
   flex-wrap: wrap;
   width: 100%;
   &:hover {
-    > div:nth-last-child(2) {
-      width: ${({ showFullWidth }) => (showFullWidth ? `` : `calc(100% - 40px);`)};
+    ${AssigneeReviewerContentWrapper} {
+      width: ${({ canEdit }) => canEdit && '100%'};
     }
-    ${ViewFieldWrapper} {
-      width: 100%;
-    }
-    ${AddButtonGrid} {
+  }
+`;
+
+export const ReviewerTooltip = styled(({ className, children, title, ...props }) => (
+  <Tooltip {...props} title={title} classes={{ popper: className }}>
+    {children}
+  </Tooltip>
+))`
+  && {
+    & .MuiTooltip-tooltipArrow {
       display: flex;
+      align-items: center;
+      justify-content: center;
+      background: ${palette.blue150};
+      height: 28px;
+      min-height: 0;
+      color: ${palette.white};
+      font-weight: 500;
+      padding: 4px;
+    }
+    & .MuiTooltip-arrow {
+      &:before {
+        background: ${palette.blue150};
+      }
     }
   }
 `;
