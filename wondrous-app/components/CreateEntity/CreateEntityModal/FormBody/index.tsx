@@ -180,7 +180,6 @@ const FormBody = forwardRef(
       handleClose();
       router.push(`/organization/settings/${form.values.orgId}/payment-method`);
     };
-
     return (
       <CreateEntityBody>
         <CreateEntityTitle
@@ -679,18 +678,6 @@ const FormBody = forwardRef(
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
         <GithubIssues existingTask={existingTask} form={form} entityType={entityType} />
-        <CreateEntityDivider />
-        <Templates
-          form={form}
-          pods={pods}
-          isMilestone={isMilestone}
-          entityType={entityType}
-          fetchedUserPermissionsContext={fetchedUserPermissionsContext}
-          handlePodChange={handlePodChange}
-          formValues={formValues}
-          paymentMethods={paymentMethods}
-          isBounty={isBounty}
-        />
       </CreateEntityBody>
     );
   }

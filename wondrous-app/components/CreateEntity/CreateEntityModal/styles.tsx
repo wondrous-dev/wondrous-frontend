@@ -66,7 +66,7 @@ export const CreateEntityForm = styled.form`
 
 export const CreateEntityHeader = styled.div`
   height: fit-content;
-  background-color: #171717;
+  background-color: ${palette.grey87};
   display: flex;
   align-items: flex-start;
   padding: 12px 24px;
@@ -277,7 +277,8 @@ export const CreateEntityHeaderArrowIcon = styled((props) => (
 `;
 
 export const CreateEntityBody = styled.div`
-  padding: 24px;
+  padding: 16px;
+  padding-bottom: 8px;
 `;
 
 export const CreateEntityTitle = styled(TextareaAutosize)`
@@ -355,6 +356,15 @@ export const CreateEntitySelectErrorWrapper = styled.div`
 
   > button {
     min-width: fit-content;
+  }
+`;
+
+export const TemplatesGalleryText = styled(Typography)`
+  && {
+    font-size: 16px;
+    color: ${palette.white};
+    font-weight: 500;
+    margin-left: -12px;
   }
 `;
 

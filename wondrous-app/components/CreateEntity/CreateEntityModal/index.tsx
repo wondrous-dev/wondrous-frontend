@@ -52,6 +52,7 @@ import { CreateEntityForm, SnapshotButtonBlock, SnapshotErrorText } from './styl
 
 import FormBody from './FormBody';
 import Header from './Header';
+import TemplateBody from './FormBody/TemplateBody';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const {
@@ -388,6 +389,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   return (
     <CreateEntityForm
+      style={showTemplates ? { maxWidth: '90%' } : { maxWidth: '600px' }}
       onSubmit={(e) => {
         // necessary for the plate editor
         e.preventDefault();
@@ -480,23 +482,43 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           )}
         </SnapshotButtonBlock>
       )}
-      <FormBody
-        form={form}
-        initialRecurrenceValue={initialRecurrenceValue}
-        initialRecurrenceType={initialRecurrenceType}
-        existingTask={existingTask}
-        pods={pods}
-        ref={inputRef}
-        entityType={entityType}
-        handleClose={handleClose}
-        isSubtask={isSubtask}
-        fileUploadLoading={fileUploadLoading}
-        setFileUploadLoading={setFileUploadLoading}
-        setTurnTaskToBountyModal={setTurnTaskToBountyModal}
-        formValues={formValues}
-        fetchedUserPermissionsContext={fetchedUserPermissionsContext}
-        handlePodChange={handlePodChange}
-      />
+      {showTemplates ? (
+        <TemplateBody
+          form={form}
+          initialRecurrenceValue={initialRecurrenceValue}
+          initialRecurrenceType={initialRecurrenceType}
+          existingTask={existingTask}
+          pods={pods}
+          ref={inputRef}
+          entityType={entityType}
+          handleClose={handleClose}
+          isSubtask={isSubtask}
+          fileUploadLoading={fileUploadLoading}
+          setFileUploadLoading={setFileUploadLoading}
+          setTurnTaskToBountyModal={setTurnTaskToBountyModal}
+          formValues={formValues}
+          fetchedUserPermissionsContext={fetchedUserPermissionsContext}
+          handlePodChange={handlePodChange}
+        />
+      ) : (
+        <FormBody
+          form={form}
+          initialRecurrenceValue={initialRecurrenceValue}
+          initialRecurrenceType={initialRecurrenceType}
+          existingTask={existingTask}
+          pods={pods}
+          ref={inputRef}
+          entityType={entityType}
+          handleClose={handleClose}
+          isSubtask={isSubtask}
+          fileUploadLoading={fileUploadLoading}
+          setFileUploadLoading={setFileUploadLoading}
+          setTurnTaskToBountyModal={setTurnTaskToBountyModal}
+          formValues={formValues}
+          fetchedUserPermissionsContext={fetchedUserPermissionsContext}
+          handlePodChange={handlePodChange}
+        />
+      )}
       <Footer
         fileUploadLoading={fileUploadLoading}
         form={form}

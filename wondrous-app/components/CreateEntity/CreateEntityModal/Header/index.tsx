@@ -15,6 +15,7 @@ import {
   CreateEntityHeaderWrapper,
   CreateEntityOpenInFullIcon,
   CreateEntitySelectErrorWrapper,
+  TemplatesGalleryText,
 } from '../styles';
 
 const Header = ({
@@ -35,7 +36,21 @@ const Header = ({
 }) => {
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   return (
-    <CreateEntityHeader>
+    <CreateEntityHeader
+      style={{
+        alignItems: showTemplates ? 'center' : 'flex-start',
+      }}
+    >
+      {showTemplates && (
+        <>
+          <TemplatesGalleryText>Templates Gallery</TemplatesGalleryText>
+          <div
+            style={{
+              flex: 1,
+            }}
+          />
+        </>
+      )}
       <CreateEntityHeaderWrapper showOnSmallScreen hideOnLargeScreen={false}>
         <CreateEntitySelectErrorWrapper>
           <CreateEntityDropdown
@@ -75,7 +90,11 @@ const Header = ({
           </>
         )}
       </CreateEntityHeaderWrapper>
-      <CreateEntityHeaderWrapper>
+      <CreateEntityHeaderWrapper
+        style={{
+          marginLeft: showTemplates ? '16px' : 0,
+        }}
+      >
         <Button
           color="grey"
           borderRadius={6}
