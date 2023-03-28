@@ -112,7 +112,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
-  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const { data: userOrgs } = useQuery(GET_USER_ORGS, {
+    fetchPolicy: 'network-only',
+  });
   const filteredDaoOptions = filterOptionsWithPermission(
     entityType,
     userOrgs?.getUserOrgs,
@@ -120,6 +122,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     undefined,
     board?.podId
   );
+
   const { handleMutation, loading }: any = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
@@ -129,6 +132,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      'getOrgHomeMilestones',
+      'getOrgHomeTaskObjects',
     ],
   });
 

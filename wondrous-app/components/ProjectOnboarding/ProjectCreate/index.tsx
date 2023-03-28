@@ -68,7 +68,7 @@ const RightPanel = ({ projectData }) => {
       value: projectData.username ? `@${projectData?.username}` : '',
     },
     {
-      label: 'Profile title:',
+      label: 'Project title:',
       value: projectData?.name,
     },
   ];
@@ -87,6 +87,10 @@ const RightPanel = ({ projectData }) => {
             xs: '100%',
             sm: '60%',
           }}
+          width={{
+            xs: '70%',
+            sm: '100%',
+          }}
         >
           <video width="100%" height="auto" autoPlay loop muted>
             <source src="/images/project-onboarding/spinning-hexagon.webm" type="video/webm" />
@@ -97,9 +101,12 @@ const RightPanel = ({ projectData }) => {
             xs: 'relative',
             sm: 'absolute',
           }}
+          display={{
+            xs: 'none',
+            sm: 'flex',
+          }}
           left="10%"
           bottom="12%"
-          display="flex"
           flexDirection="column"
           gap="14px"
         >
@@ -142,7 +149,7 @@ const ProjectCreate = () => {
       sx={{
         flexDirection: {
           xs: 'column-reverse',
-          md: 'row',
+          sm: 'row',
         },
       }}
     >

@@ -103,7 +103,7 @@ const CardType = ({ type, entityType, title = null, podColor = null, id = null, 
           flexGrow: '1',
         }}
       >
-        <Grid display="flex" gap="8px">
+        <Grid display="flex" gap="8px" alignItems="center">
           {entityType === ENTITIES_TYPES.POD ? (
             <Grid bgcolor={podColor || palette.highlightPurple} width="10px" height="10px" borderRadius="110px" />
           ) : null}
@@ -182,7 +182,7 @@ const AddEntity = ({ entityType, nextStep }) => {
   const addItems = items[TYPES.ADD];
   return (
     <>
-      <ChooseEntityToCreate />
+      <ChooseEntityToCreate shouldRedirect={false} />
       {editTask ? (
         <CreateEntity
           open={editTask}
@@ -219,7 +219,7 @@ const AddEntity = ({ entityType, nextStep }) => {
             }}
           >
             <AddProposalButtonContainer
-              onClick={() => {}}
+              onClick={openCreateEntityModal}
               style={{
                 justifyContent: 'flex-start',
                 padding: '14px 16px 14px 5px',
@@ -228,7 +228,7 @@ const AddEntity = ({ entityType, nextStep }) => {
               }}
             >
               <AddIcon />
-              <AddProposalButtonContainerText textTransform="capitalize" onClick={openCreateEntityModal}>
+              <AddProposalButtonContainerText textTransform="capitalize">
                 Create {entityType}
               </AddProposalButtonContainerText>
             </AddProposalButtonContainer>

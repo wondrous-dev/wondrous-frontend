@@ -69,7 +69,7 @@ export const GenericLeftWrapper = ({ children }) => (
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 15,
-    left: 'calc(-25%)',
+    left: 'calc(-33%)',
     right: 'calc(50%)',
   },
   [`& .${stepConnectorClasses.line}`]: {
@@ -283,7 +283,7 @@ export const Container = ({ children, sx = {} }) => (
     minHeight="100vh"
     sx={{
       flexDirection: {
-        xs: 'column',
+        xs: 'column-reverse',
         md: 'row',
       },
       ...sx,

@@ -23,7 +23,7 @@ const PostCreate = () => {
   }, []);
 
   return (
-    <Grid width="100%">
+    <Grid width="100%" height="100vh">
       <RightSideWrapper gap="14px">
         <Grid maxWidth="40%" maxHeight="20%">
           <video width="100%" height="100%" autoPlay loop muted>

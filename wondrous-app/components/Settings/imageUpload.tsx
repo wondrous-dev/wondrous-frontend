@@ -133,7 +133,6 @@ export default function ImageUpload(props: Props) {
   };
 
   const renderImage = () => {
-    console.log('here?', image);
     if (imageType === AVATAR_EDITOR_TYPES.HEADER_IMAGE) {
       return (
         <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 75 }}>

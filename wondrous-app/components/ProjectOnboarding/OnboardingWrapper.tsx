@@ -12,7 +12,7 @@ import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalW
 
 const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySidebar = false }) => {
   const [createOrg, { data: createOrgData, loading: createOrgLoading }] = useMutation(CREATE_ORG, {
-    refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS],
+    refetchQueries: ['getUserOrgs'],
   });
 
   const { setPageData } = usePageDataContext();
@@ -21,7 +21,7 @@ const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySideba
     useLazyQuery(GET_ORG_FROM_USERNAME);
 
   const [updateOrg, { data: updateOrgData, loading: updateLoading }] = useMutation(UPDATE_ORG, {
-    refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS],
+    refetchQueries: ['getUserOrgs'],
   });
 
   const [step, setStep] = useState(defaultStep);
@@ -45,28 +45,30 @@ const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySideba
     }
   };
 
-  const orgData = useMemo(() => {
-    const { id, username, name, description, category, profilePicture, headerPicture, links } =
-      data?.getOrgFromUsername || updateOrgData?.updateOrg || createOrgData?.createOrg || {};
+  const { id, username, name, description, category, profilePicture, headerPicture, links } =
+    data?.getOrgFromUsername || updateOrgData?.updateOrg || createOrgData?.createOrg || {};
 
-    const twitterUsername = links?.find((link) => link.type === 'twitter')?.url?.split('twitter.com/')?.[1];
-    return {
-      orgId: id,
-      username,
-      name,
-      description,
-      category,
-      profilePicture,
-      headerPicture,
-      twitterUsername,
-    };
-  }, [data?.getOrgFromUsername, updateOrgData?.updateOrg, createOrgData?.createOrg]);
+  const twitterUsername = useMemo(
+    () => links?.find((link) => link.type === 'twitter')?.url?.split('twitter.com/')?.[1],
+    [links]
+  );
+
+  const orgData = {
+    orgId: id,
+    username,
+    name,
+    description,
+    category,
+    profilePicture,
+    headerPicture,
+    twitterUsername,
+  };
 
   useEffect(() => {
-    if (withEntitySidebar && orgData) {
+    if (orgData) {
       setPageData({ orgData });
     }
-  }, [orgData, withEntitySidebar]);
+  }, [orgData?.orgId, orgData?.username, orgData?.profilePicture, orgData?.name]);
 
   useEffect(() => () => setPageData({}), []);
 

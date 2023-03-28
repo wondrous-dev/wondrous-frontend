@@ -80,7 +80,7 @@ export function CreateEntity(props: ICreateEntity) {
   );
 }
 
-function ChooseEntityToCreate() {
+function ChooseEntityToCreate(props) {
   const globalContext = useGlobalContext();
   const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen, pageData, setPageData } = globalContext;
 
@@ -103,6 +103,7 @@ function ChooseEntityToCreate() {
         open
         cancel={resetEntityType}
         handleClose={handleCloseModal}
+        {...props}
       />
     );
   }
