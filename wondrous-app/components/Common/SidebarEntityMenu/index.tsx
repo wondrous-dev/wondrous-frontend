@@ -66,7 +66,6 @@ const MY_WORKSPACES = [
 const EntityMenu = ({ pageData }) => {
   const router = useRouter();
   const user = useMe();
-  console.log(pageData, 'apgeData');
   const activePodOrg = useMemo(() => pageData?.pod?.org, [pageData?.pod]);
 
   const activeOrg = pageData?.orgData;
