@@ -5,7 +5,7 @@ import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import Grid from '@mui/material/Grid';
 import isFirstDayOfMonth from 'date-fns/isFirstDayOfMonth';
 import isToday from 'date-fns/isToday';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import setDate from 'date-fns/setDate';
 import startOfMonth from 'date-fns/startOfMonth';
 import Typography from '@mui/material/Typography';
@@ -15,17 +15,18 @@ import palette from 'theme/palette';
 import SmartLink from 'components/Common/SmartLink';
 import styles from 'components/Calendar/CalendarMonthView/styles';
 import TaskStatus from 'components/Icons/TaskStatus';
-import ViewTasksModal from 'components/Calendar/CalendarMonthView/ViewTasksModal';
 import { buildTaskUrl } from 'utils/board';
 import { CALENDAR_CONFIG } from 'utils/constants';
 import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
-import { TaskInterface } from 'types/task';
 
-const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps) => {
+const CalendarMonthView = ({
+  startDate,
+  tasksMap,
+  setSelectedDate,
+  setTaskForSelectedDate,
+}: CalendarMonthAndWeekViewProps) => {
   const router = useRouter();
   const { weekStartsOn, weekDays, maxTasksForMonthView } = CALENDAR_CONFIG;
-  const [selectedDate, setSelectedDate] = useState<Date>(null);
-  const [taskForSelectedDate, setTaskForSelectedDate] = useState<TaskInterface[]>([]);
   const lastWeekDayIndex = weekStartsOn === 0 ? 6 : 7;
   const days: Array<{
     date: Date;
@@ -59,11 +60,6 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
       []
     );
   }, [startDate]);
-
-  const closeViewTasksModal = () => {
-    setSelectedDate(null);
-    setTaskForSelectedDate([]);
-  };
 
   return (
     <>
@@ -152,13 +148,6 @@ const CalendarMonthView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProp
           );
         })}
       </Grid>
-
-      <ViewTasksModal
-        selectedDate={selectedDate}
-        tasks={taskForSelectedDate}
-        open={!!selectedDate}
-        onClose={closeViewTasksModal}
-      />
     </>
   );
 };

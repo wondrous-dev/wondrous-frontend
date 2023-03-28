@@ -1,3 +1,4 @@
+import ViewTasksModal from 'components/Calendar/CalendarMonthView/ViewTasksModal';
 import addMonths from 'date-fns/addMonths';
 import addWeeks from 'date-fns/addWeeks';
 import Alert from '@mui/material/Alert';
@@ -20,18 +21,24 @@ import CalendarWeekView from 'components/Calendar/CalendarWeekView';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import InfoIcon from 'components/Icons/infoIcon';
 import WonderButton from 'components/Button';
+import { TaskInterface } from 'types/task';
 import { CALENDAR_CONFIG, CALENDAR_VIEW } from 'utils/constants';
 import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
 import styles from './styles';
 
-type Props = CalendarMonthAndWeekViewProps & {
-  // Function called when the user navigates from one view to another (e.g. from month view to week view)
+type Props = {
+  startDate: Date;
+  tasksMap: {
+    [key: string]: TaskInterface[];
+  };
   onChange: (startDate: Date, endDate: Date) => void;
 };
 
 const Calendar = ({ tasksMap, onChange, startDate }: Props) => {
   const [view, setView] = useState<CALENDAR_VIEW>(CALENDAR_CONFIG.defaultView);
   const [isAlertHidden, setIsAlertHidden] = useState<boolean>(true);
+  const [selectedDate, setSelectedDate] = useState<Date>(null);
+  const [taskForSelectedDate, setTaskForSelectedDate] = useState<TaskInterface[]>([]);
 
   useEffect(() => {
     setIsAlertHidden(!!localStorage.getItem('hideCalendarAlert'));
@@ -88,6 +95,13 @@ const Calendar = ({ tasksMap, onChange, startDate }: Props) => {
     localStorage.setItem('hideCalendarAlert', 'true');
     setIsAlertHidden(true);
   };
+
+  const closeViewTasksModal = () => {
+    setSelectedDate(null);
+    setTaskForSelectedDate([]);
+  };
+
+  const View = view === CALENDAR_VIEW.Month ? CalendarMonthView : CalendarWeekView;
 
   return (
     <>
@@ -150,11 +164,19 @@ const Calendar = ({ tasksMap, onChange, startDate }: Props) => {
         </Grid>
       </Grid>
 
-      {view === CALENDAR_VIEW.Month ? (
-        <CalendarMonthView startDate={startDate} tasksMap={tasksMap} />
-      ) : (
-        <CalendarWeekView startDate={startDate} tasksMap={tasksMap} />
-      )}
+      <ViewTasksModal
+        selectedDate={selectedDate}
+        tasks={taskForSelectedDate}
+        open={!!selectedDate}
+        onClose={closeViewTasksModal}
+      />
+
+      <View
+        startDate={startDate}
+        tasksMap={tasksMap}
+        setSelectedDate={setSelectedDate}
+        setTaskForSelectedDate={setTaskForSelectedDate}
+      />
     </>
   );
 };

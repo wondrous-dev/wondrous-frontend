@@ -1,9 +1,10 @@
+import Button from '@mui/material/Button';
 import addDays from 'date-fns/addDays';
 import Box from '@mui/material/Box';
 import format from 'date-fns/format';
 import Grid from '@mui/material/Grid';
 import isToday from 'date-fns/isToday';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 
@@ -15,9 +16,15 @@ import { buildTaskUrl, getTaskType } from 'utils/board';
 import { CALENDAR_CONFIG } from 'utils/constants';
 import { CalendarMonthAndWeekViewProps } from 'components/Calendar/types';
 
-const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps) => {
+const CalendarWeekView = ({
+  startDate,
+  tasksMap,
+  setSelectedDate,
+  setTaskForSelectedDate,
+}: CalendarMonthAndWeekViewProps) => {
   const router = useRouter();
-  const daysInWeek = CALENDAR_CONFIG.weekDays.length;
+  const { weekDays, maxTasksForDayView } = CALENDAR_CONFIG;
+  const daysInWeek = weekDays.length;
 
   const days: Array<{
     date: Date;
@@ -69,7 +76,7 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
               <Box className="ColumnHeaderText">{format(date, 'ccc d')}</Box>
             </Grid>
             <Grid container className="ColumnBody" alignItems="flex-start" sx={styles.columnBody}>
-              {tasks?.map((task) => {
+              {tasks?.slice(0, maxTasksForDayView).map((task) => {
                 const taskType = getTaskType(task);
 
                 return (
@@ -100,6 +107,20 @@ const CalendarWeekView = ({ startDate, tasksMap }: CalendarMonthAndWeekViewProps
                   </SmartLink>
                 );
               })}
+              {tasks.length > maxTasksForDayView ? (
+                <Grid container display="flex" wrap="nowrap" alignItems="flex-start" sx={styles.taskRow}>
+                  <Button
+                    variant="text"
+                    onClick={() => {
+                      setSelectedDate(date);
+                      setTaskForSelectedDate(tasks);
+                    }}
+                    sx={styles.moreButton}
+                  >
+                    {tasks.length - maxTasksForDayView} more
+                  </Button>
+                </Grid>
+              ) : null}
             </Grid>
           </Grid>
         );
