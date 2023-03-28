@@ -17,6 +17,7 @@ export function MediaItem(props) {
             position: 'relative',
             left: '0',
             height: '40px',
+            maxWidth: '100%',
           }}
           alt="Media Item"
         />

@@ -7,6 +7,18 @@ export default {
   component: LeaderboardDateTabs,
 } as ComponentMeta<typeof LeaderboardDateTabs>;
 
-const Template = () => <LeaderboardDateTabs dateToday={new Date()} setFromTime={null} setToTime={null} />;
+const Template = () => (
+  <LeaderboardDateTabs
+    dateToday={new Date()}
+    setFromTime={null}
+    setToTime={null}
+    fromTime={null}
+    toTime={null}
+    orgId={null}
+    contributorTaskData={null}
+    sortByPoints={null}
+    setSortByPoints={null}
+  />
+);
 
 export const Primary = Template.bind({});

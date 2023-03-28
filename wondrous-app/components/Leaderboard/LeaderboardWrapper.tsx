@@ -6,12 +6,15 @@ import { GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
 import { useEffect, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 
+import { calculatePoints } from 'components/organization/analytics/PayoutModal';
 import { StyledCircularProgress } from 'components/Common/WonderAiTaskGeneration/styles';
-import LeaderboardDateTabs from './LeaderboardDateTabs';
+import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import { ExportCSVButton, ExportCSVButtonText } from 'components/organization/analytics/styles';
+import LeaderboardDateTabs, { getStartDate } from './LeaderboardDateTabs';
 import LeaderboardSearch from './LeaderboardSearch';
 import LeaderboardUserRow from './LeaderboardUserRow';
 
-const getContributorTaskData = (data) => {
+const getContributorTaskData = (data, sortByPoints) => {
   const completedTaskData = data?.getCompletedTasksBetweenPeriods;
   const preFilteredcontributorTaskData = completedTaskData ? [...completedTaskData] : [];
   const noAssigneeIndex = preFilteredcontributorTaskData?.findIndex((element) => !element?.assigneeId);
@@ -26,6 +29,16 @@ const getContributorTaskData = (data) => {
     ? preFilteredcontributorTaskData.slice(0, preFilteredcontributorTaskData?.length - 1)
     : preFilteredcontributorTaskData;
   contributorTaskData.sort((a, b) => {
+    if (sortByPoints) {
+      if (calculatePoints(a?.tasks) > calculatePoints(b?.tasks)) {
+        return -1;
+      }
+      if (calculatePoints(a?.tasks) < calculatePoints(b?.tasks)) {
+        return 1;
+      }
+      return 0;
+    }
+
     if (a?.tasks?.length > b?.tasks?.length) {
       return -1;
     }
@@ -46,7 +59,8 @@ const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = 
   const today = new Date();
   const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
   const [toTime, setToTime] = useState(tomorrow);
-  const [fromTime, setFromTime] = useState(new Date(1900, 0, 1));
+  const [fromTime, setFromTime] = useState(getStartDate({ duration: 30, date: new Date() }));
+  const [sortByPoints, setSortByPoints] = useState(false);
   const formatToTime = format(toTime, 'yyyy-MM-dd');
   const formatFromTime = format(fromTime, 'yyyy-MM-dd');
   const {
@@ -68,16 +82,14 @@ const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = 
   });
 
   useEffect(() => {
-    if (orgData?.createdAt) {
-      setFromTime(new Date(orgData?.createdAt));
-    } else if (podData?.createdAt) {
-      setFromTime(new Date(podData?.createdAt));
+    if (!fromTime) {
+      setFromTime(getStartDate({ duration: 30, date: new Date() }));
     }
-  }, [orgData?.createdAt, podData?.createdAt]);
+  }, [fromTime]);
 
   const data = useMemo(
-    () => getContributorTaskData(getCompletedTasksBetweenPeriodsData),
-    [getCompletedTasksBetweenPeriodsData]
+    () => getContributorTaskData(getCompletedTasksBetweenPeriodsData, sortByPoints),
+    [getCompletedTasksBetweenPeriodsData, sortByPoints]
   );
 
   const handleGetCompletedTasksBetweenPeriods = () =>
@@ -88,11 +100,22 @@ const LeaderboardWrapper = ({ orgId = '', podId = '', orgData = null, podData = 
         assigneeId: assignee?.value,
       }),
     });
-
   return (
     <>
       <Grid container rowGap="14px" alignItems="center" justifyContent="space-between" width="100%">
-        <LeaderboardDateTabs dateToday={today} setFromTime={setFromTime} setToTime={setToTime} />
+        <LeaderboardDateTabs
+          dateToday={tomorrow}
+          setFromTime={setFromTime}
+          setToTime={setToTime}
+          fromTime={fromTime}
+          toTime={toTime}
+          contributorTaskData={data}
+          orgId={orgData?.id || podData?.orgId}
+          sortByPoints={sortByPoints}
+          setSortByPoints={setSortByPoints}
+          orgData={orgData}
+          podData={podData}
+        />
         <LeaderboardSearch
           assignee={assignee}
           setAssignee={setAssignee}

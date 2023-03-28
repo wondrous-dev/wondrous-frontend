@@ -54,7 +54,7 @@ const LeaderboardSearch = ({ orgId, podId, assignee, setAssignee, handleGetCompl
   const options = useMemo(() => filterUsers(userData), [userData]);
 
   return (
-    <Grid container alignItems="center" justifyContent="end" item xs={12} md={4} width="fit-content">
+    <Grid container alignItems="center" justifyContent="end" item xs={12} md={3} width="fit-content">
       <Autocomplete
         fullWidth={isTabletScreen}
         options={options}

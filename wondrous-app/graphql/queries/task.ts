@@ -240,14 +240,8 @@ export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
         id
         title
         status
-        description
         completedAt
         orgId
-        pod {
-          id
-          name
-          color
-        }
         rewards {
           rewardAmount
           paymentMethodId

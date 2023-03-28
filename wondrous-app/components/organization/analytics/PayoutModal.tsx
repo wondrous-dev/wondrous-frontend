@@ -28,7 +28,7 @@ import { ErrorText } from '../../Common';
 import { exportPaymentCSV } from './exportPaymentCsv';
 import { RetroactivePayoutModal } from './RetroactivePayoutModal';
 
-const calculatePoints = (tasks) => {
+export const calculatePoints = (tasks) => {
   let points = 0;
   if (!tasks) {
     return points;

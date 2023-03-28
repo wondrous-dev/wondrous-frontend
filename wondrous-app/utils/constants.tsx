@@ -293,6 +293,7 @@ export const NOTIFICATION_TYPES = {
   SUBMISSION_REJECT: 'submission_reject',
   SUBMISSION_RESUBMIT: 'submission_resubmit',
 
+  NEW_PROPOSAL: 'new_proposal',
   PROPOSAL_APPROVE: 'proposal_approve',
   PROPOSAL_REJECT: 'proposal_reject',
   GRANT_APPLICATION_APPROVED: 'grant_application_approved',

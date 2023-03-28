@@ -85,6 +85,8 @@ export function getNotificationDescription(notification, link) {
       return <>You just received a payment!</>;
     case NOTIFICATION_TYPES.GRANT_APPLICATION_APPROVED:
       return <>Your grant application has been approved!</>;
+    case NOTIFICATION_TYPES.NEW_PROPOSAL:
+      return <>created a new proposal</>;
     default:
       Sentry.captureMessage(`unknow notification type: ${notification?.type}, ${objectType}`);
       return <>unknown notification type</>;

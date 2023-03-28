@@ -13,6 +13,8 @@ export const MediaItemWrapper = styled.div`
   width: fit-content;
   padding-right: 8px;
   margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
 `;
 
 export const Filename = styled(Typography)`

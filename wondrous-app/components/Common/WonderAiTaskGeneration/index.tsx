@@ -48,6 +48,14 @@ import Checkbox from 'components/Checkbox';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
 import { GET_GPT_ENTITY_DESCRIPTION } from 'graphql/queries/gptEntityDescription';
+import {
+  GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+  GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
+  GET_TASKS_PER_TYPE,
+  GET_TASKS_PER_TYPE_FOR_POD,
+} from 'graphql/queries';
+import { useEditor } from 'components/RichText';
+import { resetEditor } from 'components/PlateRichEditor/utils';
 import { ErrorText } from '..';
 import RightPanel from './rightPanel';
 import { SnackbarAlertContext } from '../SnackbarAlert';
@@ -148,6 +156,7 @@ const GeneratedTaskRow = ({
   setTaskToView,
   setTaskViewType,
   setClickSelectedList,
+  editor,
 }) => {
   const checked = selectedList.some((item) => item?.tempId === task.tempId);
   const onRowClick = () => {
@@ -155,6 +164,7 @@ const GeneratedTaskRow = ({
     setTaskViewIndex(index);
     setTaskViewType(ENTITIES_TYPES.TASK);
     setClickSelectedList(true);
+    resetEditor(editor, task?.description);
   };
 
   return (
@@ -224,7 +234,14 @@ const WonderAiTaskGeneration = () => {
   const [getGptEntityDescription, { data: getGptEntityDescriptionData }] = useLazyQuery(GET_GPT_ENTITY_DESCRIPTION);
   const [generateGPTTasks, { loading: generatedGPTTaskLoading, error: generatedGPTTaskError }] =
     useMutation(GENERATE_GPT_TASKS);
-  const [createGPTTasks, { loading: createGPTTaskLoading, error: createGPTTaskError }] = useMutation(CREATE_GPT_TASKS);
+  const [createGPTTasks, { loading: createGPTTaskLoading, error: createGPTTaskError }] = useMutation(CREATE_GPT_TASKS, {
+    refetchQueries: [
+      GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
+      GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
+      GET_TASKS_PER_TYPE,
+      GET_TASKS_PER_TYPE_FOR_POD,
+    ],
+  });
   const setMilestoneField = (field, value) => {
     setMilestone({
       ...milestone,
@@ -309,7 +326,11 @@ const WonderAiTaskGeneration = () => {
           if (podId) {
             router.push(`/pod/${podBoard?.podId}/home`);
           } else if (orgId) {
-            router.push(`/organization/${orgBoard?.orgData?.username}/home`);
+            if (orgBoard?.orgData?.shared) {
+              router.push(`/collaboration/${orgBoard?.orgData?.username}/boards`);
+            } else {
+              router.push(`/organization/${orgBoard?.orgData?.username}/home`);
+            }
           }
         }
       });
@@ -341,6 +362,7 @@ const WonderAiTaskGeneration = () => {
     }
   }, [savedEntityDescription]);
   const isMobile = useIsMobile();
+  const editor = useEditor();
   return (
     <Grid container>
       <Grid md={8} lg={7} item>
@@ -484,21 +506,25 @@ const WonderAiTaskGeneration = () => {
                       if (promptGenerationType === GENERATION_TYPES[0]?.value) {
                         if (milestone) {
                           setTaskToView(milestone);
+                          resetEditor(editor, milestone?.value);
                         } else {
                           setTaskToView({
                             ...initialMilestoneValues,
                             title: actionPrompt,
                           });
                         }
+                        resetEditor(editor, initialMilestoneValues?.description);
                         setTaskToViewType(ENTITIES_TYPES.MILESTONE);
                       } else {
                         if (parentTask) {
                           setTaskToView(parentTask);
+                          resetEditor(editor, parentTask?.value);
                         } else {
                           setTaskToView({
                             ...initialTaskValues,
                             title: actionPrompt,
                           });
+                          resetEditor(editor, initialTaskValues?.description);
                         }
                         setTaskToViewType(ENTITIES_TYPES.TASK);
                       }
@@ -526,6 +552,7 @@ const WonderAiTaskGeneration = () => {
                       setClickSelectedList={setClickSelectedList}
                       generatedTaskList={generatedTaskList}
                       setGeneratedTaskList={setGeneratedTaskList}
+                      editor={editor}
                     />
                   ))}
                   <BottomSelectBarContainer>

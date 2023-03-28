@@ -12,7 +12,7 @@ import { useReducer } from 'react';
 
 const LeaderboardUserRowTasks = ({ contributorTask }) => {
   const router = useRouter();
-  const { isTabletScreen } = useMediaQuery();
+  // const { isTabletScreen } = useMediaQuery();
   const [taskCount, setTaskCount] = useReducer((state) => state + 10, 10);
   const contributorTasks = contributorTask?.tasks;
   const tasks = contributorTasks?.slice(0, taskCount) || [];
@@ -21,8 +21,8 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
     <Grid container item width="100%" borderRadius="0 0 6px 6px">
       <Grid container item width="100%" display="flex" gap="14px" padding="14px">
         {tasks.map((task) => {
-          const podName = task?.podName || task?.pod?.name;
-          const podColor = task?.podColor || task?.pod?.color || palette.grey78;
+          // const podName = task?.podName || task?.pod?.name;
+          // const podColor = task?.podColor || task?.pod?.color || palette.grey78;
           const privateTask = task?.title === PRIVATE_TASK_TITLE;
           const handleOnClickTask = (e) => {
             e.preventDefault();
@@ -63,7 +63,7 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
                 </Grid>
               </Grid>
               <Grid container item width="fit-content" gap="24px" alignItems="center">
-                {podName && !isTabletScreen && (
+                {/* {podName && !isTabletScreen && (
                   <Grid container item gap="10px" width="fit-content" alignItems="center">
                     <Box
                       width="10px"
@@ -78,7 +78,7 @@ const LeaderboardUserRowTasks = ({ contributorTask }) => {
                       {podName}
                     </Typography>
                   </Grid>
-                )}
+                )} */}
                 <Grid container item alignItems="center" width="fit-content" gap="6px">
                   <Typography color={palette.grey250} fontWeight="500" fontSize="13px">
                     {format(new Date(task?.completedAt), 'MMM dd')}
