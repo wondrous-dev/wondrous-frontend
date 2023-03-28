@@ -68,16 +68,7 @@ import {
 import Tags from 'components/Tags';
 import { SafeImage } from 'components/Common/Image';
 import CustomProposal from 'components/CreateEntity/CreateEntityModal/CustomProposal';
-import { useMutation } from '@apollo/client';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
-import {
-  ATTACH_MEDIA_TO_TASK,
-  REMOVE_MEDIA_FROM_TASK,
-  ATTACH_MEDIA_TO_TASK_PROPOSAL,
-  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
-  REMOVE_MILESTONE_MEDIA,
-  ATTACH_MILESTONE_MEDIA,
-} from 'graphql/mutations';
 import router from 'next/router';
 import MediaUpload from './MediaUpload';
 import Reviewer from './Reviewer';
@@ -150,28 +141,6 @@ const FormBody = forwardRef(
 
     const categoriesData = useGetCategories();
     const proposalChoices = useGetProposalChoices();
-    const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK);
-    const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
-    const [removeMilestoneMedia] = useMutation(REMOVE_MILESTONE_MEDIA);
-    const [attachMilestoneMedia] = useMutation(ATTACH_MILESTONE_MEDIA);
-    const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL);
-    const [removeTaskProposalMedia] = useMutation(REMOVE_MEDIA_FROM_TASK_PROPOSAL);
-
-    const handleMedia = () => {
-      if (entityType === ENTITIES_TYPES.PROPOSAL) {
-        return {
-          attach: attachTaskProposalMedia,
-          remove: removeTaskProposalMedia,
-        };
-      }
-      if (entityType === ENTITIES_TYPES.MILESTONE) {
-        return {
-          attach: attachMilestoneMedia,
-          remove: removeMilestoneMedia,
-        };
-      }
-      return { attach: attachMedia, remove: removeMedia };
-    };
 
     const subTasks = useGetSubtasksForTask({ taskId: existingTask?.id, status: TASK_STATUS_TODO });
     const hasSubTasks = subTasks?.data?.length > 0;
@@ -213,15 +182,14 @@ const FormBody = forwardRef(
         {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
         <CreateEntityLabelSelectWrapper show>
           <MediaUpload
-            ref={ref}
             mediaUploads={form.values.mediaUploads}
             setMediaUploadsValue={(mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads)}
             existingTaskId={existingTask?.id}
             isProposal={isProposal}
             isMilestone={entityType === ENTITIES_TYPES.MILESTONE}
             fileUploadLoading={fileUploadLoading}
-            handleMedia={handleMedia}
             setFileUploadLoading={setFileUploadLoading}
+            entityType={entityType}
           />
           {existingTask && canTurnIntoBounty && (
             <>

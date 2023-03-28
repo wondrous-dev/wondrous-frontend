@@ -4,16 +4,23 @@ import palette from 'theme/palette';
 import ReactPlayer from 'react-player/lazy';
 
 export const MediaItemWrapper = styled.div`
-  background: #0f0f0f;
+  height: max-content;
+  background: ${palette.grey85};
   border-radius: 4px;
   position: relative;
-  margin-right: 8px;
   display: flex;
   align-items: center;
   width: fit-content;
-  padding-right: 8px;
-  margin-bottom: 8px;
+  padding: 2px;
   flex-wrap: wrap;
+  gap: 8px;
+`;
+
+export const MediaImageVideoTextWrapper = styled.div`
+  height: 28px;
+  display: flex;
+  align-items: center;
+  width: 100%;
   gap: 8px;
 `;
 
@@ -21,8 +28,10 @@ export const Filename = styled(Typography)`
   && {
     font-size: 14px;
     color: ${palette.white};
-    margin-right: 8px;
-    margin-left: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
   }
 `;
 
