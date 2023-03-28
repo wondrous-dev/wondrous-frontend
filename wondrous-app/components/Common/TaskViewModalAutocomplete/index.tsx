@@ -75,7 +75,6 @@ export const ListboxComponent = ({
   useEffect(() => {
     if (hasMore && inView) handleFetchMore();
   }, [hasMore, inView]);
-
   return (
     <ul {...props}>
       <AssignToSelf {...AssignToSelfProps} />

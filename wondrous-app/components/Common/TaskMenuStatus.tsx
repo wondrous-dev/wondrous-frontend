@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { ButtonBase, Menu, MenuItem, Typography } from '@mui/material';
+import { ButtonBase, Grid, Menu, MenuItem, Popper, Typography } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
 import Arrow from 'components/Icons/arrow.svg';
 import {
@@ -35,14 +35,16 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { SnackbarAlertContext } from './SnackbarAlert';
 
-export const TaskStatusMenuWrapper = styled(Menu)`
+export const TaskStatusMenuWrapper = styled(Popper)`
   && {
-    .MuiMenu-list,
-    .MuiMenu-paper {
-      padding: 0;
-      background-color: ${({ theme }) => theme.palette.midnight};
-      min-width: 150px;
-      outline: 1px solid ${({ theme }) => theme.palette.grey79};
+    z-index: 1000;
+    border-radius 6px;
+    outline: ${({ open, theme }) => open && `1px solid ${theme.palette.grey79}`};
+    > li:first-child {
+      border-radius: 6px 6px 0 0;
+    }
+    > li:last-child {
+      border-radius: 0 0 6px 6px;
     }
   }
 `;
@@ -74,8 +76,10 @@ const TaskStatusMenuButtonArrow = styled((props) => (
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 9px;
-    transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
+    padding: 4px;
+    height: 18px;
+    width: 18px;
+    transform: rotate(90deg);
     svg {
       path {
         fill: white;
@@ -86,18 +90,19 @@ const TaskStatusMenuButtonArrow = styled((props) => (
 
 export const TaskStatusMenuButton = styled(ButtonBase)`
   && {
-    outline: ${({ open, theme }) => open && `1px solid ${theme.palette.grey79}`};
+    outline: ${({ open, theme }) => open && `1px solid ${theme.palette.highlightPurple}`};
     background-color: ${({ theme }) => theme.palette.midnight};
+    width: 100%;
     min-width: fit-content;
     border-radius: 6px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     padding: 0 6px;
     gap: 8px;
     height: 28px;
     && {
-      > svg {
+      svg {
         width: 18px !important;
         height: 18px !important;
       }
@@ -305,13 +310,32 @@ export function TaskMenu({
   }, [autoFocus, ref.current]);
 
   return (
-    <span className={className}>
+    <Grid className={className} position="relative">
       <TaskStatusMenuButton onClick={handleClick} disabled={disableMenu} open={open} disableRipple ref={ref}>
-        {currentStatus?.icon}
-        <TaskModalStatusLabel>{currentStatus?.label ?? currentStatus?.name}</TaskModalStatusLabel>
+        <Grid container item alignItems="center" gap="8px">
+          {currentStatus?.icon}
+          <TaskModalStatusLabel>{currentStatus?.label ?? currentStatus?.name}</TaskModalStatusLabel>
+        </Grid>
         {!disableMenu && <TaskStatusMenuButtonArrow open={open} />}
       </TaskStatusMenuButton>
-      <TaskStatusMenuWrapper anchorEl={anchorEl} open={open} onClose={handleClose} disablePortal>
+      <TaskStatusMenuWrapper
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        disablePortal
+        modifiers={[
+          {
+            name: 'offset',
+            enabled: true,
+            options: {
+              offset: [0, 8],
+            },
+          },
+        ]}
+        sx={{
+          width: anchorEl?.clientWidth,
+        }}
+      >
         {filterStatus?.map((status) => (
           <TaskStatusMenuItem key={status.id} onClick={handleItemOnClick(status)}>
             {status.icon}
@@ -319,7 +343,7 @@ export function TaskMenu({
           </TaskStatusMenuItem>
         ))}
       </TaskStatusMenuWrapper>
-    </span>
+    </Grid>
   );
 }
 

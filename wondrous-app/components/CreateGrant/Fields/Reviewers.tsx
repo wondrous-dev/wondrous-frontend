@@ -1,5 +1,6 @@
 import { Tooltip } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
+import { TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { useGetEligibleReviewers } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
@@ -85,9 +86,7 @@ const Reviewers = ({ orgId, podId, reviewerIds, reviewerIdsErrors, onFocus, onCh
 
   return (
     <TaskSectionDisplayDiv>
-      <CreateEntityLabelWrapper>
-        <CreateEntityLabel>Reviewer</CreateEntityLabel>
-      </CreateEntityLabelWrapper>
+      <TaskSectionLabel>Reviewer</TaskSectionLabel>
 
       <CreateEntitySelectWrapper>
         {reviewerIds?.map((reviewerId, index) => {

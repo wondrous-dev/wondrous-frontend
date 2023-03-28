@@ -12,6 +12,7 @@ import {
   TaskSectionDisplayDiv,
   TaskSectionInfoMilestoneIcon,
   TaskSectionInfoTextMilestone,
+  ViewFieldHoverWrapper,
   ViewFieldWrapper,
 } from '../styles';
 import { FIELDS } from './hooks/constants';
@@ -37,32 +38,34 @@ const MilestoneFieldContent = ({ milestoneId, milestoneTitle, canEdit, toggleEdi
   }, [router, milestoneId]);
 
   return (
-    <ViewFieldWrapper $canEdit={canEdit} onClick={toggleEditMode}>
-      <UnstyledLink href={link} onClick={(e) => e.stopPropagation()}>
-        <Grid
-          display="flex"
-          gap="8px"
-          alignItems="center"
-          justifyContent="center"
-          sx={{
-            overflowWrap: 'anywhere',
-          }}
-        >
-          <IconWrapper>
-            <TaskSectionInfoMilestoneIcon />
-          </IconWrapper>
-          <TaskSectionInfoTextMilestone
+    <ViewFieldHoverWrapper $canEdit={canEdit} onClick={toggleEditMode}>
+      <ViewFieldWrapper>
+        <UnstyledLink href={link} onClick={(e) => e.stopPropagation()}>
+          <Grid
+            display="flex"
+            gap="8px"
+            alignItems="center"
+            justifyContent="center"
             sx={{
-              display: 'inline-block !important',
-              whiteSpace: 'pre-line !important',
+              overflowWrap: 'anywhere',
             }}
           >
-            {milestoneTitle}
-          </TaskSectionInfoTextMilestone>
-        </Grid>
-      </UnstyledLink>
+            <IconWrapper>
+              <TaskSectionInfoMilestoneIcon />
+            </IconWrapper>
+            <TaskSectionInfoTextMilestone
+              sx={{
+                display: 'inline-block !important',
+                whiteSpace: 'pre-line !important',
+              }}
+            >
+              {milestoneTitle}
+            </TaskSectionInfoTextMilestone>
+          </Grid>
+        </UnstyledLink>
+      </ViewFieldWrapper>
       <EditIcon stroke={palette.grey58} className="edit-icon-field" />
-    </ViewFieldWrapper>
+    </ViewFieldHoverWrapper>
   );
 };
 
@@ -116,6 +119,7 @@ const MilestoneField = ({ shouldDisplay, milestoneId, milestoneTitle, canEdit, i
           />
         )}
         canAddItem={canEdit && !milestoneId}
+        content={milestoneId}
         editableContent={({ toggleEditMode, toggleOutsideAlerter }) => (
           <EditMode
             toggleOutsideAlerter={toggleOutsideAlerter}
