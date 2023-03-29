@@ -3,16 +3,15 @@ import { Box, Grid } from '@mui/material';
 import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import palette from 'theme/palette';
 import { GET_ORG_TASK_TEMPLATES } from 'graphql/queries';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { useOrgBoard } from 'utils/hooks';
-import { CREATE_TASK_TEMPLATE, UPDATE_TASK_TEMPLATE } from 'graphql/mutations';
-import { isEmpty } from 'lodash';
 import FormBody from '../FormBody';
 import {
   CategoryDiv,
   CategoryText,
   LeftColumnText,
   StyledGrid,
+  TaskTemplateCountDiv,
   TemplateDiv,
   TemplateDivDescription,
   TemplateTitle,
@@ -40,8 +39,7 @@ const TemplateBody = ({
 }) => {
   const [initialDescription, setInitialDescription] = useState(null);
   const [templateType, setTemplateType] = useState(null);
-  const [templateUsed, setTemplateUsed] = useState(null);
-  const [getOrgTaskTemplates, { data: orgTemplatesData, loading }] = useLazyQuery(GET_ORG_TASK_TEMPLATES, {
+  const [getOrgTaskTemplates, { data: orgTemplatesData }] = useLazyQuery(GET_ORG_TASK_TEMPLATES, {
     fetchPolicy: 'cache-and-network',
   });
 
@@ -50,12 +48,14 @@ const TemplateBody = ({
   const templateTypes = Object.keys(presetTemplates);
   const orgTaskTemplates = orgTemplatesData?.getOrgTaskTemplates;
   useEffect(() => {
-    if (orgTaskTemplates?.length > 0) {
-      setTemplateType(ORG_TYPE_TEMPLATE);
-    } else if (templateTypes) {
-      setTemplateType(templateTypes[0]);
+    if (!templateType) {
+      if (orgTaskTemplates?.length > 0) {
+        setTemplateType(ORG_TYPE_TEMPLATE);
+      } else if (templateTypes) {
+        setTemplateType(templateTypes[0]);
+      }
     }
-  }, [orgTaskTemplates]);
+  }, [orgTaskTemplates, templateType]);
 
   useEffect(() => {
     if (form?.values.orgId) {
@@ -82,6 +82,14 @@ const TemplateBody = ({
               onClick={() => setTemplateType(ORG_TYPE_TEMPLATE)}
             >
               <CategoryText>{orgBoard?.orgData?.name} templates</CategoryText>
+              <div
+                style={{
+                  flex: 1,
+                }}
+              />
+              <TaskTemplateCountDiv>
+                <CategoryText>{orgTaskTemplates?.length}</CategoryText>
+              </TaskTemplateCountDiv>
             </CategoryDiv>
           </>
         )}

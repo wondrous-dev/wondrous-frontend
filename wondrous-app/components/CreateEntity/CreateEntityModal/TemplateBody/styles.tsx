@@ -37,7 +37,7 @@ export const LeftColumnText = styled(Typography)`
 `;
 
 export const CategoryDiv = styled.div`
-  padding: 10px 4px;
+  padding: 10px 8px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -54,6 +54,10 @@ export const CategoryText = styled(LeftColumnText)`
   }
 `;
 
+export const TaskTemplateCountDiv = styled.div`
+  background: ${palette.grey87};
+  padding: 4px;
+`;
 export const TemplateTitle = styled(Typography)`
   && {
     font-weight: 700;
