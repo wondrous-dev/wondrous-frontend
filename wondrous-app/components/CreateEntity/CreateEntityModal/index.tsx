@@ -7,7 +7,7 @@ import formatDate from 'date-fns/format';
 import apollo from 'services/apollo';
 
 import { useFormik } from 'formik';
-import { TURN_TASK_TO_BOUNTY } from 'graphql/mutations/task';
+import { CREATE_TASK_TEMPLATE, TURN_TASK_TO_BOUNTY, UPDATE_TASK_TEMPLATE } from 'graphql/mutations/task';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_MINIMAL_TASK_BY_ID } from 'graphql/queries/task';
 
@@ -68,6 +68,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     setFormDirty,
     shouldShowTemplates,
   } = props;
+
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const [showTemplates, setShowTemplates] = useState(shouldShowTemplates);
   const isSubtask =
@@ -98,6 +99,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
   const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
+  const [taskTemplate, setTaskTemplate] = useState(null);
   const router = useRouter();
   const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
   const { podId: routerPodId } = router.query;
@@ -203,6 +205,76 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     },
   });
 
+  const [createTaskTemplate, { data: createdTaskTemplate, loading: createTaskLoading }] = useMutation(
+    CREATE_TASK_TEMPLATE,
+    {
+      refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
+    }
+  );
+
+  const [updateTaskTemplate, { data: updatedTaskTemplate, loading: updateTaskLoading }] = useMutation(
+    UPDATE_TASK_TEMPLATE,
+    {
+      refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
+    }
+  );
+
+  const taskTemplateSaved = createdTaskTemplate || updatedTaskTemplate;
+  const taskTemplateLoading = createTaskLoading || updateTaskLoading;
+  const handleSaveTemplate = () => {
+    const rewards = isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+
+    const description = JSON.stringify(form.values.description);
+    createTaskTemplate({
+      variables: {
+        input: {
+          title: form.values.title,
+          assigneeId: form.values.assigneeId,
+          reviewerIds: form.values.reviewerIds,
+          rewards,
+          points: parseInt(form.values.points),
+          description,
+          orgId: form.values.orgId,
+          podId: form.values.podId,
+        },
+      },
+    }).catch((err) => {
+      console.error(err);
+    });
+  };
+  const handleEditTemplate = (templateId) => {
+    const rewards = isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+
+    const description = JSON.stringify(form.values.description);
+    updateTaskTemplate({
+      variables: {
+        taskTemplateId: templateId,
+        input: {
+          title: form.values.title,
+          assigneeId: form.values.assigneeId,
+          reviewerIds: form.values.reviewerIds,
+          rewards,
+          points: parseInt(form.values.points, 10),
+          description,
+          podId: form.values.podId,
+        },
+      },
+    });
+  };
   const pods = useGetAvailableUserPods(form.values.orgId);
 
   const { isFullScreen, toggleFullScreen } = useFullScreen();
@@ -502,6 +574,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             formValues={formValues}
             fetchedUserPermissionsContext={fetchedUserPermissionsContext}
             handlePodChange={handlePodChange}
+            setTaskTemplate={setTaskTemplate}
           />
         </PlateProvider>
       ) : (
@@ -532,6 +605,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         ref={inputRef}
         hasExistingTask={!!existingTask}
         showTemplates={showTemplates}
+        taskTemplate={taskTemplate}
+        handleEditTemplate={handleEditTemplate}
+        handleSaveTemplate={handleSaveTemplate}
+        taskTemplateSaved={taskTemplateSaved}
+        taskTemplateLoading={taskTemplateLoading}
       />
     </CreateEntityForm>
   );

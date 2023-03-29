@@ -3,8 +3,10 @@ import { Box, Grid } from '@mui/material';
 import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import palette from 'theme/palette';
 import { GET_ORG_TASK_TEMPLATES } from 'graphql/queries';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { useOrgBoard } from 'utils/hooks';
+import { CREATE_TASK_TEMPLATE, UPDATE_TASK_TEMPLATE } from 'graphql/mutations';
+import { isEmpty } from 'lodash';
 import FormBody from '../FormBody';
 import {
   CategoryDiv,
@@ -33,13 +35,16 @@ const TemplateBody = ({
   fetchedUserPermissionsContext,
   handlePodChange,
   pods,
+  setTaskTemplate,
   ref,
 }) => {
   const [initialDescription, setInitialDescription] = useState(null);
   const [templateType, setTemplateType] = useState(null);
+  const [templateUsed, setTemplateUsed] = useState(null);
   const [getOrgTaskTemplates, { data: orgTemplatesData, loading }] = useLazyQuery(GET_ORG_TASK_TEMPLATES, {
     fetchPolicy: 'cache-and-network',
   });
+
   // Get org and pod templates
   const presetTemplates = PRESET_TEMPLATES;
   const templateTypes = Object.keys(presetTemplates);
@@ -63,6 +68,7 @@ const TemplateBody = ({
   }, [form?.values.orgId]);
 
   const orgBoard = useOrgBoard();
+
   return (
     <Grid container>
       <StyledGrid item sm={3} md={2}>
@@ -116,6 +122,7 @@ const TemplateBody = ({
                   <TemplateDiv
                     key={template?.title}
                     onClick={() => {
+                      setTaskTemplate(template?.id);
                       form.setFieldValue('title', template?.title);
                       form.setFieldValue('points', template?.points);
                       form.setFieldValue('orgId', template?.orgId);
@@ -151,6 +158,7 @@ const TemplateBody = ({
                   <TemplateDiv
                     key={template?.title}
                     onClick={() => {
+                      setTaskTemplate(null);
                       form.setFieldValue('title', template?.title);
                       form.setFieldValue('description', template?.description);
                       setInitialDescription(template?.description);

@@ -2,7 +2,7 @@ import { Box, CircularProgress, Grid } from '@mui/material';
 import Tooltip from 'components/Tooltip';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { isEmpty } from 'lodash';
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { privacyOptions } from '../Helpers';
 import {
@@ -27,8 +27,37 @@ import { SaveTemplateButton, SaveTemplateButtonText, StyledGrid } from '../Templ
 import SaveIcon from '../TemplateBody/icons/save-icon.svg';
 
 const Footer = forwardRef(
-  ({ fileUploadLoading, form, loading, entityType, cancel, hasExistingTask, showTemplates }: any, ref: any) => {
+  (
+    {
+      fileUploadLoading,
+      form,
+      loading,
+      entityType,
+      cancel,
+      hasExistingTask,
+      showTemplates,
+      taskTemplate,
+      handleEditTemplate,
+      handleSaveTemplate,
+      taskTemplateSaved,
+      taskTemplateLoading,
+    }: any,
+    ref: any
+  ) => {
     const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
+    const [saveText, setSaveText] = useState('Save');
+
+    useEffect(() => {
+      if (taskTemplateLoading) {
+        setSaveText('Saving template...');
+      }
+      if (taskTemplateSaved) {
+        setSaveText('Template saved!');
+        setTimeout(() => {
+          setSaveText('Save');
+        }, 2000);
+      }
+    }, [taskTemplateSaved, taskTemplateLoading]);
 
     if (showTemplates) {
       return (
@@ -101,10 +130,20 @@ const Footer = forwardRef(
             sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
             md={5}
           >
-            <SaveTemplateButton>
-              <SaveIcon />
-              <SaveTemplateButtonText>Save</SaveTemplateButtonText>
-            </SaveTemplateButton>
+            {form?.values?.title && form?.values?.description && (
+              <SaveTemplateButton
+                onClick={() => {
+                  if (taskTemplate) {
+                    handleEditTemplate(taskTemplate);
+                  } else {
+                    handleSaveTemplate();
+                  }
+                }}
+              >
+                <SaveIcon />
+                <SaveTemplateButtonText>{saveText}</SaveTemplateButtonText>
+              </SaveTemplateButton>
+            )}
             <div style={{ flex: 1 }} />
             <CreateEntityHeaderWrapper showOnSmallScreen>
               {loading ? (
