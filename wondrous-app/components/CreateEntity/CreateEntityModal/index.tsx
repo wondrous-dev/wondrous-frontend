@@ -34,6 +34,7 @@ import {
 import { extractMentions } from 'components/PlateRichEditor/utils';
 import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
 import { useSnapshot } from 'services/snapshot';
+import { PlateProvider } from '@udecode/plate';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import Footer from './Footer';
 import {
@@ -483,23 +484,25 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         </SnapshotButtonBlock>
       )}
       {showTemplates ? (
-        <TemplateBody
-          form={form}
-          initialRecurrenceValue={initialRecurrenceValue}
-          initialRecurrenceType={initialRecurrenceType}
-          existingTask={existingTask}
-          pods={pods}
-          ref={inputRef}
-          entityType={entityType}
-          handleClose={handleClose}
-          isSubtask={isSubtask}
-          fileUploadLoading={fileUploadLoading}
-          setFileUploadLoading={setFileUploadLoading}
-          setTurnTaskToBountyModal={setTurnTaskToBountyModal}
-          formValues={formValues}
-          fetchedUserPermissionsContext={fetchedUserPermissionsContext}
-          handlePodChange={handlePodChange}
-        />
+        <PlateProvider initialValue={form?.values?.description}>
+          <TemplateBody
+            form={form}
+            initialRecurrenceValue={initialRecurrenceValue}
+            initialRecurrenceType={initialRecurrenceType}
+            existingTask={existingTask}
+            pods={pods}
+            ref={inputRef}
+            entityType={entityType}
+            handleClose={handleClose}
+            isSubtask={isSubtask}
+            fileUploadLoading={fileUploadLoading}
+            setFileUploadLoading={setFileUploadLoading}
+            setTurnTaskToBountyModal={setTurnTaskToBountyModal}
+            formValues={formValues}
+            fetchedUserPermissionsContext={fetchedUserPermissionsContext}
+            handlePodChange={handlePodChange}
+          />
+        </PlateProvider>
       ) : (
         <FormBody
           form={form}

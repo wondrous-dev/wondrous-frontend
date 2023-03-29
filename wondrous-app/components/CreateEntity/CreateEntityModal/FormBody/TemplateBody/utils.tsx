@@ -65,13 +65,6 @@ export const PRESET_TEMPLATES = {
       {
         title: 'Read our docs and take this starter quiz',
         description: [
-          {
-            type: 'p',
-            children: [
-              { text: ' [This works better as a bounty, rather than a task to accept multiple submissions.]' },
-            ],
-          },
-          { type: 'p', children: [{ text: '' }] },
           { type: 'p', children: [{ text: 'Read our docs [INSERT LINK HERE] and answer these questions:' }] },
           { type: 'p', children: [{ text: '' }] },
           {
@@ -79,9 +72,16 @@ export const PRESET_TEMPLATES = {
             children: [
               { type: 'li', children: [{ type: 'lic', children: [{ text: '' }] }] },
               { type: 'li', children: [{ type: 'lic', children: [{ text: '' }] }] },
-              { type: 'li', children: [{ type: 'lic', children: [{ text: '\n' }] }] },
+              { type: 'li', children: [{ type: 'lic', children: [{ text: '' }] }] },
             ],
           },
+          {
+            type: 'p',
+            children: [
+              { text: ' [This works better as a bounty, rather than a task to accept multiple submissions.]' },
+            ],
+          },
+          { type: 'p', children: [{ text: '' }] },
           { type: 'h3', children: [{ text: 'To submit:' }] },
           { type: 'p', children: [{ text: 'Please post your answers as a submission' }] },
         ],

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
-import { deserializeRichText } from 'components/PlateRichEditor';
+import { Plate, PlateProvider, useResetPlateEditor } from '@udecode/plate';
+import { useEditor } from 'components/RichText';
 import palette from 'theme/palette';
+import { resetEditor } from 'components/PlateRichEditor/utils';
 import {
   CategoryDiv,
   CategoryText,
@@ -34,8 +36,9 @@ const TemplateBody = ({
 }) => {
   const [taskToView, setTaskToView] = useState(null);
   const [taskToViewType, setTaskToViewType] = useState(null);
+  const [initialDescription, setInitialDescription] = useState(null);
   const [templateType, setTemplateType] = useState(null);
-
+  const editor = useEditor();
   // Get org and pod templates
   const presetTemplates = PRESET_TEMPLATES;
   const templateTypes = Object.keys(presetTemplates);
@@ -44,7 +47,12 @@ const TemplateBody = ({
       setTemplateType(templateTypes[0]);
     }
   }, []);
-
+  const resetPlateEditor = useResetPlateEditor();
+  // const updateEditorValue = (value: Value) => {
+  //   const newEditor = withPlate(createTEditor(), { id, plugins })
+  //   getPlateActions(id).value(value)
+  //   getPlateActions(id).editor(newEditor)
+  // }
   return (
     <Grid container>
       <StyledGrid item sm={3} md={2}>
@@ -71,7 +79,17 @@ const TemplateBody = ({
         <TemplateTitle>{templateType} Templates</TemplateTitle>
         {templateType &&
           presetTemplates[templateType]?.templates.map((template) => (
-            <TemplateDiv key={template?.title}>
+            <TemplateDiv
+              key={template?.title}
+              onClick={() => {
+                form.setFieldValue('title', template?.title);
+                form.setFieldValue('description', template?.description);
+                setInitialDescription(template?.description);
+                setTimeout(() => {
+                  setInitialDescription(null);
+                }, 0);
+              }}
+            >
               <TemplateTitle>{template?.title}</TemplateTitle>
               <TemplateDivDescription>
                 <PlateRichTextViewer text={JSON.stringify(template?.description)} />
@@ -104,6 +122,7 @@ const TemplateBody = ({
           formValues={formValues}
           fetchedUserPermissionsContext={fetchedUserPermissionsContext}
           handlePodChange={handlePodChange}
+          initialDescription={initialDescription}
         />
       </StyledGrid>
     </Grid>

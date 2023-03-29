@@ -76,6 +76,7 @@ export const TemplateDiv = styled.div`
   padding: 14px;
   margin-bottom: 12px;
   border-radius: 6px;
+  cursor: pointer;
 `;
 
 export const TemplateDivTitle = styled(Typography)`

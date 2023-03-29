@@ -99,6 +99,7 @@ interface Props {
   fetchedUserPermissionsContext: any;
   handlePodChange: (podId: string) => void;
   pods: any;
+  initialDescription?: any;
 }
 const FormBody = forwardRef(
   (
@@ -117,6 +118,7 @@ const FormBody = forwardRef(
       fetchedUserPermissionsContext,
       handlePodChange,
       pods,
+      initialDescription,
     }: Props,
     ref: any
   ) => {
@@ -198,6 +200,8 @@ const FormBody = forwardRef(
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
         <PlateRichEditor
+          initialValue={initialDescription}
+          key=""
           inputValue={form.values.description}
           mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
           onChange={(value) => {
