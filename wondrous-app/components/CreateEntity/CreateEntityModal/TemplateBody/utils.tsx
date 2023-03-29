@@ -1,4 +1,4 @@
-import OnboardingSvg from 'components/CreateEntity/CreateEntityModal/FormBody/TemplateBody/icons/onboarding.svg';
+import OnboardingSvg from 'components/CreateEntity/CreateEntityModal/TemplateBody/icons/onboarding.svg';
 
 export const PRESET_TEMPLATES = {
   Onboarding: {

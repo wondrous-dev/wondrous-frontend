@@ -4,7 +4,6 @@ import { FormikValues } from 'formik';
 import React, { forwardRef, useEffect, useState } from 'react';
 import { ENTITIES_TYPES, PRIORITIES, PROPOSAL_VOTE_CHOICES, TASK_STATUS_TODO } from 'utils/constants';
 import { ErrorText } from 'components/Common';
-import Templates from 'components/CreateEntity/CreateEntityModal/Templates';
 
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
 import { StyledLink } from 'components/Common/text';

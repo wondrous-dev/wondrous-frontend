@@ -11,26 +11,19 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Button } from 'components/Common/button';
-import { GradientHighlightHorizontal } from 'components/Common/gradients';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import AttachFileIcon from 'components/Icons/attachFile.svg';
-import CloseModalIcon from 'components/Icons/closeModal';
-import { DAOIcon } from 'components/Icons/dao';
-import PlusIcon from 'components/Icons/plus';
-import PodIcon from 'components/Icons/podIcon';
-import PointsIcon from 'components/Icons/pointsIcon.svg';
-import SingleDatePicker from 'components/SingleDatePicker';
-import styled, { css } from 'styled-components';
-import { greyColors } from 'theme/colors';
+
+import styled from 'styled-components';
 import palette from 'theme/palette';
-import scrollBarStyles from 'components/Common/ScrollbarStyles';
-import typography from 'theme/typography';
 
 export const StyledGrid = styled(Grid)`
   && {
     border: 1px solid ${palette.grey79};
+    border-bottom-width: 0;
     padding: 12px;
+    &:nth-child(even) {
+      border-right-width: 0;
+      border-left-width: 0;
+    }
   }
 `;
 
@@ -67,7 +60,7 @@ export const TemplateTitle = styled(Typography)`
     font-size: 16px;
     text-transform: capitalize;
     color: ${palette.white};
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 `;
 
@@ -97,5 +90,26 @@ export const TemplateDivDescription = styled(TemplateDivTitle)`
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     line-clamp: 2;
+  }
+`;
+
+export const SaveTemplateButton = styled.div`
+  background: ${palette.grey85};
+  border-radius: 6px;
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 16px;
+  &:hover {
+    background: ${palette.grey78};
+  }
+`;
+
+export const SaveTemplateButtonText = styled(Typography)`
+  && {
+    font-size: 13px;
+    font-weight: 500;
+    color: ${palette.white};
   }
 `;

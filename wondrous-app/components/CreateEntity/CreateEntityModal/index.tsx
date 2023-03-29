@@ -52,8 +52,9 @@ import {
 import { CreateEntityForm, SnapshotButtonBlock, SnapshotErrorText } from './styles';
 
 import FormBody from './FormBody';
+import TemplateBody from './TemplateBody';
+
 import Header from './Header';
-import TemplateBody from './FormBody/TemplateBody';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const {
@@ -198,7 +199,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             },
           }),
       };
-      handleMutation({ input, board, pods, form, handleClose, existingTask, boardType });
+      handleMutation({ input, board, form, handleClose, existingTask, boardType, showTemplates });
     },
   });
 
@@ -530,6 +531,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         cancel={cancel}
         ref={inputRef}
         hasExistingTask={!!existingTask}
+        showTemplates={showTemplates}
       />
     </CreateEntityForm>
   );

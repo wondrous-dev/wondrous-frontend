@@ -833,6 +833,7 @@ export const CreateEntityDivider = styled.div`
 export const MediaUploadDiv = styled.div`
   display: flex;
   align-items: center;
+  margin-top: 4px;
   margin-bottom: -8px;
   flex-flow: wrap;
 `;
