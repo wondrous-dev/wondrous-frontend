@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { Box, Grid } from '@mui/material';
 import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import palette from 'theme/palette';
+import { GET_ORG_TASK_TEMPLATES } from 'graphql/queries';
+import { useLazyQuery } from '@apollo/client';
+import { useOrgBoard } from 'utils/hooks';
 import FormBody from '../FormBody';
 import {
   CategoryDiv,
@@ -14,6 +17,7 @@ import {
 } from './styles';
 import { PRESET_TEMPLATES } from './utils';
 
+const ORG_TYPE_TEMPLATE = 'Org';
 const TemplateBody = ({
   form,
   initialRecurrenceValue,
@@ -33,18 +37,49 @@ const TemplateBody = ({
 }) => {
   const [initialDescription, setInitialDescription] = useState(null);
   const [templateType, setTemplateType] = useState(null);
+  const [getOrgTaskTemplates, { data: orgTemplatesData, loading }] = useLazyQuery(GET_ORG_TASK_TEMPLATES, {
+    fetchPolicy: 'cache-and-network',
+  });
   // Get org and pod templates
   const presetTemplates = PRESET_TEMPLATES;
   const templateTypes = Object.keys(presetTemplates);
+  const orgTaskTemplates = orgTemplatesData?.getOrgTaskTemplates;
   useEffect(() => {
-    if (templateTypes) {
+    if (orgTaskTemplates?.length > 0) {
+      setTemplateType(ORG_TYPE_TEMPLATE);
+    } else if (templateTypes) {
       setTemplateType(templateTypes[0]);
     }
-  }, []);
+  }, [orgTaskTemplates]);
+
+  useEffect(() => {
+    if (form?.values.orgId) {
+      getOrgTaskTemplates({
+        variables: {
+          orgId: form?.values.orgId,
+        },
+      });
+    }
+  }, [form?.values.orgId]);
+
+  const orgBoard = useOrgBoard();
   return (
     <Grid container>
       <StyledGrid item sm={3} md={2}>
-        <LeftColumnText>User Created</LeftColumnText>
+        {orgTaskTemplates?.length > 0 && (
+          <>
+            <LeftColumnText>User Created</LeftColumnText>
+            <CategoryDiv
+              style={{
+                background: templateType === ORG_TYPE_TEMPLATE ? palette.grey78 : 'none',
+              }}
+              onClick={() => setTemplateType(ORG_TYPE_TEMPLATE)}
+            >
+              <CategoryText>{orgBoard?.orgData?.name} templates</CategoryText>
+            </CategoryDiv>
+          </>
+        )}
+
         <LeftColumnText
           style={{
             marginTop: '24px',
@@ -73,25 +108,67 @@ const TemplateBody = ({
         >
           P.S Clicking on the templates will overwrite your changes!
         </TemplateDivDescription>
-        {templateType &&
-          presetTemplates[templateType]?.templates.map((template) => (
-            <TemplateDiv
-              key={template?.title}
-              onClick={() => {
-                form.setFieldValue('title', template?.title);
-                form.setFieldValue('description', template?.description);
-                setInitialDescription(template?.description);
-                setTimeout(() => {
-                  setInitialDescription(null);
-                }, 0);
-              }}
-            >
-              <TemplateTitle>{template?.title}</TemplateTitle>
-              <TemplateDivDescription>
-                <PlateRichTextViewer text={JSON.stringify(template?.description)} />
-              </TemplateDivDescription>
-            </TemplateDiv>
-          ))}
+        {templateType && (
+          <>
+            {templateType === ORG_TYPE_TEMPLATE && orgTaskTemplates?.length > 0 && (
+              <>
+                {orgTaskTemplates?.map((template) => (
+                  <TemplateDiv
+                    key={template?.title}
+                    onClick={() => {
+                      form.setFieldValue('title', template?.title);
+                      form.setFieldValue('points', template?.points);
+                      form.setFieldValue('orgId', template?.orgId);
+                      form.setFieldValue('podId', template?.podId);
+                      if (template?.rewards?.[0]) {
+                        form.setFieldValue('rewards', [
+                          { ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount },
+                        ]);
+                      }
+                      form.setFieldValue('assigneeId', template?.assignee);
+                      form.setFieldValue(
+                        'reviewerIds',
+                        template?.reviewer?.map((reviewerId) => reviewerId.id)
+                      );
+                      form.setFieldValue('description', JSON.parse(template?.description));
+                      setInitialDescription(JSON.parse(template?.description));
+                      setTimeout(() => {
+                        setInitialDescription(null);
+                      }, 0);
+                    }}
+                  >
+                    <TemplateTitle>{template?.title}</TemplateTitle>
+                    <TemplateDivDescription>
+                      <PlateRichTextViewer text={template?.description} />
+                    </TemplateDivDescription>
+                  </TemplateDiv>
+                ))}
+              </>
+            )}
+            {templateType !== ORG_TYPE_TEMPLATE && (
+              <>
+                {presetTemplates[templateType]?.templates.map((template) => (
+                  <TemplateDiv
+                    key={template?.title}
+                    onClick={() => {
+                      form.setFieldValue('title', template?.title);
+                      form.setFieldValue('description', template?.description);
+                      setInitialDescription(template?.description);
+                      setTimeout(() => {
+                        setInitialDescription(null);
+                      }, 0);
+                    }}
+                  >
+                    <TemplateTitle>{template?.title}</TemplateTitle>
+                    <TemplateDivDescription>
+                      <PlateRichTextViewer text={JSON.stringify(template?.description)} />
+                    </TemplateDivDescription>
+                  </TemplateDiv>
+                ))}
+              </>
+            )}
+          </>
+        )}
       </StyledGrid>
       <Box
         component={StyledGrid}
