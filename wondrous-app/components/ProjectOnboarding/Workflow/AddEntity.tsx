@@ -15,7 +15,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import ChooseEntityToCreate, { CreateEntity } from 'components/CreateEntity';
 import EditIcon from 'components/Icons/editIcon';
 import { UnstyledLink } from 'components/WorkspacePicker/styles';
-import { GET_ORG_HOME_MILESTONS, GET_ORG_HOME_TASK_OBJECTS } from 'graphql/queries/projectPage';
+import { GET_ORG_HOME_MILESTONES, GET_ORG_HOME_TASK_OBJECTS } from 'graphql/queries/projectPage';
 import { useRouter } from 'next/router';
 import { useContext, useMemo, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -132,7 +132,7 @@ const AddEntity = ({ entityType, nextStep }) => {
 
   const [editTask, setEditTask] = useState(null);
   const [deleteTaskId, setDeleteTaskId] = useState(null);
-  const { data: orgMilestones } = useQuery(GET_ORG_HOME_MILESTONS, {
+  const { data: orgMilestones } = useQuery(GET_ORG_HOME_MILESTONES, {
     variables: {
       input: {
         orgId: orgData?.orgId,
@@ -253,12 +253,6 @@ const AddEntity = ({ entityType, nextStep }) => {
                 <CardType type={TYPES.EMPTY} entityType={entityType} />
               )}
             </Grid>
-            {/* <Grid display="flex" flexDirection="column" gap="8px" width="100%">
-              <PageLabel fontSize="13px">Suggested {entityType}s</PageLabel>
-              {suggestionItems.map((item) => (
-                <CardType type={TYPES.SUGGESTIONS} entityType={entityType} {...item} />
-              ))}
-            </Grid> */}
           </Grid>
         </Grid>
         <ButtonsPanel onContinue={nextStep} onSkip={nextStep} />

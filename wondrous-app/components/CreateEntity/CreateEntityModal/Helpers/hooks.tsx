@@ -58,7 +58,7 @@ import {
   GET_POD_HOME_TASK_OBJECTS,
   GET_ORG_HOME_PROPOSALS,
   GET_POD_HOME_PROPOSALS,
-  GET_ORG_HOME_MILESTONS,
+  GET_ORG_HOME_MILESTONES,
 } from 'graphql/queries/projectPage';
 
 const filterGithubReposForAutocomplete = (githubPullRepos) => {
@@ -403,7 +403,7 @@ export const useCreateMilestone = () => {
       'getPerTypeTaskCountForPodBoard',
       'getOrgBoardMilestones',
       'getPodBoardMilestones',
-      GET_ORG_HOME_MILESTONS,
+      GET_ORG_HOME_MILESTONES,
     ],
     onCompleted: ({ createMilestone: createMilestoneData }) =>
       setCornerWidgetValue({
