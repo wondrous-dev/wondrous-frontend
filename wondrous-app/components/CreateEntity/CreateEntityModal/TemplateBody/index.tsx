@@ -4,8 +4,9 @@ import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer'
 import palette from 'theme/palette';
 import { GET_ORG_TASK_TEMPLATES } from 'graphql/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { useOrgBoard } from 'utils/hooks';
 import { DELETE_TASK_TEMPLATE } from 'graphql/mutations';
+import { ENTITIES_TYPES } from 'utils/constants';
+import { useGlobalContext } from 'utils/hooks';
 import FormBody from '../FormBody';
 import {
   CategoryDiv,
@@ -15,13 +16,21 @@ import {
   TaskTemplateCountDiv,
   TemplateDiv,
   TemplateDivDescription,
+  TemplateSelectText,
   TemplateTitle,
 } from './styles';
 import { PRESET_TEMPLATES } from './utils';
 import TemplateEllipsesIcon from '../Templates/TaskTemplatePicker/TemplateEllipsesIcon';
+import {
+  CreateEntityApplicationsSelectRender,
+  CreateEntityOption,
+  CreateEntityOptionLabel,
+  CreateEntitySelect,
+  CreateEntitySelectArrowIcon,
+} from '../styles';
 
 const ORG_TYPE_TEMPLATE = 'Org';
-const setOnce = false;
+const TEMPLATE_ENTITY_TYPES = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.BOUNTY];
 const TemplateBody = ({
   form,
   initialRecurrenceValue,
@@ -38,6 +47,7 @@ const TemplateBody = ({
   handlePodChange,
   pods,
   setTaskTemplate,
+  board,
   ref,
 }) => {
   const [initialDescription, setInitialDescription] = useState(null);
@@ -80,8 +90,6 @@ const TemplateBody = ({
       });
     }
   }, [form?.values.orgId]);
-
-  const orgBoard = useOrgBoard();
   const setTemplate = (template) => {
     setTaskTemplate(template?.id);
     form.setFieldValue('title', template?.title);
@@ -102,19 +110,58 @@ const TemplateBody = ({
       setInitialDescription(null);
     }, 0);
   };
+  const { pageData, setPageData } = useGlobalContext();
   return (
     <Grid container>
       <StyledGrid item sm={3} md={2}>
+        <>
+          <LeftColumnText>Creating</LeftColumnText>
+          <CreateEntitySelect
+            style={{
+              background: palette.grey940,
+            }}
+            name="task-template-type"
+            value={entityType}
+            renderValue={() => (
+              <CreateEntityApplicationsSelectRender>
+                <TemplateSelectText>{entityType}</TemplateSelectText>
+                <CreateEntitySelectArrowIcon />
+              </CreateEntityApplicationsSelectRender>
+            )}
+            onChange={(value) => {
+              setPageData({ ...pageData, createEntityType: value });
+            }}
+          >
+            {TEMPLATE_ENTITY_TYPES.map((templateEntityType, idx) => (
+              <CreateEntityOption key={idx} value={templateEntityType}>
+                <CreateEntityOptionLabel
+                  style={{
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {templateEntityType}
+                </CreateEntityOptionLabel>
+              </CreateEntityOption>
+            ))}
+          </CreateEntitySelect>
+        </>
+
         {orgTaskTemplates?.length > 0 && (
           <>
-            <LeftColumnText>User Created</LeftColumnText>
+            <LeftColumnText
+              style={{
+                marginTop: '24px',
+              }}
+            >
+              User Created
+            </LeftColumnText>
             <CategoryDiv
               style={{
                 background: templateType === ORG_TYPE_TEMPLATE ? palette.grey78 : 'none',
               }}
               onClick={() => setTemplateType(ORG_TYPE_TEMPLATE)}
             >
-              <CategoryText>{orgBoard?.orgData?.name} templates</CategoryText>
+              <CategoryText>{board?.orgData?.name} templates</CategoryText>
               <div
                 style={{
                   flex: 1,

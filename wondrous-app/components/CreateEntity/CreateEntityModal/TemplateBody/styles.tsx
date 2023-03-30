@@ -118,3 +118,7 @@ export const SaveTemplateButtonText = styled(Typography)`
     color: ${palette.white};
   }
 `;
+
+export const TemplateSelectText = styled.span`
+  text-transform: capitalize;
+`;

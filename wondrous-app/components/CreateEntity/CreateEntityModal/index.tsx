@@ -575,6 +575,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             fetchedUserPermissionsContext={fetchedUserPermissionsContext}
             handlePodChange={handlePodChange}
             setTaskTemplate={setTaskTemplate}
+            board={board}
           />
         </PlateProvider>
       ) : (

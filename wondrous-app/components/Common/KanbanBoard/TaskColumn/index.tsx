@@ -97,11 +97,18 @@ function TaskColumn(props: ITaskColumn) {
   let number;
 
   const closeAISnackbar = localStorage.getItem(CLOSE_AI_SNACK_BAR);
+  const closeTaskTemplateSnackbar = localStorage.getItem(CLOSE_TASK_TEMPLATE_SNACK_BAR);
   useEffect(() => {
     if (closeAISnackbar) {
       setAISnackbarVisible(false);
     }
   }, [closeAISnackbar]);
+
+  useEffect(() => {
+    if (closeTaskTemplateSnackbar) {
+      setTaskTemplateSnackbarVisible(false);
+    }
+  }, [closeTaskTemplateSnackbar]);
   useEffect(() => {
     if (inView && board?.hasMore && LIMIT <= cardsList.length) {
       board?.onLoadMore();
