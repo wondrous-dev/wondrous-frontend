@@ -148,7 +148,6 @@ const useGetPodTaskBoardTasks = ({
     nextFetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ getPodTaskBoardTasks }) => {
-      if (userId) return;
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY) {
         setColumns(getPodTaskBoardTasks);
         setIsLoading(false);
