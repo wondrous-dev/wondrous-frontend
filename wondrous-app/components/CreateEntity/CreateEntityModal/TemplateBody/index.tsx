@@ -3,8 +3,9 @@ import { Box, Grid } from '@mui/material';
 import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import palette from 'theme/palette';
 import { GET_ORG_TASK_TEMPLATES } from 'graphql/queries';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { useOrgBoard } from 'utils/hooks';
+import { DELETE_TASK_TEMPLATE } from 'graphql/mutations';
 import FormBody from '../FormBody';
 import {
   CategoryDiv,
@@ -17,8 +18,10 @@ import {
   TemplateTitle,
 } from './styles';
 import { PRESET_TEMPLATES } from './utils';
+import TemplateEllipsesIcon from '../Templates/TaskTemplatePicker/TemplateEllipsesIcon';
 
 const ORG_TYPE_TEMPLATE = 'Org';
+let setOnce = false;
 const TemplateBody = ({
   form,
   initialRecurrenceValue,
@@ -43,17 +46,27 @@ const TemplateBody = ({
     fetchPolicy: 'cache-and-network',
   });
 
+  const [deleteTaskTemplate] = useMutation(DELETE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
+  });
+
+  const handleDeleteTemplate = (templateId) => {
+    deleteTaskTemplate({
+      variables: {
+        taskTemplateId: templateId,
+      },
+    });
+  };
   // Get org and pod templates
   const presetTemplates = PRESET_TEMPLATES;
   const templateTypes = Object.keys(presetTemplates);
   const orgTaskTemplates = orgTemplatesData?.getOrgTaskTemplates;
   useEffect(() => {
-    if (!templateType) {
-      if (orgTaskTemplates?.length > 0) {
-        setTemplateType(ORG_TYPE_TEMPLATE);
-      } else if (templateTypes) {
-        setTemplateType(templateTypes[0]);
-      }
+    if (orgTaskTemplates?.length > 0 && !setOnce) {
+      setTemplateType(ORG_TYPE_TEMPLATE);
+      setOnce = true;
+    } else if (!templateType && templateTypes) {
+      setTemplateType(templateTypes[0]);
     }
   }, [orgTaskTemplates, templateType]);
 
@@ -68,7 +81,26 @@ const TemplateBody = ({
   }, [form?.values.orgId]);
 
   const orgBoard = useOrgBoard();
-
+  const setTemplate = (template) => {
+    setTaskTemplate(template?.id);
+    form.setFieldValue('title', template?.title);
+    form.setFieldValue('points', template?.points);
+    form.setFieldValue('orgId', template?.orgId);
+    form.setFieldValue('podId', template?.podId);
+    if (template?.rewards?.[0]) {
+      form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
+    }
+    form.setFieldValue('assigneeId', template?.assigneeId);
+    form.setFieldValue(
+      'reviewerIds',
+      template?.reviewer?.map((reviewerId) => reviewerId.id)
+    );
+    form.setFieldValue('description', JSON.parse(template?.description));
+    setInitialDescription(JSON.parse(template?.description));
+    setTimeout(() => {
+      setInitialDescription(null);
+    }, 0);
+  };
   return (
     <Grid container>
       <StyledGrid item sm={3} md={2}>
@@ -130,32 +162,18 @@ const TemplateBody = ({
                   <TemplateDiv
                     key={template?.title}
                     onClick={() => {
-                      setTaskTemplate(template?.id);
-                      form.setFieldValue('title', template?.title);
-                      form.setFieldValue('points', template?.points);
-                      form.setFieldValue('orgId', template?.orgId);
-                      form.setFieldValue('podId', template?.podId);
-                      if (template?.rewards?.[0]) {
-                        form.setFieldValue('rewards', [
-                          { ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount },
-                        ]);
-                      }
-                      form.setFieldValue('assigneeId', template?.assignee);
-                      form.setFieldValue(
-                        'reviewerIds',
-                        template?.reviewer?.map((reviewerId) => reviewerId.id)
-                      );
-                      form.setFieldValue('description', JSON.parse(template?.description));
-                      setInitialDescription(JSON.parse(template?.description));
-                      setTimeout(() => {
-                        setInitialDescription(null);
-                      }, 0);
+                      setTemplate(template);
                     }}
                   >
                     <TemplateTitle>{template?.title}</TemplateTitle>
                     <TemplateDivDescription>
                       <PlateRichTextViewer text={template?.description} />
                     </TemplateDivDescription>
+                    <TemplateEllipsesIcon
+                      templateId={template?.id}
+                      handleEditTemplate={() => setTemplate(template)}
+                      handleDeleteTemplate={() => handleDeleteTemplate(template?.id)}
+                    />
                   </TemplateDiv>
                 ))}
               </>
