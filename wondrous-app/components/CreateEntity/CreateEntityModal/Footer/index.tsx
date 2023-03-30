@@ -70,6 +70,28 @@ const Footer = forwardRef(
               borderTopWidth: '0',
               borderBottomWidth: '1px',
             }}
+          />
+          <StyledGrid
+            item
+            sm={9}
+            md={5}
+            style={{
+              borderTopWidth: '0',
+              borderBottomWidth: '1px',
+            }}
+          />
+          <Box
+            style={{
+              paddingLeft: '0',
+              borderTopWidth: '0',
+              borderBottomWidth: '1px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            item
+            component={StyledGrid}
+            sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
+            md={5}
           >
             <CreateEntityHeaderWrapper showOnSmallScreen>
               <CreateEntityAttachment showOnSmallScreen onClick={() => ref.current.click()}>
@@ -107,29 +129,6 @@ const Footer = forwardRef(
                 </CreateEntityPrivacySelect>
               )}
             </CreateEntityHeaderWrapper>
-          </StyledGrid>
-          <StyledGrid
-            item
-            sm={9}
-            md={5}
-            style={{
-              borderTopWidth: '0',
-              borderBottomWidth: '1px',
-            }}
-          />
-          <Box
-            style={{
-              paddingLeft: '0',
-              borderTopWidth: '0',
-              borderBottomWidth: '1px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            item
-            component={StyledGrid}
-            sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
-            md={5}
-          >
             {form?.values?.title && form?.values?.description && (
               <SaveTemplateButton
                 onClick={() => {
