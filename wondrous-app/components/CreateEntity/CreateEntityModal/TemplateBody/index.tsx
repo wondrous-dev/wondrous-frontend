@@ -7,6 +7,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { DELETE_TASK_TEMPLATE } from 'graphql/mutations';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
+import { SafeImage } from 'components/Common/Image';
 import FormBody from '../FormBody';
 import {
   CategoryDiv,
@@ -23,7 +24,9 @@ import { PRESET_TEMPLATES } from './utils';
 import TemplateEllipsesIcon from '../Templates/TaskTemplatePicker/TemplateEllipsesIcon';
 import {
   CreateEntityApplicationsSelectRender,
+  CreateEntityDefaultDaoImage,
   CreateEntityOption,
+  CreateEntityOptionImageWrapper,
   CreateEntityOptionLabel,
   CreateEntitySelect,
   CreateEntitySelectArrowIcon,
@@ -111,6 +114,7 @@ const TemplateBody = ({
     }, 0);
   };
   const { pageData, setPageData } = useGlobalContext();
+  const orgProfilePicture = board?.orgData?.profilePicture || board?.pod?.org?.profilePicture;
   return (
     <Grid container>
       <StyledGrid item sm={3} md={2}>
@@ -161,7 +165,18 @@ const TemplateBody = ({
               }}
               onClick={() => setTemplateType(ORG_TYPE_TEMPLATE)}
             >
-              <CategoryText>{board?.orgData?.name} templates</CategoryText>
+              <CreateEntityOptionImageWrapper
+                style={{
+                  marginRight: '4px',
+                }}
+              >
+                {orgProfilePicture ? (
+                  <SafeImage useNextImage={false} src={orgProfilePicture} alt="Image" />
+                ) : (
+                  <CreateEntityDefaultDaoImage />
+                )}
+              </CreateEntityOptionImageWrapper>
+              <CategoryText>{board?.orgData?.name || board?.pod?.org?.name}</CategoryText>
               <div
                 style={{
                   flex: 1,

@@ -146,13 +146,16 @@ export const CreateEntityOption = styled(OptionUnstyled)`
 export const CreateEntityOptionImageWrapper = styled.div`
   display: flex;
   align-items: center;
+  border-radius: 4px;
   img {
     width: 20px;
     height: 20px;
+    border-radius: 2px;
   }
   svg {
     width: 20px;
     height: 20px;
+    border-radius: 2px;
   }
 `;
 

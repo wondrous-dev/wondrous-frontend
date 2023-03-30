@@ -93,6 +93,23 @@ const Footer = forwardRef(
             sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
             md={5}
           >
+            {form?.values?.title && form?.values?.description && (
+              <SaveTemplateButton
+                onClick={() => {
+                  if (taskTemplate) {
+                    handleEditTemplate(taskTemplate);
+                  } else {
+                    handleSaveTemplate();
+                  }
+                }}
+                style={{
+                  marginRight: '8px',
+                }}
+              >
+                <SaveIcon />
+                <SaveTemplateButtonText>{saveText}</SaveTemplateButtonText>
+              </SaveTemplateButton>
+            )}
             <CreateEntityHeaderWrapper showOnSmallScreen>
               <CreateEntityAttachment showOnSmallScreen onClick={() => ref.current.click()}>
                 <CreateEntityAttachmentIcon />
@@ -129,20 +146,6 @@ const Footer = forwardRef(
                 </CreateEntityPrivacySelect>
               )}
             </CreateEntityHeaderWrapper>
-            {form?.values?.title && form?.values?.description && (
-              <SaveTemplateButton
-                onClick={() => {
-                  if (taskTemplate) {
-                    handleEditTemplate(taskTemplate);
-                  } else {
-                    handleSaveTemplate();
-                  }
-                }}
-              >
-                <SaveIcon />
-                <SaveTemplateButtonText>{saveText}</SaveTemplateButtonText>
-              </SaveTemplateButton>
-            )}
             <div style={{ flex: 1 }} />
             <CreateEntityHeaderWrapper showOnSmallScreen>
               {loading ? (
