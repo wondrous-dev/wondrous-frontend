@@ -15,6 +15,8 @@ import {
   HEADER_ICONS,
   TITLES,
   ANALYTIC_EVENTS,
+  CLOSE_AI_SNACK_BAR,
+  CLOSE_TASK_TEMPLATE_SNACK_BAR,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -65,6 +67,8 @@ function TaskColumn(props: ITaskColumn) {
   const podBoard = usePodBoard();
   const user = useMe();
   const [AISnackbarVisible, setAISnackbarVisible] = useState(true);
+  const [openFromTemplate, setOpenFromTemplate] = useState(false);
+  const [taskTemplateSnackbarVisible, setTaskTemplateSnackbarVisible] = useState(true);
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
   const [ref, inView] = useInView({});
@@ -92,6 +96,12 @@ function TaskColumn(props: ITaskColumn) {
   const HeaderIcon = HEADER_ICONS[status];
   let number;
 
+  const closeAISnackbar = localStorage.getItem(CLOSE_AI_SNACK_BAR);
+  useEffect(() => {
+    if (closeAISnackbar) {
+      setAISnackbarVisible(false);
+    }
+  }, [closeAISnackbar]);
   useEffect(() => {
     if (inView && board?.hasMore && LIMIT <= cardsList.length) {
       board?.onLoadMore();
@@ -159,6 +169,7 @@ function TaskColumn(props: ITaskColumn) {
           resetEntityType={() => {}}
           setEntityType={() => {}}
           cancel={() => setOpenTaskModal(false)}
+          shouldShowTemplates={openFromTemplate}
         />
       </CreateModalOverlay>
 
@@ -215,16 +226,59 @@ function TaskColumn(props: ITaskColumn) {
               flex: 1,
             }}
           />
-          {/* <CrossSvg
+          <CrossSvg
             style={{
               cursor: 'pointer',
             }}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              localStorage.setItem(CLOSE_AI_SNACK_BAR, 'true');
               setAISnackbarVisible(false);
             }}
-          /> */}
+          />
+        </AISnackbarContainer>
+      )}
+      {status === TASK_STATUS_TODO && canCreateTask && taskTemplateSnackbarVisible && (orgBoard || podBoard) && (
+        <AISnackbarContainer
+          onClick={() => {
+            if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+              window?.analytics?.track(ANALYTIC_EVENTS.CREATE_TASK_FROM_TASK_TEMPLATE_SNACKBAR_CLICK, {
+                orgId: board?.orgId,
+                podId: board?.podId,
+                userId: user?.id,
+              });
+            }
+            setOpenFromTemplate(true);
+            setOpenTaskModal(true);
+          }}
+        >
+          <AISnackbarNewContainer>
+            <AISnackbarText>New!</AISnackbarText>
+          </AISnackbarNewContainer>
+          <AISnackbarText
+            style={{
+              marginLeft: '8px',
+            }}
+          >
+            Start from a template?
+          </AISnackbarText>
+          <div
+            style={{
+              flex: 1,
+            }}
+          />
+          <CrossSvg
+            style={{
+              cursor: 'pointer',
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              localStorage.setItem(CLOSE_TASK_TEMPLATE_SNACK_BAR, 'true');
+              setTaskTemplateSnackbarVisible(false);
+            }}
+          />
         </AISnackbarContainer>
       )}
       <Droppable droppableId={status} isDropDisabled={isDropDisabled}>

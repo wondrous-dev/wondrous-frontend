@@ -21,7 +21,7 @@ import { PRESET_TEMPLATES } from './utils';
 import TemplateEllipsesIcon from '../Templates/TaskTemplatePicker/TemplateEllipsesIcon';
 
 const ORG_TYPE_TEMPLATE = 'Org';
-let setOnce = false;
+const setOnce = false;
 const TemplateBody = ({
   form,
   initialRecurrenceValue,
@@ -41,6 +41,7 @@ const TemplateBody = ({
   ref,
 }) => {
   const [initialDescription, setInitialDescription] = useState(null);
+  const [orgTemplateOpenOnce, setOrgTemplateOpenOnce] = useState(null);
   const [templateType, setTemplateType] = useState(null);
   const [getOrgTaskTemplates, { data: orgTemplatesData }] = useLazyQuery(GET_ORG_TASK_TEMPLATES, {
     fetchPolicy: 'cache-and-network',
@@ -62,13 +63,13 @@ const TemplateBody = ({
   const templateTypes = Object.keys(presetTemplates);
   const orgTaskTemplates = orgTemplatesData?.getOrgTaskTemplates;
   useEffect(() => {
-    if (orgTaskTemplates?.length > 0 && !setOnce) {
+    if (orgTaskTemplates?.length > 0 && !orgTemplateOpenOnce) {
       setTemplateType(ORG_TYPE_TEMPLATE);
-      setOnce = true;
+      setOrgTemplateOpenOnce(true);
     } else if (!templateType && templateTypes) {
       setTemplateType(templateTypes[0]);
     }
-  }, [orgTaskTemplates, templateType]);
+  }, [orgTaskTemplates, templateType, orgTemplateOpenOnce]);
 
   useEffect(() => {
     if (form?.values.orgId) {
