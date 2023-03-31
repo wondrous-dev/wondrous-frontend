@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { Box, Grid } from '@mui/material';
 import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import palette from 'theme/palette';
-import { GET_ORG_TASK_TEMPLATES } from 'graphql/queries';
+import { GET_ORG_TASK_TEMPLATES, GET_POD_TASK_TEMPLATES } from 'graphql/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { DELETE_TASK_TEMPLATE } from 'graphql/mutations';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
 import { SafeImage } from 'components/Common/Image';
+import { values } from 'lodash';
+import PodIcon from 'components/Icons/podIcon';
 import FormBody from '../FormBody';
 import {
   CategoryDiv,
@@ -17,6 +19,8 @@ import {
   TaskTemplateCountDiv,
   TemplateDiv,
   TemplateDivDescription,
+  TemplatePodDiv,
+  TemplatePodText,
   TemplateSelectText,
   TemplateTitle,
 } from './styles';
@@ -33,7 +37,41 @@ import {
 } from '../styles';
 
 const ORG_TYPE_TEMPLATE = 'Org';
+const POD_TYPE_TEMPLATE = 'Pod';
 const TEMPLATE_ENTITY_TYPES = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.BOUNTY];
+
+const OrgPodTemplateItem = ({ template, setTemplate, handleDeleteTemplate }) => (
+  <TemplateDiv
+    key={template?.title}
+    onClick={() => {
+      setTemplate(template);
+    }}
+  >
+    <TemplateTitle>{template?.title}</TemplateTitle>
+    <TemplateDivDescription>
+      <PlateRichTextViewer text={template?.description} />
+    </TemplateDivDescription>
+    {template?.podId && (
+      <TemplatePodDiv>
+        <PodIcon
+          color={template?.pod?.color}
+          style={{
+            width: '22px',
+            height: '22px',
+            borderRadius: '11px',
+          }}
+        />
+        <TemplatePodText>{template?.pod?.name}</TemplatePodText>
+      </TemplatePodDiv>
+    )}
+    <TemplateEllipsesIcon
+      templateId={template?.id}
+      handleEditTemplate={() => setTemplate(template)}
+      handleDeleteTemplate={() => handleDeleteTemplate(template?.id)}
+    />
+  </TemplateDiv>
+);
+
 const TemplateBody = ({
   form,
   initialRecurrenceValue,
@@ -60,8 +98,12 @@ const TemplateBody = ({
     fetchPolicy: 'cache-and-network',
   });
 
+  const [getPodTaskTemplates, { data: podTemplatesData }] = useLazyQuery(GET_POD_TASK_TEMPLATES, {
+    fetchPolicy: 'cache-and-network',
+  });
+
   const [deleteTaskTemplate] = useMutation(DELETE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
+    refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates', 'getPodTaskTemplates'],
   });
 
   const handleDeleteTemplate = (templateId) => {
@@ -75,6 +117,7 @@ const TemplateBody = ({
   const presetTemplates = PRESET_TEMPLATES;
   const templateTypes = Object.keys(presetTemplates);
   const orgTaskTemplates = orgTemplatesData?.getOrgTaskTemplates;
+  const podTaskTemplates = podTemplatesData?.getPodTaskTemplates;
   useEffect(() => {
     if (orgTaskTemplates?.length > 0 && !orgTemplateOpenOnce) {
       setTemplateType(ORG_TYPE_TEMPLATE);
@@ -93,12 +136,21 @@ const TemplateBody = ({
       });
     }
   }, [form?.values.orgId]);
+
+  useEffect(() => {
+    if (form?.values.podId) {
+      getPodTaskTemplates({
+        variables: {
+          podId: form?.values.podId,
+        },
+      });
+    }
+  }, form?.values?.podId);
   const setTemplate = (template) => {
-    setTaskTemplate(template?.id);
+    setTaskTemplate(template);
     form.setFieldValue('title', template?.title);
     form.setFieldValue('points', template?.points);
     form.setFieldValue('orgId', template?.orgId);
-    form.setFieldValue('podId', template?.podId);
     if (template?.rewards?.[0]) {
       form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
     }
@@ -115,6 +167,7 @@ const TemplateBody = ({
   };
   const { pageData, setPageData } = useGlobalContext();
   const orgProfilePicture = board?.orgData?.profilePicture || board?.pod?.org?.profilePicture;
+
   return (
     <Grid container>
       <StyledGrid item sm={3} md={2}>
@@ -186,6 +239,38 @@ const TemplateBody = ({
                 <CategoryText>{orgTaskTemplates?.length}</CategoryText>
               </TaskTemplateCountDiv>
             </CategoryDiv>
+            {podTaskTemplates?.length > 0 && (
+              <CategoryDiv
+                style={{
+                  background: templateType === POD_TYPE_TEMPLATE ? palette.grey78 : 'none',
+                }}
+                onClick={() => setTemplateType(POD_TYPE_TEMPLATE)}
+              >
+                <CreateEntityOptionImageWrapper
+                  style={{
+                    marginRight: '4px',
+                  }}
+                >
+                  <PodIcon
+                    color={board?.pod?.color}
+                    style={{
+                      width: '22px',
+                      height: '22px',
+                      borderRadius: '11px',
+                    }}
+                  />
+                </CreateEntityOptionImageWrapper>
+                <CategoryText>{board?.pod?.name}</CategoryText>
+                <div
+                  style={{
+                    flex: 1,
+                  }}
+                />
+                <TaskTemplateCountDiv>
+                  <CategoryText>{podTaskTemplates?.length}</CategoryText>
+                </TaskTemplateCountDiv>
+              </CategoryDiv>
+            )}
           </>
         )}
 
@@ -222,22 +307,22 @@ const TemplateBody = ({
             {templateType === ORG_TYPE_TEMPLATE && orgTaskTemplates?.length > 0 && (
               <>
                 {orgTaskTemplates?.map((template) => (
-                  <TemplateDiv
-                    key={template?.title}
-                    onClick={() => {
-                      setTemplate(template);
-                    }}
-                  >
-                    <TemplateTitle>{template?.title}</TemplateTitle>
-                    <TemplateDivDescription>
-                      <PlateRichTextViewer text={template?.description} />
-                    </TemplateDivDescription>
-                    <TemplateEllipsesIcon
-                      templateId={template?.id}
-                      handleEditTemplate={() => setTemplate(template)}
-                      handleDeleteTemplate={() => handleDeleteTemplate(template?.id)}
-                    />
-                  </TemplateDiv>
+                  <OrgPodTemplateItem
+                    template={template}
+                    setTemplate={setTemplate}
+                    handleDeleteTemplate={handleDeleteTemplate}
+                  />
+                ))}
+              </>
+            )}
+            {templateType === POD_TYPE_TEMPLATE && podTaskTemplates?.length > 0 && (
+              <>
+                {podTaskTemplates?.map((template) => (
+                  <OrgPodTemplateItem
+                    template={template}
+                    setTemplate={setTemplate}
+                    handleDeleteTemplate={handleDeleteTemplate}
+                  />
                 ))}
               </>
             )}

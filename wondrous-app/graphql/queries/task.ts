@@ -45,6 +45,14 @@ export const GET_ORG_TASK_TEMPLATES = gql`
   ${TaskTemplateFragment}
 `;
 
+export const GET_POD_TASK_TEMPLATES = gql`
+  query getPodTaskTemplates($podId: ID!) {
+    getPodTaskTemplates(podId: $podId) {
+      ...TaskTemplateFragment
+    }
+  }
+  ${TaskTemplateFragment}
+`;
 export const GET_TASK_REVIEWERS = gql`
   query getTaskReviewers($taskId: ID!) {
     getTaskReviewers(taskId: $taskId) {

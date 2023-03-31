@@ -658,6 +658,10 @@ export const TaskTemplateFragment = gql`
     podId
     assigneeId
     description
+    pod {
+      name
+      color
+    }
     assignee {
       username
       profilePicture

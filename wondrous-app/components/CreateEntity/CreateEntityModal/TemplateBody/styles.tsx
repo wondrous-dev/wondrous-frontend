@@ -85,6 +85,23 @@ export const TemplateDivTitle = styled(Typography)`
   }
 `;
 
+export const TemplatePodDiv = styled.div`
+  background: ${palette.grey78};
+  border-radius: 4px;
+  padding: 5px 8px 5px 4px;
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  width: fit-content;
+`;
+
+export const TemplatePodText = styled(Typography)`
+  && {
+    font-size: 13px;
+    color: ${palette.white};
+    font-weight: 500;
+  }
+`;
 export const TemplateDivDescription = styled(TemplateDivTitle)`
   && {
     color: ${palette.grey250};
