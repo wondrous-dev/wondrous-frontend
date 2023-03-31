@@ -29,6 +29,7 @@ export const GenericArtPanel = ({ url, mediaType = null }) => {
         xs: '100%',
         md: '40%',
       }}
+      width="100%"
     >
       <RightSideWrapper>
         {mediaType === 'video' ? (
@@ -292,3 +293,9 @@ export const Container = ({ children, sx = {} }) => (
     {children}
   </Grid>
 );
+
+export const sendAnalyticsData = (type, data) => {
+  if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+    window?.analytics?.track(type, data);
+  }
+};

@@ -40,7 +40,14 @@ import {
 } from './styles';
 
 export function OrgInviteLinkComponent(props) {
-  const { orgId, onClose, gradientStyles = {}, hideDivider = false } = props;
+  const {
+    orgId,
+    onClose,
+    gradientStyles = {},
+    hideDivider = false,
+    postEmailInvite = null,
+    postInviteLinkCreate = null,
+  } = props;
   const isMobile = useIsMobile();
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
   const [copied, setCopied] = useState(false);
@@ -63,6 +70,7 @@ export function OrgInviteLinkComponent(props) {
   const [sendOrgEmailInvites] = useMutation(SEND_ORG_EMAIL_INVITES, {
     onCompleted: (data) => {
       console.log(data);
+      postEmailInvite?.();
     },
     onError: (e) => {
       console.error(e);
@@ -105,6 +113,7 @@ export function OrgInviteLinkComponent(props) {
   const handleOnCopy = () => {
     navigator.clipboard.writeText(`${inviteLink}`);
     setCopied(true);
+    postInviteLinkCreate?.();
   };
 
   useEffect(() => {

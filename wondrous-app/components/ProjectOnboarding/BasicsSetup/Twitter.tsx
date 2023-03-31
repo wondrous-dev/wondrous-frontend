@@ -1,20 +1,29 @@
 import { Grid, Typography } from '@mui/material';
+import { useMe } from 'components/Auth/withAuth';
 import { Twitter } from 'components/Icons/twitter';
 import { HeaderButton } from 'components/organization/wrapper/styles';
 import IntegrationFeatures from 'components/Settings/Integrations/Helpers/IntegrationFeatures';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
 import { useEffect, useState } from 'react';
 import palette from 'theme/palette';
-import { TWITTER_CHALLENGE_CODE } from 'utils/constants';
+import { ANALYTIC_EVENTS, TWITTER_CHALLENGE_CODE } from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
-import { ButtonsPanel } from '../Shared';
+import { ButtonsPanel, sendAnalyticsData } from '../Shared';
 import { FEATURES, FEATURES_TYPES } from '../Shared/constants';
 
 const TwitterPanel = ({ handleNextStep }) => {
   const { orgData, startPolling, stopPolling, getOrgFromUsername } = useOrgBoard();
+  const user = useMe();
   const [isPolling, setIsPolling] = useState(false);
   const onContinue = () => handleNextStep();
-  const onSkip = () => handleNextStep();
+  const onSkip = () => {
+    sendAnalyticsData(ANALYTIC_EVENTS.ONBOARDING_TWITTER_SETUP_SKIP, {
+      orgId: orgData?.orgId,
+      userId: user?.id,
+    });
+
+    handleNextStep();
+  };
 
   useEffect(() => {
     if (!isPolling) return;
@@ -34,7 +43,10 @@ const TwitterPanel = ({ handleNextStep }) => {
         username: orgData?.username,
       },
     });
-
+    sendAnalyticsData(ANALYTIC_EVENTS.ONBOARDING_TWITTER_SETUP, {
+      orgId: orgData?.orgId,
+      userId: user?.id,
+    });
     startPolling(1000);
     setIsPolling(true);
     const url = buildTwitterAuthUrl(TWITTER_CHALLENGE_CODE, `project-onboarding${orgData?.orgId}`);

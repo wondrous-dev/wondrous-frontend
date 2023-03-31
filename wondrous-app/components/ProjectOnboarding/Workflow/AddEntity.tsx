@@ -9,6 +9,7 @@ import { GET_ORG_PODS } from 'graphql/queries';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 
+import { useMe } from 'components/Auth/withAuth';
 import DeleteEntityModal from 'components/Common/DeleteEntityModal';
 import { AddProposalButtonContainer, AddProposalButtonContainerText } from 'components/Common/ProposalBoard/styles';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -18,9 +19,9 @@ import { UnstyledLink } from 'components/WorkspacePicker/styles';
 import { GET_ORG_HOME_MILESTONES, GET_ORG_HOME_TASK_OBJECTS } from 'graphql/queries/projectPage';
 import { useRouter } from 'next/router';
 import { useContext, useMemo, useState } from 'react';
-import { ENTITIES_TYPES } from 'utils/constants';
+import { ANALYTIC_EVENTS, ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext, useOrgBoard } from 'utils/hooks';
-import { ButtonsPanel } from '../Shared';
+import { ButtonsPanel, sendAnalyticsData } from '../Shared';
 import { ActionItemWrapper, PageLabel } from '../Shared/styles';
 
 const TYPES = {
@@ -127,6 +128,7 @@ const CardType = ({ type, entityType, title = null, podColor = null, id = null, 
 
 const AddEntity = ({ entityType, nextStep }) => {
   const { setPageData } = useGlobalContext();
+  const user = useMe();
   const { orgData } = useOrgBoard();
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
 
@@ -180,9 +182,32 @@ const AddEntity = ({ entityType, nextStep }) => {
   }, [entityType, orgPodsData?.getOrgPods, orgTasksData?.getOrgHomeTaskObjects, orgMilestones?.getOrgHomeMilestones]);
 
   const addItems = items[TYPES.ADD];
+
+  const getEntityTypeEvent = () => {
+    switch (entityType) {
+      case ENTITIES_TYPES.POD:
+        return ANALYTIC_EVENTS.ONBOARDING_POD_CREATE;
+      case ENTITIES_TYPES.TASK:
+        return ANALYTIC_EVENTS.ONBOARDING_TASK_CREATE;
+      case ENTITIES_TYPES.MILESTONE:
+        return ANALYTIC_EVENTS.ONBOARDING_MILESTONE_CREATE;
+      case ENTITIES_TYPES.BOUNTY:
+        return ANALYTIC_EVENTS.ONBOARDING_BOUNTY_CREATE;
+    }
+  };
+
+  const handlePostEntityCreate = () => {
+    const entityEvent = getEntityTypeEvent();
+    sendAnalyticsData(entityEvent, {
+      orgId: orgData?.orgId,
+      userId: user?.id,
+    });
+    return setPageData((prev) => ({ ...prev, createEntityType: null }));
+  };
+
   return (
     <>
-      <ChooseEntityToCreate shouldRedirect={false} />
+      <ChooseEntityToCreate shouldRedirect={false} handleClose={handlePostEntityCreate} />
       {editTask ? (
         <CreateEntity
           open={editTask}

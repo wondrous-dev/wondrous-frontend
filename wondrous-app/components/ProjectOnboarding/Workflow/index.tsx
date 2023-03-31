@@ -11,7 +11,8 @@ const ENTITY_CONFIGS = [
     subtitle:
       'Pods are how you organize your teams. For example, you can have a “Design Pod” to do design work.  Use our suggestions or add custom pods for your community.',
     entityType: ENTITIES_TYPES.POD,
-    mediaUrl: '/images/project-onboarding/project-pods.gif',
+    mediaUrl: '/images/project-onboarding/pods.webm',
+    mediaType: 'video',
   },
   {
     label: 'Milestones',

@@ -4,6 +4,7 @@ import GradientHeading from 'components/GradientHeading';
 import Modal from 'components/Modal';
 import { HeaderButton } from 'components/organization/wrapper/styles';
 import { useRouter } from 'next/router';
+import { useEffect, useRef } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { DAO_CATEGORIES } from 'utils/constants';
@@ -12,7 +13,8 @@ import { CONFIG, TYPES } from '../Shared/constants';
 import { PageLabel } from '../Shared/styles';
 
 const Summary = () => {
-  const { orgData, setStep } = useOrgBoard();
+  const { orgData, setStep, collabUsername } = useOrgBoard();
+
   const router = useRouter();
   const items = [
     {
@@ -57,11 +59,19 @@ const Summary = () => {
     },
   ];
 
+  const handleCollabRedirect = () => router.push(`/collaboration/${collabUsername}/boards`);
+
   const handleLaunchClick = () => {
+    if (collabUsername) {
+      return handleCollabRedirect();
+    }
     router.push(`/organization/${orgData?.username}/home`);
   };
 
   const handleClose = () => {
+    if (collabUsername) {
+      return handleCollabRedirect();
+    }
     setStep(CONFIG.findIndex((item) => item.type === TYPES.GUIDES));
   };
 

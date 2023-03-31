@@ -11,7 +11,8 @@ const BASICS_CONFIG = [
     label: 'Project Type',
     title: 'Project Category',
     component: Category,
-    mediaUrl: '/images/project-onboarding/guides-gif.gif',
+    mediaUrl: '/images/project-onboarding/guides.webm',
+    mediaType: 'video',
   },
   {
     label: 'Twitter',

@@ -1,17 +1,20 @@
 import { makeUniqueId } from '@apollo/client/utilities';
 import { Grid } from '@mui/material';
+import { useMe } from 'components/Auth/withAuth';
 import ImageUpload from 'components/Settings/imageUpload';
 import { InputWrapper } from 'components/TextField/styles';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { useEffect, useRef, useState } from 'react';
+import { ANALYTIC_EVENTS } from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
 import { handleImageFile, uploadMedia } from 'utils/media';
-import { ButtonsPanel } from '../Shared';
+import { ButtonsPanel, sendAnalyticsData } from '../Shared';
 import { CONFIG, TYPES } from '../Shared/constants';
 import { PageLabel, TextArea } from '../Shared/styles';
 
 const ProjectLogo = () => {
-  const { setStep, updateOrg, orgData } = useOrgBoard();
+  const user = useMe();
+  const { setStep, updateOrg, orgData, orgId } = useOrgBoard();
   const [data, setData] = useState({
     profilePicture: null,
     headerPicture: null,
@@ -82,11 +85,19 @@ const ProjectLogo = () => {
       };
     }
 
+    sendAnalyticsData(ANALYTIC_EVENTS.ONBOARDING_BIO_MEDIA_SETTINGS_SETUP, {
+      userId: user?.id,
+      orgId,
+    });
     await updateOrg(inputData);
     setStep(CONFIG.findIndex((item) => item.type === TYPES.GUIDES));
   };
 
   const onSkip = () => {
+    sendAnalyticsData(ANALYTIC_EVENTS.ONBOARDING_BIO_MEDIA_SETTINGS_SETUP_SKIP, {
+      userId: user?.id,
+      orgId,
+    });
     setStep(CONFIG.findIndex((item) => item.type === TYPES.GUIDES));
   };
 

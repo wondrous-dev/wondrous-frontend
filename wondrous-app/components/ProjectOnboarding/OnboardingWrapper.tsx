@@ -1,20 +1,44 @@
-import { withAuth } from 'components/Auth/withAuth';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 
-import { Fragment, useEffect, useMemo, useState } from 'react';
-import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_ORG_FROM_USERNAME, GET_USER_ORGS } from 'graphql/queries';
-import { CREATE_ORG, UPDATE_ORG } from 'graphql/mutations';
-import { CONFIG } from 'components/ProjectOnboarding/Shared/constants';
-import { usePageDataContext } from 'utils/hooks';
-import { OrgBoardContext } from 'utils/contexts';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
+import { CONFIG } from 'components/ProjectOnboarding/Shared/constants';
+import { CREATE_ORG, REDEEM_COLLAB_TOKEN, UPDATE_ORG } from 'graphql/mutations';
+import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_ORG_FROM_USERNAME, GET_USER_ORGS } from 'graphql/queries';
+import { useRouter } from 'next/router';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { ANALYTIC_EVENTS } from 'utils/constants';
+import { OrgBoardContext } from 'utils/contexts';
+import { usePageDataContext } from 'utils/hooks';
+import { sendAnalyticsData } from './Shared';
+
+const useCreateOrg = () => {
+  const router = useRouter();
+  const { collabInvite } = router.query;
+  const [redeemCollabToken, { loading: redeemLoading, data }] = useMutation(REDEEM_COLLAB_TOKEN, {
+    notifyOnNetworkStatusChange: true,
+  });
+  const [createOrg, { loading, data: createOrgData }] = useMutation(CREATE_ORG, {
+    refetchQueries: ['getUserOrgs'],
+    onCompleted: ({ createOrg }) => {
+      const { id } = createOrg;
+      if (collabInvite) {
+        redeemCollabToken({ variables: { orgId: id, token: collabInvite } });
+      }
+    },
+  });
+  return {
+    createOrg,
+    loading: loading || redeemLoading,
+    createOrgData,
+    collabUsername: data?.redeemOrgCollabRequestInviteToken?.username,
+  };
+};
 
 const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySidebar = false }) => {
-  const [createOrg, { data: createOrgData, loading: createOrgLoading }] = useMutation(CREATE_ORG, {
-    refetchQueries: ['getUserOrgs'],
-  });
-
+  const user = useMe();
+  const { createOrg, loading: createOrgLoading, createOrgData, collabUsername } = useCreateOrg();
   const { setPageData } = usePageDataContext();
 
   const [getOrgFromUsername, { data, loading: orgLoading, refetch, startPolling, stopPolling }] =
@@ -37,6 +61,7 @@ const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySideba
     try {
       moveForward();
       const { data } = await createOrg({ variables: { input } });
+      sendAnalyticsData(ANALYTIC_EVENTS.ONBOARDING_PROJECT_CREATE, { orgId: data?.createOrg?.id, userId: user?.id });
       setTimeout(() => {
         if (data?.createOrg?.id) moveForward();
       }, 600);
@@ -94,6 +119,7 @@ const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySideba
         stopPolling,
         getOrgFromUsername,
         orgId: orgData?.orgId,
+        collabUsername,
       }}
     >
       <TaskViewModalWatcher />

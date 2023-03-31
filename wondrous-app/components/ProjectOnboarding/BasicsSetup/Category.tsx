@@ -1,14 +1,16 @@
 import { Box, Grid, Typography } from '@mui/material';
+import { useMe } from 'components/Auth/withAuth';
 import { HeaderButton } from 'components/organization/wrapper/styles';
 import { useState } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { DAO_CATEGORIES } from 'utils/constants';
+import { ANALYTIC_EVENTS, DAO_CATEGORIES } from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
-import { ButtonsPanel } from '../Shared';
+import { ButtonsPanel, sendAnalyticsData } from '../Shared';
 
 const Category = ({ handleNextStep }) => {
-  const { updateOrg, orgData } = useOrgBoard();
+  const user = useMe();
+  const { updateOrg, orgData, orgId } = useOrgBoard();
   const [orgCategory, setOrgCategory] = useState(orgData?.category || null);
   const handleCategoryClick = (category) => {
     const newCategory = category === orgCategory ? '' : category;
@@ -16,10 +18,21 @@ const Category = ({ handleNextStep }) => {
   };
 
   const handleCategoryUpdate = async () => {
-    if (orgData?.category !== orgCategory) {
-      await updateOrg({ category: orgCategory });
+    if (!orgData?.category && !orgCategory) {
+      sendAnalyticsData(ANALYTIC_EVENTS.ONBOARDING_CATEGORY_SELECT_SKIP, {
+        orgId,
+        userId: user?.id,
+      });
     }
 
+    if (orgData?.category !== orgCategory) {
+      await updateOrg({ category: orgCategory });
+      sendAnalyticsData(ANALYTIC_EVENTS.ONBOARDING_CATEGORY_SELECT, {
+        category: orgCategory,
+        orgId,
+        userId: user?.id,
+      });
+    }
     handleNextStep();
   };
 
