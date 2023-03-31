@@ -272,7 +272,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
           },
         ];
-
     const description = JSON.stringify(form.values.description);
     if (!template?.podId && form.values.podId) {
       // Create a new template for that pod

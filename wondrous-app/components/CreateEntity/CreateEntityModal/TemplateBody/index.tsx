@@ -153,12 +153,11 @@ const TemplateBody = ({
     form.setFieldValue('orgId', template?.orgId);
     if (template?.rewards?.[0]) {
       form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
+    } else {
+      form.setFieldValue('rewards', []);
     }
     form.setFieldValue('assigneeId', template?.assigneeId);
-    form.setFieldValue(
-      'reviewerIds',
-      template?.reviewer?.map((reviewerId) => reviewerId.id)
-    );
+    form.setFieldValue('reviewerIds', template?.reviewerIds || undefined);
     form.setFieldValue('description', JSON.parse(template?.description));
     setInitialDescription(JSON.parse(template?.description));
     setTimeout(() => {

@@ -678,6 +678,7 @@ export const TaskTemplateFragment = gql`
       tokenName
       chain
     }
+    reviewerIds
     points
   }
 `;
