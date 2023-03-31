@@ -566,7 +566,7 @@ export const DAO_CATEGORIES = {
   refi: '🏛️ ReFi',
   desci: '🌱 DeSci',
   incubator: '🐣 Incubator',
-  SPORTS: '🏀 Sports',
+  sports: '🏀 Sports',
 } as const;
 
 export const SORT_BY = {
