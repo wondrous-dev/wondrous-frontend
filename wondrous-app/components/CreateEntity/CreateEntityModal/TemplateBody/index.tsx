@@ -25,7 +25,7 @@ import {
   TemplateTitle,
 } from './styles';
 import { PRESET_TEMPLATES } from './utils';
-import TemplateEllipsesIcon from '../Templates/TaskTemplatePicker/TemplateEllipsesIcon';
+import TemplateEllipsesIcon from './icons/TemplateEllipsesIcon';
 import {
   CreateEntityApplicationsSelectRender,
   CreateEntityDefaultDaoImage,
@@ -285,10 +285,18 @@ const TemplateBody = ({
             key={key}
             style={{
               background: key === templateType ? palette.grey78 : 'none',
+              paddingLeft: '6px',
             }}
             onClick={() => setTemplateType(key)}
           >
-            <CategoryText>{key}</CategoryText>
+            {presetTemplates[key]?.icon}
+            <CategoryText
+              style={{
+                marginLeft: '4px',
+              }}
+            >
+              {key}
+            </CategoryText>
           </CategoryDiv>
         ))}
       </StyledGrid>
