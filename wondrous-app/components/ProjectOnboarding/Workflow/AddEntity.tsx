@@ -226,10 +226,10 @@ const AddEntity = ({ entityType, nextStep }) => {
       orgId: orgData?.orgId,
       userId: user?.id,
     });
+    setDefaultData(null);
     return setPageData((prev) => ({ ...prev, createEntityType: null }));
   };
 
-  console.log(defaultData, 'DEF DATA');
   return (
     <>
       <ChooseEntityToCreate shouldRedirect={false} handleClose={handlePostEntityCreate} defaults={defaultData} />
