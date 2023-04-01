@@ -14,6 +14,7 @@ interface ICreateEntity {
   entityType: string;
   handleClose: Function;
   cancel: Function;
+  defaults?: any;
   existingTask?: {
     id: string;
     githubIssue: {

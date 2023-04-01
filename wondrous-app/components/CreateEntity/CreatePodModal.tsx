@@ -89,8 +89,8 @@ export const filterOrgUsersForAutocomplete = (orgUsers): { display: string; id: 
 };
 
 function CreatePodModal(props) {
-  const { handleClose, cancel, open, shouldRedirect = true } = props;
-  const [podDescriptionText, setPodDescriptionText] = useState('');
+  const { handleClose, cancel, open, shouldRedirect = true, defaults = null } = props;
+  const [podDescriptionText, setPodDescriptionText] = useState(defaults?.description || '');
 
   const [errors, setErrors] = useState({
     general: null,
@@ -102,7 +102,7 @@ function CreatePodModal(props) {
 
   const [org, setOrg] = useState(null);
   const [link, setLink] = useState('');
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(defaults?.title || '');
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();

@@ -550,6 +550,25 @@ export const GLOBAL_SEARCH_TYPES = {
   USERS: 'users',
 };
 
+export const DAO_CATEGORIES_KEYS = {
+  SOCIAL_GOOD: 'social_good',
+  MEDIA_CONTENT: 'media_content',
+  NFT_COLLECTIVE: 'nft_collective',
+  INVESTMENTS: 'investments',
+  DEFI: 'defi',
+  SOCIAL: 'social',
+  SERVICE_DAO: 'service_dao',
+  THINK_TANK: 'think_tank',
+  FUN_MEMEABLE: 'fun_memeable',
+  BUILDING_PRODUCTS: 'building_products',
+  CREATOR_COMMUNITY: 'creator_community',
+  GAMING: 'gaming',
+  REFI: 'refi',
+  DESCI: 'desci',
+  INCUBATOR: 'incubator',
+  SPORTS: 'sports',
+};
+
 export const DAO_CATEGORIES = {
   social_good: '🌎 Social good',
   media_content: '🎬 Media & content',

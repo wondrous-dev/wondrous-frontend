@@ -67,6 +67,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     status,
     setFormDirty,
     shouldShowTemplates,
+    defaults = null,
   } = props;
 
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -142,7 +143,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const initialPodId = !existingTask ? board?.podId || routerPodId : null;
   const form: any = useFormik({
-    initialValues: initialValues({ entityType, existingTask, initialPodId }),
+    initialValues: initialValues({ entityType, existingTask, initialPodId, defaults }),
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: formValidationSchema,

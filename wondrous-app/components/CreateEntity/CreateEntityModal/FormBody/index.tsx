@@ -204,6 +204,7 @@ const FormBody = forwardRef(
           inputValue={form.values.description}
           mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
           onChange={(value) => {
+            console.log(value, 'VALUE');
             form.setFieldValue('description', value);
           }}
           mediaUploads={() => {

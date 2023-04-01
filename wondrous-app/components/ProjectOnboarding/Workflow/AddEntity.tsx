@@ -23,6 +23,7 @@ import { ANALYTIC_EVENTS, ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext, useOrgBoard } from 'utils/hooks';
 import { ButtonsPanel, sendAnalyticsData } from '../Shared';
 import { ActionItemWrapper, PageLabel } from '../Shared/styles';
+import { TASK_SUGGESTIONS } from './constants';
 
 const TYPES = {
   ADD: 'ADD',
@@ -30,13 +31,14 @@ const TYPES = {
   EMPTY: 'EMPTY',
 };
 
-const Actions = ({ type, entityType, onEdit, onDelete }) => {
-  if (entityType === ENTITIES_TYPES.POD) {
+const Actions = ({ type, entityType, onEdit, onDelete, onAdd }) => {
+  if (entityType === ENTITIES_TYPES.POD && type === TYPES.ADD) {
     return null;
   }
   if (type === TYPES.SUGGESTIONS) {
     return (
       <ItemButtonIcon
+        onClick={onAdd}
         bgColor={palette.grey940}
         style={{
           height: '26px',
@@ -67,7 +69,16 @@ const Actions = ({ type, entityType, onEdit, onDelete }) => {
   );
 };
 
-const CardType = ({ type, entityType, title = null, podColor = null, id = null, onEdit = null, onDelete = null }) => {
+const CardType = ({
+  type,
+  entityType,
+  title = null,
+  podColor = null,
+  id = null,
+  onEdit = null,
+  onDelete = null,
+  onAdd = null,
+}) => {
   const router = useRouter();
 
   const link =
@@ -80,7 +91,9 @@ const CardType = ({ type, entityType, title = null, podColor = null, id = null, 
             ...(entityType === ENTITIES_TYPES.MILESTONE ? { milestone: id } : { task: id }),
           },
         };
+  const CardItemWrapper = id ? UnstyledLink : 'div';
 
+  const CardItemAddProps = type === TYPES.SUGGESTIONS ? { onClick: onAdd } : {};
   return (
     <Grid
       display="flex"
@@ -98,11 +111,12 @@ const CardType = ({ type, entityType, title = null, podColor = null, id = null, 
       }}
       borderRadius="6px"
     >
-      <UnstyledLink
+      <CardItemWrapper
         href={link}
         style={{
           flexGrow: '1',
         }}
+        {...CardItemAddProps}
       >
         <Grid display="flex" gap="8px" alignItems="center">
           {entityType === ENTITIES_TYPES.POD ? (
@@ -118,9 +132,9 @@ const CardType = ({ type, entityType, title = null, podColor = null, id = null, 
             {title || 'None added yet'}
           </Typography>
         </Grid>
-      </UnstyledLink>
+      </CardItemWrapper>
       {type !== TYPES.EMPTY ? (
-        <Actions type={type} entityType={entityType} onEdit={onEdit} onDelete={onDelete} />
+        <Actions type={type} entityType={entityType} onEdit={onEdit} onDelete={onDelete} onAdd={onAdd} />
       ) : null}
     </Grid>
   );
@@ -130,6 +144,7 @@ const AddEntity = ({ entityType, nextStep }) => {
   const { setPageData } = useGlobalContext();
   const user = useMe();
   const { orgData } = useOrgBoard();
+  const [defaultData, setDefaultData] = useState(null);
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
 
   const [editTask, setEditTask] = useState(null);
@@ -179,9 +194,18 @@ const AddEntity = ({ entityType, nextStep }) => {
       return {
         [TYPES.ADD]: orgTasksData?.getOrgHomeTaskObjects?.bounties,
       };
-  }, [entityType, orgPodsData?.getOrgPods, orgTasksData?.getOrgHomeTaskObjects, orgMilestones?.getOrgHomeMilestones]);
+  }, [
+    entityType,
+    orgPodsData?.getOrgPods,
+    orgTasksData?.getOrgHomeTaskObjects,
+    orgMilestones?.getOrgHomeMilestones,
+    orgData?.category,
+  ]);
+
+  const suggestionsCategory = TASK_SUGGESTIONS[orgData?.category] || TASK_SUGGESTIONS.DEFAULT;
 
   const addItems = items[TYPES.ADD];
+  const suggestions = suggestionsCategory[entityType];
 
   const getEntityTypeEvent = () => {
     switch (entityType) {
@@ -205,9 +229,10 @@ const AddEntity = ({ entityType, nextStep }) => {
     return setPageData((prev) => ({ ...prev, createEntityType: null }));
   };
 
+  console.log(defaultData, 'DEF DATA');
   return (
     <>
-      <ChooseEntityToCreate shouldRedirect={false} handleClose={handlePostEntityCreate} />
+      <ChooseEntityToCreate shouldRedirect={false} handleClose={handlePostEntityCreate} defaults={defaultData} />
       {editTask ? (
         <CreateEntity
           open={editTask}
@@ -272,6 +297,25 @@ const AddEntity = ({ entityType, nextStep }) => {
                     onDelete={() => setDeleteTaskId(item?.id)}
                     id={item?.id}
                     podColor={item?.podColor}
+                  />
+                ))
+              ) : (
+                <CardType type={TYPES.EMPTY} entityType={entityType} />
+              )}
+            </Grid>
+            <Grid display="flex" flexDirection="column" gap="8px" width="100%">
+              <PageLabel fontSize="13px">Suggestions</PageLabel>
+              {suggestions?.length ? (
+                suggestions.map((item) => (
+                  <CardType
+                    type={TYPES.SUGGESTIONS}
+                    entityType={entityType}
+                    title={item?.title}
+                    id={item?.id}
+                    onAdd={() => {
+                      setDefaultData(item);
+                      openCreateEntityModal();
+                    }}
                   />
                 ))
               ) : (

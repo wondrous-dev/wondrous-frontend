@@ -123,7 +123,7 @@ export const isRichText = (text: string) => {
 };
 
 export const convertSlateNodesToPlate = (nodes) =>
-  nodes.reduce((acc, currentValue) => {
+  nodes?.reduce((acc, currentValue) => {
     const newValue = cloneDeep(currentValue);
     const heading = (newValue?.children || [])[0] || {};
 

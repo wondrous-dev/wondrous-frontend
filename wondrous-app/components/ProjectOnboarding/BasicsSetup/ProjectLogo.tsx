@@ -63,7 +63,7 @@ const ProjectLogo = () => {
 
   const onClick = async () => {
     let inputData = {};
-    if (data.profilePicture !== orgData?.profilePicture) {
+    if (data.profilePicture !== orgData?.profilePicture && data.profilePicture) {
       const { filename } = await transformAndUploadMedia({ file: data.profilePicture });
       inputData = {
         ...inputData,
@@ -76,7 +76,7 @@ const ProjectLogo = () => {
         description: ref?.current?.value,
       };
     }
-    if (data.headerPicture !== orgData?.headerPicture) {
+    if (data.headerPicture !== orgData?.headerPicture && data.headerPicture) {
       const { filename } = await transformAndUploadMedia({ file: data.headerPicture });
 
       inputData = {
