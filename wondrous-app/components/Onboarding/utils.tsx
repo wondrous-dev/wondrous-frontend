@@ -16,7 +16,7 @@ export const handleUserOnboardingRedirect = (user, router, inviteToken = null, i
   }
 
   const collabInviteQuery = collabInvite ? `?collabInvite=${collabInvite}` : '';
-  if (user?.signupCompleted || inviteToken) {
+  if (user?.signupCompleted) {
     router.push(defaultRoute, undefined, {
       shallow: true,
     });
