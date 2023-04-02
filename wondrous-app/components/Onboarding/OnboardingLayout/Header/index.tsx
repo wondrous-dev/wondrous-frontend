@@ -12,6 +12,7 @@ type Props = {
   secondVersionLogo?: boolean;
   withLoginButton?: boolean;
   withSignupButton?: boolean;
+  query?: any;
 };
 
 const styleSecondVersionLogoWrapper = {
@@ -28,9 +29,14 @@ const styleSecondVersionHeader = {
   display: 'inline-block',
 };
 
-function OnboardingHeader({ children, withLoginButton = false, withSignupButton = false, secondVersionLogo }: Props) {
+function OnboardingHeader({
+  children,
+  withLoginButton = false,
+  withSignupButton = false,
+  secondVersionLogo,
+  query = {},
+}: Props) {
   const router = useRouter();
-
   return (
     <Header style={secondVersionLogo ? styleSecondVersionHeader : null}>
       <Wonder style={secondVersionLogo ? styleSecondVersionLogoWrapper : null}>
@@ -41,7 +47,7 @@ function OnboardingHeader({ children, withLoginButton = false, withSignupButton 
         <Link
           href={{
             pathname: withSignupButton ? '/signup' : `/login`,
-            query: router.query,
+            query: { ...router.query, ...query },
           }}
           style={{ textDecoration: 'none' }}
         >

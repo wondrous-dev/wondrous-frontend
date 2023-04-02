@@ -182,7 +182,7 @@ export function Invite({
   return (
     <InviteWelcomeBoxWrapper>
       <div style={{ textAlign: 'center', width: '100%' }}>
-        <OnboardingHeader withLoginButton />
+        <OnboardingHeader withLoginButton query={podInfo ? { type: 'pod' } : {}} />
 
         {orgInfo || podInfo ? (
           <Logo>
