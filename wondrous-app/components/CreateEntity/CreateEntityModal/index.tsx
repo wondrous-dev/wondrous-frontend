@@ -171,8 +171,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         GR15DEISelected,
         proposalVoteType,
         customProposalChoices,
+        podIds,
         ...finalValues
       } = values;
+      const finalPodIds = podIds?.filter((i) => i !== null);
       let categories = values?.categories?.map((category) => category.id || category);
       if (GR15DEISelected) {
         if (!categories) {
@@ -207,6 +209,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               [recurrenceType]: recurrenceValue,
             },
           }),
+        podIds: finalPodIds,
       };
       handleMutation({ input, board, form, handleClose, existingTask, boardType, showTemplates });
     },
