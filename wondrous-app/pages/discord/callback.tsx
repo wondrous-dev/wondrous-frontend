@@ -11,6 +11,7 @@ import {
   USER_DISOCRD_SIGNUP_LOGIN,
 } from 'graphql/mutations';
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
+import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
 
 function Callback() {
   const router = useRouter();
@@ -27,7 +28,6 @@ function Callback() {
 
   const defaultRoute = parsedState?.collabInvite ? `/invite/collab/${collabInviteQueryString}` : '/mission-control';
 
-  console.log(parsedState);
   const returnToPage = useCallback(() => {
     let inviteToken;
     let inviteType = null;
@@ -254,17 +254,15 @@ function Callback() {
             await storeAuthHeader(token, discordUser);
             if (inviteToken) {
               // Either redeem pod invite or org invite
-              if (inviteType === 'pod') {
-                redeemPodInvite(inviteToken, discordUser);
-              } else {
-                redeemOrgInvite(inviteToken, discordUser);
-              }
-            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
+              return handleUserOnboardingRedirect(discordUser, router, inviteToken, inviteType);
+            }
+            if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
               // Only place to change this is in settings
-              router.push(defaultRoute, undefined, {
+              return router.push(defaultRoute, undefined, {
                 shallow: true,
               });
-            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
+            }
+            if (parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
               if (!discordUser?.username) {
                 router.push(`/onboarding/welcome${collabInviteQueryString}`, undefined, {
                   shallow: true,
