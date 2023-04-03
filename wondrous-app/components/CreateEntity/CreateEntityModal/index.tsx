@@ -7,7 +7,7 @@ import formatDate from 'date-fns/format';
 import apollo from 'services/apollo';
 
 import { useFormik } from 'formik';
-import { TURN_TASK_TO_BOUNTY } from 'graphql/mutations/task';
+import { CREATE_TASK_TEMPLATE, TURN_TASK_TO_BOUNTY, UPDATE_TASK_TEMPLATE } from 'graphql/mutations/task';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_MINIMAL_TASK_BY_ID } from 'graphql/queries/task';
 
@@ -34,6 +34,7 @@ import {
 import { extractMentions } from 'components/PlateRichEditor/utils';
 import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
 import { useSnapshot } from 'services/snapshot';
+import { PlateProvider } from '@udecode/plate';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import Footer from './Footer';
 import {
@@ -51,11 +52,26 @@ import {
 import { CreateEntityForm, SnapshotButtonBlock, SnapshotErrorText } from './styles';
 
 import FormBody from './FormBody';
+import TemplateBody from './TemplateBody';
+
 import Header from './Header';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status, setFormDirty } = props;
+  const {
+    entityType,
+    handleClose,
+    cancel,
+    existingTask,
+    parentTaskId,
+    formValues,
+    status,
+    setFormDirty,
+    shouldShowTemplates,
+    defaults = null,
+  } = props;
+
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(shouldShowTemplates);
   const isSubtask =
     parentTaskId !== undefined || (existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null);
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
@@ -70,6 +86,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     podBoard,
     userBoard,
   });
+
   const initialRecurrenceValue =
     existingTask?.recurringSchema?.daily ||
     existingTask?.recurringSchema?.weekly ||
@@ -84,6 +101,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
   const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
+  const [taskTemplate, setTaskTemplate] = useState(null);
   const router = useRouter();
   const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
   const { podId: routerPodId } = router.query;
@@ -95,7 +113,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
-  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const { data: userOrgs } = useQuery(GET_USER_ORGS, {
+    fetchPolicy: 'network-only',
+  });
   const filteredDaoOptions = filterOptionsWithPermission(
     entityType,
     userOrgs?.getUserOrgs,
@@ -103,6 +123,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     undefined,
     board?.podId
   );
+
   const { handleMutation, loading }: any = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
@@ -112,6 +133,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      'getOrgHomeMilestones',
+      'getOrgHomeTaskObjects',
     ],
   });
 
@@ -120,7 +143,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const initialPodId = !existingTask ? board?.podId || routerPodId : null;
   const form: any = useFormik({
-    initialValues: initialValues({ entityType, existingTask, initialPodId }),
+    initialValues: initialValues({ entityType, existingTask, initialPodId, defaults }),
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: formValidationSchema,
@@ -148,8 +171,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         GR15DEISelected,
         proposalVoteType,
         customProposalChoices,
+        podIds,
         ...finalValues
       } = values;
+      const finalPodIds = podIds?.filter((i) => i !== null);
       let categories = values?.categories?.map((category) => category.id || category);
       if (GR15DEISelected) {
         if (!categories) {
@@ -184,11 +209,115 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               [recurrenceType]: recurrenceValue,
             },
           }),
+        podIds: finalPodIds,
       };
-      handleMutation({ input, board, pods, form, handleClose, existingTask, boardType });
+      handleMutation({ input, board, form, handleClose, existingTask, boardType, showTemplates });
     },
   });
 
+  const [createTaskTemplate, { data: createdTaskTemplate, loading: createTaskLoading }] = useMutation(
+    CREATE_TASK_TEMPLATE,
+    {
+      refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates', 'getPodTaskTemplates'],
+    }
+  );
+
+  const [updateTaskTemplate, { data: updatedTaskTemplate, loading: updateTaskLoading }] = useMutation(
+    UPDATE_TASK_TEMPLATE,
+    {
+      refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates', 'getPodTaskTemplates'],
+    }
+  );
+
+  const taskTemplateSaved = createdTaskTemplate || updatedTaskTemplate;
+  const taskTemplateLoading = createTaskLoading || updateTaskLoading;
+  const handleSaveTemplate = () => {
+    const rewards = isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+
+    const description = JSON.stringify(form.values.description);
+    if (form?.values?.podId) {
+      createTaskTemplate({
+        variables: {
+          input: {
+            title: form.values.title,
+            assigneeId: form.values.assigneeId,
+            reviewerIds: form.values.reviewerIds,
+            rewards,
+            points: parseInt(form.values.points),
+            description,
+            orgId: form?.values?.orgId,
+            podId: form.values.podId,
+          },
+        },
+      });
+    } else {
+      createTaskTemplate({
+        variables: {
+          input: {
+            title: form.values.title,
+            assigneeId: form.values.assigneeId,
+            reviewerIds: form.values.reviewerIds,
+            rewards,
+            points: parseInt(form.values.points),
+            description,
+            orgId: form.values.orgId,
+          },
+        },
+      });
+    }
+  };
+  const handleEditTemplate = (template) => {
+    const rewards = isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+    const description = JSON.stringify(form.values.description);
+    if (!template?.podId && form.values.podId) {
+      // Create a new template for that pod
+      createTaskTemplate({
+        variables: {
+          input: {
+            title: form.values.title,
+            assigneeId: form.values.assigneeId,
+            reviewerIds: form.values.reviewerIds,
+            rewards,
+            points: parseInt(form.values.points),
+            description,
+            orgId: form?.values?.orgId,
+            podId: form.values.podId,
+          },
+        },
+      }).catch((err) => {
+        console.error(err);
+      });
+    } else {
+      updateTaskTemplate({
+        variables: {
+          taskTemplateId: template?.id,
+          input: {
+            title: form.values.title,
+            assigneeId: form.values.assigneeId,
+            reviewerIds: form.values.reviewerIds,
+            rewards,
+            points: parseInt(form.values.points, 10),
+            description,
+            ...(template?.podId && { podId: template?.podId }),
+          },
+        },
+      });
+    }
+  };
   const pods = useGetAvailableUserPods(form.values.orgId);
 
   const { isFullScreen, toggleFullScreen } = useFullScreen();
@@ -377,6 +506,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   return (
     <CreateEntityForm
+      style={showTemplates ? { maxWidth: '90%' } : { maxWidth: '600px' }}
       onSubmit={(e) => {
         // necessary for the plate editor
         e.preventDefault();
@@ -429,6 +559,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         handlePodChange={handlePodChange}
         toggleFullScreen={toggleFullScreen}
         cancel={cancel}
+        showTemplates={showTemplates}
+        setShowTemplates={setShowTemplates}
       />
       {snapshotConnected && isProposal && (
         <SnapshotButtonBlock>
@@ -467,23 +599,47 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           )}
         </SnapshotButtonBlock>
       )}
-      <FormBody
-        form={form}
-        initialRecurrenceValue={initialRecurrenceValue}
-        initialRecurrenceType={initialRecurrenceType}
-        existingTask={existingTask}
-        pods={pods}
-        ref={inputRef}
-        entityType={entityType}
-        handleClose={handleClose}
-        isSubtask={isSubtask}
-        fileUploadLoading={fileUploadLoading}
-        setFileUploadLoading={setFileUploadLoading}
-        setTurnTaskToBountyModal={setTurnTaskToBountyModal}
-        formValues={formValues}
-        fetchedUserPermissionsContext={fetchedUserPermissionsContext}
-        handlePodChange={handlePodChange}
-      />
+      {showTemplates ? (
+        <PlateProvider initialValue={form?.values?.description}>
+          <TemplateBody
+            form={form}
+            initialRecurrenceValue={initialRecurrenceValue}
+            initialRecurrenceType={initialRecurrenceType}
+            existingTask={existingTask}
+            pods={pods}
+            ref={inputRef}
+            entityType={entityType}
+            handleClose={handleClose}
+            isSubtask={isSubtask}
+            fileUploadLoading={fileUploadLoading}
+            setFileUploadLoading={setFileUploadLoading}
+            setTurnTaskToBountyModal={setTurnTaskToBountyModal}
+            formValues={formValues}
+            fetchedUserPermissionsContext={fetchedUserPermissionsContext}
+            handlePodChange={handlePodChange}
+            setTaskTemplate={setTaskTemplate}
+            board={board}
+          />
+        </PlateProvider>
+      ) : (
+        <FormBody
+          form={form}
+          initialRecurrenceValue={initialRecurrenceValue}
+          initialRecurrenceType={initialRecurrenceType}
+          existingTask={existingTask}
+          pods={pods}
+          ref={inputRef}
+          entityType={entityType}
+          handleClose={handleClose}
+          isSubtask={isSubtask}
+          fileUploadLoading={fileUploadLoading}
+          setFileUploadLoading={setFileUploadLoading}
+          setTurnTaskToBountyModal={setTurnTaskToBountyModal}
+          formValues={formValues}
+          fetchedUserPermissionsContext={fetchedUserPermissionsContext}
+          handlePodChange={handlePodChange}
+        />
+      )}
       <Footer
         fileUploadLoading={fileUploadLoading}
         form={form}
@@ -492,6 +648,12 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         cancel={cancel}
         ref={inputRef}
         hasExistingTask={!!existingTask}
+        showTemplates={showTemplates}
+        taskTemplate={taskTemplate}
+        handleEditTemplate={handleEditTemplate}
+        handleSaveTemplate={handleSaveTemplate}
+        taskTemplateSaved={taskTemplateSaved}
+        taskTemplateLoading={taskTemplateLoading}
       />
     </CreateEntityForm>
   );

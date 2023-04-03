@@ -183,3 +183,11 @@ export const DISCONNECT_OTTERSPACE_TO_ORG = gql`
     }
   }
 `;
+
+export const VERIFY_ORG_TWITTER = gql`
+  mutation verifyOrgTwitter($orgId: ID!, $code: String) {
+    verifyOrgTwitter(orgId: $orgId, code: $code) {
+      success
+    }
+  }
+`;

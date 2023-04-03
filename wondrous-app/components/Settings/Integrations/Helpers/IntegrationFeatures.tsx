@@ -5,13 +5,18 @@ import typography from 'theme/typography';
 import { INTEGRATION_FEATURES } from '../constants';
 import { Label } from '../styles';
 
-const IntegrationFeatures = ({ type }) => {
-  const features = INTEGRATION_FEATURES[type];
+const IntegrationFeatures = ({
+  type = null,
+  label = 'What the integration can do',
+  features = null,
+  typographyStyles = {},
+}) => {
+  const items = features || INTEGRATION_FEATURES[type];
   if (!features?.length) return null;
   return (
     <Grid display="flex" direction="column" gap="14px" justifyContent="flex-start">
-      <Label>What the integration can do</Label>
-      {features?.map((feature) => (
+      <Label>{label}</Label>
+      {items?.map((feature) => (
         <Grid display="flex" alignItems="center" gap="6px">
           <Grid
             bgcolor={palette.grey78}
@@ -30,6 +35,7 @@ const IntegrationFeatures = ({ type }) => {
             fontWeight={500}
             lineHeight="24px"
             fontFamily={typography.fontFamily}
+            {...typographyStyles}
           >
             {feature}
           </Typography>
