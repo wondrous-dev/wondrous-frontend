@@ -30,7 +30,7 @@ export const GET_POD_HOME_TASK_OBJECTS = gql`
   ${HomePageTaskCardFragment}
 `;
 
-export const GET_ORG_HOME_MILESTONS = gql`
+export const GET_ORG_HOME_MILESTONES = gql`
   query getOrgHomeMilestones($input: OrgHomePageQueryInput) {
     getOrgHomeMilestones(input: $input) {
       id

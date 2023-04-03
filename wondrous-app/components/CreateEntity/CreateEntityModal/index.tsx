@@ -67,6 +67,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     status,
     setFormDirty,
     shouldShowTemplates,
+    defaults = null,
   } = props;
 
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -85,6 +86,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     podBoard,
     userBoard,
   });
+
   const initialRecurrenceValue =
     existingTask?.recurringSchema?.daily ||
     existingTask?.recurringSchema?.weekly ||
@@ -111,7 +113,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
-  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const { data: userOrgs } = useQuery(GET_USER_ORGS, {
+    fetchPolicy: 'network-only',
+  });
   const filteredDaoOptions = filterOptionsWithPermission(
     entityType,
     userOrgs?.getUserOrgs,
@@ -119,6 +123,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     undefined,
     board?.podId
   );
+
   const { handleMutation, loading }: any = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
@@ -128,6 +133,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      'getOrgHomeMilestones',
+      'getOrgHomeTaskObjects',
     ],
   });
 
@@ -136,7 +143,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const initialPodId = !existingTask ? board?.podId || routerPodId : null;
   const form: any = useFormik({
-    initialValues: initialValues({ entityType, existingTask, initialPodId }),
+    initialValues: initialValues({ entityType, existingTask, initialPodId, defaults }),
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: formValidationSchema,
@@ -164,8 +171,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         GR15DEISelected,
         proposalVoteType,
         customProposalChoices,
+        podIds,
         ...finalValues
       } = values;
+      const finalPodIds = podIds?.filter((i) => i !== null);
       let categories = values?.categories?.map((category) => category.id || category);
       if (GR15DEISelected) {
         if (!categories) {
@@ -200,6 +209,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               [recurrenceType]: recurrenceValue,
             },
           }),
+        podIds: finalPodIds,
       };
       handleMutation({ input, board, form, handleClose, existingTask, boardType, showTemplates });
     },

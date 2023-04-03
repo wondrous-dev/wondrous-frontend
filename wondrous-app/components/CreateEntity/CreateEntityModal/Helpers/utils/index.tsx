@@ -335,10 +335,11 @@ export const entityTypeData = {
   },
 };
 
-export const initialValues = ({ entityType, existingTask = null, initialPodId = null }) => {
+export const initialValues = ({ entityType, existingTask = null, initialPodId = null, defaults = {} }) => {
   const defaultValues = assignIn(
     cloneDeep(entityTypeData[entityType]?.initialValues),
-    entityType === ENTITIES_TYPES.MILESTONE ? { podIds: [initialPodId] } : { podId: initialPodId }
+    defaults,
+    entityType === ENTITIES_TYPES.MILESTONE ? { podIds: initialPodId ? [initialPodId] : [] } : { podId: initialPodId }
   );
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
@@ -378,6 +379,7 @@ export interface ICreateEntityModal {
   handleClose: Function;
   cancel: Function;
   shouldShowTemplates?: boolean;
+  defaults?: any;
   existingTask?: {
     priority: string | void;
     id: string;

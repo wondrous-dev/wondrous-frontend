@@ -33,5 +33,4 @@ export const ProgressBarValue = styled.div`
     props.color ||
     `linear-gradient(269.92deg, ${palette.white} -20.02%, ${palette.highlightBlue} -1.88%, ${palette.violet90} 57.38%) `};
   border-radius: inherit;
-  ${({ color }) => color && `box-shadow: 2px 0 4px ${color}`}
 `;
