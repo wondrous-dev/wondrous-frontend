@@ -1,7 +1,19 @@
-export const handleUserOnboardingRedirect = (user, router) => {
-  const { collabInvite } = router.query;
+export const handleUserOnboardingRedirect = (user, router, inviteToken = null, inviteType = null) => {
+  const { collabInvite, token, type } = router.query;
 
-  const defaultRoute = collabInvite ? `/invite/collab/${collabInvite}` : '/mission-control';
+  const discordOrRouterToken = inviteToken || token;
+
+  const discordOrRouterType = inviteType || type;
+
+  let defaultRoute = collabInvite ? `/invite/collab/${collabInvite}` : '/mission-control';
+
+  if (discordOrRouterToken) {
+    defaultRoute = `/invite/${discordOrRouterToken}`;
+  }
+
+  if (discordOrRouterType === 'pod') {
+    defaultRoute = `/invite/pod/${discordOrRouterToken}`;
+  }
 
   const collabInviteQuery = collabInvite ? `?collabInvite=${collabInvite}` : '';
   if (user?.signupCompleted) {

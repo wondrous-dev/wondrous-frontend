@@ -84,7 +84,7 @@ function PodInviteLinkModal(props) {
 
   const [createPodInviteLink] = useMutation(CREATE_POD_INVITE_LINK, {
     onCompleted: (data) => {
-      setInviteLink(`${LINK}/invite/${data?.createPodInviteLink.token}`);
+      setInviteLink(`${LINK}/invite/pod/${data?.createPodInviteLink.token}`);
     },
     onError: (e) => {
       console.error(e);
@@ -108,7 +108,7 @@ function PodInviteLinkModal(props) {
 
   const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
   const searchedUserList = searchOrgUserResults?.searchOrgUsers;
-  
+
   const [getPodUsers, { fetchMore: fetchMorePodUsers }] = useLazyQuery(GET_POD_USERS, {
     fetchPolicy: 'network-only',
   });
@@ -242,8 +242,8 @@ function PodInviteLinkModal(props) {
       userId: invitee?.user?.id,
       roleId: invitee?.role?.id,
     }));
-    let addUserPromise
-    let sendEmailPromise
+    let addUserPromise;
+    let sendEmailPromise;
     if (userIdandRoleId?.length > 0) {
       addUserPromise = batchAddUsers({
         variables: {
@@ -264,7 +264,7 @@ function PodInviteLinkModal(props) {
         },
       });
     }
-    await Promise.all([sendEmailPromise, addUserPromise])
+    await Promise.all([sendEmailPromise, addUserPromise]);
 
     handleOnClose();
   };
@@ -340,14 +340,11 @@ function PodInviteLinkModal(props) {
                 ev.preventDefault();
                 if (validateEmail(inputText)) {
                   handleAddUserToList(inputText, 'email');
-                }
-                else if (searchedUserList?.length) {
+                } else if (searchedUserList?.length) {
                   handleAddUserToList(searchedUserList[0], 'user');
                 }
               }
-            }
-            }
-
+            }}
             InputProps={{
               disableUnderline: true,
               endAdornment: (

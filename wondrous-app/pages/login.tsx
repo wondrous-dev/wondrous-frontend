@@ -34,16 +34,18 @@ function Login({ csrfToken }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [notSupportedChain, setNotSupportedChain] = useState(false);
   const [loading, setLoading] = useState(null);
+
   const isMobile = useIsMobile();
   const router = useRouter();
-  const { discordConnectError, collabInvite } = router.query;
-
-  const collabInviteQuery = collabInvite ? `?collabInvite=${collabInvite}` : '';
+  const { discordConnectError, collabInvite, token, type } = router.query;
 
   const state = JSON.stringify({
     callbackType: DISCORD_CONNECT_TYPES.login,
     ...(collabInvite ? { collabInvite } : {}),
+    ...(token ? { token } : {}),
+    ...(type ? { type } : {}),
   });
+
   const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
   const handleSubmit = async (event) => {
@@ -73,16 +75,7 @@ function Login({ csrfToken }) {
           try {
             const user = await walletSignin(wonderWeb3.address, signedMessage);
             if (user) {
-              if (user?.username) {
-                const route = collabInvite ? `/invite/collab/${collabInvite}` : '/mission-control';
-                router.push(route, undefined, {
-                  shallow: true,
-                });
-              } else {
-                router.push(`/onboarding/welcome${collabInviteQuery}`, undefined, {
-                  shallow: true,
-                });
-              }
+              handleUserOnboardingRedirect(user, router);
             }
           } catch (err) {
             console.log('err?.graphQLErrors', err?.graphQLErrors);

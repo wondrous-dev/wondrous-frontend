@@ -377,14 +377,16 @@ export const useCreateTask = () => {
     onCompleted: ({ createTask: createTaskData }) => setCornerWidgetValue(createTaskData),
   });
 
-  const handleMutation = ({ input, board, pods, form, handleClose }) =>
+  const handleMutation = ({ input, showTemplates, handleClose }) =>
     createTask({
       variables: {
         input,
       },
     })
       .then(() => {
-        handleClose();
+        if (!showTemplates) {
+          handleClose();
+        }
       })
       .catch((e) => console.error(e));
 

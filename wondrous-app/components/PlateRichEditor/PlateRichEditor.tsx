@@ -1,4 +1,4 @@
-import React, { CSSProperties, useMemo, useState } from 'react';
+import React, { CSSProperties, useEffect, useMemo, useState } from 'react';
 import { PlateStyles, StickyTopSection } from 'components/PlateRichEditor/styles';
 import { convertSlateNodesToPlate } from 'components/PlateRichEditor/utils';
 import {
@@ -29,6 +29,7 @@ import {
   PlateProvider,
   StyledElement,
   TEditableProps,
+  useResetPlateEditor,
   withProps,
 } from '@udecode/plate';
 import { Descendant } from 'slate';
@@ -57,6 +58,7 @@ interface Props {
   mediaUploads?: () => void;
   placeholder?: string;
   message?: string;
+  initialValue?: TextEditorValue | Descendant[];
 }
 
 const headingStyles: CSSProperties = {
@@ -111,6 +113,17 @@ const components = createPlateUI({
   }),
 });
 
+const ResetEditorOnValueChange = ({ value }) => {
+  const resetPlateEditor = useResetPlateEditor();
+
+  useEffect(() => {
+    if (value) {
+      resetPlateEditor();
+    }
+  }, [value, resetPlateEditor]);
+
+  return null;
+};
 const PlateRichEditor = ({
   mentionables,
   id,
@@ -118,6 +131,7 @@ const PlateRichEditor = ({
   onChange,
   mediaUploads,
   placeholder = 'Type...',
+  initialValue = null,
   message,
 }: Props) => {
   // State to keep track of the conversion status of nodes
@@ -202,7 +216,6 @@ const PlateRichEditor = ({
       ),
     []
   );
-
   return (
     <PlateStyles>
       <PlateProvider<TextEditorValue> plugins={plugins} onChange={handleChange} value={value} id={id}>
@@ -218,6 +231,7 @@ const PlateRichEditor = ({
         </StickyTopSection>
 
         <Plate editableProps={editableProps} id={id}>
+          <ResetEditorOnValueChange value={initialValue} />
           <MarkBalloonToolbar />
           <MentionCombobox items={customMentionables} />
           <MentionCombobox pluginKey="/" items={slashCommandItems} />

@@ -377,6 +377,7 @@ export interface ICreateEntityModal {
   entityType: string;
   handleClose: Function;
   cancel: Function;
+  shouldShowTemplates?: boolean;
   existingTask?: {
     priority: string | void;
     id: string;

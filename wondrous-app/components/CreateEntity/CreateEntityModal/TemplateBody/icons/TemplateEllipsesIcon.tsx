@@ -4,7 +4,7 @@ import {
   TaskTemplateOptionsDeleteLabel,
   TaskTemplateOptionsLabel,
   TemplateOptionsPopper,
-} from './styles';
+} from '../styles';
 
 export default function TemplateEllipsesIcon({
   templateId,
@@ -25,7 +25,7 @@ export default function TemplateEllipsesIcon({
   const open = Boolean(anchorEl);
 
   return (
-    <div style={{ zIndex: 9999 }}>
+    <div style={{ zIndex: 9999, position: 'absolute', top: '8px', right: '8px' }}>
       <TaskTemplateEllipsesIcon onClick={handleClick} />
       <TemplateOptionsPopper open={open} placement="bottom-end" anchorEl={anchorEl}>
         <TaskTemplateOptionsLabel

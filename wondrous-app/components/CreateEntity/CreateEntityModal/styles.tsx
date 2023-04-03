@@ -66,7 +66,7 @@ export const CreateEntityForm = styled.form`
 
 export const CreateEntityHeader = styled.div`
   height: fit-content;
-  background-color: #171717;
+  background-color: ${palette.grey87};
   display: flex;
   align-items: flex-start;
   padding: 12px 24px;
@@ -146,13 +146,16 @@ export const CreateEntityOption = styled(OptionUnstyled)`
 export const CreateEntityOptionImageWrapper = styled.div`
   display: flex;
   align-items: center;
+  border-radius: 4px;
   img {
     width: 20px;
     height: 20px;
+    border-radius: 2px;
   }
   svg {
     width: 20px;
     height: 20px;
+    border-radius: 2px;
   }
 `;
 
@@ -277,7 +280,8 @@ export const CreateEntityHeaderArrowIcon = styled((props) => (
 `;
 
 export const CreateEntityBody = styled.div`
-  padding: 24px;
+  padding: 16px;
+  padding-bottom: 8px;
 `;
 
 export const CreateEntityTitle = styled(TextareaAutosize)`
@@ -355,6 +359,15 @@ export const CreateEntitySelectErrorWrapper = styled.div`
 
   > button {
     min-width: fit-content;
+  }
+`;
+
+export const TemplatesGalleryText = styled(Typography)`
+  && {
+    font-size: 16px;
+    color: ${palette.white};
+    font-weight: 500;
+    margin-left: -12px;
   }
 `;
 
@@ -823,6 +836,7 @@ export const CreateEntityDivider = styled.div`
 export const MediaUploadDiv = styled.div`
   display: flex;
   align-items: center;
+  margin-top: 4px;
   margin-bottom: -8px;
   flex-flow: wrap;
 `;
