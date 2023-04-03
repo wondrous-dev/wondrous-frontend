@@ -1,4 +1,9 @@
 import OnboardingSvg from 'components/CreateEntity/CreateEntityModal/TemplateBody/icons/onboarding.svg';
+import CommunitySvg from 'components/CreateEntity/CreateEntityModal/TemplateBody/icons/community.svg';
+import ContentSvg from 'components/CreateEntity/CreateEntityModal/TemplateBody/icons/content.svg';
+import GovernanceSvg from 'components/CreateEntity/CreateEntityModal/TemplateBody/icons/governance.svg';
+import PartnershipsSvg from 'components/CreateEntity/CreateEntityModal/TemplateBody/icons/partnerships.svg';
+import EngineeringSvg from 'components/CreateEntity/CreateEntityModal/TemplateBody/icons/engineering.svg';
 
 export const PRESET_TEMPLATES = {
   Onboarding: {
@@ -199,6 +204,7 @@ export const PRESET_TEMPLATES = {
         ],
       },
     ],
+    icon: <CommunitySvg />,
   },
   Governance: {
     templates: [
@@ -259,6 +265,7 @@ export const PRESET_TEMPLATES = {
         ],
       },
     ],
+    icon: <GovernanceSvg />,
   },
   Content: {
     templates: [
@@ -379,6 +386,7 @@ export const PRESET_TEMPLATES = {
         ],
       },
     ],
+    icon: <ContentSvg />,
   },
   Partnerships: {
     templates: [
@@ -406,6 +414,7 @@ export const PRESET_TEMPLATES = {
         ],
       },
     ],
+    icon: <PartnershipsSvg />,
   },
   Engineering: {
     templates: [
@@ -440,5 +449,6 @@ export const PRESET_TEMPLATES = {
         ],
       },
     ],
+    icon: <EngineeringSvg />,
   },
 };

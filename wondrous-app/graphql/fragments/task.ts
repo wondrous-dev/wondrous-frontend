@@ -658,6 +658,10 @@ export const TaskTemplateFragment = gql`
     podId
     assigneeId
     description
+    pod {
+      name
+      color
+    }
     assignee {
       username
       profilePicture
@@ -674,6 +678,7 @@ export const TaskTemplateFragment = gql`
       tokenName
       chain
     }
+    reviewerIds
     points
   }
 `;

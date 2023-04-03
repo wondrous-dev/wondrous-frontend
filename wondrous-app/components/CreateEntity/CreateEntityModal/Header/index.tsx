@@ -212,25 +212,27 @@ const Header = ({
           marginLeft: showTemplates ? '16px' : 0,
         }}
       >
-        <Button
-          color="grey"
-          borderRadius={6}
-          textColor={palette.white}
-          height={34}
-          buttonTheme={{
-            fontWeight: '500',
-            fontSize: '13px',
-            paddingX: 10,
-          }}
-          // @ts-ignore
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            setShowTemplates(!showTemplates);
-          }}
-        >
-          {showTemplates ? 'Hide' : 'Show'} templates
-        </Button>
+        {(entityType === ENTITIES_TYPES.TASK || entityType === ENTITIES_TYPES.BOUNTY) && (
+          <Button
+            color="grey"
+            borderRadius={6}
+            textColor={palette.white}
+            height={34}
+            buttonTheme={{
+              fontWeight: '500',
+              fontSize: '13px',
+              paddingX: 10,
+            }}
+            // @ts-ignore
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setShowTemplates(!showTemplates);
+            }}
+          >
+            {showTemplates ? 'Hide' : 'Show'} templates
+          </Button>
+        )}
         <Tooltip title="Full screen" placement="top">
           <Box>
             <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />

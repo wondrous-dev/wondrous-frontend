@@ -4,7 +4,7 @@ import {
   TaskTemplateOptionsDeleteLabel,
   TaskTemplateOptionsLabel,
   TemplateOptionsPopper,
-} from './styles';
+} from '../styles';
 
 export default function TemplateEllipsesIcon({
   templateId,

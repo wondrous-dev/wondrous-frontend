@@ -208,14 +208,14 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const [createTaskTemplate, { data: createdTaskTemplate, loading: createTaskLoading }] = useMutation(
     CREATE_TASK_TEMPLATE,
     {
-      refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
+      refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates', 'getPodTaskTemplates'],
     }
   );
 
   const [updateTaskTemplate, { data: updatedTaskTemplate, loading: updateTaskLoading }] = useMutation(
     UPDATE_TASK_TEMPLATE,
     {
-      refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
+      refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates', 'getPodTaskTemplates'],
     }
   );
 
@@ -232,24 +232,38 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         ];
 
     const description = JSON.stringify(form.values.description);
-    createTaskTemplate({
-      variables: {
-        input: {
-          title: form.values.title,
-          assigneeId: form.values.assigneeId,
-          reviewerIds: form.values.reviewerIds,
-          rewards,
-          points: parseInt(form.values.points),
-          description,
-          orgId: form.values.orgId,
-          podId: form.values.podId,
+    if (form?.values?.podId) {
+      createTaskTemplate({
+        variables: {
+          input: {
+            title: form.values.title,
+            assigneeId: form.values.assigneeId,
+            reviewerIds: form.values.reviewerIds,
+            rewards,
+            points: parseInt(form.values.points),
+            description,
+            orgId: form?.values?.orgId,
+            podId: form.values.podId,
+          },
         },
-      },
-    }).catch((err) => {
-      console.error(err);
-    });
+      });
+    } else {
+      createTaskTemplate({
+        variables: {
+          input: {
+            title: form.values.title,
+            assigneeId: form.values.assigneeId,
+            reviewerIds: form.values.reviewerIds,
+            rewards,
+            points: parseInt(form.values.points),
+            description,
+            orgId: form.values.orgId,
+          },
+        },
+      });
+    }
   };
-  const handleEditTemplate = (templateId) => {
+  const handleEditTemplate = (template) => {
     const rewards = isEmpty(form.values.rewards)
       ? []
       : [
@@ -258,22 +272,41 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
           },
         ];
-
     const description = JSON.stringify(form.values.description);
-    updateTaskTemplate({
-      variables: {
-        taskTemplateId: templateId,
-        input: {
-          title: form.values.title,
-          assigneeId: form.values.assigneeId,
-          reviewerIds: form.values.reviewerIds,
-          rewards,
-          points: parseInt(form.values.points, 10),
-          description,
-          podId: form.values.podId,
+    if (!template?.podId && form.values.podId) {
+      // Create a new template for that pod
+      createTaskTemplate({
+        variables: {
+          input: {
+            title: form.values.title,
+            assigneeId: form.values.assigneeId,
+            reviewerIds: form.values.reviewerIds,
+            rewards,
+            points: parseInt(form.values.points),
+            description,
+            orgId: form?.values?.orgId,
+            podId: form.values.podId,
+          },
         },
-      },
-    });
+      }).catch((err) => {
+        console.error(err);
+      });
+    } else {
+      updateTaskTemplate({
+        variables: {
+          taskTemplateId: template?.id,
+          input: {
+            title: form.values.title,
+            assigneeId: form.values.assigneeId,
+            reviewerIds: form.values.reviewerIds,
+            rewards,
+            points: parseInt(form.values.points, 10),
+            description,
+            ...(template?.podId && { podId: template?.podId }),
+          },
+        },
+      });
+    }
   };
   const pods = useGetAvailableUserPods(form.values.orgId);
 
