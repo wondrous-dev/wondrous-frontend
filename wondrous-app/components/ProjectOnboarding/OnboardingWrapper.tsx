@@ -102,7 +102,7 @@ const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySideba
       const { orgId, ...rest } = orgData;
       const { data } = await updateOrg({
         variables: {
-          orgId: orgData.orgId,
+          orgId,
           input: {
             ...rest,
             ...input,
