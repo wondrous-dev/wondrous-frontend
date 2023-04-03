@@ -99,7 +99,16 @@ const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySideba
 
   const handleOrgUpdate = async (input) => {
     try {
-      const { data } = await updateOrg({ variables: { orgId: orgData.orgId, input } });
+      const { orgId, ...rest } = orgData;
+      const { data } = await updateOrg({
+        variables: {
+          orgId: orgData.orgId,
+          input: {
+            ...rest,
+            ...input,
+          },
+        },
+      });
       return data;
     } catch (error) {
       console.log(error, 'error');
