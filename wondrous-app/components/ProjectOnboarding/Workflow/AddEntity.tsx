@@ -18,7 +18,7 @@ import EditIcon from 'components/Icons/editIcon';
 import { UnstyledLink } from 'components/WorkspacePicker/styles';
 import { GET_ORG_HOME_MILESTONES, GET_ORG_HOME_TASK_OBJECTS } from 'graphql/queries/projectPage';
 import { useRouter } from 'next/router';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ANALYTIC_EVENTS, ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext, useOrgBoard } from 'utils/hooks';
 import { ButtonsPanel, sendAnalyticsData } from '../Shared';
@@ -141,7 +141,7 @@ const CardType = ({
 };
 
 const AddEntity = ({ entityType, nextStep }) => {
-  const { setPageData } = useGlobalContext();
+  const { setPageData, pageData } = useGlobalContext();
   const user = useMe();
   const { orgData } = useOrgBoard();
   const [defaultData, setDefaultData] = useState(null);
@@ -220,19 +220,32 @@ const AddEntity = ({ entityType, nextStep }) => {
     }
   };
 
+  const handleClose = () => {
+    setPageData((prev) => ({ ...prev, createEntityType: null }));
+    setDefaultData(null);
+  };
+
+  useEffect(() => {
+    if (!pageData?.createEntityType && defaultData) return setDefaultData(null);
+  }, [pageData?.createEntityType, defaultData]);
+
   const handlePostEntityCreate = () => {
     const entityEvent = getEntityTypeEvent();
     sendAnalyticsData(entityEvent, {
       orgId: orgData?.orgId,
       userId: user?.id,
     });
-    setDefaultData(null);
-    return setPageData((prev) => ({ ...prev, createEntityType: null }));
+    return handleClose();
   };
 
   return (
     <>
-      <ChooseEntityToCreate shouldRedirect={false} handleClose={handlePostEntityCreate} defaults={defaultData} />
+      <ChooseEntityToCreate
+        shouldRedirect={false}
+        handleClose={handlePostEntityCreate}
+        defaults={defaultData}
+        handleCloseModal={handleClose}
+      />
       {editTask ? (
         <CreateEntity
           open={editTask}
@@ -243,7 +256,9 @@ const AddEntity = ({ entityType, nextStep }) => {
           handleClose={() => {
             setEditTask(false);
           }}
-          cancel={() => setEditTask(false)}
+          cancel={() => {
+            setEditTask(false);
+          }}
           existingTask={editTask}
         />
       ) : null}

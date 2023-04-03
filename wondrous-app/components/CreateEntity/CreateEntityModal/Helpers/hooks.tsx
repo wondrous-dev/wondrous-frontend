@@ -92,7 +92,7 @@ export const onCorrectPage = (existingTask, board) => {
 
 export const getPodObject = (pods, podId) => {
   let justCreatedPod = null;
-  pods.forEach((testPod) => {
+  pods?.forEach((testPod) => {
     if (testPod.id === podId) {
       justCreatedPod = testPod;
     }
