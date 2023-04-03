@@ -39,8 +39,15 @@ import {
   DeleteBox,
 } from './styles';
 
-function OrgInviteLinkModal(props) {
-  const { orgId, open, onClose } = props;
+export function OrgInviteLinkComponent(props) {
+  const {
+    orgId,
+    onClose,
+    gradientStyles = {},
+    hideDivider = false,
+    postEmailInvite = null,
+    postInviteLinkCreate = null,
+  } = props;
   const isMobile = useIsMobile();
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
   const [copied, setCopied] = useState(false);
@@ -63,6 +70,7 @@ function OrgInviteLinkModal(props) {
   const [sendOrgEmailInvites] = useMutation(SEND_ORG_EMAIL_INVITES, {
     onCompleted: (data) => {
       console.log(data);
+      postEmailInvite?.();
     },
     onError: (e) => {
       console.error(e);
@@ -94,7 +102,7 @@ function OrgInviteLinkModal(props) {
   });
 
   const handleOnClose = () => {
-    onClose();
+    onClose?.();
     setCopied(false);
     setInviteLink('');
     setActiveRoleId(null);
@@ -105,33 +113,32 @@ function OrgInviteLinkModal(props) {
   const handleOnCopy = () => {
     navigator.clipboard.writeText(`${inviteLink}`);
     setCopied(true);
+    postInviteLinkCreate?.();
   };
 
   useEffect(() => {
-    if (!activeRoleId && orgId && open) {
+    if (!activeRoleId && orgId) {
       getOrgRoles({
         variables: {
           orgId,
         },
       });
     }
-  }, [activeRoleId, orgId, open, getOrgRoles]);
+  }, [activeRoleId, orgId, getOrgRoles]);
 
   useEffect(() => {
-    if (open) {
-      createOrgInviteLink({
-        variables: {
-          input: {
-            invitorId: '',
-            type: linkType,
-            orgId,
-            orgRoleId: activeRoleId,
-          },
+    createOrgInviteLink({
+      variables: {
+        input: {
+          invitorId: '',
+          type: linkType,
+          orgId,
+          orgRoleId: activeRoleId,
         },
-      });
-    }
+      },
+    });
     setCopied(false);
-  }, [activeRoleId, linkType, orgId, open]);
+  }, [activeRoleId, linkType, orgId]);
 
   const roles = putDefaultRoleOnTop(orgRoles?.getOrgRoles, permissions);
   const activeRole = roles?.find((role) => role?.id === activeRoleId);
@@ -190,8 +197,8 @@ function OrgInviteLinkModal(props) {
     });
   };
   return (
-    <Modal title="Add Members" open={open} onClose={handleOnClose} maxWidth={660}>
-      <GradientHeading fontSize={24} mb="20px" gradient="89.67deg, #CCBBFF 37.16%, #00BAFF 108.05%">
+    <>
+      <GradientHeading fontSize={24} mb="20px" gradient="89.67deg, #CCBBFF 37.16%, #00BAFF 108.05%" {...gradientStyles}>
         Invite from link
       </GradientHeading>
       <LinkInviteContainer>
@@ -226,8 +233,8 @@ function OrgInviteLinkModal(props) {
         checked={linkType === LinkType.ONE_TIME}
         onClick={() => setLinkType(linkType === LinkType.ONE_TIME ? LinkType.PUBLIC : LinkType.ONE_TIME)}
       />
-      <StyledDivider />
-      <GradientHeading fontSize={24} mb="20px" gradient="89.67deg, #CCBBFF 37.16%, #00BAFF 108.05%">
+      {hideDivider ? null : <StyledDivider />}
+      <GradientHeading fontSize={24} mb="20px" gradient="89.67deg, #CCBBFF 37.16%, #00BAFF 108.05%" {...gradientStyles}>
         Invite through email
       </GradientHeading>
       <LinkInviteContainer>
@@ -322,7 +329,18 @@ function OrgInviteLinkModal(props) {
           </HeaderButton>
         </div>
       )}
-    </Modal>
+    </>
   );
 }
+
+const OrgInviteLinkModal = (props) => {
+  const { orgId, open, onClose } = props;
+
+  return open ? (
+    <Modal title="Add Members" open={open} onClose={onClose} maxWidth={660}>
+      <OrgInviteLinkComponent {...props} />
+    </Modal>
+  ) : null;
+};
+
 export default OrgInviteLinkModal;

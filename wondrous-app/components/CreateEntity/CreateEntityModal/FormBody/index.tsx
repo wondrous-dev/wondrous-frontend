@@ -4,7 +4,6 @@ import { FormikValues } from 'formik';
 import React, { forwardRef, useEffect, useState } from 'react';
 import { ENTITIES_TYPES, PRIORITIES, PROPOSAL_VOTE_CHOICES, TASK_STATUS_TODO } from 'utils/constants';
 import { ErrorText } from 'components/Common';
-import Templates from 'components/CreateEntity/CreateEntityModal/Templates';
 
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
 import { StyledLink } from 'components/Common/text';
@@ -99,6 +98,7 @@ interface Props {
   fetchedUserPermissionsContext: any;
   handlePodChange: (podId: string) => void;
   pods: any;
+  initialDescription?: any;
 }
 const FormBody = forwardRef(
   (
@@ -117,6 +117,7 @@ const FormBody = forwardRef(
       fetchedUserPermissionsContext,
       handlePodChange,
       pods,
+      initialDescription,
     }: Props,
     ref: any
   ) => {
@@ -180,7 +181,6 @@ const FormBody = forwardRef(
       handleClose();
       router.push(`/organization/settings/${form.values.orgId}/payment-method`);
     };
-
     return (
       <CreateEntityBody>
         <CreateEntityTitle
@@ -199,9 +199,12 @@ const FormBody = forwardRef(
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
         <PlateRichEditor
+          initialValue={initialDescription}
+          key=""
           inputValue={form.values.description}
           mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
           onChange={(value) => {
+            console.log(value, 'VALUE');
             form.setFieldValue('description', value);
           }}
           mediaUploads={() => {
@@ -679,18 +682,6 @@ const FormBody = forwardRef(
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
         <GithubIssues existingTask={existingTask} form={form} entityType={entityType} />
-        <CreateEntityDivider />
-        <Templates
-          form={form}
-          pods={pods}
-          isMilestone={isMilestone}
-          entityType={entityType}
-          fetchedUserPermissionsContext={fetchedUserPermissionsContext}
-          handlePodChange={handlePodChange}
-          formValues={formValues}
-          paymentMethods={paymentMethods}
-          isBounty={isBounty}
-        />
       </CreateEntityBody>
     );
   }

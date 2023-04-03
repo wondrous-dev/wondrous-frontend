@@ -75,6 +75,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
     $priorities: [String]
     $searchString: String
     $podIds: [String]
+    $userId: String
     $limit: Int
     $offset: Int
     $onlyPublic: Boolean
@@ -92,6 +93,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
         priorities: $priorities
         searchString: $searchString
         podIds: $podIds
+        userId: $userId
         limit: $limit
         offset: $offset
         onlyPublic: $onlyPublic

@@ -40,7 +40,6 @@ interface Props {
 
 export default function ImageUpload(props: Props) {
   const { image, title, updateFilesCb, imageType, avatarEditorTitle, onDeleteImage, onReplace, multiple } = props;
-
   const imageInputField = useRef(null);
   const [files, setFiles] = useState({ file: null });
 
@@ -142,25 +141,16 @@ export default function ImageUpload(props: Props) {
       );
     }
 
-    return (
-      <SafeImage
-        src={image}
-        width={80}
-        height={80}
-        style={{ borderRadius: '50%' }}
-        placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-        alt="upload image"
-      />
-    );
+    return <SafeImage src={image} width={80} height={80} style={{ borderRadius: '50%' }} alt="upload image" />;
   };
 
   return (
     <ImageUploadBlock>
-      <LabelBlock>{title}</LabelBlock>
+      {title ? <LabelBlock>{title}</LabelBlock> : null}
 
       <ImageUploadBlockActivitySection>
         <ImageUploadBlockInputWrapper isIcon={imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE}>
-          <ImageUploadButtonWrapper>
+          <ImageUploadButtonWrapper isHeader={imageType === AVATAR_EDITOR_TYPES.HEADER_IMAGE} hasImage={!!image}>
             {imageType !== AVATAR_EDITOR_TYPES.ICON_IMAGE ||
             (imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE && !image) ? (
               <ImageUploadButton onClick={() => imageInputField.current.click()}>

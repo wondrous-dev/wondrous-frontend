@@ -96,17 +96,26 @@ export function Invite({
                   token,
                 },
                 onCompleted: (data) => {
-                  handleUserOnboardingRedirect(user, router);
+                  if (orgInfo?.shared) {
+                    router.push(`/organization/${orgInfo?.username}/boards`, undefined, {
+                      shallow: true,
+                    });
+                  } else {
+                    router.push(`/organization/${orgInfo?.username}/home`, undefined, {
+                      shallow: true,
+                    });
+                  }
                 },
                 onError: (err) => {
                   if (
                     err?.graphQLErrors &&
                     (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
                       err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
-                  ) {
-                    handleUserOnboardingRedirect(user, router);
-                  }
-                  setErrorMessage('Invite already redeemed');
+                  )
+                    setErrorMessage('Invite already redeemed');
+                  router.push(`/organization/${orgInfo?.username}/home`, undefined, {
+                    shallow: true,
+                  });
                 },
               });
             } else if (podInfo) {
@@ -115,7 +124,9 @@ export function Invite({
                   token,
                 },
                 onCompleted: (data) => {
-                  handleUserOnboardingRedirect(user, router);
+                  router.push(`/pod/${podInfo?.id}/home`, undefined, {
+                    shallow: true,
+                  });
                 },
                 onError: (err) => {
                   if (
@@ -123,7 +134,9 @@ export function Invite({
                     (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
                       err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
                   ) {
-                    handleUserOnboardingRedirect(user, router);
+                    router.push(`/pod/${podInfo?.id}/home`, undefined, {
+                      shallow: true,
+                    });
                   }
                   setErrorMessage('Invite already redeemed');
                 },
@@ -182,7 +195,7 @@ export function Invite({
   return (
     <InviteWelcomeBoxWrapper>
       <div style={{ textAlign: 'center', width: '100%' }}>
-        <OnboardingHeader withLoginButton />
+        <OnboardingHeader withLoginButton query={podInfo ? { type: 'pod' } : {}} />
 
         {orgInfo || podInfo ? (
           <Logo>

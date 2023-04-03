@@ -4,20 +4,21 @@ import GrantIcon from 'components/Icons/GrantIcon';
 import HomeIcon from 'components/Icons/home';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
-import WonderBot from 'components/Icons/Sidebar/wonderbot.svg';
 import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
+import WonderBot from 'components/Icons/Sidebar/wonderbot.svg';
+import WrenchIcon from 'components/Icons/wrench';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
-import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import { hasCreateTaskPermission } from 'utils/helpers';
 import CalendarIcon from 'components/Icons/calendar';
+import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
 const usePerTypeTaskCountForBoard = () => {
@@ -94,6 +95,11 @@ const useSidebarData = () => {
           text: `${orgBoard ? 'Project Home' : 'Pod Home'}`,
           Icon: () => <HomeIcon height="12px" width="12px" />,
           link: `${link}/home`,
+        },
+        {
+          text: 'Setup Project',
+          link: `${link}/onboarding`,
+          Icon: WrenchIcon,
         },
       ],
     },
