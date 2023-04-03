@@ -4,7 +4,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
 import { CallbackBackground, CallbackHeading, CallbackWrapper } from 'components/Common/CallbackWrapper';
-import { VERIFY_TWITTER } from 'graphql/mutations';
+import { VERIFY_ORG_TWITTER, VERIFY_TWITTER } from 'graphql/mutations';
 // https://yourCallbackUrl.com?oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0&oauth_verifier=uw7NjWHT6OJ1MpJOXsHfNxoAhPKpgI8BlYDhxEjIBY
 
 function Callback() {
@@ -43,6 +43,17 @@ function Callback() {
       }
     },
   });
+  const [verifyOrgTwitter] = useMutation(VERIFY_ORG_TWITTER, {
+    onCompleted: () => {
+      if (
+        confirm(
+          'Success! You can now close this window and return to the original page to continue with the onboarding process.'
+        )
+      ) {
+        close();
+      }
+    },
+  });
 
   useEffect(() => {
     if (twitterError === 'access_denied') {
@@ -54,12 +65,19 @@ function Callback() {
   }, [twitterError]);
 
   useEffect(() => {
-    if (code) {
+    if (!code) {
+      return;
+    }
+    if (state.includes('project-onboarding')) {
+      verifyOrgTwitter({
+        variables: { code, orgId: state.split('project-onboarding')[1] },
+      });
+    } else {
       verifyTwitter({
         variables: { code },
       });
     }
-  }, [code]);
+  }, [code, state]);
 
   return (
     <>

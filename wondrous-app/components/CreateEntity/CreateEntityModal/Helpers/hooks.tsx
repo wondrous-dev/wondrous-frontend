@@ -58,6 +58,7 @@ import {
   GET_POD_HOME_TASK_OBJECTS,
   GET_ORG_HOME_PROPOSALS,
   GET_POD_HOME_PROPOSALS,
+  GET_ORG_HOME_MILESTONES,
 } from 'graphql/queries/projectPage';
 
 const filterGithubReposForAutocomplete = (githubPullRepos) => {
@@ -402,8 +403,7 @@ export const useCreateMilestone = () => {
       'getPerTypeTaskCountForPodBoard',
       'getOrgBoardMilestones',
       'getPodBoardMilestones',
-      GET_ORG_HOME_TASK_OBJECTS,
-      GET_POD_HOME_TASK_OBJECTS,
+      GET_ORG_HOME_MILESTONES,
     ],
     onCompleted: ({ createMilestone: createMilestoneData }) =>
       setCornerWidgetValue({
@@ -548,6 +548,7 @@ export const useUpdateTask = () => {
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
       SEARCH_USER_CREATED_TASKS,
+      GET_ORG_HOME_TASK_OBJECTS,
     ],
   });
 
@@ -665,6 +666,7 @@ export const useUpdateBounty = () => {
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      GET_ORG_HOME_TASK_OBJECTS,
     ],
   });
   const handleMutation = ({ input, existingTask, handleClose }) => {

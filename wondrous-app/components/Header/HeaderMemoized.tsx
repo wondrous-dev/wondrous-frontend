@@ -50,7 +50,6 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
   const [activeModalType, setActiveModalType] = useState<TYPES | null>(null);
   const router = useRouter();
   const toggleMinimize = () => setMinimized((prev) => !prev);
-
   useOutsideAlerter(wrapperRef, () => {
     if (isPodModalOpen || isTutorialsModalOpen) return;
     setActiveModalType(null);

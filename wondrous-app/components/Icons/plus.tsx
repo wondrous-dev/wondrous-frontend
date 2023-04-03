@@ -10,3 +10,11 @@ export default function PlusIcon(props) {
     </svg>
   );
 }
+
+export const AddIcon = () => (
+  <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="15.208" cy="15.3096" r="14.7939" fill="#1D1D1D" />
+    <path d="M21.208 15.3125H15.1747L9.20801 15.3125" stroke="#CCBBFF" stroke-linecap="round" />
+    <path d="M15.2119 9.3125V15.3125V21.3125" stroke="#CCBBFF" stroke-linecap="round" />
+  </svg>
+);
