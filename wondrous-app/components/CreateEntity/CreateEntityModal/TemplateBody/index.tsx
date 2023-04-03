@@ -342,6 +342,10 @@ const TemplateBody = ({
                       setTaskTemplate(null);
                       form.setFieldValue('title', template?.title);
                       form.setFieldValue('description', template?.description);
+                      form.setFieldValue('points', null);
+                      form.setFieldValue('rewards', []);
+                      form.setFieldValue('assigneeId', null);
+                      form.setFieldValue('reviewerIds', undefined);
                       setInitialDescription(template?.description);
                       setTimeout(() => {
                         setInitialDescription(null);
