@@ -1,13 +1,14 @@
 import Header from 'components/Header';
 import { Outlet } from 'react-router';
+import { Main } from './styles';
 
 const Layout = () => {
   return (
     <>
       <Header />
-      <main>
+      <Main>
         <Outlet />
-      </main>
+      </Main>
     </>
   );
 };
