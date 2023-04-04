@@ -990,3 +990,5 @@ export const ANALYTIC_EVENTS = {
 
 export const CLOSE_AI_SNACK_BAR = 'close_ai_snack_bar';
 export const CLOSE_TASK_TEMPLATE_SNACK_BAR = 'close_task_template_snack_bar';
+
+export const PAGES_WITH_NO_HOTKEYS = ['/organization/[username]/onboarding', '/onboarding-dao'];
