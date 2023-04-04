@@ -13,6 +13,7 @@ import StartIcon from 'components/Icons/Sidebar/star.svg';
 import WonderBot from 'components/Icons/Sidebar/wonderbot.svg';
 import WrenchIcon from 'components/Icons/wrench';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import useCanManage from 'hooks/useCanManage';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
@@ -74,6 +75,8 @@ const useSidebarData = () => {
     orgId: board?.orgId,
     podId: board?.podId,
   });
+  const canManage = useCanManage();
+
   const pathnamesToCheck = [
     '/organization/[username]/boards',
     '/pod/[podId]/boards',
@@ -95,7 +98,7 @@ const useSidebarData = () => {
           Icon: () => <HomeIcon height="12px" width="12px" />,
           link: `${link}/home`,
         },
-        {
+        canManage && {
           text: 'Setup Project',
           link: `${link}/onboarding`,
           Icon: WrenchIcon,
