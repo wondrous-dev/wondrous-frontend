@@ -56,7 +56,7 @@ export const TitleFieldWrapper = styled(ViewFieldWrapper)`
 
 export const DescriptionIconWrapper = styled.div`
   position: absolute;
-  top: 24px;
+  top: 0;
   right: 0;
   display: none;
 `;

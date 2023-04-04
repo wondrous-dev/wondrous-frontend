@@ -1,3 +1,4 @@
+import { Grid } from '@mui/material';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import { CreateEntity } from 'components/CreateEntity';
@@ -13,7 +14,7 @@ import {
 } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import { useRouter } from 'next/router';
-import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useSnapshot } from 'services/snapshot';
 import { formatDateDisplay, getProposalStatus } from 'utils/board';
 import {
@@ -55,6 +56,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { RejectIcon } from 'components/Icons/taskModalIcons';
+import MediaUpload from 'components/CreateEntity/CreateEntityModal/FormBody/MediaUpload';
 import { ARCHIVE_MILESTONE } from 'graphql/mutations';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
@@ -144,7 +146,10 @@ export const TaskViewModal = ({
     setFetchedTask,
     approvedSubmission,
     setApprovedSubmission,
+    setFileUploading,
+    fileUploading,
   } = useTaskViewModalState();
+  const [mediaUploads, setMediaUploadsValue] = useState(fetchedTask?.media);
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
   const entityType = useMemo(() => {
@@ -180,7 +185,7 @@ export const TaskViewModal = ({
     nextFetchPolicy: 'cache-first',
   });
 
-  const sectionRef = useRef(null);
+  const sectionRef: any = useRef();
   const user = useMe();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
   const [getTaskById, { refetch, startPolling, stopPolling }] = useLazyQuery(GET_TASK_BY_ID, {
@@ -687,7 +692,22 @@ export const TaskViewModal = ({
                               height: 'unset',
                             }}
                           />
-                          <TaskMediaWrapper media={fetchedTask?.media} />
+                          <Grid container padding="16px 0">
+                            {canEdit ? (
+                              <MediaUpload
+                                mediaUploads={mediaUploads || fetchedTask?.media}
+                                setMediaUploadsValue={setMediaUploadsValue}
+                                existingTaskId={fetchedTask?.id}
+                                isProposal={isTaskProposal}
+                                isMilestone={isMilestone}
+                                fileUploadLoading={fileUploading}
+                                entityType={entityType}
+                                setFileUploadLoading={setFileUploading}
+                              />
+                            ) : (
+                              <TaskMediaWrapper media={fetchedTask?.media} />
+                            )}
+                          </Grid>
                           {!fullScreen && <TaskBorder />}
                           {isTaskProposal && (
                             <VoteResults
