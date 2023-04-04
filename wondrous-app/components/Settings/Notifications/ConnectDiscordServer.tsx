@@ -21,6 +21,11 @@ const ConnectDiscordServer = ({ orgId, title = 'Link Discord', onConnect }: Prop
   const [openModal, setOpenModal] = useState(false);
   const closeModal = () => setOpenModal(false);
 
+  const handleOnSave = () => {
+    onConnect && onConnect();
+    closeModal();
+  };
+
   return (
     <>
       <Grid container sx={styles.connectDiscord} justifyContent="center" alignItems="center" minHeight="6rem">
@@ -46,7 +51,7 @@ const ConnectDiscordServer = ({ orgId, title = 'Link Discord', onConnect }: Prop
         <Typography sx={{ color: palette.white, margin: '0 15px', fontSize: '16px' }}>
           For private channels, please ensure that the bot is added as a role
         </Typography>
-        <AddWonderBotToDiscordConfig orgId={orgId} onSave={onConnect} />
+        <AddWonderBotToDiscordConfig orgId={orgId} onSave={handleOnSave} />
       </WonderModal>
     </>
   );

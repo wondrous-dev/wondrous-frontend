@@ -4,11 +4,10 @@ import last from 'lodash/last';
 import React, { useRef, useState } from 'react';
 
 import { useRouter } from 'next/router';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { ViewType } from 'types/common';
 import { TaskInterface } from 'types/task';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
-import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
+import { useExploreGr15TasksAndBounties, useHotkey, useHotKeysListener, useUserBoard } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { SafeImage } from '../Common/Image';
 import { UserIconSmall } from '../Icons/Search/types';
@@ -44,7 +43,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   const board = useUserBoard() || {};
   const autocompleteRef = useRef<HTMLInputElement>();
   const exploreGr15TasksAndBounties = useExploreGr15TasksAndBounties();
-  useHotkeys(
+  useHotKeysListener(
     HOTKEYS.LOCAL_SEARCH,
     () => {
       setIsExpanded(!isExpanded);

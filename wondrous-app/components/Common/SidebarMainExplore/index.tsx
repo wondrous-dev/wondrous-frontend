@@ -4,15 +4,14 @@ import ExploreIcon from 'components/Icons/Sidebar/explore.svg';
 import Link from 'next/link';
 import React from 'react';
 import { Badge } from '@mui/material';
-import { useHotkey } from 'utils/hooks';
+import { useHotkey, useHotKeysListener } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { useRouter } from 'next/router';
 
 const ExploreIconButton = ({ isActive = false }) => {
   const showBadge = useHotkey();
   const router = useRouter();
-  useHotkeys(HOTKEYS.OPEN_EXPLORE, () => {
+  useHotKeysListener(HOTKEYS.OPEN_EXPLORE, () => {
     router.push('/explore');
   });
   return (

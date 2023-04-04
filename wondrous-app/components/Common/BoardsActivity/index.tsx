@@ -3,7 +3,15 @@ import { useRouter } from 'next/router';
 
 import CalendarViewIcon from 'components/Icons/ViewIcons/CalendarViewIcon';
 import SearchTasks from 'components/SearchTasks';
-import { useHotkey, useBoards, useOrgBoard, usePodBoard, useUserBoard, useIsMobile } from 'utils/hooks';
+import {
+  useHotkey,
+  useBoards,
+  useOrgBoard,
+  usePodBoard,
+  useUserBoard,
+  useIsMobile,
+  useHotKeysListener,
+} from 'utils/hooks';
 import { ViewType } from 'types/common';
 import ToggleViewButton from 'components/Common/ToggleViewButton';
 import Toggle from 'components/Common/Toggle';
@@ -13,7 +21,6 @@ import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilte
 import UserFilter from 'components/Common/BoardFilters/userFilter';
 import { ENTITIES_TYPES } from 'utils/constants';
 import palette from 'theme/palette';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { BoardsActivityInlineViewWrapper } from './styles';
@@ -47,7 +54,7 @@ export function BoardsActivityInlineView({
   const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
   const showBadge = useHotkey();
 
-  useHotkeys(
+  useHotKeysListener(
     HOTKEYS.OPEN_FILTER,
     () => {
       setDisplayFilters(!displayFilters);
@@ -160,7 +167,7 @@ export default function BoardsActivity(props) {
     },
   ];
 
-  useHotkeys(
+  useHotKeysListener(
     HOTKEYS.LIST_VIEW,
     () => {
       const query = {
@@ -173,7 +180,7 @@ export default function BoardsActivity(props) {
     [view]
   );
 
-  useHotkeys(
+  useHotKeysListener(
     HOTKEYS.GRID_VIEW,
     () => {
       const query = {
@@ -187,7 +194,7 @@ export default function BoardsActivity(props) {
   );
 
   // TODO: Remove duplicated code
-  useHotkeys(
+  useHotKeysListener(
     HOTKEYS.CALENDAR_VIEW,
     () => {
       const query = {

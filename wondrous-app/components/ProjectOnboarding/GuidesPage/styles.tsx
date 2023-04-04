@@ -14,6 +14,7 @@ export const Image = styled.img`
 export const CardWrapper = styled(Grid)`
   && {
     padding: 14px;
+    cursor: pointer;
     justify-content: space-between;
     border-radius: 12px;
     position: relative;
