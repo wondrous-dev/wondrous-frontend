@@ -749,25 +749,21 @@ export const CreateEntityCreateTaskButton = styled(Button)`
 `;
 
 export const CreateEntityAttachment = styled(ButtonUnstyled)<{ showOnSmallScreen: boolean }>`
-  background: #282828;
+  height: 32px;
+  background: ${palette.grey85};
   font-family: 'Space Grotesk';
   font-size: 14px;
   font-weight: 500;
   text-align: left;
   color: ${palette.white};
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 8px;
   display: ${(props) => (props.showOnSmallScreen ? 'none' : 'flex')};
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
-  :hover {
-    cursor: pointer;
-    background: #454545;
-    filter: drop-shadow(0 8px 2px #171717);
-    transition: all ease-in-out 0.2s;
-  }
-
+  cursor: pointer;
   ${(props) => props.theme.breakpoints.down('sm')} {
     display: ${(props) => (props.showOnSmallScreen ? 'flex' : 'none')};
   }
@@ -839,6 +835,7 @@ export const MediaUploadDiv = styled.div`
   margin-top: 4px;
   margin-bottom: -8px;
   flex-flow: wrap;
+  gap: 8px;
 `;
 
 export const CreateEntityWrapper = styled.div`

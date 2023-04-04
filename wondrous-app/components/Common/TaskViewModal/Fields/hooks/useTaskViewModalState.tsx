@@ -13,6 +13,7 @@ export const TYPES = {
   SET_VIEW_NFT: 'VIEW_NFT',
   SET_FETCHED_TASK: 'FETCHED_TASK',
   SET_APPROVED_SUBMISSION: 'APPROVED_SUBMISSION',
+  SET_FILE_UPLOADING: 'SET_FILE_UPLOADING',
 };
 
 const reducer = (state, action) => {
@@ -39,6 +40,8 @@ const reducer = (state, action) => {
       return { ...state, fetchedTask: action.payload };
     case TYPES.SET_APPROVED_SUBMISSION:
       return { ...state, approvedSubmission: action.payload };
+    case TYPES.SET_FILE_UPLOADING:
+      return { ...state, fileUploading: action.payload };
     default:
       return state;
   }
@@ -59,6 +62,7 @@ export const useTaskViewModalState = () => {
     isViewNft: !!router?.query?.viewNft,
     approvedSubmission: null,
     fetchedTask: null,
+    fileUploading: false,
   };
 
   const [state, dispatchTest] = useReducer(reducer, INITIAL_STATE);
@@ -76,6 +80,7 @@ export const useTaskViewModalState = () => {
   const setIsViewNft = (payload) => dispatchTest({ type: TYPES.SET_VIEW_NFT, payload });
   const setFetchedTask = (payload) => dispatchTest({ type: TYPES.SET_FETCHED_TASK, payload });
   const setApprovedSubmission = (payload) => dispatchTest({ type: TYPES.SET_APPROVED_SUBMISSION, payload });
+  const setFileUploading = (payload) => dispatchTest({ type: TYPES.SET_FILE_UPLOADING, payload });
   return {
     ...state,
     setEditTask,
@@ -89,6 +94,7 @@ export const useTaskViewModalState = () => {
     setIsViewNft,
     setFetchedTask,
     setApprovedSubmission,
+    setFileUploading,
     dispatch,
   };
 };
