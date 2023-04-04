@@ -1,9 +1,10 @@
 import { Box, Grid } from '@mui/material';
 import Tooltip from 'components/Tooltip';
 
-import { ENTITIES_TYPES } from 'utils/constants';
+import { ANALYTIC_EVENTS, ENTITIES_TYPES } from 'utils/constants';
 import Button from 'components/Button';
 import palette from 'theme/palette';
+import { useMe } from 'components/Auth/withAuth';
 import { CreateEntityDropdown, filterOptionsWithPermission } from '../Helpers';
 import PodSearch from '../PodSearch';
 import {
@@ -36,6 +37,7 @@ const Header = ({
   setShowTemplates,
 }) => {
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
+  const user = useMe();
   if (showTemplates) {
     return (
       <CreateEntityHeader
@@ -143,6 +145,13 @@ const Header = ({
                 onClick={(event) => {
                   event.preventDefault();
                   event.stopPropagation();
+                  if (!showTemplates && window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+                    window?.analytics?.track(ANALYTIC_EVENTS.SHOW_TEMPLATES_CLICKED, {
+                      orgId: form?.values?.orgId,
+                      podId: form?.values?.podId,
+                      userId: user?.id,
+                    });
+                  }
                   setShowTemplates(!showTemplates);
                 }}
               >

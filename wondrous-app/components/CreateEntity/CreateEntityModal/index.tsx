@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { getBoardType } from 'utils';
 import {
+  ANALYTIC_EVENTS,
   DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY,
   ENTITIES_TYPES,
   GR15DEICategoryName,
@@ -101,6 +102,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
   const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
+  const [taskTemplateClicked, setTaskTemplateClicked] = useState(false);
   const [taskTemplate, setTaskTemplate] = useState(null);
   const router = useRouter();
   const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
@@ -161,6 +163,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
+      const filteredRewards = rewards.map((reward) => ({
+        rewardAmount: reward?.rewardAmount,
+        paymentMethodId: reward?.paymentMethodId,
+      }));
 
       const {
         chooseGithubIssue,
@@ -188,7 +194,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         ...finalValues,
         reviewerIds,
         points,
-        rewards,
+        rewards: filteredRewards,
         timezone,
         userMentions,
         categories,
@@ -211,6 +217,12 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           }),
         podIds: finalPodIds,
       };
+      if (taskTemplateClicked && window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+        window?.analytics?.track(ANALYTIC_EVENTS.TASK_OR_BOUNTY_CREATED_FROM_TEMPLATE, {
+          orgId: form?.values?.orgId,
+          podIds: finalPodIds,
+        });
+      }
       handleMutation({ input, board, form, handleClose, existingTask, boardType, showTemplates });
     },
   });
@@ -619,6 +631,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             handlePodChange={handlePodChange}
             setTaskTemplate={setTaskTemplate}
             board={board}
+            setTaskTemplateClicked={setTaskTemplateClicked}
           />
         </PlateProvider>
       ) : (
