@@ -20,7 +20,6 @@ import { formatDateDisplay, getProposalStatus } from 'utils/board';
 import {
   BOUNTY_TYPE,
   ENTITIES_TYPES,
-  MILESTONE_TYPE,
   PERMISSIONS,
   PRIVACY_LEVEL,
   STATUS_OPEN,
@@ -35,7 +34,7 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { useBoards, useCanViewTask, useColumns, useGlobalContext, useIsMobile } from 'utils/hooks';
+import { useBoards, useCanViewTask, useColumns, useGlobalContext, useHotKeysListener, useIsMobile } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
 
@@ -58,7 +57,6 @@ import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { RejectIcon } from 'components/Icons/taskModalIcons';
 import MediaUpload from 'components/CreateEntity/CreateEntityModal/FormBody/MediaUpload';
 import { ARCHIVE_MILESTONE } from 'graphql/mutations';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import ViewNftFields from '../TaskMint/ViewNftFields';
 import TaskViewNft from '../TaskViewNft';
@@ -74,7 +72,6 @@ import {
   TaskBorder,
   TaskCardOrgNoLogo,
   TaskCardOrgPhoto,
-  TaskCardPodIcon,
   TaskMediaWrapper,
   TaskModal,
   TaskModalCard,
@@ -295,7 +292,7 @@ export const TaskViewModal = ({
     entityType: board?.entityType,
     handleClose,
   });
-  useHotkeys(HOTKEYS.CREATE_COMMENT, () => {
+  useHotKeysListener(HOTKEYS.CREATE_COMMENT, () => {
     setActiveTab(tabs.discussion);
   });
 

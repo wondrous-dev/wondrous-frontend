@@ -8,6 +8,7 @@ import { PageLabel } from '../Shared/styles';
 const Card = ({ index, title, body, artwork, onClick }) => (
   <CardWrapper
     display="flex"
+    onClick={onClick}
     flexDirection={{
       xs: 'column',
       md: 'row',
@@ -48,9 +49,7 @@ const Card = ({ index, title, body, artwork, onClick }) => (
           {body}
         </Typography>
       </Grid>
-      <HeaderButton reversed onClick={onClick}>
-        Begin
-      </HeaderButton>
+      <HeaderButton reversed>Begin</HeaderButton>
     </Grid>
     <Grid
       display="flex"

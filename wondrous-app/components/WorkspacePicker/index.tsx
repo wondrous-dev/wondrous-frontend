@@ -140,6 +140,7 @@ const ITEMS_CONFIG = [
     type: 'component',
     Component: ({ onClose }) => (
       <AddDaoButton
+        onClose={onClose}
         renderButton={({ handleCreateDaoModal }) => (
           <UnstyledButton
             type="button"

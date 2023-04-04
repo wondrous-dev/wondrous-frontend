@@ -1,4 +1,4 @@
-import { NextRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo, useCallback } from 'react';
 import apollo from 'services/apollo';
 import { TokenGatingCondition } from 'types/TokenGating';
@@ -10,6 +10,7 @@ import {
   MILESTONE_TYPE,
   ENTITIES_TYPES,
   TASK_STATUS_DONE,
+  PAGES_WITH_NO_HOTKEYS,
 } from 'utils/constants';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, GET_POD_BY_ID, GET_ORG_FROM_USERNAME } from 'graphql/queries';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -18,6 +19,7 @@ import { LIMIT } from 'services/board';
 import { useWonderWeb3 } from 'services/web3';
 import { useMe } from 'components/Auth/withAuth';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { useHotkeys } from 'react-hotkeys-hook';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -490,4 +492,10 @@ export const useCopyAddress = () => {
   };
 
   return { copyAddress };
+};
+
+export const useHotKeysListener = (key, func, dependencies = []) => {
+  const router = useRouter();
+  const canUseHotkeys = useMemo(() => !PAGES_WITH_NO_HOTKEYS.includes(router.pathname), [router.pathname]);
+  return useHotkeys(key, canUseHotkeys ? func : () => {}, [canUseHotkeys, ...dependencies]);
 };

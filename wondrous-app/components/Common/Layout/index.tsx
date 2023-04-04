@@ -5,12 +5,11 @@ import Spotlight from 'components/Spotlight';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { LIMIT } from 'services/board';
 import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
 import { GlobalContext, PageDataContext, SideBarContext } from 'utils/contexts';
 import { toggleHtmlOverflow } from 'utils/helpers';
-import { useIsMobile } from 'utils/hooks';
+import { useHotKeysListener, useIsMobile } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import EntitySidebar from '../SidebarEntity';
 import UserSidebar from '../UserSidebar';
@@ -61,13 +60,11 @@ export default function SidebarLayout({ children }) {
   const [pageData, setPageData] = useState({});
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false);
 
-  useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {
-    // should this be here?
+  useHotKeysListener(HOTKEYS.OPEN_DASHBOARD, () => {
     router.push(`/dashboard`, undefined, {
       shallow: true,
     });
   });
-
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
     skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
@@ -115,13 +112,14 @@ export default function SidebarLayout({ children }) {
     [minimized, orgsList]
   );
 
-  useHotkeys(
+  useHotKeysListener(
     HOTKEYS.CHOOSE_ENTITY,
     ({ altKey, ctrlKey, shiftKey, metaKey }: KeyboardEvent) => {
       if (!createFormModal && !altKey && !ctrlKey && !shiftKey && !metaKey) {
         toggleCreateFormModal();
       }
     },
+
     [createFormModal]
   );
 

@@ -7,13 +7,13 @@ import NotificationsIcon from 'components/Icons/notifications';
 import { getNotificationDescription, getNotificationLink } from 'components/Notifications/utils';
 import Tooltip from 'components/Tooltip';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
-import React, { forwardRef, useEffect, useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
+import { useRouter } from 'next/router';
+import React, { forwardRef, useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { LIMIT } from 'services/board';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
-import { ENTITIES_TYPES, NOTIFICATION_TYPES } from 'utils/constants';
-import { useHotkey, useNotifications } from 'utils/hooks';
+import { ENTITIES_TYPES, NOTIFICATION_TYPES, PAGES_WITH_NO_HOTKEYS } from 'utils/constants';
+import { useHotkey, useHotKeysListener, useNotifications } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { SmallAvatar } from '../Common/AvatarList';
 import { HeaderItemWrapper, StyledBadge } from '../Header/styles';
@@ -42,6 +42,7 @@ const NotificationsBoard = forwardRef(
     const toggleNotifications = () => {
       setIsActive();
     };
+    const router = useRouter();
     const getNotificationActorLink = (notification) => {
       if (notification?.actorType === ENTITIES_TYPES.USER) {
         return `/profile/${notification.actorUsername}/about`;
@@ -112,7 +113,7 @@ const NotificationsBoard = forwardRef(
       );
     };
 
-    useHotkeys(
+    useHotKeysListener(
       HOTKEYS.OPEN_NOTIFICATION,
       () => {
         setIsActive();
