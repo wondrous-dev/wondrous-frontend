@@ -11,11 +11,16 @@ import { ButtonsPanel, sendAnalyticsData } from '../Shared';
 import { FEATURES, FEATURES_TYPES } from '../Shared/constants';
 
 const DiscordIntegration = ({ nextStep }) => {
-  const { orgId } = useOrgBoard();
+  const { orgId, setIsDiscordConnected } = useOrgBoard();
   const user = useMe();
   const { data, refetch } = useQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS, {
     variables: {
       orgId,
+    },
+    onCompleted: (data) => {
+      if (data?.getOrgDiscordNotificationConfig?.length) {
+        setIsDiscordConnected(true);
+      }
     },
     skip: !orgId,
   });
