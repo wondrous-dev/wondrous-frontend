@@ -13,8 +13,8 @@ interface RolePillType {
 }
 
 const ProfilePictureStyle = {
-  width: '28px',
-  height: '28px',
+  width: '20px',
+  height: '20px',
   borderRadius: '15px',
 };
 

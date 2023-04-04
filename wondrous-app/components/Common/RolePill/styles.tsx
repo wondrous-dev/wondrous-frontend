@@ -9,7 +9,7 @@ export const MemberRolePill = styled.div`
   display: flex;
   align-items: center;
   width: auto;
-  padding: 2px 5px 2px 2px;
+  padding: 4px 8px;
   gap: 6px;
   border-radius: 30px;
   height: 32px;
@@ -28,7 +28,7 @@ export const RolePillText = styled(Typography)`
     background: ${palette.grey85};
     max-lines: 1;
     white-space: nowrap;
-    font-size: ${(props) => props.fontSize || '14px'};
+    font-size: ${(props) => props.fontSize || '8px'};
     font-family: ${typography.fontFamily};
     color: white;
   }
