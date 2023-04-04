@@ -17,3 +17,5 @@ export const CONFIG = [
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextField,
 };
+
+export const HEADER_HEIGHT = 68;
