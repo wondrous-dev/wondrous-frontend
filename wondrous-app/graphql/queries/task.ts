@@ -310,6 +310,27 @@ export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
   }
 `;
 
+export const GET_USD_PAYOUT_BETWEEN_TIME_PERIOD = gql`
+  query getUsdPayoutForLeaderBoard(
+    $fromTime: String!
+    $toTime: String!
+    $orgId: ID
+    $podId: ID
+    $assigneeId: ID
+    $includeBounties: Boolean
+  ) {
+    getUsdPayoutForLeaderBoard(
+      fromTime: $fromTime
+      toTime: $toTime
+      orgId: $orgId
+      podId: $podId
+      assigneeId: $assigneeId
+      includeBounties: $includeBounties
+    ) {
+      usdPayout
+    }
+  }
+`;
 export const GET_TASK_SUBMISSION_COMMENTS = gql`
   query getTaskSubmissionComments($submissionId: String!) {
     getTaskSubmissionComments(submissionId: $submissionId) {
