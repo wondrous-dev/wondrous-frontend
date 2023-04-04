@@ -6,6 +6,9 @@ import { format } from 'date-fns';
 import { ExportCSVButton, ExportCSVButtonText } from 'components/organization/analytics/styles';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
 import { PayoutModal } from 'components/organization/analytics/PayoutModal';
+import { EXPORT_COMPLETED_TASKS_BETWEEN_TIME_PERIOD } from 'graphql/queries';
+import { useLazyQuery } from '@apollo/client';
+import { CircularProgress } from '@mui/material';
 import LeaderboardDateTabsButton from './LeaderboardDateTabsButton';
 
 export const getStartDate = ({ duration, date }) => {
@@ -13,7 +16,14 @@ export const getStartDate = ({ duration, date }) => {
   return newDate;
 };
 
-export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime, isPod = false }) => {
+export const exportContributorTaskCSV = async ({
+  getContributorTaskData,
+  fromTime,
+  toTime,
+  orgId,
+  podId,
+  isPod = false,
+}) => {
   const headers = [
     'username',
     'Address/ENS',
@@ -23,12 +33,24 @@ export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime
     'Amount',
     'Token Address/Token Symbol',
   ];
+  const formatToTime = format(toTime, 'yyyy-MM-dd');
+  const formatFromTime = format(fromTime, 'yyyy-MM-dd');
+  const contributorTaskData = await getContributorTaskData({
+    variables: {
+      fromTime: formatFromTime,
+      toTime: formatToTime,
+      orgId,
+      podId,
+      includeBounties: true,
+    },
+  });
 
+  const contributorTasks = contributorTaskData?.data?.exportCompletedTasksBetweenPeriods;
   const rows = [[headers]];
-  if (!contributorTaskData) {
+  if (!contributorTasks) {
     return;
   }
-  contributorTaskData.forEach((contributorTask) => {
+  contributorTasks.forEach((contributorTask) => {
     const assigneeUsername = contributorTask?.assigneeUsername || '';
     const wallet = contributorTask?.assigneeWallet;
     const tasks = contributorTask?.tasks;
@@ -85,6 +107,9 @@ const LeaderboardDateTabs = ({
   podData = null,
 }) => {
   const { isTabletScreen } = useMediaQuery();
+  const [getContributorTaskData, { loading: exportTaskLoading }] = useLazyQuery(
+    EXPORT_COMPLETED_TASKS_BETWEEN_TIME_PERIOD
+  );
   const [payoutModal, setPayoutModal] = useState(false);
   const dateTabs = {
     allTime: {
@@ -158,14 +183,28 @@ const LeaderboardDateTabs = ({
       <LeaderboardDateTabsButton
         onClick={() =>
           exportContributorTaskCSV({
-            contributorTaskData,
+            getContributorTaskData,
             fromTime,
             toTime,
             isPod: false,
+            podId: podData?.id,
+            orgId: orgData?.id,
           })
         }
       >
-        Export work
+        {exportTaskLoading ? (
+          <>
+            <CircularProgress
+              style={{
+                marginRight: '4px',
+              }}
+              size={20}
+            />
+            <span>Exporting...</span>
+          </>
+        ) : (
+          <span>Export work</span>
+        )}
       </LeaderboardDateTabsButton>
       <LeaderboardDateTabsButton onClick={() => setPayoutModal(true)}>Pay out work</LeaderboardDateTabsButton>
       <div
