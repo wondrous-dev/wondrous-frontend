@@ -163,7 +163,7 @@ function MemberRequests(props) {
                     </div>
                   </NoUnderlineLink>
                   <MemberMessage>“{request.message}”</MemberMessage>
-                  <RolePill roleName={request.roleName} />
+                  <RolePill roleName={request.roleName} variation />
                   <RequestActionButtons>
                     <RequestDeclineButton onClick={() => declineRequest(request.id)}>Decline</RequestDeclineButton>
                     <RequestApproveButton onClick={() => approveRequest(request.id)}>Approve</RequestApproveButton>
