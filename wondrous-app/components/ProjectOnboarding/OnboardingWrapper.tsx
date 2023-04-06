@@ -49,6 +49,7 @@ const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySideba
   });
 
   const [step, setStep] = useState(defaultStep);
+  const [isDiscordConnected, setIsDiscordConnected] = useState(false);
 
   useEffect(() => {
     if (orgUsername) getOrgFromUsername({ variables: { username: orgUsername } });
@@ -87,6 +88,7 @@ const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySideba
     profilePicture,
     headerPicture,
     twitterUsername,
+    isDiscordConnected,
   };
 
   useEffect(() => {
@@ -129,6 +131,7 @@ const ProjectOnboarding = ({ orgUsername = '', defaultStep = 0, withEntitySideba
         getOrgFromUsername,
         orgId: orgData?.orgId,
         collabUsername,
+        setIsDiscordConnected,
       }}
     >
       <TaskViewModalWatcher />

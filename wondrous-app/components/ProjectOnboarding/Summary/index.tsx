@@ -55,7 +55,7 @@ const Summary = () => {
       label: 'Discord',
       display: true,
       type: 'connection',
-      connected: orgData?.discordServerId,
+      connected: orgData?.isDiscordConnected,
     },
   ];
 
@@ -221,7 +221,7 @@ const Summary = () => {
               Click launch project to get started. You can adjust your project details later.
             </Typography>
             <HeaderButton reversed onClick={handleLaunchClick}>
-              Launch project
+              Visit project home
             </HeaderButton>
           </Grid>
         </Grid>
