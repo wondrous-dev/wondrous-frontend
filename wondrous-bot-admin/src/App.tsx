@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import DashboardPage from 'pages/dashboard';
+import { ThemeProvider as StyledComponentProvider } from 'styled-components';
+
 import './App.css';
-import CreatePage from 'pages/form/create';
+import CreatePage from 'pages/quests/create';
 import Layout from 'components/Layout';
 import QuestsPage from 'pages/quests';
+import { createTheme, PaletteMode, ThemeProvider } from '@mui/material';
+import { THEME_TYPES } from 'utils/constants';
 
 const router = createBrowserRouter([
   {
@@ -16,29 +20,82 @@ const router = createBrowserRouter([
       },
       {
         path: '/members',
-        element: <div>members</div>
+        element: <div>members</div>,
       },
       {
         path: '/quests',
-        element: <QuestsPage />
+        element: <QuestsPage />,
       },
       {
         path: '/levels',
-        element: <div>levels</div>
+        element: <div>levels</div>,
       },
       {
-        path: '/form/create',
+        path: '/quests/create',
         element: <CreatePage />,
       },
     ],
   },
 ]);
 
+const getDesignTokens = (mode) => ({
+  palette: {
+    mode,
+    ...(mode === 'light'
+      ? {
+          // palette values for light mode
+          // primaryBackground: '#FFFFFF',
+          background: {
+            default: '#FFFFFF',
+            card: '#FFFFFF',
+            cardHover: '#FEE2CA',
+            header: '#B9AEEC'
+          },
+          text: {
+            primary: '#000000',
+            labelColor: '#2A8D5C',
+          },
+          
+        }
+      : {
+          // palette values for dark mode
+          background: {
+            default: '#0C002D',
+            card: '#0C002D',
+            cardHover: '#3B9669',
+            header: '#B9AEEC'
+          },
+          text: {
+            primary: '#FFFFFF',
+            labelCOlor: '#459B71',
+          },
+        }),
+  },
+});
+
 function App() {
-  const [count, setCount] = useState(0);
+  const [mode, setMode] = useState(THEME_TYPES.LIGHT);
+
+  const colorMode = useMemo(
+    () => ({
+      // The dark mode switch would invoke this method
+      toggleColorMode: () => {
+        setMode((prevMode: PaletteMode) =>
+          prevMode === THEME_TYPES.LIGHT ? THEME_TYPES.DARK : THEME_TYPES.LIGHT
+        );
+      },
+    }),
+    []
+  );
+
+  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
   return (
-    <RouterProvider router={router} />
+    <StyledComponentProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+    </StyledComponentProvider>
   );
 }
 

@@ -1,5 +1,6 @@
 import AddFormEntity from 'components/AddFormEntity';
 import CreateTemplate from 'components/CreateTemplate';
+import PageHeader from 'components/PageHeader';
 import { useState } from 'react';
 import CreateTemplateContext from 'utils/context';
 import useCreateConfiguration from 'utils/hooks';
@@ -19,7 +20,7 @@ const CreatePage = () => {
         toggleForm,
       }}
     >
-      {open ? <AddFormEntity/> : null}
+      <PageHeader withBackButton/>
       <CreateTemplate />
     </CreateTemplateContext.Provider>
   );
