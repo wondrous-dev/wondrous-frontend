@@ -1,20 +1,18 @@
 import { Grid } from '@mui/material';
-import { useState } from 'react';
 import { StyledSwitch } from './styles';
 
-const Switch = ({ onChange }) => {
-  const [checked, setChecked] = useState(false);
+const Switch = ({ onChange, value }) => {
   return (
     <Grid
       display='flex'
       alignItems='center'
       gap='10px'
-      onClick={() => setChecked((prev) => !prev)}
+      onClick={() => onChange(!value)}
       sx={{
         cursor: 'pointer',
       }}
     >
-      <StyledSwitch checked={checked} />
+      <StyledSwitch checked={value} />
     </Grid>
   );
 };

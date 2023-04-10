@@ -2,13 +2,13 @@ import { ButtonBase, Grid, Typography } from '@mui/material';
 import WestIcon from '@mui/icons-material/West';
 import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import { useInView } from 'react-intersection-observer';
 const PageHeader = ({
   title = 'New Quest',
   withBackButton = true,
   renderActions = null,
 }) => {
   const navigate = useNavigate();
-
   const handleBackButton = () => navigate(-1);
   return (
     <Grid
@@ -18,8 +18,14 @@ const PageHeader = ({
       width='100%'
       paddingTop='46px'
       paddingBottom='34px'
-      paddingLeft='56px'
-      paddingRight='56px'
+      paddingLeft={{
+        xs: '14px',
+        sm: '56px',
+      }}
+      paddingRight={{
+        xs: '14px',
+        sm: '56px',
+      }}
     >
       <Grid display='flex' alignItems='center' gap='14px'>
         {withBackButton ? (

@@ -81,6 +81,7 @@ export const ToggleItem = styled(Grid)`
     border-radius: 4px;
     max-height: 24px;
     padding: 10px;
+    cursor: pointer;
     width: 100%;
   }
 `;
@@ -117,5 +118,30 @@ export const StyledTextFieldSelect = styled(TextField)`
     .MuiOutlinedInput-notchedOutline {
       border: none;
     }
+  }
+`;
+
+export const SharedSecondaryButton = styled(ButtonBase)`
+  && {
+    display: flex;
+    padding: 8px 24px;
+    height: 40px;
+    min-width: 40px;
+    background: ${({ background }) => background || '#84bcff'};
+    border-radius: 35px;
+
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 150%;
+    white-space: nowrap;
+    color: #0c002d;
+  }
+`;
+
+export const RoundedSecondaryButton = styled(SharedSecondaryButton)`
+  && {
+    padding: 6px;
   }
 `;

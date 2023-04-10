@@ -38,7 +38,6 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
   };
 
   const handleChangeType = (type, id) => {
-    console.log(type, 'TYPE', id);
     if (!type) return;
 
     const newConfiguration = configuration.reduce((acc, next) => {
@@ -58,98 +57,141 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
     setConfiguration(newConfiguration);
   };
 
+  const handleChange = (value, id) => {
+    const newConfiguration = configuration.reduce((acc, next) => {
+      if (next.id === id) {
+        acc = [
+          ...acc,
+          {
+            ...next,
+            value,
+          },
+        ];
+        return acc;
+      }
+      acc.push(next);
+      return acc;
+    }, []);
+    setConfiguration(newConfiguration);
+  };
   return (
-   <Grid display="flex" gap="24px" flexDirection="column" alignItems="flex-start" justifyContent="flex-start" width="100%">
-    <Typography
-    fontFamily="Poppins"
-    fontWeight={600}
-    fontSize="18px"
-    lineHeight="24px"
-    color="black"
-    >{configuration?.length} Quest Steps</Typography>
-     <DragDropContext onDragEnd={handleDragEnd}>
-      <StrictModeDroppable droppableId='droppableId'>
-        {(provided) => (
-          <Grid
-            display='flex'
-            flexDirection='column'
-            justifyContent='center'
-            gap='24px'
-            alignItems='center'
-            width='100%'
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {configuration?.map((item, idx) => {
-              const Component = CONFIG_COMPONENTS[item.type]
-              return (
-                <Draggable key={idx} draggableId={`${idx}`} index={idx}>
-                {(provided, snapshot) => (
-                  <Grid
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    ref={provided.innerRef}
-                    width='100%'
-                    isDragging={snapshot.isDragging}
-                  >
-                    <PanelComponent
-                      renderHeader={() => (
-                        <Header
-                          display='flex'
-                          justifyContent='space-between'
-                          alignItems='center'
-                        >
-                          <Grid display='flex' gap='18px' alignItems='center'>
-                            <DragIndicatorIcon
-                              sx={{
-                                color: '#2A8D5C',
-                              }}
-                            />
-                            <Typography
-                              color='#2A8D5C'
-                              fontFamily='Poppins'
-                              fontWeight={700}
-                              fontSize='12px'
-                              lineHeight='14px'
-                              whiteSpace="nowrap"
+    <Grid
+      display='flex'
+      gap='24px'
+      flexDirection='column'
+      alignItems='flex-start'
+      justifyContent='flex-start'
+      width='100%'
+    >
+      <Typography
+        fontFamily='Poppins'
+        fontWeight={600}
+        fontSize='18px'
+        lineHeight='24px'
+        color='black'
+      >
+        {configuration?.length} Quest Steps
+      </Typography>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <StrictModeDroppable droppableId='droppableId'>
+          {(provided) => (
+            <Grid
+              display='flex'
+              flexDirection='column'
+              justifyContent='center'
+              gap='24px'
+              alignItems='center'
+              width='100%'
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {configuration?.map((item, idx) => {
+                const Component = CONFIG_COMPONENTS[item.type];
+                return (
+                  <Draggable key={idx} draggableId={`${idx}`} index={idx}>
+                    {(provided, snapshot) => (
+                      <Grid
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                        width='100%'
+                        isDragging={snapshot.isDragging}
+                      >
+                        <PanelComponent
+                          renderHeader={() => (
+                            <Header
+                              display='flex'
+                              justifyContent='space-between'
+                              alignItems='center'
                             >
-                              Step {idx + 1}
-                            </Typography>
-                            <SelectComponent
-                              options={COMPONENT_OPTIONS}
-                              value={item.type}
+                              <Grid
+                                display='flex'
+                                gap='18px'
+                                alignItems='center'
+                              >
+                                <DragIndicatorIcon
+                                  sx={{
+                                    color: '#2A8D5C',
+                                  }}
+                                />
+                                <Typography
+                                  color='#2A8D5C'
+                                  fontFamily='Poppins'
+                                  fontWeight={700}
+                                  fontSize='12px'
+                                  lineHeight='14px'
+                                  whiteSpace='nowrap'
+                                >
+                                  Step {idx + 1}
+                                </Typography>
+                                <SelectComponent
+                                  options={COMPONENT_OPTIONS}
+                                  value={item.type}
+                                  onChange={(value) =>
+                                    handleChangeType(value, item.id)
+                                  }
+                                />
+                              </Grid>
+                              <Grid
+                                display='flex'
+                                alignItems='center'
+                                gap='14px'
+                              >
+                                <ButtonIconWrapper
+                                  onClick={() => handleRemove(idx)}
+                                >
+                                  <DeleteIcon />
+                                </ButtonIconWrapper>
+                                <ButtonIconWrapper>
+                                  <MoreVertIcon
+                                    sx={{
+                                      color: 'black',
+                                      fontSize: '17px',
+                                    }}
+                                  />
+                                </ButtonIconWrapper>
+                              </Grid>
+                            </Header>
+                          )}
+                          renderBody={() => (
+                            <Component
                               onChange={(value) =>
-                                handleChangeType(value, item.id)
+                                handleChange(value, item.id)
                               }
+                              value={item.value}
                             />
-                          </Grid>
-                          <Grid display='flex' alignItems='center' gap='14px'>
-                            <ButtonIconWrapper onClick={() => handleRemove(idx)}>
-                              <DeleteIcon />
-                            </ButtonIconWrapper>
-                            <ButtonIconWrapper>
-                              <MoreVertIcon
-                                sx={{
-                                  color: 'black',
-                                  fontSize: '17px',
-                                }}
-                              />
-                            </ButtonIconWrapper>
-                          </Grid>
-                        </Header>
-                      )}
-                      renderBody={() => <Component />}
-                    />
-                  </Grid>
-                )}
-              </Draggable>
-              )
-            })}
-          </Grid>
-        )}
-      </StrictModeDroppable>
-    </DragDropContext>
-   </Grid>
+                          )}
+                        />
+                      </Grid>
+                    )}
+                  </Draggable>
+                );
+              })}
+            </Grid>
+          )}
+        </StrictModeDroppable>
+      </DragDropContext>
+    </Grid>
   );
 };
 

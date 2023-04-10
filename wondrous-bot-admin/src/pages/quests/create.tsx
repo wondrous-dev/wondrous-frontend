@@ -1,28 +1,32 @@
-import AddFormEntity from 'components/AddFormEntity';
 import CreateTemplate from 'components/CreateTemplate';
 import PageHeader from 'components/PageHeader';
-import { useState } from 'react';
-import CreateTemplateContext from 'utils/context';
-import useCreateConfiguration from 'utils/hooks';
+import { SharedSecondaryButton } from 'components/Shared/styles';
+import { useRef } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 const CreatePage = () => {
-  const { configuration, setConfiguration } = useCreateConfiguration();
-  const addItem = (item) => setConfiguration([...configuration, item]);
-  const [open, setIsOpen] = useState(false)
+  const headerActionsRef = useRef(null);
+  const { ref, inView, entry } = useInView({
+    threshold: 1,
+  });
 
-  const toggleForm = () => setIsOpen(prev => !prev)
+  const setRefValue = (value) => (headerActionsRef.current = value);
+
   return (
-    <CreateTemplateContext.Provider
-      value={{
-        configuration,
-        setConfiguration,
-        addItem,
-        toggleForm,
-      }}
-    >
-      <PageHeader withBackButton/>
-      <CreateTemplate />
-    </CreateTemplateContext.Provider>
+    <>
+      <div ref={ref}>
+      <PageHeader
+        withBackButton
+        renderActions={() => (
+          <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
+            Save Quest
+          </SharedSecondaryButton>
+        )}
+      />
+      </div>
+      <CreateTemplate setRefValue={setRefValue} displaySavePanel={!inView}/>
+
+    </>
   );
 };
 

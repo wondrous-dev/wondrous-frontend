@@ -11,13 +11,13 @@ export const CustomTextField = styled(InputUnstyled)`
       box-sizing: border-box;
 
       border: none;
-      color: #949494;
+      color: black;
       width: 100%;
       font-family: Poppins;
       font-size: 15px;
       font-style: normal;
       font-weight: 400;
-      height: 110px;
+      height: ${({ multiline }) => (multiline ? '110px' : '40px')};
       resize: none;
       width: 100%;
       :focus-visible {

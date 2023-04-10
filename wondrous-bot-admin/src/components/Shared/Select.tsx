@@ -9,7 +9,7 @@ const SelectComponent = ({
   onChange,
   placeholder = 'Select',
   value,
-  options,
+  options = [],
 }) => {
   const handleChange = (e) => onChange(e.target.value);
 

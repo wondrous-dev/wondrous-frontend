@@ -9,6 +9,7 @@ import Layout from 'components/Layout';
 import QuestsPage from 'pages/quests';
 import { createTheme, PaletteMode, ThemeProvider } from '@mui/material';
 import { THEME_TYPES } from 'utils/constants';
+import MembersPage from 'pages/quests/members';
 
 const router = createBrowserRouter([
   {
@@ -17,10 +18,6 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <DashboardPage />,
-      },
-      {
-        path: '/members',
-        element: <div>members</div>,
       },
       {
         path: '/quests',
@@ -34,6 +31,10 @@ const router = createBrowserRouter([
         path: '/quests/create',
         element: <CreatePage />,
       },
+      {
+        path: '/members',
+        element: <MembersPage />
+      }
     ],
   },
 ]);

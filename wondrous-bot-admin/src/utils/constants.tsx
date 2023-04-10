@@ -1,3 +1,4 @@
+import QuizComponent from 'components/AddFormEntity/components/QuizComponent';
 import TextField from 'components/AddFormEntity/components/TextField';
 
 export const TYPES = {
@@ -7,7 +8,6 @@ export const TYPES = {
 };
 
 const telegarm = () => null
-const quiz = () => null
 export const CONFIG = [
   {
     label: 'Text Field',
@@ -18,7 +18,7 @@ export const CONFIG = [
 
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextField,
-  [TYPES.QUIZ]: quiz,
+  [TYPES.QUIZ]: QuizComponent,
   [TYPES.TELEGRAM]: telegarm
 };
 
