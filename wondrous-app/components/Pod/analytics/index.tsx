@@ -6,7 +6,7 @@ function Analytics(props) {
   const { id: podId } = podData;
 
   return (
-    <BoardPageHeader headerTitle="Analytics">
+    <BoardPageHeader headerTitle="Leaderboard">
       <LeaderboardWrapper podId={podId} podData={podData} />
     </BoardPageHeader>
   );
