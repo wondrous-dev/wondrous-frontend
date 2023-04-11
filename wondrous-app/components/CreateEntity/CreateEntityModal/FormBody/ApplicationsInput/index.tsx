@@ -148,6 +148,13 @@ const ApplicationsInput = ({
             checked={!!shouldUnclaimOnDueDateExpiry}
             onChange={() => setUnclaimFieldValue(!shouldUnclaimOnDueDateExpiry)}
             inputProps={{ 'aria-label': 'controlled' }}
+            sx={{
+              '& svg': {
+                path: {
+                  fill: '#7427FF',
+                },
+              },
+            }}
           />
           Remove assignee when due date is passed
         </ApplicationInputUnassignContainer>
