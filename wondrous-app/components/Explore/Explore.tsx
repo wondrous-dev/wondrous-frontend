@@ -111,7 +111,7 @@ function ExploreComponent() {
 
   const tabs = [
     {
-      title: 'Explore Orgs',
+      title: 'Explore Projects',
       action: () => handleTabClick(TABS_LABELS.ORGS),
       color: 'linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)',
       hoverColor: 'linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)',

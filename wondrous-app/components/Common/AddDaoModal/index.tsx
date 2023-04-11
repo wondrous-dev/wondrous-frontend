@@ -52,7 +52,7 @@ const AddDaoModal = ({ open, handleClose }) => {
       <ModalWrapper onClick={handleClose}>
         <DialogWrapper>
           <Header>
-            <HeaderText>Add Org</HeaderText>
+            <HeaderText>Add Project</HeaderText>
             <HeaderIcon />
           </Header>
           <ButtonsWrapper>
@@ -62,7 +62,7 @@ const AddDaoModal = ({ open, handleClose }) => {
               onMouseEnter={handleSetShowEllipse(true)}
               onMouseLeave={handleSetShowEllipse(false)}
             >
-              Create new org workspace
+              Create new project workspace
             </ButtonOption>
             <ButtonOption
               Icon={ExplorePageIcon}
