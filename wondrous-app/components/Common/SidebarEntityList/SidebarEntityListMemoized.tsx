@@ -52,6 +52,7 @@ const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimize
                         isActive={check ? check() : isActive(entityType, link)}
                         count={count}
                         ignoreIconStyles={ignoreIconStyles}
+                        text={text}
                       >
                         {text}
                       </Item>
