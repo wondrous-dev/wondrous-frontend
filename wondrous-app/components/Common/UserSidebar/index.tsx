@@ -45,7 +45,7 @@ const useSidebarData = () => {
       label: 'My HQ',
       items: [
         {
-          text: 'Mission Control',
+          text: 'My Work',
           Icon: MissionControlSidebarIcon,
           link: '/mission-control',
         },
