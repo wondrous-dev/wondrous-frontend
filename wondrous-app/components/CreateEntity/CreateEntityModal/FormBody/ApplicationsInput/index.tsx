@@ -1,6 +1,7 @@
 import { Checkbox } from '@mui/material';
 import { StyledChipTag } from 'components/Tags/styles';
 import { APPLICATION_POLICY, APPLICATION_POLICY_LABELS_MAP } from 'utils/constants';
+import palette from 'theme/palette';
 import { entityTypeData, Fields } from '../../Helpers';
 import {
   ApplicationInputWrapper,
@@ -151,7 +152,7 @@ const ApplicationsInput = ({
             sx={{
               '& svg': {
                 path: {
-                  fill: '#7427FF',
+                  fill: palette.highlightPurple,
                 },
               },
             }}
