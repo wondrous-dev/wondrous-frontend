@@ -90,7 +90,7 @@ type Props = {
     subTitle: string;
     permission: string;
   }>;
-  toast: { show: boolean; message: string };
+  toast: { show: boolean; message: string; error?: boolean };
   onCreateNewRole: (name: string, permissions: string[]) => any;
   onDeleteRole: (role: Role, callback?: () => void) => any;
   onPermissionsChange: (role: Role, permissions: string[]) => any;
@@ -201,6 +201,7 @@ function Roles({
         open={toast.show}
         onClose={onToastClose}
         message={toast.message}
+        error={toast?.error}
       />
       <TokenGateRoleConfigModal
         open={tokenGatedRoleModalOpen}

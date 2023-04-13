@@ -381,6 +381,7 @@ export const GRAPHQL_ERRORS = {
   INVALID_EMAIL: 'invalid_email',
   POD_WITH_SAME_NEXT_EXISTS: 'Pod with name already exist',
   DISCORD_NOT_CONFIGURED: 'discord_not_configured',
+  ORG_ROLE_IN_USE: 'Cannot delete a role that is in use',
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
