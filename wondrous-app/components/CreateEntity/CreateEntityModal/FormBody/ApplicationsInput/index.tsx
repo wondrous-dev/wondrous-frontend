@@ -1,6 +1,7 @@
 import { Checkbox } from '@mui/material';
 import { StyledChipTag } from 'components/Tags/styles';
 import { APPLICATION_POLICY, APPLICATION_POLICY_LABELS_MAP } from 'utils/constants';
+import palette from 'theme/palette';
 import { entityTypeData, Fields } from '../../Helpers';
 import {
   ApplicationInputWrapper,
@@ -148,6 +149,13 @@ const ApplicationsInput = ({
             checked={!!shouldUnclaimOnDueDateExpiry}
             onChange={() => setUnclaimFieldValue(!shouldUnclaimOnDueDateExpiry)}
             inputProps={{ 'aria-label': 'controlled' }}
+            sx={{
+              '& svg': {
+                path: {
+                  fill: palette.highlightPurple,
+                },
+              },
+            }}
           />
           Remove assignee when due date is passed
         </ApplicationInputUnassignContainer>
