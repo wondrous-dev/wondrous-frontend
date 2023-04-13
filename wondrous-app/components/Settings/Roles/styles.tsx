@@ -210,7 +210,7 @@ export const RoleAccordion = styled(Accordion)`
 
 export const Snackbar = styled(SnackbarComp)`
   .MuiPaper-elevation {
-    background: rgb(0, 67, 61);
+    background: ${(props) => (props.error ? palette.red400 : 'rgb(0, 67, 61)')};
     color: white;
   }
 `;
