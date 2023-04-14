@@ -22,6 +22,11 @@ const CornerWidgetProvider = ({ children }) => {
         open={open}
         onClose={handleClose}
         autoHideDuration={6000}
+        sx={{
+          '&.MuiSnackbar-root': {
+            bottom: '48px',
+          },
+        }}
       >
         <div>{open && <CornerWidget handleClose={handleClose} {...value} />}</div>
       </Snackbar>
