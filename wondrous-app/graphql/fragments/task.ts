@@ -333,6 +333,7 @@ export const TaskProposalCardFragment = gql`
     creatorUsername
     creatorProfilePicture
     commentCount
+    dueDate
     orgId
     orgProfilePicture
     orgName

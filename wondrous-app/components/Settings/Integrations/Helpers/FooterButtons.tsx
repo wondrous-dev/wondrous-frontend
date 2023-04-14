@@ -22,9 +22,11 @@ const FooterButtons = ({ onClose, action, title }) => (
     >
       Cancel
     </Button>
-    {title ? <HeaderButton reversed onClick={action}>
-      {title}
-    </HeaderButton> : null}
+    {title ? (
+      <HeaderButton reversed onClick={action}>
+        {title}
+      </HeaderButton>
+    ) : null}
   </Grid>
 );
 

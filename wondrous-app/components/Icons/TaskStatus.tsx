@@ -62,6 +62,6 @@ export default function TaskStatus({ status, ...rest }: Props) {
       return <Archived {...rest} />;
 
     default:
-      return null;
+      return <TodoWithBorder {...rest} />;
   }
 }

@@ -18,6 +18,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
 import { hasCreateTaskPermission } from 'utils/helpers';
+import CalendarIcon from 'components/Icons/calendar';
 import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
@@ -139,6 +140,11 @@ const useSidebarData = () => {
           check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
           count: taskCount.proposalCount,
           entityType: ENTITIES_TYPES.PROPOSAL,
+        },
+        {
+          text: 'Calendar',
+          Icon: CalendarIcon,
+          link: `${link}/calendar`,
         },
       ],
     },

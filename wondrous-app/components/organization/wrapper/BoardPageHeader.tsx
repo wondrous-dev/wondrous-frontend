@@ -17,6 +17,8 @@ import HeaderAvatars from 'components/Common/HeaderAvatars';
 import { PodIconThin } from 'components/Icons/podIcon';
 import MembersIcon from 'components/Icons/members';
 import palette from 'theme/palette';
+import ViewGrant from 'components/ViewGrant';
+import { delQuery } from 'utils';
 import { useMe } from '../../Auth/withAuth';
 import {
   ContentContainer,
@@ -164,9 +166,19 @@ function BoardPageHeader(props) {
     },
   });
 
+  const handleGrantModalClose = () => {
+    router.push({ pathname: `${delQuery(router.asPath)}` }, undefined, { scroll: false, shallow: true });
+  };
+
   return (
     <>
       <TaskViewModalWatcher />
+      <ViewGrant
+        open={!!router.query?.grant}
+        handleClose={handleGrantModalClose}
+        grantId={router.query?.grant}
+        isEdit={!!router.query?.edit}
+      />
       <Suspense>
         <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       </Suspense>

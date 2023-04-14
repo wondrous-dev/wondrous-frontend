@@ -28,6 +28,7 @@ const HeaderComponent = () => {
     '/mission-control',
     '/grants',
     '/home',
+    '/calendar',
   ];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
 

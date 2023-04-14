@@ -27,6 +27,14 @@ const styles = {
       transition: 'all 0.3s ease-in-out',
     },
   },
+  moreButton: {
+    justifyContent: 'unset',
+    padding: 0,
+    color: palette.highlightBlue,
+    fontSize: '12px',
+    lineHeight: '14px',
+    '&:hover': { textDecoration: 'underline' },
+  },
   columnHeader: {
     height: '34px',
     backgroundColor: palette.grey100,
@@ -37,7 +45,6 @@ const styles = {
   },
   columnBody: {
     padding: '10px 8px',
-    height: '100%',
   },
   taskRow: {
     '&:not(:first-child)': {

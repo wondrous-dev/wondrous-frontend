@@ -18,6 +18,8 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
     $offset: Int
     $labelId: String
     $searchString: String
+    $fromDate: String
+    $toDate: String
   ) {
     getOrgTaskBoardProposals(
       input: {
@@ -29,6 +31,8 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
         offset: $offset
         labelId: $labelId
         searchString: $searchString
+        fromDate: $fromDate
+        toDate: $toDate
       }
     ) {
       ...TaskProposalCardFragment
