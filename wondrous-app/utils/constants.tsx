@@ -929,6 +929,11 @@ export const HEADER_ICONS = {
   [STATUS_CLOSED]: Rejected,
 };
 
+export const SPECIAL_ORGS = {
+  '63763663725527146': ['Pods', 'Grants', 'Collaborations'], // Merit Circle
+  '48014116661493762': ['Pods', 'Grants', 'Collaborations'], // SampleDAO
+  '65854367353274369': ['Tasks', 'Bounties', 'Proposals'], // Wonderverse localhost
+};
 export const ONLY_GRANTS_ENABLED_ORGS = ['63763663725527146', '48014116661493762']; // Merit Circle, SampleDAO (staging)
 export const GRANT_APPLICATION_EDITABLE_STATUSES = [
   GRANT_APPLICATION_STATUSES.OPEN,
