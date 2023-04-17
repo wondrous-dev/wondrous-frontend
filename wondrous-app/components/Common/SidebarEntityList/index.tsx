@@ -36,7 +36,7 @@ const usePerTypeTaskCountForBoard = () => {
   return orgData?.getPerTypeTaskCountForOrgBoard || podData?.getPerTypeTaskCountForPodBoard || {};
 };
 
-const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, taskCount }) => {
+const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, taskCount, canCreateTask }) => {
   const orgId = board?.orgId || orgBoard?.id;
   const specialOrg = orgId in SPECIAL_ORGS;
   const hasWorkSection =
@@ -90,6 +90,21 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
         check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
         count: taskCount.proposalCount,
         entityType: ENTITIES_TYPES.PROPOSAL,
+      });
+    }
+    if (
+      !specialOrg ||
+      SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK) ||
+      SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE) ||
+      canCreateTask
+    ) {
+      workItems.push({
+        text: 'WonderBot AI',
+        Icon: WonderBot,
+        link: `${link}/wonder_ai_bot`,
+        check: () => pathnamesToCheck.includes(router.pathname) && router.pathname.includes('wonder_ai_bot'),
+        entityType: null,
+        count: null,
       });
     }
   }
@@ -219,17 +234,8 @@ const useSidebarData = () => {
 
   const taskCount = usePerTypeTaskCountForBoard();
 
-  const data = getCorrectEntities({ board, orgBoard, link, router, pathnamesToCheck, taskCount });
-  if (canCreateTask && data) {
-    data[1].items.push({
-      text: 'WonderBot AI',
-      Icon: WonderBot,
-      link: `${link}/wonder_ai_bot`,
-      check: () => pathnamesToCheck.includes(router.pathname) && router.pathname.includes('wonder_ai_bot'),
-      entityType: null,
-      count: null,
-    });
-  }
+  const data = getCorrectEntities({ board, orgBoard, link, router, pathnamesToCheck, taskCount, canCreateTask });
+
   return { data, handleOnClick };
 };
 
