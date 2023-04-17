@@ -14,7 +14,7 @@ import StartIcon from 'components/Icons/Sidebar/star.svg';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
-import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS, SPECIAL_ORGS } from 'utils/constants';
+import { ENTITIES_TYPES, SPECIAL_ORGS } from 'utils/constants';
 import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import { hasCreateTaskPermission } from 'utils/helpers';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
@@ -41,18 +41,18 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
   const specialOrg = orgId in SPECIAL_ORGS;
   const hasWorkSection =
     !specialOrg ||
-    SPECIAL_ORGS[orgId].includes('Tasks') ||
-    SPECIAL_ORGS[orgId].includes('Bounties') ||
-    SPECIAL_ORGS[orgId].includes('Proposals') ||
-    SPECIAL_ORGS[orgId].includes('Milestones');
+    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.TASK) ||
+    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.BOUNTY) ||
+    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.PROPOSAL) ||
+    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.MILESTONE);
   const hasSpacesSection =
     !specialOrg ||
-    SPECIAL_ORGS[orgId].includes('Pods') ||
-    SPECIAL_ORGS[orgId].includes('Grants') ||
-    SPECIAL_ORGS[orgId].includes('Collaborations');
+    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.POD) ||
+    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.GRANT) ||
+    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.COLLAB);
   const workItems = [];
   if (hasWorkSection) {
-    if (SPECIAL_ORGS[orgId]?.includes('Tasks')) {
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK)) {
       workItems.push({
         text: 'Tasks',
         Icon: CheckBoxIcon,
@@ -62,7 +62,7 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
         entityType: ENTITIES_TYPES.TASK,
       });
     }
-    if (SPECIAL_ORGS[orgId]?.includes('Bounties')) {
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY)) {
       workItems.push({
         text: 'Bounties',
         Icon: StartIcon,
@@ -72,7 +72,7 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
         entityType: ENTITIES_TYPES.BOUNTY,
       });
     }
-    if (SPECIAL_ORGS[orgId]?.includes('Milestones')) {
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE)) {
       workItems.push({
         text: 'Milestones',
         Icon: FlagIcon,
@@ -82,7 +82,7 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
         entityType: ENTITIES_TYPES.MILESTONE,
       });
     }
-    if (SPECIAL_ORGS[orgId]?.includes('Proposals')) {
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL)) {
       workItems.push({
         text: 'Proposals',
         Icon: ContentPaste,
@@ -96,7 +96,7 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
 
   const spacesItems = [];
   if (hasSpacesSection) {
-    if (SPECIAL_ORGS[orgId]?.includes('Pods') && !!orgBoard) {
+    if (!specialOrg || (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.POD) && !!orgBoard)) {
       spacesItems.push({
         text: 'Pods',
         Icon: PodIcon,
@@ -104,7 +104,7 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
         entityType: ENTITIES_TYPES.POD,
       });
     }
-    if (SPECIAL_ORGS[orgId]?.includes('Grants')) {
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT)) {
       spacesItems.push({
         text: 'Grants',
         Icon: GrantIcon,
@@ -112,7 +112,10 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
         entityType: ENTITIES_TYPES.GRANT,
       });
     }
-    if (SPECIAL_ORGS[orgId]?.includes('Collaborations') && !board?.orgData?.shared && !!orgBoard) {
+    if (
+      !specialOrg ||
+      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB) && !board?.orgData?.shared && !!orgBoard)
+    ) {
       spacesItems.push({
         text: 'Collaborations',
         Icon: SmallDao2DaoIcon,
