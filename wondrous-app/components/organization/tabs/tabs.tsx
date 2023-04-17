@@ -27,7 +27,7 @@ const Tabs = (props) => {
 
   const TAB_LINKS_MAP = {
     [USER_BOARD_PAGE_TYPES.CONTRIBUTOR]: [
-      ...(!isOnlyInSpecialOrg || SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.TASK)
+      ...(!isOnlyInSpecialOrg || SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK)
         ? [
             {
               href: '/dashboard',
@@ -35,7 +35,7 @@ const Tabs = (props) => {
             },
           ]
         : []),
-      ...(!isOnlyInSpecialOrg || SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.BOUNTY)
+      ...(!isOnlyInSpecialOrg || SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.BOUNTY)
         ? [
             {
               href: '/dashboard/bounties',
@@ -43,7 +43,7 @@ const Tabs = (props) => {
             },
           ]
         : []),
-      ...(!isOnlyInSpecialOrg || SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.PROPOSAL)
+      ...(!isOnlyInSpecialOrg || SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL)
         ? [
             {
               href: '/dashboard/proposals',

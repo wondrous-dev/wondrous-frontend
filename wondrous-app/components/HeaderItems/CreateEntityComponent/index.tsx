@@ -69,16 +69,16 @@ const CreateEntityComponent = ({ onClose }) => {
 
   const hasWorkSection =
     !isOnlyInSpecialOrg ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.TASK) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.BOUNTY) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.PROPOSAL) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.MILESTONE);
+    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK) ||
+    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.BOUNTY) ||
+    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL) ||
+    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.MILESTONE);
 
   const hasSpacesSection =
     !isOnlyInSpecialOrg ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.POD) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.GRANT) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.COLLAB);
+    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.POD) ||
+    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.GRANT) ||
+    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.COLLAB);
   return (
     <Wrapper data-cy="modal-base">
       {hasWorkSection && (
@@ -87,7 +87,7 @@ const CreateEntityComponent = ({ onClose }) => {
           <Grid display="flex" flexWrap="wrap" justifyContent="space-between" gap="12px">
             {Object.keys(BOARD_ITEMS_CONFIG.items).map((item, key) => {
               const { icon: Icon, label } = BOARD_ITEMS_CONFIG.items[item];
-              if (isOnlyInSpecialOrg && !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(item)) {
+              if (isOnlyInSpecialOrg && !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(item)) {
                 return null;
               }
               return (
@@ -111,7 +111,7 @@ const CreateEntityComponent = ({ onClose }) => {
           <Grid display="flex" flexWrap="wrap" justifyContent="space-between" gap="12px">
             {Object.keys(SPACE_ITEMS_CONFIG.items).map((item, key) => {
               const { icon: Icon, label } = SPACE_ITEMS_CONFIG.items[item];
-              if (isOnlyInSpecialOrg && !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(item)) {
+              if (isOnlyInSpecialOrg && !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(item)) {
                 return null;
               }
               return (

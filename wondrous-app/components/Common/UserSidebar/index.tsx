@@ -23,8 +23,8 @@ const useSidebarData = () => {
   const onlyIsInSpecialOrg = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id in SPECIAL_ORGS;
   const onlyHasProposals =
     onlyIsInSpecialOrg &&
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.PROPOSAL) &&
-    !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id].includes(ENTITIES_TYPES.TASK);
+    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL) &&
+    !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK);
   const handleOnClick = (link) => () => {
     router.push(link);
     if (isMobileScreen) {

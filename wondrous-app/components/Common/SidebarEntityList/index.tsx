@@ -41,15 +41,15 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
   const specialOrg = orgId in SPECIAL_ORGS;
   const hasWorkSection =
     !specialOrg ||
-    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.TASK) ||
-    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.BOUNTY) ||
-    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.PROPOSAL) ||
-    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.MILESTONE);
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE);
   const hasSpacesSection =
     !specialOrg ||
-    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.POD) ||
-    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.GRANT) ||
-    SPECIAL_ORGS[orgId].includes(ENTITIES_TYPES.COLLAB);
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.POD) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB);
   const workItems = [];
   if (hasWorkSection) {
     if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK)) {

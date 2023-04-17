@@ -154,7 +154,7 @@ export const filterOptionsWithPermission = (
     .filter(({ id }) => {
       const listPodId = orgId ? id : undefined;
       const isInSpecialOrg = id in SPECIAL_ORGS;
-      if (isInSpecialOrg && !SPECIAL_ORGS[id].includes(entityType)) return false;
+      if (isInSpecialOrg && !SPECIAL_ORGS[id]?.includes(entityType)) return false;
       return (
         hasCreateTaskPermission({
           userPermissionsContext,
