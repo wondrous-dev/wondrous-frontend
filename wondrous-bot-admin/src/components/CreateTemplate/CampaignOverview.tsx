@@ -1,5 +1,5 @@
 import { createTheme, Grid, Typography } from '@mui/material';
-import TextFieldComponent from 'components/AddFormEntity/components/TextField';
+import TextFieldComponent from 'components/Shared/TextField';
 import SelectComponent from 'components/Shared/Select';
 import Switch from 'components/Shared/Switch';
 import ToggleComponent from 'components/Shared/Toggle';
@@ -88,7 +88,7 @@ const CampaignOverview = ({questSettings, setQuestSettings}) => {
   );
 };
 
-const CampaignOverviewHeader = () => (
+const CampaignOverviewHeader = ({title = 'Quest Settings'}) => (
   <Grid
     padding='14px'
     bgcolor='#2A8D5C'
@@ -97,7 +97,7 @@ const CampaignOverviewHeader = () => (
       borderTopRightRadius: '16px',
     }}
   >
-    <CampaignOverviewTitle>Quest Settings</CampaignOverviewTitle>
+    <CampaignOverviewTitle>{title}</CampaignOverviewTitle>
   </Grid>
 );
 

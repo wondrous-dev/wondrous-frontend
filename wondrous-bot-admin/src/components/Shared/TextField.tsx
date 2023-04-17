@@ -1,6 +1,6 @@
 import TextField from '@mui/material/TextField';
 import { memo } from 'react';
-import { CustomTextField } from './styles';
+import { CustomTextField } from '../AddFormEntity/components/styles';
 
 const TextFieldComponent = ({
   label = 'Label',

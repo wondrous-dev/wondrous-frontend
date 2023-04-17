@@ -9,7 +9,15 @@ import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 
 import DeleteIcon from 'components/Icons/Delete';
 import StrictModeDroppable from 'components/StrictModeDroppable';
-import { CONFIG_COMPONENTS, TYPES } from 'utils/constants';
+import { CONFIG_COMPONENTS, OPTIONS_VALUES, RESPOND_TYPES, TYPES } from 'utils/constants';
+import TypeComponent from './components/TypeComponent';
+
+const MULTICHOICE_DEFAULT_VALUE = {
+  question: '',
+  withCorrectAnswers: false,
+  multiSelectValue: OPTIONS_VALUES.MULTI,
+  answers: [],
+};
 
 const COMPONENT_OPTIONS = [
   {
@@ -17,12 +25,16 @@ const COMPONENT_OPTIONS = [
     value: TYPES.TEXT_FIELD,
   },
   {
-    label: 'Telegram',
-    value: TYPES.TELEGRAM,
+    label: 'Multiple Choice',
+    value: TYPES.MULTIPLE_CHOICE,
   },
   {
-    label: 'Quiz',
-    value: TYPES.QUIZ,
+    label: 'Number',
+    value: TYPES.NUMBER,
+  },
+  {
+    label: 'Attachments',
+    value: TYPES.ATTACHMENTS,
   },
 ];
 
@@ -47,6 +59,7 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
           {
             type,
             id,
+            value: type === TYPES.MULTIPLE_CHOICE ? MULTICHOICE_DEFAULT_VALUE : '',
           },
         ];
         return acc;
@@ -58,6 +71,7 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
   };
 
   const handleChange = (value, id) => {
+    console.log(value, "VALUE")
     const newConfiguration = configuration.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
@@ -146,6 +160,7 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
                                 </Typography>
                                 <SelectComponent
                                   options={COMPONENT_OPTIONS}
+                                  background='#C1B6F6'
                                   value={item.type}
                                   onChange={(value) =>
                                     handleChangeType(value, item.id)
@@ -174,12 +189,19 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
                             </Header>
                           )}
                           renderBody={() => (
-                            <Component
-                              onChange={(value) =>
-                                handleChange(value, item.id)
-                              }
-                              value={item.value}
-                            />
+                            <>
+                              <Component
+                                onChange={(value) =>
+                                  handleChange(value, item.id)
+                                }
+                                value={item.value}
+                              />
+                              {RESPOND_TYPES[item.type] ? (
+                                <TypeComponent
+                                  respondType={RESPOND_TYPES[item.type]}
+                                />
+                              ) : null}
+                            </>
                           )}
                         />
                       </Grid>

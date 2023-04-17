@@ -1,5 +1,5 @@
 import { Box, Divider, Grid, Typography } from '@mui/material';
-import TextField from 'components/AddFormEntity/components/TextField';
+import TextField from 'components/Shared/TextField';
 import { SharedSecondaryButton } from 'components/Shared/styles';
 import { CampaignOverviewTitle } from './styles';
 

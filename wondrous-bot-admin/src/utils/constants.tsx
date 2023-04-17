@@ -1,36 +1,46 @@
 import QuizComponent from 'components/AddFormEntity/components/QuizComponent';
-import TextField from 'components/AddFormEntity/components/TextField';
+import TextComponent from 'components/AddFormEntity/components/Text';
 
 export const TYPES = {
   TEXT_FIELD: 'text_field',
-  TELEGRAM: 'telegram',
-  QUIZ: 'quiz'
+  MULTIPLE_CHOICE: 'multiple_choice',
+  NUMBER: 'number',
+  ATTACHMENTS: 'attachments',
 };
 
-const telegarm = () => null
 export const CONFIG = [
   {
     label: 'Text Field',
     value: TYPES.TEXT_FIELD,
   },
-  
 ];
 
 export const CONFIG_COMPONENTS = {
-  [TYPES.TEXT_FIELD]: TextField,
-  [TYPES.QUIZ]: QuizComponent,
-  [TYPES.TELEGRAM]: telegarm
+  [TYPES.TEXT_FIELD]: TextComponent,
+  [TYPES.MULTIPLE_CHOICE]: QuizComponent,
+  [TYPES.NUMBER]: TextComponent,
+  [TYPES.ATTACHMENTS]: TextComponent,
+};
+
+export const RESPOND_TYPES = {
+  [TYPES.TEXT_FIELD]: 'a text',
+  [TYPES.NUMBER]: 'a number',
+  [TYPES.ATTACHMENTS]: 'files and/or links',
 };
 
 export const HEADER_HEIGHT = 68;
 
 export const THEME_TYPES = {
   LIGHT: 'light',
-  DARK: 'dark'
-}
+  DARK: 'dark',
+};
 
 export const COMPONENT_LABELS = {
   [TYPES.TEXT_FIELD]: 'Text',
-  [TYPES.TELEGRAM]: 'Telegram',
-  [TYPES.QUIZ]: 'Quiz'
+  [TYPES.MULTIPLE_CHOICE]: 'Quiz',
+};
+
+export const OPTIONS_VALUES = {
+  MULTI: 'multi',
+  SINGLE: 'single',
 };

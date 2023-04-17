@@ -11,6 +11,7 @@ const ToggleComponent = ({ options, onChange, value }) => (
       >
         <Typography
           color={'black'}
+          whiteSpace='nowrap'
           fontFamily='Poppins'
           fontWeight={500}
           fontSize='13px'

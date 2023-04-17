@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import DashboardPage from 'pages/dashboard';
+import Home from 'pages/home';
 import { ThemeProvider as StyledComponentProvider } from 'styled-components';
 
 import './App.css';
@@ -10,6 +10,8 @@ import QuestsPage from 'pages/quests';
 import { createTheme, PaletteMode, ThemeProvider } from '@mui/material';
 import { THEME_TYPES } from 'utils/constants';
 import MembersPage from 'pages/quests/members';
+import QuestResultsPage from 'pages/quests/QuestResultsPage';
+import LevelsPage from 'pages/levels';
 
 const router = createBrowserRouter([
   {
@@ -17,15 +19,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <DashboardPage />,
+        element: <Home />,
       },
       {
         path: '/quests',
         element: <QuestsPage />,
       },
       {
-        path: '/levels',
-        element: <div>levels</div>,
+        path: '/quests/:id',
+        element: <QuestResultsPage />,
       },
       {
         path: '/quests/create',
@@ -33,7 +35,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/members',
-        element: <MembersPage />
+        element: <MembersPage />,
+      },
+      {
+        path: '/levels',
+        element: <LevelsPage />
       }
     ],
   },
@@ -50,13 +56,12 @@ const getDesignTokens = (mode) => ({
             default: '#FFFFFF',
             card: '#FFFFFF',
             cardHover: '#FEE2CA',
-            header: '#B9AEEC'
+            header: '#000000',
           },
           text: {
             primary: '#000000',
             labelColor: '#2A8D5C',
           },
-          
         }
       : {
           // palette values for dark mode
@@ -64,7 +69,7 @@ const getDesignTokens = (mode) => ({
             default: '#0C002D',
             card: '#0C002D',
             cardHover: '#3B9669',
-            header: '#B9AEEC'
+            header: '#F7F7F7',
           },
           text: {
             primary: '#FFFFFF',
@@ -94,8 +99,8 @@ function App() {
   return (
     <StyledComponentProvider theme={theme}>
       <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </StyledComponentProvider>
   );
 }

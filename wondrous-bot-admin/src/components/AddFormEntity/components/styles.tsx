@@ -1,4 +1,5 @@
 import { InputUnstyled } from '@mui/base';
+import { Box, Typography } from '@mui/material';
 import styled from 'styled-components';
 
 export const CustomTextField = styled(InputUnstyled)`
@@ -24,5 +25,39 @@ export const CustomTextField = styled(InputUnstyled)`
         outline: none;
       }
     }
+  }
+`;
+
+export const Label = styled(Typography)`
+  && {
+    color: #4d4d4d;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 15px;
+  }
+`;
+
+export const IndexContainer = styled(Box)`
+  && {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    background: #f7f7f7;
+    border-radius: 6px;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 24px;
+    /* identical to box height, or 160% */
+
+    letter-spacing: 0.0125em;
+
+    color: #1d1d1d;
   }
 `;

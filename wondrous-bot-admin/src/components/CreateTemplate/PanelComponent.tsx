@@ -9,7 +9,7 @@ const PanelComponent = ({ renderHeader, renderBody }) => (
       display='flex'
       flexDirection='column'
       alignItems='flex-start'
-      gap='8px'
+      gap='14px'
       bgcolor="white"
       padding='24px 14px'
       borderRadius="16px"

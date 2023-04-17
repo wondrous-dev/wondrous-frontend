@@ -109,7 +109,7 @@ export const StyledTextFieldSelect = styled(TextField)`
     width: 100%;
     display: flex;
     justify-content: center;
-    background: #e8e8e8;
+    background: ${({ background }) => background || '#e8e8e8'};
     border-radius: 6px;
 
     .MuiInputBase-input {

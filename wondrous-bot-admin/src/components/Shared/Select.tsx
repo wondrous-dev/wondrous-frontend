@@ -10,6 +10,7 @@ const SelectComponent = ({
   placeholder = 'Select',
   value,
   options = [],
+  background = null,
 }) => {
   const handleChange = (e) => onChange(e.target.value);
 
@@ -19,6 +20,7 @@ const SelectComponent = ({
       defaultValue=''
       value={value}
       placeholder={placeholder}
+      background={background}
       onChange={handleChange}
       SelectProps={{
         displayEmpty: true,

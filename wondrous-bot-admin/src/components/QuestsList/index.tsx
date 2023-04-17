@@ -8,6 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { pinkColors } from 'utils/theme/colors';
 import { CardHoverWrapper, CardWrapper, Label } from './styles';
+import { useNavigate } from 'react-router-dom';
 
 const LEVELS = [1, 2, 3, 4, 5];
 
@@ -313,8 +314,9 @@ const INFO = {
     ],
   },
 };
-
+  
 const QuestsList = () => {
+  const navigate = useNavigate()
   return (
     <Grid
       bgcolor={pinkColors.pink50}
@@ -341,6 +343,7 @@ const QuestsList = () => {
             <Grid container gap='30px 14px'>
               {INFO[level].items?.map((item, idx) => (
                 <CardHoverWrapper
+                  onClick={() => navigate(`/quests/${idx}`)}
                   flex={1}
                   flexBasis={{
                     xs: '48%',
@@ -401,7 +404,7 @@ const QuestsList = () => {
                   md: '25%',
                 }}
               >
-                <CardWrapper>
+                <CardWrapper onClick={() => navigate('/quests/create')}> 
                   <RoundedSecondaryButton background='#F8642D'>
                     <AddIcon
                       sx={{

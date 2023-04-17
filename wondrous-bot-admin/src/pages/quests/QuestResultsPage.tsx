@@ -1,27 +1,29 @@
 import PageHeader from 'components/PageHeader';
-import QuestsList from 'components/QuestsList';
 import { SharedSecondaryButton } from 'components/Shared/styles';
-import { useNavigate } from 'react-router-dom';
+import ViewQuestResults from 'components/ViewQuestResults';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const QuestsPage = () => {
+const QuestResultsPage = () => {
   const navigate = useNavigate();
+
+  let { id } = useParams();
 
   const handleNavigationToNewQuest = () => navigate('/quests/create');
 
   return (
     <>
       <PageHeader
-        title='44 Quests'
-        withBackButton={false}
+        title='Member Quiz'
+        withBackButton
         renderActions={() => (
           <SharedSecondaryButton onClick={handleNavigationToNewQuest}>
             New Quest
           </SharedSecondaryButton>
         )}
       />
-      <QuestsList />
+      <ViewQuestResults resultId={id}/>
     </>
   );
 };
 
-export default QuestsPage;
+export default QuestResultsPage;

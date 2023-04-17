@@ -10,8 +10,10 @@ import { CampaignOverviewHeader, CampaignOverview } from './CampaignOverview';
 import PanelComponent from './PanelComponent';
 import { Panel } from './styles';
 import AddFormEntity from 'components/AddFormEntity';
-import { TYPES } from 'utils/constants';
+import { OPTIONS_VALUES, TYPES } from 'utils/constants';
 import { RewardComponent, RewardOverviewHeader } from './RewardComponent';
+
+
 const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
   const [configuration, setConfiguration] = useState([]);
   const [questSettings, setQuestSettings] = useState({
@@ -25,7 +27,11 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
   const handleAdd = (type) => {
     setConfiguration([
       ...configuration,
-      { id: `item-${configuration.length}`, type, value: '' },
+      {
+        id: `item-${configuration.length}`,
+        type,
+        value: '',
+      },
     ]);
   };
 

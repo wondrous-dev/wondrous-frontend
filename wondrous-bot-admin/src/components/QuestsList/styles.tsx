@@ -9,7 +9,8 @@ export const Label = styled(Typography)`
     font-size: ${({ fontSize }) => fontSize || '18px'};
     line-height: ${({ lineHeight }) => lineHeight || '21px'};
 
-    color: #000000;
+    color: ${({ color }) => color || '#000000'};
+    display: inline-block;
   }
 `;
 
@@ -35,7 +36,7 @@ export const CardWrapper = styled(Grid)`
     transition: all 0.2s ease-in-out;
     &:hover {
       transform: translateY(-20px);
-      background: #FEE2CA;
+      background: #fee2ca;
     }
   }
 `;
