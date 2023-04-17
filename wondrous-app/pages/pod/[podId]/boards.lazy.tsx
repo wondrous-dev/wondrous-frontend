@@ -21,13 +21,7 @@ import {
 import apollo from 'services/apollo';
 import { ORG_POD_COLUMNS, LIMIT, DEFAULT_ENTITY_STATUS_FILTER } from 'services/board';
 import { TaskFilter } from 'types/task';
-import {
-  PRIVACY_LEVEL,
-  STATUS_OPEN,
-  ENTITIES_TYPES,
-  STATUSES_ON_ENTITY_TYPES,
-  ONLY_GRANTS_ENABLED_ORGS,
-} from 'utils/constants';
+import { PRIVACY_LEVEL, STATUS_OPEN, ENTITIES_TYPES, STATUSES_ON_ENTITY_TYPES } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
 import { useGetPodTaskBoard } from 'utils/board/podGetTasksHooks';
 import EntitySidebar from 'components/Common/SidebarEntity';
@@ -155,17 +149,17 @@ function BoardsPage({ meta }: Props) {
     }
   }, [podId, podData, isPodDataLoading]);
 
-  useEffect(() => {
-    if (
-      ONLY_GRANTS_ENABLED_ORGS.includes(podData?.getPodById?.orgId) &&
-      podId &&
-      entityType !== ENTITIES_TYPES.PROPOSAL
-    ) {
-      router.push(`/pod/${podId}/grants`, undefined, {
-        shallow: true,
-      });
-    }
-  }, [podData?.getPodById?.orgId, podId, entityType]);
+  // useEffect(() => {
+  //   if (
+  //     ONLY_GRANTS_ENABLED_ORGS.includes(podData?.getPodById?.orgId) &&
+  //     podId &&
+  //     entityType !== ENTITIES_TYPES.PROPOSAL
+  //   ) {
+  //     router.push(`/pod/${podId}/grants`, undefined, {
+  //       shallow: true,
+  //     });
+  //   }
+  // }, [podData?.getPodById?.orgId, podId, entityType]);
   useEffect(() => {
     if (podId) {
       if (search) {

@@ -5,7 +5,7 @@ import { UPSERT_ORG_PROFILE_PAGE, UPSERT_POD_PROFILE_PAGE } from 'graphql/mutati
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 
 import palette from 'theme/palette';
-import { ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
+import { ENTITIES_TYPES, SPECIAL_ORGS } from 'utils/constants';
 import { useBoardPermission, useBoards } from 'utils/hooks';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useIsOrg } from './helpers';
@@ -65,24 +65,38 @@ const ProfileSectionsWrapper = () => {
 
   if (!layout) return null;
 
-  const isMeritCircle = ONLY_GRANTS_ENABLED_ORGS.includes(orgId);
-  const Components = isMeritCircle
-    ? {
-        grant: ProfileGrantSection,
-        member: ProfileMemberSection,
-        resource: ProfileCategorySection,
-        ...(isOrg && { collab: ProfileCollabSection }),
-      }
-    : {
-        task: ProfileTaskSection,
-        bounty: ProfileBountySection,
-        milestone: ProfileMilestoneSection,
-        proposal: ProfileProposalSection,
-        member: ProfileMemberSection,
-        grant: ProfileGrantSection,
-        resource: ProfileCategorySection,
-        ...(isOrg && { collab: ProfileCollabSection }),
-      };
+  const isSpecialOrg = orgId in SPECIAL_ORGS;
+  const Components = {
+    ...(!isSpecialOrg ||
+      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK) &&
+        ({
+          task: ProfileTaskSection,
+        } as {}))),
+    ...(!isSpecialOrg ||
+      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY) &&
+        ({
+          bounty: ProfileBountySection,
+        } as {}))),
+    ...(!isSpecialOrg ||
+      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE) &&
+        ({
+          milestone: ProfileMilestoneSection,
+        } as {}))),
+    ...(!isSpecialOrg ||
+      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL) &&
+        ({
+          proposal: ProfileProposalSection,
+        } as {}))),
+    member: ProfileMemberSection,
+    ...(!isSpecialOrg ||
+      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT) &&
+        ({
+          grant: ProfileGrantSection,
+        } as {}))),
+    resource: ProfileCategorySection,
+    ...(isOrg &&
+      (!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB)) && { collab: ProfileCollabSection }),
+  };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

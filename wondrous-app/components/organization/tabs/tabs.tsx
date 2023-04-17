@@ -7,7 +7,8 @@ import {
   POD_MEMBERSHIP_REQUESTS,
   TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_PROPOSAL_REQUEST,
-  ONLY_GRANTS_ENABLED_ORGS,
+  SPECIAL_ORGS,
+  ENTITIES_TYPES,
 } from 'utils/constants';
 import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS } from 'graphql/queries';
@@ -19,34 +20,38 @@ const Tabs = (props) => {
   const router = useRouter();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
 
-  const onlyHasMeritCircle =
-    userOrgs?.getUserOrgs?.length === 1 && ONLY_GRANTS_ENABLED_ORGS.includes(userOrgs?.getUserOrgs[0]?.id);
   const asPath = withQueries ? router.asPath : router.asPath.split('?')[0];
   const { username, podId } = router.query;
   const entityId = username ?? podId;
+  const isOnlyInSpecialOrg = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id in SPECIAL_ORGS;
 
   const TAB_LINKS_MAP = {
-    [USER_BOARD_PAGE_TYPES.CONTRIBUTOR]: onlyHasMeritCircle
-      ? [
-          {
-            href: '/dashboard/proposals',
-            label: 'Proposals',
-          },
-        ]
-      : [
-          {
-            href: '/dashboard',
-            label: 'Tasks',
-          },
-          {
-            href: '/dashboard/bounties',
-            label: 'Bounties',
-          },
-          {
-            href: '/dashboard/proposals',
-            label: 'Proposals',
-          },
-        ],
+    [USER_BOARD_PAGE_TYPES.CONTRIBUTOR]: [
+      ...(!isOnlyInSpecialOrg || SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK)
+        ? [
+            {
+              href: '/dashboard',
+              label: 'Tasks',
+            },
+          ]
+        : []),
+      ...(!isOnlyInSpecialOrg || SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.BOUNTY)
+        ? [
+            {
+              href: '/dashboard/bounties',
+              label: 'Bounties',
+            },
+          ]
+        : []),
+      ...(!isOnlyInSpecialOrg || SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL)
+        ? [
+            {
+              href: '/dashboard/proposals',
+              label: 'Proposals',
+            },
+          ]
+        : []),
+    ],
     [USER_BOARD_PAGE_TYPES.ADMIN]: [
       {
         href: `/dashboard/admin?boardType=${ORG_MEMBERSHIP_REQUESTS}`,
