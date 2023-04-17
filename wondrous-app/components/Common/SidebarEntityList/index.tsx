@@ -115,7 +115,7 @@ const getCorrectEntities = ({ board, orgBoard, link, router, pathnamesToCheck, t
       spacesItems.push({
         text: 'Pods',
         Icon: PodIcon,
-        link: `${link}/spaces`,
+        link: `${link}/pods`,
         entityType: ENTITIES_TYPES.POD,
       });
     }
