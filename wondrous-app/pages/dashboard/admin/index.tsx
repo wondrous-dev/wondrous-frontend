@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import Wrapper from 'components/Dashboard/wrapper';
-import { useIsMobile } from 'utils/hooks';
 import AdminBoard from 'components/Dashboard/admin';
 import { UserBoardContext } from 'utils/contexts';
 import { useQuery } from '@apollo/client';
