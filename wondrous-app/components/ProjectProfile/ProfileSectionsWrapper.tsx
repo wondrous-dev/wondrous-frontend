@@ -67,32 +67,22 @@ const ProfileSectionsWrapper = () => {
 
   const isSpecialOrg = orgId in SPECIAL_ORGS;
   const Components = {
-    ...(!isSpecialOrg ||
-      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK) &&
-        ({
-          task: ProfileTaskSection,
-        } as {}))),
-    ...(!isSpecialOrg ||
-      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY) &&
-        ({
-          bounty: ProfileBountySection,
-        } as {}))),
-    ...(!isSpecialOrg ||
-      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE) &&
-        ({
-          milestone: ProfileMilestoneSection,
-        } as {}))),
-    ...(!isSpecialOrg ||
-      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL) &&
-        ({
-          proposal: ProfileProposalSection,
-        } as {}))),
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK)) && {
+      task: ProfileTaskSection,
+    }),
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY)) && {
+      bounty: ProfileBountySection,
+    }),
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE)) && {
+      milestone: ProfileMilestoneSection,
+    }),
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL)) && {
+      proposal: ProfileProposalSection,
+    }),
     member: ProfileMemberSection,
-    ...(!isSpecialOrg ||
-      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT) &&
-        ({
-          grant: ProfileGrantSection,
-        } as {}))),
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT)) && {
+      grant: ProfileGrantSection,
+    }),
     resource: ProfileCategorySection,
     ...(isOrg &&
       (!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB)) && { collab: ProfileCollabSection }),
