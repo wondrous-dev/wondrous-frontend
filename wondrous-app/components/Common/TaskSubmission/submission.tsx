@@ -5,6 +5,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { UPDATE_TASK_SHOW_SUBMISSIONS, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import isEmpty from 'lodash/isEmpty';
 import Checkbox from 'components/Checkbox';
+import { Button } from 'components/Button';
 import {
   ENTITIES_TYPES,
   TASK_STATUS_ARCHIVED,
@@ -27,9 +28,12 @@ import {
   TaskSubmissionsFormInactiveWrapper,
   HideSubmissionsCheckBoxDiv,
   HideSubmissionsHelperText,
+  SignupButton,
 } from 'components/Common/TaskSubmission/styles';
 import Wallet from 'components/Common/Wallet';
 import { useApprovedSubmission } from 'utils/hooks';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { TaskSubmissionsFilter } from './submissionFilter';
 import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
@@ -222,6 +226,7 @@ export function TaskSubmissions(props) {
     taskSubmissionLoading,
   } = props;
   const user = useMe();
+  const router = useRouter();
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
     onCompleted: (data) => inProgressMoveCompleted({ boardColumns, board }, data),
   });
@@ -341,6 +346,24 @@ export function TaskSubmissions(props) {
           </HideSubmissionsCheckBoxDiv>
         )}
         {isEmpty(fetchedTaskSubmissions) && <TaskSubmissionsEmptyState />}
+        {!user && (
+          <Link
+            href={{
+              pathname: '/signup',
+              query: { ...router.query },
+            }}
+            style={{ textDecoration: 'none' }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <SignupButton>Sign up to make a submission</SignupButton>
+            </div>
+          </Link>
+        )}
         <TaskSubmissionList
           fetchedTaskSubmissions={listSubmissions}
           setSubmissionToEdit={setSubmissionToEdit}
