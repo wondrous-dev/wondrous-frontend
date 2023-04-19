@@ -26,12 +26,14 @@ const Wrapper = (props) => {
   const config = isAdmin ? CONFIG_MAP.ADMIN : CONFIG_MAP.CONTRIBUTOR;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
   const isOnlyInSpecialOrg = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id in SPECIAL_ORGS;
-
-  const hasWorkSection =
-    (isOnlyInSpecialOrg && SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK)) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.BOUNTY) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.MILESTONE);
+  const hasNoWorkSection =
+    isOnlyInSpecialOrg &&
+    !(
+      SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK) ||
+      SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.BOUNTY) ||
+      SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL) ||
+      SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.MILESTONE)
+    );
   return (
     <OverviewComponent>
       <ChooseEntityToCreate />
@@ -39,7 +41,7 @@ const Wrapper = (props) => {
         <Banner src={config.img} />
         <DashboardHeader gradient={config.gradient}>{config.label}</DashboardHeader>
       </BannerWrapper>
-      {!hasWorkSection && (
+      {hasNoWorkSection && (
         <ErrorText
           style={{
             marginLeft: '32px',
