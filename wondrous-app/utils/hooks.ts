@@ -349,7 +349,7 @@ export const checkCanClaimPermissions = (task, userPermissionsContext) => {
   return false;
 };
 
-export const usePermissions = (entity, isTaskProposal = false) => {
+export const usePermissions = (entity, isTaskProposalOrMilestone = false) => {
   const globalContext = useGlobalContext();
   const { id: userId } = useMe() || {};
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
@@ -366,7 +366,7 @@ export const usePermissions = (entity, isTaskProposal = false) => {
   const canEdit = hasFullPermission || hasEditPermission || createdByUser || (assigneeId && assigneeId === userId);
   const canArchive = permissions.includes(PERMISSIONS.MANAGE_BOARD) || hasFullPermission || createdByUser;
   const canViewApplications = hasFullPermission || hasEditPermission || (createdByUser && type === TASK_TYPE);
-  const canDelete = canArchive && (type === ENTITIES_TYPES.TASK || type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
+  const canDelete = canArchive && (type === ENTITIES_TYPES.TASK || isTaskProposalOrMilestone);
   const canApproveProposal = hasFullPermission || permissions.includes(PERMISSIONS.CREATE_TASK);
   const claimPermissions = checkCanClaimPermissions(entity, userPermissionsContext);
   const canClaim =

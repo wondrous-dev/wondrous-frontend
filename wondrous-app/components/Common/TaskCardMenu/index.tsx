@@ -42,6 +42,11 @@ const TaskCardMenu = ({
       warning: true,
     },
   };
+
+  const hasMenuItems = keys(menuItems).some((item) => menuItems[item].condition);
+
+  if (!hasMenuItems) return null;
+
   return (
     <Grid item container width="fit-content" display={open ? 'block' : 'none'} zIndex="1000">
       <Dropdown
@@ -50,9 +55,9 @@ const TaskCardMenu = ({
         anchorEl={anchorElParent}
       >
         {keys(menuItems).map((item) => {
-          const { onClick, ...props } = menuItems[item];
+          const { onClick, condition, ...props } = menuItems[item];
 
-          return onClick ? (
+          return onClick && condition ? (
             <Item
               key={item}
               onClick={(e) => {

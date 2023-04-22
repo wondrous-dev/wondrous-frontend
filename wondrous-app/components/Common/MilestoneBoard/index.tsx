@@ -30,14 +30,23 @@ import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { Fragment, useContext, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { usePermissions } from 'utils/hooks';
+import { usePermissions, usePodBoard } from 'utils/hooks';
 import DeleteMilestoneConfirm from '../DeleteMilestoneConfirm';
 import DisplayCrossPods from '../DisplayCrossPods';
 import { MilestoneCard, MilestoneProgressWrapper } from './styles';
 
 const MilestoneItem = ({ milestone, handleCardClick }) => {
   const router = useRouter();
-  const { canEdit, canArchive, canDelete } = usePermissions(milestone);
+  const podBoard = usePodBoard();
+  const { podId } = podBoard;
+  // TODO @Adrian: avoid spreading milestone, this is really just a hotfix for now
+  const { canEdit, canArchive, canDelete } = usePermissions(
+    {
+      podId,
+      ...milestone,
+    },
+    true
+  );
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
