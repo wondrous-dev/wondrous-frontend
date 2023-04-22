@@ -4,10 +4,11 @@ import { offsetLimitPagination } from '@apollo/client/utilities';
 import { getAuthHeader, getWaitlistAuthHeader } from 'components/Auth/withAuthHeader';
 
 // Staging is http://34.135.9.199/graphql
-const graphqlUri = !process.env.NEXT_PUBLIC_STAGING
-  ? process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL
+const graphqlUri = !import.meta.env.VITE_STAGING
+  ? import.meta.env.VITE_GRAPHQL_SERVER_URL
   : 'https://apistaging.wonderapp.co/graphql';
 
+  console.log(graphqlUri, 'GRAPHQL', import.meta.env)
 const httpLink = new HttpLink({
   uri: graphqlUri,
   credentials: 'include',

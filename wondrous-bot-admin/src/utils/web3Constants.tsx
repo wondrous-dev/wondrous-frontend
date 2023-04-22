@@ -62,16 +62,16 @@ export const NATIVE_TOKEN_SYMBOL = {
 };
 
 export const RPC_URLS: { [chainId: number]: string } = {
-  1: import.meta.env.RPC_URL_ETH,
-  5: import.meta.env.RPC_URL_GOERLI,
-  137: import.meta.env.RPC_URL_MATIC,
-  1666600000: import.meta.env.RPC_URL_HARMONY,
-  42161: import.meta.env.RPC_URL_ARBITRUM,
-  56: import.meta.env.RPC_URL_BSC,
-  288: import.meta.env.RPC_URL_BOBA,
-  10: import.meta.env.RPC_URL_OPTIMISM,
-  43114: import.meta.env.RPC_URL_AVALANCHE,
-  1313161554: import.meta.env.RPC_URL_AURORA,
+  1: import.meta.env.VITE_URL_ETH,
+  5: import.meta.env.VITE_URL_GOERLI,
+  137: import.meta.env.VITE_URL_MATIC,
+  1666600000: import.meta.env.VITE_URL_HARMONY,
+  42161: import.meta.env.VITE_URL_ARBITRUM,
+  56: import.meta.env.VITE_URL_BSC,
+  288: import.meta.env.VITE_URL_BOBA,
+  10: import.meta.env.VITE_URL_OPTIMISM,
+  43114: import.meta.env.VITE_URL_AVALANCHE,
+  1313161554: import.meta.env.VITE_URL_AURORA,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {

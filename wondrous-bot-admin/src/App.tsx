@@ -6,10 +6,14 @@ import { ThemeProvider as StyledComponentProvider } from 'styled-components';
 import './App.css';
 import CreatePage from 'pages/quests/create';
 import Layout from 'components/Layout';
+
 import QuestsPage from 'pages/quests';
 import { createTheme, PaletteMode, ThemeProvider } from '@mui/material';
 import { THEME_TYPES } from 'utils/constants';
 import MembersPage from 'pages/quests/members';
+import { Web3ReactProvider } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+
 import QuestResultsPage from 'pages/quests/QuestResultsPage';
 import LevelsPage from 'pages/levels';
 import LoginPage from 'pages/login';
@@ -103,6 +107,11 @@ function App() {
     []
   );
 
+  function getLibrary(provider): Web3Provider {
+    const library = new Web3Provider(provider);
+    return library;
+  }
+
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
   return (
@@ -110,9 +119,12 @@ function App() {
       <ThemeProvider theme={theme}>
         <ApolloProvider client={client}>
           <SnackbarAlertProvider>
-            <WonderWeb3Provider>
-              <RouterProvider router={router} />
-            </WonderWeb3Provider>
+          <Web3ReactProvider getLibrary={getLibrary}>
+
+              <WonderWeb3Provider>
+                <RouterProvider router={router} />
+              </WonderWeb3Provider>
+              </Web3ReactProvider>
           </SnackbarAlertProvider>
         </ApolloProvider>
       </ThemeProvider>

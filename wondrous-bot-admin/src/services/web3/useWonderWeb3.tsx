@@ -38,7 +38,6 @@ export default function useWonderWeb3(): WonderWeb3 {
   const { connecting, setConnecting } = useContext(WonderWeb3Context);
   const [lastChainId, setLastChainId] = useState(chainId);
 
-  const isInProduction = process.env.NEXT_PUBLIC_PRODUCTION;
 
   const chainName = useMemo(() => SUPPORTED_CHAINS[chainId] || 'none', [chainId]); // i have no idea why this needs to be 'none' but it somehow doesnt work if it's null
 
@@ -249,7 +248,6 @@ export default function useWonderWeb3(): WonderWeb3 {
   const { setStoredConnector } = useStoredConnector();
 
   const activateAndStore = (connectorName: ConnectorName) => {
-    console.log('activateAndStore', connectorName);
     const conn = connectors[connectorName];
     activate(conn, () => {
       setStoredConnector(connectorName);

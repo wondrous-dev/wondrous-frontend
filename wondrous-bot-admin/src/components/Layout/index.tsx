@@ -8,11 +8,11 @@ const Layout = () => {
   const location = useLocation();
 
   const isPageWithoutHeader = PAGES_WITHOUT_HEADER.includes(location.pathname);
-
+  
   return (
     <>
       {isPageWithoutHeader ? null : <Navbar />}
-      <Main>
+      <Main $isPageWithoutHeader={isPageWithoutHeader}>
         <Outlet />
       </Main>
     </>

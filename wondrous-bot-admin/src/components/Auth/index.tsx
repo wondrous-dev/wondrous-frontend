@@ -265,7 +265,7 @@ export const withAuth = (Component, noCache = false) => {
     });
 
     useEffect(() => {
-      if (process.env.NODE_ENV !== 'production') return;
+      if (import.meta.env.NODE_ENV !== 'production') return;
       const storedSegmentUserId = localStorage.getItem('ajs_user_id')?.replaceAll('"', '') || null;
       if (data?.getLoggedinUser?.id && storedSegmentUserId !== data?.getLoggedinUser?.id) {
         (window as any).analytics.identify(data?.getLoggedinUser?.id, {
