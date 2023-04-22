@@ -249,7 +249,9 @@ function TaskColumn(props: ITaskColumn) {
       {status === TASK_STATUS_TODO && canCreateTask && taskTemplateSnackbarVisible && (orgBoard || podBoard) && (
         <AISnackbarContainer
           onClick={() => {
+            console.log('analytics', window?.analytics, process.env.NEXT_PUBLIC_ENV);
             if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+              console.log('getting in here?');
               window?.analytics?.track(ANALYTIC_EVENTS.CREATE_TASK_FROM_TASK_TEMPLATE_SNACKBAR_CLICK, {
                 orgId: board?.orgId,
                 podId: board?.podId,
