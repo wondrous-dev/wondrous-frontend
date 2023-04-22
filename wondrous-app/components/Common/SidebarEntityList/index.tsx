@@ -214,7 +214,13 @@ const useSidebarData = () => {
   const handleOnClick =
     (link, type = null) =>
     () => {
-      if (type && setEntityType) {
+      if (
+        type &&
+        setEntityType &&
+        type !== ENTITIES_TYPES.POD &&
+        type !== ENTITIES_TYPES.GRANT &&
+        type !== ENTITIES_TYPES.COLLAB
+      ) {
         setEntityType(type);
         if (!search) return;
       }

@@ -38,7 +38,7 @@ import { MilestoneCard, MilestoneProgressWrapper } from './styles';
 const MilestoneItem = ({ milestone, handleCardClick }) => {
   const router = useRouter();
   const podBoard = usePodBoard();
-  const { podId } = podBoard;
+  const podId = podBoard?.podId;
   // TODO @Adrian: avoid spreading milestone, this is really just a hotfix for now
   const { canEdit, canArchive, canDelete } = usePermissions(
     {
