@@ -39,6 +39,7 @@ export const TitleFieldWrapper = styled(ViewFieldWrapper)`
   && {
     width: 100%;
     height: fit-content;
+    pointer-events: ${({ $canEdit }) => ($canEdit ? 'auto' : 'none')};
     ${TitleIconWrapper} {
       display: none;
     }
