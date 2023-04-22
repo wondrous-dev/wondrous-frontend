@@ -44,7 +44,7 @@ const OrgPodTemplateItem = ({ template, setTemplate, handleDeleteTemplate }) => 
   <TemplateDiv
     key={template?.title}
     onClick={() => {
-      if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+      if (window?.analytics && process.env.NODE_ENV === 'production') {
         window?.analytics?.track(ANALYTIC_EVENTS.ORG_OR_POD_TEMPLATE_CLICKED, {
           orgId: template?.orgId,
           podId: template?.podId,
@@ -349,7 +349,7 @@ const TemplateBody = ({
                   <TemplateDiv
                     key={template?.title}
                     onClick={() => {
-                      if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+                      if (window?.analytics && process.env.NODE_ENV === 'production') {
                         window?.analytics?.track(ANALYTIC_EVENTS.PRESET_TASK_TEMPLATE_CLICKED, {
                           orgId: form?.values?.orgId,
                           podId: form?.values?.podId,
