@@ -81,7 +81,7 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const handleRouteChange = (url) => {
-      if (process.env.NODE_ENV === 'production') {
+      if (process.env.NEXT_PUBLIC_PRODUCTION) {
         const urlSearchParams = new URLSearchParams(window.location.search);
         const params = Object.fromEntries(urlSearchParams.entries());
         window.analytics.page(params);
