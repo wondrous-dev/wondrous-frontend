@@ -217,7 +217,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           }),
         podIds: finalPodIds,
       };
-      if (taskTemplateClicked && window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+      if (taskTemplateClicked && window?.analytics && process.env.NODE_ENV === 'production') {
         window?.analytics?.track(ANALYTIC_EVENTS.TASK_OR_BOUNTY_CREATED_FROM_TEMPLATE, {
           orgId: form?.values?.orgId,
           podIds: finalPodIds,
