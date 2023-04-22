@@ -96,7 +96,7 @@ const Footer = forwardRef(
             {form?.values?.title && form?.values?.description && (
               <SaveTemplateButton
                 onClick={() => {
-                  if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+                  if (window?.analytics && process.env.NEXT_PUBLIC_PRODUCTION) {
                     window?.analytics?.track(ANALYTIC_EVENTS.TASK_TEMPLATE_SAVED, {
                       orgId: form?.values?.orgId,
                       podId: form?.values?.podID,

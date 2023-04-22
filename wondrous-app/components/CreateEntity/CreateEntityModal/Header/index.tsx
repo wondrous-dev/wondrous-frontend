@@ -145,7 +145,7 @@ const Header = ({
                 onClick={(event) => {
                   event.preventDefault();
                   event.stopPropagation();
-                  if (!showTemplates && window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+                  if (!showTemplates && window?.analytics && process.env.NEXT_PUBLIC_PRODUCTION) {
                     window?.analytics?.track(ANALYTIC_EVENTS.SHOW_TEMPLATES_CLICKED, {
                       orgId: form?.values?.orgId,
                       podId: form?.values?.podId,
