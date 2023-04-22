@@ -295,7 +295,7 @@ export const Container = ({ children, sx = {} }) => (
 );
 
 export const sendAnalyticsData = (type, data) => {
-  if (window?.analytics && process.env.NODE_ENV === 'production') {
+  if (window?.analytics && process.env.NEXT_PUBLIC_PRODUCTION) {
     window?.analytics?.track(type, data);
   }
 };
