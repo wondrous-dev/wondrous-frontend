@@ -21,9 +21,15 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
     levelRequirement: null,
     timeBound: false,
     requireReview: false,
-    requirement: null,
+    condition: null,
+    rewards: [
+      {
+        value: 0,
+        type: 'points'
+      }
+    ],
   });
-
+  
   const handleAdd = (type) => {
     setConfiguration([
       ...configuration,
@@ -82,7 +88,7 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
           />
           <PanelComponent
             renderHeader={() => <RewardOverviewHeader />}
-            renderBody={() => <RewardComponent />}
+            renderBody={() => <RewardComponent rewards={questSettings.rewards} setQuestSettings={setQuestSettings}/>}
           />
         </Box>
         <Grid

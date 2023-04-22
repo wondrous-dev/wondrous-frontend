@@ -1,11 +1,4 @@
-import {
-  Box,
-  Grid,
-  IconButton,
-  Typography,
-  Drawer,
-  useTheme,
-} from '@mui/material';
+import { Box, Grid, Typography, Drawer, useTheme } from '@mui/material';
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import { DefaultLink } from 'components/Shared/styles';
 import { useState } from 'react';
@@ -15,6 +8,13 @@ import { HeaderBar, LinkButton, MenuIconWrapper } from './styles';
 import { Link, useLocation } from 'react-router-dom';
 import { HEADER_HEIGHT } from 'utils/constants';
 import CloseIcon from '@mui/icons-material/Close';
+
+const checkActive = (path, location, partialMatch = false) => {
+  if (partialMatch) {
+    return location.pathname.includes(path);
+  }
+  return location.pathname === path;
+};
 
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -38,6 +38,7 @@ const Header = () => {
       path: '/quests',
       label: 'QUESTS',
       activeBgColor: '#F8AFDB',
+      partialMatch: true,
     },
     {
       path: '/levels',
@@ -62,7 +63,11 @@ const Header = () => {
           padding='4px 0px'
         >
           {LINKS.map((link) => {
-            const isActive = link.path === location.pathname;
+            const isActive = checkActive(
+              link.path,
+              location,
+              link.partialMatch
+            );
             return (
               <Grid
                 item
@@ -135,9 +140,11 @@ const Header = () => {
               >
                 <LinkButton bgColor={link.activeBgColor}>
                   {link.label}
-                <ArrowOutwardIcon sx={{
-                  fontWeight: 700,
-                }}/>
+                  <ArrowOutwardIcon
+                    sx={{
+                      fontWeight: 700,
+                    }}
+                  />
                 </LinkButton>
               </DefaultLink>
             ))}

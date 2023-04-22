@@ -12,11 +12,20 @@ import { THEME_TYPES } from 'utils/constants';
 import MembersPage from 'pages/quests/members';
 import QuestResultsPage from 'pages/quests/QuestResultsPage';
 import LevelsPage from 'pages/levels';
+import LoginPage from 'pages/login';
+import client from 'services/apollo';
+import { ApolloProvider } from '@apollo/client';
+import { SnackbarAlertProvider } from 'components/SnackbarAlert';
+import { WonderWeb3Provider } from 'utils/context/WonderWeb3Context';
 
 const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
       {
         path: '/',
         element: <Home />,
@@ -39,8 +48,8 @@ const router = createBrowserRouter([
       },
       {
         path: '/levels',
-        element: <LevelsPage />
-      }
+        element: <LevelsPage />,
+      },
     ],
   },
 ]);
@@ -99,7 +108,13 @@ function App() {
   return (
     <StyledComponentProvider theme={theme}>
       <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
+        <ApolloProvider client={client}>
+          <SnackbarAlertProvider>
+            <WonderWeb3Provider>
+              <RouterProvider router={router} />
+            </WonderWeb3Provider>
+          </SnackbarAlertProvider>
+        </ApolloProvider>
       </ThemeProvider>
     </StyledComponentProvider>
   );

@@ -33,7 +33,7 @@ const ViewQuestResults = ({ resultId }) => {
       type: 'boolean',
     },
     {
-      label: 'Requirement',
+      label: 'Condition',
       value: 'Completed X*',
       type: 'text',
     },

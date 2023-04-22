@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { SnackbarAlertContext } from 'utils/context';
+import { useContext } from 'react';
 
-const useCreateConfiguration = () => {
-    const [configuration, setConfiguration] = useState([]);
-    return {
-        configuration,
-        setConfiguration
-    }
+const useAlerts = () => {
+  const {
+    setSnackbarAlertMessage,
+    setSnackbarAlertAnchorOrigin,
+    setSnackbarAlertOpen,
+    setSnackbarAlertSeverity,
+    setSnackbarAlertAutoHideDuration,
+  } = useContext(SnackbarAlertContext);
+
+  const showError = (errorMsg, isSeverityError = false) => {
+    setSnackbarAlertMessage(errorMsg);
+    setSnackbarAlertSeverity(isSeverityError ? 'error' : 'warning');
+    setSnackbarAlertOpen(true);
+  };
+
+  return {
+    showError,
+    setSnackbarAlertMessage,
+    setSnackbarAlertAnchorOrigin,
+    setSnackbarAlertOpen,
+    setSnackbarAlertSeverity,
+    setSnackbarAlertAutoHideDuration,
+  };
 };
 
-export default useCreateConfiguration;
+export default useAlerts;

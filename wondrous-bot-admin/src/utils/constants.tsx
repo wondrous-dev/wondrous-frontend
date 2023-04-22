@@ -23,8 +23,8 @@ export const CONFIG_COMPONENTS = {
 };
 
 export const RESPOND_TYPES = {
-  [TYPES.TEXT_FIELD]: 'a text',
-  [TYPES.NUMBER]: 'a number',
+  [TYPES.TEXT_FIELD]: 'text',
+  [TYPES.NUMBER]: 'number',
   [TYPES.ATTACHMENTS]: 'files and/or links',
 };
 
@@ -44,3 +44,48 @@ export const OPTIONS_VALUES = {
   MULTI: 'multi',
   SINGLE: 'single',
 };
+
+export const DATEPICKER_OPTIONS = {
+  DAILY: 'daily',
+  WEEKLY: 'weekly',
+  MONTHLY: 'monthly',
+  PERIODICALLY: 'periodic',
+};
+export const DATEPICKER_OPTIONS_ARR = Object.values(DATEPICKER_OPTIONS);
+
+export const DATEPICKER_FIELDS = {
+  END_DATE: 'endDate',
+  START_DATE: 'startDate',
+};
+
+export const DEFAULT_DATEPICKER_VALUE = { startDate: null, endDate: null };
+export const DEFAULT_SINGLE_DATEPICKER_VALUE = null;
+
+export const MONTH_DAY_FULL_YEAR = 'MM/DD/YYYY';
+export const DAY_STRING_MONTH_SHORT_YEAR = 'DD/MMM/YY';
+
+export const DISCORD_CONNECT_TYPES = {
+  signup: 'signup',
+  login: 'login',
+  loginMethod: 'login-method',
+  connectSettings: 'connectSettings',
+  connectOnboarding: 'connectOnboarding',
+  connectOnboardingDao: 'connectOnboardingDao',
+};
+
+export const GRAPHQL_ERRORS = {
+  WEB3_ADDRESS_ALREADY_EXISTS: 'web3_address_already_exist',
+  ORG_INVITE_ALREADY_EXISTS: 'org_invite_already_exist',
+  POD_INVITE_ALREADY_EXISTS: 'pod_invite_already_exist',
+  NO_RECIPIENT_WEB_3_ADDRESS: 'recipient has no web3 address',
+  NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
+  PAYMENT_METHOD_EXIST: 'payment_method_exist',
+  DISCORD_USER_ALREADY_EXISTS: 'Existing discord user exists',
+  GITHUB_REPO_ALREADY_ADDED_TO_POD: 'Repo already added!',
+  EMAIL_ALREADY_EXIST: 'email_already_exist',
+  INVALID_EMAIL: 'invalid_email',
+  POD_WITH_SAME_NEXT_EXISTS: 'Pod with name already exist',
+  DISCORD_NOT_CONFIGURED: 'discord_not_configured',
+};
+
+export const PAGES_WITHOUT_HEADER = ['/login', '/signup', '/forgot-password', '/reset-password'];

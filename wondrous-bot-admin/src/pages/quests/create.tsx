@@ -15,17 +15,18 @@ const CreatePage = () => {
   return (
     <>
       <div ref={ref}>
-      <PageHeader
-        withBackButton
-        renderActions={() => (
-          <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
-            Save Quest
-          </SharedSecondaryButton>
-        )}
-      />
+        <PageHeader
+          withBackButton
+          renderActions={() => (
+            <SharedSecondaryButton
+              onClick={() => headerActionsRef.current?.handleSave()}
+            >
+              Save Quest
+            </SharedSecondaryButton>
+          )}
+        />
       </div>
-      <CreateTemplate setRefValue={setRefValue} displaySavePanel={!inView}/>
-
+      <CreateTemplate setRefValue={setRefValue} displaySavePanel={!inView} />
     </>
   );
 };

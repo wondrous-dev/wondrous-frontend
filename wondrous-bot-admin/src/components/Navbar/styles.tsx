@@ -10,7 +10,7 @@ export const HeaderBar = styled(AppBar)`
     background: ${({ theme }) => theme.palette.background.header};
     display: flex;
     height: ${HEADER_HEIGHT}px;
-    z-index: 1000000;
+    z-index: 1000;
     top: 14px;
     width: calc(100% - 28px);
     right: 14px;
