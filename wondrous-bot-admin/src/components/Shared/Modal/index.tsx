@@ -12,16 +12,27 @@ import {
   ModalTitle,
 } from './styles';
 
+interface IModalProps {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  maxWidth?: number;
+  children: React.ReactNode;
+  footerLeft?: React.ReactNode;
+  footerRight?: React.ReactNode;
+  footerCenter?: React.ReactNode;
+}
+
 const Modal = ({
   open,
   onClose,
   title,
-  maxWidth,
+  maxWidth = 400,
   children,
-  footerLeft,
-  footerRight,
-  footerCenter,
-}) => {
+  footerLeft = null,
+  footerRight = null,
+  footerCenter = null,
+}: IModalProps) => {
   const handleBackdropClick = (event) => {
     if (event.target.dataset.backdrop) {
       onClose();

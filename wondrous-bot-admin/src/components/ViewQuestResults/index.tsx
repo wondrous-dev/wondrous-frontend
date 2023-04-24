@@ -4,6 +4,8 @@ import {
   CampaignOverviewHeader,
 } from 'components/CreateTemplate/CampaignOverview';
 import PanelComponent from 'components/CreateTemplate/PanelComponent';
+import PageWrapper from 'components/Shared/PageWrapper';
+import { BG_TYPES } from 'utils/constants';
 import { pinkColors } from 'utils/theme/colors';
 import QuestResults from './QuestResults';
 import ViewCampaignOverview from './ViewCampaignOverview';
@@ -49,17 +51,18 @@ const ViewQuestResults = ({ resultId }) => {
     },
   ];
   return (
-    <Grid
-      container
-      direction='column'
-      justifyContent='flex-start'
-      alignItems='center'
-      bgcolor={pinkColors.pink50}
-      minHeight='100vh'
-      padding={{
-        xs: '14px 14px 120px 14px',
-        sm: '24px 56px 150px 24px',
+    <PageWrapper
+      containerProps={{
+        direction: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        minHeight: '100vh',
+        padding: {
+          xs: '14px 14px 120px 14px',
+          sm: '24px 56px 150px 24px',
+        },
       }}
+      bgType={BG_TYPES.DEFAULT}
     >
       <Grid
         display='flex'
@@ -92,7 +95,7 @@ const ViewQuestResults = ({ resultId }) => {
           <QuestResults />
         </Grid>
       </Grid>
-    </Grid>
+    </PageWrapper>
   );
 };
 

@@ -109,7 +109,12 @@ const HomePage = () => {
           10.9K Engagements Received
         </Typography>
       </Grid>
-      <Grid flex='1' bgcolor={pinkColors.pink50} position='relative'>
+      <Grid flex='1' sx={{
+        backgroundImage: 'url(/images/home-bg.png)',
+        backgroundPosition: 'bottom',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover'
+      }} position='relative'>
         <CardsComponent />
       </Grid>
     </Grid>

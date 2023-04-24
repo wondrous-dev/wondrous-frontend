@@ -88,4 +88,17 @@ export const GRAPHQL_ERRORS = {
   DISCORD_NOT_CONFIGURED: 'discord_not_configured',
 };
 
-export const PAGES_WITHOUT_HEADER = ['/login', '/signup', '/forgot-password', '/reset-password'];
+export const PAGES_WITHOUT_HEADER = [
+  '/login',
+  '/signup',
+  '/forgot-password',
+  '/reset-password',
+];
+
+export const BG_TYPES = {
+  DEFAULT: 'default',
+  HOME: 'home',
+  MEMBERS: 'members',
+  LEVELS: 'levels',
+  QUESTS: 'quests'
+};

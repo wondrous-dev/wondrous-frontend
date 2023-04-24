@@ -21,6 +21,7 @@ import client from 'services/apollo';
 import { ApolloProvider } from '@apollo/client';
 import { SnackbarAlertProvider } from 'components/SnackbarAlert';
 import { WonderWeb3Provider } from 'utils/context/WonderWeb3Context';
+import SettingsPage from 'pages/settings';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <LoginPage />,
+      },
+      {
+        path: '/settings/*',
+        element: <SettingsPage />
       },
       {
         path: '/',

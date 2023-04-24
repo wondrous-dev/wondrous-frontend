@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { greyColors } from 'utils/theme/colors';
 import {
@@ -121,15 +121,19 @@ export const StyledTextFieldSelect = styled(TextField)`
   }
 `;
 
+const ReversedButtonCss = css`
+  background: white;
+  border: 1px solid #84bcff;
+`;
 export const SharedSecondaryButton = styled(ButtonBase)`
   && {
     display: flex;
     padding: 8px 24px;
-    height: 40px;
-    min-width: 40px;
+    height: ${({ height = '40px' }) => height};
+    min-width: ${({ minWidth = '40px' }) => minWidth};
+    width: ${({ width = 'auto' }) => width};
     background: ${({ background }) => background || '#84bcff'};
     border-radius: 35px;
-
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 600;
@@ -137,6 +141,10 @@ export const SharedSecondaryButton = styled(ButtonBase)`
     line-height: 150%;
     white-space: nowrap;
     color: #0c002d;
+    ${({ reverse }) => (reverse ? ReversedButtonCss : ``)}
+    &:hover {
+      border: 1px solid black;
+    }
   }
 `;
 

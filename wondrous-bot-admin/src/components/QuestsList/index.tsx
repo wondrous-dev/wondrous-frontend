@@ -9,6 +9,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { pinkColors } from 'utils/theme/colors';
 import { CardHoverWrapper, CardWrapper, Label } from './styles';
 import { useNavigate } from 'react-router-dom';
+import PageWrapper from 'components/Shared/PageWrapper';
+import { BG_TYPES } from 'utils/constants';
 
 const LEVELS = [1, 2, 3, 4, 5];
 
@@ -314,19 +316,30 @@ const INFO = {
     ],
   },
 };
-  
+
 const QuestsList = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
-    <Grid
-      bgcolor={pinkColors.pink50}
-      minHeight='100vh'
-      container
-      direction='column'
-      gap='42px'
-      padding={{
-        xs: '14px 14px 120px 14px',
-        sm: '24px 56px',
+    // <Grid
+    //   bgcolor={pinkColors.pink50}
+    //   minHeight='100vh'
+    //   container
+    //   direction='column'
+    //   gap='42px'
+    //   padding={{
+    //     xs: '14px 14px 120px 14px',
+    //     sm: '24px 56px',
+    //   }}
+    // >
+    <PageWrapper
+      bgType={BG_TYPES.QUESTS}
+      containerProps={{
+        minHeight: '100vh',
+        gap: '42px',
+        padding: {
+          xs: '14px 14px 120px 14px',
+          sm: '24px 56px',
+        },
       }}
     >
       {LEVELS.map((level, idx) => {
@@ -404,7 +417,7 @@ const QuestsList = () => {
                   md: '25%',
                 }}
               >
-                <CardWrapper onClick={() => navigate('/quests/create')}> 
+                <CardWrapper onClick={() => navigate('/quests/create')}>
                   <RoundedSecondaryButton background='#F8642D'>
                     <AddIcon
                       sx={{
@@ -419,7 +432,7 @@ const QuestsList = () => {
           </Grid>
         );
       })}
-    </Grid>
+    </PageWrapper>
   );
 };
 

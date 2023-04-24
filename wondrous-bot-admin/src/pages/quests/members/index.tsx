@@ -38,8 +38,14 @@ const MembersPage = () => {
     <>
       <PageHeader title='Members Directory' withBackButton={false} />
       <Grid
-        bgcolor={pinkColors.pink50}
         minHeight='100vh'
+        sx={{
+          backgroundImage: 'url(/images/members-bg.png)',
+          backgroundPosition: 'top',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover'
+  
+        }}
         container
         direction='column'
         gap='42px'

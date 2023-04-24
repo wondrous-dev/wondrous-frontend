@@ -30,7 +30,6 @@ function Login() {
 
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:600px)');
-  console.log(isMobile, 'ismobile');
   const { discordConnectError, collabInvite, token, type } = useParams();
 
   const state = JSON.stringify({
@@ -63,7 +62,6 @@ function Login() {
       );
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
-        console.log(signedMessage, 'signed message')
         if (signedMessageIsString(signedMessage)) {
           // Sign with Wallet
           try {
@@ -121,87 +119,95 @@ function Login() {
 
   return (
     <MainWrapper>
-      <Grid
-        bgcolor='white'
-        container
-        direction='column'
-        width='500px'
-        borderRadius='20px'
-        border='1px solid #06040A'
-        overflow='hidden'
+      <Box bgcolor='black' borderRadius='20px'
+          width='500px'
+      
       >
-        <Grid item>
-          {/* HEADER */}
-          <Box padding='24px 20px' bgcolor='#F7F7F7'>
-            <img src='/images/wonder-logo-2.svg' />
-          </Box>
-          {/* BODY */}
-          <Grid
-            container
-            direction='column'
-            gap='24px'
-            padding='24px'
-            justifyContent='center'
-            alignItems='center'
-          >
-            <Typography
-              fontFamily='Poppins'
-              fontSize='24px'
-              fontWeight='700'
-              lineHeight='24px'
-              color='#2A8D5C'
+        <Grid
+          bgcolor='white'
+          container
+          width="100%"
+          sx={{
+            transform: 'translateY(-20px)',
+          }}
+          direction='column'
+          borderRadius='20px'
+          border='1px solid #06040A'
+          overflow='hidden'
+        >
+          <Grid item>
+            {/* HEADER */}
+            <Box padding='24px 20px' bgcolor='#F7F7F7'>
+              <img src='/images/wonder-logo-2.svg' />
+            </Box>
+            {/* BODY */}
+            <Grid
+              container
+              direction='column'
+              gap='24px'
+              padding='24px'
+              justifyContent='center'
+              alignItems='center'
             >
-              Log in with email
-            </Typography>
-            {!notSupportedChain && errorMessage ? (
-              <ErrorTypography>{errorMessage}</ErrorTypography>
-            ) : (
-              ''
-            )}
-            {notSupportedChain && (
-              <ErrorTypography>
-                Unsupported network, change to mainnet or a supported network
-              </ErrorTypography>
-            )}
-            <FormControl
-              onSubmit={handleSubmit}
-              fullWidth
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '14px',
-              }}
-            >
-              <CustomTextField
-                type='email'
-                name='email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder='Enter email address'
-                required
-              />
-              <CustomTextField
-                type='password'
-                name='password'
-                value={email}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder='Enter password'
-                required
-              />
-              <RoundedSecondaryButton sx={{ marginTop: '10px' }}>
-                Log me in
-              </RoundedSecondaryButton>
-            </FormControl>
+              <Typography
+                fontFamily='Poppins'
+                fontSize='24px'
+                fontWeight='700'
+                lineHeight='24px'
+                color='#2A8D5C'
+              >
+                Log in with email
+              </Typography>
+              {!notSupportedChain && errorMessage ? (
+                <ErrorTypography>{errorMessage}</ErrorTypography>
+              ) : (
+                ''
+              )}
+              {notSupportedChain && (
+                <ErrorTypography>
+                  Unsupported network, change to mainnet or a supported network
+                </ErrorTypography>
+              )}
+              <FormControl
+                onSubmit={handleSubmit}
+                fullWidth
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '14px',
+                }}
+              >
+                <CustomTextField
+                  type='email'
+                  name='email'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder='Enter email address'
+                  required
+                />
+                <CustomTextField
+                  type='password'
+                  name='password'
+                  value={email}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder='Enter password'
+                  required
+                />
+                <RoundedSecondaryButton sx={{ marginTop: '10px' }}>
+                  Log me in
+                </RoundedSecondaryButton>
+              </FormControl>
+            </Grid>
+            {/* FOOTER */}
+            <Connectors>
+              {!isMobile && <MetaMaskConnector />}
+              <DiscordConnector state={state} />
+              <CoinbaseConnector />
+              <WalletConnectConnector />
+            </Connectors>
           </Grid>
-          {/* FOOTER */}
-          <Connectors>
-            {!isMobile && <MetaMaskConnector />}
-            <DiscordConnector state={state} />
-            <CoinbaseConnector />
-            <WalletConnectConnector />
-          </Connectors>
         </Grid>
-      </Grid>
+      </Box>
     </MainWrapper>
   );
 }

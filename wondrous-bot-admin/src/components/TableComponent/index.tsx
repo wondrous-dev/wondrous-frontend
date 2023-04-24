@@ -33,7 +33,7 @@ const TableComponent = ({ headers, data }) => {
           </StyledTableHeader>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
+          {data.map((row, idx) => (
             <StyledTableRow key={row.id} id={row.id}>
               {Object.keys(row)?.map((key) => {
                 if (key === 'id') return null;
@@ -50,7 +50,13 @@ const TableComponent = ({ headers, data }) => {
                       </Label>
                     ) : null}
                     {column.component === 'hexagon' ? (
-                      <Box position='relative' width='fit-content' display="flex" justifyContent="center" alignItems="center">
+                      <Box
+                        position='relative'
+                        width='fit-content'
+                        display='flex'
+                        justifyContent='center'
+                        alignItems='center'
+                      >
                         <ShapedHexagonWrapper />
                         <Typography
                           fontFamily='Space Grotesk'
@@ -60,7 +66,7 @@ const TableComponent = ({ headers, data }) => {
                           position='absolute'
                           color='white'
                         >
-                          {column.value}
+                          {column.value === 'index' ? idx + 1 : column.value}
                         </Typography>
                       </Box>
                     ) : null}
@@ -79,9 +85,14 @@ const TableComponent = ({ headers, data }) => {
                         />
                       </IconWrapper>
                     ) : null}
-                    {column.component === 'reward' ? 
-                    <StyledViewQuestResults isReward>{column.value}</StyledViewQuestResults>
-                    : null}
+                    {column.component === 'reward' ? (
+                      <StyledViewQuestResults isReward>
+                        {column.value}
+                      </StyledViewQuestResults>
+                    ) : null}
+                    {column.component === 'custom' ? (
+                      <column.customComponent value={column.value} />
+                    ) : null}
                   </TableCell>
                 );
               })}

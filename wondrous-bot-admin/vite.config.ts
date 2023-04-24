@@ -3,15 +3,11 @@ import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import vitePluginRequire from 'vite-plugin-require';
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills';
-import dynamicImport from 'vite-plugin-dynamic-import';
 
-// https://vitejs.dev/config/
 
-const requirePlugin = () => (vitePluginRequire as any).default({});
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), requirePlugin(), dynamicImport()],
+  plugins: [react(), tsconfigPaths()],
   server: {
     port: 3000,
   },

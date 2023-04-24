@@ -71,7 +71,6 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
   };
 
   const handleChange = (value, id) => {
-    console.log(value, "VALUE")
     const newConfiguration = configuration.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
