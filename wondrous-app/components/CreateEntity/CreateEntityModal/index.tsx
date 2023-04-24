@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { getBoardType } from 'utils';
 import {
+  ANALYTIC_EVENTS,
   DEFAULT_CUSTOM_PROPOSAL_CHOICE_ARRAY,
   ENTITIES_TYPES,
   GR15DEICategoryName,
@@ -67,6 +68,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     status,
     setFormDirty,
     shouldShowTemplates,
+    defaults = null,
   } = props;
 
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -85,6 +87,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     podBoard,
     userBoard,
   });
+
   const initialRecurrenceValue =
     existingTask?.recurringSchema?.daily ||
     existingTask?.recurringSchema?.weekly ||
@@ -99,6 +102,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
   const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
+  const [taskTemplateClicked, setTaskTemplateClicked] = useState(false);
   const [taskTemplate, setTaskTemplate] = useState(null);
   const router = useRouter();
   const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
@@ -111,7 +115,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
-  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const { data: userOrgs } = useQuery(GET_USER_ORGS, {
+    fetchPolicy: 'network-only',
+  });
   const filteredDaoOptions = filterOptionsWithPermission(
     entityType,
     userOrgs?.getUserOrgs,
@@ -119,6 +125,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     undefined,
     board?.podId
   );
+
   const { handleMutation, loading }: any = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
@@ -128,6 +135,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      'getOrgHomeMilestones',
+      'getOrgHomeTaskObjects',
     ],
   });
 
@@ -136,7 +145,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const initialPodId = !existingTask ? board?.podId || routerPodId : null;
   const form: any = useFormik({
-    initialValues: initialValues({ entityType, existingTask, initialPodId }),
+    initialValues: initialValues({ entityType, existingTask, initialPodId, defaults }),
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: formValidationSchema,
@@ -154,6 +163,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
+      const filteredRewards = rewards.map((reward) => ({
+        rewardAmount: reward?.rewardAmount,
+        paymentMethodId: reward?.paymentMethodId,
+      }));
 
       const {
         chooseGithubIssue,
@@ -164,8 +177,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         GR15DEISelected,
         proposalVoteType,
         customProposalChoices,
+        podIds,
         ...finalValues
       } = values;
+      const finalPodIds = podIds?.filter((i) => i !== null);
       let categories = values?.categories?.map((category) => category.id || category);
       if (GR15DEISelected) {
         if (!categories) {
@@ -179,7 +194,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         ...finalValues,
         reviewerIds,
         points,
-        rewards,
+        rewards: filteredRewards,
         timezone,
         userMentions,
         categories,
@@ -200,7 +215,14 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               [recurrenceType]: recurrenceValue,
             },
           }),
+        podIds: finalPodIds,
       };
+      if (taskTemplateClicked && window?.analytics && process.env.NEXT_PUBLIC_PRODUCTION) {
+        window?.analytics?.track(ANALYTIC_EVENTS.TASK_OR_BOUNTY_CREATED_FROM_TEMPLATE, {
+          orgId: form?.values?.orgId,
+          podIds: finalPodIds,
+        });
+      }
       handleMutation({ input, board, form, handleClose, existingTask, boardType, showTemplates });
     },
   });
@@ -609,6 +631,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             handlePodChange={handlePodChange}
             setTaskTemplate={setTaskTemplate}
             board={board}
+            setTaskTemplateClicked={setTaskTemplateClicked}
           />
         </PlateProvider>
       ) : (

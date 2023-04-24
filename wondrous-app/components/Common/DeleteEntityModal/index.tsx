@@ -61,7 +61,12 @@ function DeleteEntityModal(props: IArchiveTaskModalProps) {
     variables: { taskId },
     refetchQueries,
     update: (cache) =>
-      deleteTaskFromCache(cache, taskId, ['getUserTaskBoardTasks', 'getOrgTaskBoardTasks', 'getPodTaskBoardTasks']),
+      deleteTaskFromCache(cache, taskId, [
+        'getUserTaskBoardTasks',
+        'getOrgTaskBoardTasks',
+        'getPodTaskBoardTasks',
+        'getOrgHomeTaskObjects',
+      ]),
   });
   const [deleteMilestone] = useMutation(DELETE_MILESTONE, {
     variables: { milestoneId: taskId },
@@ -72,6 +77,7 @@ function DeleteEntityModal(props: IArchiveTaskModalProps) {
         'getOrgBoardMilestones',
         'getPodBoardMilestones',
         'getPodTaskBoardTasks',
+        'getOrgHomeMilestones',
       ]),
   });
 

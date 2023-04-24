@@ -89,8 +89,8 @@ export const filterOrgUsersForAutocomplete = (orgUsers): { display: string; id: 
 };
 
 function CreatePodModal(props) {
-  const { handleClose, cancel, open } = props;
-  const [podDescriptionText, setPodDescriptionText] = useState('');
+  const { handleClose, cancel, open, shouldRedirect = true, defaults = null } = props;
+  const [podDescriptionText, setPodDescriptionText] = useState(defaults?.description || '');
 
   const [errors, setErrors] = useState({
     general: null,
@@ -102,7 +102,7 @@ function CreatePodModal(props) {
 
   const [org, setOrg] = useState(null);
   const [link, setLink] = useState('');
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(defaults?.title || '');
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -113,7 +113,10 @@ function CreatePodModal(props) {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
-  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const { data: userOrgs } = useQuery(GET_USER_ORGS, {
+    fetchPolicy: 'network-only',
+  });
+
   const selectedOrgPrivacyLevel = userOrgs?.getUserOrgs?.filter((i) => i.id === org)[0]?.privacyLevel;
   const [searchOrgUsers] = useLazyQuery(SEARCH_ORG_USERS);
 
@@ -188,11 +191,13 @@ function CreatePodModal(props) {
     onCompleted: (data) => {
       const pod = data?.createPod;
       handleClose();
-      router.push(`/pod/${pod?.id}/boards`, undefined, {
-        shallow: true,
-      });
+      if (shouldRedirect) {
+        router.push(`/pod/${pod?.id}/boards`, undefined, {
+          shallow: true,
+        });
+      }
     },
-    refetchQueries: ['getOrgById'],
+    refetchQueries: ['getOrgById', 'getOrgPods'],
   });
 
   const submitMutation = useCallback(() => {

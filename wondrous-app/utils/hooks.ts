@@ -1,4 +1,4 @@
-import { NextRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo, useCallback } from 'react';
 import apollo from 'services/apollo';
 import { TokenGatingCondition } from 'types/TokenGating';
@@ -10,6 +10,7 @@ import {
   MILESTONE_TYPE,
   ENTITIES_TYPES,
   TASK_STATUS_DONE,
+  PAGES_WITH_NO_HOTKEYS,
 } from 'utils/constants';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, GET_POD_BY_ID, GET_ORG_FROM_USERNAME } from 'graphql/queries';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -18,6 +19,7 @@ import { LIMIT } from 'services/board';
 import { useWonderWeb3 } from 'services/web3';
 import { useMe } from 'components/Auth/withAuth';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { useHotkeys } from 'react-hotkeys-hook';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -321,9 +323,13 @@ export const useNotifications = () => {
 export const useSteps = (defaultStep = 0) => {
   const [step, setStep] = useState(defaultStep);
 
-  const nextStep = () => setStep((prevState) => prevState + 1);
+  const nextStep = () => setStep((prev) => prev + 1);
 
-  const prevStep = () => setStep((prevState) => prevState - 1);
+  const prevStep = () =>
+    setStep((prevState) => {
+      if (prevState === 0) return prevState;
+      return prevState - 1;
+    });
 
   useEffect(() => () => setStep(defaultStep), []);
 
@@ -343,7 +349,7 @@ export const checkCanClaimPermissions = (task, userPermissionsContext) => {
   return false;
 };
 
-export const usePermissions = (entity, isTaskProposal = false) => {
+export const usePermissions = (entity, isTaskProposalOrMilestone = false) => {
   const globalContext = useGlobalContext();
   const { id: userId } = useMe() || {};
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
@@ -360,7 +366,7 @@ export const usePermissions = (entity, isTaskProposal = false) => {
   const canEdit = hasFullPermission || hasEditPermission || createdByUser || (assigneeId && assigneeId === userId);
   const canArchive = permissions.includes(PERMISSIONS.MANAGE_BOARD) || hasFullPermission || createdByUser;
   const canViewApplications = hasFullPermission || hasEditPermission || (createdByUser && type === TASK_TYPE);
-  const canDelete = canArchive && (type === ENTITIES_TYPES.TASK || type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
+  const canDelete = canArchive && (type === ENTITIES_TYPES.TASK || isTaskProposalOrMilestone);
   const canApproveProposal = hasFullPermission || permissions.includes(PERMISSIONS.CREATE_TASK);
   const claimPermissions = checkCanClaimPermissions(entity, userPermissionsContext);
   const canClaim =
@@ -486,4 +492,10 @@ export const useCopyAddress = () => {
   };
 
   return { copyAddress };
+};
+
+export const useHotKeysListener = (key, func, dependencies = []) => {
+  const router = useRouter();
+  const canUseHotkeys = useMemo(() => !PAGES_WITH_NO_HOTKEYS.includes(router.pathname), [router.pathname]);
+  return useHotkeys(key, canUseHotkeys ? func : () => {}, [canUseHotkeys, ...dependencies]);
 };

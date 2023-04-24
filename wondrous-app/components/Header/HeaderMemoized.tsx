@@ -18,10 +18,9 @@ import NotificationsBoard from 'components/Notifications';
 import useMediaQuery from 'hooks/useMediaQuery';
 import useSideBar from 'hooks/useSideBar';
 import { useRouter } from 'next/router';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { Org } from 'types/Org';
-import { PAGE_PATHNAME } from 'utils/constants';
-import { useOutsideAlerter } from 'utils/hooks';
+import { PAGE_PATHNAME, PAGES_WITH_NO_HOTKEYS } from 'utils/constants';
+import { useHotKeysListener, useOutsideAlerter } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import BreadCrumbs from 'components/BreadCrumbs';
 import { HeaderBar, HeaderCreateButton, HeaderItemWrapper, MenuContainer } from './styles';
@@ -50,7 +49,6 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
   const [activeModalType, setActiveModalType] = useState<TYPES | null>(null);
   const router = useRouter();
   const toggleMinimize = () => setMinimized((prev) => !prev);
-
   useOutsideAlerter(wrapperRef, () => {
     if (isPodModalOpen || isTutorialsModalOpen) return;
     setActiveModalType(null);
@@ -66,11 +64,11 @@ const HeaderMemo = ({ isMobile, onSignInClick, showCreateButton, user }: Props) 
     [activeModalType]
   );
 
-  useHotkeys(HOTKEYS.OPEN_PODS, () => {
+  useHotKeysListener(HOTKEYS.OPEN_PODS, () => {
     setIsPodModalOpen(true);
   });
 
-  useHotkeys(HOTKEYS.OPEN_MISSION_CONTROL, () => {
+  useHotKeysListener(HOTKEYS.OPEN_MISSION_CONTROL, () => {
     router.push('/mission-control');
   });
 

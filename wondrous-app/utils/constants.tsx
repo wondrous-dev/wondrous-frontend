@@ -381,6 +381,7 @@ export const GRAPHQL_ERRORS = {
   INVALID_EMAIL: 'invalid_email',
   POD_WITH_SAME_NEXT_EXISTS: 'Pod with name already exist',
   DISCORD_NOT_CONFIGURED: 'discord_not_configured',
+  ORG_ROLE_IN_USE: 'Cannot delete a role that is in use',
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
@@ -530,7 +531,6 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/twitter/callback',
   '/twitter/verify-tweet',
   '/reset-password',
-  '/onboarding-dao',
   '/new-task',
   '/apps/install/coordinape',
   '/invite/collab/[token]',
@@ -551,6 +551,25 @@ export const GLOBAL_SEARCH_TYPES = {
   USERS: 'users',
 };
 
+export const DAO_CATEGORIES_KEYS = {
+  SOCIAL_GOOD: 'social_good',
+  MEDIA_CONTENT: 'media_content',
+  NFT_COLLECTIVE: 'nft_collective',
+  INVESTMENTS: 'investments',
+  DEFI: 'defi',
+  SOCIAL: 'social',
+  SERVICE_DAO: 'service_dao',
+  THINK_TANK: 'think_tank',
+  FUN_MEMEABLE: 'fun_memeable',
+  BUILDING_PRODUCTS: 'building_products',
+  CREATOR_COMMUNITY: 'creator_community',
+  GAMING: 'gaming',
+  REFI: 'refi',
+  DESCI: 'desci',
+  INCUBATOR: 'incubator',
+  SPORTS: 'sports',
+};
+
 export const DAO_CATEGORIES = {
   social_good: '🌎 Social good',
   media_content: '🎬 Media & content',
@@ -562,6 +581,12 @@ export const DAO_CATEGORIES = {
   think_tank: '‍🤔 Think tank',
   fun_memeable: '💀 Fun and memeable',
   building_products: '‍🏗️ Building products',
+  creator_community: '👩‍🎨 Creator community',
+  gaming: '🎮 Gaming',
+  refi: '🏛️ ReFi',
+  desci: '🌱 DeSci',
+  incubator: '🐣 Incubator',
+  sports: '🏀 Sports',
 } as const;
 
 export const SORT_BY = {
@@ -904,6 +929,13 @@ export const HEADER_ICONS = {
   [STATUS_CLOSED]: Rejected,
 };
 
+export const SPECIAL_ORGS = {
+  '63763663725527146': [ENTITIES_TYPES.POD, ENTITIES_TYPES.GRANT, ENTITIES_TYPES.COLLAB], // Merit Circle
+  '48014116661493762': [ENTITIES_TYPES.POD, ENTITIES_TYPES.GRANT, ENTITIES_TYPES.COLLAB], // SampleDAO
+  '65854367353274369': [ENTITIES_TYPES.TASK, ENTITIES_TYPES.BOUNTY, ENTITIES_TYPES.PROPOSAL], // Wonderverse localhost
+  '83328256244187294': [ENTITIES_TYPES.TASK, ENTITIES_TYPES.BOUNTY, ENTITIES_TYPES.PROPOSAL], // Stargate prod
+};
+
 export const ONLY_GRANTS_ENABLED_ORGS = ['63763663725527146', '48014116661493762']; // Merit Circle, SampleDAO (staging)
 export const GRANT_APPLICATION_EDITABLE_STATUSES = [
   GRANT_APPLICATION_STATUSES.OPEN,
@@ -938,7 +970,33 @@ export const ANALYTIC_EVENTS = {
   DOCUMENT_CLICK: 'document_click',
   AI_CREATE_TASK_SNACKBAR_CLICK: 'ai_create_task_snackbar_click',
   CREATE_TASK_FROM_TASK_TEMPLATE_SNACKBAR_CLICK: 'create_task_from_task_template_snackbar_click',
+  SHOW_TEMPLATES_CLICKED: 'show_templates_clicked',
+  PRESET_TASK_TEMPLATE_CLICKED: 'preset_task_template_click',
+  ORG_OR_POD_TEMPLATE_CLICKED: 'org_or_pod_template_clicked',
+  TASK_TEMPLATE_SAVED: 'task_template_saved',
+  TASK_OR_BOUNTY_CREATED_FROM_TEMPLATE: 'task_or_bounty_created_from_template',
+  ONBOARDING_BASICS_SETUP: 'onboarding_basics_setup',
+  ONBOARDING_CORE_WORKFLOW_SETUP: 'onboarding_core_workflow_setup',
+  ONBOARDING_COMMUNITY_SETUP: 'onboarding_community_setup',
+  ONBOARDING_PROJECT_CREATE: 'onboarding_project_create',
+  ONBOARDING_CATEGORY_SELECT: 'onboarding_category_select',
+  ONBOARDING_CATEGORY_SELECT_SKIP: 'onboarding_category_select_skip',
+  ONBOARDING_BIO_MEDIA_SETTINGS_SETUP: 'onboarding_bio_media_settings_setup',
+  ONBOARDING_BIO_MEDIA_SETTINGS_SETUP_SKIP: 'onboarding_bio_media_settings_setup_skip',
+  ONBOARDING_TWITTER_SETUP: 'onboarding_twitter_setup',
+  ONBOARDING_TWITTER_SETUP_SKIP: 'onboarding_twitter_setup_skip',
+  ONBOARDING_TASK_CREATE: 'onboarding_task_create',
+  ONBOARDING_POD_CREATE: 'onboarding_pod_create',
+  ONBOARDING_BOUNTY_CREATE: 'onboarding_bounty_create',
+  ONBOARDING_MILESTONE_CREATE: 'onboarding_milestone_create',
+  ONBOARDING_DISCORD_SETUP: 'onboarding_discord_setup',
+  ONBOARDING_DISCORD_SETUP_SKIP: 'onboarding_discord_setup_skip',
+  ONBOARDING_EMAIL_INVITES: 'onboarding_email_invites',
+  ONBOARDING_INVITE_LINK_COPY: 'onboarding_invite_link_copy',
+  ONBOARDING_INVITES_SKIP: 'onboarding_invites_skip',
 };
 
 export const CLOSE_AI_SNACK_BAR = 'close_ai_snack_bar';
 export const CLOSE_TASK_TEMPLATE_SNACK_BAR = 'close_task_template_snack_bar';
+
+export const PAGES_WITH_NO_HOTKEYS = ['/organization/[username]/onboarding', '/onboarding-dao'];

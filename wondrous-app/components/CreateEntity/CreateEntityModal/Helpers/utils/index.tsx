@@ -16,13 +16,7 @@ import pickBy from 'lodash/pickBy';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 import { Dispatch, SetStateAction } from 'react';
-import {
-  CATEGORY_LABELS,
-  ENTITIES_TYPES,
-  GR15DEICategoryName,
-  ONLY_GRANTS_ENABLED_ORGS,
-  PRIVACY_LEVEL,
-} from 'utils/constants';
+import { CATEGORY_LABELS, ENTITIES_TYPES, GR15DEICategoryName, PRIVACY_LEVEL, SPECIAL_ORGS } from 'utils/constants';
 import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
 import * as Yup from 'yup';
@@ -159,13 +153,8 @@ export const filterOptionsWithPermission = (
   return options
     .filter(({ id }) => {
       const listPodId = orgId ? id : undefined;
-      if (
-        ONLY_GRANTS_ENABLED_ORGS.includes(id) &&
-        (entityType === ENTITIES_TYPES.TASK ||
-          entityType === ENTITIES_TYPES.BOUNTY ||
-          entityType === ENTITIES_TYPES.MILESTONE)
-      )
-        return false;
+      const isInSpecialOrg = id in SPECIAL_ORGS;
+      if (isInSpecialOrg && !SPECIAL_ORGS[id]?.includes(entityType)) return false;
       return (
         hasCreateTaskPermission({
           userPermissionsContext,
@@ -335,10 +324,11 @@ export const entityTypeData = {
   },
 };
 
-export const initialValues = ({ entityType, existingTask = null, initialPodId = null }) => {
+export const initialValues = ({ entityType, existingTask = null, initialPodId = null, defaults = {} }) => {
   const defaultValues = assignIn(
     cloneDeep(entityTypeData[entityType]?.initialValues),
-    entityType === ENTITIES_TYPES.MILESTONE ? { podIds: [initialPodId] } : { podId: initialPodId }
+    defaults,
+    entityType === ENTITIES_TYPES.MILESTONE ? { podIds: initialPodId ? [initialPodId] : [] } : { podId: initialPodId }
   );
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
@@ -378,6 +368,7 @@ export interface ICreateEntityModal {
   handleClose: Function;
   cancel: Function;
   shouldShowTemplates?: boolean;
+  defaults?: any;
   existingTask?: {
     priority: string | void;
     id: string;

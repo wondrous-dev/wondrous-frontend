@@ -9,14 +9,16 @@ import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
+import WrenchIcon from 'components/Icons/wrench';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
-import { ENTITIES_TYPES, ONLY_GRANTS_ENABLED_ORGS } from 'utils/constants';
+import { ENTITIES_TYPES, SPECIAL_ORGS } from 'utils/constants';
 import { useBoards, useIsMobile, useSideBar } from 'utils/hooks';
 import { hasCreateTaskPermission } from 'utils/helpers';
+import useCanManage from 'hooks/useCanManage';
 import SidebarEntityListMemoized from './SidebarEntityListMemoized';
 
 const usePerTypeTaskCountForBoard = () => {
@@ -36,6 +38,171 @@ const usePerTypeTaskCountForBoard = () => {
   return orgData?.getPerTypeTaskCountForOrgBoard || podData?.getPerTypeTaskCountForPodBoard || {};
 };
 
+const getCorrectEntities = ({
+  board,
+  orgBoard,
+  link,
+  router,
+  pathnamesToCheck,
+  taskCount,
+  canCreateTask,
+  canManage,
+}) => {
+  const orgId = board?.orgId || orgBoard?.id;
+  const specialOrg = orgId in SPECIAL_ORGS;
+  const hasWorkSection =
+    !specialOrg ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE);
+  const hasSpacesSection =
+    !specialOrg ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.POD) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT) ||
+    SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB);
+  const workItems = [];
+  if (hasWorkSection) {
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK)) {
+      workItems.push({
+        text: 'Tasks',
+        Icon: CheckBoxIcon,
+        link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
+        count: taskCount.taskCount,
+        check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.TASK,
+        entityType: ENTITIES_TYPES.TASK,
+      });
+    }
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY)) {
+      workItems.push({
+        text: 'Bounties',
+        Icon: StartIcon,
+        link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
+        check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.BOUNTY,
+        count: taskCount.bountyCount,
+        entityType: ENTITIES_TYPES.BOUNTY,
+      });
+    }
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE)) {
+      workItems.push({
+        text: 'Milestones',
+        Icon: FlagIcon,
+        check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.MILESTONE,
+        link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
+        count: taskCount.milestoneCount,
+        entityType: ENTITIES_TYPES.MILESTONE,
+      });
+    }
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL)) {
+      workItems.push({
+        text: 'Proposals',
+        Icon: ContentPaste,
+        link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
+        check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
+        count: taskCount.proposalCount,
+        entityType: ENTITIES_TYPES.PROPOSAL,
+      });
+    }
+    if (
+      !specialOrg ||
+      SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK) ||
+      SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE) ||
+      canCreateTask
+    ) {
+      workItems.push({
+        text: 'WonderBot AI',
+        Icon: WonderBot,
+        link: `${link}/wonder_ai_bot`,
+        check: () => pathnamesToCheck.includes(router.pathname) && router.pathname.includes('wonder_ai_bot'),
+        entityType: null,
+        count: null,
+      });
+    }
+  }
+
+  const spacesItems = [];
+  if (hasSpacesSection) {
+    if (!specialOrg || (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.POD) && !!orgBoard)) {
+      spacesItems.push({
+        text: 'Pods',
+        Icon: PodIcon,
+        link: `${link}/pods`,
+        entityType: ENTITIES_TYPES.POD,
+      });
+    }
+    if (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT)) {
+      spacesItems.push({
+        text: 'Grants',
+        Icon: GrantIcon,
+        link: `${link}/grants`,
+        entityType: ENTITIES_TYPES.GRANT,
+      });
+    }
+    if (
+      !specialOrg ||
+      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB) && !board?.orgData?.shared && !!orgBoard)
+    ) {
+      spacesItems.push({
+        text: 'Collaborations',
+        Icon: SmallDao2DaoIcon,
+        link: `${link}/collaborations`,
+      });
+    }
+  }
+  const data = [
+    !board?.orgData?.shared && {
+      items: [
+        {
+          text: `${orgBoard ? 'Project Home' : 'Pod Home'}`,
+          Icon: () => <HomeIcon height="12px" width="12px" />,
+          link: `${link}/home`,
+          check: null,
+          entityType: null,
+          count: null,
+        },
+        canManage && {
+          text: 'Setup Project',
+          link: `${link}/onboarding`,
+          Icon: WrenchIcon,
+        },
+      ],
+    },
+    hasWorkSection && {
+      label: 'Work',
+      items: workItems,
+    },
+    hasSpacesSection && {
+      label: 'Spaces',
+      items: spacesItems,
+    },
+    {
+      label: 'Community',
+      items: [
+        {
+          text: 'Leaderboard',
+          Icon: PieChartIcon,
+          link: `${link}/analytics`,
+        },
+        // { TODO: Put back when mint kudos is out
+        //   text: 'Activity',
+        //   Icon: ShowChartIcon,
+        //   link: `${link}/activities`,
+        // },
+        {
+          text: 'Members',
+          Icon: GroupIcon,
+          link: `${link}/members`,
+        },
+        {
+          text: 'Documentation',
+          Icon: FolderIcon,
+          link: `${link}/docs`,
+        },
+      ],
+    },
+  ];
+  return data;
+};
 const useSidebarData = () => {
   const { board, orgBoard } = useBoards();
   const { setMinimized } = useSideBar();
@@ -47,7 +214,13 @@ const useSidebarData = () => {
   const handleOnClick =
     (link, type = null) =>
     () => {
-      if (type && setEntityType) {
+      if (
+        type &&
+        setEntityType &&
+        type !== ENTITIES_TYPES.POD &&
+        type !== ENTITIES_TYPES.GRANT &&
+        type !== ENTITIES_TYPES.COLLAB
+      ) {
         setEntityType(type);
         if (!search) return;
       }
@@ -82,116 +255,19 @@ const useSidebarData = () => {
   ];
 
   const taskCount = usePerTypeTaskCountForBoard();
+  const canManage = useCanManage();
 
-  const isMeritCircle =
-    ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgData?.id) || ONLY_GRANTS_ENABLED_ORGS.includes(board?.orgId);
+  const data = getCorrectEntities({
+    board,
+    orgBoard,
+    link,
+    router,
+    pathnamesToCheck,
+    taskCount,
+    canCreateTask,
+    canManage,
+  });
 
-  const data = [
-    !board?.orgData?.shared && {
-      items: [
-        {
-          text: `${orgBoard ? 'Project Home' : 'Pod Home'}`,
-          Icon: () => <HomeIcon height="12px" width="12px" />,
-          link: `${link}/home`,
-        },
-      ],
-    },
-    !isMeritCircle && {
-      label: 'Work',
-      items: [
-        {
-          text: 'Tasks',
-          Icon: CheckBoxIcon,
-          link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
-          count: taskCount.taskCount,
-          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.TASK,
-          entityType: ENTITIES_TYPES.TASK,
-        },
-        {
-          text: 'Bounties',
-          Icon: StartIcon,
-          link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
-          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.BOUNTY,
-          count: taskCount.bountyCount,
-          entityType: ENTITIES_TYPES.BOUNTY,
-        },
-        {
-          text: 'Milestones',
-          Icon: FlagIcon,
-          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.MILESTONE,
-          link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
-          count: taskCount.milestoneCount,
-          entityType: ENTITIES_TYPES.MILESTONE,
-        },
-        {
-          text: 'Proposals',
-          Icon: ContentPaste,
-          link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
-          check: () => pathnamesToCheck.includes(router.pathname) && board?.entityType === ENTITIES_TYPES.PROPOSAL,
-          count: taskCount.proposalCount,
-          entityType: ENTITIES_TYPES.PROPOSAL,
-        },
-      ],
-    },
-    {
-      label: 'Spaces',
-      items: [
-        !!orgBoard && {
-          text: 'Pods',
-          Icon: PodIcon,
-          link: `${link}/pods`,
-          count: board?.orgData?.podCount,
-        },
-        {
-          text: 'Grants',
-          Icon: GrantIcon,
-          link: `${link}/grants`,
-          count: taskCount?.grantCount,
-        },
-        !board?.orgData?.shared &&
-          !!orgBoard && {
-            text: 'Collaborations',
-            Icon: SmallDao2DaoIcon,
-            link: `${link}/collaborations`,
-          },
-      ],
-    },
-    {
-      label: 'Community',
-      items: [
-        {
-          text: 'Leaderboard',
-          Icon: PieChartIcon,
-          link: `${link}/analytics`,
-        },
-        // { TODO: Put back when mint kudos is out
-        //   text: 'Activity',
-        //   Icon: ShowChartIcon,
-        //   link: `${link}/activities`,
-        // },
-        {
-          text: 'Members',
-          Icon: GroupIcon,
-          link: `${link}/members`,
-        },
-        {
-          text: 'Documentation',
-          Icon: FolderIcon,
-          link: `${link}/docs`,
-        },
-      ],
-    },
-  ];
-  if (canCreateTask) {
-    data[1]?.items?.push({
-      text: 'WonderBot AI',
-      Icon: WonderBot,
-      link: `${link}/wonder_ai_bot`,
-      check: () => pathnamesToCheck.includes(router.pathname) && router.pathname.includes('wonder_ai_bot'),
-      entityType: null,
-      count: null,
-    });
-  }
   return { data, handleOnClick };
 };
 

@@ -3,7 +3,7 @@ import Tooltip from 'components/Tooltip';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { isEmpty } from 'lodash';
 import { forwardRef, useEffect, useState } from 'react';
-import { ENTITIES_TYPES } from 'utils/constants';
+import { ANALYTIC_EVENTS, ENTITIES_TYPES } from 'utils/constants';
 import { privacyOptions } from '../Helpers';
 import {
   CreateEntityFooter,
@@ -96,6 +96,12 @@ const Footer = forwardRef(
             {form?.values?.title && form?.values?.description && (
               <SaveTemplateButton
                 onClick={() => {
+                  if (window?.analytics && process.env.NEXT_PUBLIC_PRODUCTION) {
+                    window?.analytics?.track(ANALYTIC_EVENTS.TASK_TEMPLATE_SAVED, {
+                      orgId: form?.values?.orgId,
+                      podId: form?.values?.podID,
+                    });
+                  }
                   if (taskTemplate) {
                     handleEditTemplate(taskTemplate);
                   } else {

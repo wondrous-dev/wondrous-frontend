@@ -3,7 +3,6 @@ import { PodsButtonWrapper, PodsIconWrapper, PodsItem } from 'components/Common/
 import PodModal from 'components/Common/PodModal';
 import PodsIcon from 'components/Icons/Sidebar/podsGradient.svg';
 import { useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
 import { useHotkey } from 'utils/hooks';

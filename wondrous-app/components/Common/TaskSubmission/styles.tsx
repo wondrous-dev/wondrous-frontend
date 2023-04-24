@@ -863,6 +863,11 @@ export const SubmissionDescription = styled.div`
   }
 `;
 
+export const SignupButton = styled(Button)`
+  && {
+    width: fit-content;
+  }
+`;
 export const GiveKudosButton = styled(Button)`
   && {
     background: ${palette.grey87};

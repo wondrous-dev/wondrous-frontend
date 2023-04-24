@@ -2,6 +2,7 @@ import { InputUnstyled } from '@mui/base';
 import { ButtonBase, Typography } from '@mui/material';
 import CloseIcon from 'components/Icons/close.svg';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -155,7 +156,7 @@ export const BackButton = styled(ButtonBase)`
   && {
     width: 40px;
     height: 40px;
-    background: ${({ theme }) => theme.palette.black92};
+    background: ${({ theme, color }) => color || theme.palette.black92};
     border: 0;
     border-radius: 50%;
     display: flex;
@@ -220,8 +221,9 @@ export const FieldInput = styled(InputUnstyled)`
       height: 42px;
       padding: 12px;
       width: 100%;
-      :focus-visible {
-        outline: none;
+      :focus {
+        outline-style: solid;
+        outline-color: ${palette.highlightPurple};
       }
     }
   }

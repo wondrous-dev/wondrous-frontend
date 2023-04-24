@@ -5,7 +5,7 @@ import palette from 'theme/palette';
 import { GET_ORG_TASK_TEMPLATES, GET_POD_TASK_TEMPLATES } from 'graphql/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { DELETE_TASK_TEMPLATE } from 'graphql/mutations';
-import { ENTITIES_TYPES } from 'utils/constants';
+import { ANALYTIC_EVENTS, ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
 import { SafeImage } from 'components/Common/Image';
 import { values } from 'lodash';
@@ -44,6 +44,12 @@ const OrgPodTemplateItem = ({ template, setTemplate, handleDeleteTemplate }) => 
   <TemplateDiv
     key={template?.title}
     onClick={() => {
+      if (window?.analytics && process.env.NEXT_PUBLIC_PRODUCTION) {
+        window?.analytics?.track(ANALYTIC_EVENTS.ORG_OR_POD_TEMPLATE_CLICKED, {
+          orgId: template?.orgId,
+          podId: template?.podId,
+        });
+      }
       setTemplate(template);
     }}
   >
@@ -89,6 +95,7 @@ const TemplateBody = ({
   pods,
   setTaskTemplate,
   board,
+  setTaskTemplateClicked = null,
   ref,
 }) => {
   const [initialDescription, setInitialDescription] = useState(null);
@@ -147,6 +154,9 @@ const TemplateBody = ({
     }
   }, form?.values?.podId);
   const setTemplate = (template) => {
+    if (setTaskTemplateClicked) {
+      setTaskTemplateClicked(true);
+    }
     setTaskTemplate(template);
     form.setFieldValue('title', template?.title);
     form.setFieldValue('points', template?.points);
@@ -339,6 +349,13 @@ const TemplateBody = ({
                   <TemplateDiv
                     key={template?.title}
                     onClick={() => {
+                      if (window?.analytics && process.env.NEXT_PUBLIC_PRODUCTION) {
+                        window?.analytics?.track(ANALYTIC_EVENTS.PRESET_TASK_TEMPLATE_CLICKED, {
+                          orgId: form?.values?.orgId,
+                          podId: form?.values?.podId,
+                          title: template?.title,
+                        });
+                      }
                       setTaskTemplate(null);
                       form.setFieldValue('title', template?.title);
                       form.setFieldValue('description', template?.description);

@@ -204,7 +204,7 @@ function TaskColumn(props: ITaskColumn) {
       {status === TASK_STATUS_TODO && canCreateTask && AISnackbarVisible && (orgBoard || podBoard) && (
         <AISnackbarContainer
           onClick={() => {
-            if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+            if (window?.analytics && process.env.NEXT_PUBLIC_PRODUCTION) {
               window?.analytics?.track(ANALYTIC_EVENTS.AI_CREATE_TASK_SNACKBAR_CLICK, {
                 orgId: board?.orgId,
                 podId: board?.podId,
@@ -249,7 +249,7 @@ function TaskColumn(props: ITaskColumn) {
       {status === TASK_STATUS_TODO && canCreateTask && taskTemplateSnackbarVisible && (orgBoard || podBoard) && (
         <AISnackbarContainer
           onClick={() => {
-            if (window?.analytics && process.env.NEXT_PUBLIC_ENV === 'production') {
+            if (window?.analytics && process.env.NEXT_PUBLIC_PRODUCTION) {
               window?.analytics?.track(ANALYTIC_EVENTS.CREATE_TASK_FROM_TASK_TEMPLATE_SNACKBAR_CLICK, {
                 orgId: board?.orgId,
                 podId: board?.podId,

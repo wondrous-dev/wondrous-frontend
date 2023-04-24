@@ -171,7 +171,13 @@ export default function TaskApplicationModal(props) {
   };
 
   return (
-    <TaskApplicationFormModal open={open}>
+    <TaskApplicationFormModal
+      open={open}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+    >
       <TaskApplicationForm>
         <TaskApplicationFormBorder>
           <TaskApplicationFormBackground>

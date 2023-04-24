@@ -13,7 +13,7 @@ import {
   GET_POD_HOME_PROPOSALS,
   GET_ORG_HOME_TASK_OBJECTS,
   GET_POD_HOME_TASK_OBJECTS,
-  GET_ORG_HOME_MILESTONS,
+  GET_ORG_HOME_MILESTONES,
   GET_POD_HOME_MILESTONS,
 } from 'graphql/queries/projectPage';
 import { useRouter } from 'next/router';
@@ -182,7 +182,7 @@ export const useGetHomeMilestones = () => {
     limit: DATA_LIMIT,
     offset: 0,
   };
-  const { data: orgMilestoneData } = useQuery(GET_ORG_HOME_MILESTONS, {
+  const { data: orgMilestoneData } = useQuery(GET_ORG_HOME_MILESTONES, {
     skip: !useIsOrg(),
     variables: {
       input: {

@@ -521,15 +521,22 @@ export const ImageUploadButtonWrapper = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 99;
+  padding: 18px;
+  border-radius: 100%;
+  background: ${({ hasImage }) => (hasImage ? '' : palette.grey78)};
   display: flex;
   align-items: center;
+  width: ${({ isHeader }) => (isHeader ? '100%' : 'auto')};
+  border-radius: ${({ isHeader }) => (isHeader ? '6px' : 'auto')};
+  display: ${({ isHeader }) => (isHeader ? 'flex' : 'auto')};
+  justify-content: ${({ isHeader }) => (isHeader ? 'center' : 'auto')};
 `;
 
 export const ImageUploadButton = styled.div<{ marginLeft: string }>`
   text-align: center;
   width: 48px;
   height: 48px;
-  background-color: #1d1d1d99;
+  background-color: ${palette.grey920};
   display: flex;
   align-items: center;
   justify-content: center;

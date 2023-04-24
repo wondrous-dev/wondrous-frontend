@@ -9,10 +9,11 @@ import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from 'graphql/mutat
 import { Role } from 'types/common';
 import permissons from 'utils/orgPermissions';
 import { withAuth } from 'components/Auth/withAuth';
+import { GRAPHQL_ERRORS } from 'utils/constants';
 
 function RolesPage() {
   const [roles, setRoles] = useState([]);
-  const [toast, setToast] = useState({ show: false, message: '' });
+  const [toast, setToast] = useState({ show: false, message: '', error: false });
   // Get organization roles
   const router = useRouter();
   const { orgId } = router.query;
@@ -62,6 +63,16 @@ function RolesPage() {
   const [deleteOrgRole] = useMutation(DELETE_ORG_ROLE, {
     onCompleted: () => {
       setToast({ ...toast, message: 'Role deleted successfully.', show: true });
+    },
+    onError: (error) => {
+      if (error?.graphQLErrors && error?.graphQLErrors[0]?.extensions?.message === GRAPHQL_ERRORS.ORG_ROLE_IN_USE) {
+        setToast({
+          ...toast,
+          error: true,
+          message: 'Role is in use so you cannot delete it. Please refresh the page',
+          show: true,
+        });
+      }
     },
     refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
   });
