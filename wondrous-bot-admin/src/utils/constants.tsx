@@ -100,5 +100,24 @@ export const BG_TYPES = {
   HOME: 'home',
   MEMBERS: 'members',
   LEVELS: 'levels',
-  QUESTS: 'quests'
+  QUESTS: 'quests',
+};
+
+export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
+  gif: 'image/gif',
+  jpeg: 'image/jpeg',
+  jpg: 'image/jpeg',
+  png: 'image/png',
+  tiff: 'image/tiff',
+  ico: 'image/x-icon',
+  svg: 'image/svg+xml',
+};
+
+export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
+  mpeg: 'video/mpeg',
+  mp4: 'video/mp4',
+  mov: 'video/quicktime',
+  wmv: 'video/x-ms-wmv',
+  flv: 'video/x-flv',
+  webm: 'webm',
 };
