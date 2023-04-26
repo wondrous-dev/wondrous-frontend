@@ -1,5 +1,5 @@
 const TWITTER_CLIENT_ID = process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID;
-const DEFAULT_TWITTER_SCOPE = 'users.read%20tweet.read%20offline.access';
+const DEFAULT_TWITTER_SCOPE = 'users.read%20tweet.read%20follows.read%20like.read%20offline.access';
 
 export const getTwitterCallbackUrl = () => {
   if (process.env.NEXT_PUBLIC_PRODUCTION) {
