@@ -1,12 +1,12 @@
 import { useMutation } from "@apollo/client"
-import { Typography } from "@mui/material"
+import { CircularProgress, Typography } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import { VERIFY_COMMUNITY_USER_TWITTER } from "graphql/mutations"
 import { useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 
 const CallbackPage = () => {
-	const [searchParams, setSearchParams] = useSearchParams()
+	const [searchParams] = useSearchParams()
 	const code = searchParams?.get("code")
 	const state = searchParams?.get("state")
 	const discordId = state?.split("discordId=")[1] || ""
@@ -35,13 +35,49 @@ const CallbackPage = () => {
 	return (
 		<Grid display='flex' flexDirection='column' height='100%' minHeight='100vh'>
 			<Grid
-				flex='1'
+				flex='2'
 				display='flex'
 				justifyContent='center'
 				alignItems='center'
 				gap='8px'
 				flexDirection='column'
-			></Grid>
+			>
+				{finishedVerification && (
+					<Typography
+						fontFamily='Poppins'
+						fontWeight={600}
+						fontSize='18px'
+						lineHeight='24px'
+						color='black'
+					>
+						Finished connecting your Twitter account! You can close this window
+						now and return to Discord.
+					</Typography>
+				)}
+				{errorText && (
+					<Typography
+						fontFamily='Poppins'
+						fontWeight={600}
+						fontSize='18px'
+						lineHeight='24px'
+						color='black'
+					>
+						{errorText}
+					</Typography>
+				)}
+				{!errorText && !finishedVerification && (
+					<Typography
+						fontFamily='Poppins'
+						fontWeight={600}
+						fontSize='18px'
+						lineHeight='24px'
+						color='black'
+					>
+						Connecting your Twitter account
+					</Typography>
+				)}
+				<CircularProgress />
+			</Grid>
 			<Grid
 				flex='1'
 				sx={{
