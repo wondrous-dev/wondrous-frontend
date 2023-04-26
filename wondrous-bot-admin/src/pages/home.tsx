@@ -6,6 +6,8 @@ import {
   QuestIcon,
 } from 'components/Icons/HomePageIcons';
 import Header from 'components/Navbar';
+import { useContext } from 'react';
+import GlobalContext from 'utils/context/GlobalContext';
 import { pinkColors } from 'utils/theme/colors';
 
 const CARDS_CONFIG = [
@@ -23,7 +25,7 @@ const CARDS_CONFIG = [
   },
   {
     title: 'Levels',
-    count: 14,
+    count: 10,
     Icon: LevelsIcon,
     bgColor: '#84BCFF',
   },
@@ -81,6 +83,7 @@ const CardsComponent = () => (
 );
 
 const HomePage = () => {
+  const {activeOrg} = useContext(GlobalContext)
   return (
     <Grid display='flex' flexDirection='column' height='100%' minHeight='100vh'>
       <Grid
@@ -97,7 +100,7 @@ const HomePage = () => {
           fontSize='28px'
           color='#06040A'
         >
-          DegenGodz
+          {activeOrg?.name}
         </Typography>
         <Typography
           fontFamily='Space Grotesk'

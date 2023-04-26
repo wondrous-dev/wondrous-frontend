@@ -67,7 +67,6 @@ function SafeImage(safeImageArgs: SafeImageArgs) {
       setImageUrl(null);
       return;
     }
-
     try {
       const cachedPreviewUrl = localStorage.getItem(`safeImage.${src}`);
 
@@ -91,8 +90,9 @@ function SafeImage(safeImageArgs: SafeImageArgs) {
           return;
         }
       }
-    } catch (error) {}
-
+    } catch (error) {
+      console.log(error, 'ERROR IN SAFE IMAGE')
+    }
     getPreviewFile({
       variables: {
         path: src,
@@ -101,7 +101,7 @@ function SafeImage(safeImageArgs: SafeImageArgs) {
   }, [src, onPreviewLoaded]);
 
   if (safeImageUrl) {
-    <img
+    return <img
       src={safeImageUrl}
       alt={alt}
       width={width}

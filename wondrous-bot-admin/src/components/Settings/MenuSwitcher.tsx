@@ -31,9 +31,13 @@ const MenuSwitcher = () => {
       flexDirection='column'
       alignItems='flex-start'
       borderRadius='12px'
+      width={{
+        xs: '100%',
+        sm: '30%',
+      }}
       flexBasis={{
         xs: '100%',
-        sm: '40%',
+        sm: '30%',
       }}
     >
       {MENU_ITEMS.map((item, idx) => {

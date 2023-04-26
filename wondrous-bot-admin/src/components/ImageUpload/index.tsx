@@ -18,6 +18,12 @@ import {
 import CloseModalIcon from 'components/Icons/CloseModal';
 
 import AvatarEditor, { AVATAR_EDITOR_TYPES } from './AvatarEditor';
+import { Grid } from '@mui/material';
+import AddPicture from 'components/Icons/AddPicture';
+import { CloseIcon } from 'components/Shared/DatePicker/Icons';
+import { ButtonIconWrapper } from 'components/Shared/styles';
+import ReplaceIcon from 'components/Icons/ReplaceIcon';
+import DeleteIcon from 'components/Icons/Delete';
 
 // import AddPictureIcon from '../../public/images/icons/addPicture.svg';
 // import ReplaceIcon from '../../public/images/icons/replace.svg';
@@ -124,7 +130,6 @@ export default function ImageUpload(props: Props) {
     imageInputField.current.click();
   };
 
-
   const renderEditedImage = () => {
     if (imageType === AVATAR_EDITOR_TYPES.HEADER_IMAGE) {
       return (
@@ -170,9 +175,7 @@ export default function ImageUpload(props: Props) {
   };
 
   return (
-    <ImageUploadBlock>
-      {title ? <LabelBlock>{title}</LabelBlock> : null}
-
+    <Grid width='100%'>
       <ImageUploadBlockActivitySection>
         <ImageUploadBlockInputWrapper
           isIcon={imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE}
@@ -186,34 +189,35 @@ export default function ImageUpload(props: Props) {
               <ImageUploadButton
                 onClick={() => imageInputField.current.click()}
               >
-                {/* <AddPictureIcon /> */}
+                <AddPicture />
               </ImageUploadButton>
             ) : null}
             {imageType !== AVATAR_EDITOR_TYPES.ICON_IMAGE && image ? (
               <ImageUploadButton marginLeft='14px' onClick={handleRemoveFile}>
-                <CloseModalIcon />
+                <CloseIcon />
               </ImageUploadButton>
             ) : null}
           </ImageUploadButtonWrapper>
           {editedImage ? renderEditedImage() : renderImage()}
-          <ImageUploadBlockInput
-            accept='image/*'
-            id={imageInputId}
-            type='file'
-            ref={imageInputField}
-            onChange={handleNewFileUpload}
-          />
         </ImageUploadBlockInputWrapper>
         {imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE && image ? (
-          <ImageUploadBlockActionIcons>
-            <ToolButton onClick={handleReplaceImage}>
-              {/* <ReplaceIcon /> */}
-            </ToolButton>
-            <ToolButton onClick={handleRemoveFile}>
-              {/* <RemoveIcon /> */}
-            </ToolButton>
-          </ImageUploadBlockActionIcons>
+          <Grid display='flex' gap='8px'>
+            <ButtonIconWrapper onClick={handleRemoveFile}>
+              <DeleteIcon />
+            </ButtonIconWrapper>
+            <ButtonIconWrapper onClick={handleReplaceImage}>
+              <ReplaceIcon />
+            </ButtonIconWrapper>
+          </Grid>
         ) : null}
+
+        <ImageUploadBlockInput
+          accept='image/*'
+          id={imageInputId}
+          type='file'
+          ref={imageInputField}
+          onChange={handleNewFileUpload}
+        />
       </ImageUploadBlockActivitySection>
 
       <AvatarEditor
@@ -227,6 +231,6 @@ export default function ImageUpload(props: Props) {
         title={avatarEditorTitle || 'Upload Image'}
         recommendationText={recommendationText}
       />
-    </ImageUploadBlock>
+    </Grid>
   );
 }

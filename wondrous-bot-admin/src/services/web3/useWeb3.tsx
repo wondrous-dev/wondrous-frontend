@@ -2,7 +2,6 @@ import { useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { Web3Provider } from '@ethersproject/providers';
 import { useContext, useEffect, useState } from 'react';
-// import useAlerts from 'hooks/useAlerts';
 import useInjectedProviderListener from './useInjectedProviderListener';
 import { WonderWeb3Context } from 'utils/context/WonderWeb3Context';
 import useAlerts from 'utils/hooks';

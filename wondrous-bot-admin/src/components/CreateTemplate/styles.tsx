@@ -30,6 +30,7 @@ export const Label = styled(Typography)`
     line-height: 15px;
     min-width: 150px;
     letter-spacing: 0.01em;
-    color: #626262;
+    text-align: left;
+    color: ${({ color = '#626262' }) => color};
   }
 `;

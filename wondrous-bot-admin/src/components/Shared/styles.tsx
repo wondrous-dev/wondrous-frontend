@@ -92,9 +92,9 @@ export const ButtonIconWrapper = styled(ButtonBase)`
     justify-content: center;
     align-items: center;
     background: #c6bbfc;
-
+    gap: 6px;
     border-radius: 6px;
-
+    
     height: 30px;
 
     width: 30px;
@@ -129,11 +129,12 @@ export const SharedSecondaryButton = styled(ButtonBase)`
   && {
     display: flex;
     padding: 8px 24px;
+    gap: 10px;
     height: ${({ height = '40px' }) => height};
     min-width: ${({ minWidth = '40px' }) => minWidth};
     width: ${({ width = 'auto' }) => width};
     background: ${({ background }) => background || '#84bcff'};
-    border-radius: 35px;
+    border-radius: ${({borderRadius = "35px"}) => borderRadius};
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 600;

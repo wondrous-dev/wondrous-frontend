@@ -3,7 +3,7 @@ import {
   RoundedSecondaryButton,
   SharedSecondaryButton,
 } from 'components/Shared/styles';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 
 import { pinkColors } from 'utils/theme/colors';
@@ -11,6 +11,9 @@ import { CardHoverWrapper, CardWrapper, Label } from './styles';
 import { useNavigate } from 'react-router-dom';
 import PageWrapper from 'components/Shared/PageWrapper';
 import { BG_TYPES } from 'utils/constants';
+import { useQuery } from '@apollo/client';
+import { GET_QUESTS_FOR_ORG } from 'graphql/queries';
+import GlobalContext from 'utils/context/GlobalContext';
 
 const LEVELS = [1, 2, 3, 4, 5];
 
@@ -318,19 +321,18 @@ const INFO = {
 };
 
 const QuestsList = () => {
+  const { activeOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
+  const { data, refetch, variables } = useQuery(GET_QUESTS_FOR_ORG, {
+    variables: {
+      notifyOnNetworkStatusChange: true,
+      input: {
+        orgId: activeOrg?.id,
+      },
+    },
+  });
+
   return (
-    // <Grid
-    //   bgcolor={pinkColors.pink50}
-    //   minHeight='100vh'
-    //   container
-    //   direction='column'
-    //   gap='42px'
-    //   padding={{
-    //     xs: '14px 14px 120px 14px',
-    //     sm: '24px 56px',
-    //   }}
-    // >
     <PageWrapper
       bgType={BG_TYPES.QUESTS}
       containerProps={{

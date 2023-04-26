@@ -2,10 +2,10 @@ import QuizComponent from 'components/AddFormEntity/components/QuizComponent';
 import TextComponent from 'components/AddFormEntity/components/Text';
 
 export const TYPES = {
-  TEXT_FIELD: 'text_field',
-  MULTIPLE_CHOICE: 'multiple_choice',
+  TEXT_FIELD: 'text',
+  MULTIPLE_CHOICE: 'multi_choice',
   NUMBER: 'number',
-  ATTACHMENTS: 'attachments',
+  ATTACHMENTS: 'attachment',
 };
 
 export const CONFIG = [

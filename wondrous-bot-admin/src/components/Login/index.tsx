@@ -20,6 +20,7 @@ import {
   MetaMaskConnector,
   WalletConnectConnector,
 } from 'components/Connectors';
+import { handleUserOnboardingRedirect } from 'utils/common';
 
 function Login() {
   const wonderWeb3 = useWonderWeb3();
@@ -30,21 +31,20 @@ function Login() {
 
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:600px)');
-  const { discordConnectError, collabInvite, token, type } = useParams();
+  const params =  useParams();
+  const { discordConnectError, token, type } = params;
 
   const state = JSON.stringify({
     callbackType: DISCORD_CONNECT_TYPES.login,
-    ...(collabInvite ? { collabInvite } : {}),
     ...(token ? { token } : {}),
     ...(type ? { type } : {}),
   });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    event.stopPropagation();
     const userOrErrorMessage = await emailSignin(email, password);
-    // handleUserOnboardingRedirect(userOrErrorMessage, router);
-    navigate('/');
+    handleUserOnboardingRedirect(userOrErrorMessage, navigate, params);
     if (userOrErrorMessage === 'Incorrect Email and Password combination') {
       setErrorMessage('Incorrect Email and Password combination');
     }
@@ -119,14 +119,11 @@ function Login() {
 
   return (
     <MainWrapper>
-      <Box bgcolor='black' borderRadius='20px'
-          width='500px'
-      
-      >
+      <Box bgcolor='black' borderRadius='20px' width='500px'>
         <Grid
           bgcolor='white'
           container
-          width="100%"
+          width='100%'
           sx={{
             transform: 'translateY(-20px)',
           }}
@@ -169,7 +166,6 @@ function Login() {
                 </ErrorTypography>
               )}
               <FormControl
-                onSubmit={handleSubmit}
                 fullWidth
                 sx={{
                   display: 'flex',
@@ -188,12 +184,15 @@ function Login() {
                 <CustomTextField
                   type='password'
                   name='password'
-                  value={email}
+                  value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder='Enter password'
                   required
                 />
-                <RoundedSecondaryButton sx={{ marginTop: '10px' }}>
+                <RoundedSecondaryButton
+                  sx={{ marginTop: '10px' }}
+                  onClick={handleSubmit}
+                >
                   Log me in
                 </RoundedSecondaryButton>
               </FormControl>

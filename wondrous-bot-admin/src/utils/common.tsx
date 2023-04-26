@@ -7,3 +7,13 @@ export function shallowEqual(objA, objB) {
     (key) => objA[key] !== objB[key]
   );
 }
+
+export const handleUserOnboardingRedirect = (
+  userOrError,
+  navigate,
+  params,
+) => {
+  if (userOrError === 'Incorrect Email and Password combination') return;
+
+  return navigate('/');
+};

@@ -7,7 +7,7 @@ const QuestsPage = () => {
   const navigate = useNavigate();
 
   const handleNavigationToNewQuest = () => navigate('/quests/create');
-
+  
   return (
     <>
       <PageHeader

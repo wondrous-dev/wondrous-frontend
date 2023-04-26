@@ -8,7 +8,6 @@ const graphqlUri = !import.meta.env.VITE_STAGING
   ? import.meta.env.VITE_GRAPHQL_SERVER_URL
   : 'https://apistaging.wonderapp.co/graphql';
 
-  console.log(graphqlUri, 'GRAPHQL', import.meta.env)
 const httpLink = new HttpLink({
   uri: graphqlUri,
   credentials: 'include',

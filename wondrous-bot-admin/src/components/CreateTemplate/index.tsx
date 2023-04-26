@@ -3,7 +3,7 @@ import {
   RoundedSecondaryButton,
   SharedSecondaryButton,
 } from 'components/Shared/styles';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { CampaignOverviewHeader, CampaignOverview } from './CampaignOverview';
 import PanelComponent from './PanelComponent';
@@ -13,8 +13,53 @@ import { BG_TYPES, OPTIONS_VALUES, TYPES } from 'utils/constants';
 import { RewardComponent, RewardOverviewHeader } from './RewardComponent';
 import PageWrapper from 'components/Shared/PageWrapper';
 import Modal from 'components/Shared/Modal';
+import { useMutation } from '@apollo/client';
+import { CREATE_QUEST } from 'graphql/mutations';
+import GlobalContext from 'utils/context/GlobalContext';
+
+/*
+
+CREATE QUEST VARS
+title: String
+orgId: String
+mediaUploads: [{
+  uploadSlug: String!,
+  name: String
+  type: String
+}]
+status: String
+pointReward: Int
+questConditions: [{
+  type: String
+  conditionData: {
+    minLevel: Int
+    discordRoleId: String
+    discordGuildId: String
+  }
+}]
+conditionLogic: String
+steps: [{
+  options: [{
+    position: Int
+    text: String
+    correct: Boolean
+  }]
+  type
+  order
+  prompt
+  required
+  mediaUploads: [{
+    uploadSlug: String!
+    name: String
+    type: String
+  }]
+}]
+*/
 
 const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
+  const [createQuest] = useMutation(CREATE_QUEST);
+  const { activeOrg } = useContext(GlobalContext);
+
   const [configuration, setConfiguration] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState({
@@ -53,7 +98,50 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
     if (!questSettings.isActive && !isSaving) {
       return setIsSaving(true);
     }
-    console.log(configuration, 'CONFIGURATION');
+    const body = {
+      title: questSettings.questTitle,
+      orgId: activeOrg.id,
+      conditionLogic: 'and',
+      questConditions: [
+        {
+          type: 'level',
+          conditionData: {
+            minLevel: questSettings.levelRequirement || 1,
+          },
+        },
+      ],
+      pointReward: questSettings.rewards[0].value,
+      steps: configuration.reduce((acc, next, index) => {
+        const step: any = {
+          type: next.type,
+          order: index,
+        };
+        if (next.type === TYPES.MULTIPLE_CHOICE) {
+          step.options = next.value.answers.map((answer, idx) => {
+            return {
+              position: idx,
+              text: answer.value,
+              ...(next.value.withCorrectAnswers
+                ? { correct: answer.isCorrect }
+                : {}),
+            };
+          });
+          step.prompt = next.value.question;
+        } else {
+          step.prompt = next.value;
+        }
+        return [...acc, step];
+      }, []),
+      // status:
+    };
+    createQuest({
+      variables: {
+        input: body,
+      },
+    });
+    // console.log(body, 'BODY===')
+    // console.log(questSettings, 'quest settings');
+    // console.log(configuration, 'CONFIGURATION');
   };
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);

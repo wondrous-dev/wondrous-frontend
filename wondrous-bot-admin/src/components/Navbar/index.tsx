@@ -8,6 +8,7 @@ import { HeaderBar, LinkButton, MenuIconWrapper } from './styles';
 import { Link, useLocation } from 'react-router-dom';
 import { HEADER_HEIGHT } from 'utils/constants';
 import CloseIcon from '@mui/icons-material/Close';
+import WorkspaceSwitch from 'components/WorkspaceSwitch';
 
 const checkActive = (path, location, partialMatch = false) => {
   if (partialMatch) {
@@ -92,6 +93,7 @@ const Header = () => {
           })}
         </Grid>
       </Box>
+      <WorkspaceSwitch />
       <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
         <MenuIconWrapper onClick={toggleDrawer}>
           {drawerOpen ? (
@@ -151,7 +153,6 @@ const Header = () => {
           </Box>
         </Drawer>
       </Box>
-      <Box sx={{ display: { xs: 'none', md: 'flex' } }} />
     </HeaderBar>
   );
 };

@@ -10,6 +10,7 @@ export const ImageUploadBlockActivitySection = styled.div`
   display: flex;
   justify-content: left;
   align-items: center;
+  gap: 10px;
 `;
 
 export const ImageUploadBlockInput = styled.input`
@@ -42,7 +43,8 @@ export const ImageUploadButton = styled.div<{ marginLeft: string }>`
   text-align: center;
   width: 48px;
   height: 48px;
-  background-color: gray;
+  background-color: #1D1D1D;
+  opacity: 0.4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,7 +97,7 @@ export const ImageUploadButtonWrapper = styled.div`
   z-index: 99;
   padding: 18px;
   border-radius: 100%;
-  background: ${({ hasImage }) => (hasImage ? '' : 'gray')};
+  background: ${({ hasImage }) => (hasImage ? '' : '#E8E8E8')};
   display: flex;
   align-items: center;
   width: ${({ isHeader }) => (isHeader ? '100%' : 'auto')};

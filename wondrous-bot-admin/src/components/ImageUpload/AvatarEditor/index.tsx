@@ -4,9 +4,17 @@ import max from 'lodash/max';
 import DefaultAvatarEditor from 'react-avatar-editor';
 
 import { AvatarEditorTypes } from 'types/assets';
-import * as Styles from './styles';
-import { ImageUploadRecommendText } from './styles';
-import { SharedSecondaryButton } from 'components/Shared/styles';
+import {
+  ButtonIconWrapper,
+  SharedSecondaryButton,
+} from 'components/Shared/styles';
+import Modal from 'components/Shared/Modal';
+import { Box, Grid } from '@mui/material';
+import { pinkColors } from 'utils/theme/colors';
+import ReplaceIcon from 'components/Icons/ReplaceIcon';
+import DeleteIcon from 'components/Icons/Delete';
+import { Label } from 'components/CreateTemplate/styles';
+import { ZoomIn, ZoomOut } from '@mui/icons-material';
 
 type Props = {
   originalImage: string | File;
@@ -122,63 +130,83 @@ const AvatarEditor = ({
   };
 
   return (
-    <Styles.Container open={open}>
-      <Styles.Header>
-        <Styles.Title>{title}</Styles.Title>
-        <Styles.CloseButton onClick={onCancel}>
-          {/* <CloseModalIcon /> */}
-        </Styles.CloseButton>
-      </Styles.Header>
-      <Styles.Content>
-        <DefaultAvatarEditor
-          styles={{ borderRadius: 6 }}
-          ref={editorRef}
-          image={image}
-          width={imageViewerSize[imageType].width}
-          height={imageViewerSize[imageType].height}
-          borderRadius={imageViewerSize[imageType].borderRadius}
-          scale={scale}
-          rotate={angle}
-          border={[0, 20]}
-        />
-
-        <Styles.ToolButtonsContainer>
-          <Styles.LeftButtons>
-            <Styles.ToolButton onClick={openSelectFile}>
-              {/* <ReplaceIcon /> */}
-              Replace Image
-            </Styles.ToolButton>
-            <Styles.ToolButton onClick={onClearInput}>
-              {/* <RemoveIcon /> */}
-              Delete Image
-            </Styles.ToolButton>
-          </Styles.LeftButtons>
-
-          <Styles.RightButtons>
-            <Styles.RightToolButton onClick={() => onAction('zoom_in')}>
-              {/* <ZoomInIcon /> */}
-            </Styles.RightToolButton>
-
-            <Styles.RightToolButton onClick={() => onAction('zoom_out')}>
-              {/* <ZoomOutIcon /> */}
-            </Styles.RightToolButton>
-          </Styles.RightButtons>
-        </Styles.ToolButtonsContainer>
-        <Styles.RecomendationContainer>
-          <ImageUploadRecommendText>
-            {recommendationText}
-          </ImageUploadRecommendText>
-        </Styles.RecomendationContainer>
-      </Styles.Content>
-
-      <Styles.Footer>
-        <Styles.CancelButton onClick={onCancel}>Cancel</Styles.CancelButton>
-
-        <SharedSecondaryButton onClick={handleSave}>
-          Confirm Image
+    <Modal
+      open={open}
+      title='Upload image'
+      onClose={onCancel}
+      maxWidth={600}
+      footerLeft={
+        <SharedSecondaryButton reverse onClick={onCancel}>
+          Cancel
         </SharedSecondaryButton>
-      </Styles.Footer>
-    </Styles.Container>
+      }
+      footerRight={
+        <SharedSecondaryButton onClick={handleSave}>
+          Confirm image
+        </SharedSecondaryButton>
+      }
+    >
+      <Grid container direction='column' alignItems='center' gap='20px'>
+        <Box display='flex' justifyContent='center' alignItems='center'>
+          <DefaultAvatarEditor
+            styles={{ borderRadius: 6 }}
+            ref={editorRef}
+            image={image}
+            width={imageViewerSize[imageType].width}
+            height={imageViewerSize[imageType].height}
+            borderRadius={imageViewerSize[imageType].borderRadius}
+            scale={scale}
+            rotate={angle}
+            border={[0, 20]}
+          />
+        </Box>
+        <Grid
+          display='flex'
+          width='100%'
+          alignItems='center'
+          justifyContent='space-between'
+          gap='8px'
+        >
+          <Box display='flex' gap='8px'>
+            <SharedSecondaryButton
+              borderRadius='6px'
+              onClick={openSelectFile}
+              background={pinkColors.pink50}
+            >
+              <ReplaceIcon />
+              Replace image
+            </SharedSecondaryButton>
+            <SharedSecondaryButton
+              borderRadius='6px'
+              onClick={onClearInput}
+              background={pinkColors.pink50}
+            >
+              <DeleteIcon />
+              Delete image
+            </SharedSecondaryButton>
+          </Box>
+          <Box display='flex' gap='8px'>
+            <ButtonIconWrapper onClick={() => onAction('zoom_in')}>
+              <ZoomIn
+                sx={{
+                  color: 'black',
+                }}
+              />
+            </ButtonIconWrapper>
+            <ButtonIconWrapper onClick={() => onAction('zoom_out')}>
+              <ZoomOut
+                sx={{
+                  color: 'black',
+                }}
+              />
+            </ButtonIconWrapper>
+          </Box>
+        </Grid>
+        <Box width='100%'>
+          <Label>Recommended: 800 x 800px</Label>
+        </Box>
+      </Grid>
+    </Modal>
   );
 };
 
