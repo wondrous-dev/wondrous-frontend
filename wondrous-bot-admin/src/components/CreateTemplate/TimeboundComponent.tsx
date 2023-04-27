@@ -10,36 +10,40 @@ const TimeboundComponent = (props) => {
   const isTimebound = questSettings.timeBound;
   return (
     <Box display='flex' gap={isTimebound ? '10px' : '0px'} alignItems='center'>
-      <Box sx={{
-        width: isTimebound ? '100%' : '0px',
-        visibility: isTimebound ? 'visible' : 'hidden',
-        transition: 'width 0.3s ease-in-out, visibility 0.3s ease-in-out',
-      }}>
-      <DateRangePicker
-      startToday
-        onConfirm={(value) => {
-          setQuestSettings((prev) => ({
-            ...prev,
-            startDate: value.startDate,
-            endDate: value.endDate,
-          }));
+      <Box
+        sx={{
+          width: isTimebound ? '100%' : '0px',
+          visibility: isTimebound ? 'visible' : 'hidden',
+          transition: 'width 0.3s ease-in-out, visibility 0.3s ease-in-out',
         }}
-        ButtonComponent={(props) => (
-          <ButtonBase disabled={!isTimebound} {...props}>
-            <CustomTextField
-              disabled
-              placeholder='Select Date Range'
-              value={
-                questSettings?.startDate && questSettings?.endDate
-                  ? `${questSettings?.startDate?.format(
-                      MONTH_DAY_FULL_YEAR
-                    )} - ${questSettings?.endDate?.format(MONTH_DAY_FULL_YEAR)}`
-                  : null
-              }
-            />
-          </ButtonBase>
-        )}
-      />
+      >
+        <DateRangePicker
+          startToday
+          onConfirm={(value) => {
+            setQuestSettings((prev) => ({
+              ...prev,
+              startDate: value.startDate,
+              endDate: value.endDate,
+            }));
+          }}
+          ButtonComponent={(props) => (
+            <ButtonBase disabled={!isTimebound} {...props}>
+              <CustomTextField
+                disabled
+                placeholder='Select Date Range'
+                value={
+                  questSettings?.startDate && questSettings?.endDate
+                    ? `${questSettings?.startDate?.format(
+                        MONTH_DAY_FULL_YEAR
+                      )} - ${questSettings?.endDate?.format(
+                        MONTH_DAY_FULL_YEAR
+                      )}`
+                    : null
+                }
+              />
+            </ButtonBase>
+          )}
+        />
       </Box>
       <Switch {...props} />
     </Box>

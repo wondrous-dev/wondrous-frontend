@@ -9,3 +9,11 @@ export const CREATE_QUEST = gql`
   }
   ${QuestFragment}
 `;
+
+export const UPDATE_QUEST_LABEL = gql`
+  mutation updateOrgQuestLevel($orgId: ID!, $level: String!, $name: String!) {
+    updateOrgQuestLevel(orgId: $orgId, level: $level, name: $name) {
+      success
+    }
+  }
+`;

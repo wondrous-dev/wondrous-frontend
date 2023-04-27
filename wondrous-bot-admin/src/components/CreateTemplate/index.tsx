@@ -66,9 +66,12 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
     questTitle: '',
     levelRequirement: null,
     timeBound: false,
+    maxSubmissions: null,
     requireReview: false,
     condition: null,
     isActive: false,
+    startDate: null,
+    endDate: null,
     rewards: [
       {
         value: 0,
@@ -139,9 +142,6 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
         input: body,
       },
     });
-    // console.log(body, 'BODY===')
-    // console.log(questSettings, 'quest settings');
-    // console.log(configuration, 'CONFIGURATION');
   };
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);

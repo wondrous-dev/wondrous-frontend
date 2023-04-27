@@ -9,3 +9,12 @@ export const GET_QUESTS_FOR_ORG = gql`
   }
   ${QuestFragment}
 `;
+
+export const GET_ORG_QUESTS_LEVELS = gql`
+  query getOrgQuestsLevels($orgId: ID!) {
+    getOrgQuestsLevels(orgId: $orgId) {
+      key
+      value
+    }
+  }
+`;

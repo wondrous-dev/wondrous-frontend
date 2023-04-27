@@ -328,6 +328,7 @@ const QuestsList = () => {
       notifyOnNetworkStatusChange: true,
       input: {
         orgId: activeOrg?.id,
+        limit: 1000
       },
     },
   });

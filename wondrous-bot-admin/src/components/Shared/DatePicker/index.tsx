@@ -266,16 +266,6 @@ const DateRangePicker = ({
                         background: "#C6BBFC",
                         padding: "7px 9px"
                       }}
-                      // color="secondary"
-                      // borderRadius={6}
-                      // height={28}
-                      // width="fit-content"
-                      // buttonTheme={{
-                      //   fontWeight: 500,
-                      //   fontSize: 13,
-                      //   paddingX: 6,
-                      //   paddingY: 8,
-                      // }}
                     >
                       <Grid container alignItems="center" width="fit-content" sx={{ svg: { transform: 'scale(0.6)' } }}>
                         
@@ -291,14 +281,10 @@ const DateRangePicker = ({
                         disabled={!dateRange.startDate || !dateRange.endDate}
                         onClick={handleOnConfirm}
                         color='purple'
-                        borderRadius={200}
                         width='fit-content'
                         height={28}
-                        buttonTheme={{
-                          paddingY: 8,
-                          paddingX: 16,
-                          fontWeight: 500,
-                          fontSize: 13,
+                        sx={{
+                          borderRadius: '6px !important',
                         }}
                       >
                         Confirm

@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import { ToggleItem, ToggleWrapper } from './styles';
 
-const ToggleComponent = ({ options, onChange, value }) => (
-  <ToggleWrapper>
+const ToggleComponent = ({ options, onChange, value, fullWidth = false }) => (
+  <ToggleWrapper fullWidth={fullWidth}>
     {options?.map((option, idx) => (
       <ToggleItem
         key={`toggle-item-${idx}`}

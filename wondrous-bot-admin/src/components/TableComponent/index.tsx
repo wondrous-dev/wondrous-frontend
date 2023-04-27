@@ -8,6 +8,7 @@ import {
   Typography,
   Box,
 } from '@mui/material';
+import EditableText from 'components/EditableText';
 import { ShapedHexagonWrapper, WhiteBgDiscord } from 'components/Icons/Discord';
 import { Label } from 'components/QuestsList/styles';
 import { StyledViewQuestResults } from 'components/ViewQuestResults/styles';
@@ -33,7 +34,7 @@ const TableComponent = ({ headers, data }) => {
           </StyledTableHeader>
         </TableHead>
         <TableBody>
-          {data.map((row, idx) => (
+          {data?.map((row, idx) => (
             <StyledTableRow key={row.id} id={row.id}>
               {Object.keys(row)?.map((key) => {
                 if (key === 'id') return null;
@@ -51,23 +52,36 @@ const TableComponent = ({ headers, data }) => {
                     ) : null}
                     {column.component === 'hexagon' ? (
                       <Box
-                        position='relative'
-                        width='fit-content'
                         display='flex'
-                        justifyContent='center'
+                        gap='10px'
                         alignItems='center'
+                        position='relative'
                       >
-                        <ShapedHexagonWrapper />
-                        <Typography
-                          fontFamily='Space Grotesk'
-                          fontWeight={700}
-                          fontSize='13px'
-                          lineHeight='17px'
-                          position='absolute'
-                          color='white'
+                        <Box
+                          position='relative'
+                          width='fit-content'
+                          display='flex'
+                          justifyContent='center'
+                          alignItems='center'
                         >
-                          {column.value === 'index' ? idx + 1 : column.value}
-                        </Typography>
+                          <ShapedHexagonWrapper />
+                          <Typography
+                            fontFamily='Poppins'
+                            fontWeight={700}
+                            fontSize='13px'
+                            lineHeight='17px'
+                            position='absolute'
+                            color='white'
+                          >
+                            {column.value === 'index' ? idx + 1 : column.value}
+                          </Typography>
+                        </Box>
+                        {column.label ? (
+                          <EditableText
+                            value={column.label}
+                            {...column.labelProps}
+                          />
+                        ) : null}
                       </Box>
                     ) : null}
                     {column.component === 'discord' ? (

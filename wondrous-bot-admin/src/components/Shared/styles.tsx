@@ -68,7 +68,7 @@ export const ToggleWrapper = styled(Grid)`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 200px;
+    width: ${({ fullWidth }) => (fullWidth ? '100%' : '200px')};
   }
 `;
 
@@ -80,7 +80,7 @@ export const ToggleItem = styled(Grid)`
     background: ${({ checked }) => (checked ? '#f8642d' : 'transparent')};
     border-radius: 4px;
     max-height: 24px;
-    padding: 10px;
+    padding: 6px;
     cursor: pointer;
     width: 100%;
   }
@@ -94,7 +94,7 @@ export const ButtonIconWrapper = styled(ButtonBase)`
     background: #c6bbfc;
     gap: 6px;
     border-radius: 6px;
-    
+
     height: 30px;
 
     width: 30px;
@@ -134,7 +134,7 @@ export const SharedSecondaryButton = styled(ButtonBase)`
     min-width: ${({ minWidth = '40px' }) => minWidth};
     width: ${({ width = 'auto' }) => width};
     background: ${({ background }) => background || '#84bcff'};
-    border-radius: ${({borderRadius = "35px"}) => borderRadius};
+    border-radius: ${({ borderRadius = '35px' }) => borderRadius};
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 600;

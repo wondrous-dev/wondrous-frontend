@@ -63,10 +63,7 @@ const QuizComponent = ({ onChange, value }) => {
   const handleAnswers = (answers) => handleOnChange('answers', answers);
 
   const handleAddOption = () => {
-    handleAnswers([
-      ...answers,
-      { value: '', isCorrect: false, attachments: [] },
-    ]);
+    handleAnswers([...answers, { value: '', isCorrect: false }]);
   };
 
   const handleRemoveOption = (idx) => {
@@ -81,20 +78,20 @@ const QuizComponent = ({ onChange, value }) => {
     handleAnswers(answersClone);
   };
 
-  const handleAttachMedia = (e, idx) => {
-    const answersClone = [...answers];
-    answersClone[idx].attachments = [
-      ...answersClone[idx].attachments,
-      e.target.files[0],
-    ];
-    handleAnswers(answersClone);
-  };
+  // const handleAttachMedia = (e, idx) => {
+  //   const answersClone = [...answers];
+  //   answersClone[idx].attachments = [
+  //     ...answersClone[idx].attachments,
+  //     e.target.files[0],
+  //   ];
+  //   handleAnswers(answersClone);
+  // };
 
-  const removeAttachment = (idx, attachmentIdx) => {
-    const answersClone = [...answers];
-    answersClone[idx].attachments.splice(attachmentIdx, 1);
-    handleAnswers(answersClone);
-  };
+  // const removeAttachment = (idx, attachmentIdx) => {
+  //   const answersClone = [...answers];
+  //   answersClone[idx].attachments.splice(attachmentIdx, 1);
+  //   handleAnswers(answersClone);
+  // };
 
   return (
     <Grid container gap='24px' direction='column'>
@@ -141,7 +138,7 @@ const QuizComponent = ({ onChange, value }) => {
                   multiline={false}
                 />
                 <Box display='flex' gap='10px'>
-                  <FileUpload onChange={(e) => handleAttachMedia(e, idx)} />
+                  {/* <FileUpload onChange={(e) => handleAttachMedia(e, idx)} /> */}
                   <ButtonIconWrapper onClick={() => handleRemoveOption(idx)}>
                     <CloseIcon
                       sx={{
@@ -169,7 +166,7 @@ const QuizComponent = ({ onChange, value }) => {
                   </Box>
                 ) : null}
               </Grid>
-              {answer?.attachments?.length ? (
+              {/* {answer?.attachments?.length ? (
                 <ImageList
                   sx={{ width: 500, height: 'auto' }}
                   cols={3}
@@ -204,7 +201,7 @@ const QuizComponent = ({ onChange, value }) => {
                     ) : null
                   )}
                 </ImageList>
-              ) : null}
+              ) : null} */}
             </Grid>
           ))}
           <Box display='flex' gap='10px' alignItems='center'>
