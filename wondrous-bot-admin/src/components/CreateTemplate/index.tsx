@@ -9,69 +9,36 @@ import { CampaignOverviewHeader, CampaignOverview } from './CampaignOverview';
 import PanelComponent from './PanelComponent';
 import { Panel } from './styles';
 import AddFormEntity from 'components/AddFormEntity';
-import { BG_TYPES, OPTIONS_VALUES, TYPES } from 'utils/constants';
+import { BG_TYPES, QUEST_STATUSES, TYPES } from 'utils/constants';
 import { RewardComponent, RewardOverviewHeader } from './RewardComponent';
 import PageWrapper from 'components/Shared/PageWrapper';
 import Modal from 'components/Shared/Modal';
 import { useMutation } from '@apollo/client';
 import { CREATE_QUEST } from 'graphql/mutations';
 import GlobalContext from 'utils/context/GlobalContext';
-
-/*
-
-CREATE QUEST VARS
-title: String
-orgId: String
-mediaUploads: [{
-  uploadSlug: String!,
-  name: String
-  type: String
-}]
-status: String
-pointReward: Int
-questConditions: [{
-  type: String
-  conditionData: {
-    minLevel: Int
-    discordRoleId: String
-    discordGuildId: String
-  }
-}]
-conditionLogic: String
-steps: [{
-  options: [{
-    position: Int
-    text: String
-    correct: Boolean
-  }]
-  type
-  order
-  prompt
-  required
-  mediaUploads: [{
-    uploadSlug: String!
-    name: String
-    type: String
-  }]
-}]
-*/
+import { useNavigate } from 'react-router';
 
 const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
-  const [createQuest] = useMutation(CREATE_QUEST);
+  const navigate = useNavigate();
+  const [createQuest] = useMutation(CREATE_QUEST, {
+    onCompleted: ({ createQuest }) => {
+      navigate(`/quests/${createQuest.id}`);
+    },
+  });
   const { activeOrg } = useContext(GlobalContext);
 
   const [configuration, setConfiguration] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState({
-    questTitle: '',
-    levelRequirement: null,
+    title: '',
+    level: null,
     timeBound: false,
-    maxSubmissions: null,
+    maxSubmission: null,
     requireReview: false,
-    condition: null,
     isActive: false,
-    startDate: null,
-    endDate: null,
+    startAt: null,
+    endAt: null,
+    questConditions: [],
     rewards: [
       {
         value: 0,
@@ -97,45 +64,56 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
     setConfiguration(newItems);
   };
 
-  const handleSave = () => {
+  const handleSave = (status = null) => {
+    console.log('yo');
     if (!questSettings.isActive && !isSaving) {
       return setIsSaving(true);
     }
+    const {
+      title,
+      questConditions,
+      requireReview,
+      maxSubmission,
+      isActive,
+      startAt,
+      endAt,
+      level,
+    } = questSettings;
     const body = {
-      title: questSettings.questTitle,
+      title,
       orgId: activeOrg.id,
+      requireReview,
+      maxSubmission: maxSubmission ? parseInt(maxSubmission, 10) : null,
       conditionLogic: 'and',
-      questConditions: [
-        {
-          type: 'level',
-          conditionData: {
-            minLevel: questSettings.levelRequirement || 1,
-          },
-        },
-      ],
+      questConditions,
+      status:
+        status || isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.ARCHIVED,
+      startAt: startAt ? startAt.toISOString() : null,
+      endAt: endAt ? endAt.toISOString() : null,
       pointReward: questSettings.rewards[0].value,
+      level: level ? parseInt(level, 10) : null,
+
       steps: configuration.reduce((acc, next, index) => {
         const step: any = {
           type: next.type,
           order: index,
+          prompt: next.value?.question || next.value,
         };
-        if (next.type === TYPES.MULTIPLE_CHOICE) {
-          step.options = next.value.answers.map((answer, idx) => {
-            return {
-              position: idx,
-              text: answer.value,
-              ...(next.value.withCorrectAnswers
-                ? { correct: answer.isCorrect }
-                : {}),
-            };
-          });
+        if (next.type === TYPES.MULTI_QUIZ) {
+          (step.type = next.value.multiSelectValue),
+            (step.options = next.value.answers.map((answer, idx) => {
+              return {
+                position: idx,
+                text: answer.value,
+                ...(next.value.withCorrectAnswers
+                  ? { correct: answer.isCorrect }
+                  : {}),
+              };
+            }));
           step.prompt = next.value.question;
-        } else {
-          step.prompt = next.value;
         }
         return [...acc, step];
       }, []),
-      // status:
     };
     createQuest({
       variables: {
@@ -154,12 +132,19 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
         title={'Quest inactive'}
         maxWidth={600}
         footerLeft={
-          <SharedSecondaryButton reverse>
+          <SharedSecondaryButton
+            reverse
+            onClick={() => handleSave(QUEST_STATUSES.ARCHIVED)}
+          >
             No, keep inactive
           </SharedSecondaryButton>
         }
         footerRight={
-          <SharedSecondaryButton>Yes, activate quest</SharedSecondaryButton>
+          <SharedSecondaryButton
+            onClick={() => handleSave(QUEST_STATUSES.OPEN)}
+          >
+            Yes, activate quest
+          </SharedSecondaryButton>
         }
       >
         <Typography

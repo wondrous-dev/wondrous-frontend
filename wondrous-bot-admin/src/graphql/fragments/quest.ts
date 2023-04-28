@@ -9,15 +9,19 @@ export const QuestFragment = gql`
     description
     orgId
     status
-
+    level
+    startAt
+    endAt
+    maxSubmission
+    requireReview
     pointReward
     conditionLogic
     conditions {
       type
       conditionData {
-        minLevel
         discordRoleId
         discordGuildId
+        questId
       }
     }
     # id: ID!

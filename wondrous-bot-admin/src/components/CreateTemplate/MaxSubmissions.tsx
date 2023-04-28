@@ -6,28 +6,28 @@ import moment from 'moment';
 import { MONTH_DAY_FULL_YEAR } from 'utils/constants';
 
 const MaxSubmissions = (props) => {
-  const { maxSubmissions, setQuestSettings } = props;
+  const { maxSubmission, setQuestSettings } = props;
   return (
     <Box
       display='flex'
-      gap={maxSubmissions ? '10px' : '0px'}
+      gap={maxSubmission ? '10px' : '0px'}
       alignItems='center'
     >
       <Box
         sx={{
-          width: maxSubmissions ? '100%' : '0px',
-          visibility: maxSubmissions ? 'visible' : 'hidden',
+          width: maxSubmission ? '100%' : '0px',
+          visibility: maxSubmission ? 'visible' : 'hidden',
           transition: 'width 0.3s ease-in-out, visibility 0.3s ease-in-out',
         }}
       >
         <CustomTextField
         autoFocus
           type='number'
-          value={maxSubmissions}
+          value={maxSubmission}
           onChange={(e) => {
             setQuestSettings((prev) => ({
               ...prev,
-              maxSubmissions: e.target.value,
+              maxSubmission: e.target.value,
             }));
           }}
         />

@@ -1,9 +1,6 @@
-import {
-  RoundedSecondaryButton,
-  SharedSecondaryButton,
-} from 'components/Shared/styles';
+import { RoundedSecondaryButton } from 'components/Shared/styles';
 import AddIcon from '@mui/icons-material/Add';
-import { forwardRef, ReactEventHandler, useRef, useState } from 'react';
+import { forwardRef, useContext, useState } from 'react';
 import {
   Box,
   ButtonBase,
@@ -12,18 +9,19 @@ import {
   Popper,
   Typography,
 } from '@mui/material';
-
-const ROLES = [
-  {
-    id: 1,
-    name: 'Ultimate fairies',
-  },
-];
+import { useDiscordRoles } from 'utils/discord';
+import GlobalContext from 'utils/context/GlobalContext';
+import { Label } from 'components/CreateTemplate/styles';
+import { StyledViewQuestResults } from 'components/ViewQuestResults/styles';
+import { CloseIcon } from 'components/Shared/DatePicker/Icons';
+import { useMutation } from '@apollo/client';
+import { ADD_ORG_LEVEL_REWARD } from 'graphql/mutations';
 
 interface ILevelsRewardProps {
   value?: any;
   setAnchorEl: (element: HTMLAnchorElement) => void;
 }
+
 const LevelsRewardViewOrAdd = forwardRef(
   ({ value, setAnchorEl }: ILevelsRewardProps, ref) => {
     if (!value || !value.length)
@@ -49,8 +47,71 @@ const LevelsRewardViewOrAdd = forwardRef(
   }
 );
 
-const LevelsReward = ({ value, onChange }) => {
+const LevelsReward = ({ value, onChange, roles, level }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  
+  const { activeOrg } = useContext(GlobalContext);
+
+  const [addOrgLevelReward] = useMutation(ADD_ORG_LEVEL_REWARD);
+
+  const handleRemove = async () => {
+    await addOrgLevelReward({
+      variables: {
+        input: {
+          orgId: activeOrg.id,
+          level: level,
+          discordRewardData: {},
+        },
+      },
+    });
+    onChange({});
+  };
+  const handleMutation = async (params) => {
+    if (!params) {
+      return await handleRemove();
+    }
+
+    const { discordGuildId, discordRoleId } = params;
+    await addOrgLevelReward({
+      variables: {
+        input: {
+          orgId: activeOrg.id,
+          level: level,
+          discordRewardData: {
+            discordRoleId,
+            discordGuildId,
+          },
+        },
+      },
+    });
+    onChange({
+      discordRoleId,
+      discordGuildId,
+    });
+  };
+
+  if (Object.keys(value).length) {
+    const allRoles = roles.map((role) => role.roles).flat();
+    const selectedRole = allRoles.find(
+      (item) => item.id === value.discordRoleId
+    );
+    return (
+      <StyledViewQuestResults>
+        <img
+          src='/images/discord-official-logo.png'
+          height='18px'
+          width='18px'
+          style={{
+            borderRadius: '300px',
+          }}
+        />
+        {selectedRole?.name}
+        <ButtonBase onClick={() => handleMutation(null)}>
+          <CloseIcon />
+        </ButtonBase>
+      </StyledViewQuestResults>
+    );
+  }
   return (
     <>
       <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
@@ -66,6 +127,9 @@ const LevelsReward = ({ value, onChange }) => {
               width='300px'
               direction={'column'}
               gap='10px'
+              maxHeight='500px'
+              overflow='scroll'
+              flexWrap='nowrap'
               padding='14px'
             >
               <Box
@@ -105,39 +169,59 @@ const LevelsReward = ({ value, onChange }) => {
                   Add new reward
                 </Typography>
               </Box>
-              {ROLES.map((role, idx) => (
-                <Box
-                  padding='8px'
-                  display='flex'
-                  alignItems='center'
-                  gap='6px'
-                  borderRadius='6px'
-                  sx={{
-                    cursor: 'pointer',
-                    background: 'white',
-                    '&:hover': {
-                      background: '#c5c5c5',
-                    },
-                  }}
-                >
-                  <img
-                    src='/images/discord-official-logo.png'
-                    height='18px'
-                    width='18px'
-                    style={{
-                      borderRadius: '300px',
-                    }}
-                  />
-                  <Typography
-                    fontFamily='Poppins'
-                    fontSize='14px'
-                    fontWeight={500}
-                    color='black'
-                  >
-                    Role: {role.name}
-                  </Typography>
-                </Box>
-              ))}
+              {roles?.map((role, idx) => {
+                return (
+                  <Box>
+                    <Label>{role?.guildInfo?.guildName}</Label>
+                    {role?.roles?.map((discordRole) => {
+                      const isActive = value?.discordRoleId === discordRole.id;
+                      return (
+                        <Box
+                          padding='8px'
+                          onClick={() =>
+                            // onChange({
+                            //   discordGuildId: role?.guildId,
+                            //   discordRoleId: discordRole.id,
+                            // })
+                            handleMutation({
+                              discordGuildId: role?.guildId,
+                              discordRoleId: discordRole.id,
+                            })
+                          }
+                          display='flex'
+                          alignItems='center'
+                          gap='6px'
+                          borderRadius='6px'
+                          sx={{
+                            cursor: 'pointer',
+                            background: isActive ? '#c5c5c5' : 'white',
+                            '&:hover': {
+                              background: '#c5c5c5',
+                            },
+                          }}
+                        >
+                          <img
+                            src='/images/discord-official-logo.png'
+                            height='18px'
+                            width='18px'
+                            style={{
+                              borderRadius: '300px',
+                            }}
+                          />
+                          <Typography
+                            fontFamily='Poppins'
+                            fontSize='14px'
+                            fontWeight={500}
+                            color='black'
+                          >
+                            Role: {discordRole.name}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                );
+              })}
             </Grid>
           </Popper>
         </Box>

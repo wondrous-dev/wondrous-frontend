@@ -62,7 +62,7 @@ export default function ImageUpload(props: Props) {
   const [imageToEdit, setImageToEdit] = useState(null);
   const [editedImage, setEditedImage] = useState(null);
   const imageInputId = `upload-${title?.toLowerCase()}-image`;
-  const recommendationText =
+  const recommendDateionText =
     imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE
       ? 'Recommended: 800 x 800px'
       : 'Recommended: 1600 x 188px';
@@ -229,7 +229,7 @@ export default function ImageUpload(props: Props) {
         openSelectFile={() => imageInputField.current.click()}
         imageType={imageType}
         title={avatarEditorTitle || 'Upload Image'}
-        recommendationText={recommendationText}
+        recommendDateionText={recommendDateionText}
       />
     </Grid>
   );

@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/client';
 import { Box, Grid, Typography } from '@mui/material';
 import {
   CampaignOverview,
@@ -5,38 +6,73 @@ import {
 } from 'components/CreateTemplate/CampaignOverview';
 import PanelComponent from 'components/CreateTemplate/PanelComponent';
 import PageWrapper from 'components/Shared/PageWrapper';
-import { BG_TYPES } from 'utils/constants';
+import { GET_QUEST_BY_ID } from 'graphql/queries';
+import moment from 'moment';
+import { useMemo } from 'react';
+import { getTextForCondition } from 'utils/common';
+
+import { BG_TYPES, MONTH_DAY_FULL_YEAR } from 'utils/constants';
 import { pinkColors } from 'utils/theme/colors';
 import QuestResults from './QuestResults';
 import ViewCampaignOverview from './ViewCampaignOverview';
 
-const ViewQuestResults = ({ resultId }) => {
-  console.log(resultId, 'resultId');
-  //fetch resultId
+const ViewQuestResults = ({ questId }) => {
+  const { data: { getQuestById } = {} } = useQuery(GET_QUEST_BY_ID, {
+    variables: {
+      questId,
+    },
+    skip: !questId,
+  });
+
+  const timeboundDate = useMemo(() => {
+    const startDate = moment(getQuestById?.startDate).format(
+      MONTH_DAY_FULL_YEAR
+    );
+    const endDate = moment(getQuestById?.endDate).format(MONTH_DAY_FULL_YEAR);
+    if (!startDate && !endDate) {
+      return 'No';
+    }
+    if (startDate && endDate) {
+      return `${startDate} - ${endDate}`;
+    } else if (startDate) {
+      return `Starts on ${startDate}`;
+    }
+    return `Ends on ${endDate}`;
+  }, [getQuestById?.startDate, getQuestById?.endDate]);
+
+
+  if (!getQuestById) {
+    return null;
+  }
+
+
   const questSettings = [
     {
       label: 'Quest Title',
-      value: 'Onboarding',
+      value: getQuestById?.title,
       type: 'text',
     },
     {
       label: 'Level Requirement',
-      value: 3,
+      value: getQuestById?.level,
       type: 'text',
     },
     {
       label: 'Time Bound',
-      value: false,
-      type: 'boolean',
+      value: timeboundDate,
+      type: 'text',
     },
     {
       label: 'Require Review',
-      value: true,
+      value: getQuestById?.requireReview,
       type: 'boolean',
     },
     {
       label: 'Condition',
-      value: 'Completed X*',
+      value: getTextForCondition({
+        type: getQuestById?.conditions?.[0]?.type,
+        name: '',
+      }),
       type: 'text',
     },
     {
@@ -44,8 +80,8 @@ const ViewQuestResults = ({ resultId }) => {
       type: 'rewards',
       value: [
         {
-          value: 69,
-          type: 'DeGodz Points',
+          value: getQuestById?.pointReward,
+          type: 'Points',
         },
       ],
     },

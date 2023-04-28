@@ -1,59 +1,50 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { ClickAwayListener } from '@mui/base';
-import AddIcon from '@mui/icons-material/Add';
-import { Box, ButtonBase, Grid, Popper } from '@mui/material';
-import { Label } from 'components/AddFormEntity/components/styles';
+import { Box, Grid, Popper } from '@mui/material';
+import {
+  CustomTextField,
+  Label,
+} from 'components/AddFormEntity/components/styles';
 import SelectComponent from 'components/Shared/Select';
+import { GET_QUESTS_FOR_ORG } from 'graphql/queries';
 import { GET_ORG_DISCORD_ROLES } from 'graphql/queries/discord';
-import { useContext, useRef, useState } from 'react';
+import { useContext, useMemo, useRef, useState } from 'react';
+import { getTextForCondition } from 'utils/common';
+import { QUEST_CONDITION_TYPES } from 'utils/constants';
 import GlobalContext from 'utils/context/GlobalContext';
-
-const CONDITION_VALUES = {
-  AND: 'and',
-  OR: 'or',
-};
-
-const CONDITION_TYPES = [
-  {
-    value: CONDITION_VALUES.AND,
-    label: 'And',
-  },
-  {
-    value: CONDITION_VALUES.OR,
-    label: 'Or',
-  },
-];
 
 const CONDITION_MAP = [
   {
-    value: 'discord_role',
+    value: QUEST_CONDITION_TYPES.DISCORD_ROLE,
     label: 'Discord Role',
   },
   {
-    value: 'quest',
+    value: QUEST_CONDITION_TYPES.QUEST,
     label: 'Quest',
   },
 ];
 
-const FilterGroup = ({ isFirst = true, condition, handleChange }) => {
+const CONDITION_VALUES = {
+  [QUEST_CONDITION_TYPES.DISCORD_ROLE]: 'discordRoleId',
+  [QUEST_CONDITION_TYPES.QUEST]: 'questId',
+};
+
+const FilterGroup = ({ condition, handleChange, options }) => {
   return (
     <Box display='flex' gap='6px' alignItems='center'>
-      {/* {isFirst ? <Label>Where</Label> : null}
-      {!isFirst && (
-        <SelectComponent
-          options={CONDITION_TYPES}
-          onChange={(value) => handleChange('type', value)}
-          value={condition.type}
-        />
-      )} */}
+      <Label>Where</Label>
       <SelectComponent
         options={CONDITION_MAP}
-        onChange={(value) => handleChange('key', value)}
-        value={condition.key}
+        onChange={(value) => handleChange('type', value)}
+        value={condition.type}
       />
       <SelectComponent
-        options={CONDITION_MAP}
-        onChange={(value) => handleChange('value', value)}
+        options={options || []}
+        onChange={(value) =>
+          handleChange('conditionData', {
+            [CONDITION_VALUES[condition.type]]: value,
+          })
+        }
         value={condition.value}
       />
     </Box>
@@ -61,18 +52,48 @@ const FilterGroup = ({ isFirst = true, condition, handleChange }) => {
 };
 
 const DEFAULT_CONDITION = {
-  key: CONDITION_MAP[0].value,
-  value: null,
-  type: CONDITION_VALUES.AND,
+  type: QUEST_CONDITION_TYPES.DISCORD_ROLE,
+  conditionData: {
+    discordRoleId: null,
+  },
 };
-// use for multiple conditions - similar to notion's filter groups
-const DynamicCondition = () => {
+
+const DynamicCondition = ({ value, setQuestSettings }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { activeOrg } = useContext(GlobalContext);
 
-  const [conditions, setConditions] = useState([]);
+  const [condition, setConditions] = useState({
+    type: value?.type || null,
+    conditionData: value?.conditionData || null,
+  });
+
+  //TODO paginate this
+  const { data: getQuests } = useQuery(GET_QUESTS_FOR_ORG, {
+    variables: {
+      input: {
+        orgId: activeOrg?.id,
+        limit: 500
+      }
+    },
+    skip: !isOpen,
+  });
+
   const ref = useRef();
-  const handleClickAway = () => setIsOpen(false);
+  const handleClickAway = () => {
+    if (
+      condition?.type !== value?.type ||
+      condition?.conditionData !== value?.conditionData
+    ) {
+      setQuestSettings((prev) => ({
+        ...prev,
+        questConditions: [
+          { type: condition.type, conditionData: condition?.conditionData },
+        ],
+      }));
+    }
+    setIsOpen(false);
+  };
+
   const { data: getOrgDiscordRolesData } = useQuery(GET_ORG_DISCORD_ROLES, {
     variables: {
       orgId: activeOrg?.id,
@@ -80,26 +101,67 @@ const DynamicCondition = () => {
     skip: !isOpen,
   });
 
-  const addDefaultCondition = () =>
-    setConditions([...conditions, DEFAULT_CONDITION]);
+  const addDefaultCondition = () => setConditions(DEFAULT_CONDITION);
+
   const openPopper = () => {
-    addDefaultCondition();
+    if (Object.keys(condition).length === 0) {
+      addDefaultCondition();
+    }
     return setIsOpen(true);
   };
 
-  const handleChange = (idx) => (key, value) => {
-    const newConditions = [...conditions];
-    newConditions[idx][key] = value;
-    console.log(newConditions, 'new cond');
-    setConditions(newConditions);
+  const handleChange = (key, value) =>
+    setConditions((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+
+  const getOptionsForCondition = (type) => {
+    if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
+      return getOrgDiscordRolesData?.getOrgDiscordRoles?.map((role) => ({
+        value: role.id,
+        label: role.name,
+      }));
+    }
+
+    if (QUEST_CONDITION_TYPES.QUEST) {
+      const quests = getQuests?.getQuestsForOrg?.map((quest) => ({
+        value: quest.id,
+        label: quest.title,
+      }));
+      return quests;
+    }
+    return [
+      {
+        value: null,
+        label: 'No options',
+      },
+    ];
   };
+
+  const nameForConditionValue = useMemo(() => {
+    const item = getOptionsForCondition(condition?.type)?.find((item) => {
+      return (
+        item.value ===
+        condition?.conditionData?.[CONDITION_VALUES[condition?.type]]
+      );
+    });
+    return item?.label;
+  }, [condition]);
 
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent='onMouseDown'>
       <div>
-        <button ref={ref} onClick={openPopper}>
-          Click me
-        </button>
+        <CustomTextField
+          disabled
+          onClick={openPopper}
+          placeholder='Add Condition'
+          ref={ref}
+          value={getTextForCondition({
+            type: condition.type,
+            name: nameForConditionValue,
+          })}
+        />
         <Popper
           open={isOpen}
           onClick={(e) => e.stopPropagation()}
@@ -121,34 +183,11 @@ const DynamicCondition = () => {
             gap='10px'
             padding='14px'
           >
-            {conditions?.map((condition, idx) => {
-              const isFirst = idx === 0;
-              return (
-                <FilterGroup
-                  isFirst={isFirst}
-                  condition={condition}
-                  handleChange={handleChange(idx)}
-                />
-              );
-            })}
-            <ButtonBase
-              onClick={addDefaultCondition}
-              type='button'
-              sx={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-                gap: '10px',
-              }}
-            >
-              <AddIcon
-                sx={{
-                  color: '#4d4d4d',
-                }}
-              />
-              <Label>Add Condition</Label>
-            </ButtonBase>
+            <FilterGroup
+              condition={condition}
+              handleChange={handleChange}
+              options={getOptionsForCondition(condition.type)}
+            />
           </Grid>
         </Popper>
       </div>
@@ -156,25 +195,4 @@ const DynamicCondition = () => {
   );
 };
 
-const SingleCondition = () => {
-  const { activeOrg } = useContext(GlobalContext);
-  const ref = useRef();
-  const [isOpen, setIsOpen] = useState(false);
-  const handleClickAway = () => setIsOpen(false);
-  const { data: getOrgDiscordRolesData } = useQuery(GET_ORG_DISCORD_ROLES, {
-    variables: {
-      orgId: activeOrg?.id,
-    },
-    skip: !isOpen,
-  });
-  const openPopper = () => {
-    return setIsOpen(true);
-  };
-
-  return (
-    <ClickAwayListener onClickAway={handleClickAway} mouseEvent='onMouseDown'>
-      <FilterGroup condition={DEFAULT_CONDITION} handleChange={() => {}} />
-    </ClickAwayListener>
-  );
-};
-export default SingleCondition;
+export default DynamicCondition;

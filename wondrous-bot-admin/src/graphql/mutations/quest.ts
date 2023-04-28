@@ -17,3 +17,11 @@ export const UPDATE_QUEST_LABEL = gql`
     }
   }
 `;
+
+export const ADD_ORG_LEVEL_REWARD = gql`
+  mutation addOrgLevelReward($input: AddOrgLevelInput) {
+    addOrgLevelReward(input: $input) {
+      success
+    }
+  }
+`;

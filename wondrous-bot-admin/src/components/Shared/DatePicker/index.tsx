@@ -90,7 +90,6 @@ const DateRangePicker = ({
 
   const anchorEl = useRef(null);
 
-  
   moment.updateLocale('en', {
     week: {
       dow: 1,
@@ -98,8 +97,8 @@ const DateRangePicker = ({
   });
 
   const startDateString =
-    dateRange?.startDate?.format(MONTH_DAY_FULL_YEAR) || '';
-  const endDateString = dateRange?.endDate?.format(MONTH_DAY_FULL_YEAR) || '';
+    dateRange?.startAt?.format(MONTH_DAY_FULL_YEAR) || '';
+  const endDateString = dateRange?.endAt?.format(MONTH_DAY_FULL_YEAR) || '';
 
   const todayMoment = moment();
 
@@ -112,7 +111,6 @@ const DateRangePicker = ({
     onConfirm(dateRange);
     setFocusedInput(null);
   };
-
 
   return (
     <ClickAwayListener onClickAway={handleOnClose} mouseEvent='onMouseDown'>
@@ -172,7 +170,7 @@ const DateRangePicker = ({
                 InputProps={textFieldInputProps({
                   dateString: startDateString,
                   onClick: () =>
-                    setDateRange({ ...dateRange, startDate: null }),
+                    setDateRange({ ...dateRange, startAt: null }),
                 })}
                 placeholder='Start Date'
                 onClick={() => setFocusedInput(DATEPICKER_FIELDS.START_DATE)}
@@ -183,7 +181,7 @@ const DateRangePicker = ({
                 value={endDateString}
                 InputProps={textFieldInputProps({
                   dateString: endDateString,
-                  onClick: () => setDateRange({ ...dateRange, endDate: null }),
+                  onClick: () => setDateRange({ ...dateRange, endAt: null }),
                 })}
                 placeholder='End Date'
                 onClick={() => setFocusedInput(DATEPICKER_FIELDS.END_DATE)}
@@ -222,12 +220,12 @@ const DateRangePicker = ({
                     {day?.[0]}
                   </Typography>
                 )}
-                startDate={dateRange.startDate}
+                startDate={dateRange.startAt}
                 startDateId='your_unique_start_date_id'
-                endDate={dateRange.endDate}
+                endDate={dateRange.endAt}
                 endDateId='your_unique_end_date_id'
                 onDatesChange={({ startDate, endDate }) =>
-                  setDateRange({ startDate, endDate })
+                  setDateRange({ startAt: startDate, endAt: endDate })
                 }
                 focusedInput={focusedInput}
                 onFocusChange={(focusedInput) =>
@@ -258,27 +256,38 @@ const DateRangePicker = ({
                       borderTop={`1px solid black`}
                     >
                       <ButtonBase
-                      onClick={() => {
-                        setDateRange({ startDate: null, endDate: null });
-                      }}
-                      sx={{
-                        borderRadius: '6px',
-                        background: "#C6BBFC",
-                        padding: "7px 9px"
-                      }}
-                    >
-                      <Grid container alignItems="center" width="fit-content" sx={{ svg: { transform: 'scale(0.6)' } }}>
-                        
-                        <BackspaceOutlined sx={{
-                          color: 'black'
-                        }}/>
-                                                <Typography fontWeight="500" fontSize="13px" color={'black'} fontFamily="Poppins">
-                          Clear
-                        </Typography>
-                      </Grid>
-                    </ButtonBase>
+                        onClick={() => {
+                          setDateRange({ startAt: null, endAt: null });
+                        }}
+                        sx={{
+                          borderRadius: '6px',
+                          background: '#C6BBFC',
+                          padding: '7px 9px',
+                        }}
+                      >
+                        <Grid
+                          container
+                          alignItems='center'
+                          width='fit-content'
+                          sx={{ svg: { transform: 'scale(0.6)' } }}
+                        >
+                          <BackspaceOutlined
+                            sx={{
+                              color: 'black',
+                            }}
+                          />
+                          <Typography
+                            fontWeight='500'
+                            fontSize='13px'
+                            color={'black'}
+                            fontFamily='Poppins'
+                          >
+                            Clear
+                          </Typography>
+                        </Grid>
+                      </ButtonBase>
                       <SharedSecondaryButton
-                        disabled={!dateRange.startDate || !dateRange.endDate}
+                        disabled={!dateRange.startAt || !dateRange.endAt}
                         onClick={handleOnConfirm}
                         color='purple'
                         width='fit-content'

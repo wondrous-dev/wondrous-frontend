@@ -3,9 +3,10 @@ import TextComponent from 'components/AddFormEntity/components/Text';
 
 export const TYPES = {
   TEXT_FIELD: 'text',
-  MULTIPLE_CHOICE: 'multi_choice',
+  MULTI_QUIZ: 'multiple_quiz',
   NUMBER: 'number',
   ATTACHMENTS: 'attachment',
+  SINGLE_QUIZ: 'single_quiz',
 };
 
 export const CONFIG = [
@@ -17,7 +18,7 @@ export const CONFIG = [
 
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
-  [TYPES.MULTIPLE_CHOICE]: QuizComponent,
+  [TYPES.MULTI_QUIZ]: QuizComponent,
   [TYPES.NUMBER]: TextComponent,
   [TYPES.ATTACHMENTS]: TextComponent,
 };
@@ -37,12 +38,7 @@ export const THEME_TYPES = {
 
 export const COMPONENT_LABELS = {
   [TYPES.TEXT_FIELD]: 'Text',
-  [TYPES.MULTIPLE_CHOICE]: 'Quiz',
-};
-
-export const OPTIONS_VALUES = {
-  MULTI: 'multi',
-  SINGLE: 'single',
+  [TYPES.MULTI_QUIZ]: 'Quiz',
 };
 
 export const DATEPICKER_OPTIONS = {
@@ -58,10 +54,10 @@ export const DATEPICKER_FIELDS = {
   START_DATE: 'startDate',
 };
 
-export const DEFAULT_DATEPICKER_VALUE = { startDate: null, endDate: null };
+export const DEFAULT_DATEPICKER_VALUE = { startAt: null, endAt: null };
 export const DEFAULT_SINGLE_DATEPICKER_VALUE = null;
 
-export const MONTH_DAY_FULL_YEAR = 'MM/DD/YYYY';
+export const MONTH_DAY_FULL_YEAR = 'MM/DD/YY';
 export const DAY_STRING_MONTH_SHORT_YEAR = 'DD/MMM/YY';
 
 export const DISCORD_CONNECT_TYPES = {
@@ -121,3 +117,13 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
   flv: 'video/x-flv',
   webm: 'webm',
 };
+
+export const QUEST_CONDITION_TYPES = {
+    DISCORD_ROLE: 'discord_role',
+    QUEST: 'quest',
+}
+export const QUEST_STATUSES = {
+  ARCHIVED: 'archived',
+  OPEN: 'open',
+  MAX: 'max'
+}

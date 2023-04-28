@@ -22,8 +22,7 @@ const TimeboundComponent = (props) => {
           onConfirm={(value) => {
             setQuestSettings((prev) => ({
               ...prev,
-              startDate: value.startDate,
-              endDate: value.endDate,
+              ...value
             }));
           }}
           ButtonComponent={(props) => (
@@ -32,10 +31,10 @@ const TimeboundComponent = (props) => {
                 disabled
                 placeholder='Select Date Range'
                 value={
-                  questSettings?.startDate && questSettings?.endDate
-                    ? `${questSettings?.startDate?.format(
+                  questSettings?.startAt && questSettings?.endAt
+                    ? `${questSettings?.startAt?.format(
                         MONTH_DAY_FULL_YEAR
-                      )} - ${questSettings?.endDate?.format(
+                      )} - ${questSettings?.endAt?.format(
                         MONTH_DAY_FULL_YEAR
                       )}`
                     : null

@@ -9,13 +9,13 @@ import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 
 import DeleteIcon from 'components/Icons/Delete';
 import StrictModeDroppable from 'components/StrictModeDroppable';
-import { CONFIG_COMPONENTS, OPTIONS_VALUES, RESPOND_TYPES, TYPES } from 'utils/constants';
+import { CONFIG_COMPONENTS, RESPOND_TYPES, TYPES } from 'utils/constants';
 import TypeComponent from './components/TypeComponent';
 
 const MULTICHOICE_DEFAULT_VALUE = {
   question: '',
   withCorrectAnswers: false,
-  multiSelectValue: OPTIONS_VALUES.MULTI,
+  multiSelectValue: TYPES.MULTI_QUIZ,
   answers: [],
 };
 
@@ -26,7 +26,7 @@ const COMPONENT_OPTIONS = [
   },
   {
     label: 'Multiple Choice',
-    value: TYPES.MULTIPLE_CHOICE,
+    value: TYPES.MULTI_QUIZ,
   },
   {
     label: 'Number',
@@ -59,7 +59,7 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
           {
             type,
             id,
-            value: type === TYPES.MULTIPLE_CHOICE ? MULTICHOICE_DEFAULT_VALUE : '',
+            value: type === TYPES.MULTI_QUIZ ? MULTICHOICE_DEFAULT_VALUE : '',
           },
         ];
         return acc;

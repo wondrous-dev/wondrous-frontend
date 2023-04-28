@@ -13,7 +13,7 @@ export const StyledViewQuestResults = styled(Box)`
     font-weight: 500;
     font-size: 14px;
     line-height: 14px;
-
+    gap: 6px;
     display: flex;
     align-items: center;
     letter-spacing: 0.02em;

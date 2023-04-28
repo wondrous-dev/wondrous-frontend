@@ -3,7 +3,7 @@ import {
   RoundedSecondaryButton,
   SharedSecondaryButton,
 } from 'components/Shared/styles';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 
 import { pinkColors } from 'utils/theme/colors';
@@ -14,330 +14,359 @@ import { BG_TYPES } from 'utils/constants';
 import { useQuery } from '@apollo/client';
 import { GET_QUESTS_FOR_ORG } from 'graphql/queries';
 import GlobalContext from 'utils/context/GlobalContext';
+import {LEVELS_DEFAULT_NAMES} from 'utils/levels/constants';
+import useLevels from 'utils/levels/hooks';
 
-const LEVELS = [1, 2, 3, 4, 5];
+// const LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-const INFO = {
-  [1]: {
-    label: 'Level 1 - 10XP',
-    items: [
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-    ],
-  },
-  [2]: {
-    label: 'Level 2 - 20XP',
-    items: [
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-    ],
-  },
-  [3]: {
-    label: 'Level 3 - 30XP',
-    items: [
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-    ],
-  },
-  [4]: {
-    label: 'Level 4 - 40XP',
-    items: [
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-    ],
-  },
-  [5]: {
-    label: 'Level 5 - 50XP',
-    items: [
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-      {
-        xp: 5,
-        label: 'Complete member info',
-        completions: 591,
-      },
-    ],
-  },
-};
+// const INFO = {
+//   [1]: {
+//     label: 'Level 1 - 10XP',
+//     items: [
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//     ],
+//   },
+//   [2]: {
+//     label: 'Level 2 - 20XP',
+//     items: [
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//     ],
+//   },
+//   [3]: {
+//     label: 'Level 3 - 30XP',
+//     items: [
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//     ],
+//   },
+//   [4]: {
+//     label: 'Level 4 - 40XP',
+//     items: [
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//     ],
+//   },
+//   [5]: {
+//     label: 'Level 5 - 50XP',
+//     items: [
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//       {
+//         xp: 5,
+//         label: 'Complete member info',
+//         completions: 591,
+//       },
+//     ],
+//   },
+// };
 
-const QuestsList = () => {
-  const { activeOrg } = useContext(GlobalContext);
-  const navigate = useNavigate();
-  const { data, refetch, variables } = useQuery(GET_QUESTS_FOR_ORG, {
-    variables: {
-      notifyOnNetworkStatusChange: true,
-      input: {
-        orgId: activeOrg?.id,
-        limit: 1000
-      },
-    },
+const formatQuestsData = (LEVELS, data) => {
+  const result = {};
+
+  data.forEach((quest) => {
+    if (!result[quest.level]) {
+      result[quest.level] = {
+        label: LEVELS[quest.level],
+        items: [],
+      };
+    }
+
+    result[quest.level].items.push({
+      xp: quest.pointReward,
+      label: quest.title,
+      id: quest.id,
+      completions: quest.maxSubmission,
+    });
   });
 
+  return result;
+};
+
+const QuestsList = ({data}) => {
+  const { activeOrg } = useContext(GlobalContext);
+  const navigate = useNavigate();
+  const {levels} = useLevels({
+    orgId: activeOrg?.id,
+  });
+
+
+
+  const formattedData = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+
+    return formatQuestsData(levels, data);
+  }, [levels, data])
+  
   return (
     <PageWrapper
       bgType={BG_TYPES.QUESTS}
       containerProps={{
         minHeight: '100vh',
+        flexDirection: 'column',
         gap: '42px',
         padding: {
           xs: '14px 14px 120px 14px',
@@ -345,7 +374,10 @@ const QuestsList = () => {
         },
       }}
     >
-      {LEVELS.map((level, idx) => {
+      {Object.keys(LEVELS_DEFAULT_NAMES).map((level, idx) => {
+        if(!formattedData[level]) {
+          return null
+        }
         return (
           <Grid
             display='flex'
@@ -355,12 +387,13 @@ const QuestsList = () => {
             justifyContent='flex-start'
             alignItems='flex-start'
           >
-            <Label>{INFO[level].label}</Label>
+            <Label>{formattedData[level].label}</Label>
             <Grid container gap='30px 14px'>
-              {INFO[level].items?.map((item, idx) => (
+              {formattedData[level].items?.map((item) => (
                 <CardHoverWrapper
-                  onClick={() => navigate(`/quests/${idx}`)}
+                  onClick={() => navigate(`/quests/${item.id}`)}
                   flex={1}
+                  key={item.id}
                   flexBasis={{
                     xs: '48%',
                     sm: '30%',

@@ -1,3 +1,5 @@
+import { QUEST_CONDITION_TYPES } from "./constants";
+
 export function shallowEqual(objA, objB) {
   if (!objA || !objB) {
     return objA === objB;
@@ -16,4 +18,17 @@ export const handleUserOnboardingRedirect = (
   if (userOrError === 'Incorrect Email and Password combination') return;
 
   return navigate('/');
+};
+
+
+export const getTextForCondition = (condition) => {
+  const { type, name } = condition;
+  let text = '';
+  if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
+    text = `Discord Role: ${name || 'None'}`;
+  }
+  if (type === QUEST_CONDITION_TYPES.QUEST) {
+    text = `Quest: ${name || 'None'}`;
+  }
+  return text;
 };

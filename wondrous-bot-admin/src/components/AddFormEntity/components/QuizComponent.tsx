@@ -16,6 +16,7 @@ import Switch from 'components/Shared/Switch';
 import DeleteIcon from 'components/Icons/Delete';
 import SelectComponent from 'components/Shared/Select';
 import FileUpload from 'components/Shared/FileUpload';
+import { TYPES } from 'utils/constants';
 
 const CORRECT_ANSWERS_TYPES = {
   CORRECT: 'correct',
@@ -38,18 +39,19 @@ const getAttachmentTitle = (file) => {
   }
   return file.name;
 };
-const OPTIONS = [
-  {
-    label: 'Multi Select',
-    value: 'multi',
-  },
-  {
-    label: 'Single Select',
-    value: 'single',
-  },
-];
 
 const QuizComponent = ({ onChange, value }) => {
+  const OPTIONS = [
+    {
+      label: 'Multi Select',
+      value: TYPES.MULTI_QUIZ,
+    },
+    {
+      label: 'Single Select',
+      value: TYPES.SINGLE_QUIZ,
+    },
+  ];
+
   const { question, withCorrectAnswers, multiSelectValue, answers } =
     value || {};
 

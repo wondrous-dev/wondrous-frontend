@@ -5,7 +5,7 @@ import Switch from 'components/Shared/Switch';
 import ToggleComponent from 'components/Shared/Toggle';
 import { CampaignOverviewTitle, Label } from './styles';
 import TimeboundComponent from './TimeboundComponent';
-import SingleCondition from 'components/DynamicCondition';
+import DynamicCondition from 'components/DynamicCondition';
 import useLevels from 'utils/levels/hooks';
 import { useContext, useMemo } from 'react';
 import GlobalContext from 'utils/context/GlobalContext';
@@ -47,28 +47,28 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
     {
       label: 'Quest Title',
       component: TextFieldComponent,
-      value: questSettings.questTitle,
+      value: questSettings.title,
       componentProps: {
         multiline: false,
       },
-      key: 'questTitle',
+      key: 'title',
     },
     {
       label: 'Level Requirement',
       component: SelectComponent,
-      value: questSettings.levelRequirement,
+      value: questSettings.level,
       componentProps: {
         options: levelsOptions,
       },
-      key: 'levelRequirement',
+      key: 'level',
     },
     {
       label: 'Time Bound',
       component: TimeboundComponent,
       value: {
         timeBound: questSettings.timeBound,
-        startDate: questSettings.startDate,
-        endDate: questSettings.endDate,
+        startAt: questSettings.startAt,
+        endAt: questSettings.endAt,
       },
       key: 'timeBound',
     },
@@ -79,30 +79,32 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       key: 'requireReview',
       componentProps: {
         options: REQUIRE_REVIEW_OPTIONS,
-        fullWidth: true
+        fullWidth: true,
       },
     },
     {
       label: 'Condition',
-      component: SingleCondition,
-      value: questSettings.requirement,
-      key: 'condition',
+      component: DynamicCondition,
+      key: 'questConditions',
+      componentProps: {
+        value: questSettings.questConditions[0],
+        setQuestSettings,
+      },
     },
     {
       label: 'Max submissions',
       component: MaxSubmissions,
-      value: !!questSettings?.maxSubmissions,
+      value: !!questSettings?.maxSubmission,
       componentProps: {
-        maxSubmissions: questSettings?.maxSubmissions,
+        maxSubmission: questSettings?.maxSubmission,
         onChange: (value) => {
-          console.log('here??')
-          if (!value && questSettings.maxSubmissions) {
-            return handleChange('maxSubmissions', null);
+          if (!value && questSettings.maxSubmission) {
+            return handleChange('maxSubmission', null);
           }
-          return handleChange('maxSubmissions', 1);
+          return handleChange('maxSubmission', 1);
         },
       },
-      key: 'maxSubmissions',
+      key: 'maxSubmission',
     },
 
     {

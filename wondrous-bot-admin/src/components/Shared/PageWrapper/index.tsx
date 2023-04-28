@@ -9,7 +9,7 @@ const BG_IMAGES = {
   [BG_TYPES.QUESTS]: '/images/quests-bg.png',
 };
 
-const PageWrapper = ({ children, containerProps = {}, bgType }) => {
+const PageWrapper = ({ children, containerProps, bgType }) => {
   const img = BG_IMAGES[bgType] || BG_IMAGES[BG_TYPES.DEFAULT];
   return (
     <Grid
