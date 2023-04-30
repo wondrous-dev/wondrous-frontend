@@ -14,7 +14,7 @@ const CallbackPage = () => {
 	const [errorText, setErrorText] = useState("")
 	const [verifyTwitter] = useMutation(VERIFY_COMMUNITY_USER_TWITTER, {
 		onCompleted: (data) => {
-			if (data?.verifyCommunityUserTwitter) {
+			if (data?.verifyCommunityUserTwitter?.success) {
 				setFinishedVerification(true)
 			}
 		},
@@ -44,7 +44,7 @@ const CallbackPage = () => {
 				gap='8px'
 				flexDirection='column'
 			>
-				{finishedVerification && !errorText && (
+				{finishedVerification && (
 					<Typography
 						fontFamily='Poppins'
 						fontWeight={600}
