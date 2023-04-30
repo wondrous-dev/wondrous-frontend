@@ -42,7 +42,7 @@ const CallbackPage = () => {
 				gap='8px'
 				flexDirection='column'
 			>
-				{finishedVerification && (
+				{finishedVerification && !errorText && (
 					<Typography
 						fontFamily='Poppins'
 						fontWeight={600}
@@ -54,7 +54,7 @@ const CallbackPage = () => {
 						now and return to Discord.
 					</Typography>
 				)}
-				{errorText && (
+				{errorText && !finishedVerification && (
 					<Typography
 						fontFamily='Poppins'
 						fontWeight={600}
@@ -66,17 +66,19 @@ const CallbackPage = () => {
 					</Typography>
 				)}
 				{!errorText && !finishedVerification && (
-					<Typography
-						fontFamily='Poppins'
-						fontWeight={600}
-						fontSize='18px'
-						lineHeight='24px'
-						color='black'
-					>
-						Connecting your Twitter account
-					</Typography>
+					<>
+						<Typography
+							fontFamily='Poppins'
+							fontWeight={600}
+							fontSize='18px'
+							lineHeight='24px'
+							color='black'
+						>
+							Connecting your Twitter account
+						</Typography>
+						<CircularProgress />
+					</>
 				)}
-				<CircularProgress />
 			</Grid>
 			<Grid
 				flex='1'
