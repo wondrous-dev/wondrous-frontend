@@ -13,8 +13,10 @@ const CallbackPage = () => {
 	const [finishedVerification, setFinishedVerification] = useState(false)
 	const [errorText, setErrorText] = useState("")
 	const [verifyTwitter] = useMutation(VERIFY_COMMUNITY_USER_TWITTER, {
-		onCompleted: () => {
-			setFinishedVerification(true)
+		onCompleted: (data) => {
+			if (data?.verifyCommunityUserTwitter) {
+				setFinishedVerification(true)
+			}
 		},
 		onError: (e) => {
 			console.error("error verifying twitter", e)
@@ -60,7 +62,7 @@ const CallbackPage = () => {
 						fontWeight={600}
 						fontSize='18px'
 						lineHeight='24px'
-						color='black'
+						color='red'
 					>
 						{errorText}
 					</Typography>
