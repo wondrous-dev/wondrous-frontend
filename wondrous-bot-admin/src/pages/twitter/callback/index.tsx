@@ -56,18 +56,7 @@ const CallbackPage = () => {
 						now and return to Discord.
 					</Typography>
 				)}
-				{errorText && !finishedVerification && (
-					<Typography
-						fontFamily='Poppins'
-						fontWeight={600}
-						fontSize='18px'
-						lineHeight='24px'
-						color='red'
-					>
-						{errorText}
-					</Typography>
-				)}
-				{!errorText && !finishedVerification && (
+				{!finishedVerification && (
 					<>
 						<Typography
 							fontFamily='Poppins'
@@ -76,7 +65,8 @@ const CallbackPage = () => {
 							lineHeight='24px'
 							color='black'
 						>
-							Connecting your Twitter account
+							Connecting your Twitter account. If this is taking too long please
+							try again!
 						</Typography>
 						<CircularProgress />
 					</>
