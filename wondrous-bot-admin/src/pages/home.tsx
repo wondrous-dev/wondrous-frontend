@@ -1,4 +1,5 @@
-import { Typography } from '@mui/material';
+import { useQuery } from '@apollo/client';
+import { CircularProgress, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import {
   LevelsIcon,
@@ -6,30 +7,11 @@ import {
   QuestIcon,
 } from 'components/Icons/HomePageIcons';
 import Header from 'components/Navbar';
-import { useContext } from 'react';
+import { OrgProfilePicture } from 'components/Shared/ProjectProfilePicture';
+import { GET_ORG_QUEST_STATS } from 'graphql/queries';
+import { useContext, useEffect } from 'react';
 import GlobalContext from 'utils/context/GlobalContext';
 import { pinkColors } from 'utils/theme/colors';
-
-const CARDS_CONFIG = [
-  {
-    title: 'Members Onboarded',
-    count: 201,
-    Icon: OnboardedIcon,
-    bgColor: '#F8642D',
-  },
-  {
-    title: 'Quests',
-    count: 11,
-    Icon: QuestIcon,
-    bgColor: '#F8AFDB',
-  },
-  {
-    title: 'Levels',
-    count: 10,
-    Icon: LevelsIcon,
-    bgColor: '#84BCFF',
-  },
-];
 
 const typographyStyles = {
   fontFamily: 'Poppins',
@@ -38,7 +20,7 @@ const typographyStyles = {
   color: 'black',
 };
 
-const CardsComponent = () => (
+const CardsComponent = ({ cards }) => (
   <Grid
     container
     gap='24px'
@@ -55,16 +37,18 @@ const CardsComponent = () => (
       sm: 'row',
     }}
   >
-    {CARDS_CONFIG.map((card, idx) => (
+    {cards.map((card, idx) => (
       <Grid
         bgcolor={card.bgColor}
         display='flex'
+        key={`card-${idx}`}
         border='2px solid #000212'
         borderRadius='16px'
         flexDirection='column'
         justifyContent='center'
         flex='1'
         width='100%'
+        padding='10px'
         alignItems='center'
       >
         <card.Icon />
@@ -83,7 +67,39 @@ const CardsComponent = () => (
 );
 
 const HomePage = () => {
-  const {activeOrg} = useContext(GlobalContext)
+  const { activeOrg } = useContext(GlobalContext);
+
+  const { data, loading } = useQuery(GET_ORG_QUEST_STATS, {
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
+  });
+
+  const { totalMembers, totalQuests, totalSubmissions } = data?.getOrgQuestStats || {};
+
+  const CARDS_CONFIG = [
+    {
+      title: 'Members Onboarded',
+      count: totalMembers,
+      Icon: OnboardedIcon,
+      bgColor: '#F8642D',
+    },
+    {
+      title: 'Quests',
+      count: totalQuests,
+      Icon: QuestIcon,
+      bgColor: '#F8AFDB',
+    },
+    {
+      title: 'Levels',
+      count: 10,
+      Icon: LevelsIcon,
+      bgColor: '#84BCFF',
+    },
+  ];
+
   return (
     <Grid display='flex' flexDirection='column' height='100%' minHeight='100vh'>
       <Grid
@@ -94,6 +110,14 @@ const HomePage = () => {
         gap='8px'
         flexDirection='column'
       >
+        <OrgProfilePicture
+          profilePicture={activeOrg?.profilePicture}
+          style={{
+            width: '100px',
+            height: '100px',
+          }}
+        />
+
         <Typography
           fontFamily='Poppins'
           fontWeight={600}
@@ -109,16 +133,31 @@ const HomePage = () => {
           lineHeight='14px'
           color='black'
         >
-          10.9K Engagements Received
+          {loading ? null : `${totalSubmissions} Submissions Received`}
         </Typography>
       </Grid>
-      <Grid flex='1' sx={{
-        backgroundImage: 'url(/images/home-bg.png)',
-        backgroundPosition: 'bottom',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover'
-      }} position='relative'>
-        <CardsComponent />
+      <Grid
+        flex='1'
+        sx={{
+          backgroundImage: 'url(/images/home-bg.png)',
+          backgroundPosition: 'bottom',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+        }}
+        position='relative'
+      >
+        {loading ? (
+          <CircularProgress
+            size={60}
+            thickness={5}
+            sx={{
+              color: '#2A8D5C',
+              animationDuration: '10000ms',
+            }}
+          />
+        ) : (
+          <CardsComponent cards={CARDS_CONFIG} />
+        )}
       </Grid>
     </Grid>
   );

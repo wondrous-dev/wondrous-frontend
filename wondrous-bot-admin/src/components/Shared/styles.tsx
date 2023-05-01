@@ -142,7 +142,10 @@ export const SharedSecondaryButton = styled(ButtonBase)`
     line-height: 150%;
     white-space: nowrap;
     color: #0c002d;
-    ${({ reverse }) => (reverse ? ReversedButtonCss : ``)}
+    &:disabled {
+      opacity: 0.5;
+    }
+    ${({ $reverse }) => ($reverse ? ReversedButtonCss : ``)}
     &:hover {
       border: 1px solid black;
     }

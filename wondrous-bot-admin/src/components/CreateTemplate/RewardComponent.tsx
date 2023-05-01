@@ -95,7 +95,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
 
       <Divider color='#767676' />
       <Box>
-        <SharedSecondaryButton onClick={() => setIsRewardModalOpen(true)}>Add more</SharedSecondaryButton>
+        <SharedSecondaryButton disabled onClick={() => setIsRewardModalOpen(true)}>Add more</SharedSecondaryButton>
       </Box>
     </Grid>
   );

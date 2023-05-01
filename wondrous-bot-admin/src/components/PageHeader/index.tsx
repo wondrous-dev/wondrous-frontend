@@ -7,20 +7,32 @@ const PageHeader = ({
   title = 'New Quest',
   withBackButton = true,
   renderActions = null,
+  onBackButtonClick = () => {}
 }) => {
   const navigate = useNavigate();
-  const handleBackButton = () => navigate(-1);
+  const handleBackButton = () => {
+    navigate(-1)
+    onBackButtonClick?.()
+  };
   return (
     <Grid
       display='flex'
-      alignItems='center'
+      alignItems={{
+        xs: 'flex-start',
+        sm: 'center',
+      }}
       justifyContent='space-between'
       width='100%'
+      gap="10px"
       paddingTop='46px'
       paddingBottom='34px'
       paddingLeft={{
         xs: '14px',
         sm: '56px',
+      }}
+      flexDirection={{
+        xs: 'column',
+        sm: 'row',
       }}
       paddingRight={{
         xs: '14px',

@@ -100,7 +100,7 @@ const TableComponent = ({ headers, data }) => {
                       </IconWrapper>
                     ) : null}
                     {column.component === 'reward' ? (
-                      <StyledViewQuestResults isReward>
+                      <StyledViewQuestResults $isReward>
                         {column.value}
                       </StyledViewQuestResults>
                     ) : null}

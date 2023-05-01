@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 export const StyledViewQuestResults = styled(Box)`
   && {
-    background: ${({ isReward }) => (!isReward ? '#c6bbfc' : '#F8AFDB')};
+    background: ${({ $isReward }) => (!$isReward ? '#c6bbfc' : '#F8AFDB')};
     padding: 6px;
     border-radius: 6px;
     font-family: 'Poppins';
@@ -24,8 +24,8 @@ export const StyledViewQuestResults = styled(Box)`
 
 export const FilterPill = styled(ButtonBase)`
   && {
-    background: ${({ isActive }) => (isActive ? '#84BCFF' : '#F7F7F7')};
-    border: ${({ isActive }) => (isActive ? '1px solid #000000' : 'none')};
+    background: ${({ $isActive }) => ($isActive ? '#84BCFF' : '#F7F7F7')};
+    border: ${({ $isActive }) => ($isActive ? '1px solid #000000' : 'none')};
     border-radius: 6px;
     padding: 10px;
 

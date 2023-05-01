@@ -1,17 +1,18 @@
 import { useQuery } from '@apollo/client';
 import { ClickAwayListener } from '@mui/base';
-import { Box, Grid, Popper } from '@mui/material';
+import { Box, ButtonBase, Grid, Popper } from '@mui/material';
 import {
   CustomTextField,
   Label,
 } from 'components/AddFormEntity/components/styles';
+import CloseModalIcon from 'components/Icons/CloseModal';
 import SelectComponent from 'components/Shared/Select';
 import { GET_QUESTS_FOR_ORG } from 'graphql/queries';
-import { GET_ORG_DISCORD_ROLES } from 'graphql/queries/discord';
-import { useContext, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { getTextForCondition } from 'utils/common';
 import { QUEST_CONDITION_TYPES } from 'utils/constants';
 import GlobalContext from 'utils/context/GlobalContext';
+import { useDiscordRoles } from 'utils/discord';
 
 const CONDITION_MAP = [
   {
@@ -45,17 +46,13 @@ const FilterGroup = ({ condition, handleChange, options }) => {
             [CONDITION_VALUES[condition.type]]: value,
           })
         }
-        value={condition.value}
+        value={
+          condition.value ||
+          condition.conditionData?.[CONDITION_VALUES[condition.type]]
+        }
       />
     </Box>
   );
-};
-
-const DEFAULT_CONDITION = {
-  type: QUEST_CONDITION_TYPES.DISCORD_ROLE,
-  conditionData: {
-    discordRoleId: null,
-  },
 };
 
 const DynamicCondition = ({ value, setQuestSettings }) => {
@@ -67,19 +64,18 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
     conditionData: value?.conditionData || null,
   });
 
-  //TODO paginate this
   const { data: getQuests } = useQuery(GET_QUESTS_FOR_ORG, {
     variables: {
       input: {
         orgId: activeOrg?.id,
-        limit: 500
-      }
+        limit: 500,
+      },
     },
-    skip: !isOpen,
   });
 
   const ref = useRef();
   const handleClickAway = () => {
+    if (!isOpen) return;
     if (
       condition?.type !== value?.type ||
       condition?.conditionData !== value?.conditionData
@@ -94,19 +90,11 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
     setIsOpen(false);
   };
 
-  const { data: getOrgDiscordRolesData } = useQuery(GET_ORG_DISCORD_ROLES, {
-    variables: {
-      orgId: activeOrg?.id,
-    },
-    skip: !isOpen,
+  const roles = useDiscordRoles({
+    orgId: activeOrg?.id,
   });
 
-  const addDefaultCondition = () => setConditions(DEFAULT_CONDITION);
-
   const openPopper = () => {
-    if (Object.keys(condition).length === 0) {
-      addDefaultCondition();
-    }
     return setIsOpen(true);
   };
 
@@ -116,28 +104,33 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
       [key]: value,
     }));
 
-  const getOptionsForCondition = (type) => {
-    if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
-      return getOrgDiscordRolesData?.getOrgDiscordRoles?.map((role) => ({
-        value: role.id,
-        label: role.name,
-      }));
-    }
+  const getOptionsForCondition = useCallback(
+    (type) => {
+      if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
+        const allRoles = roles.map((role) => role.roles).flat();
 
-    if (QUEST_CONDITION_TYPES.QUEST) {
-      const quests = getQuests?.getQuestsForOrg?.map((quest) => ({
-        value: quest.id,
-        label: quest.title,
-      }));
-      return quests;
-    }
-    return [
-      {
-        value: null,
-        label: 'No options',
-      },
-    ];
-  };
+        return allRoles?.map((role) => ({
+          value: role.id,
+          label: role.name,
+        }));
+      }
+
+      if (type === QUEST_CONDITION_TYPES.QUEST) {
+        const quests = getQuests?.getQuestsForOrg?.map((quest) => ({
+          value: quest.id,
+          label: quest.title,
+        }));
+        return quests;
+      }
+      return [
+        {
+          value: null,
+          label: 'No options',
+        },
+      ];
+    },
+    [getQuests, roles]
+  );
 
   const nameForConditionValue = useMemo(() => {
     const item = getOptionsForCondition(condition?.type)?.find((item) => {
@@ -147,21 +140,38 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
       );
     });
     return item?.label;
-  }, [condition]);
+  }, [condition, roles, getOptionsForCondition]);
+
+  const onResetClick = () => {
+    setConditions({
+      type: null,
+      conditionData: null,
+    });
+    setQuestSettings((prev) => ({
+      ...prev,
+      questConditions: [],
+    }));
+    setIsOpen(false);
+  }
 
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent='onMouseDown'>
       <div>
-        <CustomTextField
-          disabled
-          onClick={openPopper}
-          placeholder='Add Condition'
-          ref={ref}
-          value={getTextForCondition({
-            type: condition.type,
-            name: nameForConditionValue,
-          })}
-        />
+        <Box display='flex' alignItems='center' gap='4px'>
+          <CustomTextField
+            disabled
+            onClick={openPopper}
+            placeholder='Add Condition'
+            ref={ref}
+            value={getTextForCondition({
+              type: condition.type,
+              name: nameForConditionValue,
+            })}
+          />
+          <ButtonBase onClick={onResetClick}>
+            <CloseModalIcon strokeColor='black' />
+          </ButtonBase>
+        </Box>
         <Popper
           open={isOpen}
           onClick={(e) => e.stopPropagation()}

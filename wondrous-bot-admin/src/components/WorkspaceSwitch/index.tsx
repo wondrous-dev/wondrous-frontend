@@ -64,7 +64,22 @@ const WorkspaceSwitch = () => {
   const togglePopper = () => setIsOpen((prev) => !prev);
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent='onMouseDown'>
-      <div>
+      <Box 
+      flex={{
+        xs: 1,
+        sm: 'unset'
+      }}
+      display={{
+        xs: 'flex',
+        sm: 'block'
+      }}
+      justifyContent='flex-end'
+      alignItems="center"
+      marginRight={{
+        xs: '10px',
+        sm: 'unset'
+      }}
+      >
         <WrenchButton ref={ref} onClick={togglePopper} />
         <Popper
           open={isOpen}
@@ -89,7 +104,7 @@ const WorkspaceSwitch = () => {
             {userOrgs?.map((org, idx) => {
               const isActive = org.id === activeOrg?.id;
               return (
-                <WorkspaceWrapper onClick={() => onOrgClick(org)}>
+                <WorkspaceWrapper onClick={() => onOrgClick(org)} key={org.id}>
                   <Box display='flex' gap='10px' alignItems='center'>
                     <OrgProfilePicture
                       profilePicture={org?.profilePicture}
@@ -129,7 +144,7 @@ const WorkspaceSwitch = () => {
             </ButtonBase>
           </Grid>
         </Popper>
-      </div>
+      </Box>
     </ClickAwayListener>
   );
 };

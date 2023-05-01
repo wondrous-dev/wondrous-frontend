@@ -14,44 +14,58 @@ import { RewardComponent, RewardOverviewHeader } from './RewardComponent';
 import PageWrapper from 'components/Shared/PageWrapper';
 import Modal from 'components/Shared/Modal';
 import { useMutation } from '@apollo/client';
-import { CREATE_QUEST } from 'graphql/mutations';
+import { CREATE_QUEST, UPDATE_QUEST } from 'graphql/mutations';
 import GlobalContext from 'utils/context/GlobalContext';
 import { useNavigate } from 'react-router';
 
-const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
+const DEFAULT_STATE_VALUE = {
+  title: '',
+  level: null,
+  timeBound: false,
+  maxSubmission: null,
+  requireReview: false,
+  isActive: false,
+  startAt: null,
+  endAt: null,
+  questConditions: [],
+  rewards: [
+    {
+      value: 0,
+      type: 'points',
+    },
+  ],
+};
+
+const CreateTemplate = ({
+  setRefValue,
+  displaySavePanel,
+  defaultQuestSettings = DEFAULT_STATE_VALUE,
+  questId = null,
+  defaultQuestSteps = []
+}) => {
   const navigate = useNavigate();
   const [createQuest] = useMutation(CREATE_QUEST, {
     onCompleted: ({ createQuest }) => {
       navigate(`/quests/${createQuest.id}`);
     },
   });
+  const [updateQuest] = useMutation(UPDATE_QUEST, {
+    onCompleted: ({ updateQuest }) => {
+      navigate(`/quests/${updateQuest.id}`);
+    },
+  });
+
   const { activeOrg } = useContext(GlobalContext);
 
-  const [configuration, setConfiguration] = useState([]);
+  const [configuration, setConfiguration] = useState(defaultQuestSteps);
   const [isSaving, setIsSaving] = useState(false);
-  const [questSettings, setQuestSettings] = useState({
-    title: '',
-    level: null,
-    timeBound: false,
-    maxSubmission: null,
-    requireReview: false,
-    isActive: false,
-    startAt: null,
-    endAt: null,
-    questConditions: [],
-    rewards: [
-      {
-        value: 0,
-        type: 'points',
-      },
-    ],
-  });
+  const [questSettings, setQuestSettings] = useState(defaultQuestSettings);
 
   const handleAdd = (type) => {
     setConfiguration([
       ...configuration,
       {
-        id: `item-${configuration.length}`,
+        id: configuration.length,
         type,
         value: '',
       },
@@ -64,8 +78,23 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
     setConfiguration(newItems);
   };
 
+  const handleMutation = ({ body }) => {
+    if (questId) {
+      return updateQuest({
+        variables: {
+          input: body,
+          questId,
+        },
+      });
+    }
+
+    createQuest({
+      variables: {
+        input: body,
+      },
+    });
+  };
   const handleSave = (status = null) => {
-    console.log('yo');
     if (!questSettings.isActive && !isSaving) {
       return setIsSaving(true);
     }
@@ -115,11 +144,7 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
         return [...acc, step];
       }, []),
     };
-    createQuest({
-      variables: {
-        input: body,
-      },
-    });
+    handleMutation({ body });
   };
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
@@ -133,7 +158,7 @@ const CreateTemplate = ({ setRefValue, displaySavePanel }) => {
         maxWidth={600}
         footerLeft={
           <SharedSecondaryButton
-            reverse
+            $reverse
             onClick={() => handleSave(QUEST_STATUSES.ARCHIVED)}
           >
             No, keep inactive

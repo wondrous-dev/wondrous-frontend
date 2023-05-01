@@ -87,6 +87,7 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
     }, []);
     setConfiguration(newConfiguration);
   };
+  
   return (
     <Grid
       display='flex'
@@ -120,6 +121,7 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
             >
               {configuration?.map((item, idx) => {
                 const Component = CONFIG_COMPONENTS[item.type];
+                if(!Component) return null;
                 return (
                   <Draggable key={idx} draggableId={`${idx}`} index={idx}>
                     {(provided, snapshot) => (

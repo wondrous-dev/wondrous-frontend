@@ -25,3 +25,12 @@ export const ADD_ORG_LEVEL_REWARD = gql`
     }
   }
 `;
+
+export const UPDATE_QUEST = gql`
+  mutation updateQuest($questId: ID!, $input: QuestInput) {
+    updateQuest(questId: $questId, input: $input) {
+      ...QuestFragment
+    }
+  }
+  ${QuestFragment}
+`;

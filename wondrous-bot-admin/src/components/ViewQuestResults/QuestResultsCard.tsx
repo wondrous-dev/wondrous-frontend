@@ -27,13 +27,14 @@ const QuestResultsCard = ({ submission }) => {
         flexDirection='column'
       >
         {submission?.rewards?.map((reward, idx) => (
-          <StyledViewQuestResults isReward>
+          <StyledViewQuestResults $isReward key={idx}>
             {reward.value} {reward.type}
           </StyledViewQuestResults>
         ))}
         {submission?.stepsInfo?.map((step, idx) => (
           <Grid
             display='flex'
+            key={`step-${idx}`}
             flexDirection='column'
             gap='8px'
             alignItems='flex-start'

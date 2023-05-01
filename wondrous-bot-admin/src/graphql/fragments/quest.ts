@@ -24,6 +24,16 @@ export const QuestFragment = gql`
         questId
       }
     }
+    steps {
+      type
+      order
+      prompt
+      options {
+        position
+        text
+        correct
+      }
+    }
     # id: ID!
     # createdAt: String
     # createdBy: String

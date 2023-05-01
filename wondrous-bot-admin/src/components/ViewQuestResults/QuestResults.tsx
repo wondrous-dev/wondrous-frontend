@@ -144,7 +144,7 @@ const QuestResults = ({ submissions = SUBMISSIONS_MOCK, stats = STATS }) => {
           <FilterPill
             type='button'
             key={stat.value}
-            isActive={stat.value === filter}
+            $isActive={stat.value === filter}
             onClick={() => handleFilterChange(stat.value)}
           >
             {stat.count} {stat.label}
@@ -152,7 +152,7 @@ const QuestResults = ({ submissions = SUBMISSIONS_MOCK, stats = STATS }) => {
         ))}
       </Grid>
       {submissions?.map((submission, idx) => (
-        <QuestResultsCard submission={submission} />
+        <QuestResultsCard submission={submission} key={idx}/>
       ))}
     </Grid>
   );

@@ -42,3 +42,69 @@ export const GET_ORG_LEVEL_REWARDS = gql`
     }
   }
 `;
+export const GET_ORG_QUEST_STATS = gql`
+  query getOrgQuestStats($orgId: ID!) {
+    getOrgQuestStats(orgId: $orgId) {
+      totalMembers
+      totalQuests
+      totalSubmissions
+    }
+  }
+`;
+
+export const GET_COMMUNITY_USERS_FOR_ORG = gql`
+  query getCmtyUsersForOrg($input: OrgIdInput!) {
+    getCmtyUsersForOrg(input: $input) {
+      id
+      createdAt
+      point
+      level
+      username
+      twitterInfo {
+        twitterUsername
+      }
+      discordUsername
+      discordId
+      discordDiscriminator
+    }
+  }
+`;
+
+export const GET_SUBMISSIONS_FOR_QUEST = gql`
+  query getSubmissionsForQuest($questId: ID!) {
+    getQuestSubmissions(questId: $questId) {
+      id
+      createdAt
+      orgId
+      approvedAt
+      rejectedAt
+      reviewedBy
+      media {
+        slug
+        name
+        type
+        muxAssetId
+        muxPlaybackId
+        videoProcessingStatus
+      }
+      stepsData {
+        stepId
+        order
+        content
+        selectedValues
+        attachments {
+          slug
+          name
+          type
+          muxAssetId
+          muxPlaybackId
+          videoProcessingStatus
+        }
+        additionalData {
+          txHash
+          tweetId
+        }
+      }
+    }
+  }
+`;

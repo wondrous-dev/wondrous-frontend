@@ -1,37 +1,54 @@
+import { useQuery } from '@apollo/client';
 import { Grid } from '@mui/material';
 import PageHeader from 'components/PageHeader';
 import TableComponent from 'components/TableComponent';
-import { pinkColors } from 'utils/theme/colors';
+import { GET_COMMUNITY_USERS_FOR_ORG } from 'graphql/queries';
+import { useContext, useMemo } from 'react';
+import { LIMIT } from 'utils/constants';
+import GlobalContext from 'utils/context/GlobalContext';
 
 const MembersPage = () => {
-  const data = [
-    {
-      id: 1,
-      name: {
-        component: 'label',
-        value: 'John Doe',
-      },
-      level: {
-        component: 'hexagon',
-        value: 1,
-      },
-      discord: {
-        component: 'discord',
-        value: 'JohnDoe#1234',
-      },
-      twitter: {
-        component: 'twitter',
-        value: '@JohnDoe',
-      },
-      xp: {
-        component: 'label',
-        value: 10,
-        componentProps: {
-          fontWeight: 500,
-        },
+  const { activeOrg } = useContext(GlobalContext);
+  const { data, fetchMore, refetch } = useQuery(GET_COMMUNITY_USERS_FOR_ORG, {
+    variables: {
+      input: {
+        orgId: activeOrg?.id,
+        limit: LIMIT,
+        offset: 0,
       },
     },
-  ];
+  });
+
+  const tableConfig = useMemo(() => {
+    return data?.getCmtyUsersForOrg?.map((user) => {
+      return {
+        id: user.id,
+        name: {
+          component: 'label',
+          value: user?.username || 'N/A',
+        },
+        level: {
+          component: 'hexagon',
+          value: user?.level,
+        },
+        discord: {
+          component: 'discord',
+          value: user?.discordUsername || 'N/A',
+        },
+        twitter: {
+          component: 'twitter',
+          value: user.twitterInfo?.twitterUsername || 'N/A',
+        },
+        xp: {
+          component: 'label',
+          value: user.point,
+          componentProps: {
+            fontWeight: 500,
+          },
+        },
+      };
+    });
+  }, [data]);
 
   const headers = ['Name', 'Level', 'Discord', 'Twitter', 'XP'];
   return (
@@ -43,8 +60,7 @@ const MembersPage = () => {
           backgroundImage: 'url(/images/members-bg.png)',
           backgroundPosition: 'top',
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover'
-  
+          backgroundSize: 'cover',
         }}
         container
         direction='column'
@@ -54,7 +70,7 @@ const MembersPage = () => {
           sm: '24px 56px',
         }}
       >
-        <TableComponent data={data} headers={headers} />
+        <TableComponent data={tableConfig} headers={headers} />
       </Grid>
     </>
   );

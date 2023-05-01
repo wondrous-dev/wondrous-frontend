@@ -136,7 +136,7 @@ const AvatarEditor = ({
       onClose={onCancel}
       maxWidth={600}
       footerLeft={
-        <SharedSecondaryButton reverse onClick={onCancel}>
+        <SharedSecondaryButton $reverse onClick={onCancel}>
           Cancel
         </SharedSecondaryButton>
       }

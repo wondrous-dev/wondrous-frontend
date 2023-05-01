@@ -19,6 +19,7 @@ export const CONFIG = [
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
   [TYPES.MULTI_QUIZ]: QuizComponent,
+  [TYPES.SINGLE_QUIZ]: QuizComponent,
   [TYPES.NUMBER]: TextComponent,
   [TYPES.ATTACHMENTS]: TextComponent,
 };
@@ -127,3 +128,5 @@ export const QUEST_STATUSES = {
   OPEN: 'open',
   MAX: 'max'
 }
+
+export const LIMIT = 10;
