@@ -64,7 +64,7 @@ const WalletConnectPage = () => {
 				wonderWeb3.address,
 				SupportedChainType.ETH
 			)
-			console.log("messageToSign", messageToSign)
+
 			if (messageToSign) {
 				const signedMessage = await wonderWeb3.signMessage(messageToSign)
 				if (signedMessageIsString(signedMessage)) {
