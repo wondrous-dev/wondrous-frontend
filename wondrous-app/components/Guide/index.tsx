@@ -60,7 +60,6 @@ export default function OnboardingGuide({ children }) {
 
   if (!guide?.id) return <>{children}</>;
 
-  if (!user) return null;
   return (
     <TourProvider
       afterOpen={disableBody}
