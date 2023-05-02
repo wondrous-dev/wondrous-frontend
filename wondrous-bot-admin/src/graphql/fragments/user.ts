@@ -84,8 +84,8 @@ export const SmallUserFragment = gql`
 	}
 `
 
-export const CtmyUserFragment = gql`
-	fragment CtmyUserFragment on CmtyUser {
+export const CmtyUserFragment = gql`
+	fragment CmtyUserFragment on CmtyUser {
 		id
 		createdAt
 		bio
