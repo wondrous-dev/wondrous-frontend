@@ -125,7 +125,7 @@ const CreateTemplate = ({
       steps: configuration.reduce((acc, next, index) => {
         const step: any = {
           type: next.type,
-          order: index,
+          order: index + 1,
           prompt: next.value?.question || next.value,
         };
         if (next.type === TYPES.MULTI_QUIZ) {
