@@ -1,6 +1,7 @@
 export {
-  LoggedinUserFragment,
-  LoggedinWaitlistUserFragment,
-  ProfileUserFragment,
-  SmallUserFragment,
-} from './user';
+	LoggedinUserFragment,
+	LoggedinWaitlistUserFragment,
+	ProfileUserFragment,
+	SmallUserFragment,
+	CmtyUserFragment
+} from "./user"

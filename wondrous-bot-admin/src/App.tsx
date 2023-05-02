@@ -23,6 +23,7 @@ import { ApolloProvider } from "@apollo/client"
 import { SnackbarAlertProvider } from "components/SnackbarAlert"
 import { WonderWeb3Provider } from "utils/context/WonderWeb3Context"
 import SettingsPage from "pages/settings"
+import WalletConnectPage from "pages/wallet/connect"
 
 const router = createBrowserRouter([
 	{
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
 			{
 				path: "/twitter/callback",
 				element: <TwitterCallbackPage />
+			},
+			{
+				path: "/wallet/connect",
+				element: <WalletConnectPage />
 			}
 		]
 	}

@@ -90,7 +90,8 @@ export const PAGES_WITHOUT_HEADER = [
 	"/signup",
 	"/forgot-password",
 	"/reset-password",
-	"/twitter/callback"
+	"/twitter/callback",
+	"/wallet/connect"
 ]
 
 export const BG_TYPES = {
