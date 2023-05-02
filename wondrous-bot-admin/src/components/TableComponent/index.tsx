@@ -85,12 +85,12 @@ const TableComponent = ({ headers, data }) => {
                       </Box>
                     ) : null}
                     {column.component === 'discord' ? (
-                      <IconWrapper>
+                      <IconWrapper onClick={() => window.open(column.value)}> 
                         <WhiteBgDiscord />
                       </IconWrapper>
                     ) : null}
                     {column.component === 'twitter' ? (
-                      <IconWrapper>
+                      <IconWrapper onClick={() => window.open(column.value)}>
                         <Twitter
                           sx={{
                             color: 'white',

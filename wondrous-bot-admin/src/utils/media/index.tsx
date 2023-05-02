@@ -87,3 +87,11 @@ export const handleImageFile = ({ file, id }) => {
   const imageFile = `tmp/${id}/${filename}`;
   return { filename: imageFile, fileType, file };
 };
+
+export const transformMediaFormat = (media) =>
+  media &&
+  media.map((item) => ({
+    uploadSlug: item?.slug,
+    type: item?.type,
+    name: item?.name,
+  }));

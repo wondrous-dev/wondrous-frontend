@@ -1,10 +1,147 @@
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { Label } from 'components/QuestsList/styles';
 import AccordionComponent from 'components/Shared/Accordion';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { StyledLinkButton, StyledViewQuestResults } from './styles';
+import {
+  StyledContent,
+  StyledLinkButton,
+  StyledViewQuestResults,
+} from './styles';
+import { useMemo } from 'react';
+import { SharedSecondaryButton } from 'components/Shared/styles';
+import { TYPES } from 'utils/constants';
+import SubmissionMedia from 'components/Shared/SubmissionMedia';
+import { useMutation } from '@apollo/client';
+import { APPROVE_SUBMISSION, REJECT_SUBMISSION } from 'graphql/mutations';
+
+/*
+
+  steps -> steps details from the quest ( type, order, prompt )
+  stepsData -> steps details from the submission
+  since stepsData doesn't contain the step type, we need to get it from steps
+*/
+const stepsNormalizr = (steps, stepsData) => {
+  return stepsData?.map((stepData, idx) => {
+    // normally it's the same as index, this is just a safety measure
+    const step = steps.find((i) => i.order === stepData.order);
+    return {
+      ...stepData,
+      type: step?.type,
+      prompt: step?.prompt,
+    };
+  });
+};
+
+const TEXT_TYPES = [TYPES.TEXT_FIELD, TYPES.NUMBER];
+
+const SELECT_TYPES = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ];
+
+const StepContent = ({ content, selectedValues, type, attachments }) => {
+  if (TEXT_TYPES.includes(type)) {
+    return (
+      <StyledContent
+        fontFamily='Poppins'
+        fontWeight={500}
+        fontSize='14px'
+        lineHeight='24px'
+        color='#767676'
+      >
+        {content}
+      </StyledContent>
+    );
+  }
+
+  if (SELECT_TYPES.includes(type)) {
+    return (
+      <Grid display='flex' gap='6px' alignItems='center'>
+        {selectedValues?.map((value, idx) => (
+          <StyledContent>{value}</StyledContent>
+        ))}
+      </Grid>
+    );
+  }
+  if (type === TYPES.ATTACHMENTS) {
+    return <SubmissionMedia media={attachments} />;
+  }
+  return null;
+};
+
+const StatusComponent = ({
+  approvedAt,
+  rejectedAt,
+  handleApprove,
+  handleReject,
+}) => {
+  if (approvedAt) {
+    return (
+      <Label
+        color='#00A343'
+        fontFamily='Poppins'
+        fontWeight={500}
+        fontSize='12px'
+        lineHeight='16px'
+      >
+        Approved
+      </Label>
+    );
+  }
+  if (rejectedAt) {
+    return (
+      <Label
+        color='#FF0000'
+        fontFamily='Poppins'
+        fontWeight={500}
+        fontSize='12px'
+        lineHeight='16px'
+      >
+        Rejected
+      </Label>
+    );
+  }
+  return (
+    <Box display='flex' gap='6px'>
+      <SharedSecondaryButton
+        borderRadius='6px'
+        $reverse
+        color='#ff0000'
+        onClick={handleReject}
+      >
+        Reject
+      </SharedSecondaryButton>
+      <SharedSecondaryButton borderRadius='6px' onClick={handleApprove}>
+        Approve
+      </SharedSecondaryButton>
+    </Box>
+  );
+};
 
 const QuestResultsCard = ({ submission }) => {
+  const steps = useMemo(() => {
+    return stepsNormalizr(submission?.steps, submission?.stepsData);
+  }, [submission?.steps, submission?.stepsData]);
+
+  const [approveQuestSubmission] = useMutation(APPROVE_SUBMISSION, {
+    refetchQueries: ['getQuestSubmissions'],
+  });
+
+  const [rejectQuestSubmission] = useMutation(REJECT_SUBMISSION, {
+    refetchQueries: ['getQuestSubmissions'],
+  });
+
+  const handleApprove = () =>
+    approveQuestSubmission({
+      variables: {
+        questSubmissionId: submission?.id,
+      },
+    });
+
+  const handleReject = () =>
+    rejectQuestSubmission({
+      variables: {
+        questSubmissionId: submission?.id,
+      },
+    });
+
   return (
     <AccordionComponent
       renderTitle={() => (
@@ -26,12 +163,27 @@ const QuestResultsCard = ({ submission }) => {
         display='flex'
         flexDirection='column'
       >
+        {/* 
+        TODO: Uncomment when we have multiple rewards per quest
         {submission?.rewards?.map((reward, idx) => (
           <StyledViewQuestResults $isReward key={idx}>
             {reward.value} {reward.type}
           </StyledViewQuestResults>
-        ))}
-        {submission?.stepsInfo?.map((step, idx) => (
+        ))} */}
+        <Grid display='flex' justifyContent='space-between'>
+          <StyledViewQuestResults $isReward>
+            Points: {submission?.pointReward}
+            {/* {reward.value} {reward.type} */}
+          </StyledViewQuestResults>
+          <StatusComponent
+            handleApprove={handleApprove}
+            handleReject={handleReject}
+            approvedAt={submission?.approvedAt}
+            rejectedAt={submission?.rejectedAt}
+          />
+        </Grid>
+
+        {steps?.map((step, idx) => (
           <Grid
             display='flex'
             key={`step-${idx}`}
@@ -48,10 +200,16 @@ const QuestResultsCard = ({ submission }) => {
               fontWeight={500}
               fontSize='14px'
               lineHeight='24px'
-              color='#767676'
+              color='black'
             >
-              {step.value}
+              {step.prompt}
             </Typography>
+            <StepContent
+              content={step.content}
+              selectedValues={step.selectedValues}
+              type={step.type}
+              attachments={step.attachments}
+            />
           </Grid>
         ))}
         <Grid display='flex' gap='24px' alignItems='center'>
@@ -64,7 +222,6 @@ const QuestResultsCard = ({ submission }) => {
             >
               <StyledLinkButton>
                 <AttachFileIcon
-                
                   sx={{
                     fontSize: '18px',
                     color: 'white',

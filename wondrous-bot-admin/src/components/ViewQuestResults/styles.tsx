@@ -1,4 +1,4 @@
-import { ButtonBase } from '@mui/material';
+import { ButtonBase, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import styled from 'styled-components';
 
@@ -56,5 +56,16 @@ export const StyledLinkButton = styled(ButtonBase)`
     align-items: center;
     background: #f8642d;
     border-radius: 6px;
+  }
+`;
+
+export const StyledContent = styled(Typography)`
+  && {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    color: #767676;
   }
 `;

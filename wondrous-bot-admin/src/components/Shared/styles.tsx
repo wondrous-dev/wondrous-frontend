@@ -141,7 +141,7 @@ export const SharedSecondaryButton = styled(ButtonBase)`
     font-size: 15px;
     line-height: 150%;
     white-space: nowrap;
-    color: #0c002d;
+    color: ${({ color = '#0c002d' }) => color};
     &:disabled {
       opacity: 0.5;
     }

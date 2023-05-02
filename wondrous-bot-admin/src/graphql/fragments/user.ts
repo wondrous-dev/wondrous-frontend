@@ -83,3 +83,24 @@ export const SmallUserFragment = gql`
     thumbnailPicture
   }
 `;
+
+export const CtmyUserFragment = gql`
+  fragment CtmyUserFragment on CmtyUser {
+    id
+    createdAt
+    bio
+    profilePicture
+    thumbnailPicture
+    web3Address
+    web3AddressType
+    discordId
+    discordUsername
+    discordDiscriminator
+    point
+    level
+    username
+    twitterInfo {
+      twitterUsername
+    }
+  }
+`;

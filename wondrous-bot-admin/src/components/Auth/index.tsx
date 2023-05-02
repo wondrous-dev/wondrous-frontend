@@ -13,21 +13,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const MyContext = React.createContext(null);
-const EXCLUDED_PATHS = [
-  '/invite/org/[token]',
-  '/invite/pod/[token]',
-  '/invite/[token]',
-  '/organization/[username]/boards',
-  '/organization/[username]/home',
-  '/login',
-  '/discord/callback',
-  '/onboarding/welcome',
-  '/explore',
-  '/404',
-  '/invite/collab/[token]',
-  '/invite/collab/members/[token]',
-  '/task/[taskId]/nft',
-];
+const EXCLUDED_PATHS = ['/login'];
 
 export const useMe = () => useContext(MyContext);
 

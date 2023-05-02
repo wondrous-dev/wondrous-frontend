@@ -108,6 +108,7 @@ export default function useWonderWeb3(): WonderWeb3 {
       setConnecting(false);
       return signedMessage;
     } catch (error) {
+      
       console.log('Error signing message ', error);
       // Error Signed message
       setConnecting(false);

@@ -21,11 +21,12 @@ const MembersPage = () => {
 
   const tableConfig = useMemo(() => {
     return data?.getCmtyUsersForOrg?.map((user) => {
+      const userDiscord = `${user?.discordUsername}#${user?.discordDiscriminator}`;
       return {
         id: user.id,
         name: {
           component: 'label',
-          value: user?.username || 'N/A',
+          value: user?.username || userDiscord || 'N/A',
         },
         level: {
           component: 'hexagon',
@@ -33,11 +34,13 @@ const MembersPage = () => {
         },
         discord: {
           component: 'discord',
-          value: user?.discordUsername || 'N/A',
+          value: `https://discordapp.com/users/${user?.discordId}` || 'N/A',
         },
         twitter: {
           component: 'twitter',
-          value: user.twitterInfo?.twitterUsername || 'N/A',
+          value:
+            `https://twitter.com/${user?.twitterInfo?.twitterUsername}` ||
+            'N/A',
         },
         xp: {
           component: 'label',

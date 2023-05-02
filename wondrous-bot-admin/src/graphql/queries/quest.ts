@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import { QuestFragment } from 'graphql/fragments/quest';
+import { CtmyUserFragment } from 'graphql/fragments/user';
 
 export const GET_QUESTS_FOR_ORG = gql`
   query getQuestsForOrg($input: OrgQuestQueryInput) {
@@ -55,30 +56,25 @@ export const GET_ORG_QUEST_STATS = gql`
 export const GET_COMMUNITY_USERS_FOR_ORG = gql`
   query getCmtyUsersForOrg($input: OrgIdInput!) {
     getCmtyUsersForOrg(input: $input) {
-      id
-      createdAt
-      point
-      level
-      username
-      twitterInfo {
-        twitterUsername
-      }
-      discordUsername
-      discordId
-      discordDiscriminator
+      ...CtmyUserFragment
     }
   }
+  ${CtmyUserFragment}
 `;
 
 export const GET_SUBMISSIONS_FOR_QUEST = gql`
-  query getSubmissionsForQuest($questId: ID!) {
-    getQuestSubmissions(questId: $questId) {
+  query getQuestSubmissions($questId: ID!, $status: String, $limit: Int, $offset: Int) {
+    getQuestSubmissions(questId: $questId, status: $status, limit: $limit, offset: $offset) {
       id
       createdAt
       orgId
       approvedAt
       rejectedAt
       reviewedBy
+      createdBy
+      creator {
+        ...CtmyUserFragment
+      }
       media {
         slug
         name
@@ -105,6 +101,18 @@ export const GET_SUBMISSIONS_FOR_QUEST = gql`
           tweetId
         }
       }
+    }
+  }
+  ${CtmyUserFragment}
+`;
+
+
+export const GET_QUEST_SUBMISSION_STATS = gql`
+  query getQuestSubmissionStats($questId: ID!) {
+    getQuestSubmissionStats(questId: $questId) {
+      in_review
+      approved
+      rejected
     }
   }
 `;

@@ -6,7 +6,12 @@ import {
 } from 'components/CreateTemplate/CampaignOverview';
 import PanelComponent from 'components/CreateTemplate/PanelComponent';
 import PageWrapper from 'components/Shared/PageWrapper';
-import { GET_QUESTS_FOR_ORG, GET_QUEST_BY_ID, GET_SUBMISSIONS_FOR_QUEST } from 'graphql/queries';
+import {
+  GET_QUESTS_FOR_ORG,
+  GET_QUEST_BY_ID,
+  GET_QUEST_SUBMISSION_STATS,
+  GET_SUBMISSIONS_FOR_QUEST,
+} from 'graphql/queries';
 import { GET_ORG_DISCORD_ROLES } from 'graphql/queries/discord';
 import moment from 'moment';
 import { useContext, useEffect, useMemo, useState } from 'react';
@@ -15,12 +20,12 @@ import { getTextForCondition } from 'utils/common';
 
 import {
   BG_TYPES,
+  LIMIT,
   MONTH_DAY_FULL_YEAR,
   QUEST_CONDITION_TYPES,
+  QUEST_SUBMISSION_STATUS,
 } from 'utils/constants';
 import GlobalContext from 'utils/context/GlobalContext';
-import { useDiscordRoles } from 'utils/discord';
-import { pinkColors } from 'utils/theme/colors';
 import QuestResults from './QuestResults';
 import ViewCampaignOverview from './ViewCampaignOverview';
 
@@ -28,14 +33,60 @@ const ViewQuestResults = ({ quest }) => {
   const { activeOrg } = useContext(GlobalContext);
   const [conditionName, setConditionName] = useState(null);
 
-  const {data: submissionsData} = useQuery(GET_SUBMISSIONS_FOR_QUEST, {
+  const [hasMore, setHasMore] = useState(true);
+  const [filter, setFilter] = useState(QUEST_SUBMISSION_STATUS.IN_REVIEW);
+
+  const {
+    data: submissionsData,
+    refetch,
+    fetchMore,
+  } = useQuery(GET_SUBMISSIONS_FOR_QUEST, {
+    variables: {
+      questId: quest?.id,
+      status: filter,
+      limit: LIMIT,
+      offset: 0,
+    },
+    skip: !quest?.id || !filter,
+  });
+
+  const handleFetchMore = () => {
+    const currentLength = submissionsData?.getQuestSubmissions?.length;
+    if (!hasMore || !currentLength) return;
+    if (currentLength < LIMIT) {
+      setHasMore(false);
+      return;
+    }
+    fetchMore({
       variables: {
         questId: quest?.id,
+        status: filter,
+        offset: submissionsData?.getQuestSubmissions?.length,
+        limit: LIMIT,
       },
-      skip: !quest?.id,
-  })
+    }).then(({ data }) => {
+      if (data?.getQuestSubmissions?.length <= LIMIT) {
+        setHasMore(false);
+      }
+    });
+  };
+  const { data: submissionStats } = useQuery(GET_QUEST_SUBMISSION_STATS, {
+    variables: {
+      questId: quest?.id,
+    },
+    skip: !quest?.id,
+  });
 
-  console.log(submissionsData?.getQuestSubmissions, "QUEST SUBS")
+  const handleFilterChange = (value) => {
+    if (filter === value) return;
+
+    refetch({
+      questId: quest?.id,
+      status: value,
+    });
+    setFilter(value);
+  };
+
   const timeboundDate = useMemo(() => {
     const startDate = moment(quest?.startDate).format(MONTH_DAY_FULL_YEAR);
     const endDate = moment(quest?.endDate).format(MONTH_DAY_FULL_YEAR);
@@ -90,6 +141,18 @@ const ViewQuestResults = ({ quest }) => {
     return null;
   }
 
+  const submissions = submissionsData?.getQuestSubmissions?.map(
+    (submission) => ({
+      user:
+        submission?.creator?.username || submission?.creator?.discordUsername,
+      pointReward: quest?.pointReward,
+      stepsData: submission?.stepsData,
+      steps: quest?.steps,
+      id: submission?.id,
+      approvedAt: submission?.approvedAt,
+      rejectedAt: submission?.rejectedAt,
+    })
+  );
 
   const questSettings = [
     {
@@ -114,10 +177,11 @@ const ViewQuestResults = ({ quest }) => {
     },
     {
       label: 'Condition',
-      value: getTextForCondition({
-        type: quest?.conditions?.[0]?.type,
-        name: conditionName,
-      }) || 'No Condition',
+      value:
+        getTextForCondition({
+          type: quest?.conditions?.[0]?.type,
+          name: conditionName,
+        }) || 'No Condition',
       type: 'text',
     },
     {
@@ -174,7 +238,14 @@ const ViewQuestResults = ({ quest }) => {
           alignItems='center'
           width='100%'
         >
-          <QuestResults />
+          <QuestResults
+            submissions={submissions}
+            stats={submissionStats?.getQuestSubmissionStats}
+            handleFilterChange={handleFilterChange}
+            filter={filter}
+            fetchMore={handleFetchMore}
+            hasMore={hasMore}
+          />
         </Grid>
       </Grid>
     </PageWrapper>

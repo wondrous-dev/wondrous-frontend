@@ -34,3 +34,19 @@ export const UPDATE_QUEST = gql`
   }
   ${QuestFragment}
 `;
+
+export const APPROVE_SUBMISSION = gql`
+  mutation approveQuestSubmission($questSubmissionId: ID!) {
+    approveQuestSubmission(questSubmissionId: $questSubmissionId) {
+      id
+    }
+  }
+`;
+
+export const REJECT_SUBMISSION = gql`
+  mutation rejectQuestSubmission($questSubmissionId: ID!) {
+    rejectQuestSubmission(questSubmissionId: $questSubmissionId) {
+      id
+    }
+  }
+`;

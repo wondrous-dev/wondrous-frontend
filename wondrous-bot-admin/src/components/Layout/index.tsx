@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { Box, Grid, Typography } from '@mui/material';
+import { useMe, withAuth } from 'components/Auth';
 import ErrorCatcher from 'components/ErrorCatcher';
 import Navbar from 'components/Navbar';
 import PageSpinner from 'components/PageSpinner';
@@ -50,6 +51,7 @@ const Layout = () => {
   const location = useLocation();
   const [activeOrg, setActiveOrg] = useState(null);
 
+  const user = useMe()
   const isPageWithoutHeader = PAGES_WITHOUT_HEADER.includes(location.pathname);
 
   const { data: userOrgs, loading } = useQuery(
@@ -89,4 +91,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default withAuth(Layout);
