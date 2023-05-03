@@ -90,6 +90,7 @@ export const PAGES_WITHOUT_HEADER = [
   '/signup',
   '/forgot-password',
   '/reset-password',
+  '/twitter/callback',
 ];
 
 export const BG_TYPES = {
@@ -120,15 +121,15 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
 };
 
 export const QUEST_CONDITION_TYPES = {
-    DISCORD_ROLE: 'discord_role',
-    QUEST: 'quest',
-}
+  DISCORD_ROLE: 'discord_role',
+  QUEST: 'quest',
+};
 export const QUEST_STATUSES = {
   ARCHIVED: 'archived',
   OPEN: 'open',
   MAX: 'max',
   INACTIVE: 'inactive',
-}
+};
 
 export const LIMIT = 10;
 
@@ -136,4 +137,4 @@ export const QUEST_SUBMISSION_STATUS = {
   IN_REVIEW: 'in_review',
   APPROVED: 'approved',
   REJECTED: 'rejected',
-}
+};
