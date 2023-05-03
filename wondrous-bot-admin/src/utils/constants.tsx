@@ -126,7 +126,8 @@ export const QUEST_CONDITION_TYPES = {
 export const QUEST_STATUSES = {
   ARCHIVED: 'archived',
   OPEN: 'open',
-  MAX: 'max'
+  MAX: 'max',
+  INACTIVE: 'inactive',
 }
 
 export const LIMIT = 10;

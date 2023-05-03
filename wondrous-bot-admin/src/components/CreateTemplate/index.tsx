@@ -116,7 +116,7 @@ const CreateTemplate = ({
       conditionLogic: 'and',
       questConditions,
       status:
-        status || isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.ARCHIVED,
+        status || isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE,
       startAt: startAt ? startAt.toISOString() : null,
       endAt: endAt ? endAt.toISOString() : null,
       pointReward: questSettings.rewards[0].value,
@@ -159,7 +159,7 @@ const CreateTemplate = ({
         footerLeft={
           <SharedSecondaryButton
             $reverse
-            onClick={() => handleSave(QUEST_STATUSES.ARCHIVED)}
+            onClick={() => handleSave(QUEST_STATUSES.INACTIVE)}
           >
             No, keep inactive
           </SharedSecondaryButton>
