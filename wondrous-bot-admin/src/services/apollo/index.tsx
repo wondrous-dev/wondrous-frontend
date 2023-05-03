@@ -52,7 +52,6 @@ const cache = new InMemoryCache({
         users(existingData, { args, toReference }) {
           return existingData || toReference({ __typename: 'User', ...args });
         },
-        getQuestSubmissions: offsetLimitPagination()
       },
     },
   },
