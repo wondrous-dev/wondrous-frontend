@@ -29,7 +29,6 @@ function SetupWallet() {
   const linkUserWithWallet = useCallback(async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       const messageToSign = await getUserSigningMessage(wonderWeb3.address, SupportedChainType.ETH);
-
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
         if (signedMessageIsString(signedMessage)) {

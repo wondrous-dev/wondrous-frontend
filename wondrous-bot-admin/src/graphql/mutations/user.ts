@@ -1,5 +1,9 @@
 import { gql } from "@apollo/client"
-import { LoggedinUserFragment, ProfileUserFragment } from "graphql/fragments"
+import {
+	LoggedinUserFragment,
+	ProfileUserFragment,
+	CmtyUserFragment
+} from "graphql/fragments"
 
 export const LOGIN_MUTATION = gql`
 	mutation emailSignin($email: String!, $password: String!) {
@@ -158,6 +162,32 @@ export const VERIFY_COMMUNITY_USER_TWITTER = gql`
 	mutation verifyCommunityUserTwitter($code: String, $discordId: String) {
 		verifyCommunityUserTwitter(code: $code, discordId: $discordId) {
 			success
+		}
+	}
+`
+
+export const CONNECT_COMMUNITY_USER_WALLET = gql`
+	mutation connectCmtyUserWallet($input: CmtyWeb3AuthInput!) {
+		connectCmtyUserWallet(input: $input) {
+			...CmtyUserFragment
+		}
+	}
+	${CmtyUserFragment}
+`
+
+export const GET_COMMUNITY_USER_SIGNING_MESSAGE = gql`
+	mutation getCmtyUserSigningMessage(
+		$discordUserId: String!
+		$web3Address: String!
+		$blockchain: String!
+	) {
+		getCmtyUserSigningMessage(
+			discordUserId: $discordUserId
+			web3Address: $web3Address
+			blockchain: $blockchain
+		) {
+			userExists
+			signingMessage
 		}
 	}
 `
