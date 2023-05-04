@@ -86,12 +86,13 @@ export const GRAPHQL_ERRORS = {
 };
 
 export const PAGES_WITHOUT_HEADER = [
-  '/login',
-  '/signup',
-  '/forgot-password',
-  '/reset-password',
-  '/twitter/callback',
-];
+	"/login",
+	"/signup",
+	"/forgot-password",
+	"/reset-password",
+	"/twitter/callback",
+	"/wallet/connect"
+]
 
 export const BG_TYPES = {
   DEFAULT: 'default',
