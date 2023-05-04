@@ -3,7 +3,6 @@ import { CircularProgress, Typography } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import {
 	CONNECT_COMMUNITY_USER_WALLET,
-	GET_COMMUNITY_USER_SIGNING_MESSAGE,
 	VERIFY_COMMUNITY_USER_TWITTER
 } from "graphql/mutations"
 import { useCallback, useEffect, useState } from "react"
@@ -24,30 +23,11 @@ const buttonStyles = {
 	marginRight: "8px"
 }
 
-export const getCmtyUserSigningMessage = async (
-	discordUserId: string,
-	web3Address: string,
-	blockchain: string,
-	includeUserExistsCheck?: boolean
-) => {
-	try {
-		const { data } = await apollo.mutate({
-			mutation: GET_COMMUNITY_USER_SIGNING_MESSAGE,
-			variables: {
-				discordUserId,
-				web3Address,
-				blockchain
-			}
-		})
+function getFormattedDate() {
+    var date = new Date();
+    var str = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " +  date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 
-		if (includeUserExistsCheck) {
-			return data.getCmtyUserSigningMessage
-		}
-		return data.getCmtyUserSigningMessage.signingMessage
-	} catch (e) {
-		console.log("error retrieving nonce", e)
-		return false
-	}
+    return str;
 }
 
 const WalletConnectPage = () => {
@@ -59,12 +39,10 @@ const WalletConnectPage = () => {
 
 	const linkUserWithWallet = useCallback(async () => {
 		if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
-			const messageToSign = await getCmtyUserSigningMessage(
-				discordUserId,
-				wonderWeb3.address,
-				SupportedChainType.ETH
-			)
+			// get current timestamp
+			const timestamp = Date.now().toString()
 
+			const messageToSign = `Welcome to wonder\nDate: ${getFormattedDate()}\nTimestamp: ${Date.now().toString()}`
 			if (messageToSign) {
 				const signedMessage = await wonderWeb3.signMessage(messageToSign)
 				if (signedMessageIsString(signedMessage)) {
@@ -72,7 +50,8 @@ const WalletConnectPage = () => {
 						discordUserId,
 						wonderWeb3.address,
 						signedMessage,
-						SupportedChainType.ETH
+						SupportedChainType.ETH,
+						messageToSign
 					)
 					if (result === true) {
 						setConnectionComplete(true)

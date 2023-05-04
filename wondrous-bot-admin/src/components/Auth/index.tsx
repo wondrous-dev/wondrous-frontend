@@ -212,7 +212,8 @@ export const linkCmtyUserWallet = async (
 	discordUserId: string,
 	web3Address: string,
 	signedMessage: string,
-	blockchain: string
+	blockchain: string,
+	originalMessage: string
 ) => {
 	try {
 		const {
@@ -224,7 +225,8 @@ export const linkCmtyUserWallet = async (
 					discordUserId,
 					web3Address,
 					signedMessage,
-					blockchain
+					blockchain,
+					originalMessage
 				}
 			}
 		})

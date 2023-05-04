@@ -174,20 +174,3 @@ export const CONNECT_COMMUNITY_USER_WALLET = gql`
 	}
 	${CmtyUserFragment}
 `
-
-export const GET_COMMUNITY_USER_SIGNING_MESSAGE = gql`
-	mutation getCmtyUserSigningMessage(
-		$discordUserId: String!
-		$web3Address: String!
-		$blockchain: String!
-	) {
-		getCmtyUserSigningMessage(
-			discordUserId: $discordUserId
-			web3Address: $web3Address
-			blockchain: $blockchain
-		) {
-			userExists
-			signingMessage
-		}
-	}
-`
