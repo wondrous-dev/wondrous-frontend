@@ -48,11 +48,13 @@ const CreateTemplate = ({
     onCompleted: ({ createQuest }) => {
       navigate(`/quests/${createQuest.id}`);
     },
+    refetchQueries: ['getQuestsForOrg']
   });
   const [updateQuest] = useMutation(UPDATE_QUEST, {
     onCompleted: ({ updateQuest }) => {
       navigate(`/quests/${updateQuest.id}`);
     },
+    refetchQueries: ['getQuestsForOrg']
   });
 
   const { activeOrg } = useContext(GlobalContext);

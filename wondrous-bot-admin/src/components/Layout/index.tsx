@@ -47,12 +47,20 @@ const DefaultFallback = () => {
     </Grid>
   );
 };
+
+const LOCAL_STORAGE_ORG_ID_KEY = 'default-org-id';
 const Layout = () => {
+  const defaultActiveOrgId = localStorage.getItem(LOCAL_STORAGE_ORG_ID_KEY);
   const location = useLocation();
   const [activeOrg, setActiveOrg] = useState(null);
 
-  const user = useMe()
+  const user = useMe();
   const isPageWithoutHeader = PAGES_WITHOUT_HEADER.includes(location.pathname);
+
+  const handleActiveOrg = (org) => {
+    localStorage.setItem(LOCAL_STORAGE_ORG_ID_KEY, org?.id);
+    setActiveOrg(org);
+  };
 
   const { data: userOrgs, loading } = useQuery(
     GET_LOGGED_IN_USER_FULL_ACCESS_ORGS,
@@ -63,7 +71,17 @@ const Layout = () => {
         excludeSharedOrgs: true,
       },
       onCompleted: ({ getLoggedInUserFullAccessOrgs }) => {
-        setActiveOrg(getLoggedInUserFullAccessOrgs[0]);
+        if (defaultActiveOrgId) {
+          const org = getLoggedInUserFullAccessOrgs.find(
+            (org) => org.id === defaultActiveOrgId
+          );
+          if (org) {
+            handleActiveOrg(org);
+            return;
+          }
+        }
+        const newActiveOrg = getLoggedInUserFullAccessOrgs[0];
+        handleActiveOrg(newActiveOrg);
       },
     }
   );
@@ -75,15 +93,13 @@ const Layout = () => {
     <GlobalContext.Provider
       value={{
         activeOrg,
-        setActiveOrg,
+        setActiveOrg: handleActiveOrg,
         userOrgs: userOrgs?.getLoggedInUserFullAccessOrgs || [],
       }}
     >
       {isPageWithoutHeader ? null : <Navbar />}
       <Main $isPageWithoutHeader={isPageWithoutHeader}>
-        <ErrorCatcher
-          fallback={({ reset }) => <DefaultFallback />}
-        >
+        <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
           <Outlet />
         </ErrorCatcher>
       </Main>

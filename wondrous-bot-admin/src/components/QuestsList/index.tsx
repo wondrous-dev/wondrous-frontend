@@ -47,8 +47,6 @@ const QuestsList = ({data}) => {
     orgId: activeOrg?.id,
   });
 
-
-
   const formattedData = useMemo(() => {
     if (!data) {
       return [];
