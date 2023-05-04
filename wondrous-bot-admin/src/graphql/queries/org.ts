@@ -1,15 +1,16 @@
 import { gql } from '@apollo/client';
 
-export const GET_LOGGED_IN_USER_FULL_ACCESS_ORGS = gql`
-  query getLoggedInUserFullAccessOrgs {
-    getLoggedInUserFullAccessOrgs {
+export const GET_CMTY_ORG_DISCORD_CONFIG = gql`
+  query getCmtyOrgDiscordConfig($orgId: ID!) {
+    getCmtyOrgDiscordConfig(orgId: $orgId) {
       id
-      username
-      name
-      profilePicture
-      thumbnailPicture
-      privacyLevel
-      shared
+      createdAt
+      orgId
+      guildId
+      guildInfo {
+        guildId
+        guildName
+      }
     }
   }
 `;
