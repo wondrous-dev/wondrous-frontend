@@ -24,6 +24,7 @@ import { SnackbarAlertProvider } from "components/SnackbarAlert"
 import { WonderWeb3Provider } from "utils/context/WonderWeb3Context"
 import SettingsPage from "pages/settings"
 import WalletConnectPage from "pages/wallet/connect"
+import OnboardingPage from "pages/onboarding"
 
 const router = createBrowserRouter([
 	{
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
 			{
 				path: "/login",
 				element: <LoginPage />
+			},
+			{
+				path: '/onboarding',
+				element: <OnboardingPage />
 			},
 			{
 				path: "/settings/*",

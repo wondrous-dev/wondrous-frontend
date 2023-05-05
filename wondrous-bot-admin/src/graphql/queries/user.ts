@@ -45,8 +45,8 @@ export const GET_USER_SIGNING_MESSAGE = gql`
 
 
 export const GET_LOGGED_IN_USER_FULL_ACCESS_ORGS = gql`
-  query getLoggedInUserFullAccessOrgs {
-    getLoggedInUserFullAccessOrgs {
+  query getLoggedInUserFullAccessOrgs($cmtyEnabled: Boolean, $excludeSharedOrgs:Boolean ) {
+    getLoggedInUserFullAccessOrgs(cmtyEnabled: $cmtyEnabled, excludeSharedOrgs: $excludeSharedOrgs) {
       id
       username
       name

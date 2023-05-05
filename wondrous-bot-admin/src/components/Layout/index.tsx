@@ -69,6 +69,7 @@ const Layout = () => {
       notifyOnNetworkStatusChange: true,
       variables: {
         excludeSharedOrgs: true,
+        cmtyEnabled: true,
       },
       onCompleted: ({ getLoggedInUserFullAccessOrgs }) => {
         if (defaultActiveOrgId) {

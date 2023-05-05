@@ -17,7 +17,7 @@ export const handleUserOnboardingRedirect = (
 ) => {
   if (userOrError === 'Incorrect Email and Password combination') return;
 
-  return navigate('/');
+  return navigate('/onboarding');
 };
 
 
