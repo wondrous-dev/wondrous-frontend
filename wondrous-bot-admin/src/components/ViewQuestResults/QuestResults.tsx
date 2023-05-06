@@ -1,7 +1,8 @@
 import { Box, Grid, Typography } from '@mui/material';
+import EmptyState from 'components/EmptyState';
 import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { QUEST_SUBMISSION_STATUS } from 'utils/constants';
+import { EMPTY_STATE_TYPES, QUEST_SUBMISSION_STATUS } from 'utils/constants';
 import QuestResultsCard from './QuestResultsCard';
 import { FilterPill } from './styles';
 
@@ -11,19 +12,15 @@ const QuestResults = ({
   filter,
   handleFilterChange,
   fetchMore,
-  hasMore
+  hasMore,
 }) => {
-
-
   const { ref, inView, entry } = useInView();
-
-
 
   useEffect(() => {
     if (inView && hasMore) {
       fetchMore();
     }
-  }, [inView, hasMore, fetchMore])
+  }, [inView, hasMore, fetchMore]);
 
   const filters = {
     [QUEST_SUBMISSION_STATUS.IN_REVIEW]: {
@@ -50,7 +47,6 @@ const QuestResults = ({
     [stats]
   );
 
-  
   return (
     <Grid
       display='flex'
@@ -81,10 +77,14 @@ const QuestResults = ({
           </FilterPill>
         ))}
       </Grid>
-      <Box ref={ref} width="100%">
-      {submissions?.map((submission, idx) => (
-        <QuestResultsCard submission={submission} key={idx} />
-      ))}
+      <Box ref={ref} width='100%'>
+        {submissions?.length ? (
+          submissions?.map((submission, idx) => (
+            <QuestResultsCard submission={submission} key={idx} />
+          ))
+        ) : (
+          <EmptyState type={EMPTY_STATE_TYPES.SUBMISSIONS} />
+        )}
       </Box>
     </Grid>
   );

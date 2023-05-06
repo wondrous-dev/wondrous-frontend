@@ -139,3 +139,8 @@ export const QUEST_SUBMISSION_STATUS = {
   APPROVED: 'approved',
   REJECTED: 'rejected',
 };
+
+export const EMPTY_STATE_TYPES = {
+  SUBMISSIONS: 'submissions',
+  MEMBERS: 'members',
+}
