@@ -25,6 +25,7 @@ import { WonderWeb3Provider } from "utils/context/WonderWeb3Context"
 import SettingsPage from "pages/settings"
 import WalletConnectPage from "pages/wallet/connect"
 import OnboardingPage from "pages/onboarding"
+import DiscordOrgCallbackPage from "pages/discord/callback/org-connect"
 
 const router = createBrowserRouter([
 	{
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
 			{
 				path: "/wallet/connect",
 				element: <WalletConnectPage />
+			},
+			{
+				path: "/discord/callback/org-connect",
+				element: <DiscordOrgCallbackPage />
 			}
 		]
 	}

@@ -21,14 +21,6 @@ export const LoggedinUserFragment = gql`
 		lastCompletedGuide
 		projectGuideComplete
 		mainBannerClosedAt
-		links {
-			url
-			displayName
-			type
-		}
-		checkIsGr15Contributor {
-			isGr15Contributor
-		}
 	}
 `
 
@@ -62,13 +54,6 @@ export const ProfileUserFragment = gql`
 			discordUsername
 			discordDiscriminator
 			twitterUsername
-		}
-		additionalInfo {
-			orgCount
-			podCount
-		}
-		checkIsGr15Contributor {
-			isGr15Contributor
 		}
 	}
 `

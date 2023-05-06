@@ -54,6 +54,7 @@ export const GET_LOGGED_IN_USER_FULL_ACCESS_ORGS = gql`
       thumbnailPicture
       privacyLevel
       shared
+      cmtyEnabled
     }
   }
 `;

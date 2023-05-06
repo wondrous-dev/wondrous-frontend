@@ -8,7 +8,6 @@ import GlobalContext from 'utils/context/GlobalContext';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CONNECT_DISCORD_TO_CMTY_ORG } from 'graphql/mutations';
 import { SharedSecondaryButton } from 'components/Shared/styles';
-import { GET_ORG_DISCORD_ROLES } from 'graphql/queries/discord';
 import { Label } from 'components/CreateTemplate/styles';
 
 const ChooseOrg = ({ handleClick, userOrgs, shouldBeVisible }) =>
@@ -94,98 +93,69 @@ const EnableConnect = ({
     </Grid>
   ) : null;
 
-const PickGuild = ({ guilds, shouldBeVisible, setSelectedGuildId }) => {
-  return (
-    <>
-      {shouldBeVisible ? (
-        <Grid display='flex' flexDirection='column' gap='10px' width='10)%'>
-          <Typography
-            fontFamily='Poppins'
-            fontWeight={600}
-            fontSize='14px'
-            color='#06040A'
-          >
-            Choose guild
-          </Typography>
-          <Grid display='flex' flexWrap='wrap' gap='6px'>
-            {guilds?.map((guild, idx) => (
-              <ButtonBase
-                key={guild?.guildInfo?.guildName}
-                onClick={() => {
-                  setSelectedGuildId(guild?.guildId);
-                }}
-                sx={{
-                  cursor: 'pointer',
-                  background: 'white',
-                  display: 'flex',
-                  gap: '6px',
-                  alignItems: 'center',
-                  padding: '8px',
-                  borderRadius: '6px',
-                  '&:hover': {
-                    background: '#F8AFDB',
-                  },
-                }}
-              >
-                <img
-                  src='/images/discord-official-logo.png'
-                  height='18px'
-                  width='18px'
-                  style={{
-                    borderRadius: '300px',
-                  }}
-                />
+// const PickGuild = ({ guilds, shouldBeVisible, setSelectedGuildId }) => {
+//   return (
+//     <>
+//       {shouldBeVisible ? (
+//         <Grid display='flex' flexDirection='column' gap='10px' width='10)%'>
+//           <Typography
+//             fontFamily='Poppins'
+//             fontWeight={600}
+//             fontSize='14px'
+//             color='#06040A'
+//           >
+//             Choose guild
+//           </Typography>
+//           <Grid display='flex' flexWrap='wrap' gap='6px'>
+//             {guilds?.map((guild, idx) => (
+//               <ButtonBase
+//                 key={guild?.guildInfo?.guildName}
+//                 onClick={() => {
+//                   setSelectedGuildId(guild?.guildId);
+//                 }}
+//                 sx={{
+//                   cursor: 'pointer',
+//                   background: 'white',
+//                   display: 'flex',
+//                   gap: '6px',
+//                   alignItems: 'center',
+//                   padding: '8px',
+//                   borderRadius: '6px',
+//                   '&:hover': {
+//                     background: '#F8AFDB',
+//                   },
+//                 }}
+//               >
+//                 <img
+//                   src='/images/discord-official-logo.png'
+//                   height='18px'
+//                   width='18px'
+//                   style={{
+//                     borderRadius: '300px',
+//                   }}
+//                 />
 
-                <Label color='black'>{guild?.guildInfo?.guildName}</Label>
-              </ButtonBase>
-            ))}
-          </Grid>
-        </Grid>
-      ) : null}
-    </>
-  );
-};
+//                 <Label color='black'>{guild?.guildInfo?.guildName}</Label>
+//               </ButtonBase>
+//             ))}
+//           </Grid>
+//         </Grid>
+//       ) : null}
+//     </>
+//   );
+// };
 
 const OnboardingPage = () => {
   const { userOrgs, setActiveOrg } = useContext(GlobalContext);
 
   const [cmtyOrgToEnable, setCmtyOrgToEnable] = useState(null);
-  const [getOrgDiscordConfig] = useLazyQuery(GET_CMTY_ORG_DISCORD_CONFIG);
-  const [selectedGuildId, setSelectedGuildId] = useState(null);
-  const [connectDiscordToCmtyOrg] = useMutation(CONNECT_DISCORD_TO_CMTY_ORG);
-  const [getOrgDiscordRoles, { data: discordRolesData }] = useLazyQuery(
-    GET_ORG_DISCORD_ROLES
-  );
   const navigate = useNavigate();
 
   const isOneOrgOnly = userOrgs?.length === 1;
 
   const handleOrgSelect = async (e, org) => {
-    try {
-      const data = await getOrgDiscordConfig({ variables: { orgId: org.id } });
-      if (!data?.data?.getCmtyOrgDiscordConfig) {
-        try {
-          const discordRolesData = await getOrgDiscordRoles({
-            variables: { orgId: org?.id },
-          });
-
-          if (discordRolesData?.data?.getOrgDiscordRoles?.length === 1) {
-            setSelectedGuildId(
-              discordRolesData?.data?.getOrgDiscordRoles[0]?.id
-            );
-            return setCmtyOrgToEnable(org);
-          }
-        } catch (error) {
-          console.log(error, 'ERROR');
-        }
-
-        return setCmtyOrgToEnable(org);
-      } else {
-        setActiveOrg(org);
-        return navigate('/');
-      }
-    } catch (error) {
-      console.log(error, 'ERROR');
+    if (org.cmtyEnabled) {
+      return navigate('/');
     }
   };
 
@@ -196,22 +166,11 @@ const OnboardingPage = () => {
   }, [isOneOrgOnly]);
 
   const handleClickOnCmtyEnable = async (e) => {
-    const data = await connectDiscordToCmtyOrg({
-      variables: {
-        orgId: cmtyOrgToEnable?.id,
-
-        guildId: selectedGuildId,
-      },
-    });
-
-    if (data?.data?.connectDiscordToCmtyOrg) {
       setActiveOrg(cmtyOrgToEnable);
       return navigate('/');
-    }
   };
 
   const handleGoBack = () => {
-    setSelectedGuildId(null);
     if (isOneOrgOnly) {
       return;
     }
@@ -224,11 +183,11 @@ const OnboardingPage = () => {
       title={`${
         cmtyOrgToEnable
           ? `Enable ${cmtyOrgToEnable?.name}`
-          : 'Enable community orgs'
+          : 'Select Community!'
       }`}
     >
       <ChooseOrg
-        shouldBeVisible={!cmtyOrgToEnable && !selectedGuildId && !isOneOrgOnly}
+        shouldBeVisible={!cmtyOrgToEnable  && !isOneOrgOnly}
         handleClick={handleOrgSelect}
         userOrgs={userOrgs}
       />
@@ -236,14 +195,8 @@ const OnboardingPage = () => {
         cmtyOrgToEnable={cmtyOrgToEnable}
         setCmtyOrgToEnable={setCmtyOrgToEnable}
         handleClickOnCmtyEnable={handleClickOnCmtyEnable}
-        shouldBeVisible={cmtyOrgToEnable && selectedGuildId}
+        shouldBeVisible={cmtyOrgToEnable}
         handleGoBack={handleGoBack}
-      />
-
-      <PickGuild
-        shouldBeVisible={cmtyOrgToEnable && !selectedGuildId}
-        setSelectedGuildId={setSelectedGuildId}
-        guilds={discordRolesData?.getOrgDiscordRoles}
       />
     </Modal>
   );
