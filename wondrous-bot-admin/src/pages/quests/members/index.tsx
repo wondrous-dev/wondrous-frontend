@@ -1,10 +1,11 @@
 import { useQuery } from '@apollo/client';
 import { Grid } from '@mui/material';
+import EmptyState from 'components/EmptyState';
 import PageHeader from 'components/PageHeader';
 import TableComponent from 'components/TableComponent';
 import { GET_COMMUNITY_USERS_FOR_ORG } from 'graphql/queries';
 import { useContext, useMemo } from 'react';
-import { LIMIT } from 'utils/constants';
+import { EMPTY_STATE_TYPES, LIMIT } from 'utils/constants';
 import GlobalContext from 'utils/context/GlobalContext';
 
 const MembersPage = () => {
@@ -73,7 +74,11 @@ const MembersPage = () => {
           sm: '24px 56px',
         }}
       >
-        <TableComponent data={tableConfig} headers={headers} />
+        {data?.getCmtyUsersForOrg?.length ? (
+          <TableComponent data={tableConfig} headers={headers} />
+        ) : (
+          <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
+        )}
       </Grid>
     </>
   );
