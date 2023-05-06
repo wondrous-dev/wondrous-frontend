@@ -127,7 +127,7 @@ const HomePage = () => {
           {activeOrg?.name}
         </Typography>
         <Typography
-          fontFamily='Space Grotesk'
+          fontFamily='Poppins'
           fontWeight={600}
           fontSize='14px'
           lineHeight='14px'

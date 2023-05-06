@@ -229,7 +229,7 @@ const QuestResultsCard = ({ submission }) => {
                 />
               </StyledLinkButton>
               <Typography
-                fontFamily='Space Grotesk'
+                fontFamily='Poppins'
                 fontWeight={500}
                 fontSize='14px'
                 color='#000000'

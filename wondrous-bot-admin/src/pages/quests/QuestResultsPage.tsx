@@ -90,7 +90,6 @@ const QuestResultsPage = () => {
                 <SharedSecondaryButton
                   onClick={async () => {
                     await headerActionsRef.current?.handleSave();
-                    toggleEdit();
                   }}
                 >
                   Save Quest
@@ -116,6 +115,7 @@ const QuestResultsPage = () => {
           displaySavePanel={!inView}
           defaultQuestSettings={questSettings}
           questId={id}
+          postUpdate={toggleEdit}
           defaultQuestSteps={questSteps}
         />
       ) : (

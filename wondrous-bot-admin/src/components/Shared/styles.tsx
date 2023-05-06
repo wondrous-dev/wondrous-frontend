@@ -114,6 +114,7 @@ export const StyledTextFieldSelect = styled(TextField)`
 
     .MuiInputBase-input {
       padding: 6px 6px 6px 10px;
+      font-family: 'Poppins';
     }
     .MuiOutlinedInput-notchedOutline {
       border: none;
@@ -135,7 +136,7 @@ export const SharedSecondaryButton = styled(ButtonBase)`
     width: ${({ width = 'auto' }) => width};
     background: ${({ background }) => background || '#84bcff'};
     border-radius: ${({ borderRadius = '35px' }) => borderRadius};
-    font-family: 'Space Grotesk';
+    font-family: 'Poppins';
     font-style: normal;
     font-weight: 600;
     font-size: 15px;
