@@ -41,20 +41,21 @@ const CreateTemplate = ({
   displaySavePanel,
   defaultQuestSettings = DEFAULT_STATE_VALUE,
   questId = null,
-  defaultQuestSteps = []
+  defaultQuestSteps = [],
+  postUpdate = null,
 }) => {
   const navigate = useNavigate();
   const [createQuest] = useMutation(CREATE_QUEST, {
     onCompleted: ({ createQuest }) => {
       navigate(`/quests/${createQuest.id}`);
     },
-    refetchQueries: ['getQuestsForOrg']
+    refetchQueries: ['getQuestsForOrg'],
   });
   const [updateQuest] = useMutation(UPDATE_QUEST, {
     onCompleted: ({ updateQuest }) => {
-      navigate(`/quests/${updateQuest.id}`);
+      postUpdate?.();
     },
-    refetchQueries: ['getQuestsForOrg']
+    refetchQueries: ['getQuestsForOrg'],
   });
 
   const { activeOrg } = useContext(GlobalContext);
@@ -118,7 +119,7 @@ const CreateTemplate = ({
       conditionLogic: 'and',
       questConditions,
       status:
-        status || isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE,
+        status || (isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE),
       startAt: startAt ? startAt.toISOString() : null,
       endAt: endAt ? endAt.toISOString() : null,
       pointReward: questSettings.rewards[0].value,
@@ -261,7 +262,7 @@ const CreateTemplate = ({
               </RoundedSecondaryButton>
               <Typography
                 color='black'
-                fontFamily='Space Grotesk'
+                fontFamily='Poppins'
                 fontWeight={600}
                 fontSize='15px'
                 lineHeight='15px'
@@ -282,7 +283,7 @@ const CreateTemplate = ({
                 borderRadius='16px'
                 border='1px solid #000212'
               >
-                <SharedSecondaryButton onClick={handleSave}>
+                <SharedSecondaryButton onClick={() => handleSave()}>
                   Save Quest
                 </SharedSecondaryButton>
               </Grid>

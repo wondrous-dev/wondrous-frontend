@@ -162,7 +162,7 @@ const ViewQuestResults = ({ quest }) => {
     },
     {
       label: 'Level Requirement',
-      value: quest?.level,
+      value: quest?.level || 'No Level Requirement',
       type: 'text',
     },
     {
