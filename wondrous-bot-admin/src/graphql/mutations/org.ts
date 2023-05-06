@@ -12,8 +12,8 @@ export const UPDATE_ORG = gql`
 
 
 export const CONNECT_DISCORD_TO_CMTY_ORG = gql`
-  mutation connectDiscordToCmtyOrg($orgId: ID!, $guildId: String!) {
-    connectDiscordToCmtyOrg(orgId: $orgId, guildId: $guildId) {
+  mutation connectDiscordToCmtyOrg($orgId: ID!, $guildId: String!, $code: String) {
+    connectDiscordToCmtyOrg(orgId: $orgId, guildId: $guildId, code: $code) {
       success
     }
   }

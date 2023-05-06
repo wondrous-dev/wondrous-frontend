@@ -1,50 +1,50 @@
-import { Box, ButtonBase, Grid, Typography } from '@mui/material';
-import Modal from 'components/Shared/Modal';
-import { OrgProfilePicture } from 'components/Shared/ProjectProfilePicture';
-import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { GET_CMTY_ORG_DISCORD_CONFIG } from 'graphql/queries';
-import GlobalContext from 'utils/context/GlobalContext';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { CONNECT_DISCORD_TO_CMTY_ORG } from 'graphql/mutations';
-import { SharedSecondaryButton } from 'components/Shared/styles';
-import { Label } from 'components/CreateTemplate/styles';
+import { Box, ButtonBase, Grid, Typography } from "@mui/material";
+import Modal from "components/Shared/Modal";
+import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { GET_LOGGED_IN_USER_FULL_ACCESS_ORGS } from "graphql/queries";
+import GlobalContext from "utils/context/GlobalContext";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { UPDATE_ORG } from "graphql/mutations";
+import { SharedSecondaryButton } from "components/Shared/styles";
+import { Label } from "components/CreateTemplate/styles";
 
 const ChooseOrg = ({ handleClick, userOrgs, shouldBeVisible }) =>
   shouldBeVisible ? (
-    <Grid display='flex' gap='10px' alignItems='center' flexWrap='wrap'>
+    <Grid display="flex" gap="10px" alignItems="center" flexWrap="wrap">
       {userOrgs?.map((org, idx) => (
         <ButtonBase onClick={(e) => handleClick(e, org)}>
           <Grid
             key={idx}
-            display='flex'
-            padding='10px'
-            flex='1 1 30%'
-            height='100px'
-            flexDirection='column'
-            alignItems='center'
-            justifyContent='center'
+            display="flex"
+            padding="10px"
+            flex="1 1 30%"
+            height="100px"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
             sx={{
-              cursor: 'pointer',
-              '&:hover': {
-                border: '1px solid black',
-                borderRadius: '10px',
+              cursor: "pointer",
+              "&:hover": {
+                border: "1px solid black",
+                borderRadius: "10px",
               },
             }}
           >
             <OrgProfilePicture
               profilePicture={org?.profilePicture}
               style={{
-                width: '100px',
-                height: '100px',
+                width: "100px",
+                height: "100px",
               }}
             />
 
             <Typography
-              fontFamily='Poppins'
+              fontFamily="Poppins"
               fontWeight={600}
-              fontSize='14px'
-              color='#06040A'
+              fontSize="14px"
+              color="#06040A"
             >
               {org?.name}
             </Typography>
@@ -62,16 +62,16 @@ const EnableConnect = ({
   handleGoBack,
 }) =>
   shouldBeVisible ? (
-    <Grid display='flex' flexDirection='column' gap='10px' width='10)%'>
+    <Grid display="flex" flexDirection="column" gap="10px" width="10)%">
       <Typography
-        fontFamily='Poppins'
+        fontFamily="Poppins"
         fontWeight={600}
-        fontSize='14px'
-        color='#06040A'
+        fontSize="14px"
+        color="#06040A"
       >
         Enable community bot for {cmtyOrgToEnable?.name}
       </Typography>
-      <Box display='flex' gap='10px' alignItems='center' width='100%'>
+      <Box display="flex" gap="10px" alignItems="center" width="100%">
         <SharedSecondaryButton
           sx={{
             flex: 1,
@@ -146,50 +146,81 @@ const EnableConnect = ({
 // };
 
 const OnboardingPage = () => {
+  // userOrgs are orgs with cmty_enabled
   const { userOrgs, setActiveOrg } = useContext(GlobalContext);
 
   const [cmtyOrgToEnable, setCmtyOrgToEnable] = useState(null);
+  const [allOrgs, setAllOrgs] = useState(null);
   const navigate = useNavigate();
 
-  const isOneOrgOnly = userOrgs?.length === 1;
+  const hasCmtyOrgs = userOrgs?.length > 0;
 
   const handleOrgSelect = async (e, org) => {
     if (org.cmtyEnabled) {
-      return navigate('/');
+      return navigate("/");
     }
+    setCmtyOrgToEnable(org);
   };
 
+  const [updateOrg] = useMutation(UPDATE_ORG, {});
+  const [getLoggedInUserFullAccessOrgs] = useLazyQuery(
+    GET_LOGGED_IN_USER_FULL_ACCESS_ORGS,
+    {
+      onCompleted: (data) => {
+        console.log(data?.getLoggedInUserFullAccessOrgs);
+        setAllOrgs(data?.getLoggedInUserFullAccessOrgs);
+      },
+    }
+  );
+
   useEffect(() => {
-    if (isOneOrgOnly) {
+    if (userOrgs && userOrgs.length === 0) {
+      getLoggedInUserFullAccessOrgs({
+        variables: {
+          excludeSharedOrgs: true,
+        },
+      });
+    }
+  }, [userOrgs]);
+
+  useEffect(() => {
+    if (hasCmtyOrgs) {
       handleOrgSelect(null, userOrgs[0]);
     }
-  }, [isOneOrgOnly]);
+  }, [hasCmtyOrgs]);
 
   const handleClickOnCmtyEnable = async (e) => {
+    updateOrg({
+      variables: {
+        orgId: cmtyOrgToEnable?.id,
+        input: {
+          cmtyEnabled: true,
+        }
+      },
+    }).then((res) => {
       setActiveOrg(cmtyOrgToEnable);
-      return navigate('/');
+      navigate("/");
+    });
   };
 
   const handleGoBack = () => {
-    if (isOneOrgOnly) {
-      return;
-    }
     return setCmtyOrgToEnable(null);
   };
+
   return (
     <Modal
       open
-      onClose={() => navigate('/')}
+      onClose={() => navigate("/")}
       title={`${
         cmtyOrgToEnable
           ? `Enable ${cmtyOrgToEnable?.name}`
-          : 'Select Community!'
+          : "Select Community!"
       }`}
     >
       <ChooseOrg
-        shouldBeVisible={!cmtyOrgToEnable  && !isOneOrgOnly}
+        shouldBeVisible={!cmtyOrgToEnable && !hasCmtyOrgs}
         handleClick={handleOrgSelect}
-        userOrgs={userOrgs}
+        userOrgs={allOrgs}
       />
       <EnableConnect
         cmtyOrgToEnable={cmtyOrgToEnable}
