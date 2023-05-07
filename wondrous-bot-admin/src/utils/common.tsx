@@ -36,10 +36,10 @@ export const getTextForCondition = (condition) => {
 
 export const getBaseUrl = () => {
   if (import.meta.env.PRODUCTION) {
-    return 'https://communities.wonderverse.xyz/discord/callback/org-connect';
+    return 'https://communities.wonderverse.xyz';
   }
   if (import.meta.env.STAGING) {
-    return 'https://wondrous-bot-admin-git-staging-wonderverse.vercel.app/discord/callback/org-connect';
+    return 'https://wondrous-bot-admin-git-staging-wonderverse.vercel.app';
   }
   return 'http://localhost:3000';
 };
