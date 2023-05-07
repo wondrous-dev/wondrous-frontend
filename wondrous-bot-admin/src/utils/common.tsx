@@ -32,3 +32,15 @@ export const getTextForCondition = (condition) => {
   }
   return text;
 };
+
+
+export const getBaseUrl = () => {
+  // for some reason i cant use import.meta
+  // if (import.meta.env.PRODUCTION) {
+  //   return ''; // TODO
+  // }
+  // if (import.meta.env.STAGING) {
+  //   return ''; // TODO
+  // }
+  return 'http://localhost:3000';
+};
