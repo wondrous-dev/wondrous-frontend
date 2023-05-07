@@ -6,7 +6,7 @@ const styles = {
   root: {
     px: 0.75,
     display: 'inline-block',
-    fontFamily: 'Space Grotesk',
+    fontFamily: 'Poppins',
     fontWeight: 400,
     fontSize: ' 12px',
     lineHeight: '19px',

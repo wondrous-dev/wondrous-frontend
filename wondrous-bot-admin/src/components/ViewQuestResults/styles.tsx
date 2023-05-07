@@ -32,7 +32,7 @@ export const FilterPill = styled(ButtonBase)`
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Space Grotesk';
+    font-family: 'Poppins';
     font-style: normal;
     font-weight: 700;
     font-size: 14px;

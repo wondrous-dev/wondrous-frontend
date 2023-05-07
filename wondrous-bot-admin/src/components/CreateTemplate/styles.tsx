@@ -23,7 +23,7 @@ export const CampaignOverviewTitle = styled(Typography)`
 
 export const Label = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: Poppins;
     font-style: normal;
     font-weight: 700;
     font-size: 14px;
