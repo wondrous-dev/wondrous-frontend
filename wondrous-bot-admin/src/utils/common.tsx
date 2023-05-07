@@ -35,12 +35,11 @@ export const getTextForCondition = (condition) => {
 
 
 export const getBaseUrl = () => {
-  // for some reason i cant use import.meta
-  // if (import.meta.env.PRODUCTION) {
-  //   return ''; // TODO
-  // }
-  // if (import.meta.env.STAGING) {
-  //   return ''; // TODO
-  // }
+  if (import.meta.env.PRODUCTION) {
+    return 'https://communities.wonderverse.xyz/discord/callback/org-connect';
+  }
+  if (import.meta.env.STAGING) {
+    return 'https://wondrous-bot-admin-git-staging-wonderverse.vercel.app/discord/callback/org-connect';
+  }
   return 'http://localhost:3000';
 };

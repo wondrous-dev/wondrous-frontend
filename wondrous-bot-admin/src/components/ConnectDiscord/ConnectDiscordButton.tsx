@@ -5,7 +5,7 @@ import { WhiteBgDiscord } from "components/Icons/Discord";
 const callbackURL = () =>
   encodeURIComponent(`${getBaseUrl()}/discord/callback/org-connect`);
 
-const DiscordClientID = "1103042974734098504";
+const DiscordClientID = process.env.VITE_VERCEL_DISCORD_CLIENT_ID;
 
 const getDiscordBotOauthURL = ({ orgId }: { orgId: string }) =>
   `https://discord.com/api/oauth2/authorize?client_id=${DiscordClientID}&permissions=8&scope=bot&response_type=code&state=${encodeURIComponent(
