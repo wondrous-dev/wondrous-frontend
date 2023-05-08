@@ -85,7 +85,7 @@ const ApplicationsInput = ({
                   name="task-applications-claim-roles"
                   value={claimPolicyRoles}
                   style={{ width: '100%', height: 'fit-content' }}
-                  onChange={(value) => setFieldValue(claimPolicyRoles ? [...claimPolicyRoles, value] : [value])}
+                  onChange={(value) => setRolesFieldValue(claimPolicyRoles ? [...claimPolicyRoles, value] : [value])}
                   renderValue={() => (
                     <CreateEntityApplicationsSelectRender>
                       {claimPolicyRoles?.map((role) => {
@@ -95,7 +95,9 @@ const ApplicationsInput = ({
                             key={role}
                             style={{ margin: '2px' }}
                             deleteIcon={<div>&times;</div>}
-                            onClick={() => setFieldValue(claimPolicyRoles?.filter((claimRole) => claimRole !== role))}
+                            onClick={() =>
+                              setRolesFieldValue(claimPolicyRoles?.filter((claimRole) => claimRole !== role))
+                            }
                             label={roleData?.name}
                             // background={option.color}
                             variant="outlined"
