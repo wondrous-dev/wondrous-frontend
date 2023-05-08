@@ -109,7 +109,7 @@ const ViewQuestResults = ({ quest }) => {
           orgId: activeOrg?.id,
         },
       });
-      const allRoles = data?.getOrgDiscordRoles
+      const allRoles = data?.getCmtyOrgDiscordRoles
         ?.map((role) => role.roles)
         .flat();
       return allRoles.find(
