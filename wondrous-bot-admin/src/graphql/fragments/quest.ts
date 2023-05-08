@@ -33,17 +33,6 @@ export const QuestFragment = gql`
 				text
 				correct
 			}
-			tweetHandle
-			additionalData {
-				discordChannelName
-				tweetHandle
-				tweetLink
-				tweetPhrase
-				snapshotProposalLink
-				snapshotSpaceLink
-				snapshotVoteTimes
-				discordMessageType
-			}
 		}
 		# id: ID!
 		# createdAt: String
