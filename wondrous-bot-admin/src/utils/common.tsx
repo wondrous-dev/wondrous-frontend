@@ -35,10 +35,10 @@ export const getTextForCondition = (condition) => {
 
 
 export const getBaseUrl = () => {
-  if (import.meta.env.PRODUCTION) {
+  if (import.meta.env.VITE_PRODUCTION) {
     return 'https://communities.wonderverse.xyz';
   }
-  if (import.meta.env.STAGING) {
+  if (import.meta.env.VITE_STAGING) {
     return 'https://wondrous-bot-admin-git-staging-wonderverse.vercel.app';
   }
   return 'http://localhost:3000';

@@ -17,6 +17,9 @@ export default defineConfig({
     'window.global': {},
     __APP_ENV__: process.env.VITE_VERCEL_ENV,
     VITE_GRAPHQL_SERVER_URL: process.env.VITE_GRAPHQL_SERVER_URL,
+    VITE_DISCORD_CLIENT_ID: process.env.VITE_DISCORD_CLIENT_ID,
+    VITE_PRODUCTION: process.env.VITE_PRODUCTION,
+    VITE_STAGING: process.env.VITE_STAGING,
   },
   resolve: {
     alias: {
