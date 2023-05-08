@@ -41,11 +41,23 @@ const FilterGroup = ({ condition, handleChange, options }) => {
       />
       <SelectComponent
         options={options || []}
-        onChange={(value) =>
+        onChange={(value) => {
+          //TODO : pls refactor me
+          let additionalParams: any = {};
+
+          const isDiscordCondition =
+            condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE;
+          if (isDiscordCondition) {
+            const discordGuildId = options.find(
+              (item) => item.value === value
+            )?.discordGuildId;
+            additionalParams.discordGuildId = discordGuildId;
+          }
           handleChange('conditionData', {
             [CONDITION_VALUES[condition.type]]: value,
-          })
-        }
+            ...additionalParams,
+          });
+        }}
         value={
           condition.value ||
           condition.conditionData?.[CONDITION_VALUES[condition.type]]
@@ -107,11 +119,20 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   const getOptionsForCondition = useCallback(
     (type) => {
       if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
-        const allRoles = roles.map((role) => role.roles).flat();
+        // TODO: quick and dirty, avoid nested loop
 
+        const allRoles = roles
+          .map((role) =>
+            role.roles.map((newRole) => ({
+              ...newRole,
+              discordGuildId: role.guildId,
+            }))
+          )
+          .flat();
         return allRoles?.map((role) => ({
           value: role.id,
           label: role.name,
+          discordGuildId: role.discordGuildId,
         }));
       }
 
@@ -152,7 +173,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
       questConditions: [],
     }));
     setIsOpen(false);
-  }
+  };
 
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent='onMouseDown'>
