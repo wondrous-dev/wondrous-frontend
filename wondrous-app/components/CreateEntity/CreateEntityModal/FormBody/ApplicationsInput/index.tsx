@@ -56,7 +56,7 @@ const ApplicationsInput = ({
                     value === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value ||
                     value === APPLICATION_POLICY.ROLES_CAN_CAN_APPLY.value
                   )
-                    setFieldValue([roles[0]?.id]);
+                    setRolesFieldValue([roles[0]?.id]);
                 }}
                 renderValue={() => {
                   const isRolesSelected =
