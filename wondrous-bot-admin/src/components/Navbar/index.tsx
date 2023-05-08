@@ -122,7 +122,7 @@ const Header = () => {
             },
             display: {
               xs: '',
-              sm: 'none',
+              md: 'none',
             },
           }}
         >

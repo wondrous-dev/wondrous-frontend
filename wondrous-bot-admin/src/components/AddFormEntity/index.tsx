@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import PanelComponent from 'components/CreateTemplate/PanelComponent';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Header } from './styles';
@@ -87,7 +87,7 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
     }, []);
     setConfiguration(newConfiguration);
   };
-  
+
   return (
     <Grid
       display='flex'
@@ -121,7 +121,7 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
             >
               {configuration?.map((item, idx) => {
                 const Component = CONFIG_COMPONENTS[item.type];
-                if(!Component) return null;
+                if (!Component) return null;
                 return (
                   <Draggable key={idx} draggableId={`${idx}`} index={idx}>
                     {(provided, snapshot) => (
@@ -159,14 +159,16 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
                                 >
                                   Step {idx + 1}
                                 </Typography>
-                                <SelectComponent
-                                  options={COMPONENT_OPTIONS}
-                                  background='#C1B6F6'
-                                  value={item.type}
-                                  onChange={(value) =>
-                                    handleChangeType(value, item.id)
-                                  }
-                                />
+                                <Box minWidth='150px'>
+                                  <SelectComponent
+                                    options={COMPONENT_OPTIONS}
+                                    background='#C1B6F6'
+                                    value={item.type}
+                                    onChange={(value) =>
+                                      handleChangeType(value, item.id)
+                                    }
+                                  />
+                                </Box>
                               </Grid>
                               <Grid
                                 display='flex'

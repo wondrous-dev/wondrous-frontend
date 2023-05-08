@@ -75,11 +75,13 @@ const QuestsPage = () => {
         withBackButton={false}
         renderActions={() => (
           <Box display="flex" gap="10px" width="100%">
+            <Box minWidth="150px">
             <SelectComponent onChange={handleChange} value={statuses}     
             options={SELECT_QUESTS_TYPE}
             background='#C1B6F6'
             
             />
+            </Box>
             <Box>
             <SharedSecondaryButton onClick={handleNavigationToNewQuest}>
             New Quest

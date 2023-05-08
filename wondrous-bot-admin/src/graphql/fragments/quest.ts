@@ -14,6 +14,7 @@ export const QuestFragment = gql`
 		endAt
 		maxSubmission
 		requireReview
+		submissionsCount
 		pointReward
 		conditionLogic
 		conditions {
