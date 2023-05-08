@@ -108,6 +108,7 @@ const QuestsList = ({data}) => {
                       bgcolor='#84bcff'
                       borderRadius='35px'
                       display='flex'
+                      padding="4px"
                       justifyContent='center'
                       alignItems='center'
                       flexDirection='column'
