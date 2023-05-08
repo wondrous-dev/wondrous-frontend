@@ -34,11 +34,14 @@ const FilterGroup = ({ condition, handleChange, options }) => {
   return (
     <Box display='flex' gap='6px' alignItems='center'>
       <Label>Where</Label>
+      <Box minWidth="150px">
       <SelectComponent
         options={CONDITION_MAP}
         onChange={(value) => handleChange('type', value)}
         value={condition.type}
       />
+      </Box>
+      <Box minWidth="150px">
       <SelectComponent
         options={options || []}
         onChange={(value) =>
@@ -51,6 +54,7 @@ const FilterGroup = ({ condition, handleChange, options }) => {
           condition.conditionData?.[CONDITION_VALUES[condition.type]]
         }
       />
+      </Box>
     </Box>
   );
 };

@@ -150,7 +150,7 @@ const QuizComponent = ({ onChange, value }) => {
                   </ButtonIconWrapper>
                 </Box>
                 {withCorrectAnswers ? (
-                  <Box>
+                  <Box minWidth="150px">
                     <SelectComponent
                       options={CORRECT_ANSWERS_OPTIONS}
                       value={

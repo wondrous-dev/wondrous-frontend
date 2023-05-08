@@ -33,7 +33,7 @@ const formatQuestsData = (LEVELS, data) => {
       xp: quest.pointReward,
       label: quest.title,
       id: quest.id,
-      completions: quest.maxSubmission,
+      completions: quest.submissionsCount || 0,
     });
   });
 
@@ -78,7 +78,7 @@ const QuestsList = ({data}) => {
             key={level}
             width='100%'
             flexDirection='column'
-            gap='18px'
+            gap='28px'
             justifyContent='flex-start'
             alignItems='flex-start'
           >

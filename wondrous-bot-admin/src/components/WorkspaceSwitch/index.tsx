@@ -67,17 +67,17 @@ const WorkspaceSwitch = () => {
       <Box 
       flex={{
         xs: 1,
-        sm: 'unset'
+        md: 'unset'
       }}
       display={{
         xs: 'flex',
-        sm: 'block'
+        md: 'block'
       }}
       justifyContent='flex-end'
       alignItems="center"
       marginRight={{
         xs: '10px',
-        sm: 'unset'
+        md: 'unset'
       }}
       >
         <WrenchButton ref={ref} onClick={togglePopper} />

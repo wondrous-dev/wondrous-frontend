@@ -289,7 +289,7 @@ const DateRangePicker = ({
                       <SharedSecondaryButton
                         disabled={!dateRange.startAt || !dateRange.endAt}
                         onClick={handleOnConfirm}
-                        color='purple'
+                        color='black'
                         width='fit-content'
                         height={28}
                         sx={{

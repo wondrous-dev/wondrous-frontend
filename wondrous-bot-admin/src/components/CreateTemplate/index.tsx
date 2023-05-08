@@ -111,13 +111,15 @@ const CreateTemplate = ({
       endAt,
       level,
     } = questSettings;
+
+    const filteredQuestConditions = questConditions?.filter(condition => condition.type && condition.conditionData) 
     const body = {
       title,
       orgId: activeOrg.id,
       requireReview,
       maxSubmission: maxSubmission ? parseInt(maxSubmission, 10) : null,
       conditionLogic: 'and',
-      questConditions,
+      questConditions: filteredQuestConditions?.length ? filteredQuestConditions : null,
       status:
         status || (isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE),
       startAt: startAt ? startAt.toISOString() : null,
@@ -206,7 +208,7 @@ const CreateTemplate = ({
           gap='24px'
           flexDirection={{
             xs: 'column',
-            sm: 'row',
+            lg: 'row',
           }}
         >
           <Box flexBasis='40%' display='flex' flexDirection='column' gap='24px'>

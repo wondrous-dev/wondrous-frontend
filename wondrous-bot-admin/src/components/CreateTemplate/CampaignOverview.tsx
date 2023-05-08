@@ -42,7 +42,6 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       value: key,
     }));
   }, [levels]);
-
   const CONFIG = [
     {
       label: 'Quest Title',
