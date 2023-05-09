@@ -1,5 +1,5 @@
 import { MediaLink } from './MediaLink';
-import React from 'react';
+import React, { useMemo } from 'react';
 import SafeImage from 'components/SafeImage';
 import {
   Filename,
@@ -7,6 +7,7 @@ import {
   MediaItemWrapper,
 } from './styles';
 import VideoPlayer from './VideoPlayer';
+import { extractFilename, isImage, isVideo } from 'utils/media';
 
 type MediaItemProps = {
   mediaItem: {
@@ -30,13 +31,22 @@ export function MediaItem({
   viewOnly,
   className,
 }: MediaItemProps) {
+  const slug = mediaItem?.uploadSlug || mediaItem?.slug;
+
+  const mediaTypeIsImage = isImage(slug, mediaItem?.type);
+  const mediaTypeIsVideo = isVideo(slug, mediaItem?.type);
+  const fileName = useMemo(
+    () => extractFilename(mediaItem?.name, slug),
+    [mediaItem?.name, slug]
+  );
+
   return (
     <MediaItemWrapper className={className}>
       <MediaLink media={mediaItem}>
         <MediaImageVideoTextWrapper>
-          {mediaItem?.type === 'image' && (
+          {mediaTypeIsImage && (
             <SafeImage
-              src={mediaItem?.uploadSlug || mediaItem?.slug}
+              src={slug}
               style={{
                 borderRadius: '4px',
                 position: 'relative',
@@ -47,14 +57,14 @@ export function MediaItem({
               alt='Media Item'
             />
           )}
-          {mediaItem?.type === 'video' && (
+          {mediaTypeIsVideo && (
             <VideoPlayer
-              src={mediaItem?.uploadSlug || mediaItem?.slug}
+              src={slug}
               name={mediaItem?.name}
               style={{ width: '10%', height: '10%' }}
             />
           )}
-          <Filename>{mediaItem?.name}</Filename>
+          <Filename>{fileName}</Filename>
         </MediaImageVideoTextWrapper>
       </MediaLink>
     </MediaItemWrapper>
