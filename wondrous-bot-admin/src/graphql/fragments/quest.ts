@@ -35,20 +35,5 @@ export const QuestFragment = gql`
 				correct
 			}
 		}
-		# id: ID!
-		# createdAt: String
-		# createdBy: String
-		# title: String
-		# description: String
-		# orgId: String
-		# status: String
-		# pointReward: Int
-		# conditionLogic: String
-		# media: [Media]
-
-		# org: Org
-		# creator: User
-		# conditions: [QuestCondition]
-		# steps: [QuestStep]
 	}
 `
