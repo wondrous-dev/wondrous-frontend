@@ -104,7 +104,6 @@ export const ButtonIconWrapper = styled(ButtonBase)`
 export const StyledTextFieldSelect = styled(TextField)`
   && {
     height: 40px;
-    min-width: 150px;
     max-width: 100%;
     width: 100%;
     display: flex;

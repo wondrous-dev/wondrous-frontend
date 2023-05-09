@@ -31,26 +31,46 @@ const CONDITION_VALUES = {
 };
 
 const FilterGroup = ({ condition, handleChange, options }) => {
+  const handleConditionDataChange = (value) => {
+    let additionalParams: any = {};
+
+    const isDiscordCondition =
+      condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE;
+
+    if (isDiscordCondition) {
+      const discordGuildId = options.find(
+        (item) => item.value === value
+      )?.discordGuildId;
+      additionalParams.discordGuildId = discordGuildId;
+    }
+    handleChange('conditionData', {
+      [CONDITION_VALUES[condition.type]]: value,
+      ...additionalParams,
+    });
+  };
   return (
     <Box display='flex' gap='6px' alignItems='center'>
       <Label>Where</Label>
-      <SelectComponent
-        options={CONDITION_MAP}
-        onChange={(value) => handleChange('type', value)}
-        value={condition.type}
-      />
-      <SelectComponent
-        options={options || []}
-        onChange={(value) =>
-          handleChange('conditionData', {
-            [CONDITION_VALUES[condition.type]]: value,
-          })
-        }
-        value={
-          condition.value ||
-          condition.conditionData?.[CONDITION_VALUES[condition.type]]
-        }
-      />
+      <Box minWidth='150px'>
+        <SelectComponent
+          options={CONDITION_MAP}
+          onChange={(value) => {
+            handleChange('type', value);
+            handleChange('conditionData', null);
+          }}
+          value={condition.type}
+        />
+      </Box>
+      <Box minWidth='150px'>
+        <SelectComponent
+          options={options || []}
+          onChange={handleConditionDataChange}
+          value={
+            condition.value ||
+            condition.conditionData?.[CONDITION_VALUES[condition.type]]
+          }
+        />
+      </Box>
     </Box>
   );
 };
@@ -107,11 +127,18 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   const getOptionsForCondition = useCallback(
     (type) => {
       if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
-        const allRoles = roles.map((role) => role.roles).flat();
-
+        const allRoles = roles
+          .map((role) =>
+            role.roles.map((newRole) => ({
+              ...newRole,
+              discordGuildId: role.guildId,
+            }))
+          )
+          .flat();
         return allRoles?.map((role) => ({
           value: role.id,
           label: role.name,
+          discordGuildId: role.discordGuildId,
         }));
       }
 
@@ -152,7 +179,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
       questConditions: [],
     }));
     setIsOpen(false);
-  }
+  };
 
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent='onMouseDown'>

@@ -50,6 +50,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       value: questSettings.title,
       componentProps: {
         multiline: false,
+        placeholder: 'Enter title'
       },
       key: 'title',
     },

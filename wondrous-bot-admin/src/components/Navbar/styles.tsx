@@ -18,7 +18,7 @@ export const HeaderBar = styled(AppBar)`
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
-    ${({ theme }) => theme.breakpoints.down('sm')} {
+    ${({ theme }) => theme.breakpoints.down('md')} {
       top: 0;
       right: 0;
       width: 100%;

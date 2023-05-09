@@ -88,8 +88,12 @@ const ViewQuestResults = ({ quest }) => {
   };
 
   const timeboundDate = useMemo(() => {
-    const startDate = moment(quest?.startDate).format(MONTH_DAY_FULL_YEAR);
-    const endDate = moment(quest?.endDate).format(MONTH_DAY_FULL_YEAR);
+    const startDate = quest?.startDate
+      ? moment(quest?.startDate).format(MONTH_DAY_FULL_YEAR)
+      : null;
+    const endDate = quest?.endDate
+      ? moment(quest?.endDate).format(MONTH_DAY_FULL_YEAR)
+      : null;
     if (!startDate && !endDate) {
       return 'No';
     }
@@ -162,7 +166,7 @@ const ViewQuestResults = ({ quest }) => {
     },
     {
       label: 'Level Requirement',
-      value: quest?.level || 'No Level Requirement',
+      value: quest?.level || 'None',
       type: 'text',
     },
     {
@@ -217,7 +221,7 @@ const ViewQuestResults = ({ quest }) => {
         gap='24px'
         flexDirection={{
           xs: 'column',
-          sm: 'row',
+          md: 'row',
         }}
       >
         <Box flexBasis='40%' display='flex' flexDirection='column' gap='24px'>
