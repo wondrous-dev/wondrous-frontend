@@ -77,7 +77,7 @@ const QuestResults = ({
           </FilterPill>
         ))}
       </Grid>
-      <Box ref={ref} width='100%'>
+      <Box ref={ref} width='100%' gap="14px" display="flex" alignItems="center" flexDirection="column">
         {submissions?.length ? (
           submissions?.map((submission, idx) => (
             <QuestResultsCard submission={submission} key={idx} />

@@ -121,11 +121,11 @@ const QuestResultsCard = ({ submission }) => {
   }, [submission?.steps, submission?.stepsData]);
 
   const [approveQuestSubmission] = useMutation(APPROVE_SUBMISSION, {
-    refetchQueries: ['getQuestSubmissions'],
+    refetchQueries: ['getQuestSubmissions', 'getQuestSubmissionStats'],
   });
 
   const [rejectQuestSubmission] = useMutation(REJECT_SUBMISSION, {
-    refetchQueries: ['getQuestSubmissions'],
+    refetchQueries: ['getQuestSubmissions', 'getQuestSubmissionStats'],
   });
 
   const handleApprove = () =>
