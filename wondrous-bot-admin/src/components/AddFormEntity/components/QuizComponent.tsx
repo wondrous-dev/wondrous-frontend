@@ -40,7 +40,7 @@ const getAttachmentTitle = (file) => {
 	return file.name
 }
 
-const QuizComponent = ({ onChange, value, stepData }) => {
+const QuizComponent = ({ onChange, value, stepType }) => {
 	const OPTIONS = [
 		{
 			label: "Multi Select",
