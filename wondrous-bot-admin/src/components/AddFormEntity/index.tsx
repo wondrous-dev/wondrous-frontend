@@ -53,6 +53,10 @@ const COMPONENT_OPTIONS = [
 		value: TYPES.RETWEET
 	},
 	{
+		label: "Tweet with a mention or hashtag",
+		value: TYPES.TWEET_WITH_PHRASE
+	},
+	{
 		label: "Vote on Snapshot proposal",
 		value: TYPES.SNAPSHOT_PROPOSAL_VOTE
 	},

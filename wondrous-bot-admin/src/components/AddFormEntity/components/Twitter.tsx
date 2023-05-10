@@ -127,7 +127,7 @@ const TwitterComponent = ({ onChange, value, stepType }) => {
 			>
 				<Label>Prompt</Label>
 				<TextField
-					placeholder='Is this a question?'
+					placeholder='Enter a prompt for the user'
 					value={value?.prompt || ""}
 					onChange={(value) => handleOnChange("prompt", value)}
 					multiline={false}

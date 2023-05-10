@@ -162,7 +162,7 @@ const CreateTemplate = ({
 				} else if (next.type === TYPES.TWEET_WITH_PHRASE) {
 					step.prompt = next.value?.prompt
 					step["additionalData"] = {
-						tweetPhrase: next.value?.tweetHandle
+						tweetPhrase: next.value?.tweetPhrase
 					}
 				} else if (next.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
 					step.prompt = next.value?.prompt
