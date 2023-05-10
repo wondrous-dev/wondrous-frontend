@@ -10,6 +10,8 @@ export const Accordion = styled(AccordionMui)`
   &.MuiAccordion-root {
     border: ${(props) => (props.expanded ? '1px solid black' : 'none')};
     border-radius: 16px;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
     background-color: ${(props) => (props.expanded ? '#FFEBDA' : 'white')};
     box-shadow: none;
     border-bottom-left-radius: 16px !important;
