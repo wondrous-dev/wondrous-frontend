@@ -15,6 +15,8 @@ import GlobalContext from "utils/context/GlobalContext";
 import { pinkColors } from "utils/theme/colors";
 import { GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL } from "graphql/queries";
 import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLocation, useNavigate } from "react-router-dom"
+import styled from 'styled-components';
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -23,7 +25,16 @@ const typographyStyles = {
   color: "black",
 };
 
-const CardsComponent = ({ cards }) => (
+export const HomeCardWrapper = styled(Grid)`
+  && {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+`;
+const CardsComponent = ({ cards }) => {
+  const navigate = useNavigate();
+
+  return(
   <Grid
     container
     gap="24px"
@@ -41,7 +52,7 @@ const CardsComponent = ({ cards }) => (
     }}
   >
     {cards.map((card, idx) => (
-      <Grid
+      <HomeCardWrapper
         bgcolor={card.bgColor}
         display="flex"
         key={`card-${idx}`}
@@ -53,6 +64,7 @@ const CardsComponent = ({ cards }) => (
         width="100%"
         padding="10px"
         alignItems="center"
+        onClick={() => navigate(card.path)}
       >
         <card.Icon />
         <Typography {...typographyStyles}>{card.count}</Typography>
@@ -64,10 +76,10 @@ const CardsComponent = ({ cards }) => (
         >
           {card.title}
         </Typography>
-      </Grid>
+      </HomeCardWrapper>
     ))}
   </Grid>
-);
+)};
 
 const HomePage = () => {
   const { activeOrg } = useContext(GlobalContext);
@@ -100,18 +112,21 @@ const HomePage = () => {
       count: totalMembers,
       Icon: OnboardedIcon,
       bgColor: "#F8642D",
+      path: "/members",
     },
     {
       title: "Quests",
       count: totalQuests,
       Icon: QuestIcon,
       bgColor: "#F8AFDB",
+      path: "/quests",
     },
     {
       title: "Levels",
       count: 10,
       Icon: LevelsIcon,
       bgColor: "#84BCFF",
+      path: "/levels",
     },
   ];
 
