@@ -1,4 +1,5 @@
 import QuizComponent from "components/AddFormEntity/components/QuizComponent"
+import SnapshotComponent from "components/AddFormEntity/components/SnapshotComponent"
 import TextComponent from "components/AddFormEntity/components/Text"
 import TwitterComponent from "components/AddFormEntity/components/Twitter"
 
@@ -36,7 +37,9 @@ export const CONFIG_COMPONENTS = {
 	[TYPES.FOLLOW_TWITTER]: TwitterComponent,
 	[TYPES.REPLY_TWEET]: TwitterComponent,
 	[TYPES.RETWEET]: TwitterComponent,
-	[TYPES.TWEET_WITH_PHRASE]: TwitterComponent
+	[TYPES.TWEET_WITH_PHRASE]: TwitterComponent,
+	[TYPES.SNAPSHOT_PROPOSAL_VOTE]: SnapshotComponent,
+	[TYPES.SNAPSHOT_SPACE_VOTE]: SnapshotComponent
 }
 
 export const RESPOND_TYPES = {

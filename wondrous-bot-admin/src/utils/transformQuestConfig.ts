@@ -17,7 +17,7 @@ type InputQuestStep = {
 		tweetPhrase?: string
 		snapshotProposalLink?: string
 		snapshotSpaceLink?: string
-		snapshotSpaceVoteTimes?: number
+		snapshotVoteTimes?: number
 		discordChannelId?: string
 		discordChannelName?: string
 		discordMessageType?: string
@@ -52,8 +52,9 @@ type OutputQuestStep = {
 		  }
 		| {
 				prompt?: string
-				snapshotSpaceLink: string
-				snapshotSpaceVoteTimes?: number
+				snapshotProposalLink?: string
+				snapshotSpaceLink?: string
+				snapshotVoteTimes?: number
 		  }
 		| {
 				prompt?: string
@@ -109,13 +110,13 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
 		} else if (step.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
 			outputStep.value = {
 				prompt: step?.prompt,
-				snapshotSpaceLink: step?.additionalData?.snapshotSpaceLink
+				snapshotProposalLink: step?.additionalData?.snapshotProposalLink
 			}
 		} else if (step.type === TYPES.SNAPSHOT_SPACE_VOTE) {
 			outputStep.value = {
 				prompt: step?.prompt,
 				snapshotSpaceLink: step?.additionalData?.snapshotSpaceLink,
-				snapshotSpaceVoteTimes: step?.additionalData?.snapshotSpaceVoteTimes
+				snapshotVoteTimes: Number(step?.additionalData?.snapshotVoteTimes)
 			}
 		} else if (step.type === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
 			outputStep.value = {

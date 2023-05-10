@@ -167,13 +167,13 @@ const CreateTemplate = ({
 				} else if (next.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
 					step.prompt = next.value?.prompt
 					step["additionalData"] = {
-						snapshotProposalLink: next.value?.tweetHandle
+						snapshotProposalLink: next.value?.snapshotProposalLink
 					}
 				} else if (next.type === TYPES.SNAPSHOT_SPACE_VOTE) {
 					step.prompt = next.value?.prompt
 					step["additionalData"] = {
 						snapshotSpaceLink: next.value?.snapshotSpaceLink,
-						snapshotSpaceVoteTimes: next.value?.snapshotSpaceVoteTimes
+						snapshotVoteTimes: Number(next.value?.snapshotVoteTimes)
 					}
 				} else if (next.type === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
 					step.prompt = next.value?.prompt
