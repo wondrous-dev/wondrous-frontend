@@ -43,6 +43,17 @@ export const OrgFragment = gql`
       hasGr15Tasks
       hasGr15Bounties
     }
+    modules {
+      tasks
+      bounties
+      pods
+      grants
+      documents
+      milestones
+      proposals
+      collabs
+      leaderboard
+    }
   }
 `;
 
