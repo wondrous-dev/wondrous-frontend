@@ -132,15 +132,15 @@ const LevelsReward = ({ value, onChange, roles, level }) => {
               flexWrap='nowrap'
               padding='14px'
             >
-              <Box
+              {/* <Box
                 display='flex'
                 gap='6px'
                 alignItems='center'
                 sx={{
                   cursor: 'pointer',
                 }}
-              >
-                <ButtonBase
+              > */}
+                {/* <ButtonBase
                   sx={{
                     padding: '3px 5px',
                     borderRadius: '4px',
@@ -167,8 +167,19 @@ const LevelsReward = ({ value, onChange, roles, level }) => {
                   lineHeight='14px'
                 >
                   Add new reward
+                </Typography> */}
+              {/* </Box> */}
+              {!roles?.length && <>
+                <Typography
+                  color='#2A8D5C'
+                  fontFamily='Poppins'
+                  fontWeight={500}
+                  fontSize='14px'
+                  lineHeight='14px'
+                >
+                  No discord roles found
                 </Typography>
-              </Box>
+              </>}
               {roles?.map((role, idx) => {
                 return (
                   <Box>

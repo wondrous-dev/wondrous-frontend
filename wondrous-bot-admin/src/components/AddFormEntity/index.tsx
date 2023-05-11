@@ -37,39 +37,39 @@ const COMPONENT_OPTIONS = [
 		value: TYPES.ATTACHMENTS
 	},
 	{
-		label: "Like a tweet",
+		label: "Like A Tweet",
 		value: TYPES.LIKE_TWEET
 	},
 	{
-		label: "Follow a twitter account",
+		label: "Follow A Twitter Account",
 		value: TYPES.FOLLOW_TWITTER
 	},
 	{
-		label: "Reply to a tweet",
+		label: "Reply To A Tweet",
 		value: TYPES.REPLY_TWEET
 	},
 	{
-		label: "Retweet a tweet",
+		label: "Retweet A Tweet",
 		value: TYPES.RETWEET
 	},
 	{
-		label: "Tweet with a mention or hashtag",
+		label: "Tweet With A Mention Or Hashtag",
 		value: TYPES.TWEET_WITH_PHRASE
 	},
 	{
-		label: "Vote on Snapshot proposal",
+		label: "Vote On Snapshot Proposal",
 		value: TYPES.SNAPSHOT_PROPOSAL_VOTE
 	},
 	{
-		label: "Vote on Snapshot space",
+		label: "Vote On Snapshot Space",
 		value: TYPES.SNAPSHOT_SPACE_VOTE
 	},
 	{
-		label: "Send a message in Discord channel",
+		label: "Send A Message in Discord Channel",
 		value: TYPES.DISCORD_MESSAGE_IN_CHANNEL
 	},
 	{
-		label: "Join Discord community call",
+		label: "Join Discord Community Call",
 		value: TYPES.JOIN_DISCORD_COMMUNITY_CALL
 	}
 ]
