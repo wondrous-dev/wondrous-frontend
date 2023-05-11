@@ -44,14 +44,14 @@ export const OrgFragment = gql`
       hasGr15Bounties
     }
     modules {
-      tasks
-      bounties
-      pods
-      grants
-      documents
-      milestones
-      proposals
-      collabs
+      task
+      bounty
+      pod
+      grant
+      document
+      milestone
+      proposal
+      collab
       leaderboard
     }
   }
