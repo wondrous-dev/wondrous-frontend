@@ -5,6 +5,7 @@ import {
   CustomTextField,
   Label,
 } from 'components/AddFormEntity/components/styles';
+import AutocompleteComponent from 'components/Autocomplete';
 import CloseModalIcon from 'components/Icons/CloseModal';
 import SelectComponent from 'components/Shared/Select';
 import { GET_QUESTS_FOR_ORG } from 'graphql/queries';
@@ -62,9 +63,9 @@ const FilterGroup = ({ condition, handleChange, options }) => {
         />
       </Box>
       <Box minWidth='150px'>
-        <SelectComponent
+        <AutocompleteComponent
           options={options || []}
-          onChange={handleConditionDataChange}
+          handleChange={handleConditionDataChange}
           value={
             condition.value ||
             condition.conditionData?.[CONDITION_VALUES[condition.type]]
