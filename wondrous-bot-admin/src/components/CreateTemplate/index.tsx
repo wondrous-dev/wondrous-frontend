@@ -292,9 +292,12 @@ const CreateTemplate = ({
 							flexDirection='column'
 							gap='14px'
 							padding='14px 24px'
+							onClick={() => handleAdd(TYPES.TEXT_FIELD)}
+								sx={{
+									cursor: 'pointer'
+								}}
 						>
 							<RoundedSecondaryButton
-								onClick={() => handleAdd(TYPES.TEXT_FIELD)}
 							>
 								<AddIcon
 									sx={{

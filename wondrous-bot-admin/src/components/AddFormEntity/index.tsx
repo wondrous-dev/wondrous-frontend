@@ -16,7 +16,10 @@ const MULTICHOICE_DEFAULT_VALUE = {
 	question: "",
 	withCorrectAnswers: false,
 	multiSelectValue: TYPES.MULTI_QUIZ,
-	answers: []
+	answers: [{
+		value: '',
+		isCorrect: true,
+	}]
 }
 
 const COMPONENT_OPTIONS = [
