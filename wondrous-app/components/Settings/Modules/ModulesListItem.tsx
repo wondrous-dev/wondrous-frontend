@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import PlusIcon from 'components/Icons/plus';
 import palette from 'theme/palette';
 
-const modulesListItemStatuses = {
+const modulesListItemButtonStatuses = {
   add: {
     tooltipTitle: 'Add feature',
     buttonColor: '#0BA876', // TODO: add color to palette
@@ -26,14 +26,21 @@ const modulesListItemStatuses = {
 };
 
 type ModulesListItemProps = {
-  status: keyof typeof modulesListItemStatuses;
+  buttonStatus: keyof typeof modulesListItemButtonStatuses;
   moduleName: string;
   ModuleIcon: any;
   createdCount: number;
+  handleOnClick: any;
 };
 
-const ModulesListItem = ({ status, moduleName, ModuleIcon, createdCount }: ModulesListItemProps) => {
-  const { tooltipTitle, buttonColor, buttonHover, ButtonIcon } = modulesListItemStatuses[status];
+const ModulesListItem = ({
+  buttonStatus: status,
+  moduleName,
+  ModuleIcon,
+  createdCount,
+  handleOnClick,
+}: ModulesListItemProps) => {
+  const { tooltipTitle, buttonColor, buttonHover, ButtonIcon } = modulesListItemButtonStatuses[status];
   return (
     <Box
       bgcolor={palette.grey900}
@@ -72,6 +79,7 @@ const ModulesListItem = ({ status, moduleName, ModuleIcon, createdCount }: Modul
         >
           <ButtonBase
             disableRipple
+            onClick={handleOnClick}
             sx={{
               bgcolor: buttonColor,
               borderRadius: '100%',
