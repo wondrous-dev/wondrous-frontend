@@ -143,8 +143,8 @@ const QuestsList = ({ data }) => {
 												<Label fontSize='14px' lineHeight='14px'>
 													{item.completions}{" "}
 													{item.completions === 1
-														? "completion"
-														: "completions"}
+														? "Completion"
+														: "Completions"}
 												</Label>
 											</Box>
 											{item.inReview > 0 && (
@@ -158,7 +158,7 @@ const QuestsList = ({ data }) => {
 													marginLeft='8px'
 												>
 													<Label fontSize='14px' lineHeight='14px'>
-														{item?.inReview} in review
+														{item?.inReview} To review
 													</Label>
 												</Box>
 											)}
