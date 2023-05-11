@@ -87,7 +87,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
 				question: step.prompt,
 				withCorrectAnswers: hasCorrectAnswer,
 				multiSelectValue: step.type,
-				answers: step.options!.map((option) => ({
+				answers: step.options?.map((option) => ({
 					value: option.text,
 					...(hasCorrectAnswer ? { isCorrect: option.correct } : {})
 				}))
