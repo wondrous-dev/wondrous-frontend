@@ -57,7 +57,7 @@ const MembersPage = () => {
   const headers = ['Name', 'Level', 'Discord', 'Twitter', 'XP'];
   return (
     <>
-      <PageHeader title='Members Directory' withBackButton={false} />
+      <PageHeader title='Members' withBackButton={false} />
       <Grid
         minHeight='100vh'
         sx={{

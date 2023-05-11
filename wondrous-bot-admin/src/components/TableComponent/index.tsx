@@ -40,11 +40,16 @@ const TableComponent = ({ headers, data }) => {
                 if (key === 'id') return null;
                 const column = row[key];
                 return (
-                  <TableCell key={key}>
+                  <TableCell key={key} sx={{
+                    borderRight: '2px solid #EFEFEF',
+                    borderBottom: '0px'
+                  }}>
                     {column.component === 'label' ? (
                       <Label
                         fontSize='14px'
                         lineHeight='14px'
+                        textAlign='center'
+                        width='100%'
                         {...(column.componentProps || {})}
                       >
                         {column.value}
@@ -56,6 +61,7 @@ const TableComponent = ({ headers, data }) => {
                         gap='10px'
                         alignItems='center'
                         position='relative'
+                        justifyContent='center'
                       >
                         <Box
                           position='relative'
@@ -85,19 +91,44 @@ const TableComponent = ({ headers, data }) => {
                       </Box>
                     ) : null}
                     {column.component === 'discord' ? (
-                      <IconWrapper onClick={() => window.open(column.value)}> 
-                        <WhiteBgDiscord />
-                      </IconWrapper>
+                      <Box
+                        display='flex'
+                        justifyContent='center'
+                        alignItems='center'
+                      >
+                        <IconWrapper onClick={() => window.open(column.value)}>
+                          <WhiteBgDiscord />
+                        </IconWrapper>
+                      </Box>
                     ) : null}
                     {column.component === 'twitter' ? (
-                      <IconWrapper onClick={() => window.open(column.value)}>
-                        <Twitter
-                          sx={{
-                            color: 'white',
-                            fontSize: '15px',
-                          }}
-                        />
-                      </IconWrapper>
+                      <Box
+                        display='flex'
+                        justifyContent='center'
+                        alignItems='center'
+                      >
+                        {column?.value ? (
+                          <Label
+                            fontSize='14px'
+                            lineHeight='14px'
+                            textAlign='center'
+                            width='100%'
+                          >
+                            None
+                          </Label>
+                        ) : (
+                          <IconWrapper
+                            onClick={() => window.open(column.value)}
+                          >
+                            <Twitter
+                              sx={{
+                                color: 'white',
+                                fontSize: '15px',
+                              }}
+                            />
+                          </IconWrapper>
+                        )}
+                      </Box>
                     ) : null}
                     {column.component === 'reward' ? (
                       <StyledViewQuestResults $isReward>

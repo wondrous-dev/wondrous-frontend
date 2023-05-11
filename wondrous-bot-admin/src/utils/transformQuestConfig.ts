@@ -64,6 +64,7 @@ type OutputQuestStep = {
 }
 
 export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
+	if (!obj) return []
 	return obj.map((step) => {
 		const outputStep: OutputQuestStep = {
 			id: step.order,
@@ -78,14 +79,15 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
 		) {
 			outputStep.value = step.prompt
 		} else if ([TYPES.SINGLE_QUIZ, TYPES.MULTI_QUIZ].includes(step.type)) {
-			const hasCorrectAnswer = step.options!.some(
+			console.log("step.options", step.options)
+			const hasCorrectAnswer = step.options?.some(
 				(option) => option.correct !== null && option.correct !== undefined
 			)
 			outputStep.value = {
 				question: step.prompt,
 				withCorrectAnswers: hasCorrectAnswer,
 				multiSelectValue: step.type,
-				answers: step.options!.map((option) => ({
+				answers: step.options?.map((option) => ({
 					value: option.text,
 					...(hasCorrectAnswer ? { isCorrect: option.correct } : {})
 				}))

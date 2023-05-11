@@ -82,6 +82,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               </Typography>
               <TextField
                 value={reward.value}
+                type="number"
                 multiline={false}
                 onChange={(value) => {
                   handleChange(reward.type, value);
@@ -93,10 +94,10 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         return null;
       })}
 
-      <Divider color='#767676' />
-      <Box>
+      {/* <Divider color='#767676' /> */}
+      {/* <Box>
         <SharedSecondaryButton disabled onClick={() => setIsRewardModalOpen(true)}>Add more</SharedSecondaryButton>
-      </Box>
+      </Box> */}
     </Grid>
   );
 };
