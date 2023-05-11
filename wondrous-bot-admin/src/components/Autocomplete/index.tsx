@@ -7,7 +7,6 @@ const AutocompleteComponent = ({
   handleChange,
   value,
 }) => {
-  if(!options?.length) return null;
   return (
     <Autocomplete
       disablePortal
