@@ -100,7 +100,7 @@ const QuizComponent = ({ onChange, value, stepType }) => {
 			<Grid item gap='14px' display='flex' flexDirection='column'>
 				<Label>Question/Prompt</Label>
 				<TextField
-					placeholder='Enter your prompt here'
+					placeholder='Enter question here'
 					value={question || ""}
 					onChange={(value) => handleOnChange("question", value)}
 					multiline={false}
