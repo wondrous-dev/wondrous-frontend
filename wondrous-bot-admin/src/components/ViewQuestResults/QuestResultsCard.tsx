@@ -145,9 +145,6 @@ const QuestResultsCard = ({ submission, key }) => {
 	return (
 		<AccordionComponent
 			key={key}
-			style={{
-				marginBottom: "16px"
-			}}
 			renderTitle={() => (
 				<Typography
 					fontFamily='Poppins'
