@@ -1,5 +1,25 @@
 import { gql } from "@apollo/client"
 
+export const QuestListFragment = gql`
+	fragment QuestListFragment on Quest {
+		id
+		createdAt
+		createdBy
+		title
+		description
+		orgId
+		status
+		level
+		startAt
+		endAt
+		maxSubmission
+		requireReview
+		submissionsCount
+		pointReward
+		conditionLogic
+	}
+`
+
 export const QuestFragment = gql`
 	fragment QuestFragment on Quest {
 		id
