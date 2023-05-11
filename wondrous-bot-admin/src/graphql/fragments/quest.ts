@@ -34,6 +34,16 @@ export const QuestFragment = gql`
 				text
 				correct
 			}
+			additionalData {
+				discordChannelName
+				tweetHandle
+				tweetLink
+				tweetPhrase
+				snapshotProposalLink
+				snapshotSpaceLink
+				snapshotVoteTimes
+				discordMessageType
+			}
 		}
 	}
 `
