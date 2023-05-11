@@ -64,6 +64,7 @@ type OutputQuestStep = {
 }
 
 export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
+	if (!obj) return []
 	return obj.map((step) => {
 		const outputStep: OutputQuestStep = {
 			id: step.order,
