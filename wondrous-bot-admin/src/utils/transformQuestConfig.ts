@@ -78,7 +78,8 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
 		) {
 			outputStep.value = step.prompt
 		} else if ([TYPES.SINGLE_QUIZ, TYPES.MULTI_QUIZ].includes(step.type)) {
-			const hasCorrectAnswer = step.options!.some(
+			console.log("step.options", step.options)
+			const hasCorrectAnswer = step.options?.some(
 				(option) => option.correct !== null && option.correct !== undefined
 			)
 			outputStep.value = {
