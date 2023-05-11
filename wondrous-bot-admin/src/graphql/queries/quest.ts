@@ -1,14 +1,14 @@
 import { gql } from "@apollo/client"
-import { QuestFragment } from "graphql/fragments/quest"
+import { QuestFragment, QuestListFragment } from "graphql/fragments/quest"
 import { CmtyUserFragment } from "graphql/fragments/user"
 
 export const GET_QUESTS_FOR_ORG = gql`
 	query getQuestsForOrg($input: OrgQuestQueryInput) {
 		getQuestsForOrg(input: $input) {
-			...QuestFragment
+			...QuestListFragment
 		}
 	}
-	${QuestFragment}
+	${QuestListFragment}
 `
 
 export const GET_ORG_QUESTS_LEVELS = gql`

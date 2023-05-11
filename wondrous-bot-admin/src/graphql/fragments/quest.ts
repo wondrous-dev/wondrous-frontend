@@ -1,5 +1,29 @@
 import { gql } from "@apollo/client"
 
+export const QuestListFragment = gql`
+	fragment QuestListFragment on Quest {
+		id
+		createdAt
+		createdBy
+		title
+		description
+		orgId
+		status
+		level
+		startAt
+		endAt
+		maxSubmission
+		requireReview
+		submissionsCount {
+			inReview
+			approved
+			rejected
+		}
+		pointReward
+		conditionLogic
+	}
+`
+
 export const QuestFragment = gql`
 	fragment QuestFragment on Quest {
 		id
@@ -14,7 +38,11 @@ export const QuestFragment = gql`
 		endAt
 		maxSubmission
 		requireReview
-		submissionsCount
+		submissionsCount {
+			inReview
+			approved
+			rejected
+		}
 		pointReward
 		conditionLogic
 		conditions {
@@ -33,6 +61,16 @@ export const QuestFragment = gql`
 				position
 				text
 				correct
+			}
+			additionalData {
+				discordChannelName
+				tweetHandle
+				tweetLink
+				tweetPhrase
+				snapshotProposalLink
+				snapshotSpaceLink
+				snapshotVoteTimes
+				discordMessageType
 			}
 		}
 	}
