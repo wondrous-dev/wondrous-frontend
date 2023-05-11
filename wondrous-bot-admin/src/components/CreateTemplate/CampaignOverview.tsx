@@ -93,7 +93,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       },
     },
     {
-      label: 'Max submissions',
+      label: 'Max Submissions',
       component: MaxSubmissions,
       value: !!questSettings?.maxSubmission,
       componentProps: {

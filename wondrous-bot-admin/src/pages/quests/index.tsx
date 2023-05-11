@@ -33,7 +33,7 @@ const SELECT_QUESTS_TYPE = [
 
 const QuestsPage = () => {
   const navigate = useNavigate();
-  const [statuses, setStatuses] = useState(null);
+  const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
 
   const handleNavigationToNewQuest = () => navigate('/quests/create');
 
@@ -47,6 +47,7 @@ const QuestsPage = () => {
       input: {
         orgId: activeOrg?.id,
         limit: 1000,
+        statuses: [QUEST_STATUSES.OPEN],
       },
     },
   });

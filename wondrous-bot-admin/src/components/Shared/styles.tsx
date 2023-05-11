@@ -55,7 +55,7 @@ export const StyledSwitch = styled.div`
 		left: 2px;
 		background: white;
 		transform: ${({ checked }) =>
-			checked ? "translate(0, -50%)" : "translate(26px, -50%)"};
+			checked ? "translate(26px, -50%)" : "translate(0px, -50%)"};
 	}
 `
 
