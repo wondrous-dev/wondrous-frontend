@@ -30,6 +30,7 @@ import LoginIcon from 'components/Icons/Sidebar/loginIcon.svg';
 import NotificationsIcon from 'components/Icons/Sidebar/notifications.svg';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import ReceiptIcon from 'components/Icons/Sidebar/receipt.svg';
+import StackIcon from 'components/Icons/Sidebar/stack.svg';
 import { LockIconOutline } from 'components/Icons/userpass';
 import WrenchIcon from 'components/Icons/wrench';
 import { GET_ORG_BY_ID } from 'graphql/queries/org';
@@ -56,6 +57,13 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     label: 'General Settings',
     value: 'general',
     href: orgId ? `/${mainPath}/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
+    page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: StackIcon,
+    label: 'Workplace Modules',
+    value: 'workplace-modules',
+    href: orgId ? `/${mainPath}/settings/${orgId}/modules` : `/pod/settings/${podId}/modules`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
