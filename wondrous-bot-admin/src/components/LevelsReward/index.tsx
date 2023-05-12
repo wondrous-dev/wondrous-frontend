@@ -16,6 +16,7 @@ import { StyledViewQuestResults } from 'components/ViewQuestResults/styles';
 import { CloseIcon } from 'components/Shared/DatePicker/Icons';
 import { useMutation } from '@apollo/client';
 import { ADD_ORG_LEVEL_REWARD } from 'graphql/mutations';
+import { LevelsWrapper } from './styles';
 
 interface ILevelsRewardProps {
   value?: any;
@@ -132,6 +133,7 @@ const LevelsReward = ({ value, onChange, roles, level }) => {
               flexWrap='nowrap'
               padding='14px'
             >
+              <LevelsWrapper>
               {/* <Box
                 display='flex'
                 gap='6px'
@@ -233,6 +235,7 @@ const LevelsReward = ({ value, onChange, roles, level }) => {
                   </Box>
                 );
               })}
+              </LevelsWrapper>
             </Grid>
           </Popper>
         </Box>

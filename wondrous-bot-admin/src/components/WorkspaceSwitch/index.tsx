@@ -114,6 +114,7 @@ const WorkspaceSwitch = () => {
                       style={{
                         width: '36px',
                         height: '36px',
+                        borderRadius: '10px'
                       }}
                     />
                     <Label color='#1D1D1D'>{org.name}</Label>
