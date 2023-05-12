@@ -91,7 +91,7 @@ const LevelsPage = () => {
         },
       };
     });
-  }, [levels, rewards]);
+  }, [levels, rewards, roles]);
 
   const headers = ['Level', 'Point Requirement', 'Reward'];
   return (

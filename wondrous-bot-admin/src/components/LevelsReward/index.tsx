@@ -49,7 +49,7 @@ const LevelsRewardViewOrAdd = forwardRef(
 
 const LevelsReward = ({ value, onChange, roles, level }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  
+
   const { activeOrg } = useContext(GlobalContext);
 
   const [addOrgLevelReward] = useMutation(ADD_ORG_LEVEL_REWARD);
