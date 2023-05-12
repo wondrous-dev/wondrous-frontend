@@ -37,7 +37,6 @@ const LevelsPage = () => {
     },
   });
 
-  console.log(rewards, 'rewardsss')
   const [updateQuestLevel] = useMutation(UPDATE_QUEST_LABEL, {
     refetchQueries: ['getOrgQuestsLevels'],
   });

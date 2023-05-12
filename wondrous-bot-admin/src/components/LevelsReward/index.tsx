@@ -57,7 +57,6 @@ const LevelsReward = ({ value, onChange, roles, level }) => {
   const [addOrgLevelReward] = useMutation(ADD_ORG_LEVEL_REWARD);
   const [removeOrgLevelReward] = useMutation(REMOVE_ORG_LEVEL_REWARD);
   const handleRemove = async () => {
-    console.log(value.id , 'VALUE ID', value)
     await removeOrgLevelReward({
       variables: {
         levelRewardId: value.id,
