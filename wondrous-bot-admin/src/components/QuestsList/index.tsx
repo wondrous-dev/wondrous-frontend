@@ -32,7 +32,7 @@ const formatQuestsData = (LEVELS, data) => {
       xp: quest.pointReward,
       label: quest.title,
       id: quest.id,
-      completions: quest.submissionsCount?.approved,
+      completions: quest.submissionsCount?.approved || 0,
       inReview: quest.submissionsCount?.inReview,
     });
   });
