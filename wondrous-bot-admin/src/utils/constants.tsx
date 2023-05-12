@@ -111,7 +111,8 @@ export const PAGES_WITHOUT_HEADER = [
 	"/forgot-password",
 	"/reset-password",
 	"/twitter/callback",
-	"/wallet/connect"
+	"/wallet/connect",
+	'/discord/callback',
 ]
 
 export const BG_TYPES = {

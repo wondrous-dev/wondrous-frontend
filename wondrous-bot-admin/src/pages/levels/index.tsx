@@ -27,13 +27,17 @@ const LevelsPage = () => {
     },
     onCompleted: ({ getOrgLevelsRewards }) => {
       const newRewards = getOrgLevelsRewards.reduce((acc, curr) => {
-        acc[curr.level] = curr.discordRewardData;
+        acc[curr.level] = {
+          ...curr.discordRewardData,
+          id: curr.id,
+        };
         return acc;
       }, {});
       setRewards(newRewards);
     },
   });
 
+  console.log(rewards, 'rewardsss')
   const [updateQuestLevel] = useMutation(UPDATE_QUEST_LABEL, {
     refetchQueries: ['getOrgQuestsLevels'],
   });

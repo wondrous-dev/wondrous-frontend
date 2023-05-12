@@ -91,7 +91,7 @@ const Layout = () => {
     return <PageSpinner />;
   }
   const AuthenticatedOutlet = EXCLUDED_PATHS.includes(location.pathname) ? Outlet : withAuth(Outlet);
-  
+    
   return (
     <GlobalContext.Provider
       value={{
@@ -110,4 +110,4 @@ const Layout = () => {
   );
 };
 
-export default withAuth(Layout);
+export default Layout;

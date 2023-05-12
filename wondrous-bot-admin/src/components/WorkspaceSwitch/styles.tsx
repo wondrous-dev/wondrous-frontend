@@ -1,5 +1,4 @@
 import { ButtonBase } from '@mui/material';
-import { Box } from '@mui/system';
 import { Label } from 'components/CreateTemplate/styles';
 import styled from 'styled-components';
 
