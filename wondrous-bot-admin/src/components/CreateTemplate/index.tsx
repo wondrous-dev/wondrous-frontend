@@ -69,7 +69,8 @@ const CreateTemplate = ({
 			{
 				id: configuration.length,
 				type,
-				value: ""
+				value: "",
+				required: true
 			}
 		])
 	}
@@ -131,6 +132,7 @@ const CreateTemplate = ({
 				const step: any = {
 					type: next.type,
 					order: index + 1,
+					required: next.required === false ? false : true,
 					prompt: next.value?.question || next?.value?.prompt || next.value
 				}
 				if (next.type === TYPES.MULTI_QUIZ) {
@@ -194,7 +196,6 @@ const CreateTemplate = ({
 	}
 
 	useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave])
-
 	return (
 		<>
 			<Modal
