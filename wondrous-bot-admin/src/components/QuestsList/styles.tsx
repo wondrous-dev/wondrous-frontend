@@ -27,6 +27,7 @@ export const CardWrapper = styled(Grid)`
     border-radius: 16px;
     height: 100%;
     width: 100%;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;

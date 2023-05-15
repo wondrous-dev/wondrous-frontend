@@ -217,14 +217,14 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
 																>
 																	<DeleteIcon />
 																</ButtonIconWrapper>
-																<ButtonIconWrapper>
+																{/* <ButtonIconWrapper>
 																	<MoreVertIcon
 																		sx={{
 																			color: "black",
 																			fontSize: "17px"
 																		}}
 																	/>
-																</ButtonIconWrapper>
+																</ButtonIconWrapper> */}
 															</Grid>
 														</Header>
 													)}

@@ -1,16 +1,17 @@
-import { useQuery } from '@apollo/client';
-import { Grid } from '@mui/material';
-import CreateTemplate from 'components/CreateTemplate';
-import PageHeader from 'components/PageHeader';
-import { SharedSecondaryButton } from 'components/Shared/styles';
-import ViewQuestResults from 'components/ViewQuestResults';
-import { GET_QUEST_BY_ID } from 'graphql/queries';
-import moment from 'moment';
-import { useMemo, useRef, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { useNavigate, useParams } from 'react-router-dom';
-import { QUEST_STATUSES } from 'utils/constants';
-import { transformQuestConfig } from 'utils/transformQuestConfig';
+import { useQuery } from "@apollo/client";
+import { ButtonBase, Grid, Typography } from "@mui/material";
+import CreateTemplate from "components/CreateTemplate";
+import PageHeader from "components/PageHeader";
+import ShareComponent from "components/Share";
+import { SharedSecondaryButton } from "components/Shared/styles";
+import ViewQuestResults from "components/ViewQuestResults";
+import { GET_QUEST_BY_ID } from "graphql/queries";
+import moment from "moment";
+import { useMemo, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import { useNavigate, useParams } from "react-router-dom";
+import { QUEST_STATUSES } from "utils/constants";
+import { transformQuestConfig } from "utils/transformQuestConfig";
 
 const QuestResultsPage = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const QuestResultsPage = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   let { id } = useParams();
 
-  const handleNavigationToNewQuest = () => navigate('/quests/create');
+  const handleNavigationToNewQuest = () => navigate("/quests/create");
 
   const headerActionsRef = useRef(null);
 
@@ -38,7 +39,7 @@ const QuestResultsPage = () => {
   const toggleEdit = () => setIsEditMode((prev) => !prev);
 
   const questSettings = {
-    title: getQuestById?.title || '',
+    title: getQuestById?.title || "",
     level: getQuestById?.level ? String(getQuestById?.level) : null,
     timeBound: getQuestById?.startAt || getQuestById?.endAt,
     maxSubmission: getQuestById?.maxSubmission || null,
@@ -48,7 +49,7 @@ const QuestResultsPage = () => {
     endAt: getQuestById?.endAt ? moment(getQuestById?.endAt) : null,
     questConditions: getQuestById?.conditions
       ? getQuestById?.conditions?.map((condition) => {
-          const {__typename, ...rest} = condition?.conditionData;
+          const { __typename, ...rest } = condition?.conditionData;
           return {
             type: condition?.type,
             conditionData: rest,
@@ -58,29 +59,30 @@ const QuestResultsPage = () => {
     rewards: [
       {
         value: getQuestById?.pointReward || 0,
-        type: 'points',
+        type: "points",
       },
     ],
   };
 
   const questSteps = useMemo(() => {
-    if(!isEditMode) return [];
+    if (!isEditMode) return [];
 
-    return transformQuestConfig(getQuestById?.steps)
+    return transformQuestConfig(getQuestById?.steps);
   }, [getQuestById?.steps, isEditMode]);
 
   return (
     <>
       <PageHeader
-        title='Member Quiz'
+        title="Member Quiz"
         withBackButton
         onBackButtonClick={() => {
-          if(isEditMode) {
+          if (isEditMode) {
             toggleEdit();
           }
         }}
         renderActions={() => (
-          <Grid display='flex' gap='10px'>
+          <Grid display="flex" gap="10px">
+            <ShareComponent />
             {isEditMode ? (
               <>
                 <SharedSecondaryButton $reverse onClick={toggleEdit}>
@@ -101,9 +103,7 @@ const QuestResultsPage = () => {
                   Edit Quest
                 </SharedSecondaryButton>
 
-                <SharedSecondaryButton onClick={handleNavigationToNewQuest}>
-                  New Quest
-                </SharedSecondaryButton>
+                <SharedSecondaryButton onClick={handleNavigationToNewQuest}>New Quest</SharedSecondaryButton>
               </>
             )}
           </Grid>
