@@ -6,7 +6,7 @@ import { TYPES } from "utils/constants"
 const TextInputStyle = {
 	width: "50%"
 }
-const SnapshotProposalText = ({ handleOnChange, value }) => (
+const SnapshotProposalText = ({ handleOnChange, value,error }) => (
 	<>
 		<Label>Vote on this Snapshot proposal</Label>
 		<TextField
@@ -14,12 +14,13 @@ const SnapshotProposalText = ({ handleOnChange, value }) => (
 			value={value?.snapshotProposalLink || ""}
 			onChange={(value) => handleOnChange("snapshotProposalLink", value)}
 			multiline={false}
+			error={error}
 			style={TextInputStyle}
 		/>
 	</>
 )
 
-const SnapshotSpaceText = ({ handleOnChange, value }) => (
+const SnapshotSpaceText = ({ handleOnChange, value, errors }) => (
 	<>
 		<Label>Vote on in our Snapshot Space at least X times</Label>
 		<TextField
@@ -27,11 +28,13 @@ const SnapshotSpaceText = ({ handleOnChange, value }) => (
 			value={value?.snapshotSpaceLink || ""}
 			onChange={(value) => handleOnChange("snapshotSpaceLink", value)}
 			multiline={false}
+			error={errors?.snapshotSpaceLink}
 			style={TextInputStyle}
 		/>
 		<TextField
 			placeholder='Please enter the number of times to vote'
 			value={value?.snapshotVoteTimes}
+			error={errors?.snapshotVoteTimes}
 			onChange={(value) => handleOnChange("snapshotVoteTimes", value)}
 			multiline={false}
 			style={TextInputStyle}
@@ -40,27 +43,26 @@ const SnapshotSpaceText = ({ handleOnChange, value }) => (
 	</>
 )
 
-const getSnapshotComponent = (stepType, handleOnChange, value) => {
+const getSnapshotComponent = (stepType, handleOnChange, value, error) => {
 	if (stepType === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
 		return (
-			<SnapshotProposalText handleOnChange={handleOnChange} value={value} />
+			<SnapshotProposalText handleOnChange={handleOnChange} value={value} error={error?.snapshotProposalLink}/>
 		)
 	}
 	if (stepType === TYPES.SNAPSHOT_SPACE_VOTE) {
-		return <SnapshotSpaceText handleOnChange={handleOnChange} value={value} />
+		return <SnapshotSpaceText handleOnChange={handleOnChange} value={value} errors={error}/>
 	}
 
 	return null
 }
 
-const SnapshotComponent = ({ onChange, value, stepType }) => {
+const SnapshotComponent = ({ onChange, value, stepType, error }) => {
 	const handleOnChange = (key, val) => {
 		onChange({
 			...value,
 			[key]: val
 		})
 	}
-
 	return (
 		<Grid
 			gap='8px'
@@ -85,6 +87,7 @@ const SnapshotComponent = ({ onChange, value, stepType }) => {
 				<TextField
 					placeholder='Enter a prompt for the user'
 					value={value?.prompt || ""}
+					error={error?.prompt}
 					onChange={(value) => handleOnChange("prompt", value)}
 					multiline={false}
 					style={{
@@ -102,7 +105,7 @@ const SnapshotComponent = ({ onChange, value, stepType }) => {
 					width: "100%"
 				}}
 			>
-				{getSnapshotComponent(stepType, handleOnChange, value)}
+				{getSnapshotComponent(stepType, handleOnChange, value, error?.additionalData)}
 			</Grid>
 		</Grid>
 	)

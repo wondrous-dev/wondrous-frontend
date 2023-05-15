@@ -1,18 +1,20 @@
-import { MenuItem } from "@mui/material"
+import { Box, MenuItem } from "@mui/material"
 
-import { StyledTextFieldSelect } from "./styles"
+import { ErrorText, StyledTextFieldSelect } from "./styles"
 const SelectComponent = ({
 	onChange,
 	placeholder = "Select",
 	value,
 	options = [],
 	background = null,
-	style = {}
+	style = {},
+	error = null
 }) => {
 	const handleChange = (e) => onChange(e.target.value)
 
 	return (
-		<StyledTextFieldSelect
+		<Box>
+			<StyledTextFieldSelect
 			select
 			defaultValue=''
 			value={value}
@@ -44,6 +46,8 @@ const SelectComponent = ({
 				</MenuItem>
 			))}
 		</StyledTextFieldSelect>
+		{error ? <ErrorText>{error}</ErrorText> : null}
+		</Box>
 	)
 }
 

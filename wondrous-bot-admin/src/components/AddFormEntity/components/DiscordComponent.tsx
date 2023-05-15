@@ -1,5 +1,5 @@
-import { Grid, Typography } from "@mui/material"
-import { IndexContainer, Label } from "./styles"
+import { Grid } from "@mui/material"
+import { Label } from "./styles"
 import TextField from "../../Shared/TextField"
 import { TYPES } from "utils/constants"
 import SelectComponent from "components/Shared/Select"
@@ -14,7 +14,7 @@ const DISCORD_MESSAGE_TYPES = [
 	}
 ]
 
-const DiscordChannelMessage = ({ handleOnChange, value }) => (
+const DiscordChannelMessage = ({ handleOnChange, value, error }) => (
 	<>
 		<Label>Ask members to message a particular channel</Label>
 		<TextField
@@ -22,6 +22,7 @@ const DiscordChannelMessage = ({ handleOnChange, value }) => (
 			value={value?.discordChannelName || ""}
 			onChange={(value) => handleOnChange("discordChannelName", value)}
 			multiline={false}
+			error={error?.discordChannelName}
 			style={TextInputStyle}
 		/>
 		<Label>Select message type</Label>
@@ -29,6 +30,7 @@ const DiscordChannelMessage = ({ handleOnChange, value }) => (
 			options={DISCORD_MESSAGE_TYPES}
 			background='#C1B6F6'
 			value={value?.discordMessageType}
+			error={error?.discordMessageType}
 			onChange={(value) => handleOnChange("discordMessageType", value)}
 			style={{
 				width: "50%"
@@ -37,17 +39,17 @@ const DiscordChannelMessage = ({ handleOnChange, value }) => (
 	</>
 )
 
-const getDiscordComponent = (stepType, handleOnChange, value) => {
+const getDiscordComponent = (stepType, handleOnChange, value, error) => {
 	if (stepType === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
 		return (
-			<DiscordChannelMessage handleOnChange={handleOnChange} value={value} />
+			<DiscordChannelMessage handleOnChange={handleOnChange} value={value} error={error?.additionalData}/>
 		)
 	}
 
 	return null
 }
 
-const DiscordComponent = ({ onChange, value, stepType }) => {
+const DiscordComponent = ({ onChange, value, stepType, error }) => {
 	const handleOnChange = (key, val) => {
 		onChange({
 			...value,
@@ -81,6 +83,7 @@ const DiscordComponent = ({ onChange, value, stepType }) => {
 					value={value?.prompt || ""}
 					onChange={(value) => handleOnChange("prompt", value)}
 					multiline={false}
+					error={error?.prompt}
 					style={{
 						width: "50%"
 					}}
@@ -96,7 +99,7 @@ const DiscordComponent = ({ onChange, value, stepType }) => {
 					width: "100%"
 				}}
 			>
-				{getDiscordComponent(stepType, handleOnChange, value)}
+				{getDiscordComponent(stepType, handleOnChange, value, error)}
 			</Grid>
 		</Grid>
 	)

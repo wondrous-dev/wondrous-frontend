@@ -6,7 +6,7 @@ import { TYPES } from "utils/constants"
 const TextInputStyle = {
 	width: "50%"
 }
-const TwitterLikeText = ({ handleOnChange, value }) => (
+const TwitterLikeText = ({ handleOnChange, value, error }) => (
 	<>
 		<Label>Like this tweet</Label>
 		<TextField
@@ -14,12 +14,13 @@ const TwitterLikeText = ({ handleOnChange, value }) => (
 			value={value?.tweetLink || ""}
 			onChange={(value) => handleOnChange("tweetLink", value)}
 			multiline={false}
+			error={error}
 			style={TextInputStyle}
 		/>
 	</>
 )
 
-const TwitterRetweetText = ({ handleOnChange, value }) => (
+const TwitterRetweetText = ({ handleOnChange, value, error }) => (
 	<>
 		<Label>Retweet this tweet</Label>
 		<TextField
@@ -27,12 +28,13 @@ const TwitterRetweetText = ({ handleOnChange, value }) => (
 			value={value?.tweetLink || ""}
 			onChange={(value) => handleOnChange("tweetLink", value)}
 			multiline={false}
+			error={error}
 			style={TextInputStyle}
 		/>
 	</>
 )
 
-const TwitterReplyText = ({ handleOnChange, value }) => (
+const TwitterReplyText = ({ handleOnChange, value, error }) => (
 	<>
 		<Label>Reply to this tweet</Label>
 		<TextField
@@ -40,12 +42,13 @@ const TwitterReplyText = ({ handleOnChange, value }) => (
 			value={value?.tweetLink || ""}
 			onChange={(value) => handleOnChange("tweetLink", value)}
 			multiline={false}
+			error={error}
 			style={TextInputStyle}
 		/>
 	</>
 )
 
-const TwitterFollowText = ({ handleOnChange, value }) => (
+const TwitterFollowText = ({ handleOnChange, value, error }) => (
 	<>
 		<Label>Follow this Twitter account</Label>
 		<TextField
@@ -53,6 +56,7 @@ const TwitterFollowText = ({ handleOnChange, value }) => (
 			value={value?.tweetHandle}
 			onChange={(value) => handleOnChange("tweetHandle", value)}
 			multiline={false}
+			error={error}
 			style={{
 				...TextInputStyle,
 				width: "55%"
@@ -61,7 +65,7 @@ const TwitterFollowText = ({ handleOnChange, value }) => (
 	</>
 )
 
-const TweetWithPhraseText = ({ handleOnChange, value }) => (
+const TweetWithPhraseText = ({ handleOnChange, value, error }) => (
 	<>
 		<Label>Tweet with this hashtag, mention, or phrase!</Label>
 		<TextField
@@ -69,6 +73,7 @@ const TweetWithPhraseText = ({ handleOnChange, value }) => (
 			value={value?.tweetPhrase || ""}
 			onChange={(value) => handleOnChange("tweetPhrase", value)}
 			multiline={false}
+			error={error}
 			style={{
 				...TextInputStyle,
 				width: "70%"
@@ -77,22 +82,22 @@ const TweetWithPhraseText = ({ handleOnChange, value }) => (
 	</>
 )
 
-const getTwitterComponent = (stepType, handleOnChange, value) => {
+const getTwitterComponent = (stepType, handleOnChange, value, error) => {
 	if (stepType === TYPES.LIKE_TWEET)
-		return <TwitterLikeText handleOnChange={handleOnChange} value={value} />
+		return <TwitterLikeText handleOnChange={handleOnChange} value={value} error={error?.tweetLink}/>
 	if (stepType === TYPES.RETWEET)
-		return <TwitterRetweetText handleOnChange={handleOnChange} value={value} />
+		return <TwitterRetweetText handleOnChange={handleOnChange} value={value} error={error?.tweetLink}/>
 	if (stepType === TYPES.REPLY_TWEET)
-		return <TwitterReplyText handleOnChange={handleOnChange} value={value} />
+		return <TwitterReplyText handleOnChange={handleOnChange} value={value} error={error?.tweetLink}/>
 	if (stepType === TYPES.FOLLOW_TWITTER)
-		return <TwitterFollowText handleOnChange={handleOnChange} value={value} />
+		return <TwitterFollowText handleOnChange={handleOnChange} value={value} error={error?.tweetHandle}/>
 	if (stepType === TYPES.TWEET_WITH_PHRASE)
-		return <TweetWithPhraseText handleOnChange={handleOnChange} value={value} />
+		return <TweetWithPhraseText handleOnChange={handleOnChange} value={value} error={error?.tweetPhrase}/>
 
 	return null
 }
 
-const TwitterComponent = ({ onChange, value, stepType }) => {
+const TwitterComponent = ({ onChange, value, stepType, error }) => {
 	const handleOnChange = (key, val) => {
 		onChange({
 			...value,
@@ -105,6 +110,7 @@ const TwitterComponent = ({ onChange, value, stepType }) => {
 		return "50%"
 	}
 
+	console.log(error, 'ERROR')
 	return (
 		<Grid
 			gap='8px'
@@ -131,6 +137,7 @@ const TwitterComponent = ({ onChange, value, stepType }) => {
 					value={value?.prompt || ""}
 					onChange={(value) => handleOnChange("prompt", value)}
 					multiline={false}
+					error={error?.prompt}
 					style={{
 						width: getTextWidth(stepType)
 					}}
@@ -146,7 +153,7 @@ const TwitterComponent = ({ onChange, value, stepType }) => {
 					width: "100%"
 				}}
 			>
-				{getTwitterComponent(stepType, handleOnChange, value)}
+				{getTwitterComponent(stepType, handleOnChange, value, error?.additionalData)}
 			</Grid>
 		</Grid>
 	)
