@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material"
+import { Grid, Typography, Box } from "@mui/material"
 import PanelComponent from "components/CreateTemplate/PanelComponent"
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator"
 import { Header } from "./styles"
@@ -11,6 +11,8 @@ import DeleteIcon from "components/Icons/Delete"
 import StrictModeDroppable from "components/StrictModeDroppable"
 import { CONFIG_COMPONENTS, RESPOND_TYPES, TYPES } from "utils/constants"
 import TypeComponent from "./components/TypeComponent"
+import Switch from "components/Shared/Switch"
+import { Label } from "./components/styles"
 
 const MULTICHOICE_DEFAULT_VALUE = {
 	question: "",
@@ -98,7 +100,26 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
 					{
 						type,
 						id,
+						required: true,
 						value: type === TYPES.MULTI_QUIZ ? MULTICHOICE_DEFAULT_VALUE : ""
+					}
+				]
+				return acc
+			}
+			acc.push(next)
+			return acc
+		}, [])
+		setConfiguration(newConfiguration)
+	}
+
+	const handleRequiredChange = (required, id) => {
+		const newConfiguration = configuration.reduce((acc, next) => {
+			if (next.id === id) {
+				acc = [
+					...acc,
+					{
+						...next,
+						required: required === false ? false : true
 					}
 				]
 				return acc
@@ -212,19 +233,40 @@ const AddFormEntity = ({ configuration, setConfiguration, handleRemove }) => {
 																alignItems='center'
 																gap='14px'
 															>
+																<Box
+																	display='flex'
+																	gap='10px'
+																	alignItems='center'
+																>
+																	<Switch
+																		value={
+																			item.required === false ? false : true
+																		}
+																		onChange={(value) => {
+																			handleRequiredChange(value, item.id)
+																		}}
+																	/>
+																	<Label
+																		style={{
+																			marginRight: "8px"
+																		}}
+																	>
+																		Required
+																	</Label>
+																</Box>
 																<ButtonIconWrapper
 																	onClick={() => handleRemove(idx)}
 																>
 																	<DeleteIcon />
 																</ButtonIconWrapper>
-																<ButtonIconWrapper>
+																{/* <ButtonIconWrapper>
 																	<MoreVertIcon
 																		sx={{
 																			color: "black",
 																			fontSize: "17px"
 																		}}
 																	/>
-																</ButtonIconWrapper>
+																</ButtonIconWrapper> */}
 															</Grid>
 														</Header>
 													)}
