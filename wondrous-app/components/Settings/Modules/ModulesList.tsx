@@ -1,64 +1,8 @@
 import { Box, Typography } from '@mui/material';
-import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
-import { useState } from 'react';
 import palette from 'theme/palette';
-import { ENTITIES_TYPES } from 'utils/constants';
-import { useSettings } from 'utils/hooks';
 import ModulesListItem from './ModulesListItem';
 
-const ModulesList = () => {
-  const settingsData = useSettings();
-  const { modules } = settingsData?.pod ?? settingsData?.org ?? {};
-  const isModuleActive = (module) => {
-    // Defaults to true if the module is null or undefined;
-    const moduleStatus = modules?.[module];
-    return moduleStatus || moduleStatus === null || moduleStatus === undefined;
-  };
-  const [modulesData, setModulesData] = useState({
-    [ENTITIES_TYPES.POD]: {
-      active: isModuleActive([ENTITIES_TYPES.POD]),
-      ModuleIcon: CheckBoxIcon,
-      createdCount: 0,
-    },
-    [ENTITIES_TYPES.TASK]: {
-      active: isModuleActive([ENTITIES_TYPES.TASK]),
-      ModuleIcon: CheckBoxIcon,
-      createdCount: 0,
-    },
-    [ENTITIES_TYPES.BOUNTY]: {
-      active: isModuleActive([ENTITIES_TYPES.BOUNTY]),
-      ModuleIcon: CheckBoxIcon,
-      createdCount: 0,
-    },
-    [ENTITIES_TYPES.MILESTONE]: {
-      active: isModuleActive([ENTITIES_TYPES.MILESTONE]),
-      ModuleIcon: CheckBoxIcon,
-      createdCount: 0,
-    },
-    [ENTITIES_TYPES.PROPOSAL]: {
-      active: isModuleActive([ENTITIES_TYPES.PROPOSAL]),
-      ModuleIcon: CheckBoxIcon,
-      createdCount: 0,
-    },
-    [ENTITIES_TYPES.GRANT]: {
-      active: isModuleActive([ENTITIES_TYPES.GRANT]),
-      ModuleIcon: CheckBoxIcon,
-      createdCount: 0,
-    },
-
-    [ENTITIES_TYPES.COLLAB]: {
-      active: isModuleActive([ENTITIES_TYPES.COLLAB]),
-      ModuleIcon: CheckBoxIcon,
-      createdCount: 0,
-    },
-
-    Docs: {
-      active: isModuleActive('Docs'),
-      ModuleIcon: CheckBoxIcon,
-      createdCount: 0,
-    },
-  });
-
+const ModulesList = ({ modulesData, setModulesData }) => {
   const handleSetModuleActiveStatus = (module) => {
     setModulesData((prev) => {
       const { active, ...rest } = prev[module];
@@ -90,7 +34,7 @@ const ModulesList = () => {
           }}
         >
           {activeModules.map((module) => {
-            const { ModuleIcon, createdCount } = modulesData[module];
+            const { ModuleIcon, count = 0 } = modulesData[module];
             return (
               <ModulesListItem
                 key={module}
@@ -98,7 +42,7 @@ const ModulesList = () => {
                 buttonStatus="remove"
                 moduleName={module}
                 ModuleIcon={ModuleIcon}
-                createdCount={createdCount}
+                createdCount={count}
               />
             );
           })}
@@ -116,7 +60,7 @@ const ModulesList = () => {
           }}
         >
           {inactiveModules.map((module) => {
-            const { ModuleIcon, createdCount } = modulesData[module];
+            const { ModuleIcon, createdCount = 0 } = modulesData[module];
             return (
               <ModulesListItem
                 key={module}
