@@ -91,7 +91,7 @@ const stepTypes = {
     }),
   }),
   [TYPES.DISCORD_MESSAGE_IN_CHANNEL]: Yup.object().shape({
-    ...sharedValidation,
+    ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       discordMessageType: Yup.string().required("Discord message type is required"),
       discordChannelName: Yup.string().required("Discord channel id is required"),
