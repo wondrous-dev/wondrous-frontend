@@ -25,6 +25,12 @@ const sharedValidation = {
   order: Yup.number().required("Order is required"),
   prompt: Yup.string().required("Prompt is required"),
 };
+
+const twitterSnapshotSharedValidation = {
+  type: Yup.string().required("Type is required").oneOf(ALL_TYPES, "Type is not valid"),
+  order: Yup.number().required("Order is required"),
+}
+
 const stepTypes = {
   [TYPES.TEXT_FIELD]: Yup.object().shape({
     ...sharedValidation,
@@ -42,43 +48,43 @@ const stepTypes = {
       .required("Options are required"),
   }),
   [TYPES.LIKE_TWEET]: Yup.object().shape({
-    ...sharedValidation,
+    ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       tweetLink: Yup.string().required("Tweet link is required").url("Tweet link is not valid"),
     }),
   }),
   [TYPES.RETWEET]: Yup.object().shape({
-    ...sharedValidation,
+    ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       tweetLink: Yup.string().required("Tweet link is required").url("Tweet link is not valid"),
     }),
   }),
   [TYPES.REPLY_TWEET]: Yup.object().shape({
-    ...sharedValidation,
+    ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       tweetLink: Yup.string().required("Tweet link is required").url("Tweet link is not valid"),
     }),
   }),
   [TYPES.FOLLOW_TWITTER]: Yup.object().shape({
-    ...sharedValidation,
+    ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       tweetHandle: Yup.string().required("Tweet handle is required"),
     }),
   }),
   [TYPES.TWEET_WITH_PHRASE]: Yup.object().shape({
-    ...sharedValidation,
+    ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       tweetPhrase: Yup.string().required("Tweet phrase is required"),
     }),
   }),
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: Yup.object().shape({
-    ...sharedValidation,
+    ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       snapshotProposalLink: Yup.string().required("Snapshot proposal link is required").url("Snapshot proposal link is not valid"),
     }),
   }),
   [TYPES.SNAPSHOT_SPACE_VOTE]: Yup.object().shape({
-    ...sharedValidation,
+    ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       snapshotSpaceLink: Yup.string().required("Snapshot space link is required").url("Snapshot space link is not valid"),
       snapshotVoteTimes: Yup.number().required("Snapshot vote times is required"),

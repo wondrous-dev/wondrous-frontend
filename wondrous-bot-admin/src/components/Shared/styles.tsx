@@ -4,14 +4,6 @@ import { greyColors } from "utils/theme/colors";
 import {
   ButtonBase,
   Grid,
-  Input,
-  Menu,
-  MenuItem,
-  Popover,
-  Popper,
-  Select,
-  Switch,
-  SwitchProps,
   TextField,
   Typography,
 } from "@mui/material";
@@ -165,6 +157,6 @@ export const ErrorText = styled(Typography)`
     color: #ee4852;
     font-size: 13px;
     margin-top: 5px;
-	font-family: "Poppins";
+    font-family: "Poppins";
   }
 `;

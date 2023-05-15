@@ -19,7 +19,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom"
 
 const MyContext = React.createContext(null)
-export const EXCLUDED_PATHS = ["/login"]
+export const EXCLUDED_PATHS = ["/login", "/discord/callback"]
 
 export const useMe = () => useContext(MyContext)
 

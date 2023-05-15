@@ -13,10 +13,10 @@ import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
 import { CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
 import GlobalContext from "utils/context/GlobalContext";
-import { questValidator, ValidationError } from "services/validators";
 import { useNavigate } from "react-router";
-import { set } from "lodash";
+import { questValidator, ValidationError } from "services/validators";
 import { getPathArray } from "utils/common";
+import { set } from "lodash";
 
 const DEFAULT_STATE_VALUE = {
   title: "",
@@ -60,17 +60,18 @@ const CreateTemplate = ({
 
   const { activeOrg } = useContext(GlobalContext);
 
+  const [errors, setErrors] = useState({});
   const [steps, setSteps] = useState(defaultQuestSteps);
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState(defaultQuestSettings);
-  const [errors, setErrors] = useState({});
   const handleAdd = (type) => {
     setSteps([
       ...steps,
       {
-        id: steps.length,
+        id: steps.length + 1,
         type,
         value: "",
+        required: true,
       },
     ]);
   };
@@ -120,7 +121,8 @@ const CreateTemplate = ({
         const step: any = {
           type: next.type,
           order: index + 1,
-          prompt: next.value?.question || next?.value?.prompt || next.value,
+          required: next.required === false ? false : true,
+          prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };
         if (next.type === TYPES.MULTI_QUIZ) {
           (step.type = next.value.multiSelectValue),
@@ -156,7 +158,7 @@ const CreateTemplate = ({
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
             snapshotSpaceLink: next.value?.snapshotSpaceLink,
-            snapshotVoteTimes: Number(next.value?.snapshotVoteTimes) || null,
+            snapshotVoteTimes: Number(next.value?.snapshotVoteTimes),
           };
         } else if (next.type === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
           step.prompt = next.value?.prompt;
@@ -182,10 +184,10 @@ const CreateTemplate = ({
     } catch (err) {
       const errors = {};
       if (err instanceof ValidationError) {
-        err.inner.forEach(error => {
+        err.inner.forEach((error) => {
           const path = getPathArray(error.path);
           set(errors, path, error.message);
-        })
+        });
         setErrors(errors);
         setIsSaving(false);
       } else console.log(err, "Error outside of validation service");
@@ -193,7 +195,6 @@ const CreateTemplate = ({
   };
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
-
   return (
     <>
       <Modal
@@ -245,9 +246,9 @@ const CreateTemplate = ({
               renderHeader={() => <CampaignOverviewHeader />}
               renderBody={() => (
                 <CampaignOverview
-                  errors={errors}
                   questSettings={questSettings}
                   setQuestSettings={setQuestSettings}
+                  errors={errors}
                   setErrors={setErrors}
                 />
               )}

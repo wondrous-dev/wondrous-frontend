@@ -62,6 +62,11 @@ const TableComponent = ({ headers, data }) => {
                         alignItems='center'
                         position='relative'
                         justifyContent='center'
+                        sx={{
+                          '&:hover #display-edit-icon': {
+                            visibility: 'visible',
+                          }
+                        }}
                       >
                         <Box
                           position='relative'

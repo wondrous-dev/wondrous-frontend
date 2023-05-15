@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Home from "pages/home"
 import { ThemeProvider as StyledComponentProvider } from "styled-components"
@@ -26,6 +26,7 @@ import SettingsPage from "pages/settings"
 import WalletConnectPage from "pages/wallet/connect"
 import OnboardingPage from "pages/onboarding"
 import DiscordOrgCallbackPage from "pages/discord/callback/org-connect"
+import DiscordCallbackPage from 'pages/discord/callback'
 
 const router = createBrowserRouter([
 	{
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
 			{
 				path: "/discord/callback/org-connect",
 				element: <DiscordOrgCallbackPage />
+			},
+			{
+				path: '/discord/callback',
+				element: <DiscordCallbackPage />
 			}
 		]
 	}
@@ -138,7 +143,6 @@ function App() {
 	}
 
 	const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode])
-
 	return (
 		<StyledComponentProvider theme={theme}>
 			<ThemeProvider theme={theme}>

@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography, Box } from "@mui/material";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { Header } from "./styles";
@@ -11,7 +11,8 @@ import DeleteIcon from "components/Icons/Delete";
 import StrictModeDroppable from "components/StrictModeDroppable";
 import { CONFIG_COMPONENTS, RESPOND_TYPES, TYPES } from "utils/constants";
 import TypeComponent from "./components/TypeComponent";
-import { getPathArray } from "utils/common";
+import Switch from "components/Shared/Switch";
+import { Label } from "./components/styles";
 
 const MULTICHOICE_DEFAULT_VALUE = {
   question: "",
@@ -93,7 +94,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
 
   const handleChangeType = (type, id, idx) => {
     if (!type) return;
-
     setErrors((prev) => {
       return {
         ...prev,
@@ -104,13 +104,14 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
       };
     });
 
-    const newStepsConfig = steps.reduce((acc, next) => {
+    const newConfiguration = steps.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
           ...acc,
           {
             type,
             id,
+            required: true,
             value: type === TYPES.MULTI_QUIZ ? MULTICHOICE_DEFAULT_VALUE : "",
           },
         ];
@@ -119,7 +120,25 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
       acc.push(next);
       return acc;
     }, []);
-    setSteps(newStepsConfig);
+    setSteps(newConfiguration);
+  };
+
+  const handleRequiredChange = (required, id) => {
+    const newConfiguration = steps.reduce((acc, next) => {
+      if (next.id === id) {
+        acc = [
+          ...acc,
+          {
+            ...next,
+            required: required === false ? false : true,
+          },
+        ];
+        return acc;
+      }
+      acc.push(next);
+      return acc;
+    }, []);
+    setSteps(newConfiguration);
   };
 
   const handleChange = (value, id, idx) => {
@@ -132,7 +151,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
         },
       };
     });
-    const newStepsConfig = steps.reduce((acc, next) => {
+    const newConfiguration = steps.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
           ...acc,
@@ -146,7 +165,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
       acc.push(next);
       return acc;
     }, []);
-    setSteps(newStepsConfig);
+    setSteps(newConfiguration);
   };
 
   return (
@@ -214,35 +233,48 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
                                 />
                               </Grid>
                               <Grid display="flex" alignItems="center" gap="14px">
+                                <Box display="flex" gap="10px" alignItems="center">
+                                  <Switch
+                                    value={item.required === false ? false : true}
+                                    onChange={(value) => {
+                                      handleRequiredChange(value, item.id);
+                                    }}
+                                  />
+                                  <Label
+                                    style={{
+                                      marginRight: "8px",
+                                    }}
+                                  >
+                                    Required
+                                  </Label>
+                                </Box>
                                 <ButtonIconWrapper onClick={() => handleRemove(idx)}>
                                   <DeleteIcon />
                                 </ButtonIconWrapper>
-                                <ButtonIconWrapper>
-                                  <MoreVertIcon
-                                    sx={{
-                                      color: "black",
-                                      fontSize: "17px",
-                                    }}
-                                  />
-                                </ButtonIconWrapper>
+                                {/* <ButtonIconWrapper>
+																	<MoreVertIcon
+																		sx={{
+																			color: "black",
+																			fontSize: "17px"
+																		}}
+																	/>
+																</ButtonIconWrapper> */}
                               </Grid>
                             </Header>
                           )}
-                          renderBody={() => {
-                            return (
-                              <>
-                                <Component
-                                  onChange={(value) => handleChange(value, item.id, idx)}
-                                  value={item.value}
-                                  stepType={item.type}
-                                  error={errors?.steps?.[idx]}
-                                />
-                                {RESPOND_TYPES[item.type] ? (
-                                  <TypeComponent respondType={RESPOND_TYPES[item.type]} />
-                                ) : null}
-                              </>
-                            );
-                          }}
+                          renderBody={() => (
+                            <>
+                              <Component
+                                onChange={(value) => handleChange(value, item.id, idx)}
+                                error={errors?.steps?.[idx]}
+                                value={item.value}
+                                stepType={item.type}
+                              />
+                              {RESPOND_TYPES[item.type] ? (
+                                <TypeComponent respondType={RESPOND_TYPES[item.type]} />
+                              ) : null}
+                            </>
+                          )}
                         />
                       </Grid>
                     )}
