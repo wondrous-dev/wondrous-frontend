@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { ButtonBase, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import CreateTemplate from "components/CreateTemplate";
 import PageHeader from "components/PageHeader";
 import ShareComponent from "components/Share";
@@ -9,14 +9,16 @@ import { GET_QUEST_BY_ID } from "graphql/queries";
 import moment from "moment";
 import { useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { QUEST_STATUSES } from "utils/constants";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 
 const QuestResultsPage = () => {
   const navigate = useNavigate();
-
-  const [isEditMode, setIsEditMode] = useState(false);
+  const location = useLocation();
+  console.log(location, 'LOCATION')
+  const isEditInQuery = new URLSearchParams(location.search).get("edit") === "true";
+  const [isEditMode, setIsEditMode] = useState(isEditInQuery);
   let { id } = useParams();
 
   const handleNavigationToNewQuest = () => navigate("/quests/create");
@@ -109,7 +111,7 @@ const QuestResultsPage = () => {
           </Grid>
         )}
       />
-      {isEditMode ? (
+      {isEditMode && getQuestById ? (
         <CreateTemplate
           setRefValue={setRefValue}
           displaySavePanel={!inView}

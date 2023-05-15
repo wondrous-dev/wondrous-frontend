@@ -1,45 +1,144 @@
+import { useMutation } from "@apollo/client";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { ButtonBase, Box } from "@mui/material";
+import { ButtonBase, Box, Grid, Popper, ClickAwayListener, Typography } from "@mui/material";
+import ConfirmActionModal from "components/ConfirmActionModal";
+import { DELETE_QUEST } from "graphql/mutations";
 import { useState } from "react";
-const QuestCardMenu = () => {
+import { useNavigate } from "react-router-dom";
+import useAlerts from "utils/hooks";
+const QuestCardMenu = ({ quest }) => {
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
+  const [confirmModalData, setConfirmModalData] = useState(null);
+
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (e) => {
     e.stopPropagation();
+    setAnchorEl((prev) => (prev ? null : e.currentTarget));
   };
-  return (
-    <Box
-      sx={{
-        zIndex: 1,
-        display: "flex",
-        justifyContent: "flex-end",
-        width: "100%",
-        position: "absolute",
-        right: '2%',
-        bottom: '5%'
-      }}
-    >
-      <ButtonBase
-        onClick={handleClick}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: "100%",
-          padding: "4px",
-          transition: "background 0.1s ease-in-out",
-          ":hover": {
-            background: "#F5F5F5",
+
+  const [deleteQuest] = useMutation(DELETE_QUEST, {
+    onCompleted: () => {
+      setSnackbarAlertMessage("Quest deleted successfully");
+      setSnackbarAlertOpen(true);
+      setAnchorEl(null);
+      setConfirmModalData(null);
+    },
+    onError: (error) => {
+        setSnackbarAlertMessage("Error deleting quest");
+        setSnackbarAlertOpen(true);
+    },
+    refetchQueries: ["getQuestsForOrg", "getOrgQuestStats"],
+  });
+
+  const onReset = () => setAnchorEl(null);
+
+  const ACTIONS = [
+    {
+      label: "Edit",
+      onClick: () => navigate(`/quests/${quest.id}?edit=true`),
+    },
+    {
+      label: "Delete",
+      onClick: () => {
+        setConfirmModalData({
+          title: "Delete Quest",
+          body: "Are you sure you want to delete this quest?",
+          onConfirm: () => {
+            deleteQuest({ variables: { questId: quest.id } });
           },
-        }}
-      >
-        <MoreVertIcon
-          sx={{
-            color: "black",
-            opacity: 0.6,
-          }}
-        />
-      </ButtonBase>
-    </Box>
+          onClose: () => {
+            setAnchorEl(null);
+            setConfirmModalData(null);
+          },
+          onCancel: () => {
+            setAnchorEl(null);
+            setConfirmModalData(null);
+          },
+          cancelButtonTitle: "Cancel",
+          confirmButtonTitle: "Delete",
+        });
+      },
+    },
+  ];
+  return (
+    <>
+      <ConfirmActionModal isOpen={!!confirmModalData} {...confirmModalData} />
+      <ClickAwayListener onClickAway={onReset}>
+        <div onClick={(e) => e.stopPropagation()}>
+          <Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom">
+            <Grid
+              bgcolor="white"
+              zIndex="100"
+              border="1px solid #000000"
+              boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
+              borderRadius="6px"
+              container
+              width="150px"
+              direction={"column"}
+              gap="10px"
+              maxHeight="500px"
+              overflow="scroll"
+              flexWrap="nowrap"
+              padding="14px"
+            >
+              {ACTIONS.map((action) => (
+                <ButtonBase
+                  onClick={() => action.onClick()}
+                  key={action.label}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    width: "100%",
+                    padding: "6px 10px",
+                    borderRadius: "6px",
+                    ":hover": {
+                      background: "#C1B6F6",
+                    },
+                  }}
+                >
+                  <Typography fontFamily="Poppins" fontSize="14px" fontWeight={500} color="black">
+                    {action.label}
+                  </Typography>
+                </ButtonBase>
+              ))}
+            </Grid>
+          </Popper>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              width: "100%",
+              position: "absolute",
+              right: "2%",
+              bottom: "5%",
+            }}
+          >
+            <ButtonBase
+              onClick={handleClick}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "100%",
+                padding: "4px",
+                transition: "background 0.1s ease-in-out",
+                ":hover": {
+                  background: "#F5F5F5",
+                },
+              }}
+            >
+              <MoreVertIcon
+                sx={{
+                  color: "black",
+                  opacity: 0.6,
+                }}
+              />
+            </ButtonBase>
+          </Box>
+        </div>
+      </ClickAwayListener>
+    </>
   );
 };
 

@@ -155,7 +155,7 @@ const QuestsList = ({ data }) => {
                         </Box>
                       )}
                     </Box>
-                    <QuestCardMenu />
+                    <QuestCardMenu quest={item} />
                   </CardWrapper>
                 </CardHoverWrapper>
               ))}
