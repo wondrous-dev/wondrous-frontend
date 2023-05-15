@@ -189,6 +189,11 @@ const ViewQuestResults = ({ quest }) => {
       type: 'text',
     },
     {
+      label: 'Max Submissions',
+      value: quest?.maxSubmission || 'Unlimited',
+      type: 'text',
+    },
+    {
       label: 'Rewards',
       type: 'rewards',
       value: [
