@@ -1,5 +1,4 @@
 import { ButtonBase } from '@mui/material';
-import { Box } from '@mui/system';
 import { Label } from 'components/CreateTemplate/styles';
 import styled from 'styled-components';
 
@@ -9,8 +8,8 @@ export const WorkspaceWrapper = styled(ButtonBase)`
     align-items: center;
     gap: 10px;
     justify-content: space-between;
-    padding: 10px 4px;
-    border-radius: 16px;
+    padding: 4px 4px;
+    border-radius: 10px;
     cursor: pointer;
     ${Label} {
         text-align: left;
