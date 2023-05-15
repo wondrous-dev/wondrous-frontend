@@ -1,28 +1,30 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client"
 
 export const GET_CMTY_ORG_DISCORD_CONFIG = gql`
-  query getCmtyOrgDiscordConfig($orgId: ID!) {
-    getCmtyOrgDiscordConfig(orgId: $orgId) {
-      id
-      createdAt
-      orgId
-      guildId
-      guildInfo {
-        guildId
-        guildName
-      }
-    }
-  }
-`;
-
+	query getCmtyOrgDiscordConfig($orgId: ID!) {
+		getCmtyOrgDiscordConfig(orgId: $orgId) {
+			id
+			createdAt
+			orgId
+			guildId
+			guildInfo {
+				guildId
+				guildName
+			}
+			additionalData {
+				notificationChannelId
+			}
+		}
+	}
+`
 
 export const GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL = gql`
-  query getCmtyOrgDiscordConfig($orgId: ID!) {
-    getCmtyOrgDiscordConfig(orgId: $orgId) {
-      id
-      createdAt
-      orgId
-      guildId
-    }
-  }
-`;
+	query getCmtyOrgDiscordConfig($orgId: ID!) {
+		getCmtyOrgDiscordConfig(orgId: $orgId) {
+			id
+			createdAt
+			orgId
+			guildId
+		}
+	}
+`
