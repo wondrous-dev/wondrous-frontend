@@ -16,7 +16,6 @@ import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
 
 const DEFAULT_STATE_VALUE = {
-  title: "",
   level: null,
   timeBound: false,
   maxSubmission: null,
@@ -40,6 +39,7 @@ const CreateTemplate = ({
   questId = null,
   defaultQuestSteps = [],
   postUpdate = null,
+  title
 }) => {
   const navigate = useNavigate();
   const [createQuest] = useMutation(CREATE_QUEST, {
@@ -97,7 +97,7 @@ const CreateTemplate = ({
     if (!questSettings.isActive && !isSaving) {
       return setIsSaving(true);
     }
-    const { title, questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
+    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
     const body = {
       title,

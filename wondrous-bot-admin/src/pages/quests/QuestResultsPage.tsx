@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import CreateTemplate from "components/CreateTemplate";
+import DeleteQuestButton from "components/DeleteQuestButton";
 import PageHeader from "components/PageHeader";
 import ShareComponent from "components/Share";
 import { SharedSecondaryButton } from "components/Shared/styles";
@@ -16,7 +17,6 @@ import { transformQuestConfig } from "utils/transformQuestConfig";
 const QuestResultsPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location, 'LOCATION')
   const isEditInQuery = new URLSearchParams(location.search).get("edit") === "true";
   const [isEditMode, setIsEditMode] = useState(isEditInQuery);
   let { id } = useParams();
@@ -41,7 +41,6 @@ const QuestResultsPage = () => {
   const toggleEdit = () => setIsEditMode((prev) => !prev);
 
   const questSettings = {
-    title: getQuestById?.title || "",
     level: getQuestById?.level ? String(getQuestById?.level) : null,
     timeBound: getQuestById?.startAt || getQuestById?.endAt,
     maxSubmission: getQuestById?.maxSubmission || null,
@@ -75,7 +74,7 @@ const QuestResultsPage = () => {
   return (
     <>
       <PageHeader
-        title="Member Quiz"
+        title={getQuestById?.title || ""}
         withBackButton
         onBackButtonClick={() => {
           if (isEditMode) {
@@ -83,7 +82,8 @@ const QuestResultsPage = () => {
           }
         }}
         renderActions={() => (
-          <Grid display="flex" gap="10px">
+          <Grid display="flex" gap="10px" alignItems="center">
+            <DeleteQuestButton questId={getQuestById?.id}/>
             <ShareComponent />
             {isEditMode ? (
               <>
@@ -101,11 +101,7 @@ const QuestResultsPage = () => {
               </>
             ) : (
               <>
-                <SharedSecondaryButton $reverse onClick={toggleEdit}>
-                  Edit Quest
-                </SharedSecondaryButton>
-
-                <SharedSecondaryButton onClick={handleNavigationToNewQuest}>New Quest</SharedSecondaryButton>
+                <SharedSecondaryButton onClick={toggleEdit}>Edit Quest</SharedSecondaryButton>
               </>
             )}
           </Grid>
@@ -117,6 +113,7 @@ const QuestResultsPage = () => {
           displaySavePanel={!inView}
           defaultQuestSettings={questSettings}
           questId={id}
+          title={getQuestById?.title}
           postUpdate={toggleEdit}
           defaultQuestSteps={questSteps}
         />

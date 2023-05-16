@@ -160,11 +160,6 @@ const ViewQuestResults = ({ quest }) => {
 
   const questSettings = [
     {
-      label: 'Quest Title',
-      value: quest?.title,
-      type: 'text',
-    },
-    {
       label: 'Level Requirement',
       value: quest?.level || 'None',
       type: 'text',

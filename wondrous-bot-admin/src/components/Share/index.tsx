@@ -1,5 +1,5 @@
-import IosShareIcon from "@mui/icons-material/IosShare";
-import { ButtonBase } from "@mui/material";
+import ShareIcon from "components/Icons/Share";
+import { ButtonIconWrapper } from "components/Shared/styles";
 import useAlerts from "utils/hooks";
 
 const ShareComponent = () => {
@@ -11,16 +11,9 @@ const ShareComponent = () => {
     setSnackbarAlertOpen(true);
   };
   return (
-    <ButtonBase onClick={onClick}>
-      <IosShareIcon
-        sx={{
-          color: "black",
-          "&:hover": {
-            opacity: 0.6,
-          },
-        }}
-      />
-    </ButtonBase>
+    <ButtonIconWrapper onClick={onClick}>
+      <ShareIcon />
+    </ButtonIconWrapper>
   );
 };
 

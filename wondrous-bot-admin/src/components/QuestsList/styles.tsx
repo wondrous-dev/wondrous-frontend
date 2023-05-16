@@ -1,4 +1,5 @@
 import { Grid, Typography } from '@mui/material';
+import { BoxWrapper } from 'components/QuestCardMenu/styles';
 import styled from 'styled-components';
 
 export const Label = styled(Typography)`
@@ -38,6 +39,9 @@ export const CardWrapper = styled(Grid)`
     &:hover {
       transform: translateY(-20px);
       background: #fee2ca;
+      ${BoxWrapper} {
+        display: flex;
+      }
     }
   }
 `;

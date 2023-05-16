@@ -6,6 +6,7 @@ import { DELETE_QUEST } from "graphql/mutations";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAlerts from "utils/hooks";
+import { BoxWrapper } from "./styles";
 const QuestCardMenu = ({ quest }) => {
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const [confirmModalData, setConfirmModalData] = useState(null);
@@ -25,8 +26,8 @@ const QuestCardMenu = ({ quest }) => {
       setConfirmModalData(null);
     },
     onError: (error) => {
-        setSnackbarAlertMessage("Error deleting quest");
-        setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage("Error deleting quest");
+      setSnackbarAlertOpen(true);
     },
     refetchQueries: ["getQuestsForOrg", "getOrgQuestStats"],
   });
@@ -104,16 +105,7 @@ const QuestCardMenu = ({ quest }) => {
               ))}
             </Grid>
           </Popper>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              width: "100%",
-              position: "absolute",
-              right: "2%",
-              bottom: "5%",
-            }}
-          >
+          <BoxWrapper>
             <ButtonBase
               onClick={handleClick}
               sx={{
@@ -124,18 +116,17 @@ const QuestCardMenu = ({ quest }) => {
                 padding: "4px",
                 transition: "background 0.1s ease-in-out",
                 ":hover": {
-                  background: "#F5F5F5",
+                  background: "white",
                 },
               }}
             >
               <MoreVertIcon
                 sx={{
                   color: "black",
-                  opacity: 0.6,
                 }}
               />
             </ButtonBase>
-          </Box>
+          </BoxWrapper>
         </div>
       </ClickAwayListener>
     </>
