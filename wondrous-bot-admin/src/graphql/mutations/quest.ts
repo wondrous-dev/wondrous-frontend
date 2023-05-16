@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client';
-import { QuestFragment } from 'graphql/fragments/quest';
+import { gql } from "@apollo/client";
+import { QuestFragment } from "graphql/fragments/quest";
 
 export const CREATE_QUEST = gql`
   mutation createQuest($input: QuestInput) {
@@ -57,4 +57,13 @@ export const REJECT_SUBMISSION = gql`
       id
     }
   }
+`;
+
+export const DELETE_QUEST = gql`
+  mutation deleteQuest($questId: ID!) {
+    deleteQuest(questId: $questId) {
+      success
+    }
+  }
+
 `;

@@ -1,12 +1,7 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 import { greyColors } from "utils/theme/colors";
-import {
-  ButtonBase,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { ButtonBase, Grid, TextField, Typography } from "@mui/material";
 
 export const DefaultLink = styled(Link)`
   && {
@@ -90,6 +85,9 @@ export const ButtonIconWrapper = styled(ButtonBase)`
     height: 30px;
 
     width: 30px;
+    &:hover {
+      opacity: 0.8;
+    }
   }
 `;
 
@@ -136,6 +134,8 @@ export const SharedSecondaryButton = styled(ButtonBase)`
     line-height: 150%;
     white-space: nowrap;
     color: ${({ color = "#0c002d" }) => color};
+    border: 1px solid transparent;
+
     &:disabled {
       opacity: 0.5;
     }

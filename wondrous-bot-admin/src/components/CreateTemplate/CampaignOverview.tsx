@@ -50,16 +50,16 @@ const CampaignOverview = ({ questSettings, setQuestSettings, errors, setErrors }
   }, [levels]);
 
   const CONFIG = [
-    {
-      label: 'Quest Title',
-      component: TextFieldComponent,
-      value: questSettings.title,
-      componentProps: {
-        multiline: false,
-        placeholder: 'Enter title'
-      },
-      key: 'title',
-    },
+    // {
+    //   label: 'Quest Title',
+    //   component: TextFieldComponent,
+    //   value: questSettings.title,
+    //   componentProps: {
+    //     multiline: false,
+    //     placeholder: 'Enter title'
+    //   },
+    //   key: 'title',
+    // },
     {
       label: 'Level Requirement',
       component: SelectComponent,
