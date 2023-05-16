@@ -12,11 +12,14 @@ import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
 import { CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
+import { GET_QUEST_REWARDS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
 import { questValidator, ValidationError } from "services/validators";
 import { getPathArray } from "utils/common";
 import { set } from "lodash";
+import { useEffect } from "react";
+import { useLazyQuery } from "@apollo/client";
 
 const DEFAULT_STATE_VALUE = {
   title: "",
@@ -45,6 +48,7 @@ const CreateTemplate = ({
   postUpdate = null,
 }) => {
   const navigate = useNavigate();
+  const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
   const [createQuest] = useMutation(CREATE_QUEST, {
     onCompleted: ({ createQuest }) => {
       navigate(`/quests/${createQuest.id}`);
@@ -55,7 +59,7 @@ const CreateTemplate = ({
     onCompleted: ({ updateQuest }) => {
       postUpdate?.();
     },
-    refetchQueries: ["getQuestsForOrg"],
+    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
   });
 
   const { activeOrg } = useContext(GlobalContext);
@@ -116,7 +120,18 @@ const CreateTemplate = ({
       endAt: endAt ? endAt.toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
-
+      rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {
+        if (reward?.type === "discord_role") {
+          return {
+            discordRewardData: {
+              discordRoleId: reward?.discordRewardData?.discordRoleId,
+              discordGuildId: reward?.discordRewardData?.discordGuildId,
+              discordRoleName: reward?.discordRewardData?.discordRoleName,
+            },
+            type: reward?.type,
+          };
+        }
+      }),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           type: next.type,
@@ -195,6 +210,26 @@ const CreateTemplate = ({
   };
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
+  useEffect(() => {
+    if (questId) {
+      getQuestRewards({
+        variables: {
+          questId,
+        },
+      });
+    }
+  }, [questId]);
+  const questRewards = questRewardsData?.getQuestRewards;
+  useEffect(() => {
+    if (questRewards?.length > 0) {
+      setQuestSettings((prev) => {
+        return {
+          ...prev,
+          rewards: [...prev.rewards, ...questRewards],
+        };
+      });
+    }
+  }, [questRewards?.length]);
   return (
     <>
       <Modal
