@@ -59,7 +59,7 @@ const CreateTemplate = ({
     onCompleted: ({ updateQuest }) => {
       postUpdate?.();
     },
-    refetchQueries: ["getQuestsForOrg"],
+    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
   });
 
   const { activeOrg } = useContext(GlobalContext);
@@ -120,7 +120,18 @@ const CreateTemplate = ({
       endAt: endAt ? endAt.toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
-      rewards: questSettings.rewards.slice(1),
+      rewards: questSettings.rewards?.slice(1)?.map((reward) => {
+        if (reward?.type === "discord_role") {
+          return {
+            discordRewardData: {
+              discordRoleId: reward?.discordRewardData?.discordRoleId,
+              discordGuildId: reward?.discordRewardData?.discordGuildId,
+              discordRoleName: reward?.discordRewardData?.discordRoleName,
+            },
+            type: reward?.type,
+          };
+        }
+      }),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           type: next.type,
