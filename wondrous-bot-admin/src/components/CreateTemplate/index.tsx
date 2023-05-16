@@ -12,8 +12,14 @@ import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
 import { CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
+import { GET_QUEST_REWARDS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
+import { questValidator, ValidationError } from "services/validators";
+import { getPathArray } from "utils/common";
+import { set } from "lodash";
+import { useEffect } from "react";
+import { useLazyQuery } from "@apollo/client";
 
 const DEFAULT_STATE_VALUE = {
   level: null,
@@ -42,6 +48,7 @@ const CreateTemplate = ({
   title
 }) => {
   const navigate = useNavigate();
+  const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
   const [createQuest] = useMutation(CREATE_QUEST, {
     onCompleted: ({ createQuest }) => {
       navigate(`/quests/${createQuest.id}`);
@@ -52,29 +59,31 @@ const CreateTemplate = ({
     onCompleted: ({ updateQuest }) => {
       postUpdate?.();
     },
-    refetchQueries: ["getQuestsForOrg"],
+    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
   });
 
   const { activeOrg } = useContext(GlobalContext);
 
-  const [configuration, setConfiguration] = useState(defaultQuestSteps);
+  const [errors, setErrors] = useState({});
+  const [steps, setSteps] = useState(defaultQuestSteps);
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState(defaultQuestSettings);
   const handleAdd = (type) => {
-    setConfiguration([
-      ...configuration,
+    setSteps([
+      ...steps,
       {
-        id: configuration.length,
+        id: steps.length + 1,
         type,
         value: "",
+        required: true,
       },
     ]);
   };
 
   const handleRemove = (index) => {
-    const newItems = [...configuration];
+    const newItems = [...steps];
     newItems.splice(index, 1);
-    setConfiguration(newItems);
+    setSteps(newItems);
   };
 
   const handleMutation = ({ body }) => {
@@ -93,9 +102,9 @@ const CreateTemplate = ({
       },
     });
   };
-  const handleSave = (status = null) => {
-    if (!questSettings.isActive && !isSaving) {
-      return setIsSaving(true);
+  const handleSave = async (status = null) => {
+    if (Object.keys(errors).length > 0) {
+      setErrors({});
     }
     const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
@@ -111,12 +120,24 @@ const CreateTemplate = ({
       endAt: endAt ? endAt.toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
-
-      steps: configuration.reduce((acc, next, index) => {
+      rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {
+        if (reward?.type === "discord_role") {
+          return {
+            discordRewardData: {
+              discordRoleId: reward?.discordRewardData?.discordRoleId,
+              discordGuildId: reward?.discordRewardData?.discordGuildId,
+              discordRoleName: reward?.discordRewardData?.discordRoleName,
+            },
+            type: reward?.type,
+          };
+        }
+      }),
+      steps: steps.reduce((acc, next, index) => {
         const step: any = {
           type: next.type,
           order: index + 1,
-          prompt: next.value?.question || next?.value?.prompt || next.value,
+          required: next.required === false ? false : true,
+          prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };
         if (next.type === TYPES.MULTI_QUIZ) {
           (step.type = next.value.multiSelectValue),
@@ -169,11 +190,46 @@ const CreateTemplate = ({
         return [...acc, step];
       }, []),
     };
-    handleMutation({ body });
+    try {
+      await questValidator(body);
+      if (!questSettings.isActive && !isSaving) {
+        return setIsSaving(true);
+      }
+      handleMutation({ body });
+    } catch (err) {
+      const errors = {};
+      if (err instanceof ValidationError) {
+        err.inner.forEach((error) => {
+          const path = getPathArray(error.path);
+          set(errors, path, error.message);
+        });
+        setErrors(errors);
+        setIsSaving(false);
+      } else console.log(err, "Error outside of validation service");
+    }
   };
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
-
+  useEffect(() => {
+    if (questId) {
+      getQuestRewards({
+        variables: {
+          questId,
+        },
+      });
+    }
+  }, [questId]);
+  const questRewards = questRewardsData?.getQuestRewards;
+  useEffect(() => {
+    if (questRewards?.length > 0) {
+      setQuestSettings((prev) => {
+        return {
+          ...prev,
+          rewards: [...prev.rewards, ...questRewards],
+        };
+      });
+    }
+  }, [questRewards?.length]);
   return (
     <>
       <Modal
@@ -223,7 +279,14 @@ const CreateTemplate = ({
           <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
             <PanelComponent
               renderHeader={() => <CampaignOverviewHeader />}
-              renderBody={() => <CampaignOverview questSettings={questSettings} setQuestSettings={setQuestSettings} />}
+              renderBody={() => (
+                <CampaignOverview
+                  questSettings={questSettings}
+                  setQuestSettings={setQuestSettings}
+                  errors={errors}
+                  setErrors={setErrors}
+                />
+              )}
             />
             <PanelComponent
               renderHeader={() => <RewardOverviewHeader />}
@@ -239,9 +302,11 @@ const CreateTemplate = ({
             width="100%"
           >
             <AddFormEntity
-              configuration={configuration}
-              setConfiguration={setConfiguration}
+              steps={steps}
+              setSteps={setSteps}
               handleRemove={handleRemove}
+              errors={errors}
+              setErrors={setErrors}
             />
             <Panel
               display="flex"

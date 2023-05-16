@@ -4,6 +4,7 @@ type InputQuestStep = {
 	type: string
 	order: number
 	prompt: string
+	required?: boolean
 	options: Array<{
 		position: number
 		text: string
@@ -27,6 +28,7 @@ type InputQuestStep = {
 type OutputQuestStep = {
 	id: number
 	type: string
+	required?: boolean
 	value:
 		| string
 		| {
@@ -69,6 +71,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
 		const outputStep: OutputQuestStep = {
 			id: step.order,
 			type: step.type,
+			required: step.required === false ? false : true,
 			value: ""
 		}
 
@@ -79,7 +82,6 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
 		) {
 			outputStep.value = step.prompt
 		} else if ([TYPES.SINGLE_QUIZ, TYPES.MULTI_QUIZ].includes(step.type)) {
-			console.log("step.options", step.options)
 			const hasCorrectAnswer = step.options?.some(
 				(option) => option.correct !== null && option.correct !== undefined
 			)

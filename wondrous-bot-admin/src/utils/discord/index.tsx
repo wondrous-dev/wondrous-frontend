@@ -1,12 +1,8 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
-import { GET_ORG_DISCORD_ROLES } from 'graphql/queries/discord';
-import { useEffect } from 'react';
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
+import { useEffect } from "react";
 
-export const addSearchParamsUrl = (
-  url: string,
-  param: string,
-  paramValue: string
-) => {
+export const addSearchParamsUrl = (url: string, param: string, paramValue: string) => {
   const newUrl = new URL(url);
   const searchParams = new URLSearchParams(newUrl.searchParams);
   searchParams.set(param, paramValue);
@@ -14,9 +10,8 @@ export const addSearchParamsUrl = (
 };
 
 export const generateRandomString = function (length: number) {
-  let text = '';
-  const possible =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let text = "";
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -42,7 +37,7 @@ export function insertUrlParam(key, value) {
     const newurl = `${window.location.protocol}//${window.location.host}${
       window.location.pathname
     }?${searchParams.toString()}`;
-    window.history.pushState({ path: newurl }, '', newurl);
+    window.history.pushState({ path: newurl }, "", newurl);
   }
 }
 
@@ -57,11 +52,11 @@ export function removeUrlParam(key) {
     const newurl = `${window.location.protocol}//${window.location.host}${
       window.location.pathname
     }?${searchParams.toString()}`;
-    window.history.pushState({ path: newurl }, '', newurl);
+    window.history.pushState({ path: newurl }, "", newurl);
   }
 }
 
-export const delQuery = (asPath) => asPath.split('?')[0];
+export const delQuery = (asPath) => asPath.split("?")[0];
 
 export const dedupeColumns = (columns) => {
   const taskMap = {};
@@ -81,28 +76,28 @@ export const dedupeColumns = (columns) => {
 
 export const getDiscordUrl = () => {
   if (import.meta.env.PRODUCTION) {
-    return 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fapp.wonderverse.xyz%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
+    return "https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fapp.wonderverse.xyz%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify";
   }
   if (import.meta.env.STAGING) {
-    return 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fwondrous-app-git-staging-wonderverse.vercel.app%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
+    return "https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fwondrous-app-git-staging-wonderverse.vercel.app%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify";
   }
-  return 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
+  return "https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify";
 };
 
 export const getTelegramBotLink = () => {
   if (import.meta.env.PRODUCTION) {
-    return 'https://t.me/wonderverse_bot';
+    return "https://t.me/wonderverse_bot";
   }
-  return 'https://t.me/wonderverse_staging_bot';
+  return "https://t.me/wonderverse_staging_bot";
 };
 
 export const useDiscordRoles = ({ orgId, skip = false }) => {
-  const [getCmtyOrgDiscordRoles, { data: getCmtyOrgDiscordRolesData, variables }] =
-    useLazyQuery(GET_ORG_DISCORD_ROLES, {
-      fetchPolicy: 'cache-and-network',
-      nextFetchPolicy: 'cache-first',
-    });
-
+  const [getCmtyOrgDiscordRoles, { data: getCmtyOrgDiscordRolesData, variables }] = useLazyQuery(
+    GET_ORG_DISCORD_ROLES,
+    {
+      fetchPolicy: "cache-and-network",
+    }
+  );
   useEffect(() => {
     if (skip || !orgId || orgId === variables?.orgId) return;
 
@@ -112,6 +107,5 @@ export const useDiscordRoles = ({ orgId, skip = false }) => {
       },
     });
   }, [getCmtyOrgDiscordRolesData, orgId, skip]);
-
   return getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles || [];
 };

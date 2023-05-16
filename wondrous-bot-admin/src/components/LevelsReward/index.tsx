@@ -16,6 +16,7 @@ import { StyledViewQuestResults } from 'components/ViewQuestResults/styles';
 import { CloseIcon } from 'components/Shared/DatePicker/Icons';
 import { useMutation } from '@apollo/client';
 import { ADD_ORG_LEVEL_REWARD, REMOVE_ORG_LEVEL_REWARD } from 'graphql/mutations';
+import { LevelsWrapper } from './styles';
 
 interface ILevelsRewardProps {
   value?: any;
@@ -51,15 +52,14 @@ const LevelsReward = ({ value, onChange, roles, level }) => {
   // FIXME we should pass in current level rewards probably
   // need to fetch somewhere?
   const [anchorEl, setAnchorEl] = useState(null);
-  
-  const { activeOrg } = useContext(GlobalContext);
 
+  const { activeOrg } = useContext(GlobalContext);
   const [addOrgLevelReward] = useMutation(ADD_ORG_LEVEL_REWARD);
   const [removeOrgLevelReward] = useMutation(REMOVE_ORG_LEVEL_REWARD);
   const handleRemove = async () => {
     await removeOrgLevelReward({
       variables: {
-        levelRewardId: 'rewardid??',
+        levelRewardId: value.id,
       }
     })
     onChange({});
@@ -131,6 +131,7 @@ const LevelsReward = ({ value, onChange, roles, level }) => {
               flexWrap='nowrap'
               padding='14px'
             >
+              <LevelsWrapper>
               {/* <Box
                 display='flex'
                 gap='6px'
@@ -232,6 +233,7 @@ const LevelsReward = ({ value, onChange, roles, level }) => {
                   </Box>
                 );
               })}
+              </LevelsWrapper>
             </Grid>
           </Popper>
         </Box>

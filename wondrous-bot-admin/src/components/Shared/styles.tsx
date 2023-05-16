@@ -1,19 +1,7 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 import { greyColors } from "utils/theme/colors";
-import {
-  ButtonBase,
-  Grid,
-  Input,
-  Menu,
-  MenuItem,
-  Popover,
-  Popper,
-  Select,
-  Switch,
-  SwitchProps,
-  TextField,
-} from "@mui/material";
+import { ButtonBase, Grid, TextField, Typography } from "@mui/material";
 
 export const DefaultLink = styled(Link)`
   && {
@@ -146,7 +134,7 @@ export const SharedSecondaryButton = styled(ButtonBase)`
     line-height: 150%;
     white-space: nowrap;
     color: ${({ color = "#0c002d" }) => color};
-	border: 1px solid transparent;
+    border: 1px solid transparent;
 
     &:disabled {
       opacity: 0.5;
@@ -161,5 +149,14 @@ export const SharedSecondaryButton = styled(ButtonBase)`
 export const RoundedSecondaryButton = styled(SharedSecondaryButton)`
   && {
     padding: 6px;
+  }
+`;
+
+export const ErrorText = styled(Typography)`
+  && {
+    color: #ee4852;
+    font-size: 13px;
+    margin-top: 5px;
+    font-family: "Poppins";
   }
 `;
