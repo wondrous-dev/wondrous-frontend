@@ -21,59 +21,63 @@ const ModulesList = ({ modulesData, setModulesData }) => {
 
   return (
     <Box display="flex" flexDirection="column" gap="24px" width="100%">
-      <Box display="flex" gap="14px" flexDirection="column">
-        <Typography color={palette.white} fontWeight="700" fontSize="13px">
-          Active features
-        </Typography>
+      {Boolean(activeModules.length) && (
+        <Box display="flex" gap="14px" flexDirection="column">
+          <Typography color={palette.white} fontWeight="700" fontSize="13px">
+            Active features
+          </Typography>
 
-        <Box
-          borderRadius="12px"
-          overflow="hidden"
-          sx={{
-            outline: '1px solid #2A2A2A', // TODO: add color to palette
-          }}
-        >
-          {activeModules.map((module) => {
-            const { ModuleIcon, count = 0 } = modulesData[module];
-            return (
-              <ModulesListItem
-                key={module}
-                handleOnClick={() => handleSetModuleActiveStatus(module)}
-                buttonStatus="remove"
-                moduleName={module}
-                ModuleIcon={ModuleIcon}
-                createdCount={count}
-              />
-            );
-          })}
+          <Box
+            borderRadius="12px"
+            overflow="hidden"
+            sx={{
+              outline: '1px solid #2A2A2A', // TODO: add color to palette
+            }}
+          >
+            {activeModules.map((module) => {
+              const { Icon, count = 0 } = modulesData[module];
+              return (
+                <ModulesListItem
+                  key={module}
+                  handleOnClick={() => handleSetModuleActiveStatus(module)}
+                  buttonStatus="remove"
+                  moduleName={module}
+                  ModuleIcon={Icon}
+                  createdCount={count}
+                />
+              );
+            })}
+          </Box>
         </Box>
-      </Box>
-      <Box display="flex" gap="14px" flexDirection="column">
-        <Typography color={palette.white} fontWeight="700" fontSize="13px">
-          Inactive features
-        </Typography>
-        <Box
-          borderRadius="12px"
-          overflow="hidden"
-          sx={{
-            outline: '1px solid #2A2A2A', // TODO: add color to palette
-          }}
-        >
-          {inactiveModules.map((module) => {
-            const { ModuleIcon, createdCount = 0 } = modulesData[module];
-            return (
-              <ModulesListItem
-                key={module}
-                handleOnClick={() => handleSetModuleActiveStatus(module)}
-                buttonStatus="add"
-                moduleName={module}
-                ModuleIcon={ModuleIcon}
-                createdCount={createdCount}
-              />
-            );
-          })}
+      )}
+      {Boolean(inactiveModules.length) && (
+        <Box display="flex" gap="14px" flexDirection="column">
+          <Typography color={palette.white} fontWeight="700" fontSize="13px">
+            Inactive features
+          </Typography>
+          <Box
+            borderRadius="12px"
+            overflow="hidden"
+            sx={{
+              outline: '1px solid #2A2A2A', // TODO: add color to palette
+            }}
+          >
+            {inactiveModules.map((module) => {
+              const { Icon, createdCount = 0 } = modulesData[module];
+              return (
+                <ModulesListItem
+                  key={module}
+                  handleOnClick={() => handleSetModuleActiveStatus(module)}
+                  buttonStatus="add"
+                  moduleName={module}
+                  ModuleIcon={Icon}
+                  createdCount={createdCount}
+                />
+              );
+            })}
+          </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 };
