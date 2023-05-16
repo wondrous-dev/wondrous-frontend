@@ -41,7 +41,8 @@ export const CONFIG_COMPONENTS = {
 	[TYPES.TWEET_WITH_PHRASE]: TwitterComponent,
 	[TYPES.SNAPSHOT_PROPOSAL_VOTE]: SnapshotComponent,
 	[TYPES.SNAPSHOT_SPACE_VOTE]: SnapshotComponent,
-	[TYPES.DISCORD_MESSAGE_IN_CHANNEL]: DiscordComponent
+	[TYPES.DISCORD_MESSAGE_IN_CHANNEL]: DiscordComponent,
+	[TYPES.JOIN_DISCORD_COMMUNITY_CALL]: DiscordComponent
 }
 
 export const RESPOND_TYPES = {

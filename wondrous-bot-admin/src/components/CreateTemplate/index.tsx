@@ -22,7 +22,6 @@ import { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 
 const DEFAULT_STATE_VALUE = {
-  title: "",
   level: null,
   timeBound: false,
   maxSubmission: null,
@@ -46,6 +45,7 @@ const CreateTemplate = ({
   questId = null,
   defaultQuestSteps = [],
   postUpdate = null,
+  title,
 }) => {
   const navigate = useNavigate();
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
@@ -106,7 +106,7 @@ const CreateTemplate = ({
     if (Object.keys(errors).length > 0) {
       setErrors({});
     }
-    const { title, questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
+    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
     const body = {
       title,
@@ -183,8 +183,14 @@ const CreateTemplate = ({
           };
         } else if (next.type === TYPES.JOIN_DISCORD_COMMUNITY_CALL) {
           step.prompt = next.value?.prompt;
+          const discordEventId = next.value?.discordEventLink
+            ?.split("/")
+            ?.find((item) => item?.includes("event"))
+            ?.split("event=")
+            ?.pop();
           step["additionalData"] = {
-            discordChannelName: next.value?.discordChannelName,
+            discordEventLink: next.value?.discordEventLink,
+            discordEventId,
           };
         }
         return [...acc, step];

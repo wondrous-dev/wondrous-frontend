@@ -22,23 +22,24 @@ import useAlerts from 'utils/hooks';
   since stepsData doesn't contain the step type, we need to get it from steps
 */
 const stepsNormalizr = (steps, stepsData) => {
-  return stepsData?.map((stepData, idx) => {
+  return steps?.map((step) => {
     // normally it's the same as index, this is just a safety measure
-    const step = steps.find((i) => i.order === stepData.order);
+    const stepData = stepsData.find((i) => i.order === step.order);
     return {
       ...stepData,
       type: step?.type,
       prompt: step?.prompt,
+      additionalData: step?.additionalData,
     };
   });
 };
-
-const TEXT_TYPES = [TYPES.TEXT_FIELD, TYPES.NUMBER];
+const TEXT_TYPES = [TYPES.TEXT_FIELD, TYPES.NUMBER, TYPES.JOIN_DISCORD_COMMUNITY_CALL];
 
 const SELECT_TYPES = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ];
 
-const StepContent = ({ content, selectedValues, type, attachments }) => {
+const StepContent = ({ content, selectedValues, type, attachments, additionalData }) => {
   if (TEXT_TYPES.includes(type)) {
+    const contentWithAdditionalData = additionalData?.discordEventLink ? `Joined: ${additionalData.discordEventLink}` : content;
     return (
       <StyledContent
         fontFamily='Poppins'
@@ -47,7 +48,7 @@ const StepContent = ({ content, selectedValues, type, attachments }) => {
         lineHeight='24px'
         color='#767676'
       >
-        {content}
+        {contentWithAdditionalData}
       </StyledContent>
     );
   }
@@ -223,6 +224,7 @@ const QuestResultsCard = ({ submission }) => {
             <StepContent
               content={step.content}
               selectedValues={step.selectedValues}
+              additionalData={step.additionalData}
               type={step.type}
               attachments={step.attachments}
             />
