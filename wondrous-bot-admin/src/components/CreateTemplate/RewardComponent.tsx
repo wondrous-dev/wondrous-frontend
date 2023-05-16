@@ -8,6 +8,7 @@ import Modal from "components/Shared/Modal";
 import { useDiscordRoles } from "utils/discord";
 import { useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
+import DeleteIcon from "components/Icons/Delete";
 import { useEffect } from "react";
 
 const COMPONENT_OPTIONS = [
@@ -90,6 +91,20 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     });
   };
 
+  const onDiscordRoleRewardRemove = (reward) => {
+    setQuestSettings((prev) => {
+      const newRewards = prev.rewards.filter((r) => {
+        if (r.type === "discord_role") {
+          return r.discordRewardData.discordRoleId !== reward.discordRewardData.discordRoleId;
+        }
+        return true;
+      });
+      return {
+        ...prev,
+        rewards: newRewards,
+      };
+    });
+  };
   return (
     <Grid container direction="column" gap="14px" justifyContent="flex-start">
       <Modal
@@ -101,14 +116,21 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
           <SharedSecondaryButton
             onClick={() => {
               const discordRoleSelected = componentsOptions.find((option) => option.value === discordRoleReward);
-              onRewardAdd({
-                type: "discord_role",
-                discordRewardData: {
-                  discordRoleId: discordRoleSelected?.value,
-                  discordGuildId: discordRoleData[0]?.guildId,
-                  discordRoleName: discordRoleSelected?.label,
-                },
-              });
+              const discordRoleAlreadyExists = rewards.some(
+                (reward) =>
+                  reward.type === "discord_role" &&
+                  reward.discordRewardData.discordRoleId === discordRoleSelected?.value
+              );
+              if (!discordRoleAlreadyExists) {
+                onRewardAdd({
+                  type: "discord_role",
+                  discordRewardData: {
+                    discordRoleId: discordRoleSelected?.value,
+                    discordGuildId: discordRoleData[0]?.guildId,
+                    discordRoleName: discordRoleSelected?.label,
+                  },
+                });
+              }
               setIsRewardModalOpen(false);
             }}
           >
@@ -172,6 +194,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                 initialReward={reward}
                 setQuestSettings={setQuestSettings}
               />
+              <DeleteIcon onClick={() => onDiscordRoleRewardRemove(reward)} />
             </Grid>
           );
         }
