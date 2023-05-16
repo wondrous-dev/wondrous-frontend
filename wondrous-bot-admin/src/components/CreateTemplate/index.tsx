@@ -120,7 +120,7 @@ const CreateTemplate = ({
       endAt: endAt ? endAt.toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
-      rewards: questSettings.rewards?.slice(1)?.map((reward) => {
+      rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {
         if (reward?.type === "discord_role") {
           return {
             discordRewardData: {
