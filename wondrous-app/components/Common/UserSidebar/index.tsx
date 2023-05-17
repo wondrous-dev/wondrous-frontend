@@ -17,42 +17,36 @@ import PodsIconButton from '../SidebarMainPods';
 
 const useSidebarData = () => {
   const router = useRouter();
-  const { setMinimized } = useSideBar();
-  const { isMobileScreen } = useMediaQuery();
+
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
   const onlyIsInSpecialOrg = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id in SPECIAL_ORGS;
   const onlyHasProposals =
     onlyIsInSpecialOrg &&
     SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL) &&
     !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK);
-  const handleOnClick = (link) => () => {
-    router.push(link);
-    if (isMobileScreen) {
-      setMinimized(true);
-    }
-  };
-
   const user = useMe();
-  const data = [
-    {
+  const data = {
+    Explore: {
       label: 'Explore',
-      items: [
-        {
+      items: {
+        'Explore Projects': {
           text: 'Explore Projects',
           Icon: ExplorePageMinimalIcon,
           link: '/explore',
+          active: true,
         },
-      ],
+      },
     },
-    {
+    'My HQ': {
       label: 'My HQ',
-      items: [
-        {
+      items: {
+        'Mission Control': {
           text: 'Mission Control',
           Icon: MissionControlSidebarIcon,
           link: '/mission-control',
+          active: true,
         },
-        {
+        'My Profile': {
           text: 'My Profile',
           ignoreIconStyles: true,
           Icon: () => (
@@ -68,31 +62,33 @@ const useSidebarData = () => {
           ),
           link: `/profile/${user?.username}/about`,
         },
-      ],
+      },
     },
-    {
+    Workspaces: {
       label: 'Workspaces',
-      items: [
-        {
+      items: {
+        Contributor: {
           text: 'Contributor',
           Icon: ContributorIcon,
           check: onlyHasProposals
             ? () => router.pathname === '/dashboard/proposals'
             : () => router.pathname === '/dashboard',
           link: '/dashboard',
+          active: true,
         },
-        {
+        Operator: {
           text: 'Operator',
           Icon: OperatorIcon,
           check: () => router.pathname === '/dashboard/admin',
           link: `/dashboard/admin?boardType=${ORG_MEMBERSHIP_REQUESTS}`,
+          active: true,
         },
-      ],
+      },
     },
-    {
+    General: {
       label: 'General',
-      items: [
-        {
+      items: {
+        Pods: {
           text: 'Pods',
           Component: () => (
             <PodsIconButton
@@ -103,24 +99,38 @@ const useSidebarData = () => {
               )}
             />
           ),
+          active: true,
         },
-        {
+        Settings: {
           text: 'Settings',
           Icon: WrenchIcon,
           link: '/profile/settings',
+          active: true,
         },
-      ],
+      },
     },
-  ];
-  return { data, handleOnClick };
+  };
+  return data;
+};
+
+const useHandleOnClick = () => {
+  const router = useRouter();
+  const { setMinimized } = useSideBar();
+  const { isMobileScreen } = useMediaQuery();
+  const handleOnClick = (link) => () => {
+    router.push(link);
+    if (isMobileScreen) {
+      setMinimized(true);
+    }
+  };
+  return handleOnClick;
 };
 
 const UserSidebar = () => {
   const router = useRouter();
   const { minimized } = useSideBar();
-
-  const { data, handleOnClick } = useSidebarData();
-
+  const handleOnClick = useHandleOnClick();
+  const data = useSidebarData();
   return (
     <SidebarEntityListMemoized
       minimized={minimized}

@@ -13,7 +13,7 @@ type MenuItem = {
     items: {
       [key: string]: {
         text: string;
-        link: string;
+        link?: string;
         Icon?: React.ReactNode | React.FC | JSX.Element;
         Component?: React.FC;
         check?: () => boolean;
