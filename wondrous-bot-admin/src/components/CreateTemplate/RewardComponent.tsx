@@ -62,7 +62,9 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const { activeOrg } = useContext(GlobalContext);
   const discordRoleData = useDiscordRoles({ orgId: activeOrg?.id });
+  console.log("discordRoleData", discordRoleData);
   const discordRoles = discordRoleData[0]?.roles;
+  console.log("discordRoles", discordRoles);
   const componentsOptions = discordRoles?.map((role) => ({
     label: role.name,
     value: role.id,
