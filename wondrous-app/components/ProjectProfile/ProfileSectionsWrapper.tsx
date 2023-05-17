@@ -4,11 +4,12 @@ import StrictModeDroppable from 'components/StrictModeDroppable';
 import { UPSERT_ORG_PROFILE_PAGE, UPSERT_POD_PROFILE_PAGE } from 'graphql/mutations';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useQueryModules from 'hooks/modules/useQueryModules';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES, SPECIAL_ORGS } from 'utils/constants';
 import { useBoardPermission, useBoards } from 'utils/hooks';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useIsOrg } from './helpers';
+import theme from '../../theme';
 import ProfileBountySection from './ProfileBountySection';
 import ProfileCategorySection from './ProfileCategorySection';
 import ProfileCollabSection from './ProfileCollabSection';
@@ -17,8 +18,9 @@ import ProfileMemberSection from './ProfileMemberSection';
 import ProfileMilestoneSection from './ProfileMilestoneSection';
 import ProfileProposalSection from './ProfileProposalSection';
 import ProfileTaskSection from './ProfileTaskSection';
+import ProjectProfileAddFeatures from './ProjectProfileAddFeatures';
+import { useIsOrg } from './helpers';
 import { CardWrapper } from './styles';
-import theme from '../../theme';
 
 const ProfileSectionsWrapper = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -26,6 +28,7 @@ const ProfileSectionsWrapper = () => {
   const { layout } = (podId ? pod : orgData) || {};
   const isOrg = useIsOrg();
   const { hasFullPermission } = useBoardPermission();
+  const modules = useQueryModules({ orgId, podId });
   const [upsertOrgProfilePage] = useMutation(UPSERT_ORG_PROFILE_PAGE, {
     refetchQueries: ['getOrgFromUsername'],
   });
@@ -67,25 +70,31 @@ const ProfileSectionsWrapper = () => {
 
   const isSpecialOrg = orgId in SPECIAL_ORGS;
   const Components = {
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK)) && {
-      task: ProfileTaskSection,
-    }),
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY)) && {
-      bounty: ProfileBountySection,
-    }),
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE)) && {
-      milestone: ProfileMilestoneSection,
-    }),
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL)) && {
-      proposal: ProfileProposalSection,
-    }),
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK)) &&
+      modules?.task && {
+        task: ProfileTaskSection,
+      }),
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY)) &&
+      modules?.bounty && {
+        bounty: ProfileBountySection,
+      }),
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE)) &&
+      modules?.milestone && {
+        milestone: ProfileMilestoneSection,
+      }),
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL)) &&
+      modules?.proposal && {
+        proposal: ProfileProposalSection,
+      }),
     member: ProfileMemberSection,
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT)) && {
-      grant: ProfileGrantSection,
-    }),
-    resource: ProfileCategorySection,
+    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT)) &&
+      modules?.grant && {
+        grant: ProfileGrantSection,
+      }),
+    ...(modules?.document && { resource: ProfileCategorySection }),
     ...(isOrg &&
-      (!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB)) && { collab: ProfileCollabSection }),
+      (!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB)) &&
+      modules?.collab && { collab: ProfileCollabSection }),
   };
 
   return (
@@ -132,6 +141,7 @@ const ProfileSectionsWrapper = () => {
               );
             })}
             {provided.placeholder}
+            {hasFullPermission && <ProjectProfileAddFeatures orgId={orgId} podId={podId} />}
           </Grid>
         )}
       </StrictModeDroppable>
