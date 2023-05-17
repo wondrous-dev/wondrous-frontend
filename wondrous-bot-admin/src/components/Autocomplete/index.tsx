@@ -13,6 +13,10 @@ const AutocompleteComponent = ({
       id={id}
       options={options}
       value={value}
+      getOptionLabel={(option) => {
+        
+        return option?.label || options?.find(i => i.value === option)?.label || ''
+      }}
       sx={{ width: 300 }}
       onChange={(e, { value }) => {
         handleChange(value);
@@ -33,12 +37,6 @@ const AutocompleteComponent = ({
           {...params}
           SelectProps={{
             displayEmpty: true,
-            renderValue: (selected) => {
-              const selectedOption = options?.find(
-                (option) => option.value === selected
-              );
-              return selectedOption ? selectedOption.label : 'Select';
-            },
           }}
         />
       )}

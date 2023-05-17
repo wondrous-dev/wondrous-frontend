@@ -57,6 +57,7 @@ export const QuestFragment = gql`
 			type
 			order
 			prompt
+			required
 			options {
 				position
 				text

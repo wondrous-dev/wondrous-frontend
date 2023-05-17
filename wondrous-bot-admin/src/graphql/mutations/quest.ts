@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client';
-import { QuestFragment } from 'graphql/fragments/quest';
+import { gql } from "@apollo/client";
+import { QuestFragment } from "graphql/fragments/quest";
 
 export const CREATE_QUEST = gql`
   mutation createQuest($input: QuestInput) {
@@ -19,8 +19,16 @@ export const UPDATE_QUEST_LABEL = gql`
 `;
 
 export const ADD_ORG_LEVEL_REWARD = gql`
-  mutation addOrgLevelReward($input: AddOrgLevelInput) {
+  mutation addOrgLevelReward($input: AddOrgLevelRewardInput) {
     addOrgLevelReward(input: $input) {
+      success
+    }
+  }
+`;
+
+export const REMOVE_ORG_LEVEL_REWARD = gql`
+  mutation removeOrgLevelReward($levelRewardId: ID!) {
+    removeOrgLevelReward(levelRewardId: $levelRewardId) {
       success
     }
   }
@@ -49,4 +57,13 @@ export const REJECT_SUBMISSION = gql`
       id
     }
   }
+`;
+
+export const DELETE_QUEST = gql`
+  mutation deleteQuest($questId: ID!) {
+    deleteQuest(questId: $questId) {
+      success
+    }
+  }
+
 `;

@@ -22,16 +22,22 @@ const REQUIRE_REVIEW_OPTIONS = [
   },
 ];
 
-const CampaignOverview = ({ questSettings, setQuestSettings }) => {
+const CampaignOverview = ({ questSettings, setQuestSettings, errors, setErrors }) => {
   const { activeOrg } = useContext(GlobalContext);
 
   const handleChange = (key, value) => {
+    if(errors[key]) {
+      setErrors({
+        ...errors,
+        [key]: null,
+      });
+    }
     setQuestSettings({
       ...questSettings,
       [key]: value,
     });
   };
-
+  
   const { levels } = useLevels({
     orgId: activeOrg?.id,
   });
@@ -44,16 +50,16 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
   }, [levels]);
 
   const CONFIG = [
-    {
-      label: 'Quest Title',
-      component: TextFieldComponent,
-      value: questSettings.title,
-      componentProps: {
-        multiline: false,
-        placeholder: 'Enter title'
-      },
-      key: 'title',
-    },
+    // {
+    //   label: 'Quest Title',
+    //   component: TextFieldComponent,
+    //   value: questSettings.title,
+    //   componentProps: {
+    //     multiline: false,
+    //     placeholder: 'Enter title'
+    //   },
+    //   key: 'title',
+    // },
     {
       label: 'Level Requirement',
       component: SelectComponent,
@@ -136,6 +142,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
               {Component ? (
                 <Component
                   onChange={(value) => handleChange(key, value)}
+                  error={errors[key]}
                   value={questSettings[key]}
                   questSettings={questSettings}
                   setQuestSettings={setQuestSettings}

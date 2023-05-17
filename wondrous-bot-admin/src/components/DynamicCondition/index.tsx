@@ -31,7 +31,7 @@ const CONDITION_VALUES = {
   [QUEST_CONDITION_TYPES.QUEST]: 'questId',
 };
 
-const FilterGroup = ({ condition, handleChange, options }) => {
+const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
   const handleConditionDataChange = (value) => {
     let additionalParams: any = {};
 
@@ -48,6 +48,7 @@ const FilterGroup = ({ condition, handleChange, options }) => {
       [CONDITION_VALUES[condition.type]]: value,
       ...additionalParams,
     });
+    handleClose()
   };
   return (
     <Box display='flex' gap='6px' alignItems='center'>
@@ -224,6 +225,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
             <FilterGroup
               condition={condition}
               handleChange={handleChange}
+              handleClose={handleClickAway}
               options={getOptionsForCondition(condition.type)}
             />
           </Grid>

@@ -1,33 +1,26 @@
-import { useQuery } from '@apollo/client';
-import { Box, Grid, Typography } from '@mui/material';
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { Box, Grid, Typography } from "@mui/material";
+import { CampaignOverview, CampaignOverviewHeader } from "components/CreateTemplate/CampaignOverview";
+import PanelComponent from "components/CreateTemplate/PanelComponent";
+import PageWrapper from "components/Shared/PageWrapper";
 import {
-  CampaignOverview,
-  CampaignOverviewHeader,
-} from 'components/CreateTemplate/CampaignOverview';
-import PanelComponent from 'components/CreateTemplate/PanelComponent';
-import PageWrapper from 'components/Shared/PageWrapper';
-import {
+  GET_CMTY_ORG_DISCORD_CONFIG,
   GET_QUESTS_FOR_ORG,
   GET_QUEST_BY_ID,
   GET_QUEST_SUBMISSION_STATS,
   GET_SUBMISSIONS_FOR_QUEST,
-} from 'graphql/queries';
-import { GET_ORG_DISCORD_ROLES } from 'graphql/queries/discord';
-import moment from 'moment';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import apollo from 'services/apollo';
-import { getTextForCondition } from 'utils/common';
+} from "graphql/queries";
+import { GET_GUILD_DISCORD_CHANNELS, GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
+import moment from "moment";
+import { useContext, useEffect, useMemo, useState } from "react";
+import apollo from "services/apollo";
+import { getTextForCondition } from "utils/common";
 
-import {
-  BG_TYPES,
-  LIMIT,
-  MONTH_DAY_FULL_YEAR,
-  QUEST_CONDITION_TYPES,
-  QUEST_SUBMISSION_STATUS,
-} from 'utils/constants';
-import GlobalContext from 'utils/context/GlobalContext';
-import QuestResults from './QuestResults';
-import ViewCampaignOverview from './ViewCampaignOverview';
+import { BG_TYPES, LIMIT, MONTH_DAY_FULL_YEAR, QUEST_CONDITION_TYPES, QUEST_SUBMISSION_STATUS } from "utils/constants";
+import GlobalContext from "utils/context/GlobalContext";
+import QuestResults from "./QuestResults";
+import ViewCampaignOverview from "./ViewCampaignOverview";
+import PublishQuestCardBody from "./PublishQuestCardBody";
 
 const ViewQuestResults = ({ quest }) => {
   const { activeOrg } = useContext(GlobalContext);
@@ -35,7 +28,18 @@ const ViewQuestResults = ({ quest }) => {
 
   const [hasMore, setHasMore] = useState(true);
   const [filter, setFilter] = useState(QUEST_SUBMISSION_STATUS.IN_REVIEW);
-
+  const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
+  });
+  const [getGuildDiscordChannels, { data: guildDiscordChannelsData }] = useLazyQuery(GET_GUILD_DISCORD_CHANNELS);
+  const guildId = orgDiscordConfig?.getCmtyOrgDiscordConfig?.guildId;
+  const guildDiscordChannels = guildDiscordChannelsData?.getAvailableChannelsForDiscordGuild;
+  const existingNotificationChannelId =
+    orgDiscordConfig?.getCmtyOrgDiscordConfig?.additionalData?.notificationChannelId;
   const {
     data: submissionsData,
     refetch,
@@ -88,14 +92,10 @@ const ViewQuestResults = ({ quest }) => {
   };
 
   const timeboundDate = useMemo(() => {
-    const startDate = quest?.startDate
-      ? moment(quest?.startDate).format(MONTH_DAY_FULL_YEAR)
-      : null;
-    const endDate = quest?.endDate
-      ? moment(quest?.endDate).format(MONTH_DAY_FULL_YEAR)
-      : null;
+    const startDate = quest?.startDate ? moment(quest?.startDate).format(MONTH_DAY_FULL_YEAR) : null;
+    const endDate = quest?.endDate ? moment(quest?.endDate).format(MONTH_DAY_FULL_YEAR) : null;
     if (!startDate && !endDate) {
-      return 'No';
+      return "No";
     }
     if (startDate && endDate) {
       return `${startDate} - ${endDate}`;
@@ -113,13 +113,8 @@ const ViewQuestResults = ({ quest }) => {
           orgId: activeOrg?.id,
         },
       });
-      const allRoles = data?.getCmtyOrgDiscordRoles
-        ?.map((role) => role.roles)
-        .flat();
-      return allRoles.find(
-        (item) =>
-          item.id === quest?.conditions?.[0]?.conditionData?.discordRoleId
-      )?.name;
+      const allRoles = data?.getCmtyOrgDiscordRoles?.map((role) => role.roles).flat();
+      return allRoles.find((item) => item.id === quest?.conditions?.[0]?.conditionData?.discordRoleId)?.name;
     }
     if (quest?.conditions?.[0]?.type === QUEST_CONDITION_TYPES.QUEST) {
       const { data } = await apollo.query({
@@ -141,106 +136,119 @@ const ViewQuestResults = ({ quest }) => {
     getName();
   }, [quest?.conditions]);
 
+  useEffect(() => {
+    if (guildId) {
+      // fetch all guild channels
+      getGuildDiscordChannels({
+        variables: {
+          guildId,
+        },
+      });
+    }
+  }, [guildId]);
   if (!quest) {
     return null;
   }
 
-  const submissions = submissionsData?.getQuestSubmissions?.map(
-    (submission) => ({
-      user:
-        submission?.creator?.username || submission?.creator?.discordUsername,
-      pointReward: quest?.pointReward,
-      stepsData: submission?.stepsData,
-      steps: quest?.steps,
-      id: submission?.id,
-      approvedAt: submission?.approvedAt,
-      rejectedAt: submission?.rejectedAt,
-    })
-  );
+  const submissions = submissionsData?.getQuestSubmissions?.map((submission) => ({
+    user: submission?.creator?.username || submission?.creator?.discordUsername,
+    pointReward: quest?.pointReward,
+    stepsData: submission?.stepsData,
+    steps: quest?.steps,
+    id: submission?.id,
+    approvedAt: submission?.approvedAt,
+    rejectedAt: submission?.rejectedAt,
+  }));
 
   const questSettings = [
     {
-      label: 'Quest Title',
-      value: quest?.title,
-      type: 'text',
+      label: "Level Requirement",
+      value: quest?.level || "None",
+      type: "text",
     },
     {
-      label: 'Level Requirement',
-      value: quest?.level || 'None',
-      type: 'text',
-    },
-    {
-      label: 'Time Bound',
+      label: "Time Bound",
       value: timeboundDate,
-      type: 'text',
+      type: "text",
     },
     {
-      label: 'Require Review',
+      label: "Require Review",
       value: quest?.requireReview,
-      type: 'boolean',
+      type: "boolean",
     },
     {
-      label: 'Condition',
+      label: "Condition",
       value:
         getTextForCondition({
           type: quest?.conditions?.[0]?.type,
           name: conditionName,
-        }) || 'No Condition',
-      type: 'text',
+        }) || "No Condition",
+      type: "text",
     },
     {
-      label: 'Rewards',
-      type: 'rewards',
+      label: "Max Submissions",
+      value: quest?.maxSubmission || "Unlimited",
+      type: "text",
+    },
+    {
+      label: "Rewards",
+      type: "rewards",
       value: [
         {
           value: quest?.pointReward,
-          type: 'Points',
+          type: "Points",
         },
       ],
     },
   ];
-
   return (
     <PageWrapper
       containerProps={{
-        direction: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        minHeight: '100vh',
+        direction: "column",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        minHeight: "100vh",
         padding: {
-          xs: '14px 14px 120px 14px',
-          sm: '24px 56px 150px 24px',
+          xs: "14px 14px 120px 14px",
+          sm: "24px 56px 150px 24px",
         },
       }}
       bgType={BG_TYPES.DEFAULT}
     >
       <Grid
-        display='flex'
-        justifyContent='space-between'
-        width='100%'
-        gap='24px'
+        display="flex"
+        justifyContent="space-between"
+        width="100%"
+        gap="24px"
         flexDirection={{
-          xs: 'column',
-          md: 'row',
+          xs: "column",
+          md: "row",
         }}
       >
-        <Box flexBasis='40%' display='flex' flexDirection='column' gap='24px'>
+        <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
           <PanelComponent
-            renderHeader={() => (
-              <CampaignOverviewHeader title='Quest Information' />
-            )}
+            renderHeader={() => <CampaignOverviewHeader title="Quest Information" />}
+            renderBody={() => <ViewCampaignOverview questSettings={questSettings} />}
+          />
+          <PanelComponent
+            renderHeader={() => <CampaignOverviewHeader title="Send quest notification" />}
             renderBody={() => (
-              <ViewCampaignOverview questSettings={questSettings} />
+              <PublishQuestCardBody
+                guildDiscordChannels={guildDiscordChannels}
+                quest={quest}
+                orgId={activeOrg?.id}
+                existingNotificationChannelId={existingNotificationChannelId}
+              />
             )}
           />
         </Box>
         <Grid
-          display='flex'
-          flexDirection='column'
-          justifyContent='flex-start'
-          gap='24px'
-          alignItems='center'
-          width='100%'
+          display="flex"
+          flexDirection="column"
+          justifyContent="flex-start"
+          gap="24px"
+          alignItems="center"
+          width="100%"
         >
           <QuestResults
             submissions={submissions}

@@ -27,7 +27,10 @@ const LevelsPage = () => {
     },
     onCompleted: ({ getOrgLevelsRewards }) => {
       const newRewards = getOrgLevelsRewards.reduce((acc, curr) => {
-        acc[curr.level] = curr.discordRewardData;
+        acc[curr.level] = {
+          ...curr.discordRewardData,
+          id: curr.id,
+        };
         return acc;
       }, {});
       setRewards(newRewards);
@@ -91,7 +94,7 @@ const LevelsPage = () => {
         },
       };
     });
-  }, [levels, rewards]);
+  }, [levels, rewards, roles]);
 
   const headers = ['Level', 'Point Requirement', 'Reward'];
   return (

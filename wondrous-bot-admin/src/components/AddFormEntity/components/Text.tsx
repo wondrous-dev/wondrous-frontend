@@ -1,12 +1,16 @@
-import { Grid } from '@mui/material';
-import TextField from 'components/Shared/TextField';
-import { Label } from './styles';
+import { Grid } from "@mui/material";
+import TextField from "components/Shared/TextField";
+import { Label } from "./styles";
 
-const TextComponent = (props) => {
+interface Props {
+  error?: any;
+  onChange: (value: string) => void;
+}
+const TextComponent = ({ error, ...rest }: Props) => {
   return (
-    <Grid display='flex' gap='8px' flexDirection='column' width="100%">
+    <Grid display="flex" gap="8px" flexDirection="column" width="100%">
       <Label>Question / Prompt</Label>
-      <TextField multiline={false} {...props} />
+      <TextField multiline={false} {...rest} error={error?.prompt} />
     </Grid>
   );
 };

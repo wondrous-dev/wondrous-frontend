@@ -41,7 +41,7 @@ const TableComponent = ({ headers, data }) => {
                 const column = row[key];
                 return (
                   <TableCell key={key} sx={{
-                    borderRight: '2px solid #EFEFEF',
+                    borderRight: '2px solid #f2f2f2',
                     borderBottom: '0px'
                   }}>
                     {column.component === 'label' ? (
@@ -62,6 +62,11 @@ const TableComponent = ({ headers, data }) => {
                         alignItems='center'
                         position='relative'
                         justifyContent='center'
+                        sx={{
+                          '&:hover #display-edit-icon': {
+                            visibility: 'visible',
+                          }
+                        }}
                       >
                         <Box
                           position='relative'
