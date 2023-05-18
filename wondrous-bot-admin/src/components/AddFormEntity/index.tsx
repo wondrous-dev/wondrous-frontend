@@ -13,6 +13,7 @@ import { CONFIG_COMPONENTS, RESPOND_TYPES, TYPES } from "utils/constants";
 import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
+import StepAttachments from "components/StepAttachments";
 
 const MULTICHOICE_DEFAULT_VALUE = {
   question: "",
@@ -168,6 +169,24 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
     setSteps(newConfiguration);
   };
 
+  const handleMedia = (value, id) => {
+    const newConfiguration = steps.reduce((acc, next) => {
+      if (next.id === id) {
+        acc = [
+          ...acc,
+          {
+            ...next,
+            mediaUploads: value,
+          },
+        ];
+        return acc;
+      }
+      acc.push(next);
+      return acc;
+    }, []);
+    setSteps(newConfiguration);
+  };
+
   return (
     <Grid
       display="flex"
@@ -251,14 +270,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
                                 <ButtonIconWrapper onClick={() => handleRemove(idx)}>
                                   <DeleteIcon />
                                 </ButtonIconWrapper>
-                                {/* <ButtonIconWrapper>
-																	<MoreVertIcon
-																		sx={{
-																			color: "black",
-																			fontSize: "17px"
-																		}}
-																	/>
-																</ButtonIconWrapper> */}
                               </Grid>
                             </Header>
                           )}
@@ -273,6 +284,10 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
                               {RESPOND_TYPES[item.type] ? (
                                 <TypeComponent respondType={RESPOND_TYPES[item.type]} />
                               ) : null}
+                              <StepAttachments
+                                step={item}
+                                handleChange={(value) => handleMedia(value, item.id)}
+                              />
                             </>
                           )}
                         />

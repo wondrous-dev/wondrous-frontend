@@ -58,6 +58,11 @@ export const QuestFragment = gql`
 			order
 			prompt
 			required
+			media {
+				slug
+				name
+				type
+			}
 			options {
 				position
 				text

@@ -20,6 +20,7 @@ import { getPathArray } from "utils/common";
 import { set } from "lodash";
 import { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
+import { transformAndUploadMedia } from "utils/media";
 
 const DEFAULT_STATE_VALUE = {
   level: null,
@@ -45,7 +46,7 @@ const CreateTemplate = ({
   questId = null,
   defaultQuestSteps = [],
   postUpdate = null,
-  title
+  title,
 }) => {
   const navigate = useNavigate();
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
@@ -76,6 +77,7 @@ const CreateTemplate = ({
         type,
         value: "",
         required: true,
+        mediaUploads: [],
       },
     ]);
   };
@@ -102,12 +104,36 @@ const CreateTemplate = ({
       },
     });
   };
+
+  const handleMediaUpload = async (mediaUploads) =>
+    Promise.all(
+      mediaUploads.map(async (file) => {
+        try {
+          const { filename, fileType } = await transformAndUploadMedia({ file });
+          return {
+            uploadSlug: filename,
+            type: fileType,
+            name: file.name,
+          };
+        } catch (error) {
+          return null;
+        }
+      })
+    );
+
   const handleSave = async (status = null) => {
     if (Object.keys(errors).length > 0) {
       setErrors({});
     }
     const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
+
+    const stepsMedia = await Promise.all(
+      steps.map(async (step, idx) => {
+        return await handleMediaUpload(step.mediaUploads);
+      })
+    );
+
     const body = {
       title,
       orgId: activeOrg.id,
@@ -136,6 +162,7 @@ const CreateTemplate = ({
         const step: any = {
           type: next.type,
           order: index + 1,
+          mediaUploads: stepsMedia[index] || [],
           required: next.required === false ? false : true,
           prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };
@@ -197,6 +224,7 @@ const CreateTemplate = ({
       }
       handleMutation({ body });
     } catch (err) {
+      console.log(err, "ERR");
       const errors = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
