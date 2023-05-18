@@ -47,12 +47,17 @@ const StepAttachments = ({ step, handleChange }) => {
                   height: "fit-content !important",
                 }}
               >
-                <SafeImage
-                  style={{
-                    height: "fit-content !important",
-                  }}
-                  src={attachment?.slug || URL.createObjectURL(attachment)}
-                />
+                {attachment?.slug ? (
+                  <SafeImage
+                    style={{
+                      height: "fit-content !important",
+                    }}
+                    src={attachment?.slug}
+                  />
+                ) : (
+                  <img src={URL.createObjectURL(attachment)} />
+                )}
+
                 <Box display="flex" gap="10px" alignItems="center">
                   <ButtonBase onClick={() => removeAttachment(attachmentIdx)}>
                     <DeleteIcon stroke="red" />

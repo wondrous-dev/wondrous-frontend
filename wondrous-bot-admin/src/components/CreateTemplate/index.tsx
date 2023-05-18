@@ -88,6 +88,13 @@ const CreateTemplate = ({
     setSteps(newItems);
   };
 
+  const postMutationMediaUpdate = async () => {
+    const stepsMedia = await Promise.all(steps.map(async (step, idx) => {
+      return await handleMediaUpload(step.mediaUploads);
+    }));
+    
+  }
+
   const handleMutation = ({ body }) => {
     if (questId) {
       return updateQuest({
@@ -109,7 +116,7 @@ const CreateTemplate = ({
     Promise.all(
       mediaUploads.map(async (file) => {
         try {
-          const { filename, fileType } = await transformAndUploadMedia({ file });
+          const {filename, fileType} = await transformAndUploadMedia({ file });
           return {
             uploadSlug: filename,
             type: fileType,
@@ -128,11 +135,9 @@ const CreateTemplate = ({
     const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
-    const stepsMedia = await Promise.all(
-      steps.map(async (step, idx) => {
-        return await handleMediaUpload(step.mediaUploads);
-      })
-    );
+    const stepsMedia = await Promise.all(steps.map(async (step, idx) => {
+      return await handleMediaUpload(step.mediaUploads);
+    }));
 
     const body = {
       title,
@@ -224,7 +229,7 @@ const CreateTemplate = ({
       }
       handleMutation({ body });
     } catch (err) {
-      console.log(err, "ERR");
+      console.log(err, 'ERR')
       const errors = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
