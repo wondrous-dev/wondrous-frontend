@@ -55,6 +55,7 @@ export const QuestFragment = gql`
 		}
 		steps {
 			type
+			id
 			order
 			prompt
 			required

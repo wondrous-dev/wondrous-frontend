@@ -11,7 +11,7 @@ import { RewardComponent, RewardOverviewHeader } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
-import { CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
+import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
 import { GET_QUEST_REWARDS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
@@ -50,18 +50,7 @@ const CreateTemplate = ({
 }) => {
   const navigate = useNavigate();
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
-  const [createQuest] = useMutation(CREATE_QUEST, {
-    onCompleted: ({ createQuest }) => {
-      navigate(`/quests/${createQuest.id}`);
-    },
-    refetchQueries: ["getQuestsForOrg"],
-  });
-  const [updateQuest] = useMutation(UPDATE_QUEST, {
-    onCompleted: ({ updateQuest }) => {
-      postUpdate?.();
-    },
-    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
-  });
+  const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA);
 
   const { activeOrg } = useContext(GlobalContext);
 
@@ -82,18 +71,56 @@ const CreateTemplate = ({
     ]);
   };
 
+  const [createQuest] = useMutation(CREATE_QUEST, {
+    onCompleted: ({ createQuest }) => {
+      handleUpdateQuestStepsMedia(createQuest.id, createQuest?.steps, steps);
+      navigate(`/quests/${createQuest.id}`);
+    },
+    refetchQueries: ["getQuestsForOrg"],
+  });
+  const [updateQuest] = useMutation(UPDATE_QUEST, {
+    onCompleted: ({ updateQuest }) => {
+      handleUpdateQuestStepsMedia(updateQuest.id, updateQuest?.steps, steps);
+      postUpdate?.();
+    },
+    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
+  });
+
   const handleRemove = (index) => {
     const newItems = [...steps];
     newItems.splice(index, 1);
     setSteps(newItems);
   };
 
-  const postMutationMediaUpdate = async () => {
-    const stepsMedia = await Promise.all(steps.map(async (step, idx) => {
-      return await handleMediaUpload(step.mediaUploads);
-    }));
-    
-  }
+  const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
+    debugger;
+    const stepsMedia = await Promise.all(
+      localSteps.map(async (step, idx) => {
+        return await handleMediaUpload(step.mediaUploads);
+      })
+    );
+
+    const stepsData = localSteps.reduce((acc, next, idx) => {
+      if (next.mediaUploads.length > 0) {
+        const questStep = questSteps.find((step) => step.order === idx + 1);
+        return [
+          ...acc,
+          {
+            stepId: questStep?.id,
+            mediaUploads: stepsMedia[idx],
+          },
+        ];
+      }
+      return acc;
+    }, []);
+
+    await attachQuestStepsMedia({
+      variables: {
+        questId,
+        stepsData,
+      },
+    });
+  };
 
   const handleMutation = ({ body }) => {
     if (questId) {
@@ -116,7 +143,7 @@ const CreateTemplate = ({
     Promise.all(
       mediaUploads.map(async (file) => {
         try {
-          const {filename, fileType} = await transformAndUploadMedia({ file });
+          const { filename, fileType } = await transformAndUploadMedia({ file });
           return {
             uploadSlug: filename,
             type: fileType,
@@ -134,10 +161,6 @@ const CreateTemplate = ({
     }
     const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
-
-    const stepsMedia = await Promise.all(steps.map(async (step, idx) => {
-      return await handleMediaUpload(step.mediaUploads);
-    }));
 
     const body = {
       title,
@@ -167,7 +190,7 @@ const CreateTemplate = ({
         const step: any = {
           type: next.type,
           order: index + 1,
-          mediaUploads: stepsMedia[index] || [],
+          mediaUploads: [],
           required: next.required === false ? false : true,
           prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };
@@ -229,7 +252,7 @@ const CreateTemplate = ({
       }
       handleMutation({ body });
     } catch (err) {
-      console.log(err, 'ERR')
+      console.log(err, "ERR");
       const errors = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
