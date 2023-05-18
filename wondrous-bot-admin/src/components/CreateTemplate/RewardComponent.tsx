@@ -10,6 +10,8 @@ import { useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import DeleteIcon from "components/Icons/Delete";
 import { useEffect } from "react";
+import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
+import { useLazyQuery } from "@apollo/client";
 
 const COMPONENT_OPTIONS = [
   {
@@ -61,9 +63,24 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const { activeOrg } = useContext(GlobalContext);
-  const discordRoleData = useDiscordRoles({ orgId: activeOrg?.id });
-  console.log("discordRoleData", discordRoleData);
-  const discordRoles = discordRoleData[0]?.roles;
+  const [getCmtyOrgDiscordRoles, { data: getCmtyOrgDiscordRolesData, variables }] = useLazyQuery(
+    GET_ORG_DISCORD_ROLES,
+    {
+      fetchPolicy: "cache-and-network",
+    }
+  );
+  useEffect(() => {
+    getCmtyOrgDiscordRoles({
+      variables: {
+        orgId: activeOrg?.id,
+      },
+    });
+  }, [activeOrg?.id]);
+  console.log("discordRoleData", getCmtyOrgDiscordRolesData);
+  const discordRoles =
+    getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles?.length > 0
+      ? getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles[0]?.roles
+      : [];
   console.log("discordRoles", discordRoles);
   const componentsOptions = discordRoles?.map((role) => ({
     label: role.name,
