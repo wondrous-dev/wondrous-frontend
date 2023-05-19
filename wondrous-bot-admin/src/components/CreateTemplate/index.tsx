@@ -22,7 +22,7 @@ import { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 
 const DEFAULT_STATE_VALUE = {
-  level: null,
+  level: '1',
   timeBound: false,
   maxSubmission: null,
   requireReview: false,
