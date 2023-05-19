@@ -1,6 +1,7 @@
-import { Box, ButtonBase, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import LinkBrokenIcon from 'components/Icons/linkBroken.svg';
 import useQueryModules from 'hooks/modules/useQueryModules';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import palette from 'theme/palette';
@@ -14,10 +15,10 @@ const ModulesChecker = ({ children }) => {
   const modules = useQueryModules({ orgId: org?.id });
   const routerPathnameToCheck = {
     [`/organization/[username]/boards?entity=${entity}`]: entity as string,
-    [`/organization/[username]/pods`]: ENTITIES_TYPES.POD,
-    [`/organization/[username]/boards`]: ENTITIES_TYPES.TASK,
-    [`/organization/[username]/docs`]: 'document',
-    [`/organization/[username]/analytics`]: 'leaderboard',
+    '/organization/[username]/pods': ENTITIES_TYPES.POD,
+    '/organization/[username]/boards': ENTITIES_TYPES.TASK,
+    '/organization/[username]/docs': 'document',
+    '/organization/[username]/analytics': 'leaderboard',
   };
   const routerPathnameLink = entity ? `${pathname}?entity=${entity}` : pathname;
   const routerPathnameEntity = routerPathnameToCheck[routerPathnameLink];
@@ -57,18 +58,26 @@ const ModulesChecker = ({ children }) => {
           <Typography color={palette.grey250} fontSize="15px" textAlign="center">
             Please contact your workspace admin if you have any questions.
           </Typography>
-          <ButtonBase
-            sx={{
-              bgcolor: palette.highlightPurple,
-              color: palette.white,
-              padding: '8px 24px',
-              borderRadius: '32px',
-              fontWeight: '600',
-              marginTop: '20px',
+          <Link
+            href={`/organization/${username}/home`}
+            passHref
+            style={{
+              textDecoration: 'none',
             }}
           >
-            Project Home
-          </ButtonBase>
+            <Box
+              sx={{
+                bgcolor: palette.highlightPurple,
+                color: palette.white,
+                padding: '8px 24px',
+                borderRadius: '32px',
+                fontWeight: '600',
+                marginTop: '20px',
+              }}
+            >
+              Project Home
+            </Box>
+          </Link>
         </Box>
       </Box>
     );

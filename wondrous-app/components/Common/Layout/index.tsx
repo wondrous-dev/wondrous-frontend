@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import HeaderComponent from 'components/Header';
-import ModulesCheckerMemoized from 'components/Modules';
+import ModulesCheckerMemoized from 'components/Common/ModulesLinkChecker';
 import Spotlight from 'components/Spotlight';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
