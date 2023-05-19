@@ -184,6 +184,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => 
       acc.push(next);
       return acc;
     }, []);
+    // debugger
     setSteps(newConfiguration);
   };
 

@@ -50,7 +50,9 @@ const CreateTemplate = ({
 }) => {
   const navigate = useNavigate();
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
-  const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA);
+  const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
+    refetchQueries: ['getQuestById']
+  });
 
   const { activeOrg } = useContext(GlobalContext);
 
@@ -93,7 +95,6 @@ const CreateTemplate = ({
   };
 
   const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
-    debugger;
     const stepsMedia = await Promise.all(
       localSteps.map(async (step, idx) => {
         return await handleMediaUpload(step.mediaUploads);
@@ -252,7 +253,6 @@ const CreateTemplate = ({
       }
       handleMutation({ body });
     } catch (err) {
-      console.log(err, "ERR");
       const errors = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
