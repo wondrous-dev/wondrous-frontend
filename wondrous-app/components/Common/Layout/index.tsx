@@ -1,10 +1,11 @@
 import { useQuery } from '@apollo/client';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import HeaderComponent from 'components/Header';
+import ModulesCheckerMemoized from 'components/Modules';
 import Spotlight from 'components/Spotlight';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { LIMIT } from 'services/board';
 import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
 import { GlobalContext, PageDataContext, SideBarContext } from 'utils/contexts';
@@ -157,11 +158,13 @@ export default function SidebarLayout({ children }) {
         }}
       >
         <HeaderComponent />
-        {!minimized && isMobile && <BackdropComponent open onClick={() => setMinimized(true)} />}
-        {isSpotlightOpen ? <Spotlight onClose={toggleSpotlight} /> : null}
-        <PageDataContext.Provider value={pageDataValues}>
-          <SectionContainer>{children}</SectionContainer>
-        </PageDataContext.Provider>
+        <ModulesCheckerMemoized>
+          {!minimized && isMobile && <BackdropComponent open onClick={() => setMinimized(true)} />}
+          {isSpotlightOpen ? <Spotlight onClose={toggleSpotlight} /> : null}
+          <PageDataContext.Provider value={pageDataValues}>
+            <SectionContainer>{children}</SectionContainer>
+          </PageDataContext.Provider>
+        </ModulesCheckerMemoized>
       </GlobalContext.Provider>
     </SideBarContext.Provider>
   );
