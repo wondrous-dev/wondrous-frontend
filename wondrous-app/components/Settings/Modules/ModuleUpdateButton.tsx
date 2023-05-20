@@ -1,9 +1,12 @@
 import { useMutation } from '@apollo/client';
 import { Box, ButtonBase } from '@mui/material';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { UPDATE_ORG_MODULES } from 'graphql/mutations';
+import { useContext } from 'react';
 import palette from 'theme/palette';
 
 const ModuleUpdateButton = ({ modulesData, orgId }) => {
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
   const input = Object.keys(modulesData).reduce((acc, module) => {
     acc[module] = modulesData[module].active;
     return acc;
@@ -14,6 +17,15 @@ const ModuleUpdateButton = ({ modulesData, orgId }) => {
     variables: {
       orgId,
       input,
+    },
+    onCompleted: () => {
+      setSnackbarAlertMessage('Modules updated successfully');
+      setSnackbarAlertOpen(true);
+    },
+    onError: () => {
+      setSnackbarAlertMessage('Something went wrong');
+      setSnackbarAlertSeverity('error');
+      setSnackbarAlertOpen(true);
     },
   });
 
