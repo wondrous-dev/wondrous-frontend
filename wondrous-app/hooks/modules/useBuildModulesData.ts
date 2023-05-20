@@ -16,11 +16,13 @@ const useBuildModulesData = ({ orgId = '', podId = '', orgUsername = '' }) => {
   const count = useQueryGetTasksPerTypeCount({ orgId, podId });
   if (!modules || !count) return null;
   const data = {
-    [ENTITIES_TYPES.POD]: {
-      active: modules?.pod,
-      Icon: PodIcon,
-      count: count?.podCount,
-    },
+    ...(!podId && {
+      [ENTITIES_TYPES.POD]: {
+        active: modules?.pod,
+        Icon: PodIcon,
+        count: count?.podCount,
+      },
+    }),
     [ENTITIES_TYPES.TASK]: {
       active: modules?.task,
       Icon: CheckBoxIcon,

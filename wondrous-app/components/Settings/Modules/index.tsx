@@ -9,7 +9,7 @@ import { useSettings } from 'utils/hooks';
 const ModuleUpdateButton = dynamic(() => import('./ModuleUpdateButton'));
 const ModulesList = dynamic(() => import('./ModulesList'));
 
-const ModulesSettingsComponent = ({ data, orgId }) => {
+const ModulesSettingsComponent = ({ data, orgId, podId }) => {
   const [modulesData, setModulesData] = useState(data);
   const handleOnClickActiveStatus = (module) => {
     setModulesData((prev) => {
@@ -62,7 +62,12 @@ const ModulesSettingsComponent = ({ data, orgId }) => {
         </Box>
         <ModulesList modulesData={modulesData} handleOnClickActiveStatus={handleOnClickActiveStatus} />
       </Box>
-      <ModuleUpdateButton modulesData={modulesData} orgId={orgId} onSubmit={clearAlteredModulesActiveState} />
+      <ModuleUpdateButton
+        modulesData={modulesData}
+        orgId={orgId}
+        podId={podId}
+        onSubmit={clearAlteredModulesActiveState}
+      />
     </Box>
   );
 };
@@ -74,7 +79,7 @@ const ModulesSettings = () => {
   const initialData = useBuildModulesData({ orgId, podId });
   if (!initialData) return null;
 
-  return <ModulesSettingsComponent data={initialData} orgId={orgId} />;
+  return <ModulesSettingsComponent data={initialData} orgId={orgId} podId={podId} />;
 };
 
 export default ModulesSettings;

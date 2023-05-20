@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME } from 'graphql/queries';
+import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, GET_POD_BY_ID } from 'graphql/queries';
 
 type UseQueryModulesValue = {
   bounty: boolean;
@@ -36,16 +36,26 @@ const useQueryModules = ({ orgUsername = '', orgId = '', podId = '' }): UseQuery
     variables: { orgId },
   });
 
-  // TODO: Add podId query
+  const { data: getPodByIdData } = useQuery(GET_POD_BY_ID, {
+    skip: !podId,
+    variables: { podId },
+  });
 
   const modules =
-    getOrgFromUsernameData?.getOrgFromUsername?.modules || getOrgByIdData?.getOrgById?.modules || defaultValue;
+    getPodByIdData?.getPodById?.modules ||
+    getOrgByIdData?.getOrgById?.modules ||
+    getOrgFromUsernameData?.getOrgFromUsername?.modules ||
+    defaultValue;
 
   const modulesCopy = Object.keys(modules).reduce(
     (acc, key) => {
-      // Converts all non-boolean values in `modules` to `true`.
+      if (podId && key === 'pod') {
+        // If `podId` is provided, then `pod` should not be included..
+        return acc;
+      }
       const moduleValue = modules[key];
       if (typeof moduleValue !== 'boolean' && key !== '__typename') {
+        // Converts all non-boolean values in `modules` to `true`.
         acc[key] = true;
         return acc;
       }

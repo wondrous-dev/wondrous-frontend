@@ -175,3 +175,11 @@ export const BATCH_ADD_USERS_TO_POD = gql`
     }
   }
 `;
+
+export const UPDATE_POD_MODULES = gql`
+  mutation updatePodModules($podId: ID!, $input: ModulesInput) {
+    updatePodModules(podId: $podId, input: $input) {
+      success
+    }
+  }
+`;
