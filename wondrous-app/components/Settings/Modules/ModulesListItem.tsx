@@ -4,7 +4,7 @@ import PlusIcon from 'components/Icons/plus';
 import palette from 'theme/palette';
 
 const modulesListItemButtonStatuses = {
-  add: {
+  inactive: {
     tooltipTitle: 'Add feature',
     buttonColor: '#0BA876', // TODO: add color to palette
     buttonHover: {
@@ -13,7 +13,7 @@ const modulesListItemButtonStatuses = {
     },
     ButtonIcon: <PlusIcon fill={palette.white} />,
   },
-  remove: {
+  active: {
     tooltipTitle: 'Remove feature',
     buttonColor: palette.red650,
     buttonHover: {
@@ -28,22 +28,22 @@ const modulesListItemButtonStatuses = {
 type ModulesListItemProps = {
   buttonStatus: keyof typeof modulesListItemButtonStatuses;
   moduleName: string;
-  ModuleIcon: any;
-  createdCount: number;
   handleOnClick: any;
+  moduleData: {
+    Icon: any; // TODO: add type
+    createdCount?: number;
+    initialActiveState?: boolean;
+    active: boolean;
+  };
 };
 
-const ModulesListItem = ({
-  buttonStatus: status,
-  moduleName,
-  ModuleIcon,
-  createdCount,
-  handleOnClick,
-}: ModulesListItemProps) => {
-  const { tooltipTitle, buttonColor, buttonHover, ButtonIcon } = modulesListItemButtonStatuses[status];
+const ModulesListItem = ({ buttonStatus, moduleName, moduleData, handleOnClick }: ModulesListItemProps) => {
+  const { Icon, createdCount = 0, initialActiveState, active } = moduleData;
+  const altered = initialActiveState !== undefined && initialActiveState !== active;
+  const { tooltipTitle, buttonColor, buttonHover, ButtonIcon } = modulesListItemButtonStatuses[buttonStatus];
   return (
     <Box
-      bgcolor={palette.grey900}
+      bgcolor={altered ? palette.grey920 : palette.grey900}
       display="flex"
       justifyContent="space-between"
       alignItems="center"
@@ -53,7 +53,7 @@ const ModulesListItem = ({
         outline: `1px solid ${palette.black92}`,
         pointerEvents: 'none',
         '&:hover': {
-          backgroundColor: palette.grey920,
+          backgroundColor: palette.grey85,
         },
       }}
     >
@@ -110,7 +110,7 @@ const ModulesListItem = ({
             justifyContent="center"
             alignItems="center"
           >
-            <ModuleIcon />
+            <Icon />
           </Box>
           <Typography color={palette.white} fontWeight="600" fontSize="16px" textTransform="capitalize">
             {moduleName}

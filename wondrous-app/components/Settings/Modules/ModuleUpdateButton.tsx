@@ -4,11 +4,10 @@ import { UPDATE_ORG_MODULES } from 'graphql/mutations';
 import palette from 'theme/palette';
 
 const ModuleUpdateButton = ({ modulesData, orgId }) => {
-  const input = {};
-
-  Object.keys(modulesData).forEach((module) => {
-    input[module] = modulesData[module].active;
-  });
+  const input = Object.keys(modulesData).reduce((acc, module) => {
+    acc[module] = modulesData[module].active;
+    return acc;
+  }, {});
 
   const [updateOrgModules] = useMutation(UPDATE_ORG_MODULES, {
     refetchQueries: ['getOrgByUsername', 'getOrgById'],
@@ -40,6 +39,7 @@ const ModuleUpdateButton = ({ modulesData, orgId }) => {
           fontSize: '15px',
           padding: '8px 24px',
           borderRadius: '35px',
+          cursor: 'pointer',
         }}
       >
         Update Workspace

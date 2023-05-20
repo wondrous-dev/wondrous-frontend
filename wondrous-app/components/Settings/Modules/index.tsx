@@ -9,8 +9,33 @@ import ModulesList from './ModulesList';
 
 const ModulesSettingsComponent = ({ data, orgId }) => {
   const [modulesData, setModulesData] = useState(data);
+  const handleOnClickActiveStatus = (module) => {
+    setModulesData((prev) => {
+      const { active, ...rest } = prev[module];
+      const { active: initialActiveState } = data[module];
+      return {
+        ...prev,
+        [module]: {
+          ...rest,
+          active: !active,
+          initialActiveState,
+        },
+      };
+    });
+  };
+  const stateIsAltered = Object.keys(modulesData).some((module) => {
+    const { active, initialActiveState } = modulesData[module];
+    return initialActiveState !== undefined && initialActiveState !== active;
+  });
   return (
-    <Box width="100%" display="flex" flexDirection="column" gap="112px" alignItems="center">
+    <Box
+      width="100%"
+      display="flex"
+      flexDirection="column"
+      paddingBottom="24px"
+      alignItems="center"
+      position="relative"
+    >
       <Box display="flex" flexDirection="column" gap="24px" alignItems="center" width="90%">
         <Box
           display="flex"
@@ -27,9 +52,13 @@ const ModulesSettingsComponent = ({ data, orgId }) => {
             Customize your workspace to only show the features your project uses.
           </Typography>
         </Box>
-        <ModulesList modulesData={modulesData} setModulesData={setModulesData} />
+        <ModulesList modulesData={modulesData} handleOnClickActiveStatus={handleOnClickActiveStatus} />
       </Box>
-      <ModuleUpdateButton modulesData={modulesData} orgId={orgId} />
+      {stateIsAltered && (
+        <Box position="fixed" width="80%" bottom="10px" margin="0 auto">
+          <ModuleUpdateButton modulesData={modulesData} orgId={orgId} />
+        </Box>
+      )}
     </Box>
   );
 };
