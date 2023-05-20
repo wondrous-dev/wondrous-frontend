@@ -31,14 +31,14 @@ type ModulesListItemProps = {
   handleOnClick: any;
   moduleData: {
     Icon: any; // TODO: add type
-    createdCount?: number;
+    count?: number;
     initialActiveState?: boolean;
     active: boolean;
   };
 };
 
 const ModulesListItem = ({ buttonStatus, moduleName, moduleData, handleOnClick }: ModulesListItemProps) => {
-  const { Icon, createdCount = 0, initialActiveState, active } = moduleData;
+  const { Icon, count = 0, initialActiveState, active } = moduleData;
   const altered = initialActiveState !== undefined && initialActiveState !== active;
   const { tooltipTitle, buttonColor, buttonHover, ButtonIcon } = modulesListItemButtonStatuses[buttonStatus];
   return (
@@ -126,7 +126,7 @@ const ModulesListItem = ({ buttonStatus, moduleName, moduleData, handleOnClick }
         padding="3px 5px"
         borderRadius="3px"
       >
-        {createdCount} created
+        {count} created
       </Typography>
     </Box>
   );

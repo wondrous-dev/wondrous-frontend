@@ -66,7 +66,7 @@ const ProfileSectionsWrapper = () => {
     return upsert(orderClone);
   };
 
-  if (!layout) return null;
+  if (!layout || !modules) return null;
 
   const isSpecialOrg = orgId in SPECIAL_ORGS;
   const Components = {

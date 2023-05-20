@@ -1,11 +1,13 @@
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import useBuildModulesData from 'hooks/modules/useBuildModulesData';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import palette from 'theme/palette';
 import { useSettings } from 'utils/hooks';
-import ModuleUpdateButton from './ModuleUpdateButton';
-import ModulesList from './ModulesList';
+
+const ModuleUpdateButton = dynamic(() => import('./ModuleUpdateButton'));
+const ModulesList = dynamic(() => import('./ModulesList'));
 
 const ModulesSettingsComponent = ({ data, orgId }) => {
   const [modulesData, setModulesData] = useState(data);
@@ -23,10 +25,16 @@ const ModulesSettingsComponent = ({ data, orgId }) => {
       };
     });
   };
-  const stateIsAltered = Object.keys(modulesData).some((module) => {
-    const { active, initialActiveState } = modulesData[module];
-    return initialActiveState !== undefined && initialActiveState !== active;
-  });
+
+  const clearAlteredModulesActiveState = () =>
+    setModulesData((prev) => {
+      const prevCopy = { ...prev };
+      Object.keys(prevCopy).forEach((module) => {
+        delete prevCopy[module].initialActiveState;
+      });
+      return prevCopy;
+    });
+
   return (
     <Box
       width="100%"
@@ -54,11 +62,7 @@ const ModulesSettingsComponent = ({ data, orgId }) => {
         </Box>
         <ModulesList modulesData={modulesData} handleOnClickActiveStatus={handleOnClickActiveStatus} />
       </Box>
-      {stateIsAltered && (
-        <Box position="fixed" width="80%" bottom="10px" margin="0 auto">
-          <ModuleUpdateButton modulesData={modulesData} orgId={orgId} />
-        </Box>
-      )}
+      <ModuleUpdateButton modulesData={modulesData} orgId={orgId} onSubmit={clearAlteredModulesActiveState} />
     </Box>
   );
 };
