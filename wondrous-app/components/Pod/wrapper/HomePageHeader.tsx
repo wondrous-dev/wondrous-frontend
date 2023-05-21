@@ -1,55 +1,47 @@
-import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { useLazyQuery } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import palette from 'theme/palette';
-import {
-  ENTITIES_TYPES,
-  PERMISSIONS,
-  PRIVACY_LEVEL,
-  HEADER_ASPECT_RATIO,
-  EMPTY_RICH_TEXT_STRING,
-} from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { usePodBoard } from 'utils/hooks';
-import { AspectRatio } from 'react-aspect-ratio';
-import DEFAULT_HEADER from 'public/images/overview/background.png';
-import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
+import { Button as PrimaryButton } from 'components/Button';
+import { SafeImage } from 'components/Common/Image';
+import MoreInfoModal from 'components/Common/MoreInfoModal';
+import RolePill from 'components/Common/RolePill';
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
+import ChooseEntityToCreate from 'components/CreateEntity';
+import MembersIcon from 'components/Icons/members';
+import ShareIcon from 'components/Icons/share.svg';
+import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
-import { SafeImage } from 'components/Common/Image';
-import ChooseEntityToCreate from 'components/CreateEntity';
-import RolePill from 'components/Common/RolePill';
-import MoreInfoModal from 'components/Common/MoreInfoModal';
-import MembersIcon from 'components/Icons/members';
 import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
-import { Button as PrimaryButton } from 'components/Button';
-import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
-import { LogoWrapper, PodProfileImage } from './styles';
+import { GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD, GET_USER_JOIN_POD_REQUEST } from 'graphql/queries';
+import { useRouter } from 'next/router';
+import DEFAULT_HEADER from 'public/images/overview/background.png';
+import { useEffect, useState } from 'react';
+import { AspectRatio } from 'react-aspect-ratio';
+import palette from 'theme/palette';
+import { EMPTY_RICH_TEXT_STRING, HEADER_ASPECT_RATIO, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { usePodBoard } from 'utils/hooks';
+import { useMe } from '../../Auth/withAuth';
+import PodInviteLinkModal from '../../Common/InviteLinkModal/PodInviteLink';
 import { DAOEmptyIcon } from '../../Icons/dao';
+import PodIcon from '../../Icons/podIcon';
 import {
-  ContentContainer,
   Container,
-  RolePodMemberContainer,
+  ContentContainer,
   HeaderContributors,
   HeaderContributorsAmount,
-  HeaderContributorsText,
+  HeaderImageWrapper,
   HeaderMainBlock,
   HeaderText,
   HeaderTitle,
-  RoleButtonWrapper,
-  TokenHeader,
   HeaderTopLeftContainer,
-  HeaderImageWrapper,
-  TokenEmptyLogo,
-  MemberPodIconBackground,
   PrivacyContainer,
   PrivacyText,
+  RolePodMemberContainer,
+  TokenEmptyLogo,
+  TokenHeader,
 } from '../../organization/wrapper/styles';
-import PodIcon from '../../Icons/podIcon';
-import PodInviteLinkModal from '../../Common/InviteLinkModal/PodInviteLink';
-import { useMe } from '../../Auth/withAuth';
+import { LogoWrapper } from './styles';
 
 function HomePageHeader(props) {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
@@ -248,34 +240,35 @@ function HomePageHeader(props) {
             </HeaderTopLeftContainer>
 
             <RolePodMemberContainer>
+              {permissions && podRoleName && (
+                <RolePill
+                  onClick={() => {
+                    setOpenCurrentRoleModal(true);
+                  }}
+                  roleName={podRoleName}
+                />
+              )}
               <HeaderContributors
                 onClick={() => {
                   setMoreInfoModalOpen(true);
                   setShowUsers(true);
                 }}
               >
-                <MemberPodIconBackground>
-                  <MembersIcon stroke={palette.blue20} />
-                </MemberPodIconBackground>
+                <MembersIcon stroke={palette.blue20} />
                 <HeaderContributorsAmount>{podProfile?.contributorCount} </HeaderContributorsAmount>
-                <HeaderContributorsText>Members</HeaderContributorsText>
               </HeaderContributors>
 
-              {permissions && podRoleName && (
-                <RoleButtonWrapper>
-                  <RolePill
-                    onClick={() => {
-                      setOpenCurrentRoleModal(true);
-                    }}
-                    roleName={podRoleName}
-                  />
-                </RoleButtonWrapper>
+              {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
+                <HeaderContributors onClick={() => setOpenInvite(true)}>
+                  <ShareIcon />
+                  <HeaderContributorsAmount>Share</HeaderContributorsAmount>
+                </HeaderContributors>
               )}
               {permissions === null && (
                 <>
                   {userJoinRequest?.id ? (
                     <PrimaryButton
-                      height={32}
+                      height={28}
                       width="max-content"
                       variant="outlined"
                       color="purple"
@@ -288,7 +281,7 @@ function HomePageHeader(props) {
                     </PrimaryButton>
                   ) : (
                     <PrimaryButton
-                      height={32}
+                      height={28}
                       paddingX={15}
                       width="max-content"
                       buttonTheme={{ fontWeight: '500', fontSize: '14px' }}

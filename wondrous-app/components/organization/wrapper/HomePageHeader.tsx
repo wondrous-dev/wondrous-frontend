@@ -1,46 +1,40 @@
-import React, { useEffect, useState, Suspense } from 'react';
-import dynamic from 'next/dynamic';
-
-import { PERMISSIONS, PRIVACY_LEVEL, HEADER_ASPECT_RATIO, EMPTY_RICH_TEXT_STRING } from 'utils/constants';
-import MembersIcon from 'components/Icons/members';
-import { Button as PrimaryButton } from 'components/Button';
-import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
-import { parseUserPermissionContext } from 'utils/helpers';
-import DEFAULT_HEADER from 'public/images/overview/background.png';
-import { AspectRatio } from 'react-aspect-ratio';
-
-import usePrevious, { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery } from '@apollo/client';
-import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
-import { useRouter } from 'next/router';
+import { Button as PrimaryButton } from 'components/Button';
 import RolePill from 'components/Common/RolePill';
-import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
-import { PodIconThin } from 'components/Icons/podIcon';
-import palette from 'theme/palette';
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
+import MembersIcon from 'components/Icons/members';
+import ShareIcon from 'components/Icons/share.svg';
 import PlateRichTextViewer from 'components/PlateRichEditor/PlateRichTextViewer';
-import { DAOEmptyIcon } from '../../Icons/dao';
+import HeaderSocialLinks from 'components/organization/wrapper/HeaderSocialLinks';
+import { GET_TASKS_PER_TYPE, GET_USER_JOIN_ORG_REQUEST } from 'graphql/queries/org';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import DEFAULT_HEADER from 'public/images/overview/background.png';
+import { Suspense, useEffect, useState } from 'react';
+import { AspectRatio } from 'react-aspect-ratio';
+import palette from 'theme/palette';
+import { EMPTY_RICH_TEXT_STRING, HEADER_ASPECT_RATIO, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useOrgBoard } from 'utils/hooks';
+import { useMe } from '../../Auth/withAuth';
 import { SafeImage } from '../../Common/Image';
+import { DAOEmptyIcon } from '../../Icons/dao';
 import {
+  Container,
   ContentContainer,
-  RolePodMemberContainer,
   HeaderContributors,
   HeaderContributorsAmount,
-  HeaderContributorsText,
+  HeaderImageWrapper,
   HeaderMainBlock,
   HeaderText,
   HeaderTitle,
-  TokenHeader,
-  TokenEmptyLogo,
   HeaderTopLeftContainer,
-  HeaderImageWrapper,
-  MemberPodIconBackground,
-  RoleButtonWrapper,
-  Container,
-  InviteButton,
   PrivacyContainer,
   PrivacyText,
+  RolePodMemberContainer,
+  TokenEmptyLogo,
+  TokenHeader,
 } from './styles';
-import { useMe } from '../../Auth/withAuth';
 
 const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/OrgInviteLink'), { suspense: true });
 const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
@@ -266,50 +260,34 @@ function Wrapper(props) {
               </PrivacyContainer>
             </HeaderTopLeftContainer>
             <RolePodMemberContainer>
-              {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && inviteButtonSettings && (
-                <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>
+              {permissions && orgRoleName && (
+                <RolePill
+                  onClick={() => {
+                    setOpenCurrentRoleModal(true);
+                  }}
+                  roleName={orgRoleName}
+                />
               )}
-
-              <HeaderContributors
-                onClick={() => {
-                  setMoreInfoModalOpen(true);
-                  setShowPods(true);
-                }}
-              >
-                <MemberPodIconBackground>
-                  <PodIconThin />
-                </MemberPodIconBackground>
-                <HeaderContributorsAmount>{orgProfile?.podCount} </HeaderContributorsAmount>
-                <HeaderContributorsText>Pods</HeaderContributorsText>
-              </HeaderContributors>
               <HeaderContributors
                 onClick={() => {
                   setMoreInfoModalOpen(true);
                   setShowUsers(true);
                 }}
               >
-                <MemberPodIconBackground>
-                  <MembersIcon stroke={palette.blue20} />
-                </MemberPodIconBackground>
-                <HeaderContributorsAmount>{orgProfile?.contributorCount} </HeaderContributorsAmount>
-                <HeaderContributorsText>Members</HeaderContributorsText>
+                <MembersIcon stroke={palette.blue20} />
+                <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
               </HeaderContributors>
-
-              {permissions && orgRoleName && (
-                <RoleButtonWrapper>
-                  <RolePill
-                    onClick={() => {
-                      setOpenCurrentRoleModal(true);
-                    }}
-                    roleName={orgRoleName}
-                  />
-                </RoleButtonWrapper>
+              {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
+                <HeaderContributors onClick={handleInviteAction}>
+                  <ShareIcon />
+                  <HeaderContributorsAmount>Share</HeaderContributorsAmount>
+                </HeaderContributors>
               )}
               {permissions === null && (
                 <>
                   {userJoinRequest?.id ? (
                     <PrimaryButton
-                      height={32}
+                      height={28}
                       width="max-content"
                       variant="outlined"
                       color="purple"
@@ -322,7 +300,7 @@ function Wrapper(props) {
                     </PrimaryButton>
                   ) : (
                     <PrimaryButton
-                      height={32}
+                      height={28}
                       paddingX={15}
                       width="max-content"
                       buttonTheme={{ fontWeight: '500', fontSize: '14px' }}

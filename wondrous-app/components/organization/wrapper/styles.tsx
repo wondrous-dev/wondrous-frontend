@@ -74,7 +74,7 @@ export const HeaderTopLeftContainer = styled.div`
   align-items: center;
   margin-left: 8px;
   width: 100%;
-  gap: 10px;
+  gap: 14px;
 
   ${({ theme }) => theme.breakpoints.down('md')} {
     justify-content: center;
@@ -318,12 +318,13 @@ export const HeaderActivityLink = styled.a`
 export const HeaderContributors = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 10px;
   cursor: pointer;
   background: ${palette.grey85};
-  padding: 3px 6px 3px 2px;
-  border-radius: 1000px;
+  border-radius: 6px;
+  padding: 8px;
   transition: background 0.2s ease-in-out;
+  height: 28px;
 
   :hover {
     background: ${palette.grey920};
@@ -354,10 +355,9 @@ export const PrivacyText = styled(Typography)`
 
 export const HeaderContributorsAmount = styled(Typography)`
   && {
-    font-weight: 600;
-    font-size: 13px;
+    font-weight: 500;
+    font-size: 14px;
     color: ${palette.white};
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
 
@@ -390,18 +390,16 @@ export const Container = styled.div`
 export const InviteButton = styled(ButtonBase)`
   && {
     align-items: center;
-    background: linear-gradient(82.03deg, ${palette.highlightPurple} 50.7%, ${palette.highlightBlue} 107.99%);
-    border-radius: 216px;
+    border-radius: 6px;
     color: ${palette.white};
     cursor: pointer;
     display: flex;
     font-family: ${typography.fontFamily};
     font-size: 14px;
     font-weight: 500;
-    height: 36px;
+    height: 28px;
     justify-content: center;
-    min-width: 110px;
-    padding: 8px 24px;
-    width: max-content;
+    width: fit-content;
+    padding: 8px;
   }
 `;

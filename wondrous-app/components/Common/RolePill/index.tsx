@@ -12,19 +12,8 @@ interface RolePillType {
   profilePicture?: string;
 }
 
-const ProfilePictureStyle = {
-  width: '28px',
-  height: '28px',
-  borderRadius: '15px',
-};
-
 const RolePill: React.FC<RolePillType> = ({ roleName, profilePicture, onClick, ...props }) => (
   <MemberRolePill onClick={onClick} roleName={roleName} {...props}>
-    {profilePicture ? (
-      <SafeImage useNextImage={false} src={profilePicture} style={ProfilePictureStyle} alt="user profile picture" />
-    ) : (
-      <DefaultUserImage style={ProfilePictureStyle} />
-    )}
     <RolePillText {...props}>{`${getRoleEmoji(roleName)}  ${roleName || 'no role'}`}</RolePillText>
   </MemberRolePill>
 );
