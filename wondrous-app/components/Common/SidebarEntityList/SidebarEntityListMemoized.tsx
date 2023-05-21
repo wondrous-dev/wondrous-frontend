@@ -39,6 +39,8 @@ const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimize
     <ListWrapper>
       {Object.keys(menuItems).map((menuItem) => {
         const { label, items } = menuItems[menuItem];
+        const hasNoActiveModules = !Object.keys(items).some((item) => items[item].active);
+        if (hasNoActiveModules) return null;
         return (
           <ListWrapper key={label}>
             {label ? <Label minimized={minimized}>{label}</Label> : null}
