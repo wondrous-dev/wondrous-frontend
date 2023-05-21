@@ -8,13 +8,29 @@ import Modal from "components/Shared/Modal";
 import { PUSH_QUEST_DISCORD_NOTFICATION } from "graphql/mutations/discord";
 import { useMutation } from "@apollo/client";
 import useAlerts from "utils/hooks";
+import Switch from "components/Shared/Switch";
 
-const PublishQuestModal = ({ onClose, channelName, handlePublish }) => {
+const PublishQuestModal = ({ onClose, channelName, handlePublish, mentionChannel, setMentionChannel }) => {
   return (
     <Grid display="flex" flexDirection="column" gap="10px" width="10)%">
       <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" color="#06040A">
         Are you sure you want to publish this quest to #{channelName} in Discord?
       </Typography>
+      <Box display="flex" gap="10px" alignItems="center" width="100%" marginTop="8px" marginBottom="8px">
+        <Switch
+          value={mentionChannel}
+          onChange={() => {
+            setMentionChannel(!mentionChannel);
+          }}
+        />
+        <Label
+          style={{
+            marginRight: "8px",
+          }}
+        >
+          Mention @here in channel
+        </Label>
+      </Box>
       <Box display="flex" gap="10px" alignItems="center" width="100%">
         <SharedSecondaryButton
           sx={{
@@ -40,6 +56,7 @@ const PublishQuestModal = ({ onClose, channelName, handlePublish }) => {
 const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNotificationChannelId }) => {
   const [openPublishModal, setOpenPublishModal] = useState(false);
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
+  const [mentionChannel, setMentionChannel] = useState(false);
   const [publishQuest] = useMutation(PUSH_QUEST_DISCORD_NOTFICATION, {
     onCompleted: () => {
       setSnackbarAlertOpen(true);
@@ -74,6 +91,8 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
         <PublishQuestModal
           onClose={() => setOpenPublishModal(false)}
           channelName={channels?.find((c) => c.value === channel)?.label}
+          mentionChannel={mentionChannel}
+          setMentionChannel={setMentionChannel}
           handlePublish={() =>
             publishQuest({
               variables: {
@@ -81,6 +100,7 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
                 questTitle: quest.title,
                 orgId,
                 channelId: channel,
+                mentionChannel,
               },
             })
           }
@@ -100,7 +120,9 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
       </Grid>
       <Box display="flex" width={"100%"} marginTop="8px">
         <Box flex={1} />
-        <SharedSecondaryButton onClick={() => setOpenPublishModal(true)}>Publish</SharedSecondaryButton>
+        <SharedSecondaryButton disabled={!channel} onClick={() => setOpenPublishModal(true)}>
+          Publish
+        </SharedSecondaryButton>
       </Box>
     </>
   );
