@@ -40,7 +40,7 @@ const ModulesSettingsComponent = ({ data, orgId, podId }) => {
       width="100%"
       display="flex"
       flexDirection="column"
-      paddingBottom="24px"
+      paddingBottom="48px"
       alignItems="center"
       position="relative"
     >
