@@ -4,7 +4,7 @@ import Link from 'next/link';
 import palette from 'theme/palette';
 
 const ProjectProfileAddFeatures = ({ orgId, podId }) => {
-  const href = orgId ? `/organization/settings/${orgId}/modules` : `/pod/settings/${podId}/modules`;
+  const href = podId ? `/pod/settings/${podId}/modules` : `/organization/settings/${orgId}/modules`;
   return (
     <Grid
       container
