@@ -3,7 +3,7 @@ import SettingsWrapper from 'components/Common/SidebarSettings';
 
 const OrgModulesSettings = () => (
   <SettingsWrapper showPodIcon={false} fullWidth>
-    <ModulesSettings />;
+    <ModulesSettings />
   </SettingsWrapper>
 );
 
