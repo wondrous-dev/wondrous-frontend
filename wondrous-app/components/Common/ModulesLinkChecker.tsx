@@ -6,23 +6,29 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useGetOrgFromUsername } from 'utils/hooks';
+import { useGlobalContext } from 'utils/hooks';
 
 const ModulesChecker = ({ children }) => {
   const { query, pathname } = useRouter();
   const { username, entity } = query;
-  const org = useGetOrgFromUsername(username);
-  const modules = useQueryModules({ orgId: org?.id });
+  const { pageData } = useGlobalContext();
+  const { pod, org } = pageData;
+  const modules = useQueryModules({ orgId: org?.id, podId: pod?.id });
   const routerPathnameToCheck = {
     [`/organization/[username]/boards?entity=${entity}`]: entity as string,
     '/organization/[username]/pods': ENTITIES_TYPES.POD,
     '/organization/[username]/boards': ENTITIES_TYPES.TASK,
     '/organization/[username]/docs': 'document',
     '/organization/[username]/analytics': 'leaderboard',
+    [`/pod/[podId]/boards?entity=${entity}`]: entity as string,
+    '/pod/[podId]/boards': ENTITIES_TYPES.TASK,
+    '/pod/[podId]/docs': 'document',
+    '/pod/[podId]/analytics': 'leaderboard',
   };
   const routerPathnameLink = entity ? `${pathname}?entity=${entity}` : pathname;
   const routerPathnameEntity = routerPathnameToCheck[routerPathnameLink];
   const shouldSkip = modules?.[routerPathnameEntity] === false;
+  const homeLink = pod?.id ? `/pod/${pod?.id}/home` : `/organization/${username}/home`;
 
   if (modules && shouldSkip) {
     return (
@@ -59,7 +65,7 @@ const ModulesChecker = ({ children }) => {
             Please contact your workspace admin if you have any questions.
           </Typography>
           <Link
-            href={`/organization/${username}/home`}
+            href={homeLink}
             passHref
             style={{
               textDecoration: 'none',
