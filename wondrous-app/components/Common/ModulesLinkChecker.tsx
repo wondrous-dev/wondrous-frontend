@@ -6,21 +6,20 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useGlobalContext } from 'utils/hooks';
 
 const ModulesChecker = ({ children }) => {
   const { query, pathname } = useRouter();
-  const { username, entity } = query;
-  const { pageData } = useGlobalContext();
-  const { pod, org } = pageData;
-  const modules = useQueryModules({ orgId: org?.id, podId: pod?.id });
+  const entity = query?.entity as string;
+  const podId = query?.podId as string;
+  const orgUsername = query?.username as string;
+  const modules = useQueryModules({ orgUsername, podId });
   const routerPathnameToCheck = {
-    [`/organization/[username]/boards?entity=${entity}`]: entity as string,
+    [`/organization/[username]/boards?entity=${entity}`]: entity,
     '/organization/[username]/pods': ENTITIES_TYPES.POD,
     '/organization/[username]/boards': ENTITIES_TYPES.TASK,
     '/organization/[username]/docs': 'document',
     '/organization/[username]/analytics': 'leaderboard',
-    [`/pod/[podId]/boards?entity=${entity}`]: entity as string,
+    [`/pod/[podId]/boards?entity=${entity}`]: entity,
     '/pod/[podId]/boards': ENTITIES_TYPES.TASK,
     '/pod/[podId]/docs': 'document',
     '/pod/[podId]/analytics': 'leaderboard',
@@ -28,7 +27,7 @@ const ModulesChecker = ({ children }) => {
   const routerPathnameLink = entity ? `${pathname}?entity=${entity}` : pathname;
   const routerPathnameEntity = routerPathnameToCheck[routerPathnameLink];
   const shouldSkip = modules?.[routerPathnameEntity] === false;
-  const homeLink = pod?.id ? `/pod/${pod?.id}/home` : `/organization/${username}/home`;
+  const homeLink = podId ? `/pod/${podId}/home` : `/organization/${orgUsername}/home`;
 
   if (modules && shouldSkip) {
     return (
