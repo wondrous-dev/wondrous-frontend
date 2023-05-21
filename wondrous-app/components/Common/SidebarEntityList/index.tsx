@@ -30,7 +30,7 @@ const useCanCreateTask = () => {
 };
 
 const useBuildSidebarMenuItems = () => {
-  const { board, orgBoard } = useBoards();
+  const { board, orgBoard, podBoard } = useBoards();
   const router = useRouter();
   const orgLink = board?.orgData?.shared
     ? `/collaboration/${board?.orgData?.username}`
@@ -44,7 +44,8 @@ const useBuildSidebarMenuItems = () => {
     '/pod/[podId]/wonder_ai_bot',
   ];
   const orgId = board?.orgId || orgBoard?.id;
-  const modules = useBuildModulesData({ orgId });
+  const podId = board?.podId || podBoard?.id;
+  const modules = useBuildModulesData({ orgId, podId });
   const workspaceItems = {
     [ENTITIES_TYPES.POD]: {
       ...modules?.pod,
