@@ -99,7 +99,7 @@ const QuestResultsPage = () => {
         renderActions={() => (
           <Grid display="flex" gap="10px" alignItems="center">
             <DeleteQuestButton questId={getQuestById?.id} />
-            <ShareComponent />
+            <ShareComponent link={`/quest/${getQuestById?.id}`}/>
             {isEditMode ? (
               <>
                 <SharedSecondaryButton $reverse onClick={toggleEdit}>

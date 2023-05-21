@@ -165,3 +165,11 @@ export const EMPTY_STATE_TYPES = {
 	SUBMISSIONS: "submissions",
 	MEMBERS: "members"
 }
+
+export const ERRORS = {
+	MIN_OPTION_LENGTH: 'MIN_OPTION_LENGTH'
+};
+
+export const ERRORS_LABELS = {
+	[ERRORS.MIN_OPTION_LENGTH]: 'You need at least one option.'
+}

@@ -75,10 +75,6 @@ const COMPONENT_OPTIONS = [
     label: "Send A Message in Discord Channel",
     value: TYPES.DISCORD_MESSAGE_IN_CHANNEL,
   },
-  {
-    label: "Join Discord Community Call",
-    value: TYPES.JOIN_DISCORD_COMMUNITY_CALL,
-  },
 ];
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => {

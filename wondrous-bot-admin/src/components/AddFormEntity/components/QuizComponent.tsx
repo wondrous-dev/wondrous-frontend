@@ -1,5 +1,5 @@
 import { Box, ButtonBase, Grid, ImageList, ImageListItem, Typography } from "@mui/material";
-import { ButtonIconWrapper } from "components/Shared/styles";
+import { ButtonIconWrapper, ErrorText } from "components/Shared/styles";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import TextField from "../../Shared/TextField";
@@ -9,7 +9,7 @@ import Switch from "components/Shared/Switch";
 import DeleteIcon from "components/Icons/Delete";
 import SelectComponent from "components/Shared/Select";
 import FileUpload from "components/Shared/FileUpload";
-import { TYPES } from "utils/constants";
+import { ERRORS, ERRORS_LABELS, TYPES } from "utils/constants";
 
 const CORRECT_ANSWERS_TYPES = {
   CORRECT: "correct",
@@ -61,6 +61,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
   };
 
   const handleRemoveOption = (idx) => {
+    if (answers.length === 1) return;
     const answersClone = [...answers];
     answersClone.splice(idx, 1);
     return handleAnswers(answersClone);
@@ -72,22 +73,6 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
     handleAnswers(answersClone);
   };
 
-  // const handleAttachMedia = (e, idx) => {
-  //   const answersClone = [...answers];
-  //   answersClone[idx].attachments = [
-  //     ...answersClone[idx].attachments,
-  //     e.target.files[0],
-  //   ];
-  //   handleAnswers(answersClone);
-  // };
-
-  // const removeAttachment = (idx, attachmentIdx) => {
-  //   const answersClone = [...answers];
-  //   answersClone[idx].attachments.splice(attachmentIdx, 1);
-  //   handleAnswers(answersClone);
-  // };
-
-  console.log(error, 'error')
   return (
     <Grid container gap="24px" direction="column">
       <Grid item gap="14px" display="flex" flexDirection="column">
@@ -114,6 +99,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
           <Label>Set correct answers</Label>
         </Grid>
         <Grid display="flex" gap="8px" flexDirection="column">
+          {error?.options === ERRORS.MIN_OPTION_LENGTH ? <ErrorText>{ERRORS_LABELS.MIN_OPTION_LENGTH}</ErrorText> : null}
           {answers?.map((answer, idx) => (
             <Grid display="flex" flexDirection="column" gap="10px">
               <Grid display="flex" alignItems="center" gap="14px" width="100%">
@@ -127,6 +113,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
                 />
                 <Box display="flex" gap="10px">
                   {/* <FileUpload onChange={(e) => handleAttachMedia(e, idx)} /> */}
+                  {answers.length > 1 ? (
                   <ButtonIconWrapper onClick={() => handleRemoveOption(idx)}>
                     <CloseIcon
                       sx={{
@@ -134,6 +121,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
                       }}
                     />
                   </ButtonIconWrapper>
+                  ) : null}
                 </Box>
                 {withCorrectAnswers ? (
                   <Box minWidth="150px">
@@ -149,42 +137,6 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
                   </Box>
                 ) : null}
               </Grid>
-              {/* {answer?.attachments?.length ? (
-                <ImageList
-                  sx={{ width: 500, height: 'auto' }}
-                  cols={3}
-                  rowHeight={164}
-                >
-                  {answer.attachments.map((attachment, attachmentIdx) =>
-                    attachment ? (
-                      <ImageListItem
-                        key={`attachment-${attachmentIdx}`}
-                        sx={{
-                          position: 'relative',
-                          borderRadius: '6px',
-                          overflow: 'hidden',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '6px',
-                        }}
-                      >
-                        <img
-                          src={URL.createObjectURL(attachment)}
-                          loading='lazy'
-                        />
-                        <Box display='flex' gap='10px' alignItems='center'>
-                          <ButtonBase
-                            onClick={() => removeAttachment(idx, attachmentIdx)}
-                          >
-                            <DeleteIcon stroke='red' />
-                          </ButtonBase>
-                          <Label>{getAttachmentTitle(attachment)}</Label>
-                        </Box>
-                      </ImageListItem>
-                    ) : null
-                  )}
-                </ImageList>
-              ) : null} */}
             </Grid>
           ))}
           <Box display="flex" gap="10px" alignItems="center">
