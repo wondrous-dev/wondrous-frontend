@@ -22,6 +22,11 @@ const useBuildModulesData = ({ orgId = '', podId = '', orgUsername = '' }) => {
         Icon: PodIcon,
         count: count?.podCount,
       },
+      [ENTITIES_TYPES.COLLAB]: {
+        active: modules?.collab,
+        Icon: SmallDao2DaoIcon,
+        count: count?.collabCount,
+      },
     }),
     [ENTITIES_TYPES.TASK]: {
       active: modules?.task,
@@ -47,12 +52,6 @@ const useBuildModulesData = ({ orgId = '', podId = '', orgUsername = '' }) => {
       active: modules?.grant,
       Icon: GrantIcon,
       count: count?.grantCount,
-    },
-
-    [ENTITIES_TYPES.COLLAB]: {
-      active: modules?.collab,
-      Icon: SmallDao2DaoIcon,
-      count: count?.collabCount,
     },
     document: {
       active: modules?.document,

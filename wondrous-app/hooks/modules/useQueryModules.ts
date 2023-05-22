@@ -3,7 +3,7 @@ import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, GET_POD_BY_ID } from 'graphql/que
 
 type UseQueryModulesValue = {
   bounty: boolean;
-  collab: boolean;
+  collab?: boolean;
   document: boolean;
   grant: boolean;
   leaderboard: boolean;
@@ -38,6 +38,10 @@ const useQueryModules = ({ orgUsername = '', orgId = '', podId = '' }): UseQuery
     modules &&
     Object.keys(modules).reduce(
       (acc, key) => {
+        if (podId && key === 'collab') {
+          // exclude the `collab` key if `podId` is provided.
+          return acc;
+        }
         if (podId && key === 'pod') {
           // If `podId` is provided, exclude the `pod` key but include the status of the parent org's `pod` module.
           acc.parentOrgPodModuleStatus = orgModules?.pod;
