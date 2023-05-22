@@ -1,33 +1,51 @@
 import { Box, Typography } from '@mui/material';
 import LinkBrokenIcon from 'components/Icons/linkBroken.svg';
 import useQueryModules from 'hooks/modules/useQueryModules';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { useGlobalContext } from 'utils/hooks';
 
 const ModulesChecker = ({ children }) => {
+  const router = useRouter();
   const { query, pathname } = useRouter();
+  const { pageData } = useGlobalContext();
+  const { org, pod } = pageData || {};
+  const orgId = org?.id || pod?.orgId;
+  const podId = pod?.id;
   const entity = query?.entity as string;
-  const podId = query?.podId as string;
-  const orgUsername = query?.username as string;
-  const modules = useQueryModules({ orgUsername, podId });
-  const routerPathnameToCheck = {
-    [`/organization/[username]/boards?entity=${entity}`]: entity,
+  const orgUsername = (query?.username as string) || pod?.org?.username;
+  const modules = useQueryModules({ orgUsername, orgId, podId });
+  const routerPathnameEntity = {
     '/organization/[username]/pods': ENTITIES_TYPES.POD,
     '/organization/[username]/boards': ENTITIES_TYPES.TASK,
     '/organization/[username]/docs': 'document',
     '/organization/[username]/analytics': 'leaderboard',
-    [`/pod/[podId]/boards?entity=${entity}`]: entity,
     '/pod/[podId]/boards': ENTITIES_TYPES.TASK,
     '/pod/[podId]/docs': 'document',
     '/pod/[podId]/analytics': 'leaderboard',
   };
-  const routerPathnameLink = entity ? `${pathname}?entity=${entity}` : pathname;
-  const routerPathnameEntity = routerPathnameToCheck[routerPathnameLink];
-  const shouldSkip = modules?.[routerPathnameEntity] === false;
-  const homeLink = podId ? `/pod/${podId}/home` : `/organization/${orgUsername}/home`;
+  const pageEntity = entity || routerPathnameEntity[pathname];
+  const blockPodAccess = podId && modules?.parentOrgPodModuleStatus === false;
+  const shouldSkip = modules?.[pageEntity] === false || blockPodAccess;
+
+  const handleOnClickHome = () => {
+    const homeLink = () => {
+      if (blockPodAccess) {
+        return `/organization/${orgUsername}/home`;
+      }
+      if (podId) {
+        return `/pod/${podId}/home`;
+      }
+      return `/organization/${orgUsername}/home`;
+    };
+    router.push(homeLink()).then(() => {
+      if (blockPodAccess) {
+        router.reload();
+      }
+    });
+  };
 
   if (modules && shouldSkip) {
     return (
@@ -63,26 +81,20 @@ const ModulesChecker = ({ children }) => {
           <Typography color={palette.grey250} fontSize="15px" textAlign="center">
             Please contact your workspace admin if you have any questions.
           </Typography>
-          <Link
-            href={homeLink}
-            passHref
-            style={{
-              textDecoration: 'none',
+          <Box
+            onClick={handleOnClickHome}
+            sx={{
+              cursor: 'pointer',
+              bgcolor: palette.highlightPurple,
+              color: palette.white,
+              padding: '8px 24px',
+              borderRadius: '32px',
+              fontWeight: '600',
+              marginTop: '20px',
             }}
           >
-            <Box
-              sx={{
-                bgcolor: palette.highlightPurple,
-                color: palette.white,
-                padding: '8px 24px',
-                borderRadius: '32px',
-                fontWeight: '600',
-                marginTop: '20px',
-              }}
-            >
-              Project Home
-            </Box>
-          </Link>
+            Project Home
+          </Box>
         </Box>
       </Box>
     );
