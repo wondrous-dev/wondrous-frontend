@@ -275,11 +275,8 @@ function BoardPageHeader(props) {
                 setShowPods(true);
               }}
             >
-              <MemberPodIconBackground>
-                <PodIconThin />
-              </MemberPodIconBackground>
+              <PodIconThin />
               <HeaderContributorsAmount>{orgProfile?.podCount} </HeaderContributorsAmount>
-              <HeaderContributorsText>Pods</HeaderContributorsText>
             </HeaderContributors>
             <HeaderContributors
               onClick={() => {
@@ -287,11 +284,8 @@ function BoardPageHeader(props) {
                 setShowUsers(true);
               }}
             >
-              <MemberPodIconBackground>
-                <MembersIcon stroke={palette.blue20} />
-              </MemberPodIconBackground>
+              <MembersIcon stroke={palette.blue20} />
               <HeaderContributorsAmount>{orgProfile?.contributorCount} </HeaderContributorsAmount>
-              <HeaderContributorsText>Members</HeaderContributorsText>
             </HeaderContributors>
           </RolePodMemberContainer>
 
