@@ -19,13 +19,17 @@ const CreatePage = () => {
       <div ref={ref}>
         <PageHeader
           withBackButton
-          titleComponent={() => <TitleInput 
-            maxRows={2}
-            multiline
-            rows={1}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter Quest Title" />}
+          titleComponent={() => (
+            <TitleInput
+              maxRows={2}
+              multiline
+              maxLength={220}
+              rows={1}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter Quest Title"
+            />
+          )}
           renderActions={() => (
             <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
               Save Quest
@@ -33,7 +37,7 @@ const CreatePage = () => {
           )}
         />
       </div>
-      <CreateTemplate setRefValue={setRefValue} displaySavePanel={!inView} title={title}/>
+      <CreateTemplate setRefValue={setRefValue} displaySavePanel={!inView} title={title} />
     </>
   );
 };
