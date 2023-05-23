@@ -163,6 +163,7 @@ export const filterOptionsWithPermission = (
         }) || entityType === ENTITIES_TYPES.PROPOSAL
       );
     })
+    .filter(({ modules }) => modules?.[entityType] ?? true)
     .map(({ profilePicture, name, id, color }) => ({
       imageUrl: profilePicture,
       label: name,

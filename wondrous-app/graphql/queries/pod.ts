@@ -81,6 +81,17 @@ export const GET_USER_AVAILABLE_PODS = gql`
       profilePicture
       privacyLevel
       color
+      modules {
+        task
+        bounty
+        pod
+        grant
+        document
+        milestone
+        proposal
+        collab
+        leaderboard
+      }
     }
   }
 `;

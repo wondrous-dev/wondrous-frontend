@@ -1,12 +1,14 @@
 import { Box, Grid } from '@mui/material';
 import Tooltip from 'components/Tooltip';
 
-import { ANALYTIC_EVENTS, ENTITIES_TYPES } from 'utils/constants';
-import Button from 'components/Button';
-import palette from 'theme/palette';
 import { useMe } from 'components/Auth/withAuth';
+import Button from 'components/Button';
+import useQueryModules from 'hooks/modules/useQueryModules';
+import palette from 'theme/palette';
+import { ANALYTIC_EVENTS, ENTITIES_TYPES } from 'utils/constants';
 import { CreateEntityDropdown, filterOptionsWithPermission } from '../Helpers';
 import PodSearch from '../PodSearch';
+import { StyledGrid } from '../TemplateBody/styles';
 import {
   CreateEntityCloseIcon,
   CreateEntityDefaultDaoImage,
@@ -18,7 +20,6 @@ import {
   CreateEntitySelectErrorWrapper,
   TemplatesGalleryText,
 } from '../styles';
-import { StyledGrid } from '../TemplateBody/styles';
 
 const Header = ({
   filteredDaoOptions,
@@ -38,6 +39,7 @@ const Header = ({
 }) => {
   const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
   const user = useMe();
+  const modules = useQueryModules({ orgId: form?.values?.orgId });
   if (showTemplates) {
     return (
       <CreateEntityHeader
@@ -203,7 +205,7 @@ const Header = ({
           />
           {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
         </CreateEntitySelectErrorWrapper>
-        {form.values.orgId !== null && (
+        {form.values.orgId !== null && modules?.pod && (
           <>
             <CreateEntityHeaderArrowIcon />
             <PodSearch
