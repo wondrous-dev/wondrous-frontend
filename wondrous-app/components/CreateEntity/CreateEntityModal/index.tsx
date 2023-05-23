@@ -349,7 +349,13 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       }) ||
         entityType === ENTITIES_TYPES.PROPOSAL) &&
       board?.orgId,
-    () => form.setFieldValue('orgId', board?.orgId)
+    () => {
+      const { orgData } = board;
+      const { modules } = orgData;
+      if (modules?.[entityType] ?? true) {
+        form.setFieldValue('orgId', board?.orgId);
+      }
+    }
   );
 
   useContextValue(formValues?.orgId && !form.values.orgId, () =>
