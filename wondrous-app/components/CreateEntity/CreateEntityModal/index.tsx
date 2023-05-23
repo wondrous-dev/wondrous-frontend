@@ -350,8 +350,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         entityType === ENTITIES_TYPES.PROPOSAL) &&
       board?.orgId,
     () => {
-      const { orgData } = board;
-      const { modules } = orgData;
+      const { orgData, pod } = board;
+      const { modules } = orgData || pod?.org;
       if (modules?.[entityType] ?? true) {
         form.setFieldValue('orgId', board?.orgId);
       }

@@ -10,6 +10,7 @@ export const PodInviteFragment = gql`
       profilePicture
       name
       username
+      modules
     }
   }
 `;
