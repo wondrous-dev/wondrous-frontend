@@ -208,13 +208,21 @@ const Header = ({
         {form.values.orgId !== null && modules?.pod && (
           <>
             <CreateEntityHeaderArrowIcon />
-            <PodSearch
-              options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
-              multiple={isMilestone}
-              value={podValue}
-              onChange={handlePodChange}
-              disabled={isSubtask}
-            />
+            <div>
+              <PodSearch
+                options={filterOptionsWithPermission(
+                  entityType,
+                  pods,
+                  fetchedUserPermissionsContext,
+                  form.values.orgId
+                )}
+                multiple={isMilestone}
+                value={podValue}
+                onChange={handlePodChange}
+                disabled={isSubtask}
+              />
+              {form.errors.podId && <CreateEntityError>{form.errors.podId}</CreateEntityError>}
+            </div>
           </>
         )}
       </CreateEntityHeaderWrapper>

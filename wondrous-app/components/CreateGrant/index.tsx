@@ -242,7 +242,13 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
         podId: board?.podId,
       }) &&
       board?.orgId,
-    () => form.setFieldValue('orgId', board?.orgId)
+    () => {
+      const { orgData } = board || {};
+      const { modules } = orgData || {};
+      if (modules?.grant ?? true) {
+        form.setFieldValue('orgId', board?.orgId);
+      }
+    }
   );
 
   const handleEntityDropdownChange = (orgId) => {

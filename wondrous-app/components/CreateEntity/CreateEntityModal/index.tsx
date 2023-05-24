@@ -149,6 +149,15 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: formValidationSchema,
+    validate: (values) => {
+      const errors: { [key: string]: any } = {};
+      const selectedOrg = userOrgs?.getUserOrgs.find(({ id }) => id === values?.orgId);
+      if (!selectedOrg?.modules?.[entityType] && !values?.podId) {
+        // If a module is disabled on the org but enabled on the pod, do not create an entity without a podId.
+        errors.podId = 'Pod is required';
+      }
+      return errors;
+    },
     onSubmit: (values) => {
       const reviewerIds = values?.reviewerIds?.filter((i) => i !== null);
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -350,9 +359,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         entityType === ENTITIES_TYPES.PROPOSAL) &&
       board?.orgId,
     () => {
-      const { orgData, pod } = board;
-      const { modules } = orgData || pod?.org;
-      if (modules?.[entityType] ?? true) {
+      const { orgData } = board || {};
+      const { modules } = orgData || {};
+      if (modules?.grant ?? true) {
         form.setFieldValue('orgId', board?.orgId);
       }
     }

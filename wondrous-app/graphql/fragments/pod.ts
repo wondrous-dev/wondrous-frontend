@@ -32,6 +32,17 @@ export const PodFragment = gql`
       profilePicture
       name
       username
+      modules {
+        task
+        bounty
+        pod
+        grant
+        document
+        milestone
+        proposal
+        collab
+        leaderboard
+      }
     }
     tags
     color
