@@ -35,12 +35,10 @@ export const PodFragment = gql`
       modules {
         task
         bounty
-        pod
         grant
         document
         milestone
         proposal
-        collab
         leaderboard
       }
     }
@@ -62,12 +60,10 @@ export const PodFragment = gql`
     modules {
       task
       bounty
-      pod
       grant
       document
       milestone
       proposal
-      collab
       leaderboard
     }
   }
