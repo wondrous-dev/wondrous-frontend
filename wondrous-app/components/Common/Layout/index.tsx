@@ -3,7 +3,7 @@ import { useMe, withAuth } from 'components/Auth/withAuth';
 import HeaderComponent from 'components/Header';
 import ModulesCheckerMemoized from 'components/Common/ModulesLinkChecker';
 import Spotlight from 'components/Spotlight';
-import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT, GET_USER_PODS } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { LIMIT } from 'services/board';
@@ -90,6 +90,9 @@ export default function SidebarLayout({ children }) {
       excludeSharedOrgs: true,
     },
   });
+  const { data: userPods } = useQuery(GET_USER_PODS, {
+    skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
+  });
 
   useEffect(() => {
     setMinimized(isMobile);
@@ -147,6 +150,7 @@ export default function SidebarLayout({ children }) {
       pageData,
       setPageData,
       orgsList,
+      userPods,
     }),
     [
       createFormModal,
@@ -159,6 +163,7 @@ export default function SidebarLayout({ children }) {
       toggleSpotlight,
       userOrgs,
       userPermissionsContext?.getUserPermissionContext,
+      userPods,
     ]
   );
 

@@ -50,6 +50,15 @@ export const GET_USER_PODS = gql`
       profilePicture
       description
       color
+      modules {
+        task
+        bounty
+        grant
+        document
+        milestone
+        proposal
+        leaderboard
+      }
     }
   }
 `;
@@ -84,12 +93,10 @@ export const GET_USER_AVAILABLE_PODS = gql`
       modules {
         task
         bounty
-        pod
         grant
         document
         milestone
         proposal
-        collab
         leaderboard
       }
     }
