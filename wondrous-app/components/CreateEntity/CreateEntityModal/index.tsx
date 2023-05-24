@@ -152,9 +152,13 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     validate: (values) => {
       const errors: { [key: string]: any } = {};
       const selectedOrg = userOrgs?.getUserOrgs.find(({ id }) => id === values?.orgId);
-      if (!selectedOrg?.modules?.[entityType] && !values?.podId) {
+      if (!selectedOrg?.modules?.[entityType] && selectedOrg?.modules?.pod && !values?.podId) {
         // If a module is disabled on the org but enabled on the pod, do not create an entity without a podId.
         errors.podId = 'Pod is required';
+      }
+      if (!selectedOrg?.modules?.[entityType] && !selectedOrg?.modules?.pod) {
+        // If a module is disabled on the org and the pod module is disabled on the org, show error.
+        errors.orgId = `Create ${entityType} is disabled by your admin`;
       }
       return errors;
     },
