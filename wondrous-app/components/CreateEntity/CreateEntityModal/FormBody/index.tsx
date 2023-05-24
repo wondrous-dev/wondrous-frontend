@@ -1,27 +1,26 @@
 import DropdownSearch from 'components/DropdownSearch';
 
-import { FormikValues } from 'formik';
-import React, { forwardRef, useEffect, useState } from 'react';
-import { ENTITIES_TYPES, PRIORITIES, PROPOSAL_VOTE_CHOICES, TASK_STATUS_TODO } from 'utils/constants';
 import { ErrorText } from 'components/Common';
+import { FormikValues } from 'formik';
+import { forwardRef, useEffect, useState } from 'react';
+import { ENTITIES_TYPES, PRIORITIES, PROPOSAL_VOTE_CHOICES, TASK_STATUS_TODO } from 'utils/constants';
 
-import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
-import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
-import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
+import { StyledLink } from 'components/Common/text';
+import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
 import GithubIssues from 'components/CreateEntity/CreateEntityModal/GithubIssues';
 import {
-  filterUserOptions,
-  filterCategoryValues,
-  entityTypeData,
-  filterOrgUsersForAutocomplete,
-  Fields,
-  handleRewardOnChange,
   CreateEntityPaymentMethodItem,
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
+  Fields,
+  entityTypeData,
+  filterCategoryValues,
   filterOrgUsers,
+  filterOrgUsersForAutocomplete,
   filterPaymentMethods,
+  filterUserOptions,
+  handleRewardOnChange,
   useCreateLabel,
   useGetCategories,
   useGetMilestones,
@@ -52,27 +51,29 @@ import {
   CreateEntityLabelWrapper,
   CreateEntityPaymentMethodOption,
   CreateEntityPaymentMethodSelect,
-  CreateEntityWrapper,
+  CreateEntityPaymentMethodSelected,
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
   CreateEntitySelectWrapper,
   CreateEntityTextfield,
   CreateEntityTitle,
-  CreateEntityPaymentMethodSelected,
+  CreateEntityWrapper,
   ProposalVoteSelect,
   ProposalVoteSelectMenuItem,
   ProposalVoteSelectMenuItemText,
 } from 'components/CreateEntity/CreateEntityModal/styles';
+import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
 
-import Tags from 'components/Tags';
 import { SafeImage } from 'components/Common/Image';
-import CustomProposal from 'components/CreateEntity/CreateEntityModal/CustomProposal';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
+import CustomProposal from 'components/CreateEntity/CreateEntityModal/CustomProposal';
+import Tags from 'components/Tags';
+import useQueryModules from 'hooks/modules/useQueryModules';
 import router from 'next/router';
+import MilestoneSearch from '../MilestoneSearch';
+import ApplicationsInput from './ApplicationsInput';
 import MediaUpload from './MediaUpload';
 import Reviewer from './Reviewer';
-import ApplicationsInput from './ApplicationsInput';
-import MilestoneSearch from '../MilestoneSearch';
 
 interface Props {
   form: any;
@@ -150,6 +151,8 @@ const FormBody = forwardRef(
       handleClose();
       router.push(`/organization/settings/${form.values.orgId}/payment-method`);
     };
+    const milestoneModuleEnabled =
+      useQueryModules({ orgId: form.values.orgId, podId: form.values.podId })?.milestone ?? true;
     return (
       <CreateEntityBody>
         <CreateEntityTitle
@@ -530,7 +533,7 @@ const FormBody = forwardRef(
         </CreateEntityLabelSelectWrapper>
 
         <CreateEntityLabelSelectWrapper
-          show={entityTypeData[entityType].fields.includes(Fields.milestone) && !isSubtask}
+          show={entityTypeData[entityType].fields.includes(Fields.milestone) && !isSubtask && milestoneModuleEnabled}
         >
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Milestone</CreateEntityLabel>
