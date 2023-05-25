@@ -22,7 +22,7 @@ import { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 
 const DEFAULT_STATE_VALUE = {
-  level: '1',
+  level: "1",
   timeBound: false,
   maxSubmission: null,
   requireReview: false,
@@ -45,7 +45,7 @@ const CreateTemplate = ({
   questId = null,
   defaultQuestSteps = [],
   postUpdate = null,
-  title
+  title,
 }) => {
   const navigate = useNavigate();
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
@@ -135,57 +135,92 @@ const CreateTemplate = ({
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           type: next.type,
-          order: index + 1,
+          order: acc.length + 1,
           required: next.required === false ? false : true,
-          prompt: next.value?.question || next?.value?.prompt || next.value || null,
+          prompt: next?.value?.prompt || next.value || null,
         };
-        if (next.type === TYPES.MULTI_QUIZ) {
-          (step.type = next.value.multiSelectValue),
-            (step.options = next.value.answers.map((answer, idx) => {
-              return {
-                position: idx,
-                text: answer.value,
-                ...(next.value.withCorrectAnswers ? { correct: answer.isCorrect } : {}),
-              };
+        switch (next.type) {
+          case TYPES.MULTI_QUIZ:
+          case TYPES.SINGLE_QUIZ:
+            step.type = next.value.multiSelectValue;
+            step.options = next.value.answers.map((answer, idx) => ({
+              position: idx,
+              text: answer.value,
+              ...(next.value.withCorrectAnswers ? { correct: answer.isCorrect } : {}),
             }));
-          step.prompt = next.value.question;
-        } else if ([TYPES.LIKE_TWEET, TYPES.RETWEET, TYPES.REPLY_TWEET].includes(next.type)) {
-          step.prompt = next.value?.prompt;
-          step["additionalData"] = {
-            tweetLink: next.value?.tweetLink,
-          };
-        } else if (next.type === TYPES.FOLLOW_TWITTER) {
-          step.prompt = next.value?.prompt;
-          step["additionalData"] = {
-            tweetHandle: next.value?.tweetHandle,
-          };
-        } else if (next.type === TYPES.TWEET_WITH_PHRASE) {
-          step.prompt = next.value?.prompt;
-          step["additionalData"] = {
-            tweetPhrase: next.value?.tweetPhrase,
-          };
-        } else if (next.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
-          step.prompt = next.value?.prompt;
-          step["additionalData"] = {
-            snapshotProposalLink: next.value?.snapshotProposalLink,
-          };
-        } else if (next.type === TYPES.SNAPSHOT_SPACE_VOTE) {
-          step.prompt = next.value?.prompt;
-          step["additionalData"] = {
-            snapshotSpaceLink: next.value?.snapshotSpaceLink,
-            snapshotVoteTimes: Number(next.value?.snapshotVoteTimes),
-          };
-        } else if (next.type === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
-          step.prompt = next.value?.prompt;
-          step["additionalData"] = {
-            discordMessageType: next.value?.discordMessageType,
-            discordChannelName: next.value?.discordChannelName,
-          };
-        } else if (next.type === TYPES.JOIN_DISCORD_COMMUNITY_CALL) {
-          step.prompt = next.value?.prompt;
-          step["additionalData"] = {
-            discordChannelName: next.value?.discordChannelName,
-          };
+            step.prompt = next.value.prompt;
+            break;
+
+          case TYPES.LIKE_TWEET:
+          case TYPES.RETWEET:
+          case TYPES.REPLY_TWEET:
+            step.prompt = next.value?.prompt;
+            step.additionalData = {
+              tweetLink: next.value?.tweetLink,
+            };
+            break;
+
+          case TYPES.FOLLOW_TWITTER:
+            step.prompt = next.value?.prompt;
+            step.additionalData = {
+              tweetHandle: next.value?.tweetHandle,
+            };
+            break;
+
+          case TYPES.TWEET_WITH_PHRASE:
+            step.prompt = next.value?.prompt;
+            step.additionalData = {
+              tweetPhrase: next.value?.tweetPhrase,
+            };
+            break;
+
+          case TYPES.SNAPSHOT_PROPOSAL_VOTE:
+            step.prompt = next.value?.prompt;
+            step.additionalData = {
+              snapshotProposalLink: next.value?.snapshotProposalLink,
+            };
+            break;
+
+          case TYPES.SNAPSHOT_SPACE_VOTE:
+            step.prompt = next.value?.prompt;
+            step.additionalData = {
+              snapshotSpaceLink: next.value?.snapshotSpaceLink,
+              snapshotVoteTimes: Number(next.value?.snapshotVoteTimes),
+            };
+            break;
+
+          case TYPES.DISCORD_MESSAGE_IN_CHANNEL:
+            step.prompt = next.value?.prompt;
+            step.additionalData = {
+              discordMessageType: next.value?.discordMessageType,
+              discordChannelName: next.value?.discordChannelName,
+            };
+            break;
+
+          case TYPES.JOIN_DISCORD_COMMUNITY_CALL:
+            step.prompt = next.value?.prompt;
+            step.additionalData = {
+              discordChannelName: next.value?.discordChannelName,
+            };
+            break;
+
+          case TYPES.DATA_COLLECTION:
+            step.type = TYPES.INTERESTS;
+            step.prompt = next.value?.prompt;
+            step.additionalData = {
+              interests: next.value?.dataCollectionProps?.interests,
+              category: next.value?.dataCollectionProps?.category,
+            };
+            acc.push({
+              order: acc.length + 2,
+              type: TYPES.LOCATION,
+              prompt: step.prompt,
+              required: step.required,
+            });
+            break;
+
+          default:
+            break;
         }
         return [...acc, step];
       }, []),

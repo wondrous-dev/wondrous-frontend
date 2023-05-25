@@ -45,7 +45,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
     },
   ];
 
-  const { question, withCorrectAnswers, multiSelectValue, answers } = value || {};
+  const { prompt, withCorrectAnswers, multiSelectValue, answers } = value || {};
 
   const handleOnChange = (key, val) => {
     onChange({
@@ -78,9 +78,9 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
       <Grid item gap="14px" display="flex" flexDirection="column">
         <Label>Question/Prompt</Label>
         <TextField
-          placeholder="Enter question here"
-          value={question || ""}
-          onChange={(value) => handleOnChange("question", value)}
+          placeholder="Enter prompt here"
+          value={prompt || ""}
+          onChange={(value) => handleOnChange("prompt", value)}
           multiline={false}
           error={error?.prompt}
         />

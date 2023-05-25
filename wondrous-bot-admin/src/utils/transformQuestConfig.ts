@@ -22,6 +22,8 @@ type InputQuestStep = {
 		discordChannelId?: string
 		discordChannelName?: string
 		discordMessageType?: string
+		interests?: string[]
+		category?: string
 	}
 }
 
@@ -32,7 +34,7 @@ type OutputQuestStep = {
 	value:
 		| string
 		| {
-				question: string
+				prompt: string
 				withCorrectAnswers: boolean
 				multiSelectValue: string
 				answers: Array<{
@@ -62,13 +64,19 @@ type OutputQuestStep = {
 				prompt?: string
 				discordChannelName: string
 				discordMessageType?: string
+		  } | {
+				prompt?: string
+				dataCollectionProps?: {
+					category: string
+					interests: string[]
+				}
 		  }
 }
 
 export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
 	if (!obj) return []
-	return obj.map((step) => {
-		const outputStep: OutputQuestStep = {
+	return obj.map((step, idx) => {
+		let outputStep: OutputQuestStep = {
 			id: step.order,
 			type: step.type,
 			required: step.required === false ? false : true,
@@ -86,7 +94,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
 				(option) => option.correct !== null && option.correct !== undefined
 			)
 			outputStep.value = {
-				question: step.prompt,
+				prompt: step.prompt,
 				withCorrectAnswers: hasCorrectAnswer,
 				multiSelectValue: step.type,
 				answers: step.options?.map((option) => ({
@@ -134,7 +142,23 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
 				discordChannelName: step?.additionalData?.discordChannelName
 			}
 		}
-
+		else if(step.type === TYPES.LOCATION) {
+			outputStep = {
+				...outputStep,
+				type: TYPES.DATA_COLLECTION,
+				id: step.order - 1,
+				value: {
+					prompt: step?.prompt,
+					dataCollectionProps: {
+						category: obj[idx + 1]?.additionalData?.category,
+						interests: obj[idx + 1]?.additionalData?.interests,
+					}
+				}
+			}
+		}
+		else if(step.type === TYPES.INTERESTS) {
+			return null
+		}
 		return outputStep
-	})
+	}).filter(Boolean)
 }

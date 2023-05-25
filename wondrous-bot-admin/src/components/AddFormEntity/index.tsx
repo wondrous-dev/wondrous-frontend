@@ -9,13 +9,14 @@ import { DragDropContext, Draggable } from "react-beautiful-dnd";
 
 import DeleteIcon from "components/Icons/Delete";
 import StrictModeDroppable from "components/StrictModeDroppable";
-import { CONFIG_COMPONENTS, RESPOND_TYPES, TYPES } from "utils/constants";
+import { RESPOND_TYPES, TYPES } from "utils/constants";
+import { CONFIG_COMPONENTS } from "utils/questStepsConfigComponents";
 import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
 
 const MULTICHOICE_DEFAULT_VALUE = {
-  question: "",
+  prompt: "",
   withCorrectAnswers: false,
   multiSelectValue: TYPES.MULTI_QUIZ,
   answers: [
@@ -75,6 +76,10 @@ const COMPONENT_OPTIONS = [
     label: "Send A Message in Discord Channel",
     value: TYPES.DISCORD_MESSAGE_IN_CHANNEL,
   },
+  {
+    label: 'Data Collection',
+    value: TYPES.DATA_COLLECTION
+  }
 ];
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => {
