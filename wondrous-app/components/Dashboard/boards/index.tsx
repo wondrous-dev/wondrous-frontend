@@ -42,6 +42,8 @@ const useGetUserTaskBoardTasks = ({
         const orgModules = userOrgs?.find(({ id }) => id === orgId)?.modules;
         const podModules = userPods?.find(({ id }) => id === podId)?.modules;
 
+        if (!(orgModules || podModules)) return true;
+
         if (podId && !orgModules?.pod) return false;
         if (!podId && orgId && orgModules?.task) return true;
         if (podId && podModules?.task) return true;
