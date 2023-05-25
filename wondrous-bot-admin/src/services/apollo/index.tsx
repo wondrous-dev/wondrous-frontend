@@ -2,6 +2,7 @@ import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { offsetLimitPagination } from '@apollo/client/utilities';
 import { getAuthHeader, getWaitlistAuthHeader } from 'components/Auth/withAuthHeader';
+import offsetLimitPaginationInput from 'utils/offsetLimitPaginationInput';
 
 // Staging is http://34.135.9.199/graphql
 const graphqlUri = !import.meta.env.VITE_STAGING
@@ -52,7 +53,10 @@ const cache = new InMemoryCache({
         users(existingData, { args, toReference }) {
           return existingData || toReference({ __typename: 'User', ...args });
         },
-        getQuestsForOrg: offsetLimitPagination(),
+        getQuestsForOrg: {
+          keyArgs: ['input', ['orgId', 'statuses']],
+          merge: offsetLimitPaginationInput,
+        }
       },
     },
   },
