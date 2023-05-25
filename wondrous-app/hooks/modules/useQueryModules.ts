@@ -8,10 +8,33 @@ type UseQueryModulesValue = {
   grant: boolean;
   leaderboard: boolean;
   milestone: boolean;
-  pod: boolean;
+  pod?: boolean;
   proposal: boolean;
   task: boolean;
   parentOrgPodModuleStatus?: boolean;
+};
+
+const defaultPodModules = {
+  bounty: true,
+  document: true,
+  grant: true,
+  leaderboard: true,
+  milestone: true,
+  proposal: true,
+  task: true,
+  parentOrgPodModuleStatus: true,
+};
+
+const defaultOrgModules = {
+  bounty: true,
+  collab: true,
+  document: true,
+  grant: true,
+  leaderboard: true,
+  milestone: true,
+  pod: true,
+  proposal: true,
+  task: true,
 };
 
 const useQueryModules = ({ orgUsername = '', orgId = '', podId = '' }): UseQueryModulesValue => {
@@ -33,6 +56,8 @@ const useQueryModules = ({ orgUsername = '', orgId = '', podId = '' }): UseQuery
   const orgModules = getOrgByIdData?.getOrgById?.modules || getOrgFromUsernameData?.getOrgFromUsername?.modules;
 
   const modules = podId ? getPodByIdData?.getPodById?.modules : orgModules;
+
+  if (!modules) return podId ? defaultPodModules : defaultOrgModules;
 
   const modulesCopy =
     modules &&
