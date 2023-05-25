@@ -99,6 +99,8 @@ export const GET_SUBMISSIONS_FOR_QUEST = gql`
         additionalData {
           txHash
           tweetId
+          interests
+          location
         }
       }
     }
