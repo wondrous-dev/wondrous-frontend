@@ -15,26 +15,26 @@ type UseQueryModulesValue = {
 };
 
 const defaultPodModules = {
-  bounty: true,
-  document: true,
-  grant: true,
-  leaderboard: true,
-  milestone: true,
-  proposal: true,
-  task: true,
-  parentOrgPodModuleStatus: true,
+  bounty: undefined,
+  document: undefined,
+  grant: undefined,
+  leaderboard: undefined,
+  milestone: undefined,
+  proposal: undefined,
+  task: undefined,
+  parentOrgPodModuleStatus: undefined,
 };
 
 const defaultOrgModules = {
-  bounty: true,
-  collab: true,
-  document: true,
-  grant: true,
-  leaderboard: true,
-  milestone: true,
-  pod: true,
-  proposal: true,
-  task: true,
+  bounty: undefined,
+  collab: undefined,
+  document: undefined,
+  grant: undefined,
+  leaderboard: undefined,
+  milestone: undefined,
+  pod: undefined,
+  proposal: undefined,
+  task: undefined,
 };
 
 const useQueryModules = ({ orgUsername = '', orgId = '', podId = '' }): UseQueryModulesValue => {
@@ -55,21 +55,16 @@ const useQueryModules = ({ orgUsername = '', orgId = '', podId = '' }): UseQuery
 
   const orgModules = getOrgByIdData?.getOrgById?.modules || getOrgFromUsernameData?.getOrgFromUsername?.modules;
 
-  const modules = podId ? getPodByIdData?.getPodById?.modules : orgModules;
+  const defaultModules = podId ? defaultPodModules : defaultOrgModules;
 
-  if (!modules) return podId ? defaultPodModules : defaultOrgModules;
+  const modules = (podId ? getPodByIdData?.getPodById?.modules : orgModules) ?? defaultModules;
 
   const modulesCopy =
     modules &&
     Object.keys(modules).reduce(
       (acc, key) => {
-        if (podId && key === 'collab') {
-          // exclude the `collab` key if `podId` is provided.
-          return acc;
-        }
-        if (podId && key === 'pod') {
-          // If `podId` is provided, exclude the `pod` key but include the status of the parent org's `pod` module.
-          acc.parentOrgPodModuleStatus = orgModules?.pod;
+        if (podId && (key === 'collab' || key === 'pod')) {
+          // exclude the `collab` and `pod` key if `podId` is provided.
           return acc;
         }
         const moduleValue = modules[key];
@@ -83,6 +78,8 @@ const useQueryModules = ({ orgUsername = '', orgId = '', podId = '' }): UseQuery
       },
       { ...modules }
     );
+
+  modulesCopy.parentOrgPodModuleStatus = podId && orgModules?.pod; // If `podId` is provided, exclude the `pod` key but include the status of the parent org's `pod` module.
 
   return modulesCopy;
 };
