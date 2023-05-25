@@ -13,6 +13,8 @@ import { CONFIG_COMPONENTS, RESPOND_TYPES, TYPES } from "utils/constants";
 import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
+import { useContext } from "react";
+import CreateQuestContext from "utils/context/CreateQuestContext";
 
 const MULTICHOICE_DEFAULT_VALUE = {
   question: "",
@@ -77,7 +79,8 @@ const COMPONENT_OPTIONS = [
   },
 ];
 
-const AddFormEntity = ({ steps, setSteps, handleRemove, errors, setErrors }) => {
+const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
+  const { errors, setErrors } = useContext(CreateQuestContext);
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
