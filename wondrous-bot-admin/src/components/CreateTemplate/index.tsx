@@ -22,7 +22,7 @@ import { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 
 const DEFAULT_STATE_VALUE = {
-  level: '1',
+  level: "1",
   timeBound: false,
   maxSubmission: null,
   requireReview: false,
@@ -45,7 +45,7 @@ const CreateTemplate = ({
   questId = null,
   defaultQuestSteps = [],
   postUpdate = null,
-  title
+  title,
 }) => {
   const navigate = useNavigate();
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);

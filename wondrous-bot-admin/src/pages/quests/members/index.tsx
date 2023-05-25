@@ -1,12 +1,12 @@
-import { useQuery } from '@apollo/client';
-import { Grid } from '@mui/material';
-import EmptyState from 'components/EmptyState';
-import PageHeader from 'components/PageHeader';
-import TableComponent from 'components/TableComponent';
-import { GET_COMMUNITY_USERS_FOR_ORG } from 'graphql/queries';
-import { useContext, useMemo } from 'react';
-import { EMPTY_STATE_TYPES, LIMIT } from 'utils/constants';
-import GlobalContext from 'utils/context/GlobalContext';
+import { useQuery } from "@apollo/client";
+import { Grid } from "@mui/material";
+import EmptyState from "components/EmptyState";
+import PageHeader from "components/PageHeader";
+import TableComponent from "components/TableComponent";
+import { GET_COMMUNITY_USERS_FOR_ORG } from "graphql/queries";
+import { useContext, useMemo } from "react";
+import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
+import GlobalContext from "utils/context/GlobalContext";
 
 const MembersPage = () => {
   const { activeOrg } = useContext(GlobalContext);
@@ -22,29 +22,28 @@ const MembersPage = () => {
 
   const tableConfig = useMemo(() => {
     return data?.getCmtyUsersForOrg?.map((user) => {
-      const userDiscord = `${user?.discordUsername}#${user?.discordDiscriminator}`;
+      const userDiscord = `${user?.discordUsername}`;
+      const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
       return {
         id: user.id,
         name: {
-          component: 'label',
-          value: user?.username || userDiscord || 'N/A',
+          component: "label",
+          value: user?.username || userDiscord || "N/A",
         },
         level: {
-          component: 'hexagon',
+          component: "hexagon",
           value: user?.level,
         },
         discord: {
-          component: 'discord',
-          value: `https://discordapp.com/users/${user?.discordId}` || 'N/A',
+          component: "discord",
+          value: userDiscordDiscriminator || "N/A",
         },
         twitter: {
-          component: 'twitter',
-          value:
-            `https://twitter.com/${user?.twitterInfo?.twitterUsername}` ||
-            'N/A',
+          component: "twitter",
+          value: `https://twitter.com/${user?.twitterInfo?.twitterUsername}` || "N/A",
         },
         xp: {
-          component: 'label',
+          component: "label",
           value: user.point,
           componentProps: {
             fontWeight: 500,
@@ -54,24 +53,24 @@ const MembersPage = () => {
     });
   }, [data]);
 
-  const headers = ['Name', 'Level', 'Discord', 'Twitter', 'XP'];
+  const headers = ["Name", "Level", "Discord", "Twitter", "XP"];
   return (
     <>
-      <PageHeader title='Members' withBackButton={false} />
+      <PageHeader title="Members" withBackButton={false} />
       <Grid
-        minHeight='100vh'
+        minHeight="100vh"
         sx={{
-          backgroundImage: 'url(/images/members-bg.png)',
-          backgroundPosition: 'top',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
+          backgroundImage: "url(/images/members-bg.png)",
+          backgroundPosition: "top",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
         }}
         container
-        direction='column'
-        gap='42px'
+        direction="column"
+        gap="42px"
         padding={{
-          xs: '14px 14px 120px 14px',
-          sm: '24px 56px',
+          xs: "14px 14px 120px 14px",
+          sm: "24px 56px",
         }}
       >
         {data?.getCmtyUsersForOrg?.length ? (
