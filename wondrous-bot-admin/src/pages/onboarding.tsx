@@ -40,12 +40,7 @@ const ChooseOrg = ({ handleClick, userOrgs, shouldBeVisible }) =>
               }}
             />
 
-            <Typography
-              fontFamily="Poppins"
-              fontWeight={600}
-              fontSize="14px"
-              color="#06040A"
-            >
+            <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" color="#06040A">
               {org?.name}
             </Typography>
           </Grid>
@@ -63,12 +58,7 @@ const EnableConnect = ({
 }) =>
   shouldBeVisible ? (
     <Grid display="flex" flexDirection="column" gap="10px" width="10)%">
-      <Typography
-        fontFamily="Poppins"
-        fontWeight={600}
-        fontSize="14px"
-        color="#06040A"
-      >
+      <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" color="#06040A">
         Enable community bot for {cmtyOrgToEnable?.name}
       </Typography>
       <Box display="flex" gap="10px" alignItems="center" width="100%">
@@ -163,15 +153,11 @@ const OnboardingPage = () => {
   };
 
   const [updateOrg] = useMutation(UPDATE_ORG, {});
-  const [getLoggedInUserFullAccessOrgs] = useLazyQuery(
-    GET_LOGGED_IN_USER_FULL_ACCESS_ORGS,
-    {
-      onCompleted: (data) => {
-        console.log(data?.getLoggedInUserFullAccessOrgs);
-        setAllOrgs(data?.getLoggedInUserFullAccessOrgs);
-      },
-    }
-  );
+  const [getLoggedInUserFullAccessOrgs] = useLazyQuery(GET_LOGGED_IN_USER_FULL_ACCESS_ORGS, {
+    onCompleted: (data) => {
+      setAllOrgs(data?.getLoggedInUserFullAccessOrgs);
+    },
+  });
 
   useEffect(() => {
     if (userOrgs && userOrgs.length === 0) {
@@ -195,7 +181,7 @@ const OnboardingPage = () => {
         orgId: cmtyOrgToEnable?.id,
         input: {
           cmtyEnabled: true,
-        }
+        },
       },
     }).then((res) => {
       setActiveOrg(cmtyOrgToEnable);
@@ -211,17 +197,9 @@ const OnboardingPage = () => {
     <Modal
       open
       onClose={() => navigate("/")}
-      title={`${
-        cmtyOrgToEnable
-          ? `Enable ${cmtyOrgToEnable?.name}`
-          : "Select Community!"
-      }`}
+      title={`${cmtyOrgToEnable ? `Enable ${cmtyOrgToEnable?.name}` : "Select Community!"}`}
     >
-      <ChooseOrg
-        shouldBeVisible={!cmtyOrgToEnable && !hasCmtyOrgs}
-        handleClick={handleOrgSelect}
-        userOrgs={allOrgs}
-      />
+      <ChooseOrg shouldBeVisible={!cmtyOrgToEnable && !hasCmtyOrgs} handleClick={handleOrgSelect} userOrgs={allOrgs} />
       <EnableConnect
         cmtyOrgToEnable={cmtyOrgToEnable}
         setCmtyOrgToEnable={setCmtyOrgToEnable}

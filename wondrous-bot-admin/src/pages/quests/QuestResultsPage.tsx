@@ -4,7 +4,6 @@ import CreateTemplate from "components/CreateTemplate";
 import DeleteQuestButton from "components/DeleteQuestButton";
 import PageHeader from "components/PageHeader";
 import ShareComponent from "components/Share";
-import { TitleInput } from "components/CreateTemplate/styles";
 
 import { SharedSecondaryButton } from "components/Shared/styles";
 import ViewQuestResults from "components/ViewQuestResults";
@@ -15,10 +14,12 @@ import { useInView } from "react-intersection-observer";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { QUEST_STATUSES } from "utils/constants";
 import { transformQuestConfig } from "utils/transformQuestConfig";
+import CreateQuestContext from "utils/context/CreateQuestContext";
+import QuestTitle from "components/QuestTitle";
 
 const QuestResultsPage = () => {
   const navigate = useNavigate();
-
+  const [errors, setErrors] = useState({});
   const location = useLocation();
   const isEditInQuery = new URLSearchParams(location.search).get("edit") === "true";
   const [isEditMode, setIsEditMode] = useState(isEditInQuery);
@@ -79,27 +80,26 @@ const QuestResultsPage = () => {
   }, [getQuestById?.steps, isEditMode]);
 
   return (
-    <>
+    <CreateQuestContext.Provider
+      value={{
+        errors,
+        setErrors,
+        isEditMode,
+      }}
+    >
       <PageHeader
         title={getQuestById?.title || ""}
-        titleComponent={isEditMode ? () => <TitleInput 
-          maxRows={2}
-          multiline
-          rows={1}
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter Quest Title" /> : null}
-
+        titleComponent={isEditMode ? () => <QuestTitle title={title} setTitle={setTitle} /> : null}
         withBackButton
         onBackButtonClick={() => {
           if (isEditMode) {
             toggleEdit();
           }
-        } }
+        }}
         renderActions={() => (
           <Grid display="flex" gap="10px" alignItems="center">
             <DeleteQuestButton questId={getQuestById?.id} />
-            <ShareComponent link={`/quest/${getQuestById?.id}`}/>
+            <ShareComponent link={`/quest/${getQuestById?.id}`} />
             {isEditMode ? (
               <>
                 <SharedSecondaryButton $reverse onClick={toggleEdit}>
@@ -133,7 +133,7 @@ const QuestResultsPage = () => {
       ) : (
         <ViewQuestResults quest={getQuestById} />
       )}
-    </>
+    </CreateQuestContext.Provider>
   );
 };
 
