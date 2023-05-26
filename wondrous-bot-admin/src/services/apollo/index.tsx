@@ -4,7 +4,7 @@ import { getAuthHeader, getWaitlistAuthHeader } from "components/Auth/withAuthHe
 import offsetLimitPaginationInput from "utils/offsetLimitPaginationInput";
 
 // Staging is http://34.135.9.199/graphql
-const graphqlUri = process.env.VITE_PRODUCTION
+const graphqlUri = !import.meta.env.VITE_STAGING
   ? process.env.VITE_GRAPHQL_SERVER_URL
   : "https://apistaging.wonderapp.co/graphql";
 
