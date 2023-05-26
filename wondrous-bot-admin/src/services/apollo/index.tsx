@@ -5,7 +5,7 @@ import offsetLimitPaginationInput from "utils/offsetLimitPaginationInput";
 
 // Staging is http://34.135.9.199/graphql
 const graphqlUri = !import.meta.env.VITE_STAGING
-  ? process.env.VITE_GRAPHQL_SERVER_URL
+  ? import.meta.env.VITE_GRAPHQL_SERVER_URL
   : "https://apistaging.wonderapp.co/graphql";
 
 const httpLink = new HttpLink({
