@@ -1,5 +1,6 @@
-import { Grid, Typography } from '@mui/material';
-import styled from 'styled-components';
+import { Grid, Typography } from "@mui/material";
+import styled from "styled-components";
+import { TextareaAutosize } from "@mui/base";
 
 export const Panel = styled(Grid)`
   && {
@@ -12,7 +13,7 @@ export const Panel = styled(Grid)`
 
 export const CampaignOverviewTitle = styled(Typography)`
   && {
-    font-family: 'Poppins';
+    font-family: "Poppins";
     font-style: normal;
     font-weight: 700;
     font-size: 18px;
@@ -31,6 +32,39 @@ export const Label = styled(Typography)`
     min-width: 150px;
     letter-spacing: 0.01em;
     text-align: left;
-    color: ${({ color = '#626262' }) => color};
+    color: ${({ color = "#626262" }) => color};
+  }
+`;
+
+export const TitleInput = styled(TextareaAutosize)`
+  && {
+    width: 100%;
+    min-width: 600px;
+    display: flex;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    resize: none;
+    font-family: Poppins;
+    background: transparent;
+    font-family: "Poppins";
+    height: 24px;
+    font-style: normal;
+    width: 20rem;
+    font-weight: 500;
+    font-size: 28px;
+    &:focus-visible {
+      outline: none;
+    }
+    ${({ theme }) => theme.breakpoints.down("sm")} {
+      min-width: 300px;
+    };
+
+    letter-spacing: -0.0375em;
+    &:placeholder {
+      color: #949494;
+    }
+    color: black;
   }
 `;

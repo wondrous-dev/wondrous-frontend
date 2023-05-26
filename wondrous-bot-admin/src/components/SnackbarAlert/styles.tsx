@@ -4,13 +4,16 @@ import styled from 'styled-components';
 
 export const StyledAlert = styled(Alert)`
   &.MuiAlert-standardSuccess {
-    background: #12413d;
-    border-radius: 7px;
-    color: #ffffff;
-    font-weight: 500;
-    font-size: 14px;
-    border: 1px solid #115448;
+    background: #2A8D5C;
+    border-radius: 6px;
+    color: #fee2ca;
+    border: 1px solid black;
     z-index: 9999;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 6px 24px;
   }
 `;
 

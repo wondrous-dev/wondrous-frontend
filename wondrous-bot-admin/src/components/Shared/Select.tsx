@@ -1,51 +1,52 @@
-import {
-  MenuItem,
-} from '@mui/material';
+import { Box, MenuItem } from "@mui/material";
 
-import {
-  StyledTextFieldSelect,
-} from './styles';
+import { ErrorText, StyledTextFieldSelect } from "./styles";
 const SelectComponent = ({
   onChange,
-  placeholder = 'Select',
+  placeholder = "Select",
   value,
   options = [],
   background = null,
+  style = {},
+  boxStyle = {},
+  error = null,
 }) => {
   const handleChange = (e) => onChange(e.target.value);
 
   return (
-    <StyledTextFieldSelect
-      select
-      defaultValue=''
-      value={value}
-      placeholder={placeholder}
-      background={background}
-      onChange={handleChange}
-      SelectProps={{
-        displayEmpty: true,
-        renderValue: (selected) => {
-          const selectedOption = options?.find(
-            (option) => option.value === selected
-          );
-          return selectedOption ? selectedOption.label : 'Select';
-        },
-        MenuProps: {
-          sx: {
-            '.MuiPaper-root': {
-              backgroundColor: '#E8E8E8',
-              borderRadius: '6px',
+    <Box style={boxStyle}>
+      <StyledTextFieldSelect
+        select
+        defaultValue=""
+        value={value}
+        style={style}
+        placeholder={placeholder}
+        background={background}
+        onChange={handleChange}
+        SelectProps={{
+          displayEmpty: true,
+          renderValue: (selected) => {
+            const selectedOption = options?.find((option) => option.value === selected);
+            return selectedOption ? selectedOption.label : "Select";
+          },
+          MenuProps: {
+            sx: {
+              ".MuiPaper-root": {
+                backgroundColor: "#E8E8E8",
+                borderRadius: "6px",
+              },
             },
           },
-        },
-      }}
-    >
-      {options?.map((option) => (
-        <MenuItem key={option.value} value={option.value}>
-          {option.label}
-        </MenuItem>
-      ))}
-    </StyledTextFieldSelect>
+        }}
+      >
+        {options?.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </StyledTextFieldSelect>
+      {error ? <ErrorText>{error}</ErrorText> : null}
+    </Box>
   );
 };
 

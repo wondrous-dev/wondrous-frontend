@@ -24,14 +24,13 @@ export const StyledTableHeaderCell = styled(TableCell)`
   font-size: 14px !important;
   line-height: 15px;
   /* identical to box height, or 107% */
-
+  text-align: center;
   letter-spacing: 0.01em;
 `;
 
 export const StyledTableRow = styled(TableRow)`
   background-color: ${({ id }) => (id % 2 === 0 ? 'white' : '#f2f2f2')};
   color: black;
-
 `;
 
 export const PaperComponent = styled(Paper)`

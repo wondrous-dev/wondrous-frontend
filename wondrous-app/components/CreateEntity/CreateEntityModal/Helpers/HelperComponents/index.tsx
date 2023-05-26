@@ -83,7 +83,7 @@ export const CreateEntityTextfieldInputPointsComponent = React.forwardRef((props
     fullWidth={false}
     ref={ref}
     inputProps={{
-      maxLength: 3,
+      maxLength: 9,
     }}
     InputProps={{
       startAdornment: (

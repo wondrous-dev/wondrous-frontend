@@ -13,6 +13,7 @@ import { TYPES } from 'utils/constants';
 import SubmissionMedia from 'components/Shared/SubmissionMedia';
 import { useMutation } from '@apollo/client';
 import { APPROVE_SUBMISSION, REJECT_SUBMISSION } from 'graphql/mutations';
+import useAlerts from 'utils/hooks';
 
 /*
 
@@ -116,18 +117,33 @@ const StatusComponent = ({
 };
 
 const QuestResultsCard = ({ submission }) => {
+	const {
+		setSnackbarAlertOpen,
+		setSnackbarAlertMessage,
+		setSnackbarAlertAnchorOrigin,
+	  } = useAlerts();
+	
   const steps = useMemo(() => {
     return stepsNormalizr(submission?.steps, submission?.stepsData);
   }, [submission?.steps, submission?.stepsData]);
 
   const [approveQuestSubmission] = useMutation(APPROVE_SUBMISSION, {
-    refetchQueries: ['getQuestSubmissions'],
+	onCompleted: () => {
+		setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage('Submission approved!');
+	},
+    refetchQueries: ['getQuestSubmissions', 'getQuestSubmissionStats'],
   });
 
   const [rejectQuestSubmission] = useMutation(REJECT_SUBMISSION, {
-    refetchQueries: ['getQuestSubmissions'],
+	onCompleted: () => {
+		setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage('Submission rejected!');
+	},
+    refetchQueries: ['getQuestSubmissions', 'getQuestSubmissionStats'],
   });
 
+  
   const handleApprove = () =>
     approveQuestSubmission({
       variables: {

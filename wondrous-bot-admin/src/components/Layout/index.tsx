@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { Box, Grid, Typography } from '@mui/material';
-import { useMe, withAuth } from 'components/Auth';
+import { EXCLUDED_PATHS, useMe, withAuth } from 'components/Auth';
 import ErrorCatcher from 'components/ErrorCatcher';
 import Navbar from 'components/Navbar';
 import PageSpinner from 'components/PageSpinner';
@@ -90,6 +90,8 @@ const Layout = () => {
   if (loading) {
     return <PageSpinner />;
   }
+  const AuthenticatedOutlet = EXCLUDED_PATHS.includes(location.pathname) ? Outlet : withAuth(Outlet);
+    
   return (
     <GlobalContext.Provider
       value={{
@@ -101,11 +103,11 @@ const Layout = () => {
       {isPageWithoutHeader ? null : <Navbar />}
       <Main $isPageWithoutHeader={isPageWithoutHeader}>
         <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
-          <Outlet />
+          <AuthenticatedOutlet />
         </ErrorCatcher>
       </Main>
     </GlobalContext.Provider>
   );
 };
 
-export default withAuth(Layout);
+export default Layout;

@@ -55,30 +55,33 @@ const WorkspaceSwitch = () => {
   const { userOrgs, activeOrg, setActiveOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
 
-  const onOrgClick = (org) => {
-    setActiveOrg(org);
-  };
   const handleClickAway = () => {
     if (isOpen) setIsOpen(false);
   };
+  const onOrgClick = (org) => {
+    setActiveOrg(org);
+    navigate('/');
+    handleClickAway();
+  };
+
   const togglePopper = () => setIsOpen((prev) => !prev);
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent='onMouseDown'>
-      <Box 
-      flex={{
-        xs: 1,
-        sm: 'unset'
-      }}
-      display={{
-        xs: 'flex',
-        sm: 'block'
-      }}
-      justifyContent='flex-end'
-      alignItems="center"
-      marginRight={{
-        xs: '10px',
-        sm: 'unset'
-      }}
+      <Box
+        flex={{
+          xs: 1,
+          md: 'unset',
+        }}
+        display={{
+          xs: 'flex',
+          md: 'block',
+        }}
+        justifyContent='flex-end'
+        alignItems='center'
+        marginRight={{
+          xs: '10px',
+          md: 'unset',
+        }}
       >
         <WrenchButton ref={ref} onClick={togglePopper} />
         <Popper
@@ -111,6 +114,7 @@ const WorkspaceSwitch = () => {
                       style={{
                         width: '36px',
                         height: '36px',
+                        borderRadius: '10px'
                       }}
                     />
                     <Label color='#1D1D1D'>{org.name}</Label>
@@ -129,6 +133,7 @@ const WorkspaceSwitch = () => {
             <ButtonBase
               onClick={(e) => {
                 e.stopPropagation();
+                handleClickAway();
                 navigate('/settings');
               }}
               sx={{

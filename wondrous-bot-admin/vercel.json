@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/quest",
+      "destination": "/api/quest"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

@@ -5,6 +5,7 @@ import {
   CustomTextField,
   Label,
 } from 'components/AddFormEntity/components/styles';
+import AutocompleteComponent from 'components/Autocomplete';
 import CloseModalIcon from 'components/Icons/CloseModal';
 import SelectComponent from 'components/Shared/Select';
 import { GET_QUESTS_FOR_ORG } from 'graphql/queries';
@@ -30,27 +31,48 @@ const CONDITION_VALUES = {
   [QUEST_CONDITION_TYPES.QUEST]: 'questId',
 };
 
-const FilterGroup = ({ condition, handleChange, options }) => {
+const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
+  const handleConditionDataChange = (value) => {
+    let additionalParams: any = {};
+
+    const isDiscordCondition =
+      condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE;
+
+    if (isDiscordCondition) {
+      const discordGuildId = options.find(
+        (item) => item.value === value
+      )?.discordGuildId;
+      additionalParams.discordGuildId = discordGuildId;
+    }
+    handleChange('conditionData', {
+      [CONDITION_VALUES[condition.type]]: value,
+      ...additionalParams,
+    });
+    handleClose()
+  };
   return (
     <Box display='flex' gap='6px' alignItems='center'>
       <Label>Where</Label>
-      <SelectComponent
-        options={CONDITION_MAP}
-        onChange={(value) => handleChange('type', value)}
-        value={condition.type}
-      />
-      <SelectComponent
-        options={options || []}
-        onChange={(value) =>
-          handleChange('conditionData', {
-            [CONDITION_VALUES[condition.type]]: value,
-          })
-        }
-        value={
-          condition.value ||
-          condition.conditionData?.[CONDITION_VALUES[condition.type]]
-        }
-      />
+      <Box minWidth='150px'>
+        <SelectComponent
+          options={CONDITION_MAP}
+          onChange={(value) => {
+            handleChange('type', value);
+            handleChange('conditionData', null);
+          }}
+          value={condition.type}
+        />
+      </Box>
+      <Box minWidth='150px'>
+        <AutocompleteComponent
+          options={options || []}
+          handleChange={handleConditionDataChange}
+          value={
+            condition.value ||
+            condition.conditionData?.[CONDITION_VALUES[condition.type]]
+          }
+        />
+      </Box>
     </Box>
   );
 };
@@ -107,11 +129,18 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   const getOptionsForCondition = useCallback(
     (type) => {
       if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
-        const allRoles = roles.map((role) => role.roles).flat();
-
+        const allRoles = roles
+          .map((role) =>
+            role.roles.map((newRole) => ({
+              ...newRole,
+              discordGuildId: role.guildId,
+            }))
+          )
+          .flat();
         return allRoles?.map((role) => ({
           value: role.id,
           label: role.name,
+          discordGuildId: role.discordGuildId,
         }));
       }
 
@@ -152,7 +181,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
       questConditions: [],
     }));
     setIsOpen(false);
-  }
+  };
 
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent='onMouseDown'>
@@ -196,6 +225,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
             <FilterGroup
               condition={condition}
               handleChange={handleChange}
+              handleClose={handleClickAway}
               options={getOptionsForCondition(condition.type)}
             />
           </Grid>
