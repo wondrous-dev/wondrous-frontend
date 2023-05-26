@@ -76,13 +76,11 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       },
     });
   }, [activeOrg?.id]);
-  console.log("discordRoleData", getCmtyOrgDiscordRolesData);
   const discordRoleData = getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles || [];
   const discordRoles =
     getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles?.length > 0
       ? getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles[0]?.roles
       : [];
-  console.log("discordRoles", discordRoles);
   const componentsOptions = discordRoles?.map((role) => ({
     label: role.name,
     value: role.id,
