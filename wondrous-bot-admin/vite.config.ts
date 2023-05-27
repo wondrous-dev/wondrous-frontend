@@ -33,7 +33,7 @@ export default defineConfig({
       },
 
       plugins: [
-        NodeGlobalsPolyfillPlugin({
+        (NodeGlobalsPolyfillPlugin as any)({
           process: true,
           buffer: true,
         }),

@@ -1,4 +1,4 @@
-import { TYPES } from "utils/constants";
+import { ERRORS, TYPES } from "utils/constants";
 import * as Yup from "yup";
 
 export const ValidationError = Yup.ValidationError;
@@ -29,7 +29,7 @@ const sharedValidation = {
 const twitterSnapshotSharedValidation = {
   type: Yup.string().required("Type is required").oneOf(ALL_TYPES, "Type is not valid"),
   order: Yup.number().required("Order is required"),
-}
+};
 
 const stepTypes = {
   [TYPES.TEXT_FIELD]: Yup.object().shape({
@@ -45,8 +45,23 @@ const stepTypes = {
           correct: Yup.boolean().optional(),
         })
       )
+      .min(1, ERRORS.MIN_OPTION_LENGTH)
       .required("Options are required"),
   }),
+  [TYPES.SINGLE_QUIZ]: Yup.object().shape({
+    ...sharedValidation,
+    options: Yup.array()
+      .of(
+        Yup.object().shape({
+          position: Yup.number().required("Position is required"),
+          text: Yup.string().required("Answer is required"),
+          correct: Yup.boolean().optional(),
+        })
+      )
+      .min(1, ERRORS.MIN_OPTION_LENGTH)
+      .required("Options are required"),
+  }),
+
   [TYPES.LIKE_TWEET]: Yup.object().shape({
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
@@ -80,13 +95,17 @@ const stepTypes = {
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: Yup.object().shape({
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
-      snapshotProposalLink: Yup.string().required("Snapshot proposal link is required").url("Snapshot proposal link is not valid"),
+      snapshotProposalLink: Yup.string()
+        .required("Snapshot proposal link is required")
+        .url("Snapshot proposal link is not valid"),
     }),
   }),
   [TYPES.SNAPSHOT_SPACE_VOTE]: Yup.object().shape({
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
-      snapshotSpaceLink: Yup.string().required("Snapshot space link is required").url("Snapshot space link is not valid"),
+      snapshotSpaceLink: Yup.string()
+        .required("Snapshot space link is required")
+        .url("Snapshot space link is not valid"),
       snapshotVoteTimes: Yup.number().required("Snapshot vote times is required"),
     }),
   }),
@@ -113,6 +132,7 @@ export const QUEST_FIELDS = {
     .min(1, "Steps must have at least one element."),
 };
 
-export const questValidator = async (body) => Yup.object().shape(QUEST_FIELDS).validate(body, {
-  abortEarly: false,
-});
+export const questValidator = async (body) =>
+  Yup.object().shape(QUEST_FIELDS).validate(body, {
+    abortEarly: false,
+  });

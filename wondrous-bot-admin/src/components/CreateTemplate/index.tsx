@@ -21,9 +21,10 @@ import { set } from "lodash";
 import { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { transformAndUploadMedia } from "utils/media";
+import CreateQuestContext from "utils/context/CreateQuestContext";
 
 const DEFAULT_STATE_VALUE = {
-  level: null,
+  level: "1",
   timeBound: false,
   maxSubmission: null,
   requireReview: false,
@@ -49,6 +50,7 @@ const CreateTemplate = ({
   title,
 }) => {
   const navigate = useNavigate();
+  const { errors, setErrors } = useContext(CreateQuestContext);
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
   const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
     refetchQueries: ['getQuestById']
@@ -56,7 +58,6 @@ const CreateTemplate = ({
 
   const { activeOrg } = useContext(GlobalContext);
 
-  const [errors, setErrors] = useState({});
   const [steps, setSteps] = useState(defaultQuestSteps);
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState(defaultQuestSettings);
@@ -339,8 +340,6 @@ const CreateTemplate = ({
                 <CampaignOverview
                   questSettings={questSettings}
                   setQuestSettings={setQuestSettings}
-                  errors={errors}
-                  setErrors={setErrors}
                 />
               )}
             />
@@ -361,8 +360,6 @@ const CreateTemplate = ({
               steps={steps}
               setSteps={setSteps}
               handleRemove={handleRemove}
-              errors={errors}
-              setErrors={setErrors}
             />
             <Panel
               display="flex"
