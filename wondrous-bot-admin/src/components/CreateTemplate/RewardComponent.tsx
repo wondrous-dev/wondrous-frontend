@@ -1,6 +1,6 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import TextField from "components/Shared/TextField";
-import { SharedSecondaryButton } from "components/Shared/styles";
+import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 import { CampaignOverviewTitle, Label } from "./styles";
 import SelectComponent from "components/Shared/Select";
 import { useState } from "react";
@@ -12,11 +12,98 @@ import DeleteIcon from "components/Icons/Delete";
 import { useEffect } from "react";
 import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
 import { useLazyQuery } from "@apollo/client";
+import Arbitrum from "assets/arbitrum";
+import Binance from "assets/binance";
+import Ethereum from "assets/ethereum";
+import Avalanche from "assets/avalanche";
+import Optimism from "assets/optimism";
+import Polygon from "assets/polygonMaticLogo.svg";
 
-const COMPONENT_OPTIONS = [
+const PAYMENT_OPTIONS = {
+  DISCORD_ROLE: "discord_role",
+  NFT: "nft",
+  TOKEN: "token",
+};
+
+const REWARD_TYPES = [
+  { label: "ERC20", value: "erc20" },
+  { label: "ERC721", value: "erc721" },
+  { label: "ERC1155", value: "erc1155" },
+];
+
+const CHAIN_SELECT_OPTIONS = [
   {
-    label: "Ultimate cool club",
-    value: "coolclub",
+    label: "Ethereum",
+    value: "ethereum",
+    icon: (
+      <Ethereum
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+      />
+    ),
+  },
+  {
+    label: "Polygon",
+    value: "polygon",
+    icon: (
+      <img
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+        src={Polygon}
+      />
+    ),
+  },
+  {
+    label: "Optimism",
+    value: "optimism",
+    icon: (
+      <Optimism
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+      />
+    ),
+  },
+  {
+    label: "Arbitrum",
+    value: "arbitrum",
+    icon: (
+      <Arbitrum
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+      />
+    ),
+  },
+  {
+    label: "BNB",
+    value: "bsc",
+    icon: (
+      <Binance
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+      />
+    ),
+  },
+  {
+    label: "Avalanche",
+    value: "avalanche",
+    icon: (
+      <Avalanche
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+      />
+    ),
   },
 ];
 
@@ -59,10 +146,56 @@ const ExistingDiscordRewardSelectComponent = ({ options, initialReward, setQuest
   );
 };
 
+const RewardMethod = ({
+  rewardType,
+  componentsOptions,
+  discordRoleReward,
+  setDiscordRoleReward,
+  nftChain,
+  setNftChain,
+}) => {
+  if (rewardType === PAYMENT_OPTIONS.DISCORD_ROLE) {
+    return (
+      <>
+        <Label>Select role</Label>
+        <SelectComponent
+          options={componentsOptions}
+          value={discordRoleReward}
+          onChange={(value) => setDiscordRoleReward(value)}
+        />
+      </>
+    );
+  }
+  if (rewardType === PAYMENT_OPTIONS.NFT) {
+    return (
+      <>
+        <Label>Chain</Label>
+        <SelectComponent options={CHAIN_SELECT_OPTIONS} value={nftChain} onChange={(value) => setNftChain(value)} />
+        <Label>Token type</Label>
+        <SelectComponent
+          options={REWARD_TYPES}
+          value={discordRoleReward}
+          onChange={(value) => setDiscordRoleReward(value)}
+        />
+        <Label
+          style={{
+            marginTop: "4px",
+          }}
+        >
+          Token
+        </Label>
+      </>
+    );
+  }
+};
 const RewardComponent = ({ rewards, setQuestSettings }) => {
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
+  const [addPaymentMethod, setAddPaymentMethod] = useState(false);
+  const [nftChain, setNftChain] = useState(null);
+  const [nftTokenType, setNftTokenType] = useState(null);
   const { activeOrg } = useContext(GlobalContext);
+  const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
   const [getCmtyOrgDiscordRoles, { data: getCmtyOrgDiscordRolesData, variables }] = useLazyQuery(
     GET_ORG_DISCORD_ROLES,
     {
@@ -128,8 +261,8 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       <Modal
         open={isRewardModalOpen}
         onClose={() => setIsRewardModalOpen(false)}
-        title="Add reward"
-        maxWidth={400}
+        title="Add reward to quest"
+        maxWidth={800}
         footerLeft={
           <SharedSecondaryButton
             onClick={() => {
@@ -159,11 +292,42 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         footerCenter={undefined}
       >
         <Grid display="flex" flexDirection="column" gap="14px">
-          <Label>Select role</Label>
-          <SelectComponent
-            options={componentsOptions}
-            value={discordRoleReward}
-            onChange={(value) => setDiscordRoleReward(value)}
+          <Box display="flex" alignItems="center" gap="6px" width={"100%"} justifyContent={"center"}>
+            <SharedBlackOutlineButton
+              style={{
+                flex: 1,
+              }}
+              background={PAYMENT_OPTIONS.DISCORD_ROLE === rewardType ? "#BFB4F3" : "#FFFFF"}
+              onClick={() => setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE)}
+            >
+              Discord Role
+            </SharedBlackOutlineButton>
+            <SharedBlackOutlineButton
+              style={{
+                flex: 1,
+              }}
+              background={PAYMENT_OPTIONS.NFT === rewardType ? "#BFB4F3" : "#FFFFF"}
+              onClick={() => setRewardType(PAYMENT_OPTIONS.NFT)}
+            >
+              NFT reward
+            </SharedBlackOutlineButton>
+            <SharedBlackOutlineButton
+              style={{
+                flex: 1,
+              }}
+              background={PAYMENT_OPTIONS.TOKEN === rewardType ? "#BFB4F3" : "#FFFFF"}
+              onClick={() => setRewardType(PAYMENT_OPTIONS.TOKEN)}
+            >
+              ERC20 tokens
+            </SharedBlackOutlineButton>
+          </Box>
+          <RewardMethod
+            rewardType={rewardType}
+            componentsOptions={componentsOptions}
+            discordRoleReward={discordRoleReward}
+            setDiscordRoleReward={setDiscordRoleReward}
+            nftChain={nftChain}
+            setNftChain={setNftChain}
           />
         </Grid>
       </Modal>
