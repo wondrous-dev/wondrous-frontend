@@ -43,6 +43,7 @@ const SelectComponent = ({
       >
         {options?.map((option) => (
           <MenuItem key={option.value} value={option.value}>
+            {option.icon}
             {option.label}
           </MenuItem>
         ))}
