@@ -15,7 +15,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import { ErrorText } from 'components/Common';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getBoardType } from 'utils';
 import {
   ANALYTIC_EVENTS,
@@ -27,6 +27,7 @@ import {
 import { hasCreateTaskPermission } from 'utils/helpers';
 import { useFullScreen, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 
+import { PlateProvider } from '@udecode/plate';
 import {
   TaskModalSnapshot,
   TaskModalSnapshotLogo,
@@ -34,17 +35,17 @@ import {
 } from 'components/Common/TaskViewModal/styles';
 import { extractMentions } from 'components/PlateRichEditor/utils';
 import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
+import useQueryModules from 'hooks/modules/useQueryModules';
 import { useSnapshot } from 'services/snapshot';
-import { PlateProvider } from '@udecode/plate';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import Footer from './Footer';
 import {
+  ICreateEntityModal,
   entityTypeData,
   filterOptionsWithPermission,
   formDirty,
   formValidationSchema,
   getPrivacyLevel,
-  ICreateEntityModal,
   initialValues,
   privacyOptions,
   useContextValue,
@@ -143,7 +144,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   // const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   // const editor = useEditor();
 
-  const initialPodId = !existingTask ? board?.podId || routerPodId : null;
+  const modules = useQueryModules({ orgId: formValues?.orgId || board?.orgId, podId: board?.podId || routerPodId });
+
+  const initialPodId = !existingTask && modules?.[entityType] ? board?.podId || routerPodId : null;
+
   const form: any = useFormik({
     initialValues: initialValues({ entityType, existingTask, initialPodId, defaults }),
     validateOnChange: false,
