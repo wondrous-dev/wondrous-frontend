@@ -7,7 +7,6 @@ import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useQueryModules from 'hooks/modules/useQueryModules';
 import palette from 'theme/palette';
-import { ENTITIES_TYPES, SPECIAL_ORGS } from 'utils/constants';
 import { useBoardPermission, useBoards } from 'utils/hooks';
 import theme from '../../theme';
 import ProfileBountySection from './ProfileBountySection';
@@ -68,33 +67,25 @@ const ProfileSectionsWrapper = () => {
 
   if (!layout || !modules) return null;
 
-  const isSpecialOrg = orgId in SPECIAL_ORGS;
   const Components = {
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.TASK)) &&
-      modules?.task && {
-        task: ProfileTaskSection,
-      }),
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.BOUNTY)) &&
-      modules?.bounty && {
-        bounty: ProfileBountySection,
-      }),
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.MILESTONE)) &&
-      modules?.milestone && {
-        milestone: ProfileMilestoneSection,
-      }),
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.PROPOSAL)) &&
-      modules?.proposal && {
-        proposal: ProfileProposalSection,
-      }),
+    ...(modules?.task && {
+      task: ProfileTaskSection,
+    }),
+    ...(modules?.bounty && {
+      bounty: ProfileBountySection,
+    }),
+    ...(modules?.milestone && {
+      milestone: ProfileMilestoneSection,
+    }),
+    ...(modules?.proposal && {
+      proposal: ProfileProposalSection,
+    }),
     member: ProfileMemberSection,
-    ...((!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.GRANT)) &&
-      modules?.grant && {
-        grant: ProfileGrantSection,
-      }),
+    ...(modules?.grant && {
+      grant: ProfileGrantSection,
+    }),
     ...(modules?.document && { resource: ProfileCategorySection }),
-    ...(isOrg &&
-      (!isSpecialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB)) &&
-      modules?.collab && { collab: ProfileCollabSection }),
+    ...(isOrg && modules?.collab && { collab: ProfileCollabSection }),
   };
 
   return (

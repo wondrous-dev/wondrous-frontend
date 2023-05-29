@@ -9,7 +9,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import { useRouter } from 'next/router';
 import { GET_USER_ORGS } from 'graphql/queries';
 import { useQuery } from '@apollo/client';
-import { ENTITIES_TYPES, ORG_MEMBERSHIP_REQUESTS, SPECIAL_ORGS } from 'utils/constants';
+import { ORG_MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { useSideBar } from 'utils/hooks';
 import { UserProfilePicture } from '../ProfilePictureHelpers';
 import SidebarEntityListMemoized from '../SidebarEntityList/SidebarEntityListMemoized';
@@ -19,11 +19,9 @@ const useSidebarData = () => {
   const router = useRouter();
 
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const onlyIsInSpecialOrg = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id in SPECIAL_ORGS;
-  const onlyHasProposals =
-    onlyIsInSpecialOrg &&
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL) &&
-    !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK);
+  const getUserOrgs = userOrgs?.getUserOrgs;
+  const userHasOneOrg = getUserOrgs?.length === 1;
+  const onlyHasProposals = userHasOneOrg && getUserOrgs[0]?.modules?.proposal && !getUserOrgs[0]?.modules?.task;
   const user = useMe();
   const data = {
     Explore: {
@@ -73,7 +71,7 @@ const useSidebarData = () => {
           check: onlyHasProposals
             ? () => router.pathname === '/dashboard/proposals'
             : () => router.pathname === '/dashboard',
-          link: '/dashboard',
+          link: onlyHasProposals ? '/dashboard/proposals' : '/dashboard',
           active: true,
         },
         Operator: {
