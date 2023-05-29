@@ -1,18 +1,17 @@
 import { useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { TaskModalCard } from 'components/Common/TaskViewModal/styles';
 import {
   CreateEntityDropdown,
+  GrantCreateModalProps,
   filterOptionsWithPermission,
   filterOrgUsersForAutocomplete,
   formDirty,
   getPrivacyLevel,
-  GrantCreateModalProps,
   privacyOptions,
   useContextValue,
   useGetAvailableUserPods,
@@ -39,24 +38,21 @@ import {
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
   CreateEntityTitle,
-  EditorPlaceholder,
-  EditorToolbar,
   MediaUploadDiv,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { MediaItem } from 'components/CreateEntity/MediaItem';
+import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
+import { deserializeRichText } from 'components/PlateRichEditor/utils';
 import Tooltip from 'components/Tooltip';
 import formatDate from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 import { useFormik } from 'formik';
 import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } from 'graphql/mutations/grant';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import useQueryModules from 'hooks/modules/useQueryModules';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
-import PlateRichEditor from 'components/PlateRichEditor/PlateRichEditor';
-import { deserializeRichText } from 'components/PlateRichEditor/utils';
-import palette from 'theme/palette';
-import typography from 'theme/typography';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useCornerWidget, useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -64,7 +60,7 @@ import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity, Reviewers } from './Fields';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
-import GrantStyle, { getGrantStyleFromGrant, GRANT_STYLE_MAP } from './Fields/GrantStyle';
+import GrantStyle, { GRANT_STYLE_MAP, getGrantStyleFromGrant } from './Fields/GrantStyle';
 import {
   Form,
   GrantDescriptionMedia,
@@ -170,6 +166,8 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
         })
     : createGrant;
 
+  const modules = useQueryModules({ orgId: board?.orgId, podId: board?.podId });
+
   const form = useFormik({
     initialValues: {
       reward: {
@@ -186,7 +184,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
         : deserializeRichText(descriptionTemplate),
       orgId: existingGrant?.orgId || null,
       categories: existingGrant?.categories || [],
-      podId: board?.podId || null,
+      podId: (board?.podId && modules?.grant) || null,
       privacyLevel: existingGrant?.privacyLevel || null,
       applyPolicy: existingGrant?.applyPolicy || APPLY_POLICY_FIELDS[0].value,
       grantStyle: getGrantStyleFromGrant(existingGrant?.numOfGrant),
@@ -195,6 +193,22 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema,
+    validate: (values) => {
+      const errors: { [key: string]: any } = {};
+      const selectedOrg = userOrgs?.getUserOrgs.find(({ id }) => id === values?.orgId);
+      const selectedOrgModules = selectedOrg?.modules;
+      const selectedOrgEntity = selectedOrgModules?.grant ?? true;
+      const selectedOrgPod = selectedOrgModules?.pod ?? true;
+      if (!selectedOrgEntity && selectedOrgPod && !values?.podId) {
+        // If a module is disabled on the org but enabled on the pod, do not create an entity without a podId.
+        errors.podId = 'Pod is required';
+      }
+      if (!selectedOrgEntity && !selectedOrgPod) {
+        // If a module is disabled on the org and the pod module is disabled on the org, show error.
+        errors.orgId = `Create grant is disabled by your admin`;
+      }
+      return errors;
+    },
     onSubmit: (values) =>
       grantAction({
         variables: {
@@ -263,7 +277,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
     form.setErrors({});
   };
 
-  const handleOnchangePodId = (podId) => {
+  const handleOnchangePodId = ({ id: podId }) => {
     form.setValues({
       ...form.values,
       privacyLevel: getPrivacyLevel(podId, pods),
@@ -319,6 +333,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
     }
   };
 
+  console.log('form.errors', form.errors);
   return (
     <Form onSubmit={form.handleSubmit}>
       <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
@@ -339,16 +354,19 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             {form.values.orgId !== null && (
               <>
                 <CreateEntityHeaderArrowIcon />
-                <PodSearch
-                  options={filterOptionsWithPermission(
-                    ENTITIES_TYPES.GRANT,
-                    pods,
-                    fetchedUserPermissionsContext,
-                    form.values.orgId
-                  )}
-                  value={form.values.podId}
-                  onChange={handleOnchangePodId}
-                />
+                <CreateEntitySelectErrorWrapper>
+                  <PodSearch
+                    options={filterOptionsWithPermission(
+                      ENTITIES_TYPES.GRANT,
+                      pods,
+                      fetchedUserPermissionsContext,
+                      form.values.orgId
+                    )}
+                    value={form.values.podId}
+                    onChange={handleOnchangePodId}
+                  />
+                  {form.errors.podId && <CreateEntityError>{form.errors.podId}</CreateEntityError>}
+                </CreateEntitySelectErrorWrapper>
               </>
             )}
           </CreateEntityHeaderWrapper>
