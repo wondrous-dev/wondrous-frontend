@@ -92,8 +92,8 @@ const ViewQuestResults = ({ quest }) => {
   };
 
   const timeboundDate = useMemo(() => {
-    const startDate = quest?.startDate ? moment(quest?.startDate).format(MONTH_DAY_FULL_YEAR) : null;
-    const endDate = quest?.endDate ? moment(quest?.endDate).format(MONTH_DAY_FULL_YEAR) : null;
+    const startDate = quest?.startAt ? moment(quest?.startAt).format(MONTH_DAY_FULL_YEAR) : null;
+    const endDate = quest?.endAt ? moment(quest?.endAt).format(MONTH_DAY_FULL_YEAR) : null;
     if (!startDate && !endDate) {
       return "No";
     }
@@ -103,7 +103,7 @@ const ViewQuestResults = ({ quest }) => {
       return `Starts on ${startDate}`;
     }
     return `Ends on ${endDate}`;
-  }, [quest?.startDate, quest?.endDate]);
+  }, [quest?.startAt, quest?.endAt]);
 
   const getNameForCondition = async () => {
     if (quest?.conditions?.[0]?.type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
