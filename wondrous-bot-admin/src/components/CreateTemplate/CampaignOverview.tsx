@@ -11,6 +11,7 @@ import { useContext, useMemo } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import MaxSubmissions from "./MaxSubmissions";
 import OnboardingComponent from "components/AddFormEntity/components/OnboardingComponent";
+import CreateQuestContext from "utils/context/CreateQuestContext";
 
 const REQUIRE_REVIEW_OPTIONS = [
   {
@@ -23,9 +24,9 @@ const REQUIRE_REVIEW_OPTIONS = [
   },
 ];
 
-const CampaignOverview = ({ questSettings, setQuestSettings, errors, setErrors }) => {
+const CampaignOverview = ({ questSettings, setQuestSettings }) => {
   const { activeOrg } = useContext(GlobalContext);
-
+  const { errors, setErrors } = useContext(CreateQuestContext);
   const handleChange = (key, value) => {
     if (errors[key]) {
       setErrors({
