@@ -145,7 +145,7 @@ const CreateTemplate = ({
             (step.options = next.value.answers.map((answer, idx) => {
               return {
                 position: idx,
-                text: answer.value,
+                text: answer.value?.trim(),
                 ...(next.value.withCorrectAnswers ? { correct: answer.isCorrect } : {}),
               };
             }));
@@ -280,12 +280,7 @@ const CreateTemplate = ({
           <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
             <PanelComponent
               renderHeader={() => <CampaignOverviewHeader />}
-              renderBody={() => (
-                <CampaignOverview
-                  questSettings={questSettings}
-                  setQuestSettings={setQuestSettings}
-                />
-              )}
+              renderBody={() => <CampaignOverview questSettings={questSettings} setQuestSettings={setQuestSettings} />}
             />
             <PanelComponent
               renderHeader={() => <RewardOverviewHeader />}
@@ -300,11 +295,7 @@ const CreateTemplate = ({
             alignItems="center"
             width="100%"
           >
-            <AddFormEntity
-              steps={steps}
-              setSteps={setSteps}
-              handleRemove={handleRemove}
-            />
+            <AddFormEntity steps={steps} setSteps={setSteps} handleRemove={handleRemove} />
             <Panel
               display="flex"
               justifyContent="center"
