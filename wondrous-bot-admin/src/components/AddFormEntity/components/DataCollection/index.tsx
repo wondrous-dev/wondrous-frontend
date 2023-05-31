@@ -1,15 +1,15 @@
 import Grid from "@mui/material/Grid";
 import TextField from "components/Shared/TextField";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { DAO_CATEGORIES, DATA_COLLECTION_TYPES, SKILLS, TYPES } from "utils/constants";
+import { useContext } from "react";
+import { DATA_COLLECTION_TYPES, SKILLS } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 
-import { getInterestsPerCategory } from "utils/dataCollection";
-import { IndexContainer, Label } from "../styles";
+import { Label } from "../styles";
 import SelectComponent from "components/Shared/Select";
 import InterestsComponent from "./InterestsComponent";
 import LocationComponent from "./Location";
 import Skills from "./Skills";
+import { getInterestsPerCategory } from "utils/dataCollection";
 
 const OPTIONS = [
   {
@@ -25,11 +25,21 @@ const OPTIONS = [
     value: DATA_COLLECTION_TYPES.SKILLS,
   },
 ];
+
+const getDefaultOptions = (type, category = null) => {
+  if (type === DATA_COLLECTION_TYPES.INTERESTS) {
+    return getInterestsPerCategory(category);
+  }
+  if (type === DATA_COLLECTION_TYPES.SKILLS) {
+    return SKILLS;
+  }
+  return null;
+};
 const DataCollectionComponent = (props) => {
   const { activeOrg } = useContext(GlobalContext);
   const { error, value, onChange } = props;
-  const { prompt, dataCollectionProps } = value;
-  const { dataCollectionType, skills = [], interests = [], location = null, category } = dataCollectionProps || {};
+  const { prompt, dataCollectionProps, options = [] } = value;
+  const { dataCollectionType, category } = dataCollectionProps || {};
 
   const handleOnChange = (key, val) => {
     onChange({
@@ -38,25 +48,20 @@ const DataCollectionComponent = (props) => {
     });
   };
 
-  // useEffect(() => {
-  //   if (category && !interests?.length) {
-  //     handleOnChange("dataCollectionProps", {
-  //       ...dataCollectionProps,
-  //       interests: getInterestsPerCategory(category),
-  //     });
-  //   }
-  //   if (!category && activeOrg?.category) {
-  //     handleOnChange("dataCollectionProps", {
-  //       ...dataCollectionProps,
-  //       category: activeOrg.category,
-  //     });
-  //   }
-  // }, [category, activeOrg]);
-
-  const handleTypeChange = (value) => {
-    return handleOnChange("dataCollectionProps", {
-      ...dataCollectionProps,
-      dataCollectionType: value,
+  const handleOnInterstCategoryChange = (data) => {
+    onChange({
+      ...value,
+      ...data,
+    });
+  };
+  const handleTypeChange = (type) => {
+    return onChange({
+      ...value,
+      dataCollectionProps: {
+        ...dataCollectionProps,
+        dataCollectionType: type,
+      },
+      options: getDefaultOptions(type, activeOrg?.category),
     });
   };
 
@@ -105,19 +110,14 @@ const DataCollectionComponent = (props) => {
       {dataCollectionType === DATA_COLLECTION_TYPES.INTERESTS ? (
         <InterestsComponent
           error={error}
-          handleOnChange={handleOnChange}
+          handleOnChange={handleOnInterstCategoryChange}
           dataCollectionProps={dataCollectionProps}
-          interests={interests}
+          options={options}
         />
       ) : null}
       {dataCollectionType === DATA_COLLECTION_TYPES.LOCATION ? <LocationComponent /> : null}
       {dataCollectionType === DATA_COLLECTION_TYPES.SKILLS ? (
-        <Skills
-          skills={skills}
-          error={error}
-          handleOnChange={handleOnChange}
-          dataCollectionProps={dataCollectionProps}
-        />
+        <Skills options={options} error={error} handleOnChange={handleOnChange} />
       ) : null}
     </Grid>
   );
