@@ -245,11 +245,23 @@ const CreateTemplate = ({
           step["additionalData"] = {
             discordChannelName: next.value?.discordChannelName,
           };
+        } else if (next.type === TYPES.DATA_COLLECTION) {
+          step.prompt = next.value?.prompt;
+          step.options = next?.value?.options
+            ? next.value.options.map((option, idx) => ({
+                position: idx,
+                text: option,
+              }))
+            : null;
+          step["additionalData"] = {
+            ...next.value?.dataCollectionProps,
+          };
         }
         return [...acc, step];
       }, []),
     };
     try {
+      console.log(body, 'BODY')
       await questValidator(body);
       if (!questSettings.isActive && !isSaving) {
         return setIsSaving(true);
@@ -259,6 +271,7 @@ const CreateTemplate = ({
       const errors = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
+          console.log(error.path, 'ERR PATH')
           const path = getPathArray(error.path);
           set(errors, path, error.message);
         });

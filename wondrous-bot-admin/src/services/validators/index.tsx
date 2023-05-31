@@ -18,6 +18,7 @@ const ALL_TYPES = [
   TYPES.SNAPSHOT_SPACE_VOTE,
   TYPES.DISCORD_MESSAGE_IN_CHANNEL,
   TYPES.JOIN_DISCORD_COMMUNITY_CALL,
+  TYPES.DATA_COLLECTION
 ];
 
 const sharedValidation = {
@@ -121,6 +122,22 @@ const stepTypes = {
   }),
   [TYPES.ATTACHMENTS]: Yup.object().shape({
     ...sharedValidation,
+  }),
+  [TYPES.DATA_COLLECTION]: Yup.object().shape({
+    ...sharedValidation,
+    additionalData: Yup.object().shape({
+      dataCollectionType: Yup.string().required("You need to select data collection type"),
+    }),
+    options: Yup.array()
+      .of(
+        Yup.object().shape({
+          position: Yup.number().required("Position is required"),
+          text: Yup.string().required("Option is required"),
+        })
+      )
+      .min(1, ERRORS.MIN_OPTION_LENGTH)
+      .max(25, ERRORS.MAX_OPTION_LENGTH)
+      .required("Options are required").nullable(),
   }),
 };
 

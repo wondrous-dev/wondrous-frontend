@@ -8,8 +8,8 @@ import TextField from "components/Shared/TextField";
 import { DAO_CATEGORIES } from "utils/constants";
 import { useMemo } from "react";
 
-const InterestsComponent = ({ handleOnChange, dataCollectionProps, interests, error }) => {
-  const {category} = dataCollectionProps;
+const InterestsComponent = ({ handleOnChange, dataCollectionProps, options, error }) => {
+  const { category } = dataCollectionProps;
   const categories = useMemo(() => {
     return Object.keys(DAO_CATEGORIES).map((item) => ({
       label: DAO_CATEGORIES[item],
@@ -18,28 +18,25 @@ const InterestsComponent = ({ handleOnChange, dataCollectionProps, interests, er
     }));
   }, [category]);
 
-  const handleInterestsUpdate = (interests) => {
-    handleOnChange("dataCollectionProps", {
-      ...dataCollectionProps,
-      interests,
-    });
-  };
+  const handleInterestsUpdate = (options) => handleOnChange({ options });
 
   const handleCategoryChange = (category) => {
-    handleOnChange("dataCollectionProps", {
-      ...dataCollectionProps,
-      category,
-      interests: getInterestsPerCategory(category),
+    handleOnChange({
+      dataCollectionProps: {
+        ...dataCollectionProps,
+        category,
+      },
+      options: getInterestsPerCategory(category),
     });
   };
 
   const removeInterest = (idx) => {
-    const newInterests = [...interests];
+    const newInterests = [...options];
     newInterests.splice(idx, 1);
     handleInterestsUpdate(newInterests);
   };
 
-  const addInterest = () => handleInterestsUpdate([...interests, ""]);
+  const addInterest = () => handleInterestsUpdate([...options, ""]);
 
   return (
     <>
@@ -85,7 +82,7 @@ const InterestsComponent = ({ handleOnChange, dataCollectionProps, interests, er
         <Label>Interests</Label>
         <Grid display="flex" gap="6px" alignItems="center" flexWrap="wrap">
           <Grid display="flex" gap="8px" flexDirection="column" width="100%">
-            {interests?.map((interest, idx) => (
+            {options?.map((interest, idx) => (
               <Grid display="flex" flexDirection="column" gap="10px">
                 <Grid display="flex" alignItems="center" gap="14px" width="100%">
                   <IndexContainer>{idx + 1}.</IndexContainer>
@@ -94,14 +91,14 @@ const InterestsComponent = ({ handleOnChange, dataCollectionProps, interests, er
                     value={interest}
                     error={error?.options?.[idx]?.text}
                     onChange={(value) => {
-                      const newInterests = [...interests];
+                      const newInterests = [...options];
                       newInterests[idx] = value;
                       handleInterestsUpdate(newInterests);
                     }}
                     multiline={false}
                   />
                   <Box display="flex" gap="10px">
-                    {interests.length > 1 ? (
+                    {options.length > 1 ? (
                       <ButtonIconWrapper onClick={() => removeInterest(idx)}>
                         <CloseIcon
                           sx={{
@@ -114,16 +111,18 @@ const InterestsComponent = ({ handleOnChange, dataCollectionProps, interests, er
                 </Grid>
               </Grid>
             ))}
-            <Box display="flex" gap="10px" alignItems="center">
-              <ButtonIconWrapper onClick={addInterest}>
-                <AddIcon
-                  sx={{
-                    color: "black",
-                  }}
-                />
-              </ButtonIconWrapper>
-              <Label>Add interest</Label>
-            </Box>
+            {options?.length < 25 ? (
+              <Box display="flex" gap="10px" alignItems="center">
+                <ButtonIconWrapper onClick={addInterest}>
+                  <AddIcon
+                    sx={{
+                      color: "black",
+                    }}
+                  />
+                </ButtonIconWrapper>
+                <Label>Add interest</Label>
+              </Box>
+            ) : null}
           </Grid>
         </Grid>
       </Grid>
