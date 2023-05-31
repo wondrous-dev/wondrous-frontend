@@ -140,7 +140,7 @@ const CreateTemplate = ({
           required: next.required === false ? false : true,
           prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };
-        if (next.type === TYPES.MULTI_QUIZ) {
+        if (next.type === TYPES.MULTI_QUIZ || next.type === TYPES.SINGLE_QUIZ) {
           (step.type = next.value.multiSelectValue),
             (step.options = next.value.answers.map((answer, idx) => {
               return {
