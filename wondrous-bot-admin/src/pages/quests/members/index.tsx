@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import EmptyState from "components/EmptyState";
 import PageHeader from "components/PageHeader";
+import { SharedSecondaryButton } from "components/Shared/styles";
 import TableComponent from "components/TableComponent";
 import { GET_COMMUNITY_USERS_FOR_ORG } from "graphql/queries";
 import { useContext, useMemo } from "react";
@@ -19,7 +20,6 @@ const MembersPage = () => {
       },
     },
   });
-
   const tableConfig = useMemo(() => {
     return data?.getCmtyUsersForOrg?.map((user) => {
       const userDiscord = `${user?.discordUsername}`;
@@ -77,6 +77,27 @@ const MembersPage = () => {
           <TableComponent data={tableConfig} headers={headers} />
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
+        )}
+        {data?.getCmtyUsersForOrg?.length >= LIMIT && (
+          <SharedSecondaryButton
+            style={{
+              width: "fit-content",
+              alignSelf: "center",
+            }}
+            onClick={() => {
+              fetchMore({
+                variables: {
+                  input: {
+                    orgId: activeOrg?.id,
+                    limit: LIMIT,
+                    offset: tableConfig?.length,
+                  },
+                },
+              });
+            }}
+          >
+            Show more
+          </SharedSecondaryButton>
         )}
       </Grid>
     </>
