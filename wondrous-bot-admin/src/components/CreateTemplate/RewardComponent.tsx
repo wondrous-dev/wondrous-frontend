@@ -19,7 +19,7 @@ import Avalanche from "assets/avalanche";
 import Optimism from "assets/optimism";
 import Polygon from "assets/polygonMaticLogo.svg";
 import { CREATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
-import { GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries/payment";
+import { GET_CMTY_PAYMENT_METHODS_FOR_ORG, GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries/payment";
 
 const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -311,6 +311,11 @@ const RewardMethod = ({
 const RewardComponent = ({ rewards, setQuestSettings }) => {
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
   const [addPaymentMethod, setAddPaymentMethod] = useState(true);
   const [tokenReward, setTokenReward] = useState({
     tokenName: null,
@@ -320,8 +325,15 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     type: null,
     chain: null,
   });
+<<<<<<< Updated upstream
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [tokenAmount, setTokenAmount] = useState(null);
+=======
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [tokenAmount, setTokenAmount] = useState(null);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
   const { activeOrg } = useContext(GlobalContext);
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
   const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD);
@@ -331,13 +343,31 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       fetchPolicy: "cache-and-network",
     }
   );
+
+  const [getCmtyPaymentMethods, { data: getCmtyPaymentMethodsData }] = useLazyQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
+    fetchPolicy: "cache-and-network",
+  });
+
   useEffect(() => {
-    getCmtyOrgDiscordRoles({
-      variables: {
-        orgId: activeOrg?.id,
-      },
-    });
+    if (activeOrg?.id) {
+      getCmtyOrgDiscordRoles({
+        variables: {
+          orgId: activeOrg?.id,
+        },
+      });
+    }
   }, [activeOrg?.id]);
+
+  useEffect(() => {
+    if (activeOrg?.id) {
+      getCmtyPaymentMethods({
+        variables: {
+          orgId: activeOrg?.id,
+        },
+      });
+    }
+  }, [activeOrg?.id]);
+
   const discordRoleData = getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles || [];
   const discordRoles =
     getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles?.length > 0
