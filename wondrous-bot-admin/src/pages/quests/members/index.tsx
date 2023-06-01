@@ -93,6 +93,12 @@ const MembersPage = () => {
                     offset: tableConfig?.length,
                   },
                 },
+                updateQuery: (prev, { fetchMoreResult }) => {
+                  const getCmtyUsersForOrg = [...prev.getCmtyUsersForOrg, ...fetchMoreResult.getCmtyUsersForOrg];
+                  return {
+                    getCmtyUsersForOrg,
+                  };
+                },
               });
             }}
           >
