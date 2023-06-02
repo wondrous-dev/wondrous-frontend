@@ -5,7 +5,7 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { StyledContent, StyledLinkButton, StyledViewQuestResults } from "./styles";
 import { useMemo } from "react";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { DATA_COLLECTION_TYPES, REGIONS_LABELS, TYPES } from "utils/constants";
+import { DATA_COLLECTION_TYPES, INTERESTS, SKILLS, TYPES } from "utils/constants";
 import SubmissionMedia from "components/Shared/SubmissionMedia";
 import { useMutation } from "@apollo/client";
 import { APPROVE_SUBMISSION, REJECT_SUBMISSION } from "graphql/mutations";
@@ -35,8 +35,7 @@ const TEXT_TYPES = [TYPES.TEXT_FIELD, TYPES.NUMBER];
 const SELECT_TYPES = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ];
 
 const StepContent = ({ content, selectedValues, type, attachments, additionalData }) => {
-  console.log(additionalData, "add data");
-  if (TEXT_TYPES.includes(type)) {
+  if (TEXT_TYPES.includes(type) || additionalData?.dataCollectionType === DATA_COLLECTION_TYPES.LOCATION) {
     return (
       <StyledContent fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="#767676">
         {content}
@@ -57,15 +56,19 @@ const StepContent = ({ content, selectedValues, type, attachments, additionalDat
     return <SubmissionMedia media={attachments} />;
   }
   if (type === TYPES.DATA_COLLECTION) {
-    const isLocation = additionalData?.dataCollectionType === DATA_COLLECTION_TYPES.LOCATION;
-    const region = REGIONS_LABELS[selectedValues[0]];
-    const country = selectedValues[1];
-    const options = isLocation ? [`${region}:`, country] : selectedValues;
-
+    const isSkill = additionalData?.dataCollectionType === DATA_COLLECTION_TYPES.SKILLS;
+    const isInterest = additionalData?.dataCollectionType === DATA_COLLECTION_TYPES.INTERESTS;
     return (
       <Grid display="flex" gap="6px" alignItems="center">
-        {options.map((option, idx) => {
-          return <StyledViewQuestResults>{option}</StyledViewQuestResults>;
+        {selectedValues?.map((option, idx) => {
+          let label = option;
+          if (isSkill) {
+            label = SKILLS[option] || option;
+          }
+          if (isInterest) {
+            label = INTERESTS[option] || option;
+          }
+          return <StyledViewQuestResults key={`${option}_${idx}`}>{label}</StyledViewQuestResults>;
         })}
       </Grid>
     );
@@ -177,7 +180,7 @@ const QuestResultsCard = ({ submission }) => {
             justifyContent="flex-start"
           >
             <Label fontSize="12px" color="#2A8D5C" fontWeight={700}>
-              Step {idx}
+              Step {idx + 1}
             </Label>
             <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
               {step.prompt}

@@ -28,7 +28,6 @@ type InputQuestStep = {
     discordChannelName?: string;
     discordMessageType?: string;
     dataCollectionType?: string;
-    category?: string;
   };
 };
 
@@ -79,7 +78,6 @@ type OutputQuestStep = {
         prompt?: string;
         options?: string[];
         dataCollectionProps: {
-          category?: string;
           dataCollectionType?: string;
         };
       };
@@ -157,11 +155,6 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
           : {}),
         dataCollectionProps: {
           dataCollectionType: step?.additionalData?.dataCollectionType,
-          ...(dataCollectionType === DATA_COLLECTION_TYPES.INTERESTS
-            ? {
-                category: step?.additionalData?.category,
-              }
-            : {}),
         },
       };
     }

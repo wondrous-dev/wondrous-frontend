@@ -147,12 +147,12 @@ export const EMPTY_STATE_TYPES = {
 
 export const ERRORS = {
   MIN_OPTION_LENGTH: "MIN_OPTION_LENGTH",
-  MAX_OPTION_LENGTH : 'MAX_OPTION_LENGTH'
+  MAX_OPTION_LENGTH: "MAX_OPTION_LENGTH",
 };
 
 export const ERRORS_LABELS = {
   [ERRORS.MIN_OPTION_LENGTH]: "You need at least one option.",
-  [ERRORS.MAX_OPTION_LENGTH]: "You have too many options"
+  [ERRORS.MAX_OPTION_LENGTH]: "You have too many options",
 };
 
 export const DAO_CATEGORIES_KEYS = {
@@ -194,25 +194,45 @@ export const DAO_CATEGORIES = {
 };
 
 export const INTERESTS = {
-  [DAO_CATEGORIES_KEYS.SPORTS]: [
-    "Basketball",
-    "Football",
-    "Soccer",
-    "Tennis",
-    "Golf",
-    "Baseball",
-    "Hockey",
-    "Cricket",
-    "Rugby",
-    "Volleyball",
-    "Boxing",
-    "MMA",
-    "Wrestling",
-    "Motorsports",
-    "Esports",
-    "Other",
-  ],
-  [DAO_CATEGORIES_KEYS.GAMING]: ["Action", "Adventure", "Role-Playing", "Simulation", "Strategy", "Sports", "Other"],
+  [DAO_CATEGORIES_KEYS.SOCIAL_GOOD]: "Social good",
+  [DAO_CATEGORIES_KEYS.MEDIA_CONTENT]: "Media & content",
+  [DAO_CATEGORIES_KEYS.INVESTMENTS]: "‍Investments",
+  [DAO_CATEGORIES_KEYS.SOCIAL]: "Social",
+  [DAO_CATEGORIES_KEYS.SERVICE_DAO]: "Service DAO",
+  [DAO_CATEGORIES_KEYS.THINK_TANK]: "Think tank",
+  [DAO_CATEGORIES_KEYS.FUN_MEMEABLE]: "Fun and memeable",
+  [DAO_CATEGORIES_KEYS.BUILDING_PRODUCTS]: "Building products",
+  [DAO_CATEGORIES_KEYS.CREATOR_COMMUNITY]: "Creator community",
+  [DAO_CATEGORIES_KEYS.GAMING]: "Gaming",
+  [DAO_CATEGORIES_KEYS.REFI]: "ReFi",
+  [DAO_CATEGORIES_KEYS.DESCI]: "DeSci",
+  [DAO_CATEGORIES_KEYS.INCUBATOR]: "Incubator",
+  [DAO_CATEGORIES_KEYS.SPORTS]: "Sports",
+  artificial_intelligence: "AI (artificial intelligence)",
+  defi: "Decentralized Finance (DeFi)",
+  nft: "Non-Fungible Tokens (NFTs)",
+  daos: "Decentralized Autonomous Organizations (DAOs)",
+  tokenomics: "Tokenomics",
+  data_privacy: "Data Privacy",
+  engineering: "Engineering",
+  marketing: "Marketing",
+  community_building: "Community Building",
+  memes: "Memes",
+  music: "Music",
+  science: "Science",
+  sustainability: "Sustainability",
+  cryptography: "Cryptography",
+  consensus_algorithms: "Consensus Algorithms",
+  decentralized_storage: "Decentralized Storage",
+  digital_identity: "Digital Identity",
+  cyber_security: "Cybersecurity",
+  interoperability: "Interoperability",
+  governance: "Governance",
+  cross_chain_technologies: "Cross-Chain Technologies",
+  layer_2_solutions: "Layer-2 Solutions",
+  web3_social_media: "Web3 Social",
+  stablecoins: "Stablecoins",
+  other: "Other",
 };
 
 export const DATA_COLLECTION_TYPES = {
@@ -221,96 +241,31 @@ export const DATA_COLLECTION_TYPES = {
   SKILLS: "skills",
 };
 
-export const SKILLS = ["Filming"];
-
-export const REGIONS_LABELS = {
-  east_asia: "East Asia",
-  south_asia: "South Asia",
-  southeast_asia: "Southeast Asia",
-  central_asia: "Central Asia",
-  northern_africa: "Northern Africa",
-  western_africa: "Western Africa",
-  central_africa: "Central Africa",
-  eastern_africa: "Eastern Africa",
-  southern_africa: "Southern Africa",
-  oceania: "Oceania",
-  middle_east: "Middle East",
-  western_europe: "Western Europe",
-  eastern_europe: "Eastern Europe",
-  northern_europe: "Northern Europe",
-  southern_europe: "Southern Europe",
-  north_america: "North America",
-  south_america: "South America",
+export const SKILLS = {
+  blockchain_fundamentals: "Blockchain Fundamentals",
+  cryptocurrency_knowledge: "Cryptocurrency Knowledge",
+  smart_contract_development: "Smart Contract Development",
+  dapp_development: "DApp Development",
+  web3_js: "Web3.js",
+  ethers_js: "Ethers.js",
+  solidity: "Solidity",
+  rust: "Rust",
+  go: "Go",
+  javascript: "JavaScript",
+  react: "React",
+  python: "Python",
+  node_js: "Node.js",
+  data_security: "Data Security",
+  ipfs: "InterPlanetary File System (IPFS)",
+  websockets: "WebSockets",
+  networking: "Networking",
+  distributed_systems: "Distributed Systems",
+  cryptography: "Cryptography",
+  database_management: "Database Management",
+  system_design: "System Design",
+  ui_ux_design: "UI/UX Design",
+  testing: "Testing and Debugging",
+  git: "Git and Version Control",
+  agile_methodologies: "Agile Methodologies",
+  other: "Other",
 };
-
-export const REGIONS = [
-  {
-    label: "East Asia",
-    value: "east_asia",
-  },
-  {
-    label: "South Asia",
-    value: "south_asia",
-  },
-  {
-    label: "Southeast Asia",
-    value: "southeast_asia",
-  },
-  {
-    label: "Central Asia",
-    value: "central_asia",
-  },
-  {
-    label: "Northern Africa",
-    value: "northern_africa",
-  },
-  {
-    label: "Western Africa",
-    value: "western_africa",
-  },
-  {
-    label: "Central Africa",
-    value: "central_africa",
-  },
-  {
-    label: "Eastern Africa",
-    value: "eastern_africa",
-  },
-  {
-    label: "Southern Africa",
-    value: "southern_africa",
-  },
-  {
-    label: "Oceania",
-    value: "oceania",
-  },
-  {
-    label: "Middle East",
-    value: "middle_east",
-  },
-  {
-    label: "Western Europe",
-    value: "western_europe",
-  },
-  {
-    label: "Eastern Europe",
-    value: "eastern_europe",
-  },
-
-  {
-    label: "Northern Europe",
-    value: "northern_europe",
-  },
-  {
-    label: "Southern Europe",
-    value: "southern_europe",
-  },
-  {
-    label: "North America",
-    value: "north_america",
-  },
-  {
-    label: "South America",
-    value: "south_america",
-  },
-];

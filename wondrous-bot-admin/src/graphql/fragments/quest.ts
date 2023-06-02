@@ -79,7 +79,6 @@ export const QuestFragment = gql`
 				snapshotSpaceLink
 				snapshotVoteTimes
 				discordMessageType
-				category
 				dataCollectionType
 			}
 		}

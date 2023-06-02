@@ -3,13 +3,11 @@ import TextField from "components/Shared/TextField";
 import { useContext } from "react";
 import { DATA_COLLECTION_TYPES, SKILLS } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
-
 import { Label } from "../styles";
 import SelectComponent from "components/Shared/Select";
 import InterestsComponent from "./InterestsComponent";
 import LocationComponent from "./Location";
 import Skills from "./Skills";
-import { getInterestsPerCategory } from "utils/dataCollection";
 
 const OPTIONS = [
   {
@@ -26,12 +24,12 @@ const OPTIONS = [
   },
 ];
 
-const getDefaultOptions = (type, category = null) => {
+const getDefaultOptions = (type) => {
   if (type === DATA_COLLECTION_TYPES.INTERESTS) {
-    return getInterestsPerCategory(category);
+    return ["web3", "other"];
   }
   if (type === DATA_COLLECTION_TYPES.SKILLS) {
-    return SKILLS;
+    return ["blockchain_fundamentals", "other"];
   }
   return null;
 };
@@ -48,12 +46,6 @@ const DataCollectionComponent = (props) => {
     });
   };
 
-  const handleOnInterstCategoryChange = (data) => {
-    onChange({
-      ...value,
-      ...data,
-    });
-  };
   const handleTypeChange = (type) => {
     return onChange({
       ...value,
@@ -61,7 +53,7 @@ const DataCollectionComponent = (props) => {
         ...dataCollectionProps,
         dataCollectionType: type,
       },
-      options: getDefaultOptions(type, activeOrg?.category),
+      options: getDefaultOptions(type),
     });
   };
 
@@ -110,14 +102,13 @@ const DataCollectionComponent = (props) => {
       {dataCollectionType === DATA_COLLECTION_TYPES.INTERESTS ? (
         <InterestsComponent
           error={error}
-          handleOnChange={handleOnInterstCategoryChange}
-          dataCollectionProps={dataCollectionProps}
+          handleOnChange={(options) => handleOnChange("options", options)}
           options={options}
         />
       ) : null}
       {dataCollectionType === DATA_COLLECTION_TYPES.LOCATION ? <LocationComponent /> : null}
       {dataCollectionType === DATA_COLLECTION_TYPES.SKILLS ? (
-        <Skills options={options} error={error} handleOnChange={handleOnChange} />
+        <Skills options={options} error={error} handleOnChange={(options) => handleOnChange("options", options)} />
       ) : null}
     </Grid>
   );
