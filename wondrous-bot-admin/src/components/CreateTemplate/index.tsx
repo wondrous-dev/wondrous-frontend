@@ -107,7 +107,7 @@ const CreateTemplate = ({
     if (Object.keys(errors).length > 0) {
       setErrors({});
     }
-    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
+    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level, timeBound } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
     const body = {
       title,
@@ -117,8 +117,8 @@ const CreateTemplate = ({
       conditionLogic: "and",
       questConditions: filteredQuestConditions,
       status: status || (isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE),
-      startAt: startAt ? startAt.toISOString() : null,
-      endAt: endAt ? endAt.toISOString() : null,
+      startAt: startAt && timeBound ? startAt.toISOString() : null,
+      endAt: endAt && timeBound ? endAt.toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
       rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {

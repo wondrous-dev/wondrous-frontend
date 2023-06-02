@@ -6,7 +6,6 @@ import { ErrorText } from "components/Shared/styles";
 
 const QuestTitle = ({ title, setTitle }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
-
   const handleChange = (e) => {
     if (errors?.title) {
       setErrors({
