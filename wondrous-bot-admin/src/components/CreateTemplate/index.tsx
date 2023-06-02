@@ -174,8 +174,8 @@ const CreateTemplate = ({
       conditionLogic: "and",
       questConditions: filteredQuestConditions,
       status: status || (isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE),
-      startAt: startAt ? startAt.toISOString() : null,
-      endAt: endAt ? endAt.toISOString() : null,
+      startAt: startAt ? startAt.utcOffset(0).startOf('day').toISOString() : null,
+      endAt: endAt ? endAt.utcOffset(0).endOf('day').toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
       rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {
