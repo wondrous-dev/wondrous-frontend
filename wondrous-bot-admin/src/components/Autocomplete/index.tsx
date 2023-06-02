@@ -1,45 +1,86 @@
-import { Autocomplete, Popper } from '@mui/material';
-import { StyledTextFieldSelect } from 'components/Shared/styles';
+import { Autocomplete, Popper, Typography } from "@mui/material";
+import { Label } from "components/CreateTemplate/styles";
+import { ErrorText, StyledTextFieldSelect } from "components/Shared/styles";
+import { useState } from "react";
 
 const AutocompleteComponent = ({
-  id = 'autocomplete-id',
+  id = "autocomplete-id",
   options,
-  handleChange,
+  handleChange = null,
   value,
+  renderInputProps = {},
+  sx = {},
+  autocompleteProps = {},
+  openOnInput = false,
+  error = null,
+  disclaimer = null,
 }) => {
+  const [isOpen, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (event, newInputValue) => {
+    setInputValue(newInputValue);
+    if (newInputValue.length > 0) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  };
+
   return (
     <Autocomplete
       disablePortal
+      inputValue={inputValue}
+      onInputChange={handleInputChange}
       id={id}
       options={options}
       value={value}
       getOptionLabel={(option) => {
-        
-        return option?.label || options?.find(i => i.value === option)?.label || ''
+        return option?.label || options?.find((i) => i.value === option)?.label || option;
       }}
-      sx={{ width: 300 }}
+      sx={{ width: 300, ...sx }}
       onChange={(e, { value }) => {
-        handleChange(value);
+        handleChange?.(value);
       }}
       PopperComponent={(props) => (
         <Popper
           {...props}
+          {...(openOnInput ? { open: isOpen } : {})}
           sx={{
-            '.MuiPaper-root': {
-              backgroundColor: '#E8E8E8',
-              borderRadius: '6px',
+            ".MuiPaper-root": {
+              backgroundColor: "#E8E8E8",
+              borderRadius: "6px",
             },
           }}
         />
       )}
       renderInput={(params) => (
-        <StyledTextFieldSelect
-          {...params}
-          SelectProps={{
-            displayEmpty: true,
-          }}
-        />
+        <>
+          <StyledTextFieldSelect
+            {...renderInputProps}
+            {...params}
+            SelectProps={{
+              displayEmpty: true,
+            }}
+          />
+          {disclaimer ? 
+                                          <Typography
+                                          color="#4d4d4d"
+                                          fontFamily="Poppins"
+                                          fontWeight={500}
+                                          fontSize="10px"
+                                          lineHeight="24px"
+                                          fontStyle="italic"
+                                          whiteSpace="nowrap"
+                                        >
+                                          {disclaimer}
+                                        </Typography>
+        
+          : null}
+          {error ? <ErrorText>{error}</ErrorText> : null}
+        </>
       )}
+      {...autocompleteProps}
     />
   );
 };
