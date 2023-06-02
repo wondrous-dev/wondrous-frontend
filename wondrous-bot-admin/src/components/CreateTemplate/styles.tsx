@@ -68,3 +68,59 @@ export const TitleInput = styled(TextareaAutosize)`
     color: black;
   }
 `;
+
+export const PaymentMethodRowContainer = styled.div`
+  background: #fffff;
+  padding: 14px;
+  border-radius: 16px;
+  border: 2px solid rgba(232, 232, 232, 1);
+`;
+
+export const PaymentMethodRowHeader = styled(Typography)`
+  && {
+    font-weight: 600;
+    font-size: 15px;
+    color: rgba(42, 141, 92, 1);
+    font-family: "Poppins";
+    margin-bottom: 8px;
+  }
+`;
+
+export const PaymentMethodSecondRowHeader = styled(Typography)`
+  && {
+    font-weight: 600;
+    font-size: 13px;
+    color: #4d4d4d;
+    font-family: "Poppins";
+  }
+`;
+
+export const PaymentRowContentBox = styled.div`
+  border-radius: 8px;
+  border: 1px solid rgba(232, 232, 232, 1);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+`;
+
+export const PaymentRowContentText = styled(PaymentMethodSecondRowHeader)`
+  && {
+    font-weight: normal;
+    text-transform: capitalize;
+    margin-left: -4px;
+    color: black;
+  }
+`;
+
+export const RewardHeaderText = styled(Typography)`
+  && {
+    font: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 15px;
+    color: #626262;
+    white-space: nowrap;
+  }
+`;
