@@ -54,7 +54,7 @@ const CreateTemplate = ({
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
   const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
-    refetchQueries: ['getQuestById']
+    refetchQueries: ["getQuestById"],
   });
 
   const { activeOrg } = useContext(GlobalContext);
@@ -162,7 +162,8 @@ const CreateTemplate = ({
     if (Object.keys(errors).length > 0) {
       setErrors({});
     }
-    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level, timeBound, isOnboarding } = questSettings;
+    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level, timeBound, isOnboarding } =
+      questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
     const body = {
@@ -174,8 +175,8 @@ const CreateTemplate = ({
       conditionLogic: "and",
       questConditions: filteredQuestConditions,
       status: status || (isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE),
-      startAt: startAt && timeBound ? startAt.utcOffset(0).startOf('day').toISOString() : null,
-      endAt: endAt && timeBound ? endAt.utcOffset(0).endOf('day').toISOString() : null,
+      startAt: startAt && timeBound ? startAt.utcOffset(0).startOf("day").toISOString() : null,
+      endAt: endAt && timeBound ? endAt.utcOffset(0).endOf("day").toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
       rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {
@@ -261,7 +262,7 @@ const CreateTemplate = ({
       }, []),
     };
     try {
-      console.log(body, 'BODY')
+      console.log(body, "BODY");
       await questValidator(body);
       if (!questSettings.isActive && !isSaving) {
         return setIsSaving(true);
@@ -271,7 +272,7 @@ const CreateTemplate = ({
       const errors = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
-          console.log(error.path, 'ERR PATH')
+          console.log(error.path, "ERR PATH");
           const path = getPathArray(error.path);
           set(errors, path, error.message);
         });
