@@ -37,6 +37,7 @@ export const QuestFragment = gql`
 		startAt
 		endAt
 		maxSubmission
+		isOnboarding
 		requireReview
 		submissionsCount {
 			inReview
@@ -55,9 +56,15 @@ export const QuestFragment = gql`
 		}
 		steps {
 			type
+			id
 			order
 			prompt
 			required
+			media {
+				slug
+				name
+				type
+			}
 			options {
 				position
 				text
