@@ -1,7 +1,7 @@
 import { useLazyQuery, ApolloClient, InMemoryCache } from '@apollo/client';
 import { GET_BADGE_SPEC, GET_RAFT_INFO, GET_RAFT_WITH_SPECS } from 'graphql/queries';
 
-const OTTERSPACE_URI = 'https://api.thegraph.com/subgraphs/name/otterspace-xyz/badges-goerli';
+const OTTERSPACE_URI = 'https://api.thegraph.com/subgraphs/name/otterspace-xyz/badges-polygon';
 
 const cache = new InMemoryCache();
 const otterspaceClientGQL = new ApolloClient({
