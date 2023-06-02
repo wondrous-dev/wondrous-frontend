@@ -37,6 +37,7 @@ export const QuestFragment = gql`
 		startAt
 		endAt
 		maxSubmission
+		isOnboarding
 		requireReview
 		submissionsCount {
 			inReview

@@ -28,6 +28,7 @@ const DEFAULT_STATE_VALUE = {
   maxSubmission: null,
   requireReview: false,
   isActive: false,
+  isOnboarding: false,
   startAt: null,
   endAt: null,
   questConditions: [],
@@ -107,11 +108,12 @@ const CreateTemplate = ({
     if (Object.keys(errors).length > 0) {
       setErrors({});
     }
-    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
+    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level, isOnboarding } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
     const body = {
       title,
       orgId: activeOrg.id,
+      isOnboarding,
       requireReview,
       maxSubmission: maxSubmission ? parseInt(maxSubmission, 10) : null,
       conditionLogic: "and",
