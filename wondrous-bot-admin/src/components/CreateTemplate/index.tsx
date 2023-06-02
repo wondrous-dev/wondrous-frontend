@@ -11,7 +11,7 @@ import { RewardComponent, RewardOverviewHeader } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
-import { CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
+import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
 import { GET_QUEST_REWARDS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
@@ -20,6 +20,7 @@ import { getPathArray } from "utils/common";
 import { set } from "lodash";
 import { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
+import { transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 
 const DEFAULT_STATE_VALUE = {
@@ -52,17 +53,8 @@ const CreateTemplate = ({
   const navigate = useNavigate();
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
-  const [createQuest] = useMutation(CREATE_QUEST, {
-    onCompleted: ({ createQuest }) => {
-      navigate(`/quests/${createQuest.id}`);
-    },
-    refetchQueries: ["getQuestsForOrg"],
-  });
-  const [updateQuest] = useMutation(UPDATE_QUEST, {
-    onCompleted: ({ updateQuest }) => {
-      postUpdate?.();
-    },
-    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
+  const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
+    refetchQueries: ['getQuestById']
   });
 
   const { activeOrg } = useContext(GlobalContext);
@@ -78,14 +70,59 @@ const CreateTemplate = ({
         type,
         value: "",
         required: true,
+        mediaUploads: [],
       },
     ]);
   };
+
+  const [createQuest] = useMutation(CREATE_QUEST, {
+    onCompleted: ({ createQuest }) => {
+      handleUpdateQuestStepsMedia(createQuest.id, createQuest?.steps, steps);
+      navigate(`/quests/${createQuest.id}`);
+    },
+    refetchQueries: ["getQuestsForOrg"],
+  });
+  const [updateQuest] = useMutation(UPDATE_QUEST, {
+    onCompleted: ({ updateQuest }) => {
+      handleUpdateQuestStepsMedia(updateQuest.id, updateQuest?.steps, steps);
+      postUpdate?.();
+    },
+    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
+  });
 
   const handleRemove = (index) => {
     const newItems = [...steps];
     newItems.splice(index, 1);
     setSteps(newItems);
+  };
+
+  const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
+    const stepsMedia = await Promise.all(
+      localSteps.map(async (step, idx) => {
+        return await handleMediaUpload(step.mediaUploads);
+      })
+    );
+
+    const stepsData = localSteps.reduce((acc, next, idx) => {
+      if (next.mediaUploads.length > 0) {
+        const questStep = questSteps.find((step) => step.order === idx + 1);
+        return [
+          ...acc,
+          {
+            stepId: questStep?.id,
+            mediaUploads: stepsMedia[idx],
+          },
+        ];
+      }
+      return acc;
+    }, []);
+
+    await attachQuestStepsMedia({
+      variables: {
+        questId,
+        stepsData,
+      },
+    });
   };
 
   const handleMutation = ({ body }) => {
@@ -104,12 +141,30 @@ const CreateTemplate = ({
       },
     });
   };
+
+  const handleMediaUpload = async (mediaUploads) =>
+    Promise.all(
+      mediaUploads.map(async (file) => {
+        try {
+          const { filename, fileType } = await transformAndUploadMedia({ file });
+          return {
+            uploadSlug: filename,
+            type: fileType,
+            name: file.name,
+          };
+        } catch (error) {
+          return null;
+        }
+      })
+    );
+
   const handleSave = async (status = null) => {
     if (Object.keys(errors).length > 0) {
       setErrors({});
     }
     const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level, isOnboarding } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
+
     const body = {
       title,
       orgId: activeOrg.id,
@@ -139,6 +194,7 @@ const CreateTemplate = ({
         const step: any = {
           type: next.type,
           order: index + 1,
+          mediaUploads: [],
           required: next.required === false ? false : true,
           prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };

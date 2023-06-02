@@ -39,6 +39,7 @@ const QuestResultsPage = () => {
     variables: {
       questId: id,
     },
+    fetchPolicy: 'network-only',
     onCompleted: (data) => {
       setTitle(data?.getQuestById?.title);
     },

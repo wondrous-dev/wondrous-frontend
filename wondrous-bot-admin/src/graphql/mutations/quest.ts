@@ -67,3 +67,9 @@ export const DELETE_QUEST = gql`
   }
 
 `;
+
+export const ATTACH_QUEST_STEPS_MEDIA = gql`
+  mutation attachQuestStepsMedia($questId: ID!, $stepsData: [StepsMediaInput]) {
+    attachQuestStepsMedia(questId: $questId, stepsData: $stepsData) 
+  }
+`;

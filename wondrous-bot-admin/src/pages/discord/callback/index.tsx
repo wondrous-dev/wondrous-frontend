@@ -132,8 +132,6 @@ function DiscordCallback() {
             const discordUser = response?.user;
             await storeAuthHeader(token, discordUser);
             if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
-              // Only place to change this is in settings
-              debugger;
               return navigate('/');
             }
           })
