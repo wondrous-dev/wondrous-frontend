@@ -10,6 +10,7 @@ const SelectComponent = ({
   style = {},
   boxStyle = {},
   error = null,
+  disabled = false,
 }) => {
   const handleChange = (e) => onChange(e.target.value);
 
@@ -18,6 +19,7 @@ const SelectComponent = ({
       <StyledTextFieldSelect
         select
         defaultValue=""
+        disabled={disabled}
         value={value}
         style={style}
         placeholder={placeholder}

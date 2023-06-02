@@ -8,7 +8,6 @@ import SelectComponent from "components/Shared/Select";
 import InterestsComponent from "./InterestsComponent";
 import LocationComponent from "./Location";
 import Skills from "./Skills";
-import { getInterestsPerCategory } from "utils/dataCollection";
 
 const OPTIONS = [
   {
@@ -25,7 +24,7 @@ const OPTIONS = [
   },
 ];
 
-const getDefaultOptions = (type, category = null) => {
+const getDefaultOptions = (type) => {
   if (type === DATA_COLLECTION_TYPES.INTERESTS) {
     return ["web3", "other"];
   }
@@ -40,21 +39,13 @@ const DataCollectionComponent = (props) => {
   const { prompt, dataCollectionProps, options = [] } = value;
   const { dataCollectionType, category } = dataCollectionProps || {};
 
-  console.log(options, 'OPTIOONS')
   const handleOnChange = (key, val) => {
-    console.log(val, 'VAL')
     onChange({
       ...value,
       [key]: val,
     });
   };
 
-  const handleOnInterstCategoryChange = (data) => {
-    onChange({
-      ...value,
-      ...data,
-    });
-  };
   const handleTypeChange = (type) => {
     return onChange({
       ...value,
@@ -62,7 +53,7 @@ const DataCollectionComponent = (props) => {
         ...dataCollectionProps,
         dataCollectionType: type,
       },
-      options: getDefaultOptions(type, activeOrg?.category),
+      options: getDefaultOptions(type),
     });
   };
 

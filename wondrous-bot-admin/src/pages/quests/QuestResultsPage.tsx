@@ -39,6 +39,7 @@ const QuestResultsPage = () => {
     variables: {
       questId: id,
     },
+    fetchPolicy: 'network-only',
     onCompleted: (data) => {
       setTitle(data?.getQuestById?.title);
     },
@@ -51,6 +52,7 @@ const QuestResultsPage = () => {
     title: getQuestById?.title || "",
     level: getQuestById?.level ? String(getQuestById?.level) : null,
     timeBound: getQuestById?.startAt || getQuestById?.endAt,
+    isOnboarding: getQuestById?.isOnboarding || false,
     maxSubmission: getQuestById?.maxSubmission || null,
     requireReview: getQuestById?.requireReview || false,
     isActive: getQuestById?.status === QUEST_STATUSES.OPEN || false,

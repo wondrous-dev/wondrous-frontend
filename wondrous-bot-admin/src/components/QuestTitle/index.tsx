@@ -21,6 +21,7 @@ const QuestTitle = ({ title, setTitle }) => {
         maxRows={2}
         multiline
         rows={1}
+        maxLength={220}
         value={title}
         onChange={handleChange}
         placeholder="Enter Quest Title"

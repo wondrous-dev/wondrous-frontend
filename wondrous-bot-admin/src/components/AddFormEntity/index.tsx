@@ -13,6 +13,7 @@ import { RESPOND_TYPES, TYPES } from "utils/constants";
 import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
+import StepAttachments from "components/StepAttachments";
 import { useContext } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
@@ -172,6 +173,25 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
     setSteps(newConfiguration);
   };
 
+  const handleMedia = (value, id) => {
+    const newConfiguration = steps.reduce((acc, next) => {
+      if (next.id === id) {
+        acc = [
+          ...acc,
+          {
+            ...next,
+            mediaUploads: value,
+          },
+        ];
+        return acc;
+      }
+      acc.push(next);
+      return acc;
+    }, []);
+    // debugger
+    setSteps(newConfiguration);
+  };
+
   return (
     <Grid
       display="flex"
@@ -255,14 +275,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
                                 <ButtonIconWrapper onClick={() => handleRemove(idx)}>
                                   <DeleteIcon />
                                 </ButtonIconWrapper>
-                                {/* <ButtonIconWrapper>
-																	<MoreVertIcon
-																		sx={{
-																			color: "black",
-																			fontSize: "17px"
-																		}}
-																	/>
-																</ButtonIconWrapper> */}
                               </Grid>
                             </Header>
                           )}
@@ -277,6 +289,10 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
                               {RESPOND_TYPES[item.type] ? (
                                 <TypeComponent respondType={RESPOND_TYPES[item.type]} />
                               ) : null}
+                              <StepAttachments
+                                step={item}
+                                handleChange={(value) => handleMedia(value, item.id)}
+                              />
                             </>
                           )}
                         />

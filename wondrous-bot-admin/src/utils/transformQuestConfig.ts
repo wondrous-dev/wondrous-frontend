@@ -4,6 +4,11 @@ type InputQuestStep = {
   type: string;
   order: number;
   prompt: string;
+  media?: Array<{
+    slug: string;
+    name: string;
+    type: string;
+  }> | null;
   required?: boolean;
   options: Array<{
     position: number;
@@ -23,7 +28,6 @@ type InputQuestStep = {
     discordChannelName?: string;
     discordMessageType?: string;
     dataCollectionType?: string;
-    category?: string;
   };
 };
 
@@ -31,6 +35,11 @@ type OutputQuestStep = {
   id: number;
   type: string;
   required?: boolean;
+  mediaUploads?: Array<{
+    slug: string;
+    name: string;
+    type: string;
+  }>;
   value:
     | string
     | {
@@ -69,7 +78,6 @@ type OutputQuestStep = {
         prompt?: string;
         options?: string[];
         dataCollectionProps: {
-          category?: string;
           dataCollectionType?: string;
         };
       };
@@ -83,6 +91,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       type: step.type,
       required: step.required === false ? false : true,
       value: "",
+      mediaUploads: step?.media || [],
     };
 
     if (step.type === TYPES.TEXT_FIELD || step.type === TYPES.NUMBER || step.type === TYPES.ATTACHMENTS) {
@@ -146,11 +155,6 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
           : {}),
         dataCollectionProps: {
           dataCollectionType: step?.additionalData?.dataCollectionType,
-          ...(dataCollectionType === DATA_COLLECTION_TYPES.INTERESTS
-            ? {
-                category: step?.additionalData?.category,
-              }
-            : {}),
         },
       };
     }
