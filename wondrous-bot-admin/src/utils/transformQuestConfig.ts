@@ -1,4 +1,4 @@
-import { TYPES } from "./constants";
+import { DATA_COLLECTION_TYPES, TYPES } from "./constants";
 
 type InputQuestStep = {
   type: string;
@@ -27,6 +27,8 @@ type InputQuestStep = {
     discordChannelId?: string;
     discordChannelName?: string;
     discordMessageType?: string;
+    dataCollectionType?: string;
+    category?: string;
   };
 };
 
@@ -72,6 +74,14 @@ type OutputQuestStep = {
         prompt?: string;
         discordChannelName: string;
         discordMessageType?: string;
+      }
+    | {
+        prompt?: string;
+        options?: string[];
+        dataCollectionProps: {
+          category?: string;
+          dataCollectionType?: string;
+        };
       };
 };
 
@@ -135,6 +145,24 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       outputStep.value = {
         prompt: step?.prompt,
         discordChannelName: step?.additionalData?.discordChannelName,
+      };
+    } else if (step.type === TYPES.DATA_COLLECTION) {
+      const dataCollectionType = step?.additionalData?.dataCollectionType;
+      outputStep.value = {
+        prompt: step?.prompt,
+        ...(dataCollectionType !== DATA_COLLECTION_TYPES.LOCATION
+          ? {
+              options: [...step?.options]?.sort((a, b) => a.position - b.position).map((option) => option.text),
+            }
+          : {}),
+        dataCollectionProps: {
+          dataCollectionType: step?.additionalData?.dataCollectionType,
+          ...(dataCollectionType === DATA_COLLECTION_TYPES.INTERESTS
+            ? {
+                category: step?.additionalData?.category,
+              }
+            : {}),
+        },
       };
     }
 
