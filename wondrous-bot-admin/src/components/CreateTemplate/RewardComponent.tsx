@@ -1,321 +1,31 @@
-import { Box, Divider, Grid, Typography } from "@mui/material";
+import { Box, ButtonBase, Divider, Grid, Typography } from "@mui/material";
+import WestIcon from "@mui/icons-material/West";
 import TextField from "components/Shared/TextField";
-import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
-import { CampaignOverviewTitle, Label } from "./styles";
-import SelectComponent from "components/Shared/Select";
-import { useMemo, useState } from "react";
+import { ErrorText, SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
+import { CampaignOverviewTitle, RewardHeaderText } from "./styles";
+import { useState } from "react";
 import Modal from "components/Shared/Modal";
-import { useDiscordRoles } from "utils/discord";
 import { useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import DeleteIcon from "components/Icons/Delete";
 import { useEffect } from "react";
 import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import Arbitrum from "assets/arbitrum";
-import Binance from "assets/binance";
-import Ethereum from "assets/ethereum";
-import Avalanche from "assets/avalanche";
-import Optimism from "assets/optimism";
-import Polygon from "assets/polygonMaticLogo.svg";
 import { CREATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
+import truncateEthAddress from "truncate-eth-address";
 import { GET_CMTY_PAYMENT_METHODS_FOR_ORG, GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries/payment";
+import {
+  PAYMENT_OPTIONS,
+  ExistingDiscordRewardSelectComponent,
+  RewardFooterLeftComponent,
+  RewardMethod,
+  ExistingPaymentMethodSelectComponent,
+} from "components/CreateTemplate/RewardUtils";
 
-const PAYMENT_OPTIONS = {
-  DISCORD_ROLE: "discord_role",
-  NFT: "nft",
-  TOKEN: "token",
-};
-
-const REWARD_TYPES = [
-  { label: "ERC20", value: "erc20" },
-  { label: "ERC721", value: "erc721" },
-  { label: "ERC1155", value: "erc1155" },
-];
-
-const CHAIN_SELECT_OPTIONS = [
-  {
-    label: "Ethereum",
-    value: "ethereum",
-    icon: (
-      <Ethereum
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "Polygon",
-    value: "polygon",
-    icon: (
-      <img
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-        src={Polygon}
-      />
-    ),
-  },
-  {
-    label: "Optimism",
-    value: "optimism",
-    icon: (
-      <Optimism
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "Arbitrum",
-    value: "arbitrum",
-    icon: (
-      <Arbitrum
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "BNB",
-    value: "bsc",
-    icon: (
-      <Binance
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "Avalanche",
-    value: "avalanche",
-    icon: (
-      <Avalanche
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-];
-
-const PaymentMethodRows = ({ paymentMethods, setPaymentMethods }) => {};
-const ExistingDiscordRewardSelectComponent = ({ options, initialReward, setQuestSettings }) => {
-  const [reward, setDiscordRoleReward] = useState(null);
-  const initialRewardId = initialReward?.discordRewardData?.discordRoleId;
-  useEffect(() => {
-    if (initialRewardId) {
-      setDiscordRoleReward(initialRewardId);
-    }
-  }, [initialRewardId]);
-  return (
-    <SelectComponent
-      boxStyle={{
-        flex: 1,
-      }}
-      options={options}
-      value={reward}
-      onChange={(value) => {
-        setDiscordRoleReward(value);
-        setQuestSettings((prev) => {
-          return {
-            ...prev,
-            rewards: prev.rewards.map((reward) => {
-              if (reward.type === "discord_role" && reward.discordRewardData.discordRoleId === initialRewardId) {
-                return {
-                  ...reward,
-                  discordRewardData: {
-                    ...reward.discordRewardData,
-                    discordRoleId: value,
-                  },
-                };
-              }
-              return reward;
-            }),
-          };
-        });
-      }}
-    />
-  );
-};
-
-const RewardMethod = ({
-  rewardType,
-  componentsOptions,
-  discordRoleReward,
-  setDiscordRoleReward,
-  tokenReward,
-  setTokenReward,
-}) => {
-  const [getTokenInfo] = useLazyQuery(GET_TOKEN_INFO, {
-    onCompleted: (data) => {
-      setTokenReward({
-        ...tokenReward,
-        tokenName: data?.getTokenInfo?.name,
-        symbol: data?.getTokenInfo?.symbol,
-        icon: data?.getTokenInfo?.icon,
-      });
-    },
-    fetchPolicy: "network-only",
-  });
-
-  const [getNFTInfo] = useLazyQuery(GET_NFT_INFO, {
-    onCompleted: (data) => {
-      setTokenReward({
-        ...tokenReward,
-        tokenName: data?.getTokenInfo?.name,
-        symbol: data?.getTokenInfo?.symbol,
-        icon: data?.getTokenInfo?.icon,
-      });
-    },
-    fetchPolicy: "network-only",
-  });
-  const searchSelectedTokenInList = (contractAddress, chain, existingList = [], tokenId = "") => {
-    if (tokenReward?.type === "ERC20") {
-      getTokenInfo({
-        variables: {
-          contractAddress,
-          chain,
-        },
-      });
-    }
-    if (tokenReward?.type === "ERC721") {
-      getNFTInfo({
-        variables: {
-          contractAddress,
-          chain,
-          tokenType: "ERC721",
-        },
-      });
-    }
-    if (tokenReward?.type === "ERC1155") {
-      getNFTInfo({
-        variables: {
-          contractAddress,
-          chain,
-          tokenType: "ERC1155",
-          tokenId,
-        },
-      });
-    }
-  };
-
-  if (rewardType === PAYMENT_OPTIONS.DISCORD_ROLE) {
-    return (
-      <>
-        <Label>Select role</Label>
-        <SelectComponent
-          options={componentsOptions}
-          value={discordRoleReward}
-          onChange={(value) => setDiscordRoleReward(value)}
-        />
-      </>
-    );
-  }
-  if (rewardType === PAYMENT_OPTIONS.NFT) {
-    return (
-      <>
-        <Label>Chain</Label>
-        <SelectComponent
-          options={CHAIN_SELECT_OPTIONS}
-          value={tokenReward?.chain}
-          onChange={(value) =>
-            setTokenReward({
-              ...tokenReward,
-              chain: value,
-            })
-          }
-        />
-        <Label>Token type</Label>
-        <SelectComponent
-          options={REWARD_TYPES}
-          value={tokenReward?.type}
-          onChange={(value) =>
-            setTokenReward({
-              ...tokenReward,
-              type: value,
-            })
-          }
-        />
-        <Label
-          style={{
-            marginTop: "4px",
-          }}
-        >
-          Token
-        </Label>
-        <TextField
-          placeholder="Please paste in the contract address"
-          value={tokenReward?.contractAddress}
-          onChange={(value) => {
-            console.log("tokenREward", tokenReward);
-
-            setTokenReward({
-              ...tokenReward,
-              contractAddress: value,
-            });
-          }}
-          multiline={false}
-        />
-        <Label
-          style={{
-            marginTop: "4px",
-          }}
-        >
-          Name
-        </Label>
-        <TextField
-          placeholder="Token name"
-          value={tokenReward?.tokenName}
-          onChange={(value) => {
-            setTokenReward({
-              ...tokenReward,
-              tokenName: value,
-            });
-          }}
-          multiline={false}
-        />
-        <Label
-          style={{
-            marginTop: "4px",
-          }}
-        >
-          Amount
-        </Label>
-        <TextField
-          placeholder="Please enter the amount of tokens to be rewarded"
-          value={tokenReward?.amount}
-          onChange={(value) =>
-            setTokenReward({
-              ...tokenReward,
-              amount: value,
-            })
-          }
-          multiline={false}
-          type="number"
-        />
-      </>
-    );
-  }
-};
 const RewardComponent = ({ rewards, setQuestSettings }) => {
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
+  const [errors, setErrors] = useState(null);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
   const [addPaymentMethod, setAddPaymentMethod] = useState(true);
   const [tokenReward, setTokenReward] = useState({
     tokenName: null,
@@ -324,16 +34,11 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     icon: null,
     type: null,
     chain: null,
+    amount: null,
   });
-<<<<<<< Updated upstream
+
   const [paymentMethod, setPaymentMethod] = useState(null);
-  const [tokenAmount, setTokenAmount] = useState(null);
-=======
-  const [paymentMethods, setPaymentMethods] = useState([]);
-  const [paymentMethod, setPaymentMethod] = useState(null);
-  const [tokenAmount, setTokenAmount] = useState(null);
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+
   const { activeOrg } = useContext(GlobalContext);
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
   const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD);
@@ -348,6 +53,11 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     fetchPolicy: "cache-and-network",
   });
 
+  const paymentMethods = getCmtyPaymentMethodsData?.getCmtyPaymentMethodsForOrg || [];
+  const paymentMethodOptions = paymentMethods?.map((method) => ({
+    label: method?.name || truncateEthAddress(method?.contractAddress),
+    value: method?.id,
+  }));
   useEffect(() => {
     if (activeOrg?.id) {
       getCmtyOrgDiscordRoles({
@@ -364,6 +74,10 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         variables: {
           orgId: activeOrg?.id,
         },
+      }).then((data) => {
+        if (data?.data?.getCmtyPaymentMethodsForOrg?.length > 0) {
+          setAddPaymentMethod(false);
+        }
       });
     }
   }, [activeOrg?.id]);
@@ -391,7 +105,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       };
     });
   };
-  console.log("tokenREward", tokenReward);
+
   const onRewardAdd = (reward) => {
     setQuestSettings((prev) => {
       return {
@@ -436,15 +150,50 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       setIsRewardModalOpen(false);
     } else if (rewardType === PAYMENT_OPTIONS.NFT || rewardType === PAYMENT_OPTIONS.TOKEN) {
       if (paymentMethod) {
+        if (!tokenReward?.amount) {
+          setErrors({
+            ...errors,
+            tokenAmount: "Please enter the amount of tokens to be rewarded",
+          });
+          return;
+        }
         onRewardAdd({
           type: rewardType,
           paymentMethodId: paymentMethod?.id,
           paymentMethod,
-          amount: tokenAmount,
+          amount: tokenReward?.amount,
         });
         setIsRewardModalOpen(false);
       } else if (addPaymentMethod) {
         // Create payment method and then add reward
+        if (!tokenReward?.contractAddress) {
+          setErrors({
+            ...errors,
+            contractAddress: "Please enter the contract address",
+          });
+          return;
+        }
+        if (!tokenReward?.chain) {
+          setErrors({
+            ...errors,
+            chain: "Please select the appropriate chain",
+          });
+          return;
+        }
+        if (!tokenReward?.type) {
+          setErrors({
+            ...errors,
+            tokenType: "Please select the token type",
+          });
+          return;
+        }
+        if (!tokenReward?.amount) {
+          setErrors({
+            ...errors,
+            tokenAmount: "Please enter the amount of tokens to be rewarded",
+          });
+          return;
+        }
         createPaymentMethod({
           variables: {
             input: {
@@ -457,15 +206,22 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               type: tokenReward?.type,
             },
           },
-        }).then((res) => {
-          const paymentMethod = res?.data?.createCmtyPaymentMethod;
-          onRewardAdd({
-            type: rewardType,
-            paymentMethodId: paymentMethod?.id,
-            amount: tokenAmount,
-            paymentMethod,
+        })
+          .then((res) => {
+            const paymentMethod = res?.data?.createCmtyPaymentMethod;
+            onRewardAdd({
+              type: rewardType,
+              paymentMethodId: paymentMethod?.id,
+              amount: tokenReward?.amount,
+              paymentMethod,
+            });
+          })
+          .catch((err) => {
+            setErrors({
+              ...errors,
+              paymentMethodCreation: err?.message,
+            });
           });
-        });
       }
     }
   };
@@ -476,7 +232,15 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         onClose={() => setIsRewardModalOpen(false)}
         title="Add reward to quest"
         maxWidth={800}
-        footerLeft={<SharedSecondaryButton onClick={handleReward}>Add reward</SharedSecondaryButton>}
+        footerLeft={
+          <RewardFooterLeftComponent
+            paymentMethod={paymentMethod}
+            setPaymentMethod={setPaymentMethod}
+            addPaymentMethod={addPaymentMethod}
+            handleReward={handleReward}
+            setAddPaymentMethod={setAddPaymentMethod}
+          />
+        }
         footerRight={undefined}
         footerCenter={undefined}
       >
@@ -510,6 +274,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               ERC20 tokens
             </SharedBlackOutlineButton> */}
           </Box>
+
           <RewardMethod
             rewardType={rewardType}
             componentsOptions={componentsOptions}
@@ -517,6 +282,11 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             setDiscordRoleReward={setDiscordRoleReward}
             tokenReward={tokenReward}
             setTokenReward={setTokenReward}
+            paymentMethod={paymentMethod}
+            paymentMethods={paymentMethods}
+            addPaymentMethod={addPaymentMethod}
+            setPaymentMethod={setPaymentMethod}
+            errors={errors}
           />
         </Grid>
       </Modal>
@@ -525,17 +295,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         if (reward.type === "points") {
           return (
             <Grid display="flex" gap="14px" alignItems="center" key={idx}>
-              <Typography
-                fontFamily="Poppins"
-                fontStyle="normal"
-                fontWeight={600}
-                fontSize="13px"
-                lineHeight="15px"
-                color="#626262"
-                whiteSpace={"nowrap"}
-              >
-                Points
-              </Typography>
+              <RewardHeaderText>Points</RewardHeaderText>
               <TextField
                 value={reward.value}
                 type="number"
@@ -546,26 +306,63 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               />
             </Grid>
           );
-        } else if (reward.type === "discord_role") {
+        } else if (reward.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
           return (
             <Grid display="flex" gap="14px" alignItems="center" key={idx}>
-              <Typography
-                fontFamily="Poppins"
-                fontStyle="normal"
-                fontWeight={600}
-                fontSize="13px"
-                lineHeight="15px"
-                color="#626262"
-                whiteSpace={"nowrap"}
-              >
-                Discord role
-              </Typography>
+              <RewardHeaderText>Discord role</RewardHeaderText>
               <ExistingDiscordRewardSelectComponent
                 options={componentsOptions}
                 initialReward={reward}
                 setQuestSettings={setQuestSettings}
               />
               <DeleteIcon onClick={() => onDiscordRoleRewardRemove(reward)} />
+            </Grid>
+          );
+        } else if (reward.type === PAYMENT_OPTIONS.NFT) {
+          return (
+            <Grid display="flex" gap="2px" alignItems="center" key={idx} maxWidth="100%">
+              <RewardHeaderText>Token Reward</RewardHeaderText>
+              <TextField
+                style={{
+                  maxWidth: "20px",
+                }}
+                value={reward.amount}
+                type="number"
+                multiline={false}
+                onChange={(value) => {
+                  setQuestSettings((prev) => {
+                    return {
+                      ...prev,
+                      rewards: prev.rewards.map((compareReward) => {
+                        if (
+                          compareReward.type === PAYMENT_OPTIONS.NFT &&
+                          compareReward.paymentMethod?.id === reward?.paymentMethod?.id
+                        ) {
+                          return {
+                            ...reward,
+                            amount: value,
+                          };
+                        }
+                        return reward;
+                      }),
+                    };
+                  });
+                }}
+              />
+              <ExistingPaymentMethodSelectComponent
+                options={paymentMethodOptions}
+                initialReward={reward}
+                setQuestSettings={setQuestSettings}
+                style={{
+                  maxWidth: "100px",
+                }}
+              />
+              <DeleteIcon
+                style={{
+                  width: "13px",
+                }}
+                onClick={() => onDiscordRoleRewardRemove(reward)}
+              />
             </Grid>
           );
         }

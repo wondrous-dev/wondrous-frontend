@@ -9,7 +9,7 @@ export const CmtyPaymentMethodFragment = gql`
     orgId
     contractAddress
     chain
-    tokenName
+    name
     symbol
     icon
     decimal
