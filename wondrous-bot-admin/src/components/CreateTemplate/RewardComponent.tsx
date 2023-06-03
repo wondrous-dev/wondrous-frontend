@@ -323,9 +323,13 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             <Grid display="flex" gap="2px" alignItems="center" key={idx} maxWidth="100%">
               <RewardHeaderText>Token Reward</RewardHeaderText>
               <TextField
-                style={{
-                  maxWidth: "20px",
+                boxStyles={{
+                  width: "auto",
                 }}
+                style={{
+                  maxWidth: "100px",
+                }}
+                Box
                 value={reward.amount}
                 type="number"
                 multiline={false}
@@ -353,13 +357,16 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                 options={paymentMethodOptions}
                 initialReward={reward}
                 setQuestSettings={setQuestSettings}
+              />
+              <div
                 style={{
-                  maxWidth: "100px",
+                  flex: 1,
                 }}
               />
               <DeleteIcon
                 style={{
                   width: "13px",
+                  flex: 1,
                 }}
                 onClick={() => onDiscordRoleRewardRemove(reward)}
               />

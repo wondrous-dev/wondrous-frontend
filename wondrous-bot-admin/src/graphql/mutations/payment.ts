@@ -7,7 +7,7 @@ export const CREATE_CMTY_PAYMENT_METHOD = gql`
       orgId
       contractAddress
       chain
-      tokenName
+      name
       symbol
       icon
       decimal

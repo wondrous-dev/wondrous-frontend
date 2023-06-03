@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
+import { PAYMENT_OPTIONS } from "./RewardUtils";
 
 const DEFAULT_STATE_VALUE = {
   level: "1",
@@ -182,7 +183,7 @@ const CreateTemplate = ({
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
       rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {
-        if (reward?.type === "discord_role") {
+        if (reward?.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
           return {
             discordRewardData: {
               discordRoleId: reward?.discordRewardData?.discordRoleId,
@@ -190,6 +191,12 @@ const CreateTemplate = ({
               discordRoleName: reward?.discordRewardData?.discordRoleName,
             },
             type: reward?.type,
+          };
+        } else if (reward?.type === PAYMENT_OPTIONS.NFT) {
+          return {
+            type: reward?.type,
+            paymentMethodId: reward?.paymentMethodId,
+            amount: reward?.amount,
           };
         }
       }),
