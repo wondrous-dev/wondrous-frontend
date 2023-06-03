@@ -75,8 +75,8 @@ export const SET_USER_SIGNUP_COMPLETE = gql`
 `;
 
 export const USER_DISOCRD_SIGNUP_LOGIN = gql`
-  mutation discordSignupLogin($discordAuthCode: String!) {
-    discordSignupLogin(discordAuthCode: $discordAuthCode) {
+  mutation discordSignupLogin($discordAuthCode: String!, $communities: Boolean) {
+    discordSignupLogin(discordAuthCode: $discordAuthCode, communities: $communities) {
       user {
         ...LoggedinUser
       }

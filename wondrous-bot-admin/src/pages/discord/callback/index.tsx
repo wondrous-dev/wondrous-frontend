@@ -89,6 +89,7 @@ function DiscordCallback() {
         discordSignupLogin({
           variables: {
             discordAuthCode: code,
+            communities: true,
           },
         })
           .then(async (result) => {
