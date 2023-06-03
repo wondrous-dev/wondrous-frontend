@@ -17,7 +17,7 @@ const TextFieldComponent = ({
   };
 
   return (
-    <Box width="100%" height="100%">
+    <Box width="100%" height="100%" style={props?.boxStyles}>
       <CustomTextField
         key={label}
         label={label}
