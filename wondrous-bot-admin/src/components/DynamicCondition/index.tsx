@@ -11,7 +11,7 @@ import SelectComponent from 'components/Shared/Select';
 import { GET_QUESTS_FOR_ORG } from 'graphql/queries';
 import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { getTextForCondition } from 'utils/common';
-import { QUEST_CONDITION_TYPES } from 'utils/constants';
+import { QUEST_CONDITION_TYPES, QUEST_STATUSES } from 'utils/constants';
 import GlobalContext from 'utils/context/GlobalContext';
 import { useDiscordRoles } from 'utils/discord';
 
@@ -91,6 +91,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
       input: {
         orgId: activeOrg?.id,
         limit: 500,
+        status: QUEST_STATUSES.OPEN,
       },
     },
   });
