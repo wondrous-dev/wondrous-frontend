@@ -53,7 +53,7 @@ const cache = new InMemoryCache({
           return existingData || toReference({ __typename: "User", ...args });
         },
         getQuestsForOrg: {
-          keyArgs: ["input", ["orgId", "statuses"]],
+          keyArgs: ["input", ["orgId", "statuses", "status"]],
           merge: offsetLimitPaginationInput,
         },
       },

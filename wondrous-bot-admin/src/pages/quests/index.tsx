@@ -44,7 +44,7 @@ const QuestsPage = () => {
       input: {
         orgId: activeOrg?.id,
         limit: 1000,
-        statuses: [QUEST_STATUSES.OPEN],
+        status: QUEST_STATUSES.OPEN,
       },
     },
   });
