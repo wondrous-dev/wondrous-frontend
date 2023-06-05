@@ -432,7 +432,7 @@ export const RewardFooterLeftComponent = ({
 
 export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, setQuestSettings }) => {
   const [reward, setPaymentReward] = useState(null);
-  const initialRewardId = initialReward?.paymentMethod?.id;
+  const initialRewardId = initialReward?.paymentMethodId;
   useEffect(() => {
     if (initialRewardId) {
       setPaymentReward(initialRewardId);

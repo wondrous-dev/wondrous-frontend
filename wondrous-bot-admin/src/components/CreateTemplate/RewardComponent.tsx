@@ -41,7 +41,9 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
 
   const { activeOrg } = useContext(GlobalContext);
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
-  const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD);
+  const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD, {
+    refetchQueries: [GET_CMTY_PAYMENT_METHODS_FOR_ORG],
+  });
   const [getCmtyOrgDiscordRoles, { data: getCmtyOrgDiscordRolesData, variables }] = useLazyQuery(
     GET_ORG_DISCORD_ROLES,
     {
@@ -118,7 +120,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
   const onDiscordRoleRewardRemove = (reward) => {
     setQuestSettings((prev) => {
       const newRewards = prev.rewards.filter((r) => {
-        if (r.type === "discord_role") {
+        if (r.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
           return r.discordRewardData.discordRoleId !== reward.discordRewardData.discordRoleId;
         }
         return true;
@@ -130,6 +132,20 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     });
   };
 
+  const OnPaymentMethodRewardRemove = (reward) => {
+    setQuestSettings((prev) => {
+      const newRewards = prev.rewards.filter((r) => {
+        if (r.type === PAYMENT_OPTIONS.NFT || r.type === PAYMENT_OPTIONS.TOKEN) {
+          return r.paymentMethodId !== reward.paymentMethodId;
+        }
+        return true;
+      });
+      return {
+        ...prev,
+        rewards: newRewards,
+      };
+    });
+  };
   const handleReward = () => {
     if (rewardType === PAYMENT_OPTIONS.DISCORD_ROLE) {
       const discordRoleSelected = componentsOptions.find((option) => option.value === discordRoleReward);
@@ -203,7 +219,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               symbol: tokenReward?.symbol,
               icon: tokenReward?.icon,
               chain: tokenReward?.chain,
-              type: tokenReward?.type,
+              type: tokenReward?.type.toUpperCase(),
             },
           },
         })
@@ -215,6 +231,8 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               amount: tokenReward?.amount,
               paymentMethod,
             });
+            setIsRewardModalOpen(false);
+            setAddPaymentMethod(false);
           })
           .catch((err) => {
             setErrors({
@@ -315,13 +333,18 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                 initialReward={reward}
                 setQuestSettings={setQuestSettings}
               />
-              <DeleteIcon onClick={() => onDiscordRoleRewardRemove(reward)} />
+              <DeleteIcon
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={() => onDiscordRoleRewardRemove(reward)}
+              />
             </Grid>
           );
         } else if (reward.type === PAYMENT_OPTIONS.NFT) {
           return (
-            <Grid display="flex" gap="2px" alignItems="center" key={idx} maxWidth="100%">
-              <RewardHeaderText>Token Reward</RewardHeaderText>
+            <Grid display="flex" gap="14px" alignItems="center" key={idx} maxWidth="100%">
+              <RewardHeaderText>Token</RewardHeaderText>
               <TextField
                 boxStyles={{
                   width: "auto",
@@ -354,7 +377,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                 }}
               />
               <ExistingPaymentMethodSelectComponent
-                options={paymentMethodOptions}
+                options={paymentMethodOptions?.length > 0 ? paymentMethodOptions : []}
                 initialReward={reward}
                 setQuestSettings={setQuestSettings}
               />
@@ -367,8 +390,9 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                 style={{
                   width: "13px",
                   flex: 1,
+                  cursor: "pointer",
                 }}
-                onClick={() => onDiscordRoleRewardRemove(reward)}
+                onClick={() => OnPaymentMethodRewardRemove(reward)}
               />
             </Grid>
           );
