@@ -27,6 +27,7 @@ import WalletConnectPage from "pages/wallet/connect"
 import OnboardingPage from "pages/onboarding"
 import DiscordOrgCallbackPage from "pages/discord/callback/org-connect"
 import DiscordCallbackPage from 'pages/discord/callback'
+import TestPage from 'pages/test'
 
 const router = createBrowserRouter([
 	{
@@ -83,7 +84,11 @@ const router = createBrowserRouter([
 			{
 				path: '/discord/callback',
 				element: <DiscordCallbackPage />
-			}
+			},
+			{
+				path: "/test",
+				element: <TestPage />,
+			  },		
 		]
 	}
 ])
