@@ -73,7 +73,7 @@ export function getNotificationDescription(notification, link) {
       return <>resubmitted {object}</>;
     // ====
     case NOTIFICATION_TYPES.COLLAB_INVITE:
-      return <>invited your org to a {object} </>;
+      return <>invited your project to a {object} </>;
     case NOTIFICATION_TYPES.COLLAB_APPROVE:
       return <>approved a {object} </>;
     case NOTIFICATION_TYPES.COLLAB_DECLINE:

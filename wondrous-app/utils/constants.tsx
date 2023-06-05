@@ -912,7 +912,7 @@ export const TITLES = {
   [TASK_STATUS_TODO]: 'To-do',
   [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
   [TASK_STATUS_IN_REVIEW]: 'In-Review',
-  [TASK_STATUS_DONE]: 'Done',
+  [TASK_STATUS_DONE]: 'Completed',
   // PROPOSALS
   [STATUS_OPEN]: 'Open',
   [STATUS_APPROVED]: 'Approved',
