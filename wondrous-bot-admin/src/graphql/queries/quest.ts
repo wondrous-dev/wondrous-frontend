@@ -126,6 +126,12 @@ export const GET_QUEST_REWARDS = gql`
         discordGuildId
         discordRoleName
       }
+      paymentMethodId
+      amount
+      paymentMethod {
+        name
+        contractAddress
+      }
     }
   }
 `;
