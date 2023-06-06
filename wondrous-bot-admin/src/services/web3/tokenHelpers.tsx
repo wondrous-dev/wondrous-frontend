@@ -139,3 +139,38 @@ export async function batchTransferERC1155(provider, tokenAddress: string, addre
   }
 }
 
+export async function batchTransferERC721(provider, tokenAddress: string, addresses: string[], tokenIds: string[]) {
+  const prov = new ethers.providers.Web3Provider(provider);
+  const signer = prov.getSigner()
+  const batchTransferContractAddress = getMultisendAddress(ContractType.ERC721, 137)
+  const batchTransferContract = new ethers.Contract(batchTransferContractAddress, batchTransferABI, signer);
+  try {
+    // Call the balance function to check the balance
+    const tx = await batchTransferContract.batchTransferERC721(tokenAddress, addresses, tokenIds, { gasLimit: 2000000 });
+    console.log('tx', tx)
+    // Return the balance value
+    return tx;
+  } catch (error) {
+    console.error("Error occurred while checking ERC721 balance:", error);
+    throw error;
+  }
+}
+
+export async function batchTransferERC20(provider, tokenAddress: string, addresses: string[], amounts: string[]) {
+  const prov = new ethers.providers.Web3Provider(provider);
+  const signer = prov.getSigner()
+  const batchTransferContractAddress = getMultisendAddress(ContractType.ERC20, 137)
+  const batchTransferContract = new ethers.Contract(batchTransferContractAddress, batchTransferABI, signer);
+  try {
+    // Call the balance function to check the balance
+    const tx = await batchTransferContract.batchTransferERC20(tokenAddress, addresses, amounts, { gasLimit: 2000000 });
+    console.log('tx', tx)
+    // Return the balance value
+    return tx;
+  } catch (error) {
+    console.error("Error occurred while checking ERC721 balance:", error);
+    throw error;
+  }
+}
+
+
