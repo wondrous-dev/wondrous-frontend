@@ -3,7 +3,7 @@ import WestIcon from "@mui/icons-material/West";
 import TextField from "components/Shared/TextField";
 import { ErrorText, SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 import { CampaignOverviewTitle, RewardHeaderText } from "./styles";
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "components/Shared/Modal";
 import { useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
@@ -83,7 +83,6 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       });
     }
   }, [activeOrg?.id]);
-
   const discordRoleData = getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles || [];
   const discordRoles =
     getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles?.length > 0
@@ -173,12 +172,33 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
           });
           return;
         }
-        onRewardAdd({
-          type: rewardType,
-          paymentMethodId: paymentMethod?.id,
-          paymentMethod,
-          amount: tokenReward?.amount,
+        // check if an existing reward is made with the same payment method - if so just edit
+        let existingReward = false;
+        const newRewards = rewards.map((reward) => {
+          if (reward.paymentMethodId === paymentMethod?.id) {
+            existingReward = true;
+            return {
+              ...reward,
+              amount: Number(tokenReward?.amount) + Number(reward?.amount),
+            };
+          }
+          return reward;
         });
+        if (existingReward) {
+          setQuestSettings((prev) => {
+            return {
+              ...prev,
+              rewards: newRewards,
+            };
+          });
+        } else {
+          onRewardAdd({
+            type: rewardType,
+            paymentMethodId: paymentMethod?.id,
+            paymentMethod,
+            amount: Number(tokenReward?.amount),
+          });
+        }
         setIsRewardModalOpen(false);
       } else if (addPaymentMethod) {
         // Create payment method and then add reward
@@ -243,6 +263,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       }
     }
   };
+
   return (
     <Grid container direction="column" gap="14px" justifyContent="flex-start">
       <Modal
@@ -310,7 +331,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       </Modal>
 
       {rewards?.map((reward, idx) => {
-        if (reward.type === "points") {
+        if (reward?.type === "points") {
           return (
             <Grid display="flex" gap="14px" alignItems="center" key={idx}>
               <RewardHeaderText>Points</RewardHeaderText>
@@ -350,7 +371,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                   width: "auto",
                 }}
                 style={{
-                  maxWidth: "100px",
+                  maxWidth: "150px",
                 }}
                 Box
                 value={reward.amount}
@@ -370,7 +391,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                             amount: value,
                           };
                         }
-                        return reward;
+                        return compareReward;
                       }),
                     };
                   });
@@ -388,9 +409,9 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               />
               <DeleteIcon
                 style={{
-                  width: "13px",
-                  flex: 1,
+                  width: "30px",
                   cursor: "pointer",
+                  flex: 1,
                 }}
                 onClick={() => OnPaymentMethodRewardRemove(reward)}
               />
