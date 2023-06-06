@@ -2,8 +2,14 @@ import { ethers } from "ethers";
 import ERC20ABI from "services/web3/abi/ERC20";
 import ERC721ABI from "services/web3/abi/ERC721";
 import ERC1155ABI from "services/web3/abi/ERC1155";
-
-export async function checkNFTAllowance(provider, contractAddress: string, owner: string, operator: string) {
+import batchTransferABI from "services/web3/abi/batchTransfer";
+import {getMultisendAddress, ContractType} from "services/web3/contractRouter";
+export async function checkNFTAllowance(
+  provider,
+  contractAddress: string,
+  owner: string,
+  operator: string,
+) {
   const prov = new ethers.providers.Web3Provider(provider);
   const signer = prov.getSigner();
 
@@ -115,3 +121,21 @@ export async function setNFTApprovalForAll(provider, contractAddress: string, op
     throw error;
   }
 }
+
+export async function batchTransferERC1155(provider, tokenAddress: string, addresses: string[], tokenIds: string[], amounts: number[]) {
+  const prov = new ethers.providers.Web3Provider(provider);
+  const signer = prov.getSigner()
+  const batchTransferContractAddress = getMultisendAddress(ContractType.ERC1155, 137)
+  const batchTransferContract = new ethers.Contract(batchTransferContractAddress, batchTransferABI, signer);
+  try {
+    // Call the balance function to check the balance
+    const tx = await batchTransferContract.batchTransferERC1155(tokenAddress, addresses, tokenIds, amounts, { gasLimit: 2000000 });
+    console.log('tx', tx)
+    // Return the balance value
+    return tx;
+  } catch (error) {
+    console.error("Error occurred while checking ERC721 balance:", error);
+    throw error;
+  }
+}
+
