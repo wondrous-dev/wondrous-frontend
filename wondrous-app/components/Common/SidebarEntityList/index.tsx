@@ -122,7 +122,7 @@ const getCorrectEntities = ({
 
   const spacesItems = [];
   if (hasSpacesSection) {
-    if (!specialOrg || (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.POD) && !!orgBoard)) {
+    if (orgBoard && (!specialOrg || SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.POD))) {
       spacesItems.push({
         text: 'Pods',
         Icon: PodIcon,
@@ -139,8 +139,8 @@ const getCorrectEntities = ({
       });
     }
     if (
-      !specialOrg ||
-      (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB) && !board?.orgData?.shared && !!orgBoard)
+      orgBoard &&
+      (!specialOrg || (SPECIAL_ORGS[orgId]?.includes(ENTITIES_TYPES.COLLAB) && !board?.orgData?.shared))
     ) {
       spacesItems.push({
         text: 'Collaborations',
