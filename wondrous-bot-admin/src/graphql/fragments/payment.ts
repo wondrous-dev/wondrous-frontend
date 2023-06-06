@@ -15,3 +15,30 @@ export const CmtyPaymentMethodFragment = gql`
     decimal
   }
 `;
+
+export const CmtyPaymentFragment = gql`
+  fragment CmtyPaymentFragment on CmtyPayment {
+    id
+    questTitle
+    questId
+    submissionId
+    level
+    payeeId
+    cmtyUserDisordId
+    discordUsername
+    discordDiscriminator
+    cmtyUserId
+    profilePicture
+    recipientAddress
+    txHash
+    payedAt
+    paymentStatus
+    amount
+    decimal
+    paymentMethodId
+    chain
+    symbol
+    icon
+    tokenName
+  }
+`;

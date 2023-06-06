@@ -27,6 +27,16 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
   const [errors, setErrors] = useState(null);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [addPaymentMethod, setAddPaymentMethod] = useState(true);
+  const [editPaymentMethod, setEditPaymentMethod] = useState({
+    id: null,
+    tokenName: null,
+    contractAddress: null,
+    symbol: null,
+    icon: null,
+    type: null,
+    chain: null,
+    amount: null,
+  });
   const [tokenReward, setTokenReward] = useState({
     tokenName: null,
     contractAddress: null,
@@ -278,6 +288,8 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             addPaymentMethod={addPaymentMethod}
             handleReward={handleReward}
             setAddPaymentMethod={setAddPaymentMethod}
+            editPaymentMethod={editPaymentMethod}
+            setEditPaymentMethod={setEditPaymentMethod}
           />
         }
         footerRight={undefined}
@@ -325,6 +337,8 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             paymentMethods={paymentMethods}
             addPaymentMethod={addPaymentMethod}
             setPaymentMethod={setPaymentMethod}
+            editPaymentMethod={editPaymentMethod}
+            setEditPaymentMethod={setEditPaymentMethod}
             errors={errors}
           />
         </Grid>
@@ -409,9 +423,8 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               />
               <DeleteIcon
                 style={{
-                  width: "30px",
+                  width: "40px",
                   cursor: "pointer",
-                  flex: 1,
                 }}
                 onClick={() => OnPaymentMethodRewardRemove(reward)}
               />

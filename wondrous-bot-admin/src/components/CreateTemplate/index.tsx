@@ -196,7 +196,7 @@ const CreateTemplate = ({
           return {
             type: reward?.type,
             paymentMethodId: reward?.paymentMethodId,
-            amount: reward?.amount,
+            amount: Number(reward?.amount),
           };
         }
       }),

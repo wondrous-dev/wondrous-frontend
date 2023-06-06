@@ -1,6 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import EmptyState from "components/EmptyState";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useContext } from "react";
+import GlobalContext from "utils/context/GlobalContext";
 import { useInView } from "react-intersection-observer";
 import { EMPTY_STATE_TYPES, QUEST_SUBMISSION_STATUS } from "utils/constants";
 import { format } from "date-fns";
@@ -8,6 +9,8 @@ import QuestResultsCard from "./QuestResultsCard";
 import { FilterPill } from "./styles";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { EXPORT_QUEST_SUBMISSIONS } from "graphql/queries";
+import { GET_CMTY_PAYMENT_COUNTS } from "graphql/queries";
+import RedDot from "assets/redDot.svg";
 
 export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, questId }) => {
   const headers = [
@@ -69,11 +72,27 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
 const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fetchMore, hasMore, quest }) => {
   const { ref, inView, entry } = useInView();
   const [exportQuestSubmissionData] = useLazyQuery(EXPORT_QUEST_SUBMISSIONS);
+  const { activeOrg } = useContext(GlobalContext);
+  const [getCmtyPaymentCount, { data: paymentCountData }] = useLazyQuery(GET_CMTY_PAYMENT_COUNTS);
   useEffect(() => {
     if (inView && hasMore) {
       fetchMore();
     }
   }, [inView, hasMore, fetchMore]);
+
+  useEffect(() => {
+    if (activeOrg?.id) {
+      getCmtyPaymentCount({
+        variables: {
+          input: {
+            orgId: activeOrg?.id,
+            questId: quest?.id,
+            paymentStatus: "unpaid",
+          },
+        },
+      });
+    }
+  }, [activeOrg?.id]);
 
   const filters = {
     [QUEST_SUBMISSION_STATUS.IN_REVIEW]: {
@@ -95,7 +114,7 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
     () => Object.values(filters).reduce((acc: Number, next) => (acc += next.value), 0),
     [stats]
   );
-
+  const unpaidPaymentsCount = paymentCountData?.getCmtyPaymentsCountForOrg?.count || 0;
   return (
     <Grid
       display="flex"
@@ -132,6 +151,17 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
         >
           Export submissions to CSV
         </FilterPill>
+        {unpaidPaymentsCount > 0 && (
+          <FilterPill type="button" key="unpaid" $isActive={false} onClick={() => {}}>
+            <img
+              style={{
+                marginRight: "4px",
+              }}
+              src={RedDot}
+            />
+            {unpaidPaymentsCount} Awaiting Reward
+          </FilterPill>
+        )}
       </Grid>
       <Box ref={ref} width="100%" gap="14px" display="flex" alignItems="center" flexDirection="column">
         {submissions?.length ? (
