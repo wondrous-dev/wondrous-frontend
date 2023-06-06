@@ -17,3 +17,21 @@ export const CREATE_CMTY_PAYMENT_METHOD = gql`
     }
   }
 `;
+
+export const UPDATE_CMTY_PAYMENT_METHOD = gql`
+  mutation updateCmtyPaymentMethod($paymentMethodId: ID!, $input: CmtyPaymentMethodInput) {
+    updateCmtyPaymentMethod(paymentMethodId: $paymentMethodId, input: $input) {
+      id
+      orgId
+      contractAddress
+      chain
+      name
+      symbol
+      icon
+      decimal
+      maxPayout
+      notes
+      type
+    }
+  }
+`;

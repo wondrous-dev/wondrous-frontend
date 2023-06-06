@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { CmtyPaymentMethodFragment } from "graphql/fragments/payment";
+import { CmtyPaymentFragment, CmtyPaymentMethodFragment } from "graphql/fragments/payment";
 
 export const GET_CMTY_PAYMENT_METHODS_FOR_ORG = gql`
   query getCmtyPaymentMethodsForOrg($orgId: ID!, $includeDeactivated: Boolean) {
@@ -30,6 +30,23 @@ export const GET_NFT_INFO = gql`
       logoUrl
       name
       symbol
+    }
+  }
+`;
+
+export const GET_UNPAID_CMTY_PAYMENTS_FOR_QUESTS = gql`
+  query getUnpaidCmtyPaymentsForQuests($input: CmtyPaymentQueryInput) {
+    getUnpaidCmtyPaymentsForQuests(input: $input) {
+      ...CmtyPaymentFragment
+    }
+  }
+  ${CmtyPaymentFragment}
+`;
+
+export const GET_CMTY_PAYMENT_COUNTS = gql`
+  query getCmtyPaymentsCountForOrg($input: CmtyPaymentQueryInput) {
+    getCmtyPaymentsCountForOrg(input: $input) {
+      count
     }
   }
 `;

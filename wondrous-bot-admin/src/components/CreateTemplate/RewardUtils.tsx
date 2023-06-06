@@ -1,7 +1,7 @@
 import { Box, ButtonBase, Divider, Grid, Typography } from "@mui/material";
 import WestIcon from "@mui/icons-material/West";
 import TextField from "components/Shared/TextField";
-import { SharedSecondaryButton } from "components/Shared/styles";
+import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 import {
   Label,
   PaymentMethodRowContainer,
@@ -13,7 +13,7 @@ import {
 import SelectComponent from "components/Shared/Select";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import Arbitrum from "assets/arbitrum";
 import Binance from "assets/binance";
 import Ethereum from "assets/ethereum";
@@ -21,6 +21,7 @@ import Avalanche from "assets/avalanche";
 import Optimism from "assets/optimism";
 import Polygon from "assets/polygonMaticLogo.svg";
 import { GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries/payment";
+import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -110,7 +111,7 @@ const CHAIN_SELECT_OPTIONS = [
   },
 ];
 
-export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, index }) => {
+export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPaymentMethod, index }) => {
   return (
     <PaymentMethodRowContainer>
       <PaymentMethodRowHeader>
@@ -166,6 +167,22 @@ export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, index }) => 
       </Box>
       <Divider color="#E8E8E8" />
       <Box justifyContent="flex-end" display="flex" marginTop="16px">
+        <SharedSecondaryButton
+          style={{
+            background: "white",
+            border: "1px solid black",
+            marginRight: "8px",
+          }}
+          onClick={() => {
+            setEditPaymentMethod({
+              ...paymentMethod,
+              tokenName: paymentMethod?.name,
+              type: paymentMethod?.type?.toLowerCase(),
+            });
+          }}
+        >
+          Edit
+        </SharedSecondaryButton>
         <SharedSecondaryButton onClick={() => setPaymentMethod(paymentMethod)}>Add Reward</SharedSecondaryButton>
       </Box>
     </PaymentMethodRowContainer>
@@ -220,6 +237,8 @@ export const RewardMethod = ({
   paymentMethods,
   addPaymentMethod,
   setPaymentMethod,
+  editPaymentMethod,
+  setEditPaymentMethod,
   errors,
 }) => {
   const [getTokenInfo] = useLazyQuery(GET_TOKEN_INFO, {
@@ -288,7 +307,7 @@ export const RewardMethod = ({
     );
   }
   if (rewardType === PAYMENT_OPTIONS.NFT) {
-    if (paymentMethod) {
+    if (paymentMethod && !editPaymentMethod?.id) {
       return (
         <AddExistingPaymentMethod
           paymentMethod={paymentMethod}
@@ -298,39 +317,59 @@ export const RewardMethod = ({
         />
       );
     }
-    if (!addPaymentMethod) {
+    if (!addPaymentMethod && !editPaymentMethod?.id) {
       return (
         <>
           {paymentMethods?.map((paymentMethod, index) => (
-            <PaymentMethodRow paymentMethod={paymentMethod} index={index + 1} setPaymentMethod={setPaymentMethod} />
+            <PaymentMethodRow
+              paymentMethod={paymentMethod}
+              index={index + 1}
+              setPaymentMethod={setPaymentMethod}
+              setEditPaymentMethod={setEditPaymentMethod}
+            />
           ))}
         </>
       );
     }
+
     return (
       <>
         <Label>Chain</Label>
         <SelectComponent
           options={CHAIN_SELECT_OPTIONS}
-          value={tokenReward?.chain}
-          onChange={(value) =>
-            setTokenReward({
-              ...tokenReward,
-              chain: value,
-            })
-          }
+          value={editPaymentMethod?.id ? editPaymentMethod?.chain : tokenReward?.chain}
+          onChange={(value) => {
+            if (editPaymentMethod?.id) {
+              setEditPaymentMethod({
+                ...editPaymentMethod,
+                chain: value,
+              });
+            } else {
+              setTokenReward({
+                ...tokenReward,
+                chain: value,
+              });
+            }
+          }}
           error={errors?.chain}
         />
         <Label>Token type</Label>
         <SelectComponent
           options={REWARD_TYPES}
-          value={tokenReward?.type}
-          onChange={(value) =>
-            setTokenReward({
-              ...tokenReward,
-              type: value,
-            })
-          }
+          value={editPaymentMethod?.id ? editPaymentMethod?.type : tokenReward?.type}
+          onChange={(value) => {
+            if (editPaymentMethod?.id) {
+              setEditPaymentMethod({
+                ...editPaymentMethod,
+                type: value,
+              });
+            } else {
+              setTokenReward({
+                ...tokenReward,
+                type: value,
+              });
+            }
+          }}
           error={errors?.tokenType}
         />
         <Label
@@ -342,12 +381,19 @@ export const RewardMethod = ({
         </Label>
         <TextField
           placeholder="Please paste in the contract address"
-          value={tokenReward?.contractAddress}
+          value={editPaymentMethod?.id ? editPaymentMethod?.contractAddress : tokenReward?.contractAddress}
           onChange={(value) => {
-            setTokenReward({
-              ...tokenReward,
-              contractAddress: value,
-            });
+            if (editPaymentMethod?.id) {
+              setEditPaymentMethod({
+                ...editPaymentMethod,
+                contractAddress: value,
+              });
+            } else {
+              setTokenReward({
+                ...tokenReward,
+                contractAddress: value,
+              });
+            }
           }}
           error={errors?.contractAddress}
           multiline={false}
@@ -361,35 +407,46 @@ export const RewardMethod = ({
         </Label>
         <TextField
           placeholder="Token name"
-          value={tokenReward?.tokenName}
+          value={editPaymentMethod?.id ? editPaymentMethod?.tokenName : tokenReward?.tokenName}
           onChange={(value) => {
-            setTokenReward({
-              ...tokenReward,
-              tokenName: value,
-            });
+            if (editPaymentMethod?.id) {
+              setEditPaymentMethod({
+                ...editPaymentMethod,
+                tokenName: value,
+              });
+            } else {
+              setTokenReward({
+                ...tokenReward,
+                tokenName: value,
+              });
+            }
           }}
           multiline={false}
         />
-        <Label
-          style={{
-            marginTop: "4px",
-          }}
-        >
-          Amount
-        </Label>
-        <TextField
-          placeholder="Please enter the amount of tokens to be rewarded"
-          value={tokenReward?.amount}
-          onChange={(value) =>
-            setTokenReward({
-              ...tokenReward,
-              amount: value,
-            })
-          }
-          multiline={false}
-          error={errors?.tokenAmount}
-          type="number"
-        />
+        {!editPaymentMethod?.id && (
+          <>
+            <Label
+              style={{
+                marginTop: "4px",
+              }}
+            >
+              Amount
+            </Label>
+            <TextField
+              placeholder="Please enter the amount of tokens to be rewarded"
+              value={tokenReward?.amount}
+              onChange={(value) =>
+                setTokenReward({
+                  ...tokenReward,
+                  amount: value,
+                })
+              }
+              multiline={false}
+              error={errors?.tokenAmount}
+              type="number"
+            />
+          </>
+        )}
       </>
     );
   }
@@ -401,7 +458,44 @@ export const RewardFooterLeftComponent = ({
   addPaymentMethod,
   handleReward,
   setAddPaymentMethod,
+  editPaymentMethod,
+  setEditPaymentMethod,
 }) => {
+  const [updateCmtyPaymentMethod] = useMutation(UPDATE_CMTY_PAYMENT_METHOD, {
+    refetchQueries: ["getCmtyPaymentMethodsForOrg"],
+  });
+  if (editPaymentMethod?.id) {
+    return (
+      <SharedSecondaryButton
+        onClick={() => {
+          updateCmtyPaymentMethod({
+            variables: {
+              paymentMethodId: editPaymentMethod?.id,
+              input: {
+                contractAddress: editPaymentMethod?.contractAddress,
+                tokenName: editPaymentMethod?.tokenName,
+                chain: editPaymentMethod?.chain,
+                type: editPaymentMethod?.type.toUpperCase(),
+              },
+            },
+          }).then(() => {
+            setEditPaymentMethod({
+              id: null,
+              tokenName: null,
+              contractAddress: null,
+              symbol: null,
+              icon: null,
+              type: null,
+              chain: null,
+              amount: null,
+            });
+          });
+        }}
+      >
+        Edit payment method
+      </SharedSecondaryButton>
+    );
+  }
   if (addPaymentMethod || paymentMethod) {
     return (
       <>

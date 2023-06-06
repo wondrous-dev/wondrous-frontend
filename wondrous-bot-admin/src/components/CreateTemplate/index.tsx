@@ -194,7 +194,7 @@ const CreateTemplate = ({
           return {
             type: reward?.type,
             paymentMethodId: reward?.paymentMethodId,
-            amount: reward?.amount,
+            amount: Number(reward?.amount),
           };
         }
       }),
@@ -269,7 +269,6 @@ const CreateTemplate = ({
       }, []),
     };
     try {
-      console.log(body, "BODY");
       await questValidator(body);
       if (!questSettings.isActive && !isSaving) {
         return setIsSaving(true);

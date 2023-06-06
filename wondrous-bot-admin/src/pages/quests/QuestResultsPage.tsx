@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import CreateTemplate from "components/CreateTemplate";
 import DeleteQuestButton from "components/DeleteQuestButton";
@@ -7,9 +7,9 @@ import ShareComponent from "components/Share";
 
 import { SharedSecondaryButton } from "components/Shared/styles";
 import ViewQuestResults from "components/ViewQuestResults";
-import { GET_QUEST_BY_ID } from "graphql/queries";
+import { GET_QUEST_BY_ID, GET_CMTY_PAYMENT_COUNTS } from "graphql/queries";
 import moment from "moment";
-import { useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { QUEST_STATUSES } from "utils/constants";
@@ -26,7 +26,6 @@ const QuestResultsPage = () => {
   let { id } = useParams();
   const [title, setTitle] = useState("");
   const handleNavigationToNewQuest = () => navigate("/quests/create");
-
   const headerActionsRef = useRef(null);
 
   const { ref, inView, entry } = useInView({
@@ -39,7 +38,7 @@ const QuestResultsPage = () => {
     variables: {
       questId: id,
     },
-    fetchPolicy: 'network-only',
+    fetchPolicy: "network-only",
     onCompleted: (data) => {
       setTitle(data?.getQuestById?.title);
     },
