@@ -65,8 +65,10 @@ const QuestsPage = () => {
     }
   }
   useEffect(() => {
-    handleFetch()
-  }, [])
+    if(activeOrg?.id) {
+      handleFetch()
+    }
+  }, [activeOrg?.id])
   
   const handleChange = (value) => {
     const variables: any = {
