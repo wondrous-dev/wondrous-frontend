@@ -15,6 +15,7 @@ const CreatePage = () => {
     threshold: 1,
   });
 
+
   const setRefValue = (value) => (headerActionsRef.current = value);
 
   return (
