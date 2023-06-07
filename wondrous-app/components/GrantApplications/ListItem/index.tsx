@@ -79,7 +79,13 @@ const ListItem = ({ item }) => {
               creatorUsername={item?.creator?.username}
               creatorProfilePicture={item?.creator?.profilePicture}
             />
-            <SubmissionItemHeader>{formatDistance(new Date(item?.createdAt), new Date())} ago</SubmissionItemHeader>
+            <SubmissionItemHeader
+              style={{
+                color: 'white !important',
+              }}
+            >
+              {formatDistance(new Date(item?.createdAt), new Date())} ago
+            </SubmissionItemHeader>
           </SubmissionItemHeaderContent>
           <Grid display="flex" gap="12px" alignItems="center">
             {canEdit && (
