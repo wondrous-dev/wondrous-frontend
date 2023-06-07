@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
-import { useContext, useMemo, useState } from "react";
+import { createRef, useContext, useMemo, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
@@ -60,6 +60,8 @@ const CreateTemplate = ({
   const { activeOrg } = useContext(GlobalContext);
 
   const [steps, setSteps] = useState(defaultQuestSteps);
+  const refs = useRef([]);
+
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState(defaultQuestSettings);
   const handleAdd = (type) => {
@@ -262,20 +264,32 @@ const CreateTemplate = ({
       }, []),
     };
     try {
-      console.log(body, "BODY");
       await questValidator(body);
       if (!questSettings.isActive && !isSaving) {
         return setIsSaving(true);
       }
       handleMutation({ body });
     } catch (err) {
-      const errors = {};
+      const errors: any = {};
+
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
           console.log(error.path, "ERR PATH");
           const path = getPathArray(error.path);
           set(errors, path, error.message);
         });
+        // this is a hacky way to scroll to the title
+        if (errors?.title) {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        } else {
+          const stepsFirstErrorIndex = errors?.steps?.findIndex((err) => !!err);
+          if (stepsFirstErrorIndex !== -1) {
+            refs?.current[stepsFirstErrorIndex]?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
         setErrors(errors);
         setIsSaving(false);
       } else console.log(err, "Error outside of validation service");
@@ -367,7 +381,7 @@ const CreateTemplate = ({
             alignItems="center"
             width="100%"
           >
-            <AddFormEntity steps={steps} setSteps={setSteps} handleRemove={handleRemove} />
+            <AddFormEntity steps={steps} setSteps={setSteps} handleRemove={handleRemove} refs={refs} />
             <Panel
               display="flex"
               justifyContent="center"
