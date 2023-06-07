@@ -129,3 +129,25 @@ export const GET_QUEST_REWARDS = gql`
     }
   }
 `;
+
+export const EXPORT_QUEST_SUBMISSIONS = gql`
+  query exportQuestSubmissions($questId: ID!) {
+    exportQuestSubmissions(questId: $questId) {
+      createdAt
+      orgId
+      approvedAt
+      rejectedAt
+      reviewedBy
+      creator {
+        discordUsername
+        discordDiscriminator
+        web3Address
+        twitterInfo {
+          twitterUsername
+        }
+        level
+        point
+      }
+    }
+  }
+`;
