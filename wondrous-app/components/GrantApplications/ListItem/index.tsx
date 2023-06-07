@@ -81,7 +81,7 @@ const ListItem = ({ item }) => {
             />
             <SubmissionItemHeader
               style={{
-                color: 'white',
+                color: 'white !important',
               }}
             >
               {formatDistance(new Date(item?.createdAt), new Date())} ago
