@@ -73,3 +73,12 @@ export const ATTACH_QUEST_STEPS_MEDIA = gql`
     attachQuestStepsMedia(questId: $questId, stepsData: $stepsData) 
   }
 `;
+
+export const START_PREVIEW_QUEST = gql`
+  mutation startPreviewQuest($questId: ID!) {
+    startPreviewQuest(questId: $questId) {
+      channelId
+      guildId
+    }
+  }
+`;
