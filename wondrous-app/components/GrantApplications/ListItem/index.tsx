@@ -81,10 +81,12 @@ const ListItem = ({ item }) => {
             />
             <SubmissionItemHeader
               style={{
-                color: 'white !important',
+                color: palette.white,
               }}
             >
-              {formatDistance(new Date(item?.createdAt), new Date())} ago
+              <span style={{color: palette.white}}>
+                {formatDistance(new Date(item?.createdAt), new Date())} ago
+              </span>
             </SubmissionItemHeader>
           </SubmissionItemHeaderContent>
           <Grid display="flex" gap="12px" alignItems="center">
