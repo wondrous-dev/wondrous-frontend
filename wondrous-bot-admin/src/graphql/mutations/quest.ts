@@ -73,3 +73,20 @@ export const ATTACH_QUEST_STEPS_MEDIA = gql`
     attachQuestStepsMedia(questId: $questId, stepsData: $stepsData) 
   }
 `;
+
+export const START_QUEST = gql`
+  mutation startQuest($questId: ID!) {
+    startQuest(questId: $questId) {
+      channelLink
+      error
+    }
+  }
+`;
+
+export const CONNECT_CMTY_USER = gql`
+  mutation connectCmtyUser($code: String!, $questId: ID!) {
+    connectCmtyUser(code: $code, questId: $questId) {
+      token
+    }
+  }
+`;

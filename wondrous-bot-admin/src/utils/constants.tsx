@@ -92,6 +92,8 @@ export const PAGES_WITHOUT_HEADER = [
   "/twitter/callback",
   "/wallet/connect",
   "/discord/callback",
+  "/quests/view/:id",
+  "/discord/callback/cmty-user-connect"
 ];
 
 export const BG_TYPES = {
@@ -100,6 +102,7 @@ export const BG_TYPES = {
   MEMBERS: "members",
   LEVELS: "levels",
   QUESTS: "quests",
+  VIEW_QUESTS: 'view_quests'
 };
 
 export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
@@ -269,3 +272,5 @@ export const SKILLS = {
   agile_methodologies: "Agile Methodologies",
   other: "Other",
 };
+
+export const EXCLUDED_PATHS = ["/login", "/discord/callback", "/twitter/callback", '/discord/callback/cmty-user-connect', '/quests/view/:id'];
