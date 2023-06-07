@@ -731,7 +731,6 @@ export const SubmissionItemHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   ${StatusWrapper} {
     white-space: nowrap;
   }
