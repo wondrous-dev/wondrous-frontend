@@ -273,16 +273,23 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
           });
       }
     } else if (rewardType === PAYMENT_OPTIONS.POAP) {
-      if (!poapEventId) {
+      if (!poapReward?.id) {
         setErrors({
           ...errors,
           poapEventId: "Please enter the POAP event ID",
         });
         return;
       }
+      if (!poapReward?.name) {
+        setErrors({
+          ...errors,
+          poapEventId: "Please enter a valid POAP event ID",
+        });
+        return;
+      }
       onRewardAdd({
         type: rewardType,
-        poapEventId,
+        poapRewardData: poapReward,
       });
       setIsRewardModalOpen(false);
     }
