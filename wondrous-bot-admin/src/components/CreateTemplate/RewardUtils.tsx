@@ -27,6 +27,7 @@ export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
   NFT: "nft",
   TOKEN: "token",
+  POAP: "poap",
 };
 
 const REWARD_TYPES = [
@@ -240,6 +241,8 @@ export const RewardMethod = ({
   editPaymentMethod,
   setEditPaymentMethod,
   errors,
+  poapEventId,
+  setPoapEventId,
 }) => {
   const [getTokenInfo] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
@@ -302,6 +305,20 @@ export const RewardMethod = ({
           options={componentsOptions}
           value={discordRoleReward}
           onChange={(value) => setDiscordRoleReward(value)}
+        />
+      </>
+    );
+  }
+  if (rewardType === PAYMENT_OPTIONS.POAP) {
+    return (
+      <>
+        <Label>Poap event ID</Label>
+        <TextField
+          placeholder="Please enter your POAP event ID"
+          value={poapEventId}
+          onChange={(value) => setPoapEventId(value)}
+          multiline={false}
+          error={errors?.poapEventId}
         />
       </>
     );
@@ -453,6 +470,7 @@ export const RewardMethod = ({
 };
 
 export const RewardFooterLeftComponent = ({
+  rewardType,
   paymentMethod,
   setPaymentMethod,
   addPaymentMethod,
@@ -496,7 +514,12 @@ export const RewardFooterLeftComponent = ({
       </SharedSecondaryButton>
     );
   }
-  if (addPaymentMethod || paymentMethod) {
+  if (
+    addPaymentMethod ||
+    paymentMethod ||
+    rewardType === PAYMENT_OPTIONS.POAP ||
+    rewardType === PAYMENT_OPTIONS.DISCORD_ROLE
+  ) {
     return (
       <>
         <ButtonBase onClick={() => (paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false))}>

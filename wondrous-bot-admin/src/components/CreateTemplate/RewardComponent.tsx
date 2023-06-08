@@ -47,6 +47,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     amount: null,
   });
 
+  const [poapEventId, setPoapEventId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
 
   const { activeOrg } = useContext(GlobalContext);
@@ -271,6 +272,19 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             });
           });
       }
+    } else if (rewardType === PAYMENT_OPTIONS.POAP) {
+      if (!poapEventId) {
+        setErrors({
+          ...errors,
+          poapEventId: "Please enter the POAP event ID",
+        });
+        return;
+      }
+      onRewardAdd({
+        type: rewardType,
+        poapEventId,
+      });
+      setIsRewardModalOpen(false);
     }
   };
 
@@ -283,6 +297,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         maxWidth={800}
         footerLeft={
           <RewardFooterLeftComponent
+            rewardType={rewardType}
             paymentMethod={paymentMethod}
             setPaymentMethod={setPaymentMethod}
             addPaymentMethod={addPaymentMethod}
@@ -310,11 +325,20 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               style={{
                 flex: 1,
               }}
+              background={PAYMENT_OPTIONS.POAP === rewardType ? "#BFB4F3" : "#FFFFF"}
+              onClick={() => setRewardType(PAYMENT_OPTIONS.POAP)}
+            >
+              POAP
+            </SharedBlackOutlineButton>
+            {/* <SharedBlackOutlineButton
+              style={{
+                flex: 1,
+              }}
               background={PAYMENT_OPTIONS.NFT === rewardType ? "#BFB4F3" : "#FFFFF"}
               onClick={() => setRewardType(PAYMENT_OPTIONS.NFT)}
             >
               Token reward
-            </SharedBlackOutlineButton>
+            </SharedBlackOutlineButton> */}
             {/* <SharedBlackOutlineButton
               style={{
                 flex: 1,
@@ -340,6 +364,8 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             editPaymentMethod={editPaymentMethod}
             setEditPaymentMethod={setEditPaymentMethod}
             errors={errors}
+            poapEventId={poapEventId}
+            setPoapEventId={setPoapEventId}
           />
         </Grid>
       </Modal>
