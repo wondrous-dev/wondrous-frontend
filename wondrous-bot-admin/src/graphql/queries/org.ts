@@ -25,6 +25,9 @@ export const GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL = gql`
 			createdAt
 			orgId
 			guildId
+			guildInfo {
+				guildName
+			}
 		}
 	}
 `

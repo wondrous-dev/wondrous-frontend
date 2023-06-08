@@ -8,15 +8,18 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import { START_QUEST } from "graphql/mutations";
 import { GET_QUEST_REWARDS } from "graphql/queries";
 import { useMemo } from "react";
-import { BG_TYPES } from "utils/constants";
+import { BG_TYPES, ERRORS_LABELS } from "utils/constants";
 import { getDiscordUrl } from "utils/discord";
 import useAlerts from "utils/hooks";
 import { ImageComponent, StyledLink, TextLabel } from "./styles";
 
 const ViewQuest = ({ quest, loading }) => {
-  const questId = quest?.id;
+  const params = {
+    questId: quest?.id,
+    orgId: quest?.org?.id,
+  }
 
-  const discordAuthUrl = getDiscordUrl("/discord/callback/cmty-user-connect", `&state=${encodeURIComponent(questId)}`);
+  const discordAuthUrl = getDiscordUrl("/discord/callback/cmty-user-connect", `&state=${encodeURIComponent(JSON.stringify(params))}`);
 
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const cmtyUserToken = localStorage.getItem("cmtyUserToken");
@@ -57,7 +60,12 @@ const ViewQuest = ({ quest, loading }) => {
         window.open(startQuest?.channelLink, "_blank");
       }
       if (startQuest?.error) {
-        setSnackbarAlertMessage(startQuest?.error || "We couldn't start the quest, please try again later");
+        let label = ERRORS_LABELS[startQuest?.error];
+
+        if(startQuest?.error === "discord_user_not_in_guild") {
+          label = ERRORS_LABELS.discord_user_not_in_guild_on_quest_start;
+        }
+        setSnackbarAlertMessage(label || "We couldn't start the quest, please try again later");
         setSnackbarAlertOpen(true);
         localStorage.removeItem("cmtyUserToken");
       }
