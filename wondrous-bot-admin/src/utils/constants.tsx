@@ -156,6 +156,11 @@ export const ERRORS = {
 export const ERRORS_LABELS = {
   [ERRORS.MIN_OPTION_LENGTH]: "You need at least one option.",
   [ERRORS.MAX_OPTION_LENGTH]: "You have too many options",
+  item_deleted_error: 'Item has been deleted',
+  quest_archived: 'Quest has been archived',
+  invalid_discord_auth_code: 'Invalid discord code. Please try again',
+  guild_not_found: 'Guild not found',
+  discord_user_not_in_guild: 'Discord user not in guild',
 };
 
 export const DAO_CATEGORIES_KEYS = {

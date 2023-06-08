@@ -1,10 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_QUEST_BY_ID } from "graphql/queries";
 import ViewQuest from "components/ViewQuest";
 
 const ViewQuestPage = () => {
-  let { id } = useParams();
+  let { id, ...rest } = useParams();
+  const [searchParams] = useSearchParams();
   const { data: { getQuestById } = {}, loading } = useQuery(GET_QUEST_BY_ID, {
     variables: {
       questId: id,

@@ -1,8 +1,10 @@
 import { useMutation } from "@apollo/client";
 import PageSpinner from "components/PageSpinner";
+import { GraphQLErrorExtensions } from "graphql";
 import { CONNECT_CMTY_USER } from "graphql/mutations";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { ERRORS_LABELS } from "utils/constants";
 import useAlerts from "utils/hooks";
 
 const DiscordCallbackCmtyUserConnect = () => {
@@ -23,9 +25,10 @@ const DiscordCallbackCmtyUserConnect = () => {
     },
     onError: (err) => {
       const message = err?.graphQLErrors[0]?.extensions?.message;
-      setSnackbarAlertMessage(message || "Something went wrong, please try again later");
+      const label = typeof message === 'string' ? ERRORS_LABELS[message] : null;
+      setSnackbarAlertMessage(label || "Something went wrong, please try again later");
       setSnackbarAlertOpen(true);
-      console.log("error", err.message);
+      navigate(`/quests/view/${questId}?error=true&message=${message}`);
     },
   });
 

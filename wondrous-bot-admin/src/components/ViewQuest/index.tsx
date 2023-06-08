@@ -59,6 +59,7 @@ const ViewQuest = ({ quest, loading }) => {
       if (startQuest?.error) {
         setSnackbarAlertMessage(startQuest?.error || "We couldn't start the quest, please try again later");
         setSnackbarAlertOpen(true);
+        localStorage.removeItem("cmtyUserToken");
       }
     },
   });
