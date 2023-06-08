@@ -26,7 +26,7 @@ export const Label = styled(Typography)`
   && {
     font-family: Poppins;
     font-style: normal;
-    font-weight: 700;
+    font-weight: ${({ fontWeight = 700 }) => fontWeight};
     font-size: 14px;
     line-height: 15px;
     min-width: 150px;
@@ -59,7 +59,7 @@ export const TitleInput = styled(TextareaAutosize)`
     }
     ${({ theme }) => theme.breakpoints.down("sm")} {
       min-width: 300px;
-    };
+    }
 
     letter-spacing: -0.0375em;
     &:placeholder {

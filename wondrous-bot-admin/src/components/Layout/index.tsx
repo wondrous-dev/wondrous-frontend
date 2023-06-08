@@ -62,6 +62,7 @@ const Layout = () => {
     setActiveOrg(org);
   };
 
+  const navigate = useNavigate();
   const { data: userOrgs, loading } = useQuery(
     GET_LOGGED_IN_USER_FULL_ACCESS_ORGS,
     {
@@ -72,6 +73,10 @@ const Layout = () => {
         cmtyEnabled: true,
       },
       onCompleted: ({ getLoggedInUserFullAccessOrgs }) => {
+        if(getLoggedInUserFullAccessOrgs.length === 0) {
+          navigate('/onboarding/welcome');
+          return;
+        };
         if (defaultActiveOrgId) {
           const org = getLoggedInUserFullAccessOrgs.find(
             (org) => org.id === defaultActiveOrgId

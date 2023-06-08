@@ -14,7 +14,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 
 const MyContext = React.createContext(null);
-export const EXCLUDED_PATHS = ["/login", "/discord/callback", "/twitter/callback"];
+export const EXCLUDED_PATHS = ["/login", "/discord/callback", "/twitter/callback", "/signup"];
 
 export const useMe = () => useContext(MyContext);
 
@@ -315,7 +315,7 @@ export const withAuth = (Component, noCache = false) => {
       return <Component {...props} />;
     }
     const user = data?.getLoggedinUser;
-    if (user && !user?.username) {
+    if (user && !user?.id && location.pathname !== "/onboarding/welcome") {
       navigate("/");
     }
     return (

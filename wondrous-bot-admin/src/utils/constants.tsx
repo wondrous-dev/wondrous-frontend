@@ -92,6 +92,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/twitter/callback",
   "/wallet/connect",
   "/discord/callback",
+  "/onboarding/welcome",
 ];
 
 export const BG_TYPES = {
