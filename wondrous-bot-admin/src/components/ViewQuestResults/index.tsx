@@ -191,9 +191,9 @@ const ViewQuestResults = ({ quest }) => {
       type: "text",
     },
     {
-      label: 'Onboarding Quest',
-      value: quest?.isOnboarding ? 'Yes' : 'No',
-      type: 'text',
+      label: "Onboarding Quest",
+      value: quest?.isOnboarding ? "Yes" : "No",
+      type: "text",
     },
     {
       label: "Rewards",
@@ -262,6 +262,7 @@ const ViewQuestResults = ({ quest }) => {
             filter={filter}
             fetchMore={handleFetchMore}
             hasMore={hasMore}
+            quest={quest}
           />
         </Grid>
       </Grid>
