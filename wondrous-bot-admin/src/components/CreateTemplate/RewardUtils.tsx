@@ -22,6 +22,7 @@ import Optimism from "assets/optimism";
 import Polygon from "assets/polygonMaticLogo.svg";
 import { GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries/payment";
 import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
+import { GET_POAP_EVENT } from "graphql/queries";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -240,10 +241,12 @@ export const RewardMethod = ({
   setPaymentMethod,
   editPaymentMethod,
   setEditPaymentMethod,
+  setErrors,
   errors,
-  poapEventId,
-  setPoapEventId,
+  poapReward,
+  setPoapReward,
 }) => {
+  const [getPoapEventInfo] = useLazyQuery(GET_POAP_EVENT);
   const [getTokenInfo] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
       setTokenReward({
@@ -315,11 +318,50 @@ export const RewardMethod = ({
         <Label>Poap event ID</Label>
         <TextField
           placeholder="Please enter your POAP event ID"
-          value={poapEventId}
-          onChange={(value) => setPoapEventId(value)}
+          value={poapReward?.id}
+          onChange={(value) => {
+            console.log("what the");
+            setPoapReward({
+              ...poapReward,
+              id: value,
+            });
+          }}
           multiline={false}
           error={errors?.poapEventId}
+          onBlur={() => {
+            console.log("poap", poapReward?.id);
+            if (poapReward?.id) {
+              console.log("poap 2", poapReward?.id);
+              getPoapEventInfo({
+                variables: {
+                  eventId: poapReward?.id,
+                },
+              })
+                .then((res) => {
+                  if (res?.data?.getQuestRewardPoapEvent) {
+                    setPoapReward(res?.data?.getQuestRewardPoapEvent);
+                  } else {
+                    setErrors({
+                      ...errors,
+                      poapEventId: "Invalid poap event - please use the right event ID",
+                    });
+                  }
+                })
+                .catch((err) => {
+                  setErrors({
+                    ...errors,
+                    poapEventId: "Invalid poap event - please use the right event ID",
+                  });
+                });
+            }
+          }}
         />
+        <Label>Poap name</Label>
+        <TextField placeholder="Poap name" value={poapReward?.name} multiline={false} disabled={true} />
+        <Label>Poap description</Label>
+        <TextField placeholder="Poap description" value={poapReward?.description} multiline={false} disabled={true} />
+        <Label>Poap event ID</Label>
+        <TextField placeholder="Poap event url" value={poapReward?.eventUrl} disabled={true} multiline={false} />
       </>
     );
   }

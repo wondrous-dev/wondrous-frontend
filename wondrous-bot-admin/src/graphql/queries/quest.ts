@@ -157,3 +157,17 @@ export const EXPORT_QUEST_SUBMISSIONS = gql`
     }
   }
 `;
+
+export const GET_POAP_EVENT = gql`
+  query getQuestRewardPoapEvent($eventId: ID!) {
+    getQuestRewardPoapEvent(eventId: $eventId) {
+      id
+      name
+      description
+      endDate
+      eventUrl
+      imageUrl
+      expiryDate
+    }
+  }
+`;

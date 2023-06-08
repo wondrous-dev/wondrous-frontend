@@ -47,7 +47,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     amount: null,
   });
 
-  const [poapEventId, setPoapEventId] = useState(null);
+  const [poapReward, setPoapReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
 
   const { activeOrg } = useContext(GlobalContext);
@@ -364,8 +364,9 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             editPaymentMethod={editPaymentMethod}
             setEditPaymentMethod={setEditPaymentMethod}
             errors={errors}
-            poapEventId={poapEventId}
-            setPoapEventId={setPoapEventId}
+            setErrors={setErrors}
+            poapReward={poapReward}
+            setPoapReward={setPoapReward}
           />
         </Grid>
       </Modal>
