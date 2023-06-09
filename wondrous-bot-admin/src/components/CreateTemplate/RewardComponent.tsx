@@ -2,7 +2,7 @@ import { Box, ButtonBase, Divider, Grid, Typography } from "@mui/material";
 import WestIcon from "@mui/icons-material/West";
 import TextField from "components/Shared/TextField";
 import { ErrorText, SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
-import { CampaignOverviewTitle, RewardHeaderText } from "./styles";
+import { CampaignOverviewTitle, PoapImage, RewardHeaderText } from "./styles";
 import React, { useState } from "react";
 import Modal from "components/Shared/Modal";
 import { useContext } from "react";
@@ -147,6 +147,21 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       const newRewards = prev.rewards.filter((r) => {
         if (r.type === PAYMENT_OPTIONS.NFT || r.type === PAYMENT_OPTIONS.TOKEN) {
           return r.paymentMethodId !== reward.paymentMethodId;
+        }
+        return true;
+      });
+      return {
+        ...prev,
+        rewards: newRewards,
+      };
+    });
+  };
+
+  const OnPoapRewardRemove = (reward) => {
+    setQuestSettings((prev) => {
+      const newRewards = prev.rewards.filter((r) => {
+        if (r.type === PAYMENT_OPTIONS.POAP) {
+          return r.id !== reward.id;
         }
         return true;
       });
@@ -407,6 +422,26 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                   cursor: "pointer",
                 }}
                 onClick={() => onDiscordRoleRewardRemove(reward)}
+              />
+            </Grid>
+          );
+        } else if (reward.type === PAYMENT_OPTIONS.POAP) {
+          return (
+            <Grid display="flex" gap="14px" alignItems="center" key={idx} maxWidth="100%">
+              <RewardHeaderText>Poap</RewardHeaderText>
+              <PoapImage src={reward?.poapRewardData?.imageUrl} />
+              <RewardHeaderText>{reward?.poapRewardData?.name}</RewardHeaderText>
+              <div
+                style={{
+                  flex: 1,
+                }}
+              />
+              <DeleteIcon
+                style={{
+                  width: "40px",
+                  cursor: "pointer",
+                }}
+                onClick={() => OnPoapRewardRemove(reward)}
               />
             </Grid>
           );

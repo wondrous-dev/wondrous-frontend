@@ -126,6 +126,16 @@ export const GET_QUEST_REWARDS = gql`
         discordGuildId
         discordRoleName
       }
+      poapRewardData {
+        id
+        name
+        description
+        startDate
+        endDate
+        eventUrl
+        imageUrl
+        expiryDate
+      }
       paymentMethodId
       amount
       paymentMethod {

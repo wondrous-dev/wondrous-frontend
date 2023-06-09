@@ -198,6 +198,11 @@ const CreateTemplate = ({
             paymentMethodId: reward?.paymentMethodId,
             amount: Number(reward?.amount),
           };
+        } else if (reward?.type === PAYMENT_OPTIONS.POAP) {
+          return {
+            type: reward?.type,
+            poapRewardData: reward?.poapRewardData,
+          };
         }
       }),
       steps: steps.reduce((acc, next, index) => {

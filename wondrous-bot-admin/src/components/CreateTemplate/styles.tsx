@@ -115,7 +115,7 @@ export const PaymentRowContentText = styled(PaymentMethodSecondRowHeader)`
 
 export const RewardHeaderText = styled(Typography)`
   && {
-    font: Poppins;
+    font-family: Poppins;
     font-style: normal;
     font-weight: 600;
     font-size: 13px;
@@ -123,4 +123,10 @@ export const RewardHeaderText = styled(Typography)`
     color: #626262;
     white-space: nowrap;
   }
+`;
+
+export const PoapImage = styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
 `;

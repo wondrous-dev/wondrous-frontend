@@ -9,6 +9,7 @@ import {
   PaymentMethodSecondRowHeader,
   PaymentRowContentBox,
   PaymentRowContentText,
+  PoapImage,
 } from "./styles";
 import SelectComponent from "components/Shared/Select";
 import { useState } from "react";
@@ -320,7 +321,6 @@ export const RewardMethod = ({
           placeholder="Please enter your POAP event ID"
           value={poapReward?.id}
           onChange={(value) => {
-            console.log("what the");
             setPoapReward({
               ...poapReward,
               id: value,
@@ -329,17 +329,25 @@ export const RewardMethod = ({
           multiline={false}
           error={errors?.poapEventId}
           onBlur={() => {
-            console.log("poap", poapReward?.id);
             if (poapReward?.id) {
-              console.log("poap 2", poapReward?.id);
               getPoapEventInfo({
                 variables: {
                   eventId: poapReward?.id,
                 },
               })
                 .then((res) => {
-                  if (res?.data?.getQuestRewardPoapEvent) {
-                    setPoapReward(res?.data?.getQuestRewardPoapEvent);
+                  const poapEvent = res?.data?.getQuestRewardPoapEvent;
+                  if (poapEvent) {
+                    setPoapReward({
+                      id: poapEvent?.id,
+                      name: poapEvent?.name,
+                      description: poapEvent?.description,
+                      startDate: poapEvent?.startDate,
+                      endDate: poapEvent?.endDate,
+                      eventUrl: poapEvent?.eventUrl,
+                      imageUrl: poapEvent?.imageUrl,
+                      expiryDate: poapEvent?.expiryDate,
+                    });
                   } else {
                     setErrors({
                       ...errors,
@@ -360,8 +368,18 @@ export const RewardMethod = ({
         <TextField placeholder="Poap name" value={poapReward?.name} multiline={false} disabled={true} />
         <Label>Poap description</Label>
         <TextField placeholder="Poap description" value={poapReward?.description} multiline={false} disabled={true} />
-        <Label>Poap event ID</Label>
-        <TextField placeholder="Poap event url" value={poapReward?.eventUrl} disabled={true} multiline={false} />
+        {poapReward?.imageUrl && (
+          <>
+            <Label>Poap badge</Label>
+            <PoapImage src={poapReward?.imageUrl} />
+          </>
+        )}
+        {poapReward?.eventUrl && (
+          <>
+            <Label>Poap event url</Label>
+            <TextField placeholder="Poap event url" value={poapReward?.eventUrl} disabled={true} multiline={false} />
+          </>
+        )}
       </>
     );
   }
