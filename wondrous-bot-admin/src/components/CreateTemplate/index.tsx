@@ -199,9 +199,10 @@ const CreateTemplate = ({
             amount: Number(reward?.amount),
           };
         } else if (reward?.type === PAYMENT_OPTIONS.POAP) {
+          const { __typename, ...rewardData } = reward?.poapRewardData;
           return {
             type: reward?.type,
-            poapRewardData: reward?.poapRewardData,
+            poapRewardData: rewardData,
           };
         }
       }),

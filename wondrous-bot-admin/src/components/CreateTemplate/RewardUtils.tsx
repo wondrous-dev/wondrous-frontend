@@ -365,9 +365,21 @@ export const RewardMethod = ({
           }}
         />
         <Label>Poap name</Label>
-        <TextField placeholder="Poap name" value={poapReward?.name} multiline={false} disabled={true} />
+        <TextField
+          onChange={() => {}}
+          placeholder="Poap name"
+          value={poapReward?.name}
+          multiline={false}
+          disabled={true}
+        />
         <Label>Poap description</Label>
-        <TextField placeholder="Poap description" value={poapReward?.description} multiline={false} disabled={true} />
+        <TextField
+          onChange={() => {}}
+          placeholder="Poap description"
+          value={poapReward?.description}
+          multiline={false}
+          disabled={true}
+        />
         {poapReward?.imageUrl && (
           <>
             <Label>Poap badge</Label>
@@ -377,7 +389,13 @@ export const RewardMethod = ({
         {poapReward?.eventUrl && (
           <>
             <Label>Poap event url</Label>
-            <TextField placeholder="Poap event url" value={poapReward?.eventUrl} disabled={true} multiline={false} />
+            <TextField
+              onChange={() => {}}
+              placeholder="Poap event url"
+              value={poapReward?.eventUrl}
+              disabled={true}
+              multiline={false}
+            />
           </>
         )}
       </>
