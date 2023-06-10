@@ -85,7 +85,7 @@ const COMPONENT_OPTIONS = [
   },
 ];
 
-const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
+const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const handleDragEnd = (result) => {
     if (!result.destination) return;
@@ -221,6 +221,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
                 const Component = CONFIG_COMPONENTS[item.type];
                 if (!Component) return null;
                 return (
+                  <Box width="100%" height="100%" ref={(ref) => refs.current[idx] = ref}>
                   <Draggable key={idx} draggableId={`${idx}`} index={idx}>
                     {(provided, snapshot) => (
                       <Grid
@@ -299,6 +300,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
                       </Grid>
                     )}
                   </Draggable>
+                  </Box>
                 );
               })}
             </Grid>

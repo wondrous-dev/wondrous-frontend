@@ -90,3 +90,12 @@ export const CONNECT_CMTY_USER = gql`
     }
   }
 `;
+
+export const START_PREVIEW_QUEST = gql`
+  mutation startPreviewQuest($questId: ID!) {
+    startPreviewQuest(questId: $questId) {
+      channelId
+      guildId
+    }
+  }
+`;

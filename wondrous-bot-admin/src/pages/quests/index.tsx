@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { Box } from "@mui/material";
 import PageHeader from "components/PageHeader";
 import QuestsList from "components/QuestsList";
@@ -38,17 +38,38 @@ const QuestsPage = () => {
 
   const { activeOrg } = useContext(GlobalContext);
 
-  const { data, refetch } = useQuery(GET_QUESTS_FOR_ORG, {
+  const [getQuestsForOrg, {data, refetch}] = useLazyQuery(GET_QUESTS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
-    variables: {
-      input: {
-        orgId: activeOrg?.id,
-        limit: 1000,
-        status: QUEST_STATUSES.OPEN,
-      },
-    },
   });
 
+  const handleFetch = async () => {
+    const {data} = await getQuestsForOrg({
+      variables: {
+        input: {
+          orgId: activeOrg?.id,
+          limit: 1000,
+          status: QUEST_STATUSES.OPEN,
+        }
+      }
+    })
+    if(!data?.getQuestsForOrg?.length) {
+      const variables: any = {
+        input: {
+          orgId: activeOrg?.id,
+          limit: 1000,
+          status: null
+        },
+      };
+      setStatuses(null);
+      refetch(variables);
+    }
+  }
+  useEffect(() => {
+    if(activeOrg?.id) {
+      handleFetch()
+    }
+  }, [activeOrg?.id])
+  
   const handleChange = (value) => {
     const variables: any = {
       input: {

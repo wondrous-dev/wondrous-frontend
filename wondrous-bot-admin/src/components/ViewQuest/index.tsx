@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Box, CircularProgress, Divider, Grid } from "@mui/material";
 import { DiscordRoleIcon, PointsIcon } from "components/Icons/Rewards";
 import PageSpinner from "components/PageSpinner";
@@ -7,7 +7,7 @@ import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { START_QUEST } from "graphql/mutations";
 import { GET_QUEST_REWARDS } from "graphql/queries";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { BG_TYPES, ERRORS_LABELS } from "utils/constants";
 import { getDiscordUrl } from "utils/discord";
 import useAlerts from "utils/hooks";
@@ -24,12 +24,19 @@ const ViewQuest = ({ quest, loading }) => {
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const cmtyUserToken = localStorage.getItem("cmtyUserToken");
   const isDiscordConnected = !!cmtyUserToken;
-  const { data: questRewardsData } = useQuery(GET_QUEST_REWARDS, {
-    variables: {
-      questId: quest?.id,
-      skip: !quest?.id,
-    },
-  });
+  const [getQuestRewards, {data: questRewardsData}] = useLazyQuery(GET_QUEST_REWARDS);
+
+
+  useEffect(() => {
+    if(quest?.id) {
+      getQuestRewards({
+        variables: {
+          questId: quest?.id
+        }
+      });
+    }
+  }, [quest?.id])
+
   const rewards = useMemo(() => {
     let roles = [
       {
