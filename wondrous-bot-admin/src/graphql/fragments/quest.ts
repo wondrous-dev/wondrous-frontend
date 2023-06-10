@@ -44,6 +44,12 @@ export const QuestFragment = gql`
       approved
       rejected
     }
+    org {
+      id
+      name
+      username
+      profilePicture
+    }
     pointReward
     conditionLogic
     conditions {

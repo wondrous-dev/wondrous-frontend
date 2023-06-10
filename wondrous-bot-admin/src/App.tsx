@@ -28,6 +28,8 @@ import OnboardingPage from "pages/onboarding"
 import DiscordOrgCallbackPage from "pages/discord/callback/org-connect"
 import DiscordCallbackPage from 'pages/discord/callback'
 import TestPage from 'pages/test'
+import ViewQuest from "pages/quests/ViewQuest"
+import DiscordCallbackCmtyUserConnect from "pages/discord/callback/cmty-user-connect"
 
 const router = createBrowserRouter([
 	{
@@ -47,7 +49,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/",
-				element: <Home />
+				element: <Home />,
 			},
 			{
 				path: "/quests",
@@ -60,6 +62,10 @@ const router = createBrowserRouter([
 			{
 				path: "/quests/create",
 				element: <CreatePage />
+			},
+			{
+				path: "/quests/view/:id",
+				element: <ViewQuest />,
 			},
 			{
 				path: "/members",
@@ -88,7 +94,11 @@ const router = createBrowserRouter([
 			{
 				path: "/test",
 				element: <TestPage />,
-			  },		
+			  },	
+			  {
+				path: '/discord/callback/cmty-user-connect',
+				element: <DiscordCallbackCmtyUserConnect />
+			  }	
 		]
 	}
 ])
