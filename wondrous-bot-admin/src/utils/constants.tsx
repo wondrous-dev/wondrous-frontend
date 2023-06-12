@@ -92,6 +92,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/twitter/callback",
   "/wallet/connect",
   "/discord/callback",
+  "/onboarding/welcome",
   "/quests/view/:id",
   "/discord/callback/cmty-user-connect"
 ];
@@ -279,4 +280,4 @@ export const SKILLS = {
   other: "Other",
 };
 
-export const EXCLUDED_PATHS = ["/login", "/discord/callback", "/twitter/callback", '/discord/callback/cmty-user-connect', '/quests/view/:id'];
+export const EXCLUDED_PATHS = ["/login", "/discord/callback", "/twitter/callback", '/discord/callback/cmty-user-connect', '/quests/view/:id', '/signup'];

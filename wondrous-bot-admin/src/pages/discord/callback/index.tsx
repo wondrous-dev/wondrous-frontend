@@ -100,6 +100,9 @@ function DiscordCallback() {
             if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
               return navigate("/");
             }
+            if(parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
+              return navigate("/onboarding/welcome");
+            }
           })
           .catch((err) => {
             console.log("Error signing in discord user", err);

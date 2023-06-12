@@ -1,17 +1,17 @@
-import { useQuery } from "@apollo/client";
-import { Box, Grid, Typography } from "@mui/material";
+import { useLazyQuery } from "@apollo/client";
 import { withAuth } from "components/Auth";
-import ErrorCatcher from "components/ErrorCatcher";
-import Navbar from "components/Navbar";
-import PageSpinner from "components/PageSpinner";
+import { Box, Grid, Typography } from "@mui/material";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { GET_LOGGED_IN_USER_FULL_ACCESS_ORGS } from "graphql/queries";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
-import { matchRoute } from "utils/common";
 import { EXCLUDED_PATHS, PAGES_WITHOUT_HEADER } from "utils/constants";
+import { matchRoute } from "utils/common";
+import ErrorCatcher from "components/ErrorCatcher";
 import GlobalContext from "utils/context/GlobalContext";
+import PageSpinner from "components/PageSpinner";
+import Navbar from "components/Navbar";
 import { Main } from "./styles";
 
 const DefaultFallback = () => {
@@ -55,25 +55,39 @@ const Layout = () => {
     setActiveOrg(org);
   };
 
-  const { data: userOrgs, loading } = useQuery(GET_LOGGED_IN_USER_FULL_ACCESS_ORGS, {
-    skip: isPageWithoutHeader,
-    notifyOnNetworkStatusChange: true,
-    variables: {
-      excludeSharedOrgs: true,
-      cmtyEnabled: true,
-    },
-    onCompleted: ({ getLoggedInUserFullAccessOrgs }) => {
-      if (defaultActiveOrgId) {
-        const org = getLoggedInUserFullAccessOrgs.find((org) => org.id === defaultActiveOrgId);
-        if (org) {
-          handleActiveOrg(org);
+  const navigate = useNavigate();
+  const [getLoggedInUserFullAccessOrgs, { data: userOrgs, loading }] = useLazyQuery(
+    GET_LOGGED_IN_USER_FULL_ACCESS_ORGS,
+    {
+      fetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true,
+      onCompleted: ({ getLoggedInUserFullAccessOrgs }) => {
+        if (getLoggedInUserFullAccessOrgs.length === 0) {
+          navigate("/onboarding");
           return;
         }
-      }
-      const newActiveOrg = getLoggedInUserFullAccessOrgs[0];
-      handleActiveOrg(newActiveOrg);
+        if (defaultActiveOrgId) {
+          const org = getLoggedInUserFullAccessOrgs.find((org) => org.id === defaultActiveOrgId);
+          if (org) {
+            handleActiveOrg(org);
+            return;
+          }
+        }
+        const newActiveOrg = getLoggedInUserFullAccessOrgs[0];
+        handleActiveOrg(newActiveOrg);
     },
   });
+
+  useEffect(() => {
+    if (!isPageWithoutHeader) {
+      getLoggedInUserFullAccessOrgs({
+        variables: {
+          excludeSharedOrgs: true,
+          cmtyEnabled: true,
+        },
+      });
+    }
+  }, [isPageWithoutHeader]);
 
   if (loading) {
     return <PageSpinner />;

@@ -317,7 +317,7 @@ export const withAuth = (Component, noCache = false) => {
       return <Component {...props} />;
     }
     const user = data?.getLoggedinUser;
-    if (user && !user?.username) {
+    if (user && !user?.id && location.pathname !== "/onboarding/welcome") {
       navigate("/");
     }
     return (
