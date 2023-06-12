@@ -316,7 +316,7 @@ export const RewardMethod = ({
   if (rewardType === PAYMENT_OPTIONS.POAP) {
     return (
       <>
-        <Label>Poap event ID</Label>
+        <Label>Poap event ID * </Label>
         <TextField
           placeholder="Please enter your POAP event ID"
           value={poapReward?.id}
@@ -363,6 +363,19 @@ export const RewardMethod = ({
                 });
             }
           }}
+        />
+        <Label>Poap event secret * (check your emails for this) </Label>
+        <TextField
+          placeholder="Please enter your 6 digit POAP event secret"
+          value={poapReward?.eventSecret}
+          onChange={(value) => {
+            setPoapReward({
+              ...poapReward,
+              eventSecret: value,
+            });
+          }}
+          multiline={false}
+          error={errors?.eventSecret}
         />
         <Label>Poap name</Label>
         <TextField

@@ -302,6 +302,13 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         });
         return;
       }
+      if (!poapReward?.eventSecret) {
+        setErrors({
+          ...errors,
+          eventSecret: "Please enter a poap event secret",
+        });
+        return;
+      }
       onRewardAdd({
         type: rewardType,
         poapRewardData: poapReward,
