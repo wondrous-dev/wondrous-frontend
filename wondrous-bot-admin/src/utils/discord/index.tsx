@@ -1,6 +1,7 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
 import { useEffect } from "react";
+import { getBaseUrl } from "utils/common";
 
 export const addSearchParamsUrl = (url: string, param: string, paramValue: string) => {
   const newUrl = new URL(url);
@@ -74,14 +75,10 @@ export const dedupeColumns = (columns) => {
   return newColumns;
 };
 
-export const getDiscordUrl = () => {
-  if (import.meta.env.VITE_PRODUCTION) {
-    return "https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fcommunities.wonderverse.xyz%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify";
-  }
-  if (import.meta.env.VITE_STAGING) {
-    return "https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fstaging-communities.wonderverse.xyz%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify";
-  }
-  return "https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify";
+export const getDiscordUrl = (callbackUrl = '/discord/callback', params = '') => {
+  let redirectUri = encodeURIComponent(`${getBaseUrl()}${callbackUrl}`);
+  const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
+  return `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=email%20identify${params}`;
 };
 
 export const getTelegramBotLink = () => {

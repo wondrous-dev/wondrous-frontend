@@ -12,9 +12,10 @@ import {
   LOGIN_WALLET_MUTATION,
 } from "graphql/mutations";
 import { useLocation, useNavigate } from "react-router-dom";
+import { EXCLUDED_PATHS } from "utils/constants";
+import { matchRoute } from "utils/common";
 
 const MyContext = React.createContext(null);
-export const EXCLUDED_PATHS = ["/login", "/discord/callback", "/twitter/callback", "/signup"];
 
 export const useMe = () => useContext(MyContext);
 
@@ -283,6 +284,7 @@ export const withAuth = (Component, noCache = false) => {
       skip: typeof window !== "undefined" && !getAuthHeader(),
     });
 
+    const isMatchedPath = matchRoute(location.pathname, EXCLUDED_PATHS);
     useEffect(() => {
       if (import.meta.env.NODE_ENV !== "production") return;
       const storedSegmentUserId = localStorage.getItem("ajs_user_id")?.replaceAll('"', "") || null;
@@ -303,13 +305,13 @@ export const withAuth = (Component, noCache = false) => {
     if (
       error?.graphQLErrors &&
       error?.graphQLErrors[0]?.extensions.code === "UNAUTHENTICATED" &&
-      !EXCLUDED_PATHS.includes(location.pathname)
+      !isMatchedPath
     ) {
       logout();
     }
     if (!tokenLoading && !token) {
       // Back to the world
-      if (!EXCLUDED_PATHS.includes(location.pathname)) {
+      if (!isMatchedPath) {
         window.location.href = "/login";
       }
       return <Component {...props} />;

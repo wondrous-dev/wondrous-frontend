@@ -39,3 +39,12 @@ export const getBaseUrl = () => {
 export function getPathArray(path) {
   return path.split(/[[\].]+/).filter(Boolean);
 }
+
+
+export const matchRoute = (pathname, options) => {
+  return !!options.find(route => {
+    // Replace potential URL parameters (e.g., ":id") with wildcard for RegExp match
+    const pattern = new RegExp(`^${route.replace(/:\w+/g, "\\w+")}$`, "g");
+    return pattern.test(pathname);
+  });
+}

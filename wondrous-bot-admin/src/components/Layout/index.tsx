@@ -1,16 +1,17 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
+import { withAuth } from "components/Auth";
 import { Box, Grid, Typography } from "@mui/material";
-import { EXCLUDED_PATHS, useMe, withAuth } from "components/Auth";
-import ErrorCatcher from "components/ErrorCatcher";
-import Navbar from "components/Navbar";
-import PageSpinner from "components/PageSpinner";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { GET_LOGGED_IN_USER_FULL_ACCESS_ORGS } from "graphql/queries";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
-import { PAGES_WITHOUT_HEADER } from "utils/constants";
+import { EXCLUDED_PATHS, PAGES_WITHOUT_HEADER } from "utils/constants";
+import { matchRoute } from "utils/common";
+import ErrorCatcher from "components/ErrorCatcher";
 import GlobalContext from "utils/context/GlobalContext";
+import PageSpinner from "components/PageSpinner";
+import Navbar from "components/Navbar";
 import { Main } from "./styles";
 
 const DefaultFallback = () => {
@@ -47,7 +48,7 @@ const Layout = () => {
   const location = useLocation();
   const [activeOrg, setActiveOrg] = useState(null);
 
-  const isPageWithoutHeader = PAGES_WITHOUT_HEADER.includes(location.pathname);
+  const isPageWithoutHeader = matchRoute(location.pathname, PAGES_WITHOUT_HEADER);
 
   const handleActiveOrg = (org) => {
     localStorage.setItem(LOCAL_STORAGE_ORG_ID_KEY, org?.id);
@@ -74,9 +75,8 @@ const Layout = () => {
         }
         const newActiveOrg = getLoggedInUserFullAccessOrgs[0];
         handleActiveOrg(newActiveOrg);
-      },
-    }
-  );
+    },
+  });
 
   useEffect(() => {
     if (!isPageWithoutHeader) {
@@ -92,7 +92,8 @@ const Layout = () => {
   if (loading) {
     return <PageSpinner />;
   }
-  const AuthenticatedOutlet = EXCLUDED_PATHS.includes(location.pathname) ? Outlet : withAuth(Outlet);
+  const isMatchedAuthPath = matchRoute(location.pathname, EXCLUDED_PATHS);
+  const AuthenticatedOutlet = isMatchedAuthPath ? Outlet : withAuth(Outlet);
 
   return (
     <GlobalContext.Provider
