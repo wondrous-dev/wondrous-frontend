@@ -19,6 +19,7 @@ import { transformQuestConfig } from "utils/transformQuestConfig";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import QuestTitle from "components/QuestTitle";
 import { getDiscordUrl } from 'utils/discord';
+import { getBaseUrl } from "utils/common";
 
 const QuestResultsPage = () => {
   const navigate = useNavigate();
@@ -109,6 +110,8 @@ const QuestResultsPage = () => {
     return transformQuestConfig(getQuestById?.steps);
   }, [getQuestById?.steps, isEditMode]);
 
+  const shareUrl = `${getBaseUrl()}/quest?id=${getQuestById?.id}`;
+  
   return (
     <CreateQuestContext.Provider
       value={{
@@ -153,7 +156,11 @@ const QuestResultsPage = () => {
         renderActions={() => (
           <Grid display="flex" gap="10px" alignItems="center">
             <DeleteQuestButton questId={getQuestById?.id} />
-            <ShareComponent link={`/quest/${getQuestById?.id}`} />
+
+            {/* 
+            ShareComponent is used to share the link to the SSR page. This will work in a local dev environment only with vercel launched.
+            */}
+            <ShareComponent link={shareUrl} />
             {isEditMode ? (
               <>
                 <SharedSecondaryButton $reverse onClick={toggleEdit}>
