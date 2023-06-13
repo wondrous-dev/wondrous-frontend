@@ -83,7 +83,7 @@ const CreateTemplate = ({
       handleUpdateQuestStepsMedia(createQuest.id, createQuest?.steps, steps);
       navigate(`/quests/${createQuest.id}`);
     },
-    refetchQueries: ["getQuestsForOrg"],
+    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
   });
   const [updateQuest] = useMutation(UPDATE_QUEST, {
     onCompleted: ({ updateQuest }) => {
