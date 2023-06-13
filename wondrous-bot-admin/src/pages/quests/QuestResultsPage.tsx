@@ -20,7 +20,6 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 import QuestTitle from "components/QuestTitle";
 import { getDiscordUrl } from "utils/discord";
 import { getBaseUrl } from "utils/common";
-import { getDiscordUrl } from "utils/discord";
 
 const QuestResultsPage = () => {
   const navigate = useNavigate();
