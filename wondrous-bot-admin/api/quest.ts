@@ -61,7 +61,7 @@ const handleRequest = async (req: VercelRequest, res: VercelResponse) => {
         <div />
         <script>
           window.onload = function() {
-            window.location.href = "/quests/${questId}";
+            window.location.href = "/quests/view/${questId}";
         }
         </script>
         </body>

@@ -18,17 +18,7 @@ import { useContext } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
 
-const MULTICHOICE_DEFAULT_VALUE = {
-  question: "",
-  withCorrectAnswers: false,
-  multiSelectValue: TYPES.MULTI_QUIZ,
-  answers: [
-    {
-      value: "",
-      isCorrect: true,
-    },
-  ],
-};
+
 
 const COMPONENT_OPTIONS = [
   {
@@ -109,6 +99,18 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
       };
     });
 
+    const MULTICHOICE_DEFAULT_VALUE = {
+      question: "",
+      withCorrectAnswers: false,
+      multiSelectValue: TYPES.MULTI_QUIZ,
+      answers: [
+        {
+          value: "",
+          isCorrect: true,
+        },
+      ],
+    };
+    
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
@@ -156,6 +158,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
         },
       };
     });
+    
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
@@ -188,7 +191,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
       acc.push(next);
       return acc;
     }, []);
-    // debugger
     setSteps(newConfiguration);
   };
 

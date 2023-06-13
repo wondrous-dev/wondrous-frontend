@@ -7,6 +7,7 @@ const BG_IMAGES = {
   [BG_TYPES.MEMBERS]: '/images/members-bg.png',
   [BG_TYPES.LEVELS]: '/images/levels-bg.png',
   [BG_TYPES.QUESTS]: '/images/quests-bg.png',
+  [BG_TYPES.VIEW_QUESTS]: '/images/view-quest-bg.png'
 };
 
 const PageWrapper = ({ children, containerProps, bgType }) => {

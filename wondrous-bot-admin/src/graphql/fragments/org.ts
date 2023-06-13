@@ -16,6 +16,7 @@ export const OrgFragment = gql`
     podCount
     category
     shared
+    cmtyEnabled
     parentOrgs {
       id
       profilePicture

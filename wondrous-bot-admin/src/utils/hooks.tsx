@@ -1,5 +1,7 @@
-import { SnackbarAlertContext } from 'utils/context';
-import { useContext } from 'react';
+import { SnackbarAlertContext } from "utils/context";
+import { useContext, useState } from "react";
+import { useLazyQuery } from "@apollo/client";
+import { IS_ORG_USERNAME_TAKEN } from "graphql/queries";
 
 const useAlerts = () => {
   const {
@@ -12,7 +14,7 @@ const useAlerts = () => {
 
   const showError = (errorMsg, isSeverityError = false) => {
     setSnackbarAlertMessage(errorMsg);
-    setSnackbarAlertSeverity(isSeverityError ? 'error' : 'warning');
+    setSnackbarAlertSeverity(isSeverityError ? "error" : "warning");
     setSnackbarAlertOpen(true);
   };
 
@@ -24,6 +26,26 @@ const useAlerts = () => {
     setSnackbarAlertSeverity,
     setSnackbarAlertAutoHideDuration,
   };
+};
+
+export const useIsOrgUsernameTaken = () => {
+  const [isOrgUsernameTaken] = useLazyQuery(IS_ORG_USERNAME_TAKEN, {
+    fetchPolicy: "network-only",
+  });
+  const [prevUsername, setPrevUsername] = useState("");
+  const [prevResult, setPrevResult] = useState(false);
+  const handleIsOrgUsernameTaken = async (username) => {
+    if (username && username !== prevUsername) {
+      // check the previous parameter first to prevent unnecessary queries during form validation; refer to https://github.com/jaredpalmer/formik/issues/512#issuecomment-666549238
+      const { data } = await isOrgUsernameTaken({ variables: { username } });
+      const result = !data?.isOrgUsernameTaken?.exist;
+      setPrevUsername(username);
+      setPrevResult(result);
+      return result;
+    }
+    return prevResult;
+  };
+  return handleIsOrgUsernameTaken;
 };
 
 export default useAlerts;
