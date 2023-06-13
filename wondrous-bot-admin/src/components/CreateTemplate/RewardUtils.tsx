@@ -613,23 +613,25 @@ export const RewardFooterLeftComponent = ({
   ) {
     return (
       <>
-        <ButtonBase onClick={() => (paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false))}>
-          <Box
-            height="40px"
-            width="40px"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            bgcolor="#2A8D5C"
-            borderRadius="35px"
-          >
-            <WestIcon
-              sx={{
-                color: "white",
-              }}
-            />
-          </Box>
-        </ButtonBase>
+        {rewardType !== PAYMENT_OPTIONS.POAP && rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE && (
+          <ButtonBase onClick={() => (paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false))}>
+            <Box
+              height="40px"
+              width="40px"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              bgcolor="#2A8D5C"
+              borderRadius="35px"
+            >
+              <WestIcon
+                sx={{
+                  color: "white",
+                }}
+              />
+            </Box>
+          </ButtonBase>
+        )}
         <SharedSecondaryButton onClick={handleReward}>Add Reward</SharedSecondaryButton>
       </>
     );
