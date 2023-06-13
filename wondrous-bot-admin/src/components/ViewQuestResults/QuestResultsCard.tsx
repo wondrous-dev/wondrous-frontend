@@ -110,7 +110,6 @@ const QuestResultsCard = ({ submission }) => {
     return stepsNormalizr(submission?.steps, submission?.stepsData);
   }, [submission?.steps, submission?.stepsData]);
 
-  console.log(steps, "STEPS");
   const [approveQuestSubmission] = useMutation(APPROVE_SUBMISSION, {
     onCompleted: () => {
       setSnackbarAlertOpen(true);

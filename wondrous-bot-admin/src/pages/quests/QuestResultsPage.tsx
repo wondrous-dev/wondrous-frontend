@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { Grid, Typography } from "@mui/material";
 import CreateTemplate from "components/CreateTemplate";
 import DeleteQuestButton from "components/DeleteQuestButton";
@@ -8,17 +8,17 @@ import ShareComponent from "components/Share";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import ViewQuestResults from "components/ViewQuestResults";
 import Modal from "components/Shared/Modal";
-import { GET_QUEST_BY_ID } from "graphql/queries";
+import { GET_QUEST_BY_ID, GET_CMTY_PAYMENT_COUNTS } from "graphql/queries";
 import { START_PREVIEW_QUEST } from "graphql/mutations";
 import moment from "moment";
-import { useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { QUEST_STATUSES } from "utils/constants";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import QuestTitle from "components/QuestTitle";
-import { getDiscordUrl } from 'utils/discord';
+import { getDiscordUrl } from "utils/discord";
 import { getBaseUrl } from "utils/common";
 
 const QuestResultsPage = () => {
@@ -32,7 +32,6 @@ const QuestResultsPage = () => {
   let { id } = useParams();
   const [title, setTitle] = useState("");
   const handleNavigationToNewQuest = () => navigate("/quests/create");
-
   const headerActionsRef = useRef(null);
 
   const { ref, inView, entry } = useInView({
@@ -53,18 +52,18 @@ const QuestResultsPage = () => {
   });
   const [startPreviewQuest] = useMutation(START_PREVIEW_QUEST, {
     onCompleted: (data) => {
-      const guildId = data?.startPreviewQuest?.guildId
-      const channelId = data?.startPreviewQuest?.channelId
-      const discordUrl = `https://discord.com/channels/${guildId}/${channelId}`
-      window.open(discordUrl, '_blank')
+      const guildId = data?.startPreviewQuest?.guildId;
+      const channelId = data?.startPreviewQuest?.channelId;
+      const discordUrl = `https://discord.com/channels/${guildId}/${channelId}`;
+      window.open(discordUrl, "_blank");
     },
     onError: (err) => {
       if (err?.graphQLErrors[0]?.extensions?.errorCode === "discord_not_connected") {
-        setConnectDiscordModalOpen(true)
+        setConnectDiscordModalOpen(true);
       }
       if (err?.graphQLErrors[0]?.extensions?.errorCode === "discord_user_not_in_guild") {
-        console.log('not in guild')
-        setNotInGuildError(true)
+        console.log("not in guild");
+        setNotInGuildError(true);
       }
     },
   });
@@ -111,7 +110,7 @@ const QuestResultsPage = () => {
   }, [getQuestById?.steps, isEditMode]);
 
   const shareUrl = `${getBaseUrl()}/quest?id=${getQuestById?.id}`;
-  
+
   return (
     <CreateQuestContext.Provider
       value={{
@@ -125,21 +124,22 @@ const QuestResultsPage = () => {
         onClose={() => setConnectDiscordModalOpen(false)}
         title={"Connect Discord"}
         maxWidth={600}
-        footerRight={<SharedSecondaryButton onClick={() => {
-          const discordUrl = getDiscordUrl()
-          window.open(discordUrl, '_blank')
-        }}>Connect</SharedSecondaryButton>}
+        footerRight={
+          <SharedSecondaryButton
+            onClick={() => {
+              const discordUrl = getDiscordUrl();
+              window.open(discordUrl, "_blank");
+            }}
+          >
+            Connect
+          </SharedSecondaryButton>
+        }
       >
         <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
           To preview this quest, you need to connect your Discord account first!
         </Typography>
       </Modal>
-      <Modal
-        open={notInGuildError}
-        onClose={() => setNotInGuildError(false)}
-        title={"Not in Server"}
-        maxWidth={600}
-      >
+      <Modal open={notInGuildError} onClose={() => setNotInGuildError(false)} title={"Not in Server"} maxWidth={600}>
         <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
           You're Discord user is not a member of the Server!
         </Typography>

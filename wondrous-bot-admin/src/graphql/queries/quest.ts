@@ -126,6 +126,22 @@ export const GET_QUEST_REWARDS = gql`
         discordGuildId
         discordRoleName
       }
+      poapRewardData {
+        id
+        name
+        description
+        startDate
+        endDate
+        eventUrl
+        imageUrl
+        expiryDate
+      }
+      paymentMethodId
+      amount
+      paymentMethod {
+        name
+        contractAddress
+      }
     }
   }
 `;
@@ -148,6 +164,20 @@ export const EXPORT_QUEST_SUBMISSIONS = gql`
         level
         point
       }
+    }
+  }
+`;
+
+export const GET_POAP_EVENT = gql`
+  query getQuestRewardPoapEvent($eventId: ID!) {
+    getQuestRewardPoapEvent(eventId: $eventId) {
+      id
+      name
+      description
+      endDate
+      eventUrl
+      imageUrl
+      expiryDate
     }
   }
 `;
