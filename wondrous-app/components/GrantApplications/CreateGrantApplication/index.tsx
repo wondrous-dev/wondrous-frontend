@@ -180,7 +180,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
       .matches(chainToValidate, 'Wallet address is not valid')
       .required('Wallet address is required'),
     mediaUploads: yup.array(),
-    org: yup.object().required('Project is required'),
+    org: yup.object(),
   });
 
   const form = useFormik({
