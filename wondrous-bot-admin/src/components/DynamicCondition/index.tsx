@@ -1,76 +1,73 @@
-import { useQuery } from '@apollo/client';
-import { ClickAwayListener } from '@mui/base';
-import { Box, ButtonBase, Grid, Popper } from '@mui/material';
-import {
-  CustomTextField,
-  Label,
-} from 'components/AddFormEntity/components/styles';
-import AutocompleteComponent from 'components/Autocomplete';
-import CloseModalIcon from 'components/Icons/CloseModal';
-import SelectComponent from 'components/Shared/Select';
-import { GET_QUESTS_FOR_ORG } from 'graphql/queries';
-import { useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { getTextForCondition } from 'utils/common';
-import { QUEST_CONDITION_TYPES, QUEST_STATUSES } from 'utils/constants';
-import GlobalContext from 'utils/context/GlobalContext';
-import { useDiscordRoles } from 'utils/discord';
+import { useQuery } from "@apollo/client";
+import { ClickAwayListener } from "@mui/base";
+import { Box, ButtonBase, Grid, Popper } from "@mui/material";
+import { CustomTextField, Label } from "components/AddFormEntity/components/styles";
+import AutocompleteComponent from "components/Autocomplete";
+import CloseModalIcon from "components/Icons/CloseModal";
+import SelectComponent from "components/Shared/Select";
+import { GET_QUESTS_FOR_ORG } from "graphql/queries";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import { getTextForCondition } from "utils/common";
+import { QUEST_CONDITION_TYPES, QUEST_STATUSES } from "utils/constants";
+import GlobalContext from "utils/context/GlobalContext";
+import { useDiscordRoles } from "utils/discord";
 
 const CONDITION_MAP = [
   {
     value: QUEST_CONDITION_TYPES.DISCORD_ROLE,
-    label: 'Discord Role',
+    label: "Discord Role",
   },
   {
     value: QUEST_CONDITION_TYPES.QUEST,
-    label: 'Quest',
+    label: "Quest",
   },
 ];
 
 const CONDITION_VALUES = {
-  [QUEST_CONDITION_TYPES.DISCORD_ROLE]: 'discordRoleId',
-  [QUEST_CONDITION_TYPES.QUEST]: 'questId',
+  [QUEST_CONDITION_TYPES.DISCORD_ROLE]: "discordRoleId",
+  [QUEST_CONDITION_TYPES.QUEST]: "questId",
 };
 
 const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
   const handleConditionDataChange = (value) => {
     let additionalParams: any = {};
 
-    const isDiscordCondition =
-      condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE;
+    const isDiscordCondition = condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE;
 
     if (isDiscordCondition) {
-      const discordGuildId = options.find(
-        (item) => item.value === value
-      )?.discordGuildId;
+      const discordGuildId = options.find((item) => item.value === value)?.discordGuildId;
       additionalParams.discordGuildId = discordGuildId;
     }
-    handleChange('conditionData', {
+    handleChange("conditionData", {
       [CONDITION_VALUES[condition.type]]: value,
       ...additionalParams,
     });
-    handleClose()
+    handleClose({
+      type: condition.type,
+      conditionData: {
+        [CONDITION_VALUES[condition.type]]: value,
+        ...additionalParams,
+      },
+    });
   };
   return (
-    <Box display='flex' gap='6px' alignItems='center'>
+    <Box display="flex" gap="6px" alignItems="center">
       <Label>Where</Label>
-      <Box minWidth='150px'>
+      <Box minWidth="150px">
         <SelectComponent
           options={CONDITION_MAP}
           onChange={(value) => {
-            handleChange('type', value);
-            handleChange('conditionData', null);
+            handleChange("type", value);
+            handleChange("conditionData", null);
           }}
           value={condition.type}
         />
       </Box>
-      <Box minWidth='150px'>
+      <Box minWidth="150px">
         <AutocompleteComponent
           options={options || []}
           handleChange={handleConditionDataChange}
-          value={
-            condition.value ||
-            condition.conditionData?.[CONDITION_VALUES[condition.type]]
-          }
+          value={condition.value || condition.conditionData?.[CONDITION_VALUES[condition.type]]}
         />
       </Box>
     </Box>
@@ -97,19 +94,14 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   });
 
   const ref = useRef();
-  const handleClickAway = () => {
+  const handleClickAway = (data = null) => {
     if (!isOpen) return;
-    if (
-      condition?.type !== value?.type ||
-      condition?.conditionData !== value?.conditionData
-    ) {
-      setQuestSettings((prev) => ({
-        ...prev,
-        questConditions: [
-          { type: condition.type, conditionData: condition?.conditionData },
-        ],
-      }));
-    }
+    let conditionItem = data || condition;
+    setQuestSettings((prev) => ({
+      ...prev,
+      questConditions: [conditionItem],
+    }));
+
     setIsOpen(false);
   };
 
@@ -155,7 +147,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
       return [
         {
           value: null,
-          label: 'No options',
+          label: "No options",
         },
       ];
     },
@@ -164,10 +156,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
 
   const nameForConditionValue = useMemo(() => {
     const item = getOptionsForCondition(condition?.type)?.find((item) => {
-      return (
-        item.value ===
-        condition?.conditionData?.[CONDITION_VALUES[condition?.type]]
-      );
+      return item.value === condition?.conditionData?.[CONDITION_VALUES[condition?.type]];
     });
     return item?.label;
   }, [condition, roles, getOptionsForCondition]);
@@ -185,13 +174,13 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   };
 
   return (
-    <ClickAwayListener onClickAway={handleClickAway} mouseEvent='onMouseDown'>
+    <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
       <div>
-        <Box display='flex' alignItems='center' gap='4px'>
+        <Box display="flex" alignItems="center" gap="4px">
           <CustomTextField
             disabled
             onClick={openPopper}
-            placeholder='Add Condition'
+            placeholder="Add Condition"
             ref={ref}
             value={getTextForCondition({
               type: condition.type,
@@ -199,29 +188,29 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
             })}
           />
           <ButtonBase onClick={onResetClick}>
-            <CloseModalIcon strokeColor='black' />
+            <CloseModalIcon strokeColor="black" />
           </ButtonBase>
         </Box>
         <Popper
           open={isOpen}
           onClick={(e) => e.stopPropagation()}
-          placement='bottom-start'
+          placement="bottom-start"
           anchorEl={ref.current}
           sx={{
             zIndex: 1000,
           }}
         >
           <Grid
-            bgcolor='white'
-            border='1px solid #000000'
-            boxShadow='0px 4px 4px rgba(0, 0, 0, 0.25)'
-            borderRadius='6px'
+            bgcolor="white"
+            border="1px solid #000000"
+            boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
+            borderRadius="6px"
             container
-            minWidth='300px'
-            marginTop='4px'
-            direction={'column'}
-            gap='10px'
-            padding='14px'
+            minWidth="300px"
+            marginTop="4px"
+            direction={"column"}
+            gap="10px"
+            padding="14px"
           >
             <FilterGroup
               condition={condition}
