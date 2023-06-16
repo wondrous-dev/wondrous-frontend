@@ -23,7 +23,7 @@ import SafeImage from "components/SafeImage";
 import Dropdown from "components/Shared/Dropdown";
 import { Wrapper } from "components/Shared/Dropdown/styles";
 
-const TeamsAndInvite = () => {
+export const TeamsAndInvite = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [inviteLink, setInviteLink] = useState("");
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
