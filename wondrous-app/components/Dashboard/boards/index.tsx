@@ -18,7 +18,7 @@ import { LIMIT, USER_COLUMNS, populateTaskColumns, generateUserDashboardFilters 
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import { extendFiltersByView, sectionOpeningReducer } from 'utils/board';
-import { TASKS_DEFAULT_STATUSES, STATUS_OPEN, PRIVACY_LEVEL } from 'utils/constants';
+import { TASKS_DEFAULT_STATUSES, STATUS_OPEN, PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
 import { useGlobalContext, useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 import BoardWrapper from './BoardWrapper';
@@ -30,12 +30,26 @@ const useGetUserTaskBoardTasks = ({
   loggedInUser,
   filters,
   view,
+  userOrgs,
+  userPods,
 }) => {
   const [getUserTaskBoardTasks, { fetchMore, variables }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
-      const tasks = data?.getUserTaskBoardTasks ?? [];
+      const tasks = (data?.getUserTaskBoardTasks ?? []).filter(({ orgId, podId, status }) => {
+        if (status === TASK_STATUS_DONE) return true;
+        const orgModules = userOrgs?.find(({ id }) => id === orgId)?.modules;
+        const podModules = userPods?.find(({ id }) => id === podId)?.modules;
+
+        if (!(orgModules || podModules)) return true;
+
+        if (podId && !orgModules?.pod) return false;
+        if (!podId && orgId && orgModules?.task) return true;
+        if (podId && podModules?.task) return true;
+
+        return false;
+      });
       const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : USER_COLUMNS);
       setContributorColumns(dedupeColumns(newColumns));
     },
@@ -116,6 +130,8 @@ const useGetUserTaskBoard = ({
   contributorColumns,
   setContributorColumns,
   filters,
+  userOrgs,
+  userPods,
 }) => {
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus } = useGetUserTaskBoardTasks({
     contributorColumns,
@@ -124,6 +140,8 @@ const useGetUserTaskBoard = ({
     loggedInUser,
     filters,
     view,
+    userOrgs,
+    userPods,
   });
   return {
     getUserTaskBoardTasksFetchMore,
@@ -147,6 +165,7 @@ const BoardsPage = (props) => {
   const [activeView, setActiveView] = useState(view as string);
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const [contributorColumns, setContributorColumns] = useState([]);
+  const { userOrgs, userPods } = useGlobalContext();
 
   const [filters, setFilters] = useState<TaskFilter>({
     podIds: [],
@@ -177,6 +196,8 @@ const BoardsPage = (props) => {
     setContributorColumns,
     view,
     filters,
+    userOrgs: userOrgs?.getUserOrgs,
+    userPods: userPods?.getUserPods,
   });
 
   const handleLoadMore = (type = null) => {

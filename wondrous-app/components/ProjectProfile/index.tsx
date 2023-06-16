@@ -3,13 +3,15 @@ import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 import { ProjectContext } from 'utils/contexts';
 
+import useQueryModules from 'hooks/modules/useQueryModules';
+import { useBoards } from 'utils/hooks';
 import {
+  useCategoriesModal,
   useCollaborationModal,
   useCreateEntityModal,
   useCreateGrantModal,
-  useCategoriesModal,
-  useIsOrg,
   useGetHomePageTaskObjects,
+  useIsOrg,
 } from './helpers';
 import ProfileSectionsWrapper from './ProfileSectionsWrapper';
 
@@ -21,6 +23,8 @@ const ProjectProfile = () => {
   const { DocCategoriesModal, handleCreateNewCategory } = useCategoriesModal();
   const { CreateGrantModal, handleCreateFormModal } = useCreateGrantModal();
   const homePageTaskObjects = useGetHomePageTaskObjects();
+  const { orgId, podId } = useBoards().board || {};
+  const modules = useQueryModules({ orgId, podId });
   const projectContextValue = useMemo(
     () => ({
       setEntityType,
@@ -39,7 +43,7 @@ const ProjectProfile = () => {
         <DocCategoriesModal />
         <CreateGrantModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
-          {useIsOrg() ? <PodSection /> : null}
+          {useIsOrg() && modules?.pod ? <PodSection /> : null}
           <ProfileSectionsWrapper />
         </Grid>
       </>

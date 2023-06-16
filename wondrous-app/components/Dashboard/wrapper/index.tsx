@@ -1,12 +1,9 @@
-import React, { useEffect } from 'react';
-
-import ChooseEntityToCreate from 'components/CreateEntity';
-import { useIsMobile } from 'utils/hooks';
-import { GET_USER_ORGS } from 'graphql/queries';
-import { ENTITIES_TYPES, SPECIAL_ORGS } from 'utils/constants';
 import { useQuery } from '@apollo/client';
 import { ErrorText } from 'components/Common';
-import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader, BannerWrapper } from './styles';
+import ChooseEntityToCreate from 'components/CreateEntity';
+import { GET_USER_ORGS } from 'graphql/queries';
+import useQueryModules from 'hooks/modules/useQueryModules';
+import { Banner, BannerWrapper, Content, ContentContainer, DashboardHeader, OverviewComponent } from './styles';
 
 const CONFIG_MAP = {
   ADMIN: {
@@ -25,15 +22,10 @@ const Wrapper = (props) => {
   const { children, isAdmin } = props;
   const config = isAdmin ? CONFIG_MAP.ADMIN : CONFIG_MAP.CONTRIBUTOR;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const isOnlyInSpecialOrg = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id in SPECIAL_ORGS;
+  const getUserOrgs = userOrgs?.getUserOrgs;
+  const modules = useQueryModules({ orgId: getUserOrgs?.[0]?.id });
   const hasNoWorkSection =
-    isOnlyInSpecialOrg &&
-    !(
-      SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK) ||
-      SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.BOUNTY) ||
-      SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL) ||
-      SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.MILESTONE)
-    );
+    getUserOrgs?.length === 1 && modules?.task && modules?.bounty && modules?.proposal && modules?.pod;
   return (
     <OverviewComponent>
       <ChooseEntityToCreate />

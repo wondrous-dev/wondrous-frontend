@@ -48,6 +48,17 @@ export const GET_USER_ORGS = gql`
       thumbnailPicture
       privacyLevel
       shared
+      modules {
+        task
+        bounty
+        pod
+        grant
+        document
+        milestone
+        proposal
+        collab
+        leaderboard
+      }
     }
   }
 `;

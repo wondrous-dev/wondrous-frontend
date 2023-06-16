@@ -117,7 +117,9 @@ function CreatePodModal(props) {
     fetchPolicy: 'network-only',
   });
 
-  const selectedOrgPrivacyLevel = userOrgs?.getUserOrgs?.filter((i) => i.id === org)[0]?.privacyLevel;
+  const userOrgsData = userOrgs?.getUserOrgs;
+
+  const selectedOrgPrivacyLevel = userOrgsData?.filter((i) => i.id === org)[0]?.privacyLevel;
   const [searchOrgUsers] = useLazyQuery(SEARCH_ORG_USERS);
 
   const handleUserMentionChange = (query) =>
@@ -145,16 +147,15 @@ function CreatePodModal(props) {
     []
   );
 
-  const filterDAOptions = useCallback((orgs) => {
-    if (!orgs) {
-      return [];
-    }
-    return orgs.map((org) => ({
-      imageUrl: org?.profilePicture,
-      label: org?.name,
-      value: org?.id,
-    }));
-  }, []);
+  const filterDAOptions = userOrgsData
+    ? userOrgsData
+        .filter(({ modules }) => modules?.pod ?? true)
+        .map(({ profilePicture, name, id }) => ({
+          imageUrl: profilePicture,
+          label: name,
+          value: id,
+        }))
+    : [];
 
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
@@ -165,7 +166,12 @@ function CreatePodModal(props) {
 
   useEffect(() => {
     if (open) {
-      if (fetchedUserPermissionsContext && board?.orgId in fetchedUserPermissionsContext?.orgPermissions && !org) {
+      if (
+        fetchedUserPermissionsContext &&
+        board?.orgId in fetchedUserPermissionsContext?.orgPermissions &&
+        !org &&
+        board?.orgData?.modules.pod
+      ) {
         // If you're only part of one dao then just set that as default
         // TODO: if you are part of the org and you're on that page it should be create on that org
         setOrg(board?.orgId);
@@ -265,7 +271,7 @@ function CreatePodModal(props) {
             setValue={setOrg}
             labelText="Choose Org"
             labelIcon={<CreateDaoIcon />}
-            options={filterDAOptions(userOrgs?.getUserOrgs) || []}
+            options={filterDAOptions}
             name="dao"
           />
         </CreateFormMainSelects>

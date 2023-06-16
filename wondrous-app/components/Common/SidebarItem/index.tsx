@@ -40,7 +40,7 @@ const ExpandedItem = ({ children, isActive, Icon, roundedBg, bgColor, count, ign
 
 type ItemProps = {
   children?: React.ReactNode;
-  Icon?: React.ReactNode;
+  Icon?: React.ReactNode | React.FC | JSX.Element;
   isActive?: boolean;
   roundedBg?: boolean;
   bgColor?: string;
