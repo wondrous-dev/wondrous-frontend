@@ -92,6 +92,7 @@ const Layout = () => {
   if (loading) {
     return <PageSpinner />;
   }
+  
   const isMatchedAuthPath = matchRoute(location.pathname, EXCLUDED_PATHS);
   const AuthenticatedOutlet = isMatchedAuthPath ? Outlet : withAuth(Outlet);
 

@@ -21,18 +21,20 @@ const variationRolePillText = css`
 `;
 
 export const MemberRolePill = styled.div`
-  background: ${palette.grey900};
+  background: ${palette.grey85};
   display: flex;
   align-items: center;
-  width: auto;
-  padding: 4px 8px;
+  width: fit-content;
   gap: 6px;
   border-radius: 30px;
-  height: 40px;
-  border: 1px solid ${(props) => getRoleColor(props.roleName)};
+  height: 32px;
   text-align: center;
+  cursor: pointer;
+  padding: 8px;
+  height: 28px;
+
   :hover {
-    cursor: pointer;
+    background: ${palette.grey920};
   }
   ${({ variation }) => variation && variationMemberRolePill}
 `;
@@ -41,9 +43,8 @@ export const RolePillText = styled(Typography)`
   && {
     border-radius: 500px;
     line-height: 1;
-    padding: 4px 8px;
+    padding: 4px;
     font-weight: 500;
-    background: ${palette.grey85};
     max-lines: 1;
     white-space: nowrap;
     font-size: ${(props) => props.fontSize || '14px'};

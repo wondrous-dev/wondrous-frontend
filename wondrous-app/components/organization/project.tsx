@@ -24,16 +24,11 @@ const OrgProject = () => {
     variables: {
       username,
     },
+    onCompleted: ({ getOrgFromUsername }) => {
+      setPageData(() => ({ orgData: getOrgFromUsername }));
+    },
   });
   const { getOrgFromUsername: orgData } = data || {};
-
-  useEffect(() => {
-    if (orgData) {
-      setPageData({ orgData });
-    }
-  }, [orgData]);
-
-  useEffect(() => () => setPageData({}), []);
 
   useEffect(() => {
     if (user && !user?.projectGuideComplete) {
@@ -41,6 +36,7 @@ const OrgProject = () => {
       setIsOpen(true);
     }
   }, [user]);
+
   const contextValue = useMemo(
     () => ({
       userPermissionsContext: userPermissionsContext?.getUserPermissionContext

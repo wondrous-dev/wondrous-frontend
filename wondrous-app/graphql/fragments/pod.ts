@@ -10,6 +10,7 @@ export const PodInviteFragment = gql`
       profilePicture
       name
       username
+      modules
     }
   }
 `;
@@ -31,6 +32,15 @@ export const PodFragment = gql`
       profilePicture
       name
       username
+      modules {
+        task
+        bounty
+        grant
+        document
+        milestone
+        proposal
+        leaderboard
+      }
     }
     tags
     color
@@ -46,6 +56,15 @@ export const PodFragment = gql`
     hasGr15TasksAndBounties {
       hasGr15Tasks
       hasGr15Bounties
+    }
+    modules {
+      task
+      bounty
+      grant
+      document
+      milestone
+      proposal
+      leaderboard
     }
   }
 `;

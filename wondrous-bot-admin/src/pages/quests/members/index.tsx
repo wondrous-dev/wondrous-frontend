@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import EmptyState from "components/EmptyState";
 import PageHeader from "components/PageHeader";
+import { TeamsAndInvite } from "components/Settings/TeamSettings";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import TableComponent from "components/TableComponent";
 import { GET_COMMUNITY_USERS_FOR_ORG } from "graphql/queries";
@@ -56,7 +57,7 @@ const MembersPage = () => {
   const headers = ["Name", "Level", "Discord", "Twitter", "XP"];
   return (
     <>
-      <PageHeader title="Members" withBackButton={false} />
+      <PageHeader title="Community Members" withBackButton={false} renderActions={() => <TeamsAndInvite />} />
       <Grid
         minHeight="100vh"
         sx={{

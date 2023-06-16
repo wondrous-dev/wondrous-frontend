@@ -26,3 +26,13 @@ export const GET_GUILD_DISCORD_CHANNELS = gql`
 		}
 	}
 `
+
+export const GET_DISCORD_ROLE_INFO = gql`
+	query getDiscordRoleInfo($discordGuildId: String!, $discordRoleId: String!) {
+		getDiscordRoleInfo(discordGuildId: $discordGuildId, discordRoleId: $discordRoleId) {
+			name
+			id
+			color
+		}
+	}
+`;

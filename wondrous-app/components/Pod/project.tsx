@@ -28,7 +28,7 @@ const PodProject = () => {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-  useEffect(() => () => setPageData({}), []);
+
   useEffect(() => {
     if (user && !user?.projectGuideComplete) {
       setCurrentStep(0);

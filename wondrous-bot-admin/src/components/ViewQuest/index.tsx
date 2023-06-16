@@ -12,6 +12,7 @@ import { BG_TYPES, ERRORS_LABELS } from "utils/constants";
 import { getDiscordUrl } from "utils/discord";
 import useAlerts from "utils/hooks";
 import { ImageComponent, StyledLink, TextLabel } from "./styles";
+import useErrorHandler from "./useErrorHandler";
 
 const ViewQuest = ({ quest, loading }) => {
   const params = {
@@ -56,6 +57,8 @@ const ViewQuest = ({ quest, loading }) => {
     return [...roles, ...questRewards];
   }, [quest, questRewardsData]);
 
+  const {handleError} = useErrorHandler();
+  
   const [startQuest, { loading: startQuestLoading }] = useMutation(START_QUEST, {
     context: {
       headers: {
@@ -67,14 +70,7 @@ const ViewQuest = ({ quest, loading }) => {
         window.open(startQuest?.channelLink, "_blank");
       }
       if (startQuest?.error) {
-        let label = ERRORS_LABELS[startQuest?.error];
-
-        if(startQuest?.error === "discord_user_not_in_guild") {
-          label = ERRORS_LABELS.discord_user_not_in_guild_on_quest_start;
-        }
-        setSnackbarAlertMessage(label || "We couldn't start the quest, please try again later");
-        setSnackbarAlertOpen(true);
-        localStorage.removeItem("cmtyUserToken");
+        return handleError({questInfo: quest, error: startQuest?.error})
       }
     },
   });

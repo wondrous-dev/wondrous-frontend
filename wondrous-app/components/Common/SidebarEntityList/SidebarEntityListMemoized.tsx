@@ -1,6 +1,6 @@
 import Item from 'components/Common/SidebarItem';
 import { Label, ListWrapper } from 'components/Common/SidebarStyles';
-import { memo } from 'react';
+import React, { memo } from 'react';
 
 const location = () => {
   if (typeof window !== 'undefined') return window.location.pathname + window.location.search;
@@ -8,12 +8,26 @@ const location = () => {
 };
 
 type MenuItem = {
-  label?: string;
-  items: Array<any>;
-} | null;
+  [key: string]: {
+    label: string;
+    items: {
+      [key: string]: {
+        text: string;
+        link?: string;
+        Icon?: React.ReactNode | React.FC | JSX.Element;
+        Component?: React.FC;
+        check?: () => boolean;
+        count?: number;
+        ignoreIconStyles?: boolean;
+        active?: boolean;
+        entityType?: string;
+      };
+    };
+  };
+};
 
 type Props = {
-  menuItems: Array<MenuItem>;
+  menuItems: MenuItem;
   handleOnClick: (link: unknown, entityType: unknown) => void;
   urlPath: string;
   minimized: boolean;
@@ -21,45 +35,36 @@ type Props = {
 
 const SidebarEntityListMemoized = ({ menuItems, handleOnClick, urlPath, minimized }: Props) => {
   const isActive = (entityType, link) => (entityType ? location().includes(link) : urlPath.includes(link));
-
   return (
     <ListWrapper>
-      {menuItems?.map((menuItem) => {
-        if (!menuItem) return null;
-        const { label, items } = menuItem;
+      {Object.keys(menuItems).map((menuItem) => {
+        const { label, items } = menuItems[menuItem];
+        const hasNoActiveModules = !Object.keys(items).some((item) => items[item].active);
+        if (hasNoActiveModules) return null;
         return (
           <ListWrapper key={label}>
             {label ? <Label minimized={minimized}>{label}</Label> : null}
             <ListWrapper minimized={minimized}>
-              {items.map(
-                ({
-                  text,
-                  link,
-                  Icon,
-                  count,
-                  entityType = null,
-                  Component = null,
-                  ignoreIconStyles = false,
-                  check = null,
-                }) => {
-                  if (Component) return <Component key={text} />;
-                  return (
-                    !!text && (
-                      <Item
-                        key={text}
-                        onClick={handleOnClick(link, entityType)}
-                        Icon={Icon}
-                        isActive={check ? check() : isActive(entityType, link)}
-                        count={count}
-                        ignoreIconStyles={ignoreIconStyles}
-                        text={text}
-                      >
-                        {text}
-                      </Item>
-                    )
-                  );
-                }
-              )}
+              {Object.keys(items).map((item) => {
+                const { text, link, Icon, Component, check, count, ignoreIconStyles, active, entityType } = items[item];
+                if (!active) return null;
+                if (Component) return <Component key={text} />;
+                return (
+                  !!text && (
+                    <Item
+                      key={text}
+                      onClick={handleOnClick(link, entityType)}
+                      Icon={Icon}
+                      isActive={check ? check() : isActive(entityType, link)}
+                      count={count}
+                      ignoreIconStyles={ignoreIconStyles}
+                      text={text}
+                    >
+                      {text}
+                    </Item>
+                  )
+                );
+              })}
             </ListWrapper>
           </ListWrapper>
         );

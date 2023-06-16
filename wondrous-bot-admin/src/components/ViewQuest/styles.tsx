@@ -25,3 +25,13 @@ export const StyledLink = styled(Link)`
     left: 1%;
   }
 `;
+
+export const UnderlinedLink = styled.a`
+  cursor: pointer;
+  color: inherit;
+  text-decoration: underline;
+  &:hover {
+    color: inherit;
+    text-decoration: underline;
+  }
+`;

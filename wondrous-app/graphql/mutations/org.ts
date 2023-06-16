@@ -149,3 +149,11 @@ export const SEND_ORG_EMAIL_INVITES = gql`
     }
   }
 `;
+
+export const UPDATE_ORG_MODULES = gql`
+  mutation updateOrgModules($orgId: ID!, $input: ModulesInput) {
+    updateOrgModules(orgId: $orgId, input: $input) {
+      success
+    }
+  }
+`;

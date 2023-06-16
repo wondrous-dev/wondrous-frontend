@@ -9,16 +9,12 @@ import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { ENTITIES_TYPES, PERMISSIONS, SPECIAL_ORGS } from 'utils/constants';
-import { GET_USER_ORGS } from 'graphql/queries';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { useGlobalContext } from 'utils/hooks';
-import { useQuery } from '@apollo/client';
 import { EntityItem, HorizontalEntityItem, Label, Wrapper } from './styles';
 
 const CreateEntityComponent = ({ onClose }) => {
   const { pageData, setPageData } = useGlobalContext();
-  const { data: userOrgs } = useQuery(GET_USER_ORGS);
 
   const BOARD_ITEMS_CONFIG = {
     label: 'Board item',
@@ -65,70 +61,46 @@ const CreateEntityComponent = ({ onClose }) => {
     },
   };
 
-  const isOnlyInSpecialOrg = userOrgs?.getUserOrgs?.length === 1 && userOrgs?.getUserOrgs[0]?.id in SPECIAL_ORGS;
-
-  const hasWorkSection =
-    !isOnlyInSpecialOrg ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.TASK) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.BOUNTY) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.PROPOSAL) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.MILESTONE);
-
-  const hasSpacesSection =
-    !isOnlyInSpecialOrg ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.POD) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.GRANT) ||
-    SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(ENTITIES_TYPES.COLLAB);
   return (
     <Wrapper data-cy="modal-base">
-      {hasWorkSection && (
-        <>
-          <Label>{BOARD_ITEMS_CONFIG.label}</Label>
-          <Grid display="flex" flexWrap="wrap" justifyContent="space-between" gap="12px">
-            {Object.keys(BOARD_ITEMS_CONFIG.items).map((item, key) => {
-              const { icon: Icon, label } = BOARD_ITEMS_CONFIG.items[item];
-              if (isOnlyInSpecialOrg && !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(item)) {
-                return null;
-              }
-              return (
-                <EntityItem key={key} onClick={() => setEntityType(item)} data-cy={`modal-item-${label}`}>
-                  <ItemButtonIcon bgColor={palette.grey75}>
-                    <Icon />
-                  </ItemButtonIcon>
+      <>
+        <Label>{BOARD_ITEMS_CONFIG.label}</Label>
+        <Grid display="flex" flexWrap="wrap" justifyContent="space-between" gap="12px">
+          {Object.keys(BOARD_ITEMS_CONFIG.items).map((item) => {
+            const { icon: Icon, label } = BOARD_ITEMS_CONFIG.items[item];
+            return (
+              <EntityItem key={label} onClick={() => setEntityType(item)} data-cy={`modal-item-${label}`}>
+                <ItemButtonIcon bgColor={palette.grey75}>
+                  <Icon />
+                </ItemButtonIcon>
 
-                  <Typography color={palette.white} fontSize="15px" fontWeight={500} fontFamily={typography.fontFamily}>
-                    {label}
-                  </Typography>
-                </EntityItem>
-              );
-            })}
-          </Grid>
-        </>
-      )}
-      {hasSpacesSection && (
-        <>
-          <Label>{SPACE_ITEMS_CONFIG.label}</Label>
-          <Grid display="flex" flexWrap="wrap" justifyContent="space-between" gap="12px">
-            {Object.keys(SPACE_ITEMS_CONFIG.items).map((item, key) => {
-              const { icon: Icon, label } = SPACE_ITEMS_CONFIG.items[item];
-              if (isOnlyInSpecialOrg && !SPECIAL_ORGS[userOrgs?.getUserOrgs[0]?.id]?.includes(item)) {
-                return null;
-              }
-              return (
-                <HorizontalEntityItem key={key} onClick={() => setEntityType(item)}>
-                  <ItemButtonIcon bgColor={palette.grey75}>
-                    <Icon />
-                  </ItemButtonIcon>
+                <Typography color={palette.white} fontSize="15px" fontWeight={500} fontFamily={typography.fontFamily}>
+                  {label}
+                </Typography>
+              </EntityItem>
+            );
+          })}
+        </Grid>
+      </>
+      <>
+        <Label>{SPACE_ITEMS_CONFIG.label}</Label>
+        <Grid display="flex" flexWrap="wrap" justifyContent="space-between" gap="12px">
+          {Object.keys(SPACE_ITEMS_CONFIG.items).map((item) => {
+            const { icon: Icon, label } = SPACE_ITEMS_CONFIG.items[item];
+            return (
+              <HorizontalEntityItem key={label} onClick={() => setEntityType(item)}>
+                <ItemButtonIcon bgColor={palette.grey75}>
+                  <Icon />
+                </ItemButtonIcon>
 
-                  <Typography color={palette.white} fontSize="15px" fontWeight={500} fontFamily={typography.fontFamily}>
-                    {label}
-                  </Typography>
-                </HorizontalEntityItem>
-              );
-            })}
-          </Grid>
-        </>
-      )}
+                <Typography color={palette.white} fontSize="15px" fontWeight={500} fontFamily={typography.fontFamily}>
+                  {label}
+                </Typography>
+              </HorizontalEntityItem>
+            );
+          })}
+        </Grid>
+      </>
     </Wrapper>
   );
 };

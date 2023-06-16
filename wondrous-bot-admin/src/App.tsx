@@ -23,6 +23,7 @@ import { ApolloProvider } from "@apollo/client";
 import { SnackbarAlertProvider } from "components/SnackbarAlert";
 import { WonderWeb3Provider } from "utils/context/WonderWeb3Context";
 import SettingsPage from "pages/settings";
+import TeamSettingsPage from "pages/settings/team";
 import WalletConnectPage from "pages/wallet/connect";
 import OnboardingPage from "pages/onboarding";
 import DiscordOrgCallbackPage from "pages/discord/callback/org-connect";
@@ -32,6 +33,7 @@ import ViewQuest from "pages/quests/ViewQuest";
 import DiscordCallbackCmtyUserConnect from "pages/discord/callback/cmty-user-connect";
 import SignupPage from "pages/signup";
 import OnboardingWelcomePage from "pages/onboarding/welcome";
+import InvitePage from "pages/invite";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/*",
         element: <SettingsPage />,
+      },
+      {
+        path: "/settings/team",
+        element: <TeamSettingsPage />,
       },
       {
         path: "/",
@@ -108,6 +114,10 @@ const router = createBrowserRouter([
       {
         path: "/onboarding/welcome",
         element: <OnboardingWelcomePage />,
+      },
+      {
+        path: '/invite/:token',
+        element: <InvitePage />
       },
     ],
   },

@@ -94,7 +94,8 @@ export const PAGES_WITHOUT_HEADER = [
   "/discord/callback",
   "/onboarding/welcome",
   "/quests/view/:id",
-  "/discord/callback/cmty-user-connect"
+  "/discord/callback/cmty-user-connect",
+  "/invite/:token"
 ];
 
 export const BG_TYPES = {
@@ -103,7 +104,7 @@ export const BG_TYPES = {
   MEMBERS: "members",
   LEVELS: "levels",
   QUESTS: "quests",
-  VIEW_QUESTS: 'view_quests'
+  VIEW_QUESTS: "view_quests",
 };
 
 export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
@@ -154,15 +155,26 @@ export const ERRORS = {
   MAX_OPTION_LENGTH: "MAX_OPTION_LENGTH",
 };
 
+export const REQUIREMENTS_NOT_MET_ERRORS = {
+  ONLY_ONCE: 'only_once',
+  LEVEL: 'level',
+  DISCORD_ROLE: 'discord_role',
+  QUEST: 'quest'
+}
+
 export const ERRORS_LABELS = {
   [ERRORS.MIN_OPTION_LENGTH]: "You need at least one option.",
   [ERRORS.MAX_OPTION_LENGTH]: "You have too many options",
-  item_deleted_error: 'Item has been deleted',
-  quest_archived: 'Quest has been archived',
-  invalid_discord_auth_code: 'Invalid discord code. Please try again',
-  guild_not_found: 'Guild not found',
-  discord_user_not_in_guild: 'You need to be a member of {guildName} to connect your account',
-  discord_user_not_in_guild_on_quest_start: 'You need to be a member of the guild to start this quest',
+  item_deleted_error: "Item has been deleted",
+  quest_archived: "Quest has been archived",
+  invalid_discord_auth_code: "Invalid discord code. Please try again",
+  guild_not_found: "Guild not found",
+  discord_user_not_in_guild: "You need to be a member of {guildName} to connect your account",
+  discord_user_not_in_guild_on_quest_start: "You need to be a member of the guild to start this quest",
+  [REQUIREMENTS_NOT_MET_ERRORS.ONLY_ONCE]: "You have reached the maximum number of submissions on this quest",
+  [REQUIREMENTS_NOT_MET_ERRORS.LEVEL]: "You must reach at least level {requiredLevel} to embark on this quest",
+  [REQUIREMENTS_NOT_MET_ERRORS.DISCORD_ROLE]: "You must have {discordRole} role to take this quest",
+  [REQUIREMENTS_NOT_MET_ERRORS.QUEST]: "You must complete {questTitle} before taking this quest"
 };
 
 export const DAO_CATEGORIES_KEYS = {
@@ -280,4 +292,12 @@ export const SKILLS = {
   other: "Other",
 };
 
-export const EXCLUDED_PATHS = ["/login", "/discord/callback", "/twitter/callback", '/discord/callback/cmty-user-connect', '/quests/view/:id', '/signup'];
+export const EXCLUDED_PATHS = [
+  "/login",
+  "/discord/callback",
+  "/twitter/callback",
+  "/discord/callback/cmty-user-connect",
+  "/quests/view/:id",
+  "/signup",
+  "/invite/:token"
+];

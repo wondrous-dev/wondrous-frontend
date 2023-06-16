@@ -29,6 +29,15 @@ export const GET_QUEST_BY_ID = gql`
   ${QuestFragment}
 `;
 
+export const GET_MINIMAL_QUEST_BY_ID = gql`
+  query getQuestById($questId: ID!) {
+    getQuestById(questId: $questId) {
+      title,
+      id
+    }
+  }
+`;
+
 export const GET_ORG_LEVEL_REWARDS = gql`
   query getOrgLevelsRewards($orgId: ID!) {
     getOrgLevelsRewards(orgId: $orgId) {
