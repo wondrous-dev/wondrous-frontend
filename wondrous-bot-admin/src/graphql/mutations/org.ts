@@ -27,3 +27,21 @@ export const CREATE_ORG = gql`
   }
   ${OrgFragment}
 `;
+
+export const CREATE_ORG_INVITE_LINK = gql`
+  mutation createOrgInviteLink($input: OrgInviteLinkInput) {
+    createOrgInviteLink(input: $input) {
+      token
+    }
+  }
+`;
+
+
+
+export const REDEEM_ORG_INVITE_LINK = gql`
+  mutation redeemOrgInviteLink($token: String!) {
+    redeemOrgInviteLink(token: $token) {
+      success
+    }
+  }
+`;

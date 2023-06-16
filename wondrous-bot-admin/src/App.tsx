@@ -23,6 +23,7 @@ import { ApolloProvider } from "@apollo/client";
 import { SnackbarAlertProvider } from "components/SnackbarAlert";
 import { WonderWeb3Provider } from "utils/context/WonderWeb3Context";
 import SettingsPage from "pages/settings";
+import TeamSettingsPage from "pages/settings/team";
 import WalletConnectPage from "pages/wallet/connect";
 import OnboardingPage from "pages/onboarding";
 import DiscordOrgCallbackPage from "pages/discord/callback/org-connect";
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/*",
         element: <SettingsPage />,
+      },
+      {
+        path: "/settings/team",
+        element: <TeamSettingsPage />,
       },
       {
         path: "/",

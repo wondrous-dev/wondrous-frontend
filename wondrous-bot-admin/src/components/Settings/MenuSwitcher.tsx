@@ -8,6 +8,10 @@ const MENU_ITEMS = [
     path: '/settings',
   },
   {
+    title: 'Team',
+    path: '/settings/team',
+  },
+  {
     title: 'Reward Methods',
     disabled: true,
     path: '/settings/reward-methods',
