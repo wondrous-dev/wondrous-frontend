@@ -47,7 +47,6 @@ const TeamsAndInvite = () => {
         orgId: activeOrg?.id,
       },
     }).then((res) => {
-      console.log(res?.data?.getOrgRoles);
       // filter for role with full access permission
       const adminRole = res?.data?.getOrgRoles?.find((role) => role?.permissions?.includes("full_access"));
       if (adminRole) {
