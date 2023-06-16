@@ -74,7 +74,7 @@ export const TeamsAndInvite = () => {
 
   return (
     <Grid container direction="column" gap="24px">
-      <Modal open={inviteModalOpen} title="Invite Teammates" onClose={handleCloseModal} maxWidth={600}>
+      <Modal open={inviteModalOpen} title="Invite Admins" onClose={handleCloseModal} maxWidth={600}>
         <div style={{ display: "flex", width: "100%" }}>
           <CustomTextField value={inviteLink} disabled></CustomTextField>
           <CopyContainer $copied={copied} onClick={handleOnCopy}>
@@ -83,7 +83,7 @@ export const TeamsAndInvite = () => {
         </div>
       </Modal>
       <Box justifyContent={"center"} display={"flex"}>
-        <SharedSecondaryButton onClick={() => setInviteModalOpen(true)}>Invite Teammates</SharedSecondaryButton>
+        <SharedSecondaryButton onClick={() => setInviteModalOpen(true)}>Invite Admins</SharedSecondaryButton>
       </Box>
     </Grid>
   );
