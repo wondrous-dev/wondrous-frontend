@@ -54,32 +54,34 @@ const useQueryModules = ({ orgUsername = '', orgId = '', podId = '' }): UseQuery
   });
 
   const orgModules = getOrgByIdData?.getOrgById?.modules || getOrgFromUsernameData?.getOrgFromUsername?.modules;
-
+  const podModules = getPodByIdData?.getPodById?.modules;
   const defaultModules = podId ? defaultPodModules : defaultOrgModules;
-
-  const modules = (podId ? getPodByIdData?.getPodById?.modules : orgModules) ?? defaultModules;
+  const modules = {
+    ...defaultModules,
+    ...(podId ? podModules : orgModules),
+  };
 
   const modulesCopy =
     modules &&
-    Object.keys(modules).reduce(
-      (acc, key) => {
-        if (podId && (key === 'collab' || key === 'pod')) {
-          // exclude the `collab` and `pod` key if `podId` is provided.
-          return acc;
-        }
-        const moduleValue = modules[key];
-        if (typeof moduleValue !== 'boolean' && key !== '__typename') {
-          // Converts all non-boolean values in `modules` to `true`.
-          acc[key] = true;
-          return acc;
-        }
-        acc[key] = moduleValue;
+    Object.keys(modules).reduce((acc, key) => {
+      if (podId && (key === 'collab' || key === 'pod')) {
+        // exclude the `collab` and `pod` key if `podId` is provided.
         return acc;
-      },
-      { ...modules }
-    );
-
-  modulesCopy.parentOrgPodModuleStatus = podId && orgModules?.pod; // If `podId` is provided, exclude the `pod` key but include the status of the parent org's `pod` module.
+      }
+      if (podId && key === 'parentOrgPodModuleStatus') {
+        // If `podId` is provided, include the status of the parent org's `pod` module.
+        acc.parentOrgPodModuleStatus = orgModules?.pod;
+        return acc;
+      }
+      const moduleValue = modules[key];
+      if (typeof moduleValue !== 'boolean' && key !== '__typename') {
+        // Converts all non-boolean values in `modules` to `true`.
+        acc[key] = true;
+        return acc;
+      }
+      acc[key] = moduleValue;
+      return acc;
+    }, modules);
 
   return modulesCopy;
 };

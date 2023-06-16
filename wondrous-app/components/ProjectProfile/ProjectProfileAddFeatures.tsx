@@ -3,7 +3,10 @@ import PlusIcon from 'components/Icons/plus';
 import Link from 'next/link';
 import palette from 'theme/palette';
 
-const ProjectProfileAddFeatures = ({ orgId, podId }) => {
+const ProjectProfileAddFeatures = ({ orgId, podId, modules }) => {
+  const isModulesAllTrue = Object.keys(modules)
+    .filter((key) => key !== '__typename')
+    .every((key) => modules[key]);
   const href = podId ? `/pod/settings/${podId}/modules` : `/organization/settings/${orgId}/modules`;
   return (
     <Grid
@@ -37,7 +40,7 @@ const ProjectProfileAddFeatures = ({ orgId, podId }) => {
             <PlusIcon width="12px" height="12px" />
           </ButtonBase>
           <Typography color={palette.grey250} fontSize="14px" fontWeight="600">
-            Add features
+            {isModulesAllTrue ? 'Configure features' : 'Add features'}
           </Typography>
         </Grid>
       </Link>

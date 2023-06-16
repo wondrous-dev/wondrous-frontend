@@ -132,7 +132,7 @@ const ProfileSectionsWrapper = () => {
               );
             })}
             {provided.placeholder}
-            {hasFullPermission && <ProjectProfileAddFeatures orgId={orgId} podId={podId} />}
+            {hasFullPermission && <ProjectProfileAddFeatures orgId={orgId} podId={podId} modules={modules} />}
           </Grid>
         )}
       </StrictModeDroppable>
