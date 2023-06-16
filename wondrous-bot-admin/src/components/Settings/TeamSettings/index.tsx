@@ -20,9 +20,7 @@ import { getBaseUrl } from "utils/common";
 
 import { handleImageFile, uploadMedia } from "utils/media";
 
-const ChangeOrgDetails = () => {
-  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
-
+const TeamsAndInvite = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [inviteLink, setInviteLink] = useState("");
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -111,7 +109,7 @@ const TeamSettings = () => {
             Team Members
           </Typography>
         )}
-        renderBody={ChangeOrgDetails}
+        renderBody={TeamsAndInvite}
       />
     </Grid>
   );
