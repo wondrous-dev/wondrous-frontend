@@ -135,6 +135,7 @@ export const GET_QUEST_REWARDS = gql`
         eventUrl
         imageUrl
         expiryDate
+        eventSecret
       }
       paymentMethodId
       amount
