@@ -5,7 +5,7 @@ import { MetaMaskConnector, DiscordConnector, CoinbaseConnector, WalletConnectCo
 import { Connectors, ErrorTypography } from "components/Login/styles";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import useWonderWeb3 from "services/web3/useWonderWeb3";
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from "utils/constants";
 import { signedMessageIsString, SupportedChainType, SUPPORTED_CHAINS } from "utils/web3Constants";
@@ -24,11 +24,14 @@ const CollectCredentials = ({ moveForward }) => {
   const { email, password, confirmPassword } = credentials;
   const [errorMessage, setErrorMessage] = useState("");
   const isMobile = useMediaQuery("(max-width:600px)");
-  const params = useParams();
+  const {search} = useLocation();
+  const searchParams = new URLSearchParams(search);
   const [notSupportedChain, setNotSupportedChain] = useState(false);
 
-  const { discordConnectError, token, type } = params;
 
+  const discordConnectError = searchParams.get('discordConnectError');
+  const token = searchParams.get('token');
+  const type = searchParams.get('type');
   const state = JSON.stringify({
     callbackType: DISCORD_CONNECT_TYPES.signup,
     ...(token ? { token } : {}),

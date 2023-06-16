@@ -35,3 +35,14 @@ export const OrgFragment = gql`
     }
   }
 `;
+
+export const OrgInviteFragment = gql`
+  fragment OrgInviteFragment on Org {
+    id
+    name
+    username
+    profilePicture
+    contributorCount
+    shared
+  }
+`;

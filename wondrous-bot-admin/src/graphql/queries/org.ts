@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client"
+import { OrgInviteFragment } from "graphql/fragments/org";
 
 export const GET_CMTY_ORG_DISCORD_CONFIG = gql`
 	query getCmtyOrgDiscordConfig($orgId: ID!) {
@@ -49,4 +50,14 @@ export const GET_ORG_ROLES = gql`
       permissions
     }
   }
+`;
+
+
+export const GET_ORG_INVITE_ORG_INFO = gql`
+  query getInvitedOrgInfo($token: String!) {
+    getInvitedOrgInfo(token: $token) {
+      ...OrgInviteFragment
+    }
+  }
+  ${OrgInviteFragment}
 `;

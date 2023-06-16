@@ -8,10 +8,12 @@ export function shallowEqual(objA, objB) {
   return !Object.keys({ ...objA, ...objB })?.some((key) => objA[key] !== objB[key]);
 }
 
-export const handleUserOnboardingRedirect = (userOrError, navigate, params) => {
+export const handleUserOnboardingRedirect = (userOrError, navigate, params, defaultRoute ="/onboarding" ) => {
   if (userOrError === "Incorrect Email and Password combination") return;
-
-  return navigate("/onboarding");
+  if(params.token) {
+    return navigate(`/invite/${params.token}`)
+  }  
+  return navigate(defaultRoute);
 };
 
 export const getTextForCondition = (condition) => {
@@ -44,7 +46,7 @@ export function getPathArray(path) {
 export const matchRoute = (pathname, options) => {
   return !!options.find(route => {
     // Replace potential URL parameters (e.g., ":id") with wildcard for RegExp match
-    const pattern = new RegExp(`^${route.replace(/:\w+/g, "\\w+")}$`, "g");
+    const pattern = new RegExp(`^${route.replace(/:\w+/g, "[\\w-]+")}$`, "gi");
     return pattern.test(pathname);
   });
 }

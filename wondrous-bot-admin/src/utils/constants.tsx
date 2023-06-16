@@ -95,6 +95,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/onboarding/welcome",
   "/quests/view/:id",
   "/discord/callback/cmty-user-connect",
+  "/invite/:token"
 ];
 
 export const BG_TYPES = {
@@ -298,4 +299,5 @@ export const EXCLUDED_PATHS = [
   "/discord/callback/cmty-user-connect",
   "/quests/view/:id",
   "/signup",
+  "/invite/:token"
 ];
