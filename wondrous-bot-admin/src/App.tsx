@@ -33,6 +33,7 @@ import ViewQuest from "pages/quests/ViewQuest";
 import DiscordCallbackCmtyUserConnect from "pages/discord/callback/cmty-user-connect";
 import SignupPage from "pages/signup";
 import OnboardingWelcomePage from "pages/onboarding/welcome";
+import InvitePage from "pages/invite";
 
 const router = createBrowserRouter([
   {
@@ -113,6 +114,10 @@ const router = createBrowserRouter([
       {
         path: "/onboarding/welcome",
         element: <OnboardingWelcomePage />,
+      },
+      {
+        path: '/invite/:token',
+        element: <InvitePage />
       },
     ],
   },

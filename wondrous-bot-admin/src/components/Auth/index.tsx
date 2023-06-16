@@ -267,7 +267,7 @@ export const logout = async () => {
   try {
     localStorage.removeItem("wonderToken");
     await apollo.clearStore();
-    window.location.href = "/";
+    window.location.href = "/login";
   } catch (exception) {
     return false;
   }
@@ -321,7 +321,10 @@ export const withAuth = (Component, noCache = false) => {
       navigate("/");
     }
     return (
-      <MyContext.Provider value={user}>
+      <MyContext.Provider value={{
+        user,
+        loading
+      }}>
         <Component {...props} user={user} />
       </MyContext.Provider>
     );
@@ -348,7 +351,10 @@ export const withWaitlistAuth = (Component, noCache = false) => {
     }
     const user = data?.getLoggedinWaitlistUser;
     return (
-      <MyContext.Provider value={user}>
+      <MyContext.Provider value={{
+        user,
+        loading
+      }}>
         <Component {...props} user={user} />
       </MyContext.Provider>
     );

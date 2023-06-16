@@ -24,13 +24,6 @@ export const LOGIN_WALLET_MUTATION = gql`
   ${LoggedinUserFragment}
 `;
 
-export const REDEEM_ORG_INVITE_LINK = gql`
-  mutation redeemOrgInviteLink($token: String!) {
-    redeemOrgInviteLink(token: $token) {
-      success
-    }
-  }
-`;
 
 export const REDEEM_POD_INVITE_LINK = gql`
   mutation redeemPodInviteLink($token: String!) {
