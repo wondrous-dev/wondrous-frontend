@@ -24,12 +24,10 @@ const CollectCredentials = ({ moveForward }) => {
   const { email, password, confirmPassword } = credentials;
   const [errorMessage, setErrorMessage] = useState("");
   const isMobile = useMediaQuery("(max-width:600px)");
-  // const params = useParams();
   const {search} = useLocation();
   const searchParams = new URLSearchParams(search);
   const [notSupportedChain, setNotSupportedChain] = useState(false);
 
-  // const { discordConnectError, token, type } = params;
 
   const discordConnectError = searchParams.get('discordConnectError');
   const token = searchParams.get('token');

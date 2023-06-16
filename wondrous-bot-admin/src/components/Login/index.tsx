@@ -26,9 +26,7 @@ function Login() {
 
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
-  // const params = useParams();
   const searchParams = new URLSearchParams(search)
-  // const { discordConnectError, token, type } = params;
 
   const discordConnectError = searchParams.get('discordConnectError');
   const token = searchParams.get('token');
