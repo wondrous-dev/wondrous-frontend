@@ -6,6 +6,7 @@ import { CONNECT_USER_DISCORD, USER_DISOCRD_SIGNUP_LOGIN } from "graphql/mutatio
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from "utils/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageSpinner from "components/PageSpinner";
+import { handleUserOnboardingRedirect } from "utils/common";
 
 function DiscordCallback() {
   const location = useLocation();
@@ -16,11 +17,11 @@ function DiscordCallback() {
   const [connectUserDiscord] = useMutation(CONNECT_USER_DISCORD);
   const [discordSignupLogin, { data, loading }] = useMutation(USER_DISOCRD_SIGNUP_LOGIN);
 
-  const parsedState = state ? JSON.parse(state) : null;
-
+  const parsedState = state ? JSON.parse(state) : {};
+  console.log(parsedState, 'parsed state')
   const returnToPage = useCallback(() => {
     navigate(
-      `/login?discordConnectError=true${parsedState?.collabInvite ? `&collabInvite=${parsedState?.collabInvite}` : ""}`
+      `/login?discordConnectError=true&${new URLSearchParams(parsedState)?.toString()}`
     );
   }, [state, navigate]);
 
@@ -95,13 +96,19 @@ function DiscordCallback() {
           .then(async (result) => {
             const response = result?.data?.discordSignupLogin;
             const token = response?.token;
+            let inviteToken = parsedState?.token;
             const discordUser = response?.user;
             await storeAuthHeader(token, discordUser);
             if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
-              return navigate("/");
+              return handleUserOnboardingRedirect(null, navigate, {
+                token: inviteToken
+              }, "/")
             }
             if(parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
-              return navigate("/onboarding/welcome");
+              return handleUserOnboardingRedirect(null, navigate, {
+                token: inviteToken
+              }, "/onboarding/welcome")
+
             }
           })
           .catch((err) => {

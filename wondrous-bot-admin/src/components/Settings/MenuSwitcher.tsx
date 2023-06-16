@@ -1,4 +1,5 @@
 import { ButtonBase, Grid, Typography } from '@mui/material';
+import { logout } from 'components/Auth';
 import RightArrowIcon from 'components/Icons/RightArrow';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -8,13 +9,18 @@ const MENU_ITEMS = [
     path: '/settings',
   },
   {
+    title: 'Team',
+    path: '/settings/team',
+  },
+  {
     title: 'Reward Methods',
     disabled: true,
     path: '/settings/reward-methods',
   },
   {
     title: 'Log out',
-    path: '/login',
+    path: null,
+    action: logout
   },
 ];
 
@@ -45,7 +51,12 @@ const MenuSwitcher = () => {
         return (
           <ButtonBase
             disabled={item.disabled}
-            onClick={() => navigate(item.path)}
+            onClick={() => {
+              item?.action?.()
+              if(item.path) {
+                return navigate(item.path)
+              }
+            }}
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
