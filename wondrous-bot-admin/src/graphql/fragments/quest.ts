@@ -14,6 +14,7 @@ export const QuestListFragment = gql`
     endAt
     maxSubmission
     requireReview
+    maxApproval
     submissionsCount {
       inReview
       approved
@@ -38,6 +39,7 @@ export const QuestFragment = gql`
     endAt
     maxSubmission
     isOnboarding
+    maxApproval
     requireReview
     submissionsCount {
       inReview
