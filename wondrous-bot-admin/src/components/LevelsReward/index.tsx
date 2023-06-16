@@ -173,7 +173,6 @@ const LevelsReward = ({ value, onChange, roles, level }) => {
                   </>
                 )}
                 {roles?.map((role, idx) => {
-                  console.log(roles, "ROOLES", value, "VALUUE");
                   return (
                     <Box>
                       <Label>{role?.guildInfo?.guildName}</Label>

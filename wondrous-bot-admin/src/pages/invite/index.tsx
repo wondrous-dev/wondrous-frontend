@@ -29,8 +29,7 @@ const InvitePage = () => {
       return navigate("/");
     },
   });
-  const {user, loading} = useMe();
-  console.log(user, loading, 'ASD')
+  const { user, loading } = useMe();
   const handleInvite = async () => {
     if (!user) {
       return navigate(`/login?token=${token}`);
@@ -41,7 +40,6 @@ const InvitePage = () => {
           token,
         },
       });
-      console.log('data here', data?.getInvitedOrgInfo?.id)
       if (data?.getInvitedOrgInfo?.id) {
         await redeemOrgInviteLink({
           variables: {
