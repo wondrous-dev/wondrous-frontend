@@ -154,7 +154,12 @@ const OnboardingPage = () => {
 
   const [updateOrg] = useMutation(UPDATE_ORG, {});
   const [getLoggedInUserFullAccessOrgs] = useLazyQuery(GET_LOGGED_IN_USER_FULL_ACCESS_ORGS, {
+    fetchPolicy: 'no-cache',
     onCompleted: (data) => {
+      if(data?.getLoggedInUserFullAccessOrgs?.length === 0) {
+        navigate("/onboarding/welcome");
+        return;
+      }
       setAllOrgs(data?.getLoggedInUserFullAccessOrgs);
     },
   });

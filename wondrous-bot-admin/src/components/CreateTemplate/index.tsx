@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
-import { useContext, useMemo, useState } from "react";
+import { createRef, useContext, useMemo, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
@@ -11,7 +11,7 @@ import { RewardComponent, RewardOverviewHeader } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
-import { CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
+import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
 import { GET_QUEST_REWARDS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
@@ -20,7 +20,9 @@ import { getPathArray } from "utils/common";
 import { set } from "lodash";
 import { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
+import { transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
+import { PAYMENT_OPTIONS } from "./RewardUtils";
 
 const DEFAULT_STATE_VALUE = {
   level: "1",
@@ -28,6 +30,7 @@ const DEFAULT_STATE_VALUE = {
   maxSubmission: null,
   requireReview: false,
   isActive: false,
+  isOnboarding: false,
   startAt: null,
   endAt: null,
   questConditions: [],
@@ -51,22 +54,15 @@ const CreateTemplate = ({
   const navigate = useNavigate();
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
-  const [createQuest] = useMutation(CREATE_QUEST, {
-    onCompleted: ({ createQuest }) => {
-      navigate(`/quests/${createQuest.id}`);
-    },
-    refetchQueries: ["getQuestsForOrg"],
-  });
-  const [updateQuest] = useMutation(UPDATE_QUEST, {
-    onCompleted: ({ updateQuest }) => {
-      postUpdate?.();
-    },
-    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
+  const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
+    refetchQueries: ["getQuestById"],
   });
 
   const { activeOrg } = useContext(GlobalContext);
 
   const [steps, setSteps] = useState(defaultQuestSteps);
+  const refs = useRef([]);
+
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState(defaultQuestSettings);
   const handleAdd = (type) => {
@@ -77,14 +73,59 @@ const CreateTemplate = ({
         type,
         value: "",
         required: true,
+        mediaUploads: [],
       },
     ]);
   };
+
+  const [createQuest] = useMutation(CREATE_QUEST, {
+    onCompleted: ({ createQuest }) => {
+      handleUpdateQuestStepsMedia(createQuest.id, createQuest?.steps, steps);
+      navigate(`/quests/${createQuest.id}`);
+    },
+    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
+  });
+  const [updateQuest] = useMutation(UPDATE_QUEST, {
+    onCompleted: ({ updateQuest }) => {
+      handleUpdateQuestStepsMedia(updateQuest.id, updateQuest?.steps, steps);
+      postUpdate?.();
+    },
+    refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
+  });
 
   const handleRemove = (index) => {
     const newItems = [...steps];
     newItems.splice(index, 1);
     setSteps(newItems);
+  };
+
+  const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
+    const stepsMedia = await Promise.all(
+      localSteps.map(async (step, idx) => {
+        return await handleMediaUpload(step.mediaUploads);
+      })
+    );
+
+    const stepsData = localSteps.reduce((acc, next, idx) => {
+      if (next.mediaUploads.length > 0) {
+        const questStep = questSteps.find((step) => step.order === idx + 1);
+        return [
+          ...acc,
+          {
+            stepId: questStep?.id,
+            mediaUploads: stepsMedia[idx],
+          },
+        ];
+      }
+      return acc;
+    }, []);
+
+    await attachQuestStepsMedia({
+      variables: {
+        questId,
+        stepsData,
+      },
+    });
   };
 
   const handleMutation = ({ body }) => {
@@ -103,26 +144,46 @@ const CreateTemplate = ({
       },
     });
   };
+
+  const handleMediaUpload = async (mediaUploads) =>
+    Promise.all(
+      mediaUploads.map(async (file) => {
+        try {
+          const { filename, fileType } = await transformAndUploadMedia({ file });
+          return {
+            uploadSlug: filename,
+            type: fileType,
+            name: file.name,
+          };
+        } catch (error) {
+          return null;
+        }
+      })
+    );
+
   const handleSave = async (status = null) => {
     if (Object.keys(errors).length > 0) {
       setErrors({});
     }
-    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level } = questSettings;
+    const { questConditions, requireReview, maxSubmission, isActive, startAt, endAt, level, timeBound, isOnboarding } =
+      questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
+
     const body = {
       title,
       orgId: activeOrg.id,
+      isOnboarding,
       requireReview,
       maxSubmission: maxSubmission ? parseInt(maxSubmission, 10) : null,
       conditionLogic: "and",
       questConditions: filteredQuestConditions,
       status: status || (isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE),
-      startAt: startAt ? startAt.toISOString() : null,
-      endAt: endAt ? endAt.toISOString() : null,
+      startAt: startAt && timeBound ? startAt.utcOffset(0).startOf("day").toISOString() : null,
+      endAt: endAt && timeBound ? endAt.utcOffset(0).endOf("day").toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
       rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {
-        if (reward?.type === "discord_role") {
+        if (reward?.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
           return {
             discordRewardData: {
               discordRoleId: reward?.discordRewardData?.discordRoleId,
@@ -131,21 +192,34 @@ const CreateTemplate = ({
             },
             type: reward?.type,
           };
+        } else if (reward?.type === PAYMENT_OPTIONS.NFT) {
+          return {
+            type: reward?.type,
+            paymentMethodId: reward?.paymentMethodId,
+            amount: Number(reward?.amount),
+          };
+        } else if (reward?.type === PAYMENT_OPTIONS.POAP) {
+          const { __typename, ...rewardData } = reward?.poapRewardData;
+          return {
+            type: reward?.type,
+            poapRewardData: rewardData,
+          };
         }
       }),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           type: next.type,
           order: index + 1,
+          mediaUploads: [],
           required: next.required === false ? false : true,
           prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };
-        if (next.type === TYPES.MULTI_QUIZ) {
+        if (next.type === TYPES.MULTI_QUIZ || next.type === TYPES.SINGLE_QUIZ) {
           (step.type = next.value.multiSelectValue),
             (step.options = next.value.answers.map((answer, idx) => {
               return {
                 position: idx,
-                text: answer.value,
+                text: answer.value?.trim(),
                 ...(next.value.withCorrectAnswers ? { correct: answer.isCorrect } : {}),
               };
             }));
@@ -187,6 +261,17 @@ const CreateTemplate = ({
           step["additionalData"] = {
             discordChannelName: next.value?.discordChannelName,
           };
+        } else if (next.type === TYPES.DATA_COLLECTION) {
+          step.prompt = next.value?.prompt;
+          step.options = next?.value?.options
+            ? next.value.options.map((option, idx) => ({
+                position: idx,
+                text: option,
+              }))
+            : null;
+          step["additionalData"] = {
+            ...next.value?.dataCollectionProps,
+          };
         }
         return [...acc, step];
       }, []),
@@ -198,12 +283,26 @@ const CreateTemplate = ({
       }
       handleMutation({ body });
     } catch (err) {
-      const errors = {};
+      const errors: any = {};
+
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
+          console.log(error.path, "ERR PATH");
           const path = getPathArray(error.path);
           set(errors, path, error.message);
         });
+        // this is a hacky way to scroll to the title
+        if (errors?.title) {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        } else {
+          const stepsFirstErrorIndex = errors?.steps?.findIndex((err) => !!err);
+          if (stepsFirstErrorIndex !== -1) {
+            refs?.current[stepsFirstErrorIndex]?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
         setErrors(errors);
         setIsSaving(false);
       } else console.log(err, "Error outside of validation service");
@@ -280,12 +379,7 @@ const CreateTemplate = ({
           <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
             <PanelComponent
               renderHeader={() => <CampaignOverviewHeader />}
-              renderBody={() => (
-                <CampaignOverview
-                  questSettings={questSettings}
-                  setQuestSettings={setQuestSettings}
-                />
-              )}
+              renderBody={() => <CampaignOverview questSettings={questSettings} setQuestSettings={setQuestSettings} />}
             />
             <PanelComponent
               renderHeader={() => <RewardOverviewHeader />}
@@ -300,11 +394,7 @@ const CreateTemplate = ({
             alignItems="center"
             width="100%"
           >
-            <AddFormEntity
-              steps={steps}
-              setSteps={setSteps}
-              handleRemove={handleRemove}
-            />
+            <AddFormEntity steps={steps} setSteps={setSteps} handleRemove={handleRemove} refs={refs} />
             <Panel
               display="flex"
               justifyContent="center"

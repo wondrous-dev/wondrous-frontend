@@ -9,24 +9,16 @@ import { DragDropContext, Draggable } from "react-beautiful-dnd";
 
 import DeleteIcon from "components/Icons/Delete";
 import StrictModeDroppable from "components/StrictModeDroppable";
-import { CONFIG_COMPONENTS, RESPOND_TYPES, TYPES } from "utils/constants";
+import { RESPOND_TYPES, TYPES } from "utils/constants";
 import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
+import StepAttachments from "components/StepAttachments";
 import { useContext } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
+import { CONFIG_COMPONENTS } from "utils/configComponents";
 
-const MULTICHOICE_DEFAULT_VALUE = {
-  question: "",
-  withCorrectAnswers: false,
-  multiSelectValue: TYPES.MULTI_QUIZ,
-  answers: [
-    {
-      value: "",
-      isCorrect: true,
-    },
-  ],
-};
+
 
 const COMPONENT_OPTIONS = [
   {
@@ -77,9 +69,13 @@ const COMPONENT_OPTIONS = [
     label: "Send A Message in Discord Channel",
     value: TYPES.DISCORD_MESSAGE_IN_CHANNEL,
   },
+  {
+    label: "Data Collection",
+    value: TYPES.DATA_COLLECTION,
+  },
 ];
 
-const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
+const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const handleDragEnd = (result) => {
     if (!result.destination) return;
@@ -103,6 +99,18 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
       };
     });
 
+    const MULTICHOICE_DEFAULT_VALUE = {
+      question: "",
+      withCorrectAnswers: false,
+      multiSelectValue: TYPES.MULTI_QUIZ,
+      answers: [
+        {
+          value: "",
+          isCorrect: true,
+        },
+      ],
+    };
+    
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
@@ -150,6 +158,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
         },
       };
     });
+    
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
@@ -157,6 +166,24 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
           {
             ...next,
             value,
+          },
+        ];
+        return acc;
+      }
+      acc.push(next);
+      return acc;
+    }, []);
+    setSteps(newConfiguration);
+  };
+
+  const handleMedia = (value, id) => {
+    const newConfiguration = steps.reduce((acc, next) => {
+      if (next.id === id) {
+        acc = [
+          ...acc,
+          {
+            ...next,
+            mediaUploads: value,
           },
         ];
         return acc;
@@ -196,6 +223,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
                 const Component = CONFIG_COMPONENTS[item.type];
                 if (!Component) return null;
                 return (
+                  <Box width="100%" height="100%" ref={(ref) => refs.current[idx] = ref}>
                   <Draggable key={idx} draggableId={`${idx}`} index={idx}>
                     {(provided, snapshot) => (
                       <Grid
@@ -250,14 +278,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
                                 <ButtonIconWrapper onClick={() => handleRemove(idx)}>
                                   <DeleteIcon />
                                 </ButtonIconWrapper>
-                                {/* <ButtonIconWrapper>
-																	<MoreVertIcon
-																		sx={{
-																			color: "black",
-																			fontSize: "17px"
-																		}}
-																	/>
-																</ButtonIconWrapper> */}
                               </Grid>
                             </Header>
                           )}
@@ -272,12 +292,17 @@ const AddFormEntity = ({ steps, setSteps, handleRemove }) => {
                               {RESPOND_TYPES[item.type] ? (
                                 <TypeComponent respondType={RESPOND_TYPES[item.type]} />
                               ) : null}
+                              <StepAttachments
+                                step={item}
+                                handleChange={(value) => handleMedia(value, item.id)}
+                              />
                             </>
                           )}
                         />
                       </Grid>
                     )}
                   </Draggable>
+                  </Box>
                 );
               })}
             </Grid>

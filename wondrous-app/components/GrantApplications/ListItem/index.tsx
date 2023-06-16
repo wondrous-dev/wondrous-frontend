@@ -22,6 +22,7 @@ import typography from 'theme/typography';
 import { GRANT_APPLICATION_EDITABLE_STATUSES, GRANT_APPLICATION_DELETE_STATUSES, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { formatDistance } from 'date-fns';
 import { ApplicationItemContainer, ApplicationItemWrapper, Footer } from './styles';
 
 const ListItem = ({ item }) => {
@@ -78,7 +79,13 @@ const ListItem = ({ item }) => {
               creatorUsername={item?.creator?.username}
               creatorProfilePicture={item?.creator?.profilePicture}
             />
-            <SubmissionItemHeader createdAt={item?.createdAt} />
+            <SubmissionItemHeader
+              style={{
+                color: palette.white,
+              }}
+            >
+              <span style={{ color: palette.white }}>{formatDistance(new Date(item?.createdAt), new Date())} ago</span>
+            </SubmissionItemHeader>
           </SubmissionItemHeaderContent>
           <Grid display="flex" gap="12px" alignItems="center">
             {canEdit && (

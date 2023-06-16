@@ -1,6 +1,7 @@
 import CreateTemplate from "components/CreateTemplate";
 import { TitleInput } from "components/CreateTemplate/styles";
 import PageHeader from "components/PageHeader";
+import QuestTitle from "components/QuestTitle";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -27,16 +28,7 @@ const CreatePage = () => {
         <div ref={ref}>
           <PageHeader
             withBackButton
-            titleComponent={() => (
-              <TitleInput
-                maxRows={2}
-                multiline
-                rows={1}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter Quest Title"
-              />
-            )}
+            titleComponent={() => <QuestTitle title={title} setTitle={setTitle} />}
             renderActions={() => (
               <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
                 Save Quest

@@ -69,7 +69,7 @@ export const ActiveCollaborationItem = (props) => {
               marginRight: '8px',
             }}
           >
-            <RolePill roleName={orgRoleName}>🔑 {orgRoleName}</RolePill>
+            <RolePill roleName={orgRoleName} />
           </RoleButtonWrapper>
           <TaskCardPrivacy privacyLevel={collab?.privacyLevel} />
         </CollabBottom>

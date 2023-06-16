@@ -25,6 +25,17 @@ export const GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL = gql`
 			createdAt
 			orgId
 			guildId
+			guildInfo {
+				guildName
+			}
 		}
 	}
 `
+
+export const IS_ORG_USERNAME_TAKEN = gql`
+  query isOrgUsernameTaken($username: String!) {
+    isOrgUsernameTaken(username: $username) {
+      exist
+    }
+  }
+`;

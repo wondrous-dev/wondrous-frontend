@@ -36,8 +36,8 @@ const authLink = setContext((_, { headers }) => {
 
   return {
     headers: {
-      ...headers,
       Authorization: auth,
+      ...headers,
     },
   };
 });
@@ -53,7 +53,7 @@ const cache = new InMemoryCache({
           return existingData || toReference({ __typename: "User", ...args });
         },
         getQuestsForOrg: {
-          keyArgs: ["input", ["orgId", "statuses"]],
+          keyArgs: ["input", ["orgId", "statuses", "status"]],
           merge: offsetLimitPaginationInput,
         },
       },

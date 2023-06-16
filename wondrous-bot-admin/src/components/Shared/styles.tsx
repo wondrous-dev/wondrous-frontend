@@ -146,6 +146,35 @@ export const SharedSecondaryButton = styled(ButtonBase)`
   }
 `;
 
+export const SharedBlackOutlineButton = styled(ButtonBase)`
+  && {
+    display: flex;
+    padding: 8px 24px;
+    gap: 10px;
+    height: ${({ height = "34px" }) => height};
+    min-width: ${({ minWidth = "40px" }) => minWidth};
+    width: ${({ width = "auto" }) => width};
+    background: ${({ background }) => background || "#FFFFF"};
+    border-radius: ${({ borderRadius = "6px" }) => borderRadius};
+    border: 1px solid ${({ borderColor }) => borderColor || "black"};
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 150%;
+    white-space: nowrap;
+    color: ${({ color = "#0c002d" }) => color};
+
+    &:disabled {
+      opacity: 0.5;
+    }
+    ${({ $reverse }) => ($reverse ? ReversedButtonCss : ``)}
+    &:hover {
+      border: 1px solid black;
+    }
+  }
+`;
+
 export const RoundedSecondaryButton = styled(SharedSecondaryButton)`
   && {
     padding: 6px;

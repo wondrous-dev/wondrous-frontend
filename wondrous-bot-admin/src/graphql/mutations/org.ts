@@ -18,3 +18,12 @@ export const CONNECT_DISCORD_TO_CMTY_ORG = gql`
     }
   }
 `;
+
+export const CREATE_ORG = gql`
+  mutation createOrg($input: OrgInput) {
+    createOrg(input: $input) {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
+`;

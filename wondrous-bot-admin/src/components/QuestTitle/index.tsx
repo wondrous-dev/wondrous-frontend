@@ -6,7 +6,6 @@ import { ErrorText } from "components/Shared/styles";
 
 const QuestTitle = ({ title, setTitle }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
-
   const handleChange = (e) => {
     if (errors?.title) {
       setErrors({
@@ -22,6 +21,7 @@ const QuestTitle = ({ title, setTitle }) => {
         maxRows={2}
         multiline
         rows={1}
+        maxLength={220}
         value={title}
         onChange={handleChange}
         placeholder="Enter Quest Title"

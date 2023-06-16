@@ -1,5 +1,7 @@
 import apollo from 'services/apollo';
 import { GET_PRESIGNED_IMAGE_URL } from 'graphql/queries';
+import { makeUniqueId } from '@apollo/client/utilities';
+
 import {
   IMAGE_FILE_EXTENSIONS_TYPE_MAPPING,
   VIDEO_FILE_EXTENSIONS_TYPE_MAPPING,
@@ -115,3 +117,11 @@ export function extractFilename(name, url) {
   const urlParts = url.split('/');
   return urlParts[urlParts.length - 1];
 }
+
+export const transformAndUploadMedia = async ({ file }) => {
+  if (!file) return null;
+
+  const imageFile = handleImageFile({ file, id: makeUniqueId('temp') });
+  await uploadMedia(imageFile);
+  return { ...imageFile };
+};

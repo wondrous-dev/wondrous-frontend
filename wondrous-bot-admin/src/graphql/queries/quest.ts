@@ -126,6 +126,58 @@ export const GET_QUEST_REWARDS = gql`
         discordGuildId
         discordRoleName
       }
+      poapRewardData {
+        id
+        name
+        description
+        startDate
+        endDate
+        eventUrl
+        imageUrl
+        expiryDate
+      }
+      paymentMethodId
+      amount
+      paymentMethod {
+        name
+        contractAddress
+      }
+    }
+  }
+`;
+
+export const EXPORT_QUEST_SUBMISSIONS = gql`
+  query exportQuestSubmissions($questId: ID!) {
+    exportQuestSubmissions(questId: $questId) {
+      createdAt
+      orgId
+      approvedAt
+      rejectedAt
+      reviewedBy
+      creator {
+        discordUsername
+        discordDiscriminator
+        web3Address
+        twitterInfo {
+          twitterUsername
+        }
+        level
+        point
+      }
+    }
+  }
+`;
+
+export const GET_POAP_EVENT = gql`
+  query getQuestRewardPoapEvent($eventId: ID!) {
+    getQuestRewardPoapEvent(eventId: $eventId) {
+      id
+      name
+      description
+      endDate
+      eventUrl
+      imageUrl
+      expiryDate
     }
   }
 `;

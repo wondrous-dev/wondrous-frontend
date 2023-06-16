@@ -10,6 +10,7 @@ import useLevels from "utils/levels/hooks";
 import { useContext, useMemo } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import MaxSubmissions from "./MaxSubmissions";
+import OnboardingComponent from "components/AddFormEntity/components/OnboardingComponent";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 
 const REQUIRE_REVIEW_OPTIONS = [
@@ -51,22 +52,13 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
   }, [levels]);
 
   const CONFIG = [
-    // {
-    //   label: 'Quest Title',
-    //   component: TextFieldComponent,
-    //   value: questSettings.title,
-    //   componentProps: {
-    //     multiline: false,
-    //     placeholder: 'Enter title'
-    //   },
-    //   key: 'title',
-    // },
     {
       label: "Level Requirement",
       component: SelectComponent,
       value: questSettings.level,
       componentProps: {
         options: levelsOptions,
+        disabled: questSettings.isOnboarding,
       },
       key: "level",
     },
@@ -120,6 +112,12 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       component: Switch,
       value: questSettings?.isActive,
       key: "isActive",
+    },
+    {
+      label: "Onboarding Quest",
+      component: OnboardingComponent,
+      value: questSettings?.isOnboarding,
+      key: "isOnboarding",
     },
   ];
 

@@ -243,7 +243,7 @@ const DateRangePicker = ({
                 hideKeyboardShortcutsPanel
                 customArrowIcon={null}
                 isDayBlocked={(day) =>
-                  blockPastDates && day.isBefore(todayMoment)
+                  blockPastDates && day.isBefore(todayMoment, 'day')
                 }
                 renderCalendarDay={(props) => <CalendarDay {...props} />}
                 renderCalendarInfo={() => (
