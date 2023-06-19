@@ -82,6 +82,7 @@ const QuestResultsPage = () => {
     timeBound: getQuestById?.startAt || getQuestById?.endAt,
     isOnboarding: getQuestById?.isOnboarding || false,
     maxSubmission: getQuestById?.maxSubmission || null,
+    maxApproval: getQuestById?.maxApproval || null,
     requireReview: getQuestById?.requireReview || false,
     isActive: getQuestById?.status === QUEST_STATUSES.OPEN || false,
     startAt: getQuestById?.startAt ? moment(getQuestById?.startAt) : null,

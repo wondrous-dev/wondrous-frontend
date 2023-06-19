@@ -1,33 +1,30 @@
-import { Box, ButtonBase } from '@mui/material';
+import { Box } from '@mui/material';
 import { CustomTextField } from 'components/AddFormEntity/components/styles';
-import DateRangePicker from 'components/Shared/DatePicker';
 import Switch from 'components/Shared/Switch';
-import moment from 'moment';
-import { MONTH_DAY_FULL_YEAR } from 'utils/constants';
 
-const MaxSubmissions = (props) => {
-  const { maxSubmission, setQuestSettings } = props;
+const MaxInput = (props) => {
+  const { keyValue, stateKey, setQuestSettings } = props;
   return (
     <Box
       display='flex'
-      gap={maxSubmission ? '10px' : '0px'}
+      gap={keyValue ? '10px' : '0px'}
       alignItems='center'
     >
       <Box
         sx={{
-          width: maxSubmission ? '100%' : '0px',
-          visibility: maxSubmission ? 'visible' : 'hidden',
+          width: keyValue ? '100%' : '0px',
+          visibility: keyValue ? 'visible' : 'hidden',
           transition: 'width 0.3s ease-in-out, visibility 0.3s ease-in-out',
         }}
       >
         <CustomTextField
         autoFocus
           type='number'
-          value={maxSubmission}
+          value={keyValue}
           onChange={(e) => {
             setQuestSettings((prev) => ({
               ...prev,
-              maxSubmission: e.target.value,
+              [stateKey]: e.target.value,
             }));
           }}
         />
@@ -37,4 +34,4 @@ const MaxSubmissions = (props) => {
   );
 };
 
-export default MaxSubmissions;
+export default MaxInput

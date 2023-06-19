@@ -191,6 +191,11 @@ const ViewQuestResults = ({ quest }) => {
       type: "text",
     },
     {
+      label: "Max Approvals",
+      value: quest?.maxApproval || "Unlimited",
+      type: "text",
+    },
+    {
       label: "Onboarding Quest",
       value: quest?.isOnboarding ? "Yes" : "No",
       type: "text",

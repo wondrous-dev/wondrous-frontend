@@ -9,9 +9,9 @@ import DynamicCondition from "components/DynamicCondition";
 import useLevels from "utils/levels/hooks";
 import { useContext, useMemo } from "react";
 import GlobalContext from "utils/context/GlobalContext";
-import MaxSubmissions from "./MaxSubmissions";
 import OnboardingComponent from "components/AddFormEntity/components/OnboardingComponent";
 import CreateQuestContext from "utils/context/CreateQuestContext";
+import MaxInput from "./MaxInput";
 
 const REQUIRE_REVIEW_OPTIONS = [
   {
@@ -93,10 +93,10 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
     },
     {
       label: "Max Submissions",
-      component: MaxSubmissions,
+      component: MaxInput,
       value: !!questSettings?.maxSubmission,
       componentProps: {
-        maxSubmission: questSettings?.maxSubmission,
+        keyValue: questSettings?.maxSubmission,
         onChange: (value) => {
           if (!value && questSettings.maxSubmission) {
             return handleChange("maxSubmission", null);
@@ -106,7 +106,21 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       },
       key: "maxSubmission",
     },
-
+    {
+      label: "Max Approvals",
+      component: MaxInput,
+      value: !!questSettings?.maxApproval,
+      componentProps: {
+        keyValue: questSettings?.maxApproval,
+        onChange: (value) => {
+          if (!value && questSettings.maxApproval) {
+            return handleChange("maxApproval", null);
+          }
+          return handleChange("maxApproval", 1);
+        },
+      },
+      key: "maxApproval",
+    },
     {
       label: "Active Quest",
       component: Switch,
@@ -131,6 +145,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
               <Component
                 onChange={(value) => handleChange(key, value)}
                 error={errors[key]}
+                stateKey={key}
                 value={questSettings[key]}
                 questSettings={questSettings}
                 setQuestSettings={setQuestSettings}
