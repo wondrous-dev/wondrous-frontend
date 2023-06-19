@@ -1,9 +1,13 @@
 import { DiscordButton } from "components/ConnectDiscord/styles";
 import { getBaseUrl } from "utils/common";
 import { WhiteBgDiscord } from "components/Icons/Discord";
+import { useTour } from "@reactour/tour";
+import { useEffect, useLayoutEffect } from "react";
+import { SET_USER_COMPLETED_GUIDE } from "graphql/mutations";
+import { useMutation } from "@apollo/client";
+import { useMe } from "components/Auth";
 
-const callbackURL = () =>
-  encodeURIComponent(`${getBaseUrl()}/discord/callback/org-connect`);
+const callbackURL = () => encodeURIComponent(`${getBaseUrl()}/discord/callback/org-connect`);
 
 const DiscordClientID = import.meta.env.VITE_DISCORD_CLIENT_ID;
 
@@ -14,8 +18,33 @@ const getDiscordBotOauthURL = ({ orgId }: { orgId: string }) =>
 
 export default function ConnectDiscordButton({ orgId }: { orgId?: string }) {
   const oauthUrl = getDiscordBotOauthURL({ orgId });
+  const { setIsOpen, isOpen } = useTour();
+  const { user } = useMe();
+  const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE);
+
+  useEffect(() => {
+    if (user && !user?.completedGuides?.includes("communities_home_guide")) {
+      setIsOpen(true);
+    }
+  }, [user?.completedGuides]);
+
+  const handleClick = async () => {
+    if (isOpen) {
+      try {
+        await setUserCompletedGuide({
+          variables: {
+            guideId: "communities_home_guide",
+          },
+        });
+        window.location.href = oauthUrl;
+      } catch (error) {
+        window.location.href = oauthUrl;
+      }
+    }
+  };
+
   return (
-    <DiscordButton onClick={() => (window.location.href = oauthUrl)}>
+    <DiscordButton onClick={handleClick} data-tour="connect-discord-button">
       <WhiteBgDiscord />
       Add Bot!
     </DiscordButton>

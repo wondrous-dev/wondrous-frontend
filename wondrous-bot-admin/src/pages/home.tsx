@@ -5,13 +5,14 @@ import { LevelsIcon, OnboardedIcon, QuestIcon } from "components/Icons/HomePageI
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import ConnectDiscordButton from "components/ConnectDiscord/ConnectDiscordButton";
 import { GET_ORG_QUEST_STATS } from "graphql/queries";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL } from "graphql/queries";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import StarIcon from "components/Icons/StarIcon";
+import { useTour } from "@reactour/tour";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -75,6 +76,8 @@ const CardsComponent = ({ cards }) => {
 const HomePage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
+  const { setIsOpen, setCurrentStep } = useTour();
+    
   const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL, {
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -166,7 +169,7 @@ const HomePage = () => {
         }}
         position="relative"
       >
-        {getDiscordConfigError?.graphQLErrors[0]?.message && (
+        {getDiscordConfigError?.graphQLErrors[0]?.message && !loading && (
           <Grid container justifyContent="center" alignItems="center" position="absolute" top="-40%">
             <ConnectDiscordButton orgId={activeOrg?.id} />
           </Grid>

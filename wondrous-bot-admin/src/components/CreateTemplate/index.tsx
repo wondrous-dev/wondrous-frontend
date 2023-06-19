@@ -382,6 +382,9 @@ const CreateTemplate = ({
               renderBody={() => <CampaignOverview questSettings={questSettings} setQuestSettings={setQuestSettings} />}
             />
             <PanelComponent
+              panelProps={{
+                'data-tour': 'tutorial-quest-rewards'
+              }}
               renderHeader={() => <RewardOverviewHeader />}
               renderBody={() => <RewardComponent rewards={questSettings.rewards} setQuestSettings={setQuestSettings} />}
             />

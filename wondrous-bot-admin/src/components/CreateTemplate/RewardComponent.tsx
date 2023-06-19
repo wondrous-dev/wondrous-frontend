@@ -21,10 +21,16 @@ import {
   RewardMethod,
   ExistingPaymentMethodSelectComponent,
 } from "components/CreateTemplate/RewardUtils";
+import { useTour } from "@reactour/tour";
 
 const RewardComponent = ({ rewards, setQuestSettings }) => {
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const [errors, setErrors] = useState(null);
+  const {
+    isOpen,
+    setCurrentStep,
+    currentStep
+  } = useTour();
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [addPaymentMethod, setAddPaymentMethod] = useState(true);
   const [editPaymentMethod, setEditPaymentMethod] = useState({
@@ -37,6 +43,8 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     chain: null,
     amount: null,
   });
+
+
   const [tokenReward, setTokenReward] = useState({
     tokenName: null,
     contractAddress: null,
@@ -317,12 +325,24 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     }
   };
 
+  const handleClose = () => {
+    if(isOpen) {
+      setCurrentStep(currentStep + 1)
+    }
+    setIsRewardModalOpen(false)
+  }
   return (
-    <Grid container direction="column" gap="14px" justifyContent="flex-start">
+    <Grid container direction="column" gap="14px" justifyContent="flex-start" >
       <Modal
         open={isRewardModalOpen}
-        onClose={() => setIsRewardModalOpen(false)}
+        onClose={handleClose}
         title="Add reward to quest"
+        modalComponentProps={{
+          className: 'tour-default-modal'
+        }}
+        dialogComponentProps={{
+          className: 'tutorials-quest-reward-modal'
+        }}
         maxWidth={800}
         footerLeft={
           <RewardFooterLeftComponent
@@ -339,7 +359,8 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         footerRight={undefined}
         footerCenter={undefined}
       >
-        <Grid display="flex" flexDirection="column" gap="14px">
+        <Grid display="flex" flexDirection="column" gap="14px"
+        >
           <Box display="flex" alignItems="center" gap="6px" width={"100%"} justifyContent={"center"}>
             <SharedBlackOutlineButton
               style={{

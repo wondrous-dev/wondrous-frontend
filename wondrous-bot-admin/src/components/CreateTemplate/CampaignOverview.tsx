@@ -112,6 +112,9 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       component: Switch,
       value: questSettings?.isActive,
       key: "isActive",
+      wrapperProps: {
+        'data-tour': 'tutorial-activate-quest'
+      }
     },
     {
       label: "Onboarding Quest",
@@ -123,9 +126,9 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
 
   return (
     <>
-      {CONFIG.map(({ label, component: Component, key, componentProps = {} }: any, idx) => {
+      {CONFIG.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }: any, idx) => {
         return (
-          <Grid display="flex" justifyContent="flex-start" alignItems="center" width="100%" gap="10%" key={key}>
+          <Grid display="flex" justifyContent="flex-start" alignItems="center" width="100%" gap="10%" key={key} {...wrapperProps}>
             <Label>{label}</Label>
             {Component ? (
               <Component

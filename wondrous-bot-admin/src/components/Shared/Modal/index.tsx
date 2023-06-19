@@ -21,6 +21,12 @@ interface IModalProps {
   footerLeft?: React.ReactNode;
   footerRight?: React.ReactNode;
   footerCenter?: React.ReactNode;
+  modalComponentProps?: {
+    className?: string;
+  };
+  dialogComponentProps?: {
+    className?: string;
+  }
 }
 
 const Modal = ({
@@ -32,6 +38,8 @@ const Modal = ({
   footerLeft = null,
   footerRight = null,
   footerCenter = null,
+  modalComponentProps = {},
+  dialogComponentProps = {},
 }: IModalProps) => {
   const handleBackdropClick = (event) => {
     if (event.target.dataset.backdrop) {
@@ -40,13 +48,17 @@ const Modal = ({
   };
 
   return (
-    <ModalComponent open={open} onClose={onClose}>
+    <ModalComponent open={open} onClose={onClose} {...modalComponentProps}>
       <ModalContainer
         tabIndex={-1}
         data-backdrop='true'
         onClick={handleBackdropClick}
+
       >
-        <ModalDialog maxWidth={maxWidth}>
+        <ModalDialog maxWidth={maxWidth}
+          {...dialogComponentProps}
+
+        >
           <ModalContent>
             <ModalHeader>
               {!!title && <ModalTitle>{title}</ModalTitle>}

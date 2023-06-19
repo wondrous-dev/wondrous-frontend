@@ -81,10 +81,11 @@ const QuestsList = ({ data }) => {
           >
             <Label>{formattedData[level].label}</Label>
             <Grid container gap="30px 14px">
-              {formattedData[level]?.items?.map((item) => (
+              {formattedData[level]?.items?.map((item, idx) => (
                 <CardHoverWrapper
                   onClick={() => navigate(`/quests/${item.id}`)}
                   flex={1}
+                  data-tour={idx === 0 ? 'tutorial-quest-card' : ''}
                   key={item.id}
                   flexBasis={{
                     xs: "48%",
