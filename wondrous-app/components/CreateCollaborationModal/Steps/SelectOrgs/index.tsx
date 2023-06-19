@@ -88,7 +88,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props)
       ...orgsSchema,
       items: orgsSchema.items?.filter(
         (org) =>
-          org?.modules?.collab &&
+          (org?.modules?.collab || !org?.modules) &&
           org.id !== selectedOrg2?.id &&
           userPermissionsContext?.orgPermissions[org.id]?.includes(PERMISSIONS.FULL_ACCESS)
       ),

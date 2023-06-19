@@ -170,7 +170,7 @@ function CreatePodModal(props) {
         fetchedUserPermissionsContext &&
         board?.orgId in fetchedUserPermissionsContext?.orgPermissions &&
         !org &&
-        board?.orgData?.modules.pod
+        board?.orgData?.modules?.pod
       ) {
         // If you're only part of one dao then just set that as default
         // TODO: if you are part of the org and you're on that page it should be create on that org
