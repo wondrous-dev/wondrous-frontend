@@ -43,6 +43,17 @@ const QuestsPage = () => {
 
   const [getQuestsForOrg, { data, refetch }] = useLazyQuery(GET_QUESTS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      if (
+        user &&
+        !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) &&
+        data?.getQuestsForOrg?.length
+      ) {
+        setIsOpen(true);
+        const quest = data?.getQuestsForOrg[0];
+        setMeta(quest?.id);
+      }
+    },
   });
 
   const handleFetch = async () => {
@@ -64,19 +75,14 @@ const QuestsPage = () => {
         },
       };
       setStatuses(null);
-      const {data} = await refetch(variables);
-      if (user && !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) && data?.getQuestsForOrg?.length) {
-        setIsOpen(true);
-        const quest = data?.getQuestsForOrg[0];
-        setMeta(quest?.id)
-      }
+      await refetch(variables);
     }
   };
   useEffect(() => {
     if (activeOrg?.id) {
-      handleFetch()
+      handleFetch();
     }
-  }, [activeOrg?.id, user]);
+  }, [activeOrg?.id]);
 
   const handleChange = (value) => {
     const variables: any = {

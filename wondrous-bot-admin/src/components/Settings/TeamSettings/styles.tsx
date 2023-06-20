@@ -22,5 +22,6 @@ export const AdminUsernameText = styled(Typography)`
     font-family: Poppins;
     font-weight: 600;
     font-size: 13px;
+    color: black;
   }
 `;

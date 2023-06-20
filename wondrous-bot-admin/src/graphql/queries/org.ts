@@ -48,6 +48,9 @@ export const GET_ORG_ADMINS = gql`
       username
       thumbnailPicture
       profilePicture
+      userInfo {
+        email
+      }
     }
   }
 `;
