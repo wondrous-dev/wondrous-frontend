@@ -64,11 +64,13 @@ export const config = [
         prevAction: "skip",
       },
       {
-        selector: ".tour-default-modal",
+        selector: ".tutorials-quest-reward-modal",
         id: 'tutorial-add-rewards',
-        highlightedSelectors: [".tutorials-quest-reward-modal"],
-        mutationObservables: [".tutorials-quest-reward-modal"],
-        resizeObservables: [".tutorials-quest-reward-modal"],
+        position: [50,500],
+        highlightedSelectors: [".tour-default-modal"],
+        mutationObservables: [".tour-default-modal"],
+        resizeObservables: [".tour-default-modal"],
+        disableInteraction: true,
         content: () => (
           <ContentComponent title="Add Rewards">
             <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
