@@ -1,7 +1,8 @@
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { ModalContent, ModalHeader } from "components/Shared/Modal/styles";
 import { TUTORIALS } from "utils/constants";
 import ContentComponent from "./ContentComponent";
+import { ActiveQuestContent } from "./helpers";
 
 export const config = [
   {
@@ -30,7 +31,7 @@ export const config = [
     disableInteraction: true,
     steps: [
       {
-        selector: '[data-tour=tutorial-quest-card]',
+        selector: "[data-tour=tutorial-quest-card]",
         nextButtonTitle: "Visit Quest",
         prevButtonTitle: "Skip",
         nextHref: "/quests/:id?edit=true",
@@ -50,29 +51,41 @@ export const config = [
     steps: [
       {
         selector: "[data-tour=tutorial-quest-rewards]",
-        position: [40, 40],
-        highlightedSelectors: ['.tutorials-quest-reward-modal'],
-        mutationObservables: ['.tour-default-modal'],
-
+        id: 'tutorial-quest-rewards',
         content: () => (
           <ContentComponent title="Rewards">
             <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
-              These are the rewards for completing the quest. You can set multiple rewards for a quest. Click Add More to add more rewards.
+              You can set up points rewards. You can also add multiple rewards for a quest. Click{" "}
+              <strong>Add More</strong> to add more rewards.
+            </Typography>
+          </ContentComponent>
+        ),
+        prevButtonTitle: "Skip",
+        prevAction: "skip",
+      },
+      {
+        selector: ".tour-default-modal",
+        id: 'tutorial-add-rewards',
+        highlightedSelectors: [".tutorials-quest-reward-modal"],
+        mutationObservables: [".tutorials-quest-reward-modal"],
+        resizeObservables: [".tutorials-quest-reward-modal"],
+        content: () => (
+          <ContentComponent title="Add Rewards">
+            <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
+              You can set up <strong>Discord Roles</strong> as rewards for your quests. You can also set up{" "}
+              <strong>POAPs</strong>.
             </Typography>
           </ContentComponent>
         ),
       },
       {
         selector: "[data-tour=tutorial-activate-quest]",
+        id: 'tutorial-activate-quest',
         content: () => (
-          <ContentComponent title="Activate Quest">
-            <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
-              Use this toggle to activate or deactivate the quest.
-            </Typography>
-          </ContentComponent>
-        ),
+          <ActiveQuestContent />
+          ),
         nextButtonTitle: "Done",
-      }
+      },
     ],
   },
 ];

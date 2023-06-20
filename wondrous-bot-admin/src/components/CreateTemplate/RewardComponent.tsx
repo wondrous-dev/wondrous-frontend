@@ -29,7 +29,9 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
   const {
     isOpen,
     setCurrentStep,
-    currentStep
+    currentStep,
+    setSteps,
+    steps
   } = useTour();
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [addPaymentMethod, setAddPaymentMethod] = useState(true);
@@ -57,6 +59,46 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
 
   const [poapReward, setPoapReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      const newSteps = steps.map((step:any) => {
+        if(step.id === 'tutorial-quest-rewards') {
+          return {
+            ...step,
+            handleNextAction: () => {
+              setIsRewardModalOpen(true)
+              setCurrentStep(prev => prev + 1)
+            }
+          }
+        };
+        if(step.id === 'tutorial-add-rewards') {
+          return {
+            ...step,
+            handleNextAction: () => {
+              setIsRewardModalOpen(false)
+              setCurrentStep(prev => prev + 1)
+            },
+            handlePrevAction: () => {
+              setIsRewardModalOpen(false)
+              setCurrentStep(prev => prev - 1)
+            }
+          }
+        }
+        if(step.id === 'tutorial-activate-quest') {
+          return {
+            ...step,
+            handlePrevAction: () => {
+              setIsRewardModalOpen(true)
+              setCurrentStep(prev => prev - 1)
+            },
+          }
+        }
+        return step;
+      });
+      setSteps(newSteps)
+    }
+  }, [isOpen])
 
   const { activeOrg } = useContext(GlobalContext);
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
@@ -325,17 +367,18 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     }
   };
 
-  const handleClose = () => {
+  const handleToggle = () => {
+    setIsRewardModalOpen(prev => !prev)
     if(isOpen) {
       setCurrentStep(currentStep + 1)
     }
-    setIsRewardModalOpen(false)
   }
+
   return (
     <Grid container direction="column" gap="14px" justifyContent="flex-start" >
       <Modal
         open={isRewardModalOpen}
-        onClose={handleClose}
+        onClose={handleToggle}
         title="Add reward to quest"
         modalComponentProps={{
           className: 'tour-default-modal'
@@ -533,7 +576,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
 
       <Divider color="#767676" />
       <Box>
-        <SharedSecondaryButton onClick={() => setIsRewardModalOpen(true)}>Add more</SharedSecondaryButton>
+        <SharedSecondaryButton onClick={handleToggle}>Add more</SharedSecondaryButton>
       </Box>
     </Grid>
   );

@@ -13,8 +13,7 @@ export function NextNavigationButton({
 }) {
   const {meta, setMeta} = useTour();
   const navigate = useNavigate()
-  const location = useLocation();
-  const {steps} = getStepsConfig(location.pathname);
+  const {steps}:any = useTour();
   const stepsData = steps[currentStep];
   const buttonTitle = stepsData?.nextButtonTitle || 'Next';
   const action = async () => {
@@ -24,6 +23,9 @@ export function NextNavigationButton({
     }
     if (currentStep === steps.length - 1) {
       return setIsOpen(false);
+    }
+    if(stepsData?.handleNextAction) {
+      return stepsData?.handleNextAction?.()
     }
     return setCurrentStep((step) => step + 1);
   };
@@ -44,14 +46,16 @@ export function PrevNavigationButton({
   setCurrentStep,
   buttonProps = {}
 }) {
-  const location = useLocation();
-  const { steps } = getStepsConfig(location.pathname);
+  const {steps}:any = useTour();
   const stepsData = steps[currentStep];
   const buttonTitle = stepsData?.prevButtonTitle || 'Previous';
-
+  
   const action = () => {
     if (currentStep === 0 || stepsData.prevAction === 'skip') {
       return setIsOpen(false);
+    }
+    if(stepsData?.handlePrevAction) {
+      return stepsData?.handlePrevAction?.()
     }
     return setCurrentStep((step) => step - 1);
   };

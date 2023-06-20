@@ -74,9 +74,9 @@ const QuestResultsPage = () => {
   });
 
   useEffect(() => {
-    // if(user && !user?.completedGuides?.includes(TUTORIALS.COMMUNITIES_QUEST) && isEditMode) {
+    if(user && !user?.completedGuides?.includes(TUTORIALS.COMMUNITIES_QUEST) && isEditMode) {
       setIsOpen(true)
-    // }
+    }
   }, [user, isEditMode])
 
   const toggleEdit = () => setIsEditMode((prev) => !prev);
