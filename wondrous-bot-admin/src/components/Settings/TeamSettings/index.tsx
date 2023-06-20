@@ -109,7 +109,7 @@ const TeamAdmin = ({ admin, orgId }) => {
         height={40}
         style={{ borderRadius: "50%", marginRight: "8px" }}
       />
-      <AdminUsernameText>{admin?.username}</AdminUsernameText>
+      <AdminUsernameText>{admin?.username || admin?.userInfo?.email}</AdminUsernameText>
       <div
         style={{
           flex: 1,
