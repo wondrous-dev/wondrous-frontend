@@ -12,7 +12,7 @@ import { getStepsConfig } from "./utils";
 
 const TutorialComponent = ({ children }) => {
   const { user } = useMe() || {};
-  const completedGuides = user?.completedGuides;
+  const completedQuestGuides = user?.completedQuestGuides;
   const location = useLocation();
 
 
@@ -27,7 +27,7 @@ const TutorialComponent = ({ children }) => {
   };
   const beforeClose = () => {
     toggleHtmlOverflow();
-    if (id && !completedGuides?.includes(id)) {
+    if (id && !completedQuestGuides?.includes(id)) {
       setUserCompletedGuide({
         variables: {
           guideId: id,

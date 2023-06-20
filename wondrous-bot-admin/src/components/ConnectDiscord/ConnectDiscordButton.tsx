@@ -23,10 +23,10 @@ export default function ConnectDiscordButton({ orgId }: { orgId?: string }) {
   const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE);
 
   useEffect(() => {
-    if (user && !user?.completedGuides?.includes("communities_home_guide")) {
+    if (user && !user?.completedQuestGuides?.includes("communities_home_guide")) {
       setIsOpen(true);
     }
-  }, [user?.completedGuides]);
+  }, [user?.completedQuestGuides]);
 
   const handleClick = async () => {
     if (isOpen) {

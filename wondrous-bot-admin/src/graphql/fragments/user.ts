@@ -21,7 +21,7 @@ export const LoggedinUserFragment = gql`
 		lastCompletedGuide
 		projectGuideComplete
 		mainBannerClosedAt
-		completedGuides
+		completedQuestGuides
 	}
 `
 
