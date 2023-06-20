@@ -301,3 +301,9 @@ export const EXCLUDED_PATHS = [
   "/signup",
   "/invite/:token"
 ];
+
+export const TUTORIALS = {
+  COMMUNITIES_HOME_GUIDE: "communities_home_guide",
+  COMMUNITIES_QUESTS_PAGE_GUIDE: "communities_quests_page_guide",
+  COMMUNITIES_QUEST: 'communities_quest',
+}

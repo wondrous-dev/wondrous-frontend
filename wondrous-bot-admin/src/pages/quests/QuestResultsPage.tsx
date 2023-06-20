@@ -14,17 +14,20 @@ import moment from "moment";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUEST_STATUSES } from "utils/constants";
+import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import QuestTitle from "components/QuestTitle";
 import { getDiscordUrl } from "utils/discord";
 import { getBaseUrl } from "utils/common";
+import { useTour } from "@reactour/tour";
+import { useMe } from "components/Auth";
 
 const QuestResultsPage = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const location = useLocation();
+  const {user} = useMe() || {}
   const isEditInQuery = new URLSearchParams(location.search).get("edit") === "true";
   const [isEditMode, setIsEditMode] = useState(isEditInQuery);
   const [connectDiscordModalOpen, setConnectDiscordModalOpen] = useState(false);
@@ -33,6 +36,8 @@ const QuestResultsPage = () => {
   const [title, setTitle] = useState("");
   const handleNavigationToNewQuest = () => navigate("/quests/create");
   const headerActionsRef = useRef(null);
+  const {setIsOpen} = useTour();
+
 
   const { ref, inView, entry } = useInView({
     threshold: 1,
@@ -67,6 +72,12 @@ const QuestResultsPage = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if(user && !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUEST) && isEditMode) {
+      setIsOpen(true)
+    }
+  }, [user, isEditMode])
 
   const toggleEdit = () => setIsEditMode((prev) => !prev);
   const handlePreviewQuest = () => {

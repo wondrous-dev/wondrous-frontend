@@ -46,6 +46,8 @@ const useBuildSidebarMenuItems = () => {
   const orgId = board?.orgId || orgBoard?.id;
   const podId = board?.podId || podBoard?.id;
   const modules = useBuildModulesData({ orgId, podId });
+  const canManage = useCanManage();
+
   const workspaceItems = {
     [ENTITIES_TYPES.POD]: {
       ...modules?.pod,
@@ -120,12 +122,16 @@ const useBuildSidebarMenuItems = () => {
       check: () => pathnamesToCheck.includes(router.pathname) && router.pathname.includes('wonder_ai_bot'),
       active: useCanCreateTask(),
     },
-    'Setup Project': {
-      text: 'Setup Project',
-      link: `${link}/onboarding`,
-      Icon: WrenchIcon,
-      active: useCanManage(),
-    },
+    ...(orgBoard && !orgBoard?.orgData?.shared
+      ? {
+          'Setup Project': {
+            text: 'Setup Project',
+            link: `${link}/onboarding`,
+            Icon: WrenchIcon,
+            active: canManage,
+          },
+        }
+      : {}),
   };
   const menu = {
     general: {
