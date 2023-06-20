@@ -1406,10 +1406,46 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.7.tgz#ccab5c8f7dc557a52ca3288c10075c9ccd37fff7"
   integrity sha512-Cr4OjIkipTtcXKjAsm8agyleBuDHvxzeBoa1v543lbv1YaIwQjESsVcmjiWiPEbC1FIeHOG/Op9kdCmAmiS3Kw==
 
+"@reactour/mask@*":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@reactour/mask/-/mask-1.1.0.tgz#e327306585ee3510e80169a7fa811e9d0b9448bb"
+  integrity sha512-GkJMLuTs3vTsm4Ryq2uXcE4sMzRP1p4xSd6juSOMqbHa7IVD/UiLCLqJWHR9xGSQPbYhpZAZAORUG5cS0U5tBA==
+  dependencies:
+    "@reactour/utils" "*"
+
+"@reactour/popover@*":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@reactour/popover/-/popover-1.1.1.tgz#c9b05ee31b8677d874f1479d724204b936e1128f"
+  integrity sha512-BouulO0sXfmuHSPX8FwCYI0fMeT+VsWqk7UTao3NQcUC5H903ZeKOV2GYpwSJtRUQhsyNEu1Q8cEruGRf1SOXQ==
+  dependencies:
+    "@reactour/utils" "*"
+
+"@reactour/tour@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@reactour/tour/-/tour-3.4.0.tgz#63c8578e0b132a78a74a4e148474cb6ed047b07f"
+  integrity sha512-tt5ZauKzeRNriWFXO4GLADL1RzOzky5u/nfxTebvpRBVqKKqaDZku5Ul17K2qy6XEPqzmZ6pNQX9JLlc1BzrNw==
+  dependencies:
+    "@reactour/mask" "*"
+    "@reactour/popover" "*"
+    "@reactour/utils" "*"
+
+"@reactour/utils@*":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@reactour/utils/-/utils-0.5.0.tgz#8886872d78839187fd53399834a1b9688e98d754"
+  integrity sha512-yQs5Nm/Dg1xRM7d/S/UILBV5OInrTgrjGzgc81/RP5khqdO5KnpOaC46yF83kDtCalte8X3RCwp+F2YA509k1w==
+  dependencies:
+    "@rooks/use-mutation-observer" "^4.11.2"
+    resize-observer-polyfill "^1.5.1"
+
 "@remix-run/router@1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.5.0.tgz#57618e57942a5f0131374a9fdb0167e25a117fdc"
   integrity sha512-bkUDCp8o1MvFO+qxkODcbhSqRa6P2GXgrGZVpt0dCXNW2HCSCqYI0ZoAqEOSAjRWmmlKcYgFvN4B4S+zo/f8kg==
+
+"@rooks/use-mutation-observer@^4.11.2":
+  version "4.11.2"
+  resolved "https://registry.yarnpkg.com/@rooks/use-mutation-observer/-/use-mutation-observer-4.11.2.tgz#a0466c4338e0a4487ea19253c86bcd427c29f4af"
+  integrity sha512-vpsdrZdr6TkB1zZJcHx+fR1YC/pHs2BaqcuYiEGjBVbwY5xcC49+h0hAUtQKHth3oJqXfIX/Ng8S7s5HFHdM/A==
 
 "@solana/buffer-layout@^4.0.0":
   version "4.0.1"
@@ -4535,6 +4571,11 @@ require-main-filename@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/require-main-filename/-/require-main-filename-2.0.0.tgz#d0b329ecc7cc0f61649f62215be69af54aa8989b"
   integrity sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==
+
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
 
 resolve-from@^4.0.0:
   version "4.0.0"

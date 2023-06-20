@@ -50,3 +50,9 @@ export const matchRoute = (pathname, options) => {
     return pattern.test(pathname);
   });
 }
+
+export const toggleHtmlOverflow = () => {
+  const htmlTagElements = document.getElementsByTagName('html');
+  const { style } = htmlTagElements.item(0);
+  style.overflow = style.overflow ? '' : 'hidden';
+};

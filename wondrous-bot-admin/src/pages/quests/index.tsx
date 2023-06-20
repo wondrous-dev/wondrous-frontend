@@ -1,5 +1,7 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { Box } from "@mui/material";
+import { useTour } from "@reactour/tour";
+import { useMe } from "components/Auth";
 import PageHeader from "components/PageHeader";
 import QuestsList from "components/QuestsList";
 import SelectComponent from "components/Shared/Select";
@@ -7,7 +9,7 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import { GET_QUESTS_FOR_ORG } from "graphql/queries";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { QUEST_STATUSES } from "utils/constants";
+import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 
 const INACTIVE_QUESTS = {
@@ -31,45 +33,51 @@ const SELECT_QUESTS_TYPE = [
 ];
 
 const QuestsPage = () => {
+  const { setIsOpen, setMeta } = useTour();
   const navigate = useNavigate();
   const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
-
+  const { user } = useMe() || {};
   const handleNavigationToNewQuest = () => navigate("/quests/create");
 
   const { activeOrg } = useContext(GlobalContext);
 
-  const [getQuestsForOrg, {data, refetch}] = useLazyQuery(GET_QUESTS_FOR_ORG, {
+  const [getQuestsForOrg, { data, refetch }] = useLazyQuery(GET_QUESTS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
   });
 
   const handleFetch = async () => {
-    const {data} = await getQuestsForOrg({
+    const { data } = await getQuestsForOrg({
       variables: {
         input: {
           orgId: activeOrg?.id,
           limit: 1000,
           status: QUEST_STATUSES.OPEN,
-        }
-      }
-    })
-    if(!data?.getQuestsForOrg?.length) {
+        },
+      },
+    });
+    if (!data?.getQuestsForOrg?.length) {
       const variables: any = {
         input: {
           orgId: activeOrg?.id,
           limit: 1000,
-          status: null
+          status: null,
         },
       };
       setStatuses(null);
-      refetch(variables);
+      const {data} = await refetch(variables);
+      if (user && !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) && data?.getQuestsForOrg?.length) {
+        setIsOpen(true);
+        const quest = data?.getQuestsForOrg[0];
+        setMeta(quest?.id)
+      }
     }
-  }
+  };
   useEffect(() => {
-    if(activeOrg?.id) {
+    if (activeOrg?.id) {
       handleFetch()
     }
-  }, [activeOrg?.id])
-  
+  }, [activeOrg?.id, user]);
+
   const handleChange = (value) => {
     const variables: any = {
       input: {

@@ -13,6 +13,7 @@ import GlobalContext from "utils/context/GlobalContext";
 import PageSpinner from "components/PageSpinner";
 import Navbar from "components/Navbar";
 import { Main } from "./styles";
+import TutorialComponent from "components/TutorialComponent";
 
 const DefaultFallback = () => {
   const navigate = useNavigate();
@@ -94,7 +95,7 @@ const Layout = () => {
   }
   
   const isMatchedAuthPath = matchRoute(location.pathname, EXCLUDED_PATHS);
-  const AuthenticatedOutlet = isMatchedAuthPath ? Outlet : withAuth(Outlet);
+  const AuthenticationLayout = isMatchedAuthPath ? TutorialComponent : withAuth(TutorialComponent);
 
   return (
     <GlobalContext.Provider
@@ -104,12 +105,16 @@ const Layout = () => {
         userOrgs: userOrgs?.getLoggedInUserFullAccessOrgs || [],
       }}
     >
+      <TutorialComponent>
       {isPageWithoutHeader ? null : <Navbar />}
       <Main $isPageWithoutHeader={isPageWithoutHeader}>
         <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
-          <AuthenticatedOutlet />
+          <AuthenticationLayout>
+            <Outlet />
+          </AuthenticationLayout>
         </ErrorCatcher>
       </Main>
+      </TutorialComponent>
     </GlobalContext.Provider>
   );
 };
