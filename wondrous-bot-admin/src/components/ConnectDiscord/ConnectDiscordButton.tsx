@@ -41,6 +41,7 @@ export default function ConnectDiscordButton({ orgId }: { orgId?: string }) {
         window.location.href = oauthUrl;
       }
     }
+    window.location.href = oauthUrl;
   };
 
   return (
