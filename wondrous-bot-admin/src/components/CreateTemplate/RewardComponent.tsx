@@ -221,6 +221,14 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
       };
     });
   };
+
+  const handleToggle = () => {
+    setIsRewardModalOpen(prev => !prev)
+    if(isOpen) {
+      setCurrentStep(prev => prev + 1)
+    }
+  }
+
   const handleReward = () => {
     if (rewardType === PAYMENT_OPTIONS.DISCORD_ROLE) {
       const discordRoleSelected = componentsOptions.find((option) => option.value === discordRoleReward);
@@ -238,7 +246,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
           },
         });
       }
-      setIsRewardModalOpen(false);
+      handleToggle()
     } else if (rewardType === PAYMENT_OPTIONS.NFT || rewardType === PAYMENT_OPTIONS.TOKEN) {
       if (paymentMethod) {
         if (!tokenReward?.amount) {
@@ -275,7 +283,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             amount: Number(tokenReward?.amount),
           });
         }
-        setIsRewardModalOpen(false);
+        handleToggle()
       } else if (addPaymentMethod) {
         // Create payment method and then add reward
         if (!tokenReward?.contractAddress) {
@@ -327,7 +335,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               amount: tokenReward?.amount,
               paymentMethod,
             });
-            setIsRewardModalOpen(false);
+            handleToggle()
             setAddPaymentMethod(false);
           })
           .catch((err) => {
@@ -363,16 +371,10 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         type: rewardType,
         poapRewardData: poapReward,
       });
-      setIsRewardModalOpen(false);
+      handleToggle()
     }
   };
 
-  const handleToggle = () => {
-    setIsRewardModalOpen(prev => !prev)
-    if(isOpen) {
-      setCurrentStep(currentStep + 1)
-    }
-  }
 
   return (
     <Grid container direction="column" gap="14px" justifyContent="flex-start" >

@@ -54,7 +54,6 @@ const CreateTemplate = ({
 }) => {
   const navigate = useNavigate();
   const { errors, setErrors } = useContext(CreateQuestContext);
-  const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
   const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
     refetchQueries: ["getQuestById"],
   });
@@ -218,7 +217,7 @@ const CreateTemplate = ({
         };
         if (next.type === TYPES.MULTI_QUIZ || next.type === TYPES.SINGLE_QUIZ) {
           (step.type = next.value.multiSelectValue),
-            (step.options = next.value.answers.map((answer, idx) => {
+            (step.options = next.value?.answers?.map((answer, idx) => {
               return {
                 position: idx,
                 text: answer.value?.trim(),
@@ -312,26 +311,7 @@ const CreateTemplate = ({
   };
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
-  useEffect(() => {
-    if (questId) {
-      getQuestRewards({
-        variables: {
-          questId,
-        },
-      });
-    }
-  }, [questId]);
-  const questRewards = questRewardsData?.getQuestRewards;
-  useEffect(() => {
-    if (questRewards?.length > 0) {
-      setQuestSettings((prev) => {
-        return {
-          ...prev,
-          rewards: [...prev.rewards, ...questRewards],
-        };
-      });
-    }
-  }, [questRewards?.length]);
+
   return (
     <>
       <Modal
