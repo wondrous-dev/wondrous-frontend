@@ -116,9 +116,7 @@ const WorkspaceSettings = () => {
 
   const activePod = pageData?.pod;
 
-  const href = activePod
-    ? `/pod/settings/${activePod?.pod?.id}/general`
-    : `/organization/settings/${activeOrg?.id}/general`;
+  const href = activePod ? `/pod/settings/${activePod?.id}/general` : `/organization/settings/${activeOrg?.id}/general`;
 
   return (
     <UnstyledLink href={href}>
