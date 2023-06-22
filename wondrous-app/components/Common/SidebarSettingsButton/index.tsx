@@ -19,6 +19,7 @@ const SidebarSettingsButton = () => {
         borderRadius="8px"
         height="36px"
         width="36px"
+        maxWidth="36px"
         sx={{
           ':hover': {
             bgcolor: palette.grey78,

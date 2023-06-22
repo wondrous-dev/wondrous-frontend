@@ -23,6 +23,12 @@ const EntitySidebar = ({ children, renderSidebar = null }) => {
           justifyContent="space-between"
           padding="24px 14px"
           gap="24px"
+          width="100%"
+          sx={{
+            '> *': {
+              flexGrow: '1',
+            },
+          }}
         >
           <SidebarSettingsButton />
           <CollapseExpandButton />
