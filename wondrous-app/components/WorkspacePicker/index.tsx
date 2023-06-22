@@ -1,6 +1,6 @@
 import Popover from '@mui/material/Popover';
 import { OrgProfilePicture, UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
-import { useGlobalContext } from 'utils/hooks';
+import { useGlobalContext, useSettingsLink } from 'utils/hooks';
 
 import { useMutation } from '@apollo/client';
 import { Add } from '@mui/icons-material';
@@ -104,22 +104,8 @@ const LeaveWorkspace = ({ onClose }) => {
 };
 
 const WorkspaceSettings = () => {
-  const router = useRouter();
-  const { pageData, orgsList } = useGlobalContext();
-
-  const activeOrg = useMemo(
-    () => orgsList.find((org) => org.isActive || org.id === pageData?.pod?.orgId),
-    [router.pathname, orgsList]
-  );
-
-  if (!activeOrg) return null;
-
-  const activePod = pageData?.pod;
-
-  const href = activePod
-    ? `/pod/settings/${activePod?.pod?.id}/general`
-    : `/organization/settings/${activeOrg?.id}/general`;
-
+  const { href, activePod } = useSettingsLink();
+  if (!href) return null;
   return (
     <UnstyledLink href={href}>
       <HorizontalEntityItem>
