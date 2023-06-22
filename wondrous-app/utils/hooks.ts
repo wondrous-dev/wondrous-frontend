@@ -499,3 +499,13 @@ export const useHotKeysListener = (key, func, dependencies = []) => {
   const canUseHotkeys = useMemo(() => !PAGES_WITH_NO_HOTKEYS.includes(router.pathname), [router.pathname]);
   return useHotkeys(key, canUseHotkeys ? func : () => {}, [canUseHotkeys, ...dependencies]);
 };
+
+export const useSettingsLink = () => {
+  useRouter();
+  const { pageData, orgsList } = useGlobalContext();
+  const activeOrg = orgsList.find((org) => org.isActive || org.id === pageData?.pod?.orgId);
+  const activePod = pageData?.pod;
+  if (!activeOrg) return { href: null };
+  const href = activePod ? `/pod/settings/${activePod?.id}/general` : `/organization/settings/${activeOrg?.id}/general`;
+  return { href, activePod };
+};

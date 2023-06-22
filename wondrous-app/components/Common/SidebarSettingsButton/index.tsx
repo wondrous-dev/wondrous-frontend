@@ -3,20 +3,14 @@ import { toolTipStyle } from 'components/Common/SidebarStyles';
 import OrgSettingsIcon from 'components/Icons/OrgSettingsIcon';
 import Tooltip from 'components/Tooltip';
 import Link from 'next/link';
-import { useMemo } from 'react';
 import palette from 'theme/palette';
-import { useGlobalContext } from 'utils/hooks';
+import { useSettingsLink } from 'utils/hooks';
 
 const SidebarSettingsButton = () => {
-  const { pageData, orgsList } = useGlobalContext();
-  const activeOrg = useMemo(
-    () => orgsList.find((org) => org.isActive || org.id === pageData?.pod?.orgId),
-    [orgsList, pageData?.pod?.orgId]
-  );
-  const podId = pageData?.pod?.id;
-  const href = podId ? `/pod/settings/${podId}/general` : `/organization/settings/${activeOrg?.id}/general`;
+  const { href, activePod } = useSettingsLink();
+  if (!href) return null;
   return (
-    <Tooltip style={toolTipStyle} title="Settings" placement="right">
+    <Tooltip style={toolTipStyle} title={activePod ? `Pod Settings` : `Organization Settings`} placement="right">
       <Box
         bgcolor={palette.grey87}
         display="flex"
