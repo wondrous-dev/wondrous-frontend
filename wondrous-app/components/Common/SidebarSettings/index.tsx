@@ -1,5 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useMe } from 'components/Auth/withAuth';
 import BackButton from 'components/Common/SidebarBackButton';
@@ -260,7 +261,9 @@ function SettingsWrapper(props) {
               </ListWrapper>
             </ListWrapper>
           </SidebarContent>
-          <CollapseExpandButton />
+          <Box display="flex" width="100%" padding="12px 24px" justifyContent="flex-end">
+            <CollapseExpandButton />
+          </Box>
         </SidebarWrapper>
 
         <ChildrenWrapper minimized={minimized}>

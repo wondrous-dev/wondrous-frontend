@@ -2,9 +2,7 @@ import { ButtonBase } from '@mui/material';
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
-  width: 100%;
   display: flex;
-  padding: 24px 14px;
   justify-content: ${({ minimized }) => (minimized ? 'center' : 'flex-end')};
 `;
 

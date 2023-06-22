@@ -1,6 +1,8 @@
+import Box from '@mui/material/Box';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import AboutEntity from 'components/Common/SidebarEntityAbout';
 import SidebarEntityList from 'components/Common/SidebarEntityList';
+import SidebarSettingsButton from 'components/Common/SidebarSettingsButton';
 import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
 import useMediaQuery from 'hooks/useMediaQuery';
 import useSideBar from 'hooks/useSideBar';
@@ -14,7 +16,17 @@ const EntitySidebar = ({ children, renderSidebar = null }) => {
       <SidebarWrapper minimized={minimized}>
         {isMobileScreen ? <AboutEntity /> : null}
         <SidebarContent>{renderSidebar ? renderSidebar() : <SidebarEntityList />}</SidebarContent>
-        <CollapseExpandButton />
+        <Box
+          display="flex"
+          flexDirection={minimized ? `column` : `row`}
+          alignItems="center"
+          justifyContent="space-between"
+          padding="24px 14px"
+          gap="24px"
+        >
+          <SidebarSettingsButton />
+          <CollapseExpandButton />
+        </Box>
       </SidebarWrapper>
       <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>
     </Wrapper>
