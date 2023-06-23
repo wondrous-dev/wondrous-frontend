@@ -14,6 +14,7 @@ import PageSpinner from "components/PageSpinner";
 import Navbar from "components/Navbar";
 import { Main } from "./styles";
 import TutorialComponent from "components/TutorialComponent";
+import { FeedbackButton } from "components/Feedback/button";
 
 const DefaultFallback = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const Layout = () => {
   const [getLoggedInUserFullAccessOrgs, { data: userOrgs, loading }] = useLazyQuery(
     GET_LOGGED_IN_USER_FULL_ACCESS_ORGS,
     {
-      fetchPolicy: 'no-cache',
+      fetchPolicy: "no-cache",
       notifyOnNetworkStatusChange: true,
       onCompleted: ({ getLoggedInUserFullAccessOrgs }) => {
         if (getLoggedInUserFullAccessOrgs.length === 0) {
@@ -76,8 +77,9 @@ const Layout = () => {
         }
         const newActiveOrg = getLoggedInUserFullAccessOrgs[0];
         handleActiveOrg(newActiveOrg);
-    },
-  });
+      },
+    }
+  );
 
   useEffect(() => {
     if (!isPageWithoutHeader) {
@@ -93,7 +95,7 @@ const Layout = () => {
   if (loading) {
     return <PageSpinner />;
   }
-  
+
   const isMatchedAuthPath = matchRoute(location.pathname, EXCLUDED_PATHS);
   const AuthenticationLayout = isMatchedAuthPath ? TutorialComponent : withAuth(TutorialComponent);
 
@@ -106,14 +108,15 @@ const Layout = () => {
       }}
     >
       <TutorialComponent>
-      {isPageWithoutHeader ? null : <Navbar />}
-      <Main $isPageWithoutHeader={isPageWithoutHeader}>
-        <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
-          <AuthenticationLayout>
-            <Outlet />
-          </AuthenticationLayout>
-        </ErrorCatcher>
-      </Main>
+        <FeedbackButton />
+        {isPageWithoutHeader ? null : <Navbar />}
+        <Main $isPageWithoutHeader={isPageWithoutHeader}>
+          <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
+            <AuthenticationLayout>
+              <Outlet />
+            </AuthenticationLayout>
+          </ErrorCatcher>
+        </Main>
       </TutorialComponent>
     </GlobalContext.Provider>
   );

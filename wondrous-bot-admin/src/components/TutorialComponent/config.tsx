@@ -33,12 +33,13 @@ export const config = [
       {
         selector: "[data-tour=tutorial-quest-card]",
         nextButtonTitle: "Visit Quest",
+        action: () => window.scrollTo(0, 0),
         prevButtonTitle: "Skip",
         nextHref: "/quests/:id?edit=true",
         content: () => (
           <ContentComponent title="Quests">
             <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
-              Your quests will appear here. Click on a quest to view and activate it.
+              Your quests will appear here. Click on the first quest to view and activate it.
             </Typography>
           </ContentComponent>
         ),
@@ -51,7 +52,7 @@ export const config = [
     steps: [
       {
         selector: "[data-tour=tutorial-quest-rewards]",
-        id: 'tutorial-quest-rewards',
+        id: "tutorial-quest-rewards",
         content: () => (
           <ContentComponent title="Rewards">
             <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
@@ -65,8 +66,8 @@ export const config = [
       },
       {
         selector: ".tutorials-quest-reward-modal",
-        id: 'tutorial-add-rewards',
-        position: [50,500],
+        id: "tutorial-add-rewards",
+        position: [50, 500],
         highlightedSelectors: [".tour-default-modal"],
         mutationObservables: [".tour-default-modal"],
         resizeObservables: [".tour-default-modal"],
@@ -82,10 +83,8 @@ export const config = [
       },
       {
         selector: "[data-tour=tutorial-activate-quest]",
-        id: 'tutorial-activate-quest',
-        content: () => (
-          <ActiveQuestContent />
-          ),
+        id: "tutorial-activate-quest",
+        content: () => <ActiveQuestContent />,
         nextButtonTitle: "Done",
       },
     ],

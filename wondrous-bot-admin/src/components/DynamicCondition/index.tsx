@@ -172,13 +172,11 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
     }));
     setIsOpen(false);
   };
-
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
       <div>
         <Box display="flex" alignItems="center" gap="4px">
           <CustomTextField
-            disabled
             onClick={openPopper}
             placeholder="Add Condition"
             ref={ref}

@@ -8,10 +8,10 @@ import ShareComponent from "components/Share";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import ViewQuestResults from "components/ViewQuestResults";
 import Modal from "components/Shared/Modal";
-import { GET_QUEST_BY_ID, GET_CMTY_PAYMENT_COUNTS } from "graphql/queries";
+import { GET_QUEST_BY_ID, GET_QUEST_REWARDS } from "graphql/queries";
 import { START_PREVIEW_QUEST } from "graphql/mutations";
 import moment from "moment";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
@@ -27,7 +27,7 @@ const QuestResultsPage = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const location = useLocation();
-  const {user} = useMe() || {}
+  const { user } = useMe() || {};
   const isEditInQuery = new URLSearchParams(location.search).get("edit") === "true";
   const [isEditMode, setIsEditMode] = useState(isEditInQuery);
   const [connectDiscordModalOpen, setConnectDiscordModalOpen] = useState(false);
@@ -36,8 +36,19 @@ const QuestResultsPage = () => {
   const [title, setTitle] = useState("");
   const handleNavigationToNewQuest = () => navigate("/quests/create");
   const headerActionsRef = useRef(null);
-  const {setIsOpen} = useTour();
+  const { setIsOpen } = useTour();
+  const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
 
+  useEffect(() => {
+    if (id) {
+      getQuestRewards({
+        variables: {
+          questId: id,
+        },
+      });
+    }
+  }, [id]);
+  const questRewards = questRewardsData?.getQuestRewards;
 
   const { ref, inView, entry } = useInView({
     threshold: 1,
@@ -74,11 +85,11 @@ const QuestResultsPage = () => {
   });
 
   useEffect(() => {
-    if(user && !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUEST)) {
+    if (user && !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUEST)) {
       setIsEditMode(true);
-      setIsOpen(true)
+      setIsOpen(true);
     }
-  }, [user, isEditMode])
+  }, [user, isEditMode]);
 
   const toggleEdit = () => setIsEditMode((prev) => !prev);
   const handlePreviewQuest = () => {
@@ -88,6 +99,7 @@ const QuestResultsPage = () => {
       },
     });
   };
+
   const questSettings = {
     title: getQuestById?.title || "",
     level: getQuestById?.level ? String(getQuestById?.level) : null,
@@ -113,6 +125,7 @@ const QuestResultsPage = () => {
         value: getQuestById?.pointReward || 0,
         type: "points",
       },
+      ...(questRewards ? questRewards : []),
     ],
   };
 
