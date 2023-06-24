@@ -50,3 +50,14 @@ export const GET_CMTY_PAYMENT_COUNTS = gql`
     }
   }
 `;
+
+
+//getUnpaidCmtyPaymentsForOrg
+export const GET_UNPAID_CMTY_PAYMENTS_FOR_ORG = gql`
+  query getUnpaidCmtyPaymentsForOrg($input: CmtyPaymentQueryInput) {
+    getUnpaidCmtyPaymentsForOrg(input: $input) {
+      ...CmtyPaymentFragment
+    }
+  }
+  ${CmtyPaymentFragment}
+`;
