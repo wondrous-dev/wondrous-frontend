@@ -17,7 +17,7 @@ export const CmtyPaymentMethodFragment = gql`
 `;
 
 export const CmtyPaymentFragment = gql`
-  fragment CmtyPaymentFragment on CmtyPayment {
+  fragment CmtyPaymentFragment on CmtyPaymentCard {
     id
     questTitle
     questId

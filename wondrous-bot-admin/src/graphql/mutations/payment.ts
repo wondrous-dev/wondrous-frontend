@@ -35,3 +35,21 @@ export const UPDATE_CMTY_PAYMENT_METHOD = gql`
     }
   }
 `;
+
+//    linkCmtyPaymentsWithTransaction(input: linkCmtyPaymentsTransactionInput): SimpleResponse
+export const LINK_CMTY_PAYMENTS_WITH_TRANSACTION = gql`
+  mutation linkCmtyPaymentsWithTransaction($input: linkCmtyPaymentsTransactionInput) {
+    linkCmtyPaymentsWithTransaction(input: $input) {
+      success
+    }
+  }
+`;
+
+// markCmtyPaymentTransactionAsComplete(txHash: String!): SimpleResponse
+export const MARK_CMTY_PAYMENT_TRANSACTION_AS_COMPLETE = gql`
+  mutation markCmtyPaymentTransactionAsComplete($txHash: String!) {
+    markCmtyPaymentTransactionAsComplete(txHash: $txHash) {
+      success
+    }
+  }
+`;

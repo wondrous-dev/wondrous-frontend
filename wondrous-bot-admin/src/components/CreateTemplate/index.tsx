@@ -203,7 +203,7 @@ const CreateTemplate = ({
             },
             type: reward?.type,
           };
-        } else if (reward?.type === PAYMENT_OPTIONS.NFT) {
+        } else if (reward?.type === PAYMENT_OPTIONS.TOKEN) {
           return {
             type: reward?.type,
             paymentMethodId: reward?.paymentMethodId,

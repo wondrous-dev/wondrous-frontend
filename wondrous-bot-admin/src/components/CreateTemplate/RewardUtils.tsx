@@ -27,7 +27,6 @@ import { GET_POAP_EVENT } from "graphql/queries";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
-  NFT: "nft",
   TOKEN: "token",
   POAP: "poap",
 };
@@ -362,7 +361,7 @@ export const RewardMethod = ({
       </>
     );
   }
-  if (rewardType === PAYMENT_OPTIONS.NFT) {
+  if (rewardType === PAYMENT_OPTIONS.TOKEN) {
     if (paymentMethod && !editPaymentMethod?.id) {
       return (
         <AddExistingPaymentMethod
@@ -387,7 +386,6 @@ export const RewardMethod = ({
         </>
       );
     }
-
     return (
       <>
         <Label>Chain</Label>
@@ -606,7 +604,7 @@ export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, s
           return {
             ...prev,
             rewards: prev.rewards.map((reward) => {
-              if (reward.type === PAYMENT_OPTIONS.NFT && reward.paymentMethod?.id === initialRewardId) {
+              if (reward.type === PAYMENT_OPTIONS.TOKEN && reward.paymentMethod?.id === initialRewardId) {
                 return {
                   ...reward,
                   paymentMethodId: value,
