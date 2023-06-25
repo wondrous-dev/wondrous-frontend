@@ -141,7 +141,6 @@ const stepTypes = {
       .nullable(),
   }),
   [TYPES.VERIFY_TOKEN_HOLDING]: Yup.object().shape({
-    ...sharedValidation,
     additionalData: Yup.object().shape({
       tokenAddress: Yup.string().required("Token address is required"),
       tokenType: Yup.string().required("Token type is required"),

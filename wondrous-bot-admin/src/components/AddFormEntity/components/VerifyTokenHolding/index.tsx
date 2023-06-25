@@ -13,6 +13,7 @@ import DropdownSelect from "components/DropdownSelect/DropdownSelect";
 import { useLazyQuery } from "@apollo/client";
 import { GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries";
 import { TokenImage, TokenText } from "./styles";
+import { ErrorText } from "components/Shared/styles";
 
 const chainOptions = [
   {
@@ -61,6 +62,7 @@ const TextInputStyle = {
 };
 
 const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
+  console.log("did we error", error);
   const handleOnChange = (key, val) => {
     onChange({
       ...value,
@@ -69,11 +71,13 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
   };
   const [getTokenInfo] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
+      if (!value?.verifyTokenName && data?.getTokenInfo?.name) {
+        handleOnChange("verifyTokenName", data?.getTokenInfo?.name);
+      }
       onChange({
         ...value,
         verifyTokenDecimals: data?.getTokenInfo?.decimals,
         verifyTokenLogoUrl: data?.getTokenInfo?.logoUrl,
-        verifyTokenName: data?.getTokenInfo?.name,
         verifyTokenSymbol: data?.getTokenInfo?.symbol,
       });
     },
@@ -82,11 +86,13 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
 
   const [getNFTInfo] = useLazyQuery(GET_NFT_INFO, {
     onCompleted: (data) => {
+      if (!value?.verifyTokenName && data?.getTokenInfo?.name) {
+        handleOnChange("verifyTokenName", data?.getTokenInfo?.name);
+      }
       onChange({
         ...value,
         verifyTokenDecimals: data?.getTokenInfo?.decimals,
         verifyTokenLogoUrl: data?.getTokenInfo?.logoUrl,
-        verifyTokenName: data?.getTokenInfo?.name,
         verifyTokenSymbol: data?.getTokenInfo?.symbol,
       });
     },
@@ -164,6 +170,15 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
           options={chainOptions}
           name="chain"
         />
+        {error?.additionalData?.tokenChain && (
+          <ErrorText
+            style={{
+              marginTop: "-10px",
+            }}
+          >
+            Please input a token chain
+          </ErrorText>
+        )}
       </Grid>
       <Grid
         item
@@ -187,6 +202,15 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
           }}
           options={SUPPORTED_ACCESS_CONDITION_TYPES}
         />
+        {error?.additionalData?.tokenType && (
+          <ErrorText
+            style={{
+              marginTop: "-10px",
+            }}
+          >
+            Please input a token type
+          </ErrorText>
+        )}
       </Grid>
       <Box display="flex" alignItems="center" width="100%" marginTop="8px">
         <Grid
@@ -206,7 +230,7 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
             value={value?.verifyTokenAddress || ""}
             onChange={(value) => handleSelectedTokenInputChange(value)}
             multiline={false}
-            error={error}
+            error={error?.additionalData?.tokenAddress}
             style={TextInputStyle}
           />
           {(value?.verifyTokenLogoUrl || value?.verifyTokenName) && (
@@ -241,7 +265,7 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
           <TextField
             placeholder="Min amount member needs to hold"
             value={value?.verifyTokenAmount}
-            error={error}
+            error={"Please enter a minimum amount to hold"}
             onChange={(value) => handleOnChange("verifyTokenAmount", value)}
             multiline={false}
             style={TextInputStyle}
@@ -264,7 +288,7 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
         <TextField
           placeholder="Token Name"
           value={value?.verifyTokenName}
-          error={error}
+          error={error?.additionalData?.tokenName}
           onChange={(value) => handleOnChange("verifyTokenName", value)}
           multiline={false}
           style={TextInputStyle}
@@ -285,7 +309,6 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
         <TextField
           placeholder="Token ID (optional for ERC1155)"
           value={value?.verifyTokenId}
-          error={error}
           onChange={(value) => handleOnChange("verifyTokenId", value)}
           multiline={false}
           style={TextInputStyle}
