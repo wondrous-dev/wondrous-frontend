@@ -8,7 +8,7 @@ import { Matic } from "components/Icons/web3";
 import Optimism from "assets/optimism";
 import Avalanche from "assets/avalanche";
 import Binance from "assets/binance";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DropdownSelect from "components/DropdownSelect/DropdownSelect";
 import { useLazyQuery } from "@apollo/client";
 import { GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries";
@@ -69,13 +69,12 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
   };
   const [getTokenInfo] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
-      handleOnChange("verifyHoldingTokenInfo", {
-        ...value?.verifyHoldingTokenInfo,
-        contractAddress: data?.getTokenInfo?.contractAddress,
-        decimals: data?.getTokenInfo?.decimals,
-        logoUrl: data?.getTokenInfo?.logoUrl,
-        name: data?.getTokenInfo?.name,
-        symbol: data?.getTokenInfo?.symbol,
+      onChange({
+        ...value,
+        verifyTokenDecimals: data?.getTokenInfo?.decimals,
+        verifyTokenLogoUrl: data?.getTokenInfo?.logoUrl,
+        verifyTokenName: data?.getTokenInfo?.name,
+        verifyTokenSymbol: data?.getTokenInfo?.symbol,
       });
     },
     fetchPolicy: "network-only",
@@ -83,19 +82,18 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
 
   const [getNFTInfo] = useLazyQuery(GET_NFT_INFO, {
     onCompleted: (data) => {
-      handleOnChange("verifyHoldingTokenInfo", {
-        ...value?.verifyHoldingTokenInfo,
-        contractAddress: data?.getTokenInfo?.contractAddress,
-        decimals: data?.getTokenInfo?.decimals,
-        logoUrl: data?.getTokenInfo?.logoUrl,
-        name: data?.getTokenInfo?.name,
-        symbol: data?.getTokenInfo?.symbol,
+      onChange({
+        ...value,
+        verifyTokenDecimals: data?.getTokenInfo?.decimals,
+        verifyTokenLogoUrl: data?.getTokenInfo?.logoUrl,
+        verifyTokenName: data?.getTokenInfo?.name,
+        verifyTokenSymbol: data?.getTokenInfo?.symbol,
       });
     },
     fetchPolicy: "network-only",
   });
   const searchSelectedTokenInList = (contractAddress, chain, existingList = [], tokenId = "") => {
-    if (value?.verifyTokenHoldingType === "ERC20") {
+    if (value?.verifyTokenType === "ERC20") {
       getTokenInfo({
         variables: {
           contractAddress,
@@ -103,7 +101,7 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
         },
       });
     }
-    if (value?.verifyTokenHoldingType === "ERC721") {
+    if (value?.verifyTokenType === "ERC721") {
       getNFTInfo({
         variables: {
           contractAddress,
@@ -112,7 +110,7 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
         },
       });
     }
-    if (value?.verifyTokenHoldingType === "ERC1155") {
+    if (value?.verifyTokenType === "ERC1155") {
       getNFTInfo({
         variables: {
           contractAddress,
@@ -125,16 +123,12 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
   };
 
   const handleSelectedTokenInputChange = (addressValue) => {
-    let foundToken;
-    if (addressValue && addressValue.length === 42 && addressValue.startsWith("0x")) {
-      if (value?.verifyTokenHoldingType === "ERC20") {
-        foundToken = searchSelectedTokenInList(addressValue, value?.verifyTokenHoldingChain);
-      } else if (value?.verifyTokenHoldingType === "ERC721" || value?.verifyTokenHoldingType === "ERC1155") {
-        foundToken = searchSelectedTokenInList(addressValue, value?.verifyTokenHoldingChain);
-      }
-      handleOnChange("verifyHoldingTokenAddress", addressValue);
-    }
+    handleOnChange("verifyTokenAddress", addressValue);
   };
+
+  useEffect(() => {
+    searchSelectedTokenInList(value?.verifyTokenAddress, value?.verifyTokenChain);
+  }, [value?.verifyTokenChain, value?.verifyTokenType, value?.verifyTokenAddress]);
   return (
     <Grid
       gap="8px"
@@ -142,7 +136,7 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
       alignItems="center"
       style={{
         width: "100%",
-        marginBottom: value?.verifyHoldingTokenInfo?.logoUrl ? "30px" : "0px",
+        marginBottom: value?.verifyTokenLogoUrl || value?.verifyTokenName ? "30px" : "0px",
       }}
       direction="column"
     >
@@ -158,8 +152,8 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
       >
         <Label>Chain</Label>
         <DropdownSelect
-          value={value?.verifyTokenHoldingChain}
-          setValue={(value) => handleOnChange("verifyTokenHoldingChain", value)}
+          value={value?.verifyTokenChain}
+          setValue={(value) => handleOnChange("verifyTokenChain", value)}
           innerStyle={{
             marginTop: 0,
           }}
@@ -182,8 +176,8 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
       >
         <Label>Token Type</Label>
         <DropdownSelect
-          value={value?.verifyTokenHoldingType}
-          setValue={(value) => handleOnChange("verifyTokenHoldingType", value)}
+          value={value?.verifyTokenType}
+          setValue={(value) => handleOnChange("verifyTokenType", value)}
           innerStyle={{
             marginTop: 0,
           }}
@@ -208,15 +202,16 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
           <Label>Token</Label>
           <TextField
             placeholder="Paste in contract address"
-            value={value?.verifyHoldingTokenAddress || ""}
+            value={value?.verifyTokenAddress || ""}
             onChange={(value) => handleSelectedTokenInputChange(value)}
             multiline={false}
             error={error}
             style={TextInputStyle}
           />
-          {value?.verifyHoldingTokenInfo?.logoUrl && (
+          {(value?.verifyTokenLogoUrl || value?.verifyTokenName) && (
             <Box display="flex" alignItems="center" marginTop="8px" position="absolute" bottom="-32px">
-              <TokenImage src={value?.verifyHoldingTokenInfo?.logoUrl} width="24px" height="24px" />
+              {value?.verifyTokenLogoUrl && <TokenImage src={value?.verifyTokenLogoUrl} width="24px" height="24px" />}
+
               <TokenText>
                 <span
                   style={{
@@ -224,9 +219,9 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
                     marginRight: "4px",
                   }}
                 >
-                  {value?.verifyHoldingTokenInfo?.symbol}
+                  {value?.verifyTokenSymbol}
                 </span>
-                {value?.verifyHoldingTokenInfo?.name}
+                {value?.verifyTokenName}
               </TokenText>
             </Box>
           )}
@@ -244,9 +239,9 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
           <Label>Min. amount to hold</Label>
           <TextField
             placeholder="Min amount member needs to hold"
-            value={value?.verifyHoldingTokenAmount}
+            value={value?.verifyTokenAmount}
             error={error}
-            onChange={(value) => handleOnChange("verifyHoldingTokenAmount", value)}
+            onChange={(value) => handleOnChange("verifyTokenAmount", value)}
             multiline={false}
             style={TextInputStyle}
             type="number"

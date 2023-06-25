@@ -222,7 +222,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
               {...provided.droppableProps}
             >
               {steps?.map((item, idx) => {
-                console.log("item type", item.type);
                 const Component = CONFIG_COMPONENTS[item.type];
                 if (!Component) return null;
                 return (

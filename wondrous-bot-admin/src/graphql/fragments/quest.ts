@@ -88,6 +88,13 @@ export const QuestFragment = gql`
         snapshotVoteTimes
         discordMessageType
         dataCollectionType
+        tokenAddress
+        tokenSymbol
+        tokenLogoUrl
+        tokenDecimals
+        tokenChain
+        tokenAmount
+        tokenType
       }
     }
   }
