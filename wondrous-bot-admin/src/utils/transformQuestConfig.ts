@@ -28,6 +28,10 @@ type InputQuestStep = {
     discordChannelName?: string;
     discordMessageType?: string;
     dataCollectionType?: string;
+    verifyTokenHoldingChain?: string;
+    verifyTokenHoldingAddress?: string;
+    verifyTokenHoldingAmount?: string;
+    verifyTokenHoldingType?: string;
   };
 };
 
@@ -73,6 +77,13 @@ type OutputQuestStep = {
         prompt?: string;
         discordChannelName: string;
         discordMessageType?: string;
+      }
+    | {
+        prompt?: string;
+        verifyTokenHoldingChain?: string;
+        verifyTokenHoldingAddress?: string;
+        verifyTokenHoldingAmount?: string;
+        verifyTokenHoldingType?: string;
       }
     | {
         prompt?: string;
@@ -132,6 +143,14 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         prompt: step?.prompt,
         snapshotSpaceLink: step?.additionalData?.snapshotSpaceLink,
         snapshotVoteTimes: Number(step?.additionalData?.snapshotVoteTimes),
+      };
+    } else if (step.type === TYPES.VERIFY_TOKEN_HOLDING) {
+      outputStep.value = {
+        prompt: step?.prompt,
+        verifyTokenHoldingChain: step?.additionalData?.verifyTokenHoldingChain,
+        verifyTokenHoldingAddress: step?.additionalData?.verifyTokenHoldingAddress,
+        verifyTokenHoldingAmount: step?.additionalData?.verifyTokenHoldingAmount,
+        verifyTokenHoldingType: step?.additionalData?.verifyTokenHoldingType,
       };
     } else if (step.type === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
       outputStep.value = {
