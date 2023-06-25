@@ -129,6 +129,7 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
   useEffect(() => {
     searchSelectedTokenInList(value?.verifyTokenAddress, value?.verifyTokenChain);
   }, [value?.verifyTokenChain, value?.verifyTokenType, value?.verifyTokenAddress]);
+
   return (
     <Grid
       gap="8px"
@@ -248,6 +249,48 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
           />
         </Grid>
       </Box>
+      <Grid
+        item
+        gap="14px"
+        display="flex"
+        xs={12}
+        flexDirection="column"
+        style={{
+          width: "100%",
+          marginTop: value?.verifyTokenLogoUrl || value?.verifyTokenName ? "40px" : "8px",
+        }}
+      >
+        <Label>Token Name</Label>
+        <TextField
+          placeholder="Token Name"
+          value={value?.verifyTokenName}
+          error={error}
+          onChange={(value) => handleOnChange("verifyTokenName", value)}
+          multiline={false}
+          style={TextInputStyle}
+        />
+      </Grid>
+      <Grid
+        item
+        gap="14px"
+        display="flex"
+        xs={12}
+        flexDirection="column"
+        style={{
+          width: "100%",
+          marginTop: "8px",
+        }}
+      >
+        <Label>Token ID (optional for ERC1155)</Label>
+        <TextField
+          placeholder="Token ID (optional for ERC1155)"
+          value={value?.verifyTokenId}
+          error={error}
+          onChange={(value) => handleOnChange("verifyTokenId", value)}
+          multiline={false}
+          style={TextInputStyle}
+        />
+      </Grid>
     </Grid>
   );
 };

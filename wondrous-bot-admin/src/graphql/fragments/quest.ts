@@ -95,6 +95,8 @@ export const QuestFragment = gql`
         tokenChain
         tokenAmount
         tokenType
+        tokenId
+        tokenName
       }
     }
   }

@@ -282,6 +282,8 @@ const CreateTemplate = ({
             tokenChain: next.value?.verifyTokenChain,
             tokenAmount: next.value?.verifyTokenAmount,
             tokenType: next.value?.verifyTokenType,
+            tokenId: next.value?.verifyTokenId,
+            tokenName: next.value?.verifyTokenName,
           };
         } else if (next.type === TYPES.DATA_COLLECTION) {
           step.prompt = next.value?.prompt;

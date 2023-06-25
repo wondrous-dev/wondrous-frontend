@@ -35,6 +35,8 @@ type InputQuestStep = {
     tokenChain?: string;
     tokenAmount?: string;
     tokenType?: string;
+    tokenId?: string;
+    tokenName?: string;
   };
 };
 
@@ -90,6 +92,8 @@ type OutputQuestStep = {
         verifyTokenDecimals?: string;
         verifyTokenSymbol?: string;
         verifyTokenLogoUrl?: string;
+        verifyTokenId?: string;
+        verifyTokenName?: string;
       }
     | {
         prompt?: string;
@@ -160,6 +164,8 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         verifyTokenDecimals: step?.additionalData?.tokenDecimals,
         verifyTokenLogoUrl: step?.additionalData?.tokenLogoUrl,
         verifyTokenSymbol: step?.additionalData?.tokenSymbol,
+        verifyTokenId: step?.additionalData?.tokenId,
+        verifyTokenName: step?.additionalData?.tokenName,
       };
     } else if (step.type === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
       outputStep.value = {

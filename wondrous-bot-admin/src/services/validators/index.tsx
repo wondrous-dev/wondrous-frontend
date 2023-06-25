@@ -18,7 +18,7 @@ const ALL_TYPES = [
   TYPES.SNAPSHOT_SPACE_VOTE,
   TYPES.DISCORD_MESSAGE_IN_CHANNEL,
   TYPES.JOIN_DISCORD_COMMUNITY_CALL,
-  TYPES.DATA_COLLECTION
+  TYPES.DATA_COLLECTION,
 ];
 
 const sharedValidation = {
@@ -137,7 +137,18 @@ const stepTypes = {
       )
       .min(1, ERRORS.MIN_OPTION_LENGTH)
       .max(25, ERRORS.MAX_OPTION_LENGTH)
-      .required("Options are required").nullable(),
+      .required("Options are required")
+      .nullable(),
+  }),
+  [TYPES.VERIFY_TOKEN_HOLDING]: Yup.object().shape({
+    ...sharedValidation,
+    additionalData: Yup.object().shape({
+      tokenAddress: Yup.string().required("Token address is required"),
+      tokenType: Yup.string().required("Token type is required"),
+      tokenAmount: Yup.number().required("Token amount is required"),
+      tokenName: Yup.string().required("Token name is required"),
+      tokenChain: Yup.string().required("Token chain is required"),
+    }),
   }),
 };
 
