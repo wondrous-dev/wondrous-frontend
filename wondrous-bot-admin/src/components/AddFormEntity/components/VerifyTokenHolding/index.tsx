@@ -265,7 +265,7 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
           <TextField
             placeholder="Min amount member needs to hold"
             value={value?.verifyTokenAmount}
-            error={"Please enter a minimum amount to hold"}
+            error={error?.additionalData?.tokenAmount ? "Please enter a minimum amount to hold" : null}
             onChange={(value) => handleOnChange("verifyTokenAmount", value)}
             multiline={false}
             style={TextInputStyle}
