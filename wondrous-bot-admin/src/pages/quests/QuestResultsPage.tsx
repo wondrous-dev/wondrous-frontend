@@ -136,7 +136,7 @@ const QuestResultsPage = () => {
   }, [getQuestById?.steps, isEditMode]);
 
   const shareUrl = `${getBaseUrl()}/quest?id=${getQuestById?.id}`;
-
+  console.log("questSteps", questSteps);
   return (
     <CreateQuestContext.Provider
       value={{

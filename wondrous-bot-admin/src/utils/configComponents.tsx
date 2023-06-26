@@ -5,6 +5,7 @@ import SnapshotComponent from "components/AddFormEntity/components/SnapshotCompo
 import TextComponent from "components/AddFormEntity/components/Text";
 import TwitterComponent from "components/AddFormEntity/components/Twitter";
 import { TYPES } from "./constants";
+import VerifyTokenHoldingComponent from "components/AddFormEntity/components/VerifyTokenHolding";
 
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
@@ -20,5 +21,6 @@ export const CONFIG_COMPONENTS = {
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: SnapshotComponent,
   [TYPES.SNAPSHOT_SPACE_VOTE]: SnapshotComponent,
   [TYPES.DISCORD_MESSAGE_IN_CHANNEL]: DiscordComponent,
-  [TYPES.DATA_COLLECTION]: DataCollectionComponent
+  [TYPES.DATA_COLLECTION]: DataCollectionComponent,
+  [TYPES.VERIFY_TOKEN_HOLDING]: VerifyTokenHoldingComponent,
 };
