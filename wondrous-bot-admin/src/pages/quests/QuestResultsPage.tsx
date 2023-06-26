@@ -14,7 +14,7 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
+import { QUEST_STATUSES, TUTORIALS, DISCORD_CONNECT_TYPES } from "utils/constants";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import QuestTitle from "components/QuestTitle";
@@ -153,7 +153,11 @@ const QuestResultsPage = () => {
         footerRight={
           <SharedSecondaryButton
             onClick={() => {
-              const discordUrl = getDiscordUrl();
+              const discordUrl = `${getDiscordUrl()}&state=${encodeURIComponent(
+                JSON.stringify({
+                  callbackType: DISCORD_CONNECT_TYPES.connectSettings,
+                })
+              )}`;
               window.open(discordUrl, "_blank");
             }}
           >
