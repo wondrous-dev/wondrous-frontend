@@ -28,6 +28,15 @@ type InputQuestStep = {
     discordChannelName?: string;
     discordMessageType?: string;
     dataCollectionType?: string;
+    tokenAddress?: string;
+    tokenSymbol?: string;
+    tokenLogoUrl?: string;
+    tokenDecimals?: string;
+    tokenChain?: string;
+    tokenAmount?: string;
+    tokenType?: string;
+    tokenId?: string;
+    tokenName?: string;
   };
 };
 
@@ -73,6 +82,18 @@ type OutputQuestStep = {
         prompt?: string;
         discordChannelName: string;
         discordMessageType?: string;
+      }
+    | {
+        prompt?: string;
+        verifyTokenChain?: string;
+        verifyTokenAddress?: string;
+        verifyTokenAmount?: string;
+        verifyTokenType?: string;
+        verifyTokenDecimals?: string;
+        verifyTokenSymbol?: string;
+        verifyTokenLogoUrl?: string;
+        verifyTokenId?: string;
+        verifyTokenName?: string;
       }
     | {
         prompt?: string;
@@ -132,6 +153,19 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         prompt: step?.prompt,
         snapshotSpaceLink: step?.additionalData?.snapshotSpaceLink,
         snapshotVoteTimes: Number(step?.additionalData?.snapshotVoteTimes),
+      };
+    } else if (step.type === TYPES.VERIFY_TOKEN_HOLDING) {
+      outputStep.value = {
+        prompt: step?.prompt,
+        verifyTokenChain: step?.additionalData?.tokenChain,
+        verifyTokenAddress: step?.additionalData?.tokenAddress,
+        verifyTokenAmount: step?.additionalData?.tokenAmount,
+        verifyTokenType: step?.additionalData?.tokenType,
+        verifyTokenDecimals: step?.additionalData?.tokenDecimals,
+        verifyTokenLogoUrl: step?.additionalData?.tokenLogoUrl,
+        verifyTokenSymbol: step?.additionalData?.tokenSymbol,
+        verifyTokenId: step?.additionalData?.tokenId,
+        verifyTokenName: step?.additionalData?.tokenName,
       };
     } else if (step.type === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
       outputStep.value = {

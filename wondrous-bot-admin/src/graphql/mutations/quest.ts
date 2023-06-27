@@ -43,6 +43,22 @@ export const UPDATE_QUEST = gql`
   ${QuestFragment}
 `;
 
+export const ACTIVATE_QUEST = gql`
+  mutation activateQuest($questId: ID!) {
+    activateQuest(questId: $questId) {
+      success
+    }
+  }
+`;
+
+export const DEACTIVATE_QUEST = gql`
+  mutation deactivateQuest($questId: ID!) {
+    deactivateQuest(questId: $questId) {
+      success
+    }
+  }
+`;
+
 export const APPROVE_SUBMISSION = gql`
   mutation approveQuestSubmission($questSubmissionId: ID!) {
     approveQuestSubmission(questSubmissionId: $questSubmissionId) {

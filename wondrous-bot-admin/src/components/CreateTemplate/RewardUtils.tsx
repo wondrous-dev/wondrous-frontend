@@ -248,58 +248,6 @@ export const RewardMethod = ({
   setPoapReward,
 }) => {
   const [getPoapEventInfo] = useLazyQuery(GET_POAP_EVENT);
-  const [getTokenInfo] = useLazyQuery(GET_TOKEN_INFO, {
-    onCompleted: (data) => {
-      setTokenReward({
-        ...tokenReward,
-        tokenName: data?.getTokenInfo?.name,
-        symbol: data?.getTokenInfo?.symbol,
-        icon: data?.getTokenInfo?.icon,
-      });
-    },
-    fetchPolicy: "network-only",
-  });
-
-  const [getNFTInfo] = useLazyQuery(GET_NFT_INFO, {
-    onCompleted: (data) => {
-      setTokenReward({
-        ...tokenReward,
-        tokenName: data?.getTokenInfo?.name,
-        symbol: data?.getTokenInfo?.symbol,
-        icon: data?.getTokenInfo?.icon,
-      });
-    },
-    fetchPolicy: "network-only",
-  });
-  const searchSelectedTokenInList = (contractAddress, chain, existingList = [], tokenId = "") => {
-    if (tokenReward?.type === "ERC20") {
-      getTokenInfo({
-        variables: {
-          contractAddress,
-          chain,
-        },
-      });
-    }
-    if (tokenReward?.type === "ERC721") {
-      getNFTInfo({
-        variables: {
-          contractAddress,
-          chain,
-          tokenType: "ERC721",
-        },
-      });
-    }
-    if (tokenReward?.type === "ERC1155") {
-      getNFTInfo({
-        variables: {
-          contractAddress,
-          chain,
-          tokenType: "ERC1155",
-          tokenId,
-        },
-      });
-    }
-  };
 
   if (rewardType === PAYMENT_OPTIONS.DISCORD_ROLE) {
     return (

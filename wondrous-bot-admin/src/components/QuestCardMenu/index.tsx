@@ -2,7 +2,7 @@ import { useMutation } from "@apollo/client";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ButtonBase, Box, Grid, Popper, ClickAwayListener, Typography } from "@mui/material";
 import ConfirmActionModal from "components/ConfirmActionModal";
-import { DELETE_QUEST } from "graphql/mutations";
+import { DELETE_QUEST, ACTIVATE_QUEST, DEACTIVATE_QUEST } from "graphql/mutations";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAlerts from "utils/hooks";
@@ -32,12 +32,41 @@ const QuestCardMenu = ({ quest }) => {
     refetchQueries: ["getQuestsForOrg", "getOrgQuestStats"],
   });
 
+  const [deactivateQuest] = useMutation(DEACTIVATE_QUEST, {
+    onCompleted: () => {
+      setSnackbarAlertMessage("Quest deactivated successfully");
+      setSnackbarAlertOpen(true);
+      setAnchorEl(null);
+      setConfirmModalData(null);
+    },
+    onError: (error) => {
+      setSnackbarAlertMessage("Error deactivating quest");
+      setSnackbarAlertOpen(true);
+    },
+    refetchQueries: ["getQuestsForOrg", "getOrgQuestStats"],
+  });
+
+  const [activateQuest] = useMutation(ACTIVATE_QUEST, {
+    onCompleted: () => {
+      setSnackbarAlertMessage("Quest deactivated successfully");
+      setSnackbarAlertOpen(true);
+      setAnchorEl(null);
+      setConfirmModalData(null);
+    },
+    onError: (error) => {
+      setSnackbarAlertMessage("Error deactivating quest");
+      setSnackbarAlertOpen(true);
+    },
+    refetchQueries: ["getQuestsForOrg", "getOrgQuestStats"],
+  });
+
   const onReset = () => setAnchorEl(null);
 
-  const ACTIONS = [
+  const ALL_ACTIONS = [
     {
       label: "Edit",
       onClick: () => navigate(`/quests/${quest.id}?edit=true`),
+      show: true
     },
     {
       label: "Delete",
@@ -60,8 +89,56 @@ const QuestCardMenu = ({ quest }) => {
           confirmButtonTitle: "Delete",
         });
       },
+      show: true
+    },
+    {
+      label: "Deactivate",
+      onClick: () => {
+        setConfirmModalData({
+          title: "Deactivate Quest",
+          body: "Are you sure you want to deactivate this quest?",
+          onConfirm: () => {
+            deactivateQuest({ variables: { questId: quest.id } });
+          },
+          onClose: () => {
+            setAnchorEl(null);
+            setConfirmModalData(null);
+          },
+          onCancel: () => {
+            setAnchorEl(null);
+            setConfirmModalData(null);
+          },
+          cancelButtonTitle: "Cancel",
+          confirmButtonTitle: "Deactivate",
+        });
+      },
+      show: quest?.status === "open",
+    },
+    {
+      label: "Activate",
+      onClick: () => {
+        setConfirmModalData({
+          title: "Activate Quest",
+          body: "Are you sure you want to activate this quest?",
+          onConfirm: () => {
+            activateQuest({ variables: { questId: quest.id } });
+          },
+          onClose: () => {
+            setAnchorEl(null);
+            setConfirmModalData(null);
+          },
+          onCancel: () => {
+            setAnchorEl(null);
+            setConfirmModalData(null);
+          },
+          cancelButtonTitle: "Cancel",
+          confirmButtonTitle: "Activate",
+        });
+      },
+      show: quest?.status === "inactive",
     },
   ];
+  const ACTIONS = ALL_ACTIONS.filter((action) => action.show);
   return (
     <>
       <ConfirmActionModal isOpen={!!confirmModalData} {...confirmModalData} />

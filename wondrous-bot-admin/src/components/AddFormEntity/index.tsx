@@ -18,8 +18,6 @@ import { useContext } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
 
-
-
 const COMPONENT_OPTIONS = [
   {
     label: "Text",
@@ -37,14 +35,14 @@ const COMPONENT_OPTIONS = [
     label: "Attachments",
     value: TYPES.ATTACHMENTS,
   },
-  {
-    label: "Like A Tweet",
-    value: TYPES.LIKE_TWEET,
-  },
-  {
-    label: "Follow A Twitter Account",
-    value: TYPES.FOLLOW_TWITTER,
-  },
+  // {
+  //   label: "Like A Tweet",
+  //   value: TYPES.LIKE_TWEET,
+  // },
+  // {
+  //   label: "Follow A Twitter Account",
+  //   value: TYPES.FOLLOW_TWITTER,
+  // },
   {
     label: "Reply To A Tweet",
     value: TYPES.REPLY_TWEET,
@@ -72,6 +70,10 @@ const COMPONENT_OPTIONS = [
   {
     label: "Data Collection",
     value: TYPES.DATA_COLLECTION,
+  },
+  {
+    label: "Verify Token Holding",
+    value: TYPES.VERIFY_TOKEN_HOLDING,
   },
 ];
 
@@ -110,7 +112,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
         },
       ],
     };
-    
+
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
@@ -158,7 +160,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
         },
       };
     });
-    
+
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.id === id) {
         acc = [
@@ -223,85 +225,82 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
                 const Component = CONFIG_COMPONENTS[item.type];
                 if (!Component) return null;
                 return (
-                  <Box width="100%" height="100%" ref={(ref) => refs.current[idx] = ref}>
-                  <Draggable key={idx} draggableId={`${idx}`} index={idx}>
-                    {(provided, snapshot) => (
-                      <Grid
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        ref={provided.innerRef}
-                        width="100%"
-                        isDragging={snapshot.isDragging}
-                      >
-                        <PanelComponent
-                          renderHeader={() => (
-                            <Header display="flex" justifyContent="space-between" alignItems="center">
-                              <Grid display="flex" gap="18px" alignItems="center">
-                                <DragIndicatorIcon
-                                  sx={{
-                                    color: "#2A8D5C",
-                                  }}
-                                />
-                                <Typography
-                                  color="#2A8D5C"
-                                  fontFamily="Poppins"
-                                  fontWeight={700}
-                                  fontSize="12px"
-                                  lineHeight="14px"
-                                  whiteSpace="nowrap"
-                                >
-                                  Step {idx + 1}
-                                </Typography>
-                                <SelectComponent
-                                  options={COMPONENT_OPTIONS}
-                                  background="#C1B6F6"
-                                  value={item.type}
-                                  onChange={(value) => handleChangeType(value, item.id, idx)}
-                                />
-                              </Grid>
-                              <Grid display="flex" alignItems="center" gap="14px">
-                                <Box display="flex" gap="10px" alignItems="center">
-                                  <Switch
-                                    value={item.required === false ? false : true}
-                                    onChange={(value) => {
-                                      handleRequiredChange(value, item.id);
+                  <Box width="100%" height="100%" ref={(ref) => (refs.current[idx] = ref)}>
+                    <Draggable key={idx} draggableId={`${idx}`} index={idx}>
+                      {(provided, snapshot) => (
+                        <Grid
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          ref={provided.innerRef}
+                          width="100%"
+                          isDragging={snapshot.isDragging}
+                        >
+                          <PanelComponent
+                            renderHeader={() => (
+                              <Header display="flex" justifyContent="space-between" alignItems="center">
+                                <Grid display="flex" gap="18px" alignItems="center">
+                                  <DragIndicatorIcon
+                                    sx={{
+                                      color: "#2A8D5C",
                                     }}
                                   />
-                                  <Label
-                                    style={{
-                                      marginRight: "8px",
-                                    }}
+                                  <Typography
+                                    color="#2A8D5C"
+                                    fontFamily="Poppins"
+                                    fontWeight={700}
+                                    fontSize="12px"
+                                    lineHeight="14px"
+                                    whiteSpace="nowrap"
                                   >
-                                    Required
-                                  </Label>
-                                </Box>
-                                <ButtonIconWrapper onClick={() => handleRemove(idx)}>
-                                  <DeleteIcon />
-                                </ButtonIconWrapper>
-                              </Grid>
-                            </Header>
-                          )}
-                          renderBody={() => (
-                            <>
-                              <Component
-                                onChange={(value) => handleChange(value, item.id, idx)}
-                                error={errors?.steps?.[idx]}
-                                value={item.value}
-                                stepType={item.type}
-                              />
-                              {RESPOND_TYPES[item.type] ? (
-                                <TypeComponent respondType={RESPOND_TYPES[item.type]} />
-                              ) : null}
-                              <StepAttachments
-                                step={item}
-                                handleChange={(value) => handleMedia(value, item.id)}
-                              />
-                            </>
-                          )}
-                        />
-                      </Grid>
-                    )}
-                  </Draggable>
+                                    Step {idx + 1}
+                                  </Typography>
+                                  <SelectComponent
+                                    options={COMPONENT_OPTIONS}
+                                    background="#C1B6F6"
+                                    value={item.type}
+                                    onChange={(value) => handleChangeType(value, item.id, idx)}
+                                  />
+                                </Grid>
+                                <Grid display="flex" alignItems="center" gap="14px">
+                                  <Box display="flex" gap="10px" alignItems="center">
+                                    <Switch
+                                      value={item.required === false ? false : true}
+                                      onChange={(value) => {
+                                        handleRequiredChange(value, item.id);
+                                      }}
+                                    />
+                                    <Label
+                                      style={{
+                                        marginRight: "8px",
+                                      }}
+                                    >
+                                      Required
+                                    </Label>
+                                  </Box>
+                                  <ButtonIconWrapper onClick={() => handleRemove(idx)}>
+                                    <DeleteIcon />
+                                  </ButtonIconWrapper>
+                                </Grid>
+                              </Header>
+                            )}
+                            renderBody={() => (
+                              <>
+                                <Component
+                                  onChange={(value) => handleChange(value, item.id, idx)}
+                                  error={errors?.steps?.[idx]}
+                                  value={item.value}
+                                  stepType={item.type}
+                                />
+                                {RESPOND_TYPES[item.type] ? (
+                                  <TypeComponent respondType={RESPOND_TYPES[item.type]} />
+                                ) : null}
+                                <StepAttachments step={item} handleChange={(value) => handleMedia(value, item.id)} />
+                              </>
+                            )}
+                          />
+                        </Grid>
+                      )}
+                    </Draggable>
                   </Box>
                 );
               })}
