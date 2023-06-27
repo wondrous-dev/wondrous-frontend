@@ -39,7 +39,8 @@ export const config = [
         content: () => (
           <ContentComponent title="Quests">
             <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
-              Your quests will appear here. Click on the first quest to view and activate it.
+              Your quests will appear here. For now we created some default quests for you! Click on the first quest to
+              view and activate it.
             </Typography>
           </ContentComponent>
         ),
