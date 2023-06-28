@@ -35,14 +35,14 @@ const COMPONENT_OPTIONS = [
     label: "Attachments",
     value: TYPES.ATTACHMENTS,
   },
-  // {
-  //   label: "Like A Tweet",
-  //   value: TYPES.LIKE_TWEET,
-  // },
-  // {
-  //   label: "Follow A Twitter Account",
-  //   value: TYPES.FOLLOW_TWITTER,
-  // },
+  {
+    label: "Like A Tweet",
+    value: TYPES.LIKE_TWEET,
+  },
+  {
+    label: "Follow A Twitter Account",
+    value: TYPES.FOLLOW_TWITTER,
+  },
   {
     label: "Reply To A Tweet",
     value: TYPES.REPLY_TWEET,
