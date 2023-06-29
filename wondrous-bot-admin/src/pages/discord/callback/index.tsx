@@ -7,6 +7,8 @@ import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from "utils/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageSpinner from "components/PageSpinner";
 import { handleUserOnboardingRedirect } from "utils/common";
+import PageWrapper from "components/Shared/PageWrapper";
+import { BG_TYPES } from "utils/constants";
 
 function DiscordCallback() {
   const location = useLocation();
@@ -18,22 +20,14 @@ function DiscordCallback() {
   const [discordSignupLogin, { data, loading }] = useMutation(USER_DISOCRD_SIGNUP_LOGIN);
 
   const parsedState = state ? JSON.parse(state) : {};
-  console.log(parsedState, 'parsed state')
   const returnToPage = useCallback(() => {
-    navigate(
-      `/login?discordConnectError=true&${new URLSearchParams(parsedState)?.toString()}`
-    );
+    navigate(`/login?discordConnectError=true&${new URLSearchParams(parsedState)?.toString()}`);
   }, [state, navigate]);
 
   useEffect(() => {
     if (code && state && !data?.discordSignupLogin && !loading) {
       const parsedState = JSON.parse(state);
-      if (
-        parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding ||
-        parsedState.callbackType === DISCORD_CONNECT_TYPES.loginMethod ||
-        parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboardingDao ||
-        parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings
-      ) {
+      if (parsedState.callbackType === DISCORD_CONNECT_TYPES.questPreview) {
         connectUserDiscord({
           variables: {
             discordAuthCode: code,
@@ -41,19 +35,9 @@ function DiscordCallback() {
           },
         })
           .then((result) => {
-            if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings) {
+            if (parsedState.callbackType === DISCORD_CONNECT_TYPES.questPreview) {
               // Only place to change this is in settings
-              window.location.href = `/profile/settings`;
-            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.loginMethod) {
-              window.location.href = `/profile/login-methods`;
-            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
-              navigate(
-                `/onboarding/discord?success${
-                  parsedState?.collabInvite ? `&collabInvite=${parsedState?.collabInvite}` : ""
-                }`
-              );
-            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboardingDao) {
-              navigate("/");
+              window.location.href = `/quests/${parsedState?.questId}`;
             }
           })
           .catch((err) => {
@@ -62,24 +46,13 @@ function DiscordCallback() {
               err?.graphQLErrors &&
               err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.DISCORD_USER_ALREADY_EXISTS;
 
-            if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings) {
+            if (parsedState.callbackType === DISCORD_CONNECT_TYPES.questPreview) {
               // Only place to change this is in settings
               if (alreadyExists) {
-                window.location.href = `/profile/settings?discordUserExists=true`;
+                window.location.href = `/quests/${parsedState?.questId}?discordUserExists=true`;
               } else {
-                window.location.href = `/profile/settings?discordError=true`;
+                window.location.href = `/quests/${parsedState?.questId}?discordError=true`;
               }
-            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.loginMethod) {
-              // Only place to change this is in settings
-              if (alreadyExists) {
-                window.location.href = `/profile/login-methods?discordUserExists=true`;
-              } else {
-                window.location.href = `/profile/login-methods?discordError=true`;
-              }
-            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
-              navigate("/");
-            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboardingDao) {
-              navigate("/");
             }
           });
       } else if (
@@ -100,15 +73,24 @@ function DiscordCallback() {
             const discordUser = response?.user;
             await storeAuthHeader(token, discordUser);
             if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
-              return handleUserOnboardingRedirect(null, navigate, {
-                token: inviteToken
-              }, "/")
+              return handleUserOnboardingRedirect(
+                null,
+                navigate,
+                {
+                  token: inviteToken,
+                },
+                "/"
+              );
             }
-            if(parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
-              return handleUserOnboardingRedirect(null, navigate, {
-                token: inviteToken
-              }, "/onboarding/welcome")
-
+            if (parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
+              return handleUserOnboardingRedirect(
+                null,
+                navigate,
+                {
+                  token: inviteToken,
+                },
+                "/onboarding/welcome"
+              );
             }
           })
           .catch((err) => {
@@ -119,22 +101,31 @@ function DiscordCallback() {
     }
   }, [data?.discordSignupLogin, loading]);
   return (
-    <Grid
-      width="100%"
-      height="100%"
-      minWidth="100vw"
-      minHeight="100vh"
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      gap="24px"
+    <PageWrapper
+      bgType={BG_TYPES.DEFAULT}
+      containerProps={{
+        minHeight: "100vh",
+        flexDirection: "column",
+        gap: "42px",
+        padding: {
+          xs: "14px 14px 120px 14px",
+          sm: "24px 56px",
+        },
+      }}
     >
-      <Typography fontFamily="Poppins" fontWeight="700" fontSize="62px" color="black">
-        Connecting Discord
-      </Typography>
-      <PageSpinner />
-    </Grid>
+      <Grid
+        width="100%"
+        display="flex"
+        flexDirection="column"
+        justifyContent="flex-start"
+        alignItems="center"
+      >
+        <Typography fontFamily="Poppins" fontWeight="600" fontSize="50px" color="white">
+          Connecting Discord
+        </Typography>
+        <PageSpinner />
+      </Grid>
+    </PageWrapper>
   );
 }
 

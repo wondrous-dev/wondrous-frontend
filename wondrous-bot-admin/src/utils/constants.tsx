@@ -64,10 +64,7 @@ export const DAY_STRING_MONTH_SHORT_YEAR = "DD/MMM/YY";
 export const DISCORD_CONNECT_TYPES = {
   signup: "signup",
   login: "login",
-  loginMethod: "login-method",
-  connectSettings: "connectSettings",
-  connectOnboarding: "connectOnboarding",
-  connectOnboardingDao: "connectOnboardingDao",
+  questPreview: "questPreview",
 };
 
 export const GRAPHQL_ERRORS = {
