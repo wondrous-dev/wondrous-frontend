@@ -193,7 +193,8 @@ const CreateTemplate = ({
       endAt: endAt && timeBound ? endAt.utcOffset(0).endOf("day").toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
-      rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {
+      // TODO: refactor this
+      rewards: questSettings.rewards?.map((reward: any) => {
         if (reward?.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
           return {
             discordRewardData: {
@@ -216,7 +217,7 @@ const CreateTemplate = ({
             poapRewardData: rewardData,
           };
         }
-      }),
+      }).filter(reward => reward),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           type: next.type,
@@ -308,7 +309,7 @@ const CreateTemplate = ({
       handleMutation({ body });
     } catch (err) {
       const errors: any = {};
-
+      console.log(err, 'ERR')
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
           console.log(error.path, "ERR PATH");

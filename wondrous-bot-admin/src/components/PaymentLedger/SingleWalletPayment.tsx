@@ -33,9 +33,10 @@ interface IProps {
   paymentData: IPaymentData;
   disabled?: boolean;
   tokenId?: string;
+  onPaymentCompleted?: () => void;
 }
 
-const SingleWalletPayment = ({ paymentData , disabled = false, tokenId}: IProps) => {
+const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymentCompleted}: IProps) => {
   const [wrongChainError, setWrongChainError] = useState(null);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const [signingError, setSigningError] = useState(null);
@@ -47,6 +48,7 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId}: IProps)
   const [linkCmtyPaymentsWithTransaction, { data: linkMetamaskPaymentData }] = useMutation(
     LINK_CMTY_PAYMENTS_WITH_TRANSACTION,
     {
+      onCompleted: () => onPaymentCompleted(),
       refetchQueries: [
         "getPaidCmtyPaymentsForQuest",
         "getProcessingCmtyPaymentsForQuest",
@@ -119,9 +121,7 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId}: IProps)
 
     }
     if(contractType === ContractType.ERC721) {
-      console.log(address, paymentData.recipient, tokenId, 'BEFORE')
       const callData = iface.encodeFunctionData("safeTransferFrom(address,address,uint256)", [address, paymentData.recipient, tokenId]);
-      console.log(callData, 'AFTER')
       return {
         from: wonderWeb3?.address,
         to: paymentData.contractAddress,

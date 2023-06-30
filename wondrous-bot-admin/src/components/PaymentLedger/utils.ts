@@ -11,7 +11,6 @@ export const exportSubmissionPaymentCsv = (data) => {
 
   for (const [_, value] of Object.entries(data)) {
     const unpaidSubmission: any = value;
-    console.log(unpaidSubmission, 'unpaid sub')
     const paymentData = {
       username: unpaidSubmission.discordUsername,
       recipientAddress: unpaidSubmission.recipientAddress,

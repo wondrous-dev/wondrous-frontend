@@ -35,6 +35,7 @@ const PaymentLedger = ({ questId = null }) => {
     paymentView,
     items,
     selectedPayments,
+    setSelectedPayments,
     tokenIds,
     updatePaymentList,
     setTokenIds,
@@ -64,6 +65,7 @@ const PaymentLedger = ({ questId = null }) => {
     return exportSubmissionPaymentCsv(data);
   };
 
+  console.log(selectedPayments, 'selected payments')
   return (
     <>
       <PageHeader
@@ -113,7 +115,14 @@ const PaymentLedger = ({ questId = null }) => {
           <EmptyState type={EMPTY_STATE_TYPES.PAYMENTS} />
         )}
         {selectedPayments?.length && paymentView === "unpaid" ? (
-          <BatchPayments selectedPayments={selectedPayments} paymentData={batchPaymentData} tokenIds={tokenIds} />
+          <BatchPayments
+            selectedPayments={selectedPayments}
+            paymentData={batchPaymentData}
+            tokenIds={tokenIds}
+            onPaymentCompleted={(paymentIds) =>
+              setSelectedPayments((prev) => prev.filter((id) => !paymentIds.includes(id)))
+            }
+          />
         ) : null}
 
         {hasMore ? (

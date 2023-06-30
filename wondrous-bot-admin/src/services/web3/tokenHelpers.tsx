@@ -13,9 +13,6 @@ export async function checkNFTAllowance(
   const prov = new ethers.providers.Web3Provider(provider);
   const signer = prov.getSigner();
 
-  // const contract = new web3.eth.Contract(ERC721ABI, contractAddress)
-  // const allowance = await contract.methods.allowance(owner, operator).call()
-  // return allowance
   const erc721Contract = new ethers.Contract(contractAddress, ERC721ABI, signer);
   try {
     // Call the allowance function to check the allowance
@@ -37,9 +34,6 @@ export async function checkERC1155Allowance(
   const prov = new ethers.providers.Web3Provider(provider);
   const signer = prov.getSigner();
 
-  // const contract = new web3.eth.Contract(ERC721ABI, contractAddress)
-  // const allowance = await contract.methods.allowance(owner, operator).call()
-  // return allowance
   const erc1155Contract = new ethers.Contract(contractAddress, ERC1155ABI, signer);
   try {
     // Call the allowance function to check the allowance

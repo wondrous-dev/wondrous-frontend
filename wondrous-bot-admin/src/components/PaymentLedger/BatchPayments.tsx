@@ -32,7 +32,7 @@ import useAlerts from "utils/hooks";
 
 import { SUPPORTED_CHAINS } from "utils/web3Constants";
 
-const BatchPayments = ({ selectedPayments, paymentData, tokenIds }) => {
+const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompleted }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const [loading, setLoading] = useState(false);
@@ -49,6 +49,10 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds }) => {
   const [linkCmtyPaymentsWithTransaction, { data: linkMetamaskPaymentData }] = useMutation(
     LINK_CMTY_PAYMENTS_WITH_TRANSACTION,
     {
+      onCompleted: () => {
+        const completedPaymentIds = paymentItems.map((item) => item.id);
+        return onPaymentCompleted(completedPaymentIds);
+      },
       refetchQueries: [
         "getPaidCmtyPaymentsForQuest",
         "getProcessingCmtyPaymentsForQuest",
