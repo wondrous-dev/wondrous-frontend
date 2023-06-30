@@ -116,3 +116,29 @@ export const ChannelContainerText = styled(Typography)`
 export const EditImg = styled.img`
   cursor: pointer;
 `;
+
+export const ModalTitleText = styled(Typography)`
+  && {
+    color: #4d4d4d;
+    font-size: 14px;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    letter-spacing: 0.14px;
+    margin-bottom: 8px;
+  }
+`;
+
+export const ModalDescriptionText = styled(Typography)`
+  && {
+    color: #828282;
+    font-size: 13px;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 14px;
+    letter-spacing: 0.26px;
+    margin-bottom: 16px;
+  }
+`;
