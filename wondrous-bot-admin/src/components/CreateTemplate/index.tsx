@@ -286,7 +286,6 @@ const CreateTemplate = ({
       handleMutation({ body });
     } catch (err) {
       const errors: any = {};
-      console.log(err, 'ERR')
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
           console.log(error.path, "ERR PATH");

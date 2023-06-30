@@ -257,7 +257,6 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
       setSnackbarAlertMessage("Success!");
       setSnackbarAlertOpen(true);
     } catch (error) {
-      console.log(error, "err");
       let message = "Something went wrong";
       if (error === "not_enough_balance") {
         message = "You don't have enough balance to make this transaction";

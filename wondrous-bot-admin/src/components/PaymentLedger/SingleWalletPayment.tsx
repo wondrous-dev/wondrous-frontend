@@ -150,7 +150,6 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     try {
       await handleAllowance({contractType: paymentData.contractType});
     } catch (error) {
-      console.log(error, "error");
       setSnackbarAlertMessage("You need to approve the token allowance first");
       setSnackbarAlertOpen(true);
       handleApproval({contractType: paymentData.contractType});
@@ -191,7 +190,6 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
       };
     } else {
       transactionData = handleTransfer({contractType: paymentData.contractType, iface, gasPrice, finalAmount, tokenId})
-      console.log(transactionData, 'transactionData')
     }
     try {
       const transactionObj = await wonderWeb3.sendTransaction(transactionData);
