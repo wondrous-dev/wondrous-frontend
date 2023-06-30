@@ -28,6 +28,31 @@ export async function checkNFTAllowance(
   }
 }
 
+export async function checkERC1155Allowance(
+  provider,
+  contractAddress: string,
+  owner: string,
+  operator: string,
+) {
+  const prov = new ethers.providers.Web3Provider(provider);
+  const signer = prov.getSigner();
+
+  // const contract = new web3.eth.Contract(ERC721ABI, contractAddress)
+  // const allowance = await contract.methods.allowance(owner, operator).call()
+  // return allowance
+  const erc1155Contract = new ethers.Contract(contractAddress, ERC1155ABI, signer);
+  try {
+    // Call the allowance function to check the allowance
+    const allowance = await erc1155Contract.isApprovedForAll(owner, operator);
+    // Return the allowance value
+    return allowance;
+  } catch (error) {
+    console.error("Error occurred while checking ERC1155 allowance:", error);
+    throw error;
+  }
+}
+
+
 export async function checkERC20Allowance(provider, contractAddress: string, owner: string, operator: string) {
   const prov = new ethers.providers.Web3Provider(provider);
   const signer = prov.getSigner();
@@ -72,7 +97,7 @@ export async function getERC1155Balance(provider, contractAddress: string, owner
     // Return the balance value
     return balance;
   } catch (error) {
-    console.error("Error occurred while checking ERC721 balance:", error);
+    console.error("Error occurred while checking ERC1155 balance:", error);
     throw error;
   }
 }
@@ -107,6 +132,7 @@ export async function approveERC20(provider, contractAddress: string, operator: 
   }
 }
 
+
 export async function setNFTApprovalForAll(provider, contractAddress: string, operator: string) {
   const prov = new ethers.providers.Web3Provider(provider);
   const signer = prov.getSigner();
@@ -122,10 +148,25 @@ export async function setNFTApprovalForAll(provider, contractAddress: string, op
   }
 }
 
-export async function batchTransferERC1155(provider, tokenAddress: string, addresses: string[], tokenIds: string[], amounts: number[]) {
+export async function setNFTApprovalForAll721(provider, contractAddress: string, operator: string) {
+  const prov = new ethers.providers.Web3Provider(provider);
+  const signer = prov.getSigner();
+  const erc721contract = new ethers.Contract(contractAddress, ERC721ABI, signer);
+  try {
+    // Call the balance function to check the balance
+    const tx = await erc721contract.setApprovalForAll(operator, true);
+    // Return the balance value
+    return tx;
+  } catch (error) {
+    console.error("Error occurred while checking ERC721 balance:", error);
+    throw error;
+  }
+}
+
+export async function batchTransferERC1155(provider, tokenAddress: string, addresses: string[], tokenIds: string[], amounts: number[], chain = 137) {
   const prov = new ethers.providers.Web3Provider(provider);
   const signer = prov.getSigner()
-  const batchTransferContractAddress = getMultisendAddress(ContractType.ERC1155, 137)
+  const batchTransferContractAddress = getMultisendAddress(ContractType.ERC1155, chain)
   const batchTransferContract = new ethers.Contract(batchTransferContractAddress, batchTransferABI, signer);
   try {
     // Call the balance function to check the balance
@@ -139,10 +180,11 @@ export async function batchTransferERC1155(provider, tokenAddress: string, addre
   }
 }
 
-export async function batchTransferERC721(provider, tokenAddress: string, addresses: string[], tokenIds: string[]) {
+export async function batchTransferERC721(provider, tokenAddress: string, addresses: string[], tokenIds: string[], chain = 137) {
+  console.log(tokenAddress, addresses, tokenIds, chain)
   const prov = new ethers.providers.Web3Provider(provider);
   const signer = prov.getSigner()
-  const batchTransferContractAddress = getMultisendAddress(ContractType.ERC721, 137)
+  const batchTransferContractAddress = getMultisendAddress(ContractType.ERC721, chain)
   const batchTransferContract = new ethers.Contract(batchTransferContractAddress, batchTransferABI, signer);
   try {
     // Call the balance function to check the balance
@@ -156,21 +198,19 @@ export async function batchTransferERC721(provider, tokenAddress: string, addres
   }
 }
 
-export async function batchTransferERC20(provider, tokenAddress: string, addresses: string[], amounts: string[]) {
+export async function batchTransferERC20(provider, tokenAddress: string, addresses: string[], amounts: string[], chain = 137) {
   const prov = new ethers.providers.Web3Provider(provider);
   const signer = prov.getSigner()
-  const batchTransferContractAddress = getMultisendAddress(ContractType.ERC20, 137)
+  const batchTransferContractAddress = getMultisendAddress(ContractType.ERC20, chain)
   const batchTransferContract = new ethers.Contract(batchTransferContractAddress, batchTransferABI, signer);
   try {
     // Call the balance function to check the balance
     const tx = await batchTransferContract.batchTransferERC20(tokenAddress, addresses, amounts, { gasLimit: 2000000 });
-    console.log('tx', tx)
     // Return the balance value
+    console.log(tx, 'txx')
     return tx;
   } catch (error) {
     console.error("Error occurred while checking ERC721 balance:", error);
     throw error;
   }
 }
-
-

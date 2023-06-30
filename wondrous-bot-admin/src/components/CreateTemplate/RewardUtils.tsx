@@ -21,7 +21,6 @@ import Ethereum from "assets/ethereum";
 import Avalanche from "assets/avalanche";
 import Optimism from "assets/optimism";
 import Polygon from "assets/polygonMaticLogo.svg";
-import { GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries/payment";
 import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import { GET_POAP_EVENT } from "graphql/queries";
 
@@ -37,7 +36,9 @@ const REWARD_TYPES = [
   { label: "ERC1155", value: "erc1155" },
 ];
 
-const CHAIN_SELECT_OPTIONS = [
+const isDev = !import.meta.env.VITE_PRODUCTION;
+
+export const CHAIN_SELECT_OPTIONS = [
   {
     label: "Ethereum",
     value: "ethereum",
@@ -50,6 +51,18 @@ const CHAIN_SELECT_OPTIONS = [
       />
     ),
   },
+  (isDev ? {
+    label: "Goerli",
+    value: "goerli",
+    icon: (
+      <Ethereum
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+      />
+    ),
+  } : {}),
   {
     label: "Polygon",
     value: "polygon",
