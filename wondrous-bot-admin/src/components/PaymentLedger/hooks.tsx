@@ -347,6 +347,7 @@ export const useTableComponents = ({
   tokenIds,
   updatePaymentList,
   setTokenIds,
+  setSelectedPayments
 }) => {
   if (paymentView === "unpaid") {
     return items?.map((payment) => {
@@ -370,6 +371,7 @@ export const useTableComponents = ({
                 id: payment.id,
                 contractType: payment.contractType,
               }}
+              onPaymentCompleted={() => setSelectedPayments((prev) => prev.filter((id) => id !== payment.id)) }
               tokenId={tokenIds[payment.id]}
               withPaymentButton
               isChecked={selectedPayments.includes(payment.id)}

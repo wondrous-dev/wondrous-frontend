@@ -3,7 +3,7 @@ import { ContractType } from "services/web3/contractRouter";
 import SingleWalletPayment from "./SingleWalletPayment";
 import { StyledCheckbox } from "./styles";
 
-const PaymentSelector = ({ paymentData, withPaymentButton = false, updatePaymentList, isChecked, tokenId }) => {
+const PaymentSelector = ({ paymentData, withPaymentButton = false, updatePaymentList, isChecked, tokenId, onPaymentCompleted }) => {
   const isPaymentButtonDisabled = !tokenId && [ContractType.ERC1155, ContractType.ERC721].includes(paymentData.contractType);
   return (
     <Box display="flex" gap="6px" alignItems="center">
@@ -14,7 +14,9 @@ const PaymentSelector = ({ paymentData, withPaymentButton = false, updatePayment
           updatePaymentList(paymentData.id, e.target.checked);
         }}
       />
-      {withPaymentButton && <SingleWalletPayment paymentData={paymentData} disabled={isPaymentButtonDisabled} tokenId={tokenId}/>}
+      {withPaymentButton && <SingleWalletPayment 
+      onPaymentCompleted={onPaymentCompleted}
+      paymentData={paymentData} disabled={isPaymentButtonDisabled} tokenId={tokenId}/>}
     </Box>
   );
 };

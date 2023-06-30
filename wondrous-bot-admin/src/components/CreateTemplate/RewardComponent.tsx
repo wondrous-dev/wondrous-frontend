@@ -101,7 +101,6 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
   }, [isOpen])
 
   const { activeOrg } = useContext(GlobalContext);
-  console.log('activeOrg', activeOrg)
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
   const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD, {
     refetchQueries: [GET_CMTY_PAYMENT_METHODS_FOR_ORG],
@@ -315,8 +314,6 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
           });
           return;
         }
-        console.log("tokenReward", tokenReward);
-        console.log('activeOrg?.id', activeOrg?.id);
         createPaymentMethod({
           variables: {
             input: {
