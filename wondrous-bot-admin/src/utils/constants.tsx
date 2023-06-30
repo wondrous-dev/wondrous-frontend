@@ -95,7 +95,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/onboarding/welcome",
   "/quests/view/:id",
   "/discord/callback/cmty-user-connect",
-  "/invite/:token"
+  "/invite/:token",
 ];
 
 export const BG_TYPES = {
@@ -148,6 +148,7 @@ export const QUEST_SUBMISSION_STATUS = {
 export const EMPTY_STATE_TYPES = {
   SUBMISSIONS: "submissions",
   MEMBERS: "members",
+  PAYMENTS: "payments",
 };
 
 export const ERRORS = {
@@ -156,11 +157,11 @@ export const ERRORS = {
 };
 
 export const REQUIREMENTS_NOT_MET_ERRORS = {
-  ONLY_ONCE: 'only_once',
-  LEVEL: 'level',
-  DISCORD_ROLE: 'discord_role',
-  QUEST: 'quest'
-}
+  ONLY_ONCE: "only_once",
+  LEVEL: "level",
+  DISCORD_ROLE: "discord_role",
+  QUEST: "quest",
+};
 
 export const ERRORS_LABELS = {
   [ERRORS.MIN_OPTION_LENGTH]: "You need at least one option.",
@@ -174,7 +175,7 @@ export const ERRORS_LABELS = {
   [REQUIREMENTS_NOT_MET_ERRORS.ONLY_ONCE]: "You have reached the maximum number of submissions on this quest",
   [REQUIREMENTS_NOT_MET_ERRORS.LEVEL]: "You must reach at least level {requiredLevel} to embark on this quest",
   [REQUIREMENTS_NOT_MET_ERRORS.DISCORD_ROLE]: "You must have {discordRole} role to take this quest",
-  [REQUIREMENTS_NOT_MET_ERRORS.QUEST]: "You must complete {questTitle} before taking this quest"
+  [REQUIREMENTS_NOT_MET_ERRORS.QUEST]: "You must complete {questTitle} before taking this quest",
 };
 
 export const DAO_CATEGORIES_KEYS = {
@@ -299,11 +300,11 @@ export const EXCLUDED_PATHS = [
   "/discord/callback/cmty-user-connect",
   "/quests/view/:id",
   "/signup",
-  "/invite/:token"
+  "/invite/:token",
 ];
 
 export const TUTORIALS = {
   COMMUNITIES_HOME_GUIDE: "communities_home_guide",
   COMMUNITIES_QUESTS_PAGE_GUIDE: "communities_quests_page_guide",
-  COMMUNITIES_QUEST: 'communities_quest',
-}
+  COMMUNITIES_QUEST: "communities_quest",
+};

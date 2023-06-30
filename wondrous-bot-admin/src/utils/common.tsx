@@ -1,4 +1,5 @@
 import { QUEST_CONDITION_TYPES } from "./constants";
+import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
 
 export function shallowEqual(objA, objB) {
   if (!objA || !objB) {
@@ -56,3 +57,5 @@ export const toggleHtmlOverflow = () => {
   const { style } = htmlTagElements.item(0);
   style.overflow = style.overflow ? '' : 'hidden';
 };
+
+export const constructExplorerRedirectUrl = (chain, txHash) => `${CHAIN_TO_EXPLORER_URL[chain]}/tx/${txHash}`;

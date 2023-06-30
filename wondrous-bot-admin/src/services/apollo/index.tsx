@@ -56,6 +56,30 @@ const cache = new InMemoryCache({
           keyArgs: ["input", ["orgId", "statuses", "status"]],
           merge: offsetLimitPaginationInput,
         },
+        getUnpaidCmtyPaymentsForQuest: {
+          keyArgs: ["input", ["questId"]],
+          merge: offsetLimitPaginationInput,
+        },
+        getProcessingCmtyPaymentsForQuest: {
+          keyArgs: ["input", ["questId"]],
+          merge: offsetLimitPaginationInput,
+        },
+        getPaidCmtyPaymentsForQuest: {
+          keyArgs: ["input", ["questId"]],
+          merge: offsetLimitPaginationInput,
+        },
+        getUnpaidCmtyPaymentsForOrg: {
+          keyArgs: ["input", ["orgId"]],
+          merge: offsetLimitPaginationInput,
+        },
+        getProcessingCmtyPaymentsForOrg: {
+          keyArgs: ["input", ["orgId"]],
+          merge: offsetLimitPaginationInput,
+        },
+        getCompletedCmtyPaymentsForOrg: {
+          keyArgs: ["input", ["orgId"]],
+          merge: offsetLimitPaginationInput,
+        }
       },
     },
   },

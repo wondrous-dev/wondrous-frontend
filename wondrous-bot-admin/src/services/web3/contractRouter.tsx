@@ -19,6 +19,11 @@ const CHAIN_TO_MULTISEND_ADDRESS = {
         [ContractType.ERC721]: '0xa97EF76725D7A7B3066EA7b6c17C4DAbA469FDbF',
         [ContractType.ERC1155]: '0xa97EF76725D7A7B3066EA7b6c17C4DAbA469FDbF',
     },
+    5: {
+        [ContractType.ERC20]: '0x83703892a562d5ec05b5f9453e8a57c8cffc99e6',
+        [ContractType.ERC721]: '0x83703892a562d5ec05b5f9453e8a57c8cffc99e6',
+        [ContractType.ERC1155]: '0x83703892a562d5ec05b5f9453e8a57c8cffc99e6',
+    }
 }
 
 export function getMultisendAddress(type: ContractType, chainId: number) {
@@ -29,6 +34,8 @@ export function getMultisendAddress(type: ContractType, chainId: number) {
             return CHAIN_TO_MULTISEND_ADDRESS[4][type]
         case 137:
             return CHAIN_TO_MULTISEND_ADDRESS[137][type]
+        case 5:
+            return CHAIN_TO_MULTISEND_ADDRESS[5][type]
         default:
             return ''  
     }

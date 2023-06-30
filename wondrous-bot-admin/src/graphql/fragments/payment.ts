@@ -40,5 +40,8 @@ export const CmtyPaymentFragment = gql`
     symbol
     icon
     tokenName
+    submissionApprovedAt
+    contractAddress
+    contractType
   }
 `;
