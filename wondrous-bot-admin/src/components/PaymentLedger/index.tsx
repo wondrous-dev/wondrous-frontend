@@ -65,7 +65,6 @@ const PaymentLedger = ({ questId = null }) => {
     return exportSubmissionPaymentCsv(data);
   };
 
-  console.log(selectedPayments, 'selected payments')
   return (
     <>
       <PageHeader

@@ -175,7 +175,6 @@ export async function batchTransferERC1155(provider, tokenAddress: string, addre
 }
 
 export async function batchTransferERC721(provider, tokenAddress: string, addresses: string[], tokenIds: string[], chain = 137) {
-  console.log(tokenAddress, addresses, tokenIds, chain)
   const prov = new ethers.providers.Web3Provider(provider);
   const signer = prov.getSigner()
   const batchTransferContractAddress = getMultisendAddress(ContractType.ERC721, chain)
@@ -201,7 +200,6 @@ export async function batchTransferERC20(provider, tokenAddress: string, address
     // Call the balance function to check the balance
     const tx = await batchTransferContract.batchTransferERC20(tokenAddress, addresses, amounts, { gasLimit: 2000000 });
     // Return the balance value
-    console.log(tx, 'txx')
     return tx;
   } catch (error) {
     console.error("Error occurred while checking ERC721 balance:", error);
