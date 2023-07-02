@@ -14,6 +14,14 @@ export const GET_CMTY_ORG_DISCORD_CONFIG = gql`
       }
       additionalData {
         notificationChannelId
+        stickyMessage
+        welcomeMessage
+        stickyMessageChannel
+        welcomeMessageChannel
+        generalNotificationsChannel
+        generalNotificationsChannelActive
+        stickyMessageChannelActive
+        welcomeMessageChannelActive
       }
     }
   }

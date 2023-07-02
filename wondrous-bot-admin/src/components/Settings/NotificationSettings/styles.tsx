@@ -142,3 +142,18 @@ export const ModalDescriptionText = styled(Typography)`
     margin-bottom: 16px;
   }
 `;
+
+export const AddChannelText = styled(Typography)`
+  && {
+    Copy
+    color: #000;
+    text-align: center;
+    font-size: 15px;
+    font-family: Space Grotesk;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    letter-spacing: -0.15px;
+    margin-left: 8px
+  }
+`;

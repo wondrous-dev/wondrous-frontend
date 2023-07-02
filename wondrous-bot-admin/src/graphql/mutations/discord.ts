@@ -19,3 +19,11 @@ export const PUSH_QUEST_DISCORD_NOTFICATION = gql`
     }
   }
 `;
+
+export const UPDATE_ORG_DISCORD_ADDITIONAL_DATA = gql`
+  mutation updateOrgDiscordAdditionalData($orgId: ID!, $additionalData: JSON) {
+    updateOrgDiscordAdditionalData(orgId: $orgId, additionalData: $additionalData) {
+      success
+    }
+  }
+`;

@@ -1,15 +1,14 @@
 import { useMutation, useLazyQuery, useQuery } from "@apollo/client";
-import { makeUniqueId } from "@apollo/client/utilities";
-import { Typography, Grid, Box } from "@mui/material";
-import { CREATE_ORG_INVITE_LINK, KICK_ORG_USER } from "graphql/mutations";
+import { Grid, Box } from "@mui/material";
 import { GET_CMTY_ORG_DISCORD_CONFIG, GET_ORG_ADMINS, GET_ORG_ROLES } from "graphql/queries";
 import Modal from "components/Shared/Modal";
 import { UPDATE_ORG } from "graphql/mutations";
 import { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import EditSvg from "components/Icons/edit.svg";
-import { getBaseUrl } from "utils/common";
+import AddIcon from "@mui/icons-material/Add";
 import {
+  AddChannelText,
   ChannelContainer,
   ChannelContainerText,
   EditImg,
@@ -27,7 +26,9 @@ import {
 import SelectComponent from "components/Shared/Select";
 import { GET_GUILD_DISCORD_CHANNELS } from "graphql/queries/discord";
 import TextField from "components/Shared/TextField";
-import { SharedSecondaryButton } from "components/Shared/styles";
+import { ButtonIconWrapper, SharedSecondaryButton } from "components/Shared/styles";
+import { UPDATE_ORG_DISCORD_ADDITIONAL_DATA } from "graphql/mutations/discord";
+import { camelToSnake, snakeToCamel } from "utils/common";
 
 const CHANNEL_TYPE = {
   STICKY_MESSAGE: "sticky_message_channel",
@@ -62,11 +63,23 @@ const NOTIFICATIONS = [
   },
 ];
 
-const NotificationModal = ({ open, onClose, channels, existingChannel, message, setMessage }) => {
-  const [channel, setChannel] = useState(existingChannel);
-
+const NotificationModal = ({
+  open,
+  onClose,
+  editMessageKey,
+  channelType,
+  channels,
+  discordChannel,
+  setDiscordChannel,
+  message,
+  setMessage,
+  orgDiscordAdditionalData,
+  orgId,
+  updateOrgDiscordAdditionalData,
+  title,
+}) => {
   return (
-    <Modal open={open} onClose={onClose} title="Edit Notification" maxWidth={640}>
+    <Modal open={open} onClose={onClose} title={`Edit ${title}`} maxWidth={640}>
       <Box marginBottom={"24px"}>
         <ModalTitleText>Channel</ModalTitleText>
         <SelectComponent
@@ -74,8 +87,8 @@ const NotificationModal = ({ open, onClose, channels, existingChannel, message, 
             flex: 1,
           }}
           options={channels}
-          value={channel}
-          onChange={(value) => setChannel(value)}
+          value={discordChannel}
+          onChange={(value) => setDiscordChannel(value)}
         />
       </Box>
       {message && (
@@ -108,7 +121,22 @@ const NotificationModal = ({ open, onClose, channels, existingChannel, message, 
           sx={{
             flex: 1,
           }}
-          onClick={() => {}}
+          onClick={() => {
+            updateOrgDiscordAdditionalData({
+              variables: {
+                orgId,
+                additionalData: {
+                  ...orgDiscordAdditionalData,
+                  ...(editMessageKey && {
+                    [editMessageKey]: message,
+                  }),
+                  [channelType]: discordChannel,
+                },
+              },
+            }).then(() => {
+              onClose();
+            });
+          }}
         >
           Update
         </SharedSecondaryButton>
@@ -118,24 +146,54 @@ const NotificationModal = ({ open, onClose, channels, existingChannel, message, 
 };
 
 const NotificationSetting = (props) => {
-  const { title, description, orgDiscordAdditionaData, channelType, editMessageKey, channels, defaultMessage } = props;
-  const existingMessage = orgDiscordAdditionaData && orgDiscordAdditionaData[editMessageKey];
-  const existingDiscordChannel = orgDiscordAdditionaData && orgDiscordAdditionaData[channelType];
-  const existingToggleActive = orgDiscordAdditionaData && orgDiscordAdditionaData[`${channelType}_active`];
-  const [message, setMessage] = useState(existingMessage || defaultMessage);
-  const [updateOrg] = useMutation(UPDATE_ORG);
+  const [updateOrgDiscordAdditionalData] = useMutation(UPDATE_ORG_DISCORD_ADDITIONAL_DATA, {
+    refetchQueries: [GET_GUILD_DISCORD_CHANNELS],
+  });
+  const { title, description, orgDiscordAdditionaData, channelType, editMessageKey, channels, defaultMessage, orgId } =
+    props;
+  const existingMessage = orgDiscordAdditionaData && orgDiscordAdditionaData[snakeToCamel(editMessageKey)];
+  const existingDiscordChannel = orgDiscordAdditionaData && orgDiscordAdditionaData[snakeToCamel(channelType)];
+  const existingToggleActive = orgDiscordAdditionaData && orgDiscordAdditionaData[`${snakeToCamel(channelType)}Active`];
+  const [message, setMessage] = useState("");
   const [discordChannel, setDiscordChannel] = useState(existingDiscordChannel);
   const [active, setActive] = useState(existingToggleActive);
   const [openModal, setOpenModal] = useState(false);
+  const discordChannelName = channels?.find((existingChannel) => existingChannel.value === discordChannel)?.label;
+  useEffect(() => {
+    if (existingToggleActive) {
+      setActive(existingToggleActive);
+    }
+  }, [existingToggleActive]);
+
+  useEffect(() => {
+    if (existingDiscordChannel) {
+      setDiscordChannel(existingDiscordChannel);
+    }
+  }, [existingDiscordChannel]);
+
+  useEffect(() => {
+    if (existingMessage) {
+      setMessage(existingMessage);
+    } else {
+      setMessage(defaultMessage);
+    }
+  }, [existingMessage]);
   return (
     <>
       <NotificationModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         channels={channels}
-        existingChannel={existingDiscordChannel}
+        discordChannel={discordChannel}
+        setDiscordChannel={setDiscordChannel}
         message={message}
-        setMessage={(e) => setMessage(e.target.value)}
+        setMessage={setMessage}
+        orgDiscordAdditionalData={orgDiscordAdditionaData}
+        orgId={orgId}
+        channelType={channelType}
+        editMessageKey={editMessageKey}
+        updateOrgDiscordAdditionalData={updateOrgDiscordAdditionalData}
+        title={title}
       />
       <NotificationWrapper>
         <NotificationHalves>
@@ -144,10 +202,38 @@ const NotificationSetting = (props) => {
             <NotificationDescription>{description}</NotificationDescription>
           </Box>
           <NotificationSwitchContainer>
-            <NotificationSwitchInnerDiv active={active} onClick={() => setActive(!active)}>
+            <NotificationSwitchInnerDiv
+              active={active}
+              onClick={() => {
+                updateOrgDiscordAdditionalData({
+                  variables: {
+                    orgId,
+                    additionalData: {
+                      ...orgDiscordAdditionaData,
+                      [`${channelType}_active`]: !active,
+                    },
+                  },
+                });
+                setActive(!active);
+              }}
+            >
               <NotificationSwitchText active={active}>ON</NotificationSwitchText>
             </NotificationSwitchInnerDiv>
-            <NotificationSwitchInnerDiv active={!active} onClick={() => setActive(!active)}>
+            <NotificationSwitchInnerDiv
+              active={!active}
+              onClick={() => {
+                updateOrgDiscordAdditionalData({
+                  variables: {
+                    orgId,
+                    additionalData: {
+                      ...orgDiscordAdditionaData,
+                      [`${channelType}_active`]: !active,
+                    },
+                  },
+                });
+                setActive(!active);
+              }}
+            >
               <NotificationSwitchText active={!active}>OFF</NotificationSwitchText>
             </NotificationSwitchInnerDiv>
           </NotificationSwitchContainer>
@@ -155,10 +241,21 @@ const NotificationSetting = (props) => {
         <NotificationHalves>
           <Box display="flex" alignItems="center">
             <NotificationPostingToText>Posting to:</NotificationPostingToText>
-            {discordChannel && (
+            {discordChannelName ? (
               <ChannelContainer>
-                <ChannelContainerText>{discordChannel}</ChannelContainerText>
+                <ChannelContainerText>#{discordChannelName}</ChannelContainerText>
               </ChannelContainer>
+            ) : (
+              <Box display="flex" alignItems={"center"} marginLeft="8px">
+                <ButtonIconWrapper onClick={() => setOpenModal(true)}>
+                  <AddIcon
+                    sx={{
+                      color: "black",
+                    }}
+                  />
+                </ButtonIconWrapper>
+                <AddChannelText>Add Channel</AddChannelText>
+              </Box>
             )}
           </Box>
           <EditImg src={EditSvg} onClick={() => setOpenModal(true)} />
@@ -179,6 +276,7 @@ const NotificationSettings = () => {
     },
     skip: !activeOrg?.id,
   });
+
   const [getGuildDiscordChannels, { data: guildDiscordChannelsData }] = useLazyQuery(GET_GUILD_DISCORD_CHANNELS);
   const guildId = orgDiscordConfig?.getCmtyOrgDiscordConfig?.guildId;
   const guildDiscordChannels = guildDiscordChannelsData?.getAvailableChannelsForDiscordGuild;
@@ -212,6 +310,7 @@ const NotificationSettings = () => {
             {...notification}
             channels={channels}
             orgDiscordAdditionaData={guildDiscordAdditionalData}
+            orgId={activeOrg?.id}
           />
         ))}
       </>
