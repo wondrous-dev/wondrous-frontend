@@ -217,7 +217,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
         tokenAddress,
         addresses,
         paymentItems.map((item) => {
-          const decimal = Number(item?.decimal);
+          const decimal = Number(item?.decimal) || 18;
           const bigChangedAmount = new BigNumber(item?.amount);
           const newDecimal = new BigNumber(10 ** decimal);
           let finalAmount = bigChangedAmount.times(newDecimal).toString();

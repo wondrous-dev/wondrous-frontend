@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Label } from "components/CreateTemplate/styles";
 import SelectComponent from "components/Shared/Select";
 import { StyledViewQuestResults } from "./styles";
-import { SharedSecondaryButton } from "components/Shared/styles";
+import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
 import Modal from "components/Shared/Modal";
 import { PUSH_QUEST_DISCORD_NOTFICATION } from "graphql/mutations/discord";
 import { useMutation } from "@apollo/client";
@@ -62,7 +62,9 @@ const PublishQuestModal = ({ onClose, channelName, handlePublish, message, setMe
 };
 const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNotificationChannelId }) => {
   const [openPublishModal, setOpenPublishModal] = useState(false);
+  const [autoNotifications, setAutoNotifications] = useState(false);
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
+  const [errors, setErrors] = useState(null);
   const [mentionChannel, setMentionChannel] = useState(false);
   const [message, setMessage] = useState(
     `@here ${quest?.title} is now available! Check it out here and make a submission`
@@ -129,6 +131,31 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
           onChange={(value) => setChannel(value)}
         />
       </Grid>
+      <Grid display="flex" justifyContent="flex-start" alignItems="center" width="100%" marginTop={"8px"}>
+        <Label>Auto notifications</Label>
+        <Switch
+          value={autoNotifications}
+          onChange={() => {
+            if (!autoNotifications && !channel) {
+              setErrors({
+                discordChannel: "Please select a channel to send auto notifications to",
+              });
+            } else {
+              setAutoNotifications(!autoNotifications);
+            }
+          }}
+        />
+      </Grid>
+      {errors?.discordChannel && (
+        <ErrorText
+          style={{
+            marginTop: "-4px",
+            fontSize: "12px",
+          }}
+        >
+          {errors?.discordChannel}
+        </ErrorText>
+      )}
       <Box display="flex" width={"100%"} marginTop="8px">
         <Box flex={1} />
         <SharedSecondaryButton disabled={!channel} onClick={() => setOpenPublishModal(true)}>

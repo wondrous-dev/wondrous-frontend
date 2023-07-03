@@ -61,7 +61,7 @@ export async function checkERC20Allowance(provider, contractAddress: string, own
     // Return the allowance value
     return allowance;
   } catch (error) {
-    console.error("Error occurred while checking ERC721 allowance:", error);
+    console.error("Error occurred while checking ERC20 allowance:", error);
     throw error;
   }
 }

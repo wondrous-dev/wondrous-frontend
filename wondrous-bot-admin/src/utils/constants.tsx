@@ -14,6 +14,7 @@ export const TYPES = {
   DISCORD_MESSAGE_IN_CHANNEL: "discord_message_in_channel",
   JOIN_DISCORD_COMMUNITY_CALL: "join_discord_community_call",
   DATA_COLLECTION: "data_collection",
+  VERIFY_TOKEN_HOLDING: "verify_token_holding",
 };
 
 export const CONFIG = [
@@ -63,10 +64,7 @@ export const DAY_STRING_MONTH_SHORT_YEAR = "DD/MMM/YY";
 export const DISCORD_CONNECT_TYPES = {
   signup: "signup",
   login: "login",
-  loginMethod: "login-method",
-  connectSettings: "connectSettings",
-  connectOnboarding: "connectOnboarding",
-  connectOnboardingDao: "connectOnboardingDao",
+  questPreview: "questPreview",
 };
 
 export const GRAPHQL_ERRORS = {

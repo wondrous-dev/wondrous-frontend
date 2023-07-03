@@ -162,8 +162,18 @@ const CreateTemplate = ({
     if (Object.keys(errors).length > 0) {
       setErrors({});
     }
-    const { questConditions, requireReview, maxSubmission, isActive, maxApproval, startAt, endAt, level, timeBound, isOnboarding } =
-      questSettings;
+    const {
+      questConditions,
+      requireReview,
+      maxSubmission,
+      isActive,
+      maxApproval,
+      startAt,
+      endAt,
+      level,
+      timeBound,
+      isOnboarding,
+    } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
     const body = {
@@ -259,6 +269,19 @@ const CreateTemplate = ({
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
             discordChannelName: next.value?.discordChannelName,
+          };
+        } else if (next.type === TYPES.VERIFY_TOKEN_HOLDING) {
+          step.prompt = next.value?.prompt;
+          step["additionalData"] = {
+            tokenAddress: next.value?.verifyTokenAddress,
+            tokenSymbol: next.value?.verifyTokenSymbol,
+            tokenLogoUrl: next.value?.verifyTokenLogoUrl,
+            tokenDecimals: next.value?.verifyTokenDecimals,
+            tokenChain: next.value?.verifyTokenChain,
+            tokenAmount: next.value?.verifyTokenAmount,
+            tokenType: next.value?.verifyTokenType,
+            tokenId: next.value?.verifyTokenId,
+            tokenName: next.value?.verifyTokenName,
           };
         } else if (next.type === TYPES.DATA_COLLECTION) {
           step.prompt = next.value?.prompt;
@@ -362,7 +385,7 @@ const CreateTemplate = ({
             />
             <PanelComponent
               panelProps={{
-                'data-tour': 'tutorial-quest-rewards'
+                "data-tour": "tutorial-quest-rewards",
               }}
               renderHeader={() => <RewardOverviewHeader />}
               renderBody={() => <RewardComponent rewards={questSettings.rewards} setQuestSettings={setQuestSettings} />}

@@ -14,7 +14,7 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
+import { QUEST_STATUSES, TUTORIALS, DISCORD_CONNECT_TYPES } from "utils/constants";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import QuestTitle from "components/QuestTitle";
@@ -22,13 +22,19 @@ import { getDiscordUrl } from "utils/discord";
 import { getBaseUrl } from "utils/common";
 import { useTour } from "@reactour/tour";
 import { useMe } from "components/Auth";
+import useAlerts from "utils/hooks";
+
 
 const QuestResultsPage = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const location = useLocation();
   const { user } = useMe() || {};
-  const isEditInQuery = new URLSearchParams(location.search).get("edit") === "true";
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
+  const searchParams = new URLSearchParams(location.search);
+  const isEditInQuery = searchParams.get("edit") === "true";
+  const discordError = searchParams.get("discordError") === "true";
+  const discordUserExists = searchParams.get("discordUserExists") === "true";
   const [isEditMode, setIsEditMode] = useState(isEditInQuery);
   const [connectDiscordModalOpen, setConnectDiscordModalOpen] = useState(false);
   const [notInGuildError, setNotInGuildError] = useState(false);
@@ -38,7 +44,16 @@ const QuestResultsPage = () => {
   const headerActionsRef = useRef(null);
   const { setIsOpen } = useTour();
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
-
+  useEffect(() => {
+    if (discordError) {
+      setSnackbarAlertMessage("Error connecting Discord");
+      setSnackbarAlertOpen(true);
+    }
+    if (discordUserExists){
+      setSnackbarAlertMessage("This Discord account is already connected to another account");
+      setSnackbarAlertOpen(true);
+    }
+  }, [discordError, discordUserExists]);
   useEffect(() => {
     if (id) {
       getQuestRewards({
@@ -136,7 +151,6 @@ const QuestResultsPage = () => {
   }, [getQuestById?.steps, isEditMode]);
 
   const shareUrl = `${getBaseUrl()}/quest?id=${getQuestById?.id}`;
-
   return (
     <CreateQuestContext.Provider
       value={{
@@ -153,8 +167,13 @@ const QuestResultsPage = () => {
         footerRight={
           <SharedSecondaryButton
             onClick={() => {
-              const discordUrl = getDiscordUrl();
-              window.open(discordUrl, "_blank");
+              const discordUrl = `${getDiscordUrl()}&state=${encodeURIComponent(
+                JSON.stringify({
+                  callbackType: DISCORD_CONNECT_TYPES.questPreview,
+                  questId: id,
+                })
+              )}`;
+              window.location.href = discordUrl;
             }}
           >
             Connect

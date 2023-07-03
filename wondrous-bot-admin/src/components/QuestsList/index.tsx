@@ -32,6 +32,7 @@ const formatQuestsData = (LEVELS, data) => {
       id: quest.id,
       completions: quest.submissionsCount?.approved || 0,
       inReview: quest.submissionsCount?.inReview,
+      status: quest.status,
     });
   });
 

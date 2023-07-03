@@ -174,21 +174,15 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     }
     const iface = new ethers.utils.Interface(iabi);
     const chain = paymentData?.chain;
-    if (chain !== SUPPORTED_CHAINS[connectedChain]) {
-      // setWrongChainError(`Please switch to ${chain} chain`);
-      setSnackbarAlertMessage(`Please switch to ${chain} chain`);
-      setSnackbarAlertOpen(true);
-      return;
-    }
     let transactionData: TransactionData;
     const gasPrice = await wonderWeb3.getGasPrice();
 
-    const decimal = Number(paymentData?.decimal);
+    const erc20DefaultDecimal = paymentData?.contractType === ContractType.ERC20 ? 18 : 1;
+    const decimal = Number(paymentData?.decimal) || erc20DefaultDecimal;
     const bigChangedAmount = new BigNumber(paymentData.amount);
     const newDecimal = new BigNumber(10 ** decimal);
-    let finalAmount = bigChangedAmount.times(newDecimal).toString();
-
-    if (paymentData?.currency === "ETH") {
+    let finalAmount = bigChangedAmount.times(newDecimal).toString();    
+    if (paymentData?.currency === "ETH" || paymentData?.currency === 'MATIC') {
       transactionData = {
         from: wonderWeb3.address,
         to: paymentData.recipient,
