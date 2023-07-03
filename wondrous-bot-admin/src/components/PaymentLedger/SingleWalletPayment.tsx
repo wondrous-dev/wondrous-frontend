@@ -17,6 +17,7 @@ import ERC1155ABI from "services/web3/abi/ERC1155";
 import BigNumber from "bignumber.js";
 import { CircularProgress } from "@mui/material";
 import { ContractType } from "services/web3/contractRouter";
+import { getMessageFromError, verifyChain } from "./utils";
 
 interface IPaymentData {
   chain: string;
@@ -37,10 +38,7 @@ interface IProps {
 }
 
 const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymentCompleted}: IProps) => {
-  const [wrongChainError, setWrongChainError] = useState(null);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
-  const [signingError, setSigningError] = useState(null);
-  const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const { activeOrg } = useContext(GlobalContext);
@@ -73,15 +71,19 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     const chainId = Object.keys(SUPPORTED_CHAINS)[chainIdx];
     return chainId;
   };
-  useEffect(() => {
-    setWrongChainError(null);
-    const chain = getChainIdFromChainName(paymentData?.chain);
-    if (chain && connectedChain) {
-      if (chain !== SUPPORTED_CHAINS[chain]) {
-        setWrongChainError(`Currently connected to the wrong network should be on ${chain}`);
-      }
+
+  const handleChainVerify = () => {
+    try {
+      verifyChain({
+        chain: paymentData?.chain,
+        connectedChain,
+      })
+    } catch (error) {
+      setSnackbarAlertMessage(`Please switch to ${paymentData?.chain} chain`);
+      setSnackbarAlertOpen(true);
+      throw new Error();
     }
-  }, [connectedChain, paymentData?.chain]);
+  }
 
   const handleAllowance = ({contractType}) => {
     if (contractType === ContractType.ERC20) {
@@ -145,6 +147,11 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
   };
   
   const sendTransactionFromMetamask = async () => {
+    try {
+      handleChainVerify()
+    } catch (error) {
+      return;
+    }
     setLoading(true);
     wonderWeb3.onConnect();
     try {
@@ -168,7 +175,9 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     const iface = new ethers.utils.Interface(iabi);
     const chain = paymentData?.chain;
     if (chain !== SUPPORTED_CHAINS[connectedChain]) {
-      setWrongChainError(`Please switch to ${chain} chain`);
+      // setWrongChainError(`Please switch to ${chain} chain`);
+      setSnackbarAlertMessage(`Please switch to ${chain} chain`);
+      setSnackbarAlertOpen(true);
       return;
     }
     let transactionData: TransactionData;
@@ -209,10 +218,7 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
       setSnackbarAlertMessage("Success!");
       setSnackbarAlertOpen(true);
     } catch (error) {
-      let message = "Error sending transaction";
-      if (error?.code === 4001) {
-        message = "Transaction rejected";
-      }
+      const message = getMessageFromError(error);
       setLoading(false);
       setSnackbarAlertMessage(message);
       setSnackbarAlertOpen(true);

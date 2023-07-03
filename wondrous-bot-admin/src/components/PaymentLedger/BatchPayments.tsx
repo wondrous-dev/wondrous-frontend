@@ -31,6 +31,7 @@ import GlobalContext from "utils/context/GlobalContext";
 import useAlerts from "utils/hooks";
 
 import { SUPPORTED_CHAINS } from "utils/web3Constants";
+import { getMessageFromError, verifyChain } from "./utils";
 
 const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompleted }) => {
   const { activeOrg } = useContext(GlobalContext);
@@ -67,7 +68,10 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
 
   const wonderWeb3 = useWonderWeb3();
 
+  const { chain: connectedChain } = wonderWeb3;
+
   useEffect(() => {
+    wonderWeb3.activateAndStore("injected");
     wonderWeb3.onConnect();
   }, []);
 
@@ -103,6 +107,19 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
 
   const showBatchPayButton =
     conditions?.checkIfAllHavePayee && conditions?.checkIfAllSameCurrency && conditions?.checkIfAllSameChain;
+
+  const handleChainVerify = ({ chain }) => {
+    try {
+      verifyChain({
+        chain,
+        connectedChain,
+      });
+    } catch (error) {
+      setSnackbarAlertMessage(`Please switch to ${chain} chain`);
+      setSnackbarAlertOpen(true);
+      throw new Error();
+    }
+  };
 
   const handleAllowance = async ({ contractType, tokenAddress, batchTransferContractAddress }) => {
     if (contractType === ContractType.ERC20) {
@@ -229,8 +246,14 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     }
   };
   const sendTransactionFromMetamask = async () => {
-    setLoading(true);
     const paymentItem = paymentItems[0];
+    setLoading(true);
+    try {
+      handleChainVerify({ chain: paymentItem?.chain });
+    } catch (error) {
+      setLoading(false);
+      return;
+    }
     const chainId = Number(getChainIdFromChainName(paymentItem?.chain)) || 137;
 
     const contractType = paymentItem?.contractType;
@@ -257,10 +280,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
       setSnackbarAlertMessage("Success!");
       setSnackbarAlertOpen(true);
     } catch (error) {
-      let message = "Something went wrong";
-      if (error === "not_enough_balance") {
-        message = "You don't have enough balance to make this transaction";
-      }
+      const message = getMessageFromError(error);
       setLoading(false);
       setSnackbarAlertMessage(message);
       setSnackbarAlertOpen(true);

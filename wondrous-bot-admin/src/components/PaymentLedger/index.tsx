@@ -65,6 +65,10 @@ const PaymentLedger = ({ questId = null }) => {
     return exportSubmissionPaymentCsv(data);
   };
 
+  const handlePaymentView = (value) => {
+    setSelectedPayments([]);
+    togglePaymentView(value);
+  }
   return (
     <>
       <PageHeader
@@ -87,7 +91,7 @@ const PaymentLedger = ({ questId = null }) => {
               </FilterPill>
             ) : null}
             <Box>
-              <StatusSwitcher value={paymentView} onChange={(value) => togglePaymentView(value)} options={OPTIONS} />
+              <StatusSwitcher value={paymentView} onChange={handlePaymentView} options={OPTIONS} />
             </Box>
           </Box>
         )}

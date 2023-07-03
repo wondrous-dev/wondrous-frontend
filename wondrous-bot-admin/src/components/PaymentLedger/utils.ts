@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { SUPPORTED_CHAINS } from "utils/web3Constants";
 
 export const exportSubmissionPaymentCsv = (data) => {
   let headers = ["Username", "Address/ENS", "Amount", "Token Address", "Token Name", "Symbol", "Chain", "Decimals"];
@@ -60,3 +61,23 @@ export const exportSubmissionPaymentCsv = (data) => {
   link.click();
 };
 
+export const verifyChain = ({ chain, connectedChain }) => {
+  if (chain && connectedChain) {
+    if (chain !== SUPPORTED_CHAINS[connectedChain]) {
+      throw new Error();
+    }
+  }
+};
+
+export const getMessageFromError = (error) => {
+  console.log(error, 'ERROR')
+  let message = "Something went wrong";
+  if (error === "not_enough_balance") {
+    message = "You don't have enough balance to make this transaction";
+  }
+  if (error?.code === 4001) {
+    message = "Transaction rejected";
+  }
+
+  return message;
+};

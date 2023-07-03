@@ -25,11 +25,13 @@ const ViewCampaignOverview = ({ questSettings }) => {
               </StyledViewQuestResults>
             ) : null}
             {quest.type === 'rewards'
-              ? quest.value.map((reward, key) => (
-                  <StyledViewQuestResults $isReward key={reward.type + 'reward'}>
+              ? <Grid display="flex" gap="6px" flexWrap="wrap">
+                {quest.value.map((reward, key) => (
+                  <StyledViewQuestResults $isReward key={key + 'reward'}>
                     {reward.value} {reward.type}
                   </StyledViewQuestResults>
-                ))
+                ))}
+                </Grid>
               : null}
           </Grid>
         );
