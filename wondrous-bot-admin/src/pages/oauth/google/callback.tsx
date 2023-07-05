@@ -15,24 +15,22 @@ function getGoogleOauthUrl(discordId) {
       discordId,
     })
   );
-  const scope = encodeURIComponent(["email", "profile", "https://www.googleapis.com/auth/youtube.force-ssl"].join(" "));
+  const accessType = "offline";
+  const scope = encodeURIComponent(["email", "profile", "https://www.googleapis.com/auth/youtube"].join(" "));
   console.log(scope);
   //'email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.force-ssl'
-  const oauthUrl = `${baseUrl}&redirect_uri=${redirectUrl}&state=${state}&scope=${scope}`;
+  const oauthUrl = `${baseUrl}&redirect_uri=${redirectUrl}&state=${state}&scope=${scope}&access_type=${accessType}`;
   console.log(oauthUrl);
   return oauthUrl;
 }
+
 const GoogleOauthCallbackPage = () => {
-  getGoogleOauthUrl("542545105903419404");
+  // getGoogleOauthUrl("542545105903419404");
   const [searchParams] = useSearchParams();
   const code = searchParams?.get("code");
   const state = searchParams?.get("state");
-  let discordId;
-  try {
-    discordId = JSON.parse(state)?.discordId;
-  } catch (e) {
-    console.error(e);
-  }
+  const { discordId } = JSON.parse(state || "{}");
+
 
   const [finishedVerification, setFinishedVerification] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -47,9 +45,10 @@ const GoogleOauthCallbackPage = () => {
       setErrorText("Error connecting google - please try again");
     },
   });
+
   useEffect(() => {
-    console.log(code, discordId, finishedVerification)
     if (code && discordId && !finishedVerification) {
+      setFinishedVerification(true);
         connectCommunityUserGoogle({
         variables: {
           code,
@@ -57,20 +56,21 @@ const GoogleOauthCallbackPage = () => {
         },
       });
     }
-  }, []);
+  }, [discordId, code]);
+  console.log(code)
 
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
       <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
         {finishedVerification && (
           <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-            Finished connecting your Twitter account! You can close this window now and return to Discord.
+            Finished connecting your Google account! You can close this window now and return to Discord.
           </Typography>
         )}
         {!finishedVerification && (
           <>
             <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-              Connecting your Twitter account. If this is taking too long please try again!
+              Connecting your Google account. If this is taking too long please try again!
             </Typography>
             <CircularProgress />
           </>
