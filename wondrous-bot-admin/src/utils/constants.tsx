@@ -146,6 +146,7 @@ export const QUEST_SUBMISSION_STATUS = {
 export const EMPTY_STATE_TYPES = {
   SUBMISSIONS: "submissions",
   MEMBERS: "members",
+  PAYMENTS: "payments",
 };
 
 export const ERRORS = {

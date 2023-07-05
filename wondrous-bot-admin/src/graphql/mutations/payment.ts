@@ -35,3 +35,19 @@ export const UPDATE_CMTY_PAYMENT_METHOD = gql`
     }
   }
 `;
+
+export const LINK_CMTY_PAYMENTS_WITH_TRANSACTION = gql`
+  mutation linkCmtyPaymentsWithTransaction($input: linkCmtyPaymentsTransactionInput) {
+    linkCmtyPaymentsWithTransaction(input: $input) {
+      success
+    }
+  }
+`;
+
+export const MARK_CMTY_PAYMENT_TRANSACTION_AS_COMPLETE = gql`
+  mutation markCmtyPaymentTransactionAsComplete($txHash: String!) {
+    markCmtyPaymentTransactionAsComplete(txHash: $txHash) {
+      success
+    }
+  }
+`;

@@ -44,6 +44,7 @@ const SUPPORTED_CHAINS = {
   43114: "avalanche",
   100: "gnosis",
   1313161554: "aurora",
+  5: "goerli",
 };
 
 export const NATIVE_TOKEN_SYMBOL = {
@@ -59,6 +60,7 @@ export const NATIVE_TOKEN_SYMBOL = {
   43114: "AVAX",
   100: "xDai",
   1313161554: "AURORA",
+  5: "GOR",
 };
 
 export const RPC_URLS: { [chainId: number]: string } = {

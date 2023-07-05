@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
-import { createRef, useContext, useMemo, useRef, useState } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
@@ -12,14 +12,11 @@ import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
 import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
-import { GET_QUEST_REWARDS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
 import { questValidator, ValidationError } from "services/validators";
 import { getPathArray } from "utils/common";
 import { set } from "lodash";
-import { useEffect } from "react";
-import { useLazyQuery } from "@apollo/client";
 import { transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
@@ -193,7 +190,8 @@ const CreateTemplate = ({
       endAt: endAt && timeBound ? endAt.utcOffset(0).endOf("day").toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
-      rewards: questSettings.rewards?.slice(1)?.map((reward: any) => {
+      // TODO: refactor this
+      rewards: questSettings.rewards?.map((reward: any) => {
         if (reward?.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
           return {
             discordRewardData: {
@@ -203,7 +201,7 @@ const CreateTemplate = ({
             },
             type: reward?.type,
           };
-        } else if (reward?.type === PAYMENT_OPTIONS.NFT) {
+        } else if (reward?.type === PAYMENT_OPTIONS.TOKEN) {
           return {
             type: reward?.type,
             paymentMethodId: reward?.paymentMethodId,
@@ -216,7 +214,7 @@ const CreateTemplate = ({
             poapRewardData: rewardData,
           };
         }
-      }),
+      }).filter(reward => reward),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           type: next.type,
@@ -308,7 +306,6 @@ const CreateTemplate = ({
       handleMutation({ body });
     } catch (err) {
       const errors: any = {};
-
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
           console.log(error.path, "ERR PATH");
