@@ -288,9 +288,12 @@ const NotificationSettings = () => {
       orgId: activeOrg?.id,
     },
     skip: !activeOrg?.id,
+    fetchPolicy: "cache-and-network",
   });
 
-  const [getGuildDiscordChannels, { data: guildDiscordChannelsData }] = useLazyQuery(GET_GUILD_DISCORD_CHANNELS);
+  const [getGuildDiscordChannels, { data: guildDiscordChannelsData }] = useLazyQuery(GET_GUILD_DISCORD_CHANNELS, {
+    fetchPolicy: "cache-and-network",
+  });
   const guildId = orgDiscordConfig?.getCmtyOrgDiscordConfig?.guildId;
   const guildDiscordChannels = guildDiscordChannelsData?.getAvailableChannelsForDiscordGuild;
   const guildDiscordAdditionalData = orgDiscordConfig?.getCmtyOrgDiscordConfig?.additionalData;
