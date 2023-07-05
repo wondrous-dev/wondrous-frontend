@@ -12,6 +12,7 @@ import { ImageKeyEnums, ImageTypes } from 'types/common';
 import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
 import { usePageDataContext } from 'utils/hooks';
 import ImageUpload from 'components/Settings/imageUpload';
+import useAlerts from 'hooks/useAlerts';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { ARCHIVE_POD, UNARCHIVE_POD, UPDATE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -366,6 +367,7 @@ const handleLinkChange = (event, item, existingLinks, setLinks) => {
 export function PodGeneralSettings() {
   const router = useRouter();
   const { podId } = router.query;
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useAlerts();
   const [podProfile, setPodProfile] = useState(null);
   const [isPrivate, setIsPrivate] = useState(null);
   const [isArchivedPod, setIsArchivedPod] = useState(false);
@@ -560,6 +562,8 @@ export function PodGeneralSettings() {
       },
       refetchQueries: [GET_POD_BY_ID],
     });
+    setSnackbarAlertMessage('Pod archived successfully');
+    setSnackbarAlertOpen(true);
   };
   const handleUnarchivePodClick = async () => {
     const confirmed = confirm('Are you sure you want to unarchive this pod?');
@@ -573,6 +577,8 @@ export function PodGeneralSettings() {
       },
       refetchQueries: [GET_POD_BY_ID],
     });
+    setSnackbarAlertMessage('Pod unarchived successfully');
+    setSnackbarAlertOpen(true);
   };
   return (
     <GeneralSettingsComponent

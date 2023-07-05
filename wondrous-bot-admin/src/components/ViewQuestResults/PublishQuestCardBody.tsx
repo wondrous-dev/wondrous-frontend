@@ -62,7 +62,6 @@ const PublishQuestModal = ({ onClose, channelName, handlePublish, message, setMe
 };
 const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNotificationChannelId }) => {
   const [openPublishModal, setOpenPublishModal] = useState(false);
-  const [autoNotifications, setAutoNotifications] = useState(false);
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
   const [errors, setErrors] = useState(null);
   const [mentionChannel, setMentionChannel] = useState(false);
@@ -129,21 +128,6 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
           background="#C1B6F6"
           value={channel}
           onChange={(value) => setChannel(value)}
-        />
-      </Grid>
-      <Grid display="flex" justifyContent="flex-start" alignItems="center" width="100%" marginTop={"8px"}>
-        <Label>Auto notifications</Label>
-        <Switch
-          value={autoNotifications}
-          onChange={() => {
-            if (!autoNotifications && !channel) {
-              setErrors({
-                discordChannel: "Please select a channel to send auto notifications to",
-              });
-            } else {
-              setAutoNotifications(!autoNotifications);
-            }
-          }}
         />
       </Grid>
       {errors?.discordChannel && (

@@ -8,11 +8,11 @@ export function shallowEqual(objA, objB) {
   return !Object.keys({ ...objA, ...objB })?.some((key) => objA[key] !== objB[key]);
 }
 
-export const handleUserOnboardingRedirect = (userOrError, navigate, params, defaultRoute ="/onboarding" ) => {
+export const handleUserOnboardingRedirect = (userOrError, navigate, params, defaultRoute = "/onboarding") => {
   if (userOrError === "Incorrect Email and Password combination") return;
-  if(params.token) {
-    return navigate(`/invite/${params.token}`)
-  }  
+  if (params.token) {
+    return navigate(`/invite/${params.token}`);
+  }
   return navigate(defaultRoute);
 };
 
@@ -42,17 +42,26 @@ export function getPathArray(path) {
   return path.split(/[[\].]+/).filter(Boolean);
 }
 
-
 export const matchRoute = (pathname, options) => {
-  return !!options.find(route => {
+  return !!options.find((route) => {
     // Replace potential URL parameters (e.g., ":id") with wildcard for RegExp match
     const pattern = new RegExp(`^${route.replace(/:\w+/g, "[\\w-]+")}$`, "gi");
     return pattern.test(pathname);
   });
-}
+};
 
 export const toggleHtmlOverflow = () => {
-  const htmlTagElements = document.getElementsByTagName('html');
+  const htmlTagElements = document.getElementsByTagName("html");
   const { style } = htmlTagElements.item(0);
-  style.overflow = style.overflow ? '' : 'hidden';
+  style.overflow = style.overflow ? "" : "hidden";
+};
+
+export const snakeToCamel = (str) => {
+  if (str === null || str === undefined) return str;
+  return str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace("-", "").replace("_", ""));
+};
+
+export const camelToSnake = (str) => {
+  if (str === null || str === undefined) return str;
+  return str[0].toLowerCase() + str.slice(1, str.length).replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 };
