@@ -90,8 +90,6 @@ const HomePage = () => {
   });
   const additionalData = orgDiscordConfig?.getCmtyOrgDiscordConfig?.additionalData;
   const discordNotConfigured = getDiscordConfigError?.graphQLErrors[0]?.message === "Not";
-  console.log("getDiscordConfigError?.graphQLErrors[0]?.message", getDiscordConfigError?.graphQLErrors[0]?.message);
-  console.log("discordConfig", orgDiscordConfig);
   const { data, loading } = useQuery(GET_ORG_QUEST_STATS, {
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -134,9 +132,9 @@ const HomePage = () => {
   }, [getDiscordConfigError?.graphQLErrors[0]?.message, loading]);
 
   useEffect(() => {
-    if (!loading && !getDiscordConfigError?.graphQLErrors[0]?.message && !additionalData)
+    if (!loading && orgDiscordConfig?.getCmtyOrgDiscordConfige && !additionalData)
       [setOpenDiscordNotificationModal(true)];
-  }, [additionalData, getDiscordConfigError?.graphQLErrors[0]?.message, loading]);
+  }, [additionalData, orgDiscordConfig?.getCmtyOrgDiscordConfig, loading]);
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
       <AddBotModal open={openDiscordModal} onClose={() => setOpenDiscordModal(false)} orgId={activeOrg?.id} />
