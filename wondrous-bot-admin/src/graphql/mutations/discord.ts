@@ -27,3 +27,11 @@ export const UPDATE_ORG_DISCORD_ADDITIONAL_DATA = gql`
     }
   }
 `;
+
+export const CONFIGURE_ORG_DISCORD_NOTIFICATION = gql`
+  mutation configureOrgDiscordNotification($orgId: ID!, $channelId: String, $newChannel: String) {
+    configureOrgDiscordNotification(orgId: $orgId, channelId: $channelId, newChannel: $newChannel) {
+      success
+    }
+  }
+`;
