@@ -26,7 +26,7 @@ import {
 import SelectComponent from "components/Shared/Select";
 import { GET_GUILD_DISCORD_CHANNELS } from "graphql/queries/discord";
 import TextField from "components/Shared/TextField";
-import { ButtonIconWrapper, SharedSecondaryButton } from "components/Shared/styles";
+import { ButtonIconWrapper, ErrorText, SharedSecondaryButton } from "components/Shared/styles";
 import { UPDATE_ORG_DISCORD_ADDITIONAL_DATA } from "graphql/mutations/discord";
 import { camelToSnake, snakeToCamel } from "utils/common";
 
@@ -94,7 +94,9 @@ const NotificationModal = ({
       {message && (
         <Box marginBottom={"24px"}>
           <ModalTitleText>Text</ModalTitleText>
-          <ModalDescriptionText>Type @member to add username reference</ModalDescriptionText>
+          {editMessageKey === MESSAGE_TYPE.WELCOME_MESSAGE && (
+            <ModalDescriptionText>Type @member to add username reference</ModalDescriptionText>
+          )}
           <TextField
             onChange={setMessage}
             style={{
@@ -146,8 +148,9 @@ const NotificationModal = ({
 };
 
 const NotificationSetting = (props) => {
+  const [errors, setErrors] = useState("");
   const [updateOrgDiscordAdditionalData] = useMutation(UPDATE_ORG_DISCORD_ADDITIONAL_DATA, {
-    refetchQueries: [GET_GUILD_DISCORD_CHANNELS],
+    refetchQueries: [GET_GUILD_DISCORD_CHANNELS, GET_CMTY_ORG_DISCORD_CONFIG],
   });
   const { title, description, orgDiscordAdditionaData, channelType, editMessageKey, channels, defaultMessage, orgId } =
     props;
@@ -205,6 +208,7 @@ const NotificationSetting = (props) => {
             <NotificationSwitchInnerDiv
               active={active}
               onClick={() => {
+                console.log("orgDiscordAdditionalData", orgDiscordAdditionaData);
                 updateOrgDiscordAdditionalData({
                   variables: {
                     orgId,
@@ -222,6 +226,10 @@ const NotificationSetting = (props) => {
             <NotificationSwitchInnerDiv
               active={!active}
               onClick={() => {
+                if (!discordChannel) {
+                  setErrors("Please first select a channel");
+                  return;
+                }
                 updateOrgDiscordAdditionalData({
                   variables: {
                     orgId,
@@ -238,6 +246,11 @@ const NotificationSetting = (props) => {
             </NotificationSwitchInnerDiv>
           </NotificationSwitchContainer>
         </NotificationHalves>
+        {errors && (
+          <Box paddingLeft="16px">
+            <ErrorText>{errors}</ErrorText>
+          </Box>
+        )}
         <NotificationHalves>
           <Box display="flex" alignItems="center">
             <NotificationPostingToText>Posting to:</NotificationPostingToText>
