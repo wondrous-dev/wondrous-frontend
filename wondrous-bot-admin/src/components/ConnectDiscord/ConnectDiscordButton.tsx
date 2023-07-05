@@ -11,36 +11,15 @@ const callbackURL = () => encodeURIComponent(`${getBaseUrl()}/discord/callback/o
 
 const DiscordClientID = import.meta.env.VITE_DISCORD_CLIENT_ID;
 
-const getDiscordBotOauthURL = ({ orgId }: { orgId: string }) =>
+export const getDiscordBotOauthURL = ({ orgId }: { orgId: string }) =>
   `https://discord.com/api/oauth2/authorize?client_id=${DiscordClientID}&permissions=8&scope=bot&response_type=code&state=${encodeURIComponent(
     orgId
   )}&redirect_uri=${callbackURL()}`;
 
 export default function ConnectDiscordButton({ orgId }: { orgId?: string }) {
   const oauthUrl = getDiscordBotOauthURL({ orgId });
-  const { setIsOpen, isOpen } = useTour();
-  const { user } = useMe();
-  const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE);
-
-  useEffect(() => {
-    if (user && !user?.completedQuestGuides?.includes("communities_home_guide")) {
-      setIsOpen(true);
-    }
-  }, [user?.completedQuestGuides]);
 
   const handleClick = async () => {
-    if (isOpen) {
-      try {
-        await setUserCompletedGuide({
-          variables: {
-            guideId: "communities_home_guide",
-          },
-        });
-        window.location.href = oauthUrl;
-      } catch (error) {
-        window.location.href = oauthUrl;
-      }
-    }
     window.location.href = oauthUrl;
   };
 

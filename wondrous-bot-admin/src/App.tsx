@@ -24,6 +24,7 @@ import { SnackbarAlertProvider } from "components/SnackbarAlert";
 import { WonderWeb3Provider } from "utils/context/WonderWeb3Context";
 import SettingsPage from "pages/settings";
 import TeamSettingsPage from "pages/settings/team";
+import NotificationSettingsPage from "pages/settings/notification";
 import WalletConnectPage from "pages/wallet/connect";
 import OnboardingPage from "pages/onboarding";
 import DiscordOrgCallbackPage from "pages/discord/callback/org-connect";
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/*",
         element: <SettingsPage />,
+      },
+      {
+        path: "/settings/notifications",
+        element: <NotificationSettingsPage />,
       },
       {
         path: "/settings/team",
@@ -122,8 +127,8 @@ const router = createBrowserRouter([
         element: <OnboardingWelcomePage />,
       },
       {
-        path: '/invite/:token',
-        element: <InvitePage />
+        path: "/invite/:token",
+        element: <InvitePage />,
       },
       {
         path: '/settings/payments',

@@ -1,4 +1,4 @@
-import ModalComponent from '@mui/material/Modal';
+import ModalComponent from "@mui/material/Modal";
 import {
   CloseModalBtn,
   ModalBody,
@@ -10,13 +10,14 @@ import {
   ModalFooterRight,
   ModalHeader,
   ModalTitle,
-} from './styles';
+} from "./styles";
 
 interface IModalProps {
   open: boolean;
   onClose: () => void;
   title: string;
   maxWidth?: number;
+  noHeader?: boolean;
   children: React.ReactNode;
   footerLeft?: React.ReactNode;
   footerRight?: React.ReactNode;
@@ -26,7 +27,7 @@ interface IModalProps {
   };
   dialogComponentProps?: {
     className?: string;
-  }
+  };
 }
 
 const Modal = ({
@@ -38,6 +39,7 @@ const Modal = ({
   footerLeft = null,
   footerRight = null,
   footerCenter = null,
+  noHeader = false,
   modalComponentProps = {},
   dialogComponentProps = {},
 }: IModalProps) => {
@@ -49,32 +51,22 @@ const Modal = ({
 
   return (
     <ModalComponent open={open} onClose={onClose} {...modalComponentProps}>
-      <ModalContainer
-        tabIndex={-1}
-        data-backdrop='true'
-        onClick={handleBackdropClick}
-
-      >
-        <ModalDialog maxWidth={maxWidth}
-          {...dialogComponentProps}
-
-        >
+      <ModalContainer tabIndex={-1} data-backdrop="true" onClick={handleBackdropClick}>
+        <ModalDialog maxWidth={maxWidth} {...dialogComponentProps}>
           <ModalContent>
-            <ModalHeader>
-              {!!title && <ModalTitle>{title}</ModalTitle>}
-              {onClose && <CloseModalBtn onClick={onClose} />}
-            </ModalHeader>
+            {!noHeader && (
+              <ModalHeader>
+                {!!title && <ModalTitle>{title}</ModalTitle>}
+                {onClose && <CloseModalBtn onClick={onClose} />}
+              </ModalHeader>
+            )}
 
             <ModalBody>{children}</ModalBody>
 
             {!!footerLeft || !!footerRight || !!footerCenter ? (
               <ModalFooter alignCenter={!!footerCenter}>
-                {footerLeft ? (
-                  <ModalFooterLeft>{footerLeft}</ModalFooterLeft>
-                ) : null}
-                {footerRight ? (
-                  <ModalFooterRight>{footerRight}</ModalFooterRight>
-                ) : null}
+                {footerLeft ? <ModalFooterLeft>{footerLeft}</ModalFooterLeft> : null}
+                {footerRight ? <ModalFooterRight>{footerRight}</ModalFooterRight> : null}
               </ModalFooter>
             ) : null}
           </ModalContent>
