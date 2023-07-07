@@ -37,6 +37,8 @@ type InputQuestStep = {
     tokenType?: string;
     tokenId?: string;
     tokenName?: string;
+    ytVideoLink?: string;
+    ytChannelLink?: string;
   };
 };
 
@@ -63,6 +65,14 @@ type OutputQuestStep = {
     | {
         prompt?: string;
         tweetLink: string;
+      }
+    | {
+        prompt?: string;
+        ytVideoLink: string;
+      }
+    | {
+        prompt?: string;
+        ytChannelLink: string;
       }
     | {
         prompt?: string;
@@ -142,6 +152,16 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       outputStep.value = {
         prompt: step?.prompt,
         tweetPhrase: step?.additionalData?.tweetPhrase,
+      };
+    } else if (step.type === TYPES.LIKE_YT_VIDEO) {
+      outputStep.value = {
+        prompt: step?.prompt,
+        ytVideoLink: step?.additionalData?.ytVideoLink,
+      };
+    } else if (step.type === TYPES.SUBSCRIBE_YT_CHANNEL) {
+      outputStep.value = {
+        prompt: step?.prompt,
+        ytChannelLink: step?.additionalData?.ytChannelLink,
       };
     } else if (step.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
       outputStep.value = {
