@@ -161,3 +161,11 @@ export const CONNECT_COMMUNITY_USER_WALLET = gql`
   }
   ${CmtyUserFragment}
 `;
+
+export const CONNECT_COMMUNITY_USER_GOOGLE = gql`
+  mutation connectCommunityUserGoogle($code: String, $discordId: String) {
+    connectCommunityUserGoogle(code: $code, discordId: $discordId) {
+      success
+    }
+  }
+`;

@@ -1,6 +1,6 @@
 import { ERRORS, TYPES } from "utils/constants";
 import * as Yup from "yup";
-
+import { getYouTubeVideoId, validateChannelUrl } from "services/validators/customValidation";
 export const ValidationError = Yup.ValidationError;
 
 const ALL_TYPES = [
@@ -19,6 +19,8 @@ const ALL_TYPES = [
   TYPES.DISCORD_MESSAGE_IN_CHANNEL,
   TYPES.JOIN_DISCORD_COMMUNITY_CALL,
   TYPES.DATA_COLLECTION,
+  TYPES.LIKE_YT_VIDEO,
+  TYPES.SUBSCRIBE_YT_CHANNEL,
 ];
 
 const sharedValidation = {
@@ -147,6 +149,36 @@ const stepTypes = {
       tokenAmount: Yup.number().required("Token amount is required"),
       tokenName: Yup.string().required("Token name is required"),
       tokenChain: Yup.string().required("Token chain is required"),
+    }),
+  }),
+  [TYPES.LIKE_YT_VIDEO]: Yup.object().shape({
+    ...twitterSnapshotSharedValidation,
+    additionalData: Yup.object().shape({
+      // check it is a youtube url
+      ytVideoLink: Yup.string()
+        .required("Youtube video link is required")
+        .url("Must be a url")
+        .test("ytVideoLink", "Must be a youtube url", function (value) {
+          const videoId = getYouTubeVideoId(value);
+          if (!videoId) {
+            return false;
+          }
+          return true;
+        }),
+    }),
+  }),
+  [TYPES.SUBSCRIBE_YT_CHANNEL]: Yup.object().shape({
+    additionalData: Yup.object().shape({
+      ytChannelLink: Yup.string()
+        .required("Youtube channel link is required")
+        .url("Must be a url")
+        .test("ytChannelLink", "Must be a youtube channel url", function (value) {
+          const valid = validateChannelUrl(value);
+          if (valid) {
+            return true;
+          }
+          return false;
+        }),
     }),
   }),
 };
