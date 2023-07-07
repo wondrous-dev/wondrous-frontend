@@ -75,14 +75,6 @@ const COMPONENT_OPTIONS = [
     label: "Verify Token Holding",
     value: TYPES.VERIFY_TOKEN_HOLDING,
   },
-  {
-    label: "Verify youtube subscription",
-    value: TYPES.SUBSCRIBE_YT_CHANNEL,
-  },
-  {
-    label: "Verify youtube like",
-    value: TYPES.LIKE_YT_VIDEO,
-  },
 ];
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
@@ -230,7 +222,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
               {...provided.droppableProps}
             >
               {steps?.map((item, idx) => {
-                console.log("item", item);
                 const Component = CONFIG_COMPONENTS[item.type];
                 if (!Component) return null;
                 return (
