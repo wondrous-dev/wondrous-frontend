@@ -15,6 +15,8 @@ export const TYPES = {
   JOIN_DISCORD_COMMUNITY_CALL: "join_discord_community_call",
   DATA_COLLECTION: "data_collection",
   VERIFY_TOKEN_HOLDING: "verify_token_holding",
+  LIKE_YT_VIDEO: 'like_yt_video',
+	SUBSCRIBE_YT_CHANNEL: 'subscribe_yt_channel',
 };
 
 export const CONFIG = [
