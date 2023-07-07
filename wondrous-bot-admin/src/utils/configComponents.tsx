@@ -6,6 +6,9 @@ import TextComponent from "components/AddFormEntity/components/Text";
 import TwitterComponent from "components/AddFormEntity/components/Twitter";
 import { TYPES } from "./constants";
 import VerifyTokenHoldingComponent from "components/AddFormEntity/components/VerifyTokenHolding";
+import YoutubeLikeComponent from "components/AddFormEntity/components/YoutubeLikeComponent";
+import YoutubeSubscribeComponent from "components/AddFormEntity/components/YoutubeSubscribeComponent";
+
 
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
@@ -23,4 +26,6 @@ export const CONFIG_COMPONENTS = {
   [TYPES.DISCORD_MESSAGE_IN_CHANNEL]: DiscordComponent,
   [TYPES.DATA_COLLECTION]: DataCollectionComponent,
   [TYPES.VERIFY_TOKEN_HOLDING]: VerifyTokenHoldingComponent,
+  [TYPES.LIKE_YT_VIDEO]: YoutubeLikeComponent,
+  [TYPES.SUBSCRIBE_YT_CHANNEL]: YoutubeSubscribeComponent,
 };
