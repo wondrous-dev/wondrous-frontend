@@ -3,9 +3,9 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { LevelsIcon, OnboardedIcon, QuestIcon } from "components/Icons/HomePageIcons";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
-import ConnectDiscordButton from "components/ConnectDiscord/ConnectDiscordButton";
-import { GET_ORG_QUEST_STATS } from "graphql/queries";
-import { useContext, useEffect } from "react";
+import ConnectDiscordButton, { getDiscordBotOauthURL } from "components/ConnectDiscord/ConnectDiscordButton";
+import { GET_CMTY_ORG_DISCORD_CONFIG, GET_ORG_QUEST_STATS } from "graphql/queries";
+import { useContext, useEffect, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL } from "graphql/queries";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,8 @@ import styled from "styled-components";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import StarIcon from "components/Icons/StarIcon";
 import { useTour } from "@reactour/tour";
+import { AddBotModal } from "pages/onboarding/discord/addBotModal";
+import { ConfigureNotificationsOnboardingModal } from "./onboarding/discord/configureNotificationsModal";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -76,17 +78,18 @@ const CardsComponent = ({ cards }) => {
 const HomePage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
+  const [openDiscordModal, setOpenDiscordModal] = useState(false);
+  const [openDiscordNotificationModal, setOpenDiscordNotificationModal] = useState(false);
   const { setIsOpen, setCurrentStep } = useTour();
-    
-  const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL, {
+  const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
     notifyOnNetworkStatusChange: true,
     variables: {
       orgId: activeOrg?.id,
     },
     skip: !activeOrg?.id,
   });
+  const additionalData = orgDiscordConfig?.getCmtyOrgDiscordConfig?.additionalData;
   const discordNotConfigured = getDiscordConfigError?.graphQLErrors[0]?.message === "Not";
-  console.log("getDiscordConfigError?.graphQLErrors[0]?.message", getDiscordConfigError?.graphQLErrors[0]?.message);
   const { data, loading } = useQuery(GET_ORG_QUEST_STATS, {
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -122,9 +125,24 @@ const HomePage = () => {
   ];
 
   const handleNavigationToNewQuest = () => navigate("/quests/create");
+  useEffect(() => {
+    if (getDiscordConfigError?.graphQLErrors[0]?.message && !loading) {
+      setOpenDiscordModal(true);
+    }
+  }, [getDiscordConfigError?.graphQLErrors[0]?.message, loading]);
 
+  useEffect(() => {
+    if (!loading && orgDiscordConfig?.getCmtyOrgDiscordConfige && !additionalData)
+      [setOpenDiscordNotificationModal(true)];
+  }, [additionalData, orgDiscordConfig?.getCmtyOrgDiscordConfig, loading]);
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
+      <AddBotModal open={openDiscordModal} onClose={() => setOpenDiscordModal(false)} orgId={activeOrg?.id} />
+      <ConfigureNotificationsOnboardingModal
+        open={openDiscordNotificationModal}
+        onClose={() => setOpenDiscordNotificationModal(false)}
+        orgId={activeOrg?.id}
+      />
       <Grid flex="1" display="flex" justifyContent="center" alignItems="center" gap="14px" flexDirection="column">
         <Box
           display="flex"

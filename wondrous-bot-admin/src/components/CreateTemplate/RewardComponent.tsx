@@ -195,7 +195,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
   const OnPaymentMethodRewardRemove = (reward) => {
     setQuestSettings((prev) => {
       const newRewards = prev.rewards.filter((r) => {
-        if (r.type === PAYMENT_OPTIONS.NFT || r.type === PAYMENT_OPTIONS.TOKEN) {
+        if (r.type === PAYMENT_OPTIONS.TOKEN) {
           return r.paymentMethodId !== reward.paymentMethodId;
         }
         return true;
@@ -247,7 +247,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         });
       }
       handleToggle()
-    } else if (rewardType === PAYMENT_OPTIONS.NFT || rewardType === PAYMENT_OPTIONS.TOKEN) {
+    } else if (rewardType === PAYMENT_OPTIONS.TOKEN) {
       if (paymentMethod) {
         if (!tokenReward?.amount) {
           setErrors({
@@ -425,24 +425,15 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             >
               POAP
             </SharedBlackOutlineButton>
-            {/* <SharedBlackOutlineButton
-              style={{
-                flex: 1,
-              }}
-              background={PAYMENT_OPTIONS.NFT === rewardType ? "#BFB4F3" : "#FFFFF"}
-              onClick={() => setRewardType(PAYMENT_OPTIONS.NFT)}
-            >
-              Token reward
-            </SharedBlackOutlineButton> */}
-            {/* <SharedBlackOutlineButton
+            <SharedBlackOutlineButton
               style={{
                 flex: 1,
               }}
               background={PAYMENT_OPTIONS.TOKEN === rewardType ? "#BFB4F3" : "#FFFFF"}
               onClick={() => setRewardType(PAYMENT_OPTIONS.TOKEN)}
             >
-              ERC20 tokens
-            </SharedBlackOutlineButton> */}
+              Token reward
+            </SharedBlackOutlineButton>
           </Box>
 
           <RewardMethod
@@ -518,7 +509,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               />
             </Grid>
           );
-        } else if (reward.type === PAYMENT_OPTIONS.NFT) {
+        } else if (reward.type === PAYMENT_OPTIONS.TOKEN) {
           return (
             <Grid display="flex" gap="14px" alignItems="center" key={idx} maxWidth="100%">
               <RewardHeaderText>Token</RewardHeaderText>
@@ -539,7 +530,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                       ...prev,
                       rewards: prev.rewards.map((compareReward) => {
                         if (
-                          compareReward.type === PAYMENT_OPTIONS.NFT &&
+                          compareReward.type === PAYMENT_OPTIONS.TOKEN &&
                           compareReward.paymentMethod?.id === reward?.paymentMethod?.id
                         ) {
                           return {

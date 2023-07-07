@@ -240,7 +240,7 @@ const QuestResultsPage = () => {
           defaultQuestSteps={questSteps}
         />
       ) : (
-        <ViewQuestResults quest={getQuestById} />
+        <ViewQuestResults quest={getQuestById} rewards={questSettings.rewards}/>
       )}
     </CreateQuestContext.Provider>
   );

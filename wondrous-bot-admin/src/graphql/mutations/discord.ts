@@ -19,3 +19,19 @@ export const PUSH_QUEST_DISCORD_NOTFICATION = gql`
     }
   }
 `;
+
+export const UPDATE_ORG_DISCORD_ADDITIONAL_DATA = gql`
+  mutation updateOrgDiscordAdditionalData($orgId: ID!, $additionalData: JSON) {
+    updateOrgDiscordAdditionalData(orgId: $orgId, additionalData: $additionalData) {
+      success
+    }
+  }
+`;
+
+export const CONFIGURE_ORG_DISCORD_NOTIFICATION = gql`
+  mutation configureOrgDiscordNotification($orgId: ID!, $channelId: String, $newChannel: String) {
+    configureOrgDiscordNotification(orgId: $orgId, channelId: $channelId, newChannel: $newChannel) {
+      success
+    }
+  }
+`;

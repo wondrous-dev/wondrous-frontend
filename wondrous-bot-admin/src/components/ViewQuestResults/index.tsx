@@ -21,8 +21,9 @@ import GlobalContext from "utils/context/GlobalContext";
 import QuestResults from "./QuestResults";
 import ViewCampaignOverview from "./ViewCampaignOverview";
 import PublishQuestCardBody from "./PublishQuestCardBody";
+import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 
-const ViewQuestResults = ({ quest }) => {
+const ViewQuestResults = ({ quest, rewards }) => {
   const { activeOrg } = useContext(GlobalContext);
   const [conditionName, setConditionName] = useState(null);
 
@@ -150,6 +151,32 @@ const ViewQuestResults = ({ quest }) => {
     return null;
   }
 
+  const constructRewards = ({rewards}) => {
+    return rewards?.map((reward) => {
+      if(reward.type === 'points') {
+        return reward;
+      }
+      if(reward.type === PAYMENT_OPTIONS.TOKEN) {
+        return {
+          type: reward?.paymentMethod?.name,
+          value: reward?.amount,
+        }
+      }
+      if(reward.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
+        return {
+          type: 'Discord Role',
+          value: reward?.discordRewardData?.discordRoleName || null,
+        }
+      }
+      if(reward.type === PAYMENT_OPTIONS.POAP) {
+        return {
+          type: 'POAP',
+          value: reward?.poapRewardData?.name || null,
+        }
+      }
+    })
+  };
+
   const submissions = submissionsData?.getQuestSubmissions?.map((submission) => ({
     user: submission?.creator?.username || submission?.creator?.discordUsername,
     pointReward: quest?.pointReward,
@@ -203,14 +230,10 @@ const ViewQuestResults = ({ quest }) => {
     {
       label: "Rewards",
       type: "rewards",
-      value: [
-        {
-          value: quest?.pointReward,
-          type: "Points",
-        },
-      ],
+      value: constructRewards({rewards}),
     },
   ];
+  
   return (
     <PageWrapper
       containerProps={{

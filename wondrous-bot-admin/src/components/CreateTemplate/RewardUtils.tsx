@@ -21,13 +21,11 @@ import Ethereum from "assets/ethereum";
 import Avalanche from "assets/avalanche";
 import Optimism from "assets/optimism";
 import Polygon from "assets/polygonMaticLogo.svg";
-import { GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries/payment";
 import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import { GET_POAP_EVENT } from "graphql/queries";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
-  NFT: "nft",
   TOKEN: "token",
   POAP: "poap",
 };
@@ -38,7 +36,9 @@ const REWARD_TYPES = [
   { label: "ERC1155", value: "erc1155" },
 ];
 
-const CHAIN_SELECT_OPTIONS = [
+const isDev = !import.meta.env.VITE_PRODUCTION;
+
+export const CHAIN_SELECT_OPTIONS = [
   {
     label: "Ethereum",
     value: "ethereum",
@@ -51,6 +51,18 @@ const CHAIN_SELECT_OPTIONS = [
       />
     ),
   },
+  (isDev ? {
+    label: "Goerli",
+    value: "goerli",
+    icon: (
+      <Ethereum
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+      />
+    ),
+  } : {}),
   {
     label: "Polygon",
     value: "polygon",
@@ -362,7 +374,7 @@ export const RewardMethod = ({
       </>
     );
   }
-  if (rewardType === PAYMENT_OPTIONS.NFT) {
+  if (rewardType === PAYMENT_OPTIONS.TOKEN) {
     if (paymentMethod && !editPaymentMethod?.id) {
       return (
         <AddExistingPaymentMethod
@@ -387,7 +399,6 @@ export const RewardMethod = ({
         </>
       );
     }
-
     return (
       <>
         <Label>Chain</Label>
@@ -606,7 +617,7 @@ export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, s
           return {
             ...prev,
             rewards: prev.rewards.map((reward) => {
-              if (reward.type === PAYMENT_OPTIONS.NFT && reward.paymentMethod?.id === initialRewardId) {
+              if (reward.type === PAYMENT_OPTIONS.TOKEN && reward.paymentMethod?.id === initialRewardId) {
                 return {
                   ...reward,
                   paymentMethodId: value,

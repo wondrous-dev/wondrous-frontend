@@ -24,6 +24,7 @@ import { SnackbarAlertProvider } from "components/SnackbarAlert";
 import { WonderWeb3Provider } from "utils/context/WonderWeb3Context";
 import SettingsPage from "pages/settings";
 import TeamSettingsPage from "pages/settings/team";
+import NotificationSettingsPage from "pages/settings/notification";
 import WalletConnectPage from "pages/wallet/connect";
 import OnboardingPage from "pages/onboarding";
 import DiscordOrgCallbackPage from "pages/discord/callback/org-connect";
@@ -35,6 +36,8 @@ import SignupPage from "pages/signup";
 import OnboardingWelcomePage from "pages/onboarding/welcome";
 import InvitePage from "pages/invite";
 import GoogleOauthCallbackPage from "pages/oauth/google/callback";
+import PaymentPage from "pages/payment";
+import QuestsPaymentPage from 'pages/quests/Payments';
 
 const router = createBrowserRouter([
   {
@@ -53,6 +56,10 @@ const router = createBrowserRouter([
         element: <SettingsPage />,
       },
       {
+        path: "/settings/notifications",
+        element: <NotificationSettingsPage />,
+      },
+      {
         path: "/settings/team",
         element: <TeamSettingsPage />,
       },
@@ -63,6 +70,10 @@ const router = createBrowserRouter([
       {
         path: "/quests",
         element: <QuestsPage />,
+      },
+      {
+        path: '/quests/:id/payments',
+        element: <QuestsPaymentPage />
       },
       {
         path: "/quests/:id",
@@ -117,8 +128,12 @@ const router = createBrowserRouter([
         element: <OnboardingWelcomePage />,
       },
       {
-        path: '/invite/:token',
-        element: <InvitePage />
+        path: "/invite/:token",
+        element: <InvitePage />,
+      },
+      {
+        path: '/settings/payments',
+        element: <PaymentPage />
       },
       {
         path: '/oauth/google/callback',
