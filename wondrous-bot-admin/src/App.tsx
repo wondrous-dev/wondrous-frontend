@@ -73,8 +73,8 @@ const router = createBrowserRouter([
         element: <QuestsPage />,
       },
       {
-        path: '/quests/:id/payments',
-        element: <QuestsPaymentPage />
+        path: "/quests/:id/payments",
+        element: <QuestsPaymentPage />,
       },
       {
         path: "/quests/:id",
@@ -133,18 +133,17 @@ const router = createBrowserRouter([
         element: <InvitePage />,
       },
       {
-        path: '/settings/payments',
-        element: <PaymentPage />
+        path: "/settings/payments",
+        element: <PaymentPage />,
       },
       {
-        path: '/oauth/google/callback',
-        element: <GoogleOauthCallbackPage />
-      }
+        path: "/oauth/google/callback",
+        element: <GoogleOauthCallbackPage />,
+      },
       {
-        path: '/pricing',
-        element: <PricingPage />
-      }
-
+        path: "/pricing",
+        element: <PricingPage />,
+      },
     ],
   },
 ]);
