@@ -38,6 +38,7 @@ import InvitePage from "pages/invite";
 import GoogleOauthCallbackPage from "pages/oauth/google/callback";
 import PaymentPage from "pages/payment";
 import QuestsPaymentPage from 'pages/quests/Payments';
+import PricingPage from "pages/pricing";
 
 const router = createBrowserRouter([
   {
@@ -72,8 +73,8 @@ const router = createBrowserRouter([
         element: <QuestsPage />,
       },
       {
-        path: '/quests/:id/payments',
-        element: <QuestsPaymentPage />
+        path: "/quests/:id/payments",
+        element: <QuestsPaymentPage />,
       },
       {
         path: "/quests/:id",
@@ -132,13 +133,17 @@ const router = createBrowserRouter([
         element: <InvitePage />,
       },
       {
-        path: '/settings/payments',
-        element: <PaymentPage />
+        path: "/settings/payments",
+        element: <PaymentPage />,
       },
       {
-        path: '/oauth/google/callback',
-        element: <GoogleOauthCallbackPage />
-      }
+        path: "/oauth/google/callback",
+        element: <GoogleOauthCallbackPage />,
+      },
+      {
+        path: "/pricing",
+        element: <PricingPage />,
+      },
     ],
   },
 ]);
