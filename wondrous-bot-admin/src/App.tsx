@@ -37,6 +37,7 @@ import OnboardingWelcomePage from "pages/onboarding/welcome";
 import InvitePage from "pages/invite";
 import PaymentPage from "pages/payment";
 import QuestsPaymentPage from 'pages/quests/Payments';
+import PricingPage from "pages/pricing";
 
 const router = createBrowserRouter([
   {
@@ -134,6 +135,11 @@ const router = createBrowserRouter([
         path: '/settings/payments',
         element: <PaymentPage />
       },
+      {
+        path: '/pricing',
+        element: <PricingPage />
+      }
+
     ],
   },
 ]);
