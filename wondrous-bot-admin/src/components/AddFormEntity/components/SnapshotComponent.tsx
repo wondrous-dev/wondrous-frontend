@@ -22,7 +22,7 @@ const SnapshotProposalText = ({ handleOnChange, value, error }) => (
 
 const SnapshotSpaceText = ({ handleOnChange, value, errors }) => (
   <>
-    <Label>Vote in our Snapshot Space at least X times</Label>
+    <Label>Vote on in our Snapshot Space at least X times</Label>
     <TextField
       placeholder="Please enter Snapshot space link"
       value={value?.snapshotSpaceLink || ""}

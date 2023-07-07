@@ -35,7 +35,6 @@ import DiscordCallbackCmtyUserConnect from "pages/discord/callback/cmty-user-con
 import SignupPage from "pages/signup";
 import OnboardingWelcomePage from "pages/onboarding/welcome";
 import InvitePage from "pages/invite";
-import GoogleOauthCallbackPage from "pages/oauth/google/callback";
 
 const router = createBrowserRouter([
   {
@@ -125,10 +124,6 @@ const router = createBrowserRouter([
         path: "/invite/:token",
         element: <InvitePage />,
       },
-      {
-        path: '/oauth/google/callback',
-        element: <GoogleOauthCallbackPage />
-      }
     ],
   },
 ]);

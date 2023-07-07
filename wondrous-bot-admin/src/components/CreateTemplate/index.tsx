@@ -250,16 +250,6 @@ const CreateTemplate = ({
           step["additionalData"] = {
             tweetPhrase: next.value?.tweetPhrase,
           };
-        } else if (next.type === TYPES.LIKE_YT_VIDEO) {
-          step.prompt = next.value?.prompt;
-          step["additionalData"] = {
-            ytVideoLink: next.value?.ytVideoLink,
-          };
-        } else if (next.type === TYPES.SUBSCRIBE_YT_CHANNEL) {
-          step.prompt = next.value?.prompt;
-          step["additionalData"] = {
-            ytChannelLink: next.value?.ytChannelLink,
-          };
         } else if (next.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
