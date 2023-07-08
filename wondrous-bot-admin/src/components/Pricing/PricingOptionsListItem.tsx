@@ -84,9 +84,11 @@ const PricingOptionsListItem = ({
             border: `3px solid ${colorScheme}`,
             borderRadius: "1000px",
             width: "fit-content",
+            minWidth: "85px",
             paddingX: "12px",
             color: "#000",
             fontWeight: "600",
+            textTransform: "capitalize",
             "&:hover": {
               borderColor: colorScheme,
               background: "transparent",
