@@ -23,18 +23,19 @@ const PremiumFeatureDialog = ({ open = false, onClose }: PremiumFeatureDialogPro
         container
         width="fit-content"
         maxWidth="416px"
-        display="flex"
         flexDirection="column"
         alignItems="center"
         borderRadius="16px"
       >
-        <Grid container item padding="24px" display="flex" flexDirection="column" alignItems="center" gap="14px">
-          <Typography color="#2A8D5C" fontFamily="Poppins" fontSize="24px" fontWeight="700" textAlign="center">
-            This is a premium feature
-          </Typography>
-          <Typography color="#5E5E5E" fontFamily="Poppins" fontSize="15px" fontWeight="500" textAlign="center">
-            Ready to increase your engagement with Communities Premium.
-          </Typography>
+        <Grid container item padding="24px" flexDirection="column" alignItems="center" gap="24px">
+          <Grid container item flexDirection="column" gap="14px" alignItems="center">
+            <Typography color="#2A8D5C" fontFamily="Poppins" fontSize="24px" fontWeight="700" textAlign="center">
+              This is a premium feature
+            </Typography>
+            <Typography color="#5E5E5E" fontFamily="Poppins" fontSize="15px" fontWeight="500" textAlign="center">
+              Ready to increase your engagement with Communities Premium.
+            </Typography>
+          </Grid>
           <img
             src="/images/premium-feature-modal.png"
             alt="premium feature modal"
