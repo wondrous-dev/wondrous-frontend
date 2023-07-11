@@ -1,5 +1,8 @@
+import { useContext } from "react";
 import PricingOptionsListItem, { PricingOptionsListItemProps } from "./PricingOptionsListItem";
 import { PricingListOptionWrapper } from "./styles";
+import GlobalContext from "utils/context/GlobalContext";
+import { it } from "date-fns/locale";
 
 const pricingOptions: PricingOptionsListItemProps[] = [
   {
@@ -8,6 +11,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     description: "For new communities",
     price: 0,
     buttonText: "Start",
+    link: "/signup",
     features: ["100 members", "100 quests", "Hosted quest pages", "Simple rewards", "General support", "1 admin"],
   },
   {
@@ -16,6 +20,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     description: "For growing communities",
     price: 29,
     buttonText: "Upgrade",
+    link: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_eVa5nma5d3Ej8EMbII",
     features: [
       "Everything in Basic",
       "1,000 members",
@@ -35,6 +40,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     price: 87,
     buttonText: "Upgrade",
     best: true,
+    link: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_14kg206T1a2HdZ68wx",
     features: [
       "Everything in Hobby",
       "Unlimited members",
@@ -53,6 +59,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     description: "For ecosystem projects",
     price: 195,
     buttonText: "Talk to Sales",
+    link: "https://docs.google.com/forms/d/e/1FAIpQLSfUToCTDAfOT3EU5pGvgigcMyNyWiFdRuQzrTtZ8yS7ox4Y-Q/viewform?usp=sf_link",
     features: [
       "Everything in Premium",
       "API access",
@@ -69,11 +76,19 @@ const pricingOptions: PricingOptionsListItemProps[] = [
 ];
 
 const PricingOptionsList = () => {
+  const { activeOrg } = useContext(GlobalContext);
   return (
     <PricingListOptionWrapper>
-      {pricingOptions.map((i) => (
-        <PricingOptionsListItem {...i} />
-      ))}
+      {pricingOptions.map((i) => {
+        if (
+          (i.title === "Hobby" || i.title === "Premium") &&
+          activeOrg?.id &&
+          !i.link?.includes("client_reference_id")
+        ) {
+          i.link = `${i.link}?client_reference_id=${activeOrg?.id}`;
+        }
+        return <PricingOptionsListItem {...i} />;
+      })}
     </PricingListOptionWrapper>
   );
 };
