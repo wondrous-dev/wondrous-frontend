@@ -26,15 +26,7 @@ const PricingComponent = () => {
           Upgrade your community with our premium features
         </Typography>
       </Box>
-      <Box
-        width="100%"
-        display="flex"
-        height={height}
-        justifyContent="center"
-        paddingY="36px"
-        paddingX="24px"
-        position="relative"
-      >
+      <Box width="100%" display="flex" height={height} justifyContent="center" position="relative" marginTop="32px">
         <PricingOptionsList />
         <Box
           sx={{

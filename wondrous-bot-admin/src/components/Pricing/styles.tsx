@@ -5,7 +5,6 @@ export const PricingListOptionWrapper = styled(Box)`
   && {
     display: flex;
     flex-wrap: wrap;
-    gap: 46px;
     justify-content: center;
     z-index: 10;
     height: max-content;
@@ -32,7 +31,8 @@ export const PricingOptionsListItemWrapper = styled(Box)`
     }
 
     ${({ theme }) => theme.breakpoints.between("md", "xl")} {
-      width: 40%;
+      width: 21%;
+      margin-left: 1%;
     }
   }
 `;

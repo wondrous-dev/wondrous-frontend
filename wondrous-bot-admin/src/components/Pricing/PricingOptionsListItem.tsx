@@ -87,11 +87,16 @@ const PricingOptionsListItem = ({
             minWidth: "85px",
             paddingX: "12px",
             color: "#000",
-            fontWeight: "600",
+            fontWeight: "700",
+            outline: "0 !important",
+            fontFamily: "Poppins",
             textTransform: "capitalize",
             "&:hover": {
               borderColor: colorScheme,
               background: "transparent",
+            },
+            "&:active": {
+              outline: "0 !important",
             },
           }}
         >
