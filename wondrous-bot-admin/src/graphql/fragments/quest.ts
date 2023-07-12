@@ -99,6 +99,7 @@ export const QuestFragment = gql`
         tokenName
         ytVideoLink
         ytChannelLink
+        linkClickUrl
       }
     }
   }

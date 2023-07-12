@@ -8,6 +8,7 @@ import { TYPES } from "./constants";
 import VerifyTokenHoldingComponent from "components/AddFormEntity/components/VerifyTokenHolding";
 import YoutubeLikeComponent from "components/AddFormEntity/components/YoutubeLikeComponent";
 import YoutubeSubscribeComponent from "components/AddFormEntity/components/YoutubeSubscribeComponent";
+import LinkClickComponent from "components/AddFormEntity/components/LinkClickComponent";
 
 
 export const CONFIG_COMPONENTS = {
@@ -28,4 +29,5 @@ export const CONFIG_COMPONENTS = {
   [TYPES.VERIFY_TOKEN_HOLDING]: VerifyTokenHoldingComponent,
   [TYPES.LIKE_YT_VIDEO]: YoutubeLikeComponent,
   [TYPES.SUBSCRIBE_YT_CHANNEL]: YoutubeSubscribeComponent,
+  [TYPES.LINK_CLICK]: LinkClickComponent
 };

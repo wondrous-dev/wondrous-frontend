@@ -10,6 +10,7 @@ import SubmissionMedia from "components/Shared/SubmissionMedia";
 import { useMutation } from "@apollo/client";
 import { APPROVE_SUBMISSION, REJECT_SUBMISSION } from "graphql/mutations";
 import useAlerts from "utils/hooks";
+import { StyledCheckbox } from "components/PaymentLedger/styles";
 
 /*
 
@@ -35,6 +36,14 @@ const TEXT_TYPES = [TYPES.TEXT_FIELD, TYPES.NUMBER];
 const SELECT_TYPES = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ];
 
 const StepContent = ({ content, selectedValues, type, attachments, additionalData }) => {
+  if (type === TYPES.LINK_CLICK) {
+    return (
+      <StyledContent fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="#767676">
+        <StyledCheckbox checked />
+        Verified URL visit
+      </StyledContent>
+    );
+  }
   if (TEXT_TYPES.includes(type) || additionalData?.dataCollectionType === DATA_COLLECTION_TYPES.LOCATION) {
     return (
       <StyledContent fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="#767676">

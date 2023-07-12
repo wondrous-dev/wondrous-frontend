@@ -39,6 +39,7 @@ import GoogleOauthCallbackPage from "pages/oauth/google/callback";
 import PaymentPage from "pages/payment";
 import QuestsPaymentPage from 'pages/quests/Payments';
 import PricingPage from "pages/pricing";
+import VerifyLinkPage from "pages/verify-link";
 
 const router = createBrowserRouter([
   {
@@ -144,6 +145,10 @@ const router = createBrowserRouter([
         path: "/pricing",
         element: <PricingPage />,
       },
+      {
+        path: '/verify-link',
+        element: <VerifyLinkPage />
+      }
     ],
   },
 ]);

@@ -3,25 +3,21 @@ import { IndexContainer, Label } from "./styles";
 import TextField from "../../Shared/TextField";
 import { TYPES } from "utils/constants";
 
-const TextInputStyle = {
-  width: "50%",
-};
 
 const YoutubeLikeText = ({ handleOnChange, value, error }) => (
   <>
-    <Label>Like this Youtube video</Label>
+    <Label>Click this link</Label>
     <TextField
-      placeholder="Please enter the video url"
-      value={value.ytVideoLink || ""} // ? formatYoutubeLink(value.ytVideoId) :
-      onChange={(value) => handleOnChange("ytVideoLink", value)}
+      placeholder="Please enter the url"
+      value={value.linkClickUrl || ""} 
+      onChange={(value) => handleOnChange("linkClickUrl", value)}
       multiline={false}
       error={error}
-      style={TextInputStyle}
     />
   </>
 );
 
-const YoutubeLikeComponent = ({ onChange, value, stepType, error }) => {
+const LinkClickComponent = ({ onChange, value, stepType, error }) => {
   const handleOnChange = (key, val) => {
     onChange({
       ...value,
@@ -48,10 +44,10 @@ const YoutubeLikeComponent = ({ onChange, value, stepType, error }) => {
           width: "100%",
         }}
       >
-        <YoutubeLikeText handleOnChange={handleOnChange} value={value} error={error?.additionalData?.ytVideoLink} />
+        <YoutubeLikeText handleOnChange={handleOnChange} value={value} error={error?.additionalData?.linkClickUrl} />
       </Grid>
     </Grid>
   );
 };
 
-export default YoutubeLikeComponent;
+export default LinkClickComponent;
