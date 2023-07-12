@@ -6,7 +6,7 @@ import DeleteIcon from "components/Icons/Delete";
 import SafeImage from "components/SafeImage";
 import FileUpload from "components/Shared/FileUpload";
 
-const StepAttachments = ({ step, handleChange }) => {
+const StepAttachments = ({ step, handleChange, removeMedia }) => {
   const handleAttachMedia = (e) => {
     const file = e.target.files[0];
     const media = step?.mediaUploads || [];
@@ -22,8 +22,11 @@ const StepAttachments = ({ step, handleChange }) => {
   };
 
   const removeAttachment = (attachmentIdx) => {
-    const media = step?.mediaUploads || [];
-    const newMedia = media?.filter((el, idx) => idx !== attachmentIdx);
+    const mediaUploads = step?.mediaUploads || [];
+    const newMedia = mediaUploads?.filter((el, idx) => idx !== attachmentIdx);
+    if(mediaUploads[attachmentIdx]?.slug) {
+      removeMedia(mediaUploads[attachmentIdx]?.slug);
+    }
     handleChange(newMedia);
   };
 

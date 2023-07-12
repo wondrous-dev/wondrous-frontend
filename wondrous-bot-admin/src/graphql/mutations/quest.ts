@@ -123,3 +123,11 @@ export const ADD_LINK_CLICK = gql`
     }
   }
 `;
+
+export const REMOVE_QUEST_STEP_MEDIA = gql`
+  mutation removeQuestStepMedia($questStepId: ID!, $slugs: [String]) {
+    removeQuestStepMedia(questStepId: $questStepId, slugs: $slugs) {
+      success
+    }
+  }
+`;
