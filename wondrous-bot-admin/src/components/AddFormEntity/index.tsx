@@ -17,6 +17,8 @@ import StepAttachments from "components/StepAttachments";
 import { useContext } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
+import { useMutation } from "@apollo/client";
+import { REMOVE_QUEST_STEP_MEDIA } from "graphql/mutations";
 
 const COMPONENT_OPTIONS = [
   {
@@ -77,7 +79,7 @@ const COMPONENT_OPTIONS = [
   },
 ];
 
-const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
+const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const handleDragEnd = (result) => {
     if (!result.destination) return;
@@ -196,6 +198,13 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
     setSteps(newConfiguration);
   };
 
+  const removeMediaItem = (slug, questStepId) => {
+    setRemovedMediaSlugs((prev) => ({
+      ...prev,
+      [questStepId]: [...(prev[questStepId] ? prev[questStepId] : []), slug],
+    }));
+  };
+
   return (
     <Grid
       display="flex"
@@ -294,7 +303,11 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs }) => {
                                 {RESPOND_TYPES[item.type] ? (
                                   <TypeComponent respondType={RESPOND_TYPES[item.type]} />
                                 ) : null}
-                                <StepAttachments step={item} handleChange={(value) => handleMedia(value, item.id)} />
+                                <StepAttachments
+                                  step={item}
+                                  removeMedia={(slug) => removeMediaItem(slug, item._id)}
+                                  handleChange={(value) => handleMedia(value, item.id)}
+                                />
                               </>
                             )}
                           />

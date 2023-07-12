@@ -43,7 +43,6 @@ function SafeImage(safeImageArgs: SafeImageArgs) {
 	const hasProtocol =
 		typeof src === "string" &&
 		(src?.startsWith("http") || src?.startsWith("file://"))
-	console.log(hasProtocol, src, imgUrl)
 	let safeImageUrl = (hasProtocol ? src : imgUrl) || placeholderSrc
 
 	// In case if image was imported

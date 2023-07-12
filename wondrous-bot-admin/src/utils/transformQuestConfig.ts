@@ -43,7 +43,7 @@ type InputQuestStep = {
 
 type OutputQuestStep = {
   id: number;
-  _id: string;
+  _id?: string;
   type: string;
   required?: boolean;
   mediaUploads?: Array<{

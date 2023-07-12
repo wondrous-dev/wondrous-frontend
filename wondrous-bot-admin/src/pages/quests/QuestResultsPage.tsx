@@ -142,14 +142,7 @@ const QuestResultsPage = () => {
       },
       ...(questRewards ? questRewards : []),
     ],
-  };
-
-  const questSteps = useMemo(() => {
-    if (!isEditMode) return [];
-
-    return transformQuestConfig(getQuestById?.steps);
-  }, [getQuestById?.steps, isEditMode]);
-
+  };  
   const shareUrl = `${getBaseUrl()}/quest?id=${getQuestById?.id}`;
   return (
     <CreateQuestContext.Provider
@@ -236,8 +229,8 @@ const QuestResultsPage = () => {
           displaySavePanel={!inView}
           defaultQuestSettings={questSettings}
           questId={id}
+          getQuestById={getQuestById}
           postUpdate={toggleEdit}
-          defaultQuestSteps={questSteps}
         />
       ) : (
         <ViewQuestResults quest={getQuestById} rewards={questSettings.rewards}/>

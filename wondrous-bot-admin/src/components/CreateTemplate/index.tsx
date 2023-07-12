@@ -1,6 +1,6 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
-import { useContext, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
@@ -11,7 +11,7 @@ import { RewardComponent, RewardOverviewHeader } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
-import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, UPDATE_QUEST } from "graphql/mutations";
+import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, REMOVE_QUEST_STEP_MEDIA, UPDATE_QUEST } from "graphql/mutations";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
 import { questValidator, ValidationError } from "services/validators";
@@ -20,6 +20,8 @@ import { set } from "lodash";
 import { transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
+import { transformQuestConfig } from "utils/transformQuestConfig";
+import useAlerts from "utils/hooks";
 
 const DEFAULT_STATE_VALUE = {
   level: "1",
@@ -45,9 +47,9 @@ const CreateTemplate = ({
   displaySavePanel,
   defaultQuestSettings = DEFAULT_STATE_VALUE,
   questId = null,
-  defaultQuestSteps = [],
   postUpdate = null,
   title,
+  getQuestById = null,
 }) => {
   const navigate = useNavigate();
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -55,13 +57,24 @@ const CreateTemplate = ({
     refetchQueries: ["getQuestById"],
   });
 
+  const {setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration} = useAlerts()
+
   const { activeOrg } = useContext(GlobalContext);
 
-  const [steps, setSteps] = useState(defaultQuestSteps);
+  const [steps, setSteps] = useState([]);
   const refs = useRef([]);
+
+  useEffect(() => {
+    if (getQuestById) {
+      setSteps(transformQuestConfig(getQuestById?.steps));
+    }
+  }, [getQuestById]);
+
+  const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState(defaultQuestSettings);
+  const [removedMediaSlugs, setRemovedMediaSlugs] = useState({});
   const handleAdd = (type) => {
     setSteps([
       ...steps,
@@ -76,14 +89,14 @@ const CreateTemplate = ({
   };
 
   const [createQuest] = useMutation(CREATE_QUEST, {
-    onCompleted: ({ createQuest }) => {
+    onCompleted: async ({ createQuest }) => {
       handleUpdateQuestStepsMedia(createQuest.id, createQuest?.steps, steps);
       navigate(`/quests/${createQuest.id}`);
     },
     refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
   });
   const [updateQuest] = useMutation(UPDATE_QUEST, {
-    onCompleted: ({ updateQuest }) => {
+    onCompleted: async ({ updateQuest }) => {
       handleUpdateQuestStepsMedia(updateQuest.id, updateQuest?.steps, steps);
       postUpdate?.();
     },
@@ -99,13 +112,26 @@ const CreateTemplate = ({
   const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
     const stepsMedia = await Promise.all(
       localSteps.map(async (step, idx) => {
-        return await handleMediaUpload(step.mediaUploads);
+        const filteredMediaUploads = step.mediaUploads.filter((media) => media instanceof File);
+        return await handleMediaUpload(filteredMediaUploads);
       })
     );
+
+    await Promise.all(
+      Object.keys(removedMediaSlugs).map(async (stepId) => {
+        return await removeQuestStepMedia({
+          variables: {
+            questStepId: stepId,
+            slugs: removedMediaSlugs[stepId],
+          }
+        })
+      }
+    ));
 
     const stepsData = localSteps.reduce((acc, next, idx) => {
       if (next.mediaUploads.length > 0) {
         const questStep = questSteps.find((step) => step.order === idx + 1);
+        if(stepsMedia[idx].length === 0) return acc;
         return [
           ...acc,
           {
@@ -116,7 +142,6 @@ const CreateTemplate = ({
       }
       return acc;
     }, []);
-
     await attachQuestStepsMedia({
       variables: {
         questId,
@@ -191,30 +216,32 @@ const CreateTemplate = ({
       pointReward: questSettings.rewards[0].value,
       level: level ? parseInt(level, 10) : null,
       // TODO: refactor this
-      rewards: questSettings.rewards?.map((reward: any) => {
-        if (reward?.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
-          return {
-            discordRewardData: {
-              discordRoleId: reward?.discordRewardData?.discordRoleId,
-              discordGuildId: reward?.discordRewardData?.discordGuildId,
-              discordRoleName: reward?.discordRewardData?.discordRoleName,
-            },
-            type: reward?.type,
-          };
-        } else if (reward?.type === PAYMENT_OPTIONS.TOKEN) {
-          return {
-            type: reward?.type,
-            paymentMethodId: reward?.paymentMethodId,
-            amount: Number(reward?.amount),
-          };
-        } else if (reward?.type === PAYMENT_OPTIONS.POAP) {
-          const { __typename, ...rewardData } = reward?.poapRewardData;
-          return {
-            type: reward?.type,
-            poapRewardData: rewardData,
-          };
-        }
-      }).filter(reward => reward),
+      rewards: questSettings.rewards
+        ?.map((reward: any) => {
+          if (reward?.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
+            return {
+              discordRewardData: {
+                discordRoleId: reward?.discordRewardData?.discordRoleId,
+                discordGuildId: reward?.discordRewardData?.discordGuildId,
+                discordRoleName: reward?.discordRewardData?.discordRoleName,
+              },
+              type: reward?.type,
+            };
+          } else if (reward?.type === PAYMENT_OPTIONS.TOKEN) {
+            return {
+              type: reward?.type,
+              paymentMethodId: reward?.paymentMethodId,
+              amount: Number(reward?.amount),
+            };
+          } else if (reward?.type === PAYMENT_OPTIONS.POAP) {
+            const { __typename, ...rewardData } = reward?.poapRewardData;
+            return {
+              type: reward?.type,
+              poapRewardData: rewardData,
+            };
+          }
+        })
+        .filter((reward) => reward),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           id: next?._id,
@@ -296,12 +323,6 @@ const CreateTemplate = ({
             ...next.value?.dataCollectionProps,
           };
         }
-        // if (next?.value?.mediaUploads?.length) {
-        //   step.mediaUploads = next.value.mediaUploads.map((media) => ({
-        //     type: media.type,
-        //     url: media.url,
-        //   }));
-        // }
         return [...acc, step];
       }, []),
     };
@@ -310,7 +331,18 @@ const CreateTemplate = ({
       if (!questSettings.isActive && !isSaving) {
         return setIsSaving(true);
       }
+    
       handleMutation({ body });
+
+      const hasMediaToUpload = steps.some((step) => step.mediaUploads.filter((media) => media instanceof File).length > 0);
+
+      const hasMediaToRemove = Object.values(removedMediaSlugs).flat().length > 0;
+      if (hasMediaToUpload || hasMediaToRemove) {
+        setSnackbarAlertMessage('Wrapping up with your media. Please keep this window open')
+        setSnackbarAlertAutoHideDuration(2000)
+        setSnackbarAlertOpen(true);
+      }
+
     } catch (err) {
       const errors: any = {};
       if (err instanceof ValidationError) {
@@ -406,7 +438,13 @@ const CreateTemplate = ({
             alignItems="center"
             width="100%"
           >
-            <AddFormEntity steps={steps} setSteps={setSteps} handleRemove={handleRemove} refs={refs} />
+            <AddFormEntity
+              steps={steps}
+              setSteps={setSteps}
+              handleRemove={handleRemove}
+              refs={refs}
+              setRemovedMediaSlugs={setRemovedMediaSlugs}
+            />
             <Panel
               display="flex"
               justifyContent="center"
