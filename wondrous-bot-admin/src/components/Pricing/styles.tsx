@@ -9,10 +9,23 @@ export const PricingListOptionWrapper = styled(Box)`
     z-index: 10;
     height: max-content;
     width: 100%;
+    gap: 14px;
+    position: relative;
     ${({ theme }) => theme.breakpoints.down("md")} {
       flex-direction: column;
       align-items: center;
     }
+  }
+`;
+
+export const PricingOptionsListItemInnerWrapper = styled(Box)`
+  && {
+    border-radius: 16px;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-color: ${({ colorScheme }) => colorScheme};
+    background-color: #fff;
+    height: 100%;
   }
 `;
 
@@ -22,17 +35,35 @@ export const PricingOptionsListItemWrapper = styled(Box)`
     min-width: 0;
     border-radius: 16px;
     font-family: Poppins, sans-serif;
-    background: #fff;
+    background-color: #000;
     position: relative;
-    outline: 1px solid black;
 
     ${({ theme }) => theme.breakpoints.down("md")} {
       width: 500px;
+      height: fit-content;
     }
 
     ${({ theme }) => theme.breakpoints.between("md", "xl")} {
       width: 21%;
-      margin-left: 1%;
+    }
+
+    ${({ theme }) => theme.breakpoints.up("lg")} {
+      height: 715px;
+      :hover {
+        cursor: pointer;
+        box-sizing: content-box;
+        ${PricingOptionsListItemInnerWrapper} {
+          position: absolute;
+          right: 0;
+          left: 0;
+          top: -16px;
+          bottom: 0;
+        }
+
+        .cta-button {
+          background: ${({ colorScheme }) => colorScheme};
+        }
+      }
     }
   }
 `;
