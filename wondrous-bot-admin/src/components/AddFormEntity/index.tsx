@@ -85,6 +85,10 @@ const COMPONENT_OPTIONS = [
     label: "Verify youtube like",
     value: TYPES.LIKE_YT_VIDEO,
   },
+  {
+    label: "Click on link",
+    value: TYPES.LINK_CLICK,
+  }
 ];
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {

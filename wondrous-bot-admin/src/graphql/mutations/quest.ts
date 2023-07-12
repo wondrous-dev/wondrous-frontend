@@ -116,6 +116,14 @@ export const START_PREVIEW_QUEST = gql`
   }
 `;
 
+export const ADD_LINK_CLICK = gql`
+  mutation addLinkClick($questStepId: ID!, $cmtyUserId: String!, $url: String!) {
+    addLinkClick(questStepId: $questStepId, cmtyUserId: $cmtyUserId, url: $url) {
+      success
+    }
+  }
+`;
+
 export const REMOVE_QUEST_STEP_MEDIA = gql`
   mutation removeQuestStepMedia($questStepId: ID!, $slugs: [String]) {
     removeQuestStepMedia(questStepId: $questStepId, slugs: $slugs) {
