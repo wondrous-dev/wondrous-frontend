@@ -1,14 +1,16 @@
 import { useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
-import PricingOptionsListItem, { PricingOptionsListItemProps, PricingOptionsTitle } from "./PricingOptionsListItem";
+import { BillingIntervalValue } from "./BillingInterval";
+import PricingOptionsListItem, { PricingOptionsListItemType, PricingOptionsTitle } from "./PricingOptionsListItem";
 import { PricingListOptionWrapper } from "./styles";
 
-const pricingOptions: PricingOptionsListItemProps[] = [
+const pricingOptions: PricingOptionsListItemType[] = [
   {
     colorScheme: "#F8AFDB",
     title: PricingOptionsTitle.Basic,
     description: "For new communities",
-    price: 0,
+    monthlyPrice: 0,
+    annualPrice: 0,
     buttonText: "Start",
     link: "/signup",
     features: ["100 members", "100 quests", "Hosted quest pages", "Simple rewards", "General support", "1 admin"],
@@ -17,7 +19,9 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     colorScheme: "#84BCFF",
     title: PricingOptionsTitle.Hobby,
     description: "For growing communities",
-    price: 29,
+    monthlyPrice: 29,
+    annualPrice: 279,
+    savings: 69,
     buttonText: "Upgrade",
     link: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_eVa5nma5d3Ej8EMbII",
     features: [
@@ -36,7 +40,9 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     colorScheme: "#2A8D5C",
     title: PricingOptionsTitle.Premium,
     description: "For big communities",
-    price: 87,
+    monthlyPrice: 87,
+    annualPrice: 836,
+    savings: 208,
     buttonText: "Upgrade",
     best: true,
     link: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_14kg206T1a2HdZ68wx",
@@ -56,7 +62,9 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     colorScheme: "#F8642D",
     title: PricingOptionsTitle.Ecosystem,
     description: "For ecosystem projects",
-    price: 195,
+    monthlyPrice: 195,
+    annualPrice: 1872,
+    savings: 468,
     buttonText: "Talk to Sales",
     link: "https://docs.google.com/forms/d/e/1FAIpQLSfUToCTDAfOT3EU5pGvgigcMyNyWiFdRuQzrTtZ8yS7ox4Y-Q/viewform?usp=sf_link",
     features: [
@@ -74,7 +82,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
   },
 ];
 
-const PricingOptionsList = () => {
+const PricingOptionsList = ({ billingInterval }: { billingInterval: BillingIntervalValue }) => {
   const { activeOrg } = useContext(GlobalContext);
   return (
     <PricingListOptionWrapper>
@@ -86,7 +94,7 @@ const PricingOptionsList = () => {
         ) {
           i.link = `${i.link}?client_reference_id=${activeOrg?.id}`;
         }
-        return <PricingOptionsListItem {...i} />;
+        return <PricingOptionsListItem {...i} billingInterval={billingInterval} />;
       })}
     </PricingListOptionWrapper>
   );

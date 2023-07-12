@@ -1,5 +1,5 @@
-import { Box } from "@mui/material";
-import styled from "@mui/styled-engine-sc";
+import { Box, ToggleButton } from "@mui/material";
+import styled from "styled-components";
 
 export const PricingListOptionWrapper = styled(Box)`
   && {
@@ -64,6 +64,30 @@ export const PricingOptionsListItemWrapper = styled(Box)`
           background: ${({ colorScheme }) => colorScheme};
         }
       }
+    }
+  }
+`;
+
+export const BillingIntervalButton = styled((props) => (
+  <ToggleButton disableRipple disableFocusRipple disableTouchRipple {...props} />
+))`
+  && {
+    background: ${(props) => (props.$selected ? "#2a8d5c" : "transparent")};
+    color: ${(props) => (props.$selected ? "#e9ff90" : "#d3d3d3")};
+    text-transform: capitalize;
+    font-family: Poppins, sans-serif;
+    margin: 2px;
+    border-radius: 6px !important;
+    height: 24px;
+    line-height: 0;
+    border: none;
+    &:hover {
+      background-color: #2a8d5c;
+      color: #e9ff90;
+    }
+    &:focus {
+      outline: 0 !important;
+      border: none;
     }
   }
 `;

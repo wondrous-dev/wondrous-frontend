@@ -1,4 +1,6 @@
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { useState } from "react";
+import BillingInterval, { BillingIntervalValue } from "./BillingInterval";
 import PricingOptionsList from "./PricingOptionsList";
 
 const useHeight = () => {
@@ -10,9 +12,19 @@ const useHeight = () => {
 
 const PricingComponent = () => {
   const height = useHeight();
+  const [billingInterval, setBillingInterval] = useState<BillingIntervalValue>(BillingIntervalValue.monthly);
+
   return (
     <>
-      <Box width="100%" display="flex" flexDirection="column" alignItems="center" marginTop="50px">
+      <Grid
+        container
+        gap="14px"
+        width="100%"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        marginTop="50px"
+      >
         <Typography fontSize="32px" color="#06040A" fontWeight="600" fontFamily="Poppins, sans-serif">
           Pricing
         </Typography>
@@ -25,9 +37,10 @@ const PricingComponent = () => {
         >
           Upgrade your community with our premium features
         </Typography>
-      </Box>
+        <BillingInterval onClick={setBillingInterval} selected={billingInterval} />
+      </Grid>
       <Box width="100%" display="flex" height={height} justifyContent="center" position="relative" marginTop="32px">
-        <PricingOptionsList />
+        <PricingOptionsList billingInterval={billingInterval} />
         <Box
           sx={{
             position: "absolute",
