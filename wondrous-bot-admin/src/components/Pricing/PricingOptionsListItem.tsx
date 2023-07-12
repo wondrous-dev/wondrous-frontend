@@ -1,6 +1,7 @@
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import CheckIcon from "components/Icons/Check";
 import PricingBestBadge from "components/Icons/pricing-best-badge.svg";
+import { BillingIntervalValue } from "./BillingInterval";
 import { PricingOptionsListItemInnerWrapper, PricingOptionsListItemWrapper } from "./styles";
 
 export enum PricingOptionsTitle {
@@ -10,27 +11,39 @@ export enum PricingOptionsTitle {
   Ecosystem = "Ecosystem",
 }
 
-export type PricingOptionsListItemProps = {
+export type PricingOptionsListItemType = {
   colorScheme: string;
   title: PricingOptionsTitle;
   description: string;
-  price: number;
+  monthlyPrice: number;
+  annualPrice: number;
   buttonText: string;
   features: string[];
   best?: boolean;
   link?: string;
+  savings?: number;
+};
+
+type PricingOptionsListItemProps = PricingOptionsListItemType & {
+  billingInterval: BillingIntervalValue;
 };
 
 const PricingOptionsListItem = ({
   colorScheme,
   title,
   description,
-  price,
+  monthlyPrice,
+  annualPrice,
   buttonText,
   features,
   link,
   best = false,
+  billingInterval,
+  savings,
 }: PricingOptionsListItemProps) => {
+  const price = billingInterval === BillingIntervalValue.monthly ? monthlyPrice : annualPrice;
+  const billingPeriod = billingInterval === BillingIntervalValue.monthly ? "Per Server/Mo" : "Per Server/Year";
+  const savingsText = billingInterval === BillingIntervalValue.annual && savings && `(20% off save $${savings})`;
   return (
     <PricingOptionsListItemWrapper colorScheme={colorScheme}>
       <PricingOptionsListItemInnerWrapper colorScheme={colorScheme}>
@@ -87,7 +100,7 @@ const PricingOptionsListItem = ({
               fontSize="13px"
               marginTop="8px"
             >
-              Per Server/Mo
+              {billingPeriod} {savingsText}
             </Typography>
             <Button
               disableRipple
