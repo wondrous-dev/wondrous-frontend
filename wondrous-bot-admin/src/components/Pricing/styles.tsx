@@ -11,7 +11,7 @@ export const PricingListOptionWrapper = styled(Box)`
     width: 100%;
     gap: 14px;
     position: relative;
-    ${({ theme }) => theme.breakpoints.down("md")} {
+    ${({ theme }) => theme.breakpoints.down("sm")} {
       flex-direction: column;
       align-items: center;
     }
@@ -21,66 +21,71 @@ export const PricingListOptionWrapper = styled(Box)`
 export const PricingOptionsListItemInnerWrapper = styled(Box)`
   && {
     border-radius: 16px;
-    outline-width: 1px;
+    outline-width: 2px;
     outline-style: solid;
-    outline-color: ${({ colorScheme }) => colorScheme};
+    outline-color: ${({ $colorScheme }) => $colorScheme};
     background-color: #fff;
     height: 100%;
+    width: 100%;
+    min-width: 0;
   }
 `;
 
 export const PricingOptionsListItemWrapper = styled(Box)`
   && {
-    width: 323px;
+    width: 23%;
+    max-width: 300px;
     min-width: 0;
     border-radius: 16px;
     font-family: Poppins, sans-serif;
     background-color: #000;
     position: relative;
+    height: ${({ $childHeight }) => $childHeight}px;
 
     ${({ theme }) => theme.breakpoints.down("md")} {
-      width: 500px;
-      height: fit-content;
+      width: 45%;
     }
 
-    ${({ theme }) => theme.breakpoints.between("md", "xl")} {
-      width: 21%;
+    ${({ theme }) => theme.breakpoints.down("sm")} {
+      width: 85%;
     }
 
-    ${({ theme }) => theme.breakpoints.up("lg")} {
-      height: 715px;
+    ${({ theme }) => theme.breakpoints.up("md")} {
       :hover {
+        height: ${({ $childHeight }) => $childHeight}px;
+        outline: 2px solid black;
         cursor: pointer;
-        box-sizing: content-box;
         ${PricingOptionsListItemInnerWrapper} {
           position: absolute;
           right: 0;
           left: 0;
-          top: -16px;
+          top: -20px;
           bottom: 0;
         }
 
         .cta-button {
-          background: ${({ colorScheme }) => colorScheme};
+          background: ${({ $colorScheme }) => $colorScheme};
         }
       }
     }
   }
 `;
 
-export const BillingIntervalButton = styled((props) => (
+export const BillingIntervalToggleButton = styled((props) => (
   <ToggleButton disableRipple disableFocusRipple disableTouchRipple {...props} />
 ))`
   && {
-    background: ${(props) => (props.$selected ? "#2a8d5c" : "transparent")};
-    color: ${(props) => (props.$selected ? "#e9ff90" : "#d3d3d3")};
+    background: transparent;
+    color: #d3d3d3;
     text-transform: capitalize;
     font-family: Poppins, sans-serif;
     margin: 2px;
     border-radius: 6px !important;
-    height: 24px;
+    height: 28px;
     line-height: 0;
     border: none;
+    font-weight: 500;
+    font-size: 14px;
     &:hover {
       background-color: #2a8d5c;
       color: #e9ff90;
@@ -89,5 +94,11 @@ export const BillingIntervalButton = styled((props) => (
       outline: 0 !important;
       border: none;
     }
+    ${({ $selected }) =>
+      $selected &&
+      `
+    background: #2a8d5c;
+    color: #e9ff90;
+    `}
   }
 `;

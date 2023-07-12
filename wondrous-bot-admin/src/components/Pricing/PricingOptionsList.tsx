@@ -94,7 +94,7 @@ const PricingOptionsList = ({ billingInterval }: { billingInterval: BillingInter
         ) {
           i.link = `${i.link}?client_reference_id=${activeOrg?.id}`;
         }
-        return <PricingOptionsListItem {...i} billingInterval={billingInterval} />;
+        return <PricingOptionsListItem {...i} billingInterval={billingInterval} key={i.title} />;
       })}
     </PricingListOptionWrapper>
   );

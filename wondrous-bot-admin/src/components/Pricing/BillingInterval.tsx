@@ -1,5 +1,5 @@
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { BillingIntervalButton } from "./styles";
+import { BillingIntervalToggleButton } from "./styles";
 
 export enum BillingIntervalValue {
   monthly = "monthly",
@@ -15,20 +15,20 @@ const BillingInterval = ({ onClick, selected }) => {
         background: "#4A4A4D",
       }}
     >
-      <BillingIntervalButton
+      <BillingIntervalToggleButton
         value={BillingIntervalValue.monthly}
         onClick={handleSetBillingInterval(BillingIntervalValue.monthly)}
         $selected={selected === BillingIntervalValue.monthly}
       >
         {BillingIntervalValue.monthly}
-      </BillingIntervalButton>
-      <BillingIntervalButton
+      </BillingIntervalToggleButton>
+      <BillingIntervalToggleButton
         value={BillingIntervalValue.annual}
         onClick={handleSetBillingInterval(BillingIntervalValue.annual)}
         $selected={selected === BillingIntervalValue.annual}
       >
         {BillingIntervalValue.annual}
-      </BillingIntervalButton>
+      </BillingIntervalToggleButton>
     </ToggleButtonGroup>
   );
 };
