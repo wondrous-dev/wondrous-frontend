@@ -35,8 +35,26 @@ export const GET_NFT_INFO = gql`
 `;
 
 export const GET_UNPAID_CMTY_PAYMENTS_FOR_QUESTS = gql`
-  query getUnpaidCmtyPaymentsForQuests($input: CmtyPaymentQueryInput) {
-    getUnpaidCmtyPaymentsForQuests(input: $input) {
+  query getUnpaidCmtyPaymentsForQuest($input: CmtyPaymentQueryInput) {
+    getUnpaidCmtyPaymentsForQuest(input: $input) {
+      ...CmtyPaymentFragment
+    }
+  }
+  ${CmtyPaymentFragment}
+`;
+
+export const GET_PAID_CMTY_PAYMENTS_FOR_QUESTS = gql`
+  query getPaidCmtyPaymentsForQuest($input: CmtyPaymentQueryInput) {
+    getPaidCmtyPaymentsForQuest(input: $input) {
+      ...CmtyPaymentFragment
+    }
+  }
+  ${CmtyPaymentFragment}
+`;
+
+export const GET_PROCESSING_CMTY_PAYMENTS_FOR_QUESTS = gql`
+  query getProcessingCmtyPaymentsForQuest($input: CmtyPaymentQueryInput) {
+    getProcessingCmtyPaymentsForQuest(input: $input) {
       ...CmtyPaymentFragment
     }
   }
@@ -49,4 +67,32 @@ export const GET_CMTY_PAYMENT_COUNTS = gql`
       count
     }
   }
+`;
+
+
+export const GET_UNPAID_CMTY_PAYMENTS_FOR_ORG = gql`
+  query getUnpaidCmtyPaymentsForOrg($input: CmtyPaymentQueryInput) {
+    getUnpaidCmtyPaymentsForOrg(input: $input) {
+      ...CmtyPaymentFragment
+    }
+  }
+  ${CmtyPaymentFragment}
+`;
+
+export const GET_COMPLETED_CMTY_PAYMENTS_FOR_ORG = gql`
+  query getCompletedCmtyPaymentsForOrg($input: CmtyPaymentQueryInput) {
+    getCompletedCmtyPaymentsForOrg(input: $input) {
+      ...CmtyPaymentFragment
+    }
+  }
+  ${CmtyPaymentFragment}
+`;
+
+export const GET_PROCESSING_CMTY_PAYMENTS_FOR_ORG = gql`
+  query getProcessingCmtyPaymentsForOrg($input: CmtyPaymentQueryInput) {
+    getProcessingCmtyPaymentsForOrg(input: $input) {
+      ...CmtyPaymentFragment
+    }
+  }
+  ${CmtyPaymentFragment}
 `;

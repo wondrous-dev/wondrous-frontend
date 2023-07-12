@@ -13,6 +13,10 @@ const EMPTY_STATE_MAP = {
     title: 'No members yet',
     Image: MembersArtwork,
   },
+  [EMPTY_STATE_TYPES.PAYMENTS]: {
+    title: 'No payments to process',
+    Image: MembersArtwork,
+  }
 };
 
 const EmptyState = ({ type }) => {

@@ -35,6 +35,10 @@ import DiscordCallbackCmtyUserConnect from "pages/discord/callback/cmty-user-con
 import SignupPage from "pages/signup";
 import OnboardingWelcomePage from "pages/onboarding/welcome";
 import InvitePage from "pages/invite";
+import GoogleOauthCallbackPage from "pages/oauth/google/callback";
+import PaymentPage from "pages/payment";
+import QuestsPaymentPage from 'pages/quests/Payments';
+import PricingPage from "pages/pricing";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +71,10 @@ const router = createBrowserRouter([
       {
         path: "/quests",
         element: <QuestsPage />,
+      },
+      {
+        path: "/quests/:id/payments",
+        element: <QuestsPaymentPage />,
       },
       {
         path: "/quests/:id",
@@ -123,6 +131,18 @@ const router = createBrowserRouter([
       {
         path: "/invite/:token",
         element: <InvitePage />,
+      },
+      {
+        path: "/settings/payments",
+        element: <PaymentPage />,
+      },
+      {
+        path: "/oauth/google/callback",
+        element: <GoogleOauthCallbackPage />,
+      },
+      {
+        path: "/pricing",
+        element: <PricingPage />,
       },
     ],
   },

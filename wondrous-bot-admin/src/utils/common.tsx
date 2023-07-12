@@ -1,4 +1,5 @@
 import { QUEST_CONDITION_TYPES } from "./constants";
+import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
 
 export function shallowEqual(objA, objB) {
   if (!objA || !objB) {
@@ -65,3 +66,5 @@ export const camelToSnake = (str) => {
   if (str === null || str === undefined) return str;
   return str[0].toLowerCase() + str.slice(1, str.length).replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 };
+
+export const constructExplorerRedirectUrl = (chain, txHash) => `${CHAIN_TO_EXPLORER_URL[chain]}/tx/${txHash}`;

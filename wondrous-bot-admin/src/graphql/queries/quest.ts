@@ -32,7 +32,7 @@ export const GET_QUEST_BY_ID = gql`
 export const GET_MINIMAL_QUEST_BY_ID = gql`
   query getQuestById($questId: ID!) {
     getQuestById(questId: $questId) {
-      title,
+      title
       id
     }
   }

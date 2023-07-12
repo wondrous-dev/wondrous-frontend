@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, ButtonBase, Grid, Typography } from "@mui/material";
 import EmptyState from "components/EmptyState";
 import { useEffect, useMemo, useState, useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
@@ -11,6 +11,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { EXPORT_QUEST_SUBMISSIONS } from "graphql/queries";
 import { GET_CMTY_PAYMENT_COUNTS } from "graphql/queries";
 import RedDot from "assets/redDot.svg";
+import { useNavigate } from "react-router-dom";
 
 export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, questId }) => {
   const headers = [
@@ -74,6 +75,7 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
   const [exportQuestSubmissionData] = useLazyQuery(EXPORT_QUEST_SUBMISSIONS);
   const { activeOrg } = useContext(GlobalContext);
   const [getCmtyPaymentCount, { data: paymentCountData }] = useLazyQuery(GET_CMTY_PAYMENT_COUNTS);
+  const navigate = useNavigate();
   useEffect(() => {
     if (inView && hasMore) {
       fetchMore();
@@ -115,6 +117,7 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
     [stats]
   );
   const unpaidPaymentsCount = paymentCountData?.getCmtyPaymentsCountForOrg?.count || 0;
+  
   return (
     <Grid
       display="flex"
@@ -152,7 +155,9 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
           Export submissions to CSV
         </FilterPill>
         {unpaidPaymentsCount > 0 && (
-          <FilterPill type="button" key="unpaid" $isActive={false} onClick={() => {}}>
+            <FilterPill type="button" key="unpaid" $isActive={false} 
+            onClick={() => navigate(`/quests/${quest.id}/payments`)}
+            >
             <img
               style={{
                 marginRight: "4px",
