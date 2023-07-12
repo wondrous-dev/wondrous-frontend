@@ -3,9 +3,16 @@ import CheckIcon from "components/Icons/Check";
 import PricingBestBadge from "components/Icons/pricing-best-badge.svg";
 import { PricingOptionsListItemInnerWrapper, PricingOptionsListItemWrapper } from "./styles";
 
+export enum PricingOptionsTitle {
+  Basic = "Basic",
+  Hobby = "Hobby",
+  Premium = "Premium",
+  Ecosystem = "Ecosystem",
+}
+
 export type PricingOptionsListItemProps = {
   colorScheme: string;
-  title: string;
+  title: PricingOptionsTitle;
   description: string;
   price: number;
   buttonText: string;

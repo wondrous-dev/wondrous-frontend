@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
-import PricingOptionsListItem, { PricingOptionsListItemProps } from "./PricingOptionsListItem";
+import PricingOptionsListItem, { PricingOptionsListItemProps, PricingOptionsTitle } from "./PricingOptionsListItem";
 import { PricingListOptionWrapper } from "./styles";
 
 const pricingOptions: PricingOptionsListItemProps[] = [
   {
     colorScheme: "#F8AFDB",
-    title: "Basic",
+    title: PricingOptionsTitle.Basic,
     description: "For new communities",
     price: 0,
     buttonText: "Start",
@@ -15,7 +15,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
   },
   {
     colorScheme: "#84BCFF",
-    title: "Hobby",
+    title: PricingOptionsTitle.Hobby,
     description: "For growing communities",
     price: 29,
     buttonText: "Upgrade",
@@ -34,7 +34,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
   },
   {
     colorScheme: "#2A8D5C",
-    title: "Premium",
+    title: PricingOptionsTitle.Premium,
     description: "For big communities",
     price: 87,
     buttonText: "Upgrade",
@@ -54,7 +54,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
   },
   {
     colorScheme: "#F8642D",
-    title: "Ecosystem",
+    title: PricingOptionsTitle.Ecosystem,
     description: "For ecosystem projects",
     price: 195,
     buttonText: "Talk to Sales",
@@ -80,7 +80,7 @@ const PricingOptionsList = () => {
     <PricingListOptionWrapper>
       {pricingOptions.map((i) => {
         if (
-          (i.title === "Hobby" || i.title === "Premium") && // TODO: make constant
+          (i.title === PricingOptionsTitle.Hobby || i.title === PricingOptionsTitle.Premium) &&
           activeOrg?.id &&
           !i.link?.includes("client_reference_id")
         ) {
