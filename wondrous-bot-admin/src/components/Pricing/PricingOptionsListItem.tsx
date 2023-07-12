@@ -58,7 +58,7 @@ const PricingOptionsListItem = ({
             <Box
               position="absolute"
               sx={{
-                top: -45,
+                top: 10,
                 right: 10,
                 zIndex: 10,
               }}
@@ -70,7 +70,6 @@ const PricingOptionsListItem = ({
             bgcolor={colorScheme}
             display="flex"
             alignItems="center"
-            justifyContent="center"
             borderRadius="16px 16px 0 0"
             overflow="hidden"
             padding="14px"
@@ -79,7 +78,7 @@ const PricingOptionsListItem = ({
               {title}
             </Typography>
           </Box>
-          <Box color="#000" display="flex" flexDirection="column" alignItems="center" padding="24px">
+          <Box color="#000" display="flex" flexDirection="column" padding="24px">
             <Typography fontWeight="600" fontFamily="Poppins, sans-serif">
               {description}
             </Typography>
@@ -132,7 +131,7 @@ const PricingOptionsListItem = ({
               padding: "24px",
               display: "flex",
               flexDirection: "column",
-              gap: "18px",
+              gap: "14px",
               boxSizing: "border-box",
             }}
           >
@@ -151,8 +150,8 @@ const PricingOptionsListItem = ({
                 }}
               >
                 <Box
-                  width="14px"
-                  height="14px"
+                  width="18px"
+                  height="18px"
                   bgcolor={colorScheme}
                   display="flex"
                   alignItems="center"
