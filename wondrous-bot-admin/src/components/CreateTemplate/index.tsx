@@ -217,6 +217,7 @@ const CreateTemplate = ({
       }).filter(reward => reward),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
+          id: next?._id,
           type: next.type,
           order: index + 1,
           mediaUploads: [],
@@ -295,6 +296,12 @@ const CreateTemplate = ({
             ...next.value?.dataCollectionProps,
           };
         }
+        // if (next?.value?.mediaUploads?.length) {
+        //   step.mediaUploads = next.value.mediaUploads.map((media) => ({
+        //     type: media.type,
+        //     url: media.url,
+        //   }));
+        // }
         return [...acc, step];
       }, []),
     };
