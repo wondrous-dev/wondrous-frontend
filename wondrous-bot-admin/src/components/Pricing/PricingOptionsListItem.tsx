@@ -1,6 +1,7 @@
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import CheckIcon from "components/Icons/Check";
 import PricingBestBadge from "components/Icons/pricing-best-badge.svg";
+import { useEffect, useRef, useState } from "react";
 import { BillingIntervalValue } from "./BillingInterval";
 import { PricingOptionsListItemInnerWrapper, PricingOptionsListItemWrapper } from "./styles";
 
@@ -28,6 +29,26 @@ type PricingOptionsListItemProps = PricingOptionsListItemType & {
   billingInterval: BillingIntervalValue;
 };
 
+const useGetChildHeight = () => {
+  const [childHeight, setChildHeight] = useState();
+  const ref = useRef(null);
+
+  useEffect(() => {
+    setChildHeight(ref.current.clientHeight);
+  }, []);
+
+  return { childHeight, ref };
+};
+
+const formatCurrency = (amount: number) =>
+  amount &&
+  amount.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+
 const PricingOptionsListItem = ({
   colorScheme,
   title,
@@ -43,10 +64,12 @@ const PricingOptionsListItem = ({
 }: PricingOptionsListItemProps) => {
   const price = billingInterval === BillingIntervalValue.monthly ? monthlyPrice : annualPrice;
   const billingPeriod = billingInterval === BillingIntervalValue.monthly ? "Per Server/Mo" : "Per Server/Year";
-  const savingsText = billingInterval === BillingIntervalValue.annual && savings && `(20% off save $${savings})`;
+  const savingsText =
+    billingInterval === BillingIntervalValue.annual && savings && `(20% off save ${formatCurrency(savings)})`;
+  const { childHeight, ref } = useGetChildHeight();
   return (
-    <PricingOptionsListItemWrapper colorScheme={colorScheme}>
-      <PricingOptionsListItemInnerWrapper colorScheme={colorScheme}>
+    <PricingOptionsListItemWrapper $colorScheme={colorScheme} $childHeight={childHeight}>
+      <PricingOptionsListItemInnerWrapper $colorScheme={colorScheme} ref={ref}>
         <a
           href={link}
           target="_blank"
@@ -78,8 +101,18 @@ const PricingOptionsListItem = ({
               {title}
             </Typography>
           </Box>
-          <Box color="#000" display="flex" flexDirection="column" padding="24px">
-            <Typography fontWeight="600" fontFamily="Poppins, sans-serif">
+          <Box color="#000" display="flex" flexDirection="column" padding="24px" borderBottom="2px solid #DADADA">
+            <Typography
+              fontWeight="600"
+              fontFamily="Poppins, sans-serif"
+              sx={{
+                width: {
+                  xs: "auto",
+                  md: "160px",
+                  lg: "auto",
+                },
+              }}
+            >
               {description}
             </Typography>
             <Typography
@@ -89,8 +122,15 @@ const PricingOptionsListItem = ({
               fontSize="62px"
               lineHeight="1"
               marginTop="18px"
+              sx={{
+                fontSize: {
+                  xs: "62px",
+                  md: "52px",
+                  lg: "62px",
+                },
+              }}
             >
-              ${price}
+              {formatCurrency(price)}
             </Typography>
             <Typography
               fontFamily="Poppins, sans-serif"
@@ -98,6 +138,12 @@ const PricingOptionsListItem = ({
               fontWeight="500"
               fontSize="13px"
               marginTop="8px"
+              sx={{
+                minHeight: {
+                  md: "40px",
+                  lg: "auto",
+                },
+              }}
             >
               {billingPeriod} {savingsText}
             </Typography>
@@ -114,7 +160,7 @@ const PricingOptionsListItem = ({
                 minWidth: "85px",
                 paddingX: "12px",
                 color: "#000",
-                fontWeight: "700",
+                fontWeight: "600",
                 outline: "0 !important",
                 fontFamily: "Poppins",
                 textTransform: "capitalize",
@@ -132,7 +178,6 @@ const PricingOptionsListItem = ({
               display: "flex",
               flexDirection: "column",
               gap: "14px",
-              boxSizing: "border-box",
             }}
           >
             {features.map((feature) => (
