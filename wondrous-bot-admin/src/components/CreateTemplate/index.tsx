@@ -316,7 +316,6 @@ const CreateTemplate = ({
       }, []),
     };
     try {
-      console.log(body, 'body')
       await questValidator(body);
       if (!questSettings.isActive && !isSaving) {
         return setIsSaving(true);

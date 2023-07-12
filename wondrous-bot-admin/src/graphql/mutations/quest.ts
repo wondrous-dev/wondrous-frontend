@@ -116,9 +116,9 @@ export const START_PREVIEW_QUEST = gql`
   }
 `;
 
-export const VERIFY_LINK_CLICK = gql`
-  mutation verifyLinkClick($questStepId: ID!, $cmtyUserId: String!) {
-    verifyLinkClick(questStepId: $questStepId, cmtyUserId: $cmtyUserId) {
+export const ADD_LINK_CLICK = gql`
+  mutation addLinkClick($questStepId: ID!, $cmtyUserId: String!, $url: String!) {
+    addLinkClick(questStepId: $questStepId, cmtyUserId: $cmtyUserId, url: $url) {
       success
     }
   }

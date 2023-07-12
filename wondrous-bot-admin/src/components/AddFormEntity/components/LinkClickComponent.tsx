@@ -18,7 +18,6 @@ const YoutubeLikeText = ({ handleOnChange, value, error }) => (
 );
 
 const LinkClickComponent = ({ onChange, value, stepType, error }) => {
-  console.log(error, 'error')
   const handleOnChange = (key, val) => {
     onChange({
       ...value,

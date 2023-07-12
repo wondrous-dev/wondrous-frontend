@@ -35,6 +35,7 @@ export default defineConfig({
       plugins: [
         (NodeGlobalsPolyfillPlugin as any)({
           process: true,
+          buffer: true,
         }),
 
         NodeModulesPolyfillPlugin(),
