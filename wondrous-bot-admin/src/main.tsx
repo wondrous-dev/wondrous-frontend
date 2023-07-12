@@ -1,4 +1,4 @@
-import { Buffer } from "buffer";
+// import { Buffer } from "buffer";
 declare global {
   interface Window {
     global: any;
@@ -7,7 +7,7 @@ declare global {
 
 if (typeof window !== "undefined") {
   window.global = window;
-  window.Buffer = Buffer;
+  // window.Buffer = Buffer;
 }
 import React from "react";
 import ReactDOM from "react-dom/client";

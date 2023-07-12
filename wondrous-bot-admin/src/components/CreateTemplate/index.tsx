@@ -258,7 +258,14 @@ const CreateTemplate = ({
           step["additionalData"] = {
             ytChannelLink: next.value?.ytChannelLink,
           };
-        } else if (next.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
+        } 
+        else if (next.type === TYPES.LINK_CLICK) {
+          step.prompt = next.value?.prompt;
+          step["additionalData"] = {
+            linkClickUrl: next.value?.linkClickUrl,
+          };
+        }
+        else if (next.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
             snapshotProposalLink: next.value?.snapshotProposalLink,
@@ -309,6 +316,7 @@ const CreateTemplate = ({
       }, []),
     };
     try {
+      console.log(body, 'body')
       await questValidator(body);
       if (!questSettings.isActive && !isSaving) {
         return setIsSaving(true);

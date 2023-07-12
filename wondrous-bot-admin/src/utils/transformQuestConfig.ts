@@ -39,6 +39,7 @@ type InputQuestStep = {
     tokenName?: string;
     ytVideoLink?: string;
     ytChannelLink?: string;
+    linkClickUrl?: string;
   };
 };
 
@@ -77,6 +78,10 @@ type OutputQuestStep = {
     | {
         prompt?: string;
         tweetHandle: string;
+      }
+      | {
+        prompt?: string;
+        linkClickUrl: string;
       }
     | {
         prompt?: string;
@@ -158,7 +163,14 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         prompt: step?.prompt,
         ytVideoLink: step?.additionalData?.ytVideoLink,
       };
-    } else if (step.type === TYPES.SUBSCRIBE_YT_CHANNEL) {
+    } 
+    else if(step.type === TYPES.LINK_CLICK) {
+      outputStep.value = {
+        prompt: step?.prompt,
+        linkClickUrl: step?.additionalData?.linkClickUrl,
+      };
+    }
+    else if (step.type === TYPES.SUBSCRIBE_YT_CHANNEL) {
       outputStep.value = {
         prompt: step?.prompt,
         ytChannelLink: step?.additionalData?.ytChannelLink,
