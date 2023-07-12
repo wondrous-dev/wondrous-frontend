@@ -2,6 +2,7 @@ import { DATA_COLLECTION_TYPES, TYPES } from "./constants";
 
 type InputQuestStep = {
   type: string;
+  id: string;
   order: number;
   prompt: string;
   media?: Array<{
@@ -44,6 +45,7 @@ type InputQuestStep = {
 
 type OutputQuestStep = {
   id: number;
+  _id?: string;
   type: string;
   required?: boolean;
   mediaUploads?: Array<{
@@ -119,6 +121,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
   return obj.map((step) => {
     const outputStep: OutputQuestStep = {
       id: step.order,
+      _id: step.id,
       type: step.type,
       required: step.required === false ? false : true,
       value: "",

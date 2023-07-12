@@ -115,3 +115,11 @@ export const START_PREVIEW_QUEST = gql`
     }
   }
 `;
+
+export const REMOVE_QUEST_STEP_MEDIA = gql`
+  mutation removeQuestStepMedia($questStepId: ID!, $slugs: [String]) {
+    removeQuestStepMedia(questStepId: $questStepId, slugs: $slugs) {
+      success
+    }
+  }
+`;
