@@ -1,8 +1,7 @@
 import { useContext } from "react";
+import GlobalContext from "utils/context/GlobalContext";
 import PricingOptionsListItem, { PricingOptionsListItemProps } from "./PricingOptionsListItem";
 import { PricingListOptionWrapper } from "./styles";
-import GlobalContext from "utils/context/GlobalContext";
-import { it } from "date-fns/locale";
 
 const pricingOptions: PricingOptionsListItemProps[] = [
   {
@@ -15,7 +14,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     features: ["100 members", "100 quests", "Hosted quest pages", "Simple rewards", "General support", "1 admin"],
   },
   {
-    colorScheme: "#2A8D5C",
+    colorScheme: "#84BCFF",
     title: "Hobby",
     description: "For growing communities",
     price: 29,
@@ -34,7 +33,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     ],
   },
   {
-    colorScheme: "#F8642D",
+    colorScheme: "#2A8D5C",
     title: "Premium",
     description: "For big communities",
     price: 87,
@@ -44,7 +43,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     features: [
       "Everything in Hobby",
       "Unlimited members",
-      "More social verifications +++",
+      "YouTube integration",
       "Custom onboarding session",
       "Custom banners",
       "Batch pay with Gnosis",
@@ -54,7 +53,7 @@ const pricingOptions: PricingOptionsListItemProps[] = [
     ],
   },
   {
-    colorScheme: "#84BCFF",
+    colorScheme: "#F8642D",
     title: "Ecosystem",
     description: "For ecosystem projects",
     price: 195,
@@ -81,7 +80,7 @@ const PricingOptionsList = () => {
     <PricingListOptionWrapper>
       {pricingOptions.map((i) => {
         if (
-          (i.title === "Hobby" || i.title === "Premium") &&
+          (i.title === "Hobby" || i.title === "Premium") && // TODO: make constant
           activeOrg?.id &&
           !i.link?.includes("client_reference_id")
         ) {
