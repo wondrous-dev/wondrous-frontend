@@ -40,7 +40,7 @@ export const PricingOptionsListItemWrapper = styled(Box)`
     font-family: Poppins, sans-serif;
     background-color: #000;
     position: relative;
-    height: ${({ $childHeight }) => $childHeight}px;
+    height: ${({ $childHeight, $willExpire }) => ($willExpire ? $childHeight + 20 : $childHeight)}px;
 
     ${({ theme }) => theme.breakpoints.down("md")} {
       width: 45%;

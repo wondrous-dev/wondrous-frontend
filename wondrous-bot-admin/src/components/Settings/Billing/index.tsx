@@ -10,10 +10,14 @@ import {
   BillingInfoUpdateLink,
   BillingInfoUpdateText,
 } from "./styles";
+import { useSubscription } from "utils/hooks";
 
-const STRIPE_MANAGE_SUBSCRIPTION_LINK = "https://billing.stripe.com/p/login/fZefYZfFDdyk6NG8ww";
+const STRIPE_MANAGE_SUBSCRIPTION_LINK = import.meta.env.VITE_PRODUCTION
+  ? "https://billing.stripe.com/p/login/fZefYZfFDdyk6NG8ww"
+  : "https://billing.stripe.com/p/login/test_3csbKGfr73hIg2QdQQ";
 const BillingSettings = () => {
   const [billingInterval, setBillingInterval] = useState<BillingIntervalValue>(BillingIntervalValue.monthly);
+
   return (
     <Grid
       flex="1"

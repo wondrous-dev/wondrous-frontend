@@ -4,6 +4,8 @@ import PricingBestBadge from "components/Icons/pricing-best-badge.svg";
 import { useEffect, useRef, useState } from "react";
 import { BillingIntervalValue } from "./BillingInterval";
 import { PricingOptionsListItemInnerWrapper, PricingOptionsListItemWrapper } from "./styles";
+import { useSubscription } from "utils/hooks";
+import { format } from "date-fns";
 
 export enum PricingOptionsTitle {
   Basic = "Basic",
@@ -53,6 +55,15 @@ const formatCurrency = (amount: number) =>
     maximumFractionDigits: 0,
   });
 
+export const getPlan = (plan) => {
+  if (!plan) return PricingOptionsTitle.Basic;
+  if (plan === "hobby" || plan === "hobby_annual") return PricingOptionsTitle.Hobby;
+  if (plan === "premium" || plan === "premium_annual") return PricingOptionsTitle.Premium;
+  if (plan === "ecosystem" || plan === "ecomosystem_annual") return PricingOptionsTitle.Ecosystem;
+};
+const STRIPE_MANAGE_SUBSCRIPTION_LINK = import.meta.env.VITE_PRODUCTION
+  ? "https://billing.stripe.com/p/login/fZefYZfFDdyk6NG8ww"
+  : "https://billing.stripe.com/p/login/test_3csbKGfr73hIg2QdQQ";
 const PricingOptionsListItem = ({
   colorScheme,
   title,
@@ -68,6 +79,15 @@ const PricingOptionsListItem = ({
   percentSavings,
   settings,
 }: PricingOptionsListItemProps) => {
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.type);
+
+  const canceled = subscription?.status === "canceled" && subscription?.additionalData?.cancelAtPeriodEnd;
+  const willExpire =
+    canceled &&
+    new Date() < new Date(subscription?.additionalData?.currentPeriodEnd) &&
+    format(new Date(subscription?.additionalData?.currentPeriodEnd), "MM/dd/yyyy");
+  const expired = canceled && new Date() > new Date(subscription?.additionalData?.currentPeriodEnd);
   const price = billingInterval === BillingIntervalValue.monthly ? monthlyPrice : annualPrice;
   const billingPeriod = billingInterval === BillingIntervalValue.monthly ? "Per Server/Mo" : "Per Server/Year";
   const savingsText =
@@ -75,11 +95,13 @@ const PricingOptionsListItem = ({
     savings &&
     `(${percentSavings}% off save ${formatCurrency(savings)})`;
   const { childHeight, ref } = useGetChildHeight();
+  const currentPlan = plan === title;
   return (
-    <PricingOptionsListItemWrapper $colorScheme={colorScheme} $childHeight={childHeight}>
+    <PricingOptionsListItemWrapper $colorScheme={colorScheme} $childHeight={childHeight} $willExpire={willExpire}>
       <PricingOptionsListItemInnerWrapper $colorScheme={colorScheme} ref={ref}>
         <a
-          href={link}
+          {...(!currentPlan && !expired && { href: link })}
+          {...(currentPlan && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}
           target="_blank"
           style={{
             textDecoration: "none",
@@ -163,6 +185,7 @@ const PricingOptionsListItem = ({
             >
               {billingPeriod} {savingsText}
             </Typography>
+
             <Button
               disableRipple
               disableFocusRipple
@@ -180,13 +203,30 @@ const PricingOptionsListItem = ({
                 outline: "0 !important",
                 fontFamily: "Poppins",
                 textTransform: "capitalize",
+                ...(currentPlan &&
+                  !expired && {
+                    background: colorScheme,
+                  }),
                 "&:active": {
                   outline: "0 !important",
                 },
               }}
             >
-              {buttonText}
+              {currentPlan && !expired ? (willExpire ? "Renew" : "Your current plan") : buttonText}
             </Button>
+            {willExpire && (
+              <Typography
+                textAlign={"center"}
+                fontFamily="Poppins, sans-serif"
+                color="#4D4D4D"
+                fontWeight="500"
+                fontSize="13px"
+                marginTop="8px"
+                marginBottom="-16px"
+              >
+                Your subscription will expire on <b>08/12/23</b>
+              </Typography>
+            )}
           </Box>
           <List
             sx={{
