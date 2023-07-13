@@ -23,10 +23,14 @@ export type PricingOptionsListItemType = {
   best?: boolean;
   link?: string;
   savings?: number;
+  percentSavings?: number;
+  yearlyLink?: string;
+  settings?: boolean;
 };
 
 type PricingOptionsListItemProps = PricingOptionsListItemType & {
   billingInterval: BillingIntervalValue;
+  settings?: boolean;
 };
 
 const useGetChildHeight = () => {
@@ -61,11 +65,15 @@ const PricingOptionsListItem = ({
   best = false,
   billingInterval,
   savings,
+  percentSavings,
+  settings,
 }: PricingOptionsListItemProps) => {
   const price = billingInterval === BillingIntervalValue.monthly ? monthlyPrice : annualPrice;
   const billingPeriod = billingInterval === BillingIntervalValue.monthly ? "Per Server/Mo" : "Per Server/Year";
   const savingsText =
-    billingInterval === BillingIntervalValue.annual && savings && `(20% off save ${formatCurrency(savings)})`;
+    billingInterval === BillingIntervalValue.annual &&
+    savings &&
+    `(${percentSavings}% off save ${formatCurrency(savings)})`;
   const { childHeight, ref } = useGetChildHeight();
   return (
     <PricingOptionsListItemWrapper $colorScheme={colorScheme} $childHeight={childHeight}>
@@ -77,7 +85,7 @@ const PricingOptionsListItem = ({
             textDecoration: "none",
           }}
         >
-          {best && (
+          {best && !settings && (
             <Box
               position="absolute"
               sx={{
@@ -101,10 +109,18 @@ const PricingOptionsListItem = ({
               {title}
             </Typography>
           </Box>
-          <Box color="#000" display="flex" flexDirection="column" padding="24px" borderBottom="2px solid #DADADA">
+          <Box
+            color="#000"
+            display="flex"
+            flexDirection="column"
+            padding="24px"
+            alignItems={settings ? "center" : "flex-start"}
+            borderBottom="2px solid #DADADA"
+          >
             <Typography
               fontWeight="600"
               fontFamily="Poppins, sans-serif"
+              textAlign={settings ? "center" : "left"}
               sx={{
                 width: {
                   xs: "auto",

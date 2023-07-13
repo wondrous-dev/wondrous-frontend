@@ -24,6 +24,7 @@ import { SnackbarAlertProvider } from "components/SnackbarAlert";
 import { WonderWeb3Provider } from "utils/context/WonderWeb3Context";
 import SettingsPage from "pages/settings";
 import TeamSettingsPage from "pages/settings/team";
+import BillingPage from "pages/settings/billing";
 import NotificationSettingsPage from "pages/settings/notification";
 import WalletConnectPage from "pages/wallet/connect";
 import OnboardingPage from "pages/onboarding";
@@ -37,7 +38,7 @@ import OnboardingWelcomePage from "pages/onboarding/welcome";
 import InvitePage from "pages/invite";
 import GoogleOauthCallbackPage from "pages/oauth/google/callback";
 import PaymentPage from "pages/payment";
-import QuestsPaymentPage from 'pages/quests/Payments';
+import QuestsPaymentPage from "pages/quests/Payments";
 import PricingPage from "pages/pricing";
 import VerifyLinkPage from "pages/verify-link";
 
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/team",
         element: <TeamSettingsPage />,
+      },
+      {
+        path: "/settings/billing",
+        element: <BillingPage />,
       },
       {
         path: "/",

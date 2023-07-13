@@ -20,10 +20,12 @@ const pricingOptions: PricingOptionsListItemType[] = [
     title: PricingOptionsTitle.Hobby,
     description: "For growing communities",
     monthlyPrice: 29,
-    annualPrice: 279,
-    savings: 69,
+    annualPrice: 300,
+    savings: 98,
+    percentSavings: 14,
     buttonText: "Upgrade",
     link: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_eVa5nma5d3Ej8EMbII",
+    yearlyLink: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_6oE7vu4KT2AfaMU7su",
     features: [
       "Everything in Basic",
       "1,000 members",
@@ -39,13 +41,15 @@ const pricingOptions: PricingOptionsListItemType[] = [
   {
     colorScheme: "#2A8D5C",
     title: PricingOptionsTitle.Premium,
-    description: "For big communities",
+    description: "For large communities",
     monthlyPrice: 87,
-    annualPrice: 836,
-    savings: 208,
+    annualPrice: 800,
+    savings: 244,
+    percentSavings: 23,
     buttonText: "Upgrade",
     best: true,
     link: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_14kg206T1a2HdZ68wx",
+    yearlyLink: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_cN22ba919gr5f3afZ1",
     features: [
       "Everything in Hobby",
       "Unlimited members",
@@ -63,8 +67,9 @@ const pricingOptions: PricingOptionsListItemType[] = [
     title: PricingOptionsTitle.Ecosystem,
     description: "For ecosystem projects",
     monthlyPrice: 195,
-    annualPrice: 1872,
-    savings: 468,
+    annualPrice: 1800,
+    savings: 540,
+    percentSavings: 23,
     buttonText: "Talk to Sales",
     link: "https://docs.google.com/forms/d/e/1FAIpQLSfUToCTDAfOT3EU5pGvgigcMyNyWiFdRuQzrTtZ8yS7ox4Y-Q/viewform?usp=sf_link",
     features: [
@@ -82,11 +87,20 @@ const pricingOptions: PricingOptionsListItemType[] = [
   },
 ];
 
-const PricingOptionsList = ({ billingInterval }: { billingInterval: BillingIntervalValue }) => {
+const PricingOptionsList = ({
+  billingInterval,
+  settings,
+}: {
+  billingInterval: BillingIntervalValue;
+  settings?: boolean;
+}) => {
   const { activeOrg } = useContext(GlobalContext);
   return (
     <PricingListOptionWrapper>
       {pricingOptions.map((i) => {
+        if (settings && i.title === PricingOptionsTitle.Basic) {
+          i.description = "For starter communities";
+        }
         if (
           (i.title === PricingOptionsTitle.Hobby || i.title === PricingOptionsTitle.Premium) &&
           activeOrg?.id &&
@@ -94,7 +108,14 @@ const PricingOptionsList = ({ billingInterval }: { billingInterval: BillingInter
         ) {
           i.link = `${i.link}?client_reference_id=${activeOrg?.id}`;
         }
-        return <PricingOptionsListItem {...i} billingInterval={billingInterval} key={i.title} />;
+
+        if (
+          billingInterval === BillingIntervalValue.annual &&
+          (i.title === PricingOptionsTitle.Hobby || i.title === PricingOptionsTitle.Premium)
+        ) {
+          i.link = i.yearlyLink;
+        }
+        return <PricingOptionsListItem {...i} settings={settings} billingInterval={billingInterval} key={i.title} />;
       })}
     </PricingListOptionWrapper>
   );

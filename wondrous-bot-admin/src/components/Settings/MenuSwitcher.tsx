@@ -9,12 +9,16 @@ const MENU_ITEMS = [
     path: "/settings",
   },
   {
+    title: "Billing",
+    path: "/settings/billing",
+  },
+  {
     title: "Notifications",
     path: "/settings/notifications",
   },
   {
-    title: 'Payments',
-    path: '/settings/payments',
+    title: "Payments",
+    path: "/settings/payments",
   },
   {
     title: "Team",
