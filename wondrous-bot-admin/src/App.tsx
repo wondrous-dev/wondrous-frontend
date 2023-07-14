@@ -40,6 +40,7 @@ import PaymentPage from "pages/payment";
 import QuestsPaymentPage from 'pages/quests/Payments';
 import PricingPage from "pages/pricing";
 import VerifyLinkPage from "pages/verify-link";
+import AnalyticsPage from "pages/analytics";
 
 const router = createBrowserRouter([
   {
@@ -148,6 +149,10 @@ const router = createBrowserRouter([
       {
         path: '/verify-link',
         element: <VerifyLinkPage />
+      },
+      {
+        path: '/analytics',
+        element: <AnalyticsPage />
       }
     ],
   },
