@@ -41,6 +41,8 @@ import PaymentPage from "pages/payment";
 import QuestsPaymentPage from "pages/quests/Payments";
 import PricingPage from "pages/pricing";
 import VerifyLinkPage from "pages/verify-link";
+import PremiumFeatureDialog from "components/PremiumFeatureDialog";
+import PaywallContext from "utils/context/PaywallContext";
 
 const router = createBrowserRouter([
   {
@@ -151,9 +153,9 @@ const router = createBrowserRouter([
         element: <PricingPage />,
       },
       {
-        path: '/verify-link',
-        element: <VerifyLinkPage />
-      }
+        path: "/verify-link",
+        element: <VerifyLinkPage />,
+      },
     ],
   },
 ]);
@@ -194,7 +196,8 @@ const getDesignTokens = (mode) => ({
 
 function App() {
   const [mode, setMode] = useState(THEME_TYPES.LIGHT);
-
+  const [paywall, setPaywall] = useState(false);
+  const [paywallMessage, setPaywallMessage] = useState("");
   const colorMode = useMemo(
     () => ({
       // The dark mode switch would invoke this method
@@ -213,12 +216,15 @@ function App() {
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
   return (
     <StyledComponentProvider theme={theme}>
+      <PremiumFeatureDialog open={paywall} onClose={() => setPaywall(false)} paywallMessage={paywallMessage} />
       <ThemeProvider theme={theme}>
         <ApolloProvider client={client}>
           <SnackbarAlertProvider>
             <Web3ReactProvider getLibrary={getLibrary}>
               <WonderWeb3Provider>
-                <RouterProvider router={router} />
+                <PaywallContext.Provider value={{ paywall, setPaywall, setPaywallMessage }}>
+                  <RouterProvider router={router} />
+                </PaywallContext.Provider>
               </WonderWeb3Provider>
             </Web3ReactProvider>
           </SnackbarAlertProvider>

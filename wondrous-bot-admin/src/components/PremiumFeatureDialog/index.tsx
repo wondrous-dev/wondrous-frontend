@@ -3,9 +3,10 @@ import { Button, Dialog, Grid, Typography } from "@mui/material";
 type PremiumFeatureDialogProps = {
   open: boolean;
   onClose: (value: string) => void;
+  paywallMessage?: string;
 };
 
-const PremiumFeatureDialog = ({ open = false, onClose }: PremiumFeatureDialogProps) => {
+const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: PremiumFeatureDialogProps) => {
   return (
     <Dialog
       open={open}
@@ -30,7 +31,7 @@ const PremiumFeatureDialog = ({ open = false, onClose }: PremiumFeatureDialogPro
         <Grid container item padding="24px" flexDirection="column" alignItems="center" gap="24px">
           <Grid container item flexDirection="column" gap="14px" alignItems="center">
             <Typography color="#2A8D5C" fontFamily="Poppins" fontSize="24px" fontWeight="700" textAlign="center">
-              This is a premium feature
+              {paywallMessage || "This is a premium feature"}
             </Typography>
             <Typography color="#5E5E5E" fontFamily="Poppins" fontSize="15px" fontWeight="500" textAlign="center">
               Ready to increase your engagement with Communities Premium.
@@ -58,6 +59,7 @@ const PremiumFeatureDialog = ({ open = false, onClose }: PremiumFeatureDialogPro
           <Button
             disableRipple
             disableFocusRipple
+            href="/pricing"
             sx={{
               backgroundColor: "#84BCFF",
               height: "40px",
@@ -75,9 +77,9 @@ const PremiumFeatureDialog = ({ open = false, onClose }: PremiumFeatureDialogPro
               },
             }}
           >
-            Upgrade
+            Upgrade Community
           </Button>
-          <Button
+          {/* <Button
             disableRipple
             disableFocusRipple
             sx={{
@@ -97,7 +99,7 @@ const PremiumFeatureDialog = ({ open = false, onClose }: PremiumFeatureDialogPro
             }}
           >
             I'll upgrade later
-          </Button>
+          </Button> */}
         </Grid>
       </Grid>
     </Dialog>

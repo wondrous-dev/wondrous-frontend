@@ -15,6 +15,8 @@ import Navbar from "components/Navbar";
 import { Main } from "./styles";
 import TutorialComponent from "components/TutorialComponent";
 import { FeedbackButton } from "components/Feedback/button";
+import { GET_ORG_SUBSCRIPTION } from "graphql/queries/subscription";
+import SubscriptionContext from "utils/context/SubscriptionContext";
 
 const DefaultFallback = () => {
   const navigate = useNavigate();
@@ -49,7 +51,20 @@ const Layout = () => {
   const defaultActiveOrgId = localStorage.getItem(LOCAL_STORAGE_ORG_ID_KEY);
   const location = useLocation();
   const [activeOrg, setActiveOrg] = useState(null);
+  const [getOrgSubscription, { data: orgSubscriptionData }] = useLazyQuery(GET_ORG_SUBSCRIPTION, {
+    fetchPolicy: "cache-and-network",
+  });
 
+  useEffect(() => {
+    if (activeOrg?.id) {
+      getOrgSubscription({
+        variables: {
+          orgId: activeOrg?.id,
+        },
+      });
+    }
+  }, [activeOrg?.id]);
+  const subscription = orgSubscriptionData?.getOrgSubscription;
   const isPageWithoutHeader = matchRoute(location.pathname, PAGES_WITHOUT_HEADER);
 
   const handleActiveOrg = (org) => {
@@ -107,17 +122,19 @@ const Layout = () => {
         userOrgs: userOrgs?.getLoggedInUserFullAccessOrgs || [],
       }}
     >
-      <TutorialComponent>
-        <FeedbackButton />
-        {isPageWithoutHeader ? null : <Navbar />}
-        <Main $isPageWithoutHeader={isPageWithoutHeader}>
-          <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
-            <AuthenticationLayout>
-              <Outlet />
-            </AuthenticationLayout>
-          </ErrorCatcher>
-        </Main>
-      </TutorialComponent>
+      <SubscriptionContext.Provider value={subscription}>
+        <TutorialComponent>
+          <FeedbackButton />
+          {isPageWithoutHeader ? null : <Navbar />}
+          <Main $isPageWithoutHeader={isPageWithoutHeader}>
+            <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
+              <AuthenticationLayout>
+                <Outlet />
+              </AuthenticationLayout>
+            </ErrorCatcher>
+          </Main>
+        </TutorialComponent>
+      </SubscriptionContext.Provider>
     </GlobalContext.Provider>
   );
 };

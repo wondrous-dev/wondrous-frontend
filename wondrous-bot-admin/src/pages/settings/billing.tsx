@@ -11,22 +11,6 @@ import GlobalContext from "utils/context/GlobalContext";
 import SubscriptionContext from "utils/context/SubscriptionContext";
 
 const SettingsPage = () => {
-  const { activeOrg } = useContext(GlobalContext);
-  const [getOrgSubscription, { data: orgSubscriptionData }] = useLazyQuery(GET_ORG_SUBSCRIPTION, {
-    fetchPolicy: "cache-and-network",
-  });
-
-  useEffect(() => {
-    if (activeOrg?.id) {
-      getOrgSubscription({
-        variables: {
-          orgId: activeOrg?.id,
-        },
-      });
-    }
-  }, [activeOrg?.id]);
-  const subscription = orgSubscriptionData?.getOrgSubscription;
-
   return (
     <>
       <PageHeader title="Team Settings" />
@@ -49,9 +33,7 @@ const SettingsPage = () => {
         }}
       >
         <MenuSwitcher />
-        <SubscriptionContext.Provider value={subscription}>
-          <BillingSettings />
-        </SubscriptionContext.Provider>
+        <BillingSettings />
       </PageWrapper>
     </>
   );
