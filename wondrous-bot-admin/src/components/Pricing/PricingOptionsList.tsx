@@ -119,12 +119,6 @@ const PricingOptionsList = ({
           i.link = `${i.link}?client_reference_id=${activeOrg?.id}`;
         }
 
-        if (
-          billingInterval === BillingIntervalValue.annual &&
-          (i.title === PricingOptionsTitle.Hobby || i.title === PricingOptionsTitle.Premium)
-        ) {
-          i.link = i.yearlyLink;
-        }
         if (plan === PricingOptionsTitle.Ecosystem) {
           if (i.title !== plan) {
             i.buttonText = "Downgrade";

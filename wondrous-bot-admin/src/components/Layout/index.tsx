@@ -63,7 +63,7 @@ const Layout = () => {
         },
       });
     }
-  }, [activeOrg?.id]);
+  }, [activeOrg?.id, location.pathname]);
   const subscription = orgSubscriptionData?.getOrgSubscription;
   const isPageWithoutHeader = matchRoute(location.pathname, PAGES_WITHOUT_HEADER);
 

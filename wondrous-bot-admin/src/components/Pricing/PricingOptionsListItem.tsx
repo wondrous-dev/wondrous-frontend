@@ -73,6 +73,7 @@ const PricingOptionsListItem = ({
   buttonText,
   features,
   link,
+  yearlyLink,
   best = false,
   billingInterval,
   savings,
@@ -100,8 +101,15 @@ const PricingOptionsListItem = ({
     <PricingOptionsListItemWrapper $colorScheme={colorScheme} $childHeight={childHeight} $willExpire={willExpire}>
       <PricingOptionsListItemInnerWrapper $colorScheme={colorScheme} ref={ref}>
         <a
-          {...(!currentPlan && !expired && { href: link })}
-          {...(currentPlan && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}
+          {...(!currentPlan &&
+            !expired && {
+              href:
+                billingInterval === BillingIntervalValue.annual &&
+                (title === PricingOptionsTitle.Hobby || title === PricingOptionsTitle.Premium)
+                  ? yearlyLink
+                  : link,
+            })}
+          {...(currentPlan && title !== PricingOptionsTitle.Basic && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}
           target="_blank"
           style={{
             textDecoration: "none",
