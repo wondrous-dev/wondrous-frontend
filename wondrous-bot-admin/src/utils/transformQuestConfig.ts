@@ -41,6 +41,8 @@ type InputQuestStep = {
     ytVideoLink?: string;
     ytChannelLink?: string;
     linkClickUrl?: string;
+    discordEventId?: string;
+    minDuration?: number;
   };
 };
 
@@ -81,7 +83,7 @@ type OutputQuestStep = {
         prompt?: string;
         tweetHandle: string;
       }
-      | {
+    | {
         prompt?: string;
         linkClickUrl: string;
       }
@@ -118,6 +120,11 @@ type OutputQuestStep = {
         dataCollectionProps: {
           dataCollectionType?: string;
         };
+      }
+    | {
+        prompt?: string;
+        discordEventId?: string;
+        minDuration?: number;
       };
 };
 
@@ -166,14 +173,12 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         prompt: step?.prompt,
         ytVideoLink: step?.additionalData?.ytVideoLink,
       };
-    } 
-    else if(step.type === TYPES.LINK_CLICK) {
+    } else if (step.type === TYPES.LINK_CLICK) {
       outputStep.value = {
         prompt: step?.prompt,
         linkClickUrl: step?.additionalData?.linkClickUrl,
       };
-    }
-    else if (step.type === TYPES.SUBSCRIBE_YT_CHANNEL) {
+    } else if (step.type === TYPES.SUBSCRIBE_YT_CHANNEL) {
       outputStep.value = {
         prompt: step?.prompt,
         ytChannelLink: step?.additionalData?.ytChannelLink,
@@ -208,10 +213,11 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         discordChannelName: step?.additionalData?.discordChannelName,
         discordMessageType: step?.additionalData?.discordMessageType,
       };
-    } else if (step.type === TYPES.JOIN_DISCORD_COMMUNITY_CALL) {
+    } else if (step.type === TYPES.DISCORD_EVENT_ATTENDANCE) {
       outputStep.value = {
         prompt: step?.prompt,
-        discordChannelName: step?.additionalData?.discordChannelName,
+        discordEventId: step?.additionalData?.discordEventId,
+        minDuration: step?.additionalData?.minDuration,
       };
     } else if (step.type === TYPES.DATA_COLLECTION) {
       const dataCollectionType = step?.additionalData?.dataCollectionType;
