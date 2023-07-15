@@ -88,6 +88,10 @@ const COMPONENT_OPTIONS = [
   {
     label: "Click on link",
     value: TYPES.LINK_CLICK,
+  },
+  {
+    label: "Verify Discord event attendance",
+    value: TYPES.DISCORD_EVENT_ATTENDANCE,
   }
 ];
 
@@ -243,7 +247,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
               {...provided.droppableProps}
             >
               {steps?.map((item, idx) => {
-                console.log("item", item);
                 const Component = CONFIG_COMPONENTS[item.type];
                 if (!Component) return null;
                 return (
