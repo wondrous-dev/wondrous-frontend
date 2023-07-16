@@ -57,7 +57,7 @@ const CreateTemplate = ({
     refetchQueries: ["getQuestById"],
   });
 
-  const {setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration} = useAlerts()
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } = useAlerts();
 
   const { activeOrg } = useContext(GlobalContext);
 
@@ -123,15 +123,15 @@ const CreateTemplate = ({
           variables: {
             questStepId: stepId,
             slugs: removedMediaSlugs[stepId],
-          }
-        })
-      }
-    ));
+          },
+        });
+      })
+    );
 
     const stepsData = localSteps.reduce((acc, next, idx) => {
       if (next.mediaUploads.length > 0) {
         const questStep = questSteps.find((step) => step.order === idx + 1);
-        if(stepsMedia[idx].length === 0) return acc;
+        if (stepsMedia[idx].length === 0) return acc;
         return [
           ...acc,
           {
@@ -286,14 +286,12 @@ const CreateTemplate = ({
           step["additionalData"] = {
             ytChannelLink: next.value?.ytChannelLink,
           };
-        } 
-        else if (next.type === TYPES.LINK_CLICK) {
+        } else if (next.type === TYPES.LINK_CLICK) {
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
             linkClickUrl: next.value?.linkClickUrl,
           };
-        }
-        else if (next.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
+        } else if (next.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
             snapshotProposalLink: next.value?.snapshotProposalLink,
@@ -308,12 +306,12 @@ const CreateTemplate = ({
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
             discordMessageType: next.value?.discordMessageType,
-            discordChannelName: next.value?.discordChannelName,
+            discordChannelName: next.value?.discordChannelName?.trim(),
           };
         } else if (next.type === TYPES.JOIN_DISCORD_COMMUNITY_CALL) {
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
-            discordChannelName: next.value?.discordChannelName,
+            discordChannelName: next.value?.discordChannelName?.trim(),
           };
         } else if (next.type === TYPES.VERIFY_TOKEN_HOLDING) {
           step.prompt = next.value?.prompt;
@@ -348,18 +346,19 @@ const CreateTemplate = ({
       if (!questSettings.isActive && !isSaving) {
         return setIsSaving(true);
       }
-    
+
       handleMutation({ body });
 
-      const hasMediaToUpload = steps.some((step) => step.mediaUploads.filter((media) => media instanceof File).length > 0);
+      const hasMediaToUpload = steps.some(
+        (step) => step.mediaUploads.filter((media) => media instanceof File).length > 0
+      );
 
       const hasMediaToRemove = Object.values(removedMediaSlugs).flat().length > 0;
       if (hasMediaToUpload || hasMediaToRemove) {
-        setSnackbarAlertMessage('Wrapping up with your media. Please keep this window open')
-        setSnackbarAlertAutoHideDuration(2000)
+        setSnackbarAlertMessage("Wrapping up with your media. Please keep this window open");
+        setSnackbarAlertAutoHideDuration(2000);
         setSnackbarAlertOpen(true);
       }
-
     } catch (err) {
       const errors: any = {};
       if (err instanceof ValidationError) {
