@@ -34,7 +34,7 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: Premium
               {paywallMessage || "This is a premium feature"}
             </Typography>
             <Typography color="#5E5E5E" fontFamily="Poppins" fontSize="15px" fontWeight="500" textAlign="center">
-              Ready to increase your engagement with Communities Premium.
+              Ready to increase your engagement with Communities Premium?
             </Typography>
           </Grid>
           <img
