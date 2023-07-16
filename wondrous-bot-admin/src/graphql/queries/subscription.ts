@@ -5,7 +5,7 @@ export const GET_ORG_SUBSCRIPTION = gql`
     getOrgSubscription(orgId: $orgId) {
       id
       status
-      type
+      tier
       additionalData {
         cancelAtPeriodEnd
         currentPeriodEnd

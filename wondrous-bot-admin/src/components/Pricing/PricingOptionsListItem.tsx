@@ -81,7 +81,7 @@ const PricingOptionsListItem = ({
   settings,
 }: PricingOptionsListItemProps) => {
   const subscription = useSubscription();
-  const plan = getPlan(subscription?.type);
+  const plan = getPlan(subscription?.tier);
 
   const canceled = subscription?.status === "canceled" && subscription?.additionalData?.cancelAtPeriodEnd;
   const willExpire =

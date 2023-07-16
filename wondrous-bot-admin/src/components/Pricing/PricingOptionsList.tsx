@@ -104,7 +104,7 @@ const PricingOptionsList = ({
 }) => {
   const { activeOrg } = useContext(GlobalContext);
   const subscription = useSubscription();
-  const plan = getPlan(subscription?.type);
+  const plan = getPlan(subscription?.tier);
   return (
     <PricingListOptionWrapper>
       {pricingOptions.map((i) => {

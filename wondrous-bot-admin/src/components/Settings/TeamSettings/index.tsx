@@ -31,7 +31,7 @@ export const TeamsAndInvite = ({ adminNumbers }) => {
   const [copied, setCopied] = useState(false);
   const subscription = useSubscription();
   const { setPaywall, setPaywallMessage } = usePaywall();
-  const plan = getPlan(subscription?.type);
+  const plan = getPlan(subscription?.tier);
   const ref = useRef(null);
   const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
     onCompleted: (data) => {
