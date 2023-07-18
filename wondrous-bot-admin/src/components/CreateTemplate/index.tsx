@@ -313,10 +313,11 @@ const CreateTemplate = ({
             discordMessageType: next.value?.discordMessageType,
             discordChannelName: next.value?.discordChannelName?.trim(),
           };
-        } else if (next.type === TYPES.JOIN_DISCORD_COMMUNITY_CALL) {
+        } else if (next.type === TYPES.DISCORD_EVENT_ATTENDANCE) {
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
-            discordChannelName: next.value?.discordChannelName?.trim(),
+            discordEventId: next.value?.discordEventId,
+            minDuration: next.value?.minDuration,
           };
         } else if (next.type === TYPES.VERIFY_TOKEN_HOLDING) {
           step.prompt = next.value?.prompt;

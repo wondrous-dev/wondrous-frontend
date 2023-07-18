@@ -70,6 +70,10 @@ const COMPONENT_OPTIONS = [
     value: TYPES.DISCORD_MESSAGE_IN_CHANNEL,
   },
   {
+    label: "Verify Discord event attendance",
+    value: TYPES.DISCORD_EVENT_ATTENDANCE,
+  },
+  {
     label: "Data Collection",
     value: TYPES.DATA_COLLECTION,
   },

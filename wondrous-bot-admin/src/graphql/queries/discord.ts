@@ -36,3 +36,35 @@ export const GET_DISCORD_ROLE_INFO = gql`
 		}
 	}
 `;
+
+
+export const GET_GUILD_EVENTS = gql`
+	query getGuildEvents($guildId: String!) {
+		getGuildEvents(guildId: $guildId) {
+			eventId
+			eventName
+			description
+			startTime
+			endTime
+			status
+			guildId
+			channelId
+		}
+	}
+`
+
+
+export const GET_GUILD_EVENT = gql`
+	query getGuildEvent($eventId: String!) {
+		getGuildEvent(eventId: $eventId) {
+			eventId
+			eventName
+			description
+			startTime
+			endTime
+			status
+			guildId
+			channelId
+		}
+	}
+`

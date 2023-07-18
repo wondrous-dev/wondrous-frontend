@@ -12,7 +12,7 @@ export const TYPES = {
   SNAPSHOT_PROPOSAL_VOTE: "snapshot_proposal_vote",
   SNAPSHOT_SPACE_VOTE: "snapshot_space_vote",
   DISCORD_MESSAGE_IN_CHANNEL: "discord_message_in_channel",
-  JOIN_DISCORD_COMMUNITY_CALL: "join_discord_community_call",
+  DISCORD_EVENT_ATTENDANCE: "discord_event_attendance",
   DATA_COLLECTION: "data_collection",
   VERIFY_TOKEN_HOLDING: "verify_token_holding",
   LIKE_YT_VIDEO: 'like_yt_video',
