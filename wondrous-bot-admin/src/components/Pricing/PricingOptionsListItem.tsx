@@ -176,6 +176,17 @@ const PricingOptionsListItem = ({
                 },
               }}
             >
+              {title === PricingOptionsTitle.Ecosystem && (
+                <span
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    color: "black",
+                  }}
+                >
+                  From
+                </span>
+              )}
               {formatCurrency(price)}
             </Typography>
             <Typography
