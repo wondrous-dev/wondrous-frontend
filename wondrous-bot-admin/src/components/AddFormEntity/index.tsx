@@ -14,11 +14,14 @@ import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
 import StepAttachments from "components/StepAttachments";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
 import { useMutation } from "@apollo/client";
 import { REMOVE_QUEST_STEP_MEDIA } from "graphql/mutations";
+import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { usePaywall, useSubscription } from "utils/hooks";
+import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
 
 const COMPONENT_OPTIONS = [
   {
@@ -82,11 +85,11 @@ const COMPONENT_OPTIONS = [
     value: TYPES.VERIFY_TOKEN_HOLDING,
   },
   {
-    label: "Verify youtube subscription",
+    label: "Verify Youtube Subscription",
     value: TYPES.SUBSCRIBE_YT_CHANNEL,
   },
   {
-    label: "Verify youtube like",
+    label: "Verify Youtube Like",
     value: TYPES.LIKE_YT_VIDEO,
   },
   {
@@ -96,7 +99,17 @@ const COMPONENT_OPTIONS = [
 ];
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
+  if (import.meta.env.NODE_ENV !== "production") {
+    COMPONENT_OPTIONS.push({
+      label: "+ Add custom on chain action",
+      value: TYPES.CUSTOM_ONCHAIN_ACTION,
+    });
+  }
   const { errors, setErrors } = useContext(CreateQuestContext);
+  const [openEcosystemDialog, setOpenEcosystemDialog] = useState(false);
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.tier);
+  const { setPaywall, setPaywallMessage } = usePaywall();
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -112,6 +125,22 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
 
   const handleChangeType = (type, order, idx) => {
     if (!type) return;
+    if (
+      import.meta.env.NODE_ENV !== "production" &&
+      (plan === PricingOptionsTitle.Basic || plan === PricingOptionsTitle.Hobby) &&
+      (type === TYPES.SUBSCRIBE_YT_CHANNEL || type === TYPES.LIKE_YT_VIDEO || type === TYPES.CUSTOM_ONCHAIN_ACTION)
+    ) {
+      setPaywall(true);
+      setPaywallMessage("This feature is only available on the Pro plan and above");
+      return;
+    }
+    if (
+      (plan === PricingOptionsTitle.Premium || plan === PricingOptionsTitle.Ecosystem) &&
+      type === TYPES.CUSTOM_ONCHAIN_ACTION
+    ) {
+      setOpenEcosystemDialog(true);
+      return;
+    }
     setErrors((prev) => {
       return {
         ...prev,
@@ -233,6 +262,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       justifyContent="flex-start"
       width="100%"
     >
+      <EcosystemFeature open={openEcosystemDialog} onClose={() => setOpenEcosystemDialog(false)} />
       <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
         {steps?.length} Quest Steps
       </Typography>

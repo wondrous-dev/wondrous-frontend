@@ -15,9 +15,10 @@ export const TYPES = {
   DISCORD_EVENT_ATTENDANCE: "discord_event_attendance",
   DATA_COLLECTION: "data_collection",
   VERIFY_TOKEN_HOLDING: "verify_token_holding",
-  LIKE_YT_VIDEO: 'like_yt_video',
-	SUBSCRIBE_YT_CHANNEL: 'subscribe_yt_channel',
-  LINK_CLICK: 'link_click',
+  LINK_CLICK: "link_click",
+  LIKE_YT_VIDEO: "like_yt_video",
+  SUBSCRIBE_YT_CHANNEL: "subscribe_yt_channel",
+  CUSTOM_ONCHAIN_ACTION: "custom_onchain_action",
 };
 
 export const CONFIG = [
@@ -97,7 +98,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/quests/view/:id",
   "/discord/callback/cmty-user-connect",
   "/invite/:token",
-  '/verify-link'
+  "/verify-link",
 ];
 
 export const BG_TYPES = {
@@ -303,7 +304,7 @@ export const EXCLUDED_PATHS = [
   "/quests/view/:id",
   "/signup",
   "/invite/:token",
-  '/verify-link'
+  "/verify-link",
 ];
 
 export const TUTORIALS = {

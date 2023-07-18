@@ -9,11 +9,13 @@ import { useNavigate } from "react-router-dom";
 import PageWrapper from "components/Shared/PageWrapper";
 import { BG_TYPES } from "utils/constants";
 import { useQuery } from "@apollo/client";
-import { GET_QUESTS_FOR_ORG } from "graphql/queries";
+import { GET_ORG_QUEST_STATS, GET_QUESTS_FOR_ORG } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { LEVELS_DEFAULT_NAMES } from "utils/levels/constants";
 import useLevels from "utils/levels/hooks";
 import QuestCardMenu from "components/QuestCardMenu";
+import { usePaywall, useSubscription } from "utils/hooks";
+import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 
 const formatQuestsData = (LEVELS, data) => {
   const result = {};
@@ -41,6 +43,18 @@ const formatQuestsData = (LEVELS, data) => {
 
 const QuestsList = ({ data }) => {
   const { activeOrg } = useContext(GlobalContext);
+  const subscription = useSubscription();
+  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { data: getOrgQuestStatsData, loading } = useQuery(GET_ORG_QUEST_STATS, {
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
+  });
+
+  const { totalQuests } = getOrgQuestStatsData?.getOrgQuestStats || {};
+  const plan = getPlan(subscription?.tier);
   const navigate = useNavigate();
   const { levels } = useLevels({
     orgId: activeOrg?.id,
@@ -86,7 +100,7 @@ const QuestsList = ({ data }) => {
                 <CardHoverWrapper
                   onClick={() => navigate(`/quests/${item.id}`)}
                   flex={1}
-                  data-tour={idx === 0 ? 'tutorial-quest-card' : ''}
+                  data-tour={idx === 0 ? "tutorial-quest-card" : ""}
                   key={item.id}
                   flexBasis={{
                     xs: "48%",
@@ -176,7 +190,18 @@ const QuestsList = ({ data }) => {
                 }}
               >
                 <CardWrapper
-                  onClick={() => navigate("/quests/create")}
+                  onClick={() => {
+                    if (
+                      import.meta.env.NODE_ENV !== "production" &&
+                      plan === PricingOptionsTitle.Basic &&
+                      totalQuests >= 100
+                    ) {
+                      setPaywall(true);
+                      setPaywallMessage("You have reached the limit of quests for your current plan.");
+                    } else {
+                      navigate("/quests/create");
+                    }
+                  }}
                   sx={{
                     minHeight: "155px",
                   }}
