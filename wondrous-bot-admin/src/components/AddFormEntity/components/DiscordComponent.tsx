@@ -62,7 +62,7 @@ const DiscordJoinCommunityCall = ({ handleOnChange, value }) => {
     skip: !orgDiscordConfig?.getCmtyOrgDiscordConfig?.guildId,
   });
   const upcomingEvents = guildEventsData?.getGuildEvents?.filter(
-    (event) => event?.status === "1" || event?.status === "2"
+    (event) => event?.status === "scheduled" || event?.status === "active"
   );
   let options: any[] = upcomingEvents
     ? upcomingEvents?.map((event) => {
