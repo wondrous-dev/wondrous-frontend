@@ -15,6 +15,8 @@ import StarIcon from "components/Icons/StarIcon";
 import { useTour } from "@reactour/tour";
 import { AddBotModal } from "pages/onboarding/discord/addBotModal";
 import { ConfigureNotificationsOnboardingModal } from "./onboarding/discord/configureNotificationsModal";
+import { usePaywall, useSubscription } from "utils/hooks";
+import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -77,6 +79,9 @@ const CardsComponent = ({ cards }) => {
 
 const HomePage = () => {
   const { activeOrg } = useContext(GlobalContext);
+  const subscription = useSubscription();
+  const { setPaywall, setPaywallMessage } = usePaywall();
+  const plan = getPlan(subscription?.tier);
   const navigate = useNavigate();
   const [openDiscordModal, setOpenDiscordModal] = useState(false);
   const [openDiscordNotificationModal, setOpenDiscordNotificationModal] = useState(false);
@@ -124,7 +129,14 @@ const HomePage = () => {
     },
   ];
 
-  const handleNavigationToNewQuest = () => navigate("/quests/create");
+  const handleNavigationToNewQuest = () => {
+    if (import.meta.env.NODE_ENV !== "production" && plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
+      setPaywall(true);
+      setPaywallMessage("You have reached the limit of quests for your current plan.");
+    } else {
+      navigate("/quests/create");
+    }
+  };
   useEffect(() => {
     if (getDiscordConfigError?.graphQLErrors[0]?.message && !loading) {
       setOpenDiscordModal(true);

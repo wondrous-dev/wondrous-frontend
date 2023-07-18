@@ -100,6 +100,8 @@ export const QuestFragment = gql`
         ytVideoLink
         ytChannelLink
         linkClickUrl
+        discordEventId
+        minDuration
       }
     }
   }

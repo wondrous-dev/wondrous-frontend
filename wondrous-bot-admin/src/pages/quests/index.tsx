@@ -3,14 +3,16 @@ import { Box } from "@mui/material";
 import { useTour } from "@reactour/tour";
 import { useMe } from "components/Auth";
 import PageHeader from "components/PageHeader";
+import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import QuestsList from "components/QuestsList";
 import SelectComponent from "components/Shared/Select";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { GET_QUESTS_FOR_ORG } from "graphql/queries";
+import { GET_ORG_QUEST_STATS, GET_QUESTS_FOR_ORG } from "graphql/queries";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
+import { usePaywall, useSubscription } from "utils/hooks";
 
 const INACTIVE_QUESTS = {
   type: QUEST_STATUSES.INACTIVE,
@@ -34,12 +36,30 @@ const SELECT_QUESTS_TYPE = [
 
 const QuestsPage = () => {
   const { setIsOpen, setMeta } = useTour();
+  const { activeOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
   const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
   const { user } = useMe() || {};
-  const handleNavigationToNewQuest = () => navigate("/quests/create");
+  const subscription = useSubscription();
+  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { data: getOrgQuestStatsData, loading } = useQuery(GET_ORG_QUEST_STATS, {
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
+  });
 
-  const { activeOrg } = useContext(GlobalContext);
+  const { totalQuests } = getOrgQuestStatsData?.getOrgQuestStats || {};
+  const plan = getPlan(subscription?.tier);
+  const handleNavigationToNewQuest = () => {
+    if (import.meta.env.NODE_ENV !== "production" && plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
+      setPaywall(true);
+      setPaywallMessage("You have reached the limit of quests for your current plan.");
+    } else {
+      navigate("/quests/create");
+    }
+  };
 
   const [getQuestsForOrg, { data, refetch }] = useLazyQuery(GET_QUESTS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,

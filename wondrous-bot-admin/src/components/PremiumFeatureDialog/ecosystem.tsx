@@ -6,7 +6,7 @@ type PremiumFeatureDialogProps = {
   paywallMessage?: string;
 };
 
-const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: PremiumFeatureDialogProps) => {
+const EcosystemFeature = ({ open = false, onClose, paywallMessage }: PremiumFeatureDialogProps) => {
   return (
     <Dialog
       open={open}
@@ -23,7 +23,7 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: Premium
       <Grid
         container
         width="fit-content"
-        maxWidth="416px"
+        maxWidth="600px"
         flexDirection="column"
         alignItems="center"
         borderRadius="16px"
@@ -31,11 +31,15 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: Premium
         <Grid container item padding="24px" flexDirection="column" alignItems="center" gap="24px">
           <Grid container item flexDirection="column" gap="14px" alignItems="center">
             <Typography color="#2A8D5C" fontFamily="Poppins" fontSize="24px" fontWeight="700" textAlign="center">
-              {paywallMessage || "This is a premium feature"}
+              Please talk to your sales representative to add custom onchain verifications for community
             </Typography>
-            <Typography color="#5E5E5E" fontFamily="Poppins" fontSize="15px" fontWeight="500" textAlign="center">
-              Ready to increase your engagement with Communities Premium?
-            </Typography>
+            <Typography
+              color="#5E5E5E"
+              fontFamily="Poppins"
+              fontSize="15px"
+              fontWeight="500"
+              textAlign="center"
+            ></Typography>
           </Grid>
           <img
             src="/images/premium-feature-modal.png"
@@ -59,7 +63,7 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: Premium
           <Button
             disableRipple
             disableFocusRipple
-            href="/pricing"
+            href="https://discord.gg/wonderverse-xyz"
             sx={{
               backgroundColor: "#84BCFF",
               height: "40px",
@@ -77,7 +81,7 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: Premium
               },
             }}
           >
-            Upgrade Community
+            Chat on Discord
           </Button>
           {/* <Button
             disableRipple
@@ -106,4 +110,4 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: Premium
   );
 };
 
-export default PremiumFeatureDialog;
+export default EcosystemFeature;

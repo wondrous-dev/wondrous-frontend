@@ -17,17 +17,21 @@ import { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import EditSvg from "components/Icons/edits.svg";
 import { getBaseUrl } from "utils/common";
-
+import { usePaywall, useSubscription } from "utils/hooks";
 import { handleImageFile, uploadMedia } from "utils/media";
 import SafeImage from "components/SafeImage";
 import Dropdown from "components/Shared/Dropdown";
 import { Wrapper } from "components/Shared/Dropdown/styles";
+import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 
-export const TeamsAndInvite = () => {
+export const TeamsAndInvite = ({ adminNumbers }) => {
   const { activeOrg } = useContext(GlobalContext);
   const [inviteLink, setInviteLink] = useState("");
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const subscription = useSubscription();
+  const { setPaywall, setPaywallMessage } = usePaywall();
+  const plan = getPlan(subscription?.tier);
   const ref = useRef(null);
   const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
     onCompleted: (data) => {
@@ -83,7 +87,24 @@ export const TeamsAndInvite = () => {
         </div>
       </Modal>
       <Box justifyContent={"center"} display={"flex"}>
-        <SharedSecondaryButton onClick={() => setInviteModalOpen(true)}>Invite Admins</SharedSecondaryButton>
+        <SharedSecondaryButton
+          onClick={() => {
+            // Add paywall
+            if (
+              import.meta.env.NODE_ENV !== "production" &&
+              ((plan === PricingOptionsTitle.Basic && adminNumbers >= 1) ||
+                (plan === PricingOptionsTitle.Hobby && adminNumbers >= 2) ||
+                (plan === PricingOptionsTitle.Premium && adminNumbers >= 10))
+            ) {
+              setPaywall(true);
+              setPaywallMessage("You have reached the limit of admins for your current plan.");
+            } else {
+              setInviteModalOpen(true);
+            }
+          }}
+        >
+          Invite Admins
+        </SharedSecondaryButton>
       </Box>
     </Grid>
   );
@@ -158,6 +179,7 @@ const TeamSettings = () => {
     }
   }, [activeOrg?.id]);
   const orgAdmins = orgAdminData?.getOrgAdmins || [];
+  console.log("orgAdmins", orgAdmins);
   return (
     <Grid
       flex="1"
@@ -168,7 +190,7 @@ const TeamSettings = () => {
     >
       <>
         <InviteMemberContainer>
-          <TeamsAndInvite />
+          <TeamsAndInvite adminNumbers={orgAdmins?.length} />
         </InviteMemberContainer>
         {orgAdmins?.map((admin) => (
           <TeamAdmin admin={admin} orgId={activeOrg?.id} />

@@ -14,11 +14,14 @@ import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
 import StepAttachments from "components/StepAttachments";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
 import { useMutation } from "@apollo/client";
 import { REMOVE_QUEST_STEP_MEDIA } from "graphql/mutations";
+import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { usePaywall, useSubscription } from "utils/hooks";
+import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
 
 const COMPONENT_OPTIONS = [
   {
@@ -70,6 +73,10 @@ const COMPONENT_OPTIONS = [
     value: TYPES.DISCORD_MESSAGE_IN_CHANNEL,
   },
   {
+    label: "Verify Discord event attendance",
+    value: TYPES.DISCORD_EVENT_ATTENDANCE,
+  },
+  {
     label: "Data Collection",
     value: TYPES.DATA_COLLECTION,
   },
@@ -78,33 +85,62 @@ const COMPONENT_OPTIONS = [
     value: TYPES.VERIFY_TOKEN_HOLDING,
   },
   {
-    label: "Verify youtube subscription",
+    label: "Verify Youtube Subscription",
     value: TYPES.SUBSCRIBE_YT_CHANNEL,
   },
   {
-    label: "Verify youtube like",
+    label: "Verify Youtube Like",
     value: TYPES.LIKE_YT_VIDEO,
   },
   {
     label: "Click on link",
     value: TYPES.LINK_CLICK,
-  }
+  },
 ];
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
+  if (import.meta.env.NODE_ENV !== "production") {
+    COMPONENT_OPTIONS.push({
+      label: "+ Add custom on chain action",
+      value: TYPES.CUSTOM_ONCHAIN_ACTION,
+    });
+  }
   const { errors, setErrors } = useContext(CreateQuestContext);
+  const [openEcosystemDialog, setOpenEcosystemDialog] = useState(false);
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.tier);
+  const { setPaywall, setPaywallMessage } = usePaywall();
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
     const reorderedItems = Array.from(steps);
-    const [removed] = reorderedItems.splice(result.source.index, 1);
+    const [removed]: any = reorderedItems.splice(result.source.index, 1);
     reorderedItems.splice(result.destination.index, 0, removed);
-
-    setSteps(reorderedItems);
+    const orderedItems = reorderedItems.map((item: any, idx) => ({
+      ...item,
+      order: idx + 1,
+    }));
+    setSteps(orderedItems);
   };
 
-  const handleChangeType = (type, id, idx) => {
+  const handleChangeType = (type, order, idx) => {
     if (!type) return;
+    if (
+      import.meta.env.NODE_ENV !== "production" &&
+      (plan === PricingOptionsTitle.Basic || plan === PricingOptionsTitle.Hobby) &&
+      (type === TYPES.SUBSCRIBE_YT_CHANNEL || type === TYPES.LIKE_YT_VIDEO || type === TYPES.CUSTOM_ONCHAIN_ACTION)
+    ) {
+      setPaywall(true);
+      setPaywallMessage("This feature is only available on the Pro plan and above");
+      return;
+    }
+    if (
+      (plan === PricingOptionsTitle.Premium || plan === PricingOptionsTitle.Ecosystem) &&
+      type === TYPES.CUSTOM_ONCHAIN_ACTION
+    ) {
+      setOpenEcosystemDialog(true);
+      return;
+    }
     setErrors((prev) => {
       return {
         ...prev,
@@ -128,12 +164,12 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     };
 
     const newConfiguration = steps.reduce((acc, next) => {
-      if (next.id === id) {
+      if (next.order === order) {
         acc = [
           ...acc,
           {
             type,
-            id,
+            order,
             required: true,
             value: type === TYPES.MULTI_QUIZ ? MULTICHOICE_DEFAULT_VALUE : "",
           },
@@ -146,9 +182,9 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     setSteps(newConfiguration);
   };
 
-  const handleRequiredChange = (required, id) => {
+  const handleRequiredChange = (required, order) => {
     const newConfiguration = steps.reduce((acc, next) => {
-      if (next.id === id) {
+      if (next.order === order) {
         acc = [
           ...acc,
           {
@@ -164,7 +200,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     setSteps(newConfiguration);
   };
 
-  const handleChange = (value, id, idx) => {
+  const handleChange = (value, order, idx) => {
     setErrors((prev) => {
       return {
         ...prev,
@@ -176,7 +212,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     });
 
     const newConfiguration = steps.reduce((acc, next) => {
-      if (next.id === id) {
+      if (next.order === order) {
         acc = [
           ...acc,
           {
@@ -192,9 +228,9 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     setSteps(newConfiguration);
   };
 
-  const handleMedia = (value, id) => {
+  const handleMedia = (value, order) => {
     const newConfiguration = steps.reduce((acc, next) => {
-      if (next.id === id) {
+      if (next.order === order) {
         acc = [
           ...acc,
           {
@@ -226,6 +262,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       justifyContent="flex-start"
       width="100%"
     >
+      <EcosystemFeature open={openEcosystemDialog} onClose={() => setOpenEcosystemDialog(false)} />
       <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
         {steps?.length} Quest Steps
       </Typography>
@@ -243,7 +280,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
               {...provided.droppableProps}
             >
               {steps?.map((item, idx) => {
-                console.log("item", item);
                 const Component = CONFIG_COMPONENTS[item.type];
                 if (!Component) return null;
                 return (
@@ -280,7 +316,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                     options={COMPONENT_OPTIONS}
                                     background="#C1B6F6"
                                     value={item.type}
-                                    onChange={(value) => handleChangeType(value, item.id, idx)}
+                                    onChange={(value) => handleChangeType(value, item.order, idx)}
                                   />
                                 </Grid>
                                 <Grid display="flex" alignItems="center" gap="14px">
@@ -288,7 +324,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                     <Switch
                                       value={item.required === false ? false : true}
                                       onChange={(value) => {
-                                        handleRequiredChange(value, item.id);
+                                        handleRequiredChange(value, item.order);
                                       }}
                                     />
                                     <Label
@@ -308,7 +344,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                             renderBody={() => (
                               <>
                                 <Component
-                                  onChange={(value) => handleChange(value, item.id, idx)}
+                                  onChange={(value) => handleChange(value, item.order, idx)}
                                   error={errors?.steps?.[idx]}
                                   value={item.value}
                                   stepType={item.type}
@@ -319,7 +355,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                 <StepAttachments
                                   step={item}
                                   removeMedia={(slug) => removeMediaItem(slug, item._id)}
-                                  handleChange={(value) => handleMedia(value, item.id)}
+                                  handleChange={(value) => handleMedia(value, item.order)}
                                 />
                               </>
                             )}
