@@ -2,10 +2,11 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import PageHeader from "components/PageHeader";
 import PageWrapper from "components/Shared/PageWrapper";
-import { GET_CMTY_ENTITIES_COUNT } from "graphql/queries";
+import { GET_CMTY_ENTITIES_COUNT, GET_SUBMISSION_REPORTS } from "graphql/queries";
 import { useContext, useEffect } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import MessagesAndReactions from "./AnalyticsGraphs/MessagesAndReactions";
+import Submissions from "./AnalyticsGraphs/Submissions";
 import CardsComponent from "./Cards";
 import { LineChart } from "./GraphsComponent";
 import getMembersAndOnboardedMembers from "./utils/getMembersAndOnboardedMembers";
@@ -14,17 +15,28 @@ import getMessagesAndReactionsData from "./utils/getMessagesAndReactionsData";
 const AnalyticsComponent = () => {
   const { activeOrg } = useContext(GlobalContext);
 
-  const {data, refetch, loading} = useQuery(GET_CMTY_ENTITIES_COUNT, {
+  const {
+    data: submissionReports,
+    refetch: submissionRefetch,
+    loading: submissionLoading,
+  } = useQuery(GET_SUBMISSION_REPORTS, {
     fetchPolicy: "cache-and-network",
     notifyOnNetworkStatusChange: true,
     variables: {
-        orgId: activeOrg?.id,
-        skip: !activeOrg?.id
-    }
+      orgId: activeOrg?.id,
+      skip: !activeOrg?.id,
+    },
   });
 
+  const { data, refetch, loading } = useQuery(GET_CMTY_ENTITIES_COUNT, {
+    fetchPolicy: "cache-and-network",
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      orgId: activeOrg?.id,
+      skip: !activeOrg?.id,
+    },
+  });
 
-  console.log(data, 'DAT HERE', loading)
   const cardsStats = {
     cmtyMembers: 1201,
     allTimeCmtyMembers: 1888,
@@ -33,7 +45,6 @@ const AnalyticsComponent = () => {
     rewards: 50,
     allTimeRewards: 70,
   };
-
 
   const membersAndOnboardedMembers = getMembersAndOnboardedMembers();
   return (
@@ -56,10 +67,23 @@ const AnalyticsComponent = () => {
         }}
       >
         <CardsComponent stats={cardsStats} />
-        <Grid display="flex" gap="24px" flexWrap="nowrap">
-          <MessagesAndReactions data={data?.getCmtyEntitiesCount} refetch={refetch} loading={loading}/>
+        <Grid
+          display="flex"
+          gap="24px"
+          flexWrap="nowrap"
+          flexDirection={{
+            xs: "column",
+            sm: "row",
+          }}
+        >
+          <MessagesAndReactions data={data?.getCmtyEntitiesCount} refetch={refetch} loading={loading} />
           <LineChart title="New Members" data={membersAndOnboardedMembers} />
         </Grid>
+        <Submissions
+          data={submissionReports?.getQuestsSubmissionsReport}
+          refetch={submissionRefetch}
+          loading={submissionLoading}
+        />
       </Grid>
     </>
   );

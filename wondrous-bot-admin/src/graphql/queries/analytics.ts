@@ -13,3 +13,15 @@ export const GET_CMTY_ENTITIES_COUNT = gql`
     }
 `;
 
+
+export const GET_SUBMISSION_REPORTS = gql`
+    query getQuestsSubmissionsReport($orgId: String, $startDate: String, $endDate: String) {
+        getQuestsSubmissionsReport(orgId: $orgId, startDate: $startDate, endDate: $endDate) {
+            date
+            counts {
+                total,
+                approved
+            }
+        }
+    }
+`;

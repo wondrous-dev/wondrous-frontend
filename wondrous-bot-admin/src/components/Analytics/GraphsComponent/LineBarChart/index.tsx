@@ -5,26 +5,37 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
   ChartOptions,
 } from "chart.js";
 
-import React from "react";
-import { Line } from "react-chartjs-2";
-import { paddingBelowLegend } from "../plugins";
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, {
-  ...paddingBelowLegend,
-});
+import { Chart } from "react-chartjs-2";
 
-function LineChart({ title, data = null, renderComponents = null }) {
+import React from "react";
+import { Line, Bar } from "react-chartjs-2";
+import { paddingBelowLegend } from "../plugins";
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  paddingBelowLegend
+);
+
+function LineBarChart({ title, data = null, renderComponents = null }) {
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  const options: ChartOptions<"line"> = {
+  const options: ChartOptions<"line" | "bar"> = {
     responsive: true,
     maintainAspectRatio: true,
-    aspectRatio: isMobile ? 1 : 2,
+    aspectRatio: isMobile ? 1 : 4,
     plugins: {
       legend: {
         position: "top",
@@ -40,7 +51,6 @@ function LineChart({ title, data = null, renderComponents = null }) {
           },
         },
       },
-
       title: {
         display: true,
         text: title || "",
@@ -65,6 +75,9 @@ function LineChart({ title, data = null, renderComponents = null }) {
       },
       line: {
         tension: 0.1, // this will make the line straight,
+        borderWidth: 4,
+      },
+      bar: {
         borderWidth: 4,
       },
     },
@@ -101,12 +114,15 @@ function LineChart({ title, data = null, renderComponents = null }) {
       borderRadius="16px"
       border={`1px solid #000212`}
       padding="24px"
-      width="100%"
+      // width="100%"
       justifyContent="center"
       display="flex"
       flexDirection="column"
       gap="24px"
       alignItems="center"
+      height="100%"
+      minWidth="20vw"
+      position="relative"
     >
       {data === null ? (
         <CircularProgress
@@ -121,11 +137,20 @@ function LineChart({ title, data = null, renderComponents = null }) {
         <>
           {renderComponents ? renderComponents() : null}
 
-          <Line data={data} options={options} />
+          <Chart
+            type="line"
+            data={data}
+            options={options}
+            style={{
+              height: "20vh",
+              width: "20vw",
+              position: "relative",
+            }}
+          />
         </>
       )}
     </Grid>
   );
 }
 
-export default LineChart;
+export default LineBarChart;
