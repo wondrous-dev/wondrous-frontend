@@ -79,7 +79,7 @@ const CreateTemplate = ({
     setSteps([
       ...steps,
       {
-        id: steps.length + 1,
+        order: steps.length + 1,
         type,
         value: "",
         required: true,
@@ -106,7 +106,12 @@ const CreateTemplate = ({
   const handleRemove = (index) => {
     const newItems = [...steps];
     newItems.splice(index, 1);
-    setSteps(newItems);
+    setSteps(
+      newItems.map((item, idx) => ({
+        ...item,
+        order: idx + 1,
+      }))
+    );
   };
 
   const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
