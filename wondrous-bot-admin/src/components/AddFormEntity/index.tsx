@@ -93,14 +93,13 @@ const COMPONENT_OPTIONS = [
     value: TYPES.LINK_CLICK,
   },
 ];
-
+if (import.meta.env.NODE_ENV !== "production") {
+  COMPONENT_OPTIONS.push({
+    label: "+ Add custom on chain action",
+    value: TYPES.CUSTOM_ONCHAIN_ACTION,
+  });
+}
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
-  if (import.meta.env.NODE_ENV !== "production") {
-    COMPONENT_OPTIONS.push({
-      label: "+ Add custom on chain action",
-      value: TYPES.CUSTOM_ONCHAIN_ACTION,
-    });
-  }
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [openEcosystemDialog, setOpenEcosystemDialog] = useState(false);
   const subscription = useSubscription();
