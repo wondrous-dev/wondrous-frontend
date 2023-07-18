@@ -45,7 +45,7 @@ type InputQuestStep = {
 };
 
 type OutputQuestStep = {
-  id: number;
+  order: number;
   _id?: string;
   type: string;
   required?: boolean;
@@ -125,7 +125,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
   if (!obj) return [];
   return obj.map((step) => {
     const outputStep: OutputQuestStep = {
-      id: step.order,
+      order: step.order,
       _id: step.id,
       type: step.type,
       required: step.required === false ? false : true,
