@@ -32,8 +32,12 @@ const pricingOptions: PricingOptionsListItemType[] = [
     savings: 99,
     percentSavings: 14,
     buttonText: "Upgrade",
-    link: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_eVa5nma5d3Ej8EMbII",
-    yearlyLink: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_00g9DC4KT8YD1ckdQV",
+    link: import.meta.env.VITE_PRODUCTION
+      ? "https://buy.stripe.com/dR66qs0P4g608y4bII"
+      : "https://buy.stripe.com/test_eVa5nma5d3Ej8EMbII",
+    yearlyLink: import.meta.env.VITE_PRODUCTION
+      ? "https://buy.stripe.com/3csdSUdBQ9HC15CdQR"
+      : "https://buy.stripe.com/test_00g9DC4KT8YD1ckdQV",
     features: [
       "Everything in Basic",
       "1,000 members",
@@ -55,8 +59,12 @@ const pricingOptions: PricingOptionsListItemType[] = [
     percentSavings: 23,
     buttonText: "Upgrade",
     best: true,
-    link: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_14kg206T1a2HdZ68wx",
-    yearlyLink: import.meta.env.VITE_PRODUCTION ? "" : "https://buy.stripe.com/test_dR6cPOfpxcaP5sA9AE",
+    link: import.meta.env.VITE_PRODUCTION
+      ? "https://buy.stripe.com/7sI024fJY8DybKg28a"
+      : "https://buy.stripe.com/test_14kg206T1a2HdZ68wx",
+    yearlyLink: import.meta.env.VITE_PRODUCTION
+      ? "https://buy.stripe.com/14kdSU69o8Dy3dKfZ1"
+      : "https://buy.stripe.com/test_dR6cPOfpxcaP5sA9AE",
     features: [
       "Everything in Hobby",
       "Unlimited members",

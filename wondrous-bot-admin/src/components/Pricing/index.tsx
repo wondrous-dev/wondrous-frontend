@@ -1,14 +1,21 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BillingInterval, { BillingIntervalValue } from "./BillingInterval";
 import PricingOptionsList from "./PricingOptionsList";
+import { useNavigate } from "react-router-dom";
 
 const PricingComponent = () => {
+  const navigate = useNavigate();
   const [billingInterval, setBillingInterval] = useState<BillingIntervalValue>(BillingIntervalValue.monthly);
   const height = {
     xs: "100%",
     md: "100vh",
   };
+  useEffect(() => {
+    if (import.meta.env.VITE_PRODUCTION) {
+      navigate("/");
+    }
+  }, []);
   return (
     <>
       <Grid
