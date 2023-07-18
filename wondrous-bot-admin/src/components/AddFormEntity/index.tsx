@@ -93,7 +93,7 @@ const COMPONENT_OPTIONS = [
     value: TYPES.LINK_CLICK,
   },
 ];
-if (import.meta.env.NODE_ENV !== "production") {
+if (!import.meta.env.VITE_PRODUCTION) {
   COMPONENT_OPTIONS.push({
     label: "+ Add custom on chain action",
     value: TYPES.CUSTOM_ONCHAIN_ACTION,
@@ -121,7 +121,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
   const handleChangeType = (type, order, idx) => {
     if (!type) return;
     if (
-      import.meta.env.NODE_ENV !== "production" &&
+      !import.meta.env.VITE_PRODUCTION &&
       (plan === PricingOptionsTitle.Basic || plan === PricingOptionsTitle.Hobby) &&
       (type === TYPES.SUBSCRIBE_YT_CHANNEL || type === TYPES.LIKE_YT_VIDEO || type === TYPES.CUSTOM_ONCHAIN_ACTION)
     ) {
