@@ -19,14 +19,15 @@ import { StyledCheckbox } from "components/PaymentLedger/styles";
   since stepsData doesn't contain the step type, we need to get it from steps
 */
 const stepsNormalizr = (steps, stepsData) => {
+  // FIXME this is kind of messed up when we add delete or update steps
   return stepsData?.map((stepData, idx) => {
     // normally it's the same as index, this is just a safety measure
-    const step = steps.find((i) => i.order === stepData.order);
+    const step = steps.find((i) => i.id === stepData.stepId);
     return {
       ...stepData,
       type: step?.type,
       prompt: step?.prompt,
-      questStepAdditionalData: step.additionalData,
+      questStepAdditionalData: step?.additionalData,
     };
   });
 };
@@ -148,7 +149,6 @@ const QuestResultsCard = ({ submission }) => {
         questSubmissionId: submission?.id,
       },
     });
-
   return (
     <AccordionComponent
       renderTitle={() => (
