@@ -70,6 +70,10 @@ const COMPONENT_OPTIONS = [
     value: TYPES.DISCORD_MESSAGE_IN_CHANNEL,
   },
   {
+    label: "Verify Discord event attendance",
+    value: TYPES.DISCORD_EVENT_ATTENDANCE,
+  },
+  {
     label: "Data Collection",
     value: TYPES.DATA_COLLECTION,
   },
@@ -89,10 +93,6 @@ const COMPONENT_OPTIONS = [
     label: "Click on link",
     value: TYPES.LINK_CLICK,
   },
-  {
-    label: "Verify Discord event attendance",
-    value: TYPES.DISCORD_EVENT_ATTENDANCE,
-  }
 ];
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
@@ -101,13 +101,16 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     if (!result.destination) return;
 
     const reorderedItems = Array.from(steps);
-    const [removed] = reorderedItems.splice(result.source.index, 1);
+    const [removed]: any = reorderedItems.splice(result.source.index, 1);
     reorderedItems.splice(result.destination.index, 0, removed);
-
-    setSteps(reorderedItems);
+    const orderedItems = reorderedItems.map((item: any, idx) => ({
+      ...item,
+      order: idx + 1,
+    }));
+    setSteps(orderedItems);
   };
 
-  const handleChangeType = (type, id, idx) => {
+  const handleChangeType = (type, order, idx) => {
     if (!type) return;
     setErrors((prev) => {
       return {
@@ -132,12 +135,12 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     };
 
     const newConfiguration = steps.reduce((acc, next) => {
-      if (next.id === id) {
+      if (next.order === order) {
         acc = [
           ...acc,
           {
             type,
-            id,
+            order,
             required: true,
             value: type === TYPES.MULTI_QUIZ ? MULTICHOICE_DEFAULT_VALUE : "",
           },
@@ -150,9 +153,9 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     setSteps(newConfiguration);
   };
 
-  const handleRequiredChange = (required, id) => {
+  const handleRequiredChange = (required, order) => {
     const newConfiguration = steps.reduce((acc, next) => {
-      if (next.id === id) {
+      if (next.order === order) {
         acc = [
           ...acc,
           {
@@ -168,7 +171,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     setSteps(newConfiguration);
   };
 
-  const handleChange = (value, id, idx) => {
+  const handleChange = (value, order, idx) => {
     setErrors((prev) => {
       return {
         ...prev,
@@ -180,7 +183,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     });
 
     const newConfiguration = steps.reduce((acc, next) => {
-      if (next.id === id) {
+      if (next.order === order) {
         acc = [
           ...acc,
           {
@@ -196,9 +199,9 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     setSteps(newConfiguration);
   };
 
-  const handleMedia = (value, id) => {
+  const handleMedia = (value, order) => {
     const newConfiguration = steps.reduce((acc, next) => {
-      if (next.id === id) {
+      if (next.order === order) {
         acc = [
           ...acc,
           {
@@ -283,7 +286,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                     options={COMPONENT_OPTIONS}
                                     background="#C1B6F6"
                                     value={item.type}
-                                    onChange={(value) => handleChangeType(value, item.id, idx)}
+                                    onChange={(value) => handleChangeType(value, item.order, idx)}
                                   />
                                 </Grid>
                                 <Grid display="flex" alignItems="center" gap="14px">
@@ -291,7 +294,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                     <Switch
                                       value={item.required === false ? false : true}
                                       onChange={(value) => {
-                                        handleRequiredChange(value, item.id);
+                                        handleRequiredChange(value, item.order);
                                       }}
                                     />
                                     <Label
@@ -311,7 +314,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                             renderBody={() => (
                               <>
                                 <Component
-                                  onChange={(value) => handleChange(value, item.id, idx)}
+                                  onChange={(value) => handleChange(value, item.order, idx)}
                                   error={errors?.steps?.[idx]}
                                   value={item.value}
                                   stepType={item.type}
@@ -322,7 +325,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                 <StepAttachments
                                   step={item}
                                   removeMedia={(slug) => removeMediaItem(slug, item._id)}
-                                  handleChange={(value) => handleMedia(value, item.id)}
+                                  handleChange={(value) => handleMedia(value, item.order)}
                                 />
                               </>
                             )}

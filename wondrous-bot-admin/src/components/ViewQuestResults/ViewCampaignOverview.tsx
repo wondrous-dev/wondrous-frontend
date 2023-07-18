@@ -10,7 +10,6 @@ const ViewCampaignOverview = ({ questSettings }) => {
   return (
     <>
       {questSettings?.map((quest, idx) => {
-        console.log("quest, qe", quest);
         return (
           <Grid
             display="flex"
