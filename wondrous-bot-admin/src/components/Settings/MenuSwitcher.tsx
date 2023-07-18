@@ -9,10 +9,6 @@ const MENU_ITEMS = [
     path: "/settings",
   },
   {
-    title: "Billing",
-    path: "/settings/billing",
-  },
-  {
     title: "Notifications",
     path: "/settings/notifications",
   },
@@ -35,7 +31,13 @@ const MENU_ITEMS = [
     action: logout,
   },
 ];
-
+if (!import.meta.env.VITE_PRODUCTION) {
+  MENU_ITEMS.splice(1, 0, {
+    title: "Billing",
+    path: "/settings/billing",
+  });
+  MENU_ITEMS.join();
+}
 const MenuSwitcher = () => {
   const location = useLocation();
 
