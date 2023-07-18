@@ -91,7 +91,7 @@ export const TeamsAndInvite = ({ adminNumbers }) => {
           onClick={() => {
             // Add paywall
             if (
-              import.meta.env.NODE_ENV !== "production" &&
+              !import.meta.env.VITE_PRODUCTION &&
               ((plan === PricingOptionsTitle.Basic && adminNumbers >= 1) ||
                 (plan === PricingOptionsTitle.Hobby && adminNumbers >= 2) ||
                 (plan === PricingOptionsTitle.Premium && adminNumbers >= 10))

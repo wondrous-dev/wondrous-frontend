@@ -53,7 +53,7 @@ const QuestsPage = () => {
   const { totalQuests } = getOrgQuestStatsData?.getOrgQuestStats || {};
   const plan = getPlan(subscription?.tier);
   const handleNavigationToNewQuest = () => {
-    if (import.meta.env.NODE_ENV !== "production" && plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
+    if (!import.meta.env.VITE_PRODUCTION && plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
       setPaywall(true);
       setPaywallMessage("You have reached the limit of quests for your current plan.");
     } else {

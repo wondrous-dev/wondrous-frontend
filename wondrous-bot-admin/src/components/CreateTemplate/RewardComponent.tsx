@@ -427,7 +427,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               }}
               background={PAYMENT_OPTIONS.TOKEN === rewardType ? "#BFB4F3" : "#FFFFF"}
               onClick={() => {
-                if (import.meta.env.NODE_ENV !== "production" && plan === PricingOptionsTitle.Basic) {
+                if (!import.meta.env.VITE_PRODUCTION && plan === PricingOptionsTitle.Basic) {
                   setPaywall(true);
                   setPaywallMessage("This reward option is not available under the basic plan.");
                   return;
