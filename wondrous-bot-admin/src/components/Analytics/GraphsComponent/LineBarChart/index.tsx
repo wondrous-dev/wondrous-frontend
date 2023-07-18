@@ -35,7 +35,6 @@ function LineBarChart({ title, data = null, renderComponents = null }) {
   const options: ChartOptions<"line" | "bar"> = {
     responsive: true,
     maintainAspectRatio: true,
-    aspectRatio: isMobile ? 1 : 4,
     plugins: {
       legend: {
         position: "top",
@@ -114,7 +113,7 @@ function LineBarChart({ title, data = null, renderComponents = null }) {
       borderRadius="16px"
       border={`1px solid #000212`}
       padding="24px"
-      // width="100%"
+      width="100%"
       justifyContent="center"
       display="flex"
       flexDirection="column"

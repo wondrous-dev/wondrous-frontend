@@ -2,13 +2,20 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import PageHeader from "components/PageHeader";
 import PageWrapper from "components/Shared/PageWrapper";
-import { GET_CMTY_ENTITIES_COUNT, GET_SUBMISSION_REPORTS } from "graphql/queries";
+import {
+  GET_CMTY_ENTITIES_COUNT,
+  GET_CMTY_PRESENCE_ANALYTICS,
+  GET_ONBOARDED_USERS_DATA,
+  GET_SUBMISSION_REPORTS,
+} from "graphql/queries";
 import { useContext, useEffect } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import MessagesAndReactions from "./AnalyticsGraphs/MessagesAndReactions";
+import OnboardedUsers from "./AnalyticsGraphs/OnboardedUsers";
 import Submissions from "./AnalyticsGraphs/Submissions";
 import CardsComponent from "./Cards";
 import { LineChart } from "./GraphsComponent";
+import Heatmap from "./GraphsComponent/Heatmap";
 import getMembersAndOnboardedMembers from "./utils/getMembersAndOnboardedMembers";
 import getMessagesAndReactionsData from "./utils/getMessagesAndReactionsData";
 
@@ -24,17 +31,43 @@ const AnalyticsComponent = () => {
     notifyOnNetworkStatusChange: true,
     variables: {
       orgId: activeOrg?.id,
-      skip: !activeOrg?.id,
     },
+    skip: !activeOrg?.id,
   });
 
   const { data, refetch, loading } = useQuery(GET_CMTY_ENTITIES_COUNT, {
     fetchPolicy: "cache-and-network",
     notifyOnNetworkStatusChange: true,
+    skip: !activeOrg?.id,
     variables: {
       orgId: activeOrg?.id,
-      skip: !activeOrg?.id,
     },
+  });
+
+  const {
+    data: presenceData,
+    refetch: presenceRefetch,
+    loading: presenceLoading,
+  } = useQuery(GET_CMTY_PRESENCE_ANALYTICS, {
+    fetchPolicy: "cache-and-network",
+    notifyOnNetworkStatusChange: true,
+    skip: !activeOrg?.id,
+    variables: {
+      orgId: activeOrg?.id,
+    },
+  });
+
+  const {
+    data: onboardedUsersData,
+    refetch: onboardedUsersRefetch,
+    loading: onboardedUsersLoading,
+  } = useQuery(GET_ONBOARDED_USERS_DATA, {
+    fetchPolicy: "cache-and-network",
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
   });
 
   const cardsStats = {
@@ -46,7 +79,6 @@ const AnalyticsComponent = () => {
     allTimeRewards: 70,
   };
 
-  const membersAndOnboardedMembers = getMembersAndOnboardedMembers();
   return (
     <>
       <PageHeader title="Analytics" withBackButton={true} />
@@ -77,13 +109,28 @@ const AnalyticsComponent = () => {
           }}
         >
           <MessagesAndReactions data={data?.getCmtyEntitiesCount} refetch={refetch} loading={loading} />
-          <LineChart title="New Members" data={membersAndOnboardedMembers} />
+          <OnboardedUsers
+            data={onboardedUsersData?.getOnboardedUsersCount}
+            refetch={onboardedUsersRefetch}
+            loading={onboardedUsersLoading}
+          />
         </Grid>
-        <Submissions
-          data={submissionReports?.getQuestsSubmissionsReport}
-          refetch={submissionRefetch}
-          loading={submissionLoading}
-        />
+        <Grid
+          display="flex"
+          gap="24px"
+          flexWrap="nowrap"
+          flexDirection={{
+            xs: "column",
+            sm: "row",
+          }}
+        >
+          <Submissions
+            data={submissionReports?.getQuestsSubmissionsReport}
+            refetch={submissionRefetch}
+            loading={submissionLoading}
+          />
+          <Heatmap data={presenceData?.getCmtyPresenceAnalytics} loading={presenceLoading} refetch={presenceRefetch} />
+        </Grid>
       </Grid>
     </>
   );
