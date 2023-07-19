@@ -289,7 +289,7 @@ export const withAuth = (Component, noCache = false) => {
       if (!import.meta.env.VITE_PRODUCTION) return;
       const storedSegmentUserId = localStorage.getItem("ajs_user_id")?.replaceAll('"', "") || null;
       if (data?.getLoggedinUser?.id && storedSegmentUserId !== data?.getLoggedinUser?.id) {
-        (window as any).analytics.identify(data?.getLoggedinUser?.id, {
+        (window as any)?.analytics?.identify(data?.getLoggedinUser?.id, {
           username: data?.getLoggedinUser?.username,
         });
       }
