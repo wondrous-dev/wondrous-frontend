@@ -22,6 +22,7 @@ import { REMOVE_QUEST_STEP_MEDIA } from "graphql/mutations";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import { usePaywall, useSubscription } from "utils/hooks";
 import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
+import AutocompleteOptionsComponent from "./components/AutocompleteComponent";
 
 const COMPONENT_OPTIONS = [
   {
@@ -311,9 +312,8 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                   >
                                     Step {idx + 1}
                                   </Typography>
-                                  <SelectComponent
+                                  <AutocompleteOptionsComponent
                                     options={COMPONENT_OPTIONS}
-                                    background="#C1B6F6"
                                     value={item.type}
                                     onChange={(value) => handleChangeType(value, item.order, idx)}
                                   />
