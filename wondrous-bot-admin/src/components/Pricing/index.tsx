@@ -1,19 +1,33 @@
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import BillingInterval, { BillingIntervalValue } from "./BillingInterval";
 import PricingOptionsList from "./PricingOptionsList";
-
-const useHeight = () => {
-  const theme = useTheme();
-  const isXlScreenOnly = useMediaQuery(theme.breakpoints.up("xl"));
-  const height = isXlScreenOnly ? "100vh" : "100%";
-  return height;
-};
+import { useNavigate } from "react-router-dom";
 
 const PricingComponent = () => {
-  const height = useHeight();
+  const navigate = useNavigate();
+  const [billingInterval, setBillingInterval] = useState<BillingIntervalValue>(BillingIntervalValue.monthly);
+  const height = {
+    xs: "100%",
+    md: "100vh",
+  };
+  useEffect(() => {
+    if (import.meta.env.VITE_PRODUCTION) {
+      navigate("/");
+    }
+  }, []);
   return (
     <>
-      <Box width="100%" display="flex" flexDirection="column" alignItems="center" marginTop="50px">
-        <Typography fontSize="32px" color="#06040A" fontWeight="600" fontFamily="Poppins, sans-serif">
+      <Grid
+        container
+        gap="14px"
+        width="100%"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        marginTop="50px"
+      >
+        <Typography fontSize="32px" color="#06040A" fontWeight="600" fontFamily="Poppins, sans-serif" lineHeight="0.7">
           Pricing
         </Typography>
         <Typography
@@ -25,17 +39,19 @@ const PricingComponent = () => {
         >
           Upgrade your community with our premium features
         </Typography>
-      </Box>
+        <BillingInterval onClick={setBillingInterval} selected={billingInterval} />
+      </Grid>
       <Box
         width="100%"
         display="flex"
-        height={height}
         justifyContent="center"
-        paddingY="36px"
-        paddingX="24px"
         position="relative"
+        marginTop="32px"
+        sx={{
+          height,
+        }}
       >
-        <PricingOptionsList />
+        <PricingOptionsList billingInterval={billingInterval} />
         <Box
           sx={{
             position: "absolute",
@@ -43,10 +59,10 @@ const PricingComponent = () => {
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
-            height: height,
+            height,
             zIndex: 0,
             bottom: 0,
-            top: 84,
+            top: 50,
             left: 0,
             right: 0,
           }}

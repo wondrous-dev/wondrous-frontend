@@ -57,7 +57,7 @@ const MembersPage = () => {
   const headers = ["Name", "Level", "Discord", "Twitter", "XP"];
   return (
     <>
-      <PageHeader title="Community Members" withBackButton={false} renderActions={() => <TeamsAndInvite />} />
+      <PageHeader title="Community Members" withBackButton={false} />
       <Grid
         minHeight="100vh"
         sx={{

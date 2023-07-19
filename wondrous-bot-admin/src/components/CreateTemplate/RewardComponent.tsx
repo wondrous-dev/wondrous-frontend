@@ -22,17 +22,13 @@ import {
   ExistingPaymentMethodSelectComponent,
 } from "components/CreateTemplate/RewardUtils";
 import { useTour } from "@reactour/tour";
+import { usePaywall, useSubscription } from "utils/hooks";
+import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 
 const RewardComponent = ({ rewards, setQuestSettings }) => {
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const [errors, setErrors] = useState(null);
-  const {
-    isOpen,
-    setCurrentStep,
-    currentStep,
-    setSteps,
-    steps
-  } = useTour();
+  const { isOpen, setCurrentStep, currentStep, setSteps, steps } = useTour();
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [addPaymentMethod, setAddPaymentMethod] = useState(true);
   const [editPaymentMethod, setEditPaymentMethod] = useState({
@@ -45,7 +41,6 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     chain: null,
     amount: null,
   });
-
 
   const [tokenReward, setTokenReward] = useState({
     tokenName: null,
@@ -62,45 +57,48 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
 
   useEffect(() => {
     if (isOpen) {
-      const newSteps = steps.map((step:any) => {
-        if(step.id === 'tutorial-quest-rewards') {
+      const newSteps = steps.map((step: any) => {
+        if (step.id === "tutorial-quest-rewards") {
           return {
             ...step,
             handleNextAction: () => {
-              setIsRewardModalOpen(true)
-              setCurrentStep(prev => prev + 1)
-            }
-          }
-        };
-        if(step.id === 'tutorial-add-rewards') {
-          return {
-            ...step,
-            handleNextAction: () => {
-              setIsRewardModalOpen(false)
-              setCurrentStep(prev => prev + 1)
+              setIsRewardModalOpen(true);
+              setCurrentStep((prev) => prev + 1);
             },
-            handlePrevAction: () => {
-              setIsRewardModalOpen(false)
-              setCurrentStep(prev => prev - 1)
-            }
-          }
+          };
         }
-        if(step.id === 'tutorial-activate-quest') {
+        if (step.id === "tutorial-add-rewards") {
+          return {
+            ...step,
+            handleNextAction: () => {
+              setIsRewardModalOpen(false);
+              setCurrentStep((prev) => prev + 1);
+            },
+            handlePrevAction: () => {
+              setIsRewardModalOpen(false);
+              setCurrentStep((prev) => prev - 1);
+            },
+          };
+        }
+        if (step.id === "tutorial-activate-quest") {
           return {
             ...step,
             handlePrevAction: () => {
-              setIsRewardModalOpen(true)
-              setCurrentStep(prev => prev - 1)
+              setIsRewardModalOpen(true);
+              setCurrentStep((prev) => prev - 1);
             },
-          }
+          };
         }
         return step;
       });
-      setSteps(newSteps)
+      setSteps(newSteps);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   const { activeOrg } = useContext(GlobalContext);
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.tier);
+  const { setPaywall, setPaywallMessage } = usePaywall();
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
   const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD, {
     refetchQueries: [GET_CMTY_PAYMENT_METHODS_FOR_ORG],
@@ -223,11 +221,11 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
   };
 
   const handleToggle = () => {
-    setIsRewardModalOpen(prev => !prev)
-    if(isOpen) {
-      setCurrentStep(prev => prev + 1)
+    setIsRewardModalOpen((prev) => !prev);
+    if (isOpen) {
+      setCurrentStep((prev) => prev + 1);
     }
-  }
+  };
 
   const handleReward = () => {
     if (rewardType === PAYMENT_OPTIONS.DISCORD_ROLE) {
@@ -246,7 +244,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
           },
         });
       }
-      handleToggle()
+      handleToggle();
     } else if (rewardType === PAYMENT_OPTIONS.TOKEN) {
       if (paymentMethod) {
         if (!tokenReward?.amount) {
@@ -283,7 +281,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             amount: Number(tokenReward?.amount),
           });
         }
-        handleToggle()
+        handleToggle();
       } else if (addPaymentMethod) {
         // Create payment method and then add reward
         if (!tokenReward?.contractAddress) {
@@ -335,7 +333,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               amount: tokenReward?.amount,
               paymentMethod,
             });
-            handleToggle()
+            handleToggle();
             setAddPaymentMethod(false);
           })
           .catch((err) => {
@@ -371,22 +369,21 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         type: rewardType,
         poapRewardData: poapReward,
       });
-      handleToggle()
+      handleToggle();
     }
   };
 
-
   return (
-    <Grid container direction="column" gap="14px" justifyContent="flex-start" >
+    <Grid container direction="column" gap="14px" justifyContent="flex-start">
       <Modal
         open={isRewardModalOpen}
         onClose={handleToggle}
         title="Add reward to quest"
         modalComponentProps={{
-          className: 'tour-default-modal'
+          className: "tour-default-modal",
         }}
         dialogComponentProps={{
-          className: 'tutorials-quest-reward-modal'
+          className: "tutorials-quest-reward-modal",
         }}
         maxWidth={800}
         footerLeft={
@@ -404,8 +401,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         footerRight={undefined}
         footerCenter={undefined}
       >
-        <Grid display="flex" flexDirection="column" gap="14px"
-        >
+        <Grid display="flex" flexDirection="column" gap="14px">
           <Box display="flex" alignItems="center" gap="6px" width={"100%"} justifyContent={"center"}>
             <SharedBlackOutlineButton
               style={{
@@ -430,7 +426,15 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                 flex: 1,
               }}
               background={PAYMENT_OPTIONS.TOKEN === rewardType ? "#BFB4F3" : "#FFFFF"}
-              onClick={() => setRewardType(PAYMENT_OPTIONS.TOKEN)}
+              onClick={() => {
+                if (!import.meta.env.VITE_PRODUCTION && plan === PricingOptionsTitle.Basic) {
+                  setPaywall(true);
+                  setPaywallMessage("This reward option is not available under the basic plan.");
+                  return;
+                } else {
+                  setRewardType(PAYMENT_OPTIONS.TOKEN);
+                }
+              }}
             >
               Token reward
             </SharedBlackOutlineButton>

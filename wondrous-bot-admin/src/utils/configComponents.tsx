@@ -29,5 +29,6 @@ export const CONFIG_COMPONENTS = {
   [TYPES.VERIFY_TOKEN_HOLDING]: VerifyTokenHoldingComponent,
   [TYPES.LIKE_YT_VIDEO]: YoutubeLikeComponent,
   [TYPES.SUBSCRIBE_YT_CHANNEL]: YoutubeSubscribeComponent,
-  [TYPES.LINK_CLICK]: LinkClickComponent
+  [TYPES.LINK_CLICK]: LinkClickComponent,
+  [TYPES.DISCORD_EVENT_ATTENDANCE]: DiscordComponent
 };

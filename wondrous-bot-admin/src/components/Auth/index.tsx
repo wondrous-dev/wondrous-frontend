@@ -286,10 +286,10 @@ export const withAuth = (Component, noCache = false) => {
 
     const isMatchedPath = matchRoute(location.pathname, EXCLUDED_PATHS);
     useEffect(() => {
-      if (import.meta.env.NODE_ENV !== "production") return;
+      if (!import.meta.env.VITE_PRODUCTION) return;
       const storedSegmentUserId = localStorage.getItem("ajs_user_id")?.replaceAll('"', "") || null;
       if (data?.getLoggedinUser?.id && storedSegmentUserId !== data?.getLoggedinUser?.id) {
-        (window as any).analytics.identify(data?.getLoggedinUser?.id, {
+        (window as any)?.analytics?.identify(data?.getLoggedinUser?.id, {
           username: data?.getLoggedinUser?.username,
         });
       }
@@ -302,11 +302,7 @@ export const withAuth = (Component, noCache = false) => {
         setTokenLoading(false);
       })();
     }, [token]);
-    if (
-      error?.graphQLErrors &&
-      error?.graphQLErrors[0]?.extensions.code === "UNAUTHENTICATED" &&
-      !isMatchedPath
-    ) {
+    if (error?.graphQLErrors && error?.graphQLErrors[0]?.extensions.code === "UNAUTHENTICATED" && !isMatchedPath) {
       logout();
     }
     if (!tokenLoading && !token) {
@@ -321,10 +317,12 @@ export const withAuth = (Component, noCache = false) => {
       navigate("/");
     }
     return (
-      <MyContext.Provider value={{
-        user,
-        loading
-      }}>
+      <MyContext.Provider
+        value={{
+          user,
+          loading,
+        }}
+      >
         <Component {...props} user={user} />
       </MyContext.Provider>
     );
@@ -351,10 +349,12 @@ export const withWaitlistAuth = (Component, noCache = false) => {
     }
     const user = data?.getLoggedinWaitlistUser;
     return (
-      <MyContext.Provider value={{
-        user,
-        loading
-      }}>
+      <MyContext.Provider
+        value={{
+          user,
+          loading,
+        }}
+      >
         <Component {...props} user={user} />
       </MyContext.Provider>
     );

@@ -62,7 +62,6 @@ const TextInputStyle = {
 };
 
 const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
-  console.log("did we error", error);
   const handleOnChange = (key, val) => {
     onChange({
       ...value,

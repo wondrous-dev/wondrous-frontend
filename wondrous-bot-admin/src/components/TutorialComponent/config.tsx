@@ -77,7 +77,7 @@ export const config = [
           <ContentComponent title="Add Rewards">
             <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
               You can set up <strong>Discord Roles</strong> as rewards for your quests. You can also set up{" "}
-              <strong>POAPs</strong>.
+              <strong>POAP and token rewards</strong>.
             </Typography>
           </ContentComponent>
         ),
