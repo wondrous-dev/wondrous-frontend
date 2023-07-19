@@ -158,7 +158,6 @@ const getDiscordComponent = (stepType, handleOnChange, value, error) => {
 };
 
 const DiscordComponent = ({ onChange, value, stepType, error }) => {
-  console.log("value", value);
   const handleOnChange = (key, val) => {
     onChange({
       ...value,
