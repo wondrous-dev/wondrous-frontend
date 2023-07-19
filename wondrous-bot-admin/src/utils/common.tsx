@@ -1,3 +1,4 @@
+import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import { QUEST_CONDITION_TYPES } from "./constants";
 import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
 
@@ -68,3 +69,29 @@ export const camelToSnake = (str) => {
 };
 
 export const constructExplorerRedirectUrl = (chain, txHash) => `${CHAIN_TO_EXPLORER_URL[chain]}/tx/${txHash}`;
+
+export const constructRewards = ({rewards}) => {
+  return rewards?.map((reward) => {
+    if(reward.type === 'points') {
+      return reward;
+    }
+    if(reward.type === PAYMENT_OPTIONS.TOKEN) {
+      return {
+        type: reward?.paymentMethod?.name,
+        value: reward?.amount,
+      }
+    }
+    if(reward.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
+      return {
+        type: 'Discord Role',
+        value: reward?.discordRewardData?.discordRoleName || null,
+      }
+    }
+    if(reward.type === PAYMENT_OPTIONS.POAP) {
+      return {
+        type: 'POAP',
+        value: reward?.poapRewardData?.name || null,
+      }
+    }
+  })
+};

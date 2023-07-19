@@ -18,7 +18,7 @@ const MessagesAndReactions = ({ data, refetch, loading }) => {
     if (loading || !data) return null;
 
     return getMessagesAndReactionsData(data, activeFilter);
-  }, [data, activeFilter]);
+  }, [data, activeFilter, loading]);
 
   const [customDates, setCustomDates] = useState({
     startAt: null,

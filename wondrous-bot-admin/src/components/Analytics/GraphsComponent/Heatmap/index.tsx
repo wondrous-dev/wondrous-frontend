@@ -30,11 +30,9 @@ const Cell = ({ counts, date }) => {
     }
   }, [counts, date]);
 
-  console.log(calcDiff, "calc diff");
 
   let bgColor = `rgba(186, 172, 250, ${calcDiff?.opacity})`;
 
-  console.log(counts, "COUNTS");
   return (
     <Tooltip
       title={
@@ -89,6 +87,7 @@ const Heatmap = ({ data, loading, refetch }) => {
     };
   }, [data]);
 
+  console.log(labels, 'labeeels')
   const filterToDates = (value) => {
     if (value === "last_week") {
       return {
@@ -229,7 +228,7 @@ const Heatmap = ({ data, loading, refetch }) => {
       ) : (
         <HeatmapContainer cellsNum={cellsNum}>
           {labels.map((label, idx) => (
-            <Cell counts={data[idx]?.counts} date={label} />
+            <Cell counts={data[idx]?.counts} date={label} key={label}/>
           ))}
         </HeatmapContainer>
       )}

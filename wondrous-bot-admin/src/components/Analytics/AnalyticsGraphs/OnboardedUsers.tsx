@@ -16,7 +16,7 @@ const OnboardedUsers = ({ data, refetch, loading }) => {
     if (loading || !data) return null;
 
     return getMembersAndOnboardedMembers(data, activeFilter);
-  }, [data, activeFilter]);
+  }, [data, activeFilter, loading]);
 
   const [customDates, setCustomDates] = useState({
     startAt: null,

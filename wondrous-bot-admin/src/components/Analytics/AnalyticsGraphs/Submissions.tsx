@@ -6,17 +6,16 @@ import { useMemo, useState } from "react";
 import { MONTH_DAY_FULL_YEAR } from "utils/constants";
 import FiltersComponent from "../Filters";
 import LineBarChart from "../GraphsComponent/LineBarChart";
-import getMessagesAndReactionsData from "../utils/getMessagesAndReactionsData";
 import getSubmissionsData from "../utils/getSubmissionsData";
 
-const MessagesAndReactions = ({ data, refetch, loading }) => {
+const SubmissionsGraph = ({ data, refetch, loading }) => {
   const [activeFilter, setActiveFilter] = useState("last_week");
 
   const submissionsData = useMemo(() => {
     if (loading || !data) return null;
 
     return getSubmissionsData(data, activeFilter);
-  }, [data, activeFilter]);
+  }, [data, activeFilter, loading]);
 
   const [customDates, setCustomDates] = useState({
     startAt: null,
@@ -100,4 +99,4 @@ const MessagesAndReactions = ({ data, refetch, loading }) => {
   );
 };
 
-export default MessagesAndReactions;
+export default SubmissionsGraph;
