@@ -208,7 +208,6 @@ const NotificationSetting = (props) => {
             <NotificationSwitchInnerDiv
               active={active}
               onClick={() => {
-                console.log("orgDiscordAdditionalData", orgDiscordAdditionaData);
                 updateOrgDiscordAdditionalData({
                   variables: {
                     orgId,
