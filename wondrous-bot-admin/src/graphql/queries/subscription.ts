@@ -9,6 +9,7 @@ export const GET_ORG_SUBSCRIPTION = gql`
       additionalData {
         cancelAtPeriodEnd
         currentPeriodEnd
+        purchasedUserId
       }
     }
   }

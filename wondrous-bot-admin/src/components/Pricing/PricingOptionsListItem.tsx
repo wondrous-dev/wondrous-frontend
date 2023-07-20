@@ -6,6 +6,7 @@ import { BillingIntervalValue } from "./BillingInterval";
 import { PricingOptionsListItemInnerWrapper, PricingOptionsListItemWrapper } from "./styles";
 import { useSubscription } from "utils/hooks";
 import { format } from "date-fns";
+import { useMe } from "components/Auth";
 
 export enum PricingOptionsTitle {
   Basic = "Basic",
@@ -82,7 +83,8 @@ const PricingOptionsListItem = ({
 }: PricingOptionsListItemProps) => {
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
-
+  const user = useMe()?.user;
+  const userPurchasedSubscription = user?.id === subscription?.additionalData?.purchasedUserId;
   const canceled = subscription?.status === "canceled" && subscription?.additionalData?.cancelAtPeriodEnd;
   const willExpire =
     canceled &&
@@ -97,19 +99,24 @@ const PricingOptionsListItem = ({
     `(${percentSavings}% off save ${formatCurrency(savings)})`;
   const { childHeight, ref } = useGetChildHeight();
   const currentPlan = plan === title;
+  const canPurchaseNewPlan =
+    !currentPlan &&
+    !expired &&
+    ((subscription && userPurchasedSubscription) || !subscription || title === PricingOptionsTitle.Ecosystem);
   return (
     <PricingOptionsListItemWrapper $colorScheme={colorScheme} $childHeight={childHeight} $willExpire={willExpire}>
       <PricingOptionsListItemInnerWrapper $colorScheme={colorScheme} ref={ref}>
         <a
-          {...(!currentPlan &&
-            !expired && {
-              href:
-                billingInterval === BillingIntervalValue.annual &&
-                (title === PricingOptionsTitle.Hobby || title === PricingOptionsTitle.Premium)
-                  ? yearlyLink
-                  : link,
-            })}
-          {...(currentPlan && title !== PricingOptionsTitle.Basic && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}
+          {...(canPurchaseNewPlan && {
+            href:
+              billingInterval === BillingIntervalValue.annual &&
+              (title === PricingOptionsTitle.Hobby || title === PricingOptionsTitle.Premium)
+                ? yearlyLink
+                : link,
+          })}
+          {...(currentPlan &&
+            title !== PricingOptionsTitle.Basic &&
+            userPurchasedSubscription && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}
           target="_blank"
           style={{
             textDecoration: "none",

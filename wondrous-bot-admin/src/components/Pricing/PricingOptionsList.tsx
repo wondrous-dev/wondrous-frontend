@@ -8,6 +8,7 @@ import PricingOptionsListItem, {
 } from "./PricingOptionsListItem";
 import { PricingListOptionWrapper } from "./styles";
 import { useSubscription } from "utils/hooks";
+import { useMe } from "components/Auth";
 
 const STRIPE_MANAGE_SUBSCRIPTION_LINK = import.meta.env.VITE_PRODUCTION
   ? "https://billing.stripe.com/p/login/fZefYZfFDdyk6NG8ww"
@@ -112,6 +113,8 @@ const PricingOptionsList = ({
   const { activeOrg } = useContext(GlobalContext);
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
+  const user = useMe()?.user;
+  const userPurchasedSubscription = user?.id === subscription?.additionalData?.purchasedUserId;
   return (
     <PricingListOptionWrapper>
       {pricingOptions.map((i) => {
@@ -123,29 +126,31 @@ const PricingOptionsList = ({
           activeOrg?.id &&
           !i.link?.includes("client_reference_id")
         ) {
-          i.link = `${i.link}?client_reference_id=${activeOrg?.id}`;
+          i.link = `${i.link}?client_reference_id=${activeOrg?.id}${user?.id ? `usereq${user?.id}` : ""}`;
         }
 
         if (plan === PricingOptionsTitle.Ecosystem) {
           if (i.title !== plan) {
             i.buttonText = "Downgrade";
           }
-          if (i.title === PricingOptionsTitle.Basic) {
+          if (i.title === PricingOptionsTitle.Basic && userPurchasedSubscription) {
             i.link = STRIPE_MANAGE_SUBSCRIPTION_LINK;
           }
         }
         if (plan === PricingOptionsTitle.Premium) {
           if (i.title === PricingOptionsTitle.Hobby || i.title === PricingOptionsTitle.Basic) {
             i.buttonText = "Downgrade";
-          }
-          if (i.title === PricingOptionsTitle.Basic) {
-            i.link = STRIPE_MANAGE_SUBSCRIPTION_LINK;
+            if (userPurchasedSubscription) {
+              i.link = STRIPE_MANAGE_SUBSCRIPTION_LINK;
+            }
           }
         }
         if (plan === PricingOptionsTitle.Hobby) {
           if (i.title === PricingOptionsTitle.Basic) {
             i.buttonText = "Downgrade";
-            i.link = STRIPE_MANAGE_SUBSCRIPTION_LINK;
+            if (userPurchasedSubscription) {
+              i.link = STRIPE_MANAGE_SUBSCRIPTION_LINK;
+            }
           }
         }
         return <PricingOptionsListItem {...i} settings={settings} billingInterval={billingInterval} key={i.title} />;
