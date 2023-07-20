@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import BillingInterval, { BillingIntervalValue } from "./BillingInterval";
 import PricingOptionsList from "./PricingOptionsList";
 import { useNavigate } from "react-router-dom";
+import { BillingInfoContainer, BillingInfoHeaderText } from "components/Settings/Billing/styles";
+import { useSubscription } from "utils/hooks";
+import { useMe } from "components/Auth";
 
 const PricingComponent = () => {
   const navigate = useNavigate();
@@ -11,6 +14,9 @@ const PricingComponent = () => {
     xs: "100%",
     md: "100vh",
   };
+  const subscription = useSubscription();
+  const user = useMe()?.user;
+  const userPurchasedSubscription = user?.id === subscription?.additionalData?.purchasedUserId;
   useEffect(() => {
     if (import.meta.env.VITE_PRODUCTION) {
       navigate("/");
@@ -40,6 +46,36 @@ const PricingComponent = () => {
           Upgrade your community with our premium features
         </Typography>
         <BillingInterval onClick={setBillingInterval} selected={billingInterval} />
+        {subscription && !userPurchasedSubscription && (
+          <Box paddingLeft="16px" paddingRight="16px">
+            <BillingInfoContainer
+              style={{
+                marginBottom: "16px",
+                background: "#2A8D5C",
+                maxWidth: "1200px",
+              }}
+            >
+              <BillingInfoHeaderText
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "white",
+                }}
+              >
+                There's already a subscription associated with this organization! Only the user account who purchased
+                the subscription can update their account. Please contact us our on{" "}
+                <a
+                  style={{ color: "white", textDecoration: "underline" }}
+                  href="https://discord.gg/wonderverse-xyz"
+                  target="_blank"
+                >
+                  Discord
+                </a>{" "}
+                if you want to change this.
+              </BillingInfoHeaderText>
+            </BillingInfoContainer>
+          </Box>
+        )}
       </Grid>
       <Box
         width="100%"

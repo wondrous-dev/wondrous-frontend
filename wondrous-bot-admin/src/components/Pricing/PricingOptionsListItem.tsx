@@ -99,18 +99,21 @@ const PricingOptionsListItem = ({
     `(${percentSavings}% off save ${formatCurrency(savings)})`;
   const { childHeight, ref } = useGetChildHeight();
   const currentPlan = plan === title;
+  const canPurchaseNewPlan =
+    !currentPlan &&
+    !expired &&
+    ((subscription && userPurchasedSubscription) || !subscription || title === PricingOptionsTitle.Ecosystem);
   return (
     <PricingOptionsListItemWrapper $colorScheme={colorScheme} $childHeight={childHeight} $willExpire={willExpire}>
       <PricingOptionsListItemInnerWrapper $colorScheme={colorScheme} ref={ref}>
         <a
-          {...(!currentPlan &&
-            !expired && {
-              href:
-                billingInterval === BillingIntervalValue.annual &&
-                (title === PricingOptionsTitle.Hobby || title === PricingOptionsTitle.Premium)
-                  ? yearlyLink
-                  : link,
-            })}
+          {...(canPurchaseNewPlan && {
+            href:
+              billingInterval === BillingIntervalValue.annual &&
+              (title === PricingOptionsTitle.Hobby || title === PricingOptionsTitle.Premium)
+                ? yearlyLink
+                : link,
+          })}
           {...(currentPlan &&
             title !== PricingOptionsTitle.Basic &&
             userPurchasedSubscription && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}

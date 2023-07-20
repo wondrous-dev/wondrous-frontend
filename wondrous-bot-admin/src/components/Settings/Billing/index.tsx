@@ -45,8 +45,12 @@ const BillingSettings = () => {
                 fontWeight: "500",
               }}
             >
-              Only the user account who purchased the subscription can update their details! You can however upgrade the
-              subscription.
+              Only the user account who purchased the subscription for this organization can update their account!
+              Please contact us our on{" "}
+              <a href="https://discord.gg/wonderverse-xyz" target="_blank">
+                Discord
+              </a>{" "}
+              if you want to change this.
             </BillingInfoHeaderText>
           </BillingInfoContainer>
         </Box>
