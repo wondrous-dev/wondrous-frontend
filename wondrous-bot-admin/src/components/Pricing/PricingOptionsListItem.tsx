@@ -240,7 +240,7 @@ const PricingOptionsListItem = ({
             >
               {currentPlan && !expired ? (willExpire ? "Renew" : "Your current plan") : buttonText}
             </Button>
-            {willExpire && (
+            {willExpire && currentPlan && (
               <Typography
                 textAlign={"center"}
                 fontFamily="Poppins, sans-serif"
