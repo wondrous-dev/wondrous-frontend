@@ -6,6 +6,7 @@ import { BillingIntervalValue } from "./BillingInterval";
 import { PricingOptionsListItemInnerWrapper, PricingOptionsListItemWrapper } from "./styles";
 import { useSubscription } from "utils/hooks";
 import { format } from "date-fns";
+import { useMe } from "components/Auth";
 
 export enum PricingOptionsTitle {
   Basic = "Basic",
@@ -82,7 +83,8 @@ const PricingOptionsListItem = ({
 }: PricingOptionsListItemProps) => {
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
-
+  const user = useMe()?.user;
+  const userPurchasedSubscription = user?.id === subscription?.additionalData?.purchasedUserId;
   const canceled = subscription?.status === "canceled" && subscription?.additionalData?.cancelAtPeriodEnd;
   const willExpire =
     canceled &&
@@ -109,7 +111,9 @@ const PricingOptionsListItem = ({
                   ? yearlyLink
                   : link,
             })}
-          {...(currentPlan && title !== PricingOptionsTitle.Basic && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}
+          {...(currentPlan &&
+            title !== PricingOptionsTitle.Basic &&
+            userPurchasedSubscription && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}
           target="_blank"
           style={{
             textDecoration: "none",
