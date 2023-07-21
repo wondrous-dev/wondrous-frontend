@@ -57,6 +57,12 @@ const handleRequest = async (req: VercelRequest, res: VercelResponse) => {
         <title>${metadata.title}</title>
         <meta property="og:image" content="${metadata.image}" />
         <meta property="og:description" content="${metadata.description}" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@wonderverse_xyz" />
+        <meta name="twitter:title" content="${metadata.title}" />
+        <meta name="twitter:description" content="${metadata.description}" />
+        <meta name="twitter:image" content="${metadata.image}" />
+
         <body>
         <div />
         <script>
