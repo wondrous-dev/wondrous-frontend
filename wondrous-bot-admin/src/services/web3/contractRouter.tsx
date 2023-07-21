@@ -23,6 +23,11 @@ const CHAIN_TO_MULTISEND_ADDRESS = {
         [ContractType.ERC20]: '0x83703892a562d5ec05b5f9453e8a57c8cffc99e6',
         [ContractType.ERC721]: '0x83703892a562d5ec05b5f9453e8a57c8cffc99e6',
         [ContractType.ERC1155]: '0x83703892a562d5ec05b5f9453e8a57c8cffc99e6',
+    },
+    10: { // Optimism
+        [ContractType.ERC20]: '0x619645aE6B05cAAcCBbDa3E1B4D41De151556B92',
+        [ContractType.ERC721]: '0x619645aE6B05cAAcCBbDa3E1B4D41De151556B92',
+        [ContractType.ERC1155]: '0x619645aE6B05cAAcCBbDa3E1B4D41De151556B92',
     }
 }
 
