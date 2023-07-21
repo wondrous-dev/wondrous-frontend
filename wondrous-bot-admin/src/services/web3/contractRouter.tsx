@@ -5,9 +5,9 @@ export enum ContractType {
 }
 const CHAIN_TO_MULTISEND_ADDRESS = {
     1: { // mainnet
-        [ContractType.ERC20]: '',
-        [ContractType.ERC721]: '',
-        [ContractType.ERC1155]: '',
+        [ContractType.ERC20]: '0x87439d43d0d59ae05f858252fe6464f4640f31bf',
+        [ContractType.ERC721]: '0x87439d43d0d59ae05f858252fe6464f4640f31bf',
+        [ContractType.ERC1155]: '0x87439d43d0d59ae05f858252fe6464f4640f31bf',
     },
     4: { // rinkeby
         [ContractType.ERC20]: '',
