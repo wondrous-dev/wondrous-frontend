@@ -5,9 +5,9 @@ export enum ContractType {
 }
 const CHAIN_TO_MULTISEND_ADDRESS = {
     1: { // mainnet
-        [ContractType.ERC20]: '',
-        [ContractType.ERC721]: '',
-        [ContractType.ERC1155]: '',
+        [ContractType.ERC20]: '0x87439d43d0d59ae05f858252fe6464f4640f31bf',
+        [ContractType.ERC721]: '0x87439d43d0d59ae05f858252fe6464f4640f31bf',
+        [ContractType.ERC1155]: '0x87439d43d0d59ae05f858252fe6464f4640f31bf',
     },
     4: { // rinkeby
         [ContractType.ERC20]: '',
@@ -23,6 +23,11 @@ const CHAIN_TO_MULTISEND_ADDRESS = {
         [ContractType.ERC20]: '0x83703892a562d5ec05b5f9453e8a57c8cffc99e6',
         [ContractType.ERC721]: '0x83703892a562d5ec05b5f9453e8a57c8cffc99e6',
         [ContractType.ERC1155]: '0x83703892a562d5ec05b5f9453e8a57c8cffc99e6',
+    },
+    10: { // Optimism
+        [ContractType.ERC20]: '0x619645aE6B05cAAcCBbDa3E1B4D41De151556B92',
+        [ContractType.ERC721]: '0x619645aE6B05cAAcCBbDa3E1B4D41De151556B92',
+        [ContractType.ERC1155]: '0x619645aE6B05cAAcCBbDa3E1B4D41De151556B92',
     }
 }
 
