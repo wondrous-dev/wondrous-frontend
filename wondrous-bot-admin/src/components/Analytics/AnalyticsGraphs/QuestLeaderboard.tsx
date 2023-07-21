@@ -11,7 +11,6 @@ import GlobalContext from "utils/context/GlobalContext";
 
 const RewardComponent = ({ value }) => {
   const rewards = constructRewards({ rewards: value });
-  console.log(rewards, "REWARDS");
   return (
     <Grid display="flex" gap="6px" flexWrap="wrap">
       {rewards?.map((reward, key) => (

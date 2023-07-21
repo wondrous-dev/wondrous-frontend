@@ -42,8 +42,6 @@ const CardsComponent = ({ stats }: IProps) => {
     },
   });
 
-  console.log(data, "DATAS");
-
   const config = [
     {
       title: "Community Members",
