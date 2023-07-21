@@ -1,4 +1,5 @@
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
+import moment from "moment";
 import { QUEST_CONDITION_TYPES } from "./constants";
 import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
 
@@ -94,4 +95,29 @@ export const constructRewards = ({rewards}) => {
       }
     }
   })
+};
+
+export const filterToDates = (value) => {
+  if (value === "last_week") {
+    return {
+      startDate: moment().subtract(7, "days").utcOffset(0).startOf("day").toISOString(),
+      endDate: moment().utcOffset(0).endOf("day").toISOString(),
+    };
+  }
+  if (value === "last_month") {
+    return {
+      startDate: moment().subtract(1, "months").utcOffset(0).startOf("day").toISOString(),
+      endDate: moment().utcOffset(0).endOf("day").toISOString(),
+    };
+  }
+  if (value === "ytd") {
+    return {
+      startDate: moment().startOf("year").utcOffset(0).startOf("day").toISOString(),
+      endDate: moment().utcOffset(0).endOf("day").toISOString(),
+    };
+  }
+  return {
+    startDate: moment().subtract(7, "days").utcOffset(0).startOf("day").toISOString(),
+    endDate: moment().utcOffset(0).endOf("day").toISOString(),
+  };
 };

@@ -1,5 +1,6 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { offsetLimitPagination } from "@apollo/client/utilities";
 import { getAuthHeader, getWaitlistAuthHeader } from "components/Auth/withAuthHeader";
 import offsetLimitPaginationInput from "utils/offsetLimitPaginationInput";
 
@@ -64,6 +65,7 @@ const cache = new InMemoryCache({
           keyArgs: ["input", ["questId"]],
           merge: offsetLimitPaginationInput,
         },
+
         getPaidCmtyPaymentsForQuest: {
           keyArgs: ["input", ["questId"]],
           merge: offsetLimitPaginationInput,
@@ -79,7 +81,8 @@ const cache = new InMemoryCache({
         getCompletedCmtyPaymentsForOrg: {
           keyArgs: ["input", ["orgId"]],
           merge: offsetLimitPaginationInput,
-        }
+        },
+        getQuestsAnalyticsLeaderboard: offsetLimitPagination()
       },
     },
   },

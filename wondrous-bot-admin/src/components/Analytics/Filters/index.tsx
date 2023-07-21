@@ -20,11 +20,11 @@ const OPTIONS = [
   },
 ];
 
-const FiltersComponent = ({ onChange, activeFilter }) => {
+const FiltersComponent = ({ onChange, activeFilter, options = OPTIONS }) => {
   const handleOnChange = (val) => {
     onChange(val);
   };
-  return <SelectComponent options={OPTIONS} value={activeFilter} onChange={(val) => handleOnChange(val)} />;
+  return <SelectComponent options={options} value={activeFilter} onChange={(val) => handleOnChange(val)} />;
 };
 
 export default FiltersComponent;

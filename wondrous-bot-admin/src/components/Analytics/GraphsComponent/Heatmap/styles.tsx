@@ -3,8 +3,9 @@ import styled from "styled-components";
 
 export const HeatmapContainer = styled(Grid)`
   display: grid;
-  // grid-template-columns: repeat(6, 1fr);
-  grid-template-columns: ${({ cellsNum }) => `repeat(${cellsNum}, 1fr);`}
+  grid-template-columns: repeat(24, 1fr);
+  grid-template-rows: 7;
+  overflow: scroll;
   grid-gap: 4px;
   grid-row-gap: 2px;
   width: 100%;
@@ -14,5 +15,7 @@ export const HeatmapContainer = styled(Grid)`
 export const HeatmapCell = styled.div`
   background-color: ${({ bgColor }) => bgColor};
   border-radius: 6px;
-  height: 100%;
+  aspect-ratio: 1;
+  width: 100%;
+  box-sizing: border-box;
 `;

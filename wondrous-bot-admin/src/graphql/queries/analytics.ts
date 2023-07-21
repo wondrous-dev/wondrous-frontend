@@ -38,6 +38,7 @@ export const GET_CMTY_PRESENCE_ANALYTICS = gql`
   query getCmtyPresenceAnalytics($orgId: String, $startDate: String, $endDate: String) {
     getCmtyPresenceAnalytics(orgId: $orgId, startDate: $startDate, endDate: $endDate) {
       date
+      hour
       counts {
         total
         active
@@ -47,8 +48,8 @@ export const GET_CMTY_PRESENCE_ANALYTICS = gql`
 `;
 
 export const GET_QUEST_LEADERBOARD = gql`
-  query getQuestsAnalyticsLeaderboard($orgId: String, $startDate: String, $endDate: String) {
-    getQuestsAnalyticsLeaderboard(orgId: $orgId, startDate: $startDate, endDate: $endDate) {
+  query getQuestsAnalyticsLeaderboard($orgId: String, $startDate: String, $endDate: String, $limit: Int, $offset: Int) {
+    getQuestsAnalyticsLeaderboard(orgId: $orgId, startDate: $startDate, endDate: $endDate, limit: $limit, offset: $offset) {
       id
       createdAt
       createdBy
@@ -86,6 +87,19 @@ export const GET_QUEST_LEADERBOARD = gql`
           contractAddress
         }
       }
+    }
+  }
+`;
+
+export const GET_CMTY_ANALYTICS_CARDS = gql`
+  query getCmtyAnalyticsCards($orgId: String, $startDate: String, $endDate: String) {
+    getCmtyAnalyticsCards(orgId: $orgId, startDate: $startDate, endDate: $endDate) {
+      cmtyMembers
+      allTimeCmtyMembers
+      questCompletions
+      allTimeQuestCompletions
+      rewards,
+      allTimeRewards
     }
   }
 `;

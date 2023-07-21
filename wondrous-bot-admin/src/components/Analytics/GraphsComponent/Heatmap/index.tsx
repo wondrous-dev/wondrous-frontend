@@ -1,7 +1,4 @@
-import { Box, ButtonBase, CircularProgress, Grid, Tooltip, Typography } from "@mui/material";
-import { CustomTextField } from "components/AddFormEntity/components/styles";
-import FiltersComponent from "components/Analytics/Filters";
-import DateRangePicker from "components/Shared/DatePicker";
+import { Box, CircularProgress, Grid, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useMemo, useState } from "react";
 import { MONTH_DAY_FULL_YEAR } from "utils/constants";
@@ -13,42 +10,59 @@ const Cell = ({ counts, date }) => {
     if (total === 0) {
       return {
         opacity: 0.2,
-        diff: 'Not enough data'
+        diff: "Not enough data",
       };
     }
     const diff = active / total;
-    // if(diff < 0.2) {
-    //     return 0.3;
-    // }
     let opacity = diff;
-    if(diff < 0.2) {
-        opacity = 0.3
-    };
-    return {
-        opacity,
-        diff: `${diff * 100}%`
+    if (diff < 0.2) {
+      opacity = 0.3;
     }
+    return {
+      opacity,
+      diff: `${diff * 100}%`,
+    };
   }, [counts, date]);
 
-
   let bgColor = `rgba(186, 172, 250, ${calcDiff?.opacity})`;
+
+  const config = [
+    {
+      label: "Date:",
+      value: `${moment(counts?.date).format(MONTH_DAY_FULL_YEAR)} ${counts?.hour}:00`,
+    },
+    {
+      label: "Active members:",
+      value: counts?.active,
+    },
+    {
+      label: "Total Members:",
+      value: counts?.total,
+    },
+    {
+      label: "Active %",
+      value: calcDiff?.diff,
+    },
+  ];
 
   return (
     <Tooltip
       title={
         <Box>
-          <Typography fontFamily="Poppins" fontWeight={600} fontSize="12px" lineHeight="24px" color="white">
-            Date: {moment(date).format(MONTH_DAY_FULL_YEAR)}
-          </Typography>
-          <Typography fontFamily="Poppins" fontWeight={600} fontSize="12px" lineHeight="24px" color="white">
-            Active members: {counts?.active}
-          </Typography>
-          <Typography fontFamily="Poppins" fontWeight={600} fontSize="12px" lineHeight="24px" color="white">
-            Total members: {counts?.total}
-          </Typography>
-          <Typography fontFamily="Poppins" fontWeight={600} fontSize="12px" lineHeight="24px" color="white">
-            Active % : {calcDiff?.diff}
-          </Typography>
+          {config?.map((item, idx) => {
+            return (
+              <Typography
+                key={idx}
+                fontFamily="Poppins"
+                fontWeight={600}
+                fontSize="12px"
+                lineHeight="24px"
+                color="white"
+              >
+                {item.label} {item?.value}
+              </Typography>
+            );
+          })}
         </Box>
       }
       placement="top"
@@ -58,114 +72,87 @@ const Cell = ({ counts, date }) => {
   );
 };
 
-const handleCellNum = (value) => {
-  let cellNum = 0;
-  if (value === "last_week") {
-    cellNum = 3;
-  }
-  if (value === "last_month") {
-    cellNum = 6;
-  }
-  if (value === "ytd") {
-    cellNum = 20;
-  }
-  return cellNum;
-};
-
 const Heatmap = ({ data, loading, refetch }) => {
   const [activeFilter, setActiveFilter] = useState("last_week");
-  const [cellsNum, setCellsNum] = useState(handleCellNum("last_week"));
   const [customDates, setCustomDates] = useState({
     startAt: null,
     endAt: null,
   });
 
-  const { labels } = useMemo(() => {
-    const labels = data?.map((i) => i.date);
-    return {
-      labels,
-    };
+  const { dataByHourAndDay, labels, uniqueDates } = useMemo(() => {
+    let dataByHourAndDay = {};
+    let labels = [];
+    let uniqueDates = [];
+
+    data?.forEach((item) => {
+      const date = moment(item.date);
+      const day = date.day();
+      const hour = parseInt(item.hour, 10);
+      const key = `${day}-${hour}`;
+      if (!uniqueDates.includes(item.date)) {
+        uniqueDates.push(item.date);
+      }
+
+      labels.push(key);
+      dataByHourAndDay[key] = { ...item.counts, date: item.date, hour };
+    });
+
+    return { dataByHourAndDay, labels, uniqueDates };
   }, [data]);
 
-  console.log(labels, 'labeeels')
-  const filterToDates = (value) => {
-    if (value === "last_week") {
-      return {
-        startDate: moment().subtract(7, "days").utcOffset(0).startOf("day").toISOString(),
-        endDate: moment().utcOffset(0).endOf("day").toISOString(),
-      };
-    }
-    if (value === "last_month") {
-      return {
-        startDate: moment().subtract(1, "months").utcOffset(0).startOf("day").toISOString(),
-        endDate: moment().utcOffset(0).endOf("day").toISOString(),
-      };
-    }
-    if (value === "ytd") {
-      return {
-        startDate: moment().startOf("year").utcOffset(0).startOf("day").toISOString(),
-        endDate: moment().utcOffset(0).endOf("day").toISOString(),
-      };
-    }
-    return {
-      startDate: moment().subtract(7, "days").utcOffset(0).startOf("day").toISOString(),
-      endDate: moment().utcOffset(0).endOf("day").toISOString(),
-    };
-  };
+  // const handleChange = (value) => {
+  //   setActiveFilter(value);
+  //   if (value === "custom") {
+  //     return;
+  //   }
+  //   const { startDate, endDate } = filterToDates(value);
+  //   refetch({
+  //     startDate,
+  //     endDate,
+  //   });
+  // };
 
-  const handleChange = (value) => {
-    setActiveFilter(value);
-    if (value === "custom") {
-      return;
-    }
-    setCellsNum(handleCellNum(value));
-    const { startDate, endDate } = filterToDates(value);
-    refetch({
-      startDate,
-      endDate,
-    });
-  };
-
-  const handleCustomDatesCells = (value) => {
-    console.log(value, "VALUE");
-    const diffInDays = value.endAt.diff(value.startAt, "days");
-    switch (true) {
-      case diffInDays < 10:
-        return 3;
-      case diffInDays < 30:
-        return 5;
-      case diffInDays < 60:
-        return 6;
-      case diffInDays < 100:
-        return 10;
-      case diffInDays < 370:
-        return 20;
-      case diffInDays < 500:
-        return 28;
-      case diffInDays < 700:
-        return 40;
-      case diffInDays < 800:
-        return 44;
-      case diffInDays < 900:
-        return 48;
-      case diffInDays < 1000:
-        return 52;
-      default:
-        return 20;
-    }
-  };
+  // const handleCustomDatesCells = (value) => {
+  //   const diffInDays = value.endAt.diff(value.startAt, "days");
+  //   switch (true) {
+  //     case diffInDays < 10:
+  //       return 3;
+  //     case diffInDays < 30:
+  //       return 5;
+  //     case diffInDays < 60:
+  //       return 6;
+  //     case diffInDays < 100:
+  //       return 10;
+  //     case diffInDays < 370:
+  //       return 20;
+  //     case diffInDays < 500:
+  //       return 28;
+  //     case diffInDays < 700:
+  //       return 40;
+  //     case diffInDays < 800:
+  //       return 44;
+  //     case diffInDays < 900:
+  //       return 48;
+  //     case diffInDays < 1000:
+  //       return 52;
+  //     default:
+  //       return 20;
+  //   }
+  // };
 
   const handleConfirm = (value) => {
     setCustomDates(value);
     // setData(Array(labelsTestVal("custom", value)).fill(null));
-    setCellsNum(handleCustomDatesCells(value));
+    // setCellsNum(handleCustomDatesCells(value));
     refetch({
       startDate: value.startAt.utcOffset(0).startOf("day").toISOString(),
       endDate: value.endAt.utcOffset(0).endOf("day").toISOString(),
     });
   };
 
-  console.log(loading || !data);
+  const startDate = uniqueDates[0];
+  const endDate = uniqueDates[uniqueDates?.length - 1];
+
   return (
     <Grid
       bgcolor="white"
@@ -180,8 +167,7 @@ const Heatmap = ({ data, loading, refetch }) => {
       alignItems="center"
     >
       <Grid display="flex" gap="12px" alignItems="flex-start" width="100%">
-        <FiltersComponent onChange={handleChange} activeFilter={activeFilter} />
-        {activeFilter === "custom" ? (
+        {/* {activeFilter === "custom" ? (
           <DateRangePicker
             onConfirm={handleConfirm}
             blockPastDates={false}
@@ -202,7 +188,7 @@ const Heatmap = ({ data, loading, refetch }) => {
               </ButtonBase>
             )}
           />
-        ) : null}
+        ) : null} */}
       </Grid>
       <Typography
         width="100%"
@@ -213,8 +199,48 @@ const Heatmap = ({ data, loading, refetch }) => {
         lineHeight="16px"
         color="black"
       >
-        Discord Presence
+        Hourly discord presence
       </Typography>
+
+      <Typography
+        width="100%"
+        align="left"
+        fontFamily="Poppins"
+        fontWeight={600}
+        fontSize="12px"
+        lineHeight="12px"
+        color="black"
+        display={{
+          xs: "block",
+          sm: "none",
+        }}
+      >
+        {`${moment(startDate)?.format("MM/DD/YY")} - ${moment(endDate)?.format("MM/DD/YY")}`}
+      </Typography>
+      <Box display="flex" width="100%" justifyContent="flex-start" gap="10px" alignItems="center">
+        <Box 
+        sx={{
+          borderRadius: '6px',
+          width: '20px',
+          height: '20px',
+          background: 'rgba(186, 172, 250, 0.3)'
+        }}
+        />
+        <Typography fontFamily="Poppins" fontWeight={500} fontSize="12px" lineHeight="24px" color="black">
+          Least activity
+        </Typography>
+        <Box 
+        sx={{
+          borderRadius: '6px',
+          width: '20px',
+          height: '20px',
+          background: 'rgba(186, 172, 250, 1)'
+        }}
+        />
+        <Typography fontFamily="Poppins" fontWeight={500} fontSize="12px" lineHeight="24px" color="black">
+          Most activity
+        </Typography>
+      </Box>
 
       {loading || !data ? (
         <CircularProgress
@@ -226,11 +252,33 @@ const Heatmap = ({ data, loading, refetch }) => {
           }}
         />
       ) : (
-        <HeatmapContainer cellsNum={cellsNum}>
-          {labels.map((label, idx) => (
-            <Cell counts={data[idx]?.counts} date={label} key={label}/>
-          ))}
-        </HeatmapContainer>
+        <Grid display="flex" width="100%" height="80%" paddingTop="4rem" paddingBottom="4rem" gap="12px">
+          <Grid
+            gap="4px"
+            display={{
+              xs: "none",
+              sm: "grid",
+            }}
+          >
+            {uniqueDates?.map((date, idx) => (
+              <Typography
+                fontSize="12px"
+                fontFamily="Poppins"
+                fontWeight={600}
+                color="black"
+                display="flex"
+                alignItems="center"
+              >
+                {moment(date)?.format("MM/DD")}
+              </Typography>
+            ))}
+          </Grid>
+          <HeatmapContainer>
+            {labels.map((label) => (
+              <Cell counts={dataByHourAndDay[label]} date={label} key={label} />
+            ))}
+          </HeatmapContainer>
+        </Grid>
       )}
     </Grid>
   );

@@ -1,7 +1,6 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import PageHeader from "components/PageHeader";
-import PageWrapper from "components/Shared/PageWrapper";
 import {
   GET_CMTY_ENTITIES_COUNT,
   GET_CMTY_PRESENCE_ANALYTICS,
@@ -9,39 +8,23 @@ import {
   GET_QUEST_LEADERBOARD,
   GET_SUBMISSION_REPORTS,
 } from "graphql/queries";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import MessagesAndReactions from "./AnalyticsGraphs/MessagesAndReactions";
 import OnboardedUsers from "./AnalyticsGraphs/OnboardedUsers";
 import QuestLeaderboard from "./AnalyticsGraphs/QuestLeaderboard";
 import Submissions from "./AnalyticsGraphs/Submissions";
 import CardsComponent from "./Cards";
-import { LineChart } from "./GraphsComponent";
 import Heatmap from "./GraphsComponent/Heatmap";
-import getMembersAndOnboardedMembers from "./utils/getMembersAndOnboardedMembers";
-import getMessagesAndReactionsData from "./utils/getMessagesAndReactionsData";
 
 const AnalyticsComponent = () => {
   const { activeOrg } = useContext(GlobalContext);
-
+  
   const {
     data: submissionReports,
     refetch: submissionRefetch,
     loading: submissionLoading,
   } = useQuery(GET_SUBMISSION_REPORTS, {
-    fetchPolicy: "cache-and-network",
-    notifyOnNetworkStatusChange: true,
-    variables: {
-      orgId: activeOrg?.id,
-    },
-    skip: !activeOrg?.id,
-  });
-
-  const {
-    data: questLeaderboardData,
-    refetch: questLeaderboardRefetch,
-    loading: questLeaderboardLoading,
-  } = useQuery(GET_QUEST_LEADERBOARD, {
     fetchPolicy: "cache-and-network",
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -139,14 +122,16 @@ const AnalyticsComponent = () => {
             sm: "row",
           }}
         >
+          <Grid width="100%">
           <Submissions
             data={submissionReports?.getQuestsSubmissionsReport}
             refetch={submissionRefetch}
             loading={submissionLoading}
           />
+          </Grid>
           <Heatmap data={presenceData?.getCmtyPresenceAnalytics} loading={presenceLoading} refetch={presenceRefetch} />
         </Grid>
-        <QuestLeaderboard data={questLeaderboardData?.getQuestsAnalyticsLeaderboard} />
+        <QuestLeaderboard />
       </Grid>
     </>
   );
