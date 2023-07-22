@@ -4,6 +4,8 @@ import * as Yup from "yup";
 const FIELDS = {
   NAME: "name",
   USERNAME: "username",
+  TWITTER_HANDLE: "twitterHandle",
+  PRODUCT_LINK: "productLink",
 };
 
 export const useSchema = () => {
@@ -19,8 +21,9 @@ export const useSchema = () => {
         "Usernames should be between 5 and 15 characters long and contain only lowercase letters, numbers, and underscores."
       )
       .test("is-taken", "This username is taken", handleIsOrgUsernameTaken),
+    [FIELDS.TWITTER_HANDLE]: Yup.string().required("Twitter handle is required"),
+    [FIELDS.PRODUCT_LINK]: Yup.string().required("Product link is required"),
   });
-  return validationSchema
-//   return validationSchema.validate(values, { abortEarly: false });
-  
+  return validationSchema;
+  //   return validationSchema.validate(values, { abortEarly: false });
 };

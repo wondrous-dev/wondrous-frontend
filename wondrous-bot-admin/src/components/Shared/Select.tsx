@@ -15,7 +15,7 @@ const SelectComponent = ({
   const handleChange = (e) => onChange(e.target.value);
 
   return (
-    <Box style={boxStyle}>
+    <Box style={boxStyle} data-tour="tutorial-quest-select">
       <StyledTextFieldSelect
         select
         defaultValue=""

@@ -31,6 +31,20 @@ export const config = [
     disableInteraction: true,
     steps: [
       {
+        selector: "[data-tour=tutorial-quest-select]",
+        nextButtonTitle: "Next",
+        action: () => {},
+        prevButtonTitle: "Skip",
+        content: () => (
+          <ContentComponent title="Quests">
+            <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
+              You can toggle active and inactive quests here. We created default quests for your to use as templates but
+              they are inactive currently.
+            </Typography>
+          </ContentComponent>
+        ),
+      },
+      {
         selector: "[data-tour=tutorial-quest-card]",
         nextButtonTitle: "Visit Quest",
         action: () => window.scrollTo(0, 0),
