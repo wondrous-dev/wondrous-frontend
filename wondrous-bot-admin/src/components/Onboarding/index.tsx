@@ -14,6 +14,8 @@ const OnboardingComponent = () => {
   const [orgData, setOrgData] = useState({
     name: "",
     username: "",
+    twitterHandle: "",
+    productLink: "",
   });
 
   const navigate = useNavigate();
@@ -44,18 +46,8 @@ const OnboardingComponent = () => {
       label: "Username",
       value: orgData.username,
       onChange: handleChange,
-      placeholder: "communities",
+      placeholder: "username",
       required: true,
-      onBlur: async () => {
-        if (!orgData.username || !orgData.name) return;
-        try {
-          await validationSchema.validate(orgData, { abortEarly: false });
-        } catch (err) {
-          err.inner.forEach((e) => {
-            setErrors((prev) => ({ ...prev, [e.path]: e.message }));
-          });
-        }
-      },
       padding: "14px 14px 14px 24px",
       startAdornment: (
         <Typography
@@ -71,6 +63,48 @@ const OnboardingComponent = () => {
         </Typography>
       ),
     },
+    {
+      name: "twitterHandle",
+      label: "Twitter Handle",
+      onChange: handleChange,
+      placeholder: "twitter handle",
+      required: true,
+      padding: "14px 14px 14px 24px",
+      startAdornment: (
+        <Typography
+          fontFamily={"Poppins"}
+          fontSize="15px"
+          fontStyle="normal"
+          fontWeight={400}
+          color="black"
+          position="absolute"
+          padding="8px 0px 0px 8px"
+        >
+          @
+        </Typography>
+      ),
+    },
+    {
+      name: "productLink",
+      label: "Product Website",
+      onChange: handleChange,
+      placeholder: "product-link.xyz",
+      required: true,
+      padding: "14px 14px 14px 65px",
+      startAdornment: (
+        <Typography
+          fontFamily={"Poppins"}
+          fontSize="15px"
+          fontStyle="normal"
+          fontWeight={400}
+          color="black"
+          position="absolute"
+          padding="8px 0px 0px 8px"
+        >
+          https://
+        </Typography>
+      ),
+    },
   ];
 
   const handleSubmit = async () => {
@@ -82,6 +116,8 @@ const OnboardingComponent = () => {
             name: orgData.name,
             username: orgData.username,
             cmtyEnabled: true,
+            twitterHandle: orgData.twitterHandle,
+            productLink: orgData.productLink,
           },
         },
       });
@@ -131,7 +167,7 @@ const OnboardingComponent = () => {
             ))}
           </FormControl>
           <SharedSecondaryButton type="button" onClick={handleSubmit}>
-            Launch Community 💖
+            Create Community 💖
           </SharedSecondaryButton>
         </Grid>
       )}
