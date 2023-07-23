@@ -69,7 +69,6 @@ const CreateTemplate = ({
       setSteps(transformQuestConfig(getQuestById?.steps));
     }
   }, [getQuestById]);
-
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -311,7 +310,7 @@ const CreateTemplate = ({
           step.prompt = next.value?.prompt;
           step["additionalData"] = {
             discordMessageType: next.value?.discordMessageType,
-            discordChannelName: next.value?.discordChannelName?.trim(),
+            discordChannelId: next.value?.discordChannelId,
           };
         } else if (next.type === TYPES.DISCORD_EVENT_ATTENDANCE) {
           step.prompt = next.value?.prompt;

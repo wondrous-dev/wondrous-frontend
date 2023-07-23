@@ -1,11 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Grid } from "@mui/material";
 import apollo from "services/apollo";
 import { Label } from "./styles";
 import TextField from "../../Shared/TextField";
 import { TYPES } from "utils/constants";
-import { GET_GUILD_EVENTS, GET_GUILD_EVENT, GET_CMTY_ORG_DISCORD_CONFIG } from "graphql/queries";
-import { useQuery } from "@apollo/client";
+import {
+  GET_GUILD_EVENTS,
+  GET_GUILD_EVENT,
+  GET_CMTY_ORG_DISCORD_CONFIG,
+  GET_GUILD_DISCORD_CHANNELS,
+} from "graphql/queries";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import SelectComponent from "components/Shared/Select";
 import GlobalContext from "utils/context/GlobalContext";
 import DropdownSelect from "components/DropdownSelect/DropdownSelect";
@@ -20,30 +25,66 @@ const DISCORD_MESSAGE_TYPES = [
   },
 ];
 
-const DiscordChannelMessage = ({ handleOnChange, value, error }) => (
-  <>
-    <Label>Ask members to message a particular channel</Label>
-    <TextField
-      placeholder="Please enter the channel name without the # e.g. intros"
-      value={value?.discordChannelName || ""}
-      onChange={(value) => handleOnChange("discordChannelName", value)}
-      multiline={false}
-      error={error?.discordChannelName}
-      style={TextInputStyle}
-    />
-    <Label>Select message type</Label>
-    <SelectComponent
-      options={DISCORD_MESSAGE_TYPES}
-      background="#C1B6F6"
-      value={value?.discordMessageType}
-      error={error?.discordMessageType}
-      onChange={(value) => handleOnChange("discordMessageType", value)}
-      style={{
-        width: "50%",
-      }}
-    />
-  </>
-);
+const DiscordChannelMessage = ({ handleOnChange, value, error }) => {
+  const { activeOrg } = useContext(GlobalContext);
+  const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
+    fetchPolicy: "cache-and-network",
+  });
+
+  const [getGuildDiscordChannels, { data: guildDiscordChannelsData }] = useLazyQuery(GET_GUILD_DISCORD_CHANNELS, {
+    fetchPolicy: "cache-and-network",
+  });
+  const guildId = orgDiscordConfig?.getCmtyOrgDiscordConfig?.guildId;
+  const guildDiscordChannels = guildDiscordChannelsData?.getAvailableChannelsForDiscordGuild;
+  useEffect(() => {
+    if (guildId) {
+      // fetch all guild channels
+      getGuildDiscordChannels({
+        variables: {
+          guildId,
+        },
+      });
+    }
+  }, [guildId]);
+  const channels = guildDiscordChannels?.map((channel) => ({
+    label: channel.name,
+    value: channel.id,
+  }));
+
+  return (
+    <>
+      <Label>Ask members to message a particular channel</Label>
+      <SelectComponent
+        boxStyle={{
+          flex: 1,
+        }}
+        options={channels}
+        value={value?.discordChannelId || ""}
+        onChange={(value) => handleOnChange("discordChannelId", value)}
+        background="#C1B6F6"
+        style={{
+          width: "50%",
+        }}
+      />
+      <Label>Select message type</Label>
+      <SelectComponent
+        options={DISCORD_MESSAGE_TYPES}
+        background="#C1B6F6"
+        value={value?.discordMessageType}
+        error={error?.discordMessageType}
+        onChange={(value) => handleOnChange("discordMessageType", value)}
+        style={{
+          width: "50%",
+        }}
+      />
+    </>
+  );
+};
 
 const DiscordJoinCommunityCall = ({ handleOnChange, value }) => {
   const { activeOrg } = useContext(GlobalContext);
