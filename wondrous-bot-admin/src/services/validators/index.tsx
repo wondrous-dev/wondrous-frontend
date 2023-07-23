@@ -21,7 +21,7 @@ const ALL_TYPES = [
   TYPES.DATA_COLLECTION,
   TYPES.LIKE_YT_VIDEO,
   TYPES.SUBSCRIBE_YT_CHANNEL,
-  TYPES.LINK_CLICK
+  TYPES.LINK_CLICK,
 ];
 
 const sharedValidation = {
@@ -117,7 +117,7 @@ const stepTypes = {
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       discordMessageType: Yup.string().required("Discord message type is required"),
-      discordChannelName: Yup.string().required("Discord channel id is required"),
+      discordChannelId: Yup.string().required("Discord channel id is required"),
     }),
   }),
   [TYPES.NUMBER]: Yup.object().shape({
@@ -172,7 +172,7 @@ const stepTypes = {
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       linkClickUrl: Yup.string().required("Link is required").url("Must be a url"),
-    })
+    }),
   }),
   [TYPES.SUBSCRIBE_YT_CHANNEL]: Yup.object().shape({
     additionalData: Yup.object().shape({

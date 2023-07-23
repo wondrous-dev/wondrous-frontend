@@ -80,6 +80,7 @@ export const QuestFragment = gql`
       }
       additionalData {
         discordChannelName
+        discordChannelId
         tweetHandle
         tweetLink
         tweetPhrase

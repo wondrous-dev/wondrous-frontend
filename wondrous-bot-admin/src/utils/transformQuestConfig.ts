@@ -99,7 +99,7 @@ type OutputQuestStep = {
       }
     | {
         prompt?: string;
-        discordChannelName: string;
+        discordChannelId: string;
         discordMessageType?: string;
       }
     | {
@@ -210,7 +210,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
     } else if (step.type === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
       outputStep.value = {
         prompt: step?.prompt,
-        discordChannelName: step?.additionalData?.discordChannelName,
+        discordChannelId: step?.additionalData?.discordChannelId,
         discordMessageType: step?.additionalData?.discordMessageType,
       };
     } else if (step.type === TYPES.DISCORD_EVENT_ATTENDANCE) {
