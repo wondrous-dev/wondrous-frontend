@@ -1,9 +1,5 @@
-import { gql } from '@apollo/client';
-import {
-  LoggedinUserFragment,
-  LoggedinWaitlistUserFragment,
-  SmallUserFragment,
-} from 'graphql/fragments';
+import { gql } from "@apollo/client";
+import { LoggedinUserFragment, LoggedinWaitlistUserFragment, SmallUserFragment } from "graphql/fragments";
 
 export const WHOAMI = gql`
   query whoami {
@@ -23,7 +19,6 @@ export const GET_LOGGED_IN_USER = gql`
   ${LoggedinUserFragment}
 `;
 
-
 export const GET_LOGGED_IN_WAITLIST_USER = gql`
   query {
     getLoggedinWaitlistUser {
@@ -42,10 +37,8 @@ export const GET_USER_SIGNING_MESSAGE = gql`
   }
 `;
 
-
-
 export const GET_LOGGED_IN_USER_FULL_ACCESS_ORGS = gql`
-  query getLoggedInUserFullAccessOrgs($cmtyEnabled: Boolean, $excludeSharedOrgs:Boolean ) {
+  query getLoggedInUserFullAccessOrgs($cmtyEnabled: Boolean, $excludeSharedOrgs: Boolean) {
     getLoggedInUserFullAccessOrgs(cmtyEnabled: $cmtyEnabled, excludeSharedOrgs: $excludeSharedOrgs) {
       id
       username
@@ -55,6 +48,12 @@ export const GET_LOGGED_IN_USER_FULL_ACCESS_ORGS = gql`
       privacyLevel
       shared
       cmtyEnabled
+      cmtyDiscordConfig {
+        guildId
+        guildInfo {
+          guildName
+        }
+      }
     }
   }
 `;

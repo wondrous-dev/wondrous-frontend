@@ -70,7 +70,7 @@ const LevelsPage = () => {
           labelProps: {
             canEdit: true,
             onEdit: (value) => {
-              if (!import.meta.env.VITE_PRODUCTION && plan === PricingOptionsTitle.Basic) {
+              if (plan === PricingOptionsTitle.Basic) {
                 setPaywall(true);
                 setPaywallMessage("You need to upgrade from a basic plan to edit level names");
               } else {
