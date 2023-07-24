@@ -191,7 +191,7 @@ const QuestsList = ({ data }) => {
               >
                 <CardWrapper
                   onClick={() => {
-                    if (!import.meta.env.VITE_PRODUCTION && plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
+                    if (plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
                       setPaywall(true);
                       setPaywallMessage("You have reached the limit of quests for your current plan.");
                     } else {
