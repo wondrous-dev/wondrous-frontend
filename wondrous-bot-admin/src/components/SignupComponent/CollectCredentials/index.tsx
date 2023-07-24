@@ -24,14 +24,13 @@ const CollectCredentials = ({ moveForward }) => {
   const { email, password, confirmPassword } = credentials;
   const [errorMessage, setErrorMessage] = useState("");
   const isMobile = useMediaQuery("(max-width:600px)");
-  const {search} = useLocation();
+  const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const [notSupportedChain, setNotSupportedChain] = useState(false);
 
-
-  const discordConnectError = searchParams.get('discordConnectError');
-  const token = searchParams.get('token');
-  const type = searchParams.get('type');
+  const discordConnectError = searchParams.get("discordConnectError");
+  const token = searchParams.get("token");
+  const type = searchParams.get("type");
   const state = JSON.stringify({
     callbackType: DISCORD_CONNECT_TYPES.signup,
     ...(token ? { token } : {}),
@@ -102,7 +101,6 @@ const CollectCredentials = ({ moveForward }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wonderWeb3.wallet.chain]);
 
-  
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
     setErrors({
@@ -147,15 +145,14 @@ const CollectCredentials = ({ moveForward }) => {
     setErrors({});
     try {
       await validate(credentials);
-      const {email, password} = credentials;
+      const { email, password } = credentials;
       const result = await emailSignup(email, password);
-      if(result?.success) {
+      if (result?.success) {
         moveForward();
-      }
-      else if (result === GRAPHQL_ERRORS.EMAIL_ALREADY_EXIST) {
-        setErrorMessage('This email is already registered. Please log in');
+      } else if (result === GRAPHQL_ERRORS.EMAIL_ALREADY_EXIST) {
+        setErrorMessage("This email is already registered. Please log in");
       } else if (result === GRAPHQL_ERRORS.INVALID_EMAIL) {
-        setErrorMessage('Please enter a valid email');
+        setErrorMessage("Please enter a valid email");
       }
     } catch (error) {
       error.inner.forEach((error) => {
@@ -176,10 +173,10 @@ const CollectCredentials = ({ moveForward }) => {
           <ErrorTypography>Unsupported network, change to mainnet or a supported network</ErrorTypography>
         )}
         <Connectors bgcolor="transparent">
-          {!isMobile && <MetaMaskConnector />}
+          {/* {!isMobile && <MetaMaskConnector />} */}
           <DiscordConnector state={state} />
-          <CoinbaseConnector />
-          <WalletConnectConnector />
+          {/* <CoinbaseConnector />
+          <WalletConnectConnector /> */}
         </Connectors>
         <Box display="flex" alignItems="center" width="100%" gap="7px">
           <Divider />
