@@ -71,7 +71,7 @@ const DiscordChannelMessage = ({ handleOnChange, value, error }) => {
           width: "50%",
         }}
       />
-      <Label>Select message type</Label>
+      {/* <Label>Select message type</Label>
       <SelectComponent
         options={DISCORD_MESSAGE_TYPES}
         background="#C1B6F6"
@@ -81,7 +81,7 @@ const DiscordChannelMessage = ({ handleOnChange, value, error }) => {
         style={{
           width: "50%",
         }}
-      />
+      /> */}
     </>
   );
 };
