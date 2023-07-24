@@ -305,6 +305,7 @@ export const EXCLUDED_PATHS = [
   "/signup",
   "/invite/:token",
   "/verify-link",
+  "/wallet/connect",
 ];
 
 export const TUTORIALS = {
