@@ -41,6 +41,7 @@ import PaymentPage from "pages/payment";
 import QuestsPaymentPage from "pages/quests/Payments";
 import PricingPage from "pages/pricing";
 import VerifyLinkPage from "pages/verify-link";
+import AnalyticsPage from "pages/analytics";
 import PremiumFeatureDialog from "components/PremiumFeatureDialog";
 import PaywallContext from "utils/context/PaywallContext";
 
@@ -153,9 +154,13 @@ const router = createBrowserRouter([
         element: <PricingPage />,
       },
       {
-        path: "/verify-link",
-        element: <VerifyLinkPage />,
+        path: '/verify-link',
+        element: <VerifyLinkPage />
       },
+      {
+        path: '/analytics',
+        element: <AnalyticsPage />
+      }
     ],
   },
 ]);

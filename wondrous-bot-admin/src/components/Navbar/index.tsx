@@ -46,6 +46,11 @@ const Header = () => {
       label: 'LEVELS',
       activeBgColor: '#FEE2CA',
     },
+    {
+      path: '/analytics',
+      label: 'ANALYTICS',
+      activeBgColor: '#FFCB5D',
+    }
   ];
 
   return (
