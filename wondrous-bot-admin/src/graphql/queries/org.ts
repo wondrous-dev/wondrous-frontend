@@ -81,3 +81,11 @@ export const GET_ORG_INVITE_ORG_INFO = gql`
   }
   ${OrgInviteFragment}
 `;
+
+export const GET_ORG_DISCORD_INVITE_LINK = gql`
+  query getOrgDiscordInviteLink($orgId: ID!) {
+    getOrgDiscordInviteLink(orgId: $orgId) {
+      link
+    }
+  }
+`;

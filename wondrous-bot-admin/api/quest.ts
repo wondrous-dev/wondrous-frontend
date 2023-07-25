@@ -48,7 +48,7 @@ const handleRequest = async (req: VercelRequest, res: VercelResponse) => {
     const data = await fetchQuest(questId as string)
     const metadata = {
       title: data?.data?.getQuestById?.title || "Quest",
-      image:"/wonder.svg",
+      image:"/og-start-quest.png",
       description:"Quests are a fun way to engage your community and reward them for their participation.",
     }; 
 
@@ -61,7 +61,7 @@ const handleRequest = async (req: VercelRequest, res: VercelResponse) => {
         <meta name="twitter:site" content="@wonderverse_xyz" />
         <meta name="twitter:title" content="${metadata.title}" />
         <meta name="twitter:description" content="${metadata.description}" />
-        <meta name="twitter:image" content="${metadata.image}" />
+        <meta name="twitter:image" content="/twitter-og-start.png" />
 
         <body>
         <div />

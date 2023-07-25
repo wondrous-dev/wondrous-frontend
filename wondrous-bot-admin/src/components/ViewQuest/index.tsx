@@ -6,7 +6,7 @@ import PageWrapper from "components/Shared/PageWrapper";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { START_QUEST } from "graphql/mutations";
-import { GET_QUEST_REWARDS } from "graphql/queries";
+import { GET_ORG_DISCORD_INVITE_LINK, GET_QUEST_REWARDS } from "graphql/queries";
 import { useEffect, useMemo } from "react";
 import { BG_TYPES, ERRORS_LABELS } from "utils/constants";
 import { getDiscordUrl } from "utils/discord";
@@ -29,7 +29,17 @@ const ViewQuest = ({ quest, loading }) => {
   const cmtyUserToken = localStorage.getItem("cmtyUserToken");
   const isDiscordConnected = !!cmtyUserToken;
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
+  const [getOrgDiscordInviteLink, { data: orgDiscordInviteLinkData }] = useLazyQuery(GET_ORG_DISCORD_INVITE_LINK);
 
+  useEffect(() => {
+    if (quest?.org?.id) {
+      getOrgDiscordInviteLink({
+        variables: {
+          orgId: quest?.org?.id,
+        },
+      });
+    }
+  }, [quest?.org?.id]);
   useEffect(() => {
     if (quest?.id) {
       getQuestRewards({
@@ -98,7 +108,7 @@ const ViewQuest = ({ quest, loading }) => {
       },
     });
   };
-
+  const link = orgDiscordInviteLinkData?.getOrgDiscordInviteLink?.link;
   return (
     <PageWrapper
       containerProps={{
@@ -185,8 +195,8 @@ const ViewQuest = ({ quest, loading }) => {
               ) : null}
               <Box display="flex" alignItems="center" gap="4px">
                 <TextLabel>
-                  Please first make sure you've joined the <a href="https://discord.gg/wonderverse-xyz"> Discord </a> of
-                  this community before taking the quest
+                  Please first make sure you've joined the <a href={link}> Discord </a> of this community before taking
+                  the quest
                 </TextLabel>
               </Box>
               <ImageComponent src="/images/view-quest-artwork.png" />
