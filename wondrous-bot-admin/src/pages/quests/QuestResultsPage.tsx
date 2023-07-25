@@ -23,6 +23,7 @@ import { getBaseUrl } from "utils/common";
 import { useTour } from "@reactour/tour";
 import { useMe } from "components/Auth";
 import useAlerts from "utils/hooks";
+import ShareQuestTweet from "components/ShareQuestTweet";
 
 
 const QuestResultsPage = () => {
@@ -199,6 +200,7 @@ const QuestResultsPage = () => {
             ShareComponent is used to share the link to the SSR page. This will work in a local dev environment only with vercel launched.
             */}
             <ShareComponent link={shareUrl} />
+            <ShareQuestTweet link={shareUrl} />
             {isEditMode ? (
               <>
                 <SharedSecondaryButton $reverse onClick={toggleEdit}>
