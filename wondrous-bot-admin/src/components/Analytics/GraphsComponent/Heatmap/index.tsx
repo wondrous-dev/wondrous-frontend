@@ -199,7 +199,7 @@ const Heatmap = ({ data, loading, refetch }) => {
         lineHeight="16px"
         color="black"
       >
-        Hourly discord presence
+        Hourly Discord Presence
       </Typography>
 
       <Typography

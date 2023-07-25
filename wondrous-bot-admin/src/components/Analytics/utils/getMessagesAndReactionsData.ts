@@ -2,7 +2,7 @@ import moment from "moment";
 
 
 const getMessagesAndReactionsData = (apiData, filterType) => {
-  const labels = apiData.map((item) => moment(item?.date).format("DD/MM"));
+  const labels = apiData.map((item) => moment(item?.date).format("MM/DD"));
 
   const messagesData = apiData.map((item) => item?.counts.discordMessage);
   const reactionsData = apiData.map((item) => item?.counts.discordReaction);

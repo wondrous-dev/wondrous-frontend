@@ -1,7 +1,7 @@
 import moment from "moment";
 
 const getSubmissionsData = (apiData, filterType) => {
-  const labels = apiData.map((item) => moment(item?.date).format("DD/MM"));
+  const labels = apiData.map((item) => moment(item?.date).format("MM/DD"));
 
   const submissionsTotal = apiData.map((item) => item?.counts.total);
   const submissionsApproved = apiData.map((item) => item?.counts.approved);

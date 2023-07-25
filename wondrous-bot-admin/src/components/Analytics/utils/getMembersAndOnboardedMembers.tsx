@@ -1,7 +1,7 @@
 import moment from "moment";
 
 const getMembersAndOnboardedMembers = (apiData, activeFilter) => {
-  const labels = apiData.map((item) => moment(item?.date).format("DD/MM"));
+  const labels = apiData.map((item) => moment(item?.date).format("MM/DD"));
   const total = apiData.map((item) => item?.total);
 
     return {
