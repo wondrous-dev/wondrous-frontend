@@ -69,14 +69,6 @@ const AnalyticsComponent = () => {
     skip: !activeOrg?.id,
   });
 
-  const cardsStats = {
-    cmtyMembers: 1201,
-    allTimeCmtyMembers: 1888,
-    questCompletions: 100,
-    allTimeQuestCompletions: 202,
-    rewards: 50,
-    allTimeRewards: 70,
-  };
 
   return (
     <>
@@ -97,7 +89,7 @@ const AnalyticsComponent = () => {
           sm: "24px 56px",
         }}
       >
-        <CardsComponent stats={cardsStats} />
+        <CardsComponent />
         <Grid
           display="flex"
           gap="24px"

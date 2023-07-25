@@ -20,10 +20,10 @@ interface IStats {
 }
 
 interface IProps {
-  stats: IStats;
+  defaultStats?: IStats;
 }
 
-const CardsComponent = ({ stats }: IProps) => {
+const CardsComponent = ({ defaultStats = null }: IProps) => {
   const { activeOrg } = useContext(GlobalContext);
 
   const [activeFilter, setActiveFilter] = useState("last_week");
@@ -40,25 +40,27 @@ const CardsComponent = ({ stats }: IProps) => {
       startDate: null,
       endDate: null,
     },
+    skip: !activeOrg?.id && !defaultStats
   });
 
+  const configStats = defaultStats || data?.getCmtyAnalyticsCards
   const config = [
     {
       title: "Community Members",
-      value: data?.getCmtyAnalyticsCards?.cmtyMembers,
-      allTimeValue: data?.getCmtyAnalyticsCards?.allTimeCmtyMembers,
+      value: configStats?.cmtyMembers,
+      allTimeValue: configStats?.allTimeCmtyMembers,
       bgColor: "#F8642D",
     },
     {
       title: "Quest Completions",
-      value: data?.getCmtyAnalyticsCards?.questCompletions,
-      allTimeValue: data?.getCmtyAnalyticsCards?.allTimeQuestCompletions,
+      value: configStats?.questCompletions,
+      allTimeValue: configStats?.allTimeQuestCompletions,
       bgColor: "#F8AFDB",
     },
     {
       title: "Rewards",
-      value: data?.getCmtyAnalyticsCards?.rewards,
-      allTimeValue: data?.getCmtyAnalyticsCards?.allTimeRewards,
+      value: configStats?.rewards,
+      allTimeValue: configStats?.allTimeRewards,
       bgColor: "#84BCFF",
     },
   ];
@@ -122,6 +124,7 @@ const CardsComponent = ({ stats }: IProps) => {
         {config.map((item, idx) => (
           <Grid
             display="flex"
+            key={idx + 'card_key'}
             flexDirection="column"
             border={`1px solid #000212`}
             bgcolor={item.bgColor}
