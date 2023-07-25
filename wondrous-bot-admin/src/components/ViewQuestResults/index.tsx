@@ -14,7 +14,7 @@ import { GET_GUILD_DISCORD_CHANNELS, GET_ORG_DISCORD_ROLES } from "graphql/queri
 import moment from "moment";
 import { useContext, useEffect, useMemo, useState } from "react";
 import apollo from "services/apollo";
-import { getTextForCondition } from "utils/common";
+import { constructRewards, getTextForCondition } from "utils/common";
 
 import { BG_TYPES, LIMIT, MONTH_DAY_FULL_YEAR, QUEST_CONDITION_TYPES, QUEST_SUBMISSION_STATUS } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
@@ -151,31 +151,6 @@ const ViewQuestResults = ({ quest, rewards }) => {
     return null;
   }
 
-  const constructRewards = ({rewards}) => {
-    return rewards?.map((reward) => {
-      if(reward.type === 'points') {
-        return reward;
-      }
-      if(reward.type === PAYMENT_OPTIONS.TOKEN) {
-        return {
-          type: reward?.paymentMethod?.name,
-          value: reward?.amount,
-        }
-      }
-      if(reward.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
-        return {
-          type: 'Discord Role',
-          value: reward?.discordRewardData?.discordRoleName || null,
-        }
-      }
-      if(reward.type === PAYMENT_OPTIONS.POAP) {
-        return {
-          type: 'POAP',
-          value: reward?.poapRewardData?.name || null,
-        }
-      }
-    })
-  };
 
   const submissions = submissionsData?.getQuestSubmissions?.map((submission) => ({
     user: submission?.creator?.username || submission?.creator?.discordUsername,
