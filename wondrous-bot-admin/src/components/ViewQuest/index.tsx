@@ -181,6 +181,10 @@ const ViewQuest = ({ quest, loading }) => {
                   <TextLabel weight={600} color="#2A8D5C">
                     Level {quest?.level}
                   </TextLabel>
+                  <TextLabel>
+                    Please first make sure you've joined the <a href="https://discord.gg/wonderverse-xyz"> Discord </a>{" "}
+                    of this community before taking the quest
+                  </TextLabel>
                 </Box>
               ) : null}
               <ImageComponent src="/images/view-quest-artwork.png" />
