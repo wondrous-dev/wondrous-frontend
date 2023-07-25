@@ -151,6 +151,7 @@ export const GET_QUEST_REWARDS = gql`
       paymentMethod {
         name
         contractAddress
+        type
       }
     }
   }
