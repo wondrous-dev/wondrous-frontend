@@ -57,11 +57,12 @@ const ViewQuest = ({ quest, loading }) => {
         } else if (reward.type === "token") {
           return {
             label: `Token: ${reward.amount} ${reward?.paymentMethod?.name || reward?.paymentMethod?.contractAddress}`,
-            icon: reward?.type?.toLowerCase() === "erc20" ? PointsIcon : NFTIcon,
+            icon: reward?.paymentMethod?.type?.toLowerCase() === "erc20" ? PointsIcon : NFTIcon,
           };
         } else if (reward.type === "poap") {
           return {
             label: `POAP: ${reward.poapRewardData?.name}`,
+            icon: NFTIcon,
           };
         }
       }) || [];
