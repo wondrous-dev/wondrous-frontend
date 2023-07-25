@@ -1,6 +1,6 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Box, CircularProgress, Divider, Grid } from "@mui/material";
-import { DiscordRoleIcon, PointsIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, NFTIcon, PointsIcon } from "components/Icons/Rewards";
 import PageSpinner from "components/PageSpinner";
 import PageWrapper from "components/Shared/PageWrapper";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
@@ -53,6 +53,16 @@ const ViewQuest = ({ quest, loading }) => {
           return {
             label: `Discord role: ${reward.discordRewardData?.discordRoleName}`,
             icon: DiscordRoleIcon,
+          };
+        } else if (reward.type === "token") {
+          return {
+            label: `Token: ${reward.amount} ${reward?.paymentMethod?.name || reward?.paymentMethod?.contractAddress}`,
+            icon: reward?.paymentMethod?.type?.toLowerCase() === "erc20" ? PointsIcon : NFTIcon,
+          };
+        } else if (reward.type === "poap") {
+          return {
+            label: `POAP: ${reward.poapRewardData?.name}`,
+            icon: NFTIcon,
           };
         }
       }) || [];
@@ -192,7 +202,7 @@ const ViewQuest = ({ quest, loading }) => {
                     gap="6px"
                   >
                     {reward && <reward.icon />}
-                    <TextLabel>{reward.label}</TextLabel>
+                    <TextLabel>{reward?.label}</TextLabel>
                   </Box>
                 ))}
               </Grid>
