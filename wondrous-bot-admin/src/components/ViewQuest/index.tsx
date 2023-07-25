@@ -18,25 +18,27 @@ const ViewQuest = ({ quest, loading }) => {
   const params = {
     questId: quest?.id,
     orgId: quest?.org?.id,
-  }
+  };
 
-  const discordAuthUrl = getDiscordUrl("/discord/callback/cmty-user-connect", `&state=${encodeURIComponent(JSON.stringify(params))}`);
+  const discordAuthUrl = getDiscordUrl(
+    "/discord/callback/cmty-user-connect",
+    `&state=${encodeURIComponent(JSON.stringify(params))}`
+  );
 
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const cmtyUserToken = localStorage.getItem("cmtyUserToken");
   const isDiscordConnected = !!cmtyUserToken;
-  const [getQuestRewards, {data: questRewardsData}] = useLazyQuery(GET_QUEST_REWARDS);
-
+  const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
 
   useEffect(() => {
-    if(quest?.id) {
+    if (quest?.id) {
       getQuestRewards({
         variables: {
-          questId: quest?.id
-        }
+          questId: quest?.id,
+        },
       });
     }
-  }, [quest?.id])
+  }, [quest?.id]);
 
   const rewards = useMemo(() => {
     let roles = [
@@ -57,20 +59,20 @@ const ViewQuest = ({ quest, loading }) => {
     return [...roles, ...questRewards];
   }, [quest, questRewardsData]);
 
-  const {handleError} = useErrorHandler();
-  
+  const { handleError } = useErrorHandler();
+
   const [startQuest, { loading: startQuestLoading }] = useMutation(START_QUEST, {
     context: {
       headers: {
-        Authorization: `Bearer ${cmtyUserToken}`
-      }
+        Authorization: `Bearer ${cmtyUserToken}`,
+      },
     },
     onCompleted: ({ startQuest }) => {
       if (startQuest?.channelLink) {
         window.open(startQuest?.channelLink, "_blank");
       }
       if (startQuest?.error) {
-        return handleError({questInfo: quest, error: startQuest?.error})
+        return handleError({ questInfo: quest, error: startQuest?.error });
       }
     },
   });
@@ -189,7 +191,7 @@ const ViewQuest = ({ quest, loading }) => {
                     padding="8px"
                     gap="6px"
                   >
-                    <reward.icon />
+                    {reward && <reward.icon />}
                     <TextLabel>{reward.label}</TextLabel>
                   </Box>
                 ))}
