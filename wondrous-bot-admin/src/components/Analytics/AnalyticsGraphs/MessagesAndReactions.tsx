@@ -9,9 +9,6 @@ import FiltersComponent from "../Filters";
 import { LineChart } from "../GraphsComponent";
 import getMessagesAndReactionsData from "../utils/getMessagesAndReactionsData";
 
-// startAt: startAt && timeBound ? startAt.utcOffset(0).startOf("day").toISOString() : null,
-// endAt: endAt && timeBound ? endAt.utcOffset(0).endOf("day").toISOString() : null,
-
 const MessagesAndReactions = ({ data, refetch, loading }) => {
   const [activeFilter, setActiveFilter] = useState("last_week");
 

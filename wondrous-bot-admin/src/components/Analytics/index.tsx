@@ -59,6 +59,7 @@ const AnalyticsComponent = () => {
     data: onboardedUsersData,
     refetch: onboardedUsersRefetch,
     loading: onboardedUsersLoading,
+    error: onboardedUsersError
   } = useQuery(GET_ONBOARDED_USERS_DATA, {
     fetchPolicy: "cache-and-network",
     notifyOnNetworkStatusChange: true,
@@ -68,14 +69,6 @@ const AnalyticsComponent = () => {
     skip: !activeOrg?.id,
   });
 
-  const cardsStats = {
-    cmtyMembers: 1201,
-    allTimeCmtyMembers: 1888,
-    questCompletions: 100,
-    allTimeQuestCompletions: 202,
-    rewards: 50,
-    allTimeRewards: 70,
-  };
 
   return (
     <>
@@ -96,7 +89,7 @@ const AnalyticsComponent = () => {
           sm: "24px 56px",
         }}
       >
-        <CardsComponent stats={cardsStats} />
+        <CardsComponent />
         <Grid
           display="flex"
           gap="24px"
@@ -111,6 +104,7 @@ const AnalyticsComponent = () => {
             data={onboardedUsersData?.getOnboardedUsersCount}
             refetch={onboardedUsersRefetch}
             loading={onboardedUsersLoading}
+            error={onboardedUsersError}
           />
         </Grid>
         <Grid

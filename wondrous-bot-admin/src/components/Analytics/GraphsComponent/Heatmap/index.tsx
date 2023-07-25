@@ -267,6 +267,7 @@ const Heatmap = ({ data, loading, refetch }) => {
                 fontWeight={600}
                 color="black"
                 display="flex"
+                key={`${date}`}
                 alignItems="center"
               >
                 {moment(date)?.format("MM/DD")}

@@ -10,13 +10,11 @@ import {
   Tooltip,
   Legend,
   ChartOptions,
+  BarController,
 } from "chart.js";
-
 import { Chart } from "react-chartjs-2";
-
-import React from "react";
-import { Line, Bar } from "react-chartjs-2";
 import { paddingBelowLegend } from "../plugins";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -26,7 +24,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  paddingBelowLegend
+  paddingBelowLegend,
+  BarController,
 );
 
 function LineBarChart({ title, data = null, renderComponents = null }) {
