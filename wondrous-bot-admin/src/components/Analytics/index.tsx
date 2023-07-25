@@ -59,6 +59,7 @@ const AnalyticsComponent = () => {
     data: onboardedUsersData,
     refetch: onboardedUsersRefetch,
     loading: onboardedUsersLoading,
+    error: onboardedUsersError
   } = useQuery(GET_ONBOARDED_USERS_DATA, {
     fetchPolicy: "cache-and-network",
     notifyOnNetworkStatusChange: true,
@@ -111,6 +112,7 @@ const AnalyticsComponent = () => {
             data={onboardedUsersData?.getOnboardedUsersCount}
             refetch={onboardedUsersRefetch}
             loading={onboardedUsersLoading}
+            error={onboardedUsersError}
           />
         </Grid>
         <Grid
