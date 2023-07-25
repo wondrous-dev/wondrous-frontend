@@ -54,6 +54,14 @@ const ViewQuest = ({ quest, loading }) => {
             label: `Discord role: ${reward.discordRewardData?.discordRoleName}`,
             icon: DiscordRoleIcon,
           };
+        } else if (reward.type === "token") {
+          return {
+            label: `Token: ${reward.amount} ${reward?.paymentMethod?.name || reward?.paymentMethod?.contractAddress}`,
+          };
+        } else if (reward.type === "poap") {
+          return {
+            label: `POAP: ${reward.poapRewardData?.name}`,
+          };
         }
       }) || [];
     return [...roles, ...questRewards];
@@ -192,7 +200,7 @@ const ViewQuest = ({ quest, loading }) => {
                     gap="6px"
                   >
                     {reward && <reward.icon />}
-                    <TextLabel>{reward.label}</TextLabel>
+                    <TextLabel>{reward?.label}</TextLabel>
                   </Box>
                 ))}
               </Grid>
