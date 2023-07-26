@@ -42,6 +42,9 @@ const DEFAULT_STATE_VALUE = {
   ],
 };
 
+const stepCache = {
+  steps: null,
+};
 const CreateTemplate = ({
   setRefValue,
   displaySavePanel,
@@ -66,9 +69,16 @@ const CreateTemplate = ({
 
   useEffect(() => {
     if (getQuestById) {
+      stepCache.steps = transformQuestConfig(getQuestById?.steps);
       setSteps(transformQuestConfig(getQuestById?.steps));
     }
   }, [getQuestById]);
+
+  useEffect(() => {
+    if (stepCache?.steps && steps?.length === 0) {
+      setSteps(stepCache.steps);
+    }
+  }, []);
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -105,6 +115,10 @@ const CreateTemplate = ({
   const handleRemove = (index) => {
     const newItems = [...steps];
     newItems.splice(index, 1);
+    stepCache.steps = newItems.map((item, idx) => ({
+      ...item,
+      order: idx + 1,
+    }));
     setSteps(
       newItems.map((item, idx) => ({
         ...item,
@@ -462,6 +476,7 @@ const CreateTemplate = ({
             <AddFormEntity
               steps={steps}
               setSteps={setSteps}
+              stepCache={stepCache}
               handleRemove={handleRemove}
               refs={refs}
               setRemovedMediaSlugs={setRemovedMediaSlugs}
