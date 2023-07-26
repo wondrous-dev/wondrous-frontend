@@ -25,7 +25,9 @@ import { useMe } from "components/Auth";
 import useAlerts from "utils/hooks";
 import ShareQuestTweet from "components/ShareQuestTweet";
 
-
+const editModeCache = {
+  editMode: null,
+};
 const QuestResultsPage = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -50,7 +52,7 @@ const QuestResultsPage = () => {
       setSnackbarAlertMessage("Error connecting Discord");
       setSnackbarAlertOpen(true);
     }
-    if (discordUserExists){
+    if (discordUserExists) {
       setSnackbarAlertMessage("This Discord account is already connected to another account");
       setSnackbarAlertOpen(true);
     }
@@ -64,6 +66,11 @@ const QuestResultsPage = () => {
       });
     }
   }, [id]);
+  useEffect(() => {
+    if (editModeCache.editMode === true && !isEditMode) {
+      setIsEditMode(true);
+    }
+  }, []);
   const questRewards = questRewardsData?.getQuestRewards;
 
   const { ref, inView, entry } = useInView({
@@ -102,12 +109,16 @@ const QuestResultsPage = () => {
 
   useEffect(() => {
     if (user && !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUEST)) {
+      editModeCache.editMode = true;
       setIsEditMode(true);
       setIsOpen(true);
     }
   }, [user, isEditMode]);
 
-  const toggleEdit = () => setIsEditMode((prev) => !prev);
+  const toggleEdit = () => {
+    editModeCache.editMode = !isEditMode;
+    setIsEditMode((prev) => !prev);
+  };
   const handlePreviewQuest = () => {
     startPreviewQuest({
       variables: {
@@ -143,7 +154,7 @@ const QuestResultsPage = () => {
       },
       ...(questRewards ? questRewards : []),
     ],
-  };  
+  };
   const shareUrl = `${getBaseUrl()}/quest?id=${getQuestById?.id}`;
   return (
     <CreateQuestContext.Provider
@@ -235,7 +246,7 @@ const QuestResultsPage = () => {
           postUpdate={toggleEdit}
         />
       ) : (
-        <ViewQuestResults quest={getQuestById} rewards={questSettings.rewards}/>
+        <ViewQuestResults quest={getQuestById} rewards={questSettings.rewards} />
       )}
     </CreateQuestContext.Provider>
   );
