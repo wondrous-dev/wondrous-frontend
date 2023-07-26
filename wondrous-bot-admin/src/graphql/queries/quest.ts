@@ -192,3 +192,11 @@ export const GET_POAP_EVENT = gql`
     }
   }
 `;
+
+export const GET_CMTY_USER_TOKEN_EXPIRE_CHECK = gql`
+  query getCmtyUserTokenExpireCheck {
+    getCmtyUserTokenExpireCheck {
+      success
+    }
+  }
+`;

@@ -6,8 +6,8 @@ import PageWrapper from "components/Shared/PageWrapper";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { START_QUEST } from "graphql/mutations";
-import { GET_ORG_DISCORD_INVITE_LINK, GET_QUEST_REWARDS } from "graphql/queries";
-import { useEffect, useMemo } from "react";
+import { GET_ORG_DISCORD_INVITE_LINK, GET_QUEST_REWARDS, GET_CMTY_USER_TOKEN_EXPIRE_CHECK } from "graphql/queries";
+import { useEffect, useMemo, useState } from "react";
 import { BG_TYPES, ERRORS_LABELS } from "utils/constants";
 import { getDiscordUrl } from "utils/discord";
 import useAlerts from "utils/hooks";
@@ -25,11 +25,23 @@ const ViewQuest = ({ quest, loading }) => {
     `&state=${encodeURIComponent(JSON.stringify(params))}`
   );
 
-  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const cmtyUserToken = localStorage.getItem("cmtyUserToken");
-  const isDiscordConnected = !!cmtyUserToken;
+  const [isDiscordConnected, setIsDiscordConnected] = useState(false);
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
   const [getOrgDiscordInviteLink, { data: orgDiscordInviteLinkData }] = useLazyQuery(GET_ORG_DISCORD_INVITE_LINK);
+  const [verifyToken] = useLazyQuery(GET_CMTY_USER_TOKEN_EXPIRE_CHECK, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${cmtyUserToken}`,
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (cmtyUserToken) {
+      verifyToken().then(({ data }) => setIsDiscordConnected(data?.getCmtyUserTokenExpireCheck?.success));
+    }
+  }, [cmtyUserToken]);
 
   useEffect(() => {
     if (quest?.org?.id) {
