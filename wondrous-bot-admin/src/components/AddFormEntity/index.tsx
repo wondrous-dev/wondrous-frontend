@@ -103,7 +103,7 @@ COMPONENT_OPTIONS.push({
   value: TYPES.CUSTOM_ONCHAIN_ACTION,
 });
 
-const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
+const AddFormEntity = ({ steps, setSteps, stepCache,  handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [openEcosystemDialog, setOpenEcosystemDialog] = useState(false);
   const subscription = useSubscription();
@@ -119,6 +119,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       ...item,
       order: idx + 1,
     }));
+    stepCache.steps = orderedItems;
     setSteps(orderedItems);
   };
 
@@ -177,6 +178,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       acc.push(next);
       return acc;
     }, []);
+    stepCache.steps = newConfiguration;
     setSteps(newConfiguration);
   };
 
@@ -195,6 +197,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       acc.push(next);
       return acc;
     }, []);
+    stepCache.steps = newConfiguration;
     setSteps(newConfiguration);
   };
 
@@ -223,6 +226,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       acc.push(next);
       return acc;
     }, []);
+    stepCache.steps = newConfiguration;
     setSteps(newConfiguration);
   };
 
@@ -241,6 +245,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       acc.push(next);
       return acc;
     }, []);
+    stepCache.steps = newConfiguration;
     setSteps(newConfiguration);
   };
 
