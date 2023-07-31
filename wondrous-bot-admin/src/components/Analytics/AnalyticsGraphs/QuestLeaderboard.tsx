@@ -15,8 +15,8 @@ const RewardComponent = ({ value }) => {
   const rewards = constructRewards({ rewards: value });
   return (
     <Grid display="flex" gap="6px" flexWrap="wrap">
-      {rewards?.map((reward, sortKey) => (
-        <StyledViewQuestResults $isReward sortKey={sortKey + "reward"}>
+      {rewards?.map((reward, key) => (
+        <StyledViewQuestResults $isReward sortKey={key + "reward"}>
           {reward.value} {reward.type}
         </StyledViewQuestResults>
       ))}
@@ -146,12 +146,10 @@ const QuestLeaderboard = () => {
   });
 
   const onSortOrderChange = ({ header }) => {
-    console.log(header, "HEADER")
     const newSortOrder = {
       sortKey: header.sortKey,
       order: sortOrder.sortKey === header.sortKey && sortOrder.order === "desc" ? "asc" : "desc",
     }
-    console.log(newSortOrder, 'new sort order')
     setSortOrder(newSortOrder);
     refetch(newSortOrder)
   };
