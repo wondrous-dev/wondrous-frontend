@@ -164,7 +164,7 @@ const QuestLeaderboard = () => {
             <StyledTableHeader>
               {headersConfig?.map((header) => (
                 <StyledTableHeaderCell sortKey={header} sx={{}}>
-                  <Box display="flex" alignItems="center" gap="6px">
+                  <Box display="flex" alignItems="center" gap="6px" justifyContent="center">
                     {header.label}
                     {header.sortKey ? (
                       <ButtonBase type="button" onClick={() => onSortOrderChange({ header })}>
