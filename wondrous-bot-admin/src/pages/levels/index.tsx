@@ -65,6 +65,7 @@ const LevelsPage = () => {
         id: key,
         level: {
           component: "hexagon",
+
           value: key,
           label: levels[key],
           labelProps: {
@@ -123,7 +124,7 @@ const LevelsPage = () => {
           },
         }}
       >
-        <TableComponent data={data} headers={headers} />
+        <TableComponent data={data} headers={headers} title="Levels" />
       </PageWrapper>
     </>
   );

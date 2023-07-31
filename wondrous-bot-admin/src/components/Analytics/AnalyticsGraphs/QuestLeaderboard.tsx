@@ -1,7 +1,9 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { Grid } from "@mui/material";
+import { ArrowUpward } from "@mui/icons-material";
+import { Box, ButtonBase, Grid } from "@mui/material";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import TableComponent from "components/TableComponent";
+import { StyledTableHeader, StyledTableHeaderCell } from "components/TableComponent/styles";
 import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { GET_QUEST_LEADERBOARD } from "graphql/queries";
 import { useContext, useEffect, useState } from "react";
@@ -13,8 +15,8 @@ const RewardComponent = ({ value }) => {
   const rewards = constructRewards({ rewards: value });
   return (
     <Grid display="flex" gap="6px" flexWrap="wrap">
-      {rewards?.map((reward, key) => (
-        <StyledViewQuestResults $isReward key={key + "reward"}>
+      {rewards?.map((reward, sortKey) => (
+        <StyledViewQuestResults $isReward sortKey={sortKey + "reward"}>
           {reward.value} {reward.type}
         </StyledViewQuestResults>
       ))}
@@ -23,6 +25,10 @@ const RewardComponent = ({ value }) => {
 };
 
 const QuestLeaderboard = () => {
+  const [sortOrder, setSortOrder] = useState({
+    sortKey: "submissions",
+    order: "desc",
+  });
   const { activeOrg } = useContext(GlobalContext);
   const [hasMore, setHasMore] = useState(true);
   const [getQuestLeaderboard, { data, refetch, loading, fetchMore }] = useLazyQuery(GET_QUEST_LEADERBOARD, {
@@ -51,14 +57,34 @@ const QuestLeaderboard = () => {
     }
   }, [activeOrg?.id]);
 
-  const headers = [
-    "Quest Title",
-    "Submissions",
-    "Approvals",
-    "% Completion",
-    "Quest Rewards",
-    "Rewards Awarded",
-    "XP Awarded",
+  const headersConfig = [
+    {
+      label: "Quest Title",
+    },
+    {
+      label: "Submissions",
+      sortKey: "submissions",
+    },
+    {
+      label: "Approvals",
+      sortKey: "approvals",
+    },
+    {
+      label: "% Completion",
+      sortKey: "completion",
+    },
+    {
+      label: "Quest Rewards",
+      
+    },
+    {
+      label: "Rewards Awarded",
+      sortKey: "rewards_awarded",
+    },
+    {
+      label: "XP Awarded",
+      sortKey: "points",
+    },
   ];
 
   const items = data?.getQuestsAnalyticsLeaderboard?.map((item, idx) => {
@@ -66,6 +92,8 @@ const QuestLeaderboard = () => {
       id: idx,
       questName: {
         component: "label",
+        width: "auto",
+        textAlign: "left",
         value: item.title,
         componentProps: {
           fontWeight: 500,
@@ -117,9 +145,50 @@ const QuestLeaderboard = () => {
     };
   });
 
+  const onSortOrderChange = ({ header }) => {
+    console.log(header, "HEADER")
+    const newSortOrder = {
+      sortKey: header.sortKey,
+      order: sortOrder.sortKey === header.sortKey && sortOrder.order === "desc" ? "asc" : "desc",
+    }
+    console.log(newSortOrder, 'new sort order')
+    setSortOrder(newSortOrder);
+    refetch(newSortOrder)
+  };
+
   return (
     <>
-      <TableComponent headers={headers} data={items} />
+      <TableComponent
+        data={items}
+        title="Quest Activity"
+        headerComponent={() => {
+          return (
+            <StyledTableHeader>
+              {headersConfig?.map((header) => (
+                <StyledTableHeaderCell sortKey={header} sx={{}}>
+                  <Box display="flex" alignItems="center" gap="6px">
+                    {header.label}
+                    {header.sortKey ? (
+                      <ButtonBase type="button" onClick={() => onSortOrderChange({ header })}>
+                        <ArrowUpward
+                          sx={{
+                            fontSize: "14px",
+                            color: sortOrder.sortKey === header.sortKey ? "red" : "#949494",
+                            transform:
+                              sortOrder.sortKey === header.sortKey && sortOrder.order === "desc"
+                                ? "rotate(180deg)"
+                                : "rotate(0deg)",
+                          }}
+                        />
+                      </ButtonBase>
+                    ) : null}
+                  </Box>
+                </StyledTableHeaderCell>
+              ))}
+            </StyledTableHeader>
+          );
+        }}
+      />
       {hasMore && data?.getQuestsAnalyticsLeaderboard?.length >= LIMIT ? (
         <SharedSecondaryButton
           style={{
