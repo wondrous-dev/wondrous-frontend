@@ -17,11 +17,6 @@ const PricingComponent = () => {
   const subscription = useSubscription();
   const user = useMe()?.user;
   const userPurchasedSubscription = user?.id === subscription?.additionalData?.purchasedUserId;
-  useEffect(() => {
-    if (import.meta.env.VITE_PRODUCTION) {
-      navigate("/");
-    }
-  }, []);
   return (
     <>
       <Grid
