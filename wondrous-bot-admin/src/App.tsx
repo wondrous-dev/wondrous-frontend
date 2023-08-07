@@ -44,6 +44,7 @@ import VerifyLinkPage from "pages/verify-link";
 import AnalyticsPage from "pages/analytics";
 import PremiumFeatureDialog from "components/PremiumFeatureDialog";
 import PaywallContext from "utils/context/PaywallContext";
+import TelegramPage from "pages/telegram";
 
 const router = createBrowserRouter([
   {
@@ -160,6 +161,10 @@ const router = createBrowserRouter([
       {
         path: '/analytics',
         element: <AnalyticsPage />
+      },
+      {
+        path: '/telegram',
+        element: <TelegramPage />
       }
     ],
   },

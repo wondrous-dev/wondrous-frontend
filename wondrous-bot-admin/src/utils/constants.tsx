@@ -99,6 +99,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/discord/callback/cmty-user-connect",
   "/invite/:token",
   "/verify-link",
+  '/telegram'
 ];
 
 export const BG_TYPES = {
@@ -306,6 +307,7 @@ export const EXCLUDED_PATHS = [
   "/invite/:token",
   "/verify-link",
   "/wallet/connect",
+  "/telegram"
 ];
 
 export const TUTORIALS = {
