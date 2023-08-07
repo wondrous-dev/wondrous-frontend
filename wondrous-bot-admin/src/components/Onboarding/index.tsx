@@ -6,11 +6,13 @@ import { ErrorTypography } from "components/Login/styles";
 import AuthLayout from "components/Shared/AuthLayout";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { CREATE_ORG } from "graphql/mutations";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSchema } from "./validator";
+import GlobalContext from "utils/context/GlobalContext";
 
 const OnboardingComponent = () => {
+  const { setActiveOrg } = useContext(GlobalContext);
   const [orgData, setOrgData] = useState({
     name: "",
     username: "",
@@ -121,6 +123,7 @@ const OnboardingComponent = () => {
           },
         },
       });
+      setActiveOrg(data?.createOrg);
       navigate("/");
     } catch (err) {
       err?.inner?.forEach((e) => {
