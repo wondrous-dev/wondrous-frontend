@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import GlobalContext from "utils/context/GlobalContext";
 import { WorkspaceWrapper } from "./styles";
 import { TutorialButton, TutorialLink } from "components/Navbar/styles";
+import AddImage from "components/Icons/Add.svg";
 
 interface WrenchButtonProps {
   onClick?: () => void;
@@ -119,6 +120,18 @@ const WorkspaceSwitch = () => {
                 </WorkspaceWrapper>
               );
             })}
+            <WorkspaceWrapper onClick={() => navigate("/onboarding/welcome")}>
+              <Box display="flex" gap="10px" alignItems="center">
+                <img
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                  }}
+                  src={AddImage}
+                />
+                <Label color="#1D1D1D">Add new</Label>
+              </Box>
+            </WorkspaceWrapper>
             <Divider />
             <ButtonBase
               onClick={(e) => {
