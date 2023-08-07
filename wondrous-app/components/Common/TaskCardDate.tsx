@@ -1,10 +1,13 @@
 import Grid from '@mui/material/Grid';
 import CalendarIcon from 'components/Icons/calendar';
 import { format } from 'date-fns';
+import moment from 'moment';
 import palette from 'theme/palette';
 
 const TaskCardDate = ({ date }) => {
   if (!date) return null;
+  const formattedDate = moment.utc(date).format('MMM D');
+
   return (
     <Grid
       container
@@ -21,7 +24,7 @@ const TaskCardDate = ({ date }) => {
       color={palette.white}
     >
       <CalendarIcon width="10px" height="11px" />
-      {format(new Date(date), 'MMM d')}
+      {formattedDate}
     </Grid>
   );
 };
