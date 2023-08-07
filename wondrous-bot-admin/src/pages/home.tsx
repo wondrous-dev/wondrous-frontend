@@ -144,7 +144,7 @@ const HomePage = () => {
   }, [getDiscordConfigError?.graphQLErrors[0]?.message, loading]);
 
   useEffect(() => {
-    if (!loading && orgDiscordConfig?.getCmtyOrgDiscordConfige && !additionalData)
+    if (!loading && orgDiscordConfig?.getCmtyOrgDiscordConfig && !additionalData)
       [setOpenDiscordNotificationModal(true)];
   }, [additionalData, orgDiscordConfig?.getCmtyOrgDiscordConfig, loading]);
   return (
