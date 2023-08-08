@@ -45,6 +45,7 @@ import AnalyticsPage from "pages/analytics";
 import PremiumFeatureDialog from "components/PremiumFeatureDialog";
 import PaywallContext from "utils/context/PaywallContext";
 import TelegramPage from "pages/telegram";
+import ConnectPage from "pages/settings/connect";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/billing",
         element: <BillingPage />,
+      },
+      {
+        path: '/settings/connect',
+        element: <ConnectPage />
       },
       {
         path: "/",
