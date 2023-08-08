@@ -43,6 +43,7 @@ type InputQuestStep = {
     linkClickUrl?: string;
     discordEventId?: string;
     minDuration?: number;
+    usdValue?: number;
   };
 };
 
@@ -58,6 +59,7 @@ type OutputQuestStep = {
   }>;
   value:
     | string
+    | number
     | {
         question: string;
         withCorrectAnswers: boolean;
@@ -219,6 +221,8 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         discordEventId: step?.additionalData?.discordEventId,
         minDuration: step?.additionalData?.minDuration,
       };
+    } else if (step.type === TYPES.LIFI_VALUE_BRIDGED) {
+      outputStep.value = step?.additionalData?.usdValue;
     } else if (step.type === TYPES.DATA_COLLECTION) {
       const dataCollectionType = step?.additionalData?.dataCollectionType;
       outputStep.value = {

@@ -356,6 +356,12 @@ const CreateTemplate = ({
           step["additionalData"] = {
             ...next.value?.dataCollectionProps,
           };
+        } else if (next.type === TYPES.LIFI_VALUE_BRIDGED) {
+          console.log("next", next);
+          step.prompt = next.value?.prompt;
+          step["additionalData"] = {
+            usdValue: Number(next.value),
+          };
         }
         return [...acc, step];
       }, []),
@@ -382,6 +388,7 @@ const CreateTemplate = ({
       const errors: any = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
+          console.log("error", error);
           console.log(error.path, "ERR PATH");
           const path = getPathArray(error.path);
           set(errors, path, error.message);

@@ -22,6 +22,7 @@ const ALL_TYPES = [
   TYPES.LIKE_YT_VIDEO,
   TYPES.SUBSCRIBE_YT_CHANNEL,
   TYPES.LINK_CLICK,
+  TYPES.LIFI_VALUE_BRIDGED,
 ];
 
 const sharedValidation = {
@@ -171,6 +172,11 @@ const stepTypes = {
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       linkClickUrl: Yup.string().required("Link is required").url("Must be a url"),
+    }),
+  }),
+  [TYPES.LIFI_VALUE_BRIDGED]: Yup.object().shape({
+    additionalData: Yup.object().shape({
+      usdValue: Yup.number().required("USD value is required"),
     }),
   }),
   [TYPES.SUBSCRIBE_YT_CHANNEL]: Yup.object().shape({
