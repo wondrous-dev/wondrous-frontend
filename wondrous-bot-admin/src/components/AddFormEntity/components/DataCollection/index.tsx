@@ -8,6 +8,7 @@ import SelectComponent from "components/Shared/Select";
 import InterestsComponent from "./InterestsComponent";
 import LocationComponent from "./Location";
 import Skills from "./Skills";
+import { ErrorText } from "components/Shared/styles";
 
 const OPTIONS = [
   {
@@ -78,7 +79,7 @@ const DataCollectionComponent = (props) => {
         }}
       >
         <Label>Select what you want to collect</Label>
-        <SelectComponent onChange={handleTypeChange} value={dataCollectionType} options={OPTIONS} />
+        <SelectComponent onChange={handleTypeChange} value={dataCollectionType} options={OPTIONS} error={error?.additionalData?.dataCollectionType}/>
       </Grid>
       <Grid
         item
