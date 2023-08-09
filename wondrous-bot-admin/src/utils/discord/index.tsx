@@ -81,11 +81,13 @@ export const getDiscordUrl = (callbackUrl = '/discord/callback', params = '') =>
   return `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=email%20identify${params}`;
 };
 
+
+
 export const getTelegramBotLink = () => {
   if (import.meta.env.VITE_PRODUCTION) {
-    return "https://t.me/wonderverse_bot";
+    return "https://t.me/communities_test_bot?startgroup=true&admin=post_messages";
   }
-  return "https://t.me/wonderverse_staging_bot";
+  return "https://t.me/communities_test_bot?startgroup=true&admin=post_messages";
 };
 
 export const useDiscordRoles = ({ orgId, skip = false }) => {

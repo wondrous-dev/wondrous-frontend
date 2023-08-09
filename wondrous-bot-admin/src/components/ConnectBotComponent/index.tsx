@@ -3,43 +3,106 @@ import { getDiscordBotOauthURL } from "components/ConnectDiscord/ConnectDiscordB
 import { GreenBgDiscord } from "components/Icons/Discord";
 import { TelegramGreenBg } from "components/Icons/Telegram";
 import { NotificationWrapper } from "components/Settings/NotificationSettings/styles";
-import { SharedSecondaryButton } from "components/Shared/styles";
-import { useContext, useState } from "react";
+import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
+import { useContext, useEffect, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { AddBotLink, SharedLabel, StatusPill } from "./styles";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { ExternalLinkIcon } from "components/Icons/ExternalLink";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
+import { getTelegramBotLink } from "utils/discord";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import * as yup from "yup";
+import { CONNECT_TELEGRAM_BOT } from "graphql/mutations";
+import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
+
+const telegramGroupIdSchema = yup
+  .number()
+  .integer("ID must be an integer.")
+  .negative("ID must be negative.")
+  .required("ID is required.");
+
+const validateTelegramGroupId = async (groupId) => {
+  try {
+    await telegramGroupIdSchema.validate(groupId);
+    return true;
+  } catch (error) {
+    console.error(error.message);
+    return false;
+  }
+};
 
 const useTelegramModal = () => {
+  const { activeOrg } = useContext(GlobalContext);
+
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
   const toggleTelegramModal = () => setIsTelegramModalOpen((prev) => !prev);
   const [groupId, setGroupId] = useState("");
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+
+  const [getTelegramConfigForOrg, { data }] = useLazyQuery(GET_TELEGRAM_CONFIG_FOR_ORG, {
+    onCompleted: (data) => {
+      if (data?.getTelegramConfigForOrg?.chatId) {
+        setGroupId(data?.getTelegramConfigForOrg?.chatId);
+      }
+    },
+  });
+
+  const [connectTelegram] = useMutation(CONNECT_TELEGRAM_BOT, {
+    refetchQueries: ["getTelegramConfigForOrg"],
+    onCompleted: () => {
+      toggleTelegramModal();
+    },
+  });
+
+  useEffect(() => {
+    if (!activeOrg?.id) return;
+
+    getTelegramConfigForOrg({
+      variables: {
+        orgId: activeOrg?.id,
+      },
+    });
+  }, [activeOrg?.id]);
 
   const handleSubmit = () => {
-    console.log('SUBMIT')
+    validateTelegramGroupId(groupId).then((isValid) => {
+      if (isValid) {
+        connectTelegram({ variables: { chatId: `${groupId}`, orgId: activeOrg?.id } });
+      } else {
+        setError("Invalid Group ID");
+      }
+    });
   };
 
   const TgComponent = () => {
-    const handleChange = (e) => setGroupId(e.target.value);
+    const handleChange = (e) => {
+      if (error) setError("");
+      setGroupId(e.target.value);
+    };
+
+    const botLink = getTelegramBotLink();
 
     const config = [
       {
         label: "Link WonderBot",
         component: () => (
-          <AddBotLink>
-            Add Bot
-            <ExternalLinkIcon />
-          </AddBotLink>
+          <a href={`${botLink}`} target="__blank" rel="noreferrer">
+            <AddBotLink>
+              Add Bot
+              <ExternalLinkIcon />
+            </AddBotLink>
+          </a>
         ),
       },
       {
         label: "Group ID",
-        component: () => <CustomTextField onChange={handleChange} />,
+        component: () => <CustomTextField onChange={handleChange} value={groupId} />,
       },
     ];
+
     if (!isTelegramModalOpen) return null;
+
     return (
       <Grid display="flex" flexDirection="column" gap="24px" padding="18px" borderTop="1px solid #B0BEC5" width="100%">
         <Grid display="flex" alignItems="center" gap="24px">
@@ -62,14 +125,20 @@ const useTelegramModal = () => {
             );
           })}
         </Grid>
+        {error ? <ErrorText>{error}</ErrorText> : null}
         <Box>
-        <SharedSecondaryButton disabled={!groupId} onClick={handleSubmit}>Connect</SharedSecondaryButton>
+          <SharedSecondaryButton disabled={!groupId} onClick={handleSubmit}>
+            Connect
+          </SharedSecondaryButton>
         </Box>
       </Grid>
     );
   };
 
   const ConnectButton = () => {
+    if (data?.getTelegramConfigForOrg?.chatId && !isTelegramModalOpen) {
+      return <StatusPill onClick={toggleTelegramModal}>Update</StatusPill>;
+    }
     if (isTelegramModalOpen) {
       return (
         <ButtonBase onClick={toggleTelegramModal}>
