@@ -9,7 +9,7 @@ interface Props {
 const LifiValueBridgeComponent = ({ error, ...rest }: Props) => {
   return (
     <Grid display="flex" gap="8px" flexDirection="column" width="100%">
-      <Label>Amount user needs to bridge in USD value (whole numbers only)</Label>
+      <Label>Amount user needs to bridge in USD value </Label>
       <TextField type="number" multiline={false} {...rest} error={error?.prompt} />
     </Grid>
   );
