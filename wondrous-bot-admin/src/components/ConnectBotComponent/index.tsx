@@ -1,13 +1,12 @@
 import { Box, ButtonBase, Grid, Typography } from "@mui/material";
 import { getDiscordBotOauthURL } from "components/ConnectDiscord/ConnectDiscordButton";
-import { GreenBgDiscord } from "components/Icons/Discord";
-import { TelegramGreenBg } from "components/Icons/Telegram";
+import { ConnectDiscordIcon } from "components/Icons/Discord";
+import { TelegramConnectIcon } from "components/Icons/Telegram";
 import { NotificationWrapper } from "components/Settings/NotificationSettings/styles";
 import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
 import { useContext, useEffect, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { AddBotLink, SharedLabel, StatusPill } from "./styles";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { ExternalLinkIcon } from "components/Icons/ExternalLink";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
 import { getTelegramBotLink } from "utils/discord";
@@ -153,13 +152,14 @@ const useTelegramModal = () => {
   return {
     TgComponent,
     ConnectButton,
+    isConnected: data?.getTelegramConfigForOrg?.chatId,
   };
 };
 
-const ConnectBotComponent = () => {
+const ConnectBotComponent = ({ cardBgColor = "white" }) => {
   const { activeOrg } = useContext(GlobalContext);
   const oauthUrl = getDiscordBotOauthURL({ orgId: activeOrg?.id });
-  const { TgComponent, ConnectButton } = useTelegramModal();
+  const { TgComponent, ConnectButton, isConnected: isTelegramConnected } = useTelegramModal();
   const handleDiscordClick = async () => {
     window.location.href = oauthUrl;
   };
@@ -167,56 +167,48 @@ const ConnectBotComponent = () => {
   const CARDS_CONFIG = [
     {
       title: "Discord",
-      icon: GreenBgDiscord,
+      icon: ConnectDiscordIcon,
       onClick: handleDiscordClick,
       isConnected: !!activeOrg?.cmtyDiscordConfig,
+      iconProps: {
+        fill: !!activeOrg?.cmtyDiscordConfig ? "#AF9EFF" : "#2A8D5C",
+      },
     },
     {
       title: "Telegram",
-      icon: TelegramGreenBg,
+      icon: TelegramConnectIcon,
+      iconProps: {
+        fill: isTelegramConnected ? "#AF9EFF" : "#2A8D5C",
+      },
       component: TgComponent,
       customButton: ConnectButton,
     },
   ];
 
   return (
-    <Grid
-      flex="1"
-      display="flex"
-      flexDirection="column"
-      alignItems="flex-start"
-      justifyContent="flex-start"
-      gap="32px"
-      width={{
-        xs: "100%",
-        sm: "70%",
-      }}
-    >
-      <SharedLabel>You can connect your bot to either or both platforms below.</SharedLabel>
-      <Grid gap="14px" display="flex" flexDirection="column" width="100%">
-        {CARDS_CONFIG.map((card) => (
-          <NotificationWrapper>
-            <Grid padding="18px" display="flex" justifyContent="flex-start" alignItems="center" gap="14px" width="100%">
-              <card.icon />
-              <SharedLabel>{card.title}</SharedLabel>
-              <Box flex="1" display="flex" justifyContent="flex-end">
-                {card.customButton ? (
-                  card.customButton()
-                ) : (
-                  <>
-                    {card.isConnected ? (
-                      <StatusPill disabled>Connected</StatusPill>
-                    ) : (
-                      <SharedSecondaryButton onClick={card.onClick}>Connect</SharedSecondaryButton>
-                    )}
-                  </>
-                )}
-              </Box>
-            </Grid>
-            {card.component && <>{card.component()}</>}
-          </NotificationWrapper>
-        ))}
-      </Grid>
+    <Grid display="flex" flexDirection="column" width="100%">
+      {CARDS_CONFIG.map((card) => (
+        <NotificationWrapper bgColor={cardBgColor}>
+          <Grid padding="18px" display="flex" justifyContent="flex-start" alignItems="center" gap="14px" width="100%">
+            <card.icon {...card.iconProps} />
+            <SharedLabel>{card.title}</SharedLabel>
+            <Box flex="1" display="flex" justifyContent="flex-end">
+              {card.customButton ? (
+                card.customButton()
+              ) : (
+                <>
+                  {card.isConnected ? (
+                    <StatusPill disabled>Connected</StatusPill>
+                  ) : (
+                    <SharedSecondaryButton onClick={card.onClick}>Connect</SharedSecondaryButton>
+                  )}
+                </>
+              )}
+            </Box>
+          </Grid>
+          {card.component && <>{card.component()}</>}
+        </NotificationWrapper>
+      ))}
     </Grid>
   );
 };

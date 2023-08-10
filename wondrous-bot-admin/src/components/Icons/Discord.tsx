@@ -19,9 +19,9 @@ export const ShapedHexagonWrapper = () => (
   </svg>
 );
 
-export const GreenBgDiscord = () => (
+export const ConnectDiscordIcon = ({fill = "#2A8D5C"}) => (
   <svg width="42" height="43" viewBox="0 0 42 43" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect y="0.703125" width="42" height="42" rx="6" fill="#2A8D5C" />
+    <rect y="0.703125" width="42" height="42" rx="6" fill={fill} />
     <path
       fillRule="evenodd"
       clipRule="evenodd"

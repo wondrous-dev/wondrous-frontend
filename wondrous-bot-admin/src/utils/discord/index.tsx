@@ -84,8 +84,14 @@ export const getDiscordUrl = (callbackUrl = '/discord/callback', params = '') =>
 
 
 export const getTelegramBotLink = () => {
+  let botName = 'wonder_communities_bot'
+  let link = `https://t.me/${botName}?startgroup=true&admin=post_messages`;
   if (import.meta.env.VITE_PRODUCTION) {
-    return "https://t.me/communities_test_bot?startgroup=true&admin=post_messages";
+    return link;
+  }
+  if(import.meta.env.VITE_STAGING) {
+    botName = 'communities_staging_bot'
+    return link;
   }
   return "https://t.me/communities_test_bot?startgroup=true&admin=post_messages";
 };

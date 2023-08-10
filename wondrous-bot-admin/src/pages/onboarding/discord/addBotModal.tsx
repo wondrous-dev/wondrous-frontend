@@ -3,23 +3,18 @@ import { ConnectWonderbotDescription, ConnectWonderbotImg, ConnectWonderbotText 
 import AddDiscordImg from "assets/addDiscord.svg";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { Box } from "@mui/material";
-import { getDiscordBotOauthURL } from "components/ConnectDiscord/ConnectDiscordButton";
+import ConnectBotComponent from "components/ConnectBotComponent";
 
-export const AddBotModal = ({ open, onClose, orgId }) => {
-  const oauthUrl = getDiscordBotOauthURL({ orgId });
-
-  const handleClick = async () => {
-    window.location.href = oauthUrl;
-  };
+export const AddBotModal = ({ open, onClose }) => {
   return (
     <Modal open={open} onClose={onClose} noHeader title="" maxWidth={600}>
       <Box display="flex" flexDirection={"column"} justifyContent={"center"}>
         <ConnectWonderbotText>Connect the WonderBot</ConnectWonderbotText>
         <ConnectWonderbotDescription>
-          Connect WonderBot to your Discord server for free. Trusted by top servers with no risk to your community.
+          The party doesn't start until you add WonderBot to your server! Connect WonderBot to your server to start
+          sending out quests.{" "}
         </ConnectWonderbotDescription>
-        <ConnectWonderbotImg src={AddDiscordImg} />
-        <SharedSecondaryButton onClick={handleClick}>Connect Bot</SharedSecondaryButton>
+        <ConnectBotComponent cardBgColor={"#F7F7F7"} />
         <SharedSecondaryButton
           style={{
             border: "none",
