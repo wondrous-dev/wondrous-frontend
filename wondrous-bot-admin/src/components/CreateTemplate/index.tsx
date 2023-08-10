@@ -15,7 +15,7 @@ import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, REMOVE_QUEST_STEP_MEDIA, UPDATE
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
 import { questValidator, ValidationError } from "services/validators";
-import { getPathArray } from "utils/common";
+import { getPathArray, toCent } from "utils/common";
 import { set } from "lodash";
 import { transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
@@ -356,6 +356,11 @@ const CreateTemplate = ({
           step["additionalData"] = {
             ...next.value?.dataCollectionProps,
           };
+        } else if (next.type === TYPES.LIFI_VALUE_BRIDGED) {
+          step.prompt = next.value?.prompt;
+          step["additionalData"] = {
+            usdValue: toCent(next.value),
+          };
         }
         return [...acc, step];
       }, []),
@@ -382,6 +387,7 @@ const CreateTemplate = ({
       const errors: any = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
+          console.log("error", error);
           console.log(error.path, "ERR PATH");
           const path = getPathArray(error.path);
           set(errors, path, error.message);

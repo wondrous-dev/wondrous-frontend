@@ -19,6 +19,7 @@ export const TYPES = {
   LIKE_YT_VIDEO: "like_yt_video",
   SUBSCRIBE_YT_CHANNEL: "subscribe_yt_channel",
   CUSTOM_ONCHAIN_ACTION: "custom_onchain_action",
+  LIFI_VALUE_BRIDGED: "lifi_value_bridged",
 };
 
 export const CONFIG = [
@@ -175,6 +176,8 @@ export const ERRORS_LABELS = {
   guild_not_found: "Guild not found",
   discord_user_not_in_guild: "You need to be a member of {guildName}'s Discord to connect your account",
   discord_user_not_in_guild_on_quest_start: "You need to be a member of the Discord to start this quest",
+  org_member_limit_reached:
+    "The organization has reached its member limit - please contact the admin to upgrade their plan",
   [REQUIREMENTS_NOT_MET_ERRORS.ONLY_ONCE]: "You have reached the maximum number of submissions on this quest",
   [REQUIREMENTS_NOT_MET_ERRORS.LEVEL]: "You must reach at least level {requiredLevel} to embark on this quest",
   [REQUIREMENTS_NOT_MET_ERRORS.DISCORD_ROLE]: "You must have {discordRole} role to take this quest",
@@ -312,4 +315,17 @@ export const TUTORIALS = {
   COMMUNITIES_HOME_GUIDE: "communities_home_guide",
   COMMUNITIES_QUESTS_PAGE_GUIDE: "communities_quests_page_guide",
   COMMUNITIES_QUEST: "communities_quest",
+};
+
+export const CUSTOM_INTEGRATIONS = {
+  // LIFI
+  "58318954576216128": {
+    name: "Lifi",
+    integrations: [
+      {
+        label: "LI.FI Bridging across any EVM chain",
+        value: TYPES.LIFI_VALUE_BRIDGED,
+      },
+    ],
+  },
 };

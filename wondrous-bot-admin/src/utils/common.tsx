@@ -71,30 +71,30 @@ export const camelToSnake = (str) => {
 
 export const constructExplorerRedirectUrl = (chain, txHash) => `${CHAIN_TO_EXPLORER_URL[chain]}/tx/${txHash}`;
 
-export const constructRewards = ({rewards}) => {
+export const constructRewards = ({ rewards }) => {
   return rewards?.map((reward) => {
-    if(reward.type === 'points') {
+    if (reward.type === "points") {
       return reward;
     }
-    if(reward.type === PAYMENT_OPTIONS.TOKEN) {
+    if (reward.type === PAYMENT_OPTIONS.TOKEN) {
       return {
         type: reward?.paymentMethod?.name,
         value: reward?.amount,
-      }
+      };
     }
-    if(reward.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
+    if (reward.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
       return {
-        type: 'Discord Role',
+        type: "Discord Role",
         value: reward?.discordRewardData?.discordRoleName || null,
-      }
+      };
     }
-    if(reward.type === PAYMENT_OPTIONS.POAP) {
+    if (reward.type === PAYMENT_OPTIONS.POAP) {
       return {
-        type: 'POAP',
+        type: "POAP",
         value: reward?.poapRewardData?.name || null,
-      }
+      };
     }
-  })
+  });
 };
 
 export const filterToDates = (value) => {
@@ -120,4 +120,16 @@ export const filterToDates = (value) => {
     startDate: moment().subtract(7, "days").utcOffset(0).startOf("day").toISOString(),
     endDate: moment().utcOffset(0).endOf("day").toISOString(),
   };
+};
+
+export const toCent = (amount) => {
+  const str = amount.toString();
+  const int = str.split(".");
+
+  return Number(
+    Number(amount)
+      .toFixed(2)
+      .replace(".", "")
+      .padEnd(int.length === 1 ? 3 : 4, "0")
+  );
 };
