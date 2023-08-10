@@ -222,7 +222,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         minDuration: step?.additionalData?.minDuration,
       };
     } else if (step.type === TYPES.LIFI_VALUE_BRIDGED) {
-      outputStep.value = step?.additionalData?.usdValue;
+      outputStep.value = Number(step?.additionalData?.usdValue) / 100;
     } else if (step.type === TYPES.DATA_COLLECTION) {
       const dataCollectionType = step?.additionalData?.dataCollectionType;
       outputStep.value = {
