@@ -12,7 +12,6 @@ import { EXPORT_QUEST_SUBMISSIONS } from "graphql/queries";
 import { GET_CMTY_PAYMENT_COUNTS } from "graphql/queries";
 import RedDot from "assets/redDot.svg";
 import { useNavigate } from "react-router-dom";
-import { createFormatValue } from "csv42";
 
 export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, questId }) => {
   const headers = [
