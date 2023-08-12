@@ -161,6 +161,7 @@ export const EXPORT_QUEST_SUBMISSIONS = gql`
   query exportQuestSubmissions($questId: ID!) {
     exportQuestSubmissions(questId: $questId) {
       questSteps {
+        id
         order
         type
         prompt
@@ -208,6 +209,7 @@ export const EXPORT_QUEST_SUBMISSIONS = gql`
             tweetId
           }
           selectedValues
+          stepId
         }
         creator {
           discordUsername

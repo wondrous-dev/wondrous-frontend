@@ -83,7 +83,7 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
     const submitterWeb3Address = submission?.creator?.web3Address;
     const approvedAt = submission?.approvedAt ? format(new Date(submission?.approvedAt), "yyyy-MM-dd") : "";
     const rejectedAt = submission?.rejectedAt ? format(new Date(submission?.rejectedAt), "yyyy-MM-dd") : "";
-    const finalArr = [
+    let finalArr = [
       format(new Date(submission?.createdAt), "yyyy-MM-dd"),
       submitterDiscordHandle,
       submitterTwitterHandle,
@@ -91,9 +91,11 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
       approvedAt,
       rejectedAt,
     ];
-
     if (submission?.stepsData) {
-      submission?.stepsData?.forEach((submissionStep) => {
+      for (let i = 0; i < submission?.stepsData?.length; i++) {
+        const extraAdded = {};
+        let questStepIndex = 0;
+        const submissionStep = submission?.stepsData[i];
         const contentString = JSON.stringify({
           ...(submissionStep?.content && {
             answer: submissionStep?.content,
@@ -115,12 +117,37 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
           }),
         });
         const finalContentString = `"${contentString.replace(/\"/g, '""')}"`;
-        finalArr.push(finalContentString);
-      });
+        while (questStepIndex < questSteps?.length && submissionStep?.stepId !== questSteps[questStepIndex]?.id) {
+          questStepIndex++;
+        }
+        if (questStepIndex === questSteps?.length) {
+          // The first question no longer exists so we add it later
+          if (!(submissionStep?.stepId in extraAdded)) {
+            extraAdded[submissionStep?.stepId] = [finalContentString];
+          } else {
+            extraAdded[submissionStep?.stepId].push(finalContentString);
+          }
+          let extraIndex = questStepIndex + 7;
+          for (const key in extraAdded) {
+            // Find the corresponding revmoed step ids
+            const keyString = "Removed step ID: " + key;
+            if (!rows[0][0].includes(keyString)) {
+              rows[0][0].push(keyString);
+              finalArr[extraIndex] = extraAdded[key];
+              extraIndex++;
+            } else {
+              const index = rows[0][0].indexOf(keyString);
+              finalArr[index] = extraAdded[key];
+            }
+          }
+          continue;
+        }
+        // There are 6 constant step indices before
+        finalArr[questStepIndex + 6] = finalContentString;
+      }
     }
     rows.push(finalArr);
   });
-
   let csvContent = "data:text/csv;charset=utf-8,";
   rows.forEach((rowArray) => {
     const row = rowArray.join(",");
