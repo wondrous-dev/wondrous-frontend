@@ -3,7 +3,7 @@ import EmptyState from "components/EmptyState";
 import { useEffect, useMemo, useState, useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { useInView } from "react-intersection-observer";
-import { EMPTY_STATE_TYPES, QUEST_SUBMISSION_STATUS } from "utils/constants";
+import { EMPTY_STATE_TYPES, QUEST_SUBMISSION_STATUS, TYPES } from "utils/constants";
 import { format } from "date-fns";
 import QuestResultsCard from "./QuestResultsCard";
 import { FilterPill } from "./styles";
@@ -28,8 +28,46 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
       questId,
     },
   });
-
-  const questSubmissions = questSubmissionData?.data?.exportQuestSubmissions;
+  const questSubmissions = questSubmissionData?.data?.exportQuestSubmissions?.questSubmissions;
+  const questSteps = questSubmissionData?.data?.exportQuestSubmissions?.questSteps;
+  questSteps.forEach((questStep) => {
+    const questStepType = questStep?.type;
+    let questStepTypeString = questStepType?.split("_").join(" ");
+    questStepTypeString = questStepTypeString.charAt(0).toUpperCase() + questStepTypeString.slice(1);
+    if (questStepType === TYPES.RETWEET || questStepType === TYPES.LIKE_TWEET || questStepType === TYPES.REPLY_TWEET) {
+      questStepTypeString = `${questStepTypeString} ${questStep?.additionalData?.tweetLink}`;
+    } else if (questStepType === TYPES.FOLLOW_TWITTER) {
+      questStepTypeString = `${questStepTypeString} ${questStep?.additionalData?.tweetHandle}`;
+    } else if (questStepType === TYPES.TWEET_WITH_PHRASE) {
+      questStepTypeString = `${questStepTypeString} ${questStep?.additionalData?.tweetPhrase}`;
+    } else if (
+      questStepType === TYPES.TEXT_FIELD ||
+      questStepType === TYPES.MULTI_QUIZ ||
+      questStepType === TYPES.SINGLE_QUIZ ||
+      questStepType === TYPES.ATTACHMENTS ||
+      questStepType === TYPES.NUMBER ||
+      questStepType === TYPES.DATA_COLLECTION
+    ) {
+      questStepTypeString = `${questStepTypeString} - ${questStep?.prompt}`;
+    } else if (questStepType === TYPES.DISCORD_EVENT_ATTENDANCE) {
+      questStepTypeString = `${questStepTypeString} - ${questStep?.additionalData?.discordEventId}`;
+    } else if (questStepType === TYPES.DISCORD_MESSAGE_IN_CHANNEL) {
+      questStepTypeString = `${questStepTypeString} - #${questStep?.additionalData?.discordChannelName}`;
+    } else if (questStepType === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
+      questStepTypeString = `${questStepTypeString} - ${questStep?.additionalData?.snapshotProposalLink}`;
+    } else if (questStepType === TYPES.SNAPSHOT_SPACE_VOTE) {
+      questStepTypeString = `${questStepTypeString} - Vote ${questStep?.additionalData?.snapshotVoteTimes} times ${questStep?.additionalData?.snapshotSpaceLink}`;
+    } else if (questStepType === TYPES.VERIFY_TOKEN_HOLDING) {
+      questStepTypeString = `${questStepTypeString} - ${questStep?.additionalData?.tokenAmount} ${questStep?.additionalData?.tokenName}`;
+    } else if (questStepType === TYPES.LINK_CLICK) {
+      questStepTypeString = `${questStepTypeString} - ${questStep?.additionalData?.linkClickUrl}`;
+    } else if (questStepType === TYPES.LIKE_YT_VIDEO) {
+      questStepTypeString = `${questStepTypeString} - ${questStep?.additionalData?.ytVideoLink}`;
+    } else if (questStepType === TYPES.SUBSCRIBE_YT_CHANNEL) {
+      questStepTypeString = `${questStepTypeString} - ${questStep?.additionalData?.ytChannelLink}`;
+    }
+    headers.push(`Step ${questStep?.order}: ${questStepTypeString}`);
+  });
   const rows = [[headers]];
   if (!questSubmissions) {
     return;
@@ -45,22 +83,77 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
     const submitterWeb3Address = submission?.creator?.web3Address;
     const approvedAt = submission?.approvedAt ? format(new Date(submission?.approvedAt), "yyyy-MM-dd") : "";
     const rejectedAt = submission?.rejectedAt ? format(new Date(submission?.rejectedAt), "yyyy-MM-dd") : "";
-    rows.push([
-      [
-        format(new Date(submission?.createdAt), "yyyy-MM-dd"),
-        submitterDiscordHandle,
-        submitterTwitterHandle,
-        submitterWeb3Address,
-        approvedAt,
-        rejectedAt,
-      ],
-    ]);
+    let finalArr = [
+      format(new Date(submission?.createdAt), "yyyy-MM-dd"),
+      submitterDiscordHandle,
+      submitterTwitterHandle,
+      submitterWeb3Address,
+      approvedAt,
+      rejectedAt,
+    ];
+    if (submission?.stepsData) {
+      for (let i = 0; i < submission?.stepsData?.length; i++) {
+        const extraAdded = {};
+        let questStepIndex = 0;
+        const submissionStep = submission?.stepsData[i];
+        const contentString = JSON.stringify({
+          ...(submissionStep?.content && {
+            answer: submissionStep?.content,
+          }),
+          ...(submissionStep?.skipped && {
+            skipped: true,
+          }),
+          ...(!submissionStep.skipped && {
+            verified: true,
+          }),
+          ...(submissionStep?.tweetId && {
+            tweetId: submissionStep?.tweetId,
+          }),
+          ...(submissionStep?.txHash && {
+            txHash: submissionStep?.txHash,
+          }),
+          ...(submissionStep?.selectedValues && {
+            selectedValues: JSON.stringify(submissionStep?.selectedValues),
+          }),
+        });
+        const finalContentString = `"${contentString.replace(/\"/g, '""')}"`;
+        while (questStepIndex < questSteps?.length && submissionStep?.stepId !== questSteps[questStepIndex]?.id) {
+          questStepIndex++;
+        }
+        if (questStepIndex === questSteps?.length) {
+          // The first question no longer exists so we add it later
+          if (!(submissionStep?.stepId in extraAdded)) {
+            extraAdded[submissionStep?.stepId] = [finalContentString];
+          } else {
+            extraAdded[submissionStep?.stepId].push(finalContentString);
+          }
+          let extraIndex = questStepIndex + 7;
+          for (const key in extraAdded) {
+            // Find the corresponding revmoed step ids
+            const keyString = "Removed step ID: " + key;
+            if (!rows[0][0].includes(keyString)) {
+              rows[0][0].push(keyString);
+              finalArr[extraIndex] = extraAdded[key];
+              extraIndex++;
+            } else {
+              const index = rows[0][0].indexOf(keyString);
+              finalArr[index] = extraAdded[key];
+            }
+          }
+          continue;
+        }
+        // There are 6 constant step indices before
+        finalArr[questStepIndex + 6] = finalContentString;
+      }
+    }
+    rows.push(finalArr);
   });
   let csvContent = "data:text/csv;charset=utf-8,";
   rows.forEach((rowArray) => {
     const row = rowArray.join(",");
     csvContent += `${row}\r\n`;
   });
+
   let encodedUri = encodeURI(csvContent);
   encodedUri = encodedUri.replace(/#/g, "%23");
   const link = document.createElement("a");
@@ -117,7 +210,7 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
     [stats]
   );
   const unpaidPaymentsCount = paymentCountData?.getCmtyPaymentsCountForOrg?.count || 0;
-  
+
   return (
     <Grid
       display="flex"
@@ -155,9 +248,12 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
           Export submissions to CSV
         </FilterPill>
         {unpaidPaymentsCount > 0 && (
-            <FilterPill type="button" key="unpaid" $isActive={false} 
+          <FilterPill
+            type="button"
+            key="unpaid"
+            $isActive={false}
             onClick={() => navigate(`/quests/${quest.id}/payments`)}
-            >
+          >
             <img
               style={{
                 marginRight: "4px",
