@@ -160,20 +160,65 @@ export const GET_QUEST_REWARDS = gql`
 export const EXPORT_QUEST_SUBMISSIONS = gql`
   query exportQuestSubmissions($questId: ID!) {
     exportQuestSubmissions(questId: $questId) {
-      createdAt
-      orgId
-      approvedAt
-      rejectedAt
-      reviewedBy
-      creator {
-        discordUsername
-        discordDiscriminator
-        web3Address
-        twitterInfo {
-          twitterUsername
+      questSteps {
+        order
+        type
+        prompt
+        additionalData {
+          discordChannelName
+          discordChannelId
+          tweetHandle
+          tweetLink
+          tweetPhrase
+          snapshotProposalLink
+          snapshotSpaceLink
+          snapshotVoteTimes
+          discordMessageType
+          dataCollectionType
+          tokenAddress
+          tokenSymbol
+          tokenLogoUrl
+          tokenDecimals
+          tokenChain
+          tokenAmount
+          tokenType
+          tokenId
+          tokenName
+          ytVideoLink
+          ytChannelLink
+          linkClickUrl
+          discordEventId
+          minDuration
         }
-        level
-        point
+      }
+      questSubmissions {
+        createdAt
+        orgId
+        approvedAt
+        rejectedAt
+        reviewedBy
+        stepsData {
+          order
+          content
+          attachments {
+            slug
+          }
+          additionalData {
+            txHash
+            tweetId
+          }
+          selectedValues
+        }
+        creator {
+          discordUsername
+          discordDiscriminator
+          web3Address
+          twitterInfo {
+            twitterUsername
+          }
+          level
+          point
+        }
       }
     }
   }
