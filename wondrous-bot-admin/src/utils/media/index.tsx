@@ -99,14 +99,14 @@ export const transformMediaFormat = (media) =>
   }));
 
 export function isImage(url, mediaType) {
-  if (mediaType.includes('image')) {
+  if (mediaType?.includes('image')) {
     return true;
   }
   return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url);
 }
 
 export function isVideo(url, mediaType) {
-  if (mediaType.includes('video')) {
+  if (mediaType?.includes('video')) {
     return true;
   }
   return /\.(mp4|mov|avi|wmv|flv|webm|mkv|m4v)$/.test(url);
