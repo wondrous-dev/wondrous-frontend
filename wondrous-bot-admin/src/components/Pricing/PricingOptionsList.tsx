@@ -22,7 +22,14 @@ const pricingOptions: PricingOptionsListItemType[] = [
     annualPrice: 0,
     buttonText: "Start",
     link: "/signup",
-    features: ["100 members", "5 active quests", "Hosted quest pages", "Simple rewards", "General support", "1 seat"],
+    features: [
+      "Up to 100 members",
+      "5 active quests",
+      "Hosted quest pages",
+      "Simple rewards",
+      "General support",
+      "1 seat",
+    ],
   },
   {
     colorScheme: "#84BCFF",
@@ -41,7 +48,7 @@ const pricingOptions: PricingOptionsListItemType[] = [
       : "https://buy.stripe.com/test_00g9DC4KT8YD1ckdQV",
     features: [
       "Everything in Basic",
-      "1,000 members",
+      "Up to 1,000 members",
       "Unlimited quests",
       "Customize levels names",
       "Reward crypto",
@@ -70,7 +77,7 @@ const pricingOptions: PricingOptionsListItemType[] = [
       "Everything in Hobby",
       "Unlimited members",
       "More social integrations",
-      "Custom onboarding session",
+      "More rewards (Discord nitro, gift cards, merch, etc)",
       "Custom banners",
       "Premium support in Discord",
       "Batch pay with Gnosis",
