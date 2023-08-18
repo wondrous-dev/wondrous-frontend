@@ -29,8 +29,7 @@ const GoogleOauthCallbackPage = () => {
   const [searchParams] = useSearchParams();
   const code = searchParams?.get("code");
   const state = searchParams?.get("state");
-  const { discordId } = JSON.parse(state || "{}");
-
+  const { discordId, telegramUserId } = JSON.parse(state || "{}");
 
   const [finishedVerification, setFinishedVerification] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -47,24 +46,25 @@ const GoogleOauthCallbackPage = () => {
   });
 
   useEffect(() => {
-    if (code && discordId && !finishedVerification) {
+    if (code && (discordId || telegramUserId) && !finishedVerification) {
       setFinishedVerification(true);
-        connectCommunityUserGoogle({
+      connectCommunityUserGoogle({
         variables: {
           code,
           discordId,
+          telegramUserId: telegramUserId?.toString(),
         },
       });
     }
-  }, [discordId, code]);
-  console.log(code)
+  }, [discordId, code, telegramUserId]);
 
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
       <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
         {finishedVerification && (
           <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-            Finished connecting your Google account! You can close this window now and return to Discord.
+            Finished connecting your Google account! You can close this window now and return to{" "}
+            {telegramUserId ? "Telegram" : "Discord"}.
           </Typography>
         )}
         {!finishedVerification && (
