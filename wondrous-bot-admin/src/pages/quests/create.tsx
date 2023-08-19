@@ -36,7 +36,7 @@ const CreatePage = () => {
             )}
           />
         </div>
-        <CreateTemplate setRefValue={setRefValue} displaySavePanel={!inView} title={title} />
+        {entry && <CreateTemplate setRefValue={setRefValue} displaySavePanel={!inView} title={title} />}
       </CreateQuestContext.Provider>
     </>
   );
