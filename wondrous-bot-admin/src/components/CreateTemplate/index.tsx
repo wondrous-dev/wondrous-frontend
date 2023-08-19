@@ -22,6 +22,7 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
+import QuestTemplateModal from "./QuestTemplateModal";
 
 const DEFAULT_STATE_VALUE = {
   level: "1",
@@ -63,6 +64,8 @@ const CreateTemplate = ({
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } = useAlerts();
 
   const { activeOrg } = useContext(GlobalContext);
+
+  const [isQuestTemplateOpen, setIsQuestTemplateOpen] = useState(true);
 
   const [steps, setSteps] = useState([]);
   const refs = useRef([]);
@@ -414,6 +417,13 @@ const CreateTemplate = ({
 
   return (
     <>
+      <QuestTemplateModal
+        setSteps={setSteps}
+        setQuestSettings={setQuestSettings}
+        open={isQuestTemplateOpen}
+        setOpen={setIsQuestTemplateOpen}
+      />
+
       <Modal
         open={isSaving}
         onClose={() => setIsSaving(false)}
