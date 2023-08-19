@@ -20,12 +20,13 @@ import StartFromScratchImage from "assets/questTemplatesImages/startFromScratch.
 import VerifyTokenHoldingsImage from "assets/questTemplatesImages/verifyTokenHoldings.jpeg";
 import VerifyYourSubscriptionImage from "assets/questTemplatesImages/verifyYourSubscription.jpeg";
 import CloseModalIcon from "components/Icons/CloseModal";
-import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { TYPES } from "utils/constants";
 import { usePaywall, useSubscription } from "utils/hooks";
+
+const EcosystemFeature = React.lazy(() => import("components/PremiumFeatureDialog/ecosystem"));
 
 const questTemplateCategories = {
   all: "See All",
@@ -449,11 +450,13 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
 
   return (
     <>
-      <EcosystemFeature
-        open={ecoSystemFeatureModal.open}
-        onClose={handleSetEcoSystemFeatureModalOnClose}
-        paywallMessage={ecoSystemFeatureModal.message}
-      />
+      <Suspense>
+        <EcosystemFeature
+          open={ecoSystemFeatureModal.open}
+          onClose={handleSetEcoSystemFeatureModalOnClose}
+          paywallMessage={ecoSystemFeatureModal.message}
+        />
+      </Suspense>
 
       <Dialog
         open={open}
