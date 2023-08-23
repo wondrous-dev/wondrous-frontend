@@ -74,6 +74,7 @@ export const RPC_URLS: { [chainId: number]: string } = {
   10: import.meta.env.VITE_URL_OPTIMISM,
   43114: import.meta.env.VITE_URL_AVALANCHE,
   1313161554: import.meta.env.VITE_URL_AURORA,
+  8453: import.meta.env.VITE_URL_BASE,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
