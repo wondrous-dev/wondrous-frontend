@@ -45,6 +45,7 @@ import AnalyticsPage from "pages/analytics";
 import PremiumFeatureDialog from "components/PremiumFeatureDialog";
 import PaywallContext from "utils/context/PaywallContext";
 import ConnectPage from "pages/settings/connect";
+import TelegramStatQuest from "pages/telegram/start-quest";
 
 const router = createBrowserRouter([
   {
@@ -75,8 +76,8 @@ const router = createBrowserRouter([
         element: <BillingPage />,
       },
       {
-        path: '/settings/connect',
-        element: <ConnectPage />
+        path: "/settings/connect",
+        element: <ConnectPage />,
       },
       {
         path: "/",
@@ -159,12 +160,16 @@ const router = createBrowserRouter([
         element: <PricingPage />,
       },
       {
-        path: '/verify-link',
-        element: <VerifyLinkPage />
+        path: "/verify-link",
+        element: <VerifyLinkPage />,
       },
       {
-        path: '/analytics',
-        element: <AnalyticsPage />
+        path: "/analytics",
+        element: <AnalyticsPage />,
+      },
+      {
+        path: "/telegram/start-quest/:id",
+        element: <TelegramStatQuest />,
       },
     ],
   },

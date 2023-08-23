@@ -30,7 +30,7 @@ export const CustomTextField = styled(InputUnstyled)`
 
 export const Label = styled(Typography)`
   && {
-    color: #4d4d4d;
+    color: ${({color = '#4d4d4d'}) => color};
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 600;

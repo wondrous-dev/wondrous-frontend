@@ -192,3 +192,12 @@ export const GET_POAP_EVENT = gql`
     }
   }
 `;
+
+export const USER_CAN_START_QUEST = gql`
+  query userCanStartQuest($telegramUserId: String, $telegramUsername: String, $questId: String) {
+    userCanStartQuest(telegramUserId: $telegramUserId, telegramUsername: $telegramUsername, questId: $questId) {
+      canStart
+      error
+    }
+  }
+`;
