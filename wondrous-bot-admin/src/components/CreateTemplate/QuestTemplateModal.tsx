@@ -62,24 +62,52 @@ const questTemplates: {
       },
     ],
   },
-  communitySurvey: {
-    text: "Community survey",
-    image: CommunitySurveyImage,
-    category: questTemplateCategories.community,
+  increaseTwitterFollowers: {
+    text: "Increase Twitter Followers",
+    image: IncreaseTwitterFollowersImage,
+    category: questTemplateCategories.socialMedia,
+    steps: [{ type: TYPES.FOLLOW_TWITTER }, { type: TYPES.REPLY_TWEET }],
+    rewards: [
+      {
+        type: rewardTypePoints,
+        value: 10,
+      },
+    ],
+  },
+  promoteATweet: {
+    text: "Promote a Tweet",
+    image: PromoteATweetImage,
+    category: questTemplateCategories.socialMedia,
+    steps: [{ type: TYPES.LIKE_TWEET }, { type: TYPES.REPLY_TWEET }],
+    rewards: [
+      {
+        type: rewardTypePoints,
+        value: 5,
+      },
+    ],
+  },
+  getProductFeedback: {
+    text: "Get Product Feedback",
+    image: GetProductFeedbackImage,
+    category: questTemplateCategories.product,
     steps: [
       {
         type: TYPES.TEXT_FIELD,
-        value: "How has your experience been with our community so far?",
+        value: "What was your favorite thing about our product (was it useful, fun, etc)?",
       },
       {
         type: TYPES.TEXT_FIELD,
-        value: "What are some improvements we can make?",
+        value: "What could have been improved on?",
+      },
+      {
+        type: TYPES.TEXT_FIELD,
+        value: "Are there any features you would have liked",
       },
     ],
     rewards: [
       {
         type: rewardTypePoints,
-        value: 10,
+        value: 15,
       },
     ],
   },
@@ -100,15 +128,51 @@ const questTemplates: {
       },
     ],
   },
-  getYoutubeLikes: {
-    text: "Get YouTube likes",
-    image: GetYoutubeLikesImage,
-    category: questTemplateCategories.socialMedia,
-    steps: [{ type: TYPES.LIKE_YT_VIDEO }],
+  onboardCommunity: {
+    text: "Onboard Your Community",
+    image: OnboardYourCommunityImage,
+    category: questTemplateCategories.community,
+    steps: [
+      {
+        type: TYPES.MULTI_QUIZ,
+        value: {
+          question: "go to our website (X) and answer these questions",
+          withCorrectAnswers: false,
+          multiSelectValue: TYPES.MULTI_QUIZ,
+          answers: [
+            {
+              value: "",
+              isCorrect: true,
+            },
+          ],
+        },
+      },
+    ],
     rewards: [
       {
         type: rewardTypePoints,
-        value: 5,
+        value: 10,
+      },
+    ],
+  },
+  communitySurvey: {
+    text: "Community survey",
+    image: CommunitySurveyImage,
+    category: questTemplateCategories.community,
+    steps: [
+      {
+        type: TYPES.TEXT_FIELD,
+        value: "How has your experience been with our community so far?",
+      },
+      {
+        type: TYPES.TEXT_FIELD,
+        value: "What are some improvements we can make?",
+      },
+    ],
+    rewards: [
+      {
+        type: rewardTypePoints,
+        value: 10,
       },
     ],
   },
@@ -156,56 +220,49 @@ const questTemplates: {
       },
     ],
   },
-  getEngineeringContributions: {
-    text: "Get engineering contributions",
-    image: GetEngineeringContributionsImage,
-    category: questTemplateCategories.product,
-    steps: [
-      {
-        type: TYPES.TEXT_FIELD,
-        value: "Submit PR to Github issues",
-      },
-    ],
+  launchMemeContest: {
+    text: "Launch Meme contest",
+    image: LaunchAMemeContestImage,
+    category: questTemplateCategories.socialMedia,
+    steps: [{ type: TYPES.ATTACHMENTS, value: "Winner gets 50 USDC, Runner up 25 and third place 10 USDC" }],
     rewards: [
       {
         type: rewardTypePoints,
-        value: 25,
+        value: 5,
       },
     ],
   },
-  getProductFeedback: {
-    text: "Get Product Feedback",
-    image: GetProductFeedbackImage,
-    category: questTemplateCategories.product,
-    steps: [
-      {
-        type: TYPES.TEXT_FIELD,
-        value: "What was your favorite thing about our product (was it useful, fun, etc)?",
-      },
-      {
-        type: TYPES.TEXT_FIELD,
-        value: "What could have been improved on?",
-      },
-      {
-        type: TYPES.TEXT_FIELD,
-        value: "Are there any features you would have liked",
-      },
-    ],
+  getYoutubeLikes: {
+    text: "Get YouTube likes",
+    image: GetYoutubeLikesImage,
+    category: questTemplateCategories.socialMedia,
+    steps: [{ type: TYPES.LIKE_YT_VIDEO }],
     rewards: [
       {
         type: rewardTypePoints,
-        value: 15,
+        value: 5,
       },
     ],
   },
-  haveMembersInviteFriends: {
-    text: "Have members invite friends",
-    image: HaveMembersInviteFriendsImage,
+  verifyYoutubeSubscription: {
+    text: "Verify YouTube Subscription",
+    image: VerifyYourSubscriptionImage,
+    category: questTemplateCategories.socialMedia,
+    steps: [{ type: TYPES.SUBSCRIBE_YT_CHANNEL }],
+    rewards: [
+      {
+        type: rewardTypePoints,
+        value: 10,
+      },
+    ],
+  },
+  launchSnapshotProposal: {
+    text: "Launch Snapshot proposal",
+    image: LaunchSnapshotProposalImage,
     category: questTemplateCategories.community,
     steps: [
       {
-        type: TYPES.TEXT_FIELD,
-        value: "Submit your Discord invite link so we can check referrals",
+        type: TYPES.SNAPSHOT_PROPOSAL_VOTE,
       },
     ],
     rewards: [
@@ -227,82 +284,20 @@ const questTemplates: {
       },
     ],
   },
-  increaseTwitterFollowers: {
-    text: "Increase Twitter Followers",
-    image: IncreaseTwitterFollowersImage,
-    category: questTemplateCategories.socialMedia,
-    steps: [{ type: TYPES.FOLLOW_TWITTER }, { type: TYPES.REPLY_TWEET }],
-    rewards: [
-      {
-        type: rewardTypePoints,
-        value: 10,
-      },
-    ],
-  },
-  launchMemeContest: {
-    text: "Launch Meme contest",
-    image: LaunchAMemeContestImage,
-    category: questTemplateCategories.socialMedia,
-    steps: [{ type: TYPES.ATTACHMENTS, value: "Winner gets 50 USDC, Runner up 25 and third place 10 USDC" }],
-    rewards: [
-      {
-        type: rewardTypePoints,
-        value: 5,
-      },
-    ],
-  },
-  launchSnapshotProposal: {
-    text: "Launch Snapshot proposal",
-    image: LaunchSnapshotProposalImage,
+  haveMembersInviteFriends: {
+    text: "Have members invite friends",
+    image: HaveMembersInviteFriendsImage,
     category: questTemplateCategories.community,
     steps: [
       {
-        type: TYPES.SNAPSHOT_PROPOSAL_VOTE,
+        type: TYPES.TEXT_FIELD,
+        value: "Submit your Discord invite link so we can check referrals",
       },
     ],
     rewards: [
       {
         type: rewardTypePoints,
         value: 20,
-      },
-    ],
-  },
-  onboardCommunity: {
-    text: "Onboard Your Community",
-    image: OnboardYourCommunityImage,
-    category: questTemplateCategories.community,
-    steps: [
-      {
-        type: TYPES.MULTI_QUIZ,
-        value: {
-          question: "go to our website (X) and answer these questions",
-          withCorrectAnswers: false,
-          multiSelectValue: TYPES.MULTI_QUIZ,
-          answers: [
-            {
-              value: "",
-              isCorrect: true,
-            },
-          ],
-        },
-      },
-    ],
-    rewards: [
-      {
-        type: rewardTypePoints,
-        value: 10,
-      },
-    ],
-  },
-  promoteATweet: {
-    text: "Promote a Tweet",
-    image: PromoteATweetImage,
-    category: questTemplateCategories.socialMedia,
-    steps: [{ type: TYPES.LIKE_TWEET }, { type: TYPES.REPLY_TWEET }],
-    rewards: [
-      {
-        type: rewardTypePoints,
-        value: 5,
       },
     ],
   },
@@ -324,15 +319,20 @@ const questTemplates: {
       },
     ],
   },
-  verifyYoutubeSubscription: {
-    text: "Verify YouTube Subscription",
-    image: VerifyYourSubscriptionImage,
-    category: questTemplateCategories.socialMedia,
-    steps: [{ type: TYPES.SUBSCRIBE_YT_CHANNEL }],
+  getEngineeringContributions: {
+    text: "Get engineering contributions",
+    image: GetEngineeringContributionsImage,
+    category: questTemplateCategories.product,
+    steps: [
+      {
+        type: TYPES.TEXT_FIELD,
+        value: "Submit PR to Github issues",
+      },
+    ],
     rewards: [
       {
         type: rewardTypePoints,
-        value: 10,
+        value: 25,
       },
     ],
   },
