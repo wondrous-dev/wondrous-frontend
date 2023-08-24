@@ -6,7 +6,11 @@ type PremiumFeatureDialogProps = {
   paywallMessage?: string;
 };
 
-const EcosystemFeature = ({ open = false, onClose, paywallMessage }: PremiumFeatureDialogProps) => {
+const EcosystemFeature = ({
+  open = false,
+  onClose,
+  paywallMessage = "Please talk to your sales representative to add custom onchain verifications for community",
+}: PremiumFeatureDialogProps) => {
   return (
     <Dialog
       open={open}
@@ -31,7 +35,7 @@ const EcosystemFeature = ({ open = false, onClose, paywallMessage }: PremiumFeat
         <Grid container item padding="24px" flexDirection="column" alignItems="center" gap="24px">
           <Grid container item flexDirection="column" gap="14px" alignItems="center">
             <Typography color="#2A8D5C" fontFamily="Poppins" fontSize="24px" fontWeight="700" textAlign="center">
-              Please talk to your sales representative to add custom onchain verifications for community
+              {paywallMessage}
             </Typography>
             <Typography
               color="#5E5E5E"

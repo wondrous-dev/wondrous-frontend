@@ -22,25 +22,7 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
-
-const DEFAULT_STATE_VALUE = {
-  level: "1",
-  timeBound: false,
-  maxSubmission: null,
-  maxApproval: null,
-  requireReview: false,
-  isActive: false,
-  isOnboarding: false,
-  startAt: null,
-  endAt: null,
-  questConditions: [],
-  rewards: [
-    {
-      value: 0,
-      type: "points",
-    },
-  ],
-};
+import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "./shared";
 
 const stepCache = {
   steps: null,
@@ -48,11 +30,12 @@ const stepCache = {
 const CreateTemplate = ({
   setRefValue,
   displaySavePanel,
-  defaultQuestSettings = DEFAULT_STATE_VALUE,
+  defaultQuestSettings = DEFAULT_QUEST_SETTINGS_STATE_VALUE,
   questId = null,
   postUpdate = null,
   title,
   getQuestById = null,
+  defaultSteps = [],
 }) => {
   const navigate = useNavigate();
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -64,7 +47,7 @@ const CreateTemplate = ({
 
   const { activeOrg } = useContext(GlobalContext);
 
-  const [steps, setSteps] = useState([]);
+  const [steps, setSteps] = useState(defaultSteps);
   const refs = useRef([]);
 
   useEffect(() => {
