@@ -49,6 +49,7 @@ const questTemplates: {
       type: string;
       value: number;
     }[];
+    requireReview?: boolean;
     isCustom?: boolean;
   };
 } = {
@@ -317,6 +318,7 @@ const questTemplates: {
         value: 20,
       },
     ],
+    requireReview: true,
   },
   reportABug: {
     label: "Report a bug",
@@ -396,7 +398,7 @@ type QuestTemplateModalProps = {
   setQuestTemplate: React.Dispatch<React.SetStateAction<any>>;
 };
 
-const QuestTemplateModal = ({ open, setQuestTemplate }) => {
+const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps) => {
   const { selectedCategory, setSelectedCategory, filteredQuestTemplates } = useFilteredQuestTemplateByCategory();
 
   const handleSelectCategory = (categoryValue) => () => {
@@ -414,7 +416,7 @@ const QuestTemplateModal = ({ open, setQuestTemplate }) => {
 
   const handleTemplateSelect = (questTemplate) => () => {
     const template = questTemplates[questTemplate];
-    const { isCustom, label, rewards, title } = template || {};
+    const { isCustom, label, rewards, title, requireReview } = template || {};
     if (isCustom && plan === PricingOptionsTitle.Basic) {
       setPaywall(true);
       setPaywallMessage(`${label} is a premium template`);
@@ -440,6 +442,7 @@ const QuestTemplateModal = ({ open, setQuestTemplate }) => {
       questSettings: {
         ...prev.questSettings,
         rewards,
+        requireReview,
       },
       title,
     }));
