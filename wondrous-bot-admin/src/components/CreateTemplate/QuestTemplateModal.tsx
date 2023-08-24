@@ -367,43 +367,6 @@ const useFilteredQuestTemplateByCategory = () => {
   };
 };
 
-const useHandleSelectTemplate = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [ecoSystemFeatureModal, setEcoSystemFeatureModal] = useState({
-    open: false,
-    message: "",
-  });
-  const { setPaywall, setPaywallMessage } = usePaywall();
-  const subscription = useSubscription();
-  const plan = getPlan(subscription?.tier);
-
-  const handleSetEcoSystemFeatureModalOnClose = () => setEcoSystemFeatureModal({ open: false, message: "" });
-
-  const handleSelectTemplate = (questTemplate) => () => {
-    const { isCustom, text } = questTemplates[questTemplate];
-    if (isCustom && plan === PricingOptionsTitle.Basic) {
-      setPaywall(true);
-      setPaywallMessage(`${text} is a premium template`);
-      return;
-    }
-    if (isCustom && plan !== PricingOptionsTitle.Basic) {
-      setEcoSystemFeatureModal({
-        open: true,
-        message: `Please talk to your sales representative to add ${text}`,
-      });
-      return;
-    }
-    setSelectedTemplate(questTemplate);
-  };
-  return {
-    selectedTemplate,
-    ecoSystemFeatureModal,
-    handleSelectTemplate,
-    handleSetEcoSystemFeatureModalOnClose,
-    setSelectedTemplate,
-  };
-};
-
 const useIsScreenSmDown = () => {
   const theme = useTheme();
   return useMediaQuery(theme.breakpoints.down("sm"));
@@ -419,21 +382,34 @@ type QuestTemplateModalProps = {
 const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: QuestTemplateModalProps) => {
   const { selectedCategory, setSelectedCategory, filteredQuestTemplates } = useFilteredQuestTemplateByCategory();
 
-  const {
-    selectedTemplate,
-    ecoSystemFeatureModal,
-    handleSelectTemplate,
-    handleSetEcoSystemFeatureModalOnClose,
-    setSelectedTemplate,
-  } = useHandleSelectTemplate();
-
   const handleSelectCategory = (categoryValue) => () => {
     setSelectedCategory(() => categoryValue);
-    setSelectedTemplate(() => null);
   };
 
-  const handleTemplateCreate = () => {
-    const template = questTemplates[selectedTemplate];
+  const { setPaywall, setPaywallMessage } = usePaywall();
+  const [ecoSystemFeatureModal, setEcoSystemFeatureModal] = useState({
+    open: false,
+    message: "",
+  });
+  const handleSetEcoSystemFeatureModalOnClose = () => setEcoSystemFeatureModal({ open: false, message: "" });
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.tier);
+
+  const handleTemplateSelect = (questTemplate) => () => {
+    const template = questTemplates[questTemplate];
+    const { isCustom, text } = template || {};
+    if (isCustom && plan === PricingOptionsTitle.Basic) {
+      setPaywall(true);
+      setPaywallMessage(`${text} is a premium template`);
+      return;
+    }
+    if (isCustom && plan !== PricingOptionsTitle.Basic) {
+      setEcoSystemFeatureModal({
+        open: true,
+        message: `Please talk to your sales representative to add ${text}`,
+      });
+      return;
+    }
     const steps = template.steps.map((step, i) => ({
       order: i + 1,
       required: true,
@@ -628,7 +604,6 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
             >
               {Object.keys(filteredQuestTemplates).map((questTemplate) => {
                 const questTemplateValue = filteredQuestTemplates[questTemplate];
-                const isSelected = selectedTemplate === questTemplate;
                 return (
                   <ListItem
                     key={questTemplateValue.text}
@@ -642,11 +617,10 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
                         xs: "calc(50% - 4px)",
                         sm: "180px",
                       },
-                      background: isSelected ? "#AF9EFF" : "#f1f1f1",
+                      background: "#f1f1f1",
                       padding: 0,
                       borderRadius: "12px",
                       overflow: "hidden",
-                      outline: isSelected && "1px solid black",
                       "&:hover": {
                         background: "#AF9EFF",
                         outline: "1px solid black",
@@ -659,7 +633,7 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
                     <ListItemButton
                       disableRipple
                       disableTouchRipple
-                      onClick={handleSelectTemplate(questTemplate)}
+                      onClick={handleTemplateSelect(questTemplate)}
                       sx={{
                         display: "flex",
                         flexDirection: "column",
@@ -669,10 +643,7 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
                         height: "100%",
                       }}
                     >
-                      <img
-                        src={questTemplateValue.image}
-                        style={{ display: "block", width: "100%", opacity: isSelected && "70%" }}
-                      />
+                      <img src={questTemplateValue.image} style={{ display: "block", width: "100%" }} />
                       <Typography fontFamily="Poppins" padding="14px" margin="0" fontWeight="500">
                         {questTemplateValue.text}
                       </Typography>
@@ -697,32 +668,6 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
               </Grid>
             )}
           </Grid>
-        </Grid>
-        <Grid
-          item
-          container
-          borderTop="1px solid black"
-          width="100%"
-          height="88px"
-          justifyContent="flex-end"
-          padding="24px 14px"
-          gap="24px"
-          zIndex="100"
-          justifySelf="end"
-        >
-          <SharedSecondaryButton
-            onClick={() => setOpen(false)}
-            background="transparent"
-            width="140px"
-            sx={{
-              outline: "1px solid #84BCFF",
-            }}
-          >
-            Cancel
-          </SharedSecondaryButton>
-          <SharedSecondaryButton onClick={handleTemplateCreate} width="140px" disabled={!selectedTemplate}>
-            Create
-          </SharedSecondaryButton>
         </Grid>
       </Dialog>
     </>
