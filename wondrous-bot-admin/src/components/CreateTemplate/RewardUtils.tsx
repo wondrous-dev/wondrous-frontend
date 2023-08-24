@@ -20,6 +20,7 @@ import Binance from "assets/binance";
 import Ethereum from "assets/ethereum";
 import Avalanche from "assets/avalanche";
 import Optimism from "assets/optimism";
+import Base from "assets/base.svg";
 import Polygon from "assets/polygonMaticLogo.svg";
 import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import { GET_POAP_EVENT } from "graphql/queries";
@@ -51,18 +52,20 @@ export const CHAIN_SELECT_OPTIONS = [
       />
     ),
   },
-  (isDev ? {
-    label: "Goerli",
-    value: "goerli",
-    icon: (
-      <Ethereum
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  } : {}),
+  isDev
+    ? {
+        label: "Goerli",
+        value: "goerli",
+        icon: (
+          <Ethereum
+            style={{
+              width: "20px",
+              marginRight: "8px",
+            }}
+          />
+        ),
+      }
+    : {},
   {
     label: "Polygon",
     value: "polygon",
@@ -121,6 +124,19 @@ export const CHAIN_SELECT_OPTIONS = [
           width: "20px",
           marginRight: "8px",
         }}
+      />
+    ),
+  },
+  {
+    label: "Base",
+    value: "base",
+    icon: (
+      <img
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+        src={Base}
       />
     ),
   },
