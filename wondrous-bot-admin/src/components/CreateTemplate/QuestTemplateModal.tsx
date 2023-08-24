@@ -21,7 +21,6 @@ import VerifyTokenHoldingsImage from "assets/questTemplatesImages/verifyTokenHol
 import VerifyYourSubscriptionImage from "assets/questTemplatesImages/verifyYourSubscription.jpeg";
 import CloseModalIcon from "components/Icons/CloseModal";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
-import { SharedSecondaryButton } from "components/Shared/styles";
 import React, { Suspense, useState } from "react";
 import { TYPES } from "utils/constants";
 import { usePaywall, useSubscription } from "utils/hooks";
@@ -393,6 +392,12 @@ const useIsScreenSmDown = () => {
   return useMediaQuery(theme.breakpoints.down("sm"));
 };
 
+const useSubscriptionPlan = () => {
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.tier);
+  return plan;
+};
+
 type QuestTemplateModalProps = {
   open: boolean;
   setQuestTemplate: React.Dispatch<React.SetStateAction<any>>;
@@ -400,19 +405,12 @@ type QuestTemplateModalProps = {
 
 const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps) => {
   const { selectedCategory, setSelectedCategory, filteredQuestTemplates } = useFilteredQuestTemplateByCategory();
-
-  const handleSelectCategory = (categoryValue) => () => {
-    setSelectedCategory(() => categoryValue);
-  };
-
   const { setPaywall, setPaywallMessage } = usePaywall();
   const [ecoSystemFeatureModal, setEcoSystemFeatureModal] = useState({
     open: false,
     message: "",
   });
-  const handleSetEcoSystemFeatureModalOnClose = () => setEcoSystemFeatureModal({ open: false, message: "" });
-  const subscription = useSubscription();
-  const plan = getPlan(subscription?.tier);
+  const plan = useSubscriptionPlan();
 
   const handleTemplateSelect = (questTemplate) => () => {
     const template = questTemplates[questTemplate];
@@ -455,7 +453,7 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
       <Suspense>
         <EcosystemFeature
           open={ecoSystemFeatureModal.open}
-          onClose={handleSetEcoSystemFeatureModalOnClose}
+          onClose={() => setEcoSystemFeatureModal({ open: false, message: "" })}
           paywallMessage={ecoSystemFeatureModal.message}
         />
       </Suspense>
@@ -571,7 +569,7 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
                   <ListItemButton
                     disableRipple
                     disableTouchRipple
-                    onClick={handleSelectCategory(categoryValue)}
+                    onClick={() => setSelectedCategory(() => categoryValue)}
                     sx={{
                       padding: "12px",
                       height: "100%",

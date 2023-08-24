@@ -22,7 +22,6 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
-import QuestTemplateModal from "./QuestTemplateModal";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "./shared";
 
 const stepCache = {
