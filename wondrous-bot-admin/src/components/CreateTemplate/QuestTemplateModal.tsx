@@ -41,9 +41,10 @@ const rewardTypePoints = "points";
 const questTemplates: {
   [key: string]: {
     category?: (typeof questTemplateCategories)[keyof typeof questTemplateCategories];
-    text: string;
+    label: string;
     image: string;
     steps?: any[];
+    title?: string;
     rewards?: {
       type: string;
       value: number;
@@ -52,7 +53,8 @@ const questTemplates: {
   };
 } = {
   startFromScratch: {
-    text: "Start From Scratch",
+    label: "Start From Scratch",
+    title: "New quest",
     image: StartFromScratchImage,
     steps: [],
     rewards: [
@@ -63,7 +65,8 @@ const questTemplates: {
     ],
   },
   increaseTwitterFollowers: {
-    text: "Increase Twitter Followers",
+    title: "Follow us on Twitter",
+    label: "Increase Twitter Followers",
     image: IncreaseTwitterFollowersImage,
     category: questTemplateCategories.socialMedia,
     steps: [{ type: TYPES.FOLLOW_TWITTER }, { type: TYPES.REPLY_TWEET }],
@@ -75,7 +78,8 @@ const questTemplates: {
     ],
   },
   promoteATweet: {
-    text: "Promote a Tweet",
+    label: "Promote a Tweet",
+    title: "Engage with our Twitter",
     image: PromoteATweetImage,
     category: questTemplateCategories.socialMedia,
     steps: [{ type: TYPES.LIKE_TWEET }, { type: TYPES.REPLY_TWEET }],
@@ -87,7 +91,8 @@ const questTemplates: {
     ],
   },
   getProductFeedback: {
-    text: "Get Product Feedback",
+    label: "Get Product Feedback",
+    title: "Submit product feedback",
     image: GetProductFeedbackImage,
     category: questTemplateCategories.product,
     steps: [
@@ -112,7 +117,8 @@ const questTemplates: {
     ],
   },
   gatherFeatureIdeas: {
-    text: "Gather feature ideas",
+    label: "Gather feature ideas",
+    title: "Submit feature request",
     image: GatherFeatureIdeasImage,
     category: questTemplateCategories.product,
     steps: [
@@ -129,7 +135,8 @@ const questTemplates: {
     ],
   },
   onboardCommunity: {
-    text: "Onboard Your Community",
+    label: "Onboard Your Community",
+    title: "Onboarding quiz",
     image: OnboardYourCommunityImage,
     category: questTemplateCategories.community,
     steps: [
@@ -156,7 +163,8 @@ const questTemplates: {
     ],
   },
   communitySurvey: {
-    text: "Community survey",
+    label: "Community survey",
+    title: "Community Survey",
     image: CommunitySurveyImage,
     category: questTemplateCategories.community,
     steps: [
@@ -177,7 +185,8 @@ const questTemplates: {
     ],
   },
   verifyTokenHoldings: {
-    text: "Verify Token Holdings",
+    label: "Verify Token Holdings",
+    title: "Get some tokens!",
     image: VerifyTokenHoldingsImage,
     category: questTemplateCategories.tokens,
     steps: [{ type: TYPES.VERIFY_TOKEN_HOLDING }],
@@ -189,7 +198,8 @@ const questTemplates: {
     ],
   },
   getDiscordEngagement: {
-    text: "Get Discord engagement",
+    label: "Get Discord engagement",
+    title: "Introduce yourself in Discord :)",
     image: GetDiscordEngagementImage,
     category: questTemplateCategories.community,
     steps: [
@@ -205,7 +215,8 @@ const questTemplates: {
     ],
   },
   getDiscordEventAttendance: {
-    text: "Get Discord event attendance",
+    label: "Get Discord event attendance",
+    title: "Join our weekly call!",
     image: GetDiscordEventAttendanceImage,
     category: questTemplateCategories.community,
     steps: [
@@ -221,7 +232,8 @@ const questTemplates: {
     ],
   },
   launchMemeContest: {
-    text: "Launch Meme contest",
+    label: "Launch Meme contest",
+    title: "Create the best meme",
     image: LaunchAMemeContestImage,
     category: questTemplateCategories.socialMedia,
     steps: [{ type: TYPES.ATTACHMENTS, value: "Winner gets 50 USDC, Runner up 25 and third place 10 USDC" }],
@@ -233,7 +245,8 @@ const questTemplates: {
     ],
   },
   getYoutubeLikes: {
-    text: "Get YouTube likes",
+    label: "Get YouTube likes",
+    title: "Like our Youtube video",
     image: GetYoutubeLikesImage,
     category: questTemplateCategories.socialMedia,
     steps: [{ type: TYPES.LIKE_YT_VIDEO }],
@@ -245,7 +258,8 @@ const questTemplates: {
     ],
   },
   verifyYoutubeSubscription: {
-    text: "Verify YouTube Subscription",
+    label: "Verify YouTube Subscription",
+    title: "Subscribe to our Youtube Channel",
     image: VerifyYourSubscriptionImage,
     category: questTemplateCategories.socialMedia,
     steps: [{ type: TYPES.SUBSCRIBE_YT_CHANNEL }],
@@ -257,7 +271,8 @@ const questTemplates: {
     ],
   },
   launchSnapshotProposal: {
-    text: "Launch Snapshot proposal",
+    label: "Launch Snapshot proposal",
+    title: "Vote on our proposal",
     image: LaunchSnapshotProposalImage,
     category: questTemplateCategories.community,
     steps: [
@@ -273,7 +288,8 @@ const questTemplates: {
     ],
   },
   hostContentContest: {
-    text: "Host content contest",
+    label: "Host content contest",
+    title: "Tweet about us",
     image: HostAContentContestImage,
     category: questTemplateCategories.socialMedia,
     steps: [{ type: TYPES.TWEET_WITH_PHRASE }],
@@ -285,7 +301,8 @@ const questTemplates: {
     ],
   },
   haveMembersInviteFriends: {
-    text: "Have members invite friends",
+    label: "Have members invite friends",
+    title: "Invite friends to Discord",
     image: HaveMembersInviteFriendsImage,
     category: questTemplateCategories.community,
     steps: [
@@ -302,7 +319,8 @@ const questTemplates: {
     ],
   },
   reportABug: {
-    text: "Report a bug",
+    label: "Report a bug",
+    title: "Report a bug",
     image: GetBugReportImage,
     category: questTemplateCategories.product,
     steps: [
@@ -320,7 +338,8 @@ const questTemplates: {
     ],
   },
   getEngineeringContributions: {
-    text: "Get engineering contributions",
+    label: "Get engineering contributions",
+    title: "Contribute to our codebase",
     image: GetEngineeringContributionsImage,
     category: questTemplateCategories.product,
     steps: [
@@ -337,13 +356,13 @@ const questTemplates: {
     ],
   },
   customProductVerification: {
-    text: "Custom product verification",
+    label: "Custom product verification",
     image: CustomProductVerificationImage,
     category: questTemplateCategories.product,
     isCustom: true,
   },
   customOnChainVerification: {
-    text: "Custom on-chain verification",
+    label: "Custom on-chain verification",
     image: CustomOnchainVerificationImage,
     category: questTemplateCategories.tokens,
     isCustom: true,
@@ -374,12 +393,10 @@ const useIsScreenSmDown = () => {
 
 type QuestTemplateModalProps = {
   open: boolean;
-  setSteps: React.Dispatch<React.SetStateAction<any>>;
-  setOpen: React.Dispatch<React.SetStateAction<any>>;
-  setQuestSettings: React.Dispatch<React.SetStateAction<any>>;
+  setQuestTemplate: React.Dispatch<React.SetStateAction<any>>;
 };
 
-const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: QuestTemplateModalProps) => {
+const QuestTemplateModal = ({ open, setQuestTemplate }) => {
   const { selectedCategory, setSelectedCategory, filteredQuestTemplates } = useFilteredQuestTemplateByCategory();
 
   const handleSelectCategory = (categoryValue) => () => {
@@ -397,16 +414,16 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
 
   const handleTemplateSelect = (questTemplate) => () => {
     const template = questTemplates[questTemplate];
-    const { isCustom, text } = template || {};
+    const { isCustom, label, rewards, title } = template || {};
     if (isCustom && plan === PricingOptionsTitle.Basic) {
       setPaywall(true);
-      setPaywallMessage(`${text} is a premium template`);
+      setPaywallMessage(`${label} is a premium template`);
       return;
     }
     if (isCustom && plan !== PricingOptionsTitle.Basic) {
       setEcoSystemFeatureModal({
         open: true,
-        message: `Please talk to your sales representative to add ${text}`,
+        message: `Please talk to your sales representative to add ${label}`,
       });
       return;
     }
@@ -416,13 +433,19 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
       value: "",
       ...step,
     }));
-    setQuestSettings((prev) => ({
+    setQuestTemplate((prev) => ({
       ...prev,
-      rewards: template.rewards,
+      open: false,
+      steps,
+      questSettings: {
+        ...prev.questSettings,
+        rewards,
+      },
+      title,
     }));
-    setSteps(steps);
-    setOpen(false);
   };
+
+  const handleOnClose = () => setQuestTemplate((prev) => ({ ...prev, open: false }));
 
   return (
     <>
@@ -437,7 +460,7 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
       <Dialog
         open={open}
         fullScreen={useIsScreenSmDown()}
-        onClose={() => setOpen(false)}
+        onClose={handleOnClose}
         sx={{
           overflow: "hidden",
         }}
@@ -476,7 +499,7 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
             justifyContent="center"
             borderRadius="6px"
             bgcolor="#C1B6F6"
-            onClick={() => setOpen(false)}
+            onClick={handleOnClose}
             sx={{
               cursor: "pointer",
             }}
@@ -606,7 +629,7 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
                 const questTemplateValue = filteredQuestTemplates[questTemplate];
                 return (
                   <ListItem
-                    key={questTemplateValue.text}
+                    key={questTemplateValue.label}
                     disablePadding
                     sx={{
                       width: {
@@ -645,7 +668,7 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
                     >
                       <img src={questTemplateValue.image} style={{ display: "block", width: "100%" }} />
                       <Typography fontFamily="Poppins" padding="14px" margin="0" fontWeight="500">
-                        {questTemplateValue.text}
+                        {questTemplateValue.label}
                       </Typography>
                     </ListItemButton>
                   </ListItem>
@@ -660,7 +683,7 @@ const QuestTemplateModal = ({ open, setOpen, setSteps, setQuestSettings }: Quest
                     display="inline"
                     color="#3E96FF"
                     sx={{ cursor: "pointer", textDecoration: "underline" }}
-                    onClick={() => setOpen(false)}
+                    onClick={handleOnClose}
                   >
                     Start from scratch
                   </Box>
