@@ -56,9 +56,9 @@ export interface IWebApp {
 }
 
 export const TelegramStartQuest = () => {
-  const [webApp, setWebApp] = useState<IWebApp | null>(null);
   let { id, ...rest } = useParams();
 
+  const webApp = (window as any)?.Telegram?.WebApp;
   const [getQuestById, { data, loading, refetch }] = useLazyQuery(GET_QUEST_BY_ID, {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
@@ -69,21 +69,6 @@ export const TelegramStartQuest = () => {
   const [canUserStartQuest, { data: canStartData, error: canStartError }] = useLazyQuery(USER_CAN_START_QUEST, {
     fetchPolicy: "network-only",
   });
-
-  useLayoutEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://telegram.org/js/telegram-web-app.js";
-    script.async = true;
-    document.body.appendChild(script);
-    const app = (window as any).Telegram?.WebApp;
-    if (app) {
-      app.ready();
-      setWebApp(app);
-    }
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   const value = {
     webApp,
@@ -107,20 +92,21 @@ export const TelegramStartQuest = () => {
       });
     }
   };
+
   useEffect(() => {
-    handleStart();
     if (!webApp?.initDataUnsafe?.user?.id) {
       return;
     }
+    handleStart();
   }, [webApp?.initDataUnsafe?.user?.id, webApp?.initDataUnsafe?.user?.username]);
 
   const { user, unsafeData } = value;
-  console.log(data, loading)
+
   return (
     <PageWrapper
       containerProps={{
         direction: "column",
-        justifyContent: "flex-start",
+        justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
         padding: {
@@ -130,29 +116,8 @@ export const TelegramStartQuest = () => {
       }}
       bgType={BG_TYPES.QUESTS}
     >
-      {data?.getQuestById ? <QuestSteps quest={data?.getQuestById}/> : <PageSpinner />}
+      {data?.getQuestById ? <QuestSteps quest={data?.getQuestById} /> : <PageSpinner />}
     </PageWrapper>
-    // <div
-    //   style={{
-    //     color: "black",
-    //   }}
-    // >
-    //   {canStartData ? JSON.stringify(data?.getQuestById) : "NO DATA CAN START"}
-    //   <strong>QUEST_ID = {id}</strong>
-    //   {user ? (
-    //     <div>
-    //       <h1>Welcome {user?.username}</h1>
-    //       User data:
-    //       <pre>{JSON.stringify(user, null, 2)}</pre>
-    //       Enter Web App data:
-    //       <pre>{JSON.stringify(webApp, null, 2)}</pre>
-    //       UNSAFE DATA
-    //       <pre>{JSON.stringify(unsafeData)}</pre>
-    //     </div>
-    //   ) : (
-    //     <div>Make sure web app is opened from telegram client</div>
-    //   )}
-    // </div>
   );
 };
 
