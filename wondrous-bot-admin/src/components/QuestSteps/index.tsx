@@ -147,7 +147,6 @@ const QuestStepsList = () => {
   const handleSubmit = async () => {
     const questSubmissions = [];
 
-    console.log(responses, "RESPONSES");
     for (const step of data?.getQuestById.steps) {
       const answer = responses[step.id];
       const isQuestSkipped = responses[step.id] === null;
