@@ -2,8 +2,11 @@ import { Grid, Box, Typography, ButtonBase } from "@mui/material";
 import { BotIcon } from "assets/botIcon";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
+import { useTakeQuest } from "utils/hooks";
 
-export const StepModal = ({ children, step, nextStep, prevStep, disabled, nextStepId, handleSubmit }) => {
+export const StepModal = ({ children, step, disabled, nextStepId }) => {
+  const { nextStep, handleSubmit } = useTakeQuest();
+
   return (
     <Grid display="flex" flexDirection="column" gap="24px" width="100%">
       <Grid display="flex" flexDirection="column" gap="10px" width="100%">
@@ -19,8 +22,8 @@ export const StepModal = ({ children, step, nextStep, prevStep, disabled, nextSt
       </Grid>
       {children}
       <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" gap="14px">
-        <SharedSecondaryButton onClick={nextStepId ? nextStep : handleSubmit} disabled={disabled}>
-          {nextStepId ? "Next" : "Submit"}
+        <SharedSecondaryButton onClick={nextStep} disabled={disabled}>
+          Next
         </SharedSecondaryButton>
         {step?.required ? null : (
           <ButtonBase onClick={nextStep}>

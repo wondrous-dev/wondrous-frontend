@@ -125,21 +125,21 @@ const AddFormEntity = ({ steps, setSteps, stepCache,  handleRemove, refs, setRem
 
   const handleChangeType = (type, order, idx) => {
     if (!type) return;
-    if (
-      (plan === PricingOptionsTitle.Basic || plan === PricingOptionsTitle.Hobby) &&
-      (type === TYPES.SUBSCRIBE_YT_CHANNEL || type === TYPES.LIKE_YT_VIDEO || type === TYPES.CUSTOM_ONCHAIN_ACTION)
-    ) {
-      setPaywall(true);
-      setPaywallMessage("This feature is only available on the Pro plan and above");
-      return;
-    }
-    if (
-      (plan === PricingOptionsTitle.Premium || plan === PricingOptionsTitle.Ecosystem) &&
-      type === TYPES.CUSTOM_ONCHAIN_ACTION
-    ) {
-      setOpenEcosystemDialog(true);
-      return;
-    }
+    // if (
+    //   (plan === PricingOptionsTitle.Basic || plan === PricingOptionsTitle.Hobby) &&
+    //   (type === TYPES.SUBSCRIBE_YT_CHANNEL || type === TYPES.LIKE_YT_VIDEO || type === TYPES.CUSTOM_ONCHAIN_ACTION)
+    // ) {
+    //   setPaywall(true);
+    //   setPaywallMessage("This feature is only available on the Pro plan and above");
+    //   return;
+    // }
+    // if (
+    //   (plan === PricingOptionsTitle.Premium || plan === PricingOptionsTitle.Ecosystem) &&
+    //   type === TYPES.CUSTOM_ONCHAIN_ACTION
+    // ) {
+    //   setOpenEcosystemDialog(true);
+    //   return;
+    // }
     setErrors((prev) => {
       return {
         ...prev,

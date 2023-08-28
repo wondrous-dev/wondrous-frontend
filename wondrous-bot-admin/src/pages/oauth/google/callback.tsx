@@ -6,23 +6,29 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getBaseUrl } from "utils/common";
 
-function getGoogleOauthUrl(discordId) {
-  const GOOGLE_CLIENT_ID = "276263235787-efsi17itjf4d230126shg69h6r6qagf7.apps.googleusercontent.com";
-  const baseUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&response_type=code`;
-  const redirectUrl = encodeURIComponent(`${getBaseUrl()}/oauth/google/callback`);
-  const state = encodeURIComponent(
-    JSON.stringify({
-      discordId,
-    })
-  );
-  const accessType = "offline";
-  const scope = encodeURIComponent(["email", "profile", "https://www.googleapis.com/auth/youtube"].join(" "));
-  console.log(scope);
-  //'email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.force-ssl'
-  const oauthUrl = `${baseUrl}&redirect_uri=${redirectUrl}&state=${state}&scope=${scope}&access_type=${accessType}`;
-  console.log(oauthUrl);
-  return oauthUrl;
+export function getGoogleOauthUrl({telegramUserId = null, discordId = null}) {
+	const GOOGLE_CLIENT_ID = '276263235787-efsi17itjf4d230126shg69h6r6qagf7.apps.googleusercontent.com';
+	const baseUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&response_type=code`;
+	const redirectUrl = encodeURIComponent(`${getBaseUrl()}/oauth/google/callback`);
+
+  const payload = {};
+
+  if(telegramUserId) {
+    payload['telegramUserId'] = telegramUserId
+  };
+  if(discordId) {
+    payload['discordId'] = discordId
+  }
+	const state = encodeURIComponent(
+		JSON.stringify(payload)
+	);
+	const accessType = 'offline';
+	const scope = encodeURIComponent(['email', 'profile', 'https://www.googleapis.com/auth/youtube'].join(' '));
+	//'email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.force-ssl'
+	const oauthUrl = `${baseUrl}&redirect_uri=${redirectUrl}&state=${state}&scope=${scope}&access_type=${accessType}`;
+	return oauthUrl;
 }
+
 
 const GoogleOauthCallbackPage = () => {
   // getGoogleOauthUrl("542545105903419404");

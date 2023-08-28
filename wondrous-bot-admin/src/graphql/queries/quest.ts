@@ -201,3 +201,63 @@ export const USER_CAN_START_QUEST = gql`
     }
   }
 `;
+
+export const GET_INTEGRATION_CMTY_USER = gql`
+  query getIntegrationCmtyUser($telegramUserId: String) {
+    getIntegrationCmtyUser(telegramUserId: $telegramUserId) {
+      ...CmtyUserFragment
+    }
+  }
+
+  ${CmtyUserFragment}
+`;
+
+export const GET_CMTY_USER_INFO = gql`
+  query getCmtyUserInfo($cmtyUserId: String) {
+    getCmtyUserInfo(cmtyUserId: $cmtyUserId) {
+      cmtyUserId
+      googleInfo {
+        expireAt
+      }
+    }
+  }
+`;
+export const VERIFY_LINK_CLICKED = gql`
+  query verifyLinkClicked($cmtyUserId: String, $questStepId: String, $url: String) {
+    verifyLinkClicked(cmtyUserId: $cmtyUserId, questStepId: $questStepId, url: $url) {
+      success
+    }
+  }
+`;
+
+export const VERIFY_YT_SUBSCRIPTION = gql`
+  query verifyYoutubeSubscription($cmtyUserId: String, $channelId: String, $channelHandle: String) {
+    verifyYoutubeSubscription(cmtyUserId: $cmtyUserId, channelId: $channelId, channelHandle: $channelHandle) {
+      subscribed
+    }
+  }
+`;
+
+export const VERIFY_YT_LIKED = gql`
+  query verifyYoutubeVideoLike($cmtyUserId: String, $videoId: String) {
+    verifyYoutubeVideoLike(cmtyUserId: $cmtyUserId, videoId: $videoId) {
+      liked
+    }
+  }
+`;
+
+export const VERIFY_SNAPSHOT_PROPOSAL_VOTE = gql`
+  query verifySnapshotProposalVote($telegramUserId: String, $proposalId: String) {
+    verifySnapshotProposalVote(telegramUserId: $telegramUserId, proposalId: $proposalId) {
+      userVotedProposal
+    }
+  }
+`;
+
+export const VERIFY_SNAPSHOT_SPACE_VOTE = gql`
+  query verifySnapshotSpaceVote($telegramUserId: String, $stepId: String, $voteTimes: Int) {
+    verifySnapshotSpaceVote(telegramUserId: $telegramUserId, stepId: $stepId, voteTimes: $voteTimes) {
+      userVotedSpace
+    }
+  }
+`;

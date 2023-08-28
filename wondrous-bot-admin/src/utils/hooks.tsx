@@ -4,6 +4,7 @@ import { useLazyQuery } from "@apollo/client";
 import { IS_ORG_USERNAME_TAKEN } from "graphql/queries";
 import SubscriptionContext from "./context/SubscriptionContext";
 import PaywallContext from "./context/PaywallContext";
+import TakeQuestContext from "./context/TakeQuestContext";
 
 const useAlerts = () => {
   const {
@@ -55,3 +56,5 @@ export default useAlerts;
 export const useSubscription = () => useContext(SubscriptionContext);
 
 export const usePaywall = () => useContext(PaywallContext);
+
+export const useTakeQuest = () => useContext(TakeQuestContext)

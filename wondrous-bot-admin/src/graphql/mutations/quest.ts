@@ -131,3 +131,13 @@ export const REMOVE_QUEST_STEP_MEDIA = gql`
     }
   }
 `;
+
+
+
+export const SUBMIT_QUEST = gql`
+  mutation createQuestSubmission($questId: String, $telegramUserId: String, $telegramUsername: String, $stepsData: [StepSubmissionInput]) {
+    createQuestSubmission(questId: $questId, telegramUserId: $telegramUserId, telegramUsername: $telegramUsername, stepsData: $stepsData) {
+      success
+    }
+  }
+`;
