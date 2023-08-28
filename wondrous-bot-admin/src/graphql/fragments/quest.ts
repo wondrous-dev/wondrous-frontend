@@ -103,6 +103,7 @@ export const QuestFragment = gql`
         linkClickUrl
         discordEventId
         minDuration
+        usdValue
       }
     }
   }

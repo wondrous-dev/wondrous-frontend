@@ -9,7 +9,7 @@ import VerifyTokenHoldingComponent from "components/AddFormEntity/components/Ver
 import YoutubeLikeComponent from "components/AddFormEntity/components/YoutubeLikeComponent";
 import YoutubeSubscribeComponent from "components/AddFormEntity/components/YoutubeSubscribeComponent";
 import LinkClickComponent from "components/AddFormEntity/components/LinkClickComponent";
-
+import LifiValueBridgeComponent from "components/AddFormEntity/components/LiFiValueBridgeComponent";
 
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
@@ -30,5 +30,6 @@ export const CONFIG_COMPONENTS = {
   [TYPES.LIKE_YT_VIDEO]: YoutubeLikeComponent,
   [TYPES.SUBSCRIBE_YT_CHANNEL]: YoutubeSubscribeComponent,
   [TYPES.LINK_CLICK]: LinkClickComponent,
-  [TYPES.DISCORD_EVENT_ATTENDANCE]: DiscordComponent
+  [TYPES.DISCORD_EVENT_ATTENDANCE]: DiscordComponent,
+  [TYPES.LIFI_VALUE_BRIDGED]: LifiValueBridgeComponent,
 };

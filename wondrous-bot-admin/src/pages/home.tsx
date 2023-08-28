@@ -157,7 +157,7 @@ const HomePage = () => {
   }, [getDiscordConfigError?.graphQLErrors[0]?.message, loading, telegramConfigData?.getTelegramConfigForOrg?.chatId]);
 
   useEffect(() => {
-    if (!loading && orgDiscordConfig?.getCmtyOrgDiscordConfige && !additionalData)
+    if (!loading && orgDiscordConfig?.getCmtyOrgDiscordConfig && !additionalData)
       [setOpenDiscordNotificationModal(true)];
   }, [additionalData, orgDiscordConfig?.getCmtyOrgDiscordConfig, loading]);
 

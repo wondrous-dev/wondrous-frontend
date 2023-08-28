@@ -3,8 +3,8 @@ import { useContext, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { IS_ORG_USERNAME_TAKEN } from "graphql/queries";
 import SubscriptionContext from "./context/SubscriptionContext";
-import PaywallContext from "./context/PaywallContext";
 import TakeQuestContext from "./context/TakeQuestContext";
+import { PaywallContext } from "./context/PaywallContext";
 
 const useAlerts = () => {
   const {
