@@ -32,7 +32,9 @@ const SubmitQuest = ({
             Do you want to submit your response?
           </Typography>
 
-          <Image src={DEFAULT_BANNER_IMAGES.QUEST_READY_TO_SUBMIT} />
+          <Image src={DEFAULT_BANNER_IMAGES.QUEST_READY_TO_SUBMIT} style={{
+            height: '81px'
+          }} />
           <Box display="flex" gap="14px">
             <SharedSecondaryButton $reverse>Edit Responses</SharedSecondaryButton>
             <SharedSecondaryButton

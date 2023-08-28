@@ -1,6 +1,6 @@
-import { SELECT_STEP_TYPES, TYPES } from "utils/constants";
+import { DEFAULT_BANNER_IMAGES, SELECT_STEP_TYPES, TYPES } from "utils/constants";
 import { StepTextField } from "./Steps";
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { useEffect, useState } from "react";
 import { StepModal } from "./StepModal";
@@ -15,6 +15,9 @@ import TakeQuestContext from "utils/context/TakeQuestContext";
 import { useTakeQuest } from "utils/hooks";
 import SubmitQuest from "./SubmitQuest";
 import { SUBMIT_QUEST } from "graphql/mutations";
+import { Image } from "./styles";
+import SubmissionMedia from "components/Shared/SubmissionMedia";
+import SafeImage from "components/SafeImage";
 
 const handleMediaUpload = async (mediaUploads) =>
   Promise.all(
@@ -48,6 +51,12 @@ const COMPONENTS_CONFIG: any = {
   [TYPES.DATA_COLLECTION]: () => null,
 };
 
+const IMAGES_CONFIG = {
+  [TYPES.SNAPSHOT_PROPOSAL_VOTE]: DEFAULT_BANNER_IMAGES.QUEST_STEP_SNAPSHOT,
+  [TYPES.SNAPSHOT_SPACE_VOTE]: DEFAULT_BANNER_IMAGES.QUEST_STEP_SNAPSHOT,
+  [TYPES.ATTACHMENTS]: DEFAULT_BANNER_IMAGES.ATTACHMENT_REQUIRED,
+};
+
 const QuestStep = ({ step, value, isActive, nextStepId, isWebView = false }) => {
   const Component: React.FC<any> = COMPONENTS_CONFIG[step?.type];
   const [isActionDisabled, setIsActionDisabled] = useState(false);
@@ -72,6 +81,7 @@ const QuestStep = ({ step, value, isActive, nextStepId, isWebView = false }) => 
         )}
         renderBody={() => (
           <StepModal step={step} nextStepId={nextStepId} disabled={!value || isActionDisabled}>
+            {IMAGES_CONFIG[step.type] ? <Image src={IMAGES_CONFIG[step.type]} /> : null}
             <Component
               step={step}
               value={value}
@@ -80,6 +90,23 @@ const QuestStep = ({ step, value, isActive, nextStepId, isWebView = false }) => 
               onChange={(value) => onChange({ id: step.id, value })}
               placeholder="Enter answer"
             />
+            {step?.media ? (
+              <Grid display="flex" alignItems="center" gap="14px">
+                {step?.media?.map((item) => {
+                  return (
+                    <Box>
+                      <SafeImage
+                        style={{
+                          maxHeight: "200px",
+                        }}
+                        width="auto"
+                        src={item?.slug}
+                      />
+                    </Box>
+                  );
+                })}
+              </Grid>
+            ) : null}
           </StepModal>
         )}
       />
