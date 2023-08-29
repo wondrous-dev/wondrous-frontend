@@ -33,7 +33,6 @@ const CreateTemplate = ({
   defaultQuestSettings = DEFAULT_QUEST_SETTINGS_STATE_VALUE,
   questId = null,
   postUpdate = null,
-  title,
   getQuestById = null,
   defaultSteps = [],
 }) => {
@@ -199,11 +198,14 @@ const CreateTemplate = ({
       level,
       timeBound,
       isOnboarding,
+      title,
+      description,
     } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
     const body = {
       title,
+      description,
       orgId: activeOrg.id,
       isOnboarding,
       requireReview,

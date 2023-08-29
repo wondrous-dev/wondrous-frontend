@@ -441,8 +441,8 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
         ...prev.questSettings,
         rewards,
         requireReview,
+        title,
       },
-      title,
     }));
   };
 
