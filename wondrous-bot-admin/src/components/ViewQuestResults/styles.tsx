@@ -4,10 +4,11 @@ import styled from 'styled-components';
 
 export const StyledViewQuestResults = styled(Box)`
   && {
-    background: ${({ $isReward }) => (!$isReward ? '#c6bbfc' : '#F8AFDB')};
+    background: ${({ bgcolor }) => bgcolor || "#d8e7df"};
+    outline: ${({ outlineColor }) => `1px solid ${outlineColor || "#2a8d5c"}`};
     padding: 6px;
     border-radius: 6px;
-    font-family: 'Poppins';
+    font-family: "Poppins";
     font-style: normal;
     width: fit-content;
     font-weight: 500;
@@ -18,7 +19,7 @@ export const StyledViewQuestResults = styled(Box)`
     align-items: center;
     letter-spacing: 0.02em;
 
-    color: #000000;
+    color: ${({ color }) => color || "#000"};
   }
 `;
 
