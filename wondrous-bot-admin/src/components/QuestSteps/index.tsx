@@ -78,6 +78,7 @@ const QuestStepsList = () => {
     if (!webApp?.initDataUnsafe?.user?.id) {
       return;
     }
+    webApp?.expand();
     handleStart();
   }, [webApp?.initDataUnsafe?.user?.id, webApp?.initDataUnsafe?.user?.username]);
 
@@ -212,6 +213,7 @@ const QuestStepsList = () => {
         setIsEditMode,
         setShowSubmitView,
         isEditMode,
+        webApp
       }}
     >
       <Grid display="flex" flexDirection="column" justifyContent="center" gap="24px" alignItems="center" width="100%">

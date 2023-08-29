@@ -23,7 +23,7 @@ const Body = ({ header, subHeader, renderComponents = null }) => {
       <Image
         src={DEFAULT_BANNER_IMAGES.QUEST_READY_TO_SUBMIT}
         style={{
-          height: "81px",
+          width: "100%",
         }}
       />
       {renderComponents?.()}
@@ -117,14 +117,14 @@ const SubmittedQuestRewards = ({ quest }) => {
               {reward && <reward.icon />}
               <TextLabel>{reward?.label}</TextLabel>
             </Box>
-            <Box display="flex" justifyContent="center">
+            {reward?.subLabel || reward?.subComponent ? <Box display="flex" justifyContent="center" alignItems="center">
               {reward?.subLabel ? (
-                <TextLabel fontSize="12px" fontWeight={400}>
+                <TextLabel fontSize="12px" fontWeight={400} textAlign="center">
                   {reward?.subLabel}
                 </TextLabel>
               ) : null}
-              {reward.subComponent?.()}
-            </Box>
+              {reward.subComponent ? reward.subComponent() : null}
+            </Box> : null}
           </Box>
         ))}
       </Grid>
@@ -133,17 +133,17 @@ const SubmittedQuestRewards = ({ quest }) => {
 };
 
 const SubmittedQuestBody = () => {
-  const { quest } = useTakeQuest();
+  const { quest, webApp } = useTakeQuest();
 
   const subHeader = quest?.requireReview
     ? "Your submission has been sent for review"
     : "Your submission has been approved";
-
+    
   return (
     <>
       <Body header="Quest Submitted" subHeader={subHeader} />
       {quest?.requireReview === false ? <SubmittedQuestRewards quest={quest} /> : null}
-      <SharedSecondaryButton>Close</SharedSecondaryButton>
+      <SharedSecondaryButton onClick={() => webApp?.close()}>Close</SharedSecondaryButton>
     </>
   );
 };
