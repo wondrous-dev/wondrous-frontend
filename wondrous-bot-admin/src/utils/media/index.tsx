@@ -1,5 +1,5 @@
 import apollo from 'services/apollo';
-import { GET_PRESIGNED_IMAGE_URL } from 'graphql/queries';
+import { GET_PRESIGNED_IMAGE_URL, GET_PRESIGNED_TELEGRAM_IMAGE_URL } from 'graphql/queries';
 import { makeUniqueId } from '@apollo/client/utilities';
 
 import {
@@ -13,6 +13,28 @@ export const uploadMedia = async ({ filename, fileType, file }) => {
       query: GET_PRESIGNED_IMAGE_URL,
       variables: {
         filename,
+      },
+    });
+    const apiUrl = apolloResult.data.getPresignedFileUrl.url;
+    // TODO: parse filetype
+    const uploadResponse = await fetch(apiUrl, {
+      method: 'PUT',
+      body: file,
+    });
+    // console.log('uploadResponse', uploadResponse, apiUrl)
+  } catch (error) {
+    console.error('error', JSON.stringify(error, null, 2));
+  }
+};
+
+export const uploadTelegramMedia = async ({ filename, fileType, file }) => {
+  const telegramUserId = (window as any)?.Telegram?.WebApp?.initDataUnsafe?.user?.id?.toString();
+  try {
+    const apolloResult = await apollo.query({
+      query: GET_PRESIGNED_TELEGRAM_IMAGE_URL,
+      variables: {
+        filename,
+        telegramUserId
       },
     });
     const apiUrl = apolloResult.data.getPresignedFileUrl.url;
@@ -123,5 +145,13 @@ export const transformAndUploadMedia = async ({ file }) => {
 
   const imageFile = handleImageFile({ file, id: makeUniqueId('temp') });
   await uploadMedia(imageFile);
+  return { ...imageFile };
+};
+
+export const transformAndUploadTelegramMedia = async ({ file }) => {
+  if (!file) return null;
+
+  const imageFile = handleImageFile({ file, id: makeUniqueId('temp') });
+  await uploadTelegramMedia(imageFile);
   return { ...imageFile };
 };

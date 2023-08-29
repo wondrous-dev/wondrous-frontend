@@ -1,5 +1,5 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { useLazyQuery } from "@apollo/client";
+import { Box, Grid } from "@mui/material";
 import { Label } from "components/AddFormEntity/components/styles";
 import Spinner from "components/Shared/Spinner";
 import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
@@ -13,27 +13,24 @@ import {
   VERIFY_YT_SUBSCRIPTION,
 } from "graphql/queries";
 import { getGoogleOauthUrl } from "pages/oauth/google/callback";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { getYouTubeVideoId } from "services/validators/customValidation";
 import { getBaseUrl, getWeb3ConnectUrl, getYoutubeChannelId } from "utils/common";
 import { TYPES } from "utils/constants";
 import { useTakeQuest } from "utils/hooks";
 
-const LinkComponent = ({
-  loading,
-  link,
-  onClick,
-  label = "Click to verify",
-  linkText = "Verify",
-  error = null,
-}) => {
+const LinkComponent = ({ loading, link, onClick, label = "Click to verify", linkText = "Verify", error = null }) => {
   return (
     <Box display="flex" flexDirection="column" gap="14px" width="100%">
       {loading ? <Spinner /> : null}
       <Label>{label}</Label>
-      <a href={link} onClick={onClick} style={{
-        width: 'fit-content'
-      }}>
+      <a
+        href={link}
+        onClick={onClick}
+        style={{
+          width: "fit-content",
+        }}
+      >
         <SharedSecondaryButton>{linkText}</SharedSecondaryButton>
       </a>
       {error ? <ErrorText>{error}</ErrorText> : null}
@@ -237,7 +234,7 @@ const SnapshotButton = ({ step, cmtyUser, handleLinkClick, startCmtyUserPolling,
   const snapshotProposalLink = step?.additionalData?.snapshotProposalLink;
   const snapshotSpaceLink = step?.additionalData?.snapshotSpaceLink;
   const snapshotVoteTimes = step?.additionalData?.snapshotVoteTimes;
-  
+
   const isProposalType = step.type === TYPES.SNAPSHOT_PROPOSAL_VOTE;
 
   const { onChange, nextStep } = useTakeQuest();
@@ -352,7 +349,6 @@ const SnapshotButton = ({ step, cmtyUser, handleLinkClick, startCmtyUserPolling,
       error={errorMessage}
       link={snapshotProposalLink || snapshotSpaceLink}
       onClick={onClick}
-      label={label}
       loading={loading || spaceLoading}
     />
   );

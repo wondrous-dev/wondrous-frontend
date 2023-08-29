@@ -11,6 +11,24 @@ import { SUBMIT_QUEST } from "graphql/mutations";
 import { ErrorText } from "components/Shared/styles";
 import EditModal from "./EditModal";
 import QuestStepComponent from "./QuestStepComponent";
+import { transformAndUploadMedia, transformAndUploadTelegramMedia } from "utils/media";
+
+const handleMediaUpload = async (mediaUploads) =>
+Promise.all(
+  mediaUploads.map(async (file) => {
+    try {
+      const { filename, fileType } = await transformAndUploadTelegramMedia({ file });
+      return {
+        uploadSlug: filename,
+        type: fileType,
+        name: file.name,
+      };
+    } catch (error) {
+      return null;
+    }
+  })
+);
+
 
 const ErrorHelpers = ({ error, callback, telegramUserId }) => {
   const errorCode = error?.graphQLErrors?.[0]?.extensions?.errorCode;
@@ -117,18 +135,18 @@ const QuestStepsList = () => {
         });
       } else if (step.type === TYPES.ATTACHMENTS) {
         //TODO: fix upload media from web app , probably separate endpoint
-        // const stepsMedia = isQuestSkipped ? [null] : await handleMediaUpload(answer);
-        // console.log(stepsMedia, 'STEPS MEDIA')
-        // questSubmissions.push({
-        //   stepId: step.id,
-        //   order: step.order,
-        //   skipped: isQuestSkipped,
-        //   attachments: isQuestSkipped ? null : stepsMedia.map((media) => ({
-        //     filename: media.name,
-        //     type: media.type,
-        //     uploadSlug: media.uploadSlug
-        //   }))
-        // })
+        const stepsMedia = isQuestSkipped ? [null] : await handleMediaUpload(answer);
+        console.log(stepsMedia, 'STEPS MEDIA')
+        questSubmissions.push({
+          stepId: step.id,
+          order: step.order,
+          skipped: isQuestSkipped,
+          attachments: isQuestSkipped ? null : stepsMedia.map((media) => ({
+            filename: media.name,
+            type: media.type,
+            uploadSlug: media.uploadSlug
+          }))
+        })
       } else if ([TYPES.LIKE_YT_VIDEO, TYPES.SUBSCRIBE_YT_CHANNEL].includes(step.type)) {
         questSubmissions.push({
           stepId: step.id,
@@ -159,13 +177,6 @@ const QuestStepsList = () => {
       if (isEditMode) setIsEditMode(false);
     } catch (error) {}
     //TODO: handle reward && next screen
-    //   const stepsSubmission = camelToSnakeArr(questSubmissions);
-    // const submissionInput = {
-    // 	quest_id: questId,
-    // 	telegram_user_id: ctx.from.id,
-    // 	telegram_username: ctx.from.username,
-    // 	steps_data: stepsSubmission
-    // };
   };
 
   const steps = data?.getQuestById?.steps || [];

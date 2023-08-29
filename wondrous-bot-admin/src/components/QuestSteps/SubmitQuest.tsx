@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { DEFAULT_BANNER_IMAGES } from "utils/constants";
 import { Image } from "./styles";
-import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
+import { SharedSecondaryButton } from "components/Shared/styles";
 import { useTakeQuest } from "utils/hooks";
 import { GET_QUEST_REWARDS } from "graphql/queries";
 import { useLazyQuery } from "@apollo/client";
