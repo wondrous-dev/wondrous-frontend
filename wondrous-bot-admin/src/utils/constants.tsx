@@ -360,7 +360,10 @@ export const DEFAULT_BANNER_IMAGES = {
 };
 
 
-export const SELECT_STEP_TYPES = ['multiple_quiz', 'single_quiz'];
+export const TEXT_TYPES = [TYPES.TEXT_FIELD, TYPES.NUMBER];
+
+export const SELECT_TYPES = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ];
+
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
   "58318954576216128": {

@@ -1,129 +1,47 @@
-import { DEFAULT_BANNER_IMAGES, SELECT_STEP_TYPES, TYPES } from "utils/constants";
-import { StepTextField } from "./Steps";
-import { Box, Grid, Typography } from "@mui/material";
-import PanelComponent from "components/CreateTemplate/PanelComponent";
+import { SELECT_TYPES, TYPES } from "utils/constants";
+import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import { StepModal } from "./StepModal";
-import OptionSelect from "./Steps/OptionSelect";
-import AttachmentType from "./Steps/Attachment";
-import { VerifyButton } from "./Steps/VerifyButton";
+import { Web3Connect } from "./Steps/VerifyButton";
 import { GET_QUEST_BY_ID, USER_CAN_START_QUEST } from "graphql/queries";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { transformAndUploadMedia } from "utils/media";
 import TakeQuestContext from "utils/context/TakeQuestContext";
-import { useTakeQuest } from "utils/hooks";
 import SubmitQuest from "./SubmitQuest";
 import { SUBMIT_QUEST } from "graphql/mutations";
-import { Image } from "./styles";
-import SubmissionMedia from "components/Shared/SubmissionMedia";
-import SafeImage from "components/SafeImage";
+import { ErrorText } from "components/Shared/styles";
+import EditModal from "./EditModal";
+import QuestStepComponent from "./QuestStepComponent";
 
-const handleMediaUpload = async (mediaUploads) =>
-  Promise.all(
-    mediaUploads.map(async (file) => {
-      try {
-        const { filename, fileType } = await transformAndUploadMedia({ file });
-        return {
-          uploadSlug: filename,
-          type: fileType,
-          name: file.name,
-        };
-      } catch (error) {
-        return null;
-      }
-    })
-  );
+const ErrorHelpers = ({ error, callback, telegramUserId }) => {
+  const errorCode = error?.graphQLErrors?.[0]?.extensions?.errorCode;
+  const errorMessage = error?.graphQLErrors?.[0]?.extensions?.message;
 
-const COMPONENTS_CONFIG: any = {
-  [TYPES.TEXT_FIELD]: StepTextField,
-  [TYPES.MULTI_QUIZ]: OptionSelect,
-  [TYPES.SINGLE_QUIZ]: OptionSelect,
-  [TYPES.NUMBER]: (props) => <StepTextField type="number" {...props} />,
-  [TYPES.ATTACHMENTS]: AttachmentType,
-  [TYPES.LINK_CLICK]: VerifyButton,
-  [TYPES.SUBSCRIBE_YT_CHANNEL]: VerifyButton,
-  [TYPES.LIKE_YT_VIDEO]: VerifyButton,
+  if (!error) return null;
 
-  [TYPES.SNAPSHOT_PROPOSAL_VOTE]: VerifyButton,
-  [TYPES.SNAPSHOT_SPACE_VOTE]: VerifyButton,
-  [TYPES.VERIFY_TOKEN_HOLDING]: VerifyButton,
-  [TYPES.DATA_COLLECTION]: () => null,
-};
-
-const IMAGES_CONFIG = {
-  [TYPES.SNAPSHOT_PROPOSAL_VOTE]: DEFAULT_BANNER_IMAGES.QUEST_STEP_SNAPSHOT,
-  [TYPES.SNAPSHOT_SPACE_VOTE]: DEFAULT_BANNER_IMAGES.QUEST_STEP_SNAPSHOT,
-  [TYPES.ATTACHMENTS]: DEFAULT_BANNER_IMAGES.ATTACHMENT_REQUIRED,
-};
-
-const QuestStep = ({ step, value, isActive, nextStepId, isWebView = false }) => {
-  const Component: React.FC<any> = COMPONENTS_CONFIG[step?.type];
-  const [isActionDisabled, setIsActionDisabled] = useState(false);
-  const { onChange } = useTakeQuest();
-  if (!isActive) return null;
-  if (Component) {
+  if (errorCode === "no_active_wallet") {
     return (
-      <PanelComponent
-        renderHeader={() => (
-          <Grid
-            padding="14px"
-            bgcolor="#F7F7F7"
-            sx={{
-              borderTopLeftRadius: "16px",
-              borderTopRightRadius: "16px",
-            }}
-          >
-            <Typography fontFamily="Poppins" color="black" fontSize="14px" fontWeight={600} lineHeight="15px">
-              Quest Portal
-            </Typography>
-          </Grid>
-        )}
-        renderBody={() => (
-          <StepModal step={step} nextStepId={nextStepId} disabled={!value || isActionDisabled}>
-            {IMAGES_CONFIG[step.type] ? <Image src={IMAGES_CONFIG[step.type]} /> : null}
-            <Component
-              step={step}
-              value={value}
-              isActionDisabled={isActionDisabled}
-              setIsActionDisabled={setIsActionDisabled}
-              onChange={(value) => onChange({ id: step.id, value })}
-              placeholder="Enter answer"
-            />
-            {step?.media ? (
-              <Grid display="flex" alignItems="center" gap="14px">
-                {step?.media?.map((item) => {
-                  return (
-                    <Box>
-                      <SafeImage
-                        style={{
-                          maxHeight: "200px",
-                        }}
-                        width="auto"
-                        src={item?.slug}
-                      />
-                    </Box>
-                  );
-                })}
-              </Grid>
-            ) : null}
-          </StepModal>
-        )}
-      />
+      <>
+        <ErrorText>
+          There is a token reward with this quest! Please connect your wallet first and then click submit again.
+        </ErrorText>
+        <Web3Connect telegramUserId={telegramUserId} callback={callback} />
+      </>
     );
   }
-  return null;
+  if (errorMessage?.includes("You already minted a POAP for this drop")) {
+    return <ErrorText>{errorMessage}</ErrorText>;
+  }
+  return <ErrorText>Something went wrong</ErrorText>;
 };
 
 const QuestStepsList = () => {
   let { id } = useParams();
 
-  const [submitQuest] = useMutation(SUBMIT_QUEST);
+  const [submitQuest, { data: submittedQuestData, error }] = useMutation(SUBMIT_QUEST);
 
   const [activeStepId, setActiveStepId] = useState(null);
   const [responses, setResponses] = useState({});
   const [showSubmitView, setShowSubmitView] = useState(false);
-
   const [isEditMode, setIsEditMode] = useState(false);
 
   const webApp = (window as any)?.Telegram?.WebApp;
@@ -190,7 +108,7 @@ const QuestStepsList = () => {
           content: answer,
           order: step.order,
         });
-      } else if (SELECT_STEP_TYPES.includes(step.type)) {
+      } else if (SELECT_TYPES.includes(step.type)) {
         questSubmissions.push({
           stepId: step.id,
           order: step.order,
@@ -234,10 +152,12 @@ const QuestStepsList = () => {
       stepsData: questSubmissions,
     };
 
-    const { data: submitQuestResultData } = await submitQuest({
-      variables: submissionInput,
-    });
-
+    try {
+      const { data: submitQuestResultData } = await submitQuest({
+        variables: submissionInput,
+      });
+      if (isEditMode) setIsEditMode(false);
+    } catch (error) {}
     //TODO: handle reward && next screen
     //   const stepsSubmission = camelToSnakeArr(questSubmissions);
     // const submissionInput = {
@@ -254,6 +174,10 @@ const QuestStepsList = () => {
     const currentStepIdx = steps?.findIndex((step) => step.id === activeStepId);
     const nextStepId = steps[currentStepIdx + 1]?.id;
 
+    if (isEditMode) {
+      setIsEditMode(false);
+      return setShowSubmitView(true);
+    }
     if (!nextStepId) {
       return setShowSubmitView(true);
     }
@@ -273,24 +197,38 @@ const QuestStepsList = () => {
         handleSubmit,
         telegramUser: webApp?.initDataUnsafe?.user,
         isWebView: webApp?.isWebView,
+        quest: data?.getQuestById,
+        setIsEditMode,
+        setShowSubmitView,
+        isEditMode,
       }}
     >
       <Grid display="flex" flexDirection="column" justifyContent="center" gap="24px" alignItems="center" width="100%">
-        {showSubmitView ? (
-          <SubmitQuest handleSubmit={handleSubmit} />
+        {showSubmitView && !isEditMode ? (
+          <SubmitQuest
+            handleSubmit={handleSubmit}
+            submittedQuestData={submittedQuestData}
+            errorComponents={() => (
+              <ErrorHelpers telegramUserId={webApp?.initDataUnsafe?.user?.id} callback={handleSubmit} error={error} />
+            )}
+          />
         ) : (
           <>
-            {data?.getQuestById?.steps?.map((step, idx) => {
-              return (
-                <QuestStep
-                  value={responses[step.id]}
-                  isActive={activeStepId === step.id}
-                  step={step}
-                  key={step.id}
-                  nextStepId={steps[idx + 1]}
-                />
-              );
-            })}
+            {isEditMode ? (
+              <EditModal responses={responses} />
+            ) : (
+              data?.getQuestById?.steps?.map((step, idx) => {
+                return (
+                  <QuestStepComponent
+                    value={responses[step.id]}
+                    isActive={activeStepId === step.id}
+                    step={step}
+                    key={step.id}
+                    nextStepId={steps[idx + 1]}
+                  />
+                );
+              })
+            )}
           </>
         )}
       </Grid>

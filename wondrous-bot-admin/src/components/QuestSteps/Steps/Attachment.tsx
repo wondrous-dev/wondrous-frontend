@@ -15,7 +15,7 @@ import { isVideo } from "utils/media";
 import VideoPlayer from "components/Shared/SubmissionMedia/VideoPlayer";
 import { Filename } from "components/Shared/SubmissionMedia/styles";
 
-const Media = ({ file }) => {
+export const Media = ({ file }) => {
   if (file.type?.includes("image")) {
     return <img src={URL.createObjectURL(file)} />;
   }

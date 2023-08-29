@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { TYPES } from "utils/constants";
 
 export const OptionSelect = ({ step, onChange, value, setIsActionDisabled, isActionDisabled }) => {
+  console.log(value, 'VALUE')
   const opacity = useMemo(() => {
     if (step.type === TYPES.SINGLE_QUIZ && value && value.length > 0) {
       return 0.3;
@@ -78,6 +79,7 @@ export const OptionSelect = ({ step, onChange, value, setIsActionDisabled, isAct
               bgcolor={"#2A8D5C"}
               height="22px"
               width="22px"
+              checked={value?.includes(option.text)}
               disabled={step.type === TYPES.SINGLE_QUIZ && value?.length > 0 && !value.includes(option.text)}
               onChange={(e) => handleCheckboxChange(e, option.text)}
             />
@@ -88,7 +90,7 @@ export const OptionSelect = ({ step, onChange, value, setIsActionDisabled, isAct
         );
       })}
       {isCorrect !== null &&
-        value?.length &&
+        !!value?.length &&
         (isCorrect ? null : <ErrorText>Please select only the correct options</ErrorText>)}
     </Grid>
   );

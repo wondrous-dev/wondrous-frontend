@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { Label } from "components/AddFormEntity/components/styles";
 import Spinner from "components/Shared/Spinner";
 import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
@@ -23,30 +23,21 @@ const LinkComponent = ({
   loading,
   link,
   onClick,
-  label = "Click on the link below to verify",
-  linkText = "Visit Link",
+  label = "Click to verify",
+  linkText = "Verify",
   error = null,
 }) => {
   return (
-    <>
+    <Box display="flex" flexDirection="column" gap="14px" width="100%">
       {loading ? <Spinner /> : null}
       <Label>{label}</Label>
-      <a href={link} onClick={onClick}>
-        <Typography
-          fontFamily="Poppins"
-          fontWeight={600}
-          fontSize="14px"
-          lineHeight="24px"
-          color="black"
-          sx={{
-            textDecoration: "underline",
-          }}
-        >
-          {linkText}
-        </Typography>
+      <a href={link} onClick={onClick} style={{
+        width: 'fit-content'
+      }}>
+        <SharedSecondaryButton>{linkText}</SharedSecondaryButton>
       </a>
       {error ? <ErrorText>{error}</ErrorText> : null}
-    </>
+    </Box>
   );
 };
 
@@ -63,7 +54,7 @@ const GoogleVerify = ({ telegramUserId, callback }) => {
   );
 };
 
-const Web3Connect = ({ telegramUserId, callback }) => {
+export const Web3Connect = ({ telegramUserId, callback }) => {
   const handleClick = () => {
     return callback?.();
   };
@@ -228,13 +219,11 @@ const YoutubeButton = ({ step, cmtyUser, startCmtyUserPolling, stopCmtyUserPolli
     return handleVerifySubscription();
   };
 
-  const label = step.type === TYPES.LIKE_YT_VIDEO ? "Verify YouTube Like" : "Verify YouTube Subscription";
   return (
     <LinkComponent
       link={step?.additionalData?.ytChannelLink || step?.additionalData?.ytVideoLink}
       onClick={onClick}
       loading={ytSubscriptionLoading}
-      label={label}
       error={
         errorObject?.graphQLErrors?.[0]?.extensions?.errorCode === "google_api_error"
           ? "Youtube API is acting up! please try again :)"
@@ -296,10 +285,6 @@ const SnapshotButton = ({ step, cmtyUser, handleLinkClick, startCmtyUserPolling,
       }
     },
   });
-
-  const label = isProposalType
-    ? `Please vote on this proposal`
-    : `Please vote in this space at least ${snapshotVoteTimes} times`;
 
   const errorObj = error || spaceVoteError;
 
