@@ -1,4 +1,4 @@
-import { SELECT_TYPES, TYPES } from "utils/constants";
+import { DATA_COLLECTION_TYPES, SELECT_TYPES, TYPES } from "utils/constants";
 import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Web3Connect } from "./Steps/VerifyButton";
@@ -15,21 +15,20 @@ import { transformAndUploadTelegramMedia } from "utils/media";
 import FailReasons from "./FailReasons";
 
 const handleMediaUpload = async (mediaUploads) =>
-Promise.all(
-  mediaUploads.map(async (file) => {
-    try {
-      const { filename, fileType } = await transformAndUploadTelegramMedia({ file });
-      return {
-        uploadSlug: filename,
-        type: fileType,
-        name: file.name,
-      };
-    } catch (error) {
-      return null;
-    }
-  })
-);
-
+  Promise.all(
+    mediaUploads.map(async (file) => {
+      try {
+        const { filename, fileType } = await transformAndUploadTelegramMedia({ file });
+        return {
+          uploadSlug: filename,
+          type: fileType,
+          name: file.name,
+        };
+      } catch (error) {
+        return null;
+      }
+    })
+  );
 
 const ErrorHelpers = ({ error, callback, telegramUserId }) => {
   const errorCode = error?.graphQLErrors?.[0]?.extensions?.errorCode;
@@ -111,7 +110,7 @@ const QuestStepsList = () => {
 
   const handleSubmit = async () => {
     const questSubmissions = [];
-
+    
     for (const step of data?.getQuestById.steps) {
       const answer = responses[step.id];
       const isQuestSkipped = responses[step.id] === null;
@@ -136,19 +135,19 @@ const QuestStepsList = () => {
           selectedValues: isQuestSkipped ? null : answer,
         });
       } else if (step.type === TYPES.ATTACHMENTS) {
-        //TODO: fix upload media from web app , probably separate endpoint
         const stepsMedia = isQuestSkipped ? [null] : await handleMediaUpload(answer);
-        console.log(stepsMedia, 'STEPS MEDIA')
         questSubmissions.push({
           stepId: step.id,
           order: step.order,
           skipped: isQuestSkipped,
-          attachments: isQuestSkipped ? null : stepsMedia.map((media) => ({
-            filename: media.name,
-            type: media.type,
-            uploadSlug: media.uploadSlug
-          }))
-        })
+          attachments: isQuestSkipped
+            ? null
+            : stepsMedia.map((media) => ({
+                filename: media.name,
+                type: media.type,
+                uploadSlug: media.uploadSlug,
+              })),
+        });
       } else if ([TYPES.LIKE_YT_VIDEO, TYPES.SUBSCRIBE_YT_CHANNEL].includes(step.type)) {
         questSubmissions.push({
           stepId: step.id,
@@ -163,6 +162,28 @@ const QuestStepsList = () => {
           skipped: isQuestSkipped,
           verified: isQuestSkipped ? false : true,
         });
+      } else if ([TYPES.VERIFY_TOKEN_HOLDING].includes(step.type)) {
+        questSubmissions.push({
+          stepId: step.id,
+          order: step.order,
+          skipped: isQuestSkipped,
+          verified: isQuestSkipped ? false : true,
+        });
+      } else if (step.type === TYPES.DATA_COLLECTION) {
+        const collectionType = step.additionalData?.dataCollectionType;
+        let submission: any = {
+          stepId: step.id,
+          order: step.order,
+          skipped: isQuestSkipped,
+          verified: isQuestSkipped ? false : true,
+          dataCollectionType: collectionType,
+        };
+        if (collectionType === DATA_COLLECTION_TYPES.LOCATION) {
+          submission.content = isQuestSkipped ? null : answer;
+        } else {
+          submission.selectedValues = isQuestSkipped ? null : answer;
+        }
+        questSubmissions.push(submission);
       }
     }
     const submissionInput = {
@@ -178,7 +199,6 @@ const QuestStepsList = () => {
       });
       if (isEditMode) setIsEditMode(false);
     } catch (error) {}
-    //TODO: handle reward && next screen
   };
 
   const steps = data?.getQuestById?.steps || [];
@@ -214,10 +234,12 @@ const QuestStepsList = () => {
         setIsEditMode,
         setShowSubmitView,
         isEditMode,
-        webApp
+        webApp,
       }}
     >
-      {canStartData?.userCanStartQuest?.canStart === false ? <FailReasons reasons={canStartData?.userCanStartQuest?.failReasons}/> : null}
+      {canStartData?.userCanStartQuest?.canStart === false ? (
+        <FailReasons reasons={canStartData?.userCanStartQuest?.failReasons} />
+      ) : null}
       <Grid display="flex" flexDirection="column" justifyContent="center" gap="24px" alignItems="center" width="100%">
         {showSubmitView && !isEditMode ? (
           <SubmitQuest

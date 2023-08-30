@@ -10,6 +10,7 @@ import AttachmentType from "./Steps/Attachment";
 import OptionSelect from "./Steps/OptionSelect";
 import { VerifyButton } from "./Steps/VerifyButton";
 import { Image } from "./styles";
+import DataCollectionComponent from "./Steps/DataCollection";
 
 const COMPONENTS_CONFIG: any = {
   [TYPES.TEXT_FIELD]: StepTextField,
@@ -24,7 +25,7 @@ const COMPONENTS_CONFIG: any = {
   [TYPES.SNAPSHOT_SPACE_VOTE]: VerifyButton,
 
   [TYPES.VERIFY_TOKEN_HOLDING]: VerifyButton,
-  [TYPES.DATA_COLLECTION]: () => null,
+  [TYPES.DATA_COLLECTION]: DataCollectionComponent
 };
 
 const IMAGES_CONFIG = {

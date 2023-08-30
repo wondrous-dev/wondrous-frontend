@@ -5,7 +5,6 @@ import { useMemo } from "react";
 import { TYPES } from "utils/constants";
 
 export const OptionSelect = ({ step, onChange, value, setIsActionDisabled, isActionDisabled }) => {
-  console.log(value, 'VALUE')
   const opacity = useMemo(() => {
     if (step.type === TYPES.SINGLE_QUIZ && value && value.length > 0) {
       return 0.3;

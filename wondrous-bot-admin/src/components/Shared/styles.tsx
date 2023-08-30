@@ -82,9 +82,9 @@ export const ButtonIconWrapper = styled(ButtonBase)`
     gap: 6px;
     border-radius: 6px;
 
-    height: 30px;
+    height: ${({ height = "30px" }) => height};
 
-    width: 30px;
+    width: ${({ width = "30px" }) => width};
     &:hover {
       opacity: 0.8;
     }

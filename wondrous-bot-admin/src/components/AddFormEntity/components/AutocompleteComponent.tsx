@@ -4,7 +4,7 @@ import CheckCircleIcon from "components/Icons/CheckCircle";
 import SearchIcon from "components/Icons/Search";
 import { useState } from "react";
 
-const AutocompleteOptionsComponent = ({ options, onChange, value }) => {
+const AutocompleteOptionsComponent = ({ options, onChange, value, fullWidth = false, autocompletProps = {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
   const handleChange = (e, option) => onChange(option.value);
@@ -50,7 +50,7 @@ const AutocompleteOptionsComponent = ({ options, onChange, value }) => {
             }}
           >
             <Grid container justifyContent="space-between" alignItems="center" padding="0">
-              {option.label}
+              {option.label || option.value}
               {option.value === value && <CheckCircleIcon />}
             </Grid>
           </MenuItem>
@@ -105,7 +105,7 @@ const AutocompleteOptionsComponent = ({ options, onChange, value }) => {
         borderRadius: "6px",
         padding: "0",
         height: "40px",
-        width: "380px",
+        width: fullWidth ? '100%' : '380px',
         "& .MuiInputBase-root.MuiOutlinedInput-root": {
           "& .MuiOutlinedInput-notchedOutline": {
             border: "none",
@@ -134,6 +134,7 @@ const AutocompleteOptionsComponent = ({ options, onChange, value }) => {
           transform: "none",
         },
       }}
+      {...autocompletProps}
     />
   );
 };
