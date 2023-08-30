@@ -553,11 +553,6 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
                 initialReward={reward}
                 setQuestSettings={setQuestSettings}
               />
-              <div
-                style={{
-                  flex: 1,
-                }}
-              />
               <DeleteIcon
                 style={{
                   width: "40px",

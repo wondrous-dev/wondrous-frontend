@@ -121,7 +121,6 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       settingsLayout: {
         flexDirection: "row",
         alignItems: "center",
-        gap: "10%",
       },
     },
     {

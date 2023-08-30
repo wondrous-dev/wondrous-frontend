@@ -70,7 +70,7 @@ export const TitleInput = styled(TextareaAutosize)`
 `;
 
 export const PaymentMethodRowContainer = styled.div`
-  background: #fffff;
+  background: #fff;
   padding: 14px;
   border-radius: 16px;
   border: 2px solid rgba(232, 232, 232, 1);
@@ -122,6 +122,7 @@ export const RewardHeaderText = styled(Typography)`
     line-height: 15px;
     color: #626262;
     white-space: nowrap;
+    min-width: 80px;
   }
 `;
 
