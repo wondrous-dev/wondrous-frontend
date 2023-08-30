@@ -29,6 +29,7 @@ import QuestResults from "./QuestResults";
 import ViewCampaignOverview from "./ViewCampaignOverview";
 import PublishQuestCardBody from "./PublishQuestCardBody";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
+import ViewRewards from "./ViewRewards";
 
 const ViewQuestResults = ({ quest, rewards }) => {
   const { activeOrg } = useContext(GlobalContext);
@@ -230,13 +231,6 @@ const ViewQuestResults = ({ quest, rewards }) => {
       ],
       showBorder: false,
     },
-
-    // TODO: move to a separate panel
-    // {
-    //   label: "Rewards",
-    //   type: "rewards",
-    //   value: constructRewards({ rewards }),
-    // },
   ];
 
   return (
@@ -268,6 +262,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
             renderHeader={() => <CampaignOverviewHeader title="Quest Information" />}
             renderBody={() => <ViewCampaignOverview sections={sections} />}
           />
+          <PanelComponent renderBody={() => <ViewRewards rewards={rewards} />} />
           <PanelComponent
             renderHeader={() => <CampaignOverviewHeader title="Send quest notification" />}
             renderBody={() => (
