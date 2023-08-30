@@ -315,3 +315,11 @@ export const VERIFY_SNAPSHOT_SPACE_VOTE = gql`
     }
   }
 `;
+
+export const VERIFY_TOKEN_HOLDING = gql`
+  query verifyTokenHolding($telegramUserId:String, $tokenChain:String, $tokenAddress:String, $tokenAmount:String, $tokenType:String, $tokenDecimals:String) {
+    verifyTokenHolding(telegramUserId: $telegramUserId, tokenChain: $tokenChain, tokenAddress: $tokenAddress, tokenAmount: $tokenAmount, tokenType: $tokenType, tokenDecimals: $tokenDecimals) {
+      userHasTokens
+    }
+  }
+`;

@@ -9,6 +9,7 @@ import {
   VERIFY_LINK_CLICKED,
   VERIFY_SNAPSHOT_PROPOSAL_VOTE,
   VERIFY_SNAPSHOT_SPACE_VOTE,
+  VERIFY_TOKEN_HOLDING,
   VERIFY_YT_LIKED,
   VERIFY_YT_SUBSCRIPTION,
 } from "graphql/queries";
@@ -19,20 +20,33 @@ import { getBaseUrl, getWeb3ConnectUrl, getYoutubeChannelId } from "utils/common
 import { TYPES } from "utils/constants";
 import { useTakeQuest } from "utils/hooks";
 
-const LinkComponent = ({ loading, link, onClick, label = "Click to verify", linkText = "Verify", error = null }) => {
+const LinkComponent = ({
+  loading,
+  link = "",
+  onClick,
+  label = "Click to verify",
+  linkText = "Verify",
+  error = null,
+}) => {
   return (
     <Box display="flex" flexDirection="column" gap="14px" width="100%">
       {loading ? <Spinner /> : null}
       <Label>{label}</Label>
-      <a
-        href={link}
-        onClick={onClick}
-        style={{
-          width: "fit-content",
-        }}
-      >
-        <SharedSecondaryButton>{linkText}</SharedSecondaryButton>
-      </a>
+      {link ? (
+        <a
+          href={link}
+          onClick={onClick}
+          style={{
+            width: "fit-content",
+          }}
+        >
+          <SharedSecondaryButton>{linkText}</SharedSecondaryButton>
+        </a>
+      ) : (
+        <Box>
+          <SharedSecondaryButton onClick={onClick}>{linkText}</SharedSecondaryButton>
+        </Box>
+      )}
       {error ? <ErrorText>{error}</ErrorText> : null}
     </Box>
   );
@@ -354,12 +368,68 @@ const SnapshotButton = ({ step, cmtyUser, handleLinkClick, startCmtyUserPolling,
   );
 };
 
+const VerifyTokenHoldingButton = ({ step, startCmtyUserPolling, stopCmtyUserPolling, cmtyUser, handleLinkClick }) => {
+  const { nextStep, onChange } = useTakeQuest();
+
+  const tokenChain = step?.additionalData?.tokenChain;
+  const tokenAddress = step?.additionalData?.tokenAddress;
+  const tokenAmount = step?.additionalData?.tokenAmount;
+  const tokenType = step?.additionalData?.tokenType;
+  const tokenDecimals = step?.additionalData?.tokenDecimals;
+
+  const [verifyTokenHolding, { loading, data }] = useLazyQuery(VERIFY_TOKEN_HOLDING, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      if (data?.verifyTokenHolding?.userHasTokens) {
+        onChange({
+          id: step?.id,
+          value: true,
+        });
+        nextStep();
+      }
+    },
+  });
+
+  const onClick = async () => {
+    return handleLinkClick({
+      action: async () => {
+        verifyTokenHolding({
+          variables: {
+            telegramUserId: cmtyUser?.telegramId?.toString(),
+            tokenChain,
+            tokenAddress,
+            tokenAmount,
+            tokenType,
+            tokenDecimals,
+          },
+        });
+      },
+    });
+  };
+
+  const web3VerifyCallback = () => {
+    setTimeout(() => startCmtyUserPolling(1000), 3000);
+  };
+
+
+  if (!cmtyUser?.web3Address) {
+    return <Web3Connect telegramUserId={cmtyUser.telegramId} callback={web3VerifyCallback} />;
+  }
+
+  return <LinkComponent 
+  error={data?.verifyTokenHolding?.userHasTokens === false ? "You don't hold enough tokens" : ""}
+  
+  loading={loading} onClick={onClick} />;
+};
+
 const COMPONENTS = {
   [TYPES.LINK_CLICK]: LinkClickButton,
   [TYPES.SUBSCRIBE_YT_CHANNEL]: YoutubeButton,
   [TYPES.LIKE_YT_VIDEO]: YoutubeButton,
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: SnapshotButton,
   [TYPES.SNAPSHOT_SPACE_VOTE]: SnapshotButton,
+  [TYPES.VERIFY_TOKEN_HOLDING]: VerifyTokenHoldingButton,
 };
 
 export const VerifyButton = ({ step }) => {
@@ -375,9 +445,10 @@ export const VerifyButton = ({ step }) => {
       await action();
     }
 
-    setTimeout(() => {
-      callback();
-    }, timeout);
+    callback &&
+      setTimeout(() => {
+        callback?.();
+      }, timeout);
   };
 
   const { telegramUser } = useTakeQuest();

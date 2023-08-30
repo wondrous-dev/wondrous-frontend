@@ -9,6 +9,7 @@ import { useTakeQuest } from "utils/hooks";
 const PromptComponent = ({ step }) => {
   const snapshotVoteTimes = step?.additionalData?.snapshotVoteTimes;
 
+  const tokenName = step?.additionalData?.tokenName;
   const content = useMemo(() => {
     if (step.prompt) {
       return step.prompt;
@@ -27,6 +28,9 @@ const PromptComponent = ({ step }) => {
     }
     if(step.type === TYPES.SNAPSHOT_SPACE_VOTE) {
       return `Please vote in this space at least ${snapshotVoteTimes} times`
+    }
+    if(step.type === TYPES.VERIFY_TOKEN_HOLDING) {
+      return `Press to verify ${tokenName || 'token'} holdings`
     }
     return null;
   }, [step.prompt, step.type, snapshotVoteTimes]);
