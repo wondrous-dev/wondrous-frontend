@@ -11,7 +11,8 @@ import { SUBMIT_QUEST } from "graphql/mutations";
 import { ErrorText } from "components/Shared/styles";
 import EditModal from "./EditModal";
 import QuestStepComponent from "./QuestStepComponent";
-import { transformAndUploadMedia, transformAndUploadTelegramMedia } from "utils/media";
+import { transformAndUploadTelegramMedia } from "utils/media";
+import FailReasons from "./FailReasons";
 
 const handleMediaUpload = async (mediaUploads) =>
 Promise.all(
@@ -216,6 +217,7 @@ const QuestStepsList = () => {
         webApp
       }}
     >
+      {canStartData?.userCanStartQuest?.canStart === false ? <FailReasons reasons={canStartData?.userCanStartQuest?.failReasons}/> : null}
       <Grid display="flex" flexDirection="column" justifyContent="center" gap="24px" alignItems="center" width="100%">
         {showSubmitView && !isEditMode ? (
           <SubmitQuest

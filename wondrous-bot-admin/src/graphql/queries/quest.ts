@@ -245,6 +245,13 @@ export const USER_CAN_START_QUEST = gql`
     userCanStartQuest(telegramUserId: $telegramUserId, telegramUsername: $telegramUsername, questId: $questId) {
       canStart
       error
+      failReasons {
+        reason
+        level
+        questId
+        questTitle
+        discordRoleId
+      }
     }
   }
 `;
