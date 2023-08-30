@@ -37,7 +37,7 @@ export const uploadTelegramMedia = async ({ filename, fileType, file }) => {
         telegramUserId
       },
     });
-    const apiUrl = apolloResult.data.getPresignedFileUrl.url;
+    const apiUrl = apolloResult.data.getTelegramPresignedFileUrl.url;
     // TODO: parse filetype
     const uploadResponse = await fetch(apiUrl, {
       method: 'PUT',
@@ -45,6 +45,7 @@ export const uploadTelegramMedia = async ({ filename, fileType, file }) => {
     });
     // console.log('uploadResponse', uploadResponse, apiUrl)
   } catch (error) {
+    console.log(error, 'error')
     console.error('error', JSON.stringify(error, null, 2));
   }
 };
