@@ -26,6 +26,85 @@ const REQUIRE_REVIEW_OPTIONS = [
   },
 ];
 
+const CampaignOverviewSections = ({
+  canBeHidden = false,
+  settingsLayout,
+  settings,
+  showBorder = true,
+  errors,
+  questSettings,
+  setQuestSettings,
+  handleChange,
+}) => {
+  const [show, setShow] = useState(!canBeHidden);
+  return (
+    <Grid
+      container
+      flexDirection="column"
+      borderBottom={showBorder && `1px solid #E8E8E8`}
+      paddingBottom={showBorder && "24px"}
+      gap="14px"
+    >
+      {canBeHidden && (
+        <Grid
+          container
+          item
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ cursor: "pointer" }}
+          onClick={() => setShow((prev) => !prev)}
+        >
+          <Grid container item alignItems="center" gap="10px" width="fit-content">
+            <SortIcon />
+            <Typography color="#626262" fontWeight="600" fontFamily="Poppins" fontSize="13px">
+              {show ? "Hide" : "Show"} extra features
+            </Typography>
+          </Grid>
+          <Grid
+            container
+            item
+            bgcolor="#2A8D5C"
+            width="30px"
+            height="30px"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius="6px"
+            sx={{
+              transform: show && "rotate(180deg)",
+            }}
+          >
+            <ArrowDropDownIcon fill="#fff" />
+          </Grid>
+        </Grid>
+      )}
+      {show && (
+        <Grid container item gap="14px">
+          {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }) => {
+            return (
+              <Grid container key={key} {...wrapperProps} {...settingsLayout}>
+                <Label>{label}</Label>
+                <Grid container item flex="1">
+                  {Component ? (
+                    <Component
+                      onChange={(value) => handleChange(key, value)}
+                      error={errors[key]}
+                      stateKey={key}
+                      value={questSettings[key]}
+                      questSettings={questSettings}
+                      setQuestSettings={setQuestSettings}
+                      {...componentProps}
+                    />
+                  ) : null}
+                </Grid>
+              </Grid>
+            );
+          })}
+        </Grid>
+      )}
+    </Grid>
+  );
+};
+
 const CampaignOverview = ({ questSettings, setQuestSettings }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -184,73 +263,18 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
 
   return (
     <>
-      {sections.map(({ canBeHidden = false, settingsLayout, settings, showBorder = true }) => {
-        const [show, setShow] = useState(!canBeHidden);
+      {sections.map(({ canBeHidden, settingsLayout, settings, showBorder }) => {
         return (
-          <Grid
-            container
-            flexDirection="column"
-            borderBottom={showBorder && `1px solid #E8E8E8`}
-            paddingBottom={showBorder && "24px"}
-            gap="14px"
-          >
-            {canBeHidden && (
-              <Grid
-                container
-                item
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ cursor: "pointer" }}
-                onClick={() => setShow((prev) => !prev)}
-              >
-                <Grid container item alignItems="center" gap="10px" width="fit-content">
-                  <SortIcon />
-                  <Typography color="#626262" fontWeight="600" fontFamily="Poppins" fontSize="13px">
-                    {show ? "Hide" : "Show"} extra features
-                  </Typography>
-                </Grid>
-                <Grid
-                  container
-                  item
-                  bgcolor="#2A8D5C"
-                  width="30px"
-                  height="30px"
-                  alignItems="center"
-                  justifyContent="center"
-                  borderRadius="6px"
-                  sx={{
-                    transform: show && "rotate(180deg)",
-                  }}
-                >
-                  <ArrowDropDownIcon fill="#fff" />
-                </Grid>
-              </Grid>
-            )}
-            {show && (
-              <Grid container item gap="14px">
-                {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }) => {
-                  return (
-                    <Grid container key={key} {...wrapperProps} {...settingsLayout}>
-                      <Label>{label}</Label>
-                      <Grid container item flex="1">
-                        {Component ? (
-                          <Component
-                            onChange={(value) => handleChange(key, value)}
-                            error={errors[key]}
-                            stateKey={key}
-                            value={questSettings[key]}
-                            questSettings={questSettings}
-                            setQuestSettings={setQuestSettings}
-                            {...componentProps}
-                          />
-                        ) : null}
-                      </Grid>
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            )}
-          </Grid>
+          <CampaignOverviewSections
+            canBeHidden={canBeHidden}
+            settingsLayout={settingsLayout}
+            settings={settings}
+            showBorder={showBorder}
+            handleChange={handleChange}
+            errors={errors}
+            questSettings={questSettings}
+            setQuestSettings={setQuestSettings}
+          />
         );
       })}
     </>
