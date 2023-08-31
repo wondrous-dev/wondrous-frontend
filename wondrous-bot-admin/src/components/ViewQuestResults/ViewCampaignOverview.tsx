@@ -70,7 +70,15 @@ const Settings = ({ quest, idx, settingsLayout }) => {
             height="fit-content"
             lineHeight="0"
           >
-            <Typography position="absolute" top="50%" color="#000" zIndex="10" lineHeight="0">
+            <Typography
+              position="absolute"
+              top="50%"
+              color="#000"
+              zIndex="10"
+              lineHeight="0"
+              fontFamily="Poppins"
+              fontWeight="500"
+            >
               {quest.value}
             </Typography>
             <Box position="relative">
