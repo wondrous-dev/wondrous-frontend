@@ -106,6 +106,8 @@ export const StyledTextFieldSelect = styled(TextField)`
       padding: 6px 6px 6px 10px;
       padding-right: 32px;
       font-family: "Poppins";
+      font-size: 13px;
+      font-weight: 500;
     }
     .MuiOutlinedInput-notchedOutline {
       border: none;
