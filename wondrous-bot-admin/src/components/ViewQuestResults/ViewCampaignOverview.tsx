@@ -35,7 +35,6 @@ const Settings = ({ quest, idx, settingsLayout }) => {
       alignItems="center"
       width="100%"
       key={idx + "quest"}
-      gap="10%"
       {...settingsLayout}
     >
       <Label>{quest.label}</Label>

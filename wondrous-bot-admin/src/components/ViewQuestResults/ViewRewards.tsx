@@ -49,7 +49,7 @@ const ViewRewards = ({ rewards }) => {
 
   return (
     <Grid container alignItems="center">
-      <Grid container alignSelf="self-start" width="187px">
+      <Grid container alignSelf="self-start" width="fit-content">
         <Label>Rewards</Label>
       </Grid>
       <Grid container alignItems="center" gap="14px" flex="1">
