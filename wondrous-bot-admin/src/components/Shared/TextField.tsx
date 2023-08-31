@@ -29,6 +29,7 @@ const TextFieldComponent = ({
         placeholder={placeholder}
         error={!!error}
         helperText={error}
+        borderRadius={props?.borderRadius}
         {...props}
       />
       {error ? <ErrorText>{error}</ErrorText> : null}

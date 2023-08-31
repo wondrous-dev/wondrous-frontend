@@ -159,6 +159,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
             placeholder: "Describe the quest",
             key: "description",
             multiline: true,
+            showMaxLength: true,
           },
           key: "description",
         },
