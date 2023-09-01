@@ -16,7 +16,7 @@ const COMPONENTS_CONFIG: any = {
   [TYPES.TEXT_FIELD]: StepTextField,
   [TYPES.MULTI_QUIZ]: OptionSelect,
   [TYPES.SINGLE_QUIZ]: OptionSelect,
-  [TYPES.NUMBER]: (props) => <StepTextField type="number" {...props} />,
+  [TYPES.NUMBER]: (props) => <StepTextField type="tel" {...props} />,
   [TYPES.ATTACHMENTS]: AttachmentType,
   [TYPES.LINK_CLICK]: VerifyButton,
   [TYPES.SUBSCRIBE_YT_CHANNEL]: VerifyButton,
@@ -36,7 +36,7 @@ const IMAGES_CONFIG = {
 
 const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = false }) => {
   const Component: React.FC<any> = COMPONENTS_CONFIG[step?.type];
-  const [isActionDisabled, setIsActionDisabled] = useState(false);
+  const [customHandlers, setCustomHandlers] = useState(null);
   const { onChange, isEditMode } = useTakeQuest();
   if (!isActive || !step) return null;
   if (Component) {
@@ -76,13 +76,13 @@ const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = fal
               )
         }
         renderBody={() => (
-          <StepModal step={step} nextStepId={nextStepId} disabled={!value || isActionDisabled}>
+          <StepModal step={step} disabled={!value}
+          customHandlers={customHandlers}
+          >
             {IMAGES_CONFIG[step.type] ? <Image src={IMAGES_CONFIG[step.type]} /> : null}
             <Component
               step={step}
               value={value}
-              isActionDisabled={isActionDisabled}
-              setIsActionDisabled={setIsActionDisabled}
               onChange={(value) => onChange({ id: step.id, value })}
               placeholder="Enter answer"
             />
@@ -93,7 +93,10 @@ const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = fal
                     <Box>
                       <SafeImage
                         style={{
-                          maxHeight: "200px",
+                          width: '100%',
+                          maxHeight:'200px',
+                          objectFit: 'cover',
+                          objectPosition: 'center'
                         }}
                         width="auto"
                         src={item?.slug}

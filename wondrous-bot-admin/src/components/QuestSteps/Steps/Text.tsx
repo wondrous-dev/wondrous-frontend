@@ -6,7 +6,14 @@ export const StepTextField = ({ step, onChange, value, placeholder = "", type = 
   return (
     <>
       <Grid display="flex" gap="8px" flexDirection="column" width="100%">
-        <TextField multiline={false} type={type} onChange={onChange} value={value} placeholder={placeholder} />
+        <TextField
+          multiline={false}
+          type={type}
+          onChange={onChange}
+          value={value}
+          placeholder={placeholder}
+          autoFocus="true"
+        />
       </Grid>
     </>
   );

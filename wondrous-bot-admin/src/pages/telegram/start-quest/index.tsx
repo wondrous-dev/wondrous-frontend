@@ -9,7 +9,6 @@ export const TelegramStartQuest = () => {
         direction: "column",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh",
         padding: {
           xs: "14px 14px 120px 14px",
           sm: "24px 56px 150px 24px",

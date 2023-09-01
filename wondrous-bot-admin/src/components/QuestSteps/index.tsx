@@ -61,6 +61,7 @@ const QuestStepsList = () => {
   const [responses, setResponses] = useState({});
   const [showSubmitView, setShowSubmitView] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const webApp = (window as any)?.Telegram?.WebApp;
   const [getQuestById, { data, loading, refetch }] = useLazyQuery(GET_QUEST_BY_ID, {
@@ -108,11 +109,51 @@ const QuestStepsList = () => {
       [id]: skip ? null : value,
     });
 
+    const validate = (step, value) => {
+      const { type, id, options } = step;
+      
+      if (!SELECT_TYPES.includes(type)) return true;
+      setErrors({})
+    
+      const correctValues = options?.filter((option) => option.correct).map((option) => option.text) || [];
+    
+      const isMultiQuizValid = () => {
+        const hasAllValuesCorrect = 
+          correctValues.every((correctValue) => value?.includes(correctValue)) &&
+          value.every((selectedValue) => correctValues.includes(selectedValue));
+      
+        if (!hasAllValuesCorrect) {
+          setErrors(prevErrors => ({ ...prevErrors, [id]: "Please select only the correct options" }));
+        }
+        return hasAllValuesCorrect;
+      };
+        
+      const isSingleQuizValid = () => {
+        const isCorrect = correctValues.includes(value?.[0]);
+        if (!isCorrect) {
+          setErrors(prevErrors => ({ ...prevErrors, [id]: "Please select only the correct options" }));
+        }
+        return isCorrect;
+      };
+    
+      if (type === TYPES.MULTI_QUIZ && correctValues?.length > 0) {
+        return isMultiQuizValid();
+      }
+    
+      if (type === TYPES.SINGLE_QUIZ && correctValues?.length > 0) {
+        return isSingleQuizValid();
+      }
+    
+      return true;
+    };
+  
   const handleSubmit = async () => {
     const questSubmissions = [];
-    
+
     for (const step of data?.getQuestById.steps) {
       const answer = responses[step.id];
+      const isValid = validate(step, answer);
+      if(!isValid) return;
       const isQuestSkipped = responses[step.id] === null;
       if (step.type === TYPES.TEXT_FIELD) {
         questSubmissions.push({
@@ -203,24 +244,33 @@ const QuestStepsList = () => {
 
   const steps = data?.getQuestById?.steps || [];
 
+  
   const nextStep = () => {
     const currentStepIdx = steps?.findIndex((step) => step.id === activeStepId);
+    const currentStep = steps[currentStepIdx];
     const nextStepId = steps[currentStepIdx + 1]?.id;
 
     if (isEditMode) {
       setIsEditMode(false);
       return setShowSubmitView(true);
     }
+
+    if (!validate(currentStep, responses[currentStep.id])) {
+      return;
+    }
+
     if (!nextStepId) {
       return setShowSubmitView(true);
     }
-    setActiveStepId(steps[currentStepIdx + 1]?.id);
+
+    setActiveStepId(nextStepId);
   };
 
   const prevStep = () => {
     const currentStepIdx = steps?.findIndex((step) => step.id === activeStepId);
     setActiveStepId(steps[currentStepIdx - 1]?.id);
   };
+
   return (
     <TakeQuestContext.Provider
       value={{
@@ -235,6 +285,8 @@ const QuestStepsList = () => {
         setShowSubmitView,
         isEditMode,
         webApp,
+        validate,
+        errors,
       }}
     >
       {canStartData?.userCanStartQuest?.canStart === false ? (

@@ -42,8 +42,10 @@ const PromptComponent = ({ step }) => {
   );
 };
 
-export const StepModal = ({ children, step, disabled, nextStepId }) => {
+export const StepModal = ({ children, step, disabled, customHandlers }) => {
   const { nextStep, isEditMode } = useTakeQuest();
+
+  
 
   return (
     <Grid display="flex" flexDirection="column" gap="24px" width="100%">

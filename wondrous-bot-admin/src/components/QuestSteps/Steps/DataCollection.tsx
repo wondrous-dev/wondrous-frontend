@@ -9,9 +9,8 @@ import AddIcon from "@mui/icons-material/Add";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 import countries from "utils/countries";
 
-const SelectOption = ({ step, onChange, value = []}) => {
+const SelectOption = ({ step, onChange, value = [] }) => {
   const [inputValue, setInputValue] = useState("");
-    console.log(value, 'VALUE1')
   const allOptions = useMemo(() => {
     const initialOptionsTexts = step.options.map((opt) => opt.text);
     const addedOptions =
@@ -96,6 +95,9 @@ const LocationType = ({ step, onChange, value }) => {
       <AutocompleteOptionsComponent
         autocompletProps={{
           getOptionLabel: (option) => option.value,
+        }}
+        inputProps={{
+          sx: {},
         }}
         options={countries}
         value={value}

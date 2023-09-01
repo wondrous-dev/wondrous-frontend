@@ -4,7 +4,7 @@ import CheckCircleIcon from "components/Icons/CheckCircle";
 import SearchIcon from "components/Icons/Search";
 import { useState } from "react";
 
-const AutocompleteOptionsComponent = ({ options, onChange, value, fullWidth = false, autocompletProps = {} }) => {
+const AutocompleteOptionsComponent = ({ options, onChange, value, fullWidth = false, autocompletProps = {}, inputProps = {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
   const handleChange = (e, option) => onChange(option.value);
@@ -31,6 +31,7 @@ const AutocompleteOptionsComponent = ({ options, onChange, value, fullWidth = fa
               fontWeight: "500",
             },
           }}
+          {...inputProps}
         />
       )}
       renderOption={(props, option) => {
