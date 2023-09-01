@@ -19,7 +19,7 @@ import { getYouTubeVideoId } from "services/validators/customValidation";
 import { getBaseUrl, getWeb3ConnectUrl, getYoutubeChannelId } from "utils/common";
 import { TYPES } from "utils/constants";
 import { useTakeQuest } from "utils/hooks";
-import { VerifyFollowAccount, VerifyLikeTweet, VerifyReplyToTweet, VerifyRetweet } from "./TwitterComponents";
+import TwitterActionVerifier from "./TwitterComponents";
 import { LinkComponent } from "./LinkComponent";
 
 const GoogleVerify = ({ telegramUserId, callback }) => {
@@ -382,15 +382,17 @@ const VerifyTokenHoldingButton = ({ step, startCmtyUserPolling, stopCmtyUserPoll
     setTimeout(() => startCmtyUserPolling(1000), 3000);
   };
 
-
   if (!cmtyUser?.web3Address) {
     return <Web3Connect telegramUserId={cmtyUser.telegramId} callback={web3VerifyCallback} />;
   }
 
-  return <LinkComponent 
-  error={data?.verifyTokenHolding?.userHasTokens === false ? "You don't hold enough tokens" : ""}
-  
-  loading={loading} onClick={onClick} />;
+  return (
+    <LinkComponent
+      error={data?.verifyTokenHolding?.userHasTokens === false ? "You don't hold enough tokens" : ""}
+      loading={loading}
+      onClick={onClick}
+    />
+  );
 };
 
 const COMPONENTS = {
@@ -400,10 +402,11 @@ const COMPONENTS = {
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: SnapshotButton,
   [TYPES.SNAPSHOT_SPACE_VOTE]: SnapshotButton,
   [TYPES.VERIFY_TOKEN_HOLDING]: VerifyTokenHoldingButton,
-  [TYPES.LIKE_TWEET]: VerifyLikeTweet,
-  [TYPES.FOLLOW_TWITTER]: VerifyFollowAccount,
-  [TYPES.REPLY_TWEET]: VerifyReplyToTweet,
-  [TYPES.RETWEET]: VerifyRetweet,
+  [TYPES.LIKE_TWEET]: TwitterActionVerifier,
+  [TYPES.FOLLOW_TWITTER]: TwitterActionVerifier,
+  [TYPES.REPLY_TWEET]: TwitterActionVerifier,
+  [TYPES.RETWEET]: TwitterActionVerifier,
+  [TYPES.TWEET_WITH_PHRASE]: TwitterActionVerifier,
 };
 
 export const VerifyButton = ({ step }) => {

@@ -33,3 +33,11 @@ export const VERIFY_TWEET_REPLIED = gql`
     }
 `;
 
+
+export const VERIFY_TWEET_WITH_PHRASE = gql`
+  query verifyTweetWithPhrase($cmtyUserId: ID!, $tweetPhrase: String) {
+    verifyTweetWithPhrase(cmtyUserId: $cmtyUserId, tweetPhrase: $tweetPhrase) {
+      userTweetedWithPhrase
+    }
+  }
+`;

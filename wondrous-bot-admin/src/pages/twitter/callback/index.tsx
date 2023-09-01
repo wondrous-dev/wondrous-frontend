@@ -30,8 +30,8 @@ const CallbackPage = () => {
       verifyTwitter({
         variables: {
           code,
-          discordId,
-          telegramUserId: telegramUserId?.toString(),
+          ...(discordId && { discordId }),
+          ...(telegramUserId && { telegramUserId })
         },
       });
     }

@@ -6,46 +6,84 @@ import { useMemo } from "react";
 import { TYPES } from "utils/constants";
 import { useTakeQuest } from "utils/hooks";
 
+const ContentComponent = ({ link = null, prompt }) => {
+  return (
+    <Grid display="flex" flexDirection="column" gap="14px">
+      <Typography color="#1D1D1D" fontFamily="Poppins" fontSize="16px" fontWeight={500} lineHeight="24px">
+        {prompt}
+      </Typography>
+      {link ? <a href={link}>Link</a> : null}
+    </Grid>
+  );
+};
+
 const PromptComponent = ({ step }) => {
   const snapshotVoteTimes = step?.additionalData?.snapshotVoteTimes;
 
+  const tweetLink = step?.additionalData?.tweetLink;
   const tokenName = step?.additionalData?.tokenName;
   const content = useMemo(() => {
     if (step.prompt) {
       return step.prompt;
     }
-    if(step.type === TYPES.LINK_CLICK) {
-      return 'Click on the link below to verify'
+    if (step.type === TYPES.LINK_CLICK) {
+      return "Click on the link below to verify";
     }
-    if(step.type === TYPES.LIKE_YT_VIDEO) {
-      return 'Verify YouTube Like'
+    if (step.type === TYPES.LIKE_YT_VIDEO) {
+      return "Verify YouTube Like";
     }
-    if(step.type === TYPES.SUBSCRIBE_YT_CHANNEL) {
-      return 'Verify YouTube Subscription'
+    if (step.type === TYPES.SUBSCRIBE_YT_CHANNEL) {
+      return "Verify YouTube Subscription";
     }
-    if(step.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
-      return 'Please vote on this proposal'
+    if (step.type === TYPES.SNAPSHOT_PROPOSAL_VOTE) {
+      return "Please vote on this proposal";
     }
-    if(step.type === TYPES.SNAPSHOT_SPACE_VOTE) {
-      return `Please vote in this space at least ${snapshotVoteTimes} times`
+    if (step.type === TYPES.SNAPSHOT_SPACE_VOTE) {
+      return `Please vote in this space at least ${snapshotVoteTimes} times`;
     }
-    if(step.type === TYPES.VERIFY_TOKEN_HOLDING) {
-      return `Press to verify ${tokenName || 'token'} holdings`
+    if (step.type === TYPES.VERIFY_TOKEN_HOLDING) {
+      return `Press to verify ${tokenName || "token"} holdings`;
+    }
+    if (step.type === TYPES.LIKE_TWEET) {
+      return () => <ContentComponent link={tweetLink} prompt={"Like the tweet below to verify"} />;
+    }
+    if (step.type === TYPES.FOLLOW_TWITTER) {
+      const tweetHandle = step?.additionalData?.tweetHandle;
+      return (
+        <Grid display="flex" flexDirection="column" gap="14px">
+          <Typography color="#1D1D1D" fontFamily="Poppins" fontSize="16px" fontWeight={500} lineHeight="24px">
+            Follow this account:
+          </Typography>
+          <a href={`https://twitter.com/${tweetHandle}`}>@{tweetHandle}</a>
+        </Grid>
+      );
+    }
+    if(step.type === TYPES.REPLY_TWEET) {
+      const tweetLink = step?.additionalData?.tweetLink
+      return () => <ContentComponent prompt="Reply to this tweet:" link={tweetLink}/>
+    }
+    if(step.type === TYPES.TWEET_WITH_PHRASE) {
+      const tweetPhrase = step?.additionalData?.tweetPhrase;
+      return () => <ContentComponent prompt={`Tweet with this phrase: ${tweetPhrase}`}/>
+    }
+    if(step.type === TYPES.RETWEET) {
+      const tweetLink = step?.additionalData?.tweetLink;
+      return () => <ContentComponent prompt="Retweet this tweet:" link={tweetLink}/>
     }
     return null;
-  }, [step.prompt, step.type, snapshotVoteTimes]);
+  }, [step.prompt, step.type, step?.additionalData]);
 
-  return (
+  return typeof content === "function" ? (
+    content()
+  ) : (
     <Typography color="#1D1D1D" fontFamily="Poppins" fontSize="16px" fontWeight={500} lineHeight="24px">
       {content}
     </Typography>
   );
 };
 
-export const StepModal = ({ children, step, disabled, customHandlers }) => {
+export const StepModal = ({ children, step, disabled }) => {
   const { nextStep, isEditMode } = useTakeQuest();
-
-  
 
   return (
     <Grid display="flex" flexDirection="column" gap="24px" width="100%">

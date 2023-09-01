@@ -28,7 +28,7 @@ const COMPONENTS_CONFIG: any = {
   [TYPES.LIKE_TWEET]: VerifyButton,
   [TYPES.FOLLOW_TWITTER]: VerifyButton,
   [TYPES.REPLY_TWEET]: VerifyButton,
-  [TYPES.REPLY_TWEET]: VerifyButton,
+  [TYPES.RETWEET]: VerifyButton,
   [TYPES.TWEET_WITH_PHRASE]: VerifyButton
 };
 
@@ -40,8 +40,8 @@ const IMAGES_CONFIG = {
 
 const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = false }) => {
   const Component: React.FC<any> = COMPONENTS_CONFIG[step?.type];
-  const [customHandlers, setCustomHandlers] = useState(null);
   const { onChange, isEditMode } = useTakeQuest();
+  
   if (!isActive || !step) return null;
   if (Component) {
     return (
@@ -81,7 +81,6 @@ const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = fal
         }
         renderBody={() => (
           <StepModal step={step} disabled={!value}
-          customHandlers={customHandlers}
           >
             {IMAGES_CONFIG[step.type] ? <Image src={IMAGES_CONFIG[step.type]} /> : null}
             {step?.media ? (

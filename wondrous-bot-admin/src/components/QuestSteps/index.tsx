@@ -273,6 +273,7 @@ const QuestStepsList = () => {
     setActiveStepId(steps[currentStepIdx - 1]?.id);
   };
 
+  console.log(activeStepId, 'act step id', steps.find(i => i.id === activeStepId), steps)
   return (
     <TakeQuestContext.Provider
       value={{
