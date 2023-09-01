@@ -1,30 +1,29 @@
 import { Grid, Typography } from "@mui/material";
 import { Label } from "components/CreateTemplate/styles";
+import { DiscordRoleIcon, NFTIcon, PointsIcon, TokensIcon } from "components/Icons/Rewards";
 import { constructRewards } from "utils/common";
-import PointsIcon from "components/Icons/PointsIcon.svg";
-import DiscordIcon from "components/Icons/DiscordIcon.svg";
-import NFTIcon from "components/Icons/NFTIcon.svg";
 
 const selectReward = ({ type, value }) => {
   const rewardProps = {
     points: {
       text: `${value} points`,
-      icon: PointsIcon,
+      Icon: PointsIcon,
     },
     "Discord Role": {
       text: `Role: ${value}`,
-      icon: DiscordIcon,
+      Icon: DiscordRoleIcon,
     },
     POAP: {
       text: value,
-      icon: NFTIcon,
+      Icon: NFTIcon,
     },
   };
-  return rewardProps[type] || { text: `${value} ${type}` };
+  return rewardProps[type] || { text: `${value} ${type}`, Icon: TokensIcon };
 };
 
 const Reward = ({ type, value }) => {
-  const { text, icon } = selectReward({ type, value });
+  const { text, Icon = null } = selectReward({ type, value });
+  console.log("Icon ", Icon);
   return (
     <Grid
       container
@@ -36,7 +35,7 @@ const Reward = ({ type, value }) => {
       borderRadius="6px"
       minHeight="32px"
     >
-      <img src={icon} />
+      {Icon && <Icon />}
       <Typography lineHeight="1" color="#000" fontWeight="500" fontSize="14px" fontFamily="Poppins">
         {text}
       </Typography>
