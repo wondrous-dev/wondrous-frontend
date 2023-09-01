@@ -11,37 +11,19 @@ export const OptionSelect = ({ step, onChange, value }) => {
 
   const opacity = step.type === TYPES.SINGLE_QUIZ && value && value.length > 0 ? 0.3 : 1;
   
-  const correctValues = step?.options?.filter((option) => option.correct).map((option) => option.text);
-
-  const allCorrect = useMemo(() => {
-    if (correctValues && correctValues.length > 0) {
-      if (step?.type === TYPES.MULTI_QUIZ) {
-        return (
-          correctValues.every((correctValue) => value?.includes(correctValue)) &&
-          value?.length === correctValues.length
-        );
-      }
-      return step?.type === TYPES.SINGLE_QUIZ ? correctValues.includes(value?.[0]) : null;
-    }
-    return step?.type === TYPES.MULTI_QUIZ ? value?.length > 0 : null;
-  }, [correctValues, value, step.type]);
-  
-
-  const isCorrect = correctValues && correctValues.length > 0 ? allCorrect : null;
-
-  const handleCheckboxChange = (e, text) => {
+  const handleCheckboxChange = (e, position) => {
     let updatedValuesSet = new Set(value || []);
 
     if (e.target.checked) {
-        updatedValuesSet.add(text);
+        updatedValuesSet.add(position);
     } else {
-        updatedValuesSet.delete(text);
+        updatedValuesSet.delete(position);
     }
 
     const updatedValuesArray = [...updatedValuesSet];
 
     if (step.type === TYPES.SINGLE_QUIZ) {
-        return onChange(e.target.checked ? [text] : []);
+        return onChange(e.target.checked ? [position] : []);
     }
 
     return onChange(updatedValuesArray);
@@ -64,7 +46,7 @@ export const OptionSelect = ({ step, onChange, value }) => {
             gap="12px"
             sx={{
               opacity:
-                (step.type === TYPES.SINGLE_QUIZ && value?.includes(option.text)) || step.type !== TYPES.SINGLE_QUIZ
+                (step.type === TYPES.SINGLE_QUIZ && value?.includes(option.position)) || step.type !== TYPES.SINGLE_QUIZ
                   ? 1
                   : opacity,
             }}
@@ -73,9 +55,9 @@ export const OptionSelect = ({ step, onChange, value }) => {
               bgcolor={"#2A8D5C"}
               height="22px"
               width="22px"
-              defaultChecked={value?.includes(option.text)}
-              disabled={step.type === TYPES.SINGLE_QUIZ && value?.length > 0 && !value.includes(option.text)}
-              onChange={(e) => handleCheckboxChange(e, option.text)}
+              defaultChecked={value?.includes(option.position)}
+              disabled={step.type === TYPES.SINGLE_QUIZ && value?.length > 0 && !value.includes(option.position)}
+              onChange={(e) => handleCheckboxChange(e, option.position)}
               />
             <Typography fontFamily="Poppins" fontSize="16px" fontWeight={500} lineHeight="24px" color="#1D1D1D">
               {option.text}
@@ -84,9 +66,6 @@ export const OptionSelect = ({ step, onChange, value }) => {
         );
       })}
       {errors[step.id] ? <ErrorText>{errors[step.id]}</ErrorText> : null}
-      {/* {isCorrect !== null &&
-        !!value?.length &&
-        (isCorrect ? null : <ErrorText>Please select only the correct options</ErrorText>)} */}
     </Grid>
   );
 };

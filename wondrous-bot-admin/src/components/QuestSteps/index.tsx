@@ -114,9 +114,10 @@ const QuestStepsList = () => {
       
       if (!SELECT_TYPES.includes(type)) return true;
       setErrors({})
-    
-      const correctValues = options?.filter((option) => option.correct).map((option) => option.text) || [];
-    
+
+      const correctValues = options?.filter((option) => option.correct).map((option) => option.position) || [];
+      
+
       const isMultiQuizValid = () => {
         const hasAllValuesCorrect = 
           correctValues.every((correctValue) => value?.includes(correctValue)) &&
@@ -169,11 +170,12 @@ const QuestStepsList = () => {
           order: step.order,
         });
       } else if (SELECT_TYPES.includes(step.type)) {
+        const selectedValues = step.options.filter(option => answer.includes(option.position))?.map(value => value.text)
         questSubmissions.push({
           stepId: step.id,
           order: step.order,
           skipped: isQuestSkipped,
-          selectedValues: isQuestSkipped ? null : answer,
+          selectedValues: isQuestSkipped ? null : selectedValues,
         });
       } else if (step.type === TYPES.ATTACHMENTS) {
         const stepsMedia = isQuestSkipped ? [null] : await handleMediaUpload(answer);
