@@ -23,9 +23,13 @@ const COMPONENTS_CONFIG: any = {
   [TYPES.LIKE_YT_VIDEO]: VerifyButton,
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: VerifyButton,
   [TYPES.SNAPSHOT_SPACE_VOTE]: VerifyButton,
-
   [TYPES.VERIFY_TOKEN_HOLDING]: VerifyButton,
-  [TYPES.DATA_COLLECTION]: DataCollectionComponent
+  [TYPES.DATA_COLLECTION]: DataCollectionComponent,
+  [TYPES.LIKE_TWEET]: VerifyButton,
+  [TYPES.FOLLOW_TWITTER]: VerifyButton,
+  [TYPES.REPLY_TWEET]: VerifyButton,
+  [TYPES.REPLY_TWEET]: VerifyButton,
+  [TYPES.TWEET_WITH_PHRASE]: VerifyButton
 };
 
 const IMAGES_CONFIG = {

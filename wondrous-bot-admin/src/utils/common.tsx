@@ -3,6 +3,10 @@ import moment from "moment";
 import { QUEST_CONDITION_TYPES } from "./constants";
 import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
 
+const DEFAULT_TWITTER_SCOPE =
+	'users.read%20tweet.read%20follows.read%20follows.write%20like.read%20like.write%20offline.access';
+export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
+
 export function shallowEqual(objA, objB) {
   if (!objA || !objB) {
     return objA === objB;
@@ -154,4 +158,20 @@ export const toCent = (amount) => {
       .replace(".", "")
       .padEnd(int.length === 1 ? 3 : 4, "0")
   );
+};
+
+
+export const getTwitterCallbackUrl = () => {
+	return getBaseUrl() + '%2Ftwitter%2Fcallback';
+};
+
+export const buildTwitterAuthUrl = (state?) => {
+  const CLIENT_ID = 'alotNFdURk5Qd0FoRGpKeUpHMDE6MTpjaQ';
+	if (!state) {
+		state = 'state';
+	}
+
+  // fetch URL from server
+	const redirectUri = getTwitterCallbackUrl();
+	return `https://twitter.com/i/oauth2/authorize?client_id=${CLIENT_ID}&scope=${DEFAULT_TWITTER_SCOPE}&response_type=code&redirect_uri=${redirectUri}&state=${state}&code_challenge=${TWITTER_CHALLENGE_CODE}&code_challenge_method=plain`;
 };

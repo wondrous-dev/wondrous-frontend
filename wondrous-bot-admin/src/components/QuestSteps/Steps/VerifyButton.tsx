@@ -19,38 +19,8 @@ import { getYouTubeVideoId } from "services/validators/customValidation";
 import { getBaseUrl, getWeb3ConnectUrl, getYoutubeChannelId } from "utils/common";
 import { TYPES } from "utils/constants";
 import { useTakeQuest } from "utils/hooks";
-
-const LinkComponent = ({
-  loading,
-  link = "",
-  onClick,
-  label = "Click to verify",
-  linkText = "Verify",
-  error = null,
-}) => {
-  return (
-    <Box display="flex" flexDirection="column" gap="14px" width="100%">
-      {loading ? <Spinner /> : null}
-      <Label>{label}</Label>
-      {link ? (
-        <a
-          href={link}
-          onClick={onClick}
-          style={{
-            width: "fit-content",
-          }}
-        >
-          <SharedSecondaryButton>{linkText}</SharedSecondaryButton>
-        </a>
-      ) : (
-        <Box>
-          <SharedSecondaryButton onClick={onClick}>{linkText}</SharedSecondaryButton>
-        </Box>
-      )}
-      {error ? <ErrorText>{error}</ErrorText> : null}
-    </Box>
-  );
-};
+import { VerifyFollowAccount, VerifyLikeTweet, VerifyReplyToTweet, VerifyRetweet } from "./TwitterComponents";
+import { LinkComponent } from "./LinkComponent";
 
 const GoogleVerify = ({ telegramUserId, callback }) => {
   const handleClick = () => {
@@ -430,6 +400,10 @@ const COMPONENTS = {
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: SnapshotButton,
   [TYPES.SNAPSHOT_SPACE_VOTE]: SnapshotButton,
   [TYPES.VERIFY_TOKEN_HOLDING]: VerifyTokenHoldingButton,
+  [TYPES.LIKE_TWEET]: VerifyLikeTweet,
+  [TYPES.FOLLOW_TWITTER]: VerifyFollowAccount,
+  [TYPES.REPLY_TWEET]: VerifyReplyToTweet,
+  [TYPES.RETWEET]: VerifyRetweet,
 };
 
 export const VerifyButton = ({ step }) => {

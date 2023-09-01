@@ -10,6 +10,8 @@ const CallbackPage = () => {
   const code = searchParams?.get("code");
   const state = searchParams?.get("state");
   const discordId = state?.split("discordId=")[1] || "";
+  const telegramUserId = state?.split("telegramUserId=")[1] || "";
+
   const [finishedVerification, setFinishedVerification] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [verifyTwitter] = useMutation(VERIFY_COMMUNITY_USER_TWITTER, {
@@ -24,11 +26,12 @@ const CallbackPage = () => {
     },
   });
   useEffect(() => {
-    if (code && discordId && !finishedVerification) {
+    if (code && !finishedVerification && (discordId || telegramUserId)) {
       verifyTwitter({
         variables: {
           code,
           discordId,
+          telegramUserId: telegramUserId?.toString(),
         },
       });
     }
