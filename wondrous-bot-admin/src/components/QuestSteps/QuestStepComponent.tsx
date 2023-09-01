@@ -80,17 +80,11 @@ const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = fal
           customHandlers={customHandlers}
           >
             {IMAGES_CONFIG[step.type] ? <Image src={IMAGES_CONFIG[step.type]} /> : null}
-            <Component
-              step={step}
-              value={value}
-              onChange={(value) => onChange({ id: step.id, value })}
-              placeholder="Enter answer"
-            />
             {step?.media ? (
-              <Grid display="flex" alignItems="center" gap="14px">
+              <Grid display="flex" alignItems="center" gap="14px" flexWrap="wrap" overflow="scroll">
                 {step?.media?.map((item) => {
                   return (
-                    <Box>
+                    <Box flex="1" minWidth="fit-content">
                       <SafeImage
                         style={{
                           width: '100%',
@@ -106,6 +100,13 @@ const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = fal
                 })}
               </Grid>
             ) : null}
+            <Component
+              step={step}
+              value={value}
+              onChange={(value) => onChange({ id: step.id, value })}
+              placeholder="Enter answer"
+            />
+           
           </StepModal>
         )}
       />
