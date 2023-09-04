@@ -58,17 +58,17 @@ const PromptComponent = ({ step }) => {
         </Grid>
       );
     }
-    if(step.type === TYPES.REPLY_TWEET) {
-      const tweetLink = step?.additionalData?.tweetLink
-      return () => <ContentComponent prompt="Reply to this tweet:" link={tweetLink}/>
-    }
-    if(step.type === TYPES.TWEET_WITH_PHRASE) {
-      const tweetPhrase = step?.additionalData?.tweetPhrase;
-      return () => <ContentComponent prompt={`Tweet with this phrase: ${tweetPhrase}`}/>
-    }
-    if(step.type === TYPES.RETWEET) {
+    if (step.type === TYPES.REPLY_TWEET) {
       const tweetLink = step?.additionalData?.tweetLink;
-      return () => <ContentComponent prompt="Retweet this tweet:" link={tweetLink}/>
+      return () => <ContentComponent prompt="Reply to this tweet:" link={tweetLink} />;
+    }
+    if (step.type === TYPES.TWEET_WITH_PHRASE) {
+      const tweetPhrase = step?.additionalData?.tweetPhrase;
+      return () => <ContentComponent prompt={`Tweet with this phrase: ${tweetPhrase}`} />;
+    }
+    if (step.type === TYPES.RETWEET) {
+      const tweetLink = step?.additionalData?.tweetLink;
+      return () => <ContentComponent prompt="Retweet this tweet:" link={tweetLink} />;
     }
     return null;
   }, [step.prompt, step.type, step?.additionalData]);
@@ -76,7 +76,16 @@ const PromptComponent = ({ step }) => {
   return typeof content === "function" ? (
     content()
   ) : (
-    <Typography color="#1D1D1D" fontFamily="Poppins" fontSize="16px" fontWeight={500} lineHeight="24px">
+    <Typography
+      color="#1D1D1D"
+      fontFamily="Poppins"
+      fontSize="16px"
+      fontWeight={500}
+      lineHeight="24px"
+      sx={{
+        wordBreak: "break-word",
+      }}
+    >
       {content}
     </Typography>
   );

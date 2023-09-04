@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import { CustomTextField } from "../AddFormEntity/components/styles";
 import { ErrorText } from "./styles";
 
@@ -15,7 +15,7 @@ const TextFieldComponent = ({
   const handleChange = (e) => {
     return onChange(e.target.value);
   };
-
+  
   return (
     <Box width="100%" height="100%" style={props?.boxStyles}>
       <CustomTextField

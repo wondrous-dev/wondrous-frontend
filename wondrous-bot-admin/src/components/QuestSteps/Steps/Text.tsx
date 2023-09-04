@@ -26,6 +26,7 @@ export const StepTextField = ({ step, onChange, value, placeholder = "", type = 
 
   const {isEditMode} = useTakeQuest();
 
+  const shouldAutoFocus = step.order > 1 && !isEditMode;
   return (
     <>
       <Grid display="flex" gap="8px" flexDirection="column" width="100%">
@@ -35,7 +36,7 @@ export const StepTextField = ({ step, onChange, value, placeholder = "", type = 
           onChange={handleInputChange}
           value={value}
           placeholder={placeholder}
-          autoFocus={!isEditMode}
+          autoFocus={shouldAutoFocus}
           onFocus={onFocus}
           onBlur={onBlur}
         />
