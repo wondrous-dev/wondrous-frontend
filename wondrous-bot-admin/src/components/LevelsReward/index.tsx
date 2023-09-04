@@ -9,220 +9,98 @@ import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { CloseIcon } from "components/Shared/DatePicker/Icons";
 import { useMutation } from "@apollo/client";
 import { ADD_ORG_LEVEL_REWARD, REMOVE_ORG_LEVEL_REWARD } from "graphql/mutations";
+import { RewardConfigModal } from "components/LevelReward/RewardConfigModal";
 import { LevelsWrapper } from "./styles";
 
-interface ILevelsRewardProps {
-  value?: any;
-  setAnchorEl: (element: HTMLAnchorElement) => void;
-}
-
-const LevelsRewardViewOrAdd = forwardRef(({ value, setAnchorEl }: ILevelsRewardProps, ref) => {
-  if (!value || !value.length)
-    return (
-      <RoundedSecondaryButton
-        onClick={(e) => setAnchorEl(e.currentTarget)}
-        ref={ref}
-        sx={{
-          padding: "4px 8px !important",
-          borderRadius: "6px !important",
-        }}
-      >
-        <AddIcon
-          sx={{
-            color: "black",
-            fontSize: "22px",
-          }}
-        />
-      </RoundedSecondaryButton>
-    );
-
-  return null;
-});
-
-const LevelsReward = ({ value, onChange, roles, level }) => {
-  // FIXME we should pass in current level rewards probably
+const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => {
+  // FIXME we should pass reward current level rewards probably
   // need to fetch somewhere?
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
+  const allRoles = discordRoles.map((role) => role.roles).flat();
 
   const { activeOrg } = useContext(GlobalContext);
-  const [addOrgLevelReward] = useMutation(ADD_ORG_LEVEL_REWARD, {
-    refetchQueries: ["getOrgLevelsRewards"],
-  });
+
   const [removeOrgLevelReward] = useMutation(REMOVE_ORG_LEVEL_REWARD, {
     refetchQueries: ["getOrgLevelsRewards"],
   });
-  const handleRemove = async () => {
+  const handleRemove = async (rewardId) => {
     await removeOrgLevelReward({
       variables: {
-        levelRewardId: value.id,
+        levelRewardId: rewardId,
       },
     });
-    onChange({});
+    refetchLevelRewards();
   };
-  const handleMutation = async (params) => {
-    if (!params) {
-      return await handleRemove();
-    }
-
-    const { discordGuildId, discordRoleId, discordRoleName } = params;
-    await addOrgLevelReward({
-      variables: {
-        input: {
-          orgId: activeOrg.id,
-          level: level,
-          type: "discord_role",
-          discordRewardData: {
-            discordRoleId,
-            discordGuildId,
-            discordRoleName,
-          },
-        },
-      },
-    });
-    onChange({
-      ...value,
-      discordRoleId,
-      discordGuildId,
-      discordRoleName,
-    });
-  };
-
-  if (Object.keys(value).length) {
-    const allRoles = roles.map((role) => role.roles).flat();
-    const selectedRole = allRoles.find((item) => item.id === value.discordRoleId);
-    return (
-      <StyledViewQuestResults>
-        <img
-          src="/images/discord-official-logo.png"
-          height="18px"
-          width="18px"
-          style={{
-            borderRadius: "300px",
-          }}
-        />
-        {selectedRole?.name}
-        <ButtonBase onClick={() => handleMutation(null)}>
-          <CloseIcon />
-        </ButtonBase>
-      </StyledViewQuestResults>
-    );
-  }
   return (
     <>
-      <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-        <Box>
-          <LevelsRewardViewOrAdd value={value} setAnchorEl={setAnchorEl} />
-          <Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom">
-            <Grid
-              bgcolor="white"
-              border="1px solid #000000"
-              boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
-              borderRadius="6px"
-              container
-              width="300px"
-              direction={"column"}
-              gap="10px"
-              maxHeight="500px"
-              overflow="scroll"
-              flexWrap="nowrap"
-              padding="14px"
-            >
-              <LevelsWrapper>
-                {/* <Box
-                display='flex'
-                gap='6px'
-                alignItems='center'
-                sx={{
-                  cursor: 'pointer',
-                }}
-              > */}
-                {/* <ButtonBase
-                  sx={{
-                    padding: '3px 5px',
-                    borderRadius: '4px',
-                    height: '18px',
-                    width: '18px',
-                    background: '#84bcff',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <AddIcon
-                    sx={{
-                      color: 'black',
-                      fontSize: '12px',
-                    }}
-                  />
-                </ButtonBase>
-                <Typography
-                  color='#2A8D5C'
-                  fontFamily='Poppins'
-                  fontWeight={500}
-                  fontSize='14px'
-                  lineHeight='14px'
-                >
-                  Add new reward
-                </Typography> */}
-                {/* </Box> */}
-                {!roles?.length && (
-                  <>
-                    <Typography color="#2A8D5C" fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="14px">
-                      No discord roles found
-                    </Typography>
-                  </>
-                )}
-                {roles?.map((role, idx) => {
-                  return (
-                    <Box>
-                      <Label>{role?.guildInfo?.guildName}</Label>
-                      {role?.roles?.map((discordRole) => {
-                        const isActive = value?.discordRoleId === discordRole.id;
-                        return (
-                          <Box
-                            padding="8px"
-                            onClick={() =>
-                              handleMutation({
-                                discordGuildId: role?.guildId,
-                                discordRoleId: discordRole.id,
-                                discordRoleName: discordRole.name,
-                              })
-                            }
-                            display="flex"
-                            alignItems="center"
-                            gap="6px"
-                            borderRadius="6px"
-                            sx={{
-                              cursor: "pointer",
-                              background: isActive ? "#c5c5c5" : "white",
-                              "&:hover": {
-                                background: "#c5c5c5",
-                              },
-                            }}
-                          >
-                            <img
-                              src="/images/discord-official-logo.png"
-                              height="18px"
-                              width="18px"
-                              style={{
-                                borderRadius: "300px",
-                              }}
-                            />
-                            <Typography fontFamily="Poppins" fontSize="14px" fontWeight={500} color="black">
-                              Role: {discordRole.name}
-                            </Typography>
-                          </Box>
-                        );
-                      })}
-                    </Box>
-                  );
-                })}
-              </LevelsWrapper>
-            </Grid>
-          </Popper>
-        </Box>
-      </ClickAwayListener>
+      <RewardConfigModal
+        isRewardModalOpen={isRewardModalOpen}
+        setIsRewardModalOpen={setIsRewardModalOpen}
+        level={level}
+        refetchLevelRewards={refetchLevelRewards}
+      />
+      <Box style={{display: 'flex', gap: 5}}>
+        <div style={{ display: "flex", gap: 5 }}>
+          {rewards?.length &&
+            rewards?.map((reward) => (
+              <ExistingLevelsReward
+                reward={reward}
+                allRoles={allRoles}
+                level={level}
+                refetchLevelRewards={refetchLevelRewards}
+                handleRemove={() => handleRemove(reward.id)}
+              />
+            ))}
+        </div>
+        <RoundedSecondaryButton
+          onClick={(e) => setIsRewardModalOpen(true)}
+          sx={{
+            padding: "4px 8px !important",
+            borderRadius: "6px !important",
+          }}
+        >
+          <AddIcon
+            sx={{
+              color: "black",
+              fontSize: "22px",
+            }}
+          />
+        </RoundedSecondaryButton>
+      </Box>
     </>
+  );
+};
+
+const ExistingLevelsReward = ({ reward, allRoles, level, refetchLevelRewards, handleRemove }) => {
+  const selectedRole = allRoles.find((item) => item.id === reward.discordRewardData?.discordRoleId);
+
+  return (
+    <StyledViewQuestResults>
+      {reward.type === "discord_role" && (
+        <>
+          <img
+            src="/images/discord-official-logo.png"
+            height="18px"
+            width="18px"
+            style={{
+              borderRadius: "300px",
+            }}
+          />
+          {selectedRole?.name}
+          <ButtonBase onClick={() => handleRemove()}>
+            <CloseIcon />
+          </ButtonBase>
+        </>
+      )}
+      {reward.type === "token" && (
+        <>
+          {reward?.amount} {reward?.paymentMethod?.name}
+          <ButtonBase onClick={() => handleRemove()}>
+            <CloseIcon />
+          </ButtonBase>
+        </>
+      )}
+    </StyledViewQuestResults>
   );
 };
 

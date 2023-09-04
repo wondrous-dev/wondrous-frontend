@@ -261,7 +261,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             existingReward = true;
             return {
               ...reward,
-              amount: Number(tokenReward?.amount) + Number(reward?.amount),
+              amount: Number(tokenReward?.amount)
             };
           }
           return reward;
