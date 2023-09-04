@@ -49,7 +49,25 @@ export const GET_ORG_LEVEL_REWARDS = gql`
         discordRoleId
         discordGuildId
       }
-    }
+      poapRewardData {
+        id
+        name
+        description
+        startDate
+        endDate
+        eventUrl
+        imageUrl
+        expiryDate
+        eventSecret
+      }
+      paymentMethodId
+      amount
+      paymentMethod {
+        name
+        contractAddress
+        type
+      }
+  }
   }
 `;
 export const GET_ORG_QUEST_STATS = gql`
