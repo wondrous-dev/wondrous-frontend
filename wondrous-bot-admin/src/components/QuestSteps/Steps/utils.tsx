@@ -7,9 +7,13 @@ export const useKeyboardEffect = () => {
     if (!isMobilePlatform) return;
     const panel = document.querySelector(".quest-step-panel");
     if (panel instanceof HTMLElement) {
+      const container = panel?.parentElement;
+      if(!container) return;
       if (type === "in") {
+        container.style.paddingTop = '50%';
         panel.style.transform = "translateY(-20%)";
       } else {
+        container.style.paddingTop = '0';
         panel.style.transform = "translateY(0)";
       }
     }
