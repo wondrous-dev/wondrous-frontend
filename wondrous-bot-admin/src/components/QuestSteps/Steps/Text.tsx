@@ -1,5 +1,7 @@
 import { Grid } from "@mui/material";
 import TextField from "components/Shared/TextField";
+import { useKeyboardEffect } from "./utils";
+import { useTakeQuest } from "utils/hooks";
 
 const validateTypes = (type, value) => {
   if (type === "number" || type === "tel") {
@@ -20,6 +22,10 @@ export const StepTextField = ({ step, onChange, value, placeholder = "", type = 
     }
   };
 
+  const { onBlur, onFocus } = useKeyboardEffect();
+
+  const {isEditMode} = useTakeQuest();
+
   return (
     <>
       <Grid display="flex" gap="8px" flexDirection="column" width="100%">
@@ -29,7 +35,9 @@ export const StepTextField = ({ step, onChange, value, placeholder = "", type = 
           onChange={handleInputChange}
           value={value}
           placeholder={placeholder}
-          autoFocus="true"
+          autoFocus={!isEditMode}
+          onFocus={onFocus}
+          onBlur={onBlur}
         />
       </Grid>
     </>

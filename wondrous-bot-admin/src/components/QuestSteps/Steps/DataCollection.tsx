@@ -8,6 +8,7 @@ import { DATA_COLLECTION_TYPES, TYPES } from "utils/constants";
 import AddIcon from "@mui/icons-material/Add";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 import countries from "utils/countries";
+import { useKeyboardEffect } from "./utils";
 
 const SelectOption = ({ step, onChange, value = [] }) => {
   const [inputValue, setInputValue] = useState("");
@@ -44,6 +45,8 @@ const SelectOption = ({ step, onChange, value = [] }) => {
     }
   };
 
+  const { onBlur, onFocus } = useKeyboardEffect();
+
   return (
     <Grid display="flex" flexDirection="column" gap="14px">
       {allOptions.map((option, idx) => {
@@ -76,6 +79,8 @@ const SelectOption = ({ step, onChange, value = [] }) => {
           onChange={handleInputChange}
           value={inputValue}
           placeholder={"Enter your option"}
+          onBlur={onBlur}
+          onFocus={onFocus}
         />
         <ButtonIconWrapper onClick={handleAddClick} height="40px" width="40px">
           <AddIcon

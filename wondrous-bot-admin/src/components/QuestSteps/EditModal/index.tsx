@@ -1,17 +1,13 @@
-import { Box, Divider, Grid, Typography } from "@mui/material";
-import { BotIcon } from "assets/botIcon";
+import { Divider, Grid, Typography } from "@mui/material";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
-import { StyledCheckbox } from "components/PaymentLedger/styles";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { StyledContent, StyledViewQuestResults } from "components/ViewQuestResults/styles";
-import { useMemo, useState } from "react";
-import { DATA_COLLECTION_TYPES, INTERESTS, SELECT_TYPES, SKILLS, TYPES } from "utils/constants";
 import { useTakeQuest } from "utils/hooks";
-import { Media } from "../Steps/Attachment";
 import QuestStepComponent from "../QuestStepComponent";
+import { useEffect } from "react";
 
-const QuestStepsList = ({ steps, responses, setEditStepId }) => {
+const QuestStepsList = ({ steps, responses }) => {
   const { handleSubmit } = useTakeQuest();
+  
   return (
     <>
       <PanelComponent
@@ -47,12 +43,14 @@ const QuestStepsList = ({ steps, responses, setEditStepId }) => {
                 return (
                   <>
                     <QuestStepComponent value={response} isActive step={step} key={step.id} nextStepId />
-                    {idx === steps.length - 1 ? null : <Divider
-                      color="#E8E8E8"
-                      sx={{
-                        width: "100%",
-                      }}
-                    />}
+                    {idx === steps.length - 1 ? null : (
+                      <Divider
+                        color="#E8E8E8"
+                        sx={{
+                          width: "100%",
+                        }}
+                      />
+                    )}
                   </>
                 );
               })}
@@ -68,16 +66,8 @@ const QuestStepsList = ({ steps, responses, setEditStepId }) => {
 const EditModal = ({ responses }) => {
   const { quest } = useTakeQuest();
   const steps = quest?.steps;
-  const [editStepId, setEditStepId] = useState(null);
 
-  const stepToEdit = useMemo(() => {
-    if (editStepId) {
-      return steps?.find((step) => step.id === editStepId);
-    }
-    return null;
-  }, [editStepId]);
-  console.log(stepToEdit, "step to edit", editStepId);
-  return <QuestStepsList steps={steps} responses={responses} setEditStepId={setEditStepId} />;
+  return <QuestStepsList steps={steps} responses={responses} />;
 };
 
 export default EditModal;

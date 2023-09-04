@@ -8,6 +8,7 @@ export const Panel = styled(Grid)`
     border-radius: 16px;
     background: #f7f7f7;
     width: 100%;
+    transition: transform 0.2s ease;
   }
 `;
 

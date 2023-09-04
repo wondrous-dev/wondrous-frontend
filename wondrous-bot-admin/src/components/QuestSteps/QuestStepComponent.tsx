@@ -29,19 +29,18 @@ const COMPONENTS_CONFIG: any = {
   [TYPES.FOLLOW_TWITTER]: VerifyButton,
   [TYPES.REPLY_TWEET]: VerifyButton,
   [TYPES.RETWEET]: VerifyButton,
-  [TYPES.TWEET_WITH_PHRASE]: VerifyButton
+  [TYPES.TWEET_WITH_PHRASE]: VerifyButton,
 };
 
 const IMAGES_CONFIG = {
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: DEFAULT_BANNER_IMAGES.QUEST_STEP_SNAPSHOT,
   [TYPES.SNAPSHOT_SPACE_VOTE]: DEFAULT_BANNER_IMAGES.QUEST_STEP_SNAPSHOT,
-  [TYPES.ATTACHMENTS]: DEFAULT_BANNER_IMAGES.ATTACHMENT_REQUIRED,
 };
 
 const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = false }) => {
   const Component: React.FC<any> = COMPONENTS_CONFIG[step?.type];
   const { onChange, isEditMode } = useTakeQuest();
-  
+
   if (!isActive || !step) return null;
   if (Component) {
     return (
@@ -50,14 +49,17 @@ const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = fal
           isEditMode
             ? {
                 filter: "None;",
+                className: "quest-step-panel;",
               }
-            : {}
+            : {
+                className: "quest-step-panel",
+              }
         }
         gridSx={
           isEditMode
             ? {
                 borderRadius: "0px",
-                padding: '0px'
+                padding: "0px",
               }
             : {}
         }
@@ -80,8 +82,7 @@ const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = fal
               )
         }
         renderBody={() => (
-          <StepModal step={step} disabled={!value}
-          >
+          <StepModal step={step} disabled={!value}>
             {IMAGES_CONFIG[step.type] ? <Image src={IMAGES_CONFIG[step.type]} /> : null}
             {step?.media ? (
               <Grid display="flex" alignItems="center" gap="14px" flexWrap="wrap" overflow="scroll">
@@ -90,10 +91,10 @@ const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = fal
                     <Box flex="1" minWidth="fit-content">
                       <SafeImage
                         style={{
-                          width: '100%',
-                          maxHeight:'200px',
-                          objectFit: 'cover',
-                          objectPosition: 'center'
+                          width: "100%",
+                          maxHeight: "200px",
+                          objectFit: "cover",
+                          objectPosition: "center",
                         }}
                         width="auto"
                         src={item?.slug}
@@ -109,7 +110,6 @@ const QuestStepComponent = ({ step, value, isActive, nextStepId, isWebView = fal
               onChange={(value) => onChange({ id: step.id, value })}
               placeholder="Enter answer"
             />
-           
           </StepModal>
         )}
       />
