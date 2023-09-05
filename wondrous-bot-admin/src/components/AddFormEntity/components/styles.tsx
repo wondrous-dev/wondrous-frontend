@@ -5,6 +5,9 @@ import styled from 'styled-components';
 export const CustomTextField = styled(InputUnstyled)`
   width: 100%;
   && {
+    .Mui-disabled {
+      pointer-events: none;
+    }
     .MuiInput-input {
       border-radius: 6px;
       background: #e8e8e8;
