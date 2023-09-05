@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const NotificationWrapper = styled.div`
   display: flex;
-  background: white;
+  background: ${({ bgColor = "white" }) => bgColor};
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;

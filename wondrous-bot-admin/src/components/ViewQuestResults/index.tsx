@@ -153,7 +153,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
 
 
   const submissions = submissionsData?.getQuestSubmissions?.map((submission) => ({
-    user: submission?.creator?.username || submission?.creator?.discordUsername,
+    user: submission?.creator?.username || submission?.creator?.discordUsername || submission?.creator?.telegramUsername,
     pointReward: quest?.pointReward,
     stepsData: submission?.stepsData,
     steps: quest?.steps,

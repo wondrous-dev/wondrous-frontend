@@ -7,11 +7,11 @@ export const StyledCheckbox = styled(Checkbox)`
     height: 18px;
     color: #707070;
     &.Mui-checked {
-      color: #F8642D;
+      color: ${({ bgcolor = "#F8642D" }) => bgcolor};
     }
     .MuiSvgIcon-root {
-      width: 16px;
-      height: 16px;
+      width: ${({ width = "16px" }) => width};
+      height: ${({ height = "16px" }) => height};
     }
   }
 `;

@@ -1,8 +1,8 @@
-import AttachmentIcon from 'components/Icons/Attachment';
-import { useRef } from 'react';
-import { ButtonIconWrapper } from './styles';
+import AttachmentIcon from "components/Icons/Attachment";
+import { useRef } from "react";
+import { ButtonIconWrapper } from "./styles";
 
-const FileUpload = ({ onChange }) => {
+const FileUpload = ({ onChange, renderUploadComponent = null, accept = "image/*" }) => {
   const inputRef = useRef(null);
 
   const handleAddMedia = () => inputRef.current.click();
@@ -10,17 +10,21 @@ const FileUpload = ({ onChange }) => {
   return (
     <>
       <input
-        type='file'
+        type="file"
         ref={(input) => {
           inputRef.current = input;
         }}
         onChange={onChange}
-        style={{ display: 'none' }}
-        accept='image/*'
+        style={{ display: "none" }}
+        accept={accept}
       />
-      <ButtonIconWrapper onClick={() => handleAddMedia()}>
-        <AttachmentIcon />
-      </ButtonIconWrapper>
+      {renderUploadComponent ? (
+        renderUploadComponent({ handleAddMedia })
+      ) : (
+        <ButtonIconWrapper onClick={() => handleAddMedia()}>
+          <AttachmentIcon />
+        </ButtonIconWrapper>
+      )}
     </>
   );
 };
