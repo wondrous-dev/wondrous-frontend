@@ -20,6 +20,7 @@ export const TYPES = {
   SUBSCRIBE_YT_CHANNEL: "subscribe_yt_channel",
   CUSTOM_ONCHAIN_ACTION: "custom_onchain_action",
   LIFI_VALUE_BRIDGED: "lifi_value_bridged",
+  REFERRAL: "referral",
 };
 
 export const CONFIG = [

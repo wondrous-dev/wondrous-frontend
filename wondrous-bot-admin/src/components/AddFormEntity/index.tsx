@@ -31,6 +31,10 @@ const COMPONENT_OPTIONS = [
     value: TYPES.TEXT_FIELD,
   },
   {
+    label: "Referral",
+    value: TYPES.REFERRAL,
+  },
+  {
     label: "Multiple Choice",
     value: TYPES.MULTI_QUIZ,
   },
