@@ -388,6 +388,7 @@ export const useTableComponents = ({
             discordUsername: payment.discordUsername,
             discordAvatarUrl: payment.profilePicture,
             address: payment.recipientAddress,
+            cmtyUserId: payment.payeeId,
           },
           customComponent: ({ value }) => <UserInfo {...value} />,
         },
@@ -434,6 +435,7 @@ export const useTableComponents = ({
       name: {
         component: "custom",
         value: {
+          cmtyUserId: payment.payeeId,
           discordUsername: payment.discordUsername,
           discordAvatarUrl: payment.profilePicture,
           address: payment.recipientAddress,

@@ -141,3 +141,11 @@ export const SUBMIT_QUEST = gql`
     }
   }
 `;
+
+export const REQUEST_CMTY_USER_CONNECT_WALLET = gql`
+  mutation requestCmtyUserConnectWallet($cmtyUserId: ID!, $orgId: ID!) {
+    requestCmtyUserConnectWallet(cmtyUserId: $cmtyUserId, orgId: $orgId) {
+      success
+    }
+  }
+`;
