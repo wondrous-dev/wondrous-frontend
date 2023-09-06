@@ -40,7 +40,7 @@ export const getBaseUrl = () => {
     return "https://communities.wonderverse.xyz";
   }
   if (import.meta.env.VITE_STAGING) {
-    return "https://wondrous-bot-admin-git-staging-wonderverse.vercel.app";
+    return "https://staging-communities.wonderverse.xyz";
   }
   return "http://localhost:3000";
 };
