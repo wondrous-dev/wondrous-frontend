@@ -1,6 +1,5 @@
 import Modal from "components/Shared/Modal";
-import { ConnectWonderbotDescription, ConnectWonderbotImg, ConnectWonderbotText } from "./styles";
-import AddDiscordImg from "assets/addDiscord.svg";
+import { ConnectWonderbotDescription, ConnectWonderbotText } from "./styles";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { Box } from "@mui/material";
 import ConnectBotComponent from "components/ConnectBotComponent";
