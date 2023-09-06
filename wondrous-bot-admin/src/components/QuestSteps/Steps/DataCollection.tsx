@@ -1,14 +1,14 @@
-import { Grid, Box, Typography } from "@mui/material";
-import { StyledCheckbox } from "components/PaymentLedger/styles";
+import { Grid, Box } from "@mui/material";
 import TextField from "components/Shared/TextField";
-import { ButtonIconWrapper, ErrorText } from "components/Shared/styles";
+import { ButtonIconWrapper } from "components/Shared/styles";
 import { useMemo, useState } from "react";
-import { DATA_COLLECTION_TYPES, TYPES } from "utils/constants";
+import { DATA_COLLECTION_TYPES } from "utils/constants";
 
 import AddIcon from "@mui/icons-material/Add";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 import countries from "utils/countries";
 import { useKeyboardEffect } from "./utils";
+import CheckboxOption from "components/QuestSteps/Checkbox";
 
 const SelectOption = ({ step, onChange, value = [] }) => {
   const [inputValue, setInputValue] = useState("");
@@ -51,26 +51,15 @@ const SelectOption = ({ step, onChange, value = [] }) => {
     <Grid display="flex" flexDirection="column" gap="14px">
       {allOptions.map((option, idx) => {
         return (
-          <Box
-            padding="8px 12px"
-            borderRadius="6px"
-            bgcolor="#E8E8E8"
-            border="1px solid black"
-            display="flex"
-            alignItems="center"
-            gap="12px"
-          >
-            <StyledCheckbox
-              bgcolor={"#2A8D5C"}
-              height="22px"
-              width="22px"
-              checked={value?.includes(option.text)}
-              onChange={(e) => handleCheckboxChange(option.text)}
-            />
-            <Typography fontFamily="Poppins" fontSize="16px" fontWeight={500} lineHeight="24px" color="#1D1D1D">
-              {option.text}
-            </Typography>
-          </Box>
+          <CheckboxOption
+            option={option}
+            value={value}
+            handleCheckboxChange={(e) => handleCheckboxChange(option.text)}
+            checkboxProps={{
+              checked: value?.includes(option.text),
+            }}
+            key={`checkbox-${idx}`}
+          />
         );
       })}
       <Box display="flex" gap="10px" alignItems="center">
