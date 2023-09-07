@@ -4,10 +4,11 @@ import { TextareaAutosize } from "@mui/base";
 
 export const Panel = styled(Grid)`
   && {
-    filter: drop-shadow(0px 4px 34px rgba(0, 0, 0, 0.24));
+    filter: ${({ filter = "drop-shadow(0px 4px 34px rgba(0, 0, 0, 0.24))" }) => filter};
     border-radius: 16px;
     background: #f7f7f7;
     width: 100%;
+    transition: transform 0.2s ease;
   }
 `;
 

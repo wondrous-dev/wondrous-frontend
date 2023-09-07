@@ -88,5 +88,7 @@ export const CmtyUserFragment = gql`
 		twitterInfo {
 			twitterUsername
 		}
+		telegramId
+		telegramUsername
 	}
 `

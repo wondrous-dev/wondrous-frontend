@@ -347,7 +347,7 @@ export const useTableComponents = ({
   tokenIds,
   updatePaymentList,
   setTokenIds,
-  setSelectedPayments
+  setSelectedPayments,
 }) => {
   if (paymentView === "unpaid") {
     return items?.map((payment) => {
@@ -371,7 +371,7 @@ export const useTableComponents = ({
                 id: payment.id,
                 contractType: payment.contractType,
               }}
-              onPaymentCompleted={() => setSelectedPayments((prev) => prev.filter((id) => id !== payment.id)) }
+              onPaymentCompleted={() => setSelectedPayments((prev) => prev.filter((id) => id !== payment.id))}
               tokenId={tokenIds[payment.id]}
               withPaymentButton
               isChecked={selectedPayments.includes(payment.id)}
@@ -388,6 +388,7 @@ export const useTableComponents = ({
             discordUsername: payment.discordUsername,
             discordAvatarUrl: payment.profilePicture,
             address: payment.recipientAddress,
+            cmtyUserId: payment.payeeId,
           },
           customComponent: ({ value }) => <UserInfo {...value} />,
         },
@@ -410,14 +411,16 @@ export const useTableComponents = ({
         },
         questName: {
           component: "label",
-          value: payment.questTitle,
+          value: payment.questTitle ? payment.questTitle : `Level: ${payment.level}`,
           componentProps: {
             fontWeight: 500,
           },
         },
         date: {
           component: "label",
-          value: moment(payment.submissionApprovedAt).format(MONTH_DAY_FULL_YEAR),
+          value: payment.submissionApprovedAt
+            ? moment(payment.submissionApprovedAt).format(MONTH_DAY_FULL_YEAR)
+            : moment(payment.createdAt).format(MONTH_DAY_FULL_YEAR),
           componentProps: {
             fontWeight: 500,
           },
@@ -432,6 +435,7 @@ export const useTableComponents = ({
       name: {
         component: "custom",
         value: {
+          cmtyUserId: payment.payeeId,
           discordUsername: payment.discordUsername,
           discordAvatarUrl: payment.profilePicture,
           address: payment.recipientAddress,

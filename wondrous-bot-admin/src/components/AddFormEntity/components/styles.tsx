@@ -5,6 +5,9 @@ import styled from 'styled-components';
 export const CustomTextField = styled(InputUnstyled)`
   width: 100%;
   && {
+    .Mui-disabled {
+      pointer-events: none;
+    }
     .MuiInput-input {
       border-radius: ${({ borderRadius }) => borderRadius || "6px"};
       background: #e8e8e8;
@@ -30,7 +33,7 @@ export const CustomTextField = styled(InputUnstyled)`
 
 export const Label = styled(Typography)`
   && {
-    color: #4d4d4d;
+    color: ${({color = '#4d4d4d'}) => color};
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 600;

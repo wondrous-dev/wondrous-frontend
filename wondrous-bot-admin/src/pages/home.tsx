@@ -5,7 +5,7 @@ import { LevelsIcon, OnboardedIcon, QuestIcon } from "components/Icons/HomePageI
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import ConnectDiscordButton, { getDiscordBotOauthURL } from "components/ConnectDiscord/ConnectDiscordButton";
 import { GET_CMTY_ORG_DISCORD_CONFIG, GET_ORG_QUEST_STATS } from "graphql/queries";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL } from "graphql/queries";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +17,7 @@ import { AddBotModal } from "pages/onboarding/discord/addBotModal";
 import { ConfigureNotificationsOnboardingModal } from "./onboarding/discord/configureNotificationsModal";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -83,18 +84,25 @@ const HomePage = () => {
   const { setPaywall, setPaywallMessage } = usePaywall();
   const plan = getPlan(subscription?.tier);
   const navigate = useNavigate();
-  const [openDiscordModal, setOpenDiscordModal] = useState(false);
+  const [openAddBotModal, setOpenAddBotModal] = useState(false);
   const [openDiscordNotificationModal, setOpenDiscordNotificationModal] = useState(false);
   const { setIsOpen, setCurrentStep } = useTour();
-  const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
+  const { data: telegramConfigData, loading: isTelegramConfigLoading } = useQuery(GET_TELEGRAM_CONFIG_FOR_ORG, {
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    notifyOnNetworkStatusChange: true,
+    skip: !activeOrg?.id,
+  });
+  const { data: orgDiscordConfig, error: getDiscordConfigError, loading: isDiscordConfigLoading } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
     notifyOnNetworkStatusChange: true,
     variables: {
       orgId: activeOrg?.id,
     },
     skip: !activeOrg?.id,
   });
+
   const additionalData = orgDiscordConfig?.getCmtyOrgDiscordConfig?.additionalData;
-  const discordNotConfigured = getDiscordConfigError?.graphQLErrors[0]?.message === "Not";
   const { data, loading } = useQuery(GET_ORG_QUEST_STATS, {
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -137,19 +145,56 @@ const HomePage = () => {
       navigate("/quests/create");
     }
   };
-  useEffect(() => {
-    if (getDiscordConfigError?.graphQLErrors[0]?.message && !loading) {
-      setOpenDiscordModal(true);
-    }
-  }, [getDiscordConfigError?.graphQLErrors[0]?.message, loading]);
+
 
   useEffect(() => {
-    if (!loading && orgDiscordConfig?.getCmtyOrgDiscordConfig && !additionalData)
-      [setOpenDiscordNotificationModal(true)];
-  }, [additionalData, orgDiscordConfig?.getCmtyOrgDiscordConfig, loading]);
+    if (!loading && orgDiscordConfig?.getCmtyOrgDiscordConfig && !additionalData) {
+      setOpenDiscordNotificationModal(true);
+    }
+    if (
+      (getDiscordConfigError?.graphQLErrors[0]?.message && !loading) ||
+      !telegramConfigData?.getTelegramConfigForOrg?.chatId
+    ) {
+      setOpenAddBotModal(true);
+    }
+  }, [
+    additionalData,
+    orgDiscordConfig?.getCmtyOrgDiscordConfig,
+    loading,
+    getDiscordConfigError?.graphQLErrors[0]?.message,
+    telegramConfigData?.getTelegramConfigForOrg?.chatId,
+  ]);
+
+  const hasShownModal = useMemo(() => localStorage.getItem("wndr-show-connectingModal"), []);
+
+  const shouldDisplayAddModal = useMemo(() => {
+    if(isTelegramConfigLoading || isDiscordConfigLoading || loading) return false;
+    const discordConfigExists = orgDiscordConfig?.getCmtyOrgDiscordConfig?.id;
+    const telegramConfigExists = telegramConfigData?.getTelegramConfigForOrg?.chatId;
+    if (!discordConfigExists && !telegramConfigExists && openAddBotModal) {
+      return true;
+    }
+    if ((discordConfigExists || telegramConfigExists) && openAddBotModal && !hasShownModal) {
+      return true;
+    }
+    return false;
+  }, [orgDiscordConfig, telegramConfigData, openAddBotModal, hasShownModal, isDiscordConfigLoading, isTelegramConfigLoading, loading]);
+
+  const handleOnBotModalClose = () => {
+    const hasDiscordConnected = !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id;
+    const hasTelegramConnected = !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
+    if (hasDiscordConnected || hasTelegramConnected) {
+      localStorage.setItem("wndr-show-connectingModal", "true");
+    }
+    setOpenAddBotModal(false);
+  };
+
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
-      <AddBotModal open={openDiscordModal} onClose={() => setOpenDiscordModal(false)} orgId={activeOrg?.id} />
+      <AddBotModal
+        open={shouldDisplayAddModal}
+        onClose={handleOnBotModalClose}
+      />
       <ConfigureNotificationsOnboardingModal
         open={openDiscordNotificationModal}
         onClose={() => setOpenDiscordNotificationModal(false)}

@@ -24,21 +24,26 @@ const LevelsPage = () => {
   const { setPaywall, setPaywallMessage } = usePaywall();
   //TODO we probably don't need this state. We can just use the data from the query, change later
   const [rewards, setRewards] = useState({});
-
-  const { data: rewardsData } = useQuery(GET_ORG_LEVEL_REWARDS, {
+  const { data: rewardsData, refetch: refetchLevelRewards } = useQuery(GET_ORG_LEVEL_REWARDS, {
     variables: {
       orgId: activeOrg?.id,
     },
     onCompleted: ({ getOrgLevelsRewards }) => {
-      const newRewards = getOrgLevelsRewards.reduce((acc, curr) => {
-        acc[curr.level] = {
-          ...curr.discordRewardData,
-          id: curr.id,
-        };
-        return acc;
-      }, {});
-      setRewards(newRewards);
+      if (getOrgLevelsRewards?.length === 0) return
+      const formattedRewards = {};
+      for (const reward of getOrgLevelsRewards) {
+        if (reward.level in formattedRewards) {
+          formattedRewards[reward.level].push(reward);
+        }
+        else {
+          formattedRewards[reward.level] = [reward];
+        }
+      }
+      console.log('formattedRewards', formattedRewards)
+      setRewards(formattedRewards);
+      
     },
+    skip: !activeOrg?.id,
   });
 
   const [updateQuestLevel] = useMutation(UPDATE_QUEST_LABEL, {
@@ -55,10 +60,9 @@ const LevelsPage = () => {
     });
   };
 
-  const roles = useDiscordRoles({
+  const discordRoles = useDiscordRoles({
     orgId: activeOrg?.id,
   });
-
   const data = useMemo(() => {
     return Object.keys(levels).map((key, idx) => {
       return {
@@ -90,22 +94,12 @@ const LevelsPage = () => {
           component: "custom",
           value: rewards[key] || {},
           customComponent: ({ value }) => (
-            <LevelsReward
-              value={value}
-              roles={roles}
-              level={key}
-              onChange={(value) => {
-                setRewards({
-                  ...rewards,
-                  [key]: value,
-                });
-              }}
-            />
+            <LevelsReward refetchLevelRewards={refetchLevelRewards} rewards={value} discordRoles={discordRoles} level={key} />
           ),
         },
       };
     });
-  }, [levels, rewards, roles]);
+  }, [levels, rewards, discordRoles]);
 
   const headers = ["Level", "Point Requirement", "Reward"];
   return (

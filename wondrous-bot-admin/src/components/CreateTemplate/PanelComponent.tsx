@@ -1,14 +1,10 @@
-import { Divider, Grid } from '@mui/material';
-import { Panel, CampaignOverviewTitle } from './styles';
+import { Divider, Grid } from "@mui/material";
+import { Panel, CampaignOverviewTitle } from "./styles";
 
-const PanelComponent = ({ renderHeader = undefined, renderBody, panelProps = {} }) => (
+const PanelComponent = ({ renderHeader, renderBody, panelProps = {}, gridSx = {} }) => (
   <Panel {...panelProps}>
-    {renderHeader ? (
-      <>
-        {renderHeader()}
-        <Divider color="black" />
-      </>
-    ) : null}
+    {renderHeader?.()}
+    {renderHeader ? <Divider color="black" /> : null}
     <Grid
       display="flex"
       flexDirection="column"
@@ -17,6 +13,7 @@ const PanelComponent = ({ renderHeader = undefined, renderBody, panelProps = {} 
       bgcolor="white"
       padding="24px 14px"
       borderRadius="16px"
+      {...gridSx}
     >
       {renderBody()}
     </Grid>
