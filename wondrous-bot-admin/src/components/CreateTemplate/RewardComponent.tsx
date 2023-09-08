@@ -146,7 +146,6 @@ const RewardsList = ({
   );
 };
 
-
 const RewardComponent = ({
   rewards,
   onRewardsChange,
@@ -158,14 +157,12 @@ const RewardComponent = ({
   const [errors, setErrors] = useState(null);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [addPaymentMethod, setAddPaymentMethod] = useState(true);
-  const [editPaymentMethod, setEditPaymentMethod] = useState({...DEFAULT_PAYMENT_METHOD});
+  const [editPaymentMethod, setEditPaymentMethod] = useState({ ...DEFAULT_PAYMENT_METHOD });
 
-
-  const [tokenReward, setTokenReward] = useState({...TOKEN_ADDRESS_DEFAULT_STATE});
+  const [tokenReward, setTokenReward] = useState({ ...TOKEN_ADDRESS_DEFAULT_STATE });
 
   const [poapReward, setPoapReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
-
 
   const { activeOrg } = useContext(GlobalContext);
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
@@ -187,8 +184,8 @@ const RewardComponent = ({
     // TODO fix me: too much state
     setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
     setDiscordRoleReward(null);
-    setEditPaymentMethod({...DEFAULT_PAYMENT_METHOD});
-    setTokenReward({...TOKEN_ADDRESS_DEFAULT_STATE})
+    setEditPaymentMethod({ ...DEFAULT_PAYMENT_METHOD });
+    setTokenReward({ ...TOKEN_ADDRESS_DEFAULT_STATE });
     setErrors(null);
     setPoapReward(null);
     setPaymentMethod(null);

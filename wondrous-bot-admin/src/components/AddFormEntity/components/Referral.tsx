@@ -5,7 +5,6 @@ import InfoIcon from "components/Icons/InfoIcon";
 
 interface Props {
   error?: any;
-  onChange: (value: string) => void;
 }
 const ReferralComponent = ({ error, ...rest }: Props) => {
   return (
