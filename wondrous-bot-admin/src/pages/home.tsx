@@ -189,9 +189,8 @@ const HomePage = () => {
     setOpenAddBotModal(false);
   };
 
-  const isTelegramOrDiscordConnected = !!orgDiscordConfig?.getCmtyOrgDiscordConfig || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
+  const isTelegramOrDiscordConnected = !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
 
-  console.log(isTelegramOrDiscordConnected ,'iscn')
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
       <AddBotModal
