@@ -743,7 +743,7 @@ export const RewardWrapperWithTextField = ({
   Icon,
   handleOnRemove = null,
 }) => {
-  const rewardValue = reward?.value ?? reward?.amount;
+  const rewardValue = Number(reward?.value ?? reward?.amount);
   return (
     <Grid
       container
