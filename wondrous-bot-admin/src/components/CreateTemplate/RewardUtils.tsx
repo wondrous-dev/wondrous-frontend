@@ -713,7 +713,6 @@ export const RewardWrapper = ({ idx, showNewRewardAutocomplete, rewards, handleO
     item
     alignItems="center"
     justifyContent="space-between"
-    key={idx}
     sx={{
       width: "100%",
       ...(!showNewRewardAutocomplete && rewards.length === idx + 1 ? { flex: 1 } : { flex: "0 1 auto" }),
@@ -742,6 +741,7 @@ export const RewardWrapperWithTextField = ({
   text,
   Icon,
   handleOnRemove = null,
+  inputRef,
 }) => {
   const rewardValue = Number(reward?.value ?? reward?.amount);
   return (
@@ -755,11 +755,13 @@ export const RewardWrapperWithTextField = ({
       }}
     >
       <MUITextField
-        key={reward?.type + idx}
         placeholder="How many points?"
         variant="standard"
         value={rewardValue}
-        onChange={handleOnChange}
+        onChange={(e) => {
+          handleOnChange(e);
+          inputRef.current.focus();
+        }}
         type="number"
         InputProps={{
           disableUnderline: true,
@@ -810,6 +812,7 @@ export const RewardWrapperWithTextField = ({
             },
           },
         }}
+        inputRef={inputRef}
       />
     </Grid>
   );
@@ -821,7 +824,7 @@ export const RewardsComponent = ({ rewards, rewardComponents }) => {
       {rewards?.map((reward, idx) => {
         const Component = rewardComponents[reward?.type];
         if (Component) {
-          return <Component idx={idx} reward={reward} />;
+          return <Component key={reward.type + idx} idx={idx} reward={reward} />;
         }
         return null;
       })}

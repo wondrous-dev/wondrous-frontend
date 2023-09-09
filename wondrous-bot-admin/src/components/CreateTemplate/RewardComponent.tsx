@@ -16,7 +16,7 @@ import { SharedBlackOutlineButton } from "components/Shared/styles";
 import { CREATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
 import { GET_CMTY_PAYMENT_METHODS_FOR_ORG } from "graphql/queries/payment";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import truncateEthAddress from "truncate-eth-address";
 import GlobalContext from "utils/context/GlobalContext";
 import { usePaywall, useSubscription } from "utils/hooks";
@@ -393,12 +393,19 @@ const useAddRewardModalState = ({ paymentMethods }) => {
   };
 };
 
+const useInputRef = () => {
+  const inputRef = useRef(null);
+
+  useEffect(() => inputRef.current.focus());
+  return inputRef;
+};
+
 const RewardComponent = ({
   rewards,
   setQuestSettings,
 }: {
   rewards: { [key: string]: any }[];
-  setQuestSettings: React.Dispatch<React.SetStateAction<{ [key: string]: any }[]>>;
+  setQuestSettings: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
 }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { plan, setPaywall, setPaywallMessage } = useSubscriptionPaywall();
@@ -505,6 +512,8 @@ const RewardComponent = ({
 
   const [showNewRewardAutocomplete, setShowNewRewardAutocomplete] = useState(false);
 
+  const inputRef = useInputRef();
+
   const rewardComponents = {
     points: ({ idx, reward }) => (
       <RewardWrapperWithTextField
@@ -517,6 +526,7 @@ const RewardComponent = ({
         }}
         text="Points"
         Icon={PointsIcon}
+        inputRef={inputRef}
       />
     ),
     [PAYMENT_OPTIONS.DISCORD_ROLE]: ({ idx, reward }) => (
@@ -557,6 +567,7 @@ const RewardComponent = ({
         handleOnRemove={() => OnPaymentMethodRewardRemove({ reward, setQuestSettings })}
         text={String(reward?.paymentMethod.name)}
         Icon={TokensIcon}
+        inputRef={inputRef}
       />
     ),
     [PAYMENT_OPTIONS.POAP]: ({ idx, reward }) => (
