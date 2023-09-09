@@ -3,6 +3,18 @@ import AddIcon from "components/Icons/Add.svg";
 import { DiscordRoleIcon, TokensIcon } from "components/Icons/Rewards";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 
+type NewRewardAutocompleteProps = {
+  discordRoleOptions: { label: any; value: any }[];
+  handleNewDiscordRole: (value: any) => void;
+  handleNewToken: (value: any) => void;
+  onRewardAdd: (reward: any) => void;
+  paymentMethodOptions: { label: any; value: any }[];
+  rewards: { [key: string]: any }[];
+  setIsRewardModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  show: boolean;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 const NewRewardAutocomplete = ({
   discordRoleOptions,
   handleNewDiscordRole,
@@ -13,7 +25,7 @@ const NewRewardAutocomplete = ({
   setIsRewardModalOpen,
   show,
   setShow,
-}) => {
+}: NewRewardAutocompleteProps) => {
   const selectOptions = [
     {
       onSelect: () => setIsRewardModalOpen(true),

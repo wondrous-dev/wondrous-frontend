@@ -1,8 +1,18 @@
-import { Box, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import TextField from "components/Shared/TextField";
 import { ErrorText } from "components/Shared/styles";
 import { useContext } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
+
+type QuestTitleProps = {
+  value: any;
+  onChange: (value: any) => void;
+  placeholder?: string;
+  key?: string;
+  multiline?: boolean;
+  maxLength?: number;
+  showMaxLength?: boolean;
+};
 
 const QuestTitle = ({
   value,
@@ -12,7 +22,7 @@ const QuestTitle = ({
   multiline = false,
   maxLength = 125,
   showMaxLength = false,
-}) => {
+}: QuestTitleProps) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const handleChange = (value) => {
     if (value.length > maxLength) return;

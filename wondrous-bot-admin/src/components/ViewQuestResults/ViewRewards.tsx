@@ -23,7 +23,6 @@ const selectReward = ({ type, value }) => {
 
 const Reward = ({ type, value }) => {
   const { text, Icon = null } = selectReward({ type, value });
-  console.log("Icon ", Icon);
   return (
     <Grid
       container

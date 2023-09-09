@@ -393,7 +393,13 @@ const useAddRewardModalState = ({ paymentMethods }) => {
   };
 };
 
-const RewardComponent = ({ rewards, setQuestSettings }) => {
+const RewardComponent = ({
+  rewards,
+  setQuestSettings,
+}: {
+  rewards: { [key: string]: any }[];
+  setQuestSettings: React.Dispatch<React.SetStateAction<{ [key: string]: any }[]>>;
+}) => {
   const { activeOrg } = useContext(GlobalContext);
   const { plan, setPaywall, setPaywallMessage } = useSubscriptionPaywall();
   const { discordRoleOptions, discordRoleData } = useDiscordRoleRewardData();
