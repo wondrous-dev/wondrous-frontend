@@ -1,7 +1,20 @@
-import { Box, ButtonBase, Divider, Grid, Typography } from "@mui/material";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import WestIcon from "@mui/icons-material/West";
+import { Box, ButtonBase, Divider, Grid, InputAdornment, TextField as MUITextField, Typography } from "@mui/material";
+import Arbitrum from "assets/arbitrum";
+import Avalanche from "assets/avalanche";
+import Base from "assets/base.svg";
+import Binance from "assets/binance";
+import Ethereum from "assets/ethereum";
+import Optimism from "assets/optimism";
+import Polygon from "assets/polygonMaticLogo.svg";
+import CloseModalIcon from "components/Icons/CloseModal";
+import SelectComponent from "components/Shared/Select";
 import TextField from "components/Shared/TextField";
-import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
+import { SharedSecondaryButton } from "components/Shared/styles";
+import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
+import { GET_POAP_EVENT } from "graphql/queries";
+import { useEffect, useState } from "react";
 import {
   Label,
   PaymentMethodRowContainer,
@@ -11,19 +24,6 @@ import {
   PaymentRowContentText,
   PoapImage,
 } from "./styles";
-import SelectComponent from "components/Shared/Select";
-import { useState } from "react";
-import { useEffect } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import Arbitrum from "assets/arbitrum";
-import Binance from "assets/binance";
-import Ethereum from "assets/ethereum";
-import Avalanche from "assets/avalanche";
-import Optimism from "assets/optimism";
-import Base from "assets/base.svg";
-import Polygon from "assets/polygonMaticLogo.svg";
-import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
-import { GET_POAP_EVENT } from "graphql/queries";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -685,5 +685,146 @@ export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, s
         });
       }}
     />
+  );
+};
+
+const RemoveRewardComponent = ({ onClick }) => {
+  return (
+    <Grid
+      container
+      item
+      alignItems="center"
+      justifyContent="center"
+      width="24px"
+      height="24px"
+      onClick={onClick}
+      sx={{
+        cursor: "pointer",
+      }}
+    >
+      <CloseModalIcon strokeColor="#4D4D4D" />
+    </Grid>
+  );
+};
+
+export const RewardWrapper = ({ idx, showNewRewardAutocomplete, rewards, handleOnRemove, Icon, text }) => (
+  <Grid
+    container
+    item
+    alignItems="center"
+    justifyContent="space-between"
+    key={idx}
+    sx={{
+      width: "100%",
+      ...(!showNewRewardAutocomplete && rewards.length === idx + 1 ? { flex: 1 } : { flex: "0 1 auto" }),
+    }}
+    bgcolor="#E8E8E8"
+    padding="8px"
+    borderRadius="6px"
+    gap="8px"
+  >
+    <Grid container item gap="8px" flex="1">
+      <Icon />
+      <Typography color="#000000" fontWeight="500" fontFamily="Poppins">
+        {text}
+      </Typography>
+    </Grid>
+    <RemoveRewardComponent onClick={handleOnRemove} />
+  </Grid>
+);
+
+export const RewardWrapperWithTextField = ({
+  showNewRewardAutocomplete,
+  rewards,
+  idx,
+  handleOnChange,
+  reward,
+  text,
+  Icon,
+  handleOnRemove = null,
+}) => {
+  const rewardValue = reward?.value ?? reward?.amount;
+  return (
+    <Grid
+      container
+      item
+      sx={{
+        width: "100%",
+        flex: "0 1 auto",
+        ...(!showNewRewardAutocomplete && rewards.length === idx + 1 ? { flex: 1 } : { flex: "0 1 auto" }),
+      }}
+    >
+      <MUITextField
+        key={reward?.type + idx}
+        placeholder="How many points?"
+        variant="standard"
+        value={rewardValue}
+        onChange={handleOnChange}
+        type="number"
+        InputProps={{
+          disableUnderline: true,
+          inputMode: "numeric",
+          sx: {
+            padding: "8px 10px",
+            background: "#E8E8E8",
+            "& input": {
+              width: typeof rewardValue === "number" ? `${String(rewardValue).length + 1}ch` : "100%",
+              fontFamily: "Poppins",
+              fontWeight: 500,
+              padding: 0,
+            },
+            "& input[type=number]": {
+              "-moz-appearance": "textfield",
+            },
+            "& input[type=number]::-webkit-outer-spin-button": {
+              "-webkit-appearance": "none",
+              margin: 0,
+            },
+            "& input[type=number]::-webkit-inner-spin-button": {
+              "-webkit-appearance": "none",
+              margin: 0,
+            },
+          },
+          startAdornment: (
+            <InputAdornment position="start">
+              <Icon />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <Grid container item flex="1" justifyContent="space-between">
+              <Typography fontFamily="Poppins" fontWeight="500">
+                {typeof rewardValue === "number" && text}
+              </Typography>
+              {handleOnRemove && <RemoveRewardComponent onClick={handleOnRemove} />}
+            </Grid>
+          ),
+        }}
+        sx={{
+          width: "100%",
+          overflow: "hidden",
+          borderRadius: "6px",
+          "&:focus-within": {
+            outline: "1px solid #000",
+            "& p": {
+              color: "#949494",
+            },
+          },
+        }}
+      />
+    </Grid>
+  );
+};
+
+export const RewardsComponent = ({ rewards, rewardComponents }) => {
+  return (
+    <>
+      {rewards?.map((reward, idx) => {
+        const Component = rewardComponents[reward?.type];
+        if (Component) {
+          return <Component idx={idx} reward={reward} />;
+        }
+        return null;
+      })}
+    </>
   );
 };

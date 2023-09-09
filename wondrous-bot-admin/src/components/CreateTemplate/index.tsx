@@ -452,7 +452,7 @@ const CreateTemplate = ({
               panelProps={{
                 "data-tour": "tutorial-quest-rewards",
               }}
-              renderHeader={() => <RewardOverviewHeader />}
+              renderHeader={null}
               renderBody={() => <RewardComponent rewards={questSettings.rewards} setQuestSettings={setQuestSettings} />}
             />
           </Box>
