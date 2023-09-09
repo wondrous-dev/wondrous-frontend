@@ -3,6 +3,7 @@ import ArrowDropDownIcon from "components/Icons/ArrowDropDown";
 import CheckCircleIcon from "components/Icons/CheckCircle";
 import SearchIcon from "components/Icons/Search";
 import { useState } from "react";
+import { scrollbarStyles } from "components/Shared/styles";
 
 const AutocompleteOptionsComponent = ({ options, onChange, value, fullWidth = false, autocompletProps = {}, inputProps = {} }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,23 +63,6 @@ const AutocompleteOptionsComponent = ({ options, onChange, value, fullWidth = fa
           padding: "6px",
           maxHeight: "300px",
           overflowY: "auto",
-          "&::-webkit-scrollbar": {
-            WebkitAppearance: "none",
-            background: " #fff",
-            width: "18px",
-          },
-          "&::-webkit-scrollbar-track": {
-            background: "rgba(0, 0, 0, 0.20);",
-            border: "6px solid transparent",
-            backgroundClip: "padding-box",
-            borderRadius: "20px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            border: "6px solid transparent",
-            background: "#2A8D5C",
-            backgroundClip: "padding-box",
-            borderRadius: "100px",
-          },
           "& .MuiAutocomplete-option": {
             padding: "6px",
           },
@@ -86,6 +70,7 @@ const AutocompleteOptionsComponent = ({ options, onChange, value, fullWidth = fa
             outline: "1px solid #000",
             backgroundColor: "#E4E4E4 !important",
           },
+          ...scrollbarStyles,
         },
       }}
       slotProps={{
@@ -106,7 +91,7 @@ const AutocompleteOptionsComponent = ({ options, onChange, value, fullWidth = fa
         borderRadius: "6px",
         padding: "0",
         height: "40px",
-        width: fullWidth ? '100%' : '380px',
+        width: fullWidth ? "100%" : "380px",
         "& .MuiInputBase-root.MuiOutlinedInput-root": {
           "& .MuiOutlinedInput-notchedOutline": {
             border: "none",

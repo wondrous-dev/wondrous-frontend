@@ -24,6 +24,7 @@ import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsL
 import React, { Suspense, useState } from "react";
 import { TYPES } from "utils/constants";
 import { usePaywall, useSubscription } from "utils/hooks";
+import { scrollbarStyles } from "components/Shared/styles";
 
 const EcosystemFeature = React.lazy(() => import("components/PremiumFeatureDialog/ecosystem"));
 
@@ -598,23 +599,7 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
             sx={{
               overflowY: "auto",
               overflowX: "hidden",
-              "&::-webkit-scrollbar": {
-                WebkitAppearance: "none",
-                background: " #fff",
-                width: "20px",
-              },
-              "&::-webkit-scrollbar-track": {
-                background: "rgba(0, 0, 0, 0.20);",
-                border: "6px solid transparent",
-                backgroundClip: "padding-box",
-                borderRadius: "20px",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                border: "6px solid transparent",
-                background: "#2A8D5C",
-                backgroundClip: "padding-box",
-                borderRadius: "100px",
-              },
+              ...scrollbarStyles,
             }}
           >
             <List

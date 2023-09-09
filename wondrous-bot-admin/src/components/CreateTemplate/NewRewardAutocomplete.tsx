@@ -1,6 +1,7 @@
 import { Autocomplete, Button, Grid, ListItem, TextField, Typography } from "@mui/material";
 import AddIcon from "components/Icons/Add.svg";
 import { DiscordRoleIcon, TokensIcon } from "components/Icons/Rewards";
+import { scrollbarStyles } from "components/Shared/styles";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 
 type NewRewardAutocompleteProps = {
@@ -43,6 +44,7 @@ const NewRewardAutocomplete = ({
           <img src={AddIcon} />
         </Button>
       ),
+      groupBy: "",
     },
     ...discordRoleOptions.map((i) => ({
       ...i,
@@ -66,7 +68,7 @@ const NewRewardAutocomplete = ({
         <Grid container>
           <Autocomplete
             options={selectOptions}
-            groupBy={(option) => option.groupBy}
+            groupBy={(option) => option?.groupBy}
             onChange={(event, value, reason) => {
               if (reason === "selectOption") {
                 const { onSelect, ...newReward } = value;
@@ -128,28 +130,12 @@ const NewRewardAutocomplete = ({
                 padding: "6px",
                 maxHeight: "300px",
                 overflowY: "auto",
-                "&::-webkit-scrollbar": {
-                  WebkitAppearance: "none",
-                  background: " #fff",
-                  width: "18px",
-                },
-                "&::-webkit-scrollbar-track": {
-                  background: "rgba(0, 0, 0, 0.20);",
-                  border: "6px solid transparent",
-                  backgroundClip: "padding-box",
-                  borderRadius: "20px",
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  border: "6px solid transparent",
-                  background: "#2A8D5C",
-                  backgroundClip: "padding-box",
-                  borderRadius: "100px",
-                },
                 "& .MuiListSubheader-root": {
                   padding: "16px 8px 8px 8px",
                   lineHeight: 1,
                   fontFamily: "Poppins",
                 },
+                ...scrollbarStyles,
               },
             }}
             sx={{
