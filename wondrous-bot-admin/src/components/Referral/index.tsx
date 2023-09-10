@@ -22,7 +22,7 @@ const ReferralConnect = () => {
     referralCode,
   };
   const discordAuthUrl = getDiscordUrl(
-    "/discord/callback/cmty-user-connect",
+    "/discord/callback/referral",
     `&state=${encodeURIComponent(JSON.stringify(params))}`
   );
 

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+let createCmtyUserBool = false;
 const DiscordCallbackReferralUserConnect = () => {
   const [searchParams] = useSearchParams();
   const code = searchParams?.get("code");
@@ -14,52 +15,46 @@ const DiscordCallbackReferralUserConnect = () => {
   const { referralCode } = JSON.parse(state || "{}");
   const navigate = useNavigate();
 
-  const [finishedVerification, setFinishedVerification] = useState(false);
   const [errorText, setErrorText] = useState("");
-  const [createCmtyUserFromReferral, { data: orgCmtyUserData }] = useMutation(CREATE_CMTY_USER_FROM_REFERRAL, {
-    onCompleted: (data) => {
-      if (data?.createCmtyUserFromReferral?.success) {
-        setFinishedVerification(true);
-      }
-    },
-    onError: (e) => {
-      console.error("error connecting discord", e);
-      setErrorText("Error connecting discord - please try again");
-    },
-  });
   const [getOrgDiscordInviteLink, { data: orgDiscordInviteLinkData }] = useLazyQuery(GET_ORG_DISCORD_INVITE_LINK);
+  const [createCmtyUserFromReferral, { data }] = useMutation(CREATE_CMTY_USER_FROM_REFERRAL);
   useEffect(() => {
-    if (code && referralCode) {
+    if (code && referralCode && !createCmtyUserBool) {
       createCmtyUserFromReferral({
         variables: {
           code,
           referralCode,
         },
+      }).then((res) => {
+        if (res?.data?.createCmtyUserFromReferral) {
+          const orgId = res?.data?.createCmtyUserFromReferral?.orgId;
+          if (orgId) {
+            getOrgDiscordInviteLink({
+              variables: {
+                orgId,
+              },
+            });
+          }
+        }
       });
+      createCmtyUserBool = true;
     }
-  }, [code, code, referralCode]);
-
-  const orgId = orgCmtyUserData?.createCmtyUserFromReferral?.orgId;
-  useEffect(() => {
-    if (orgId) {
-      getOrgDiscordInviteLink({
-        variables: {
-          orgId,
-        },
-      });
-    }
-  }, [orgId]);
+  }, [code, referralCode, createCmtyUserBool, getOrgDiscordInviteLink]);
   const link = orgDiscordInviteLinkData?.getOrgDiscordInviteLink?.link;
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
       <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
-        {finishedVerification && (
+        {link && (
           <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-            Thanks for connecting your account! To redeem rewards for your and your referrer, join{" "}
-            <a href={link}> Discord </a> to start taking on quests!
+            Thanks for connecting your account! To redeem rewards for your and your referrer, join the{" "}
+            <a style={{ fontWeight: "bold", cursor: "pointer" }} href={link}>
+              {" "}
+              Discord server
+            </a>{" "}
+            to start taking on quests!
           </Typography>
         )}
-        {!finishedVerification && (
+        {!link && (
           <>
             <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
               Connecting your Discord. If this is taking too long please try again!
