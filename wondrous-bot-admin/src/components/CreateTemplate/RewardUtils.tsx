@@ -742,26 +742,27 @@ export const RewardWrapperWithTextField = ({
   Icon,
   handleOnRemove = null,
   inputRef,
+  placeholder,
 }) => {
-  const rewardValue = Number(reward?.value ?? reward?.amount);
+  const rewardValue = reward?.value ?? reward?.amount ? Number(reward?.value ?? reward?.amount) : "";
   return (
     <Grid
       container
       item
       sx={{
         width: "100%",
+
         flex: "0 1 auto",
-        ...(!showNewRewardAutocomplete && rewards.length === idx + 1 ? { flex: 1 } : { flex: "0 1 auto" }),
+        ...(!showNewRewardAutocomplete && rewards.length === idx + 1
+          ? { flex: 1, maxWidth: "calc(100% - 50px)" }
+          : { flex: "0 1 auto" }),
       }}
     >
       <MUITextField
-        placeholder="How many points?"
+        placeholder={placeholder}
         variant="standard"
         value={rewardValue}
-        onChange={(e) => {
-          handleOnChange(e);
-          inputRef.current.focus();
-        }}
+        onChange={handleOnChange}
         type="number"
         InputProps={{
           disableUnderline: true,
@@ -770,7 +771,7 @@ export const RewardWrapperWithTextField = ({
             padding: "8px 10px",
             background: "#E8E8E8",
             "& input": {
-              width: typeof rewardValue === "number" ? `${String(rewardValue).length + 1}ch` : "100%",
+              width: rewardValue ? `${String(rewardValue).length + 1}ch` : "100%",
               fontFamily: "Poppins",
               fontWeight: 500,
               padding: 0,
@@ -793,12 +794,16 @@ export const RewardWrapperWithTextField = ({
             </InputAdornment>
           ),
           endAdornment: (
-            <Grid container item flex="1" justifyContent="space-between">
-              <Typography fontFamily="Poppins" fontWeight="500">
-                {typeof rewardValue === "number" && text}
-              </Typography>
-              {handleOnRemove && <RemoveRewardComponent onClick={handleOnRemove} />}
-            </Grid>
+            <>
+              {rewardValue ? (
+                <Grid container item flex="1" justifyContent="space-between" flexWrap="nowrap">
+                  <Typography fontFamily="Poppins" fontWeight="500">
+                    {typeof rewardValue === "number" ? text : null}
+                  </Typography>
+                  {handleOnRemove && <RemoveRewardComponent onClick={handleOnRemove} />}
+                </Grid>
+              ) : null}
+            </>
           ),
         }}
         sx={{

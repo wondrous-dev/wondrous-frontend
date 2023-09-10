@@ -556,7 +556,7 @@ const RewardComponent = ({
                 ) {
                   return {
                     ...reward,
-                    amount: e.target.value && Number(e.target.value),
+                    amount: e.target.value ? Number(e.target.value) : "",
                   };
                 }
                 return compareReward;
@@ -566,6 +566,7 @@ const RewardComponent = ({
         }}
         handleOnRemove={() => OnPaymentMethodRewardRemove({ reward, setQuestSettings })}
         text={String(reward?.paymentMethod.name)}
+        placeholder={`How much ${String(reward?.paymentMethod.name)}?`}
         Icon={TokensIcon}
         inputRef={inputRef}
       />
@@ -672,7 +673,7 @@ const RewardComponent = ({
         </Grid>
       </Modal>
 
-      <Grid container>
+      <Grid container flexWrap="nowrap" maxWidth="inherit">
         <Label>Rewards</Label>
         <Grid container item gap="14px" alignItems="center" flex="1">
           <RewardsComponent rewards={rewards} rewardComponents={rewardComponents} />
