@@ -7,7 +7,7 @@ import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
 import { BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
-import { RewardComponent, RewardOverviewHeader } from "./RewardComponent";
+import { RewardComponent } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";

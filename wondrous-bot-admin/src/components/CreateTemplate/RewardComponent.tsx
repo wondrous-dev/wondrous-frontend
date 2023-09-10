@@ -21,7 +21,7 @@ import truncateEthAddress from "truncate-eth-address";
 import GlobalContext from "utils/context/GlobalContext";
 import { usePaywall, useSubscription } from "utils/hooks";
 import NewRewardAutocomplete from "./NewRewardAutocomplete";
-import { CampaignOverviewTitle, Label, PoapImage } from "./styles";
+import { Label, PoapImage } from "./styles";
 
 const useSubscriptionPaywall = () => {
   const subscription = useSubscription();
@@ -697,17 +697,4 @@ const RewardComponent = ({
   );
 };
 
-const RewardOverviewHeader = () => (
-  <Grid
-    padding="14px"
-    bgcolor="#2A8D5C"
-    sx={{
-      borderTopLeftRadius: "16px",
-      borderTopRightRadius: "16px",
-    }}
-  >
-    <CampaignOverviewTitle>Reward</CampaignOverviewTitle>
-  </Grid>
-);
-
-export { RewardComponent, RewardOverviewHeader };
+export { RewardComponent };
