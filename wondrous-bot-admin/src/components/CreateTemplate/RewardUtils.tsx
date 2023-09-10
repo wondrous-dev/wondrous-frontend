@@ -741,7 +741,6 @@ export const RewardWrapperWithTextField = ({
   text,
   Icon,
   handleOnRemove = null,
-  inputRef,
   placeholder,
 }) => {
   const rewardValue = reward?.value ?? reward?.amount ? Number(reward?.value ?? reward?.amount) : "";
@@ -817,7 +816,6 @@ export const RewardWrapperWithTextField = ({
             },
           },
         }}
-        inputRef={inputRef}
       />
     </Grid>
   );
@@ -829,7 +827,7 @@ export const RewardsComponent = ({ rewards, rewardComponents }) => {
       {rewards?.map((reward, idx) => {
         const Component = rewardComponents[reward?.type];
         if (Component) {
-          return <Component key={reward.type + idx} idx={idx} reward={reward} />;
+          return <>{Component({ idx, reward })}</>;
         }
         return null;
       })}

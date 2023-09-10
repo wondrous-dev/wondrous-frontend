@@ -393,13 +393,6 @@ const useAddRewardModalState = ({ paymentMethods }) => {
   };
 };
 
-const useInputRef = () => {
-  const inputRef = useRef(null);
-
-  useEffect(() => inputRef.current.focus());
-  return inputRef;
-};
-
 const RewardComponent = ({
   rewards,
   setQuestSettings,
@@ -512,8 +505,6 @@ const RewardComponent = ({
 
   const [showNewRewardAutocomplete, setShowNewRewardAutocomplete] = useState(false);
 
-  const inputRef = useInputRef();
-
   const rewardComponents = {
     points: ({ idx, reward }) => (
       <RewardWrapperWithTextField
@@ -527,7 +518,6 @@ const RewardComponent = ({
         text="Points"
         placeholder="How many points?"
         Icon={PointsIcon}
-        inputRef={inputRef}
       />
     ),
     [PAYMENT_OPTIONS.DISCORD_ROLE]: ({ idx, reward }) => (
@@ -569,7 +559,6 @@ const RewardComponent = ({
         text={String(reward?.paymentMethod.name)}
         placeholder={`How much ${String(reward?.paymentMethod.name)}?`}
         Icon={TokensIcon}
-        inputRef={inputRef}
       />
     ),
     [PAYMENT_OPTIONS.POAP]: ({ idx, reward }) => (
