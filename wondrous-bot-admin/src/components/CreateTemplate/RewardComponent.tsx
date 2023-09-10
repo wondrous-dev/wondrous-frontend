@@ -525,6 +525,7 @@ const RewardComponent = ({
           handleOnChangePoints(reward.type, e.target.value);
         }}
         text="Points"
+        placeholder="How many points?"
         Icon={PointsIcon}
         inputRef={inputRef}
       />
