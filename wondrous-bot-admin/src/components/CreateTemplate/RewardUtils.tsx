@@ -794,14 +794,14 @@ export const RewardWrapperWithTextField = ({
           ),
           endAdornment: (
             <>
-              {rewardValue ? (
-                <Grid container item flex="1" justifyContent="space-between" flexWrap="nowrap">
+              <Grid container item flex="1" justifyContent="space-between" flexWrap="nowrap">
+                {rewardValue ? (
                   <Typography fontFamily="Poppins" fontWeight="500">
                     {typeof rewardValue === "number" ? text : null}
                   </Typography>
-                  {handleOnRemove && <RemoveRewardComponent onClick={handleOnRemove} />}
-                </Grid>
-              ) : null}
+                ) : null}
+                {handleOnRemove && <RemoveRewardComponent onClick={handleOnRemove} />}
+              </Grid>
             </>
           ),
         }}
