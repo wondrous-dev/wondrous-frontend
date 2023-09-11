@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Divider, Grid, Typography } from "@mui/material";
 import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -23,6 +23,7 @@ import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "./shared";
+import { useTour } from "@reactour/tour";
 
 const stepCache = {
   steps: null,
@@ -38,6 +39,7 @@ const CreateTemplate = ({
   defaultSteps = [],
 }) => {
   const navigate = useNavigate();
+  const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
     refetchQueries: ["getQuestById"],
@@ -62,6 +64,9 @@ const CreateTemplate = ({
       setSteps(stepCache.steps);
     }
   }, []);
+
+  const { isOpen, setCurrentStep, currentStep, setSteps: setTourSteps, steps: tourSteps } = useTour();
+
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -108,6 +113,51 @@ const CreateTemplate = ({
         order: idx + 1,
       }))
     );
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const newSteps = tourSteps.map((step: any) => {
+      if (step.id === "tutorial-quest-rewards") {
+        return {
+          ...step,
+          handleNextAction: () => {
+            setIsRewardModalOpen(true);
+            setCurrentStep((prev) => prev + 1);
+          },
+        };
+      }
+      if (step.id === "tutorial-add-rewards") {
+        return {
+          ...step,
+          handleNextAction: () => {
+            setIsRewardModalOpen(false);
+            setCurrentStep((prev) => prev + 1);
+          },
+          handlePrevAction: () => {
+            setIsRewardModalOpen(false);
+            setCurrentStep((prev) => prev - 1);
+          },
+        };
+      }
+      if (step.id === "tutorial-activate-quest") {
+        return {
+          ...step,
+          handlePrevAction: () => {
+            setIsRewardModalOpen(true);
+            setCurrentStep((prev) => prev - 1);
+          },
+        };
+      }
+      return step;
+    });
+    setTourSteps(newSteps);
+  }, [isOpen]);
+
+  const postRewardsToggle = () => {
+    if (isOpen) {
+      setCurrentStep((prev) => prev + 1);
+    }
   };
 
   const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
@@ -395,6 +445,17 @@ const CreateTemplate = ({
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
 
+  const handleRewardsToggle = () => {
+    setIsRewardModalOpen((prev) => !prev);
+    postRewardsToggle();
+  };
+
+  const onRewardsChange = (rewards) => {
+    setQuestSettings((prev) => ({
+      ...prev,
+      rewards,
+    }));
+  }
   return (
     <>
       <Modal
@@ -451,7 +512,22 @@ const CreateTemplate = ({
                 "data-tour": "tutorial-quest-rewards",
               }}
               renderHeader={() => <RewardOverviewHeader />}
-              renderBody={() => <RewardComponent rewards={questSettings.rewards} setQuestSettings={setQuestSettings} />}
+              renderBody={() => (
+                <RewardComponent
+                  rewards={questSettings.rewards}
+                  onRewardsChange={onRewardsChange}
+                  renderRewardController={() => (
+                    <>
+                      <Divider color="#767676" />
+                      <Box>
+                        <SharedSecondaryButton onClick={handleRewardsToggle}>Add more</SharedSecondaryButton>
+                      </Box>
+                    </>
+                  )}
+                  handleRewardsToggle={handleRewardsToggle}
+                  isRewardModalOpen={isRewardModalOpen}
+                />
+              )}
             />
           </Box>
           <Grid
