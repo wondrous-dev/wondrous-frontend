@@ -41,7 +41,6 @@ const ReferralConnect = () => {
   }, [referralCode]);
 
   const org = orgData?.getOrgByReferralCode;
-  console.log("org", org);
   const { handleError } = useErrorHandler();
 
   const handleConnectDiscord = () => {

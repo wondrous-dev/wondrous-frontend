@@ -5,12 +5,13 @@ import InfoIcon from "components/Icons/InfoIcon";
 
 interface Props {
   error?: any;
+  onChange: (value: string) => void;
 }
 const ReferralComponent = ({ error, ...rest }: Props) => {
   return (
     <Grid display="flex" gap="8px" flexDirection="column" width="100%">
       <Label>Question / Prompt</Label>
-      <TextField multiline={false} {...rest} error={error?.prompt} />
+      <TextField multiline={false} {...rest} error={error?.prompt} {...rest} />
       <Box display="flex" alignItems="center" marginTop="6px">
         <InfoIcon
           style={{
