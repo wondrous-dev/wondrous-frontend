@@ -16,6 +16,7 @@ import useAlerts from "utils/hooks";
 
 import { handleImageFile, uploadMedia } from "utils/media";
 import { redColors } from "utils/theme/colors";
+import QuestChannelName from "./QuestChannelName";
 
 const ChangeOrgDetails = () => {
   const { activeOrg } = useContext(GlobalContext);
@@ -110,6 +111,9 @@ const ChangeOrgDetails = () => {
         <Label>Project Name</Label>
         <CustomTextField defaultValue={activeOrg.name} onChange={(e) => (ref.current = e.target.value)} />
       </Box>
+    <QuestChannelName guildId={guildId}
+    parentChannelId={orgDiscordConfig?.getCmtyOrgDiscordConfig?.parentChannelId}
+    />
       <Box width="100%" display="flex" justifyContent="flex-start" alignItems="flex-start">
         {guildId && !getDiscordConfigError ? (
           <SharedSecondaryButton
