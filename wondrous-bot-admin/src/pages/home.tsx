@@ -189,6 +189,8 @@ const HomePage = () => {
     setOpenAddBotModal(false);
   };
 
+  const isTelegramOrDiscordConnected = !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
+
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
       <AddBotModal
@@ -244,7 +246,7 @@ const HomePage = () => {
         }}
         position="relative"
       >
-        {getDiscordConfigError?.graphQLErrors[0]?.message && !loading && (
+        {!isTelegramOrDiscordConnected && !loading && (
           <Grid container justifyContent="center" alignItems="center" position="absolute" top="-40%">
             <ConnectDiscordButton orgId={activeOrg?.id} />
           </Grid>
@@ -261,7 +263,7 @@ const HomePage = () => {
             />
           </Grid>
         )}
-        {!loading && !getDiscordConfigError?.graphQLErrors[0]?.message && <CardsComponent cards={CARDS_CONFIG} />}
+        {!loading && isTelegramOrDiscordConnected && <CardsComponent cards={CARDS_CONFIG} />}
       </Grid>
     </Grid>
   );
