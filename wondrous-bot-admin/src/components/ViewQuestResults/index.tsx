@@ -262,7 +262,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
             renderHeader={() => <CampaignOverviewHeader title="Quest Information" />}
             renderBody={() => <ViewCampaignOverview sections={sections} />}
           />
-          <PanelComponent renderBody={() => <ViewRewards rewards={rewards} />} />
+          <PanelComponent renderHeader={null} renderBody={() => <ViewRewards rewards={rewards} />} />
           <PanelComponent
             renderHeader={() => <CampaignOverviewHeader title="Send quest notification" />}
             renderBody={() => (
