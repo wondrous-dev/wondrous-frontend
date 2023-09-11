@@ -35,3 +35,11 @@ export const CONFIGURE_ORG_DISCORD_NOTIFICATION = gql`
     }
   }
 `;
+
+export const UPDATE_DISCORD_PARENT_CHANNEL_NAME = gql`
+  mutation updateDiscordParentChannelName($orgId: ID!, $newName: String) {
+    updateDiscordParentChannelName(orgId: $orgId, newName: $newName) {
+      success
+    }
+  }
+`;

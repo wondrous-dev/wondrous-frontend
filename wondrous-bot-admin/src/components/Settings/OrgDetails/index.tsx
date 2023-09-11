@@ -112,7 +112,7 @@ const ChangeOrgDetails = () => {
         <CustomTextField defaultValue={activeOrg.name} onChange={(e) => (ref.current = e.target.value)} />
       </Box>
     <QuestChannelName guildId={guildId}
-    parentChannelId={orgDiscordConfig?.getCmtyOrgDiscordConfig?.parentChannelId}
+    parentChannelId={orgDiscordConfig?.getCmtyOrgDiscordConfig?.additionalData?.parentChannel}
     />
       <Box width="100%" display="flex" justifyContent="flex-start" alignItems="flex-start">
         {guildId && !getDiscordConfigError ? (
