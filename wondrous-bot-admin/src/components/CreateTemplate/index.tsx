@@ -22,7 +22,7 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
-import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "./shared";
+import { DEFAULT_QUEST_SETTINGS_STATE_VALUE, mapAnswersToOptions, reduceConditionalRewards } from "./utils";
 import { useTour } from "@reactour/tour";
 
 const stepCache = {
@@ -302,15 +302,16 @@ const CreateTemplate = ({
           required: next.required === false ? false : true,
           prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };
-        if (next.type === TYPES.MULTI_QUIZ || next.type === TYPES.SINGLE_QUIZ) {
-          (step.type = next.value.multiSelectValue),
-            (step.options = next.value?.answers?.map((answer, idx) => {
-              return {
-                position: idx,
-                text: answer.value?.trim(),
-                ...(next.value.withCorrectAnswers ? { correct: answer.isCorrect } : {}),
-              };
-            }));
+        const isQuiz = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ].includes(next.type);
+        if (isQuiz) {
+          step.type = next.value.multiSelectValue;
+          step.options = next.value?.answers
+            ? mapAnswersToOptions(next.value.answers, next.value.withCorrectAnswers)
+            : [];
+          const conditionalRewards = next.value?.answers?.reduce(reduceConditionalRewards, []);
+          if (conditionalRewards.length) {
+            step.conditionalRewards = conditionalRewards;
+          }
           step.prompt = next.value.question;
         } else if ([TYPES.LIKE_TWEET, TYPES.RETWEET, TYPES.REPLY_TWEET].includes(next.type)) {
           step.prompt = next.value?.prompt;
@@ -455,7 +456,7 @@ const CreateTemplate = ({
       ...prev,
       rewards,
     }));
-  }
+  };
   return (
     <>
       <Modal

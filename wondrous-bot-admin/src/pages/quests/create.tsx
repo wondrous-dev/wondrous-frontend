@@ -1,5 +1,5 @@
 import QuestTemplateModal from "components/CreateTemplate/QuestTemplateModal";
-import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "components/CreateTemplate/shared";
+import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "components/CreateTemplate/utils";
 import { TitleInput } from "components/CreateTemplate/styles";
 import PageHeader from "components/PageHeader";
 import QuestTitle from "components/QuestTitle";

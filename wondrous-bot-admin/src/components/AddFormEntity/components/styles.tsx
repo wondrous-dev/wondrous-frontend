@@ -21,7 +21,7 @@ export const CustomTextField = styled(InputUnstyled)`
       font-size: 15px;
       font-style: normal;
       font-weight: 400;
-      height: ${({ multiline }) => (multiline ? '40px' : '40px')};
+      height: ${({ multiline }) => (multiline ? '110px' : '40px')};
       resize: none;
       width: 100%;
       :focus-visible {

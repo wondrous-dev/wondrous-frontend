@@ -41,7 +41,6 @@ const RewardContent = ({ reward }) => {
 };
 
 const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward }) => {
-  console.log(rewards, "rewards");
   if (!rewards?.length) return null;
 
   return (
