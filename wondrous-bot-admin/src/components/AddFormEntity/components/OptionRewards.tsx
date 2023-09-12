@@ -21,11 +21,11 @@ const RewardContent = ({ reward }) => {
     if (reward?.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
       return `Role: ${reward?.discordRewardData?.discordRoleName}`;
     }
-    if(reward?.type === PAYMENT_OPTIONS.TOKEN) {
-      return `Token: ${reward?.amount} ${reward?.paymentMethod?.name}`
+    if (reward?.type === PAYMENT_OPTIONS.TOKEN) {
+      return `Token: ${reward?.amount} ${reward?.paymentMethod?.name}`;
     }
-    if(reward?.type === PAYMENT_OPTIONS.POAP) {
-      return `POAP: ${reward?.poapRewardData?.name}`
+    if (reward?.type === PAYMENT_OPTIONS.POAP) {
+      return `POAP: ${reward?.poapRewardData?.name}`;
     }
   }, [reward]);
 
@@ -41,6 +41,7 @@ const RewardContent = ({ reward }) => {
 };
 
 const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward }) => {
+  console.log(rewards, 'REWARDS')
   if (!rewards?.length) return null;
 
   return (

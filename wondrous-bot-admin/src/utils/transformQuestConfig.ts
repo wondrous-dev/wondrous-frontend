@@ -18,6 +18,7 @@ type InputQuestStep = {
     __typename: string;
   }> | null;
   __typename: string;
+  conditionalRewards: any;
   additionalData: {
     tweetLink?: string;
     tweetHandle?: string;
@@ -149,12 +150,18 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       const hasCorrectAnswer = step.options?.some((option) => option.correct !== null && option.correct !== undefined);
       outputStep.value = {
         question: step.prompt,
-        //TODO withConditionalRewards: step.conditionalRewards?.length > 0,
+        withConditionalRewards: step.conditionalRewards?.length > 0,
         withCorrectAnswers: hasCorrectAnswer,
         multiSelectValue: step.type,
         answers: step.options?.map((option) => ({
           value: option.text,
-          ...(hasCorrectAnswer ? { isCorrect: option.correct } : {}),
+          rewards: step?.conditionalRewards?.find((item) => item.optionText === option.text)?.rewardData || [],
+          ...(hasCorrectAnswer
+            ? {
+                isCorrect: option.correct,
+
+              }
+            : {}),
         })),
       };
     } else if ([TYPES.LIKE_TWEET, TYPES.RETWEET, TYPES.REPLY_TWEET].includes(step.type)) {

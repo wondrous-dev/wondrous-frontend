@@ -39,7 +39,6 @@ const LevelsPage = () => {
           formattedRewards[reward.level] = [reward];
         }
       }
-      console.log('formattedRewards', formattedRewards)
       setRewards(formattedRewards);
       
     },
