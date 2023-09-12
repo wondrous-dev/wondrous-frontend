@@ -155,6 +155,7 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
     const MULTICHOICE_DEFAULT_VALUE = {
       question: "",
       withCorrectAnswers: false,
+      withConditionalRewards: false,
       multiSelectValue: TYPES.MULTI_QUIZ,
       answers: [
         {

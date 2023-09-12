@@ -4,7 +4,7 @@ import { TitleInput } from "components/CreateTemplate/styles";
 import PageHeader from "components/PageHeader";
 import QuestTitle from "components/QuestTitle";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import React, { Suspense, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 
@@ -28,6 +28,16 @@ const CreatePage = () => {
 
   const titleValue = title || questTemplate.title;
 
+  useEffect(() => {
+    return () => {
+      setQuestTemplate({
+        steps: [],
+        questSettings: DEFAULT_QUEST_SETTINGS_STATE_VALUE,
+        open: true,
+        title: "",
+      });
+    }
+  }, [])
   return (
     <>
       <QuestTemplateModal setQuestTemplate={setQuestTemplate} open={questTemplate.open} />

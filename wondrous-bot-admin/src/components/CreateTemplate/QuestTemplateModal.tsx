@@ -145,6 +145,7 @@ const questTemplates: {
         value: {
           question: "go to our website (X) and answer these questions",
           withCorrectAnswers: false,
+          withConditionalRewards: false,
           multiSelectValue: TYPES.MULTI_QUIZ,
           answers: [
             {

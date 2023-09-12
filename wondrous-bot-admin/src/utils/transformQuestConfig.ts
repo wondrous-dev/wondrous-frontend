@@ -63,6 +63,7 @@ type OutputQuestStep = {
     | {
         question: string;
         withCorrectAnswers: boolean;
+        withConditionalRewards?: boolean;
         multiSelectValue: string;
         answers: Array<{
           value: string;
@@ -148,6 +149,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       const hasCorrectAnswer = step.options?.some((option) => option.correct !== null && option.correct !== undefined);
       outputStep.value = {
         question: step.prompt,
+        //TODO withConditionalRewards: step.conditionalRewards?.length > 0,
         withCorrectAnswers: hasCorrectAnswer,
         multiSelectValue: step.type,
         answers: step.options?.map((option) => ({
