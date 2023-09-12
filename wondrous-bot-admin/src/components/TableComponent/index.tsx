@@ -6,6 +6,7 @@ import { Label } from "components/QuestsList/styles";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { StyledLinkButton, StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { IconWrapper, PaperComponent, StyledTableHeader, StyledTableHeaderCell, StyledTableRow } from "./styles";
+import LinkIcon from "components/Icons/LinkIcon";
 
 const TableComponent = ({ headers, data }) => {
   return (
@@ -24,14 +25,14 @@ const TableComponent = ({ headers, data }) => {
               {Object.keys(row)?.map((key) => {
                 if (key === "id") return null;
                 const column = row[key];
-                const {tableStyle = {}} = column || {};
+                const { tableStyle = {} } = column || {};
                 return (
                   <TableCell
                     key={key}
                     sx={{
                       borderRight: "2px solid #f2f2f2",
                       borderBottom: "0px",
-                      ...tableStyle
+                      ...tableStyle,
                     }}
                   >
                     {column.component === "label" ? (
@@ -108,20 +109,22 @@ const TableComponent = ({ headers, data }) => {
                     {column.component === "reward" ? (
                       <StyledViewQuestResults $isReward>{column.value}</StyledViewQuestResults>
                     ) : null}
-                    {column.component === "custom" ? column.customComponent({value: column.value}) : null}
+                    {column.component === "custom" ? column.customComponent({ value: column.value }) : null}
                     {column.component === "link" ? (
-                      <Box width="100%" display="flex" justifyContent="center">
-                        <a href={column.value} target="__blank">
-                        <StyledLinkButton>
-                        <AttachFileIcon
-                          sx={{
-                            fontSize: "18px",
-                            color: "white",
-                          }}
-                        />
-                      </StyledLinkButton>
-                        </a>
-                      </Box>
+                      <a href={column.value} target="__blank">
+                        <Box width="100%" display="flex" justifyContent="left" alignItems="center">
+                          <LinkIcon />
+                          <Label
+                            marginLeft="8px"
+                            fontSize="14px"
+                            lineHeight="14px"
+                            textAlign="center"
+                            {...(column.componentProps || {})}
+                          >
+                            {column.text}
+                          </Label>
+                        </Box>
+                      </a>
                     ) : null}
                   </TableCell>
                 );

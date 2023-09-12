@@ -13,6 +13,7 @@ import { GET_CMTY_PAYMENT_COUNTS } from "graphql/queries";
 import RedDot from "assets/redDot.svg";
 import { useNavigate } from "react-router-dom";
 import TableComponent from "components/TableComponent";
+import { getBaseUrl } from "utils/common";
 
 export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, questId }) => {
   const headers = [
@@ -221,7 +222,7 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
     [stats]
   );
   const unpaidPaymentsCount = paymentCountData?.getCmtyPaymentsCountForOrg?.count || 0;
-  const referralHeaders = ["Name", "Link", "Referrals made"];
+  const referralHeaders = ["Name", "Referral Code", "Referrals Made"];
   const tableConfig = referralData?.getQuestReferralLeaderBoard.map((userReferral) => ({
     id: userReferral.referrerId,
     name: {
@@ -229,8 +230,9 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
       value: userReferral?.referrerDiscordUsername,
     },
     link: {
-      component: "label",
-      value: `communities.wonderverse.xyz/referral?referralCode=${userReferral?.referralCode}`,
+      component: "link",
+      value: `${getBaseUrl()}/referral?referralCode=${userReferral?.referralCode}`,
+      text: userReferral?.referralCode,
     },
     referralCount: {
       component: "label",
