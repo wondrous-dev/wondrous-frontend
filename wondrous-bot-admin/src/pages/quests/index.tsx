@@ -120,6 +120,7 @@ const QuestsPage = () => {
     refetch(variables);
   };
 
+
   return (
     <>
       <PageHeader

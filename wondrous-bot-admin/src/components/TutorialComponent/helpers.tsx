@@ -10,8 +10,11 @@ export const ActiveQuestContent = () => {
           Use this toggle to activate or deactivate the quest.
         </Typography>
         <AccordionComponent
+        summaryProps={{
+          bgColor: '#FFEBDA'
+        }}
           renderTitle={() => (
-            <Typography fontFamily="Poppins" color="#2a8d5c" fontWeight={500} fontSize="14px" lineHeight="24px">
+            <Typography fontFamily="Poppins" color="black" fontWeight={500} fontSize="14px" lineHeight="24px">
               What is an <strong>Active Quest?</strong>
             </Typography>
           )}
