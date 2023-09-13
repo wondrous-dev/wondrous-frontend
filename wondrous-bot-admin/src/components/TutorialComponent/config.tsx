@@ -28,9 +28,9 @@ export const config = [
   {
     path: "/quests",
     id: TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE,
-    disableInteraction: true,
     steps: [
       {
+
         selector: "[data-tour=tutorial-quest-select]",
         nextButtonTitle: "Next",
         action: () => {},
@@ -48,7 +48,6 @@ export const config = [
         selector: "[data-tour=tutorial-quest-card]",
         nextButtonTitle: "Visit Quest",
         action: () => window.scrollTo(0, 0),
-        prevButtonTitle: "Skip",
         nextHref: "/quests/:id?edit=true",
         content: () => (
           <ContentComponent title="Quests">

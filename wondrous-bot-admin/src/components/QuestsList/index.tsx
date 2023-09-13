@@ -16,6 +16,7 @@ import useLevels from "utils/levels/hooks";
 import QuestCardMenu from "components/QuestCardMenu";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { useTour } from "@reactour/tour";
 
 const formatQuestsData = (LEVELS, data) => {
   const result = {};
@@ -43,6 +44,8 @@ const formatQuestsData = (LEVELS, data) => {
 
 const QuestsList = ({ data }) => {
   const { activeOrg } = useContext(GlobalContext);
+  const { isOpen } = useTour();
+
   const subscription = useSubscription();
   const { setPaywall, setPaywallMessage } = usePaywall();
   const { data: getOrgQuestStatsData, loading } = useQuery(GET_ORG_QUEST_STATS, {
@@ -113,7 +116,9 @@ const QuestsList = ({ data }) => {
                     md: "24%",
                   }}
                 >
-                  <CardWrapper item>
+                  <CardWrapper item
+                  disableHover={isOpen}
+                  >
                     <Box
                       height="40px"
                       width="auto"
