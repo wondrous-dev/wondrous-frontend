@@ -5,10 +5,10 @@ export const SharedLabel = styled(Typography)`
   && {
     font-family: Poppins;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 15px;
     line-height: 24px;
-    color: black;
+    color: ${({ color = "black" }) => color};
   }
 `;
 
@@ -49,5 +49,25 @@ export const AddBotLink = styled(ButtonBase)`
     align-self: stretch;
     border-radius: 6px;
     background: #c1b6f6;
+  }
+`;
+
+export const DisconnectButton = styled(ButtonBase)`
+  && {
+    border-radius: 35px;
+    padding: 8px 24px 8px 24px;
+    height: 40px;
+    font-family: Poppins;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #CB3340;
+    border: 2px solid #CDCDCD;
+    &:hover {
+      background-color: #E8E8E8;
+      border: 1px solid #000;
+    }
   }
 `;

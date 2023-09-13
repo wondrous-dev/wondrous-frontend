@@ -1,87 +1,45 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
-import { Label } from "components/CreateTemplate/styles";
-import { SharedSecondaryButton } from "components/Shared/styles";
-import { UPDATE_DISCORD_PARENT_CHANNEL_NAME } from "graphql/mutations/discord";
-import { GET_GUILD_DISCORD_CHANNELS } from "graphql/queries";
-import { useContext, useEffect, useMemo, useState } from "react";
-import GlobalContext from "utils/context/GlobalContext";
+import { useMemo } from "react";
 
-const QuestChannelName = ({ guildId, parentChannelId }) => {
-  const [channelName, setChannelName] = useState("");
-  const { activeOrg } = useContext(GlobalContext);
-  const [getGuildDiscordChannels, { data, loading, refetch }] = useLazyQuery(GET_GUILD_DISCORD_CHANNELS, {
-    fetchPolicy: "cache-and-network",
-    notifyOnNetworkStatusChange: true,
-    onCompleted: (data) => {
-      const defaultChannel = data?.getAvailableChannelsForDiscordGuild.find(
-        (channel) => channel.id === parentChannelId || channel.name === "community-quest"
-      );
-      setChannelName(defaultChannel?.name);
-    },
-  });
-
-  const [updateChannelName, { loading: updateInProgress }] = useMutation(UPDATE_DISCORD_PARENT_CHANNEL_NAME, {
-    notifyOnNetworkStatusChange: true,
-    onCompleted: () => {
-      refetch();
-    },
-  });
-
-  useEffect(() => {
-    if (guildId) {
-      getGuildDiscordChannels({
-        variables: {
-          guildId,
-        },
-      });
-    }
-  }, [guildId]);
-
-  const defaultChannelName = useMemo(() => {
-    if (data?.getAvailableChannelsForDiscordGuild) {
-      const defaultChannel = data?.getAvailableChannelsForDiscordGuild.find(
-        (channel) => channel.id === parentChannelId || channel.name === "community-quest"
-      );
-      return defaultChannel?.name;
-    }
-  }, [data?.getAvailableChannelsForDiscordGuild]);
-
-  const handleSave = (value) => {
-    updateChannelName({
-      variables: {
-        orgId: activeOrg?.id,
-        newName: value,
-      },
-    });
-  };
-
+const QuestChannelName = ({ guildId, channelName, setChannelName, isLoading }) => {
   const handleChange = (e) => setChannelName(e.target.value);
-  if (!guildId) return null;
 
-  const isLoading = loading || updateInProgress;
+
+  const message = useMemo(() => {
+    if (!guildId) {
+      return `You don't have a discord server connected to your community. Please connect a discord server to your community
+      to create a quest channel.
+`;
+    }
+    if (!isLoading && !channelName) {
+      return `Please start a quest in Discord to create a quest channel.`;
+    }
+
+    return null;
+  }, [guildId, isLoading, channelName]);
+  
+  if (message)
+    return (
+      <Typography fontWeight={500} fontSize="13px" fontFamily="Poppins" color="#4D4D4D">
+        {message}
+      </Typography>
+    );
+
   return (
-    <Box display="flex" flexDirection="column" gap="14px" justifyContent="flex-start" alignItems="flex-start">
-      <Label>Update channel name</Label>
-      <Box display="flex" gap="8px" alignItems="center">
-        <CustomTextField 
-        onChange={handleChange}
-        value={channelName} disabled={isLoading} />
-        <SharedSecondaryButton onClick={() => handleSave(channelName)} disabled={channelName === defaultChannelName}>
-          {isLoading ? (
-            <CircularProgress
-              size={30}
-              thickness={5}
-              sx={{
-                color: "#2A8D5C",
-                animationDuration: "10000ms",
-              }}
-            />
-          ) : (
-            "Save"
-          )}
-        </SharedSecondaryButton>
+    <Box
+      display="flex"
+      flexDirection="column"
+      gap="24px"
+      justifyContent="flex-start"
+      alignItems="flex-start"
+      width="100%"
+    >
+      <Typography fontWeight={500} fontSize="13px" fontFamily="Poppins" color="#4D4D4D">
+        This is the title of the channel which will contain all quest activity.
+      </Typography>
+      <Box display="flex" gap="8px" alignItems="center" width="100%">
+        <CustomTextField onChange={handleChange} value={channelName} />
       </Box>
     </Box>
   );
