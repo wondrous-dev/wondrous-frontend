@@ -64,7 +64,7 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
 export const reduceConditionalRewards = (acc: any[], answer: any) => {
   const rewards = mapAnswerToConditionalRewards(answer);
   if (rewards.length) {
-    acc.push({ optionText: answer.value, rewardData: rewards });
+    acc.push({ optionText: answer.value?.trim(), rewardData: rewards });
   }
   return acc;
 };
