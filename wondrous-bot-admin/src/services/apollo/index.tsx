@@ -88,7 +88,8 @@ const cache = new InMemoryCache({
           keyArgs: ["input", ["orgId"]],
           merge: offsetLimitPaginationInput,
         },
-        getQuestsAnalyticsLeaderboard: offsetLimitPagination()
+        getQuestsAnalyticsLeaderboard: offsetLimitPagination(),
+        getQuestSubmissions: offsetLimitPagination(),
       },
     },
   },
