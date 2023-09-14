@@ -18,6 +18,14 @@ export const CONNECT_DISCORD_TO_CMTY_ORG = gql`
   }
 `;
 
+export const DISCONNECT_DISCORD_TO_CMTY_ORG = gql`
+  mutation disconnectDiscordToCmtyOrg($orgId: ID!) {
+    disconnectDiscordToCmtyOrg(orgId: $orgId) {
+      success
+    }
+  }
+`;
+
 export const CREATE_ORG = gql`
   mutation createOrg($input: OrgInput) {
     createOrg(input: $input) {

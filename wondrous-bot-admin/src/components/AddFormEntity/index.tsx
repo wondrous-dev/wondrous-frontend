@@ -9,12 +9,12 @@ import { DragDropContext, Draggable } from "react-beautiful-dnd";
 
 import DeleteIcon from "components/Icons/Delete";
 import StrictModeDroppable from "components/StrictModeDroppable";
-import { RESPOND_TYPES, TYPES } from "utils/constants";
+import { CUSTOM_INTEGRATIONS, RESPOND_TYPES, TYPES } from "utils/constants";
 import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
 import StepAttachments from "components/StepAttachments";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
 import { useMutation } from "@apollo/client";
@@ -23,6 +23,7 @@ import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsL
 import { usePaywall, useSubscription } from "utils/hooks";
 import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
 import AutocompleteOptionsComponent from "./components/AutocompleteComponent";
+import GlobalContext from "utils/context/GlobalContext";
 
 const COMPONENT_OPTIONS = [
   {
@@ -102,9 +103,10 @@ COMPONENT_OPTIONS.push({
   label: "+ Add custom on chain action",
   value: TYPES.CUSTOM_ONCHAIN_ACTION,
 });
-
-const AddFormEntity = ({ steps, setSteps, stepCache,  handleRemove, refs, setRemovedMediaSlugs }) => {
+let activeOrgPushed = false;
+const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
+  const { activeOrg } = useContext(GlobalContext);
   const [openEcosystemDialog, setOpenEcosystemDialog] = useState(false);
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
@@ -153,6 +155,7 @@ const AddFormEntity = ({ steps, setSteps, stepCache,  handleRemove, refs, setRem
     const MULTICHOICE_DEFAULT_VALUE = {
       question: "",
       withCorrectAnswers: false,
+      withConditionalRewards: false,
       multiSelectValue: TYPES.MULTI_QUIZ,
       answers: [
         {
@@ -182,6 +185,15 @@ const AddFormEntity = ({ steps, setSteps, stepCache,  handleRemove, refs, setRem
     setSteps(newConfiguration);
   };
 
+  useEffect(() => {
+    if (activeOrg?.id in CUSTOM_INTEGRATIONS && !activeOrgPushed) {
+      const customIntegrations = CUSTOM_INTEGRATIONS[activeOrg?.id];
+      customIntegrations?.integrations.forEach((integration) => {
+        COMPONENT_OPTIONS.push(integration);
+      });
+      activeOrgPushed = true;
+    }
+  }, [activeOrg?.id, activeOrgPushed]);
   const handleRequiredChange = (required, order) => {
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.order === order) {

@@ -23,3 +23,12 @@ export const GET_PREVIEW_FILE = gql`
     }
   }
 `;
+
+
+export const GET_PRESIGNED_TELEGRAM_IMAGE_URL = gql`
+  query getTelegramPresignedFileUrl($filename: String!, $telegramUserId: String!) {
+    getTelegramPresignedFileUrl(filename: $filename, telegramUserId: $telegramUserId) {
+      url
+    }
+  }
+`;

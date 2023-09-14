@@ -5,3 +5,4 @@ export * from "./org";
 export * from "./payment";
 export * from './analytics'
 export * from "./discord";
+export * from './questSubmission'

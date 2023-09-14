@@ -78,6 +78,35 @@ export const QuestFragment = gql`
         text
         correct
       }
+      conditionalRewards {
+        optionText
+        rewardData {
+          type
+          discordRewardData {
+            discordRoleId
+            discordGuildId
+            discordRoleName
+          }
+          poapRewardData {
+            id
+            name
+            description
+            startDate
+            endDate
+            eventUrl
+            imageUrl
+            expiryDate
+            eventSecret
+          }
+          paymentMethodId
+          amount
+          paymentMethod {
+            name
+            contractAddress
+            type
+          }
+        }
+      }
       additionalData {
         discordChannelName
         discordChannelId
@@ -103,6 +132,7 @@ export const QuestFragment = gql`
         linkClickUrl
         discordEventId
         minDuration
+        usdValue
       }
     }
   }

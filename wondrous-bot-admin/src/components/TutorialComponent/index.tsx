@@ -2,6 +2,8 @@ import { TourProvider } from "@reactour/tour";
 import { useMutation } from "@apollo/client";
 import { SET_USER_COMPLETED_GUIDE, SET_PROJECT_GUIDE_COMPLETE } from "graphql/mutations/user";
 import { useMe, withAuth } from "components/Auth";
+import { useRect } from "@reactour/utils";
+
 import { config } from "./config";
 import { useLocation } from "react-router-dom";
 import { toggleHtmlOverflow } from "utils/common";
@@ -9,14 +11,14 @@ import { GET_LOGGED_IN_USER } from "graphql/queries";
 import NavigationWrapper from "./NavigationWrapper";
 import { NextNavigationButton, PrevNavigationButton } from "./NavigationButtons";
 import { getStepsConfig } from "./utils";
+import { useEffect, useRef, useState } from "react";
 
 const TutorialComponent = ({ children }) => {
   const { user } = useMe() || {};
   const completedQuestGuides = user?.completedQuestGuides;
   const location = useLocation();
 
-
-  const {steps, id, disableInteraction} = getStepsConfig(location.pathname);
+  const { steps, id, disableInteraction } = getStepsConfig(location.pathname);
 
   const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
     refetchQueries: [{ query: GET_LOGGED_IN_USER }],
@@ -25,6 +27,7 @@ const TutorialComponent = ({ children }) => {
   const disableBody = () => {
     toggleHtmlOverflow();
   };
+
   const beforeClose = () => {
     toggleHtmlOverflow();
     if (id && !completedQuestGuides?.includes(id)) {
@@ -46,7 +49,9 @@ const TutorialComponent = ({ children }) => {
       overflow: "hidden",
       border: "0.5px solid rgba(75, 75, 75, 1)",
     }),
-    maskArea: (base) => ({ ...base, rx: 10 }),
+    maskArea: (base) => {
+      return { ...base, rx: 15 };
+    },
     navigation: (base) => ({
       ...base,
       counterReset: null,
@@ -57,6 +62,16 @@ const TutorialComponent = ({ children }) => {
     }),
   };
 
+  const shakePopoverAnimation = () => {
+    const popover = document.querySelector(".reactour__popover");
+    if (popover) {
+      popover.classList.add("shake-animation");
+      setTimeout(() => {
+        popover.classList.remove("shake-animation");
+      }, 1000);
+    }
+  }
+
   return (
     <TourProvider
       steps={steps}
@@ -64,11 +79,13 @@ const TutorialComponent = ({ children }) => {
       beforeClose={beforeClose}
       styles={styles}
       showCloseButton
-      onClickMask={(e) => {}}
+      onClickMask={shakePopoverAnimation}
       disableInteraction={disableInteraction}
       disableDotsNavigation
+      padding={{ popover: 15 }}
       components={{
         Badge: () => null,
+
         Navigation: ({ nextButton, prevButton, currentStep, setIsOpen, setCurrentStep }) => (
           <NavigationWrapper
             nextButton={nextButton}
@@ -79,10 +96,10 @@ const TutorialComponent = ({ children }) => {
           />
         ),
       }}
-      nextButton={({ currentStep, stepsLength, setIsOpen, setCurrentStep }) => (
+      nextButton={({ currentStep, setIsOpen, setCurrentStep }) => (
         <NextNavigationButton currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
       )}
-      prevButton={({ currentStep, stepsLength, setIsOpen, setCurrentStep }) => (
+      prevButton={({ currentStep, setIsOpen, setCurrentStep }) => (
         <PrevNavigationButton currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
       )}
     >

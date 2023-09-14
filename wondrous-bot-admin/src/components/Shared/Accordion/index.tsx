@@ -25,6 +25,7 @@ const ExpandIcon = () => {
 export default function AccordionComponent({
   children,
   renderTitle,
+  summaryProps = {},
   ...props
 }) {
   const [expanded, setExpanded] = useState(props.expanded || false);
@@ -34,7 +35,9 @@ export default function AccordionComponent({
     <Accordion {...props} onChange={handleChange} expanded={expanded} 
     
     >
-      <StyledAccordionSummary expandIcon={<ExpandIcon />}>
+      <StyledAccordionSummary 
+      {...summaryProps}
+      expandIcon={<ExpandIcon />}>
         {renderTitle ? renderTitle() : null}
       </StyledAccordionSummary>
       <StyledAccordionDetails>{children}</StyledAccordionDetails>

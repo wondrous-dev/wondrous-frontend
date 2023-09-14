@@ -1,45 +1,33 @@
-import { useMutation } from '@apollo/client';
-import { makeUniqueId } from '@apollo/client/utilities';
-import { Typography, Grid, Box } from '@mui/material';
-import { CustomTextField } from 'components/AddFormEntity/components/styles';
-import PanelComponent from 'components/CreateTemplate/PanelComponent';
-import { Label } from 'components/CreateTemplate/styles';
-import ImageUpload from 'components/ImageUpload';
-import { AVATAR_EDITOR_TYPES } from 'components/ImageUpload/AvatarEditor';
-import { SharedSecondaryButton } from 'components/Shared/styles';
-import { UPDATE_ORG } from 'graphql/mutations';
-import { useContext, useEffect, useRef, useState } from 'react';
-import GlobalContext from 'utils/context/GlobalContext';
-import useAlerts from 'utils/hooks';
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { makeUniqueId } from "@apollo/client/utilities";
+import { Typography, Grid, Box, CircularProgress } from "@mui/material";
+import { CustomTextField } from "components/AddFormEntity/components/styles";
+import ConnectDiscordButton from "components/ConnectDiscord/ConnectDiscordButton";
+import PanelComponent from "components/CreateTemplate/PanelComponent";
+import { Label } from "components/CreateTemplate/styles";
+import ImageUpload from "components/ImageUpload";
+import { AVATAR_EDITOR_TYPES } from "components/ImageUpload/AvatarEditor";
+import { SharedSecondaryButton } from "components/Shared/styles";
+import { DISCONNECT_DISCORD_TO_CMTY_ORG, UPDATE_ORG } from "graphql/mutations";
+import { GET_CMTY_ORG_DISCORD_CONFIG, GET_GUILD_DISCORD_CHANNELS } from "graphql/queries";
+import { forwardRef, useContext, useEffect, useMemo, useRef, useState } from "react";
+import GlobalContext from "utils/context/GlobalContext";
+import useAlerts from "utils/hooks";
 
-import { handleImageFile, uploadMedia } from 'utils/media';
+import { handleImageFile, transformAndUploadMedia, uploadMedia } from "utils/media";
+import { redColors } from "utils/theme/colors";
+import QuestChannelName from "./QuestChannelName";
+import { UPDATE_DISCORD_PARENT_CHANNEL_NAME } from "graphql/mutations/discord";
 
-const ChangeOrgDetails = () => {
-  const {
-    setSnackbarAlertOpen,
-    setSnackbarAlertMessage,
-    setSnackbarAlertAnchorOrigin,
-  } = useAlerts();
-  const [data, setData] = useState({
-    profilePicture: null,
-  });
-  const [updateOrg, { data: updateOrgData, loading: updateLoading }] =
-    useMutation(UPDATE_ORG, {
-      refetchQueries: ['getUserOrgs'],
-      onCompleted: () => {
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage('Success!');
-        setSnackbarAlertAnchorOrigin({
-          vertical: 'top',
-          horizontal: 'center',
-        });
-      },
-    });
+interface ChangeOrgDetailsProps {
+  data: any;
+  setData: (data: any) => void;
+}
 
+const ChangeOrgDetails = forwardRef(({ data, setData }: ChangeOrgDetailsProps, ref: any) => {
   const { activeOrg } = useContext(GlobalContext);
-  const handleChange = (value) => setData({ profilePicture: value });
 
-  const ref = useRef(null);
+  const handleChange = (value) => setData({ profilePicture: value });
 
   useEffect(() => {
     if (data.profilePicture !== activeOrg?.profilePicture) {
@@ -50,13 +38,103 @@ const ChangeOrgDetails = () => {
     }
   }, [activeOrg?.profilePicture, activeOrg?.headerPicture]);
 
-  const transformAndUploadMedia = async ({ file }) => {
-    if (!file) return null;
+  return (
+    <Grid container direction="column" gap="24px">
+      <Label>Project Logo</Label>
 
-    const imageFile = handleImageFile({ file, id: makeUniqueId('temp') });
-    await uploadMedia(imageFile);
-    return { ...imageFile };
+      <ImageUpload
+        title=""
+        image={data.profilePicture}
+        updateFilesCb={(file) => handleChange(file)}
+        imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
+        onDeleteImage={(imageType) => handleChange(null)}
+        onReplace={(file) => handleChange(file)}
+      />
+      <Box display="flex" flexDirection="column" gap="14px" justifyContent="flex-start" alignItems="flex-start">
+        <Label>Project Name</Label>
+        <CustomTextField defaultValue={activeOrg?.name} onChange={(e) => (ref.current = e.target.value)} />
+      </Box>
+    </Grid>
+  );
+});
+
+const OrgDetails = () => {
+  const { activeOrg } = useContext(GlobalContext);
+
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
+
+  const setSnackbarSuccess = () => {
+    setSnackbarAlertOpen(true);
+    setSnackbarAlertMessage("Success!");
+    setSnackbarAlertAnchorOrigin({
+      vertical: "top",
+      horizontal: "center",
+    });
   };
+  const [updateOrg, { data: updateOrgData, loading: updateLoading }] = useMutation(UPDATE_ORG, {
+    refetchQueries: ["getUserOrgs"],
+    onCompleted: () => {
+      setSnackbarSuccess();
+    },
+  });
+
+  const [data, setData] = useState({
+    profilePicture: null,
+  });
+
+  const [channelName, setChannelName] = useState("");
+
+  const [getGuildDiscordChannels, { data: guildDiscordChannelsData, loading: discordChannelsLoading, refetch }] =
+    useLazyQuery(GET_GUILD_DISCORD_CHANNELS, {
+      fetchPolicy: "cache-and-network",
+      notifyOnNetworkStatusChange: true,
+      onCompleted: (data) => {
+        const defaultChannel = data?.getAvailableChannelsForDiscordGuild.find(
+          (channel) => channel.id === parentChannelId || channel.name === "community-quest"
+        );
+        setChannelName(defaultChannel?.name);
+      },
+    });
+
+  const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      if (data?.getCmtyOrgDiscordConfig?.guildId) {
+        getGuildDiscordChannels({
+          variables: {
+            guildId: data?.getCmtyOrgDiscordConfig?.guildId,
+          },
+        });
+      }
+    },
+  });
+
+  const parentChannelId = orgDiscordConfig?.getCmtyOrgDiscordConfig?.additionalData?.parentChannel;
+
+  const guildId = orgDiscordConfig?.getCmtyOrgDiscordConfig?.guildId;
+
+  const [updateChannelName, { loading: updateInProgress }] = useMutation(UPDATE_DISCORD_PARENT_CHANNEL_NAME, {
+    notifyOnNetworkStatusChange: true,
+    onCompleted: () => {
+      setSnackbarSuccess();
+    },
+  });
+
+  const ref = useRef(null);
+
+  const defaultChannelName = useMemo(() => {
+    if (guildDiscordChannelsData?.getAvailableChannelsForDiscordGuild) {
+      const defaultChannel = guildDiscordChannelsData?.getAvailableChannelsForDiscordGuild.find(
+        (channel) => channel.id === parentChannelId || channel.name === "community-quest"
+      );
+      return defaultChannel?.name;
+    }
+  }, [guildDiscordChannelsData?.getAvailableChannelsForDiscordGuild]);
 
   const onClick = async () => {
     let inputData = {};
@@ -75,74 +153,88 @@ const ChangeOrgDetails = () => {
         name: ref?.current,
       };
     }
-    await updateOrg({
-      variables: {
-        orgId: activeOrg.id,
-        input: {
-          ...inputData,
+    if (Object.keys(inputData)?.length) {
+      await updateOrg({
+        variables: {
+          orgId: activeOrg.id,
+          input: {
+            ...inputData,
+          },
         },
-      },
-    });
+      });
+    }
+    if (defaultChannelName !== channelName) {
+      await updateChannelName({
+        variables: {
+          orgId: activeOrg.id,
+          newName: channelName,
+        },
+      });
+    }
   };
 
+  const loading = updateLoading || updateInProgress;
   return (
-    <Grid container direction='column' gap='24px'>
-      <Label>Project Logo</Label>
-
-      <ImageUpload
-        title=''
-        image={data.profilePicture}
-        updateFilesCb={(file) => handleChange(file)}
-        imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
-        onDeleteImage={(imageType) => handleChange(null)}
-        onReplace={(file) => handleChange(file)}
-      />
-      <Box
-        display='flex'
-        flexDirection='column'
-        gap='14px'
-        justifyContent='flex-start'
-        alignItems='flex-start'
-      >
-        <Label>Project Name</Label>
-        <CustomTextField
-          defaultValue={activeOrg.name}
-          onChange={(e) => (ref.current = e.target.value)}
-        />
-      </Box>
-      <Box
-        width='100%'
-        display='flex'
-        justifyContent='flex-end'
-        alignItems='flex-start'
-      >
-        <SharedSecondaryButton onClick={onClick}>Change</SharedSecondaryButton>
-      </Box>
-    </Grid>
-  );
-};
-
-const OrgDetails = () => {
-  return (
-    <Grid flex='1' width={{
-      xs: '100%',
-      sm: '70%',
-    }}>
+    <Grid
+      flex="1"
+      gap="24px"
+      display="flex"
+      flexDirection="column"
+      width={{
+        xs: "100%",
+        sm: "70%",
+      }}
+    >
       <PanelComponent
         renderHeader={() => (
           <Typography
-            fontFamily='Poppins'
-            fontSize='12px'
-            padding='14px'
-            lineHeight='14px'
+            fontFamily="Poppins"
+            fontSize="12px"
+            padding="14px"
+            lineHeight="14px"
             fontWeight={600}
-            color='#2A8D5C'
+            color="#2A8D5C"
           >
             Basic Details
           </Typography>
         )}
-        renderBody={ChangeOrgDetails}
+        renderBody={() => <ChangeOrgDetails data={data} ref={ref} setData={setData} />}
       />
+      <PanelComponent
+        renderHeader={() => (
+          <Typography
+            fontFamily="Poppins"
+            fontSize="12px"
+            padding="14px"
+            lineHeight="14px"
+            fontWeight={600}
+            color="#2A8D5C"
+          >
+            Discord Quest Channel Name
+          </Typography>
+        )}
+        renderBody={() => (
+          <QuestChannelName guildId={guildId} channelName={channelName} setChannelName={setChannelName} 
+          isLoading={discordChannelsLoading}
+          />
+        )}
+      />
+      <Grid
+        position="fixed"
+        bgcolor="#FFEBDA"
+        width="70%"
+        bottom="5%"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        padding="14px"
+        borderRadius="16px"
+        border="1px solid #000212"
+      >
+        <SharedSecondaryButton disabled={loading} onClick={onClick}>
+          {loading ? <CircularProgress size={20} /> : "Save"}
+        </SharedSecondaryButton>
+      </Grid>
     </Grid>
   );
 };

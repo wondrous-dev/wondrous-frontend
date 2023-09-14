@@ -162,9 +162,11 @@ export const CONNECT_COORDINAPE_TO_ORG = gql`
   }
 `;
 
-export const CONNECT_TELEGRAM = gql`
-  mutation connectTelegram($orgId: ID, $podId: ID) {
-    connectTelegram(orgId: $orgId, podId: $podId)
+export const CONNECT_TELEGRAM_BOT = gql`
+  mutation connectTelegram($orgId: ID, $chatId: String, $podId: ID) {
+    connectTelegram(orgId: $orgId, chatId: $chatId, podId: $podId) {
+      success
+    }
   }
 `;
 

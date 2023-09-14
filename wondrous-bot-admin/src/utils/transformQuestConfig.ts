@@ -18,6 +18,7 @@ type InputQuestStep = {
     __typename: string;
   }> | null;
   __typename: string;
+  conditionalRewards: any;
   additionalData: {
     tweetLink?: string;
     tweetHandle?: string;
@@ -43,6 +44,7 @@ type InputQuestStep = {
     linkClickUrl?: string;
     discordEventId?: string;
     minDuration?: number;
+    usdValue?: number;
   };
 };
 
@@ -58,9 +60,11 @@ type OutputQuestStep = {
   }>;
   value:
     | string
+    | number
     | {
         question: string;
         withCorrectAnswers: boolean;
+        withConditionalRewards?: boolean;
         multiSelectValue: string;
         answers: Array<{
           value: string;
@@ -146,11 +150,18 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       const hasCorrectAnswer = step.options?.some((option) => option.correct !== null && option.correct !== undefined);
       outputStep.value = {
         question: step.prompt,
+        withConditionalRewards: step.conditionalRewards?.length > 0,
         withCorrectAnswers: hasCorrectAnswer,
         multiSelectValue: step.type,
         answers: step.options?.map((option) => ({
           value: option.text,
-          ...(hasCorrectAnswer ? { isCorrect: option.correct } : {}),
+          rewards: step?.conditionalRewards?.find((item) => item.optionText === option.text)?.rewardData || [],
+          ...(hasCorrectAnswer
+            ? {
+                isCorrect: option.correct,
+
+              }
+            : {}),
         })),
       };
     } else if ([TYPES.LIKE_TWEET, TYPES.RETWEET, TYPES.REPLY_TWEET].includes(step.type)) {
@@ -219,6 +230,8 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         discordEventId: step?.additionalData?.discordEventId,
         minDuration: step?.additionalData?.minDuration,
       };
+    } else if (step.type === TYPES.LIFI_VALUE_BRIDGED) {
+      outputStep.value = Number(step?.additionalData?.usdValue) / 100;
     } else if (step.type === TYPES.DATA_COLLECTION) {
       const dataCollectionType = step?.additionalData?.dataCollectionType;
       outputStep.value = {
