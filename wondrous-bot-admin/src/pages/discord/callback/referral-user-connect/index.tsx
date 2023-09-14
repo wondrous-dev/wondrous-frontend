@@ -6,6 +6,7 @@ import { GET_ORG_DISCORD_INVITE_LINK } from "graphql/queries";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { GRAPHQL_ERRORS } from "utils/constants";
 
 let createCmtyUserBool = false;
 const DiscordCallbackReferralUserConnect = () => {
@@ -25,18 +26,24 @@ const DiscordCallbackReferralUserConnect = () => {
           code,
           referralCode,
         },
-      }).then((res) => {
-        if (res?.data?.createCmtyUserFromReferral) {
-          const orgId = res?.data?.createCmtyUserFromReferral?.orgId;
-          if (orgId) {
-            getOrgDiscordInviteLink({
-              variables: {
-                orgId,
-              },
-            });
+      })
+        .then((res) => {
+          if (res?.data?.createCmtyUserFromReferral) {
+            const orgId = res?.data?.createCmtyUserFromReferral?.orgId;
+            if (orgId) {
+              getOrgDiscordInviteLink({
+                variables: {
+                  orgId,
+                },
+              });
+            }
           }
-        }
-      });
+        })
+        .catch((err) => {
+          if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.CMTY_USER_ALREADY_REFERRED) {
+            setErrorText("You have already been referred!");
+          }
+        });
       createCmtyUserBool = true;
     }
   }, [code, referralCode, createCmtyUserBool, getOrgDiscordInviteLink]);
@@ -44,7 +51,7 @@ const DiscordCallbackReferralUserConnect = () => {
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
       <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
-        {link && (
+        {link && !errorText && (
           <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
             Thanks for connecting your account! To redeem rewards for your and your referrer, join the{" "}
             <a style={{ fontWeight: "bold", cursor: "pointer" }} href={link}>
@@ -54,13 +61,18 @@ const DiscordCallbackReferralUserConnect = () => {
             to start taking on quests!
           </Typography>
         )}
-        {!link && (
+        {!link && !errorText && (
           <>
             <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
               Connecting your Discord. If this is taking too long please try again!
             </Typography>
             <CircularProgress />
           </>
+        )}
+        {errorText && (
+          <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
+            {errorText}
+          </Typography>
         )}
       </Grid>
       <Grid
