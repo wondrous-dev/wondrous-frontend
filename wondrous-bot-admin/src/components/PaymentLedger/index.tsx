@@ -41,8 +41,8 @@ const PaymentLedger = ({ questId = null }) => {
     setTokenIds,
   });
 
-  const unpaidHeaders = [null, "Name", "Reward", "Chain", "Token ID", "Quest Title", "Date"];
-  const paidHeaders = ["Name", "Reward", "Chain", "Link", "Quest Title", "Date"];
+  const unpaidHeaders = [null, "Name", "Reward", "Chain", "Token ID", "Quest/Level Increase", "Date"];
+  const paidHeaders = ["Name", "Reward", "Chain", "Link", "Quest/Level Increase", "Date"];
 
   const headers = paymentView === "unpaid" ? unpaidHeaders : paidHeaders;
   const OPTIONS = [

@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Divider, Grid, Typography } from "@mui/material";
 import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -15,32 +15,15 @@ import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, REMOVE_QUEST_STEP_MEDIA, UPDATE
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
 import { questValidator, ValidationError } from "services/validators";
-import { getPathArray } from "utils/common";
+import { getPathArray, toCent } from "utils/common";
 import { set } from "lodash";
 import { transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
-
-const DEFAULT_STATE_VALUE = {
-  level: "1",
-  timeBound: false,
-  maxSubmission: null,
-  maxApproval: null,
-  requireReview: false,
-  isActive: false,
-  isOnboarding: false,
-  startAt: null,
-  endAt: null,
-  questConditions: [],
-  rewards: [
-    {
-      value: 0,
-      type: "points",
-    },
-  ],
-};
+import { DEFAULT_QUEST_SETTINGS_STATE_VALUE, mapAnswersToOptions, reduceConditionalRewards } from "./utils";
+import { useTour } from "@reactour/tour";
 
 const stepCache = {
   steps: null,
@@ -48,13 +31,15 @@ const stepCache = {
 const CreateTemplate = ({
   setRefValue,
   displaySavePanel,
-  defaultQuestSettings = DEFAULT_STATE_VALUE,
+  defaultQuestSettings = DEFAULT_QUEST_SETTINGS_STATE_VALUE,
   questId = null,
   postUpdate = null,
   title,
   getQuestById = null,
+  defaultSteps = [],
 }) => {
   const navigate = useNavigate();
+  const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
     refetchQueries: ["getQuestById"],
@@ -64,7 +49,7 @@ const CreateTemplate = ({
 
   const { activeOrg } = useContext(GlobalContext);
 
-  const [steps, setSteps] = useState([]);
+  const [steps, setSteps] = useState(defaultSteps);
   const refs = useRef([]);
 
   useEffect(() => {
@@ -79,6 +64,9 @@ const CreateTemplate = ({
       setSteps(stepCache.steps);
     }
   }, []);
+
+  const { isOpen, setCurrentStep, currentStep, setSteps: setTourSteps, steps: tourSteps } = useTour();
+
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -125,6 +113,51 @@ const CreateTemplate = ({
         order: idx + 1,
       }))
     );
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const newSteps = tourSteps.map((step: any) => {
+      if (step.id === "tutorial-quest-rewards") {
+        return {
+          ...step,
+          handleNextAction: () => {
+            setIsRewardModalOpen(true);
+            setCurrentStep((prev) => prev + 1);
+          },
+        };
+      }
+      if (step.id === "tutorial-add-rewards") {
+        return {
+          ...step,
+          handleNextAction: () => {
+            setIsRewardModalOpen(false);
+            setCurrentStep((prev) => prev + 1);
+          },
+          handlePrevAction: () => {
+            setIsRewardModalOpen(false);
+            setCurrentStep((prev) => prev - 1);
+          },
+        };
+      }
+      if (step.id === "tutorial-activate-quest") {
+        return {
+          ...step,
+          handlePrevAction: () => {
+            setIsRewardModalOpen(true);
+            setCurrentStep((prev) => prev - 1);
+          },
+        };
+      }
+      return step;
+    });
+    setTourSteps(newSteps);
+  }, [isOpen]);
+
+  const postRewardsToggle = () => {
+    if (isOpen) {
+      setCurrentStep((prev) => prev + 1);
+    }
   };
 
   const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
@@ -269,15 +302,16 @@ const CreateTemplate = ({
           required: next.required === false ? false : true,
           prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };
-        if (next.type === TYPES.MULTI_QUIZ || next.type === TYPES.SINGLE_QUIZ) {
-          (step.type = next.value.multiSelectValue),
-            (step.options = next.value?.answers?.map((answer, idx) => {
-              return {
-                position: idx,
-                text: answer.value?.trim(),
-                ...(next.value.withCorrectAnswers ? { correct: answer.isCorrect } : {}),
-              };
-            }));
+        const isQuiz = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ].includes(next.type);
+        if (isQuiz) {
+          step.type = next.value.multiSelectValue;
+          step.options = next.value?.answers
+            ? mapAnswersToOptions(next.value.answers, next.value.withCorrectAnswers)
+            : [];
+          const conditionalRewards = next.value?.answers?.reduce(reduceConditionalRewards, []);
+          if (conditionalRewards.length) {
+            step.conditionalRewards = conditionalRewards;
+          }
           step.prompt = next.value.question;
         } else if ([TYPES.LIKE_TWEET, TYPES.RETWEET, TYPES.REPLY_TWEET].includes(next.type)) {
           step.prompt = next.value?.prompt;
@@ -356,6 +390,11 @@ const CreateTemplate = ({
           step["additionalData"] = {
             ...next.value?.dataCollectionProps,
           };
+        } else if (next.type === TYPES.LIFI_VALUE_BRIDGED) {
+          step.prompt = next.value?.prompt;
+          step["additionalData"] = {
+            usdValue: toCent(next.value),
+          };
         }
         return [...acc, step];
       }, []),
@@ -382,6 +421,7 @@ const CreateTemplate = ({
       const errors: any = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
+          console.log("error", error);
           console.log(error.path, "ERR PATH");
           const path = getPathArray(error.path);
           set(errors, path, error.message);
@@ -406,6 +446,17 @@ const CreateTemplate = ({
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
 
+  const handleRewardsToggle = () => {
+    setIsRewardModalOpen((prev) => !prev);
+    postRewardsToggle();
+  };
+
+  const onRewardsChange = (rewards) => {
+    setQuestSettings((prev) => ({
+      ...prev,
+      rewards,
+    }));
+  };
   return (
     <>
       <Modal
@@ -462,7 +513,22 @@ const CreateTemplate = ({
                 "data-tour": "tutorial-quest-rewards",
               }}
               renderHeader={() => <RewardOverviewHeader />}
-              renderBody={() => <RewardComponent rewards={questSettings.rewards} setQuestSettings={setQuestSettings} />}
+              renderBody={() => (
+                <RewardComponent
+                  rewards={questSettings.rewards}
+                  onRewardsChange={onRewardsChange}
+                  renderRewardController={() => (
+                    <>
+                      <Divider color="#767676" />
+                      <Box>
+                        <SharedSecondaryButton onClick={handleRewardsToggle}>Add more</SharedSecondaryButton>
+                      </Box>
+                    </>
+                  )}
+                  handleRewardsToggle={handleRewardsToggle}
+                  isRewardModalOpen={isRewardModalOpen}
+                />
+              )}
             />
           </Box>
           <Grid

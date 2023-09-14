@@ -218,3 +218,13 @@ export const TelegramBotInfo = styled(Typography)`
     line-height: 17px;
   }
 `;
+
+export const GroupInput = styled(InputBase)`
+  && {
+    color: ${palette.white};
+    font-family: ${typography.fontFamily};
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 17px;
+  }
+`;

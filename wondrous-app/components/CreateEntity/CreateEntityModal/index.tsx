@@ -3,8 +3,8 @@ import moment from 'moment';
 
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import CircularProgress from '@mui/material/CircularProgress';
-import formatDate from 'date-fns/format';
 import apollo from 'services/apollo';
+import { setHours, setMinutes, setSeconds, format } from 'date-fns';
 
 import { useFormik } from 'formik';
 import { CREATE_TASK_TEMPLATE, TURN_TASK_TO_BOUNTY, UPDATE_TASK_TEMPLATE } from 'graphql/mutations/task';
@@ -208,6 +208,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         }
         categories.push(GR15DEICategoryName);
       }
+      const adjustedDate = values.dueDate ? setHours(setMinutes(setSeconds(new Date(values.dueDate), 1), 0), 0) : null;
+
       const voteType = proposalVoteType || PROPOSAL_VOTE_CHOICES.BINARY;
       const voteOptions = customProposalChoices;
       const input = {
@@ -219,7 +221,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         userMentions,
         categories,
         // set due date to 00:00:01 to avoid timezone issues
-        dueDate: values.dueDate ? formatDate(values.dueDate, `yyyy-MM-dd'T'00:00:01.000'Z'`) : null,
+        dueDate: values.dueDate ? format(adjustedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX") : null,
         ...(isProposal && {
           voteType,
           ...(voteType === PROPOSAL_VOTE_CHOICES.CUSTOM && { voteOptions }),

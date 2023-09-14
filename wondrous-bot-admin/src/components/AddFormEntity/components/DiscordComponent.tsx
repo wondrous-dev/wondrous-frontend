@@ -15,6 +15,7 @@ import SelectComponent from "components/Shared/Select";
 import GlobalContext from "utils/context/GlobalContext";
 import DropdownSelect from "components/DropdownSelect/DropdownSelect";
 import { format } from "date-fns";
+import { ErrorText } from "components/Shared/styles";
 const TextInputStyle = {
   width: "50%",
 };
@@ -55,7 +56,6 @@ const DiscordChannelMessage = ({ handleOnChange, value, error }) => {
     label: channel.name,
     value: channel.id,
   }));
-
   return (
     <>
       <Label>Ask members to message a particular channel</Label>
@@ -71,6 +71,8 @@ const DiscordChannelMessage = ({ handleOnChange, value, error }) => {
           width: "50%",
         }}
       />
+      {error?.discordChannelId ? <ErrorText>{error?.discordChannelId}</ErrorText> : null}
+
       {/* <Label>Select message type</Label>
       <SelectComponent
         options={DISCORD_MESSAGE_TYPES}
@@ -86,7 +88,7 @@ const DiscordChannelMessage = ({ handleOnChange, value, error }) => {
   );
 };
 
-const DiscordJoinCommunityCall = ({ handleOnChange, value }) => {
+const DiscordJoinCommunityCall = ({ handleOnChange, value, error }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
     notifyOnNetworkStatusChange: true,
@@ -149,6 +151,7 @@ const DiscordJoinCommunityCall = ({ handleOnChange, value }) => {
       value: 30 * 60,
     },
   ];
+
   return (
     <>
       {options && (
@@ -156,7 +159,7 @@ const DiscordJoinCommunityCall = ({ handleOnChange, value }) => {
           options={options}
           background="#C1B6F6"
           value={value?.discordEventId}
-          // error={error?.discordMessageType}
+          error={error?.discordEventId}
           onChange={(value) => handleOnChange("discordEventId", value)}
           style={{
             width: "50%",
@@ -176,7 +179,7 @@ const DiscordJoinCommunityCall = ({ handleOnChange, value }) => {
         options={durationOptions}
         background="#C1B6F6"
         value={value?.minDuration}
-        // error={error?.discordMessageType}
+        error={error?.minDuration}
         onChange={(value) => handleOnChange("minDuration", value)}
         style={{
           width: "50%",
@@ -192,7 +195,7 @@ const getDiscordComponent = (stepType, handleOnChange, value, error) => {
   }
 
   if (stepType === TYPES.DISCORD_EVENT_ATTENDANCE) {
-    return <DiscordJoinCommunityCall handleOnChange={handleOnChange} value={value} />;
+    return <DiscordJoinCommunityCall handleOnChange={handleOnChange} value={value} error={error?.additionalData} />;
   }
 
   return null;

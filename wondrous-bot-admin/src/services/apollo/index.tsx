@@ -11,7 +11,13 @@ const graphqlUri = !import.meta.env.VITE_STAGING
 
 const httpLink = new HttpLink({
   uri: graphqlUri,
-  credentials: "include",
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Request-With',
+  }
+  // credentials: "include",
+  
 });
 
 const getAuth = () => {

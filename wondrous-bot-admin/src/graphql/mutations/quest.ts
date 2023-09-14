@@ -131,3 +131,21 @@ export const REMOVE_QUEST_STEP_MEDIA = gql`
     }
   }
 `;
+
+
+
+export const SUBMIT_QUEST = gql`
+  mutation createQuestSubmission($questId: String, $telegramUserId: String, $telegramUsername: String, $stepsData: [StepSubmissionInput]) {
+    createQuestSubmission(questId: $questId, telegramUserId: $telegramUserId, telegramUsername: $telegramUsername, stepsData: $stepsData) {
+      success
+    }
+  }
+`;
+
+export const REQUEST_CMTY_USER_CONNECT_WALLET = gql`
+  mutation requestCmtyUserConnectWallet($cmtyUserId: ID!, $orgId: ID!) {
+    requestCmtyUserConnectWallet(cmtyUserId: $cmtyUserId, orgId: $orgId) {
+      success
+    }
+  }
+`;

@@ -46,21 +46,22 @@ export const ModalContent = styled.div`
   outline: 0;
 `;
 
-export const ModalTitle = styled(Typography).attrs({
-  sx: {
-    fontSize: 15,
-    color: '#E9FF90',
-    fontFamily: 'Poppins',
-    fontWeight: 600,
-  },
-})``;
+
+export const ModalTitle = styled(Typography)`
+  && {
+    font-size: 15px;
+    color: ${({color = "#E9FF90"}) => color};
+    font-family: Poppins;
+    font-weight: 600;
+  }
+`;
 
 export const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px;
-  background: #2a8d5c;
+  background: ${({bgColor = "#2a8d5c"}) => bgColor};
   border-bottom: 1px solid black;
 `;
 

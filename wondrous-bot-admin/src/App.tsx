@@ -44,6 +44,9 @@ import VerifyLinkPage from "pages/verify-link";
 import AnalyticsPage from "pages/analytics";
 import PremiumFeatureDialog from "components/PremiumFeatureDialog";
 import PaywallContext from "utils/context/PaywallContext";
+import ConnectPage from "pages/settings/connect";
+import TelegramStatQuest from "pages/telegram/start-quest";
+import PaywallContextProvider from "utils/context/PaywallContext";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +75,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/billing",
         element: <BillingPage />,
+      },
+      {
+        path: "/settings/connect",
+        element: <ConnectPage />,
       },
       {
         path: "/",
@@ -154,13 +161,17 @@ const router = createBrowserRouter([
         element: <PricingPage />,
       },
       {
-        path: '/verify-link',
-        element: <VerifyLinkPage />
+        path: "/verify-link",
+        element: <VerifyLinkPage />,
       },
       {
-        path: '/analytics',
-        element: <AnalyticsPage />
-      }
+        path: "/analytics",
+        element: <AnalyticsPage />,
+      },
+      {
+        path: "/telegram/start-quest/:id",
+        element: <TelegramStatQuest />,
+      },
     ],
   },
 ]);
@@ -201,8 +212,6 @@ const getDesignTokens = (mode) => ({
 
 function App() {
   const [mode, setMode] = useState(THEME_TYPES.LIGHT);
-  const [paywall, setPaywall] = useState(false);
-  const [paywallMessage, setPaywallMessage] = useState("");
   const colorMode = useMemo(
     () => ({
       // The dark mode switch would invoke this method
@@ -221,15 +230,14 @@ function App() {
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
   return (
     <StyledComponentProvider theme={theme}>
-      <PremiumFeatureDialog open={paywall} onClose={() => setPaywall(false)} paywallMessage={paywallMessage} />
       <ThemeProvider theme={theme}>
         <ApolloProvider client={client}>
           <SnackbarAlertProvider>
             <Web3ReactProvider getLibrary={getLibrary}>
               <WonderWeb3Provider>
-                <PaywallContext.Provider value={{ paywall, setPaywall, setPaywallMessage }}>
+                <PaywallContextProvider>
                   <RouterProvider router={router} />
-                </PaywallContext.Provider>
+                </PaywallContextProvider>
               </WonderWeb3Provider>
             </Web3ReactProvider>
           </SnackbarAlertProvider>

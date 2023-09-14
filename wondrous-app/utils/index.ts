@@ -91,7 +91,7 @@ export const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
 
 export const getTelegramBotLink = () => {
   if (process.env.NEXT_PUBLIC_PRODUCTION) {
-    return 'https://t.me/wonderverse_bot';
+    return 'https://t.me/wonderverse_bot?startgroup=true&admin=post_messages';
   }
-  return 'https://t.me/wonderverse_staging_bot';
+  return 'https://t.me/wonderverse_test_bot?startgroup=true&admin=post_messages';
 };

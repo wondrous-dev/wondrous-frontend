@@ -8,6 +8,7 @@ import { Matic } from "components/Icons/web3";
 import Optimism from "assets/optimism";
 import Avalanche from "assets/avalanche";
 import Binance from "assets/binance";
+import Base from "assets/base.svg";
 import { useEffect, useState } from "react";
 import DropdownSelect from "components/DropdownSelect/DropdownSelect";
 import { useLazyQuery } from "@apollo/client";
@@ -40,6 +41,19 @@ const chainOptions = [
     label: "BNB",
     icon: <Binance />,
     value: "bsc",
+  },
+  {
+    label: "Base",
+    icon: (
+      <img
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+        src={Base}
+      />
+    ),
+    vaue: "base",
   },
 ];
 

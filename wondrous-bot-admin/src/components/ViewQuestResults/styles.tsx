@@ -66,6 +66,6 @@ export const StyledContent = styled(Typography)`
     font-weight: 500;
     font-size: 14px;
     line-height: 24px;
-    color: #767676;
+    color: ${({color = "#767676"}) => color};
   }
 `;
