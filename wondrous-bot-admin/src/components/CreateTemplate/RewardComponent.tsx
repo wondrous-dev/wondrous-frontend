@@ -153,6 +153,7 @@ const RewardComponent = ({
   handleRewardsToggle,
   isRewardModalOpen,
   renderRewardController = null,
+  hasReferralStep = false,
 }) => {
   const [errors, setErrors] = useState(null);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
@@ -424,7 +425,7 @@ const RewardComponent = ({
       <Modal
         open={isRewardModalOpen}
         onClose={handleToggle}
-        title="Add reward to quest"
+        title={hasReferralStep ? "Add reward per referral" : "Add reward to quest"}
         modalComponentProps={{
           className: "tour-default-modal",
         }}

@@ -110,7 +110,6 @@ export const CREATE_CMTY_USER_FROM_REFERRAL = gql`
   mutation createCmtyUserFromReferral($referralCode: String!, $code: String!) {
     createCmtyUserFromReferral(referralCode: $referralCode, code: $code) {
       orgId
-      cmtyUserId
     }
   }
 `;
