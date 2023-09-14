@@ -57,8 +57,9 @@ const DiscordCallbackReferralUserConnect = () => {
             <a style={{ fontWeight: "bold", cursor: "pointer" }} href={link}>
               {" "}
               Discord server
-            </a>{" "}
-            to start taking on quests!
+            </a>
+            {", "}
+            then type "/quests" to start taking on quests!
           </Typography>
         )}
         {!link && !errorText && (
