@@ -82,9 +82,9 @@ export const ButtonIconWrapper = styled(ButtonBase)`
     gap: 6px;
     border-radius: 6px;
 
-    height: 30px;
+    height: ${({ height = "30px" }) => height};
 
-    width: 30px;
+    width: ${({ width = "30px" }) => width};
     &:hover {
       opacity: 0.8;
     }
@@ -115,7 +115,7 @@ export const StyledTextFieldSelect = styled(TextField)`
 
 const ReversedButtonCss = css`
   background: white;
-  border: 1px solid #84bcff;
+  border: 2px solid #84bcff;
 `;
 export const SharedSecondaryButton = styled(ButtonBase)`
   && {

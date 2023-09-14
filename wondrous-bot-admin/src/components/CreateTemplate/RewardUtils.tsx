@@ -627,6 +627,7 @@ export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, s
     <SelectComponent
       options={options}
       value={reward}
+      disabled
       onChange={(value) => {
         setPaymentReward(value);
         setQuestSettings((prev) => {

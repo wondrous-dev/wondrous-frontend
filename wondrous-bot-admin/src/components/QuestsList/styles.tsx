@@ -1,16 +1,16 @@
-import { Grid, Typography } from '@mui/material';
-import { BoxWrapper } from 'components/QuestCardMenu/styles';
-import styled from 'styled-components';
+import { Grid, Typography } from "@mui/material";
+import { BoxWrapper } from "components/QuestCardMenu/styles";
+import styled from "styled-components";
 
 export const Label = styled(Typography)`
   && {
-    font-family: 'Poppins';
+    font-family: "Poppins";
     font-style: normal;
     font-weight: ${({ fontWeight }) => fontWeight || 600};
-    font-size: ${({ fontSize }) => fontSize || '18px'};
-    line-height: ${({ lineHeight }) => lineHeight || '21px'};
+    font-size: ${({ fontSize }) => fontSize || "18px"};
+    line-height: ${({ lineHeight }) => lineHeight || "21px"};
 
-    color: ${({ color }) => color || '#000000'};
+    color: ${({ color }) => color || "#000000"};
     display: inline-block;
   }
 `;
@@ -36,12 +36,15 @@ export const CardWrapper = styled(Grid)`
     flex-direction: column;
     gap: 14px;
     transition: all 0.2s ease-in-out;
-    &:hover {
+    ${({ disableHover }) =>
+    disableHover
+        ? ""
+        : `&:hover {
       transform: translateY(-20px);
       background: #fee2ca;
       ${BoxWrapper} {
         display: flex;
       }
-    }
+    }`}
   }
 `;

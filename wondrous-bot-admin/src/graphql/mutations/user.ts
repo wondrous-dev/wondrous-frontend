@@ -146,8 +146,8 @@ export const CLOSE_MAIN_BANNER = gql`
 `;
 
 export const VERIFY_COMMUNITY_USER_TWITTER = gql`
-  mutation verifyCommunityUserTwitter($code: String, $discordId: String) {
-    verifyCommunityUserTwitter(code: $code, discordId: $discordId) {
+  mutation verifyCommunityUserTwitter($code: String, $discordId: String, $telegramUserId: String) {
+    verifyCommunityUserTwitter(code: $code, discordId: $discordId, telegramUserId: $telegramUserId) {
       success
     }
   }
@@ -163,8 +163,8 @@ export const CONNECT_COMMUNITY_USER_WALLET = gql`
 `;
 
 export const CONNECT_COMMUNITY_USER_GOOGLE = gql`
-  mutation connectCommunityUserGoogle($code: String, $discordId: String) {
-    connectCommunityUserGoogle(code: $code, discordId: $discordId) {
+  mutation connectCommunityUserGoogle($code: String, $discordId: String, $telegramUserId: String) {
+    connectCommunityUserGoogle(code: $code, discordId: $discordId, telegramUserId: $telegramUserId) {
       success
     }
   }

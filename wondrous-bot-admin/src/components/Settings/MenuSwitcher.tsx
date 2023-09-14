@@ -13,6 +13,10 @@ const MENU_ITEMS = [
     path: "/settings/notifications",
   },
   {
+    title: 'Connect Bot',
+    path: '/settings/connect'
+  },
+  {
     title: "Payments",
     path: "/settings/payments",
   },

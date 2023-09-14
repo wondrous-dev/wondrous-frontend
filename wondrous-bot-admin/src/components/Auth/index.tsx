@@ -198,7 +198,8 @@ export const linkCmtyUserWallet = async (
   web3Address: string,
   signedMessage: string,
   blockchain: string,
-  originalMessage: string
+  originalMessage: string,
+  telegramUserId?: string
 ) => {
   try {
     const {
@@ -212,6 +213,7 @@ export const linkCmtyUserWallet = async (
           signedMessage,
           blockchain,
           originalMessage,
+          telegramUserId
         },
       },
     });

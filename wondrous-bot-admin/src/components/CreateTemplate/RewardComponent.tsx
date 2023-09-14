@@ -261,7 +261,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
             existingReward = true;
             return {
               ...reward,
-              amount: Number(tokenReward?.amount) + Number(reward?.amount),
+              amount: Number(tokenReward?.amount)
             };
           }
           return reward;
@@ -427,13 +427,15 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               }}
               background={PAYMENT_OPTIONS.TOKEN === rewardType ? "#BFB4F3" : "#FFFFF"}
               onClick={() => {
-                if (plan === PricingOptionsTitle.Basic) {
-                  setPaywall(true);
-                  setPaywallMessage("This reward option is not available under the basic plan.");
-                  return;
-                } else {
-                  setRewardType(PAYMENT_OPTIONS.TOKEN);
-                }
+                setRewardType(PAYMENT_OPTIONS.TOKEN);
+
+                // if (plan === PricingOptionsTitle.Basic) {
+                //   setPaywall(true);
+                //   setPaywallMessage("This reward option is not available under the basic plan.");
+                //   return;
+                // } else {
+                //   setRewardType(PAYMENT_OPTIONS.TOKEN);
+                // }
               }}
             >
               Token reward

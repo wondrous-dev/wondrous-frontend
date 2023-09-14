@@ -75,17 +75,24 @@ export const dedupeColumns = (columns) => {
   return newColumns;
 };
 
-export const getDiscordUrl = (callbackUrl = '/discord/callback', params = '') => {
+export const getDiscordUrl = (callbackUrl = "/discord/callback", params = "") => {
   let redirectUri = encodeURIComponent(`${getBaseUrl()}${callbackUrl}`);
   const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
   return `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=email%20identify${params}`;
 };
 
 export const getTelegramBotLink = () => {
+  let botName = "wonderverse_bot";
+  let link = `https://t.me/${botName}?startgroup=true&admin=post_messages`;
   if (import.meta.env.VITE_PRODUCTION) {
-    return "https://t.me/wonderverse_bot";
+    return link;
   }
-  return "https://t.me/wonderverse_staging_bot";
+  if (import.meta.env.VITE_STAGING) {
+    botName = "wonderverse_staging_bot";
+    link = `https://t.me/${botName}?startgroup=true&admin=post_messages`;
+    return link;
+  }
+  return "https://t.me/communities_test_bot?startgroup=true&admin=post_messages";
 };
 
 export const useDiscordRoles = ({ orgId, skip = false }) => {

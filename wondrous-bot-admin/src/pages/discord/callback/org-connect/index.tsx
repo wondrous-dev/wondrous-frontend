@@ -22,6 +22,7 @@ const CallbackPage = () => {
       }
       navigate("/");
     },
+    refetchQueries: ['getLoggedInUserFullAccessOrgs'],
     onError: (e) => {
       console.error("error connecting discord", e);
       setErrorText("Error connecting discord - please try again");

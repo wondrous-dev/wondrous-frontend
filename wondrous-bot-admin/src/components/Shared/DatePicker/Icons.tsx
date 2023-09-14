@@ -1,7 +1,7 @@
-export const CloseIcon = () => (
+export const CloseIcon = ({height = "13px", width="12px"}) => (
   <svg
-    width='12'
-    height='13'
+    width={width}
+    height={height}
     viewBox='0 0 12 13'
     fill='none'
     xmlns='http://www.w3.org/2000/svg'
