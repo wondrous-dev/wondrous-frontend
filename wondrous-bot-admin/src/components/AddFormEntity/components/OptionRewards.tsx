@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, ButtonBase, Grid } from "@mui/material";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import DeleteIcon from "components/Icons/Delete";
 import { DiscordRoleIcon, NFTIcon, PointsIcon } from "components/Icons/Rewards";
@@ -13,11 +13,14 @@ const ICONS_MAP = {
   [PAYMENT_OPTIONS.TOKEN]: PointsIcon,
 };
 
-const RewardContent = ({ reward }) => {
+const RewardContent = ({ reward, handleAddReward }) => {
   const Icon = ICONS_MAP[reward?.type];
 
   const label = useMemo(() => {
     if (!reward) return null;
+    if (reward?.type === null) {
+      return `Select reward`;
+    }
     if (reward?.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
       return `Role: ${reward?.discordRewardData?.discordRoleName}`;
     }
@@ -40,9 +43,13 @@ const RewardContent = ({ reward }) => {
   );
 };
 
-const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward }) => {
-  
+const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward, id }) => {
   if (!rewards?.length) return null;
+
+  const addEmptyReward = (reward) => {
+    if (reward && reward.type !== null) return null;
+    handleAddReward(id);
+  };
 
   return (
     <Grid display="flex" gap="10px" flexDirection="column" paddingLeft="46px" width="100%">
@@ -59,13 +66,14 @@ const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward }) => {
               borderRadius="6px"
               flex="1"
               gap="8px"
+              onClick={() => addEmptyReward(reward)}
             >
-              <RewardContent reward={reward} />
+              <RewardContent reward={reward} handleAddReward={() => handleAddReward(id)} />
             </Box>
-            <ButtonIconWrapper onClick={() => handleRewardDelete(idx)}>
+            {rewards?.length > 1 ? <ButtonIconWrapper onClick={() => handleRewardDelete(idx)}>
               <DeleteIcon />
-            </ButtonIconWrapper>
-            <ButtonIconWrapper onClick={() => handleAddReward(idx)}>
+            </ButtonIconWrapper> : null}
+            <ButtonIconWrapper onClick={() => handleAddReward(id)}>
               <AddIcon
                 sx={{
                   color: "black",

@@ -148,14 +148,16 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       outputStep.value = step.prompt;
     } else if ([TYPES.SINGLE_QUIZ, TYPES.MULTI_QUIZ].includes(step.type)) {
       const hasCorrectAnswer = step.options?.some((option) => option.correct !== null && option.correct !== undefined);
+      const hasStepConditionalRewards = step.conditionalRewards?.length > 0;
+      const defaultRewardsIfConditionalRewardsIsOn = hasStepConditionalRewards ? [{type: null}] : [];
       outputStep.value = {
         question: step.prompt,
-        withConditionalRewards: step.conditionalRewards?.length > 0,
+        withConditionalRewards: hasStepConditionalRewards,
         withCorrectAnswers: hasCorrectAnswer,
         multiSelectValue: step.type,
         answers: step.options?.map((option) => ({
           value: option.text,
-          rewards: step?.conditionalRewards?.find((item) => item.optionText === option.text)?.rewardData || [],
+          rewards: step?.conditionalRewards?.find((item) => item.optionText === option.text)?.rewardData || defaultRewardsIfConditionalRewardsIsOn,
           ...(hasCorrectAnswer
             ? {
                 isCorrect: option.correct,
