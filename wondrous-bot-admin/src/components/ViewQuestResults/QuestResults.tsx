@@ -264,12 +264,13 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
           </FilterPill>
         )}
       </Grid>
-      <Box ref={ref} width="100%" gap="14px" display="flex" alignItems="center" flexDirection="column">
+      <Box width="100%" gap="14px" display="flex" alignItems="center" flexDirection="column">
         {submissions?.length ? (
           submissions?.map((submission, idx) => <QuestResultsCard submission={submission} key={idx} />)
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.SUBMISSIONS} />
         )}
+        <div ref={ref} />
       </Box>
     </Grid>
   );
