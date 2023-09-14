@@ -292,7 +292,7 @@ const CreateTemplate = ({
             };
           }
         })
-        .filter((reward) => reward),
+        ?.filter((reward) => reward),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           id: next?._id,
@@ -408,7 +408,7 @@ const CreateTemplate = ({
       handleMutation({ body });
 
       const hasMediaToUpload = steps.some(
-        (step) => step.mediaUploads.filter((media) => media instanceof File).length > 0
+        (step) => step.mediaUploads?.filter((media) => media instanceof File).length > 0
       );
 
       const hasMediaToRemove = Object.values(removedMediaSlugs).flat().length > 0;
