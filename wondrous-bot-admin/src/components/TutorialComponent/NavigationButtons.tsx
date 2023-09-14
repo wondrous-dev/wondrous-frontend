@@ -17,6 +17,11 @@ export function NextNavigationButton({
   const stepsData = steps[currentStep];
   const buttonTitle = stepsData?.nextButtonTitle || 'Next';
   const action = async () => {
+
+    if(stepsData?.forceNextStep) {
+      const nextStep = stepsData?.forceNextStep(currentStep)
+      return setCurrentStep(nextStep)
+    }
     if(stepsData?.nextHref && meta) {
       navigate(stepsData?.nextHref.replace(':id', meta))
       setMeta(null)
@@ -50,7 +55,13 @@ export function PrevNavigationButton({
   const stepsData = steps[currentStep];
   const buttonTitle = stepsData?.prevButtonTitle || 'Previous';
   
+
+
   const action = () => {
+    if(stepsData?.forcePrevStep) {
+      const prevStep = stepsData?.forcePrevStep(currentStep)
+      return setCurrentStep(prevStep)
+    }
     if (currentStep === 0 || stepsData.prevAction === 'skip') {
       return setIsOpen(false);
     }

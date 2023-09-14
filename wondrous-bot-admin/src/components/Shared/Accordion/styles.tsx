@@ -11,6 +11,7 @@ export const Accordion = styled(AccordionMui)`
 		border: ${(props) => (props.expanded ? "1px solid black" : "none")};
 		background-color: ${(props) => (props.expanded ? "#FFEBDA" : "white")};
 		box-shadow: none;
+		overflow: hidden;
 		border-bottom-left-radius: 16px !important;
 		border-bottom-right-radius: 16px !important;
 		border-top-left-radius: 16px !important;
@@ -30,8 +31,9 @@ export const Accordion = styled(AccordionMui)`
 export const StyledAccordionSummary = styled(AccordionSummaryMui)`
 	&.MuiAccordionSummary-root {
 		min-height: 56px;
-
 		padding: 14px;
+		background: ${({bgColor = 'transparent'}) => bgColor};
+		border-radius: 6px;
 		& .MuiAccordionSummary-content {
 			margin: 0 !important;
 		}

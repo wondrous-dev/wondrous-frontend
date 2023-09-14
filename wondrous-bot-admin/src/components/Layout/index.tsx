@@ -124,7 +124,7 @@ const Layout = () => {
     >
       <SubscriptionContext.Provider value={subscription?.status === "active" ? subscription : null}>
         <TutorialComponent>
-          <FeedbackButton />
+          {/* <FeedbackButton /> */}
           {isPageWithoutHeader ? null : <Navbar />}
           <Main $isPageWithoutHeader={isPageWithoutHeader}>
             <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>

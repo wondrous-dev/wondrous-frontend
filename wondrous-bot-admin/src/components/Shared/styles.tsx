@@ -117,7 +117,7 @@ export const StyledTextFieldSelect = styled(TextField)`
 
 const ReversedButtonCss = css`
   background: white;
-  border: 1px solid #84bcff;
+  border: 2px solid #84bcff;
 `;
 export const SharedSecondaryButton = styled(ButtonBase)`
   && {

@@ -11,6 +11,7 @@ const SelectComponent = ({
   boxStyle = {},
   error = null,
   disabled = false,
+  onOpen = null
 }) => {
   const handleChange = (e) => onChange(e.target.value);
 
@@ -27,11 +28,15 @@ const SelectComponent = ({
         onChange={handleChange}
         SelectProps={{
           displayEmpty: true,
+          onOpen: () => onOpen?.(),
           renderValue: (selected) => {
             const selectedOption = options?.find((option) => option.value === selected);
             return selectedOption ? selectedOption.label : "Select";
           },
           MenuProps: {
+            MenuListProps: {
+              'data-tour': 'tutorial-quest-select-menu',
+            },
             sx: {
               ".MuiPaper-root": {
                 backgroundColor: "#E8E8E8",
