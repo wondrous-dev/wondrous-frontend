@@ -1,19 +1,20 @@
 import { Box, ButtonBase, Grid, Typography } from "@mui/material";
 import { getDiscordBotOauthURL } from "components/ConnectDiscord/ConnectDiscordButton";
-import { ConnectDiscordIcon } from "components/Icons/Discord";
 import { TelegramConnectIcon } from "components/Icons/Telegram";
 import { NotificationWrapper } from "components/Settings/NotificationSettings/styles";
 import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
 import { useContext, useEffect, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
-import { AddBotLink, SharedLabel, StatusPill } from "./styles";
+import { AddBotLink, DisconnectButton, SharedLabel } from "./styles";
 import { ExternalLinkIcon } from "components/Icons/ExternalLink";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
 import { getTelegramBotLink } from "utils/discord";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import * as yup from "yup";
-import { CONNECT_TELEGRAM_BOT } from "graphql/mutations";
+import { CONNECT_TELEGRAM_BOT, DISCONNECT_DISCORD_TO_CMTY_ORG } from "graphql/mutations";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
+import { DiscordRoleIcon } from "components/Icons/Rewards";
+import { GET_CMTY_ORG_DISCORD_CONFIG } from "graphql/queries";
 
 const telegramGroupIdSchema = yup
   .number()
@@ -40,18 +41,18 @@ const useTelegramModal = () => {
   const [error, setError] = useState("");
 
   const [getTelegramConfigForOrg, { data }] = useLazyQuery(GET_TELEGRAM_CONFIG_FOR_ORG, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
+      setGroupId(data?.getTelegramConfigForOrg?.chatId);
       if (data?.getTelegramConfigForOrg?.chatId) {
-        setGroupId(data?.getTelegramConfigForOrg?.chatId);
+        setIsTelegramModalOpen(true);
       }
     },
   });
 
   const [connectTelegram] = useMutation(CONNECT_TELEGRAM_BOT, {
     refetchQueries: ["getTelegramConfigForOrg"],
-    onCompleted: () => {
-      toggleTelegramModal();
-    },
   });
 
   useEffect(() => {
@@ -100,7 +101,7 @@ const useTelegramModal = () => {
       },
     ];
 
-    if (!isTelegramModalOpen) return null;
+    if (!isTelegramModalOpen && !data?.getTelegramConfigForOrg?.chatId) return null;
 
     return (
       <Grid display="flex" flexDirection="column" gap="24px" padding="18px" borderTop="1px solid #B0BEC5" width="100%">
@@ -127,16 +128,21 @@ const useTelegramModal = () => {
         {error ? <ErrorText>{error}</ErrorText> : null}
         <Box>
           <SharedSecondaryButton disabled={!groupId} onClick={handleSubmit}>
-            Connect
+            {data?.getTelegramConfigForOrg?.chatId ? "Update" : "Connect"}
           </SharedSecondaryButton>
         </Box>
       </Grid>
     );
   };
 
+  const handleDisconnect = () => {
+    connectTelegram({ variables: { chatId: null, orgId: activeOrg?.id } });
+    setGroupId("");
+    setIsTelegramModalOpen(false);
+  };
   const ConnectButton = () => {
-    if (data?.getTelegramConfigForOrg?.chatId && !isTelegramModalOpen) {
-      return <StatusPill onClick={toggleTelegramModal}>Update</StatusPill>;
+    if (data?.getTelegramConfigForOrg?.chatId) {
+      return <DisconnectButton onClick={handleDisconnect}>Disconnect</DisconnectButton>;
     }
     if (isTelegramModalOpen) {
       return (
@@ -159,29 +165,44 @@ const useTelegramModal = () => {
 const ConnectBotComponent = ({ cardBgColor = "white" }) => {
   const { activeOrg } = useContext(GlobalContext);
   const oauthUrl = getDiscordBotOauthURL({ orgId: activeOrg?.id });
-  const { TgComponent, ConnectButton, isConnected: isTelegramConnected } = useTelegramModal();
+  const { TgComponent, isConnected: isTelegramConnected, ConnectButton } = useTelegramModal();
   const handleDiscordClick = async () => {
     window.location.href = oauthUrl;
   };
 
+  const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
+    fetchPolicy: "cache-and-network",
+  });
+
+  const [disconnectCmtyOrgDiscord] = useMutation(DISCONNECT_DISCORD_TO_CMTY_ORG, {
+    refetchQueries: ["getCmtyOrgDiscordConfig"],
+  });
+
   const CARDS_CONFIG = [
     {
       title: "Discord",
-      icon: ConnectDiscordIcon,
+      icon: DiscordRoleIcon,
       onClick: handleDiscordClick,
-      isConnected: !!activeOrg?.cmtyDiscordConfig,
-      iconProps: {
-        fill: !!activeOrg?.cmtyDiscordConfig ? "#AF9EFF" : "#2A8D5C",
+      isConnected: !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.guildId && getDiscordConfigError?.graphQLErrors[0]?.extensions?.code !== 404,
+      onDisconnect: () => {
+        disconnectCmtyOrgDiscord({
+          variables: {
+            orgId: activeOrg?.id,
+          },
+        });
       },
     },
     {
       title: "Telegram",
       icon: TelegramConnectIcon,
-      iconProps: {
-        fill: isTelegramConnected ? "#AF9EFF" : "#2A8D5C",
-      },
       component: TgComponent,
       customButton: ConnectButton,
+      isConnected: isTelegramConnected,
     },
   ];
 
@@ -190,15 +211,26 @@ const ConnectBotComponent = ({ cardBgColor = "white" }) => {
       {CARDS_CONFIG.map((card) => (
         <NotificationWrapper bgColor={cardBgColor}>
           <Grid padding="18px" display="flex" justifyContent="flex-start" alignItems="center" gap="14px" width="100%">
-            <card.icon {...card.iconProps} />
+            <Box
+              borderRadius="6px"
+              bgcolor="#F8AFDB"
+              height="42px"
+              width="42px"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <card.icon />
+            </Box>
             <SharedLabel>{card.title}</SharedLabel>
+            {card.isConnected ? <SharedLabel color="#2A8D5C">Connected</SharedLabel> : null}
             <Box flex="1" display="flex" justifyContent="flex-end">
               {card.customButton ? (
                 card.customButton()
               ) : (
                 <>
                   {card.isConnected ? (
-                    <StatusPill disabled>Connected</StatusPill>
+                    <DisconnectButton onClick={card.onDisconnect}>Disconnect</DisconnectButton>
                   ) : (
                     <SharedSecondaryButton onClick={card.onClick}>Connect</SharedSecondaryButton>
                   )}
