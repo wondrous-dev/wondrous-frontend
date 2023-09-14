@@ -255,7 +255,7 @@ const RewardComponent = ({
 
   const onDiscordRoleRewardRemove = (reward) => {
     return onRewardsChange(
-      rewards.filter((r) => {
+      rewards?.filter((r) => {
         if (r.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
           return r.discordRewardData.discordRoleId !== reward.discordRewardData.discordRoleId;
         }
@@ -266,7 +266,7 @@ const RewardComponent = ({
 
   const onPaymentMethodRewardRemove = (reward) => {
     return onRewardsChange(
-      rewards.filter((r) => {
+      rewards?.filter((r) => {
         if (r.type === PAYMENT_OPTIONS.TOKEN) {
           return r.paymentMethodId !== reward.paymentMethodId;
         }
@@ -276,7 +276,7 @@ const RewardComponent = ({
   };
 
   const onPoapRewardRemove = (reward) => {
-    return rewards.filter((r) => {
+    return rewards?.filter((r) => {
       if (r.type === PAYMENT_OPTIONS.POAP) {
         return r.id !== reward.id;
       }
