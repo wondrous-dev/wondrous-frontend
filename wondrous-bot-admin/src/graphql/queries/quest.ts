@@ -144,8 +144,8 @@ export const GET_QUEST_SUBMISSION_STATS = gql`
 `;
 
 export const GET_QUEST_REWARDS = gql`
-  query getQuestRewards($questId: ID!) {
-    getQuestRewards(questId: $questId) {
+  query getQuestRewards($questId: ID!, $includeConditionalRewards: Boolean) {
+    getQuestRewards(questId: $questId, includeConditionalRewards: $includeConditionalRewards) {
       id
       type
       discordRewardData {

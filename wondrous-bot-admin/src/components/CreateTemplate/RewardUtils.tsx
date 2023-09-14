@@ -615,7 +615,7 @@ export const RewardFooterLeftComponent = ({
   }
 };
 
-export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, setQuestSettings }) => {
+export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, onRewardsChange, rewards }) => {
   const [reward, setPaymentReward] = useState(null);
   const initialRewardId = initialReward?.paymentMethodId;
   useEffect(() => {
@@ -623,33 +623,33 @@ export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, s
       setPaymentReward(initialRewardId);
     }
   }, [initialRewardId]);
+
+  const handleChange = (value) => {
+    setPaymentReward(value);
+
+    onRewardsChange(
+      rewards.map((reward) => {
+        if (reward.type === PAYMENT_OPTIONS.TOKEN && reward.paymentMethod?.id === initialRewardId) {
+          return {
+            ...reward,
+            paymentMethodId: value,
+          };
+        }
+        return reward;
+      })
+    );
+  }
   return (
     <SelectComponent
       options={options}
       value={reward}
       disabled
-      onChange={(value) => {
-        setPaymentReward(value);
-        setQuestSettings((prev) => {
-          return {
-            ...prev,
-            rewards: prev.rewards.map((reward) => {
-              if (reward.type === PAYMENT_OPTIONS.TOKEN && reward.paymentMethod?.id === initialRewardId) {
-                return {
-                  ...reward,
-                  paymentMethodId: value,
-                };
-              }
-              return reward;
-            }),
-          };
-        });
-      }}
+      onChange={handleChange}
     />
   );
 };
 
-export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, setQuestSettings }) => {
+export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, onRewardsChange, rewards }) => {
   const [reward, setDiscordRoleReward] = useState(null);
   const initialRewardId = initialReward?.discordRewardData?.discordRoleId;
   useEffect(() => {
@@ -657,6 +657,28 @@ export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, s
       setDiscordRoleReward(initialRewardId);
     }
   }, [initialRewardId]);
+
+  const handleChange = (value) => {
+    setDiscordRoleReward(value);
+    onRewardsChange(
+      rewards.map((reward) => {
+        if (
+          reward.type === PAYMENT_OPTIONS.DISCORD_ROLE &&
+          reward.discordRewardData.discordRoleId === initialRewardId
+        ) {
+          return {
+            ...reward,
+            discordRewardData: {
+              ...reward.discordRewardData,
+              discordRoleId: value,
+            },
+          };
+        }
+        return reward;
+      })
+    );
+  };
+
   return (
     <SelectComponent
       boxStyle={{
@@ -664,26 +686,7 @@ export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, s
       }}
       options={options}
       value={reward}
-      onChange={(value) => {
-        setDiscordRoleReward(value);
-        setQuestSettings((prev) => {
-          return {
-            ...prev,
-            rewards: prev.rewards.map((reward) => {
-              if (reward.type === "discord_role" && reward.discordRewardData.discordRoleId === initialRewardId) {
-                return {
-                  ...reward,
-                  discordRewardData: {
-                    ...reward.discordRewardData,
-                    discordRoleId: value,
-                  },
-                };
-              }
-              return reward;
-            }),
-          };
-        });
-      }}
+      onChange={handleChange}
     />
   );
 };

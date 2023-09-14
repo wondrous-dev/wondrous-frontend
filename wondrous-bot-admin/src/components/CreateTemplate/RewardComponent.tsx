@@ -1,9 +1,8 @@
-import { Box, ButtonBase, Divider, Grid, Typography } from "@mui/material";
-import WestIcon from "@mui/icons-material/West";
+import { Box, Grid } from "@mui/material";
 import TextField from "components/Shared/TextField";
-import { ErrorText, SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
+import { SharedBlackOutlineButton } from "components/Shared/styles";
 import { CampaignOverviewTitle, PoapImage, RewardHeaderText } from "./styles";
-import React, { useState } from "react";
+import { useState } from "react";
 import Modal from "components/Shared/Modal";
 import { useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
@@ -13,7 +12,7 @@ import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import truncateEthAddress from "truncate-eth-address";
-import { GET_CMTY_PAYMENT_METHODS_FOR_ORG, GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries/payment";
+import { GET_CMTY_PAYMENT_METHODS_FOR_ORG } from "graphql/queries/payment";
 import {
   PAYMENT_OPTIONS,
   ExistingDiscordRewardSelectComponent,
@@ -21,14 +20,140 @@ import {
   RewardMethod,
   ExistingPaymentMethodSelectComponent,
 } from "components/CreateTemplate/RewardUtils";
-import { useTour } from "@reactour/tour";
-import { usePaywall, useSubscription } from "utils/hooks";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 
-const RewardComponent = ({ rewards, setQuestSettings }) => {
-  const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
+const RewardsList = ({
+  rewards,
+  handleChange,
+  componentsOptions,
+  onRewardsChange,
+  onDiscordRoleRewardRemove,
+  onPoapRewardRemove,
+  paymentMethodOptions,
+  onPaymentMethodRewardRemove,
+}) => {
+  return (
+    <>
+      {rewards?.map((reward, idx) => {
+        if (reward?.type === "points") {
+          return (
+            <Grid display="flex" gap="14px" alignItems="center" key={idx}>
+              <RewardHeaderText>Points</RewardHeaderText>
+              <TextField
+                value={reward.value}
+                type="number"
+                multiline={false}
+                onChange={(value) => {
+                  handleChange(reward.type, value);
+                }}
+              />
+            </Grid>
+          );
+        } else if (reward.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
+          return (
+            <Grid display="flex" gap="14px" alignItems="center" key={idx}>
+              <RewardHeaderText>Discord role</RewardHeaderText>
+              <ExistingDiscordRewardSelectComponent
+                options={componentsOptions}
+                initialReward={reward}
+                rewards={rewards}
+                onRewardsChange={onRewardsChange}
+              />
+              <DeleteIcon
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={() => onDiscordRoleRewardRemove(reward)}
+              />
+            </Grid>
+          );
+        } else if (reward.type === PAYMENT_OPTIONS.POAP) {
+          return (
+            <Grid display="flex" gap="14px" alignItems="center" key={idx} maxWidth="100%">
+              <RewardHeaderText>Poap</RewardHeaderText>
+              <PoapImage src={reward?.poapRewardData?.imageUrl} />
+              <RewardHeaderText>{reward?.poapRewardData?.name}</RewardHeaderText>
+              <div
+                style={{
+                  flex: 1,
+                }}
+              />
+              <DeleteIcon
+                style={{
+                  width: "40px",
+                  cursor: "pointer",
+                }}
+                onClick={() => onPoapRewardRemove(reward)}
+              />
+            </Grid>
+          );
+        } else if (reward.type === PAYMENT_OPTIONS.TOKEN) {
+          return (
+            <Grid display="flex" gap="14px" alignItems="center" key={idx} maxWidth="100%">
+              <RewardHeaderText>Token</RewardHeaderText>
+              <TextField
+                boxStyles={{
+                  width: "auto",
+                }}
+                style={{
+                  maxWidth: "150px",
+                }}
+                Box
+                value={reward.amount}
+                type="number"
+                multiline={false}
+                onChange={(value) => {
+                  onRewardsChange(
+                    rewards.map((compareReward) => {
+                      if (
+                        compareReward.type === PAYMENT_OPTIONS.TOKEN &&
+                        compareReward.paymentMethod?.id === reward?.paymentMethod?.id
+                      ) {
+                        return {
+                          ...reward,
+                          amount: value,
+                        };
+                      }
+                      return compareReward;
+                    })
+                  );
+                }}
+              />
+              <ExistingPaymentMethodSelectComponent
+                options={paymentMethodOptions?.length > 0 ? paymentMethodOptions : []}
+                initialReward={reward}
+                rewards={rewards}
+                onRewardsChange={onRewardsChange}
+              />
+              <div
+                style={{
+                  flex: 1,
+                }}
+              />
+              <DeleteIcon
+                style={{
+                  width: "40px",
+                  cursor: "pointer",
+                }}
+                onClick={() => onPaymentMethodRewardRemove(reward)}
+              />
+            </Grid>
+          );
+        }
+        return null;
+      })}
+    </>
+  );
+};
+
+const RewardComponent = ({
+  rewards,
+  onRewardsChange,
+  displayRewards = true,
+  handleRewardsToggle,
+  isRewardModalOpen,
+  renderRewardController = null,
+}) => {
   const [errors, setErrors] = useState(null);
-  const { isOpen, setCurrentStep, currentStep, setSteps, steps } = useTour();
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [addPaymentMethod, setAddPaymentMethod] = useState(true);
   const [editPaymentMethod, setEditPaymentMethod] = useState({
@@ -41,6 +166,10 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     chain: null,
     amount: null,
   });
+
+  const handleToggle = () => {
+    handleRewardsToggle();
+  };
 
   const [tokenReward, setTokenReward] = useState({
     tokenName: null,
@@ -55,50 +184,7 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
   const [poapReward, setPoapReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      const newSteps = steps.map((step: any) => {
-        if (step.id === "tutorial-quest-rewards") {
-          return {
-            ...step,
-            handleNextAction: () => {
-              setIsRewardModalOpen(true);
-              setCurrentStep((prev) => prev + 1);
-            },
-          };
-        }
-        if (step.id === "tutorial-add-rewards") {
-          return {
-            ...step,
-            handleNextAction: () => {
-              setIsRewardModalOpen(false);
-              setCurrentStep((prev) => prev + 1);
-            },
-            handlePrevAction: () => {
-              setIsRewardModalOpen(false);
-              setCurrentStep((prev) => prev - 1);
-            },
-          };
-        }
-        if (step.id === "tutorial-activate-quest") {
-          return {
-            ...step,
-            handlePrevAction: () => {
-              setIsRewardModalOpen(true);
-              setCurrentStep((prev) => prev - 1);
-            },
-          };
-        }
-        return step;
-      });
-      setSteps(newSteps);
-    }
-  }, [isOpen]);
-
   const { activeOrg } = useContext(GlobalContext);
-  const subscription = useSubscription();
-  const plan = getPlan(subscription?.tier);
-  const { setPaywall, setPaywallMessage } = usePaywall();
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
   const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD, {
     refetchQueries: [GET_CMTY_PAYMENT_METHODS_FOR_ORG],
@@ -152,79 +238,50 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
     value: role.id,
   }));
   const handleChange = (key, value) => {
-    setQuestSettings((prev) => {
-      return {
-        ...prev,
-        rewards: prev.rewards.map((reward) => {
-          const defaultValue = value ? Number(value) : null;
-          return {
-            ...reward,
-            value: reward.type === key ? defaultValue : reward.value,
-          };
-        }),
-      };
-    });
+    const defaultValue = value ? Number(value) : null;
+    onRewardsChange(
+      rewards.map((reward) => {
+        return {
+          ...reward,
+          value: reward.type === key ? defaultValue : reward.value,
+        };
+      })
+    );
   };
 
   const onRewardAdd = (reward) => {
-    setQuestSettings((prev) => {
-      return {
-        ...prev,
-        rewards: [...prev.rewards, reward],
-      };
-    });
+    return onRewardsChange([...rewards, reward]);
   };
 
   const onDiscordRoleRewardRemove = (reward) => {
-    setQuestSettings((prev) => {
-      const newRewards = prev.rewards.filter((r) => {
+    return onRewardsChange(
+      rewards.filter((r) => {
         if (r.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
           return r.discordRewardData.discordRoleId !== reward.discordRewardData.discordRoleId;
         }
         return true;
-      });
-      return {
-        ...prev,
-        rewards: newRewards,
-      };
-    });
+      })
+    );
   };
 
-  const OnPaymentMethodRewardRemove = (reward) => {
-    setQuestSettings((prev) => {
-      const newRewards = prev.rewards.filter((r) => {
+  const onPaymentMethodRewardRemove = (reward) => {
+    return onRewardsChange(
+      rewards.filter((r) => {
         if (r.type === PAYMENT_OPTIONS.TOKEN) {
           return r.paymentMethodId !== reward.paymentMethodId;
         }
         return true;
-      });
-      return {
-        ...prev,
-        rewards: newRewards,
-      };
-    });
+      })
+    );
   };
 
-  const OnPoapRewardRemove = (reward) => {
-    setQuestSettings((prev) => {
-      const newRewards = prev.rewards.filter((r) => {
-        if (r.type === PAYMENT_OPTIONS.POAP) {
-          return r.id !== reward.id;
-        }
-        return true;
-      });
-      return {
-        ...prev,
-        rewards: newRewards,
-      };
+  const onPoapRewardRemove = (reward) => {
+    return rewards.filter((r) => {
+      if (r.type === PAYMENT_OPTIONS.POAP) {
+        return r.id !== reward.id;
+      }
+      return true;
     });
-  };
-
-  const handleToggle = () => {
-    setIsRewardModalOpen((prev) => !prev);
-    if (isOpen) {
-      setCurrentStep((prev) => prev + 1);
-    }
   };
 
   const handleReward = () => {
@@ -254,25 +311,19 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
           });
           return;
         }
-        // check if an existing reward is made with the same payment method - if so just edit
         let existingReward = false;
         const newRewards = rewards.map((reward) => {
           if (reward.paymentMethodId === paymentMethod?.id) {
             existingReward = true;
             return {
               ...reward,
-              amount: Number(tokenReward?.amount)
+              amount: Number(tokenReward?.amount),
             };
           }
           return reward;
         });
         if (existingReward) {
-          setQuestSettings((prev) => {
-            return {
-              ...prev,
-              rewards: newRewards,
-            };
-          });
+          onRewardsChange(newRewards);
         } else {
           onRewardAdd({
             type: rewardType,
@@ -428,14 +479,6 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
               background={PAYMENT_OPTIONS.TOKEN === rewardType ? "#BFB4F3" : "#FFFFF"}
               onClick={() => {
                 setRewardType(PAYMENT_OPTIONS.TOKEN);
-
-                // if (plan === PricingOptionsTitle.Basic) {
-                //   setPaywall(true);
-                //   setPaywallMessage("This reward option is not available under the basic plan.");
-                //   return;
-                // } else {
-                //   setRewardType(PAYMENT_OPTIONS.TOKEN);
-                // }
               }}
             >
               Token reward
@@ -463,120 +506,19 @@ const RewardComponent = ({ rewards, setQuestSettings }) => {
         </Grid>
       </Modal>
 
-      {rewards?.map((reward, idx) => {
-        if (reward?.type === "points") {
-          return (
-            <Grid display="flex" gap="14px" alignItems="center" key={idx}>
-              <RewardHeaderText>Points</RewardHeaderText>
-              <TextField
-                value={reward.value}
-                type="number"
-                multiline={false}
-                onChange={(value) => {
-                  handleChange(reward.type, value);
-                }}
-              />
-            </Grid>
-          );
-        } else if (reward.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
-          return (
-            <Grid display="flex" gap="14px" alignItems="center" key={idx}>
-              <RewardHeaderText>Discord role</RewardHeaderText>
-              <ExistingDiscordRewardSelectComponent
-                options={componentsOptions}
-                initialReward={reward}
-                setQuestSettings={setQuestSettings}
-              />
-              <DeleteIcon
-                style={{
-                  cursor: "pointer",
-                }}
-                onClick={() => onDiscordRoleRewardRemove(reward)}
-              />
-            </Grid>
-          );
-        } else if (reward.type === PAYMENT_OPTIONS.POAP) {
-          return (
-            <Grid display="flex" gap="14px" alignItems="center" key={idx} maxWidth="100%">
-              <RewardHeaderText>Poap</RewardHeaderText>
-              <PoapImage src={reward?.poapRewardData?.imageUrl} />
-              <RewardHeaderText>{reward?.poapRewardData?.name}</RewardHeaderText>
-              <div
-                style={{
-                  flex: 1,
-                }}
-              />
-              <DeleteIcon
-                style={{
-                  width: "40px",
-                  cursor: "pointer",
-                }}
-                onClick={() => OnPoapRewardRemove(reward)}
-              />
-            </Grid>
-          );
-        } else if (reward.type === PAYMENT_OPTIONS.TOKEN) {
-          return (
-            <Grid display="flex" gap="14px" alignItems="center" key={idx} maxWidth="100%">
-              <RewardHeaderText>Token</RewardHeaderText>
-              <TextField
-                boxStyles={{
-                  width: "auto",
-                }}
-                style={{
-                  maxWidth: "150px",
-                }}
-                Box
-                value={reward.amount}
-                type="number"
-                multiline={false}
-                onChange={(value) => {
-                  setQuestSettings((prev) => {
-                    return {
-                      ...prev,
-                      rewards: prev.rewards.map((compareReward) => {
-                        if (
-                          compareReward.type === PAYMENT_OPTIONS.TOKEN &&
-                          compareReward.paymentMethod?.id === reward?.paymentMethod?.id
-                        ) {
-                          return {
-                            ...reward,
-                            amount: value,
-                          };
-                        }
-                        return compareReward;
-                      }),
-                    };
-                  });
-                }}
-              />
-              <ExistingPaymentMethodSelectComponent
-                options={paymentMethodOptions?.length > 0 ? paymentMethodOptions : []}
-                initialReward={reward}
-                setQuestSettings={setQuestSettings}
-              />
-              <div
-                style={{
-                  flex: 1,
-                }}
-              />
-              <DeleteIcon
-                style={{
-                  width: "40px",
-                  cursor: "pointer",
-                }}
-                onClick={() => OnPaymentMethodRewardRemove(reward)}
-              />
-            </Grid>
-          );
-        }
-        return null;
-      })}
-
-      <Divider color="#767676" />
-      <Box>
-        <SharedSecondaryButton onClick={handleToggle}>Add more</SharedSecondaryButton>
-      </Box>
+      {displayRewards ? (
+        <RewardsList
+          rewards={rewards}
+          handleChange={handleChange}
+          componentsOptions={componentsOptions}
+          onRewardsChange={onRewardsChange}
+          onDiscordRoleRewardRemove={onDiscordRoleRewardRemove}
+          onPoapRewardRemove={onPoapRewardRemove}
+          paymentMethodOptions={paymentMethodOptions}
+          onPaymentMethodRewardRemove={onPaymentMethodRewardRemove}
+        />
+      ) : null}
+      {renderRewardController?.()}
     </Grid>
   );
 };
@@ -594,4 +536,4 @@ const RewardOverviewHeader = () => (
   </Grid>
 );
 
-export { RewardComponent, RewardOverviewHeader };
+export { RewardComponent, RewardOverviewHeader, RewardsList };

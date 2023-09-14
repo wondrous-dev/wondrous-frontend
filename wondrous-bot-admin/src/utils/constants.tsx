@@ -376,3 +376,5 @@ export const CUSTOM_INTEGRATIONS = {
     ],
   },
 };
+
+export const OPTION_TEXT_LIMIT = 250;
