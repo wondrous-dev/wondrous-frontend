@@ -9,6 +9,7 @@ import Ethereum from "assets/ethereum";
 import Optimism from "assets/optimism";
 import Polygon from "assets/polygonMaticLogo.svg";
 import CloseModalIcon from "components/Icons/CloseModal";
+import DeleteIcon from "components/Icons/Delete";
 import SelectComponent from "components/Shared/Select";
 import TextField from "components/Shared/TextField";
 import { SharedSecondaryButton } from "components/Shared/styles";
@@ -688,18 +689,22 @@ export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, s
   );
 };
 
-const RemoveRewardComponent = ({ onClick }) => {
+const ClearRewardValue = ({ onClick }) => {
   return (
     <Grid
       container
       item
       alignItems="center"
       justifyContent="center"
-      width="24px"
+      width="18px"
       height="24px"
       onClick={onClick}
+      borderRadius="6px"
       sx={{
         cursor: "pointer",
+        "&:hover": {
+          background: "rgba(40, 40, 40, 0.2)",
+        },
       }}
     >
       <CloseModalIcon strokeColor="#4D4D4D" />
@@ -707,117 +712,78 @@ const RemoveRewardComponent = ({ onClick }) => {
   );
 };
 
-export const RewardWrapper = ({ idx, showNewRewardAutocomplete, rewards, handleOnRemove, Icon, text }) => (
-  <Grid
-    container
-    item
-    alignItems="center"
-    justifyContent="space-between"
-    sx={{
-      width: "100%",
-      ...(!showNewRewardAutocomplete && rewards.length === idx + 1 ? { flex: 1 } : { flex: "0 1 auto" }),
-    }}
-    bgcolor="#E8E8E8"
-    padding="8px"
-    borderRadius="6px"
-    gap="8px"
-  >
-    <Grid container item gap="8px" flex="1">
-      <Icon />
-      <Typography color="#000000" fontWeight="500" fontFamily="Poppins">
-        {text}
-      </Typography>
-    </Grid>
-    <RemoveRewardComponent onClick={handleOnRemove} />
+export const RewardWrapper = ({ Icon, text }) => (
+  <Grid container item gap="8px" bgcolor="#E8E8E8" padding="8px" borderRadius="6px" alignItems="center">
+    <Icon />
+    <Typography color="#000000" fontWeight="500" fontFamily="Poppins">
+      {text}
+    </Typography>
   </Grid>
 );
 
-export const RewardWrapperWithTextField = ({
-  showNewRewardAutocomplete,
-  rewards,
-  idx,
-  handleOnChange,
-  reward,
-  text,
-  Icon,
-  handleOnRemove = null,
-  placeholder,
-}) => {
+export const RewardWrapperWithTextField = ({ handleOnChange, reward, text, Icon, handleOnClear, placeholder }) => {
   const rewardValue = reward?.value ?? reward?.amount ? Number(reward?.value ?? reward?.amount) : "";
   return (
-    <Grid
-      container
-      item
+    <MUITextField
+      placeholder={placeholder}
+      variant="standard"
+      value={rewardValue}
+      onChange={handleOnChange}
+      type="number"
+      InputProps={{
+        disableUnderline: true,
+        inputMode: "numeric",
+        sx: {
+          padding: "8px 10px",
+          background: "#E8E8E8",
+          "& input": {
+            width: rewardValue ? `${String(rewardValue).length + 1}ch` : "100%",
+            fontFamily: "Poppins",
+            fontWeight: 500,
+            padding: 0,
+          },
+          "& input[type=number]": {
+            "-moz-appearance": "textfield",
+          },
+          "& input[type=number]::-webkit-outer-spin-button": {
+            "-webkit-appearance": "none",
+            margin: 0,
+          },
+          "& input[type=number]::-webkit-inner-spin-button": {
+            "-webkit-appearance": "none",
+            margin: 0,
+          },
+        },
+        startAdornment: (
+          <InputAdornment position="start">
+            <Icon />
+          </InputAdornment>
+        ),
+        endAdornment: (
+          <>
+            {rewardValue ? (
+              <Grid container item flex="1" justifyContent="space-between" flexWrap="nowrap">
+                <Typography fontFamily="Poppins" fontWeight="500">
+                  {typeof rewardValue === "number" ? text : null}
+                </Typography>
+                <ClearRewardValue onClick={handleOnClear} />
+              </Grid>
+            ) : null}
+          </>
+        ),
+      }}
       sx={{
         width: "100%",
-
-        flex: "0 1 auto",
-        ...(!showNewRewardAutocomplete && rewards.length === idx + 1
-          ? { flex: 1, maxWidth: "calc(100% - 50px)" }
-          : { flex: "0 1 auto" }),
+        overflow: "hidden",
+        borderRadius: "6px",
+        "&:focus-within": {
+          outline: "1px solid #000",
+          "& p": {
+            color: "#949494",
+          },
+        },
       }}
-    >
-      <MUITextField
-        placeholder={placeholder}
-        variant="standard"
-        value={rewardValue}
-        onChange={handleOnChange}
-        type="number"
-        InputProps={{
-          disableUnderline: true,
-          inputMode: "numeric",
-          sx: {
-            padding: "8px 10px",
-            background: "#E8E8E8",
-            "& input": {
-              width: rewardValue ? `${String(rewardValue).length + 1}ch` : "100%",
-              fontFamily: "Poppins",
-              fontWeight: 500,
-              padding: 0,
-            },
-            "& input[type=number]": {
-              "-moz-appearance": "textfield",
-            },
-            "& input[type=number]::-webkit-outer-spin-button": {
-              "-webkit-appearance": "none",
-              margin: 0,
-            },
-            "& input[type=number]::-webkit-inner-spin-button": {
-              "-webkit-appearance": "none",
-              margin: 0,
-            },
-          },
-          startAdornment: (
-            <InputAdornment position="start">
-              <Icon />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <>
-              <Grid container item flex="1" justifyContent="space-between" flexWrap="nowrap">
-                {rewardValue ? (
-                  <Typography fontFamily="Poppins" fontWeight="500">
-                    {typeof rewardValue === "number" ? text : null}
-                  </Typography>
-                ) : null}
-                {handleOnRemove && <RemoveRewardComponent onClick={handleOnRemove} />}
-              </Grid>
-            </>
-          ),
-        }}
-        sx={{
-          width: "100%",
-          overflow: "hidden",
-          borderRadius: "6px",
-          "&:focus-within": {
-            outline: "1px solid #000",
-            "& p": {
-              color: "#949494",
-            },
-          },
-        }}
-      />
-    </Grid>
+    />
   );
 };
 
@@ -825,11 +791,33 @@ export const RewardsComponent = ({ rewards, rewardComponents }) => {
   return (
     <>
       {rewards?.map((reward, idx) => {
-        const Component = rewardComponents[reward?.type];
-        if (Component) {
-          return <>{Component({ idx, reward })}</>;
-        }
-        return null;
+        const { Component, handleOnRemove } = rewardComponents[reward?.type];
+        return (
+          <Grid container alignItems="center" justifyContent="space-between" gap="14px">
+            <Grid item container flex="1">
+              {Component({ idx, reward })}
+            </Grid>
+            <Grid
+              item
+              container
+              bgcolor="#C1B6F6"
+              width="30px"
+              height="30px"
+              borderRadius="6px"
+              alignItems="center"
+              justifyContent="center"
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  background: "#AF9EFF",
+                  outline: "1px solid #000",
+                },
+              }}
+            >
+              <DeleteIcon onClick={() => handleOnRemove(reward)} />
+            </Grid>
+          </Grid>
+        );
       })}
     </>
   );
