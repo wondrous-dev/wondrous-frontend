@@ -86,6 +86,7 @@ export const GRAPHQL_ERRORS = {
   INVALID_EMAIL: "invalid_email",
   POD_WITH_SAME_NEXT_EXISTS: "Pod with name already exist",
   DISCORD_NOT_CONFIGURED: "discord_not_configured",
+  CMTY_USER_ALREADY_REFERRED: "cmty_user_already_referred",
 };
 
 export const PAGES_WITHOUT_HEADER = [
