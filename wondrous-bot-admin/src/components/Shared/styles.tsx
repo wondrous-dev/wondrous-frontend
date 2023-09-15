@@ -201,6 +201,7 @@ export const ErrorText = styled(Typography)`
 `;
 
 export const scrollbarStyles = {
+  overflowY: "auto",
   "&::-webkit-scrollbar": {
     WebkitAppearance: "none",
     background: " #fff",
