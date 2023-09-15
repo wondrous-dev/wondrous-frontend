@@ -1,18 +1,19 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { Box, Divider, Grid } from "@mui/material";
+import { Divider, Grid } from "@mui/material";
 import { useTour } from "@reactour/tour";
 import {
   PAYMENT_OPTIONS,
   RewardFooterLeftComponent,
   RewardMethod,
+  RewardMethodOptionButton,
   RewardWrapper,
   RewardWrapperWithTextField,
   RewardsComponent,
 } from "components/CreateTemplate/RewardUtils";
-import { DiscordRoleIcon, PointsIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, PoapIcon, PointsIcon, TokensIcon } from "components/Icons/Rewards";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import Modal from "components/Shared/Modal";
-import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
+import { SharedSecondaryButton } from "components/Shared/styles";
 import { CREATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
 import { GET_CMTY_PAYMENT_METHODS_FOR_ORG } from "graphql/queries/payment";
@@ -20,7 +21,7 @@ import { useContext, useEffect, useState } from "react";
 import truncateEthAddress from "truncate-eth-address";
 import GlobalContext from "utils/context/GlobalContext";
 import { usePaywall, useSubscription } from "utils/hooks";
-import { PoapImage } from "./styles";
+import { Label, PoapImage } from "./styles";
 
 const useSubscriptionPaywall = () => {
   const subscription = useSubscription();
@@ -541,6 +542,40 @@ const RewardComponent = ({
   const pointReward = rewards.filter((reward) => reward?.type === "points")[0];
   const otherRewards = rewards.filter((reward) => reward?.type !== "points");
 
+  const modalRewardButtonsProps = [
+    {
+      paymentOption: PAYMENT_OPTIONS.DISCORD_ROLE,
+      rewardType: rewardType,
+      onClick: () => setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE),
+      Icon: DiscordRoleIcon,
+      text: "Discord Role",
+    },
+    {
+      paymentOption: PAYMENT_OPTIONS.POAP,
+      rewardType: rewardType,
+      onClick: () => setRewardType(PAYMENT_OPTIONS.POAP),
+      Icon: PoapIcon,
+      text: "POAP",
+    },
+    {
+      paymentOption: PAYMENT_OPTIONS.TOKEN,
+      rewardType: rewardType,
+      onClick: () => {
+        setRewardType(PAYMENT_OPTIONS.TOKEN);
+        if (plan === PricingOptionsTitle.Basic) {
+          setPaywall(true);
+          setPaywallMessage("This reward option is not available under the basic plan.");
+          setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
+          return;
+        } else {
+          setRewardType(PAYMENT_OPTIONS.TOKEN);
+        }
+      },
+      Icon: TokensIcon,
+      text: "Token reward",
+    },
+  ];
+
   return (
     <>
       <Modal
@@ -569,65 +604,35 @@ const RewardComponent = ({
         footerRight={undefined}
         footerCenter={undefined}
       >
-        <Grid display="flex" flexDirection="column" gap="14px">
-          <Box display="flex" alignItems="center" gap="6px" width={"100%"} justifyContent={"center"}>
-            <SharedBlackOutlineButton
-              style={{
-                flex: 1,
-              }}
-              background={PAYMENT_OPTIONS.DISCORD_ROLE === rewardType ? "#BFB4F3" : "#FFFFF"}
-              onClick={() => setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE)}
-            >
-              Discord Role
-            </SharedBlackOutlineButton>
-            <SharedBlackOutlineButton
-              style={{
-                flex: 1,
-              }}
-              background={PAYMENT_OPTIONS.POAP === rewardType ? "#BFB4F3" : "#FFFFF"}
-              onClick={() => setRewardType(PAYMENT_OPTIONS.POAP)}
-            >
-              POAP
-            </SharedBlackOutlineButton>
-            <SharedBlackOutlineButton
-              style={{
-                flex: 1,
-              }}
-              background={PAYMENT_OPTIONS.TOKEN === rewardType ? "#BFB4F3" : "#FFFFF"}
-              onClick={() => {
-                setRewardType(PAYMENT_OPTIONS.TOKEN);
-                if (plan === PricingOptionsTitle.Basic) {
-                  setPaywall(true);
-                  setPaywallMessage("This reward option is not available under the basic plan.");
-                  setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
-                  return;
-                } else {
-                  setRewardType(PAYMENT_OPTIONS.TOKEN);
-                }
-              }}
-            >
-              Token reward
-            </SharedBlackOutlineButton>
-          </Box>
-
-          <RewardMethod
-            rewardType={rewardType}
-            componentsOptions={discordRoleOptions}
-            discordRoleReward={discordRoleReward}
-            setDiscordRoleReward={setDiscordRoleReward}
-            tokenReward={tokenReward}
-            setTokenReward={setTokenReward}
-            paymentMethod={paymentMethod}
-            paymentMethods={paymentMethods}
-            addPaymentMethod={addPaymentMethod}
-            setPaymentMethod={setPaymentMethod}
-            editPaymentMethod={editPaymentMethod}
-            setEditPaymentMethod={setEditPaymentMethod}
-            errors={errors}
-            setErrors={setErrors}
-            poapReward={poapReward}
-            setPoapReward={setPoapReward}
-          />
+        <Grid display="flex" flexDirection="column" gap="24px">
+          <Grid container item gap="14px">
+            <Label>Reward Type</Label>
+            <Grid container item alignItems="center" gap="14px" width="100%" justifyContent="center">
+              {modalRewardButtonsProps.map((props) => (
+                <RewardMethodOptionButton {...props} />
+              ))}
+            </Grid>
+          </Grid>
+          <Grid container item flexDirection="column" gap="14px">
+            <RewardMethod
+              rewardType={rewardType}
+              componentsOptions={discordRoleOptions}
+              discordRoleReward={discordRoleReward}
+              setDiscordRoleReward={setDiscordRoleReward}
+              tokenReward={tokenReward}
+              setTokenReward={setTokenReward}
+              paymentMethod={paymentMethod}
+              paymentMethods={paymentMethods}
+              addPaymentMethod={addPaymentMethod}
+              setPaymentMethod={setPaymentMethod}
+              editPaymentMethod={editPaymentMethod}
+              setEditPaymentMethod={setEditPaymentMethod}
+              errors={errors}
+              setErrors={setErrors}
+              poapReward={poapReward}
+              setPoapReward={setPoapReward}
+            />
+          </Grid>
         </Grid>
       </Modal>
 

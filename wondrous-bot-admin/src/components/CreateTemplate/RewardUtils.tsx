@@ -12,7 +12,7 @@ import CloseModalIcon from "components/Icons/CloseModal";
 import DeleteIcon from "components/Icons/Delete";
 import SelectComponent from "components/Shared/Select";
 import TextField from "components/Shared/TextField";
-import { SharedSecondaryButton } from "components/Shared/styles";
+import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import { GET_POAP_EVENT } from "graphql/queries";
 import { useEffect, useState } from "react";
@@ -535,6 +535,22 @@ export const RewardMethod = ({
     );
   }
 };
+
+export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, Icon, text }) => (
+  <SharedBlackOutlineButton
+    style={{
+      flex: 1,
+    }}
+    background={paymentOption === rewardType ? "#BFB4F3" : "#BFB4F366"}
+    borderColor={paymentOption === rewardType ? "#000" : "transparent"}
+    justifyContent="flex-start"
+    height="44px"
+    padding="10px"
+    onClick={onClick}
+  >
+    <Icon /> {text}
+  </SharedBlackOutlineButton>
+);
 
 export const RewardFooterLeftComponent = ({
   rewardType,

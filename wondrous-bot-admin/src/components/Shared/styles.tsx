@@ -154,7 +154,7 @@ export const SharedSecondaryButton = styled(ButtonBase)`
 export const SharedBlackOutlineButton = styled(ButtonBase)`
   && {
     display: flex;
-    padding: 8px 24px;
+    padding: ${({ padding = "8px 24px" }) => padding};
     gap: 10px;
     height: ${({ height = "34px" }) => height};
     min-width: ${({ minWidth = "40px" }) => minWidth};
@@ -169,6 +169,7 @@ export const SharedBlackOutlineButton = styled(ButtonBase)`
     line-height: 150%;
     white-space: nowrap;
     color: ${({ color = "#0c002d" }) => color};
+    justify-content: ${({ justifyContent = "center" }) => justifyContent};
 
     &:disabled {
       opacity: 0.5;
@@ -176,6 +177,10 @@ export const SharedBlackOutlineButton = styled(ButtonBase)`
     ${({ $reverse }) => ($reverse ? ReversedButtonCss : ``)}
     &:hover {
       border: 1px solid black;
+    }
+
+    &:focus {
+      outline: none !important;
     }
   }
 `;
