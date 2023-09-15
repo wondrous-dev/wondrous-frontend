@@ -522,7 +522,9 @@ const CreateTemplate = ({
                     <>
                       <Divider color="#767676" />
                       <Box>
-                        <SharedSecondaryButton onClick={handleRewardsToggle}>Add more</SharedSecondaryButton>
+                        <SharedSecondaryButton onClick={handleRewardsToggle}>
+                          {hasReferralStep ? "Add Reward per referral" : "Add Reward"}
+                        </SharedSecondaryButton>
                       </Box>
                     </>
                   )}
