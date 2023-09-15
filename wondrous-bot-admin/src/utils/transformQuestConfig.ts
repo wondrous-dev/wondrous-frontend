@@ -234,6 +234,8 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       };
     } else if (step.type === TYPES.LIFI_VALUE_BRIDGED) {
       outputStep.value = Number(step?.additionalData?.usdValue) / 100;
+    } else if (step.type === TYPES.REFERRAL) {
+      outputStep.value = step?.prompt;
     } else if (step.type === TYPES.DATA_COLLECTION) {
       const dataCollectionType = step?.additionalData?.dataCollectionType;
       outputStep.value = {
