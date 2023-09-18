@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import EmptyState from "components/EmptyState";
+import MembersAnalytics from "components/MembersAnalytics";
 import PageHeader from "components/PageHeader";
 import { TeamsAndInvite } from "components/Settings/TeamSettings";
 import { SharedSecondaryButton } from "components/Shared/styles";
@@ -28,8 +29,9 @@ const MembersPage = () => {
       return {
         id: user.id,
         name: {
-          component: "label",
-          value: user?.username || userDiscord || "N/A",
+          component: "custom",
+          value: user,
+          customComponent: MembersAnalytics
         },
         level: {
           component: "hexagon",
