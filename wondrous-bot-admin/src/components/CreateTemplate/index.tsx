@@ -457,10 +457,7 @@ const CreateTemplate = ({
       rewards,
     }));
   };
-<<<<<<< HEAD
   const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
-=======
->>>>>>> master
   return (
     <>
       <Modal
