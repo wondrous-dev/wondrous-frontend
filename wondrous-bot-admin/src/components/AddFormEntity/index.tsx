@@ -31,6 +31,10 @@ const COMPONENT_OPTIONS = [
     value: TYPES.TEXT_FIELD,
   },
   {
+    label: "Referral",
+    value: TYPES.REFERRAL,
+  },
+  {
     label: "Multiple Choice",
     value: TYPES.MULTI_QUIZ,
   },
@@ -141,6 +145,8 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
     ) {
       setOpenEcosystemDialog(true);
       return;
+    }
+    if (type === TYPES.REFERRAL && idx > 0) {
     }
     setErrors((prev) => {
       return {
@@ -331,6 +337,8 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
                                     options={COMPONENT_OPTIONS}
                                     value={item.type}
                                     onChange={(value) => handleChangeType(value, item.order, idx)}
+                                    setSteps={setSteps}
+                                    order={idx + 1}
                                   />
                                 </Grid>
                                 <Grid display="flex" alignItems="center" gap="14px">

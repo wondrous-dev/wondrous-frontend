@@ -20,6 +20,7 @@ import {
   RewardMethod,
   ExistingPaymentMethodSelectComponent,
 } from "components/CreateTemplate/RewardUtils";
+import { DEFAULT_PAYMENT_METHOD, TOKEN_ADDRESS_DEFAULT_STATE } from "./utils";
 
 const RewardsList = ({
   rewards,
@@ -152,34 +153,14 @@ const RewardComponent = ({
   handleRewardsToggle,
   isRewardModalOpen,
   renderRewardController = null,
+  hasReferralStep = false,
 }) => {
   const [errors, setErrors] = useState(null);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [addPaymentMethod, setAddPaymentMethod] = useState(true);
-  const [editPaymentMethod, setEditPaymentMethod] = useState({
-    id: null,
-    tokenName: null,
-    contractAddress: null,
-    symbol: null,
-    icon: null,
-    type: null,
-    chain: null,
-    amount: null,
-  });
+  const [editPaymentMethod, setEditPaymentMethod] = useState({ ...DEFAULT_PAYMENT_METHOD });
 
-  const handleToggle = () => {
-    handleRewardsToggle();
-  };
-
-  const [tokenReward, setTokenReward] = useState({
-    tokenName: null,
-    contractAddress: null,
-    symbol: null,
-    icon: null,
-    type: null,
-    chain: null,
-    amount: null,
-  });
+  const [tokenReward, setTokenReward] = useState({ ...TOKEN_ADDRESS_DEFAULT_STATE });
 
   const [poapReward, setPoapReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -199,6 +180,21 @@ const RewardComponent = ({
   const [getCmtyPaymentMethods, { data: getCmtyPaymentMethodsData }] = useLazyQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
     fetchPolicy: "cache-and-network",
   });
+
+  const resetStates = () => {
+    // TODO fix me: too much state
+    setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
+    setDiscordRoleReward(null);
+    setEditPaymentMethod({ ...DEFAULT_PAYMENT_METHOD });
+    setTokenReward({ ...TOKEN_ADDRESS_DEFAULT_STATE });
+    setErrors(null);
+    setPoapReward(null);
+    setPaymentMethod(null);
+  };
+  const handleToggle = () => {
+    handleRewardsToggle();
+    resetStates();
+  };
 
   const paymentMethods = getCmtyPaymentMethodsData?.getCmtyPaymentMethodsForOrg || [];
   const paymentMethodOptions = paymentMethods?.map((method) => ({
@@ -429,7 +425,7 @@ const RewardComponent = ({
       <Modal
         open={isRewardModalOpen}
         onClose={handleToggle}
-        title="Add reward to quest"
+        title={hasReferralStep ? "Add reward per referral" : "Add reward to quest"}
         modalComponentProps={{
           className: "tour-default-modal",
         }}

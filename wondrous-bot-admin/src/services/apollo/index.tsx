@@ -6,18 +6,17 @@ import offsetLimitPaginationInput from "utils/offsetLimitPaginationInput";
 
 // Staging is http://34.135.9.199/graphql
 const graphqlUri = !import.meta.env.VITE_STAGING
-  ? import.meta.env.VITE_GRAPHQL_SERVER_URL
+  ? "http://localhost:4000/graphql"
   : "https://apistaging.wonderapp.co/graphql";
 
 const httpLink = new HttpLink({
   uri: graphqlUri,
   headers: {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Request-With',
-  }
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Origin, Content-Type, Accept, Authorization, X-Request-With",
+  },
   // credentials: "include",
-  
 });
 
 const getAuth = () => {
@@ -88,7 +87,8 @@ const cache = new InMemoryCache({
           keyArgs: ["input", ["orgId"]],
           merge: offsetLimitPaginationInput,
         },
-        getQuestsAnalyticsLeaderboard: offsetLimitPagination()
+        getQuestsAnalyticsLeaderboard: offsetLimitPagination(),
+        getQuestSubmissions: offsetLimitPagination(),
       },
     },
   },

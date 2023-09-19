@@ -67,7 +67,7 @@ export const GET_ORG_LEVEL_REWARDS = gql`
         contractAddress
         type
       }
-  }
+    }
   }
 `;
 export const GET_ORG_QUEST_STATS = gql`
@@ -335,9 +335,34 @@ export const VERIFY_SNAPSHOT_SPACE_VOTE = gql`
 `;
 
 export const VERIFY_TOKEN_HOLDING = gql`
-  query verifyTokenHolding($telegramUserId:String, $tokenChain:String, $tokenAddress:String, $tokenAmount:String, $tokenType:String, $tokenDecimals:String) {
-    verifyTokenHolding(telegramUserId: $telegramUserId, tokenChain: $tokenChain, tokenAddress: $tokenAddress, tokenAmount: $tokenAmount, tokenType: $tokenType, tokenDecimals: $tokenDecimals) {
+  query verifyTokenHolding(
+    $telegramUserId: String
+    $tokenChain: String
+    $tokenAddress: String
+    $tokenAmount: String
+    $tokenType: String
+    $tokenDecimals: String
+  ) {
+    verifyTokenHolding(
+      telegramUserId: $telegramUserId
+      tokenChain: $tokenChain
+      tokenAddress: $tokenAddress
+      tokenAmount: $tokenAmount
+      tokenType: $tokenType
+      tokenDecimals: $tokenDecimals
+    ) {
       userHasTokens
+    }
+  }
+`;
+export const GET_QUEST_REFERRAL_LEADERBOARD = gql`
+  query getQuestReferralLeaderBoard($questId: ID!) {
+    getQuestReferralLeaderBoard(questId: $questId) {
+      referrerName
+      referrerDiscordUsername
+      referralCount
+      referralCode
+      referrerId
     }
   }
 `;

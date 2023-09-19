@@ -457,6 +457,7 @@ const CreateTemplate = ({
       rewards,
     }));
   };
+  const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
   return (
     <>
       <Modal
@@ -521,7 +522,9 @@ const CreateTemplate = ({
                     <>
                       <Divider color="#767676" />
                       <Box>
-                        <SharedSecondaryButton onClick={handleRewardsToggle}>Add more</SharedSecondaryButton>
+                        <SharedSecondaryButton onClick={handleRewardsToggle}>
+                          {hasReferralStep ? "Add Reward per referral" : "Add Reward"}
+                        </SharedSecondaryButton>
                       </Box>
                     </>
                   )}
@@ -547,30 +550,33 @@ const CreateTemplate = ({
               refs={refs}
               setRemovedMediaSlugs={setRemovedMediaSlugs}
             />
-            <Panel
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              flexDirection="column"
-              gap="14px"
-              padding="14px 24px"
-              onClick={() => handleAdd(TYPES.TEXT_FIELD)}
-              sx={{
-                cursor: "pointer",
-              }}
-            >
-              <RoundedSecondaryButton>
-                <AddIcon
-                  sx={{
-                    color: "black",
-                    fontSize: "14px",
-                  }}
-                />
-              </RoundedSecondaryButton>
-              <Typography color="black" fontFamily="Poppins" fontWeight={600} fontSize="15px" lineHeight="15px">
-                Add new block
-              </Typography>
-            </Panel>
+            {!hasReferralStep && (
+              <Panel
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                flexDirection="column"
+                gap="14px"
+                padding="14px 24px"
+                onClick={() => handleAdd(TYPES.TEXT_FIELD)}
+                sx={{
+                  cursor: "pointer",
+                }}
+              >
+                <RoundedSecondaryButton>
+                  <AddIcon
+                    sx={{
+                      color: "black",
+                      fontSize: "14px",
+                    }}
+                  />
+                </RoundedSecondaryButton>
+                <Typography color="black" fontFamily="Poppins" fontWeight={600} fontSize="15px" lineHeight="15px">
+                  Add new block
+                </Typography>
+              </Panel>
+            )}
+
             {displaySavePanel ? (
               <Grid
                 position="fixed"
