@@ -22,10 +22,16 @@ const CallbackPage = () => {
       }
       navigate("/");
     },
-    refetchQueries: ['getLoggedInUserFullAccessOrgs'],
-    onError: (e) => {
-      console.error("error connecting discord", e);
-      setErrorText("Error connecting discord - please try again");
+    refetchQueries: ["getLoggedInUserFullAccessOrgs"],
+    onError: (err) => {
+      console.error("error connecting discord", err);
+      if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.message === "guild_already_exist") {
+        setErrorText(
+          "This discord server is already connected to another account! Please disconnect it from that account first."
+        );
+      } else {
+        setErrorText("Error connecting discord - please try again");
+      }
     },
   });
   useEffect(() => {
@@ -42,40 +48,24 @@ const CallbackPage = () => {
 
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
-      <Grid
-        flex="2"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        gap="8px"
-        flexDirection="column"
-      >
-        {finishedVerification && (
-          <Typography
-            fontFamily="Poppins"
-            fontWeight={600}
-            fontSize="18px"
-            lineHeight="24px"
-            color="black"
-          >
-            Finished connecting your Discord! You can close this window now and
-            return to Discord.
+      <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
+        {finishedVerification && !errorText && (
+          <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
+            Finished connecting your Discord! You can close this window now and return to Discord.
           </Typography>
         )}
-        {!finishedVerification && (
+        {!finishedVerification && !errorText && (
           <>
-            <Typography
-              fontFamily="Poppins"
-              fontWeight={600}
-              fontSize="18px"
-              lineHeight="24px"
-              color="black"
-            >
-              Connecting your Discord server. If this is taking too long please
-              try again!
+            <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
+              Connecting your Discord server. If this is taking too long please try again!
             </Typography>
             <CircularProgress />
           </>
+        )}
+        {errorText && (
+          <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
+            {errorText}
+          </Typography>
         )}
       </Grid>
       <Grid
