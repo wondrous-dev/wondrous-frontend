@@ -70,9 +70,11 @@ const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward, id }) => 
             >
               <RewardContent reward={reward} handleAddReward={() => handleAddReward(id)} />
             </Box>
-            {rewards?.length > 1 ? <ButtonIconWrapper onClick={() => handleRewardDelete(idx)}>
-              <DeleteIcon />
-            </ButtonIconWrapper> : null}
+            {rewards?.length > 1 ? (
+              <ButtonIconWrapper onClick={() => handleRewardDelete(idx)}>
+                <DeleteIcon />
+              </ButtonIconWrapper>
+            ) : null}
             <ButtonIconWrapper onClick={() => handleAddReward(id)}>
               <AddIcon
                 sx={{

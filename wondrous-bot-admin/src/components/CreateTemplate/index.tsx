@@ -457,7 +457,10 @@ const CreateTemplate = ({
       rewards,
     }));
   };
+<<<<<<< HEAD
   const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
+=======
+>>>>>>> master
   return (
     <>
       <Modal
@@ -522,9 +525,13 @@ const CreateTemplate = ({
                     <>
                       <Divider color="#767676" />
                       <Box>
+<<<<<<< HEAD
                         <SharedSecondaryButton onClick={handleRewardsToggle}>
                           {hasReferralStep ? "Add Reward per referral" : "Add Reward"}
                         </SharedSecondaryButton>
+=======
+                        <SharedSecondaryButton onClick={handleRewardsToggle}>Add more</SharedSecondaryButton>
+>>>>>>> master
                       </Box>
                     </>
                   )}

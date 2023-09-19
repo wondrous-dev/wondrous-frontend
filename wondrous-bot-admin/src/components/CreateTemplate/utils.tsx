@@ -69,7 +69,6 @@ export const reduceConditionalRewards = (acc: any[], answer: any) => {
   return acc;
 };
 
-
 export const DEFAULT_PAYMENT_METHOD = {
   id: null,
   tokenName: null,
@@ -89,4 +88,4 @@ export const TOKEN_ADDRESS_DEFAULT_STATE = {
   type: null,
   chain: null,
   amount: null,
-}
+};
