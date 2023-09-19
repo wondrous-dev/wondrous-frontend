@@ -9,7 +9,7 @@ import FiltersComponent from "../Filters";
 import { LineChart } from "../GraphsComponent";
 import getMessagesAndReactionsData from "../utils/getMessagesAndReactionsData";
 
-const MessagesAndReactions = ({ data, refetch, loading }) => {
+const MessagesAndReactions = ({ data, refetch, loading, panelSxProps = {} }) => {
   const [activeFilter, setActiveFilter] = useState("last_week");
 
   const messagesAndReactionsData = useMemo(() => {
@@ -46,6 +46,7 @@ const MessagesAndReactions = ({ data, refetch, loading }) => {
     <LineChart
       title="Messages and Reactions"
       data={messagesAndReactionsData}
+      panelSxProps={panelSxProps}
       renderComponents={() => (
         <Grid display="flex" gap="12px" alignItems="flex-start" width="100%">
           <FiltersComponent onChange={handleChange} activeFilter={activeFilter} />

@@ -1,21 +1,25 @@
 import { Label } from "components/QuestsList/styles";
-import { StyledUsername } from "./styles";
+import { DataTitle, StyledUsername } from "./styles";
 import { useState } from "react";
 import Modal from "components/Shared/Modal";
 import { Box, Grid, Typography } from "@mui/material";
 import Panel from "./Panel";
 import { AddressComponent, IntegrationsComponent, NameComponent, XpComponent } from "./Common";
+import StatsComponent from "./StatsComponent";
+import { MESSAGES_REACTIONS_MOCK_DATA } from "components/Analytics/MockCharts";
+import MessagesAndReactions from "components/Analytics/AnalyticsGraphs/MessagesAndReactions";
+import DiscordAnalytics from "./DiscordAnalytics";
+import Submissions from "./Submissions";
 
-// general info
-// submissions
-// approval rate
-// rewards
-// points
+// general info - DONE
+// submissions - DONE
+// approval rate - DONE
+// rewards - DONE
+// points - DONE
 // messages ?
 // reactions ?
 
 const GeneralInfo = ({ user }) => {
-  console.log(user, "suer");
   const ITEMS = [
     {
       label: "Name",
@@ -34,30 +38,15 @@ const GeneralInfo = ({ user }) => {
     },
     {
       label: "Discord",
-      component: () => (
-        <IntegrationsComponent
-          user={user}
-          type="discord"
-        />
-      ),
+      component: () => <IntegrationsComponent user={user} type="discord" />,
     },
     {
       label: "Twitter",
-      component: () => (
-        <IntegrationsComponent
-          user={user}
-          type="twitter"
-        />
-      ),
+      component: () => <IntegrationsComponent user={user} type="twitter" />,
     },
     {
       label: "Telegram",
-      component: () => (
-        <IntegrationsComponent
-          user={user}
-          type="telegram"
-        />
-      ),
+      component: () => <IntegrationsComponent user={user} type="telegram" />,
     },
   ];
   return (
@@ -65,16 +54,7 @@ const GeneralInfo = ({ user }) => {
       {ITEMS.map((item, idx) => {
         return (
           <Box display="flex" alignItems="center" gap="24px" padding="10px">
-            <Typography
-              color="#626262"
-              fontFamily="Poppins"
-              fontSize="13px"
-              fontWeight={600}
-              lineHeight="15px"
-              minWidth="30%"
-            >
-              {item.label}
-            </Typography>
+            <DataTitle>{item.label}</DataTitle>
             {item.component ? <item.component key={idx} /> : null}
           </Box>
         );
@@ -100,19 +80,34 @@ const MembersAnalytics = ({ value }) => {
       id: "general-info",
       component: () => <GeneralInfo user={value} />,
     },
+    {
+      id: "stats",
+      component: () => <StatsComponent user={value} />,
+    },
+    {
+      id: "messages-reactions",
+
+      component: () => <DiscordAnalytics user={value}/>,
+    },
+    {
+      id: 'submissions',
+      component: () => <Submissions user={value}/>
+    }
   ];
 
   return (
     <>
       <Modal open={!!activeCmtyUser} onClose={handleClose} title={`${username}`} maxWidth={640}>
         <Grid display="flex" gap="14px" flexDirection="column">
-          {CONFIG.map((config, idx) => {
-            return (
-              <Panel>
-                <config.component key={config.id} />
-              </Panel>
-            );
-          })}
+          {activeCmtyUser
+            ? CONFIG.map((config, idx) => {
+                return (
+                  <Panel>
+                    <config.component key={config.id} />
+                  </Panel>
+                );
+              })
+            : null}
         </Grid>
       </Modal>
       <StyledUsername

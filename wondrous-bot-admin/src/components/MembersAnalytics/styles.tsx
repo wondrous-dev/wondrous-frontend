@@ -22,3 +22,15 @@ export const CommonTypography = styled(Typography)`
     letter-spacing: 0.24px;
   }
 `;
+
+export const DataTitle = styled(Typography)`
+  && {
+    color: #626262;
+    font-family: Poppins;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    min-width: 30%;
+  }
+`;

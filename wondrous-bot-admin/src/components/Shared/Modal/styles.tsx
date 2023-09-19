@@ -22,13 +22,12 @@ export const ModalDialog = styled.div`
   position: relative;
   width: 80%;
   max-width: ${(props) => (props.maxWidth ? `${props.maxWidth}px` : '100%')};
-
-  overflow: hidden;
+  max-height: calc(100vh - 200px);
+  overflow: scroll;
   pointer-events: none;
   background: white;
   border-radius: 16px;
   border: 1px solid black;
-  overflow: hidden;
   @media (min-width: 5716px) {
     .modal-dialog {
       max-width: 500px;
