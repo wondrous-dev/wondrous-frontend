@@ -20,6 +20,7 @@ export const TYPES = {
   SUBSCRIBE_YT_CHANNEL: "subscribe_yt_channel",
   CUSTOM_ONCHAIN_ACTION: "custom_onchain_action",
   LIFI_VALUE_BRIDGED: "lifi_value_bridged",
+  MIGRATE_ORIGIN_USERS: "migrate_origin_users",
   REFERRAL: "referral",
 };
 
@@ -357,6 +358,15 @@ export const CUSTOM_INTEGRATIONS = {
       {
         label: "LI.FI Bridging across any EVM chain",
         value: TYPES.LIFI_VALUE_BRIDGED,
+      },
+    ],
+  },
+  "97005656507154467": {
+    name: "Origin",
+    integrations: [
+      {
+        label: "Migrate Origin members from Carma",
+        value: TYPES.MIGRATE_ORIGIN_USERS,
       },
     ],
   },
