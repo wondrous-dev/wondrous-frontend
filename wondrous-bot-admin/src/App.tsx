@@ -49,6 +49,7 @@ import TelegramStatQuest from "pages/telegram/start-quest";
 import PaywallContextProvider from "utils/context/PaywallContext";
 import ReferralComponent from "components/Referral";
 import DiscordCallbackReferralUserConnect from "pages/discord/callback/referral-user-connect";
+import TelegramConnect from "pages/telegram/connect";
 
 const router = createBrowserRouter([
   {
@@ -181,6 +182,10 @@ const router = createBrowserRouter([
       {
         path: "/telegram/start-quest/:id",
         element: <TelegramStatQuest />,
+      },
+      {
+        path: "/telegram/connect",
+        element: <TelegramConnect />,
       },
     ],
   },

@@ -105,6 +105,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/invite/:token",
   "/verify-link",
   "/telegram/start-quest/:id",
+  "/telegram/connect",
 ];
 
 export const BG_TYPES = {
@@ -317,6 +318,7 @@ export const EXCLUDED_PATHS = [
   "/wallet/connect",
   "/telegram/start-quest/:id",
   "/referral",
+  "/telegram/connect",
 ];
 
 export const TUTORIALS = {
@@ -361,7 +363,7 @@ export const CUSTOM_INTEGRATIONS = {
       },
     ],
   },
-  "97005656507154467": {
+  "97005656507154467`": {
     name: "Origin",
     integrations: [
       {
