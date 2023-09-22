@@ -15,7 +15,6 @@ const DiscordAnalytics = ({ user }) => {
 
   useEffect(() => {
     if (activeOrg?.id) {
-      console.log("activeOrg?.id", activeOrg?.id), console.log("value?.id", user?.id);
       getCmtyEntitiesCount({
         variables: {
           orgId: activeOrg?.id,
@@ -30,10 +29,12 @@ const DiscordAnalytics = ({ user }) => {
       data={data?.getCmtyEntitiesCount}
       refetch={refetch}
       loading={loading}
+      title="Member Engagement"
       panelSxProps={{
         border: "none",
-        bgcolor: "transparent",
-        padding: 0,
+        borderRadius: '6px',
+        bgcolor: "#F7F7F7",
+        padding: '14px',
       }}
     />
   );

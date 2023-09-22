@@ -51,3 +51,79 @@ export const GET_USER_QUEST_SUBMISSION_ANALYTICS = gql`
     }
   }
 `;
+
+export const GET_USER_QUEST_SUBMISSIONS = gql`
+  query getUserQuestSubmissions($cmtyUserId: ID!, $orgId: ID!, $limit: Int, $offset: Int, $questId: String) {
+    getUserQuestSubmissions(cmtyUserId: $cmtyUserId, orgId: $orgId, limit: $limit, offset: $offset, questId: $questId) {
+      id
+      createdAt
+      orgId
+      approvedAt
+      rejectedAt
+      reviewedBy
+      createdBy
+      media {
+        slug
+        name
+        type
+        muxAssetId
+        muxPlaybackId
+        videoProcessingStatus
+      }
+      stepsData {
+        selectedValues
+        stepId
+        attachments {
+          slug
+          name
+          type
+          muxAssetId
+          muxPlaybackId
+          videoProcessingStatus
+        }
+        content
+        additionalData {
+          txHash
+          tweetId
+        }
+      }
+      quest {
+        title
+        pointReward
+        steps {
+          type
+          id
+          prompt
+          additionalData {
+            discordChannelName
+            discordChannelId
+            tweetHandle
+            tweetLink
+            tweetPhrase
+            snapshotProposalLink
+            snapshotSpaceLink
+            snapshotVoteTimes
+            discordMessageType
+            category
+            dataCollectionType
+            tokenAddress
+            tokenSymbol
+            tokenLogoUrl
+            tokenDecimals
+            tokenChain
+            tokenAmount
+            tokenType
+            tokenId
+            tokenName
+            ytVideoLink
+            ytChannelLink
+            linkClickUrl
+            discordEventId
+            minDuration
+            usdValue
+          }
+        }
+      }
+    }
+  }
+`;

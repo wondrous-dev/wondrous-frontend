@@ -10,6 +10,7 @@ import { MESSAGES_REACTIONS_MOCK_DATA } from "components/Analytics/MockCharts";
 import MessagesAndReactions from "components/Analytics/AnalyticsGraphs/MessagesAndReactions";
 import DiscordAnalytics from "./DiscordAnalytics";
 import Submissions from "./Submissions";
+import OnboardingSubmissions from "./OnboardingSubmissions";
 
 // general info - DONE
 // submissions - DONE
@@ -53,9 +54,9 @@ const GeneralInfo = ({ user }) => {
     <Box display="flex" flexDirection="column" gap="8px">
       {ITEMS.map((item, idx) => {
         return (
-          <Box display="flex" alignItems="center" gap="24px" padding="10px">
+          <Box display="flex" alignItems="center" gap="24px" padding="10px 0px" key={item.label}>
             <DataTitle>{item.label}</DataTitle>
-            {item.component ? <item.component key={idx} /> : null}
+            {item.component ? <item.component /> : null}
           </Box>
         );
       })}
@@ -81,31 +82,27 @@ const MembersAnalytics = ({ value }) => {
       component: () => <GeneralInfo user={value} />,
     },
     {
-      id: "stats",
-      component: () => <StatsComponent user={value} />,
-    },
-    {
       id: "messages-reactions",
 
-      component: () => <DiscordAnalytics user={value}/>,
+      component: () => <DiscordAnalytics user={value} />,
     },
     {
-      id: 'submissions',
-      component: () => <Submissions user={value}/>
-    }
+      id: "onboarding",
+      component: () => <OnboardingSubmissions user={value} />,
+    },
+    {
+      id: "submissions",
+      component: () => <Submissions user={value} />,
+    },
   ];
 
   return (
     <>
       <Modal open={!!activeCmtyUser} onClose={handleClose} title={`${username}`} maxWidth={640}>
-        <Grid display="flex" gap="14px" flexDirection="column">
+        <Grid display="flex" gap="32px" flexDirection="column">
           {activeCmtyUser
             ? CONFIG.map((config, idx) => {
-                return (
-                  <Panel>
-                    <config.component key={config.id} />
-                  </Panel>
-                );
+                return <config.component key={config.id} />;
               })
             : null}
         </Grid>

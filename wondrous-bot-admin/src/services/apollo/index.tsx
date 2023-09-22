@@ -89,6 +89,7 @@ const cache = new InMemoryCache({
         },
         getQuestsAnalyticsLeaderboard: offsetLimitPagination(),
         getQuestSubmissions: offsetLimitPagination(),
+        getUserQuestSubmissions: offsetLimitPagination(["cmtyUserId", "orgId", "questId"]),
       },
     },
   },
