@@ -41,7 +41,7 @@ const TelegramConnect = () => {
     script.setAttribute("data-telegram-login", "wonderverse_andros_bot");
     script.setAttribute("data-size", "large");
     script.setAttribute("data-onauth", "onTelegramAuth(user)");
-    script.setAttribute("data-auth-url", "https://1217-68-173-56-96.ngrok-free.app/telegram/connect");
+    script.setAttribute("data-auth-url", "https://staging-communities.wonderverse.xyz/telegram/connect");
     script.setAttribute("data-request-access", "write");
     document.body.appendChild(script);
     // Cleanup: remove script when component unmounts
