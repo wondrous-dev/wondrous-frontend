@@ -23,17 +23,16 @@ const TelegramConnect = () => {
   useEffect(() => {
     // Define the onTelegramAuth function on the global scope
     (window as any).onTelegramAuth = (user) => {
-      console.log("user", user.id);
-      alert(
-        "Logged in as " +
-          user.first_name +
-          " " +
-          user.last_name +
-          " (" +
-          user.id +
-          (user.username ? ", @" + user.username : "") +
-          ")"
-      );
+      if (user?.id && user?.username) {
+        migrateOrgCmtyUser({
+          variables: {
+            cmtyUserId: cmtyUserId,
+            orgId: orgId,
+            telegramId: user.id.toString(),
+            telegramUsername: user.username,
+          },
+        });
+      }
     };
     // Create and append the script tag
     const script = document.createElement("script");
@@ -55,25 +54,20 @@ const TelegramConnect = () => {
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
       <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
-        {/* {link && !errorText && (
-          <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-            Thanks for connecting your account! To redeem rewards for your and your referrer, join the{" "}
-            <a style={{ fontWeight: "bold", cursor: "pointer" }} href={link}>
-              {" "}
-              Discord server
-            </a>
-            {", "}
-            then type "/quests" to start taking on quests!
-          </Typography>
-        )}
-        {!link && !errorText && (
+        {migrateOrgCmtyUserData?.migratOrgCmtyUserTelegram?.success && (
           <>
-            <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-              Connecting your Discord. If this is taking too long please try again!
+            <Typography
+              marginTop="-10%"
+              fontFamily="Poppins"
+              fontWeight={600}
+              fontSize="18px"
+              lineHeight="24px"
+              color="black"
+            >
+              Telegram connected! Please return to the quest channel
             </Typography>
-            <CircularProgress />
           </>
-        )} */}
+        )}
 
         {errorText && (
           <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
