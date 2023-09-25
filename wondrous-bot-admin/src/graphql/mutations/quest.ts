@@ -163,3 +163,16 @@ export const REQUEST_CMTY_USER_CONNECT_WALLET = gql`
     }
   }
 `;
+
+export const MIGRATE_ORG_CMTY_USER_TELEGRAM = gql`
+  mutation migratOrgCmtyUserTelegram($orgId: ID!, $cmtyUserId: ID!, $telegramId: String, $telegramUsername: String) {
+    migratOrgCmtyUserTelegram(
+      orgId: $orgId
+      cmtyUserId: $cmtyUserId
+      telegramId: $telegramId
+      telegramUsername: $telegramUsername
+    ) {
+      success
+    }
+  }
+`;

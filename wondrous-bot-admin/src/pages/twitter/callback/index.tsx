@@ -9,9 +9,12 @@ const CallbackPage = () => {
   const [searchParams] = useSearchParams();
   const code = searchParams?.get("code");
   const state = searchParams?.get("state");
-  const discordId = state?.split("discordId=")[1] || "";
+  let discordId = state?.split("discordId=")[1] || "";
   const telegramUserId = state?.split("telegramUserId=")[1] || "";
-
+  const migrateOrgId = state?.split("migrateOrgId=")[1] || "";
+  if (migrateOrgId) {
+    discordId = discordId?.split(" ")[0] || "";
+  }
   const [finishedVerification, setFinishedVerification] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [verifyTwitter] = useMutation(VERIFY_COMMUNITY_USER_TWITTER, {
@@ -26,12 +29,13 @@ const CallbackPage = () => {
     },
   });
   useEffect(() => {
-    if (code && !finishedVerification && (discordId || telegramUserId)) {
+    if (code && !finishedVerification && (discordId || telegramUserId || migrateOrgId)) {
       verifyTwitter({
         variables: {
           code,
           ...(discordId && { discordId }),
-          ...(telegramUserId && { telegramUserId })
+          ...(telegramUserId && { telegramUserId }),
+          ...(migrateOrgId && { migrateOrgId }),
         },
       });
     }

@@ -65,3 +65,9 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+#telegram-login-wonderverse_andros_bot {
+  position: absolute;
+  left: 42%;
+  top: 30%;
+}

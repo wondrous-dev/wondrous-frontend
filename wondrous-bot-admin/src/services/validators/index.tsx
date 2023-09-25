@@ -23,6 +23,7 @@ const ALL_TYPES = [
   TYPES.SUBSCRIBE_YT_CHANNEL,
   TYPES.LINK_CLICK,
   TYPES.LIFI_VALUE_BRIDGED,
+  TYPES.MIGRATE_ORIGIN_USERS,
 ];
 
 const sharedValidation = {
@@ -111,7 +112,10 @@ const stepTypes = {
       snapshotSpaceLink: Yup.string()
         .required("Snapshot space link is required")
         .url("Snapshot space link is not valid"),
-      snapshotVoteTimes: Yup.number().required("Snapshot vote times is required").typeError('Amount must be a number').min(0, 'Value is too small'),
+      snapshotVoteTimes: Yup.number()
+        .required("Snapshot vote times is required")
+        .typeError("Amount must be a number")
+        .min(0, "Value is too small"),
     }),
   }),
   [TYPES.DISCORD_MESSAGE_IN_CHANNEL]: Yup.object().shape({
@@ -179,6 +183,9 @@ const stepTypes = {
       usdValue: Yup.number().required("USD value is required"),
     }),
   }),
+  [TYPES.MIGRATE_ORIGIN_USERS]: Yup.object().shape({
+    ...sharedValidation,
+  }),
   [TYPES.SUBSCRIBE_YT_CHANNEL]: Yup.object().shape({
     additionalData: Yup.object().shape({
       ytChannelLink: Yup.string()
@@ -196,9 +203,12 @@ const stepTypes = {
   [TYPES.DISCORD_EVENT_ATTENDANCE]: Yup.object().shape({
     additionalData: Yup.object().shape({
       discordEventId: Yup.string().required("Discord event is required"),
-      minDuration: Yup.number().required("Min duration is required").typeError('Amount must be a number').min(0, 'Value is too small'),
-    })
-  })
+      minDuration: Yup.number()
+        .required("Min duration is required")
+        .typeError("Amount must be a number")
+        .min(0, "Value is too small"),
+    }),
+  }),
 };
 
 export const QUEST_FIELDS = {
