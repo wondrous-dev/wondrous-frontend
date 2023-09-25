@@ -149,7 +149,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
     } else if ([TYPES.SINGLE_QUIZ, TYPES.MULTI_QUIZ].includes(step.type)) {
       const hasCorrectAnswer = step.options?.some((option) => option.correct !== null && option.correct !== undefined);
       const hasStepConditionalRewards = step.conditionalRewards?.length > 0;
-      const defaultRewardsIfConditionalRewardsIsOn = hasStepConditionalRewards ? [{type: null}] : [];
+      const defaultRewardsIfConditionalRewardsIsOn = hasStepConditionalRewards ? [{ type: null }] : [];
       outputStep.value = {
         question: step.prompt,
         withConditionalRewards: hasStepConditionalRewards,
@@ -157,11 +157,12 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
         multiSelectValue: step.type,
         answers: step.options?.map((option) => ({
           value: option.text,
-          rewards: step?.conditionalRewards?.find((item) => item.optionText === option.text)?.rewardData || defaultRewardsIfConditionalRewardsIsOn,
+          rewards:
+            step?.conditionalRewards?.find((item) => item.optionText === option.text)?.rewardData ||
+            defaultRewardsIfConditionalRewardsIsOn,
           ...(hasCorrectAnswer
             ? {
                 isCorrect: option.correct,
-
               }
             : {}),
         })),
@@ -234,6 +235,8 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       };
     } else if (step.type === TYPES.LIFI_VALUE_BRIDGED) {
       outputStep.value = Number(step?.additionalData?.usdValue) / 100;
+    } else if (step.type === TYPES.MIGRATE_ORIGIN_USERS) {
+      outputStep.value = step?.prompt;
     } else if (step.type === TYPES.REFERRAL) {
       outputStep.value = step?.prompt;
     } else if (step.type === TYPES.DATA_COLLECTION) {

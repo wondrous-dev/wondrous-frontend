@@ -77,7 +77,7 @@ const MembersPage = () => {
         }}
       >
         {data?.getCmtyUsersForOrg?.length ? (
-          <TableComponent data={tableConfig} headers={headers} />
+          <TableComponent data={tableConfig} headers={headers} title="Top Members"/>
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
         )}

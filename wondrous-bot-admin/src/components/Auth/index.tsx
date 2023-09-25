@@ -199,7 +199,8 @@ export const linkCmtyUserWallet = async (
   signedMessage: string,
   blockchain: string,
   originalMessage: string,
-  telegramUserId?: string
+  telegramUserId?: string,
+  migrateOrgId?: string
 ) => {
   try {
     const {
@@ -213,7 +214,10 @@ export const linkCmtyUserWallet = async (
           signedMessage,
           blockchain,
           originalMessage,
-          telegramUserId
+          telegramUserId,
+          ...(migrateOrgId && {
+            migrateOrgId,
+          }),
         },
       },
     });

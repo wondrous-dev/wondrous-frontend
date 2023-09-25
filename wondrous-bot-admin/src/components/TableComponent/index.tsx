@@ -1,5 +1,5 @@
 import { Twitter } from "@mui/icons-material";
-import { TableContainer, Table, TableHead, TableBody, TableCell, Typography, Box } from "@mui/material";
+import { TableContainer, Table, TableHead, TableBody, TableCell, Typography, Box, Grid } from "@mui/material";
 import EditableText from "components/EditableText";
 import { ShapedHexagonWrapper, WhiteBgDiscord } from "components/Icons/Discord";
 import { Label } from "components/QuestsList/styles";
@@ -8,21 +8,30 @@ import { StyledLinkButton, StyledViewQuestResults } from "components/ViewQuestRe
 import { IconWrapper, PaperComponent, StyledTableHeader, StyledTableHeaderCell, StyledTableRow } from "./styles";
 import LinkIcon from "components/Icons/LinkIcon";
 
-const TableComponent = ({ headers, data }) => {
+const TableComponent = ({ headers = null, data, title = "", headerComponent = null }) => {
   return (
     <TableContainer component={PaperComponent}>
+      <Grid bgcolor="#2a8d5c" padding="24px 14px">
+        <Typography color="#F7F7F7" fontFamily="Poppins" fontWeight={600} fontSize="16px" lineHeight="16px">
+          {title}
+        </Typography>
+      </Grid>
       <Table>
         <TableHead>
-          <StyledTableHeader>
-            {headers?.map((header) => (
-              <StyledTableHeaderCell key={header}>{header}</StyledTableHeaderCell>
-            ))}
-          </StyledTableHeader>
+          {headerComponent ? (
+            headerComponent()
+          ) : (
+            <StyledTableHeader>
+              {headers?.map((header) => (
+                <StyledTableHeaderCell key={header}>{header}</StyledTableHeaderCell>
+              ))}
+            </StyledTableHeader>
+          )}
         </TableHead>
         <TableBody>
           {data?.map((row, idx) => (
             <StyledTableRow key={row.id} id={row.id}>
-              {Object.keys(row)?.map((key) => {
+              {Object.keys(row)?.map((key, rowIdx) => {
                 if (key === "id") return null;
                 const column = row[key];
                 const { tableStyle = {} } = column || {};
@@ -30,7 +39,7 @@ const TableComponent = ({ headers, data }) => {
                   <TableCell
                     key={key}
                     sx={{
-                      borderRight: "2px solid #f2f2f2",
+                      borderRight: "1px solid #949494",
                       borderBottom: "0px",
                       ...tableStyle,
                     }}
@@ -39,8 +48,8 @@ const TableComponent = ({ headers, data }) => {
                       <Label
                         fontSize="14px"
                         lineHeight="14px"
-                        textAlign="center"
-                        width="100%"
+                        textAlign={column.textAlign || "center"}
+                        width={column.width || "100%"}
                         {...(column.componentProps || {})}
                       >
                         {column.value}
@@ -111,20 +120,29 @@ const TableComponent = ({ headers, data }) => {
                     ) : null}
                     {column.component === "custom" ? column.customComponent({ value: column.value }) : null}
                     {column.component === "link" ? (
-                      <a href={column.value} target="__blank">
-                        <Box width="100%" display="flex" justifyContent="left" alignItems="center">
-                          <LinkIcon />
-                          <Label
-                            marginLeft="8px"
-                            fontSize="14px"
-                            lineHeight="14px"
-                            textAlign="center"
-                            {...(column.componentProps || {})}
-                          >
-                            {column.text}
-                          </Label>
-                        </Box>
-                      </a>
+                      <Box width="100%" display="flex" justifyContent="center">
+                        <a href={column.value} target="__blank">
+                          <StyledLinkButton>
+                            <AttachFileIcon
+                              sx={{
+                                fontSize: "18px",
+                                color: "white",
+                              }}
+                            />
+                          </StyledLinkButton>
+                        </a>
+                      </Box>
+                    ) : null}
+                    {column.component === "label" ? (
+                      <Label
+                        fontSize="14px"
+                        lineHeight="14px"
+                        textAlign={column.textAlign || "center"}
+                        width={column.width || "100%"}
+                        {...(column.componentProps || {})}
+                      >
+                        {column.value}
+                      </Label>
                     ) : null}
                   </TableCell>
                 );
