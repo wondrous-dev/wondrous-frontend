@@ -134,8 +134,8 @@ export const GET_SUBMISSIONS_FOR_QUEST = gql`
 `;
 
 export const GET_QUEST_SUBMISSION_STATS = gql`
-  query getQuestSubmissionStats($questId: ID!) {
-    getQuestSubmissionStats(questId: $questId) {
+  query getQuestSubmissionStats($questId: ID, $cmtyUserId: String, $orgId: ID) {
+    getQuestSubmissionStats(questId: $questId, cmtyUserId: $cmtyUserId, orgId: $orgId) {
       in_review
       approved
       rejected

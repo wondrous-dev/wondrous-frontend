@@ -1,26 +1,32 @@
 import { Box, Grid } from "@mui/material";
-import { SecondaryAccordion, SubmissionComponent } from "./Common";
 import { CardLabel } from "./styles";
 import AutocompleteComponent from "components/AddFormEntity/components/AutocompleteComponent";
-import { GET_QUESTS_FOR_ORG, GET_USER_QUEST_SUBMISSIONS } from "graphql/queries";
+import { GET_QUESTS_FOR_ORG, GET_QUEST_SUBMISSION_STATS, GET_USER_QUEST_SUBMISSIONS } from "graphql/queries";
 import { useLazyQuery } from "@apollo/client";
 import { useContext, useEffect, useMemo, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { LIMIT, QUEST_STATUSES, QUEST_SUBMISSION_STATUS } from "utils/constants";
 import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 import { FilterPill } from "components/ViewQuestResults/styles";
+import SubmissionsList, { SubmissionComponent } from "./Common/SubmissionsList";
 
 const Submissions = ({ user }) => {
   const { activeOrg } = useContext(GlobalContext);
 
-  const [activeQuest, setActiveQuest] = useState(QUEST_SUBMISSION_STATUS.APPROVED);
-  const [activeFilter, setActiveFilter] = useState(null);
+  const [activeQuest, setActiveQuest] = useState(null);
+  const [activeFilter, setActiveFilter] = useState(QUEST_SUBMISSION_STATUS.APPROVED);
   const [hasMore, setHasMore] = useState(false);
+  const [hasMoreSubmissions, setHasMoreSubmissions] = useState(false);
   const [getQuestsForOrg, { data, fetchMore }] = useLazyQuery(GET_QUESTS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
   });
 
-  const [getUserQuestSubmissions, { data: submissionsData, refetch }] = useLazyQuery(GET_USER_QUEST_SUBMISSIONS, {
+  const [getQuestSubmissionStats, { data: submissionStats }] = useLazyQuery(GET_QUEST_SUBMISSION_STATS);
+
+  const [
+    getUserQuestSubmissions,
+    { data: submissionsData, refetch, loading: submissionsLoading, fetchMore: submissionsFetchMore },
+  ] = useLazyQuery(GET_USER_QUEST_SUBMISSIONS, {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
@@ -45,17 +51,31 @@ const Submissions = ({ user }) => {
     }
   }, [activeOrg?.id]);
 
+  const initFetch = async () => {
+    const { data } = await getUserQuestSubmissions({
+      variables: {
+        cmtyUserId: user?.id,
+        orgId: activeOrg?.id,
+        limit: LIMIT,
+        offset: 0,
+        questId: activeQuest,
+      },
+    });
+    const {data: statsData} = await getQuestSubmissionStats({
+      variables: {
+        questId: activeQuest,
+        cmtyUserId: user?.id,
+        orgId: activeOrg?.id,
+      }
+    });
+    if (data?.getUserQuestSubmissions?.length >= LIMIT) {
+      setHasMoreSubmissions(true);
+    }
+
+  };
   useEffect(() => {
     if (activeOrg?.id && user?.id) {
-      getUserQuestSubmissions({
-        variables: {
-          cmtyUserId: user?.id,
-          orgId: activeOrg?.id,
-          limit: LIMIT,
-          offset: 0,
-          questId: activeQuest,
-        },
-      });
+      initFetch();
     }
   }, [user?.id, activeOrg?.id]);
 
@@ -82,6 +102,20 @@ const Submissions = ({ user }) => {
     setHasMore(fetchMoreData?.getQuestsForOrg?.length === LIMIT);
   };
 
+  const handleFetchMoreSubmissions = async () => {
+    if (!hasMoreSubmissions) return;
+    const { data: fetchMoreData } = await submissionsFetchMore({
+      variables: {
+        cmtyUserId: user?.id,
+        orgId: activeOrg?.id,
+        limit: LIMIT,
+        offset: submissionsData?.getUserQuestSubmissions?.length || 0,
+        questId: activeQuest,
+      },
+    });
+    setHasMoreSubmissions(fetchMoreData?.getUserQuestSubmissions?.length === LIMIT);
+  };
+
   const handleChange = (questId) => {
     setActiveQuest(questId);
     refetch({
@@ -93,22 +127,31 @@ const Submissions = ({ user }) => {
     });
   };
 
-  const stats = {};
   const filters = {
     [QUEST_SUBMISSION_STATUS.APPROVED]: {
       label: "Approved",
-      value: stats[QUEST_SUBMISSION_STATUS.APPROVED] || 0,
+      value: submissionStats?.getQuestSubmissionStats[QUEST_SUBMISSION_STATUS.APPROVED] || 0,
     },
 
     [QUEST_SUBMISSION_STATUS.IN_REVIEW]: {
       label: "Awaiting Approval",
-      value: stats[QUEST_SUBMISSION_STATUS.IN_REVIEW] || 0,
+      value: submissionStats?.getQuestSubmissionStats[QUEST_SUBMISSION_STATUS.IN_REVIEW] || 0,
     },
 
     [QUEST_SUBMISSION_STATUS.REJECTED]: {
       label: "Rejected",
-      value: stats[QUEST_SUBMISSION_STATUS.REJECTED] || 0,
+      value: submissionStats?.getQuestSubmissionStats[QUEST_SUBMISSION_STATUS.REJECTED] || 0,
     },
+  };
+
+  const handleFilterChange = async (value) => {
+    setActiveFilter(value);
+    const {data} = await refetch({
+      status: value,
+    })
+    if (data?.getUserQuestSubmissions?.length >= LIMIT) {
+      setHasMoreSubmissions(true);
+    }
   };
 
   return (
@@ -134,17 +177,18 @@ const Submissions = ({ user }) => {
         </Box>
         <Box display="flex" gap="14px" alignItems="center" width="100%">
           {Object.keys(filters).map((key, idx) => (
-            <FilterPill type="button" key={key} $isActive={key === activeFilter} onClick={() => {}}>
+            <FilterPill type="button" key={key} $isActive={key === activeFilter} onClick={() => handleFilterChange(key)}>
               {filters[key].value} {filters[key].label}
             </FilterPill>
           ))}
         </Box>
       </Box>
-      <Box display="flex" flexDirection="column" gap="14px">
-        {submissionsData?.getUserQuestSubmissions?.map((submission) => (
-          <SubmissionComponent key={submission.id} submission={submission} />
-        ))}
-      </Box>
+      <SubmissionsList
+        loading={submissionsLoading}
+        data={submissionsData?.getUserQuestSubmissions}
+        fetchMore={handleFetchMoreSubmissions}
+        hasMore={hasMoreSubmissions}
+      />
     </Grid>
   );
 };

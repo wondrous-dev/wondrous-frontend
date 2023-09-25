@@ -16,7 +16,7 @@ const ScrollBarStyles = css`
   &::-webkit-scrollbar-thumb {
     border-radius: 50px;
     border: 8px solid rgba(0, 0, 0, 0);
-    background: #c4c4c4;
+    background: #2A8D5C;
     background-clip: padding-box;
   }
 `;
