@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Label } from "components/QuestsList/styles";
 import { Box, Typography } from "@mui/material";
+import ScrollBarStyles from "components/Shared/ScrollBarStyles";
 
 export const StyledUsername = styled(Label)`
   && {
@@ -55,5 +56,13 @@ export const CardLabel = styled(Typography)`
     font-weight: 600;
     line-height: 16px; /* 100% */
     letter-spacing: 0.32px;
+  }
+`;
+
+export const SubmissinsWrapper = styled(Box)`
+  && {
+    max-height: 400px;
+    overflow: scroll;
+    ${ScrollBarStyles};
   }
 `;

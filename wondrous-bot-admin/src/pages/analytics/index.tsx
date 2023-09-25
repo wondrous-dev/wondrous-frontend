@@ -11,11 +11,11 @@ const AnalyticsPage = () => {
 
   const plan = getPlan(subscription?.tier);
 
-  // if (plan === PricingOptionsTitle.Basic) {
-  //   setPaywall(true);
-  //   setPaywallMessage("This feature is only available on the Hobby plan and above");
-  //   return <MockCharts />;
-  // }
+  if (plan === PricingOptionsTitle.Basic) {
+    setPaywall(true);
+    setPaywallMessage("This feature is only available on the Hobby plan and above");
+    return <MockCharts />;
+  }
   return <AnalyticsComponent />;
 };
 

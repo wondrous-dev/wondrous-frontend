@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, ButtonBase } from "@mui/material";
+import { Box } from "@mui/system";
+import {ScrollBarStylesHorizontal} from "components/Shared/ScrollBarStyles";
 
 export const StyledTableHeaderCell = styled(TableCell)`
   && {
@@ -50,6 +52,7 @@ export const PaperComponent = styled(Paper)`
   && {
     border-radius: 16px;
     border: 2px solid black;
+    overflow: hidden;
   }
 `;
 
@@ -63,5 +66,12 @@ export const IconWrapper = styled(ButtonBase)`
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+`;
+
+export const TableBodyWrapper = styled(Box)`
+  && {
+    overflow: auto;
+    ${ScrollBarStylesHorizontal};
   }
 `;

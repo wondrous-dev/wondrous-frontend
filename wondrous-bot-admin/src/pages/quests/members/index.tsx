@@ -24,7 +24,6 @@ const MembersPage = () => {
   });
   const tableConfig = useMemo(() => {
     return data?.getCmtyUsersForOrg?.map((user) => {
-      const userDiscord = `${user?.discordUsername}`;
       const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
       return {
         id: user.id,

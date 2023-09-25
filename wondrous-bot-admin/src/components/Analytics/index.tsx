@@ -17,6 +17,7 @@ import QuestLeaderboard from "./AnalyticsGraphs/QuestLeaderboard";
 import Submissions from "./AnalyticsGraphs/Submissions";
 import CardsComponent from "./Cards";
 import Heatmap from "./GraphsComponent/Heatmap";
+import UsersLeaderboard from "./AnalyticsGraphs/UsersLeaderboard";
 
 const AnalyticsComponent = () => {
   const { activeOrg } = useContext(GlobalContext);
@@ -128,6 +129,7 @@ const AnalyticsComponent = () => {
           <Heatmap data={presenceData?.getCmtyPresenceAnalytics} loading={presenceLoading} refetch={presenceRefetch} />
         </Grid>
         <QuestLeaderboard />
+        <UsersLeaderboard />
       </Grid>
     </>
   );

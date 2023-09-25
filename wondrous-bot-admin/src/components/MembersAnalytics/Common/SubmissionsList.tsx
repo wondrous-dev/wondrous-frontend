@@ -5,7 +5,7 @@ import { StyledLinkButton } from "components/ViewQuestResults/styles";
 import { Label } from "components/QuestsList/styles";
 import { useEffect, useMemo } from "react";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import { TextWrapper, CommonTypography } from "../styles";
+import { TextWrapper, CommonTypography, SubmissinsWrapper } from "../styles";
 import AccordionComponent from "components/Shared/Accordion";
 import { useInView } from "react-intersection-observer";
 import EmptyState from "components/EmptyState";
@@ -99,14 +99,13 @@ const SubmissionsList = ({ loading, data = [], fetchMore, hasMore }) => {
   const [ref, inView] = useInView({});
 
   useEffect(() => {
-    console.log(inView && hasMore);
     if (inView && hasMore) {
       fetchMore();
     }
   }, [hasMore, inView]);
 
   return (
-    <Box maxHeight="400px" overflow="scroll">
+    <SubmissinsWrapper maxHeight="400px" overflow="scroll">
       {loading ? (
         <CircularProgress
           sx={{
@@ -115,13 +114,13 @@ const SubmissionsList = ({ loading, data = [], fetchMore, hasMore }) => {
           }}
         />
       ) : (
-        <Box height="100%" display="flex" flexDirection="column" gap="14px">
+        <Box height="100%" display="flex" flexDirection="column" gap="14px" padding="2px">
           {data.map((submission) => (
             <SubmissionComponent key={submission.id} submission={submission} />
           ))}
           {!data?.length && !loading && (
             <EmptyState
-              type={EMPTY_STATE_TYPES.PAYMENTS}
+              type={EMPTY_STATE_TYPES.SUBMISSIONS}
               labelColor="black"
               sx={{
                 border: "1px solid black",
@@ -131,7 +130,7 @@ const SubmissionsList = ({ loading, data = [], fetchMore, hasMore }) => {
           <div ref={ref} style={{ height: "1px", display: "block" }} />
         </Box>
       )}
-    </Box>
+    </SubmissinsWrapper>
   );
 };
 

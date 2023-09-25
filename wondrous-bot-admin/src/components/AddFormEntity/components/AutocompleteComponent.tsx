@@ -33,7 +33,6 @@ const AutocompleteOptionsComponent = ({
       },
     ]);
   };
-  console.log(listBoxProps)
   return (
     <>
       <ReferralWarningDialog

@@ -103,3 +103,21 @@ export const GET_CMTY_ANALYTICS_CARDS = gql`
     }
   }
 `;
+
+export const GET_CMTY_USERS_LEADERBOARD = gql`
+  query getCmtyUsersLeaderboard($orgId: String, $limit: Int, $offset: Int) {
+    getCmtyUsersLeaderboard(orgId: $orgId, limit: $limit, offset: $offset) {
+      id
+      discordUsername
+      discordDiscriminator
+      level
+      messages
+      reactions
+      submissions
+      telegramUsername
+      username
+      web3Address
+      points
+    }
+  }
+`;

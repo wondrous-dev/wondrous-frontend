@@ -21,4 +21,26 @@ const ScrollBarStyles = css`
   }
 `;
 
+export const ScrollBarStylesHorizontal = css`
+  &::-webkit-scrollbar {
+    display: block;
+    position: absolute;
+    z-index: 999;
+    height: 20px; 
+    background: transparent;
+    border-radius: 4px 0 0 4px; 
+    outline: none;
+    width: 0;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    border: 8px solid rgba(0, 0, 0, 0);
+    background: #2A8D5C;
+    background-clip: padding-box;
+  }
+`;
+
 export default ScrollBarStyles;

@@ -1,14 +1,13 @@
 import { Twitter } from "@mui/icons-material";
 import { TableContainer, Table, TableHead, TableBody, TableCell, Typography, Box, Grid } from "@mui/material";
 import EditableText from "components/EditableText";
-import { ShapedHexagonWrapper, WhiteBgDiscord } from "components/Icons/Discord";
+import { ShapedHexagonWrapper } from "components/Icons/Discord";
 import { Label } from "components/QuestsList/styles";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { StyledLinkButton, StyledViewQuestResults } from "components/ViewQuestResults/styles";
-import { IconWrapper, PaperComponent, StyledTableHeader, StyledTableHeaderCell, StyledTableRow } from "./styles";
-import LinkIcon from "components/Icons/LinkIcon";
+import { IconWrapper, PaperComponent, StyledTableHeader, StyledTableHeaderCell, StyledTableRow, TableBodyWrapper } from "./styles";
 
-const TableComponent = ({ headers = null, data, title = "", headerComponent = null }) => {
+const TableComponent = ({ headers = null, data, title = "", headerComponent = null, footerComponent = null }) => {
   return (
     <TableContainer component={PaperComponent}>
       <Grid bgcolor="#2a8d5c" padding="24px 14px">
@@ -16,7 +15,8 @@ const TableComponent = ({ headers = null, data, title = "", headerComponent = nu
           {title}
         </Typography>
       </Grid>
-      <Table>
+     <TableBodyWrapper>
+     <Table >
         <TableHead>
           {headerComponent ? (
             headerComponent()
@@ -39,7 +39,7 @@ const TableComponent = ({ headers = null, data, title = "", headerComponent = nu
                   <TableCell
                     key={key}
                     sx={{
-                      borderRight: "1px solid #949494",
+                      borderRight: rowIdx === Object.keys(row).length - 1 ? "0px" : "1px solid #949494",
                       borderBottom: "0px",
                       ...tableStyle,
                     }}
@@ -133,24 +133,15 @@ const TableComponent = ({ headers = null, data, title = "", headerComponent = nu
                         </a>
                       </Box>
                     ) : null}
-                    {column.component === "label" ? (
-                      <Label
-                        fontSize="14px"
-                        lineHeight="14px"
-                        textAlign={column.textAlign || "center"}
-                        width={column.width || "100%"}
-                        {...(column.componentProps || {})}
-                      >
-                        {column.value}
-                      </Label>
-                    ) : null}
                   </TableCell>
                 );
               })}
             </StyledTableRow>
           ))}
         </TableBody>
+        {footerComponent ? footerComponent() : null}
       </Table>
+     </TableBodyWrapper>
     </TableContainer>
   );
 };

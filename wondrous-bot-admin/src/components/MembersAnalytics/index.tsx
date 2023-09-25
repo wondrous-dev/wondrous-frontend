@@ -1,24 +1,12 @@
-import { Label } from "components/QuestsList/styles";
 import { DataTitle, StyledUsername } from "./styles";
 import { useState } from "react";
 import Modal from "components/Shared/Modal";
-import { Box, Grid, Typography } from "@mui/material";
-import Panel from "./Panel";
+import { Box, Grid } from "@mui/material";
 import { AddressComponent, IntegrationsComponent, NameComponent, XpComponent } from "./Common";
-import StatsComponent from "./StatsComponent";
-import { MESSAGES_REACTIONS_MOCK_DATA } from "components/Analytics/MockCharts";
-import MessagesAndReactions from "components/Analytics/AnalyticsGraphs/MessagesAndReactions";
 import DiscordAnalytics from "./DiscordAnalytics";
 import Submissions from "./Submissions";
 import OnboardingSubmissions from "./OnboardingSubmissions";
 
-// general info - DONE
-// submissions - DONE
-// approval rate - DONE
-// rewards - DONE
-// points - DONE
-// messages ?
-// reactions ?
 
 const GeneralInfo = ({ user }) => {
   const ITEMS = [
@@ -98,7 +86,7 @@ const MembersAnalytics = ({ value }) => {
 
   return (
     <>
-      <Modal open={!!activeCmtyUser} onClose={handleClose} title={`${username}`} maxWidth={640}>
+      <Modal open={!!activeCmtyUser} onClose={handleClose} title={`${username}`} maxWidth={740}>
         <Grid display="flex" gap="32px" flexDirection="column">
           {activeCmtyUser
             ? CONFIG.map((config, idx) => {
