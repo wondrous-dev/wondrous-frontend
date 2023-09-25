@@ -122,7 +122,7 @@ const ReversedButtonCss = css`
 export const SharedSecondaryButton = styled(ButtonBase)`
   && {
     display: flex;
-    padding: 8px 24px;
+    padding: ${({ padding = "8px 24px" }) => padding};
     gap: 10px;
     height: ${({ height = "40px" }) => height};
     min-width: ${({ minWidth = "40px" }) => minWidth};
@@ -131,7 +131,7 @@ export const SharedSecondaryButton = styled(ButtonBase)`
     border-radius: ${({ borderRadius = "35px" }) => borderRadius};
     font-family: "Poppins";
     font-style: normal;
-    font-weight: 600;
+    font-weight: ${({ fontWeight = 600 }) => fontWeight};
     font-size: 15px;
     line-height: 150%;
     white-space: nowrap;
@@ -220,3 +220,46 @@ export const scrollbarStyles = {
     borderRadius: "100px",
   },
 };
+export const CustomResizableTextField = styled(TextField)`
+width: 100%;
+&& {
+  .MuiOutlinedInput-notchedOutline {
+    border-color: transparent; /* Set border color to transparent by default */
+  }
+
+  &:hover .MuiOutlinedInput-notchedOutline {
+    border-color: transparent;
+  }
+
+  .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: black;
+  }
+
+  .Mui-disabled {
+    pointer-events: none;
+  }
+  .Mui-focused fieldset {
+    borderColor: black;
+  }
+  .MuiInputBase-root {
+    border-radius: 6px;
+    background: #e8e8e8;
+    box-sizing: border-box;
+    padding: 0;
+    border: none;
+    color: black;
+    width: 100%;
+    border: 0;
+    font-family: Poppins;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    resize: none;
+    .MuiInputBase-input {
+      padding: ${({ padding = "9px 14px" }) => padding};
+      width: 100%;
+    };
+  }
+
+  
+`;

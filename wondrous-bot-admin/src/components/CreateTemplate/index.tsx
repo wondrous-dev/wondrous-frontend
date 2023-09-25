@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Divider, Grid, Typography } from "@mui/material";
 import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,7 +22,8 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
-import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "./shared";
+import { DEFAULT_QUEST_SETTINGS_STATE_VALUE, mapAnswersToOptions, reduceConditionalRewards } from "./utils";
+import { useTour } from "@reactour/tour";
 
 const stepCache = {
   steps: null,
@@ -37,6 +38,7 @@ const CreateTemplate = ({
   defaultSteps = [],
 }) => {
   const navigate = useNavigate();
+  const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
     refetchQueries: ["getQuestById"],
@@ -61,6 +63,9 @@ const CreateTemplate = ({
       setSteps(stepCache.steps);
     }
   }, []);
+
+  const { isOpen, setCurrentStep, currentStep, setSteps: setTourSteps, steps: tourSteps } = useTour();
+
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -107,6 +112,51 @@ const CreateTemplate = ({
         order: idx + 1,
       }))
     );
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const newSteps = tourSteps.map((step: any) => {
+      if (step.id === "tutorial-quest-rewards") {
+        return {
+          ...step,
+          handleNextAction: () => {
+            setIsRewardModalOpen(true);
+            setCurrentStep((prev) => prev + 1);
+          },
+        };
+      }
+      if (step.id === "tutorial-add-rewards") {
+        return {
+          ...step,
+          handleNextAction: () => {
+            setIsRewardModalOpen(false);
+            setCurrentStep((prev) => prev + 1);
+          },
+          handlePrevAction: () => {
+            setIsRewardModalOpen(false);
+            setCurrentStep((prev) => prev - 1);
+          },
+        };
+      }
+      if (step.id === "tutorial-activate-quest") {
+        return {
+          ...step,
+          handlePrevAction: () => {
+            setIsRewardModalOpen(true);
+            setCurrentStep((prev) => prev - 1);
+          },
+        };
+      }
+      return step;
+    });
+    setTourSteps(newSteps);
+  }, [isOpen]);
+
+  const postRewardsToggle = () => {
+    if (isOpen) {
+      setCurrentStep((prev) => prev + 1);
+    }
   };
 
   const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
@@ -244,7 +294,7 @@ const CreateTemplate = ({
             };
           }
         })
-        .filter((reward) => reward),
+        ?.filter((reward) => reward),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           id: next?._id,
@@ -254,15 +304,16 @@ const CreateTemplate = ({
           required: next.required === false ? false : true,
           prompt: next.value?.question || next?.value?.prompt || next.value || null,
         };
-        if (next.type === TYPES.MULTI_QUIZ || next.type === TYPES.SINGLE_QUIZ) {
-          (step.type = next.value.multiSelectValue),
-            (step.options = next.value?.answers?.map((answer, idx) => {
-              return {
-                position: idx,
-                text: answer.value?.trim(),
-                ...(next.value.withCorrectAnswers ? { correct: answer.isCorrect } : {}),
-              };
-            }));
+        const isQuiz = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ].includes(next.type);
+        if (isQuiz) {
+          step.type = next.value.multiSelectValue;
+          step.options = next.value?.answers
+            ? mapAnswersToOptions(next.value.answers, next.value.withCorrectAnswers)
+            : [];
+          const conditionalRewards = next.value?.answers?.reduce(reduceConditionalRewards, []);
+          if (conditionalRewards.length) {
+            step.conditionalRewards = conditionalRewards;
+          }
           step.prompt = next.value.question;
         } else if ([TYPES.LIKE_TWEET, TYPES.RETWEET, TYPES.REPLY_TWEET].includes(next.type)) {
           step.prompt = next.value?.prompt;
@@ -359,7 +410,7 @@ const CreateTemplate = ({
       handleMutation({ body });
 
       const hasMediaToUpload = steps.some(
-        (step) => step.mediaUploads.filter((media) => media instanceof File).length > 0
+        (step) => step.mediaUploads?.filter((media) => media instanceof File).length > 0
       );
 
       const hasMediaToRemove = Object.values(removedMediaSlugs).flat().length > 0;
@@ -397,6 +448,18 @@ const CreateTemplate = ({
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
 
+  const handleRewardsToggle = () => {
+    setIsRewardModalOpen((prev) => !prev);
+    postRewardsToggle();
+  };
+
+  const onRewardsChange = (rewards) => {
+    setQuestSettings((prev) => ({
+      ...prev,
+      rewards,
+    }));
+  };
+  const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
   return (
     <>
       <Modal
@@ -453,7 +516,13 @@ const CreateTemplate = ({
                 "data-tour": "tutorial-quest-rewards",
               }}
               renderHeader={null}
-              renderBody={() => <RewardComponent rewards={questSettings.rewards} setQuestSettings={setQuestSettings} />}
+              renderBody={() => (
+                <RewardComponent
+                  rewards={questSettings.rewards}
+                  setQuestSettings={setQuestSettings}
+                  hasReferralStep={hasReferralStep}
+                />
+              )}
             />
           </Box>
           <Grid
@@ -472,30 +541,33 @@ const CreateTemplate = ({
               refs={refs}
               setRemovedMediaSlugs={setRemovedMediaSlugs}
             />
-            <Panel
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              flexDirection="column"
-              gap="14px"
-              padding="14px 24px"
-              onClick={() => handleAdd(TYPES.TEXT_FIELD)}
-              sx={{
-                cursor: "pointer",
-              }}
-            >
-              <RoundedSecondaryButton>
-                <AddIcon
-                  sx={{
-                    color: "black",
-                    fontSize: "14px",
-                  }}
-                />
-              </RoundedSecondaryButton>
-              <Typography color="black" fontFamily="Poppins" fontWeight={600} fontSize="15px" lineHeight="15px">
-                Add new block
-              </Typography>
-            </Panel>
+            {!hasReferralStep && (
+              <Panel
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                flexDirection="column"
+                gap="14px"
+                padding="14px 24px"
+                onClick={() => handleAdd(TYPES.TEXT_FIELD)}
+                sx={{
+                  cursor: "pointer",
+                }}
+              >
+                <RoundedSecondaryButton>
+                  <AddIcon
+                    sx={{
+                      color: "black",
+                      fontSize: "14px",
+                    }}
+                  />
+                </RoundedSecondaryButton>
+                <Typography color="black" fontFamily="Poppins" fontWeight={600} fontSize="15px" lineHeight="15px">
+                  Add new block
+                </Typography>
+              </Panel>
+            )}
+
             {displaySavePanel ? (
               <Grid
                 position="fixed"

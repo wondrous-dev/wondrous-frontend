@@ -61,6 +61,7 @@ const QuestResultsPage = () => {
       getQuestRewards({
         variables: {
           questId: id,
+          includeConditionRewards: false,
         },
       });
     }

@@ -10,6 +10,8 @@ import YoutubeLikeComponent from "components/AddFormEntity/components/YoutubeLik
 import YoutubeSubscribeComponent from "components/AddFormEntity/components/YoutubeSubscribeComponent";
 import LinkClickComponent from "components/AddFormEntity/components/LinkClickComponent";
 import LifiValueBridgeComponent from "components/AddFormEntity/components/LiFiValueBridgeComponent";
+import ReferralComponent from "components/AddFormEntity/components/Referral";
+import MigrateOriginUsers from "components/AddFormEntity/components/MigrateOriginUsers";
 
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
@@ -32,4 +34,6 @@ export const CONFIG_COMPONENTS = {
   [TYPES.LINK_CLICK]: LinkClickComponent,
   [TYPES.DISCORD_EVENT_ATTENDANCE]: DiscordComponent,
   [TYPES.LIFI_VALUE_BRIDGED]: LifiValueBridgeComponent,
+  [TYPES.REFERRAL]: ReferralComponent,
+  [TYPES.MIGRATE_ORIGIN_USERS]: MigrateOriginUsers,
 };

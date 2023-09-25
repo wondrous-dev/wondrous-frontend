@@ -2,7 +2,7 @@ import QuestTemplateModal from "components/CreateTemplate/QuestTemplateModal";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "components/CreateTemplate/shared";
 import PageHeader from "components/PageHeader";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import React, { Suspense, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 

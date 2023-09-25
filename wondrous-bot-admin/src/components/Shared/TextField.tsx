@@ -1,7 +1,27 @@
 import { Box } from "@mui/material";
-import { memo, useEffect, useRef } from "react";
+import { memo } from "react";
 import { CustomTextField } from "../AddFormEntity/components/styles";
-import { ErrorText } from "./styles";
+import { CustomResizableTextField, ErrorText } from "./styles";
+
+export const ResizeTextField = ({ value, onChange, label = "", error, placeholder, maxRows = 4, ...props }) => {
+  return (
+    <Box width="100%" height="100%" style={props?.boxStyles} flex="1">
+      <CustomResizableTextField
+        placeholder="Type an answer here"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        multiline={true}
+        sx={{
+          minHeight: "40px",
+          padding: "2px",
+        }}
+        maxRows={maxRows}
+        {...props}
+      />
+      {error ? <ErrorText>{error}</ErrorText> : null}
+    </Box>
+  );
+};
 
 const TextFieldComponent = ({
   label = "Label",
@@ -15,7 +35,7 @@ const TextFieldComponent = ({
   const handleChange = (e) => {
     return onChange(e.target.value);
   };
-  
+
   return (
     <Box width="100%" height="100%" style={props?.boxStyles}>
       <CustomTextField

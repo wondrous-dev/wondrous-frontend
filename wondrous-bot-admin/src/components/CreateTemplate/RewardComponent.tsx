@@ -401,9 +401,11 @@ const useAddRewardModalState = ({ paymentMethods }) => {
 const RewardComponent = ({
   rewards,
   setQuestSettings,
+  hasReferralStep,
 }: {
   rewards: { [key: string]: any }[];
   setQuestSettings: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
+  hasReferralStep: boolean;
 }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { plan, setPaywall, setPaywallMessage } = useSubscriptionPaywall();
@@ -493,18 +495,12 @@ const RewardComponent = ({
     });
   };
 
-  const OnPoapRewardRemove = (reward) => {
-    setQuestSettings((prev) => {
-      const newRewards = prev.rewards.filter((r) => {
-        if (r.type === PAYMENT_OPTIONS.POAP) {
-          return r.id !== reward.id;
-        }
-        return true;
-      });
-      return {
-        ...prev,
-        rewards: newRewards,
-      };
+  const onPoapRewardRemove = (reward) => {
+    return rewards?.filter((r) => {
+      if (r.type === PAYMENT_OPTIONS.POAP) {
+        return r.id !== reward.id;
+      }
+      return true;
     });
   };
 
@@ -535,7 +531,7 @@ const RewardComponent = ({
           text={reward?.poapRewardData?.name}
         />
       ),
-      handleOnRemove: OnPoapRewardRemove,
+      handleOnRemove: onPoapRewardRemove,
     },
   };
 
@@ -657,7 +653,9 @@ const RewardComponent = ({
             }}
           />
           <RewardsComponent rewards={otherRewards} rewardComponents={rewardComponents} />
-          <SharedSecondaryButton onClick={() => setIsRewardModalOpen(true)}>Add New Reward</SharedSecondaryButton>
+          <SharedSecondaryButton onClick={() => setIsRewardModalOpen(true)}>
+            {hasReferralStep ? "Add reward per referral" : "Add New Reward"}
+          </SharedSecondaryButton>
         </Grid>
       </Grid>
     </>

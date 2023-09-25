@@ -6,7 +6,6 @@ const getMessagesAndReactionsData = (apiData, filterType) => {
 
   const messagesData = apiData.map((item) => item?.counts.discordMessage);
   const reactionsData = apiData.map((item) => item?.counts.discordReaction);
-  const interactionsData = apiData.map((item) => item?.counts.discordInteraction);
 
   return {
     labels: labels,
@@ -28,15 +27,6 @@ const getMessagesAndReactionsData = (apiData, filterType) => {
         pointStyle: "circle",
         backgroundColor: "#9DCAFF",
         borderColor: "#9DCAFF",
-      },
-      {
-        label: "\n\nInteractions",
-        data: interactionsData,
-        pointRadius: 5,
-        pointStyle: "circle",
-        fill: false,
-        backgroundColor: "#AF9EFF",
-        borderColor: "#AF9EFF",
       },
     ],
   };

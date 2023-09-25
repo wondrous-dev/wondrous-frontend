@@ -18,6 +18,7 @@ type InputQuestStep = {
     __typename: string;
   }> | null;
   __typename: string;
+  conditionalRewards: any;
   additionalData: {
     tweetLink?: string;
     tweetHandle?: string;
@@ -63,6 +64,7 @@ type OutputQuestStep = {
     | {
         question: string;
         withCorrectAnswers: boolean;
+        withConditionalRewards?: boolean;
         multiSelectValue: string;
         answers: Array<{
           value: string;
@@ -146,13 +148,23 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       outputStep.value = step.prompt;
     } else if ([TYPES.SINGLE_QUIZ, TYPES.MULTI_QUIZ].includes(step.type)) {
       const hasCorrectAnswer = step.options?.some((option) => option.correct !== null && option.correct !== undefined);
+      const hasStepConditionalRewards = step.conditionalRewards?.length > 0;
+      const defaultRewardsIfConditionalRewardsIsOn = hasStepConditionalRewards ? [{ type: null }] : [];
       outputStep.value = {
         question: step.prompt,
+        withConditionalRewards: hasStepConditionalRewards,
         withCorrectAnswers: hasCorrectAnswer,
         multiSelectValue: step.type,
         answers: step.options?.map((option) => ({
           value: option.text,
-          ...(hasCorrectAnswer ? { isCorrect: option.correct } : {}),
+          rewards:
+            step?.conditionalRewards?.find((item) => item.optionText === option.text)?.rewardData ||
+            defaultRewardsIfConditionalRewardsIsOn,
+          ...(hasCorrectAnswer
+            ? {
+                isCorrect: option.correct,
+              }
+            : {}),
         })),
       };
     } else if ([TYPES.LIKE_TWEET, TYPES.RETWEET, TYPES.REPLY_TWEET].includes(step.type)) {
@@ -223,6 +235,10 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       };
     } else if (step.type === TYPES.LIFI_VALUE_BRIDGED) {
       outputStep.value = Number(step?.additionalData?.usdValue) / 100;
+    } else if (step.type === TYPES.MIGRATE_ORIGIN_USERS) {
+      outputStep.value = step?.prompt;
+    } else if (step.type === TYPES.REFERRAL) {
+      outputStep.value = step?.prompt;
     } else if (step.type === TYPES.DATA_COLLECTION) {
       const dataCollectionType = step?.additionalData?.dataCollectionType;
       outputStep.value = {

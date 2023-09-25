@@ -12,6 +12,7 @@ import GetYoutubeLikesImage from "assets/questTemplatesImages/getYoutubeLikes.jp
 import HaveMembersInviteFriendsImage from "assets/questTemplatesImages/haveMembersInviteFriends.jpeg";
 import HostAContentContestImage from "assets/questTemplatesImages/hostAContentContest.jpeg";
 import IncreaseTwitterFollowersImage from "assets/questTemplatesImages/increaseTwitterFollowers.jpeg";
+import ReferralsImage from "assets/questTemplatesImages/referralsthumbnail.png";
 import LaunchAMemeContestImage from "assets/questTemplatesImages/launchAMemeContest.jpeg";
 import LaunchSnapshotProposalImage from "assets/questTemplatesImages/launchSnapshotProposal.jpeg";
 import OnboardYourCommunityImage from "assets/questTemplatesImages/onboardYourCommunity.jpeg";
@@ -75,6 +76,19 @@ const questTemplates: {
       {
         type: rewardTypePoints,
         value: 10,
+      },
+    ],
+  },
+  createReferrals: {
+    title: "Refer a friend to join and complete quests!",
+    label: "Create Referral system",
+    image: ReferralsImage,
+    category: questTemplateCategories.community,
+    steps: [{ type: TYPES.REFERRAL }],
+    rewards: [
+      {
+        type: rewardTypePoints,
+        value: 5,
       },
     ],
   },
@@ -146,6 +160,7 @@ const questTemplates: {
         value: {
           question: "go to our website (X) and answer these questions",
           withCorrectAnswers: false,
+          withConditionalRewards: false,
           multiSelectValue: TYPES.MULTI_QUIZ,
           answers: [
             {
