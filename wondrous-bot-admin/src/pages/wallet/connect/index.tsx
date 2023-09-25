@@ -39,6 +39,7 @@ const WalletConnectPage = () => {
   const wonderWeb3 = useWonderWeb3();
   const discordUserId = searchParams?.get("discordUserId");
   const telegramUserId = searchParams?.get("telegramUserId");
+  const migrateOrgId = searchParams?.get("migrateOrgId");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [connectionComplete, setConnectionComplete] = useState(false);
 
@@ -57,7 +58,8 @@ const WalletConnectPage = () => {
             signedMessage,
             SupportedChainType.ETH,
             messageToSign,
-            telegramUserId
+            telegramUserId,
+            migrateOrgId
           );
           if (result === true) {
             setConnectionComplete(true);
@@ -107,7 +109,7 @@ const WalletConnectPage = () => {
         ) : (
           <>
             <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-              You're all set! Please close the page and return to {telegramUserId ? 'Telegram' : "Discord"}
+              You're all set! Please close the page and return to {telegramUserId ? "Telegram" : "Discord"}
             </Typography>
           </>
         )}

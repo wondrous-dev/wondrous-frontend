@@ -24,7 +24,6 @@ export const LOGIN_WALLET_MUTATION = gql`
   ${LoggedinUserFragment}
 `;
 
-
 export const REDEEM_POD_INVITE_LINK = gql`
   mutation redeemPodInviteLink($token: String!) {
     redeemPodInviteLink(token: $token) {
@@ -146,8 +145,18 @@ export const CLOSE_MAIN_BANNER = gql`
 `;
 
 export const VERIFY_COMMUNITY_USER_TWITTER = gql`
-  mutation verifyCommunityUserTwitter($code: String, $discordId: String, $telegramUserId: String) {
-    verifyCommunityUserTwitter(code: $code, discordId: $discordId, telegramUserId: $telegramUserId) {
+  mutation verifyCommunityUserTwitter(
+    $code: String
+    $discordId: String
+    $telegramUserId: String
+    $migrateOrgId: String
+  ) {
+    verifyCommunityUserTwitter(
+      code: $code
+      discordId: $discordId
+      telegramUserId: $telegramUserId
+      migrateOrgId: $migrateOrgId
+    ) {
       success
     }
   }
