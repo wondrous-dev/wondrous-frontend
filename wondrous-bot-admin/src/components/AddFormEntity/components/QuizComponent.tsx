@@ -54,7 +54,10 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
   const handleAnswers = (answers) => handleOnChange("answers", answers);
 
   const handleAddOption = () => {
-    handleAnswers([...answers, { value: "", isCorrect: false }]);
+    handleAnswers([
+      ...answers,
+      { value: "", isCorrect: false, rewards: withConditionalRewards ? [{ type: null }] : [] },
+    ]);
   };
 
   const handleRemoveOption = (idx) => {
@@ -76,35 +79,58 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
 
   const onRewardsChange = (rewardOptionId, rewards) => {
     const option = value?.answers?.[rewardOptionId];
+    const optionRewards = option?.rewards?.filter((i) => i.type !== null) || [];
     const newOption = {
       ...option,
-      rewards: [...(option?.rewards || []), ...rewards],
+      rewards: [...optionRewards, ...rewards],
     };
     const newAnswers = value?.answers?.map((item, idx) => {
-      if(item.value === newOption.value) {
-        return newOption
+      if (item.value === newOption.value) {
+        return newOption;
       }
-      return item
-    })
+      return item;
+    });
     handleAnswers(newAnswers);
     setRewardOptionId(null);
   };
 
   const handleRewardDelete = (rewardIdx, answerIdx) => {
-    const option = value?.answers?.[answerIdx];
-    const newOption = {
-      ...option,
-      rewards: option?.rewards?.filter((item, index) => index !== rewardIdx),
-    };
-    const newAnswers = value?.answers?.map((item, idx) => {
-      if(item.value === newOption.value) {
-        return newOption
+    if (!value?.answers) return;
+
+    const newAnswers = value.answers.map((item, idx) => {
+      if (idx === answerIdx) {
+        const updatedRewards = item.rewards?.filter((_, index) => index !== rewardIdx) || [];
+
+        return {
+          ...item,
+          rewards: updatedRewards.length > 0 ? updatedRewards : [{ type: null }],
+        };
       }
-      return item
-    })
-    handleAnswers(newAnswers);
+      return item;
+    });
+
+    const hasRewards = newAnswers.some((item) => (item.rewards?.length ?? 0) > 0);
+
+    onChange({
+      ...value,
+      answers: newAnswers,
+      withConditionalRewards: hasRewards,
+    });
     setRewardOptionId(null);
-  }
+  };
+
+  const handleConditionalRewardsToggle = (toggleValue) => {
+    const newAnswers = answers?.map((item) => ({
+      ...item,
+      rewards: toggleValue ? [{ type: null }] : [],
+    }));
+
+    onChange({
+      ...value,
+      withConditionalRewards: toggleValue,
+      answers: newAnswers,
+    });
+  };
   return (
     <>
       <RewardComponent
@@ -140,10 +166,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
               <Label>Set correct answers</Label>
             </Grid>
             <Grid display="flex" gap="10px" alignItems="center">
-              <Switch
-                onChange={(value) => handleOnChange("withConditionalRewards", value)}
-                value={withConditionalRewards}
-              />
+              <Switch onChange={handleConditionalRewardsToggle} value={withConditionalRewards} />
               <Label>Conditional Rewards</Label>
             </Grid>
           </Grid>
@@ -154,12 +177,18 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
             ) : null}
             {answers?.map((answer, idx) => (
               <Grid display="flex" flexDirection="column" gap="10px">
-                <Grid display="flex" alignItems="center" gap="14px" width="100%" sx={{
-                  flexWrap: {
-                    xs: "wrap",
-                    sm: "nowrap",
-                  }
-                }}>
+                <Grid
+                  display="flex"
+                  alignItems="center"
+                  gap="14px"
+                  width="100%"
+                  sx={{
+                    flexWrap: {
+                      xs: "wrap",
+                      sm: "nowrap",
+                    },
+                  }}
+                >
                   <IndexContainer>{idx + 1}.</IndexContainer>
                   <ResizeTextField
                     placeholder="Type an answer here"
@@ -168,10 +197,11 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
                     onChange={(value) => handleAnswerChange(idx, value)}
                     multiline={true}
                     inputProps={{
-                      maxLength: OPTION_TEXT_LIMIT
+                      maxLength: OPTION_TEXT_LIMIT,
                     }}
                   />
-                  {answers?.length > 1 ? <Box display="flex" gap="10px">
+                  {answers?.length > 1 ? (
+                    <Box display="flex" gap="10px">
                       <ButtonIconWrapper onClick={() => handleRemoveOption(idx)} height="40px" width="40px">
                         <CloseIcon
                           sx={{
@@ -179,48 +209,46 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
                           }}
                         />
                       </ButtonIconWrapper>
-                    {/* <FileUpload onChange={(e) => handleAttachMedia(e, idx)} /> */}
-                  </Box> : null}
-                 {withCorrectAnswers || withConditionalRewards ? <Box display="flex" gap="10px" minWidth="30%"
-                 sx={{
-                  minWidth: {
-                    xs: "100%",
-                    sm: "auto",
-                  },
-                  paddingLeft: {
-                    xs: "46px",
-                    sm: "0",
-                  }
-                 }}
-                 >
-                    {withCorrectAnswers ? (
-                      <Box minWidth="150px">
-                        <SelectComponent
-                          options={CORRECT_ANSWERS_OPTIONS}
-                          value={answer.isCorrect ? CORRECT_ANSWERS_TYPES.CORRECT : CORRECT_ANSWERS_TYPES.INCORRECT}
-                          onChange={(value) => {
-                            const answersClone = [...answers];
-                            answersClone[idx].isCorrect = value === CORRECT_ANSWERS_TYPES.CORRECT;
-                            handleAnswers(answersClone);
-                          }}
-                        />
-                      </Box>
-                    ) : null}
-                    {withConditionalRewards ? (
-                      <SharedSecondaryButton
-                        onClick={() => handleRewardsClick(idx)}
-                        fontWeight="500"
-                        background="#C6BBFC"
-                        borderRadius="6px"
-                      >
-                        + Add Reward
-                      </SharedSecondaryButton>
-                    ) : null}
-                  </Box> : null}
+                      {/* <FileUpload onChange={(e) => handleAttachMedia(e, idx)} /> */}
+                    </Box>
+                  ) : null}
+                  {withCorrectAnswers || withConditionalRewards ? (
+                    <Box
+                      display="flex"
+                      gap="10px"
+                      minWidth="30%"
+                      sx={{
+                        minWidth: {
+                          xs: "100%",
+                          sm: "auto",
+                        },
+                        paddingLeft: {
+                          xs: "46px",
+                          sm: "0",
+                        },
+                      }}
+                    >
+                      {withCorrectAnswers ? (
+                        <Box minWidth="150px">
+                          <SelectComponent
+                            options={CORRECT_ANSWERS_OPTIONS}
+                            value={answer.isCorrect ? CORRECT_ANSWERS_TYPES.CORRECT : CORRECT_ANSWERS_TYPES.INCORRECT}
+                            onChange={(value) => {
+                              const answersClone = [...answers];
+                              answersClone[idx].isCorrect = value === CORRECT_ANSWERS_TYPES.CORRECT;
+                              handleAnswers(answersClone);
+                            }}
+                          />
+                        </Box>
+                      ) : null}
+                    </Box>
+                  ) : null}
                 </Grid>
-                <OptionRewards rewards={answer.rewards}
-                handleAddReward={() => handleRewardsClick(idx)}
-                handleRewardDelete={(rewardIdx) => handleRewardDelete(rewardIdx, idx)}
+                <OptionRewards
+                  rewards={answer.rewards}
+                  id={idx}
+                  handleAddReward={handleRewardsClick}
+                  handleRewardDelete={(rewardIdx) => handleRewardDelete(rewardIdx, idx)}
                 />
               </Grid>
             ))}

@@ -47,6 +47,9 @@ import PaywallContext from "utils/context/PaywallContext";
 import ConnectPage from "pages/settings/connect";
 import TelegramStatQuest from "pages/telegram/start-quest";
 import PaywallContextProvider from "utils/context/PaywallContext";
+import ReferralComponent from "components/Referral";
+import DiscordCallbackReferralUserConnect from "pages/discord/callback/referral-user-connect";
+import TelegramConnect from "pages/telegram/connect";
 
 const router = createBrowserRouter([
   {
@@ -105,6 +108,10 @@ const router = createBrowserRouter([
         element: <ViewQuest />,
       },
       {
+        path: "/referral",
+        element: <ReferralComponent />,
+      },
+      {
         path: "/members",
         element: <MembersPage />,
       },
@@ -135,6 +142,10 @@ const router = createBrowserRouter([
       {
         path: "/discord/callback/cmty-user-connect",
         element: <DiscordCallbackCmtyUserConnect />,
+      },
+      {
+        path: "/discord/callback/referral",
+        element: <DiscordCallbackReferralUserConnect />,
       },
       {
         path: "/signup",
@@ -171,6 +182,10 @@ const router = createBrowserRouter([
       {
         path: "/telegram/start-quest/:id",
         element: <TelegramStatQuest />,
+      },
+      {
+        path: "/telegram/connect",
+        element: <TelegramConnect />,
       },
     ],
   },

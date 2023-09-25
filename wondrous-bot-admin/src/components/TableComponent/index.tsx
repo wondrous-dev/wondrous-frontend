@@ -6,6 +6,7 @@ import { Label } from "components/QuestsList/styles";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { StyledLinkButton, StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { IconWrapper, PaperComponent, StyledTableHeader, StyledTableHeaderCell, StyledTableRow } from "./styles";
+import LinkIcon from "components/Icons/LinkIcon";
 
 const TableComponent = ({ headers = null, data, title = "", headerComponent = null }) => {
   return (
@@ -131,6 +132,17 @@ const TableComponent = ({ headers = null, data, title = "", headerComponent = nu
                           </StyledLinkButton>
                         </a>
                       </Box>
+                    ) : null}
+                    {column.component === "label" ? (
+                      <Label
+                        fontSize="14px"
+                        lineHeight="14px"
+                        textAlign={column.textAlign || "center"}
+                        width={column.width || "100%"}
+                        {...(column.componentProps || {})}
+                      >
+                        {column.value}
+                      </Label>
                     ) : null}
                   </TableCell>
                 );

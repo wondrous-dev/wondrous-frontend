@@ -31,7 +31,7 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
   if (!answer.rewards?.length) return [];
 
   return answer.rewards
-    .map((reward) => {
+    ?.map((reward) => {
       switch (reward?.type) {
         case PAYMENT_OPTIONS.DISCORD_ROLE:
           return {
@@ -58,7 +58,7 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
           return null;
       }
     })
-    .filter((reward) => reward);
+    ?.filter((reward) => reward);
 };
 
 export const reduceConditionalRewards = (acc: any[], answer: any) => {
@@ -67,4 +67,25 @@ export const reduceConditionalRewards = (acc: any[], answer: any) => {
     acc.push({ optionText: answer.value?.trim(), rewardData: rewards });
   }
   return acc;
+};
+
+export const DEFAULT_PAYMENT_METHOD = {
+  id: null,
+  tokenName: null,
+  contractAddress: null,
+  symbol: null,
+  icon: null,
+  type: null,
+  chain: null,
+  amount: null,
+};
+
+export const TOKEN_ADDRESS_DEFAULT_STATE = {
+  tokenName: null,
+  contractAddress: null,
+  symbol: null,
+  icon: null,
+  type: null,
+  chain: null,
+  amount: null,
 };

@@ -70,7 +70,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
         limit: LIMIT,
       },
     }).then(({ data }) => {
-      if (data?.getQuestSubmissions?.length <= LIMIT) {
+      if (data?.getQuestSubmissions?.length < LIMIT) {
         setHasMore(false);
       }
     });

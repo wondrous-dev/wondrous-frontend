@@ -81,12 +81,11 @@ export const DELETE_QUEST = gql`
       success
     }
   }
-
 `;
 
 export const ATTACH_QUEST_STEPS_MEDIA = gql`
   mutation attachQuestStepsMedia($questId: ID!, $stepsData: [StepsMediaInput]) {
-    attachQuestStepsMedia(questId: $questId, stepsData: $stepsData) 
+    attachQuestStepsMedia(questId: $questId, stepsData: $stepsData)
   }
 `;
 
@@ -107,6 +106,13 @@ export const CONNECT_CMTY_USER = gql`
   }
 `;
 
+export const CREATE_CMTY_USER_FROM_REFERRAL = gql`
+  mutation createCmtyUserFromReferral($referralCode: String!, $code: String!) {
+    createCmtyUserFromReferral(referralCode: $referralCode, code: $code) {
+      orgId
+    }
+  }
+`;
 export const START_PREVIEW_QUEST = gql`
   mutation startPreviewQuest($questId: ID!) {
     startPreviewQuest(questId: $questId) {
@@ -132,11 +138,19 @@ export const REMOVE_QUEST_STEP_MEDIA = gql`
   }
 `;
 
-
-
 export const SUBMIT_QUEST = gql`
-  mutation createQuestSubmission($questId: String, $telegramUserId: String, $telegramUsername: String, $stepsData: [StepSubmissionInput]) {
-    createQuestSubmission(questId: $questId, telegramUserId: $telegramUserId, telegramUsername: $telegramUsername, stepsData: $stepsData) {
+  mutation createQuestSubmission(
+    $questId: String
+    $telegramUserId: String
+    $telegramUsername: String
+    $stepsData: [StepSubmissionInput]
+  ) {
+    createQuestSubmission(
+      questId: $questId
+      telegramUserId: $telegramUserId
+      telegramUsername: $telegramUsername
+      stepsData: $stepsData
+    ) {
       success
     }
   }
@@ -145,6 +159,19 @@ export const SUBMIT_QUEST = gql`
 export const REQUEST_CMTY_USER_CONNECT_WALLET = gql`
   mutation requestCmtyUserConnectWallet($cmtyUserId: ID!, $orgId: ID!) {
     requestCmtyUserConnectWallet(cmtyUserId: $cmtyUserId, orgId: $orgId) {
+      success
+    }
+  }
+`;
+
+export const MIGRATE_ORG_CMTY_USER_TELEGRAM = gql`
+  mutation migratOrgCmtyUserTelegram($orgId: ID!, $cmtyUserId: ID!, $telegramId: String, $telegramUsername: String) {
+    migratOrgCmtyUserTelegram(
+      orgId: $orgId
+      cmtyUserId: $cmtyUserId
+      telegramId: $telegramId
+      telegramUsername: $telegramUsername
+    ) {
       success
     }
   }
