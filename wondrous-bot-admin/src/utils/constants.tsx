@@ -363,7 +363,7 @@ export const CUSTOM_INTEGRATIONS = {
       },
     ],
   },
-  "46110468539940865": {
+  "100884993427899088": {
     name: "Origin",
     integrations: [
       {
