@@ -22,6 +22,7 @@ export const TYPES = {
   LIFI_VALUE_BRIDGED: "lifi_value_bridged",
   MIGRATE_ORIGIN_USERS: "migrate_origin_users",
   REFERRAL: "referral",
+  VERIFY_MARKETSFLARE_TRIAL: "verify_marketsflare_trial",
 };
 
 export const CONFIG = [
@@ -369,6 +370,15 @@ export const CUSTOM_INTEGRATIONS = {
       {
         label: "Migrate Origin members from Carma",
         value: TYPES.MIGRATE_ORIGIN_USERS,
+      },
+    ],
+  },
+  "65854367353274369": {
+    name: "MarketsFlare",
+    integrations: [
+      {
+        label: "Verify MarketsFlare trial",
+        value: TYPES.VERIFY_MARKETSFLARE_TRIAL,
       },
     ],
   },
