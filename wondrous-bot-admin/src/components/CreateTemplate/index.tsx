@@ -395,6 +395,8 @@ const CreateTemplate = ({
           step["additionalData"] = {
             usdValue: toCent(next.value),
           };
+        } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL) {
+          step.prompt = next.value;
         }
         return [...acc, step];
       }, []),
