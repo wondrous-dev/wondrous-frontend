@@ -33,6 +33,11 @@ const CHAIN_TO_MULTISEND_ADDRESS = {
         [ContractType.ERC20]: '0x619645ae6b05caaccbbda3e1b4d41de151556b92',
         [ContractType.ERC721]: '0x619645ae6b05caaccbbda3e1b4d41de151556b92',
         [ContractType.ERC1155]: '0x619645ae6b05caaccbbda3e1b4d41de151556b92',
+    },
+    56: { // BSC
+        [ContractType.ERC20]: '0x619645ae6b05caaccbbda3e1b4d41de151556b92',
+        [ContractType.ERC721]: '0x619645ae6b05caaccbbda3e1b4d41de151556b92',
+        [ContractType.ERC1155]: '0x619645ae6b05caaccbbda3e1b4d41de151556b92',
     }
 }
 
