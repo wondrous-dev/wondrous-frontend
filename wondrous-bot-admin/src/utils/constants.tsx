@@ -373,7 +373,7 @@ export const CUSTOM_INTEGRATIONS = {
       },
     ],
   },
-  "65854367353274369": {
+  "100452448485769921": {
     name: "MarketsFlare",
     integrations: [
       {
