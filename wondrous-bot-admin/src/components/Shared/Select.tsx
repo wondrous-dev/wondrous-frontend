@@ -37,7 +37,6 @@ const SelectComponent = ({
             return selectedOption ? selectedOption.label : "Select";
           },
           MenuProps: {
-            disablePortal: true,
             sx: { marginTop: "8px" },
             PaperProps: {
               sx: {
