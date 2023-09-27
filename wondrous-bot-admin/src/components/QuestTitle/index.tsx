@@ -4,9 +4,10 @@ import { useContext } from "react";
 import { Box } from "@mui/material";
 import { ErrorText } from "components/Shared/styles";
 
-const QuestTitle = ({ title, setTitle }) => {
+const QuestTitle = ({ title = null, setTitle = null, placeholder="Enter Quest Title"  }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const handleChange = (e) => {
+    if(!setTitle) return;
     if (errors?.title) {
       setErrors({
         ...errors,
@@ -24,7 +25,7 @@ const QuestTitle = ({ title, setTitle }) => {
         maxLength={220}
         value={title}
         onChange={handleChange}
-        placeholder="Enter Quest Title"
+        placeholder={placeholder}
       />
       {errors?.title ? (
         <ErrorText

@@ -1,7 +1,7 @@
 import { Divider, Grid } from '@mui/material';
 import { Panel, CampaignOverviewTitle } from './styles';
 
-const PanelComponent = ({ renderHeader, renderBody, panelProps = {}, gridSx={} }) => (
+const PanelComponent = ({ renderHeader = null, renderBody, panelProps = {}, gridSx={} }) => (
   <Panel
   {...panelProps}
   >

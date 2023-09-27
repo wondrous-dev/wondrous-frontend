@@ -147,6 +147,11 @@ export const QUEST_STATUSES = {
   INACTIVE: "inactive",
 };
 
+export const STORE_ITEM_STATUSES = {
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+};
+
 export const LIMIT = 10;
 
 export const QUEST_SUBMISSION_STATUS = {
@@ -375,3 +380,14 @@ export const CUSTOM_INTEGRATIONS = {
 };
 
 export const OPTION_TEXT_LIMIT = 250;
+
+export const STORE_ITEM_TYPES = {
+  NFT: 'nft',
+  PHYSICAL: 'physical',
+  DISCORD_ROLE: 'discord_role'
+}
+export const STORE_ITEM_LABELS = {
+  [STORE_ITEM_TYPES.NFT]: 'NFT Products',
+  [STORE_ITEM_TYPES.PHYSICAL]: 'Shopify Products',
+  [STORE_ITEM_TYPES.DISCORD_ROLE]: 'Discord Roles',
+}

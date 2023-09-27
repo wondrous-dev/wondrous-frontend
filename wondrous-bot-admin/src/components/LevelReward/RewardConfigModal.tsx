@@ -115,7 +115,7 @@ const RewardConfigModal = ({ isRewardModalOpen, setIsRewardModalOpen, level, ref
       orgId: activeOrg?.id,
       level: level,
       type: reward?.type,
-    }
+    };
     if (reward?.type === PAYMENT_OPTIONS.TOKEN) {
       input.paymentMethodId = reward?.paymentMethodId;
       input.amount = reward?.amount;

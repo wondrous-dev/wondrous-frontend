@@ -40,6 +40,11 @@ const Header = () => {
       label: 'QUESTS',
       activeBgColor: '#F8AFDB',
       partialMatch: true,
+    },{
+      path: '/store',
+      label: 'STORE',
+      activeBgColor: '#F8AFDB',
+      partialMatch: true,
     },
     {
       path: '/levels',

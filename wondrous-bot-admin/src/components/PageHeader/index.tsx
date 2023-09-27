@@ -2,7 +2,6 @@ import { ButtonBase, Grid, Typography } from "@mui/material";
 import WestIcon from "@mui/icons-material/West";
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
-import { useInView } from "react-intersection-observer";
 const PageHeader = ({
   title = "New Quest",
   withBackButton = true,

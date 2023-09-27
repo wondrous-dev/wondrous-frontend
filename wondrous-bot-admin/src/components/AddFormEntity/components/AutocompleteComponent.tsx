@@ -15,6 +15,7 @@ const AutocompleteOptionsComponent = ({
   fullWidth = false,
   autocompletProps = {},
   inputProps = {},
+  placeholder = "Search"
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
@@ -55,7 +56,7 @@ const AutocompleteOptionsComponent = ({
           <TextField
             {...params}
             label=""
-            placeholder="Search"
+            placeholder={placeholder}
             sx={{
               padding: 0,
               outline: "none",
