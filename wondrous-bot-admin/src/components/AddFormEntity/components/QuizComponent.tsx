@@ -1,17 +1,16 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { ButtonIconWrapper, ErrorText, SharedSecondaryButton } from "components/Shared/styles";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import TextField, { ResizeTextField } from "../../Shared/TextField";
-import { IndexContainer, Label } from "./styles";
-import ToggleComponent from "components/Shared/Toggle";
-import Switch from "components/Shared/Switch";
+import { Box, Grid, Typography } from "@mui/material";
+import RewardModal, { useAddRewardModalState } from "components/CreateTemplate/RewardModal";
 import SelectComponent from "components/Shared/Select";
-import { ERRORS, ERRORS_LABELS, OPTION_TEXT_LIMIT, TYPES } from "utils/constants";
-import CurrencyBitcoinIcon from "@mui/icons-material/CurrencyBitcoin";
+import Switch from "components/Shared/Switch";
+import ToggleComponent from "components/Shared/Toggle";
+import { ButtonIconWrapper, ErrorText } from "components/Shared/styles";
 import { useState } from "react";
-import { RewardComponent, RewardsList } from "components/CreateTemplate/RewardComponent";
+import { ERRORS, ERRORS_LABELS, OPTION_TEXT_LIMIT, TYPES } from "utils/constants";
+import TextField, { ResizeTextField } from "../../Shared/TextField";
 import OptionRewards from "./OptionRewards";
+import { IndexContainer, Label } from "./styles";
 
 const CORRECT_ANSWERS_TYPES = {
   CORRECT: "correct",
@@ -30,6 +29,8 @@ const CORRECT_ANSWERS_OPTIONS = [
 
 const QuizComponent = ({ onChange, value, stepType, error }) => {
   const [rewardOptionId, setRewardOptionId] = useState(null);
+  const rewardModalState = useAddRewardModalState();
+  const { setIsRewardModalOpen } = rewardModalState;
 
   const OPTIONS = [
     {
@@ -75,23 +76,29 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
 
   const handleRewardsClick = (idx) => {
     setRewardOptionId(idx);
+    setIsRewardModalOpen(true);
   };
 
-  const onRewardsChange = (rewardOptionId, rewards) => {
+  const handleRewardModalClose = () => {
+    setRewardOptionId(null);
+    setIsRewardModalOpen(false);
+  };
+
+  const onRewardsChange = (reward) => {
     const option = value?.answers?.[rewardOptionId];
     const optionRewards = option?.rewards?.filter((i) => i.type !== null) || [];
     const newOption = {
       ...option,
-      rewards: [...optionRewards, ...rewards],
+      rewards: [...optionRewards, reward],
     };
     const newAnswers = value?.answers?.map((item, idx) => {
-      if (item.value === newOption.value) {
+      if (idx === rewardOptionId) {
         return newOption;
       }
       return item;
     });
     handleAnswers(newAnswers);
-    setRewardOptionId(null);
+    handleRewardModalClose();
   };
 
   const handleRewardDelete = (rewardIdx, answerIdx) => {
@@ -131,14 +138,13 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
       answers: newAnswers,
     });
   };
+
   return (
     <>
-      <RewardComponent
-        isRewardModalOpen={rewardOptionId !== null}
-        displayRewards={false}
-        rewards={[]}
-        onRewardsChange={(rewards) => onRewardsChange(rewardOptionId, rewards)}
-        handleRewardsToggle={() => setRewardOptionId(null)}
+      <RewardModal
+        rewardModalState={rewardModalState}
+        handleRewardModalToggle={handleRewardModalClose}
+        handleOnRewardAdd={onRewardsChange}
       />
       <Grid container gap="24px" direction="column">
         <Grid item gap="14px" display="flex" flexDirection="column">
