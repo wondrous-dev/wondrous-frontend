@@ -16,12 +16,20 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import apollo from "services/apollo";
 import { constructRewards, getTextForCondition } from "utils/common";
 
-import { BG_TYPES, LIMIT, MONTH_DAY_FULL_YEAR, QUEST_CONDITION_TYPES, QUEST_SUBMISSION_STATUS } from "utils/constants";
+import {
+  BG_TYPES,
+  LIMIT,
+  MONTH_DAY_FULL_YEAR,
+  QUEST_CONDITION_TYPES,
+  QUEST_STATUSES,
+  QUEST_SUBMISSION_STATUS,
+} from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import QuestResults from "./QuestResults";
 import ViewCampaignOverview from "./ViewCampaignOverview";
 import PublishQuestCardBody from "./PublishQuestCardBody";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
+import ViewRewards from "./ViewRewards";
 
 const ViewQuestResults = ({ quest, rewards }) => {
   const { activeOrg } = useContext(GlobalContext);
@@ -96,14 +104,14 @@ const ViewQuestResults = ({ quest, rewards }) => {
     const startDate = quest?.startAt ? moment(quest?.startAt).format(MONTH_DAY_FULL_YEAR) : null;
     const endDate = quest?.endAt ? moment(quest?.endAt).format(MONTH_DAY_FULL_YEAR) : null;
     if (!startDate && !endDate) {
-      return "No";
+      return { type: "boolean", value: "" };
     }
     if (startDate && endDate) {
-      return `${startDate} - ${endDate}`;
+      return { type: "text", value: `${startDate} - ${endDate}` };
     } else if (startDate) {
-      return `Starts on ${startDate}`;
+      return { type: "text", value: `Starts on ${startDate}` };
     }
-    return `Ends on ${endDate}`;
+    return { type: "text", value: `Ends on ${endDate}` };
   }, [quest?.startAt, quest?.endAt]);
 
   const getNameForCondition = async () => {
@@ -151,7 +159,6 @@ const ViewQuestResults = ({ quest, rewards }) => {
     return null;
   }
 
-
   const submissions = submissionsData?.getQuestSubmissions?.map((submission) => ({
     user: submission?.creator?.username || submission?.creator?.discordUsername || submission?.creator?.telegramUsername,
     pointReward: quest?.pointReward,
@@ -162,53 +169,70 @@ const ViewQuestResults = ({ quest, rewards }) => {
     rejectedAt: submission?.rejectedAt,
   }));
 
-  const questSettings = [
+  const questSettingsCondition = getTextForCondition({
+    type: quest?.conditions?.[0]?.type,
+    name: conditionName,
+  });
+
+  const sections = [
     {
-      label: "Level Requirement",
-      value: quest?.level || "None",
-      type: "text",
+      settings: [
+        { label: "Quest Title", value: quest?.title, type: "titleOrDescription" },
+        { label: "Description", value: quest?.description, type: "titleOrDescription" },
+      ],
+      settingsLayout: {
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: "14px",
+      },
     },
     {
-      label: "Time Bound",
-      value: timeboundDate,
-      type: "text",
+      settings: [
+        {
+          label: "Level Requirement",
+          value: quest?.level || "None",
+          type: "level",
+        },
+        {
+          label: "Require Review",
+          value: quest?.requireReview,
+          type: "boolean",
+        },
+        { label: "Active Quest", value: quest?.status === QUEST_STATUSES.OPEN, type: "boolean" },
+      ],
     },
+
     {
-      label: "Require Review",
-      value: quest?.requireReview,
-      type: "boolean",
-    },
-    {
-      label: "Condition",
-      value:
-        getTextForCondition({
-          type: quest?.conditions?.[0]?.type,
-          name: conditionName,
-        }) || "No Condition",
-      type: "text",
-    },
-    {
-      label: "Max Submissions",
-      value: quest?.maxSubmission || "Unlimited",
-      type: "text",
-    },
-    {
-      label: "Max Approvals",
-      value: quest?.maxApproval || "Unlimited",
-      type: "text",
-    },
-    {
-      label: "Onboarding Quest",
-      value: quest?.isOnboarding ? "Yes" : "No",
-      type: "text",
-    },
-    {
-      label: "Rewards",
-      type: "rewards",
-      value: constructRewards({rewards}),
+      settings: [
+        {
+          label: "Max Submissions",
+          value: quest?.maxSubmission || "Unlimited",
+          type: "text",
+        },
+        {
+          label: "Max Approvals",
+          value: quest?.maxApproval || "Unlimited",
+          type: "text",
+        },
+        {
+          label: "Onboarding Quest",
+          value: quest?.isOnboarding ? "Yes" : "No",
+          type: "boolean",
+        },
+        {
+          label: "Time Bound",
+          ...timeboundDate,
+        },
+        {
+          label: "Condition",
+          value: questSettingsCondition,
+          type: questSettingsCondition ? "text" : "boolean",
+        },
+      ],
+      showBorder: false,
     },
   ];
-  
+
   return (
     <PageWrapper
       containerProps={{
@@ -236,8 +260,9 @@ const ViewQuestResults = ({ quest, rewards }) => {
         <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
           <PanelComponent
             renderHeader={() => <CampaignOverviewHeader title="Quest Information" />}
-            renderBody={() => <ViewCampaignOverview questSettings={questSettings} />}
+            renderBody={() => <ViewCampaignOverview sections={sections} />}
           />
+          <PanelComponent renderHeader={null} renderBody={() => <ViewRewards rewards={rewards} />} />
           <PanelComponent
             renderHeader={() => <CampaignOverviewHeader title="Send quest notification" />}
             renderBody={() => (

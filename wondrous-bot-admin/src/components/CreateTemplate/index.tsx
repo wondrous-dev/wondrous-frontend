@@ -7,7 +7,7 @@ import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
 import { BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
-import { RewardComponent, RewardOverviewHeader } from "./RewardComponent";
+import { RewardComponent } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
@@ -31,7 +31,6 @@ const CreateTemplate = ({
   defaultQuestSettings = DEFAULT_QUEST_SETTINGS_STATE_VALUE,
   questId = null,
   postUpdate = null,
-  title,
   getQuestById = null,
   defaultSteps = [],
 }) => {
@@ -235,11 +234,14 @@ const CreateTemplate = ({
       level,
       timeBound,
       isOnboarding,
+      title,
+      description,
     } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
     const body = {
       title,
+      description,
       orgId: activeOrg.id,
       isOnboarding,
       requireReview,
@@ -501,23 +503,12 @@ const CreateTemplate = ({
               panelProps={{
                 "data-tour": "tutorial-quest-rewards",
               }}
-              renderHeader={() => <RewardOverviewHeader />}
+              renderHeader={null}
               renderBody={() => (
                 <RewardComponent
                   rewards={questSettings.rewards}
-                  onRewardsChange={onRewardsChange}
-                  renderRewardController={() => (
-                    <>
-                      <Divider color="#767676" />
-                      <Box>
-                        <SharedSecondaryButton onClick={handleRewardsToggle}>
-                          {hasReferralStep ? "Add Reward per referral" : "Add Reward"}
-                        </SharedSecondaryButton>
-                      </Box>
-                    </>
-                  )}
-                  handleRewardsToggle={handleRewardsToggle}
-                  isRewardModalOpen={isRewardModalOpen}
+                  setQuestSettings={setQuestSettings}
+                  hasReferralStep={hasReferralStep}
                 />
               )}
             />

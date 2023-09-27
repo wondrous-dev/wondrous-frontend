@@ -1,6 +1,9 @@
-import { Box, MenuItem } from "@mui/material";
+import { Box, Grid, MenuItem } from "@mui/material";
 
+import CheckCircleIcon from "components/Icons/CheckCircle";
+import { scrollbarStyles } from "components/Shared/styles";
 import { ErrorText, StyledTextFieldSelect } from "./styles";
+
 const SelectComponent = ({
   onChange,
   placeholder = "Select",
@@ -11,7 +14,7 @@ const SelectComponent = ({
   boxStyle = {},
   error = null,
   disabled = false,
-  onOpen = null
+  onOpen = null,
 }) => {
   const handleChange = (e) => onChange(e.target.value);
 
@@ -34,22 +37,57 @@ const SelectComponent = ({
             return selectedOption ? selectedOption.label : "Select";
           },
           MenuProps: {
-            MenuListProps: {
-              'data-tour': 'tutorial-quest-select-menu',
+            sx: { marginTop: "8px" },
+            PaperProps: {
+              sx: {
+                outline: "1px solid #000",
+              },
             },
-            sx: {
-              ".MuiPaper-root": {
-                backgroundColor: "#E8E8E8",
+            MenuListProps: {
+              "data-tour": "tutorial-quest-select-menu",
+              sx: {
+                overflow: "hidden",
                 borderRadius: "6px",
+                padding: "6px",
+                "& .Mui-focused": {
+                  outline: "1px solid #000",
+                  backgroundColor: "#E4E4E4 !important",
+                },
+                maxHeight: "300px",
+                ...scrollbarStyles,
               },
             },
           },
         }}
       >
         {options?.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.icon}
-            {option.label}
+          <MenuItem
+            key={option.value}
+            value={option.value}
+            selected={value === option.value}
+            sx={{
+              marginY: "1px",
+              padding: "8px",
+              height: "40px",
+              borderRadius: "6px",
+              "&.Mui-selected": {
+                backgroundColor: "#E4E4E4 !important",
+                outline: "1px solid #000",
+              },
+              "&:hover": {
+                backgroundColor: "#E4E4E4 !important",
+              },
+            }}
+          >
+            <Grid container alignItems="center" justifyContent="space-between">
+              <Grid container item flex="1">
+                {option.icon}
+                {option.label}
+              </Grid>
+              <Grid container item width="fit-content">
+                {option.value === value && <CheckCircleIcon />}
+              </Grid>
+            </Grid>
           </MenuItem>
         ))}
       </StyledTextFieldSelect>

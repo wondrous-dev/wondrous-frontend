@@ -9,9 +9,9 @@ export const CustomTextField = styled(InputUnstyled)`
       pointer-events: none;
     }
     .MuiInput-input {
-      border-radius: 6px;
+      border-radius: ${({ borderRadius }) => borderRadius || "6px"};
       background: #e8e8e8;
-      padding: ${({padding = "14px"}) => padding};
+      padding: ${({ padding = "14px" }) => padding};
       box-sizing: border-box;
 
       border: none;
@@ -21,7 +21,7 @@ export const CustomTextField = styled(InputUnstyled)`
       font-size: 15px;
       font-style: normal;
       font-weight: 400;
-      height: ${({ multiline }) => (multiline ? '110px' : '40px')};
+      height: ${({ multiline }) => (multiline ? "110px" : "40px")};
       resize: none;
       width: 100%;
       :focus-visible {
