@@ -25,9 +25,6 @@ import { useMe } from "components/Auth";
 import useAlerts from "utils/hooks";
 import ShareQuestTweet from "components/ShareQuestTweet";
 
-const editModeCache = {
-  editMode: null,
-};
 const QuestResultsPage = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -66,11 +63,6 @@ const QuestResultsPage = () => {
       });
     }
   }, [id]);
-  useEffect(() => {
-    if (editModeCache.editMode === true && !isEditMode) {
-      setIsEditMode(true);
-    }
-  }, []);
   const questRewards = questRewardsData?.getQuestRewards;
 
   const { ref, inView, entry } = useInView({
@@ -106,14 +98,12 @@ const QuestResultsPage = () => {
 
   useEffect(() => {
     if (user && !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUEST)) {
-      editModeCache.editMode = true;
       setIsEditMode(true);
       setIsOpen(true);
     }
   }, [user, isEditMode]);
 
   const toggleEdit = () => {
-    editModeCache.editMode = !isEditMode;
     setIsEditMode((prev) => !prev);
   };
   const handlePreviewQuest = () => {

@@ -25,9 +25,6 @@ import useAlerts from "utils/hooks";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE, mapAnswersToOptions, reduceConditionalRewards } from "./utils";
 import { useTour } from "@reactour/tour";
 
-const stepCache = {
-  steps: null,
-};
 const CreateTemplate = ({
   setRefValue,
   displaySavePanel,
@@ -53,16 +50,9 @@ const CreateTemplate = ({
 
   useEffect(() => {
     if (getQuestById) {
-      stepCache.steps = transformQuestConfig(getQuestById?.steps);
       setSteps(transformQuestConfig(getQuestById?.steps));
     }
   }, [getQuestById]);
-
-  useEffect(() => {
-    if (stepCache?.steps && steps?.length === 0) {
-      setSteps(stepCache.steps);
-    }
-  }, []);
 
   const { isOpen, setCurrentStep, currentStep, setSteps: setTourSteps, steps: tourSteps } = useTour();
 
@@ -102,10 +92,6 @@ const CreateTemplate = ({
   const handleRemove = (index) => {
     const newItems = [...steps];
     newItems.splice(index, 1);
-    stepCache.steps = newItems.map((item, idx) => ({
-      ...item,
-      order: idx + 1,
-    }));
     setSteps(
       newItems.map((item, idx) => ({
         ...item,
@@ -397,6 +383,8 @@ const CreateTemplate = ({
           step["additionalData"] = {
             usdValue: toCent(next.value),
           };
+        } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL) {
+          step.prompt = next.value;
         }
         return [...acc, step];
       }, []),
@@ -536,7 +524,6 @@ const CreateTemplate = ({
             <AddFormEntity
               steps={steps}
               setSteps={setSteps}
-              stepCache={stepCache}
               handleRemove={handleRemove}
               refs={refs}
               setRemovedMediaSlugs={setRemovedMediaSlugs}
