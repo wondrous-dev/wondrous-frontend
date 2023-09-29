@@ -66,7 +66,6 @@ const StoreItemsList = ({ data }) => {
             <Label>{STORE_ITEM_LABELS[STORE_ITEM_TYPES[type]]}</Label>
             <Grid container gap="30px 14px">
               {storeData[STORE_ITEM_TYPES[type]]?.items?.map((item, idx) => {
-                console.log(item, "ITM");
                 return (
                   <CardHoverWrapper
                     onClick={() => navigate(`/store/items/${item.id}`)}

@@ -37,7 +37,6 @@ const ActivateStoreItem = (props) => {
         setIsConfirmationModalOpen(false);
       },
       onCancel: () => {
-        console.log(" on cancel");
         setIsConfirmationModalOpen(false);
       },
       onClose: () => setIsConfirmationModalOpen(false),

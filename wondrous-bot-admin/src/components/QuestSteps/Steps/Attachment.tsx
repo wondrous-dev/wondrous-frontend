@@ -16,7 +16,6 @@ import VideoPlayer from "components/Shared/SubmissionMedia/VideoPlayer";
 import { Filename } from "components/Shared/SubmissionMedia/styles";
 
 export const Media = ({ file }) => {
-  console.log(file, 'FILE')
   if(file === 'string') {
     return <img src={file}/>
   }

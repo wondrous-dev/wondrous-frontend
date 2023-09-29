@@ -80,7 +80,6 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
 
   const Config:any = COMPONENTS[storeItemData.type];
 
-  console.log(storeItemData?.type ,'TYPE')
   return (
     <Grid display="flex" flexDirection="column" justifyContent="flex-start" gap="24px" alignItems="center" width="100%">
       <PanelComponent

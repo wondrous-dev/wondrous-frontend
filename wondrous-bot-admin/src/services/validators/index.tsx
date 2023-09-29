@@ -257,7 +257,6 @@ export const questValidator = async (body) =>
   });
 
 export const storeItemValidator = async (body) => {
-  console.log(body, "boody");
   const schema = storeItemTypes[body.type];
   if (!schema) {
     throw new Error(`Validation schema not found for type: ${body.type}`);

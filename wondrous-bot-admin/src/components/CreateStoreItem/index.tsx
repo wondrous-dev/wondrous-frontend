@@ -23,7 +23,6 @@ import { getPathArray } from "utils/common";
 import { set } from "lodash";
 import { handleMediaUpload } from "utils/media";
 
-
 export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
   description: null,
   name: null,
@@ -164,19 +163,19 @@ const CreateStoreItem = ({
       await handleMutation(input);
 
       const storeItemDataMediaUploads = Array.isArray(storeItemData?.mediaUploads) ? storeItemData?.mediaUploads : [];
-      const defaultStoreItemDataMediaUploads = Array.isArray(defaultStoreItemData?.mediaUploads) ? defaultStoreItemData?.mediaUploads : [];
-      
+      const defaultStoreItemDataMediaUploads = Array.isArray(defaultStoreItemData?.mediaUploads)
+        ? defaultStoreItemData?.mediaUploads
+        : [];
+
       const hasMediaToUpload = storeItemDataMediaUploads.some((media) => media instanceof File);
-      
-      const storeItemSlugs = storeItemDataMediaUploads
-        .filter((media) => media?.slug)
-        .map((media) => media.slug); // Ensures that you are working with the slug strings directly.
-      
+
+      const storeItemSlugs = storeItemDataMediaUploads.filter((media) => media?.slug).map((media) => media.slug); // Ensures that you are working with the slug strings directly.
+
       const mediaSlugsToRemove = defaultStoreItemDataMediaUploads
         .filter((media) => !storeItemSlugs.includes(media?.slug))
         .map((media) => media?.slug); // Map to get the slugs to remove.
-        
-            if (hasMediaToUpload) {
+
+      if (hasMediaToUpload) {
         setSnackbarAlertMessage("Wrapping up with your media. Please keep this window open");
         setSnackbarAlertAutoHideDuration(2000);
         setSnackbarAlertOpen(true);
