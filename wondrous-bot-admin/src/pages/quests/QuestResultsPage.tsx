@@ -39,7 +39,6 @@ const QuestResultsPage = () => {
   const [connectDiscordModalOpen, setConnectDiscordModalOpen] = useState(false);
   const [notInGuildError, setNotInGuildError] = useState(false);
   let { id } = useParams();
-  const [title, setTitle] = useState("");
   const handleNavigationToNewQuest = () => navigate("/quests/create");
   const headerActionsRef = useRef(null);
   const { setIsOpen } = useTour();
@@ -77,9 +76,6 @@ const QuestResultsPage = () => {
       questId: id,
     },
     fetchPolicy: "network-only",
-    onCompleted: (data) => {
-      setTitle(data?.getQuestById?.title);
-    },
     skip: !id,
   });
   const [startPreviewQuest] = useMutation(START_PREVIEW_QUEST, {
@@ -120,6 +116,7 @@ const QuestResultsPage = () => {
 
   const questSettings = {
     title: getQuestById?.title || "",
+    description: getQuestById?.description || "",
     level: getQuestById?.level ? String(getQuestById?.level) : null,
     timeBound: getQuestById?.startAt || getQuestById?.endAt,
     isOnboarding: getQuestById?.isOnboarding || false,
@@ -129,6 +126,7 @@ const QuestResultsPage = () => {
     isActive: getQuestById?.status === QUEST_STATUSES.OPEN || false,
     startAt: getQuestById?.startAt ? moment(getQuestById?.startAt) : null,
     endAt: getQuestById?.endAt ? moment(getQuestById?.endAt) : null,
+    submissionCooldownPeriod: getQuestById?.submissionCooldownPeriod,
     questConditions: getQuestById?.conditions
       ? getQuestById?.conditions?.map((condition) => {
           const { __typename, ...rest } = condition?.conditionData;
@@ -186,8 +184,7 @@ const QuestResultsPage = () => {
         </Typography>
       </Modal>
       <PageHeader
-        title={getQuestById?.title || ""}
-        titleComponent={isEditMode ? () => <QuestTitle title={title} setTitle={setTitle} /> : null}
+        title={isEditMode ? "Edit Quest" : "View Quest"}
         withBackButton
         onBackButtonClick={() => {
           if (isEditMode) {
@@ -229,7 +226,6 @@ const QuestResultsPage = () => {
       {isEditMode && getQuestById ? (
         <CreateTemplate
           setRefValue={setRefValue}
-          title={title}
           displaySavePanel={!inView}
           defaultQuestSettings={questSettings}
           questId={id}
