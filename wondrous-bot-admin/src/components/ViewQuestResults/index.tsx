@@ -160,7 +160,8 @@ const ViewQuestResults = ({ quest, rewards }) => {
   }
 
   const submissions = submissionsData?.getQuestSubmissions?.map((submission) => ({
-    user: submission?.creator?.username || submission?.creator?.discordUsername || submission?.creator?.telegramUsername,
+    user:
+      submission?.creator?.username || submission?.creator?.discordUsername || submission?.creator?.telegramUsername,
     pointReward: quest?.pointReward,
     stepsData: submission?.stepsData,
     steps: quest?.steps,
@@ -222,6 +223,11 @@ const ViewQuestResults = ({ quest, rewards }) => {
         {
           label: "Time Bound",
           ...timeboundDate,
+        },
+        {
+          label: "Daily submission",
+          value: quest?.submissionCooldownPeriod ? "Yes" : "No",
+          type: "text",
         },
         {
           label: "Condition",

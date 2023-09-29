@@ -11,6 +11,7 @@ export const DEFAULT_QUEST_SETTINGS_STATE_VALUE = {
   startAt: null,
   endAt: null,
   questConditions: [],
+  submissionCooldownPeriod: null,
   rewards: [
     {
       value: 0,

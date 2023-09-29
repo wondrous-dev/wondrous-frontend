@@ -14,6 +14,7 @@ import useLevels from "utils/levels/hooks";
 import MaxInput from "./MaxInput";
 import TimeboundComponent from "./TimeboundComponent";
 import { CampaignOverviewTitle, Label } from "./styles";
+import DailySubmissionComponent from "./DailySubmission";
 
 const REQUIRE_REVIEW_OPTIONS = [
   {
@@ -244,6 +245,11 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           label: "Time Bound",
           component: TimeboundComponent,
           key: "timeBound",
+        },
+        {
+          label: "Daily submission",
+          component: DailySubmissionComponent,
+          key: "dailySubmission",
         },
         {
           label: "Condition",

@@ -126,6 +126,7 @@ const QuestResultsPage = () => {
     isActive: getQuestById?.status === QUEST_STATUSES.OPEN || false,
     startAt: getQuestById?.startAt ? moment(getQuestById?.startAt) : null,
     endAt: getQuestById?.endAt ? moment(getQuestById?.endAt) : null,
+    submissionCooldownPeriod: getQuestById?.submissionCooldownPeriod,
     questConditions: getQuestById?.conditions
       ? getQuestById?.conditions?.map((condition) => {
           const { __typename, ...rest } = condition?.conditionData;

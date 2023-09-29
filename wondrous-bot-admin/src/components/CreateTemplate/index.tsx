@@ -253,6 +253,7 @@ const CreateTemplate = ({
       startAt: startAt && timeBound ? startAt.utcOffset(0).startOf("day").toISOString() : null,
       endAt: endAt && timeBound ? endAt.utcOffset(0).endOf("day").toISOString() : null,
       pointReward: questSettings.rewards[0].value,
+      submissionCooldownPeriod: questSettings?.submissionCooldownPeriod,
       level: level ? parseInt(level, 10) : null,
       // TODO: refactor this
       rewards: questSettings.rewards
