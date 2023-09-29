@@ -77,19 +77,19 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
           <Label marginLeft="8px">Exclude Quest</Label>
           <Switch
             onChange={() => {
-              if (condition?.conditionData?.excludeQuest) {
+              if (condition?.conditionData?.exclusiveQuest) {
                 handleChange("conditionData", {
                   ...condition?.conditionData,
-                  excludeQuest: false,
+                  exclusiveQuest: false,
                 });
               } else {
                 handleChange("conditionData", {
                   ...condition?.conditionData,
-                  excludeQuest: true,
+                  exclusiveQuest: true,
                 });
               }
             }}
-            value={condition?.conditionData?.excludeQuest}
+            value={condition?.conditionData?.exclusiveQuest}
           />
         </>
       )}
