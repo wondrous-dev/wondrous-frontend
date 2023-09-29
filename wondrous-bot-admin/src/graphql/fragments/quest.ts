@@ -60,7 +60,7 @@ export const QuestFragment = gql`
         discordRoleId
         discordGuildId
         questId
-        excludeQuest
+        exclusiveQuest
       }
     }
     steps {
