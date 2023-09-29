@@ -2,9 +2,11 @@ import { Box, Grid } from "@mui/material";
 import { StorePointsIcon } from "components/Icons/Rewards";
 import { CardHoverWrapper, CardWrapper, Label } from "components/QuestsList/styles";
 import PageWrapper from "components/Shared/PageWrapper";
+import { RoundedSecondaryButton } from "components/Shared/styles";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { BG_TYPES, STORE_ITEM_TYPES, STORE_ITEM_LABELS } from "utils/constants";
+import AddIcon from "@mui/icons-material/Add";
 
 const formatStoreData = (data = []) => {
   const result = {};
@@ -128,6 +130,39 @@ const StoreItemsList = ({ data }) => {
                   </CardHoverWrapper>
                 );
               })}
+              <CardHoverWrapper
+                flex={1}
+                flexBasis={{
+                  xs: "48%",
+                  sm: "30%",
+                  md: "24%",
+                }}
+                minHeight="100%"
+                maxWidth={{
+                  xs: "50%",
+                  sm: "33%",
+                  md: "24%",
+                }}
+              >
+                <CardWrapper
+                  onClick={() => {
+                    navigate("/store/items/create");
+                    
+                  }}
+                  sx={{
+                    minHeight: "155px",
+                  }}
+                >
+                  <RoundedSecondaryButton background="#F8642D">
+                    <AddIcon
+                      sx={{
+                        color: "white",
+                      }}
+                    />
+                  </RoundedSecondaryButton>
+                  <Label fontSize="15px">New product</Label>
+                </CardWrapper>
+              </CardHoverWrapper>
             </Grid>
           </Grid>
         );

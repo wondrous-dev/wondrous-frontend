@@ -17,6 +17,8 @@ const StoreItem = () => {
   let { id, ...rest } = useParams();
   const { data, loading } = useQuery(GET_STORE_ITEM_BY_ID, {
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy:'network-only',
     variables: {
       storeItemId: id,
     },
