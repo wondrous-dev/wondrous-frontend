@@ -38,7 +38,7 @@ const StorePage = () => {
   return (
     <>
       <PageHeader
-        title={`${data?.getStoreItemsForOrg?.length} Products`}
+        title={`${data?.getStoreItemsForOrg?.length || 0} Products`}
         withBackButton={false}
         renderActions={() => (
           <Box display="flex" gap="10px" width="100%">

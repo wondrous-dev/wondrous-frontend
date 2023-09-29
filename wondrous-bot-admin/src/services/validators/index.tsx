@@ -24,6 +24,7 @@ const ALL_TYPES = [
   TYPES.LINK_CLICK,
   TYPES.LIFI_VALUE_BRIDGED,
   TYPES.MIGRATE_ORIGIN_USERS,
+  TYPES.VERIFY_MARKETSFLARE_TRIAL,
 ];
 
 export const STORE_TYPES = [STORE_ITEM_TYPES.PHYSICAL, STORE_ITEM_TYPES.DISCORD_ROLE, STORE_ITEM_TYPES.NFT];
@@ -186,6 +187,9 @@ const stepTypes = {
     }),
   }),
   [TYPES.MIGRATE_ORIGIN_USERS]: Yup.object().shape({
+    ...sharedValidation,
+  }),
+  [TYPES.VERIFY_MARKETSFLARE_TRIAL]: Yup.object().shape({
     ...sharedValidation,
   }),
   [TYPES.SUBSCRIBE_YT_CHANNEL]: Yup.object().shape({

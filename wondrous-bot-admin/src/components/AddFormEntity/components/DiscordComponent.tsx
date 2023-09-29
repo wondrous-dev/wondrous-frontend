@@ -208,7 +208,7 @@ const DiscordComponent = ({ onChange, value, stepType, error }) => {
       [key]: val,
     });
   };
-
+  const { prompt } = value;
   return (
     <Grid
       gap="8px"
@@ -229,6 +229,25 @@ const DiscordComponent = ({ onChange, value, stepType, error }) => {
           width: "100%",
         }}
       >
+        <Grid
+          item
+          gap="14px"
+          display="flex"
+          flexDirection="column"
+          xs={12}
+          style={{
+            width: "100%",
+          }}
+        >
+          <Label>Question/Prompt</Label>
+          <TextField
+            placeholder="Enter prompt here"
+            value={prompt || ""}
+            onChange={(value) => handleOnChange("prompt", value)}
+            multiline={false}
+            error={error?.prompt}
+          />
+        </Grid>
         {getDiscordComponent(stepType, handleOnChange, value, error)}
       </Grid>
     </Grid>

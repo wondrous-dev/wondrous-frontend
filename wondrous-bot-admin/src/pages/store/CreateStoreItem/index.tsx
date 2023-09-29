@@ -1,6 +1,7 @@
 import CreateStoreItem from "components/CreateStoreItem";
 import PageHeader from "components/PageHeader";
 import QuestTitle from "components/QuestTitle";
+import TextField from "components/Shared/TextField";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -22,7 +23,7 @@ const CreateStoreItemPage = () => {
       >
         <PageHeader
           withBackButton
-          titleComponent={() => <QuestTitle title="Add Product Listing" />}
+          title="Add Product Listing"
           renderActions={() => (
             <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
               Save Product

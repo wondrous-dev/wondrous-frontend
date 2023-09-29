@@ -5,6 +5,7 @@ import { CustomTextField, Label } from "components/AddFormEntity/components/styl
 import AutocompleteComponent from "components/Autocomplete";
 import CloseModalIcon from "components/Icons/CloseModal";
 import SelectComponent from "components/Shared/Select";
+import Switch from "components/Shared/Switch";
 import { GET_QUESTS_FOR_ORG } from "graphql/queries";
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { getTextForCondition } from "utils/common";
@@ -31,7 +32,6 @@ const CONDITION_VALUES = {
 const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
   const handleConditionDataChange = (value) => {
     let additionalParams: any = {};
-
     const isDiscordCondition = condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE;
 
     if (isDiscordCondition) {
@@ -42,13 +42,15 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
       [CONDITION_VALUES[condition.type]]: value,
       ...additionalParams,
     });
-    handleClose({
-      type: condition.type,
-      conditionData: {
-        [CONDITION_VALUES[condition.type]]: value,
-        ...additionalParams,
-      },
-    });
+    if (isDiscordCondition) {
+      handleClose({
+        type: condition.type,
+        conditionData: {
+          [CONDITION_VALUES[condition.type]]: value,
+          ...additionalParams,
+        },
+      });
+    }
   };
   return (
     <Box display="flex" gap="6px" alignItems="center">
@@ -70,6 +72,27 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
           value={condition.value || condition.conditionData?.[CONDITION_VALUES[condition.type]]}
         />
       </Box>
+      {condition.type === QUEST_CONDITION_TYPES.QUEST && (
+        <>
+          <Label marginLeft="8px">Exclude Quest</Label>
+          <Switch
+            onChange={() => {
+              if (condition?.conditionData?.exclusiveQuest) {
+                handleChange("conditionData", {
+                  ...condition?.conditionData,
+                  exclusiveQuest: false,
+                });
+              } else {
+                handleChange("conditionData", {
+                  ...condition?.conditionData,
+                  exclusiveQuest: true,
+                });
+              }
+            }}
+            value={condition?.conditionData?.exclusiveQuest}
+          />
+        </>
+      )}
     </Box>
   );
 };
@@ -96,10 +119,10 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   const ref = useRef();
   const handleClickAway = (data = null) => {
     if (!isOpen) return;
-    let conditionItem = data || condition;
+    let conditionItem = data?.conditionData ? data : condition;
     setQuestSettings((prev) => ({
       ...prev,
-      questConditions: [conditionItem],
+      questConditions: [condition],
     }));
 
     setIsOpen(false);

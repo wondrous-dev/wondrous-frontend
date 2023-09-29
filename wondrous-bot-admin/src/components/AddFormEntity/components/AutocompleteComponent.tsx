@@ -4,6 +4,7 @@ import CheckCircleIcon from "components/Icons/CheckCircle";
 import SearchIcon from "components/Icons/Search";
 import ReferralWarningDialog from "components/Referral/referralWarningDialog";
 import { useState } from "react";
+import { scrollbarStyles } from "components/Shared/styles";
 import { TYPES } from "utils/constants";
 
 const AutocompleteOptionsComponent = ({
@@ -120,6 +121,7 @@ const AutocompleteOptionsComponent = ({
               outline: "1px solid #000",
               backgroundColor: "#E4E4E4 !important",
             },
+            ...scrollbarStyles,
           },
         }}
         slotProps={{

@@ -7,7 +7,7 @@ import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
 import { BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
-import { RewardComponent, RewardOverviewHeader } from "./RewardComponent";
+import { RewardComponent } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
@@ -25,18 +25,12 @@ import useAlerts from "utils/hooks";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE, mapAnswersToOptions, reduceConditionalRewards } from "./utils";
 import { useTour } from "@reactour/tour";
 
-const stepCache = {
-  steps: null,
-};
-
-
 const CreateTemplate = ({
   setRefValue,
   displaySavePanel,
   defaultQuestSettings = DEFAULT_QUEST_SETTINGS_STATE_VALUE,
   questId = null,
   postUpdate = null,
-  title,
   getQuestById = null,
   defaultSteps = [],
 }) => {
@@ -56,16 +50,9 @@ const CreateTemplate = ({
 
   useEffect(() => {
     if (getQuestById) {
-      stepCache.steps = transformQuestConfig(getQuestById?.steps);
       setSteps(transformQuestConfig(getQuestById?.steps));
     }
   }, [getQuestById]);
-
-  useEffect(() => {
-    if (stepCache?.steps && steps?.length === 0) {
-      setSteps(stepCache.steps);
-    }
-  }, []);
 
   const { isOpen, setCurrentStep, currentStep, setSteps: setTourSteps, steps: tourSteps } = useTour();
 
@@ -105,10 +92,6 @@ const CreateTemplate = ({
   const handleRemove = (index) => {
     const newItems = [...steps];
     newItems.splice(index, 1);
-    stepCache.steps = newItems.map((item, idx) => ({
-      ...item,
-      order: idx + 1,
-    }));
     setSteps(
       newItems.map((item, idx) => ({
         ...item,
@@ -236,11 +219,14 @@ const CreateTemplate = ({
       level,
       timeBound,
       isOnboarding,
+      title,
+      description,
     } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
     const body = {
       title,
+      description,
       orgId: activeOrg.id,
       isOnboarding,
       requireReview,
@@ -252,6 +238,7 @@ const CreateTemplate = ({
       startAt: startAt && timeBound ? startAt.utcOffset(0).startOf("day").toISOString() : null,
       endAt: endAt && timeBound ? endAt.utcOffset(0).endOf("day").toISOString() : null,
       pointReward: questSettings.rewards[0].value,
+      submissionCooldownPeriod: questSettings?.submissionCooldownPeriod,
       level: level ? parseInt(level, 10) : null,
       // TODO: refactor this
       rewards: questSettings.rewards
@@ -382,6 +369,8 @@ const CreateTemplate = ({
           step["additionalData"] = {
             usdValue: toCent(next.value),
           };
+        } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL) {
+          step.prompt = next.value;
         }
         return [...acc, step];
       }, []),
@@ -500,23 +489,12 @@ const CreateTemplate = ({
               panelProps={{
                 "data-tour": "tutorial-quest-rewards",
               }}
-              renderHeader={() => <RewardOverviewHeader />}
+              renderHeader={null}
               renderBody={() => (
                 <RewardComponent
                   rewards={questSettings.rewards}
-                  onRewardsChange={onRewardsChange}
-                  renderRewardController={() => (
-                    <>
-                      <Divider color="#767676" />
-                      <Box>
-                        <SharedSecondaryButton onClick={handleRewardsToggle}>
-                          {hasReferralStep ? "Add Reward per referral" : "Add Reward"}
-                        </SharedSecondaryButton>
-                      </Box>
-                    </>
-                  )}
-                  handleRewardsToggle={handleRewardsToggle}
-                  isRewardModalOpen={isRewardModalOpen}
+                  setQuestSettings={setQuestSettings}
+                  hasReferralStep={hasReferralStep}
                 />
               )}
             />
@@ -532,7 +510,6 @@ const CreateTemplate = ({
             <AddFormEntity
               steps={steps}
               setSteps={setSteps}
-              stepCache={stepCache}
               handleRemove={handleRemove}
               refs={refs}
               setRemovedMediaSlugs={setRemovedMediaSlugs}

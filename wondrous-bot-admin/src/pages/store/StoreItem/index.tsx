@@ -3,6 +3,8 @@ import { CircularProgress } from "@mui/material";
 import CreateStoreItem from "components/CreateStoreItem";
 import PageHeader from "components/PageHeader";
 import PageSpinner from "components/PageSpinner";
+import TextField from "components/Shared/TextField";
+
 import QuestTitle from "components/QuestTitle";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { GET_STORE_ITEM_BY_ID } from "graphql/queries";
@@ -18,7 +20,7 @@ const StoreItem = () => {
   const { data, loading } = useQuery(GET_STORE_ITEM_BY_ID, {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "cache-and-network",
-    nextFetchPolicy:'network-only',
+    nextFetchPolicy: "network-only",
     variables: {
       storeItemId: id,
     },
@@ -29,8 +31,8 @@ const StoreItem = () => {
 
   const normalizdItem = useMemo(() => {
     if (!data?.getStoreItem?.id) return null;
-    
-    const {__typename, ...restAdditionalData} = data?.getStoreItem?.additionalData || {};
+
+    const { __typename, ...restAdditionalData } = data?.getStoreItem?.additionalData || {};
     return {
       id: data?.getStoreItem?.id,
       name: data?.getStoreItem?.name,
@@ -75,7 +77,7 @@ const StoreItem = () => {
   if (loading || !data?.getStoreItem?.id) {
     return <PageSpinner />;
   }
-  
+
   const isDeactivated = !!data?.getStoreItem?.deactivatedAt;
   return (
     <>
@@ -87,12 +89,14 @@ const StoreItem = () => {
       >
         <PageHeader
           withBackButton
-          titleComponent={() => <QuestTitle title={normalizdItem?.name || "Product"} />}
+          title={normalizdItem?.name || 'Product Listing'}
           renderActions={() => (
-            <SharedSecondaryButton 
-            $reverse={isDeactivated}
-            onClick={() => headerActionsRef.current?.handleSave()} disabled={isDeactivated}>
-              {isDeactivated ? 'Product deactivated' : 'Update Product'}
+            <SharedSecondaryButton
+              $reverse={isDeactivated}
+              onClick={() => headerActionsRef.current?.handleSave()}
+              disabled={isDeactivated}
+            >
+              {isDeactivated ? "Product deactivated" : "Update Product"}
             </SharedSecondaryButton>
           )}
         />
