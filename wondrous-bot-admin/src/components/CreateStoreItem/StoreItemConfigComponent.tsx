@@ -1,19 +1,18 @@
-import { Box, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { Label } from "components/CreateTemplate/styles";
-import ImageUpload from "components/ImageUpload";
-import { AVATAR_EDITOR_TYPES } from "components/ImageUpload/AvatarEditor";
 import TextField from "components/Shared/TextField";
 import { useContext } from "react";
 import { STORE_ITEM_TYPES } from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
-import { ImageUploadWrapper } from "./styles";
 import ProductImage from "./ProductImage";
-import { TokenComponent } from "components/CreateTemplate/RewardUtils";
+import TokenStoreItem from "./components/TokenStoreItem";
+import SelectComponent from "components/Shared/Select";
+import DiscordRoles from "./components/DiscordRoles";
 
-const StoreItemConfigComponent = ({ storeItemData, setStoreItemData }) => {
+const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChange }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { activeOrg } = useContext(GlobalContext);
 
@@ -26,52 +25,31 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData }) => {
         type: "url",
         width: "100%",
         value: storeItemData.config.url,
-        onChange: (value) =>
+        error: errors["url"],
+        onChange: (value) => {
           setStoreItemData((prev) => ({
             ...prev,
             config: {
               ...prev.config,
               url: value,
             },
-          })),
+          }));
+          if (errors["url"]) {
+            setErrors((prev) => ({
+              ...prev,
+              url: null,
+            }));
+          }
+        },
       },
     },
     [STORE_ITEM_TYPES.NFT]: {
-      component: TokenComponent,
+      component: TokenStoreItem,
       label: "NFT",
-      componentProps: {
-        multiline: false,
-        addPaymentMethod: () => {},
-        type: "url",
-        options: [
-          { label: "ERC721", value: "erc721" },
-          { label: "ERC1155", value: "erc1155" },
-        ],
-        onChange: (value) =>
-          setStoreItemData((prev) => ({
-            ...prev,
-            config: {
-              ...prev.config,
-              url: value,
-            },
-          })),
-      },
     },
     [STORE_ITEM_TYPES.DISCORD_ROLE]: {
-      component: TextField,
+      component: DiscordRoles,
       label: "Discord Role",
-      componentProps: {
-        multiline: false,
-        type: "url",
-        onChange: (value) =>
-          setStoreItemData((prev) => ({
-            ...prev,
-            config: {
-              ...prev.config,
-              url: value,
-            },
-          })),
-      },
     },
   };
 
@@ -97,9 +75,12 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData }) => {
       type,
       config,
     }));
+    onTypeChange(type);
   };
 
-  const Config = COMPONENTS[storeItemData.type];
+  const Config:any = COMPONENTS[storeItemData.type];
+
+  console.log(storeItemData?.type ,'TYPE')
   return (
     <Grid display="flex" flexDirection="column" justifyContent="flex-start" gap="24px" alignItems="center" width="100%">
       <PanelComponent
@@ -119,7 +100,11 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData }) => {
               <Grid display="flex" flexDirection="column" gap="12px">
                 <Label fontWeight={600}>{Config.label}</Label>
 
-                <Config.component {...COMPONENTS[storeItemData.type].componentProps} />
+                <Config.component
+                  {...COMPONENTS[storeItemData.type].componentProps}
+                  setStoreItemData={setStoreItemData}
+                  storeItemData={storeItemData}
+                />
               </Grid>
             </Grid>
           );
@@ -131,7 +116,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData }) => {
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">
               <Grid display="flex" flexDirection="column" gap="12px">
                 <Label fontWeight={600}>Product image</Label>
-                <ProductImage />
+                <ProductImage storeItemData={storeItemData} setStoreItemData={setStoreItemData} />
               </Grid>
             </Grid>
           );

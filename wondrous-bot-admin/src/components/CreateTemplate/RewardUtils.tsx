@@ -41,15 +41,16 @@ const isDev = !import.meta.env.VITE_PRODUCTION;
 
 export const TokenComponent = ({
   paymentMethod = null,
-  setPaymentMethod,
+  setPaymentMethod = null,
   addPaymentMethod = null,
   tokenReward,
   setTokenReward,
-  paymentMethods,
+  paymentMethods = null,
   editPaymentMethod = null,
-  setEditPaymentMethod,
+  setEditPaymentMethod = null,
   errors,
   options = REWARD_TYPES,
+  withAmount = true
 }) => {
   if (paymentMethod && !editPaymentMethod?.id) {
     return (
@@ -75,7 +76,6 @@ export const TokenComponent = ({
       </>
     );
   }
-  console.log('im now here too')
   return (
     <>
       <Label>Chain</Label>
@@ -114,7 +114,7 @@ export const TokenComponent = ({
             });
           }
         }}
-        error={errors?.tokenType}
+        error={errors?.tokenType || errors?.type}
       />
       <Label
         style={{
@@ -167,7 +167,7 @@ export const TokenComponent = ({
         }}
         multiline={false}
       />
-      {!editPaymentMethod?.id && (
+      {!editPaymentMethod?.id && withAmount && (
         <>
           <Label
             style={{

@@ -9,6 +9,9 @@ export const GET_STORE_ITEMS_FOR_ORG = gql`
       orgId
       name
       type
+      stats {
+        totalPurchases
+      }
       description
       ptPrice
       price
@@ -24,12 +27,52 @@ export const GET_STORE_ITEMS_FOR_ORG = gql`
       url
       tokenInfo {
         contractAddress
-        logoUrl
         name
-        symbol
         type
+        chain
+      }
+      additionalData {
+        discordRoleId
+        discordGuildId
+        discordRoleName
       }
       deactivatedAt
+    }
+  }
+`;
+
+export const GET_STORE_ITEM_BY_ID = gql`
+  query getStoreItem($storeItemId: ID!) {
+    getStoreItem(storeItemId: $storeItemId) {
+      id
+      orgId
+      name
+      type
+      description
+      deactivatedAt
+      ptPrice
+      price
+      media {
+        slug
+        name
+        type
+        muxAssetId
+        muxPlaybackId
+        videoProcessingStatus
+      }
+      deliveryMethod
+      url
+      tokenInfo {
+        contractAddress
+        name
+        type
+        chain
+      }
+      additionalData {
+        discordRoleId
+        discordGuildId
+        discordRoleName
+      }
     }
   }
 `;

@@ -156,3 +156,19 @@ export const transformAndUploadTelegramMedia = async ({ file }) => {
   await uploadTelegramMedia(imageFile);
   return { ...imageFile };
 };
+
+export const handleMediaUpload = async (mediaUploads) =>
+Promise.all(
+  mediaUploads.map(async (file) => {
+    try {
+      const { filename, fileType } = await transformAndUploadMedia({ file });
+      return {
+        uploadSlug: filename,
+        type: fileType,
+        name: file.name,
+      };
+    } catch (error) {
+      return null;
+    }
+  })
+);

@@ -17,7 +17,7 @@ import { useNavigate } from "react-router";
 import { questValidator, ValidationError } from "services/validators";
 import { getPathArray, toCent } from "utils/common";
 import { set } from "lodash";
-import { transformAndUploadMedia } from "utils/media";
+import { handleMediaUpload, transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
@@ -28,6 +28,8 @@ import { useTour } from "@reactour/tour";
 const stepCache = {
   steps: null,
 };
+
+
 const CreateTemplate = ({
   setRefValue,
   displaySavePanel,
@@ -218,21 +220,6 @@ const CreateTemplate = ({
     });
   };
 
-  const handleMediaUpload = async (mediaUploads) =>
-    Promise.all(
-      mediaUploads.map(async (file) => {
-        try {
-          const { filename, fileType } = await transformAndUploadMedia({ file });
-          return {
-            uploadSlug: filename,
-            type: fileType,
-            name: file.name,
-          };
-        } catch (error) {
-          return null;
-        }
-      })
-    );
 
   const handleSave = async (status = null) => {
     if (Object.keys(errors).length > 0) {

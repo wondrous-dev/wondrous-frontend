@@ -6,7 +6,7 @@ import StoreItemsList from "components/StoreItemsList";
 import { GET_STORE_ITEMS_FOR_ORG } from "graphql/queries";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { QUEST_STATUSES, STORE_ITEM_STATUSES } from "utils/constants";
+import {  STORE_ITEM_STATUSES } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 
 const StorePage = () => {
@@ -34,9 +34,6 @@ const StorePage = () => {
   const handleNavigationToNewProduct = () => {
     navigate("/store/items/create");
   };
-  console.log(data, 'DATA')
-
-  // TODO : implement pagination
 
   return (
     <>
@@ -52,7 +49,6 @@ const StorePage = () => {
         )}
       />
       <StoreItemsList data={data?.getStoreItemsForOrg}/>
-      {/* <QuestsList data={data?.getQuestsForOrg} /> */}
     </>
   );
 };

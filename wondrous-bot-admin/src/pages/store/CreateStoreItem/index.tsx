@@ -8,11 +8,7 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 
 const CreateStoreItemPage = () => {
   const headerActionsRef = useRef(null);
-  const [title, setTitle] = useState("");
   const [errors, setErrors] = useState({});
-  const { ref, inView, entry } = useInView({
-    threshold: 1,
-  });
 
   const setRefValue = (value) => (headerActionsRef.current = value);
 
@@ -24,17 +20,15 @@ const CreateStoreItemPage = () => {
           setErrors,
         }}
       >
-        <div ref={ref}>
-          <PageHeader
-            withBackButton
-            titleComponent={() => <QuestTitle title="Add Product Listing" />}
-            renderActions={() => (
-              <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
-                Save Product
-              </SharedSecondaryButton>
-            )}
-          />
-        </div>
+        <PageHeader
+          withBackButton
+          titleComponent={() => <QuestTitle title="Add Product Listing" />}
+          renderActions={() => (
+            <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
+              Save Product
+            </SharedSecondaryButton>
+          )}
+        />
         <CreateStoreItem setRefValue={setRefValue} />
       </CreateQuestContext.Provider>
     </>

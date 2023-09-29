@@ -391,3 +391,9 @@ export const STORE_ITEM_LABELS = {
   [STORE_ITEM_TYPES.PHYSICAL]: 'Shopify Products',
   [STORE_ITEM_TYPES.DISCORD_ROLE]: 'Discord Roles',
 }
+
+export const DELIVERY_METHODS = {
+  DISCORD_ROLE: 'discord_role',
+  DISCOUNT_CODE: 'discount_code',
+  NFT_PAYMENT: 'nft_payment'
+};

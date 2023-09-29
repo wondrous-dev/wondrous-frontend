@@ -10,6 +10,8 @@ import SelectComponent from "components/Shared/Select";
 import useLevels from "utils/levels/hooks";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
 import Switch from "components/Shared/Switch";
+import { DELIVERY_METHODS } from "utils/constants";
+import ActivateStoreItem from "./components/ActivateStoreItem";
 
 const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings }) => {
   const { activeOrg } = useContext(GlobalContext);
@@ -26,17 +28,6 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
       [key]: value,
     });
   };
-
-  const { levels } = useLevels({
-    orgId: activeOrg?.id,
-  });
-
-  const levelsOptions = useMemo(() => {
-    return Object.keys(levels).map((key) => ({
-      label: levels[key],
-      value: key,
-    }));
-  }, [levels]);
 
   const CONFIG = [
     {
@@ -63,14 +54,38 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
       divider: true,
     },
     {
-      label: "Level Req.",
+      label: "Delivery method",
       direction: "row",
       component: SelectComponent,
-      value: storeItemSettings.level,
+      value: storeItemSettings.deliveryMethod,
       componentProps: {
-        options: levelsOptions,
+        options: [
+          {
+            label: "Discord Role",
+            value: DELIVERY_METHODS.DISCORD_ROLE,
+          },
+          {
+            label: "Discount Code",
+            value: DELIVERY_METHODS.DISCOUNT_CODE,
+          },
+          {
+            label: "NFT Payment",
+            value: DELIVERY_METHODS.NFT_PAYMENT,
+          },
+        ],
       },
-      key: "level",
+      key: "deliveryMethod",
+    },
+    {
+      label: "Price",
+      direction: "row",
+      key: "price",
+      component: TextField,
+      componentProps: {
+        type: "number",
+        multiline: false,
+        placeholder: "Price",
+      },
     },
     {
       label: "Price in Points",
@@ -83,12 +98,16 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         placeholder: "Price in Points",
       },
     },
+
     {
-      label: "Active Product",
+      label: "Activate Product",
       direction: "row",
-      component: Switch,
-      key: "isActive",
-      value: storeItemSettings?.isActive,
+      component: ActivateStoreItem,
+      key: "deactivatedAt",
+      componentProps: {
+        value: !storeItemSettings?.deactivatedAt,
+        storeItemId: storeItemSettings?.id,
+      },
     },
   ];
 

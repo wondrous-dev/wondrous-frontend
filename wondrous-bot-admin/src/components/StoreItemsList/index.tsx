@@ -22,6 +22,7 @@ const formatStoreData = (data = []) => {
       price: storeItem.ptPrice,
       id: storeItem.id,
       status: storeItem.status,
+      totalPurchases: storeItem?.stats?.totalPurchases,
     });
   });
 
@@ -31,7 +32,7 @@ const formatStoreData = (data = []) => {
 const StoreItemsList = ({ data }) => {
   const navigate = useNavigate();
   const storeData = useMemo(() => {
-    if(!data) return {};
+    if (!data) return {};
     return formatStoreData(data);
   }, [data]);
 
@@ -63,6 +64,7 @@ const StoreItemsList = ({ data }) => {
             <Label>{STORE_ITEM_LABELS[STORE_ITEM_TYPES[type]]}</Label>
             <Grid container gap="30px 14px">
               {storeData[STORE_ITEM_TYPES[type]]?.items?.map((item, idx) => {
+                console.log(item, "ITM");
                 return (
                   <CardHoverWrapper
                     onClick={() => navigate(`/store/items/${item.id}`)}
@@ -100,15 +102,28 @@ const StoreItemsList = ({ data }) => {
                         </Label>
                       </Box>
                       <Label
-                      fontSize="15px"
-                      style={{
-                        textAlign: "center",
-                        overflowWrap: "anywhere",
-                      }}
-                    >
-                      {item.label}
-                    </Label>
-
+                        fontSize="15px"
+                        style={{
+                          textAlign: "center",
+                          overflowWrap: "anywhere",
+                        }}
+                      >
+                        {item.label}
+                      </Label>
+                      <Box display="flex" justifyContent="center" alignItems="center">
+                        <Box
+                          bgcolor="#C1B6F6"
+                          padding="8px"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          borderRadius="6px"
+                        >
+                          <Label fontSize="14px" lineHeight="14px">
+                            {item?.totalPurchases} {item?.totalPurchases === 1 ? "Purchase" : "Purchases"}
+                          </Label>
+                        </Box>
+                      </Box>
                     </CardWrapper>
                   </CardHoverWrapper>
                 );
