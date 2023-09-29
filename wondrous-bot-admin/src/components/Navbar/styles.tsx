@@ -84,3 +84,27 @@ export const TutorialLink = styled.a`
   font-weight: 500;
   font-size: 19px;
 `;
+
+export const ImageDefault = styled.img`
+  transition: all 0.1s;
+`;
+
+export const HoveredImage = styled.img`
+  opacity: 0;
+  height: 0;
+  width: 0;
+`;
+export const ImageContainer = styled.div`
+  &:hover {
+    ${ImageDefault} {
+      opacity: 0;
+      height: 0;
+      width: 0;
+    }
+    ${HoveredImage} {
+      opacity: 1;
+      height: 100%;
+      width: 100%;
+    }
+  }
+`;
