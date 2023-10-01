@@ -44,6 +44,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
     },
     skip: !activeOrg?.id,
   });
+  const [questSettingsConditions, setQuestSettingsConditions] = useState([]);
   const [getGuildDiscordChannels, { data: guildDiscordChannelsData }] = useLazyQuery(GET_GUILD_DISCORD_CHANNELS);
   const guildId = orgDiscordConfig?.getCmtyOrgDiscordConfig?.guildId;
   const guildDiscordChannels = guildDiscordChannelsData?.getAvailableChannelsForDiscordGuild;
@@ -114,8 +115,8 @@ const ViewQuestResults = ({ quest, rewards }) => {
     return { type: "text", value: `Ends on ${endDate}` };
   }, [quest?.startAt, quest?.endAt]);
 
-  const getNameForCondition = async () => {
-    if (quest?.conditions?.[0]?.type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
+  const getNameForCondition = async (condition) => {
+    if (condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
       const { data } = await apollo.query({
         query: GET_ORG_DISCORD_ROLES,
         variables: {
@@ -123,27 +124,19 @@ const ViewQuestResults = ({ quest, rewards }) => {
         },
       });
       const allRoles = data?.getCmtyOrgDiscordRoles?.map((role) => role.roles).flat();
-      return allRoles.find((item) => item.id === quest?.conditions?.[0]?.conditionData?.discordRoleId)?.name;
+      return allRoles.find((item) => item.id === condition.conditionData?.discordRoleId)?.name;
     }
-    if (quest?.conditions?.[0]?.type === QUEST_CONDITION_TYPES.QUEST) {
+    if (condition.type === QUEST_CONDITION_TYPES.QUEST) {
       const { data } = await apollo.query({
         query: GET_QUEST_BY_ID,
         variables: {
-          questId: quest?.conditions?.[0]?.conditionData?.questId,
+          questId: condition.conditionData?.questId,
         },
       });
       return data?.getQuestById?.title;
     }
     return null;
   };
-
-  useEffect(() => {
-    const getName = async () => {
-      const name = await getNameForCondition();
-      setConditionName(name);
-    };
-    getName();
-  }, [quest?.conditions]);
 
   useEffect(() => {
     if (guildId) {
@@ -158,7 +151,24 @@ const ViewQuestResults = ({ quest, rewards }) => {
   if (!quest) {
     return null;
   }
-
+  useEffect(() => {
+    const setQuestConditionsAsync = async (questConditions) => {
+      const results = await Promise.all(
+        questConditions.map(async (item) => {
+          const result = await getNameForCondition(item);
+          return getTextForCondition({
+            type: item?.type,
+            name: result,
+            exclusiveQuest: item?.conditionData?.exclusiveQuest,
+          });
+        })
+      );
+      setQuestSettingsConditions(results);
+    };
+    if (quest?.conditions?.length > 0) {
+      setQuestConditionsAsync(quest?.conditions);
+    }
+  }, [quest?.conditions?.length]);
   const submissions = submissionsData?.getQuestSubmissions?.map((submission) => ({
     user:
       submission?.creator?.username || submission?.creator?.discordUsername || submission?.creator?.telegramUsername,
@@ -169,11 +179,6 @@ const ViewQuestResults = ({ quest, rewards }) => {
     approvedAt: submission?.approvedAt,
     rejectedAt: submission?.rejectedAt,
   }));
-
-  const questSettingsCondition = getTextForCondition({
-    type: quest?.conditions?.[0]?.type,
-    name: conditionName,
-  });
 
   const sections = [
     {
@@ -230,9 +235,9 @@ const ViewQuestResults = ({ quest, rewards }) => {
           type: "text",
         },
         {
-          label: "Condition",
-          value: questSettingsCondition,
-          type: questSettingsCondition ? "text" : "boolean",
+          label: "Conditions",
+          value: questSettingsConditions,
+          type: questSettingsConditions?.length > 0 ? "questConditions" : "boolean",
         },
       ],
       showBorder: false,
