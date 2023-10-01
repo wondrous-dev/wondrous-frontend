@@ -82,7 +82,17 @@ const CampaignOverviewSections = ({
         <Grid container item gap="14px">
           {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }) => {
             return (
-              <Grid container key={key} {...wrapperProps} {...settingsLayout}>
+              <Grid
+                container
+                key={key}
+                {...wrapperProps}
+                {...settingsLayout}
+                style={{
+                  ...(key === "questConditions" && {
+                    alignItems: "baseline",
+                  }),
+                }}
+              >
                 <Label>{label}</Label>
                 <Grid container item flex="1">
                   {Component ? (
@@ -252,11 +262,11 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           key: "dailySubmission",
         },
         {
-          label: "Condition",
+          label: "Conditions",
           component: DynamicCondition,
           key: "questConditions",
           componentProps: {
-            value: questSettings.questConditions[0],
+            value: questSettings.questConditions,
             setQuestSettings,
           },
         },
