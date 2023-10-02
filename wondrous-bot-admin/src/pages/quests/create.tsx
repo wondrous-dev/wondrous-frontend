@@ -1,6 +1,7 @@
 import QuestTemplateModal from "components/CreateTemplate/QuestTemplateModal";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "components/CreateTemplate/shared";
 import PageHeader from "components/PageHeader";
+import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -24,6 +25,7 @@ const CreatePage = () => {
 
   return (
     <>
+    {/* <DiscordRoleDisclaimer onClose={() => {}} /> */}
       <QuestTemplateModal setQuestTemplate={setQuestTemplate} open={questTemplate.open} />
       <CreateQuestContext.Provider
         value={{
