@@ -279,6 +279,8 @@ const PricingOptionsListItem = ({
                 <Box
                   width="18px"
                   height="18px"
+                  minWidth="18px"
+                  minHeight="18px"
                   bgcolor={colorScheme}
                   display="flex"
                   alignItems="center"
