@@ -1,6 +1,7 @@
-import { Typography } from '@mui/material';
-import CloseModalIcon from 'components/Icons/CloseModal';
-import styled from 'styled-components';
+import { Typography } from "@mui/material";
+import CloseModalIcon from "components/Icons/CloseModal";
+import styled from "styled-components";
+import ScrollBarStyles from "../ScrollBarStyles";
 
 export const ModalContainer = styled.div`
   position: fixed;
@@ -13,7 +14,7 @@ export const ModalContainer = styled.div`
   outline: 0;
   overflow-y: auto;
   background: rgba(175, 158, 255, 0.9);
-    display: flex;
+  display: flex;
   justify-content: center;
   align-items: center;
 `;
@@ -21,14 +22,13 @@ export const ModalContainer = styled.div`
 export const ModalDialog = styled.div`
   position: relative;
   width: 80%;
-  max-width: ${(props) => (props.maxWidth ? `${props.maxWidth}px` : '100%')};
-
+  max-width: ${(props) => (props.maxWidth ? `${props.maxWidth}px` : "100%")};
   overflow: hidden;
   pointer-events: none;
   background: white;
   border-radius: 16px;
   border: 1px solid black;
-  overflow: hidden;
+  max-height: 100%;
   @media (min-width: 5716px) {
     .modal-dialog {
       max-width: 500px;
@@ -46,11 +46,10 @@ export const ModalContent = styled.div`
   outline: 0;
 `;
 
-
 export const ModalTitle = styled(Typography)`
   && {
     font-size: 15px;
-    color: ${({color = "#E9FF90"}) => color};
+    color: ${({ color = "#E9FF90" }) => color};
     font-family: Poppins;
     font-weight: 600;
   }
@@ -61,7 +60,7 @@ export const ModalHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 12px;
-  background: ${({bgColor = "#2a8d5c"}) => bgColor};
+  background: ${({ bgColor = "#2a8d5c" }) => bgColor};
   border-bottom: 1px solid black;
 `;
 
@@ -69,15 +68,18 @@ export const ModalBody = styled.div`
   position: relative;
   flex: 1 1 auto;
   padding: 24px;
+  max-height: calc(100vh - 200px);
+  overflow: scroll;
+  ${ScrollBarStyles}
 `;
 
 export const ModalFooter = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${({ alignCenter }) => (alignCenter ? 'center' : 'flex-end')};
+  justify-content: ${({ alignCenter }) => (alignCenter ? "center" : "flex-end")};
   padding: 24px;
   border-radius: 0 0 16px 16px;
-  border-top: 1px solid #E8E8E8;
+  border-top: 1px solid #e8e8e8;
 `;
 
 export const ModalFooterLeft = styled.div`
@@ -98,7 +100,7 @@ export const CloseModalBtn = styled((props) => (
 ))`
   width: 32px;
   height: 32px;
-  background-color: #F8AFDB;
+  background-color: #f8afdb;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -106,7 +108,7 @@ export const CloseModalBtn = styled((props) => (
   cursor: pointer;
 
   &:hover {
-    background-color: #F8AFDB;
+    background-color: #f8afdb;
   }
 
   svg {

@@ -178,7 +178,6 @@ const TeamSettings = () => {
     }
   }, [activeOrg?.id]);
   const orgAdmins = orgAdminData?.getOrgAdmins || [];
-  console.log("orgAdmins", orgAdmins);
   return (
     <Grid
       flex="1"

@@ -5,6 +5,7 @@ import { IS_ORG_USERNAME_TAKEN } from "graphql/queries";
 import SubscriptionContext from "./context/SubscriptionContext";
 import TakeQuestContext from "./context/TakeQuestContext";
 import { PaywallContext } from "./context/PaywallContext";
+import GlobalContext from "./context/GlobalContext";
 
 const useAlerts = () => {
   const {
@@ -58,3 +59,5 @@ export const useSubscription = () => useContext(SubscriptionContext);
 export const usePaywall = () => useContext(PaywallContext);
 
 export const useTakeQuest = () => useContext(TakeQuestContext)
+
+export const useGlobalContext = () => useContext(GlobalContext);
