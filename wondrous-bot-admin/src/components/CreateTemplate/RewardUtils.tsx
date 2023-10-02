@@ -655,15 +655,8 @@ export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, o
         return reward;
       })
     );
-  }
-  return (
-    <SelectComponent
-      options={options}
-      value={reward}
-      disabled
-      onChange={handleChange}
-    />
-  );
+  };
+  return <SelectComponent options={options} value={reward} disabled onChange={handleChange} />;
 };
 
 export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, onRewardsChange, rewards }) => {
@@ -781,11 +774,20 @@ export const RewardWrapperWithTextField = ({ handleOnChange, reward, text, Icon,
         endAdornment: (
           <>
             {rewardValue ? (
-              <Grid container item flex="1" justifyContent="space-between" flexWrap="nowrap">
+              <Grid
+                container
+                item
+                flex="1"
+                justifyContent="space-between"
+                flexWrap="nowrap"
+                style={{
+                  pointerEvents: "none",
+                }}
+              >
                 <Typography fontFamily="Poppins" fontWeight="500">
                   {typeof rewardValue === "number" ? text : null}
                 </Typography>
-                <ClearRewardValue onClick={handleOnClear} />
+                {/* <ClearRewardValue onClick={handleOnClear} /> */}
               </Grid>
             ) : null}
           </>
