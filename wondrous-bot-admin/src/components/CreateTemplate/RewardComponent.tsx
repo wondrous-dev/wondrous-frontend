@@ -71,7 +71,12 @@ const RewardComponent = ({
 }) => {
   const onRewardAdd = (reward) => {
     setQuestSettings((prev) => {
-      const filteredRewards = prev.rewards.filter((i) => i.paymentMethodId !== reward.paymentMethod?.id);
+      const filteredRewards = prev.rewards.filter((i) => {
+        if (i.type === PAYMENT_OPTIONS.TOKEN) {
+          return i.paymentMethodId !== reward.paymentMethod?.id;
+        }
+        return true;
+      });
       return {
         ...prev,
         rewards: [...filteredRewards, reward],
@@ -143,10 +148,8 @@ const RewardComponent = ({
       handleOnRemove: onPoapRewardRemove,
     },
   };
-
   const pointReward = rewards.filter((reward) => reward?.type === "points")[0];
   const otherRewards = rewards.filter((reward) => reward?.type !== "points");
-
   return (
     <>
       <RewardModal
@@ -161,7 +164,7 @@ const RewardComponent = ({
           <RewardWrapperWithTextField
             reward={pointReward}
             handleOnChange={(e) => {
-              handleOnChangePoints(pointReward.type, e.target.value);
+              handleOnChangePoints(pointReward?.type, e.target.value);
             }}
             text="Points"
             placeholder="How many points?"
