@@ -25,7 +25,6 @@ const CreatePage = () => {
 
   return (
     <>
-    {/* <DiscordRoleDisclaimer onClose={() => {}} /> */}
       <QuestTemplateModal setQuestTemplate={setQuestTemplate} open={questTemplate.open} />
       <CreateQuestContext.Provider
         value={{
