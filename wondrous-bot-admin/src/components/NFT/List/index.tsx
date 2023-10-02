@@ -10,6 +10,8 @@ import VideoPlayer from "components/Shared/SubmissionMedia/VideoPlayer";
 import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { useState } from "react";
 import ViewNFTComponent from "../ViewNFTComponent";
+import EmptyState from "components/EmptyState";
+import { EMPTY_STATE_TYPES } from "utils/constants";
 
 const NFTMediaItem = ({ slug, type, name }) => {
   const mediaTypeIsImage = isImage(slug, type);
@@ -86,6 +88,7 @@ const NFTList = () => {
           );
         })}
       </Grid>
+      {data?.getCommunityNFTsForOrg?.length === 0 && !loading ? <EmptyState type={EMPTY_STATE_TYPES.NFT}/> : null}
     </Grid>
     </>
   );

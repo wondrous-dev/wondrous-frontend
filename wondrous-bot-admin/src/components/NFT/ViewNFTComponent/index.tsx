@@ -65,10 +65,11 @@ const DataComponent = ({ label, value, type }) => {
           {type === 'chain' && !!ChainComponent ? ChainComponent : null}
           <Typography
             color="black"
+            
             fontFamily="Poppins"
             fontSize="12px"
             fontWeight={500}
-            sx={{ textDecoration: type === "url" ? "underline" : "none" }}
+            sx={{ textDecoration: type === "url" ? "underline" : "none", wordBreak: "break-all" }}
           >
             {value}
           </Typography>
