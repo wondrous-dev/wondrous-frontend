@@ -138,6 +138,20 @@ const ViewQuestResults = ({ quest, rewards }) => {
     return null;
   };
 
+  const setQuestConditionsAsync = async (questConditions) => {
+    const results = await Promise.all(
+      questConditions.map(async (item) => {
+        const result = await getNameForCondition(item);
+        return getTextForCondition({
+          type: item?.type,
+          name: result,
+          exclusiveQuest: item?.conditionData?.exclusiveQuest,
+        });
+      })
+    );
+    setQuestSettingsConditions(results);
+  };
+
   useEffect(() => {
     if (guildId) {
       // fetch all guild channels
@@ -148,27 +162,16 @@ const ViewQuestResults = ({ quest, rewards }) => {
       });
     }
   }, [guildId]);
-  if (!quest) {
-    return null;
-  }
   useEffect(() => {
-    const setQuestConditionsAsync = async (questConditions) => {
-      const results = await Promise.all(
-        questConditions.map(async (item) => {
-          const result = await getNameForCondition(item);
-          return getTextForCondition({
-            type: item?.type,
-            name: result,
-            exclusiveQuest: item?.conditionData?.exclusiveQuest,
-          });
-        })
-      );
-      setQuestSettingsConditions(results);
-    };
-    if (quest?.conditions?.length > 0) {
+    if (quest?.conditions?.length > 0 && quest?.conditions?.length !== questSettingsConditions?.length) {
       setQuestConditionsAsync(quest?.conditions);
     }
   }, [quest?.conditions?.length]);
+
+  if (!quest) {
+    return null;
+  }
+
   const submissions = submissionsData?.getQuestSubmissions?.map((submission) => ({
     user:
       submission?.creator?.username || submission?.creator?.discordUsername || submission?.creator?.telegramUsername,
@@ -236,8 +239,8 @@ const ViewQuestResults = ({ quest, rewards }) => {
         },
         {
           label: "Conditions",
-          value: questSettingsConditions,
-          type: questSettingsConditions?.length > 0 ? "questConditions" : "boolean",
+          value: questSettingsConditions?.length > 0 ? questSettingsConditions : "None",
+          type: questSettingsConditions?.length > 0 ? "questConditions" : "text",
         },
       ],
       showBorder: false,
