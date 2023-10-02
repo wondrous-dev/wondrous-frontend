@@ -36,6 +36,11 @@ const Settings = ({ quest, idx, settingsLayout }) => {
       width="100%"
       key={idx + "quest"}
       {...settingsLayout}
+      style={{
+        ...(quest.type === "questConditions" && {
+          alignItems: "baseline",
+        }),
+      }}
     >
       <Label>{quest.label}</Label>
       <Grid container flex="1" alignItems="center" gap="8px">
