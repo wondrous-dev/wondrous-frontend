@@ -7,7 +7,7 @@ import { DataLabel, TextWrapper } from "./styles";
 import Ethereum from "assets/ethereum";
 import Polygon from "assets/polygonMaticLogo.svg";
 
-const ChainIcons = {
+export const ChainIcons = {
   ethereum: <Ethereum />,
   polygon: <img
   style={{

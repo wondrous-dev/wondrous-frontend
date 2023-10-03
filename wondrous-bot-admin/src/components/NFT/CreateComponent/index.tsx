@@ -31,7 +31,7 @@ const formSchema = Yup.object().shape({
   mediaUpload: Yup.mixed().required("Please upload a file"),
 });
 
-const CHAIN_SELECT_OPTIONS = [
+export const NFT_MINTING_CHAIN_SELECT_OPTIONS = [
   {
     label: "Ethereum",
     value: "ethereum",
@@ -140,7 +140,7 @@ const CreateNFTComponent = ({ handleClose }) => {
       placeholder: "Select blockchain",
       required: true,
       key: "chain",
-      options: CHAIN_SELECT_OPTIONS,
+      options: NFT_MINTING_CHAIN_SELECT_OPTIONS,
     },
   ];
 
