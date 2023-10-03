@@ -12,7 +12,40 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import { FilterPill } from "components/ViewQuestResults/styles";
 import { exportSubmissionPaymentCsv } from "./utils";
 import { useData, useTableComponents } from "./hooks";
+import { StyledCheckbox } from "./styles";
+import { StyledTableHeaderCell } from "components/TableComponent/styles";
 
+const SelectAllComponent = ({ setSelectedPayments, batchPaymentData }) => {
+  const [isChecked, setIsChecked] = useState(false);
+  return (
+    <Box display="flex" gap="6px" alignItems="center" width="100%">
+      <StyledCheckbox
+        style={{
+          color: "white",
+        }}
+        checked={isChecked}
+        onChange={(e) => {
+          setIsChecked(!isChecked);
+          if (!isChecked) {
+            setSelectedPayments(batchPaymentData.map(({ id }) => id));
+          } else {
+            setSelectedPayments([]);
+          }
+        }}
+      />
+      <StyledTableHeaderCell
+        style={{
+          borderBottom: "none",
+          width: "max-content",
+          textAlign: "left",
+          padding: "8px",
+        }}
+      >
+        Select All
+      </StyledTableHeaderCell>
+    </Box>
+  );
+};
 const PaymentLedger = ({ questId = null }) => {
   const { activeOrg } = useContext(GlobalContext);
   const [tokenIds, setTokenIds] = useState({});
@@ -41,7 +74,15 @@ const PaymentLedger = ({ questId = null }) => {
     setTokenIds,
   });
 
-  const unpaidHeaders = [null, "Name", "Reward", "Chain", "Token ID", "Quest/Level Increase", "Date"];
+  const unpaidHeaders = [
+    <SelectAllComponent setSelectedPayments={setSelectedPayments} batchPaymentData={batchPaymentData} />,
+    "Name",
+    "Reward",
+    "Chain",
+    "Token ID",
+    "Quest/Level Increase",
+    "Date",
+  ];
   const paidHeaders = ["Name", "Reward", "Chain", "Link", "Quest/Level Increase", "Date"];
 
   const headers = paymentView === "unpaid" ? unpaidHeaders : paidHeaders;
@@ -68,7 +109,7 @@ const PaymentLedger = ({ questId = null }) => {
   const handlePaymentView = (value) => {
     setSelectedPayments([]);
     togglePaymentView(value);
-  }
+  };
   return (
     <>
       <PageHeader
