@@ -113,3 +113,21 @@ export const GET_COMMUNITY_NFT_BY_TOKEN_ID = gql`
   }
   ${CommunityNFTFragment}
 `;
+
+export const GET_CMTY_USER_NFT_METADATA = gql`
+  query getCmtyUserNftMetadata($signature: String!, $cmtyUserId: String!, $tokenId: String!) {
+    getCmtyUserNftMetadata(signature: $signature, cmtyUserId: $cmtyUserId, tokenId: $tokenId) {
+      orgId
+      chain
+      receiverAddress
+      name
+      mediaUrl
+      cmtyUserUsername
+      cmtyUserDiscordUsername
+      org {
+        name
+        profilePicture
+      }
+    }
+  }
+`;
