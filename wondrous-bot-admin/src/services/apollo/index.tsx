@@ -94,6 +94,8 @@ const cache = new InMemoryCache({
           keyArgs: ["input", ["orgId"]],
           merge: offsetLimitPaginationInput,
         },
+        getQuestSubmissions: offsetLimitPagination(),
+        getUserQuestSubmissions: offsetLimitPagination(["cmtyUserId", "orgId", "questId"]),
       },
     },
   },

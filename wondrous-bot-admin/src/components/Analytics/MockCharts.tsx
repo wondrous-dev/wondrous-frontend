@@ -17,6 +17,67 @@ import Submissions from "./AnalyticsGraphs/Submissions";
 import CardsComponent from "./Cards";
 import Heatmap from "./GraphsComponent/Heatmap";
 
+export const MESSAGES_REACTIONS_MOCK_DATA = [
+  {
+    date: "2023-07-19T05:26:26.621Z",
+    counts: {
+      discordMessage: 24,
+      discordReaction: 29,
+      discordInteraction: 26,
+    },
+  },
+  {
+    date: "2023-07-20T05:26:26.621Z",
+    counts: {
+      discordMessage: 28,
+      discordReaction: 32,
+      discordInteraction: 34,
+    },
+  },
+  {
+    date: "2023-07-21T05:26:26.621Z",
+    counts: {
+      discordMessage: 30,
+      discordReaction: 32,
+      discordInteraction: 34,
+    },
+  },
+  {
+    date: "2023-07-22T05:26:26.621Z",
+    counts: {
+      discordMessage: 26,
+      discordReaction: 28,
+      discordInteraction: 22,
+    },
+  },
+  {
+    date: "2023-07-23T05:26:26.621Z",
+    counts: {
+      discordMessage: 34,
+      discordReaction: 36,
+      discordInteraction: 38,
+    },
+  },
+  {
+    date: "2023-07-24T05:26:26.621Z",
+    counts: {
+      discordMessage: 36,
+      discordReaction: 38,
+      discordInteraction: 40,
+    },
+  },
+  {
+    date: "2023-07-25T05:26:26.621Z",
+    counts: {
+      discordMessage: 40,
+      discordReaction: 42,
+      discordInteraction: 44,
+    },
+  },
+];
+
+
+
 const MockCharts = () => {
   const { activeOrg } = useContext(GlobalContext);
 
@@ -28,65 +89,6 @@ const MockCharts = () => {
     rewards: 50,
     allTimeRewards: 70,
   };
-
-  const MESSAGES_REACTIONS_MOCK_DATA = [
-    {
-      date: "2023-07-19T05:26:26.621Z",
-      counts: {
-        discordMessage: 24,
-        discordReaction: 29,
-        discordInteraction: 26,
-      },
-    },
-    {
-      date: "2023-07-20T05:26:26.621Z",
-      counts: {
-        discordMessage: 28,
-        discordReaction: 32,
-        discordInteraction: 34,
-      },
-    },
-    {
-      date: "2023-07-21T05:26:26.621Z",
-      counts: {
-        discordMessage: 30,
-        discordReaction: 32,
-        discordInteraction: 34,
-      },
-    },
-    {
-      date: "2023-07-22T05:26:26.621Z",
-      counts: {
-        discordMessage: 26,
-        discordReaction: 28,
-        discordInteraction: 22,
-      },
-    },
-    {
-      date: "2023-07-23T05:26:26.621Z",
-      counts: {
-        discordMessage: 34,
-        discordReaction: 36,
-        discordInteraction: 38,
-      },
-    },
-    {
-      date: "2023-07-24T05:26:26.621Z",
-      counts: {
-        discordMessage: 36,
-        discordReaction: 38,
-        discordInteraction: 40,
-      },
-    },
-    {
-      date: "2023-07-25T05:26:26.621Z",
-      counts: {
-        discordMessage: 40,
-        discordReaction: 42,
-        discordInteraction: 44,
-      },
-    },
-  ];
 
   const ONBOARDED_USERS_MOCK = [
     {

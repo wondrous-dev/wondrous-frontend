@@ -14,7 +14,8 @@ const SelectComponent = ({
   boxStyle = {},
   error = null,
   disabled = false,
-  onOpen = null,
+  defaultLabel = 'Select',
+  onOpen = null
 }) => {
   const handleChange = (e) => onChange(e.target.value);
 
@@ -34,7 +35,7 @@ const SelectComponent = ({
           onOpen: () => onOpen?.(),
           renderValue: (selected) => {
             const selectedOption = options?.find((option) => option.value === selected);
-            return selectedOption ? selectedOption.label : "Select";
+            return selectedOption ? selectedOption.label : defaultLabel;
           },
           MenuProps: {
             sx: { marginTop: "8px" },

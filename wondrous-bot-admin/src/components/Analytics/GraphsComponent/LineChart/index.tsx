@@ -18,7 +18,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
   ...paddingBelowLegend,
 });
 
-function LineChart({ title, data = null, renderComponents = null }) {
+function LineChart({ title, data = null, renderComponents = null, panelSxProps = {} }) {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const options: ChartOptions<"line"> = {
@@ -107,6 +107,7 @@ function LineChart({ title, data = null, renderComponents = null }) {
       flexDirection="column"
       gap="24px"
       alignItems="center"
+      {...panelSxProps}
     >
       {data === null ? (
         <CircularProgress

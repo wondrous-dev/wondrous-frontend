@@ -3,6 +3,7 @@ import ArrowDropDownIcon from "components/Icons/ArrowDropDown";
 import CheckCircleIcon from "components/Icons/CheckCircle";
 import SearchIcon from "components/Icons/Search";
 import ReferralWarningDialog from "components/Referral/referralWarningDialog";
+import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 import { useState } from "react";
 import { scrollbarStyles } from "components/Shared/styles";
 import { TYPES } from "utils/constants";
@@ -16,11 +17,13 @@ const AutocompleteOptionsComponent = ({
   fullWidth = false,
   autocompletProps = {},
   inputProps = {},
-  placeholder = "Search"
+  placeholder = "Search",
+  bgColor = '#C1B6F6',
+  listBoxProps = {}
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
-  const selectedValue = options.find((option) => option.value === value);
+  const selectedValue = options?.find((option) => option.value === value);
   const [openReferralDialog, setOpenReferralDialog] = useState(false);
   const setReferralStep = () => {
     setSteps([
@@ -123,6 +126,7 @@ const AutocompleteOptionsComponent = ({
             },
             ...scrollbarStyles,
           },
+          ...listBoxProps
         }}
         slotProps={{
           paper: {
@@ -138,7 +142,7 @@ const AutocompleteOptionsComponent = ({
           },
         }}
         sx={{
-          background: "#C1B6F6",
+          background: bgColor,
           borderRadius: "6px",
           padding: "0",
           height: "40px",

@@ -34,7 +34,7 @@ export const ModalDialog = styled.div`
       max-width: 500px;
       margin: 1.75rem auto;
     }
-  }
+  };
 `;
 
 export const ModalContent = styled.div`
