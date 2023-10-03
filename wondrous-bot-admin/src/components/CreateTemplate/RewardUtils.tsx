@@ -1,7 +1,21 @@
-import { Box, ButtonBase, Divider, Grid, Typography } from "@mui/material";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import WestIcon from "@mui/icons-material/West";
+import { Box, ButtonBase, Divider, Grid, InputAdornment, TextField as MUITextField, Typography } from "@mui/material";
+import Arbitrum from "assets/arbitrum";
+import Avalanche from "assets/avalanche";
+import Base from "assets/base.svg";
+import Binance from "assets/binance";
+import Ethereum from "assets/ethereum";
+import Optimism from "assets/optimism";
+import Polygon from "assets/polygonMaticLogo.svg";
+import CloseModalIcon from "components/Icons/CloseModal";
+import DeleteIcon from "components/Icons/Delete";
+import SelectComponent from "components/Shared/Select";
 import TextField from "components/Shared/TextField";
 import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
+import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
+import { GET_PERMISSION_TO_REWARD_ROLE, GET_POAP_EVENT } from "graphql/queries";
+import { useEffect, useState } from "react";
 import {
   Label,
   PaymentMethodRowContainer,
@@ -11,19 +25,7 @@ import {
   PaymentRowContentText,
   PoapImage,
 } from "./styles";
-import SelectComponent from "components/Shared/Select";
-import { useState } from "react";
-import { useEffect } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import Arbitrum from "assets/arbitrum";
-import Binance from "assets/binance";
-import Ethereum from "assets/ethereum";
-import Avalanche from "assets/avalanche";
-import Optimism from "assets/optimism";
-import Base from "assets/base.svg";
-import Polygon from "assets/polygonMaticLogo.svg";
-import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
-import { GET_POAP_EVENT } from "graphql/queries";
+import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -274,8 +276,34 @@ export const RewardMethod = ({
   errors,
   poapReward,
   setPoapReward,
+  guildId,
 }) => {
   const [getPoapEventInfo] = useLazyQuery(GET_POAP_EVENT);
+  const [displayRoleDisclaimer, setDisplayRoleDisclaimer] = useState(false)
+  const [getPermissionToRewardRole, {data, loading}] = useLazyQuery(GET_PERMISSION_TO_REWARD_ROLE, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-and-network'
+  })
+
+  const handleRoleChange = async (value) => {
+    const {data} = await getPermissionToRewardRole({
+      variables: {
+        roleId: value,
+        guildId
+      }
+    })
+    if(data?.getPermissionToRewardRole?.success === true) {
+      return setDiscordRoleReward(value)
+    }
+    setDisplayRoleDisclaimer(value)
+  }
+
+  if(displayRoleDisclaimer) {
+    return (
+      <DiscordRoleDisclaimer onClose={() => setDisplayRoleDisclaimer(false)}/>
+    )
+  }
 
   if (rewardType === PAYMENT_OPTIONS.DISCORD_ROLE) {
     return (
@@ -284,7 +312,7 @@ export const RewardMethod = ({
         <SelectComponent
           options={componentsOptions}
           value={discordRoleReward}
-          onChange={(value) => setDiscordRoleReward(value)}
+          onChange={handleRoleChange}
         />
       </>
     );
@@ -535,6 +563,22 @@ export const RewardMethod = ({
   }
 };
 
+export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, Icon, text }) => (
+  <SharedBlackOutlineButton
+    style={{
+      flex: 1,
+    }}
+    background={paymentOption === rewardType ? "#BFB4F3" : "#BFB4F366"}
+    borderColor={paymentOption === rewardType ? "#000" : "transparent"}
+    justifyContent="flex-start"
+    height="44px"
+    padding="10px"
+    onClick={onClick}
+  >
+    <Icon /> {text}
+  </SharedBlackOutlineButton>
+);
+
 export const RewardFooterLeftComponent = ({
   rewardType,
   paymentMethod,
@@ -638,15 +682,8 @@ export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, o
         return reward;
       })
     );
-  }
-  return (
-    <SelectComponent
-      options={options}
-      value={reward}
-      disabled
-      onChange={handleChange}
-    />
-  );
+  };
+  return <SelectComponent options={options} value={reward} disabled onChange={handleChange} />;
 };
 
 export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, onRewardsChange, rewards }) => {
@@ -688,5 +725,148 @@ export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, o
       value={reward}
       onChange={handleChange}
     />
+  );
+};
+
+const ClearRewardValue = ({ onClick }) => {
+  return (
+    <Grid
+      container
+      item
+      alignItems="center"
+      justifyContent="center"
+      width="18px"
+      height="24px"
+      onClick={onClick}
+      borderRadius="6px"
+      sx={{
+        cursor: "pointer",
+        "&:hover": {
+          background: "rgba(40, 40, 40, 0.2)",
+        },
+      }}
+    >
+      <CloseModalIcon strokeColor="#4D4D4D" />
+    </Grid>
+  );
+};
+
+export const RewardWrapper = ({ Icon, text }) => (
+  <Grid container item gap="8px" bgcolor="#E8E8E8" padding="8px" borderRadius="6px" alignItems="center">
+    <Icon />
+    <Typography color="#000000" fontWeight="500" fontFamily="Poppins">
+      {text}
+    </Typography>
+  </Grid>
+);
+
+export const RewardWrapperWithTextField = ({ handleOnChange, reward, text, Icon, handleOnClear, placeholder }) => {
+  const rewardValue = reward?.value ?? reward?.amount ? Number(reward?.value ?? reward?.amount) : "";
+  return (
+    <MUITextField
+      placeholder={placeholder}
+      variant="standard"
+      value={rewardValue}
+      onChange={handleOnChange}
+      type="number"
+      InputProps={{
+        disableUnderline: true,
+        inputMode: "numeric",
+        sx: {
+          padding: "8px 10px",
+          background: "#E8E8E8",
+          "& input": {
+            width: rewardValue ? `${String(rewardValue).length + 1}ch` : "100%",
+            fontFamily: "Poppins",
+            fontWeight: 500,
+            padding: 0,
+          },
+          "& input[type=number]": {
+            "-moz-appearance": "textfield",
+          },
+          "& input[type=number]::-webkit-outer-spin-button": {
+            "-webkit-appearance": "none",
+            margin: 0,
+          },
+          "& input[type=number]::-webkit-inner-spin-button": {
+            "-webkit-appearance": "none",
+            margin: 0,
+          },
+        },
+        startAdornment: (
+          <InputAdornment position="start">
+            <Icon />
+          </InputAdornment>
+        ),
+        endAdornment: (
+          <>
+            {rewardValue ? (
+              <Grid
+                container
+                item
+                flex="1"
+                justifyContent="space-between"
+                flexWrap="nowrap"
+                style={{
+                  pointerEvents: "none",
+                }}
+              >
+                <Typography fontFamily="Poppins" fontWeight="500">
+                  {typeof rewardValue === "number" ? text : null}
+                </Typography>
+                {/* <ClearRewardValue onClick={handleOnClear} /> */}
+              </Grid>
+            ) : null}
+          </>
+        ),
+      }}
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+        borderRadius: "6px",
+        "&:focus-within": {
+          outline: "1px solid #000",
+          "& p": {
+            color: "#949494",
+          },
+        },
+      }}
+    />
+  );
+};
+
+export const RewardsComponent = ({ rewards, rewardComponents }) => {
+  return (
+    <>
+      {rewards?.map((reward, idx) => {
+        const { Component, handleOnRemove } = rewardComponents[reward?.type];
+        return (
+          <Grid container alignItems="center" justifyContent="space-between" gap="14px">
+            <Grid item container flex="1">
+              {Component({ idx, reward })}
+            </Grid>
+            <Grid
+              item
+              container
+              bgcolor="#C1B6F6"
+              width="30px"
+              height="30px"
+              borderRadius="6px"
+              alignItems="center"
+              justifyContent="center"
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  background: "#AF9EFF",
+                  outline: "1px solid #000",
+                },
+              }}
+            >
+              <DeleteIcon onClick={() => handleOnRemove(reward)} />
+            </Grid>
+          </Grid>
+        );
+      })}
+    </>
   );
 };

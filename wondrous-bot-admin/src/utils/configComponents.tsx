@@ -12,6 +12,7 @@ import LinkClickComponent from "components/AddFormEntity/components/LinkClickCom
 import LifiValueBridgeComponent from "components/AddFormEntity/components/LiFiValueBridgeComponent";
 import ReferralComponent from "components/AddFormEntity/components/Referral";
 import MigrateOriginUsers from "components/AddFormEntity/components/MigrateOriginUsers";
+import VerifyMarketsFlareTrial from "components/AddFormEntity/components/VerifyMarketsFlareTrial";
 
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
@@ -36,4 +37,5 @@ export const CONFIG_COMPONENTS = {
   [TYPES.LIFI_VALUE_BRIDGED]: LifiValueBridgeComponent,
   [TYPES.REFERRAL]: ReferralComponent,
   [TYPES.MIGRATE_ORIGIN_USERS]: MigrateOriginUsers,
+  [TYPES.VERIFY_MARKETSFLARE_TRIAL]: VerifyMarketsFlareTrial,
 };

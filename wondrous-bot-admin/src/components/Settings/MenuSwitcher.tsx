@@ -25,6 +25,10 @@ const MENU_ITEMS = [
     path: "/settings/team",
   },
   {
+    title: 'Community NFTs',
+    path: '/settings/nft'
+  },
+  {
     title: "Reward Methods",
     disabled: true,
     path: "/settings/reward-methods",

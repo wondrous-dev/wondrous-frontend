@@ -366,3 +366,11 @@ export const GET_QUEST_REFERRAL_LEADERBOARD = gql`
     }
   }
 `;
+
+export const GET_PERMISSION_TO_REWARD_ROLE = gql`
+  query getPermissionToRewardRole($roleId: String!, $guildId: String!) {
+    getPermissionToRewardRole(roleId: $roleId, guildId: $guildId) {
+      success
+    }
+  }
+`;

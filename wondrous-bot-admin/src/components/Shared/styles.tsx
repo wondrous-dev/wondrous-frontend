@@ -106,6 +106,8 @@ export const StyledTextFieldSelect = styled(TextField)`
       padding: 6px 6px 6px 10px;
       padding-right: 32px;
       font-family: "Poppins";
+      font-size: 13px;
+      font-weight: 500;
     }
     .MuiOutlinedInput-notchedOutline {
       border: none;
@@ -152,7 +154,7 @@ export const SharedSecondaryButton = styled(ButtonBase)`
 export const SharedBlackOutlineButton = styled(ButtonBase)`
   && {
     display: flex;
-    padding: 8px 24px;
+    padding: ${({ padding = "8px 24px" }) => padding};
     gap: 10px;
     height: ${({ height = "34px" }) => height};
     min-width: ${({ minWidth = "40px" }) => minWidth};
@@ -167,6 +169,7 @@ export const SharedBlackOutlineButton = styled(ButtonBase)`
     line-height: 150%;
     white-space: nowrap;
     color: ${({ color = "#0c002d" }) => color};
+    justify-content: ${({ justifyContent = "center" }) => justifyContent};
 
     &:disabled {
       opacity: 0.5;
@@ -174,6 +177,10 @@ export const SharedBlackOutlineButton = styled(ButtonBase)`
     ${({ $reverse }) => ($reverse ? ReversedButtonCss : ``)}
     &:hover {
       border: 1px solid black;
+    }
+
+    &:focus {
+      outline: none !important;
     }
   }
 `;
@@ -193,6 +200,26 @@ export const ErrorText = styled(Typography)`
   }
 `;
 
+export const scrollbarStyles = {
+  overflowY: "auto",
+  "&::-webkit-scrollbar": {
+    WebkitAppearance: "none",
+    background: " #fff",
+    width: "18px",
+  },
+  "&::-webkit-scrollbar-track": {
+    background: "rgba(0, 0, 0, 0.20);",
+    border: "6px solid transparent",
+    backgroundClip: "padding-box",
+    borderRadius: "20px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    border: "6px solid transparent",
+    background: "#2A8D5C",
+    backgroundClip: "padding-box",
+    borderRadius: "100px",
+  },
+};
 export const CustomResizableTextField = styled(TextField)`
 width: 100%;
 && {

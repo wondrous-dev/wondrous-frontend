@@ -24,6 +24,7 @@ const ALL_TYPES = [
   TYPES.LINK_CLICK,
   TYPES.LIFI_VALUE_BRIDGED,
   TYPES.MIGRATE_ORIGIN_USERS,
+  TYPES.VERIFY_MARKETSFLARE_TRIAL,
 ];
 
 const sharedValidation = {
@@ -184,6 +185,9 @@ const stepTypes = {
     }),
   }),
   [TYPES.MIGRATE_ORIGIN_USERS]: Yup.object().shape({
+    ...sharedValidation,
+  }),
+  [TYPES.VERIFY_MARKETSFLARE_TRIAL]: Yup.object().shape({
     ...sharedValidation,
   }),
   [TYPES.SUBSCRIBE_YT_CHANNEL]: Yup.object().shape({

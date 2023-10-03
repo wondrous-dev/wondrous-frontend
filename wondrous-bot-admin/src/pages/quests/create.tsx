@@ -1,8 +1,7 @@
 import QuestTemplateModal from "components/CreateTemplate/QuestTemplateModal";
-import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "components/CreateTemplate/utils";
-import { TitleInput } from "components/CreateTemplate/styles";
+import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "components/CreateTemplate/shared";
 import PageHeader from "components/PageHeader";
-import QuestTitle from "components/QuestTitle";
+import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -12,7 +11,6 @@ const CreateTemplate = React.lazy(() => import("components/CreateTemplate"));
 
 const CreatePage = () => {
   const headerActionsRef = useRef(null);
-  const [title, setTitle] = useState("");
   const [errors, setErrors] = useState({});
   const { ref, inView, entry } = useInView({
     threshold: 1,
@@ -21,23 +19,10 @@ const CreatePage = () => {
     steps: [],
     questSettings: DEFAULT_QUEST_SETTINGS_STATE_VALUE,
     open: true,
-    title,
   });
 
   const setRefValue = (value) => (headerActionsRef.current = value);
 
-  const titleValue = title || questTemplate.title;
-
-  useEffect(() => {
-    return () => {
-      setQuestTemplate({
-        steps: [],
-        questSettings: DEFAULT_QUEST_SETTINGS_STATE_VALUE,
-        open: true,
-        title: "",
-      });
-    }
-  }, [])
   return (
     <>
       <QuestTemplateModal setQuestTemplate={setQuestTemplate} open={questTemplate.open} />
@@ -50,7 +35,7 @@ const CreatePage = () => {
         <div ref={ref}>
           <PageHeader
             withBackButton
-            titleComponent={() => <QuestTitle title={titleValue} setTitle={setTitle} />}
+            title="Create Quest"
             renderActions={() => (
               <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
                 Save Quest
@@ -65,7 +50,6 @@ const CreatePage = () => {
               defaultQuestSettings={questTemplate.questSettings}
               setRefValue={setRefValue}
               displaySavePanel={!inView}
-              title={titleValue}
             />
           </Suspense>
         )}

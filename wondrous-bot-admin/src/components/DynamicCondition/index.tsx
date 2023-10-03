@@ -5,12 +5,15 @@ import { CustomTextField, Label } from "components/AddFormEntity/components/styl
 import AutocompleteComponent from "components/Autocomplete";
 import CloseModalIcon from "components/Icons/CloseModal";
 import SelectComponent from "components/Shared/Select";
+import Switch from "components/Shared/Switch";
 import { GET_QUESTS_FOR_ORG } from "graphql/queries";
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { getTextForCondition } from "utils/common";
 import { QUEST_CONDITION_TYPES, QUEST_STATUSES } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { useDiscordRoles } from "utils/discord";
+import AddIcon from "@mui/icons-material/Add";
+import { ButtonIconWrapper } from "components/Shared/styles";
 
 const CONDITION_MAP = [
   {
@@ -31,7 +34,6 @@ const CONDITION_VALUES = {
 const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
   const handleConditionDataChange = (value) => {
     let additionalParams: any = {};
-
     const isDiscordCondition = condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE;
 
     if (isDiscordCondition) {
@@ -42,13 +44,15 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
       [CONDITION_VALUES[condition.type]]: value,
       ...additionalParams,
     });
-    handleClose({
-      type: condition.type,
-      conditionData: {
-        [CONDITION_VALUES[condition.type]]: value,
-        ...additionalParams,
-      },
-    });
+    if (isDiscordCondition) {
+      handleClose({
+        type: condition.type,
+        conditionData: {
+          [CONDITION_VALUES[condition.type]]: value,
+          ...additionalParams,
+        },
+      });
+    }
   };
   return (
     <Box display="flex" gap="6px" alignItems="center">
@@ -70,6 +74,27 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
           value={condition.value || condition.conditionData?.[CONDITION_VALUES[condition.type]]}
         />
       </Box>
+      {condition.type === QUEST_CONDITION_TYPES.QUEST && (
+        <>
+          <Label marginLeft="8px">Exclude Quest</Label>
+          <Switch
+            onChange={() => {
+              if (condition?.conditionData?.exclusiveQuest) {
+                handleChange("conditionData", {
+                  ...condition?.conditionData,
+                  exclusiveQuest: false,
+                });
+              } else {
+                handleChange("conditionData", {
+                  ...condition?.conditionData,
+                  exclusiveQuest: true,
+                });
+              }
+            }}
+            value={condition?.conditionData?.exclusiveQuest}
+          />
+        </>
+      )}
     </Box>
   );
 };
@@ -78,9 +103,9 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { activeOrg } = useContext(GlobalContext);
 
-  const [condition, setConditions] = useState({
-    type: value?.type || null,
-    conditionData: value?.conditionData || null,
+  const [condition, setCondition] = useState({
+    type: null,
+    conditionData: null,
   });
 
   const { data: getQuests } = useQuery(GET_QUESTS_FOR_ORG, {
@@ -96,12 +121,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   const ref = useRef();
   const handleClickAway = (data = null) => {
     if (!isOpen) return;
-    let conditionItem = data || condition;
-    setQuestSettings((prev) => ({
-      ...prev,
-      questConditions: [conditionItem],
-    }));
-
+    let conditionItem = data?.conditionData ? data : condition;
     setIsOpen(false);
   };
 
@@ -114,7 +134,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   };
 
   const handleChange = (key, value) =>
-    setConditions((prev) => ({
+    setCondition((prev) => ({
       ...prev,
       [key]: value,
     }));
@@ -154,24 +174,50 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
     [getQuests, roles]
   );
 
-  const nameForConditionValue = useMemo(() => {
+  const nameForConditionValue = (condition) => {
     const item = getOptionsForCondition(condition?.type)?.find((item) => {
       return item.value === condition?.conditionData?.[CONDITION_VALUES[condition?.type]];
     });
     return item?.label;
-  }, [condition, roles, getOptionsForCondition]);
+  };
 
-  const onResetClick = () => {
-    setConditions({
+  const addCondition = () => {
+    const hasCondition = value.some((item) => {
+      if (
+        item.type === condition.type &&
+        item.conditionData[CONDITION_VALUES[condition.type]] === condition[CONDITION_VALUES[condition.type]]
+      ) {
+        return true;
+      }
+      return false;
+    });
+    if (!hasCondition) {
+      setQuestSettings((prev) => ({
+        ...prev,
+        questConditions: [...prev.questConditions, condition],
+      }));
+    }
+    handleClickAway();
+    setCondition({
       type: null,
       conditionData: null,
     });
+  };
+
+  const removeCondition = (condition) => {
+    const { type, conditionData } = condition;
+    const newConditions = value.filter((item) => {
+      if (item.type === type && item.conditionData[CONDITION_VALUES[type]] === conditionData[CONDITION_VALUES[type]]) {
+        return false;
+      }
+      return true;
+    });
     setQuestSettings((prev) => ({
       ...prev,
-      questConditions: [],
+      questConditions: newConditions,
     }));
-    setIsOpen(false);
   };
+
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
       <div>
@@ -181,14 +227,48 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
             placeholder="Add Condition"
             ref={ref}
             value={getTextForCondition({
-              type: condition.type,
-              name: nameForConditionValue,
+              type: condition?.type,
+              name: nameForConditionValue(condition),
+              exclusiveQuest: condition?.conditionData?.exclusiveQuest,
             })}
           />
-          <ButtonBase onClick={onResetClick}>
+          <ButtonIconWrapper
+            style={{
+              height: "30px",
+              width: "35px",
+              marginLeft: "8px",
+            }}
+            onClick={addCondition}
+          >
+            <AddIcon
+              sx={{
+                color: "black",
+              }}
+            />
+          </ButtonIconWrapper>
+          {/* <ButtonBase onClick={onResetClick}>
             <CloseModalIcon strokeColor="black" />
-          </ButtonBase>
+          </ButtonBase> */}
         </Box>
+        {value?.map((conditionItem) => (
+          <Box display="flex" alignItems="center" gap="4px" marginTop="12px">
+            <CustomTextField
+              disabled
+              style={{
+                color: "grey",
+              }}
+              placeholder="Add Condition"
+              value={getTextForCondition({
+                type: conditionItem.type,
+                name: nameForConditionValue(conditionItem),
+                exclusiveQuest: conditionItem?.conditionData?.exclusiveQuest,
+              })}
+            />
+            <ButtonBase onClick={() => removeCondition(conditionItem)}>
+              <CloseModalIcon strokeColor="black" />
+            </ButtonBase>
+          </Box>
+        ))}
         <Popper
           open={isOpen}
           onClick={(e) => e.stopPropagation()}
