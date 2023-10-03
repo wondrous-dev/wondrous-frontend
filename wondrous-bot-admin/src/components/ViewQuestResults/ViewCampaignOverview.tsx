@@ -36,6 +36,11 @@ const Settings = ({ quest, idx, settingsLayout }) => {
       width="100%"
       key={idx + "quest"}
       {...settingsLayout}
+      style={{
+        ...(quest.type === "questConditions" && {
+          alignItems: "baseline",
+        }),
+      }}
     >
       <Label>{quest.label}</Label>
       <Grid container flex="1" alignItems="center" gap="8px">
@@ -86,6 +91,21 @@ const Settings = ({ quest, idx, settingsLayout }) => {
           </Grid>
         ) : null}
         {quest.type === "boolean" ? getBooleanText(quest.value) : null}
+        {quest.type === "questConditions" && (
+          <>
+            {quest?.value?.map((condition, idx) => {
+              return (
+                <StyledViewQuestResults
+                  style={{
+                    position: "relative",
+                  }}
+                >
+                  {condition}
+                </StyledViewQuestResults>
+              );
+            })}
+          </>
+        )}
         {quest.type === "text" ? (
           <StyledViewQuestResults
             style={{

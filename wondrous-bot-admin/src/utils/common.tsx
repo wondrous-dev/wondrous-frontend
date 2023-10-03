@@ -4,8 +4,8 @@ import { QUEST_CONDITION_TYPES } from "./constants";
 import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
 
 const DEFAULT_TWITTER_SCOPE =
-	'users.read%20tweet.read%20follows.read%20follows.write%20like.read%20like.write%20offline.access';
-export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
+  "users.read%20tweet.read%20follows.read%20follows.write%20like.read%20like.write%20offline.access";
+export const TWITTER_CHALLENGE_CODE = "0ioze5m20493ny2"; // not that important but should fetch from server'
 
 export function shallowEqual(objA, objB) {
   if (!objA || !objB) {
@@ -24,13 +24,13 @@ export const handleUserOnboardingRedirect = (userOrError, navigate, params, defa
 };
 
 export const getTextForCondition = (condition) => {
-  const { type, name } = condition;
+  const { type, name, exclusiveQuest } = condition;
   let text = "";
   if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
     text = `Discord Role: ${name || "None"}`;
   }
   if (type === QUEST_CONDITION_TYPES.QUEST) {
-    text = `Quest: ${name || "None"}`;
+    text = `${exclusiveQuest ? "Exclude" : "Quest"}: ${name || "None"}`;
   }
   return text;
 };
@@ -160,18 +160,29 @@ export const toCent = (amount) => {
   );
 };
 
-
 export const getTwitterCallbackUrl = () => {
-	return getBaseUrl() + '%2Ftwitter%2Fcallback';
+  return getBaseUrl() + "%2Ftwitter%2Fcallback";
 };
 
 export const buildTwitterAuthUrl = (state?) => {
-  const CLIENT_ID = 'alotNFdURk5Qd0FoRGpKeUpHMDE6MTpjaQ';
-	if (!state) {
-		state = 'state';
-	}
+  const CLIENT_ID = "alotNFdURk5Qd0FoRGpKeUpHMDE6MTpjaQ";
+  if (!state) {
+    state = "state";
+  }
 
   // fetch URL from server
-	const redirectUri = getTwitterCallbackUrl();
-	return `https://twitter.com/i/oauth2/authorize?client_id=${CLIENT_ID}&scope=${DEFAULT_TWITTER_SCOPE}&response_type=code&redirect_uri=${redirectUri}&state=${state}&code_challenge=${TWITTER_CHALLENGE_CODE}&code_challenge_method=plain`;
+  const redirectUri = getTwitterCallbackUrl();
+  return `https://twitter.com/i/oauth2/authorize?client_id=${CLIENT_ID}&scope=${DEFAULT_TWITTER_SCOPE}&response_type=code&redirect_uri=${redirectUri}&state=${state}&code_challenge=${TWITTER_CHALLENGE_CODE}&code_challenge_method=plain`;
+};
+
+
+export const validateTypes = (type, value) => {
+  if (type === "number" || type === "tel") {
+    const re = /^[0-9\b]+$/;
+    if (value === "" || re.test(value)) {
+      return true;
+    }
+    return false;
+  }
+  return true;
 };

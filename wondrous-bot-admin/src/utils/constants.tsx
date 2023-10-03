@@ -165,6 +165,7 @@ export const EMPTY_STATE_TYPES = {
   SUBMISSIONS: "submissions",
   MEMBERS: "members",
   PAYMENTS: "payments",
+  NFT: 'nft'
 };
 
 export const ERRORS = {

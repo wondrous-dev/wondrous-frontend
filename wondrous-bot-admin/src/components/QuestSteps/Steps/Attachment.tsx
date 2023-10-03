@@ -20,7 +20,7 @@ export const Media = ({ file }) => {
     return <img src={file}/>
   }
   if (file.type?.includes("image")) {
-    return <img src={URL.createObjectURL(file)} />;
+    return <img src={URL.createObjectURL(file)}/>;
   }
   if (file.type?.includes("video")) {
     return <VideoPlayer src={URL.createObjectURL(file)} name={file?.name} style={{ width: "10%", height: "10%" }} />;

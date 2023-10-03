@@ -14,7 +14,7 @@ import SelectComponent from "components/Shared/Select";
 import TextField from "components/Shared/TextField";
 import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 import { UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
-import { GET_POAP_EVENT } from "graphql/queries";
+import { GET_PERMISSION_TO_REWARD_ROLE, GET_POAP_EVENT } from "graphql/queries";
 import { useEffect, useState } from "react";
 import {
   Label,
@@ -25,6 +25,7 @@ import {
   PaymentRowContentText,
   PoapImage,
 } from "./styles";
+import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -431,8 +432,34 @@ export const RewardMethod = ({
   errors,
   poapReward,
   setPoapReward,
+  guildId,
 }) => {
   const [getPoapEventInfo] = useLazyQuery(GET_POAP_EVENT);
+  const [displayRoleDisclaimer, setDisplayRoleDisclaimer] = useState(false)
+  const [getPermissionToRewardRole, {data, loading}] = useLazyQuery(GET_PERMISSION_TO_REWARD_ROLE, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-and-network'
+  })
+
+  const handleRoleChange = async (value) => {
+    const {data} = await getPermissionToRewardRole({
+      variables: {
+        roleId: value,
+        guildId
+      }
+    })
+    if(data?.getPermissionToRewardRole?.success === true) {
+      return setDiscordRoleReward(value)
+    }
+    setDisplayRoleDisclaimer(value)
+  }
+
+  if(displayRoleDisclaimer) {
+    return (
+      <DiscordRoleDisclaimer onClose={() => setDisplayRoleDisclaimer(false)}/>
+    )
+  }
 
   if (rewardType === PAYMENT_OPTIONS.DISCORD_ROLE) {
     return (
@@ -441,7 +468,7 @@ export const RewardMethod = ({
         <SelectComponent
           options={componentsOptions}
           value={discordRoleReward}
-          onChange={(value) => setDiscordRoleReward(value)}
+          onChange={handleRoleChange}
         />
       </>
     );
@@ -943,11 +970,20 @@ export const RewardWrapperWithTextField = ({ handleOnChange, reward, text, Icon,
         endAdornment: (
           <>
             {rewardValue ? (
-              <Grid container item flex="1" justifyContent="space-between" flexWrap="nowrap">
+              <Grid
+                container
+                item
+                flex="1"
+                justifyContent="space-between"
+                flexWrap="nowrap"
+                style={{
+                  pointerEvents: "none",
+                }}
+              >
                 <Typography fontFamily="Poppins" fontWeight="500">
                   {typeof rewardValue === "number" ? text : null}
                 </Typography>
-                <ClearRewardValue onClick={handleOnClear} />
+                {/* <ClearRewardValue onClick={handleOnClear} /> */}
               </Grid>
             ) : null}
           </>

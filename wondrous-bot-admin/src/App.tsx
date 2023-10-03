@@ -53,6 +53,7 @@ import TelegramConnect from "pages/telegram/connect";
 import StorePage from "pages/store";
 import CreateStoreItem from "pages/store/CreateStoreItem";
 import StoreItem from "pages/store/StoreItem";
+import CommunityNFTSettingsPage from "pages/settings/nft";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/connect",
         element: <ConnectPage />,
+      },
+      {
+        path: "/settings/nft",
+        element: <CommunityNFTSettingsPage />
       },
       {
         path: "/",

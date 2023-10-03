@@ -16,7 +16,11 @@ const EMPTY_STATE_MAP = {
   [EMPTY_STATE_TYPES.PAYMENTS]: {
     title: 'No payments to process',
     Image: MembersArtwork,
-  }
+  },
+  [EMPTY_STATE_TYPES.NFT]: {
+    title: 'You have no community NFTs yet',
+    Image: MembersArtwork,
+  },
 };
 
 const EmptyState = ({ type }) => {
