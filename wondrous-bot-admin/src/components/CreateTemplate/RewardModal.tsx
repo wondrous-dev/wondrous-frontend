@@ -227,7 +227,7 @@ const useDiscordRoleRewardData = () => {
   const discordRoleOptions = discordRoles?.map((role) => ({
     label: role.name,
     value: role.id,
-  }));
+  }))
 
   return {
     discordRoleOptions,
@@ -469,6 +469,8 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
             setErrors={setErrors}
             poapReward={poapReward}
             setPoapReward={setPoapReward}
+            guildId={discordRoleData[0]?.guildId}
+
           />
         </Grid>
       </Grid>
