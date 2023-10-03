@@ -10,8 +10,8 @@ import { verifyChain } from "components/PaymentLedger/utils";
 import useAlerts from "utils/hooks";
 import { nftFactoryABI } from "services/contracts/nftFactory.abi";
 import { ethers } from "ethers";
+import { CHAIN_TO_NFT_FACTORY } from "services/web3/contractRouter";
 
-const contractAddress = "0x563565C5Faf5B3aC2B04271715ba67a9AbbFad51";
 
 const ClaimButton = ({ chain, receiverAddress, signature, tokenId }) => {
   const wonderWeb3 = useWonderWeb3();
@@ -23,13 +23,11 @@ const ClaimButton = ({ chain, receiverAddress, signature, tokenId }) => {
     if (!wonderWeb3?.address) return;
 
     try {
-      // Define the parameters as per your requirement
       const amount = 1;
       const prov = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
       const signer = prov.getSigner();
 
-      // Trigger the contract's claimBadge function
-      const contractInstance = new ethers.Contract(contractAddress, nftFactoryABI, signer);
+      const contractInstance = new ethers.Contract(CHAIN_TO_NFT_FACTORY[wonderWeb3.chainName], nftFactoryABI, signer);
     
       const transaction = await contractInstance.claimBadge(amount, tokenId, signature);
       await transaction.wait();
