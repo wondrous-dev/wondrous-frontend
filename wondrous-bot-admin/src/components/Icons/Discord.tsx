@@ -7,11 +7,11 @@ export const WhiteBgDiscord = () => (
   </svg>
 );
 
-export const ShapedHexagonWrapper = () => (
+export const ShapedHexagonWrapper = ({fill = '#F8642D'}) => (
   <svg width="27" height="30" viewBox="0 0 27 30" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M11.625 1.45646C12.8626 0.741927 14.3874 0.741927 15.625 1.45646L24.6154 6.64706C25.853 7.36159 26.6154 8.6821 26.6154 10.1112V20.4924C26.6154 21.9214 25.853 23.2419 24.6154 23.9565L15.625 29.1471C14.3874 29.8616 12.8626 29.8616 11.625 29.1471L2.63462 23.9565C1.39701 23.2419 0.634619 21.9214 0.634619 20.4924V10.1112C0.634619 8.6821 1.39701 7.36159 2.63462 6.64706L11.625 1.45646Z"
-      fill="#F8642D"
+      fill={fill}
     />
     {/* <text x='11' y='20' font-size='8' text-anchor='middle' fill='white'>
       1
