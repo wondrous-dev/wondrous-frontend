@@ -74,3 +74,26 @@ export const CREATE_COMMUNITY_NFT = gql`
     }
   }
 `;
+
+export const IMPORT_COMMUNITY_NFT = gql`
+  mutation importCommunityNFT($input: ImportNFTInput) {
+    importCommunityNFT(input: $input) {
+      id
+      tokenId
+      chain
+      contractAddress
+      name
+      description
+      mediaUrl
+      externalUrl
+      attributes
+      maxSupply
+      unlockableContent
+      media {
+        slug
+        name
+        type
+      }
+    }
+  }
+`;

@@ -1,5 +1,5 @@
 import FileUpload from "components/Shared/FileUpload";
-import { AssetDisclaimer, AssetPanelWrapper, Container } from "./styles";
+import { AssetDisclaimer, AssetPanelWrapper, Container } from "./CreateComponent/styles";
 import ImageIcon from "components/Icons/ImageIcon";
 import { Box, Grid } from "@mui/material";
 import VideoPlayer from "components/Shared/SubmissionMedia/VideoPlayer";
