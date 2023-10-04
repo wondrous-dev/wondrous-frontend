@@ -138,29 +138,16 @@ const CreateStoreItem = ({
       ptPrice: storeItemSettings.ptPrice ? parseInt(storeItemSettings.ptPrice) : null,
       price: storeItemSettings.price ? parseInt(storeItemSettings.price) : null,
       url: storeItemData?.config?.url || null,
-      tokenInfo: storeItemData?.config?.tokenInfo,
+      nftMetadataId: storeItemData?.config?.nftMetadataId,
       deliveryMethod: storeItemSettings.deliveryMethod,
       deactivatedAt: storeItemSettings?.deactivatedAt ? moment().toISOString() : null,
       additionalData: storeItemData?.config?.additionalData,
     };
     try {
       await storeItemValidator(body);
-      const { tokenInfo, ...rest } = body;
+      const { ...rest } = body;
 
-      const input = {
-        ...rest,
-        tokenInfo: tokenInfo
-          ? tokenInfo
-            ? {
-                name: tokenInfo?.tokenName,
-                chain: tokenInfo?.chain,
-                contractAddress: tokenInfo?.contractAddress,
-                type: tokenInfo?.type,
-              }
-            : {}
-          : null,
-      };
-      await handleMutation(input);
+      await handleMutation(rest);
 
       const storeItemDataMediaUploads = Array.isArray(storeItemData?.mediaUploads) ? storeItemData?.mediaUploads : [];
       const defaultStoreItemDataMediaUploads = Array.isArray(defaultStoreItemData?.mediaUploads)

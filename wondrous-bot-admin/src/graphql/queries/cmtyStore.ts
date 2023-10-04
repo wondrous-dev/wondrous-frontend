@@ -25,12 +25,7 @@ export const GET_STORE_ITEMS_FOR_ORG = gql`
       }
       deliveryMethod
       url
-      tokenInfo {
-        contractAddress
-        name
-        type
-        chain
-      }
+      nftMetadataId
       additionalData {
         discordRoleId
         discordGuildId
@@ -62,12 +57,7 @@ export const GET_STORE_ITEM_BY_ID = gql`
       }
       deliveryMethod
       url
-      tokenInfo {
-        contractAddress
-        name
-        type
-        chain
-      }
+      nftMetadataId
       additionalData {
         discordRoleId
         discordGuildId

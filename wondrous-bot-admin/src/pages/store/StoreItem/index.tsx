@@ -8,7 +8,7 @@ import TextField from "components/Shared/TextField";
 import QuestTitle from "components/QuestTitle";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { GET_STORE_ITEM_BY_ID } from "graphql/queries";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 
@@ -43,7 +43,7 @@ const StoreItem = () => {
       deliveryMethod: data?.getStoreItem?.deliveryMethod,
       url: data?.getStoreItem?.url,
       additionalData: restAdditionalData,
-      tokenInfo: data?.getStoreItem?.tokenInfo,
+      nftMetadataId: data?.getStoreItem?.nftMetadataId,
       deactivatedAt: data?.getStoreItem?.deactivatedAt,
       type: data?.getStoreItem?.type,
     };
@@ -63,18 +63,13 @@ const StoreItem = () => {
     mediaUploads: normalizdItem?.mediaUploads || [],
     config: {
       url: normalizdItem?.url,
-      tokenInfo: {
-        chain: normalizdItem?.tokenInfo?.chain,
-        contractAddress: normalizdItem?.tokenInfo?.contractAddress,
-        tokenName: normalizdItem?.tokenInfo?.name,
-        type: normalizdItem?.tokenInfo?.type,
-      },
+      nftMetadataId: normalizdItem?.nftMetadataId,
       additionalData: normalizdItem?.additionalData,
     },
     type: normalizdItem?.type,
   };
 
-  if (loading || !data?.getStoreItem?.id) {
+  if (!normalizdItem?.id) {
     return <PageSpinner />;
   }
 
@@ -89,7 +84,7 @@ const StoreItem = () => {
       >
         <PageHeader
           withBackButton
-          title={normalizdItem?.name || 'Product Listing'}
+          title={normalizdItem?.name || "Product Listing"}
           renderActions={() => (
             <SharedSecondaryButton
               $reverse={isDeactivated}

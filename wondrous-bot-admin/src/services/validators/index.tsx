@@ -238,12 +238,7 @@ const storeItemTypes = {
     }),
   }),
   [STORE_ITEM_TYPES.NFT]: STORE_FIELDS.shape({
-    tokenInfo: Yup.object().shape({
-      contractAddress: Yup.string().required("Contract address is required"),
-      chain: Yup.string().required("Chain is required"),
-      tokenName: Yup.string().required("Name is required"),
-      type: Yup.string().required("Type is required"),
-    }),
+    nftMetadataId: Yup.string().required("Please select an NFT"),
   }),
 };
 

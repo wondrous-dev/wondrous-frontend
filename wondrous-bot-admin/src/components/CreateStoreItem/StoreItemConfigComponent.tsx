@@ -3,7 +3,7 @@ import AutocompleteOptionsComponent from "components/AddFormEntity/components/Au
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { Label } from "components/CreateTemplate/styles";
 import TextField from "components/Shared/TextField";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { STORE_ITEM_TYPES } from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
@@ -69,16 +69,23 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
   ];
 
   const handleTypeChange = (type) => {
-    const config = {};
+    const additionalChanges: any = {};
+    if (type === storeItemData.type) return null;
+
+    if (storeItemData.type === STORE_ITEM_TYPES.NFT) {
+      additionalChanges.mediaUploads = [];
+    }
+
     setStoreItemData((prev) => ({
       ...prev,
       type,
-      config,
+      config: {},
+      ...additionalChanges,
     }));
     onTypeChange(type);
   };
 
-  const Config:any = COMPONENTS[storeItemData.type];
+  const Config: any = COMPONENTS[storeItemData.type];
 
   return (
     <Grid display="flex" flexDirection="column" justifyContent="flex-start" gap="24px" alignItems="center" width="100%">
