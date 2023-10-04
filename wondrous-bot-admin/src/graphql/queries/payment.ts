@@ -124,6 +124,7 @@ export const GET_CMTY_USER_NFT_METADATA = gql`
       mediaUrl
       cmtyUserUsername
       cmtyUserDiscordUsername
+      nonce
       org {
         name
         profilePicture
