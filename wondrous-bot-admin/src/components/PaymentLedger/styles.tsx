@@ -1,4 +1,4 @@
-import { Checkbox } from "@mui/material";
+import { Checkbox, Typography } from "@mui/material";
 import styled from "styled-components";
 
 export const StyledCheckbox = styled(Checkbox)`
@@ -14,4 +14,20 @@ export const StyledCheckbox = styled(Checkbox)`
       height: ${({ height = "16px" }) => height};
     }
   }
+`;
+
+export const StyledRewardText = styled(Typography)`
+  && {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 24px;
+    color: #000000;
+  }
+`;
+
+export const StyledRewardImg = styled.img`
+  cursor: pointer;
+  margin-right: 8px;
 `;

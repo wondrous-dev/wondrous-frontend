@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import EmptyState from "components/EmptyState";
+import MembersAnalytics from "components/MembersAnalytics";
 import PageHeader from "components/PageHeader";
 import { TeamsAndInvite } from "components/Settings/TeamSettings";
 import { SharedSecondaryButton } from "components/Shared/styles";
@@ -23,13 +24,13 @@ const MembersPage = () => {
   });
   const tableConfig = useMemo(() => {
     return data?.getCmtyUsersForOrg?.map((user) => {
-      const userDiscord = `${user?.discordUsername}`;
       const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
       return {
         id: user.id,
         name: {
-          component: "label",
-          value: user?.username || userDiscord || "N/A",
+          component: "custom",
+          value: user,
+          customComponent: MembersAnalytics
         },
         level: {
           component: "hexagon",
@@ -75,7 +76,7 @@ const MembersPage = () => {
         }}
       >
         {data?.getCmtyUsersForOrg?.length ? (
-          <TableComponent data={tableConfig} headers={headers} />
+          <TableComponent data={tableConfig} headers={headers} title="Top Members"/>
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
         )}

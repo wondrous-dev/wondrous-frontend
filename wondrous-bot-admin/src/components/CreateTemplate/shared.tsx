@@ -3,7 +3,7 @@ export const DEFAULT_QUEST_SETTINGS_STATE_VALUE = {
   description: "",
   level: "1",
   timeBound: false,
-  maxSubmission: null,
+  maxSubmission: 1,
   maxApproval: null,
   requireReview: false,
   isActive: false,

@@ -134,8 +134,8 @@ export const GET_SUBMISSIONS_FOR_QUEST = gql`
 `;
 
 export const GET_QUEST_SUBMISSION_STATS = gql`
-  query getQuestSubmissionStats($questId: ID!) {
-    getQuestSubmissionStats(questId: $questId) {
+  query getQuestSubmissionStats($questId: ID, $cmtyUserId: String, $orgId: ID) {
+    getQuestSubmissionStats(questId: $questId, cmtyUserId: $cmtyUserId, orgId: $orgId) {
       in_review
       approved
       rejected
@@ -363,6 +363,14 @@ export const GET_QUEST_REFERRAL_LEADERBOARD = gql`
       referralCount
       referralCode
       referrerId
+    }
+  }
+`;
+
+export const GET_PERMISSION_TO_REWARD_ROLE = gql`
+  query getPermissionToRewardRole($roleId: String!, $guildId: String!) {
+    getPermissionToRewardRole(roleId: $roleId, guildId: $guildId) {
+      success
     }
   }
 `;

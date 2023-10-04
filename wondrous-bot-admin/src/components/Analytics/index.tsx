@@ -5,6 +5,7 @@ import {
   GET_CMTY_ENTITIES_COUNT,
   GET_CMTY_PRESENCE_ANALYTICS,
   GET_ONBOARDED_USERS_DATA,
+  GET_QUESTS_FOR_ORG,
   GET_QUEST_LEADERBOARD,
   GET_SUBMISSION_REPORTS,
 } from "graphql/queries";
@@ -16,10 +17,11 @@ import QuestLeaderboard from "./AnalyticsGraphs/QuestLeaderboard";
 import Submissions from "./AnalyticsGraphs/Submissions";
 import CardsComponent from "./Cards";
 import Heatmap from "./GraphsComponent/Heatmap";
+import UsersLeaderboard from "./AnalyticsGraphs/UsersLeaderboard";
 
 const AnalyticsComponent = () => {
   const { activeOrg } = useContext(GlobalContext);
-  
+
   const {
     data: submissionReports,
     refetch: submissionRefetch,
@@ -105,6 +107,7 @@ const AnalyticsComponent = () => {
             refetch={onboardedUsersRefetch}
             loading={onboardedUsersLoading}
             error={onboardedUsersError}
+
           />
         </Grid>
         <Grid
@@ -126,6 +129,7 @@ const AnalyticsComponent = () => {
           <Heatmap data={presenceData?.getCmtyPresenceAnalytics} loading={presenceLoading} refetch={presenceRefetch} />
         </Grid>
         <QuestLeaderboard />
+        <UsersLeaderboard />
       </Grid>
     </>
   );

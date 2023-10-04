@@ -1,7 +1,9 @@
 import { ButtonBase, Grid, Typography } from "@mui/material";
 import { logout } from "components/Auth";
 import RightArrowIcon from "components/Icons/RightArrow";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useGlobalContext } from "utils/hooks";
 
 const MENU_ITEMS = [
   {
@@ -13,8 +15,8 @@ const MENU_ITEMS = [
     path: "/settings/notifications",
   },
   {
-    title: 'Connect Bot',
-    path: '/settings/connect'
+    title: "Connect Bot",
+    path: "/settings/connect",
   },
   {
     title: "Payments",
@@ -41,10 +43,25 @@ MENU_ITEMS.splice(1, 0, {
   path: "/settings/billing",
 });
 MENU_ITEMS.join();
+let isCommunityNFTsAdded = false;
 const MenuSwitcher = () => {
   const location = useLocation();
-
+  const { activeOrg } = useGlobalContext();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (
+      !isCommunityNFTsAdded &&
+      ((import.meta.env.VITE_PRODUCTION && activeOrg?.id === "45956686890926082") ||
+        (import.meta.env.VITE_STAGING && activeOrg?.id === "89444950095167649") ||
+        (!import.meta.env.VITE_STAGING && !import.meta.env.VITE_PRODUCTION))
+    ) {
+      MENU_ITEMS.splice(4, 0, {
+        title: "Community NFTs",
+        path: "/settings/nft",
+      });
+      isCommunityNFTsAdded = true;
+    }
+  }, [activeOrg?.id]);
   return (
     <Grid
       display="flex"

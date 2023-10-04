@@ -174,3 +174,15 @@ export const buildTwitterAuthUrl = (state?) => {
   const redirectUri = getTwitterCallbackUrl();
   return `https://twitter.com/i/oauth2/authorize?client_id=${CLIENT_ID}&scope=${DEFAULT_TWITTER_SCOPE}&response_type=code&redirect_uri=${redirectUri}&state=${state}&code_challenge=${TWITTER_CHALLENGE_CODE}&code_challenge_method=plain`;
 };
+
+
+export const validateTypes = (type, value) => {
+  if (type === "number" || type === "tel") {
+    const re = /^[0-9\b]+$/;
+    if (value === "" || re.test(value)) {
+      return true;
+    }
+    return false;
+  }
+  return true;
+};

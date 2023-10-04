@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid, Box } from "@mui/material";
 import EmptyState from "components/EmptyState";
 import PageHeader from "components/PageHeader";
@@ -12,17 +12,62 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import { FilterPill } from "components/ViewQuestResults/styles";
 import { exportSubmissionPaymentCsv } from "./utils";
 import { useData, useTableComponents } from "./hooks";
+import { StyledCheckbox } from "./styles";
+import { StyledTableHeaderCell } from "components/TableComponent/styles";
+import { ContractType } from "services/web3/contractRouter";
 
+const SelectAllComponent = ({ setSelectedPayments, batchPaymentData, tokenIds }) => {
+  const [isChecked, setIsChecked] = useState(false);
+  return (
+    <Box display="flex" gap="6px" alignItems="center" width="100%">
+      <StyledCheckbox
+        style={{
+          color: "white",
+        }}
+        checked={isChecked}
+        onChange={(e) => {
+          setIsChecked(!isChecked);
+          if (!isChecked) {
+            const filteredData = batchPaymentData.filter((item) => {
+              const tokenId = tokenIds[item.id];
+              if (!tokenId && [ContractType.ERC1155, ContractType.ERC721].includes(item.contractType)) {
+                return false;
+              }
+              return true;
+            });
+            const paymentIds = filteredData.map((item) => item.id);
+            setSelectedPayments(paymentIds);
+          } else {
+            setSelectedPayments([]);
+          }
+        }}
+      />
+      <StyledTableHeaderCell
+        style={{
+          borderBottom: "none",
+          width: "max-content",
+          textAlign: "left",
+          padding: "8px",
+        }}
+      >
+        Select All
+      </StyledTableHeaderCell>
+    </Box>
+  );
+};
 const PaymentLedger = ({ questId = null }) => {
   const { activeOrg } = useContext(GlobalContext);
   const [tokenIds, setTokenIds] = useState({});
   const [selectedPayments, setSelectedPayments] = useState([]);
-
+  const [unpaidPayments, setUnpaidPayments] = useState([]);
   const { hasMore, paymentView, items, hasLength, batchPaymentData, togglePaymentView, handleFetchMore } = useData({
     orgId: activeOrg?.id,
     questId,
   });
 
+  useEffect(() => {
+    setUnpaidPayments(items);
+  }, [items?.length]);
   const updatePaymentList = (paymentId, value) => {
     if (value) {
       setSelectedPayments((prev) => [...prev, paymentId]);
@@ -33,15 +78,28 @@ const PaymentLedger = ({ questId = null }) => {
 
   const itemsList = useTableComponents({
     paymentView,
-    items,
+    items: paymentView === "unpaid" ? unpaidPayments : items,
     selectedPayments,
     setSelectedPayments,
     tokenIds,
     updatePaymentList,
     setTokenIds,
+    setUnpaidPayments,
   });
 
-  const unpaidHeaders = [null, "Name", "Reward", "Chain", "Token ID", "Quest/Level Increase", "Date"];
+  const unpaidHeaders = [
+    <SelectAllComponent
+      tokenIds={tokenIds}
+      setSelectedPayments={setSelectedPayments}
+      batchPaymentData={unpaidPayments}
+    />,
+    "Name",
+    "Reward",
+    "Chain",
+    "Token ID",
+    "Quest/Level Increase",
+    "Date",
+  ];
   const paidHeaders = ["Name", "Reward", "Chain", "Link", "Quest/Level Increase", "Date"];
 
   const headers = paymentView === "unpaid" ? unpaidHeaders : paidHeaders;
@@ -68,7 +126,7 @@ const PaymentLedger = ({ questId = null }) => {
   const handlePaymentView = (value) => {
     setSelectedPayments([]);
     togglePaymentView(value);
-  }
+  };
   return (
     <>
       <PageHeader
@@ -113,14 +171,14 @@ const PaymentLedger = ({ questId = null }) => {
         }}
       >
         {hasLength ? (
-          <TableComponent data={itemsList} headers={headers} />
+          <TableComponent data={itemsList} headers={headers} title="Payments" />
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.PAYMENTS} />
         )}
         {selectedPayments?.length && paymentView === "unpaid" ? (
           <BatchPayments
             selectedPayments={selectedPayments}
-            paymentData={batchPaymentData}
+            paymentData={unpaidPayments}
             tokenIds={tokenIds}
             onPaymentCompleted={(paymentIds) =>
               setSelectedPayments((prev) => prev.filter((id) => !paymentIds.includes(id)))
