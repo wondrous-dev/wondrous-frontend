@@ -1,23 +1,24 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Box, Grid, Typography } from "@mui/material";
 import Modal from "components/Shared/Modal";
-import { GET_COMMUNITY_NFT_BY_TOKEN_ID } from "graphql/queries";
-import { useEffect, useMemo } from "react";
-import { DataLabel, TextWrapper } from "./styles";
+import { GET_COMMUNITY_NFT_BY_METADATA_ID } from "graphql/queries";
+import { useMemo } from "react";
+import { DataLabel } from "./styles";
 import Ethereum from "assets/ethereum";
 import Polygon from "assets/polygonMaticLogo.svg";
 
 const ChainIcons = {
   ethereum: <Ethereum />,
-  polygon: <img
-  style={{
-    width: "20px",
-    marginRight: "8px",
-  }}
-  src={Polygon}
-/>
-}
-
+  polygon: (
+    <img
+      style={{
+        width: "20px",
+        marginRight: "8px",
+      }}
+      src={Polygon}
+    />
+  ),
+};
 
 const ImageComponent = ({ src }) => (
   <Box width="100%" display="flex" justifyContent="center" alignItems="center">
@@ -47,7 +48,7 @@ const DataComponent = ({ label, value, type }) => {
     return <>{children}</>;
   };
 
-  const ChainComponent = useMemo(() => ChainIcons[value] || null, [value])
+  const ChainComponent = useMemo(() => ChainIcons[value] || null, [value]);
 
   return (
     <Box display="flex" alignItems="center" gap="24px" padding="10px 0px" key={label}>
@@ -62,10 +63,9 @@ const DataComponent = ({ label, value, type }) => {
         gap="8px"
       >
         <Wrapper>
-          {type === 'chain' && !!ChainComponent ? ChainComponent : null}
+          {type === "chain" && !!ChainComponent ? ChainComponent : null}
           <Typography
             color="black"
-            
             fontFamily="Poppins"
             fontSize="12px"
             fontWeight={500}
@@ -80,15 +80,14 @@ const DataComponent = ({ label, value, type }) => {
 };
 
 const ViewNFTComponent = ({ handleClose, data }) => {
-  const { data: communityNftData } = useQuery(GET_COMMUNITY_NFT_BY_TOKEN_ID, {
+  const { data: communityNftData } = useQuery(GET_COMMUNITY_NFT_BY_METADATA_ID, {
     variables: {
-      tokenId: data?.tokenId,
+      nftMetadataId: data?.id,
     },
-    skip: !data?.tokenId,
+    skip: !data?.id,
   });
 
-  const { mediaUrl, name, externalUrl, description, maxSupply, chain } =
-    communityNftData?.getCommunityNFTByTokenID || {};
+  const { mediaUrl, name, externalUrl, description, maxSupply, chain } = communityNftData?.getCmtyNFTByMetadataId || {};
   const CONFIG = [
     {
       component: "media",
@@ -132,7 +131,7 @@ const ViewNFTComponent = ({ handleClose, data }) => {
       placeholder: "Select blockchain",
       key: "chain",
       value: chain,
-      type:"chain",
+      type: "chain",
     },
   ];
   return (
@@ -147,10 +146,6 @@ const ViewNFTComponent = ({ handleClose, data }) => {
                 <DataComponent label={item.label} value={item.value} type={item.type} />
               ) : null}
             </>
-
-            // <Box>
-            //   <TextWrapper>yo</TextWrapper>
-            // </Box>
           );
         })}
       </Grid>
