@@ -15,7 +15,10 @@ import ChainInfo from "./ChainInfo";
 import TokenIdSelect from "./TokenIdSelect";
 import UserInfo from "./UserInfo";
 import { constructExplorerRedirectUrl } from "utils/common";
-import { StyledCheckbox } from "./styles";
+import { StyledCheckbox, StyledRewardImg, StyledRewardText } from "./styles";
+import { Box, ClickAwayListener, TextField } from "@mui/material";
+import EditSvg from "components/Icons/edit.svg";
+import { CustomTextField } from "components/AddFormEntity/components/styles";
 
 export const useData = ({ orgId, questId }) => {
   const [paymentView, setPaymentView] = useState("unpaid");
@@ -340,6 +343,55 @@ export const useData = ({ orgId, questId }) => {
   };
 };
 
+const UnpaidPayment = ({ setUnpaidPayments, payment, unpaidPayments }) => {
+  const [editMode, setEditMode] = useState(false);
+  const handleClickAway = (data = null) => {
+    setEditMode(false);
+  };
+  return (
+    <>
+      {editMode ? (
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Box display="flex" alignItems="center">
+            <CustomTextField
+              style={{
+                width: "fit-content",
+                maxWidth: "50px",
+                marginRight: "8px",
+              }}
+              value={payment?.amount}
+              onChange={(e) => {
+                const newUnpaidPayments = unpaidPayments.map((unpaidPayment) => {
+                  if (unpaidPayment.id === payment.id) {
+                    return {
+                      ...unpaidPayment,
+                      amount: e.target.value,
+                    };
+                  }
+                  return unpaidPayment;
+                });
+                setUnpaidPayments(newUnpaidPayments);
+              }}
+            />
+            <StyledRewardText>{`${payment?.tokenName}`}</StyledRewardText>
+          </Box>
+        </ClickAwayListener>
+      ) : (
+        <Box
+          alignItems="center"
+          display="flex"
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={() => setEditMode(true)}
+        >
+          <StyledRewardImg src={EditSvg} />
+          <StyledRewardText>{`${payment?.amount} ${payment?.tokenName}`}</StyledRewardText>
+        </Box>
+      )}
+    </>
+  );
+};
 export const useTableComponents = ({
   paymentView,
   items,
@@ -348,6 +400,7 @@ export const useTableComponents = ({
   updatePaymentList,
   setTokenIds,
   setSelectedPayments,
+  setUnpaidPayments = null,
 }) => {
   if (paymentView === "unpaid") {
     return items?.map((payment) => {
@@ -393,11 +446,11 @@ export const useTableComponents = ({
           customComponent: ({ value }) => <UserInfo {...value} />,
         },
         reward: {
-          component: "label",
+          component: "custom",
           value: `${payment.amount} ${payment.tokenName}`,
-          componentProps: {
-            fontWeight: 500,
-          },
+          customComponent: () => (
+            <UnpaidPayment payment={payment} setUnpaidPayments={setUnpaidPayments} unpaidPayments={items} />
+          ),
         },
         chain: {
           component: "custom",
