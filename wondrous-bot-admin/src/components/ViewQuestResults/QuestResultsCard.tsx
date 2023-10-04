@@ -11,6 +11,7 @@ import { useMutation } from "@apollo/client";
 import { APPROVE_SUBMISSION, REJECT_SUBMISSION } from "graphql/mutations";
 import useAlerts from "utils/hooks";
 import { StyledCheckbox } from "components/PaymentLedger/styles";
+import { CommonTypography, TextWrapper } from "components/MembersAnalytics/styles";
 
 /*
 
@@ -18,11 +19,11 @@ import { StyledCheckbox } from "components/PaymentLedger/styles";
   stepsData -> steps details from the submission
   since stepsData doesn't contain the step type, we need to get it from steps
 */
-const stepsNormalizr = (steps, stepsData) => {
+export const stepsNormalizr = (questSteps, submissionStepsData) => {
   // FIXME this is kind of messed up when we add delete or update steps
-  return stepsData?.map((stepData, idx) => {
+  return submissionStepsData?.map((stepData, idx) => {
     // normally it's the same as index, this is just a safety measure
-    const step = steps.find((i) => i.id === stepData.stepId);
+    const step = questSteps.find((i) => i.id === stepData.stepId);
     return {
       ...stepData,
       type: step?.type,
@@ -36,7 +37,7 @@ const TEXT_TYPES = [TYPES.TEXT_FIELD, TYPES.NUMBER];
 
 const SELECT_TYPES = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ];
 
-const StepContent = ({ content, selectedValues, type, attachments, additionalData }) => {
+export const StepContent = ({ content, selectedValues, type, attachments, additionalData }) => {
   if (type === TYPES.LINK_CLICK) {
     return (
       <StyledContent fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="#767676">
@@ -86,21 +87,26 @@ const StepContent = ({ content, selectedValues, type, attachments, additionalDat
   return null;
 };
 
-const StatusComponent = ({ approvedAt, rejectedAt, handleApprove, handleReject }) => {
+export const StatusComponent = ({ approvedAt, rejectedAt, handleApprove = null, handleReject = null }) => {
   if (approvedAt) {
     return (
-      <Label color="#00A343" fontFamily="Poppins" fontWeight={500} fontSize="12px" lineHeight="16px">
-        Approved
-      </Label>
+      <Box width="fit-content">
+        <TextWrapper border="1px solid #2A8D5C" bgcolor="rgba(42, 141, 92, 0.20)">
+          <CommonTypography>Approved</CommonTypography>
+        </TextWrapper>
+      </Box>
     );
   }
   if (rejectedAt) {
     return (
-      <Label color="#FF0000" fontFamily="Poppins" fontWeight={500} fontSize="12px" lineHeight="16px">
-        Rejected
-      </Label>
+      <Box width="fit-content">
+      <TextWrapper border="1px solid #ee4852" bgcolor="rgba(238, 72, 82, 0.2)">
+        <CommonTypography>Rejected</CommonTypography>
+      </TextWrapper>
+    </Box>
     );
   }
+  if(!handleApprove || !handleReject) return null;
   return (
     <Box display="flex" gap="6px">
       <SharedSecondaryButton borderRadius="6px" $reverse color="#ff0000" onClick={handleReject}>

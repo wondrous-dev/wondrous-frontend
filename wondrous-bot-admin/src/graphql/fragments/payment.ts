@@ -45,3 +45,25 @@ export const CmtyPaymentFragment = gql`
     contractType
   }
 `;
+
+
+export const CommunityNFTFragment = gql`
+  fragment CommunityNFTFragment on CommunityNFT {
+    id
+    tokenId
+    chain
+    contractAddress
+    name
+    description
+    mediaUrl
+    externalUrl
+    attributes
+    maxSupply
+    unlockableContent
+    media {
+      slug
+      name
+      type
+    }
+  }
+`;

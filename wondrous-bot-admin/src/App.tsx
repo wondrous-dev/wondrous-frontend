@@ -50,6 +50,7 @@ import PaywallContextProvider from "utils/context/PaywallContext";
 import ReferralComponent from "components/Referral";
 import DiscordCallbackReferralUserConnect from "pages/discord/callback/referral-user-connect";
 import TelegramConnect from "pages/telegram/connect";
+import CommunityNFTSettingsPage from "pages/settings/nft";
 
 const router = createBrowserRouter([
   {
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/connect",
         element: <ConnectPage />,
+      },
+      {
+        path: "/settings/nft",
+        element: <CommunityNFTSettingsPage />
       },
       {
         path: "/",

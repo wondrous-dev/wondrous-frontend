@@ -351,6 +351,7 @@ const RewardConfigModal = ({ isRewardModalOpen, setIsRewardModalOpen, level, ref
             setErrors={setErrors}
             poapReward={poapReward}
             setPoapReward={setPoapReward}
+            guildId={discordRoleData[0]?.guildId}
           />
         </Grid>
       </Modal>
