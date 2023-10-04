@@ -170,6 +170,10 @@ export const GET_QUEST_REWARDS = gql`
         name
         contractAddress
         type
+        nftMetadataId
+        nftMetadata {
+          mediaUrl
+        }
       }
     }
   }

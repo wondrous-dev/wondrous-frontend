@@ -92,6 +92,7 @@ const RewardConfigModal = ({ isRewardModalOpen, setIsRewardModalOpen, level, ref
       getCmtyPaymentMethods({
         variables: {
           orgId: activeOrg?.id,
+          includeCommunityBadges: false,
         },
       }).then((data) => {
         if (data?.data?.getCmtyPaymentMethodsForOrg?.length > 0) {
