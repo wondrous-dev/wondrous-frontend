@@ -171,7 +171,7 @@ const PaymentLedger = ({ questId = null }) => {
         }}
       >
         {hasLength ? (
-          <TableComponent data={itemsList} headers={headers} title="Payments" paymentView={paymentView}/>
+          <TableComponent data={itemsList} headers={headers} title="Payments" />
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.PAYMENTS} />
         )}
