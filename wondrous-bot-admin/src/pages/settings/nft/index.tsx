@@ -1,4 +1,6 @@
+import { Box } from "@mui/material";
 import CreateNFTComponent from "components/NFT/CreateComponent";
+import ImportComponent from "components/NFT/ImportComponent";
 import NFTList from "components/NFT/List";
 import SettingsLayout from "components/Shared/SettingsLayout";
 import { SharedSecondaryButton } from "components/Shared/styles";
@@ -7,16 +9,24 @@ import { useNavigate } from "react-router-dom";
 
 const CommunityNFTSettingsPage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
-  const toggleModal = () => setIsCreateModalOpen((prev) => !prev);
+  const toggleCreateModal = () => setIsCreateModalOpen((prev) => !prev);
+
+  const toggleImportModal = () => setIsImportModalOpen(prev => !prev);
 
   return (
     <>
-      {isCreateModalOpen ? <CreateNFTComponent handleClose={toggleModal} /> : null}
+      {isImportModalOpen ? <ImportComponent handleClose={toggleImportModal}/> : null}
+      {isCreateModalOpen ? <CreateNFTComponent handleClose={toggleCreateModal} /> : null}
       <SettingsLayout
         title="Community NFTs"
         headerProps={{
-          renderActions: () => <SharedSecondaryButton onClick={toggleModal}>Create New</SharedSecondaryButton>,
+          renderActions: () => <Box display="flex" gap="8px" alignItems="center">
+            <SharedSecondaryButton onClick={toggleImportModal}>Import NFT</SharedSecondaryButton>
+
+            <SharedSecondaryButton onClick={toggleCreateModal}>Create New</SharedSecondaryButton>
+          </Box>,
         }}
       >
         <NFTList />
