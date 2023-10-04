@@ -106,7 +106,7 @@ const SubmissionsList = ({ loading, data = [], fetchMore, hasMore }) => {
 
   return (
     <SubmissinsWrapper maxHeight="400px" overflow="scroll">
-      {loading ? (
+      {loading && !data?.length ? (
         <CircularProgress
           sx={{
             color: "#2A8D5C",
