@@ -113,3 +113,12 @@ export const GET_COMMUNITY_NFT_BY_TOKEN_ID = gql`
   }
   ${CommunityNFTFragment}
 `;
+
+export const GET_COMMUNITY_NFT_BY_METADATA_ID = gql`
+  query getCmtyNFTByMetadataId($nftMetadataId: ID!) {
+    getCmtyNFTByMetadataId(nftMetadataId: $nftMetadataId) {
+      ...CommunityNFTFragment
+    }
+  }
+  ${CommunityNFTFragment}
+`;
