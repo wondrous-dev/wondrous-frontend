@@ -267,11 +267,11 @@ const CreateTemplate = ({
               },
               type: reward?.type,
             };
-          } else if (reward?.type === PAYMENT_OPTIONS.TOKEN) {
+          } else if (reward?.type === PAYMENT_OPTIONS.TOKEN || reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
             return {
-              type: reward?.type,
+              type: PAYMENT_OPTIONS.TOKEN,
               paymentMethodId: reward?.paymentMethodId,
-              amount: Number(reward?.amount),
+              amount: reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE ? null : Number(reward?.amount),
             };
           } else if (reward?.type === PAYMENT_OPTIONS.POAP) {
             const { __typename, ...rewardData } = reward?.poapRewardData;
@@ -298,6 +298,7 @@ const CreateTemplate = ({
             ? mapAnswersToOptions(next.value.answers, next.value.withCorrectAnswers)
             : [];
           const conditionalRewards = next.value?.answers?.reduce(reduceConditionalRewards, []);
+          debugger
           if (conditionalRewards.length) {
             step.conditionalRewards = conditionalRewards;
           }

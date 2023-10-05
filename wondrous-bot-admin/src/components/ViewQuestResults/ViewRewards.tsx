@@ -1,9 +1,11 @@
 import { Grid, Typography } from "@mui/material";
+import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import { Label } from "components/CreateTemplate/styles";
 import { DiscordRoleIcon, NFTIcon, PointsIcon, TokensIcon } from "components/Icons/Rewards";
 import { constructRewards } from "utils/common";
 
 const selectReward = ({ type, value }) => {
+  console.log(type, 'TYP')
   const rewardProps = {
     points: {
       text: `${value} points`,
@@ -14,6 +16,10 @@ const selectReward = ({ type, value }) => {
       Icon: DiscordRoleIcon,
     },
     POAP: {
+      text: value,
+      Icon: NFTIcon,
+    },
+    [PAYMENT_OPTIONS.COMMUNITY_BADGE]: {
       text: value,
       Icon: NFTIcon,
     },

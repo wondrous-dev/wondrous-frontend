@@ -13,6 +13,10 @@ export const CmtyPaymentMethodFragment = gql`
     symbol
     icon
     decimal
+    nftMetadataId
+    nftMetadata {
+      mediaUrl
+    }
   }
 `;
 

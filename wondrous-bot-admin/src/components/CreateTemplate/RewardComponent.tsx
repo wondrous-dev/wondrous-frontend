@@ -28,7 +28,7 @@ const handleDiscordRoleRewardRemove = ({ reward, setQuestSettings }) => {
 const OnPaymentMethodRewardRemove = ({ reward, setQuestSettings }) => {
   setQuestSettings((prev) => {
     const newRewards = prev.rewards.filter((r) => {
-      if (r.type === PAYMENT_OPTIONS.TOKEN) {
+      if (r.type === PAYMENT_OPTIONS.TOKEN || r.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
         return r.paymentMethodId !== reward.paymentMethodId;
       }
       return true;
@@ -146,6 +146,16 @@ const RewardComponent = ({
         />
       ),
       handleOnRemove: onPoapRewardRemove,
+    },
+    [PAYMENT_OPTIONS.COMMUNITY_BADGE]: {
+      Component: ({ reward }) => (
+        <RewardWrapper
+          Icon={() => <PoapImage src={reward?.paymentMethod?.nftMetadata?.mediaUrl} />}
+          text={reward?.paymentMethod?.name}
+        />
+      ),
+      handleOnRemove: (reward) => OnPaymentMethodRewardRemove({ reward, setQuestSettings }),
+
     },
   };
   const pointReward = rewards.filter((reward) => reward?.type === "points")[0];
