@@ -66,3 +66,7 @@ export function getMultisendAddress(type: ContractType, chainId: number) {
       return "";
   }
 }
+
+export const CHAIN_TO_NFT_FACTORY = {
+  goerli: '0x25449b65659f479BD3895E3e0e6D53Fd9D830647'
+}

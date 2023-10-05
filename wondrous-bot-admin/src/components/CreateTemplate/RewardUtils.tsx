@@ -147,6 +147,7 @@ export const CHAIN_SELECT_OPTIONS = [
 ];
 
 export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPaymentMethod, index }) => {
+  
   return (
     <PaymentMethodRowContainer>
       <PaymentMethodRowHeader>
