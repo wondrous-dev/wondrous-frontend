@@ -26,11 +26,13 @@ import {
   PoapImage,
 } from "./styles";
 import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
+import { useCommunityBadgePaymentMethods } from "./shared";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
   TOKEN: "token",
   POAP: "poap",
+  COMMUNITY_BADGE: "COMMUNITY_BADGE",
 };
 
 const REWARD_TYPES = [
@@ -279,41 +281,57 @@ export const RewardMethod = ({
   guildId,
 }) => {
   const [getPoapEventInfo] = useLazyQuery(GET_POAP_EVENT);
-  const [displayRoleDisclaimer, setDisplayRoleDisclaimer] = useState(false)
-  const [getPermissionToRewardRole, {data, loading}] = useLazyQuery(GET_PERMISSION_TO_REWARD_ROLE, {
+  const [displayRoleDisclaimer, setDisplayRoleDisclaimer] = useState(false);
+  const [getPermissionToRewardRole, { data, loading }] = useLazyQuery(GET_PERMISSION_TO_REWARD_ROLE, {
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-and-network'
-  })
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-and-network",
+  });
+
+  const { data: cmtyBadgePaymentMethods, options } = useCommunityBadgePaymentMethods({
+    shouldFetch: rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE,
+    asOptions: true,
+  });
 
   const handleRoleChange = async (value) => {
-    const {data} = await getPermissionToRewardRole({
+    const { data } = await getPermissionToRewardRole({
       variables: {
         roleId: value,
-        guildId
-      }
-    })
-    if(data?.getPermissionToRewardRole?.success === true) {
-      return setDiscordRoleReward(value)
+        guildId,
+      },
+    });
+    if (data?.getPermissionToRewardRole?.success === true) {
+      return setDiscordRoleReward(value);
     }
-    setDisplayRoleDisclaimer(value)
+    setDisplayRoleDisclaimer(value);
+  };
+
+  if (displayRoleDisclaimer) {
+    return <DiscordRoleDisclaimer onClose={() => setDisplayRoleDisclaimer(false)} />;
   }
 
-  if(displayRoleDisclaimer) {
+  if (rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
     return (
-      <DiscordRoleDisclaimer onClose={() => setDisplayRoleDisclaimer(false)}/>
-    )
+      <>
+        <Label>Select NFT</Label>
+        <SelectComponent
+          options={options}
+          value={paymentMethod?.id}
+          onChange={(value) => {
+            const selectedPaymentMethod = cmtyBadgePaymentMethods?.find((method) => method.id === value);
+
+            setPaymentMethod(selectedPaymentMethod);
+          }}
+        />
+      </>
+    );
   }
 
   if (rewardType === PAYMENT_OPTIONS.DISCORD_ROLE) {
     return (
       <>
         <Label>Select role</Label>
-        <SelectComponent
-          options={componentsOptions}
-          value={discordRoleReward}
-          onChange={handleRoleChange}
-        />
+        <SelectComponent options={componentsOptions} value={discordRoleReward} onChange={handleRoleChange} />
       </>
     );
   }
@@ -573,6 +591,7 @@ export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, I
     justifyContent="flex-start"
     height="44px"
     padding="10px"
+    minWidth="fit-content"
     onClick={onClick}
   >
     <Icon /> {text}
@@ -839,7 +858,7 @@ export const RewardsComponent = ({ rewards, rewardComponents }) => {
   return (
     <>
       {rewards?.map((reward, idx) => {
-        const { Component, handleOnRemove } = rewardComponents[reward?.type];
+        const { Component, handleOnRemove } = reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE ? rewardComponents[PAYMENT_OPTIONS.COMMUNITY_BADGE] : rewardComponents[reward?.type];
         return (
           <Grid container alignItems="center" justifyContent="space-between" gap="14px">
             <Grid item container flex="1">

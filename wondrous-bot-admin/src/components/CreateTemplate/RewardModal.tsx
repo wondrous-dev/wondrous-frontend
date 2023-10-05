@@ -7,7 +7,7 @@ import {
   RewardMethod,
   RewardMethodOptionButton,
 } from "components/CreateTemplate/RewardUtils";
-import { DiscordRoleIcon, PoapIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, NFTIcon, PoapIcon, TokensIcon } from "components/Icons/Rewards";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import Modal from "components/Shared/Modal";
 import { CREATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
@@ -62,7 +62,7 @@ const handleAddTokenOnModal = ({
   rewardType,
 }) => {
   if (paymentMethod) {
-    if (!newReward?.amount) {
+    if (!newReward?.amount && rewardType !== PAYMENT_OPTIONS.COMMUNITY_BADGE) {
       setErrors({
         ...errors,
         tokenAmount: "Please enter the amount of tokens to be rewarded",
@@ -74,7 +74,7 @@ const handleAddTokenOnModal = ({
       type: rewardType,
       paymentMethodId: paymentMethod?.id,
       paymentMethod,
-      amount: Number(newReward?.amount),
+      amount: rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE ? 1 : Number(newReward?.amount),
     });
     handleToggle();
   } else if (addPaymentMethod) {
@@ -190,6 +190,7 @@ const useTokenRewardData = () => {
       getCmtyPaymentMethods({
         variables: {
           orgId: activeOrg?.id,
+          includeCommunityBadges: false
         },
       });
     }
@@ -361,7 +362,7 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
         discordRoleOptions,
       });
       handleRewardModalToggle();
-    } else if (rewardType === PAYMENT_OPTIONS.TOKEN) {
+    } else if (rewardType === PAYMENT_OPTIONS.TOKEN || rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
       handleAddTokenOnModal({
         newReward: tokenReward,
         handleOnRewardAdd,
@@ -413,6 +414,13 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
       Icon: TokensIcon,
       text: "Token reward",
     },
+    {
+      paymentOption: PAYMENT_OPTIONS.COMMUNITY_BADGE,
+      rewardType: rewardType,
+      onClick: () => setRewardType(PAYMENT_OPTIONS.COMMUNITY_BADGE),
+      Icon: NFTIcon,
+      text: 'Community Badge',
+    }
   ];
 
   return (

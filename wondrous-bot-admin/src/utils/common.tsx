@@ -80,6 +80,12 @@ export const constructRewards = ({ rewards }) => {
     if (reward.type === "points") {
       return reward;
     }
+    if(reward.type === PAYMENT_OPTIONS.TOKEN && reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
+      return {
+        type: PAYMENT_OPTIONS.COMMUNITY_BADGE,
+        value: reward?.paymentMethod?.name
+      }
+    }
     if (reward.type === PAYMENT_OPTIONS.TOKEN) {
       return {
         type: reward?.paymentMethod?.name,
