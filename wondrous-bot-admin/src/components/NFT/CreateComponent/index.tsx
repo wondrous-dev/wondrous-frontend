@@ -1,19 +1,12 @@
-import { Box, FormControl } from "@mui/material";
-import { Label } from "components/AddFormEntity/components/styles";
-import SelectComponent from "components/Shared/Select";
-import TextField from "components/Shared/TextField";
-import { Divider } from "components/SignupComponent/CollectCredentials/styles";
+import { Box } from "@mui/material";
 import { useState } from "react";
 import useAlerts, { useGlobalContext } from "utils/hooks";
-import AssetUpload from "../AssetUpload";
 import { validateTypes } from "utils/common";
-import { SharedSecondaryButton } from "components/Shared/styles";
 import * as Yup from "yup";
 import { transformAndUploadMedia } from "utils/media";
 import { useMutation } from "@apollo/client";
 import { CREATE_COMMUNITY_NFT } from "graphql/mutations/payment";
 import Modal from "components/Shared/Modal";
-import PageSpinner from "components/PageSpinner";
 import Spinner from "components/Shared/Spinner";
 import { COMMUNITY_BADGE_CHAIN_SELECT_OPTIONS, MB_LIMIT, ModalFooterComponent } from "../utils";
 import { StyledFormControl } from "../styles";
@@ -32,7 +25,7 @@ const formSchema = Yup.object().shape({
   mediaUpload: Yup.mixed().required("Please upload a file"),
 });
 
-const CreateNFTComponent = ({ handleClose }) => {
+const CreateNFTComponent = ({ handleClose, onSuccess = null }) => {
   const { activeOrg } = useGlobalContext();
 
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useAlerts();
@@ -43,6 +36,7 @@ const CreateNFTComponent = ({ handleClose }) => {
     onCompleted: (data) => {
       setSnackbarAlertMessage("Success!");
       setSnackbarAlertOpen(true);
+      onSuccess?.(data?.createCommunityNFT)
       handleClose();
     },
   });

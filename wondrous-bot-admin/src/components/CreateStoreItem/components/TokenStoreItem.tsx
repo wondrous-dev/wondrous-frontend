@@ -5,13 +5,16 @@ import { PoapImage } from "components/CreateTemplate/styles";
 import { PoapIcon } from "components/Icons/Rewards";
 import SelectComponent from "components/Shared/Select";
 import { GET_COMMUNITY_NFTS_FOR_ORG } from "graphql/queries";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { useGlobalContext } from "utils/hooks";
+import AddIcon from "@mui/icons-material/Add";
+import CreateNFTComponent from "components/NFT/CreateComponent";
 
 const TokenStoreItem = ({ setStoreItemData, storeItemData }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { activeOrg } = useGlobalContext();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [getCommunityNFTsForOrg, { data, loading }] = useLazyQuery(GET_COMMUNITY_NFTS_FOR_ORG, {
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "network-only",
@@ -43,18 +46,53 @@ const TokenStoreItem = ({ setStoreItemData, storeItemData }) => {
   const options = useMemo(() => {
     if (!data?.getCommunityNFTsForOrg) return null;
 
-    return data?.getCommunityNFTsForOrg.map((item, idx) => ({
-      label: item.name,
-      value: item.id,
-      icon: (
-        <Box display="flex" marginRight="8px">
-          <PoapImage src={item?.mediaUrl} />
-        </Box>
-      ),
-    }));
+    return [
+      {
+        label: "Add NFT",
+        value: "add-nft",
+        icon: (
+          <AddIcon
+            sx={{
+              color: "black",
+            }}
+          />
+        ),
+      },
+      ...data?.getCommunityNFTsForOrg.map((item, idx) => ({
+        label: item.name,
+        value: item.id,
+        icon: (
+          <Box display="flex" marginRight="8px">
+            <PoapImage src={item?.mediaUrl} />
+          </Box>
+        ),
+      })),
+    ];
   }, [data?.getCommunityNFTsForOrg]);
 
+  const toggleCreateModal = () => setIsAddModalOpen((prev) => !prev);
+
+  const handleCreateNFT = (createdNft) => {
+    setErrors((prev) => ({
+      ...prev,
+      nftMetadataId: null,
+    }));
+    setStoreItemData((prev) => ({
+      ...prev,
+      config: {
+        ...prev.config,
+        nftMetadataId: createdNft?.id,
+      },
+      mediaUploads: [
+        {
+          slug: createdNft?.mediaUrl,
+        },
+      ],
+    }));
+  };
+
   const handleChange = (value) => {
+    if (value === "add-nft") return toggleCreateModal();
     const option = data?.getCommunityNFTsForOrg?.find((item) => item.id === value);
 
     setErrors((prev) => ({
@@ -77,12 +115,16 @@ const TokenStoreItem = ({ setStoreItemData, storeItemData }) => {
   };
 
   return (
-    <SelectComponent
-      error={errors["nftMetadataId"]}
-      options={options}
-      value={storeItemData?.config?.nftMetadataId}
-      onChange={handleChange}
-    />
+    <>
+      {isAddModalOpen ? <CreateNFTComponent handleClose={toggleCreateModal} onSuccess={handleCreateNFT} /> : null}
+
+      <SelectComponent
+        error={errors["nftMetadataId"]}
+        options={options}
+        value={storeItemData?.config?.nftMetadataId}
+        onChange={handleChange}
+      />
+    </>
   );
 };
 

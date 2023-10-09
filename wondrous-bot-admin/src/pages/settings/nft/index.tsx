@@ -13,20 +13,22 @@ const CommunityNFTSettingsPage = () => {
 
   const toggleCreateModal = () => setIsCreateModalOpen((prev) => !prev);
 
-  const toggleImportModal = () => setIsImportModalOpen(prev => !prev);
+  const toggleImportModal = () => setIsImportModalOpen((prev) => !prev);
 
   return (
     <>
-      {isImportModalOpen ? <ImportComponent handleClose={toggleImportModal}/> : null}
+      {isImportModalOpen ? <ImportComponent handleClose={toggleImportModal} /> : null}
       {isCreateModalOpen ? <CreateNFTComponent handleClose={toggleCreateModal} /> : null}
       <SettingsLayout
         title="Community NFTs"
         headerProps={{
-          renderActions: () => <Box display="flex" gap="8px" alignItems="center">
-            <SharedSecondaryButton onClick={toggleImportModal}>Import NFT</SharedSecondaryButton>
+          renderActions: () => (
+            <Box display="flex" gap="8px" alignItems="center">
+              <SharedSecondaryButton onClick={toggleImportModal}>Import NFT</SharedSecondaryButton>
 
-            <SharedSecondaryButton onClick={toggleCreateModal}>Create New</SharedSecondaryButton>
-          </Box>,
+              <SharedSecondaryButton onClick={toggleCreateModal}>Create New</SharedSecondaryButton>
+            </Box>
+          ),
         }}
       >
         <NFTList />
