@@ -224,6 +224,7 @@ const STORE_FIELDS = Yup.object().shape({
   ptPrice: Yup.number().nullable(),
   price: Yup.number().nullable(),
   deliveryMethod: Yup.string().nullable(),
+  maxPurchase: Yup.number().nullable(),
 });
 
 const storeItemTypes = {

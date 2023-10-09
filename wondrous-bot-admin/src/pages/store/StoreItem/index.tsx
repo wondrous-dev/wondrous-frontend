@@ -46,6 +46,7 @@ const StoreItem = () => {
       nftMetadataId: data?.getStoreItem?.nftMetadataId,
       deactivatedAt: data?.getStoreItem?.deactivatedAt,
       type: data?.getStoreItem?.type,
+      maxPurchase: data?.getStoreItem?.maxPurchase,
     };
   }, [data?.getStoreItem]);
 
@@ -57,6 +58,7 @@ const StoreItem = () => {
     deliveryMethod: normalizdItem?.deliveryMethod,
     deactivatedAt: normalizdItem?.deactivatedAt,
     id: normalizdItem?.id,
+    maxPurchase: normalizdItem?.maxPurchase
   };
 
   const defaultStoreItemData = {

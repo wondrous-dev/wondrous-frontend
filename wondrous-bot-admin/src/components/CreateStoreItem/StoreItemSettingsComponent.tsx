@@ -12,6 +12,7 @@ import { Divider } from "components/SignupComponent/CollectCredentials/styles";
 import Switch from "components/Shared/Switch";
 import { DELIVERY_METHODS } from "utils/constants";
 import ActivateStoreItem from "./components/ActivateStoreItem";
+import MaxInput from "components/CreateTemplate/MaxInput";
 
 const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings }) => {
   const { activeOrg } = useContext(GlobalContext);
@@ -98,6 +99,22 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         placeholder: "Price in Points",
       },
     },
+    {
+      label: "Max purchases",
+      direction: "row",
+      key: "maxPurchase",
+      component: MaxInput,
+      componentProps: {
+        keyValue: storeItemSettings?.maxPurchase,
+        handleValueChange: (value) => handleChange("maxPurchase", value),
+        onChange: (value) => {
+          if (!value && storeItemSettings?.maxPurchase) {
+            return handleChange("maxPurchase", null);
+          }
+          return handleChange("maxPurchase", 1);
+        },
+      },
+},
 
     {
       label: "Activate Product",

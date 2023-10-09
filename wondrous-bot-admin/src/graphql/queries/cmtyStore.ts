@@ -46,6 +46,7 @@ export const GET_STORE_ITEM_BY_ID = gql`
       description
       deactivatedAt
       ptPrice
+      maxPurchase
       price
       media {
         slug

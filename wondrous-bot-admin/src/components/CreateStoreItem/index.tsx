@@ -31,6 +31,7 @@ export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
   deliveryMethod: null,
   deactivatedAt: null,
   id: null,
+  maxPurchase: null
 };
 
 const DEFAULT_STORE_ITEM_DATA = {
@@ -142,6 +143,7 @@ const CreateStoreItem = ({
       deliveryMethod: storeItemSettings.deliveryMethod,
       deactivatedAt: storeItemSettings?.deactivatedAt ? moment().toISOString() : null,
       additionalData: storeItemData?.config?.additionalData,
+      maxPurchase: storeItemSettings?.maxPurchase ? parseInt(storeItemSettings?.maxPurchase) : null,
     };
     try {
       await storeItemValidator(body);

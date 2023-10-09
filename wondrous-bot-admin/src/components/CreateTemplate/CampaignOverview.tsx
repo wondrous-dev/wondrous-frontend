@@ -223,6 +223,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           component: MaxInput,
           componentProps: {
             keyValue: questSettings?.maxSubmission,
+            handleValueChange: (value) => handleChange("maxSubmission", value),
             onChange: (value) => {
               if (!value && questSettings.maxSubmission) {
                 return handleChange("maxSubmission", null);
@@ -243,6 +244,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
               }
               return handleChange("maxApproval", 1);
             },
+            handleValueChange: (value) => handleChange("maxApproval", value)
           },
           key: "maxApproval",
         },
