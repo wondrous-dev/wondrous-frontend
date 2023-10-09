@@ -9,32 +9,38 @@ import Switch from "components/Shared/Switch";
 import { GET_QUESTS_FOR_ORG } from "graphql/queries";
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { getTextForCondition } from "utils/common";
-import { QUEST_CONDITION_TYPES, QUEST_STATUSES } from "utils/constants";
+import { CONDITION_TYPES, QUEST_STATUSES } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { useDiscordRoles } from "utils/discord";
 import AddIcon from "@mui/icons-material/Add";
 import { ButtonIconWrapper } from "components/Shared/styles";
+import useLevels from "utils/levels/hooks";
 
 const CONDITION_MAP = [
   {
-    value: QUEST_CONDITION_TYPES.DISCORD_ROLE,
+    value: CONDITION_TYPES.DISCORD_ROLE,
     label: "Discord Role",
   },
   {
-    value: QUEST_CONDITION_TYPES.QUEST,
+    value: CONDITION_TYPES.QUEST,
     label: "Quest",
+  },
+  {
+    value: CONDITION_TYPES.LEVEL,
+    label: "Level",
   },
 ];
 
 const CONDITION_VALUES = {
-  [QUEST_CONDITION_TYPES.DISCORD_ROLE]: "discordRoleId",
-  [QUEST_CONDITION_TYPES.QUEST]: "questId",
+  [CONDITION_TYPES.DISCORD_ROLE]: "discordRoleId",
+  [CONDITION_TYPES.QUEST]: "questId",
+  [CONDITION_TYPES.LEVEL]: "minLevel",
 };
 
-const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
+const FilterGroup = ({ condition, handleChange, options, handleClose, typeOptions }) => {
   const handleConditionDataChange = (value) => {
     let additionalParams: any = {};
-    const isDiscordCondition = condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE;
+    const isDiscordCondition = condition.type === CONDITION_TYPES.DISCORD_ROLE;
 
     if (isDiscordCondition) {
       const discordGuildId = options.find((item) => item.value === value)?.discordGuildId;
@@ -59,7 +65,7 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
       <Label>Where</Label>
       <Box minWidth="150px">
         <SelectComponent
-          options={CONDITION_MAP}
+          options={typeOptions}
           onChange={(value) => {
             handleChange("type", value);
             handleChange("conditionData", null);
@@ -74,7 +80,7 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
           value={condition.value || condition.conditionData?.[CONDITION_VALUES[condition.type]]}
         />
       </Box>
-      {condition.type === QUEST_CONDITION_TYPES.QUEST && (
+      {condition.type === CONDITION_TYPES.QUEST && (
         <>
           <Label marginLeft="8px">Exclude Quest</Label>
           <Switch
@@ -99,9 +105,17 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
   );
 };
 
-const DynamicCondition = ({ value, setQuestSettings }) => {
+const DynamicCondition = ({ value, handleUpdate, options, stateKey }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { activeOrg } = useContext(GlobalContext);
+
+  const fetchConditions = useMemo(() => {
+    return {
+      [CONDITION_TYPES.QUEST]: options.includes(CONDITION_TYPES.QUEST),
+      [CONDITION_TYPES.DISCORD_ROLE]: options.includes(CONDITION_TYPES.DISCORD_ROLE),
+      [CONDITION_TYPES.LEVEL]: options.includes(CONDITION_TYPES.LEVEL),
+    };
+  }, [options]);
 
   const [condition, setCondition] = useState({
     type: null,
@@ -115,18 +129,39 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
         limit: 500,
         status: QUEST_STATUSES.OPEN,
       },
+      skip: fetchConditions[CONDITION_TYPES.QUEST] ? false : true,
     },
   });
 
   const ref = useRef();
+
   const handleClickAway = (data = null) => {
     if (!isOpen) return;
-    let conditionItem = data?.conditionData ? data : condition;
     setIsOpen(false);
+    let conditionItem = data?.conditionData ? data : condition;
+
+    if(!conditionItem?.conditionData || !conditionItem?.type) return;
+    handleUpdate((prev) => {
+      const prevState = prev[stateKey] || [];
+      return {
+        ...prev,
+        [stateKey]: [...prevState, conditionItem],
+      }
+    });
+    setCondition({
+      type: null,
+      conditionData: null,
+    });
   };
 
   const roles = useDiscordRoles({
     orgId: activeOrg?.id,
+    skip: fetchConditions[CONDITION_TYPES.DISCORD_ROLE] ? false : true,
+  });
+
+  const { levels } = useLevels({
+    orgId: activeOrg?.id,
+    shouldFetch: fetchConditions[CONDITION_TYPES.LEVEL] ? false : true,
   });
 
   const openPopper = () => {
@@ -141,7 +176,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
 
   const getOptionsForCondition = useCallback(
     (type) => {
-      if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
+      if (type === CONDITION_TYPES.DISCORD_ROLE) {
         const allRoles = roles
           .map((role) =>
             role.roles.map((newRole) => ({
@@ -157,12 +192,18 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
         }));
       }
 
-      if (type === QUEST_CONDITION_TYPES.QUEST) {
+      if (type === CONDITION_TYPES.QUEST) {
         const quests = getQuests?.getQuestsForOrg?.map((quest) => ({
           value: quest.id,
           label: quest.title,
         }));
         return quests;
+      }
+      if (type === CONDITION_TYPES.LEVEL) {
+        return Object.keys(levels).map((key) => ({
+          label: levels[key],
+          value: parseInt(key),
+        }));
       }
       return [
         {
@@ -171,7 +212,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
         },
       ];
     },
-    [getQuests, roles]
+    [getQuests, roles, levels]
   );
 
   const nameForConditionValue = (condition) => {
@@ -192,9 +233,9 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
       return false;
     });
     if (!hasCondition) {
-      setQuestSettings((prev) => ({
+      handleUpdate((prev) => ({
         ...prev,
-        questConditions: [...prev.questConditions, condition],
+        key: [...prev[stateKey], condition],
       }));
     }
     handleClickAway();
@@ -206,18 +247,21 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
 
   const removeCondition = (condition) => {
     const { type, conditionData } = condition;
-    const newConditions = value.filter((item) => {
+    const newConditions = value?.filter((item) => {
       if (item.type === type && item.conditionData[CONDITION_VALUES[type]] === conditionData[CONDITION_VALUES[type]]) {
         return false;
       }
       return true;
     });
-    setQuestSettings((prev) => ({
+    handleUpdate((prev) => ({
       ...prev,
-      questConditions: newConditions,
+      [stateKey]: newConditions,
     }));
   };
 
+  const typeOptions = useMemo(() => {
+    return CONDITION_MAP.filter((item) => options.includes(item.value));
+  }, [options]);
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
       <div>
@@ -293,6 +337,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
             <FilterGroup
               condition={condition}
               handleChange={handleChange}
+              typeOptions={typeOptions}
               handleClose={handleClickAway}
               options={getOptionsForCondition(condition.type)}
             />

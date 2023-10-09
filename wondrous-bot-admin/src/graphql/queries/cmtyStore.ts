@@ -48,6 +48,14 @@ export const GET_STORE_ITEM_BY_ID = gql`
       ptPrice
       maxPurchase
       price
+      conditions {
+        type
+        conditionData {
+          minLevel
+          discordGuildId
+          discordRoleId
+        }
+      }
       media {
         slug
         name

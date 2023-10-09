@@ -138,9 +138,10 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
   webm: "webm",
 };
 
-export const QUEST_CONDITION_TYPES = {
+export const CONDITION_TYPES = {
   DISCORD_ROLE: "discord_role",
   QUEST: "quest",
+  LEVEL: 'level'
 };
 export const QUEST_STATUSES = {
   ARCHIVED: "archived",

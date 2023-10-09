@@ -47,6 +47,16 @@ const StoreItem = () => {
       deactivatedAt: data?.getStoreItem?.deactivatedAt,
       type: data?.getStoreItem?.type,
       maxPurchase: data?.getStoreItem?.maxPurchase,
+      storeItemConditions: data?.getStoreItem?.conditions
+      ? data?.getStoreItem?.conditions?.map((condition) => {
+          const { __typename, ...rest } = condition?.conditionData;
+          return {
+            type: condition?.type,
+            conditionData: rest,
+          };
+        })
+      : null,
+
     };
   }, [data?.getStoreItem]);
 
@@ -58,7 +68,8 @@ const StoreItem = () => {
     deliveryMethod: normalizdItem?.deliveryMethod,
     deactivatedAt: normalizdItem?.deactivatedAt,
     id: normalizdItem?.id,
-    maxPurchase: normalizdItem?.maxPurchase
+    maxPurchase: normalizdItem?.maxPurchase,
+    storeItemConditions: normalizdItem?.storeItemConditions,
   };
 
   const defaultStoreItemData = {

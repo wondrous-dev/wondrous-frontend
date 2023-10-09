@@ -20,7 +20,7 @@ import {
   BG_TYPES,
   LIMIT,
   MONTH_DAY_FULL_YEAR,
-  QUEST_CONDITION_TYPES,
+  CONDITION_TYPES,
   QUEST_STATUSES,
   QUEST_SUBMISSION_STATUS,
 } from "utils/constants";
@@ -116,7 +116,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
   }, [quest?.startAt, quest?.endAt]);
 
   const getNameForCondition = async (condition) => {
-    if (condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
+    if (condition.type === CONDITION_TYPES.DISCORD_ROLE) {
       const { data } = await apollo.query({
         query: GET_ORG_DISCORD_ROLES,
         variables: {
@@ -126,7 +126,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
       const allRoles = data?.getCmtyOrgDiscordRoles?.map((role) => role.roles).flat();
       return allRoles.find((item) => item.id === condition.conditionData?.discordRoleId)?.name;
     }
-    if (condition.type === QUEST_CONDITION_TYPES.QUEST) {
+    if (condition.type === CONDITION_TYPES.QUEST) {
       const { data } = await apollo.query({
         query: GET_QUEST_BY_ID,
         variables: {

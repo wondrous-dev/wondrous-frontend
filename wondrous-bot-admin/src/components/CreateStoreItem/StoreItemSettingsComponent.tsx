@@ -10,12 +10,12 @@ import SelectComponent from "components/Shared/Select";
 import useLevels from "utils/levels/hooks";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
 import Switch from "components/Shared/Switch";
-import { DELIVERY_METHODS } from "utils/constants";
+import { CONDITION_TYPES, DELIVERY_METHODS } from "utils/constants";
 import ActivateStoreItem from "./components/ActivateStoreItem";
 import MaxInput from "components/CreateTemplate/MaxInput";
+import DynamicCondition from "components/DynamicCondition";
 
 const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings }) => {
-  const { activeOrg } = useContext(GlobalContext);
   const { errors, setErrors } = useContext(CreateQuestContext);
   const handleChange = (key, value) => {
     if (errors[key]) {
@@ -114,8 +114,18 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
           return handleChange("maxPurchase", 1);
         },
       },
-},
-
+    },
+    {
+      label: "Conditions",
+      component: DynamicCondition,
+      direction: "row",
+      key: "storeItemConditions",
+      componentProps: {
+        handleUpdate: setStoreItemSettings,
+        value: storeItemSettings.storeItemConditions,
+        options: [CONDITION_TYPES.LEVEL, CONDITION_TYPES.DISCORD_ROLE]
+      },
+    },
     {
       label: "Activate Product",
       direction: "row",
@@ -127,7 +137,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
       },
     },
   ];
-
+  
   return (
     <>
       {CONFIG.map(

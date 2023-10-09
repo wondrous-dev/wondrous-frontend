@@ -4,7 +4,7 @@ import PanelComponent from "components/CreateTemplate/PanelComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import { useContext, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BG_TYPES, DELIVERY_METHODS, STORE_ITEM_TYPES } from "utils/constants";
+import { BG_TYPES, CONDITION_TYPES, DELIVERY_METHODS, STORE_ITEM_TYPES } from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
 import useAlerts from "utils/hooks";
@@ -31,7 +31,9 @@ export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
   deliveryMethod: null,
   deactivatedAt: null,
   id: null,
-  maxPurchase: null
+  maxPurchase: null,
+  storeItemConditions: [],
+
 };
 
 const DEFAULT_STORE_ITEM_DATA = {
@@ -131,6 +133,8 @@ const CreateStoreItem = ({
       setErrors({});
     }
 
+    const filteredStoreItemConditions = storeItemSettings?.storeItemConditions?.filter((condition) => condition.type && condition.conditionData);
+
     const body = {
       orgId: activeOrg.id,
       name: storeItemSettings.name,
@@ -144,6 +148,19 @@ const CreateStoreItem = ({
       deactivatedAt: storeItemSettings?.deactivatedAt ? moment().toISOString() : null,
       additionalData: storeItemData?.config?.additionalData,
       maxPurchase: storeItemSettings?.maxPurchase ? parseInt(storeItemSettings?.maxPurchase) : null,
+      conditionLogic: 'and',
+      storeItemConditions: filteredStoreItemConditions?.map((condition) => {
+        if(condition.type === CONDITION_TYPES.LEVEL) {
+          return {
+            type: condition.type,
+            conditionData: {
+              minLevel: parseInt(condition.conditionData.minLevel),
+            }
+          }
+        }
+        return condition;
+      })
+      
     };
     try {
       await storeItemValidator(body);
