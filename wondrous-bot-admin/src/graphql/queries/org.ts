@@ -23,6 +23,8 @@ export const GET_CMTY_ORG_DISCORD_CONFIG = gql`
         stickyMessageChannelActive
         welcomeMessageChannelActive
         parentChannel
+        submissionNotificationsChannel
+        submissionNotificationsChannelActive
       }
     }
   }
