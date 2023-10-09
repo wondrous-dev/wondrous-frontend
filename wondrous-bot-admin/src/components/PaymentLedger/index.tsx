@@ -21,9 +21,6 @@ const SelectAllComponent = ({ setSelectedPayments, batchPaymentData, tokenIds })
   return (
     <Box display="flex" gap="6px" alignItems="center" width="100%">
       <StyledCheckbox
-        style={{
-          color: "white",
-        }}
         checked={isChecked}
         onChange={(e) => {
           setIsChecked(!isChecked);

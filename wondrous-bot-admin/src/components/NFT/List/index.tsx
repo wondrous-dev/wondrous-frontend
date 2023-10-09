@@ -65,6 +65,7 @@ const NFTList = () => {
             onClick={() => setActiveNFTData({
               tokenId: item.tokenId,
               title: item.name,
+              id: item.id,
             })}>
               {/* TODO: change this */}
               <NFTMediaItem slug={item.mediaUrl} type={mediaItem?.type} name={mediaItem?.name} />

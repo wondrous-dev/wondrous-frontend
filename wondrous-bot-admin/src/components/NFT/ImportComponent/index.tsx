@@ -17,14 +17,14 @@ const validationSchema = yup.object().shape({
     .string()
     .matches(/^0x[a-fA-F0-9]{40}$/, "Must be a valid address")
     .required("Contract Address is required"),
-  tokenId: yup.number().required('Token ID is required'),
-    // .test("tokenId", "Token ID is required for ERC1155 contracts", function (value) {
-    //   return this.parent.nftType !== CONTRACT_LABELS.ERC1155 || (value != null && !isNaN(value));
-    // }),
+  tokenId: yup.number().test("tokenId", "Token ID is required for ERC1155 contracts", function (value) {
+    return this.parent.nftType !== CONTRACT_LABELS.ERC1155 || (value != null && !isNaN(value));
+  }).nullable(),
+
   externalUrl: yup.string().url("Invalid URL format").notRequired(),
   chain: yup
     .mixed()
-    .oneOf(Object.values(['ethereum', 'polygon']), "Must select a valid chain")
+    .oneOf(Object.values(["ethereum", "polygon"]), "Must select a valid chain")
     .required("Blockchain is required"),
   mediaUpload: yup.mixed().required("Media upload is required"),
   nftType: yup
@@ -112,16 +112,15 @@ const ImportComponent = ({ handleClose }) => {
       component: "input",
       label: "Token ID",
       placeholder: "Enter Token ID",
-      required: true,
       onChange: (value) => {
         const isValid = validateTypes("number", value);
         if (isValid) {
           return handleChange(value, "tokenId");
         }
       },
-      // required: formData?.nftType === CONTRACT_LABELS.ERC1155,
+      required: formData?.nftType === CONTRACT_LABELS.ERC1155,
       key: "tokenId",
-      // hide: formData?.nftType !== CONTRACT_LABELS.ERC1155,
+      hide: formData?.nftType !== CONTRACT_LABELS.ERC1155,
     },
     {
       component: "input",
@@ -182,7 +181,6 @@ const ImportComponent = ({ handleClose }) => {
           },
         },
       });
-
     } catch (error) {
       if (error instanceof yup.ValidationError) {
         const errorMessages = {};

@@ -107,6 +107,10 @@ export const QuestFragment = gql`
             name
             contractAddress
             type
+            nftMetadataId
+            nftMetadata {
+              mediaUrl
+            }
           }
         }
       }

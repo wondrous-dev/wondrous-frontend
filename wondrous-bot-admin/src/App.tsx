@@ -54,6 +54,7 @@ import StorePage from "pages/store";
 import CreateStoreItem from "pages/store/CreateStoreItem";
 import StoreItem from "pages/store/StoreItem";
 import CommunityNFTSettingsPage from "pages/settings/nft";
+import CommunityBadgeClaimPage from "pages/community-badge/claim";
 
 const router = createBrowserRouter([
   {
@@ -206,6 +207,10 @@ const router = createBrowserRouter([
       {
         path: '/store/items/:id',
         element: <StoreItem />
+      },
+      {
+        path: '/community-badge/claim',
+        element: <CommunityBadgeClaimPage />
       }
     ],
   },

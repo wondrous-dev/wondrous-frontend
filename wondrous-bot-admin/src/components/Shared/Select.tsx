@@ -81,7 +81,7 @@ const SelectComponent = ({
             }}
           >
             <Grid container alignItems="center" justifyContent="space-between">
-              <Grid container item flex="1">
+              <Grid container item flex="1" gap="4px">
                 {option.icon}
                 {option.label}
               </Grid>
