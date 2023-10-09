@@ -161,7 +161,7 @@ const DynamicCondition = ({ value, handleUpdate, options, stateKey }) => {
 
   const { levels } = useLevels({
     orgId: activeOrg?.id,
-    shouldFetch: fetchConditions[CONDITION_TYPES.LEVEL] ? false : true,
+    shouldFetch: fetchConditions[CONDITION_TYPES.LEVEL],
   });
 
   const openPopper = () => {

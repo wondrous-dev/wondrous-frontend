@@ -1,15 +1,11 @@
 import Grid from "@mui/material/Grid";
-import TextComponent from "components/AddFormEntity/components/Text";
 import TextField from "components/Shared/TextField";
 
 import { Label } from "components/CreateTemplate/styles";
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
-import GlobalContext from "utils/context/GlobalContext";
 import SelectComponent from "components/Shared/Select";
-import useLevels from "utils/levels/hooks";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
-import Switch from "components/Shared/Switch";
 import { CONDITION_TYPES, DELIVERY_METHODS } from "utils/constants";
 import ActivateStoreItem from "./components/ActivateStoreItem";
 import MaxInput from "components/CreateTemplate/MaxInput";
