@@ -16,7 +16,7 @@ import VerifyMarketsFlareTrial from "components/AddFormEntity/components/VerifyM
 import VerifyApeironIntegrations from "components/AddFormEntity/components/VerifyApeiron";
 
 const APEIRON_INTEGRATIONS = {
-  [TYPES.VERIFY_APEIRON_3_HRS_PLAYED]: VerifyApeironIntegrations,
+  [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: VerifyApeironIntegrations,
   [TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80]: VerifyApeironIntegrations,
   [TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS]: VerifyApeironIntegrations,
   [TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS]: VerifyApeironIntegrations,

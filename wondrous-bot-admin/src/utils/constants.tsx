@@ -377,8 +377,8 @@ const APEIRON_INTEGRATIONS = [
     value: TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS,
   },
   {
-    label: "Verify Apeiron 3 Hrs Played",
-    value: TYPES.VERIFY_APEIRON_3_HRS_PLAYED,
+    label: "Verify Apeiron 10 mins Played",
+    value: TYPES.VERIFY_APEIRON_10_MINS_PLAYED,
   },
 ];
 

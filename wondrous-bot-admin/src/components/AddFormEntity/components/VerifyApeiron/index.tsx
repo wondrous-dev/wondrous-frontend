@@ -11,7 +11,7 @@ interface Props {
 }
 
 const APEIRON_INFO_TEXT = {
-  [TYPES.VERIFY_APEIRON_3_HRS_PLAYED]: "Users will be asked to verify that they have played 3 hours of Apeiron.",
+  [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: "Users will be asked to verify that they have played 10 mins of Apeiron.",
   [TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS]:
     "Users will be asked to verify that they have an Apeiron account connected to their wallet address.",
   [TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80]:
