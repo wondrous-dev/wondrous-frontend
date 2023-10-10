@@ -8,6 +8,7 @@ interface Props {
   error?: any;
   onChange: (value: string) => void;
   stepType?: string;
+  value?: any;
 }
 
 const APEIRON_INFO_TEXT = {
