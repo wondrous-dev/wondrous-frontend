@@ -32,10 +32,10 @@ const validationSchema = yup.object().shape({
     .oneOf([CONTRACT_LABELS.ERC721, CONTRACT_LABELS.ERC1155], "Invalid contract type")
     .required("Contract type is required"),
   name: yup.string().required("Please enter an NFT name"),
-  description: yup.string().required("Description is required"),
+  description: yup.string()
 });
 
-const ImportComponent = ({ handleClose }) => {
+const ImportComponent = ({ handleClose, onSuccess = null }) => {
   const { activeOrg } = useGlobalContext();
 
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useAlerts();
@@ -47,6 +47,7 @@ const ImportComponent = ({ handleClose }) => {
     onCompleted: (data) => {
       setSnackbarAlertMessage("Success!");
       setSnackbarAlertOpen(true);
+      onSuccess?.(data?.importCommunityNFT)
       handleClose();
     },
   });
@@ -87,7 +88,6 @@ const ImportComponent = ({ handleClose }) => {
       component: "input",
       label: "Description",
       placeholder: "Provide a description of the item.",
-      required: true,
       key: "description",
       multiline: true,
     },
