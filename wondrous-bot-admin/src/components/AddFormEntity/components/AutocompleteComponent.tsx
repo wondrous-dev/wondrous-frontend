@@ -17,6 +17,7 @@ const AutocompleteOptionsComponent = ({
   fullWidth = false,
   autocompletProps = {},
   inputProps = {},
+  placeholder = "Search",
   bgColor = '#C1B6F6',
   listBoxProps = {}
 }) => {
@@ -59,7 +60,7 @@ const AutocompleteOptionsComponent = ({
           <TextField
             {...params}
             label=""
-            placeholder="Search"
+            placeholder={placeholder}
             sx={{
               padding: 0,
               outline: "none",

@@ -138,14 +138,20 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
   webm: "webm",
 };
 
-export const QUEST_CONDITION_TYPES = {
+export const CONDITION_TYPES = {
   DISCORD_ROLE: "discord_role",
   QUEST: "quest",
+  LEVEL: 'level'
 };
 export const QUEST_STATUSES = {
   ARCHIVED: "archived",
   OPEN: "open",
   MAX: "max",
+  INACTIVE: "inactive",
+};
+
+export const STORE_ITEM_STATUSES = {
+  ACTIVE: "active",
   INACTIVE: "inactive",
 };
 
@@ -388,3 +394,20 @@ export const CUSTOM_INTEGRATIONS = {
 };
 
 export const OPTION_TEXT_LIMIT = 250;
+
+export const STORE_ITEM_TYPES = {
+  NFT: 'nft',
+  PHYSICAL: 'physical',
+  DISCORD_ROLE: 'discord_role'
+}
+export const STORE_ITEM_LABELS = {
+  [STORE_ITEM_TYPES.NFT]: 'NFT Products',
+  [STORE_ITEM_TYPES.PHYSICAL]: 'Shopify Products',
+  [STORE_ITEM_TYPES.DISCORD_ROLE]: 'Discord Roles',
+}
+
+export const DELIVERY_METHODS = {
+  DISCORD_ROLE: 'discord_role',
+  DISCOUNT_CODE: 'discount_code',
+  NFT_PAYMENT: 'nft_payment'
+};

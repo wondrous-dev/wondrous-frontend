@@ -50,6 +50,9 @@ import PaywallContextProvider from "utils/context/PaywallContext";
 import ReferralComponent from "components/Referral";
 import DiscordCallbackReferralUserConnect from "pages/discord/callback/referral-user-connect";
 import TelegramConnect from "pages/telegram/connect";
+import StorePage from "pages/store";
+import CreateStoreItem from "pages/store/CreateStoreItem";
+import StoreItem from "pages/store/StoreItem";
 import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
 
@@ -192,6 +195,18 @@ const router = createBrowserRouter([
       {
         path: "/telegram/connect",
         element: <TelegramConnect />,
+      },
+      {
+        path: '/store',
+        element: <StorePage />
+      },
+      {
+        path: '/store/items/create',
+        element: <CreateStoreItem />
+      },
+      {
+        path: '/store/items/:id',
+        element: <StoreItem />
       },
       {
         path: '/community-badge/claim',
