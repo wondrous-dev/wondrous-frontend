@@ -8,7 +8,7 @@ import PricingOptionsListItem, {
 } from "./PricingOptionsListItem";
 import { PricingListOptionWrapper } from "./styles";
 import { useSubscription } from "utils/hooks";
-import { useMe } from "components/Auth";
+import { useMe, withAuth } from "components/Auth";
 
 const STRIPE_MANAGE_SUBSCRIPTION_LINK = import.meta.env.VITE_PRODUCTION
   ? "https://billing.stripe.com/p/login/fZefYZfFDdyk6NG8ww"
@@ -131,9 +131,14 @@ const PricingOptionsList = ({
         if (
           (i.title === PricingOptionsTitle.Hobby || i.title === PricingOptionsTitle.Premium) &&
           activeOrg?.id &&
-          !i.link?.includes("client_reference_id")
+          !i.link?.includes("usereq")
         ) {
-          i.link = `${i.link}?client_reference_id=${activeOrg?.id}${user?.id ? `usereq${user?.id}` : ""}`;
+          const splitLink = i.link.split("?");
+          if (splitLink.length > 1) {
+            i.link = `${splitLink[0]}?client_reference_id=${activeOrg?.id}${user?.id ? `usereq${user?.id}` : ""}`;
+          } else {
+            i.link = `${i.link}?client_reference_id=${activeOrg?.id}${user?.id ? `usereq${user?.id}` : ""}`;
+          }
         }
 
         if (plan === PricingOptionsTitle.Ecosystem) {
@@ -166,4 +171,4 @@ const PricingOptionsList = ({
   );
 };
 
-export default PricingOptionsList;
+export default withAuth(PricingOptionsList);
