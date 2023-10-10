@@ -122,7 +122,6 @@ const PricingOptionsList = ({
   const plan = getPlan(subscription?.tier);
   const user = useMe()?.user;
   const userPurchasedSubscription = user?.id === subscription?.additionalData?.purchasedUserId;
-  console.log("user", user);
   return (
     <PricingListOptionWrapper>
       {pricingOptions.map((i) => {
@@ -132,9 +131,14 @@ const PricingOptionsList = ({
         if (
           (i.title === PricingOptionsTitle.Hobby || i.title === PricingOptionsTitle.Premium) &&
           activeOrg?.id &&
-          !i.link?.includes("client_reference_id")
+          !i.link?.includes("usereq")
         ) {
-          i.link = `${i.link}?client_reference_id=${activeOrg?.id}${user?.id ? `usereq${user?.id}` : ""}`;
+          const splitLink = i.link.split("?");
+          if (splitLink.length > 1) {
+            i.link = `${splitLink[0]}?client_reference_id=${activeOrg?.id}${user?.id ? `usereq${user?.id}` : ""}`;
+          } else {
+            i.link = `${i.link}?client_reference_id=${activeOrg?.id}${user?.id ? `usereq${user?.id}` : ""}`;
+          }
         }
 
         if (plan === PricingOptionsTitle.Ecosystem) {
