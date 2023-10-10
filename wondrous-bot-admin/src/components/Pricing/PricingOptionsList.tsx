@@ -8,7 +8,7 @@ import PricingOptionsListItem, {
 } from "./PricingOptionsListItem";
 import { PricingListOptionWrapper } from "./styles";
 import { useSubscription } from "utils/hooks";
-import { useMe } from "components/Auth";
+import { useMe, withAuth } from "components/Auth";
 
 const STRIPE_MANAGE_SUBSCRIPTION_LINK = import.meta.env.VITE_PRODUCTION
   ? "https://billing.stripe.com/p/login/fZefYZfFDdyk6NG8ww"
@@ -122,6 +122,7 @@ const PricingOptionsList = ({
   const plan = getPlan(subscription?.tier);
   const user = useMe()?.user;
   const userPurchasedSubscription = user?.id === subscription?.additionalData?.purchasedUserId;
+  console.log("user", user);
   return (
     <PricingListOptionWrapper>
       {pricingOptions.map((i) => {
@@ -166,4 +167,4 @@ const PricingOptionsList = ({
   );
 };
 
-export default PricingOptionsList;
+export default withAuth(PricingOptionsList);
