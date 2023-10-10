@@ -6,7 +6,7 @@ import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
-import { BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
+import { APEIRON_TYPES, BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
 import { RewardComponent } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
@@ -283,7 +283,6 @@ const CreateTemplate = ({
             ? mapAnswersToOptions(next.value.answers, next.value.withCorrectAnswers)
             : [];
           const conditionalRewards = next.value?.answers?.reduce(reduceConditionalRewards, []);
-          debugger
           if (conditionalRewards.length) {
             step.conditionalRewards = conditionalRewards;
           }
@@ -370,7 +369,7 @@ const CreateTemplate = ({
           step["additionalData"] = {
             usdValue: toCent(next.value),
           };
-        } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL) {
+        } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL || Object.values(APEIRON_TYPES).includes(next.type)) {
           step.prompt = next.value;
         }
         return [...acc, step];
