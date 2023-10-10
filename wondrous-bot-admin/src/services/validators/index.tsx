@@ -25,6 +25,10 @@ const ALL_TYPES = [
   TYPES.LIFI_VALUE_BRIDGED,
   TYPES.MIGRATE_ORIGIN_USERS,
   TYPES.VERIFY_MARKETSFLARE_TRIAL,
+  TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS,
+  TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80,
+  TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS,
+  TYPES.VERIFY_APEIRON_10_MINS_PLAYED,
 ];
 
 const sharedValidation = {
@@ -188,6 +192,18 @@ const stepTypes = {
     ...sharedValidation,
   }),
   [TYPES.VERIFY_MARKETSFLARE_TRIAL]: Yup.object().shape({
+    ...sharedValidation,
+  }),
+  [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: Yup.object().shape({
+    ...sharedValidation,
+  }),
+  [TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS]: Yup.object().shape({
+    ...sharedValidation,
+  }),
+  [TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80]: Yup.object().shape({
+    ...sharedValidation,
+  }),
+  [TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS]: Yup.object().shape({
     ...sharedValidation,
   }),
   [TYPES.SUBSCRIBE_YT_CHANNEL]: Yup.object().shape({

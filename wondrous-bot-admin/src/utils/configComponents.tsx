@@ -13,7 +13,14 @@ import LifiValueBridgeComponent from "components/AddFormEntity/components/LiFiVa
 import ReferralComponent from "components/AddFormEntity/components/Referral";
 import MigrateOriginUsers from "components/AddFormEntity/components/MigrateOriginUsers";
 import VerifyMarketsFlareTrial from "components/AddFormEntity/components/VerifyMarketsFlareTrial";
+import VerifyApeironIntegrations from "components/AddFormEntity/components/VerifyApeiron";
 
+const APEIRON_INTEGRATIONS = {
+  [TYPES.VERIFY_APEIRON_3_HRS_PLAYED]: VerifyApeironIntegrations,
+  [TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80]: VerifyApeironIntegrations,
+  [TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS]: VerifyApeironIntegrations,
+  [TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS]: VerifyApeironIntegrations,
+};
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
   [TYPES.MULTI_QUIZ]: QuizComponent,
@@ -38,4 +45,5 @@ export const CONFIG_COMPONENTS = {
   [TYPES.REFERRAL]: ReferralComponent,
   [TYPES.MIGRATE_ORIGIN_USERS]: MigrateOriginUsers,
   [TYPES.VERIFY_MARKETSFLARE_TRIAL]: VerifyMarketsFlareTrial,
+  ...APEIRON_INTEGRATIONS,
 };
