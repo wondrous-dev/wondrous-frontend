@@ -411,7 +411,7 @@ export const CUSTOM_INTEGRATIONS = {
       },
     ],
   },
-  "65854367353274369": {
+  "98989259425317451": {
     name: "Apeiron",
     integrations: APEIRON_INTEGRATIONS,
   },
