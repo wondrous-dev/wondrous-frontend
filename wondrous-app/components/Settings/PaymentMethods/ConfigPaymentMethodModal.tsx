@@ -261,6 +261,10 @@ function ConfigPaymentMethodModal(props) {
       tokenAddress = CHAIN_TO_USDC_ADDR[chain];
       tokenName = 'USD Coin';
       symbol = 'USDC';
+    } else if (selectedToken === 'ETH') {
+      tokenAddress = '0x0000000000000000000000000000000000000000';
+      tokenName = 'Ethereum';
+      symbol = 'ETH';
     } else if (selectedToken === 'DAI') {
       tokenAddress = CHAIN_TO_DAI_ADDR[chain];
       tokenName = 'Dai';
