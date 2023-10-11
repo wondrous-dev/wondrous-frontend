@@ -55,6 +55,7 @@ import CreateStoreItem from "pages/store/CreateStoreItem";
 import StoreItem from "pages/store/StoreItem";
 import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
+import EmbedCreatorPage from "pages/embed-creator";
 
 const router = createBrowserRouter([
   {
@@ -211,6 +212,10 @@ const router = createBrowserRouter([
       {
         path: '/community-badge/claim',
         element: <CommunityBadgeClaimPage />
+      },
+      {
+        path: '/embed-creator',
+        element: <EmbedCreatorPage />
       }
     ],
   },
