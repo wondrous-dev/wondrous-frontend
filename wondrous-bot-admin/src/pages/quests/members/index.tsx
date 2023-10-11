@@ -1,19 +1,23 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { Grid } from "@mui/material";
 import EmptyState from "components/EmptyState";
 import MembersAnalytics from "components/MembersAnalytics";
 import PageHeader from "components/PageHeader";
 import { TeamsAndInvite } from "components/Settings/TeamSettings";
+import Spinner from "components/Shared/Spinner";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import TableComponent from "components/TableComponent";
 import { GET_COMMUNITY_USERS_FOR_ORG } from "graphql/queries";
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 
 const MembersPage = () => {
   const { activeOrg } = useContext(GlobalContext);
-  const { data, fetchMore, refetch } = useQuery(GET_COMMUNITY_USERS_FOR_ORG, {
+  const [hasMore, setHasMore] = useState(true);
+
+  const [getCmtyUsersForOrg, { data, fetchMore, refetch, loading }] = useLazyQuery(GET_COMMUNITY_USERS_FOR_ORG, {
+    notifyOnNetworkStatusChange: true,
     variables: {
       input: {
         orgId: activeOrg?.id,
@@ -22,6 +26,32 @@ const MembersPage = () => {
       },
     },
   });
+
+  useEffect(() => {
+    if (activeOrg?.id) {
+      getCmtyUsersForOrg({
+        variables: {
+          input: {
+            orgId: activeOrg?.id,
+            limit: LIMIT,
+            offset: 0,
+          },
+        },
+      }).then(({ data }) => setHasMore(data?.getCmtyUsersForOrg?.length >= LIMIT));
+    }
+  }, [])
+
+  const handleFetchMore = () => {
+    fetchMore({
+      variables: {
+        input: {
+          orgId: activeOrg?.id,
+          limit: LIMIT,
+          offset: data?.getCmtyUsersForOrg?.length,
+        },
+      },
+    }).then(({ data }) => setHasMore(data?.getCmtyUsersForOrg?.length >= LIMIT));
+  }
   const tableConfig = useMemo(() => {
     return data?.getCmtyUsersForOrg?.map((user) => {
       const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
@@ -80,31 +110,15 @@ const MembersPage = () => {
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
         )}
-        {data?.getCmtyUsersForOrg?.length >= LIMIT && (
+        {hasMore && (
           <SharedSecondaryButton
             style={{
               width: "fit-content",
               alignSelf: "center",
             }}
-            onClick={() => {
-              fetchMore({
-                variables: {
-                  input: {
-                    orgId: activeOrg?.id,
-                    limit: LIMIT,
-                    offset: tableConfig?.length,
-                  },
-                },
-                updateQuery: (prev, { fetchMoreResult }) => {
-                  const getCmtyUsersForOrg = [...prev.getCmtyUsersForOrg, ...fetchMoreResult.getCmtyUsersForOrg];
-                  return {
-                    getCmtyUsersForOrg,
-                  };
-                },
-              });
-            }}
+            onClick={handleFetchMore}
           >
-            Show more
+            {loading ? <Spinner /> : `Show more`}
           </SharedSecondaryButton>
         )}
       </Grid>
