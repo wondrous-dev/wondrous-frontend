@@ -1,4 +1,4 @@
-import { ERRORS, TYPES } from "utils/constants";
+import { ERRORS, STORE_ITEM_TYPES, TYPES } from "utils/constants";
 import * as Yup from "yup";
 import { getYouTubeVideoId, validateChannelUrl } from "services/validators/customValidation";
 export const ValidationError = Yup.ValidationError;
@@ -25,7 +25,13 @@ const ALL_TYPES = [
   TYPES.LIFI_VALUE_BRIDGED,
   TYPES.MIGRATE_ORIGIN_USERS,
   TYPES.VERIFY_MARKETSFLARE_TRIAL,
+  TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS,
+  TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80,
+  TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS,
+  TYPES.VERIFY_APEIRON_10_MINS_PLAYED,
 ];
+
+export const STORE_TYPES = [STORE_ITEM_TYPES.PHYSICAL, STORE_ITEM_TYPES.DISCORD_ROLE, STORE_ITEM_TYPES.NFT];
 
 const sharedValidation = {
   type: Yup.string().required("Type is required").oneOf(ALL_TYPES, "Type is not valid"),
@@ -190,6 +196,18 @@ const stepTypes = {
   [TYPES.VERIFY_MARKETSFLARE_TRIAL]: Yup.object().shape({
     ...sharedValidation,
   }),
+  [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: Yup.object().shape({
+    ...sharedValidation,
+  }),
+  [TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS]: Yup.object().shape({
+    ...sharedValidation,
+  }),
+  [TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80]: Yup.object().shape({
+    ...sharedValidation,
+  }),
+  [TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS]: Yup.object().shape({
+    ...sharedValidation,
+  }),
   [TYPES.SUBSCRIBE_YT_CHANNEL]: Yup.object().shape({
     additionalData: Yup.object().shape({
       ytChannelLink: Yup.string()
@@ -215,6 +233,32 @@ const stepTypes = {
   }),
 };
 
+const STORE_FIELDS = Yup.object().shape({
+  type: Yup.string().required("Type is required").oneOf(STORE_TYPES, "Type is not valid"),
+  name: Yup.string().required("Name is required"),
+  description: Yup.string().nullable(),
+  ptPrice: Yup.number().nullable(),
+  price: Yup.number().nullable(),
+  deliveryMethod: Yup.string().nullable(),
+  maxPurchase: Yup.number().nullable(),
+});
+
+const storeItemTypes = {
+  [STORE_ITEM_TYPES.PHYSICAL]: STORE_FIELDS.shape({
+    url: Yup.string().url("This is not a valid url").required("URL is required"),
+  }),
+  [STORE_ITEM_TYPES.DISCORD_ROLE]: STORE_FIELDS.shape({
+    additionalData: Yup.object().shape({
+      discordRoleId: Yup.string().required("Please select a discord role"),
+      discordRoleName: Yup.string().required("Please select a discord role"),
+      discordGuildId: Yup.string().required("Please select a discord role"),
+    }),
+  }),
+  [STORE_ITEM_TYPES.NFT]: STORE_FIELDS.shape({
+    nftMetadataId: Yup.string().required("Please select an NFT"),
+  }),
+};
+
 export const QUEST_FIELDS = {
   title: Yup.string().required("Title is required"),
   steps: Yup.array()
@@ -227,3 +271,13 @@ export const questValidator = async (body) =>
   Yup.object().shape(QUEST_FIELDS).validate(body, {
     abortEarly: false,
   });
+
+export const storeItemValidator = async (body) => {
+  const schema = storeItemTypes[body.type];
+  if (!schema) {
+    throw new Error(`Validation schema not found for type: ${body.type}`);
+  }
+  return schema.validate(body, {
+    abortEarly: false,
+  });
+};

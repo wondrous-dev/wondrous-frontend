@@ -16,7 +16,7 @@ type QuestTitleProps = {
 
 const QuestTitle = ({
   value,
-  onChange,
+  onChange = null,
   placeholder = "Enter a quest title",
   key = "title",
   multiline = false,
@@ -25,6 +25,7 @@ const QuestTitle = ({
 }: QuestTitleProps) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const handleChange = (value) => {
+    if(!onChange) return null;
     if (value.length > maxLength) return;
     if (errors?.[key]) {
       setErrors({

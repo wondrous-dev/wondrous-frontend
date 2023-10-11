@@ -1,27 +1,45 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { Box, Grid } from "@mui/material";
 import EmptyState from "components/EmptyState";
 import MembersAnalytics from "components/MembersAnalytics";
 import { AddressComponent } from "components/MembersAnalytics/Common";
+import Spinner from "components/Shared/Spinner";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import TableComponent from "components/TableComponent";
 import { GET_CMTY_USERS_LEADERBOARD, GET_COMMUNITY_USERS_FOR_ORG } from "graphql/queries";
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 
 const UsersLeaderboard = () => {
   const { activeOrg } = useContext(GlobalContext);
 
-  const { data, fetchMore, refetch } = useQuery(GET_CMTY_USERS_LEADERBOARD, {
-    variables: {
-        orgId: activeOrg?.id,
-        limit: LIMIT,
-        offset: 0,
-    },
-    skip: !activeOrg?.id,
+  const [hasMore, setHasMore] = useState(true);
+  const [getCmtyUsersLeaderboard, { data, fetchMore, loading }] = useLazyQuery(GET_CMTY_USERS_LEADERBOARD, {
+    notifyOnNetworkStatusChange: true,
   });
-  
+
+  useEffect(() => {
+    if (activeOrg?.id) {
+      getCmtyUsersLeaderboard({
+        variables: {
+          orgId: activeOrg?.id,
+          limit: LIMIT,
+          offset: 0,
+        },
+      }).then(({ data }) => setHasMore(data?.getCmtyUsersLeaderboard?.length >= LIMIT));
+    }
+  }, []);
+
+  const handleFetchMore = async () => {
+    const res = await fetchMore({
+      variables: {
+        offset: data?.getCmtyUsersLeaderboard?.length,
+      },
+    });
+    setHasMore(res?.data?.getCmtyUsersLeaderboard?.length >= LIMIT);
+  };
+
   const tableConfig = useMemo(() => {
     return data?.getCmtyUsersLeaderboard?.map((user) => {
       return {
@@ -29,7 +47,7 @@ const UsersLeaderboard = () => {
         name: {
           component: "custom",
           value: user,
-          customComponent: MembersAnalytics,
+          customComponent: (props) => <MembersAnalytics {...props} />,
         },
         level: {
           component: "hexagon",
@@ -68,7 +86,6 @@ const UsersLeaderboard = () => {
 
   const headers = ["Username", "LVL", "Wallet Address", "Submissions", "XP Earned", "# of Messages", "#of Reactions"];
 
-
   return (
     <>
       {data?.getCmtyUsersLeaderboard?.length ? (
@@ -76,31 +93,15 @@ const UsersLeaderboard = () => {
       ) : (
         <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
       )}
-      {data?.getCmtyUsersLeaderboard?.length >= LIMIT && (
+      {hasMore && (
         <SharedSecondaryButton
           style={{
             width: "fit-content",
             alignSelf: "center",
           }}
-          onClick={() => {
-            fetchMore({
-              variables: {
-                input: {
-                  orgId: activeOrg?.id,
-                  limit: LIMIT,
-                  offset: tableConfig?.length,
-                },
-              },
-              updateQuery: (prev, { fetchMoreResult }) => {
-                const getCmtyUsersLeaderboard = [...prev.getCmtyUsersLeaderboard, ...fetchMoreResult.getCmtyUsersLeaderboard];
-                return {
-                  getCmtyUsersLeaderboard,
-                };
-              },
-            });
-          }}
+          onClick={handleFetchMore}
         >
-          Show more
+          {loading ? <Spinner /> : 'Show more'}
         </SharedSecondaryButton>
       )}
     </>

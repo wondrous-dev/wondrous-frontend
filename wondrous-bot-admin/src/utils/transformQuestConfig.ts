@@ -1,4 +1,4 @@
-import { DATA_COLLECTION_TYPES, TYPES } from "./constants";
+import { APEIRON_TYPES, DATA_COLLECTION_TYPES, TYPES } from "./constants";
 
 type InputQuestStep = {
   type: string;
@@ -143,7 +143,6 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       value: "",
       mediaUploads: step?.media || [],
     };
-
     if (step.type === TYPES.TEXT_FIELD || step.type === TYPES.NUMBER || step.type === TYPES.ATTACHMENTS) {
       outputStep.value = step.prompt;
     } else if ([TYPES.SINGLE_QUIZ, TYPES.MULTI_QUIZ].includes(step.type)) {
@@ -235,7 +234,11 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       };
     } else if (step.type === TYPES.LIFI_VALUE_BRIDGED) {
       outputStep.value = Number(step?.additionalData?.usdValue) / 100;
-    } else if (step.type === TYPES.MIGRATE_ORIGIN_USERS || step.type === TYPES.VERIFY_MARKETSFLARE_TRIAL) {
+    } else if (
+      step.type === TYPES.MIGRATE_ORIGIN_USERS ||
+      step.type === TYPES.VERIFY_MARKETSFLARE_TRIAL ||
+      Object.values(APEIRON_TYPES).includes(step.type)
+    ) {
       outputStep.value = step?.prompt;
     } else if (step.type === TYPES.REFERRAL) {
       outputStep.value = step?.prompt;

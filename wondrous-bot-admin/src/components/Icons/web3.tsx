@@ -71,8 +71,6 @@ export function Binance() {
   );
 }
 
-import React from 'react';
-
 export function Boba() {
   return (
     <svg

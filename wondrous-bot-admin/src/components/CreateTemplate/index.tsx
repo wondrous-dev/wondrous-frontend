@@ -6,7 +6,7 @@ import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
-import { BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
+import { APEIRON_TYPES, BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
 import { RewardComponent } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
@@ -17,7 +17,7 @@ import { useNavigate } from "react-router";
 import { questValidator, ValidationError } from "services/validators";
 import { getPathArray, toCent } from "utils/common";
 import { set } from "lodash";
-import { transformAndUploadMedia } from "utils/media";
+import { handleMediaUpload, transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
@@ -203,21 +203,6 @@ const CreateTemplate = ({
     });
   };
 
-  const handleMediaUpload = async (mediaUploads) =>
-    Promise.all(
-      mediaUploads.map(async (file) => {
-        try {
-          const { filename, fileType } = await transformAndUploadMedia({ file });
-          return {
-            uploadSlug: filename,
-            type: fileType,
-            name: file.name,
-          };
-        } catch (error) {
-          return null;
-        }
-      })
-    );
 
   const handleSave = async (status = null) => {
     if (Object.keys(errors).length > 0) {
@@ -267,11 +252,11 @@ const CreateTemplate = ({
               },
               type: reward?.type,
             };
-          } else if (reward?.type === PAYMENT_OPTIONS.TOKEN) {
+          } else if (reward?.type === PAYMENT_OPTIONS.TOKEN || reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
             return {
-              type: reward?.type,
+              type: PAYMENT_OPTIONS.TOKEN,
               paymentMethodId: reward?.paymentMethodId,
-              amount: Number(reward?.amount),
+              amount: reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE ? null : Number(reward?.amount),
             };
           } else if (reward?.type === PAYMENT_OPTIONS.POAP) {
             const { __typename, ...rewardData } = reward?.poapRewardData;
@@ -384,7 +369,7 @@ const CreateTemplate = ({
           step["additionalData"] = {
             usdValue: toCent(next.value),
           };
-        } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL) {
+        } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL || Object.values(APEIRON_TYPES).includes(next.type)) {
           step.prompt = next.value;
         }
         return [...acc, step];

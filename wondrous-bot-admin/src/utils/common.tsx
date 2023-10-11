@@ -1,6 +1,6 @@
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import moment from "moment";
-import { QUEST_CONDITION_TYPES } from "./constants";
+import { CONDITION_TYPES } from "./constants";
 import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
 
 const DEFAULT_TWITTER_SCOPE =
@@ -26,11 +26,14 @@ export const handleUserOnboardingRedirect = (userOrError, navigate, params, defa
 export const getTextForCondition = (condition) => {
   const { type, name, exclusiveQuest } = condition;
   let text = "";
-  if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
+  if (type === CONDITION_TYPES.DISCORD_ROLE) {
     text = `Discord Role: ${name || "None"}`;
   }
-  if (type === QUEST_CONDITION_TYPES.QUEST) {
+  if (type === CONDITION_TYPES.QUEST) {
     text = `${exclusiveQuest ? "Exclude" : "Quest"}: ${name || "None"}`;
+  }
+  if(type === CONDITION_TYPES.LEVEL) {
+    text = `Level: ${condition?.name || "None"}`
   }
   return text;
 };
@@ -79,6 +82,12 @@ export const constructRewards = ({ rewards }) => {
   return rewards?.map((reward) => {
     if (reward.type === "points") {
       return reward;
+    }
+    if(reward.type === PAYMENT_OPTIONS.TOKEN && reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
+      return {
+        type: PAYMENT_OPTIONS.COMMUNITY_BADGE,
+        value: reward?.paymentMethod?.name
+      }
     }
     if (reward.type === PAYMENT_OPTIONS.TOKEN) {
       return {

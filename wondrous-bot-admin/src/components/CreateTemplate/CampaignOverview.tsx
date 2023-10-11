@@ -15,6 +15,7 @@ import MaxInput from "./MaxInput";
 import TimeboundComponent from "./TimeboundComponent";
 import { CampaignOverviewTitle, Label } from "./styles";
 import DailySubmissionComponent from "./DailySubmission";
+import { CONDITION_TYPES } from "utils/constants";
 
 const REQUIRE_REVIEW_OPTIONS = [
   {
@@ -223,6 +224,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           component: MaxInput,
           componentProps: {
             keyValue: questSettings?.maxSubmission,
+            handleValueChange: (value) => handleChange("maxSubmission", value),
             onChange: (value) => {
               if (!value && questSettings.maxSubmission) {
                 return handleChange("maxSubmission", null);
@@ -243,6 +245,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
               }
               return handleChange("maxApproval", 1);
             },
+            handleValueChange: (value) => handleChange("maxApproval", value)
           },
           key: "maxApproval",
         },
@@ -267,7 +270,8 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           key: "questConditions",
           componentProps: {
             value: questSettings.questConditions,
-            setQuestSettings,
+            handleUpdate: setQuestSettings,
+            options: [CONDITION_TYPES.DISCORD_ROLE, CONDITION_TYPES.QUEST]
           },
         },
       ],
@@ -277,7 +281,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       },
     },
   ];
-
+  
   return (
     <>
       {sections.map(({ canBeHidden, settingsLayout, settings, showBorder }) => {

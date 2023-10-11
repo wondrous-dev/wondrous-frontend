@@ -1,3 +1,9 @@
+export const APEIRON_TYPES = {
+  VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS: "verify_apeiron_account_by_wallet_address",
+  VERIFY_APEIRON_APOSTLES_IV_OVER_80: "verify_apeiron_apostles_iv_over_80",
+  VERIFY_APEIRON_DEFEAT_FIRST_BOSS: "verify_apeiron_defeat_first_boss",
+  VERIFY_APEIRON_10_MINS_PLAYED: "verify_apeiron_10_mins_played",
+};
 export const TYPES = {
   TEXT_FIELD: "text",
   MULTI_QUIZ: "multiple_quiz",
@@ -23,6 +29,7 @@ export const TYPES = {
   MIGRATE_ORIGIN_USERS: "migrate_origin_users",
   REFERRAL: "referral",
   VERIFY_MARKETSFLARE_TRIAL: "verify_marketsflare_trial",
+  ...APEIRON_TYPES,
 };
 
 export const CONFIG = [
@@ -107,6 +114,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/verify-link",
   "/telegram/start-quest/:id",
   "/telegram/connect",
+  "/community-badge/claim",
 ];
 
 export const BG_TYPES = {
@@ -137,14 +145,20 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
   webm: "webm",
 };
 
-export const QUEST_CONDITION_TYPES = {
+export const CONDITION_TYPES = {
   DISCORD_ROLE: "discord_role",
   QUEST: "quest",
+  LEVEL: 'level'
 };
 export const QUEST_STATUSES = {
   ARCHIVED: "archived",
   OPEN: "open",
   MAX: "max",
+  INACTIVE: "inactive",
+};
+
+export const STORE_ITEM_STATUSES = {
+  ACTIVE: "active",
   INACTIVE: "inactive",
 };
 
@@ -160,7 +174,7 @@ export const EMPTY_STATE_TYPES = {
   SUBMISSIONS: "submissions",
   MEMBERS: "members",
   PAYMENTS: "payments",
-  NFT: 'nft'
+  NFT: "nft",
 };
 
 export const ERRORS = {
@@ -321,6 +335,7 @@ export const EXCLUDED_PATHS = [
   "/telegram/start-quest/:id",
   "/referral",
   "/telegram/connect",
+  "/community-badge/claim",
 ];
 
 export const TUTORIALS = {
@@ -354,6 +369,25 @@ export const TEXT_TYPES = [TYPES.TEXT_FIELD, TYPES.NUMBER];
 
 export const SELECT_TYPES = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ];
 
+const APEIRON_INTEGRATIONS = [
+  {
+    label: "Verify Apeiron Account By Wallet Address",
+    value: TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS,
+  },
+  {
+    label: "Verify Apeiron Apostles IV Over 80",
+    value: TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80,
+  },
+  {
+    label: "Verify Apeiron Defeat First Boss",
+    value: TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS,
+  },
+  {
+    label: "Verify Apeiron 10 mins Played",
+    value: TYPES.VERIFY_APEIRON_10_MINS_PLAYED,
+  },
+];
+
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
   "58318954576216128": {
@@ -383,6 +417,27 @@ export const CUSTOM_INTEGRATIONS = {
       },
     ],
   },
+  "98989259425317451": {
+    name: "Apeiron",
+    integrations: APEIRON_INTEGRATIONS,
+  },
 };
 
 export const OPTION_TEXT_LIMIT = 250;
+
+export const STORE_ITEM_TYPES = {
+  NFT: 'nft',
+  PHYSICAL: 'physical',
+  DISCORD_ROLE: 'discord_role'
+}
+export const STORE_ITEM_LABELS = {
+  [STORE_ITEM_TYPES.NFT]: 'NFT Products',
+  [STORE_ITEM_TYPES.PHYSICAL]: 'Shopify Products',
+  [STORE_ITEM_TYPES.DISCORD_ROLE]: 'Discord Roles',
+}
+
+export const DELIVERY_METHODS = {
+  DISCORD_ROLE: 'discord_role',
+  DISCOUNT_CODE: 'discount_code',
+  NFT_PAYMENT: 'nft_payment'
+};

@@ -26,14 +26,14 @@ export const ResizeTextField = ({ value, onChange, label = "", error, placeholde
 const TextFieldComponent = ({
   label = "Label",
   value = "",
-  onChange,
+  onChange = null,
   error = null,
   placeholder = "Enter value",
   multiline = true,
   ...props
 }) => {
   const handleChange = (e) => {
-    return onChange(e.target.value);
+    return onChange?.(e.target.value);
   };
 
   return (

@@ -1,8 +1,10 @@
 import { Divider, Grid } from "@mui/material";
 import { Panel, CampaignOverviewTitle } from "./styles";
 
-const PanelComponent = ({ renderHeader, renderBody, panelProps = {}, gridSx = {} }) => (
-  <Panel {...panelProps}>
+const PanelComponent = ({ renderHeader = null, renderBody, panelProps = {}, gridSx={} }) => (
+  <Panel
+  {...panelProps}
+  >
     {renderHeader?.()}
     {renderHeader ? <Divider color="black" /> : null}
     <Grid
