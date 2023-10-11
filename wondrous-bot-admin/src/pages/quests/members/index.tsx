@@ -60,7 +60,7 @@ const MembersPage = () => {
         name: {
           component: "custom",
           value: user,
-          customComponent: MembersAnalytics
+          customComponent: (props) => <MembersAnalytics {...props}/>
         },
         level: {
           component: "hexagon",
