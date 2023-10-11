@@ -15,7 +15,7 @@ import { FormBody } from "../Shared";
 const formSchema = Yup.object().shape({
   name: Yup.string().required("Please enter an NFT name"),
   externalUrl: Yup.string().url("Invalid URL format").notRequired(),
-  description: Yup.string().required("Description is required"),
+  description: Yup.string(),
   maxSupply: Yup.number()
     .positive("Supply must be a positive number")
     .integer("Supply must be an integer")
@@ -82,7 +82,6 @@ const CreateNFTComponent = ({ handleClose, onSuccess = null }) => {
       component: "input",
       label: "Description",
       placeholder: "Provide a description of the item.",
-      required: true,
       key: "description",
       multiline: true,
     },
