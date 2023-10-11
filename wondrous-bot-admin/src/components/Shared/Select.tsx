@@ -79,8 +79,9 @@ const SelectComponent = ({
                 backgroundColor: "#E4E4E4 !important",
               },
             }}
+            {...option.onClick? {onClick: option.onClick} : {}}
           >
-            <Grid container alignItems="center" justifyContent="space-between">
+            <Grid container alignItems="center" justifyContent="space-between" gap="4px">
               <Grid container item flex="1" gap="4px">
                 {option.icon}
                 {option.label}
