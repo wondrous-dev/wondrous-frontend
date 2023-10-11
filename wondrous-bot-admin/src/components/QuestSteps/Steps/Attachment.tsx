@@ -16,8 +16,11 @@ import VideoPlayer from "components/Shared/SubmissionMedia/VideoPlayer";
 import { Filename } from "components/Shared/SubmissionMedia/styles";
 
 export const Media = ({ file }) => {
+  if(file === 'string') {
+    return <img src={file}/>
+  }
   if (file.type?.includes("image")) {
-    return <img src={URL.createObjectURL(file)} />;
+    return <img src={URL.createObjectURL(file)}/>;
   }
   if (file.type?.includes("video")) {
     return <VideoPlayer src={URL.createObjectURL(file)} name={file?.name} style={{ width: "10%", height: "10%" }} />;

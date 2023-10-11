@@ -233,6 +233,7 @@ const DateRangePicker = ({
                       <ButtonBase
                         onClick={() => {
                           setDateRange({ startAt: null, endAt: null });
+                          onConfirm({ startAt: null, endAt: null });
                         }}
                         sx={{
                           borderRadius: "6px",

@@ -1,3 +1,9 @@
+export const APEIRON_TYPES = {
+  VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS: "verify_apeiron_account_by_wallet_address",
+  VERIFY_APEIRON_APOSTLES_IV_OVER_80: "verify_apeiron_apostles_iv_over_80",
+  VERIFY_APEIRON_DEFEAT_FIRST_BOSS: "verify_apeiron_defeat_first_boss",
+  VERIFY_APEIRON_10_MINS_PLAYED: "verify_apeiron_10_mins_played",
+};
 export const TYPES = {
   TEXT_FIELD: "text",
   MULTI_QUIZ: "multiple_quiz",
@@ -20,6 +26,10 @@ export const TYPES = {
   SUBSCRIBE_YT_CHANNEL: "subscribe_yt_channel",
   CUSTOM_ONCHAIN_ACTION: "custom_onchain_action",
   LIFI_VALUE_BRIDGED: "lifi_value_bridged",
+  MIGRATE_ORIGIN_USERS: "migrate_origin_users",
+  REFERRAL: "referral",
+  VERIFY_MARKETSFLARE_TRIAL: "verify_marketsflare_trial",
+  ...APEIRON_TYPES,
 };
 
 export const CONFIG = [
@@ -85,6 +95,7 @@ export const GRAPHQL_ERRORS = {
   INVALID_EMAIL: "invalid_email",
   POD_WITH_SAME_NEXT_EXISTS: "Pod with name already exist",
   DISCORD_NOT_CONFIGURED: "discord_not_configured",
+  CMTY_USER_ALREADY_REFERRED: "cmty_user_already_referred",
 };
 
 export const PAGES_WITHOUT_HEADER = [
@@ -98,9 +109,12 @@ export const PAGES_WITHOUT_HEADER = [
   "/onboarding/welcome",
   "/quests/view/:id",
   "/discord/callback/cmty-user-connect",
+  "/discord/callback/referral",
   "/invite/:token",
   "/verify-link",
   "/telegram/start-quest/:id",
+  "/telegram/connect",
+  "/community-badge/claim",
 ];
 
 export const BG_TYPES = {
@@ -131,14 +145,20 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
   webm: "webm",
 };
 
-export const QUEST_CONDITION_TYPES = {
+export const CONDITION_TYPES = {
   DISCORD_ROLE: "discord_role",
   QUEST: "quest",
+  LEVEL: 'level'
 };
 export const QUEST_STATUSES = {
   ARCHIVED: "archived",
   OPEN: "open",
   MAX: "max",
+  INACTIVE: "inactive",
+};
+
+export const STORE_ITEM_STATUSES = {
+  ACTIVE: "active",
   INACTIVE: "inactive",
 };
 
@@ -154,6 +174,7 @@ export const EMPTY_STATE_TYPES = {
   SUBMISSIONS: "submissions",
   MEMBERS: "members",
   PAYMENTS: "payments",
+  NFT: "nft",
 };
 
 export const ERRORS = {
@@ -305,14 +326,17 @@ export const EXCLUDED_PATHS = [
   "/discord/callback",
   "/twitter/callback",
   "/discord/callback/cmty-user-connect",
+  "/discord/callback/referral",
   "/quests/view/:id",
   "/signup",
   "/invite/:token",
   "/verify-link",
   "/wallet/connect",
   "/telegram/start-quest/:id",
+  "/referral",
+  "/telegram/connect",
+  "/community-badge/claim",
 ];
-
 
 export const TUTORIALS = {
   COMMUNITIES_HOME_GUIDE: "communities_home_guide",
@@ -321,48 +345,48 @@ export const TUTORIALS = {
 };
 
 export const DEFAULT_BANNER_IMAGES = {
-  QUEST:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/d1dde3c6-ec7b-47d0-7038-5f0559af3300/public',
-  LEVEL:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/fce99bf4-8658-41cc-4d62-6797e37fe700/public',
-  LEADERBOARD:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/2379966b-c3ab-498c-d290-cf0826928100/public',
-  QUEST_APPROVED:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/1664bce7-ae62-471d-dcc8-c12ea97ef400/public',
-  QUEST_COMPLETED:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/2f3f3cee-37cf-4988-7ecc-721ec1294f00/public',
-  QUEST_SUBMITTED:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/0b69e6ff-801c-4596-c9be-42c0cd6d4800/public',
-  QUEST_READY_TO_SUBMIT:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/0b69e6ff-801c-4596-c9be-42c0cd6d4800/public',
-  START_QUEST:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/45fd3534-6756-445d-4d17-19b277fd7d00/public',
-  ONBOARD_ME:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/d96083c6-2250-4780-d492-3b27d702dc00/public',
-  MY_SUBMISSION:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/955c330d-947d-4a6b-8005-2319b36ee800/public',
-  QUESTION_MARK:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/272fca8c-f320-4578-0e8a-2eff794d3f00/public',
-  ATTACHMENT_REQUIRED:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/73b4752f-d9a5-4c79-8151-5989c8b1fa00/public',
-  QUEST_STEP_TWITTER:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/89ebf640-014a-45e2-319c-fe2b530c8900/public',
-  QUEST_STEP_DISCORD:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/a64a25dd-3d03-40a2-ac40-02c2017c8300/public',
-  QUEST_STEP_SNAPSHOT:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/280a3673-93a0-4be1-0cdf-2c0a7c88ab00/public',
-  SHOW_QUESTS_1:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/28218faf-0823-4db9-4f6a-3cd4db1ace00/public',
-  SHOW_QUESTS_2:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/61f360a2-3c12-4110-4537-4f1262bf8500/public',
-  SHOW_LEADERBOARD:
-    'https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/4737f05c-0a90-4526-be43-3f18fc9faf00/public',
+  QUEST: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/d1dde3c6-ec7b-47d0-7038-5f0559af3300/public",
+  LEVEL: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/fce99bf4-8658-41cc-4d62-6797e37fe700/public",
+  LEADERBOARD: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/2379966b-c3ab-498c-d290-cf0826928100/public",
+  QUEST_APPROVED: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/1664bce7-ae62-471d-dcc8-c12ea97ef400/public",
+  QUEST_COMPLETED: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/2f3f3cee-37cf-4988-7ecc-721ec1294f00/public",
+  QUEST_SUBMITTED: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/0b69e6ff-801c-4596-c9be-42c0cd6d4800/public",
+  QUEST_READY_TO_SUBMIT: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/0b69e6ff-801c-4596-c9be-42c0cd6d4800/public",
+  START_QUEST: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/45fd3534-6756-445d-4d17-19b277fd7d00/public",
+  ONBOARD_ME: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/d96083c6-2250-4780-d492-3b27d702dc00/public",
+  MY_SUBMISSION: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/955c330d-947d-4a6b-8005-2319b36ee800/public",
+  QUESTION_MARK: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/272fca8c-f320-4578-0e8a-2eff794d3f00/public",
+  ATTACHMENT_REQUIRED: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/73b4752f-d9a5-4c79-8151-5989c8b1fa00/public",
+  QUEST_STEP_TWITTER: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/89ebf640-014a-45e2-319c-fe2b530c8900/public",
+  QUEST_STEP_DISCORD: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/a64a25dd-3d03-40a2-ac40-02c2017c8300/public",
+  QUEST_STEP_SNAPSHOT: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/280a3673-93a0-4be1-0cdf-2c0a7c88ab00/public",
+  SHOW_QUESTS_1: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/28218faf-0823-4db9-4f6a-3cd4db1ace00/public",
+  SHOW_QUESTS_2: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/61f360a2-3c12-4110-4537-4f1262bf8500/public",
+  SHOW_LEADERBOARD: "https://imagedelivery.net/Nf8NSpw7AwOfpJLL_UgXaw/4737f05c-0a90-4526-be43-3f18fc9faf00/public",
 };
-
 
 export const TEXT_TYPES = [TYPES.TEXT_FIELD, TYPES.NUMBER];
 
 export const SELECT_TYPES = [TYPES.MULTI_QUIZ, TYPES.SINGLE_QUIZ];
+
+const APEIRON_INTEGRATIONS = [
+  {
+    label: "Verify Apeiron Account By Wallet Address",
+    value: TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS,
+  },
+  {
+    label: "Verify Apeiron Apostles IV Over 80",
+    value: TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80,
+  },
+  {
+    label: "Verify Apeiron Defeat First Boss",
+    value: TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS,
+  },
+  {
+    label: "Verify Apeiron 10 mins Played",
+    value: TYPES.VERIFY_APEIRON_10_MINS_PLAYED,
+  },
+];
 
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
@@ -375,6 +399,45 @@ export const CUSTOM_INTEGRATIONS = {
       },
     ],
   },
+  "100884993427899088": {
+    name: "Origin",
+    integrations: [
+      {
+        label: "Migrate Origin members from Carma",
+        value: TYPES.MIGRATE_ORIGIN_USERS,
+      },
+    ],
+  },
+  "100452448485769921": {
+    name: "MarketsFlare",
+    integrations: [
+      {
+        label: "Verify MarketsFlare trial",
+        value: TYPES.VERIFY_MARKETSFLARE_TRIAL,
+      },
+    ],
+  },
+  "98989259425317451": {
+    name: "Apeiron",
+    integrations: APEIRON_INTEGRATIONS,
+  },
 };
 
 export const OPTION_TEXT_LIMIT = 250;
+
+export const STORE_ITEM_TYPES = {
+  NFT: 'nft',
+  PHYSICAL: 'physical',
+  DISCORD_ROLE: 'discord_role'
+}
+export const STORE_ITEM_LABELS = {
+  [STORE_ITEM_TYPES.NFT]: 'NFT Products',
+  [STORE_ITEM_TYPES.PHYSICAL]: 'Shopify Products',
+  [STORE_ITEM_TYPES.DISCORD_ROLE]: 'Discord Roles',
+}
+
+export const DELIVERY_METHODS = {
+  DISCORD_ROLE: 'discord_role',
+  DISCOUNT_CODE: 'discount_code',
+  NFT_PAYMENT: 'nft_payment'
+};

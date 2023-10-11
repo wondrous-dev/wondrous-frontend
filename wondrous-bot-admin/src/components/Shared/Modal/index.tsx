@@ -28,6 +28,9 @@ interface IModalProps {
   dialogComponentProps?: {
     className?: string;
   };
+  modalFooterStyle?: {
+    padding?: string;
+  }
 }
 
 const Modal = ({
@@ -42,6 +45,7 @@ const Modal = ({
   noHeader = false,
   modalComponentProps = {},
   dialogComponentProps = {},
+  modalFooterStyle = {}
 }: IModalProps) => {
   const handleBackdropClick = (event) => {
     if (event.target.dataset.backdrop) {
@@ -64,7 +68,7 @@ const Modal = ({
             <ModalBody>{children}</ModalBody>
 
             {!!footerLeft || !!footerRight || !!footerCenter ? (
-              <ModalFooter alignCenter={!!footerCenter}>
+              <ModalFooter alignCenter={!!footerCenter} style={{...modalFooterStyle}}>
                 {footerLeft ? <ModalFooterLeft>{footerLeft}</ModalFooterLeft> : null}
                 {footerRight ? <ModalFooterRight>{footerRight}</ModalFooterRight> : null}
               </ModalFooter>

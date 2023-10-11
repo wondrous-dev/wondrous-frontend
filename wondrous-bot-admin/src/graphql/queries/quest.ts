@@ -67,7 +67,7 @@ export const GET_ORG_LEVEL_REWARDS = gql`
         contractAddress
         type
       }
-  }
+    }
   }
 `;
 export const GET_ORG_QUEST_STATS = gql`
@@ -134,8 +134,8 @@ export const GET_SUBMISSIONS_FOR_QUEST = gql`
 `;
 
 export const GET_QUEST_SUBMISSION_STATS = gql`
-  query getQuestSubmissionStats($questId: ID!) {
-    getQuestSubmissionStats(questId: $questId) {
+  query getQuestSubmissionStats($questId: ID, $cmtyUserId: String, $orgId: ID) {
+    getQuestSubmissionStats(questId: $questId, cmtyUserId: $cmtyUserId, orgId: $orgId) {
       in_review
       approved
       rejected
@@ -170,6 +170,10 @@ export const GET_QUEST_REWARDS = gql`
         name
         contractAddress
         type
+        nftMetadataId
+        nftMetadata {
+          mediaUrl
+        }
       }
     }
   }
@@ -335,9 +339,42 @@ export const VERIFY_SNAPSHOT_SPACE_VOTE = gql`
 `;
 
 export const VERIFY_TOKEN_HOLDING = gql`
-  query verifyTokenHolding($telegramUserId:String, $tokenChain:String, $tokenAddress:String, $tokenAmount:String, $tokenType:String, $tokenDecimals:String) {
-    verifyTokenHolding(telegramUserId: $telegramUserId, tokenChain: $tokenChain, tokenAddress: $tokenAddress, tokenAmount: $tokenAmount, tokenType: $tokenType, tokenDecimals: $tokenDecimals) {
+  query verifyTokenHolding(
+    $telegramUserId: String
+    $tokenChain: String
+    $tokenAddress: String
+    $tokenAmount: String
+    $tokenType: String
+    $tokenDecimals: String
+  ) {
+    verifyTokenHolding(
+      telegramUserId: $telegramUserId
+      tokenChain: $tokenChain
+      tokenAddress: $tokenAddress
+      tokenAmount: $tokenAmount
+      tokenType: $tokenType
+      tokenDecimals: $tokenDecimals
+    ) {
       userHasTokens
+    }
+  }
+`;
+export const GET_QUEST_REFERRAL_LEADERBOARD = gql`
+  query getQuestReferralLeaderBoard($questId: ID!) {
+    getQuestReferralLeaderBoard(questId: $questId) {
+      referrerName
+      referrerDiscordUsername
+      referralCount
+      referralCode
+      referrerId
+    }
+  }
+`;
+
+export const GET_PERMISSION_TO_REWARD_ROLE = gql`
+  query getPermissionToRewardRole($roleId: String!, $guildId: String!) {
+    getPermissionToRewardRole(roleId: $roleId, guildId: $guildId) {
+      success
     }
   }
 `;

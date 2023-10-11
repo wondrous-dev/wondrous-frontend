@@ -13,6 +13,10 @@ export const CmtyPaymentMethodFragment = gql`
     symbol
     icon
     decimal
+    nftMetadataId
+    nftMetadata {
+      mediaUrl
+    }
   }
 `;
 
@@ -43,5 +47,27 @@ export const CmtyPaymentFragment = gql`
     submissionApprovedAt
     contractAddress
     contractType
+  }
+`;
+
+
+export const CommunityNFTFragment = gql`
+  fragment CommunityNFTFragment on CommunityNFT {
+    id
+    tokenId
+    chain
+    contractAddress
+    name
+    description
+    mediaUrl
+    externalUrl
+    attributes
+    maxSupply
+    unlockableContent
+    media {
+      slug
+      name
+      type
+    }
   }
 `;

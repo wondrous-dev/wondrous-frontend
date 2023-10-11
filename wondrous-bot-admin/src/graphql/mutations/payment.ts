@@ -51,3 +51,49 @@ export const MARK_CMTY_PAYMENT_TRANSACTION_AS_COMPLETE = gql`
     }
   }
 `;
+
+export const CREATE_COMMUNITY_NFT = gql`
+  mutation createCommunityNFT($input: CommunityNFTInput) {
+    createCommunityNFT(input: $input) {
+      id
+      tokenId
+      chain
+      contractAddress
+      name
+      description
+      mediaUrl
+      externalUrl
+      attributes
+      maxSupply
+      unlockableContent
+      media {
+        slug
+        name
+        type
+      }
+    }
+  }
+`;
+
+export const IMPORT_COMMUNITY_NFT = gql`
+  mutation importCommunityNFT($input: ImportNFTInput) {
+    importCommunityNFT(input: $input) {
+      id
+      tokenId
+      chain
+      contractAddress
+      name
+      description
+      mediaUrl
+      externalUrl
+      attributes
+      maxSupply
+      unlockableContent
+      media {
+        slug
+        name
+        type
+      }
+    }
+  }
+`;

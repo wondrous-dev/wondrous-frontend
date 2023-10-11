@@ -34,6 +34,7 @@ const CHANNEL_TYPE = {
   STICKY_MESSAGE: "sticky_message_channel",
   WELCOME_MESSAGE: "welcome_message_channel",
   GENERAL_NOTIFICATIONS: "general_notifications_channel",
+  SUBMISSION_NOTIFICATIONS: "submission_notifications_channel",
 };
 
 const MESSAGE_TYPE = {
@@ -60,6 +61,11 @@ const NOTIFICATIONS = [
     title: "General Notifications",
     description: "This channel will be used to post general notifications like new quests and quest reminders",
     channelType: CHANNEL_TYPE.GENERAL_NOTIFICATIONS,
+  },
+  {
+    title: "Submissions Notifications",
+    description: "This channel will be used to post notifications when members make submissions to quests",
+    channelType: CHANNEL_TYPE.SUBMISSION_NOTIFICATIONS,
   },
 ];
 
@@ -152,11 +158,12 @@ const NotificationSetting = (props) => {
   const [updateOrgDiscordAdditionalData] = useMutation(UPDATE_ORG_DISCORD_ADDITIONAL_DATA, {
     refetchQueries: [GET_GUILD_DISCORD_CHANNELS, GET_CMTY_ORG_DISCORD_CONFIG],
   });
-  const { title, description, orgDiscordAdditionaData, channelType, editMessageKey, channels, defaultMessage, orgId } =
+  const { title, description, orgDiscordAdditionalData, channelType, editMessageKey, channels, defaultMessage, orgId } =
     props;
-  const existingMessage = orgDiscordAdditionaData && orgDiscordAdditionaData[snakeToCamel(editMessageKey)];
-  const existingDiscordChannel = orgDiscordAdditionaData && orgDiscordAdditionaData[snakeToCamel(channelType)];
-  const existingToggleActive = orgDiscordAdditionaData && orgDiscordAdditionaData[`${snakeToCamel(channelType)}Active`];
+  const existingMessage = orgDiscordAdditionalData && orgDiscordAdditionalData[snakeToCamel(editMessageKey)];
+  const existingDiscordChannel = orgDiscordAdditionalData && orgDiscordAdditionalData[snakeToCamel(channelType)];
+  const existingToggleActive =
+    orgDiscordAdditionalData && orgDiscordAdditionalData[`${snakeToCamel(channelType)}Active`];
   const [message, setMessage] = useState("");
   const [discordChannel, setDiscordChannel] = useState(existingDiscordChannel);
   const [active, setActive] = useState(existingToggleActive);
@@ -191,7 +198,7 @@ const NotificationSetting = (props) => {
         setDiscordChannel={setDiscordChannel}
         message={message}
         setMessage={setMessage}
-        orgDiscordAdditionalData={orgDiscordAdditionaData}
+        orgDiscordAdditionalData={orgDiscordAdditionalData}
         orgId={orgId}
         channelType={channelType}
         editMessageKey={editMessageKey}
@@ -208,12 +215,16 @@ const NotificationSetting = (props) => {
             <NotificationSwitchInnerDiv
               active={active}
               onClick={() => {
+                if (!discordChannel) {
+                  setErrors("Please first select a channel");
+                  return;
+                }
                 updateOrgDiscordAdditionalData({
                   variables: {
                     orgId,
                     additionalData: {
-                      ...orgDiscordAdditionaData,
-                      [`${channelType}_active`]: !active,
+                      ...orgDiscordAdditionalData,
+                      [`${channelType}Active`]: !active,
                     },
                   },
                 });
@@ -233,8 +244,8 @@ const NotificationSetting = (props) => {
                   variables: {
                     orgId,
                     additionalData: {
-                      ...orgDiscordAdditionaData,
-                      [`${channelType}_active`]: !active,
+                      ...orgDiscordAdditionalData,
+                      [`${channelType}Active`]: !active,
                     },
                   },
                 });
@@ -324,7 +335,7 @@ const NotificationSettings = () => {
           <NotificationSetting
             {...notification}
             channels={channels}
-            orgDiscordAdditionaData={guildDiscordAdditionalData}
+            orgDiscordAdditionalData={guildDiscordAdditionalData}
             orgId={activeOrg?.id}
           />
         ))}

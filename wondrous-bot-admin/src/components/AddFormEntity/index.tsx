@@ -31,6 +31,10 @@ const COMPONENT_OPTIONS = [
     value: TYPES.TEXT_FIELD,
   },
   {
+    label: "Referral",
+    value: TYPES.REFERRAL,
+  },
+  {
     label: "Multiple Choice",
     value: TYPES.MULTI_QUIZ,
   },
@@ -104,7 +108,7 @@ COMPONENT_OPTIONS.push({
   value: TYPES.CUSTOM_ONCHAIN_ACTION,
 });
 let activeOrgPushed = false;
-const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemovedMediaSlugs }) => {
+const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { activeOrg } = useContext(GlobalContext);
   const [openEcosystemDialog, setOpenEcosystemDialog] = useState(false);
@@ -121,7 +125,6 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
       ...item,
       order: idx + 1,
     }));
-    stepCache.steps = orderedItems;
     setSteps(orderedItems);
   };
 
@@ -141,6 +144,8 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
     ) {
       setOpenEcosystemDialog(true);
       return;
+    }
+    if (type === TYPES.REFERRAL && idx > 0) {
     }
     setErrors((prev) => {
       return {
@@ -181,7 +186,6 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
       acc.push(next);
       return acc;
     }, []);
-    stepCache.steps = newConfiguration;
     setSteps(newConfiguration);
   };
 
@@ -209,7 +213,6 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
       acc.push(next);
       return acc;
     }, []);
-    stepCache.steps = newConfiguration;
     setSteps(newConfiguration);
   };
 
@@ -238,7 +241,6 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
       acc.push(next);
       return acc;
     }, []);
-    stepCache.steps = newConfiguration;
     setSteps(newConfiguration);
   };
 
@@ -257,7 +259,6 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
       acc.push(next);
       return acc;
     }, []);
-    stepCache.steps = newConfiguration;
     setSteps(newConfiguration);
   };
 
@@ -331,6 +332,8 @@ const AddFormEntity = ({ steps, setSteps, stepCache, handleRemove, refs, setRemo
                                     options={COMPONENT_OPTIONS}
                                     value={item.type}
                                     onChange={(value) => handleChangeType(value, item.order, idx)}
+                                    setSteps={setSteps}
+                                    order={idx + 1}
                                   />
                                 </Grid>
                                 <Grid display="flex" alignItems="center" gap="14px">

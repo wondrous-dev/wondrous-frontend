@@ -6,8 +6,8 @@ import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
-import { BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
-import { RewardComponent, RewardOverviewHeader } from "./RewardComponent";
+import { APEIRON_TYPES, BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
+import { RewardComponent } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
@@ -17,7 +17,7 @@ import { useNavigate } from "react-router";
 import { questValidator, ValidationError } from "services/validators";
 import { getPathArray, toCent } from "utils/common";
 import { set } from "lodash";
-import { transformAndUploadMedia } from "utils/media";
+import { handleMediaUpload, transformAndUploadMedia } from "utils/media";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { PAYMENT_OPTIONS } from "./RewardUtils";
 import { transformQuestConfig } from "utils/transformQuestConfig";
@@ -25,16 +25,12 @@ import useAlerts from "utils/hooks";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE, mapAnswersToOptions, reduceConditionalRewards } from "./utils";
 import { useTour } from "@reactour/tour";
 
-const stepCache = {
-  steps: null,
-};
 const CreateTemplate = ({
   setRefValue,
   displaySavePanel,
   defaultQuestSettings = DEFAULT_QUEST_SETTINGS_STATE_VALUE,
   questId = null,
   postUpdate = null,
-  title,
   getQuestById = null,
   defaultSteps = [],
 }) => {
@@ -54,16 +50,9 @@ const CreateTemplate = ({
 
   useEffect(() => {
     if (getQuestById) {
-      stepCache.steps = transformQuestConfig(getQuestById?.steps);
       setSteps(transformQuestConfig(getQuestById?.steps));
     }
   }, [getQuestById]);
-
-  useEffect(() => {
-    if (stepCache?.steps && steps?.length === 0) {
-      setSteps(stepCache.steps);
-    }
-  }, []);
 
   const { isOpen, setCurrentStep, currentStep, setSteps: setTourSteps, steps: tourSteps } = useTour();
 
@@ -103,10 +92,6 @@ const CreateTemplate = ({
   const handleRemove = (index) => {
     const newItems = [...steps];
     newItems.splice(index, 1);
-    stepCache.steps = newItems.map((item, idx) => ({
-      ...item,
-      order: idx + 1,
-    }));
     setSteps(
       newItems.map((item, idx) => ({
         ...item,
@@ -218,21 +203,6 @@ const CreateTemplate = ({
     });
   };
 
-  const handleMediaUpload = async (mediaUploads) =>
-    Promise.all(
-      mediaUploads.map(async (file) => {
-        try {
-          const { filename, fileType } = await transformAndUploadMedia({ file });
-          return {
-            uploadSlug: filename,
-            type: fileType,
-            name: file.name,
-          };
-        } catch (error) {
-          return null;
-        }
-      })
-    );
 
   const handleSave = async (status = null) => {
     if (Object.keys(errors).length > 0) {
@@ -249,11 +219,14 @@ const CreateTemplate = ({
       level,
       timeBound,
       isOnboarding,
+      title,
+      description,
     } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
     const body = {
       title,
+      description,
       orgId: activeOrg.id,
       isOnboarding,
       requireReview,
@@ -265,6 +238,7 @@ const CreateTemplate = ({
       startAt: startAt && timeBound ? startAt.utcOffset(0).startOf("day").toISOString() : null,
       endAt: endAt && timeBound ? endAt.utcOffset(0).endOf("day").toISOString() : null,
       pointReward: questSettings.rewards[0].value,
+      submissionCooldownPeriod: questSettings?.submissionCooldownPeriod,
       level: level ? parseInt(level, 10) : null,
       // TODO: refactor this
       rewards: questSettings.rewards
@@ -278,11 +252,11 @@ const CreateTemplate = ({
               },
               type: reward?.type,
             };
-          } else if (reward?.type === PAYMENT_OPTIONS.TOKEN) {
+          } else if (reward?.type === PAYMENT_OPTIONS.TOKEN || reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
             return {
-              type: reward?.type,
+              type: PAYMENT_OPTIONS.TOKEN,
               paymentMethodId: reward?.paymentMethodId,
-              amount: Number(reward?.amount),
+              amount: reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE ? null : Number(reward?.amount),
             };
           } else if (reward?.type === PAYMENT_OPTIONS.POAP) {
             const { __typename, ...rewardData } = reward?.poapRewardData;
@@ -292,7 +266,7 @@ const CreateTemplate = ({
             };
           }
         })
-        .filter((reward) => reward),
+        ?.filter((reward) => reward),
       steps: steps.reduce((acc, next, index) => {
         const step: any = {
           id: next?._id,
@@ -395,6 +369,8 @@ const CreateTemplate = ({
           step["additionalData"] = {
             usdValue: toCent(next.value),
           };
+        } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL || Object.values(APEIRON_TYPES).includes(next.type)) {
+          step.prompt = next.value;
         }
         return [...acc, step];
       }, []),
@@ -408,7 +384,7 @@ const CreateTemplate = ({
       handleMutation({ body });
 
       const hasMediaToUpload = steps.some(
-        (step) => step.mediaUploads.filter((media) => media instanceof File).length > 0
+        (step) => step.mediaUploads?.filter((media) => media instanceof File).length > 0
       );
 
       const hasMediaToRemove = Object.values(removedMediaSlugs).flat().length > 0;
@@ -457,6 +433,7 @@ const CreateTemplate = ({
       rewards,
     }));
   };
+  const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
   return (
     <>
       <Modal
@@ -512,21 +489,12 @@ const CreateTemplate = ({
               panelProps={{
                 "data-tour": "tutorial-quest-rewards",
               }}
-              renderHeader={() => <RewardOverviewHeader />}
+              renderHeader={null}
               renderBody={() => (
                 <RewardComponent
                   rewards={questSettings.rewards}
-                  onRewardsChange={onRewardsChange}
-                  renderRewardController={() => (
-                    <>
-                      <Divider color="#767676" />
-                      <Box>
-                        <SharedSecondaryButton onClick={handleRewardsToggle}>Add more</SharedSecondaryButton>
-                      </Box>
-                    </>
-                  )}
-                  handleRewardsToggle={handleRewardsToggle}
-                  isRewardModalOpen={isRewardModalOpen}
+                  setQuestSettings={setQuestSettings}
+                  hasReferralStep={hasReferralStep}
                 />
               )}
             />
@@ -542,35 +510,37 @@ const CreateTemplate = ({
             <AddFormEntity
               steps={steps}
               setSteps={setSteps}
-              stepCache={stepCache}
               handleRemove={handleRemove}
               refs={refs}
               setRemovedMediaSlugs={setRemovedMediaSlugs}
             />
-            <Panel
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              flexDirection="column"
-              gap="14px"
-              padding="14px 24px"
-              onClick={() => handleAdd(TYPES.TEXT_FIELD)}
-              sx={{
-                cursor: "pointer",
-              }}
-            >
-              <RoundedSecondaryButton>
-                <AddIcon
-                  sx={{
-                    color: "black",
-                    fontSize: "14px",
-                  }}
-                />
-              </RoundedSecondaryButton>
-              <Typography color="black" fontFamily="Poppins" fontWeight={600} fontSize="15px" lineHeight="15px">
-                Add new block
-              </Typography>
-            </Panel>
+            {!hasReferralStep && (
+              <Panel
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                flexDirection="column"
+                gap="14px"
+                padding="14px 24px"
+                onClick={() => handleAdd(TYPES.TEXT_FIELD)}
+                sx={{
+                  cursor: "pointer",
+                }}
+              >
+                <RoundedSecondaryButton>
+                  <AddIcon
+                    sx={{
+                      color: "black",
+                      fontSize: "14px",
+                    }}
+                  />
+                </RoundedSecondaryButton>
+                <Typography color="black" fontFamily="Poppins" fontWeight={600} fontSize="15px" lineHeight="15px">
+                  Add new block
+                </Typography>
+              </Panel>
+            )}
+
             {displaySavePanel ? (
               <Grid
                 position="fixed"

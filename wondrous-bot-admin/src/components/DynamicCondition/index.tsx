@@ -5,34 +5,42 @@ import { CustomTextField, Label } from "components/AddFormEntity/components/styl
 import AutocompleteComponent from "components/Autocomplete";
 import CloseModalIcon from "components/Icons/CloseModal";
 import SelectComponent from "components/Shared/Select";
+import Switch from "components/Shared/Switch";
 import { GET_QUESTS_FOR_ORG } from "graphql/queries";
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { getTextForCondition } from "utils/common";
-import { QUEST_CONDITION_TYPES, QUEST_STATUSES } from "utils/constants";
+import { CONDITION_TYPES, QUEST_STATUSES } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { useDiscordRoles } from "utils/discord";
+import AddIcon from "@mui/icons-material/Add";
+import { ButtonIconWrapper } from "components/Shared/styles";
+import useLevels from "utils/levels/hooks";
 
 const CONDITION_MAP = [
   {
-    value: QUEST_CONDITION_TYPES.DISCORD_ROLE,
+    value: CONDITION_TYPES.DISCORD_ROLE,
     label: "Discord Role",
   },
   {
-    value: QUEST_CONDITION_TYPES.QUEST,
+    value: CONDITION_TYPES.QUEST,
     label: "Quest",
+  },
+  {
+    value: CONDITION_TYPES.LEVEL,
+    label: "Level",
   },
 ];
 
 const CONDITION_VALUES = {
-  [QUEST_CONDITION_TYPES.DISCORD_ROLE]: "discordRoleId",
-  [QUEST_CONDITION_TYPES.QUEST]: "questId",
+  [CONDITION_TYPES.DISCORD_ROLE]: "discordRoleId",
+  [CONDITION_TYPES.QUEST]: "questId",
+  [CONDITION_TYPES.LEVEL]: "minLevel",
 };
 
-const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
+const FilterGroup = ({ condition, handleChange, options, handleClose, typeOptions }) => {
   const handleConditionDataChange = (value) => {
     let additionalParams: any = {};
-
-    const isDiscordCondition = condition.type === QUEST_CONDITION_TYPES.DISCORD_ROLE;
+    const isDiscordCondition = condition.type === CONDITION_TYPES.DISCORD_ROLE;
 
     if (isDiscordCondition) {
       const discordGuildId = options.find((item) => item.value === value)?.discordGuildId;
@@ -42,20 +50,22 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
       [CONDITION_VALUES[condition.type]]: value,
       ...additionalParams,
     });
-    handleClose({
-      type: condition.type,
-      conditionData: {
-        [CONDITION_VALUES[condition.type]]: value,
-        ...additionalParams,
-      },
-    });
+    if (isDiscordCondition) {
+      handleClose({
+        type: condition.type,
+        conditionData: {
+          [CONDITION_VALUES[condition.type]]: value,
+          ...additionalParams,
+        },
+      });
+    }
   };
   return (
     <Box display="flex" gap="6px" alignItems="center">
       <Label>Where</Label>
       <Box minWidth="150px">
         <SelectComponent
-          options={CONDITION_MAP}
+          options={typeOptions}
           onChange={(value) => {
             handleChange("type", value);
             handleChange("conditionData", null);
@@ -70,17 +80,46 @@ const FilterGroup = ({ condition, handleChange, options, handleClose }) => {
           value={condition.value || condition.conditionData?.[CONDITION_VALUES[condition.type]]}
         />
       </Box>
+      {condition.type === CONDITION_TYPES.QUEST && (
+        <>
+          <Label marginLeft="8px">Exclude Quest</Label>
+          <Switch
+            onChange={() => {
+              if (condition?.conditionData?.exclusiveQuest) {
+                handleChange("conditionData", {
+                  ...condition?.conditionData,
+                  exclusiveQuest: false,
+                });
+              } else {
+                handleChange("conditionData", {
+                  ...condition?.conditionData,
+                  exclusiveQuest: true,
+                });
+              }
+            }}
+            value={condition?.conditionData?.exclusiveQuest}
+          />
+        </>
+      )}
     </Box>
   );
 };
 
-const DynamicCondition = ({ value, setQuestSettings }) => {
+const DynamicCondition = ({ value, handleUpdate, options, stateKey }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { activeOrg } = useContext(GlobalContext);
 
-  const [condition, setConditions] = useState({
-    type: value?.type || null,
-    conditionData: value?.conditionData || null,
+  const fetchConditions = useMemo(() => {
+    return {
+      [CONDITION_TYPES.QUEST]: options.includes(CONDITION_TYPES.QUEST),
+      [CONDITION_TYPES.DISCORD_ROLE]: options.includes(CONDITION_TYPES.DISCORD_ROLE),
+      [CONDITION_TYPES.LEVEL]: options.includes(CONDITION_TYPES.LEVEL),
+    };
+  }, [options]);
+
+  const [condition, setCondition] = useState({
+    type: null,
+    conditionData: null,
   });
 
   const { data: getQuests } = useQuery(GET_QUESTS_FOR_ORG, {
@@ -90,23 +129,39 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
         limit: 500,
         status: QUEST_STATUSES.OPEN,
       },
+      skip: fetchConditions[CONDITION_TYPES.QUEST] ? false : true,
     },
   });
 
   const ref = useRef();
+
   const handleClickAway = (data = null) => {
     if (!isOpen) return;
-    let conditionItem = data || condition;
-    setQuestSettings((prev) => ({
-      ...prev,
-      questConditions: [conditionItem],
-    }));
-
     setIsOpen(false);
+    let conditionItem = data?.conditionData ? data : condition;
+
+    if(!conditionItem?.conditionData || !conditionItem?.type) return;
+    handleUpdate((prev) => {
+      const prevState = prev[stateKey] || [];
+      return {
+        ...prev,
+        [stateKey]: [...prevState, conditionItem],
+      }
+    });
+    setCondition({
+      type: null,
+      conditionData: null,
+    });
   };
 
   const roles = useDiscordRoles({
     orgId: activeOrg?.id,
+    skip: fetchConditions[CONDITION_TYPES.DISCORD_ROLE] ? false : true,
+  });
+
+  const { levels } = useLevels({
+    orgId: activeOrg?.id,
+    shouldFetch: fetchConditions[CONDITION_TYPES.LEVEL],
   });
 
   const openPopper = () => {
@@ -114,14 +169,14 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
   };
 
   const handleChange = (key, value) =>
-    setConditions((prev) => ({
+    setCondition((prev) => ({
       ...prev,
       [key]: value,
     }));
 
   const getOptionsForCondition = useCallback(
     (type) => {
-      if (type === QUEST_CONDITION_TYPES.DISCORD_ROLE) {
+      if (type === CONDITION_TYPES.DISCORD_ROLE) {
         const allRoles = roles
           .map((role) =>
             role.roles.map((newRole) => ({
@@ -137,12 +192,18 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
         }));
       }
 
-      if (type === QUEST_CONDITION_TYPES.QUEST) {
+      if (type === CONDITION_TYPES.QUEST) {
         const quests = getQuests?.getQuestsForOrg?.map((quest) => ({
           value: quest.id,
           label: quest.title,
         }));
         return quests;
+      }
+      if (type === CONDITION_TYPES.LEVEL) {
+        return Object.keys(levels).map((key) => ({
+          label: levels[key],
+          value: parseInt(key),
+        }));
       }
       return [
         {
@@ -151,27 +212,56 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
         },
       ];
     },
-    [getQuests, roles]
+    [getQuests, roles, levels]
   );
 
-  const nameForConditionValue = useMemo(() => {
+  const nameForConditionValue = (condition) => {
     const item = getOptionsForCondition(condition?.type)?.find((item) => {
       return item.value === condition?.conditionData?.[CONDITION_VALUES[condition?.type]];
     });
     return item?.label;
-  }, [condition, roles, getOptionsForCondition]);
+  };
 
-  const onResetClick = () => {
-    setConditions({
+  const addCondition = () => {
+    const hasCondition = value.some((item) => {
+      if (
+        item.type === condition.type &&
+        item.conditionData[CONDITION_VALUES[condition.type]] === condition[CONDITION_VALUES[condition.type]]
+      ) {
+        return true;
+      }
+      return false;
+    });
+    if (!hasCondition) {
+      handleUpdate((prev) => ({
+        ...prev,
+        key: [...prev[stateKey], condition],
+      }));
+    }
+    handleClickAway();
+    setCondition({
       type: null,
       conditionData: null,
     });
-    setQuestSettings((prev) => ({
-      ...prev,
-      questConditions: [],
-    }));
-    setIsOpen(false);
   };
+
+  const removeCondition = (condition) => {
+    const { type, conditionData } = condition;
+    const newConditions = value?.filter((item) => {
+      if (item.type === type && item.conditionData[CONDITION_VALUES[type]] === conditionData[CONDITION_VALUES[type]]) {
+        return false;
+      }
+      return true;
+    });
+    handleUpdate((prev) => ({
+      ...prev,
+      [stateKey]: newConditions,
+    }));
+  };
+
+  const typeOptions = useMemo(() => {
+    return CONDITION_MAP.filter((item) => options.includes(item.value));
+  }, [options]);
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
       <div>
@@ -181,14 +271,48 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
             placeholder="Add Condition"
             ref={ref}
             value={getTextForCondition({
-              type: condition.type,
-              name: nameForConditionValue,
+              type: condition?.type,
+              name: nameForConditionValue(condition),
+              exclusiveQuest: condition?.conditionData?.exclusiveQuest,
             })}
           />
-          <ButtonBase onClick={onResetClick}>
+          <ButtonIconWrapper
+            style={{
+              height: "30px",
+              width: "35px",
+              marginLeft: "8px",
+            }}
+            onClick={addCondition}
+          >
+            <AddIcon
+              sx={{
+                color: "black",
+              }}
+            />
+          </ButtonIconWrapper>
+          {/* <ButtonBase onClick={onResetClick}>
             <CloseModalIcon strokeColor="black" />
-          </ButtonBase>
+          </ButtonBase> */}
         </Box>
+        {value?.map((conditionItem) => (
+          <Box display="flex" alignItems="center" gap="4px" marginTop="12px">
+            <CustomTextField
+              disabled
+              style={{
+                color: "grey",
+              }}
+              placeholder="Add Condition"
+              value={getTextForCondition({
+                type: conditionItem.type,
+                name: nameForConditionValue(conditionItem),
+                exclusiveQuest: conditionItem?.conditionData?.exclusiveQuest,
+              })}
+            />
+            <ButtonBase onClick={() => removeCondition(conditionItem)}>
+              <CloseModalIcon strokeColor="black" />
+            </ButtonBase>
+          </Box>
+        ))}
         <Popper
           open={isOpen}
           onClick={(e) => e.stopPropagation()}
@@ -213,6 +337,7 @@ const DynamicCondition = ({ value, setQuestSettings }) => {
             <FilterGroup
               condition={condition}
               handleChange={handleChange}
+              typeOptions={typeOptions}
               handleClose={handleClickAway}
               options={getOptionsForCondition(condition.type)}
             />

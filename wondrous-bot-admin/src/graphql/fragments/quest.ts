@@ -13,6 +13,7 @@ export const QuestListFragment = gql`
     startAt
     endAt
     maxSubmission
+    submissionCooldownPeriod
     requireReview
     maxApproval
     submissionsCount {
@@ -37,6 +38,7 @@ export const QuestFragment = gql`
     level
     startAt
     endAt
+    submissionCooldownPeriod
     maxSubmission
     isOnboarding
     maxApproval
@@ -60,6 +62,7 @@ export const QuestFragment = gql`
         discordRoleId
         discordGuildId
         questId
+        exclusiveQuest
       }
     }
     steps {
@@ -104,6 +107,10 @@ export const QuestFragment = gql`
             name
             contractAddress
             type
+            nftMetadataId
+            nftMetadata {
+              mediaUrl
+            }
           }
         }
       }

@@ -11,6 +11,9 @@ export const DEFAULT_QUEST_SETTINGS_STATE_VALUE = {
   startAt: null,
   endAt: null,
   questConditions: [],
+  title: "",
+  description: "",
+  submissionCooldownPeriod: null,
   rewards: [
     {
       value: 0,
@@ -31,7 +34,7 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
   if (!answer.rewards?.length) return [];
 
   return answer.rewards
-    .map((reward) => {
+    ?.map((reward) => {
       switch (reward?.type) {
         case PAYMENT_OPTIONS.DISCORD_ROLE:
           return {
@@ -43,10 +46,11 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
             type: reward?.type,
           };
         case PAYMENT_OPTIONS.TOKEN:
+        case PAYMENT_OPTIONS.COMMUNITY_BADGE:
           return {
-            type: reward?.type,
+            type: PAYMENT_OPTIONS.TOKEN,
             paymentMethodId: reward?.paymentMethodId,
-            amount: Number(reward?.amount),
+            amount: reward?.paymentMethod === PAYMENT_OPTIONS.COMMUNITY_BADGE ? null : reward?.amount,
           };
         case PAYMENT_OPTIONS.POAP:
           const { __typename, ...rewardData } = reward?.poapRewardData || {};
@@ -58,7 +62,7 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
           return null;
       }
     })
-    .filter((reward) => reward);
+    ?.filter((reward) => reward);
 };
 
 export const reduceConditionalRewards = (acc: any[], answer: any) => {
@@ -67,4 +71,25 @@ export const reduceConditionalRewards = (acc: any[], answer: any) => {
     acc.push({ optionText: answer.value?.trim(), rewardData: rewards });
   }
   return acc;
+};
+
+export const DEFAULT_PAYMENT_METHOD = {
+  id: null,
+  tokenName: null,
+  contractAddress: null,
+  symbol: null,
+  icon: null,
+  type: null,
+  chain: null,
+  amount: null,
+};
+
+export const TOKEN_ADDRESS_DEFAULT_STATE = {
+  tokenName: null,
+  contractAddress: null,
+  symbol: null,
+  icon: null,
+  type: null,
+  chain: null,
+  amount: null,
 };

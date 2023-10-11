@@ -47,6 +47,14 @@ import PaywallContext from "utils/context/PaywallContext";
 import ConnectPage from "pages/settings/connect";
 import TelegramStatQuest from "pages/telegram/start-quest";
 import PaywallContextProvider from "utils/context/PaywallContext";
+import ReferralComponent from "components/Referral";
+import DiscordCallbackReferralUserConnect from "pages/discord/callback/referral-user-connect";
+import TelegramConnect from "pages/telegram/connect";
+import StorePage from "pages/store";
+import CreateStoreItem from "pages/store/CreateStoreItem";
+import StoreItem from "pages/store/StoreItem";
+import CommunityNFTSettingsPage from "pages/settings/nft";
+import CommunityBadgeClaimPage from "pages/community-badge/claim";
 
 const router = createBrowserRouter([
   {
@@ -81,6 +89,10 @@ const router = createBrowserRouter([
         element: <ConnectPage />,
       },
       {
+        path: "/settings/nft",
+        element: <CommunityNFTSettingsPage />
+      },
+      {
         path: "/",
         element: <Home />,
       },
@@ -103,6 +115,10 @@ const router = createBrowserRouter([
       {
         path: "/quests/view/:id",
         element: <ViewQuest />,
+      },
+      {
+        path: "/referral",
+        element: <ReferralComponent />,
       },
       {
         path: "/members",
@@ -135,6 +151,10 @@ const router = createBrowserRouter([
       {
         path: "/discord/callback/cmty-user-connect",
         element: <DiscordCallbackCmtyUserConnect />,
+      },
+      {
+        path: "/discord/callback/referral",
+        element: <DiscordCallbackReferralUserConnect />,
       },
       {
         path: "/signup",
@@ -172,6 +192,26 @@ const router = createBrowserRouter([
         path: "/telegram/start-quest/:id",
         element: <TelegramStatQuest />,
       },
+      {
+        path: "/telegram/connect",
+        element: <TelegramConnect />,
+      },
+      {
+        path: '/store',
+        element: <StorePage />
+      },
+      {
+        path: '/store/items/create',
+        element: <CreateStoreItem />
+      },
+      {
+        path: '/store/items/:id',
+        element: <StoreItem />
+      },
+      {
+        path: '/community-badge/claim',
+        element: <CommunityBadgeClaimPage />
+      }
     ],
   },
 ]);

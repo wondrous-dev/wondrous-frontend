@@ -12,6 +12,7 @@ import GetYoutubeLikesImage from "assets/questTemplatesImages/getYoutubeLikes.jp
 import HaveMembersInviteFriendsImage from "assets/questTemplatesImages/haveMembersInviteFriends.jpeg";
 import HostAContentContestImage from "assets/questTemplatesImages/hostAContentContest.jpeg";
 import IncreaseTwitterFollowersImage from "assets/questTemplatesImages/increaseTwitterFollowers.jpeg";
+import ReferralsImage from "assets/questTemplatesImages/referralsthumbnail.png";
 import LaunchAMemeContestImage from "assets/questTemplatesImages/launchAMemeContest.jpeg";
 import LaunchSnapshotProposalImage from "assets/questTemplatesImages/launchSnapshotProposal.jpeg";
 import OnboardYourCommunityImage from "assets/questTemplatesImages/onboardYourCommunity.jpeg";
@@ -24,6 +25,7 @@ import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsL
 import React, { Suspense, useState } from "react";
 import { TYPES } from "utils/constants";
 import { usePaywall, useSubscription } from "utils/hooks";
+import { scrollbarStyles } from "components/Shared/styles";
 
 const EcosystemFeature = React.lazy(() => import("components/PremiumFeatureDialog/ecosystem"));
 
@@ -74,6 +76,19 @@ const questTemplates: {
       {
         type: rewardTypePoints,
         value: 10,
+      },
+    ],
+  },
+  createReferrals: {
+    title: "Refer a friend to join and complete quests!",
+    label: "Create Referral system",
+    image: ReferralsImage,
+    category: questTemplateCategories.community,
+    steps: [{ type: TYPES.REFERRAL }],
+    rewards: [
+      {
+        type: rewardTypePoints,
+        value: 5,
       },
     ],
   },
@@ -442,8 +457,8 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
         ...prev.questSettings,
         rewards,
         requireReview,
+        title,
       },
-      title,
     }));
   };
 
@@ -599,23 +614,7 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
             sx={{
               overflowY: "auto",
               overflowX: "hidden",
-              "&::-webkit-scrollbar": {
-                WebkitAppearance: "none",
-                background: " #fff",
-                width: "20px",
-              },
-              "&::-webkit-scrollbar-track": {
-                background: "rgba(0, 0, 0, 0.20);",
-                border: "6px solid transparent",
-                backgroundClip: "padding-box",
-                borderRadius: "20px",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                border: "6px solid transparent",
-                background: "#2A8D5C",
-                backgroundClip: "padding-box",
-                borderRadius: "100px",
-              },
+              ...scrollbarStyles,
             }}
           >
             <List

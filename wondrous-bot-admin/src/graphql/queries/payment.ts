@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
-import { CmtyPaymentFragment, CmtyPaymentMethodFragment } from "graphql/fragments/payment";
+import { CmtyPaymentFragment, CmtyPaymentMethodFragment, CommunityNFTFragment } from "graphql/fragments/payment";
 
 export const GET_CMTY_PAYMENT_METHODS_FOR_ORG = gql`
-  query getCmtyPaymentMethodsForOrg($orgId: ID!, $includeDeactivated: Boolean) {
-    getCmtyPaymentMethodsForOrg(orgId: $orgId, includeDeactivated: $includeDeactivated) {
+  query getCmtyPaymentMethodsForOrg($orgId: ID!, $includeDeactivated: Boolean, $includeCommunityBadges: Boolean) {
+    getCmtyPaymentMethodsForOrg(orgId: $orgId, includeDeactivated: $includeDeactivated, includeCommunityBadges: $includeCommunityBadges) {
       ...CmtyPaymentMethodFragment
     }
   }
@@ -69,7 +69,6 @@ export const GET_CMTY_PAYMENT_COUNTS = gql`
   }
 `;
 
-
 export const GET_UNPAID_CMTY_PAYMENTS_FOR_ORG = gql`
   query getUnpaidCmtyPaymentsForOrg($input: CmtyPaymentQueryInput) {
     getUnpaidCmtyPaymentsForOrg(input: $input) {
@@ -95,4 +94,50 @@ export const GET_PROCESSING_CMTY_PAYMENTS_FOR_ORG = gql`
     }
   }
   ${CmtyPaymentFragment}
+`;
+
+export const GET_COMMUNITY_NFTS_FOR_ORG = gql`
+  query getCommunityNFTsForOrg($orgId: ID!) {
+    getCommunityNFTsForOrg(orgId: $orgId) {
+      ...CommunityNFTFragment
+    }
+  }
+  ${CommunityNFTFragment}
+`;
+
+export const GET_COMMUNITY_NFT_BY_TOKEN_ID = gql`
+  query getCommunityNFTByTokenID($tokenId: ID!) {
+    getCommunityNFTByTokenID(tokenId: $tokenId) {
+      ...CommunityNFTFragment
+    }
+  }
+  ${CommunityNFTFragment}
+`;
+
+export const GET_CMTY_USER_NFT_METADATA = gql`
+  query getCmtyUserNftMetadata($signature: String!, $cmtyUserId: String!, $tokenId: String!) {
+    getCmtyUserNftMetadata(signature: $signature, cmtyUserId: $cmtyUserId, tokenId: $tokenId) {
+      orgId
+      chain
+      receiverAddress
+      name
+      mediaUrl
+      cmtyUserUsername
+      cmtyUserDiscordUsername
+      nonce
+      org {
+        name
+        profilePicture
+      }
+    }
+  }
+`;
+
+export const GET_COMMUNITY_NFT_BY_METADATA_ID = gql`
+  query getCmtyNFTByMetadataId($nftMetadataId: ID!) {
+    getCmtyNFTByMetadataId(nftMetadataId: $nftMetadataId) {
+      ...CommunityNFTFragment
+    }
+  }
+  ${CommunityNFTFragment}
 `;

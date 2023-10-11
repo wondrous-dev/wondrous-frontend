@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { OrgInviteFragment } from "graphql/fragments/org";
+import { OrgFragment, OrgInviteFragment } from "graphql/fragments/org";
 
 export const GET_CMTY_ORG_DISCORD_CONFIG = gql`
   query getCmtyOrgDiscordConfig($orgId: ID!) {
@@ -23,6 +23,8 @@ export const GET_CMTY_ORG_DISCORD_CONFIG = gql`
         stickyMessageChannelActive
         welcomeMessageChannelActive
         parentChannel
+        submissionNotificationsChannel
+        submissionNotificationsChannelActive
       }
     }
   }
@@ -89,4 +91,13 @@ export const GET_ORG_DISCORD_INVITE_LINK = gql`
       link
     }
   }
+`;
+
+export const GET_ORG_BY_REFERRAL_CODE = gql`
+  query getOrgByReferralCode($referralCode: String!) {
+    getOrgByReferralCode(referralCode: $referralCode) {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
 `;

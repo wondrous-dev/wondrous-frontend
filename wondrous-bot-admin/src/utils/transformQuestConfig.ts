@@ -1,4 +1,4 @@
-import { DATA_COLLECTION_TYPES, TYPES } from "./constants";
+import { APEIRON_TYPES, DATA_COLLECTION_TYPES, TYPES } from "./constants";
 
 type InputQuestStep = {
   type: string;
@@ -143,23 +143,25 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       value: "",
       mediaUploads: step?.media || [],
     };
-
     if (step.type === TYPES.TEXT_FIELD || step.type === TYPES.NUMBER || step.type === TYPES.ATTACHMENTS) {
       outputStep.value = step.prompt;
     } else if ([TYPES.SINGLE_QUIZ, TYPES.MULTI_QUIZ].includes(step.type)) {
       const hasCorrectAnswer = step.options?.some((option) => option.correct !== null && option.correct !== undefined);
+      const hasStepConditionalRewards = step.conditionalRewards?.length > 0;
+      const defaultRewardsIfConditionalRewardsIsOn = hasStepConditionalRewards ? [{ type: null }] : [];
       outputStep.value = {
         question: step.prompt,
-        withConditionalRewards: step.conditionalRewards?.length > 0,
+        withConditionalRewards: hasStepConditionalRewards,
         withCorrectAnswers: hasCorrectAnswer,
         multiSelectValue: step.type,
         answers: step.options?.map((option) => ({
           value: option.text,
-          rewards: step?.conditionalRewards?.find((item) => item.optionText === option.text)?.rewardData || [],
+          rewards:
+            step?.conditionalRewards?.find((item) => item.optionText === option.text)?.rewardData ||
+            defaultRewardsIfConditionalRewardsIsOn,
           ...(hasCorrectAnswer
             ? {
                 isCorrect: option.correct,
-
               }
             : {}),
         })),
@@ -232,6 +234,14 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       };
     } else if (step.type === TYPES.LIFI_VALUE_BRIDGED) {
       outputStep.value = Number(step?.additionalData?.usdValue) / 100;
+    } else if (
+      step.type === TYPES.MIGRATE_ORIGIN_USERS ||
+      step.type === TYPES.VERIFY_MARKETSFLARE_TRIAL ||
+      Object.values(APEIRON_TYPES).includes(step.type)
+    ) {
+      outputStep.value = step?.prompt;
+    } else if (step.type === TYPES.REFERRAL) {
+      outputStep.value = step?.prompt;
     } else if (step.type === TYPES.DATA_COLLECTION) {
       const dataCollectionType = step?.additionalData?.dataCollectionType;
       outputStep.value = {

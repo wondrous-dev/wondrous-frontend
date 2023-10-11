@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_CMTY_ENTITIES_COUNT = gql`
-  query getCmtyEntitiesCount($orgId: String, $startDate: String, $endDate: String) {
-    getCmtyEntitiesCount(orgId: $orgId, startDate: $startDate, endDate: $endDate) {
+  query getCmtyEntitiesCount($orgId: String, $startDate: String, $endDate: String, $cmtyUserId: String) {
+    getCmtyEntitiesCount(orgId: $orgId, startDate: $startDate, endDate: $endDate, cmtyUserId: $cmtyUserId) {
       date
       counts {
         discordInteraction
@@ -14,8 +14,8 @@ export const GET_CMTY_ENTITIES_COUNT = gql`
 `;
 
 export const GET_SUBMISSION_REPORTS = gql`
-  query getQuestsSubmissionsReport($orgId: String, $startDate: String, $endDate: String) {
-    getQuestsSubmissionsReport(orgId: $orgId, startDate: $startDate, endDate: $endDate) {
+  query getQuestsSubmissionsReport($orgId: String, $startDate: String, $endDate: String, $questId: String) {
+    getQuestsSubmissionsReport(orgId: $orgId, startDate: $startDate, endDate: $endDate, questId: $questId) {
       date
       counts {
         total
@@ -48,8 +48,8 @@ export const GET_CMTY_PRESENCE_ANALYTICS = gql`
 `;
 
 export const GET_QUEST_LEADERBOARD = gql`
-  query getQuestsAnalyticsLeaderboard($orgId: String, $startDate: String, $endDate: String, $limit: Int, $offset: Int) {
-    getQuestsAnalyticsLeaderboard(orgId: $orgId, startDate: $startDate, endDate: $endDate, limit: $limit, offset: $offset) {
+  query getQuestsAnalyticsLeaderboard($orgId: String, $startDate: String, $endDate: String, $limit: Int, $offset: Int, $sortKey: String, $order: String) {
+    getQuestsAnalyticsLeaderboard(orgId: $orgId, startDate: $startDate, endDate: $endDate, limit: $limit, offset: $offset, sortKey:$sortKey, order: $order) {
       id
       createdAt
       createdBy
@@ -100,6 +100,24 @@ export const GET_CMTY_ANALYTICS_CARDS = gql`
       allTimeQuestCompletions
       rewards,
       allTimeRewards
+    }
+  }
+`;
+
+export const GET_CMTY_USERS_LEADERBOARD = gql`
+  query getCmtyUsersLeaderboard($orgId: String, $limit: Int, $offset: Int) {
+    getCmtyUsersLeaderboard(orgId: $orgId, limit: $limit, offset: $offset) {
+      id
+      discordUsername
+      discordDiscriminator
+      level
+      messages
+      reactions
+      submissions
+      telegramUsername
+      username
+      web3Address
+      points
     }
   }
 `;
