@@ -116,7 +116,7 @@ const handleAddTokenOnModal = ({
           symbol: newReward?.symbol,
           icon: newReward?.icon,
           chain: newReward?.chain,
-          type: newReward?.type.toUpperCase(),
+          type: 'ERC20'
         },
       },
     })
@@ -402,14 +402,14 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
       rewardType: rewardType,
       onClick: () => {
         setRewardType(PAYMENT_OPTIONS.TOKEN);
-        if (plan === PricingOptionsTitle.Basic) {
-          setPaywall(true);
-          setPaywallMessage("This reward option is not available under the basic plan.");
-          setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
-          return;
-        } else {
-          setRewardType(PAYMENT_OPTIONS.TOKEN);
-        }
+        // if (plan === PricingOptionsTitle.Basic) {
+        //   setPaywall(true);
+        //   setPaywallMessage("This reward option is not available under the basic plan.");
+        //   setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
+        //   return;
+        // } else {
+        //   setRewardType(PAYMENT_OPTIONS.TOKEN);
+        // }
       },
       Icon: TokensIcon,
       text: "Token reward",
