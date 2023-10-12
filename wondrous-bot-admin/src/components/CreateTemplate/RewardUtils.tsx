@@ -27,6 +27,7 @@ import {
 } from "./styles";
 import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 import { useCommunityBadgePaymentMethods } from "./shared";
+import TokenStoreItem from "components/CreateStoreItem/components/TokenStoreItem";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -37,8 +38,8 @@ export const PAYMENT_OPTIONS = {
 
 const REWARD_TYPES = [
   { label: "ERC20", value: "erc20" },
-  { label: "ERC721", value: "erc721" },
-  { label: "ERC1155", value: "erc1155" },
+  // { label: "ERC721", value: "erc721" },
+  // { label: "ERC1155", value: "erc1155" },
 ];
 
 const isDev = !import.meta.env.VITE_PRODUCTION;
@@ -54,7 +55,7 @@ export const TokenComponent = ({
   setEditPaymentMethod = null,
   errors,
   options = REWARD_TYPES,
-  withAmount = true
+  withAmount = true,
 }) => {
   if (paymentMethod && !editPaymentMethod?.id) {
     return (
@@ -102,9 +103,11 @@ export const TokenComponent = ({
         error={errors?.chain}
       />
       <Label>Token type</Label>
+      
       <SelectComponent
         options={options}
-        value={editPaymentMethod?.id ? editPaymentMethod?.type : tokenReward?.type}
+        disabled
+        value={editPaymentMethod?.id && editPaymentMethod?.type ? editPaymentMethod?.type : 'erc20'}
         onChange={(value) => {
           if (editPaymentMethod?.id) {
             setEditPaymentMethod({
@@ -303,7 +306,6 @@ export const CHAIN_SELECT_OPTIONS = [
 ];
 
 export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPaymentMethod, index }) => {
-  
   return (
     <PaymentMethodRowContainer>
       <PaymentMethodRowHeader>
@@ -445,7 +447,7 @@ export const RewardMethod = ({
     nextFetchPolicy: "cache-and-network",
   });
 
-  const { data: cmtyBadgePaymentMethods, options } = useCommunityBadgePaymentMethods({
+  const { data: cmtyBadgePaymentMethods, refetch } = useCommunityBadgePaymentMethods({
     shouldFetch: rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE,
     asOptions: true,
   });
@@ -468,18 +470,22 @@ export const RewardMethod = ({
   }
 
   if (rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
+    const handleTokenStoreItemChange = async (value) => {
+      const existingMethod = cmtyBadgePaymentMethods?.find((method) => method.nftMetadataId === value.id);
+      if (!existingMethod && value.id) {
+        const { data } = await refetch();
+        const selectedPaymentMethod = data?.getCmtyPaymentMethodsForOrg?.find(
+          (method) => method.nftMetadataId === value.id || method.id === value.id
+        );
+        return setPaymentMethod(selectedPaymentMethod);
+      }
+      setPaymentMethod(existingMethod);
+    };
+
     return (
       <>
         <Label>Select NFT</Label>
-        <SelectComponent
-          options={options}
-          value={paymentMethod?.id}
-          onChange={(value) => {
-            const selectedPaymentMethod = cmtyBadgePaymentMethods?.find((method) => method.id === value);
-
-            setPaymentMethod(selectedPaymentMethod);
-          }}
-        />
+        <TokenStoreItem onChange={handleTokenStoreItemChange} value={paymentMethod?.nftMetadataId} />
       </>
     );
   }
@@ -792,7 +798,7 @@ export const RewardFooterLeftComponent = ({
                 contractAddress: editPaymentMethod?.contractAddress,
                 tokenName: editPaymentMethod?.tokenName,
                 chain: editPaymentMethod?.chain,
-                type: editPaymentMethod?.type.toUpperCase(),
+                type: 'ERC20',
               },
             },
           }).then(() => {
@@ -1028,7 +1034,10 @@ export const RewardsComponent = ({ rewards, rewardComponents }) => {
   return (
     <>
       {rewards?.map((reward, idx) => {
-        const { Component, handleOnRemove } = reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE ? rewardComponents[PAYMENT_OPTIONS.COMMUNITY_BADGE] : rewardComponents[reward?.type];
+        const { Component, handleOnRemove } =
+          reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE
+            ? rewardComponents[PAYMENT_OPTIONS.COMMUNITY_BADGE]
+            : rewardComponents[reward?.type];
         return (
           <Grid container alignItems="center" justifyContent="space-between" gap="14px">
             <Grid item container flex="1">

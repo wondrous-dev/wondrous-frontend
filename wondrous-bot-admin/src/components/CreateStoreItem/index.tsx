@@ -2,7 +2,7 @@ import { Box, Grid } from "@mui/material";
 import { CampaignOverviewHeader } from "components/CreateTemplate/CampaignOverview";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import PageWrapper from "components/Shared/PageWrapper";
-import { useContext, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BG_TYPES, CONDITION_TYPES, DELIVERY_METHODS, STORE_ITEM_TYPES } from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
@@ -28,7 +28,6 @@ export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
   name: null,
   ptPrice: null,
   price: null,
-  deliveryMethod: null,
   deactivatedAt: null,
   id: null,
   maxPurchase: null,
@@ -38,6 +37,7 @@ export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
 
 const DEFAULT_STORE_ITEM_DATA = {
   type: STORE_ITEM_TYPES.PHYSICAL,
+  deliveryMethod: null,
   mediaUploads: [],
   config: {
     url: null,
@@ -61,8 +61,8 @@ const CreateStoreItem = ({
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } = useAlerts();
 
-  const [storeItemData, setStoreItemData] = useState<any>(defaultStoreItemData);
-  const [storeItemSettings, setStoreItemSettings] = useState(defaultStoreItemStetings);
+  const [storeItemData, setStoreItemData] = useState<any>({...defaultStoreItemData});
+  const [storeItemSettings, setStoreItemSettings] = useState({...defaultStoreItemStetings});
 
   const [createStoreItem] = useMutation(CREATE_STORE_ITEM, {
     onCompleted: (data) => {
@@ -81,22 +81,6 @@ const CreateStoreItem = ({
 
   const onTypeChange = (newType) => {
     setErrors({});
-    const newConfig = {
-      deliveryMethod: null,
-    };
-    if (newType === STORE_ITEM_TYPES.PHYSICAL) {
-      newConfig.deliveryMethod = DELIVERY_METHODS.DISCOUNT_CODE;
-    }
-    if (newType === STORE_ITEM_TYPES.DISCORD_ROLE) {
-      newConfig.deliveryMethod = DELIVERY_METHODS.DISCORD_ROLE;
-    }
-    if (newType === STORE_ITEM_TYPES.NFT) {
-      newConfig.deliveryMethod = DELIVERY_METHODS.NFT_PAYMENT;
-    }
-    return setStoreItemSettings((prev) => ({
-      ...prev,
-      ...newConfig,
-    }));
   };
 
   const handleUpdateStoreItemMedia = async (storeItemId, mediaUploads) => {
@@ -144,7 +128,7 @@ const CreateStoreItem = ({
       price: storeItemSettings.price ? parseInt(storeItemSettings.price) : null,
       url: storeItemData?.config?.url || null,
       nftMetadataId: storeItemData?.config?.nftMetadataId,
-      deliveryMethod: storeItemSettings.deliveryMethod,
+      deliveryMethod: storeItemData.deliveryMethod,
       deactivatedAt: storeItemSettings?.deactivatedAt ? moment().toISOString() : null,
       additionalData: storeItemData?.config?.additionalData,
       maxPurchase: storeItemSettings?.maxPurchase ? parseInt(storeItemSettings?.maxPurchase) : null,
