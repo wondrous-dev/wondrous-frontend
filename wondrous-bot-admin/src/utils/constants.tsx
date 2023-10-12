@@ -441,3 +441,8 @@ export const DELIVERY_METHODS = {
   DISCOUNT_CODE: 'discount_code',
   NFT_PAYMENT: 'nft_payment'
 };
+
+export const NFT_ORIGIN_TYPES = {
+  CREATED: 'created',
+  IMPORTED: 'imported'
+}

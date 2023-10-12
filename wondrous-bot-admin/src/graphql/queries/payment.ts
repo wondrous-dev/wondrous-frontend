@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 import { CmtyPaymentFragment, CmtyPaymentMethodFragment, CommunityNFTFragment } from "graphql/fragments/payment";
 
 export const GET_CMTY_PAYMENT_METHODS_FOR_ORG = gql`
-  query getCmtyPaymentMethodsForOrg($orgId: ID!, $includeDeactivated: Boolean, $includeCommunityBadges: Boolean) {
-    getCmtyPaymentMethodsForOrg(orgId: $orgId, includeDeactivated: $includeDeactivated, includeCommunityBadges: $includeCommunityBadges) {
+  query getCmtyPaymentMethodsForOrg($orgId: ID!, $includeDeactivated: Boolean, $types: [String]) {
+    getCmtyPaymentMethodsForOrg(orgId: $orgId, includeDeactivated: $includeDeactivated, types: $types) {
       ...CmtyPaymentMethodFragment
     }
   }
