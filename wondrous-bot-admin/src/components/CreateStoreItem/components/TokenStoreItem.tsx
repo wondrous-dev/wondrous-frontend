@@ -148,6 +148,21 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
     setIsAddModalOpen(false);
   };
 
+  const modalType = useMemo(() => {
+    return {
+      isCreateModalOpen: nftModalType === NFT_MODAL_TYPES.CREATE,
+      isImportModalOpen: nftModalType === NFT_MODAL_TYPES.IMPORT,
+    };
+  }, [nftModalType]);
+
+  const handleNFTModalClose = () => {
+    setNftModalType(null);
+  };
+
+  const onModalSelect = (type) => {
+    setNftModalType(type);
+    setIsAddModalOpen(false);
+  };
   return (
     <>
       <Modal
@@ -182,6 +197,7 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
           value={value}
           onChange={handleChange}
           grouped
+
         />
       )}
     </>
