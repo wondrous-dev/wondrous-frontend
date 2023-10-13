@@ -257,11 +257,6 @@ function ConfigPaymentMethodModal(props) {
     let symbol;
     let icon;
     let decimals;
-    if (selectedToken === 'ETH' && chain === 'ethereum') {
-      tokenAddress = '0x0000000000000000000000000000000000000000';
-      tokenName = 'ETH';
-      symbol = 'ETH';
-    }
     if (selectedToken === 'USDC') {
       tokenAddress = CHAIN_TO_USDC_ADDR[chain];
       tokenName = 'USD Coin';
