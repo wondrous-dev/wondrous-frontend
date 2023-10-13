@@ -148,12 +148,14 @@ const RewardComponent = ({
       handleOnRemove: onPoapRewardRemove,
     },
     [PAYMENT_OPTIONS.COMMUNITY_BADGE]: {
-      Component: ({ reward }) => (
-        <RewardWrapper
+      Component: ({ reward }) => {
+        return (
+          <RewardWrapper
           Icon={() => <PoapImage src={reward?.paymentMethod?.nftMetadata?.mediaUrl} />}
           text={reward?.paymentMethod?.name}
         />
-      ),
+        )
+      },
       handleOnRemove: (reward) => OnPaymentMethodRewardRemove({ reward, setQuestSettings }),
 
     },

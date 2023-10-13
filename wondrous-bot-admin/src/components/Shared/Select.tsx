@@ -1,4 +1,4 @@
-import { Box, Grid, MenuItem } from "@mui/material";
+import { Box, Grid, ListSubheader, MenuItem } from "@mui/material";
 
 import CheckCircleIcon from "components/Icons/CheckCircle";
 import { scrollbarStyles } from "components/Shared/styles";
@@ -14,8 +14,10 @@ const SelectComponent = ({
   boxStyle = {},
   error = null,
   disabled = false,
-  defaultLabel = 'Select',
-  onOpen = null
+  defaultLabel = "Select",
+  onOpen = null,
+  grouped = false,
+  groupedOptions = [],
 }) => {
   const handleChange = (e) => onChange(e.target.value);
 
@@ -61,37 +63,74 @@ const SelectComponent = ({
           },
         }}
       >
-        {options?.map((option) => (
-          <MenuItem
-            key={option.value}
-            value={option.value}
-            selected={value === option.value}
-            sx={{
-              marginY: "1px",
-              padding: "8px",
-              height: "40px",
-              borderRadius: "6px",
-              "&.Mui-selected": {
-                backgroundColor: "#E4E4E4 !important",
-                outline: "1px solid #000",
-              },
-              "&:hover": {
-                backgroundColor: "#E4E4E4 !important",
-              },
-            }}
-            {...option.onClick? {onClick: option.onClick} : {}}
-          >
-            <Grid container alignItems="center" justifyContent="space-between" gap="4px">
-              <Grid container item flex="1" gap="4px">
-                {option.icon}
-                {option.label}
-              </Grid>
-              <Grid container item width="fit-content">
-                {option.value === value && <CheckCircleIcon />}
-              </Grid>
-            </Grid>
-          </MenuItem>
-        ))}
+        {grouped
+          ? groupedOptions.map((group, idx) => [
+              group.groupName ? <ListSubheader sx={{ position: "relative" }}>{group.groupName}</ListSubheader> : null,
+              group?.items?.map((option, optionIdx) => (
+                <MenuItem
+                  key={option.value}
+                  value={option.value}
+                  disabled={option.disabled}
+                  selected={value === option.value}
+                  sx={{
+                    marginY: "1px",
+                    padding: "8px",
+                    height: "40px",
+                    borderRadius: "6px",
+                    "&.Mui-selected": {
+                      backgroundColor: "#E4E4E4 !important",
+                      outline: "1px solid #000",
+                    },
+                    "&:hover": {
+                      backgroundColor: "#E4E4E4 !important",
+                    },
+                  }}
+                  {...(option.onClick ? { onClick: option.onClick } : {})}
+                >
+                  <Grid container alignItems="center" justifyContent="space-between" gap="4px">
+                    <Grid container item flex="1" gap="4px">
+                      {option.icon}
+                      {option.label}
+                    </Grid>
+                    <Grid container item width="fit-content">
+                      {option.value === value && <CheckCircleIcon />}
+                    </Grid>
+                  </Grid>
+                </MenuItem>
+              )),
+            ])
+          : options?.map((option) => (
+              <MenuItem
+                key={option.value}
+                value={option.value}
+                disabled={option.disabled}
+                selected={value === option.value}
+                sx={{
+                  marginY: "1px",
+                  padding: "8px",
+                  height: "40px",
+                  borderRadius: "6px",
+                  "&.Mui-selected": {
+                    backgroundColor: "#E4E4E4 !important",
+                    outline: "1px solid #000",
+                  },
+                  "&:hover": {
+                    backgroundColor: "#E4E4E4 !important",
+                  },
+                }}
+                {...(option.onClick ? { onClick: option.onClick } : {})}
+              >
+                <Grid container alignItems="center" justifyContent="space-between" gap="4px">
+                  <Grid container item flex="1" gap="4px">
+                    {option.icon}
+                    {option.label}
+                  </Grid>
+                  <Grid container item width="fit-content">
+                    {option.value === value && <CheckCircleIcon />}
+                  </Grid>
+                </Grid>
+              </MenuItem>
+            ))}
       </StyledTextFieldSelect>
       {error ? <ErrorText>{error}</ErrorText> : null}
     </Box>

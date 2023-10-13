@@ -51,29 +51,6 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
       divider: true,
     },
     {
-      label: "Delivery method",
-      direction: "row",
-      component: SelectComponent,
-      value: storeItemSettings.deliveryMethod,
-      componentProps: {
-        options: [
-          {
-            label: "Discord Role",
-            value: DELIVERY_METHODS.DISCORD_ROLE,
-          },
-          {
-            label: "Discount Code",
-            value: DELIVERY_METHODS.DISCOUNT_CODE,
-          },
-          {
-            label: "NFT Payment",
-            value: DELIVERY_METHODS.NFT_PAYMENT,
-          },
-        ],
-      },
-      key: "deliveryMethod",
-    },
-    {
       label: "Price",
       direction: "row",
       key: "price",

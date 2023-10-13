@@ -1,16 +1,18 @@
 import { useLazyQuery } from "@apollo/client";
 import { Box } from "@mui/material";
 import PageHeader from "components/PageHeader";
-import { SharedSecondaryButton } from "components/Shared/styles";
+import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 import StoreItemsList from "components/StoreItemsList";
 import { GET_STORE_ITEMS_FOR_ORG } from "graphql/queries";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {  STORE_ITEM_STATUSES } from "utils/constants";
+import { STORE_ITEM_STATUSES } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
+import PublishDirectoryModal from "./PublishDirectoryModal";
 
 const StorePage = () => {
   const { activeOrg } = useContext(GlobalContext);
+  const [openPublishModal, setOpenPublishModal] = useState(false);
   const navigate = useNavigate();
   const [getStoreItems, { data }] = useLazyQuery(GET_STORE_ITEMS_FOR_ORG, {
     fetchPolicy: "cache-and-network",
@@ -24,7 +26,7 @@ const StorePage = () => {
           input: {
             orgId: activeOrg?.id,
             limit: 100,
-            status: STORE_ITEM_STATUSES.ACTIVE
+            status: STORE_ITEM_STATUSES.ACTIVE,
           },
         },
       });
@@ -37,18 +39,28 @@ const StorePage = () => {
 
   return (
     <>
+      <PublishDirectoryModal openPublishModal={openPublishModal} setOpenPublishModal={setOpenPublishModal} />
       <PageHeader
         title={`${data?.getStoreItemsForOrg?.length || 0} Products`}
         withBackButton={false}
         renderActions={() => (
-          <Box display="flex" gap="10px" width="100%">
+          <Box display="flex" gap="10px" width="100%" alignItems="center">
+            <Box>
+              <SharedBlackOutlineButton
+                onClick={() => {
+                  setOpenPublishModal(true);
+                }}
+              >
+                Publish Directory
+              </SharedBlackOutlineButton>
+            </Box>
             <Box>
               <SharedSecondaryButton onClick={handleNavigationToNewProduct}>New Product</SharedSecondaryButton>
             </Box>
           </Box>
         )}
       />
-      <StoreItemsList data={data?.getStoreItemsForOrg}/>
+      <StoreItemsList data={data?.getStoreItemsForOrg} />
     </>
   );
 };

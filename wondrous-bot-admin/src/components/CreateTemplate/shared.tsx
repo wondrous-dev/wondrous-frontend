@@ -27,7 +27,7 @@ export const DEFAULT_QUEST_SETTINGS_STATE_VALUE = {
 
 export const useCommunityBadgePaymentMethods = ({shouldFetch, asOptions = false}) => {
   const {activeOrg} = useGlobalContext();
-  const [getCmtyPaymentForOrg, {data}] = useLazyQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
+  const [getCmtyPaymentForOrg, {data, refetch}] = useLazyQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
   })
 
@@ -36,7 +36,7 @@ export const useCommunityBadgePaymentMethods = ({shouldFetch, asOptions = false}
       getCmtyPaymentForOrg({
         variables: {
           orgId: activeOrg?.id,
-          includeCommunityBadges: true
+          types: ['COMMUNITY_BADGE', 'ERC721', 'ERC1155']
         }
       })
     }
@@ -59,6 +59,7 @@ export const useCommunityBadgePaymentMethods = ({shouldFetch, asOptions = false}
   }, [asOptions, data?.getCmtyPaymentMethodsForOrg]);
   return {
     data: data?.getCmtyPaymentMethodsForOrg,
-    options
+    options,
+    refetch
   }
 };  

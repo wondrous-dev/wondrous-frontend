@@ -1,5 +1,13 @@
 import { gql } from "@apollo/client";
 
+export const PUSH_DIRECTORY_DISCORD_NOTFICATION = gql`
+  mutation postDirectoryToDiscord($channelId: String!, $orgId: ID!) {
+    postDirectoryToDiscord(orgId: $orgId, channelId: $channelId) {
+      success
+    }
+  }
+`;
+
 export const PUSH_QUEST_DISCORD_NOTFICATION = gql`
   mutation postQuestToDiscord(
     $questId: ID!
