@@ -1,6 +1,6 @@
-import { InputUnstyled } from '@mui/base';
-import { Box, Typography } from '@mui/material';
-import styled from 'styled-components';
+import { InputUnstyled } from "@mui/base";
+import { Box, Grid, Typography } from "@mui/material";
+import styled from "styled-components";
 
 export const CustomTextField = styled(InputUnstyled)`
   width: 100%;
@@ -33,8 +33,8 @@ export const CustomTextField = styled(InputUnstyled)`
 
 export const Label = styled(Typography)`
   && {
-    color: ${({color = '#4d4d4d'}) => color};
-    font-family: 'Poppins';
+    color: ${({ color = "#4d4d4d" }) => color};
+    font-family: "Poppins";
     font-style: normal;
     font-weight: 600;
     font-size: 13px;
@@ -52,7 +52,7 @@ export const IndexContainer = styled(Box)`
     height: 30px;
     background: #f7f7f7;
     border-radius: 6px;
-    font-family: 'Poppins';
+    font-family: "Poppins";
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
@@ -62,5 +62,21 @@ export const IndexContainer = styled(Box)`
     letter-spacing: 0.0125em;
 
     color: #1d1d1d;
+  }
+`;
+
+export const CustomComponentWrapper = styled(Box)`
+  && {
+    display: none;
+  }
+`;
+
+export const MenuItemOptionWrapper = styled(Grid)`
+  && {
+    &:hover {
+      ${CustomComponentWrapper} {
+        display: block;
+      }
+    }
   }
 `;

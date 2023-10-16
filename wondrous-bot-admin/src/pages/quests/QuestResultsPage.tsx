@@ -127,6 +127,7 @@ const QuestResultsPage = () => {
     startAt: getQuestById?.startAt ? moment(getQuestById?.startAt) : null,
     endAt: getQuestById?.endAt ? moment(getQuestById?.endAt) : null,
     submissionCooldownPeriod: getQuestById?.submissionCooldownPeriod,
+    category: getQuestById?.category || null,
     questConditions: getQuestById?.conditions
       ? getQuestById?.conditions?.map((condition) => {
           const { __typename, ...rest } = condition?.conditionData;

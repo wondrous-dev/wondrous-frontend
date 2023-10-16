@@ -9,6 +9,7 @@ export const SharedLabel = styled(Typography)`
     font-size: 15px;
     line-height: 24px;
     color: ${({ color = "black" }) => color};
+    white-space: nowrap;
   }
 `;
 

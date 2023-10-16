@@ -8,7 +8,7 @@ import QuestsList from "components/QuestsList";
 import SelectComponent from "components/Shared/Select";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { GET_ORG_QUEST_STATS, GET_QUESTS_FOR_ORG } from "graphql/queries";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
@@ -121,6 +121,20 @@ const QuestsPage = () => {
   };
 
 
+  const sortedData = useMemo(() => {
+    return [...data?.getQuestsForOrg || []]?.sort((a, b) => {
+      if (a.order !== null && b.order !== null) {
+        return a.order - b.order;
+      } else if (a.order !== null) {
+        return 0;
+      } else if (b.order !== null) {
+        return -1;
+      } else {
+        return 0;
+      }
+    })
+  }, [data?.getQuestsForOrg])
+
   return (
     <>
       <PageHeader
@@ -142,7 +156,7 @@ const QuestsPage = () => {
           </Box>
         )}
       />
-      <QuestsList data={data?.getQuestsForOrg} />
+      <QuestsList data={sortedData} />
     </>
   );
 };

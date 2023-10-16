@@ -63,20 +63,19 @@ const AutocompleteComponent = ({
               displayEmpty: true,
             }}
           />
-          {disclaimer ? 
-                                          <Typography
-                                          color="#4d4d4d"
-                                          fontFamily="Poppins"
-                                          fontWeight={500}
-                                          fontSize="10px"
-                                          lineHeight="24px"
-                                          fontStyle="italic"
-                                          whiteSpace="nowrap"
-                                        >
-                                          {disclaimer}
-                                        </Typography>
-        
-          : null}
+          {disclaimer ? (
+            <Typography
+              color="#4d4d4d"
+              fontFamily="Poppins"
+              fontWeight={500}
+              fontSize="10px"
+              lineHeight="24px"
+              fontStyle="italic"
+              whiteSpace="nowrap"
+            >
+              {disclaimer}
+            </Typography>
+          ) : null}
           {error ? <ErrorText>{error}</ErrorText> : null}
         </>
       )}

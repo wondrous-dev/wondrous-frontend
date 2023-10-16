@@ -53,6 +53,7 @@ import CreateStoreItem from "pages/store/CreateStoreItem";
 import StoreItem from "pages/store/StoreItem";
 import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
+import CategoriesSettingsPage from "pages/settings/categories";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/notifications",
         element: <NotificationSettingsPage />,
+      },
+      {
+        path: '/settings/categories',
+        element: <CategoriesSettingsPage />
       },
       {
         path: "/settings/team",

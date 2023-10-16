@@ -23,6 +23,10 @@ const MENU_ITEMS = [
     path: "/settings/payments",
   },
   {
+    title: 'Quest Categories',
+    path: '/settings/categories'
+  },
+  {
     title: "Team",
     path: "/settings/team",
   },

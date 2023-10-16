@@ -16,6 +16,7 @@ import TimeboundComponent from "./TimeboundComponent";
 import { CampaignOverviewTitle, Label } from "./styles";
 import DailySubmissionComponent from "./DailySubmission";
 import { CONDITION_TYPES } from "utils/constants";
+import CategorySelectComponent from "./CategorySelectComponent";
 
 const REQUIRE_REVIEW_OPTIONS = [
   {
@@ -219,6 +220,14 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       canBeHidden: true,
       showBorder: false,
       settings: [
+        {
+          label: 'Category',
+          component: CategorySelectComponent,
+          componentProps: {
+            value: questSettings?.category,
+          },
+          key: 'category',
+        },
         {
           label: "Max Submissions",
           component: MaxInput,

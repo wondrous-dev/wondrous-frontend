@@ -8,7 +8,7 @@ import { CardHoverWrapper, CardWrapper, Label } from "./styles";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "components/Shared/PageWrapper";
 import { BG_TYPES } from "utils/constants";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_ORG_QUEST_STATS, GET_QUESTS_FOR_ORG } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { LEVELS_DEFAULT_NAMES } from "utils/levels/constants";
@@ -17,6 +17,222 @@ import QuestCardMenu from "components/QuestCardMenu";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import { useTour } from "@reactour/tour";
+import { CSS } from "@dnd-kit/utilities";
+
+const SortableItem = ({ item, idx, isOpen }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id });
+
+  const navigate = useNavigate();
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition: transition || undefined,
+  };
+
+  return (
+    <CardHoverWrapper
+      width="100%"
+      id={item.id}
+      ref={setNodeRef}
+      style={style}
+      onClick={() => navigate(`/quests/${item.id}`)}
+      flex={1}
+      data-tour={idx === 0 ? "tutorial-quest-card" : ""}
+      key={item.id}
+      flexBasis={{
+        xs: "48%",
+        sm: "30%",
+        md: "24%",
+      }}
+      maxWidth={{
+        xs: "50%",
+        sm: "33%",
+        md: "24%",
+      }}
+      {...attributes}
+      {...listeners}
+    >
+      <CardWrapper item disableHover={isOpen}>
+        <Box
+          height="40px"
+          width="auto"
+          minWidth="40px"
+          bgcolor="#84bcff"
+          borderRadius="35px"
+          display="flex"
+          padding="4px"
+          justifyContent="center"
+          alignItems="center"
+          flexDirection="column"
+        >
+          <Label fontSize="16px" lineHeight={"16px"}>
+            {item.xp}
+          </Label>
+          <Label fontSize="12px" lineHeight="13px" fontWeight={400}>
+            XP
+          </Label>
+        </Box>
+        <Label
+          fontSize="15px"
+          style={{
+            textAlign: "center",
+            overflowWrap: "anywhere",
+          }}
+        >
+          {item.label}
+        </Label>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Box
+            bgcolor="#C1B6F6"
+            padding="8px"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            borderRadius="6px"
+          >
+            <Label fontSize="14px" lineHeight="14px">
+              {item.completions} {item.completions === 1 ? "Completion" : "Completions"}
+            </Label>
+          </Box>
+          {item.inReview > 0 && (
+            <Box
+              bgcolor="#F8AFDB"
+              padding="8px"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              borderRadius="6px"
+              marginLeft="8px"
+            >
+              <Label fontSize="14px" lineHeight="14px">
+                {item?.inReview} To review
+              </Label>
+            </Box>
+          )}
+        </Box>
+        <QuestCardMenu quest={item} />
+      </CardWrapper>
+    </CardHoverWrapper>
+  );
+};
+
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  MouseSensor,
+  TouchSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { UPDATE_QUEST_ORDER } from "graphql/mutations";
+
+const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan }) => {
+  const navigate = useNavigate();
+  const [updateQuestOrder] = useMutation(UPDATE_QUEST_ORDER, {
+    refetchQueries: ["getQuestsForOrg"],
+  });
+  const { setPaywall, setPaywallMessage } = usePaywall();
+
+  // the reason for separate state is to hide the New Quest card when dragging
+  const [isDragging, setIsDragging] = useState(false);
+
+  const toggleIsDragging = () => setIsDragging((prev) => !prev);
+
+  const handleDragEnd = async (event) => {
+    const { active: current, over: destination } = event;
+    const questId = current.id;
+    const destinationOrder = destination?.data?.current?.sortable?.index;
+    await updateQuestOrder({
+      variables: {
+        questId,
+        order: destinationOrder,
+      },
+    });
+    toggleIsDragging();
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 5,
+      },
+    })
+  );
+
+  return (
+    <Grid
+      display="flex"
+      key={level}
+      width="100%"
+      flexDirection="column"
+      gap="28px"
+      justifyContent="flex-start"
+      alignItems="flex-start"
+    >
+      <Label>{formattedData[level].label}</Label>
+      <Grid container gap="30px 14px">
+        <DndContext
+          onDragEnd={handleDragEnd}
+          onDragStart={toggleIsDragging}
+          sensors={sensors}
+          collisionDetection={closestCenter}
+        >
+          <SortableContext items={formattedData[level].items || []} strategy={rectSortingStrategy}>
+            {formattedData[level].items.map((item, idx) => (
+              <SortableItem key={item.id} item={item} isOpen={isOpen} idx={idx} />
+            ))}
+            {isDragging ? null : (
+              <CardHoverWrapper
+                flexBasis={{
+                  xs: "48%",
+                  sm: "30%",
+                  md: "24%",
+                }}
+                maxWidth={{
+                  xs: "50%",
+                  sm: "33%",
+                  md: "24%",
+                }}
+              >
+                <CardWrapper
+                  onClick={() => {
+                    if (plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
+                      setPaywall(true);
+                      setPaywallMessage("You have reached the limit of quests for your current plan.");
+                    } else {
+                      navigate("/quests/create");
+                    }
+                  }}
+                  sx={{
+                    minHeight: "155px",
+                  }}
+                >
+                  <RoundedSecondaryButton background="#F8642D">
+                    <AddIcon
+                      sx={{
+                        color: "white",
+                      }}
+                    />
+                  </RoundedSecondaryButton>
+                  <Label fontSize="15px">New Quest</Label>
+                </CardWrapper>
+              </CardHoverWrapper>
+            )}
+          </SortableContext>
+        </DndContext>
+      </Grid>
+    </Grid>
+  );
+};
 
 const formatQuestsData = (LEVELS, data) => {
   const result = {};
@@ -47,8 +263,7 @@ const QuestsList = ({ data }) => {
   const { isOpen } = useTour();
 
   const subscription = useSubscription();
-  const { setPaywall, setPaywallMessage } = usePaywall();
-  const { data: getOrgQuestStatsData, loading } = useQuery(GET_ORG_QUEST_STATS, {
+  const { data: getOrgQuestStatsData } = useQuery(GET_ORG_QUEST_STATS, {
     notifyOnNetworkStatusChange: true,
     variables: {
       orgId: activeOrg?.id,
@@ -58,7 +273,6 @@ const QuestsList = ({ data }) => {
 
   const { totalQuests } = getOrgQuestStatsData?.getOrgQuestStats || {};
   const plan = getPlan(subscription?.tier);
-  const navigate = useNavigate();
   const { levels } = useLevels({
     orgId: activeOrg?.id,
   });
@@ -76,6 +290,7 @@ const QuestsList = ({ data }) => {
       containerProps={{
         minHeight: "100vh",
         flexDirection: "column",
+        overflow: "hidden",
         gap: "42px",
         padding: {
           xs: "14px 14px 120px 14px",
@@ -88,137 +303,14 @@ const QuestsList = ({ data }) => {
           return null;
         }
         return (
-          <Grid
-            display="flex"
-            key={level}
-            width="100%"
-            flexDirection="column"
-            gap="28px"
-            justifyContent="flex-start"
-            alignItems="flex-start"
-          >
-            <Label>{formattedData[level].label}</Label>
-            <Grid container gap="30px 14px">
-              {formattedData[level]?.items?.map((item, idx) => (
-                <CardHoverWrapper
-                  onClick={() => navigate(`/quests/${item.id}`)}
-                  flex={1}
-                  data-tour={idx === 0 ? "tutorial-quest-card" : ""}
-                  key={item.id}
-                  flexBasis={{
-                    xs: "48%",
-                    sm: "30%",
-                    md: "24%",
-                  }}
-                  maxWidth={{
-                    xs: "50%",
-                    sm: "33%",
-                    md: "24%",
-                  }}
-                >
-                  <CardWrapper item
-                  disableHover={isOpen}
-                  >
-                    <Box
-                      height="40px"
-                      width="auto"
-                      minWidth="40px"
-                      bgcolor="#84bcff"
-                      borderRadius="35px"
-                      display="flex"
-                      padding="4px"
-                      justifyContent="center"
-                      alignItems="center"
-                      flexDirection="column"
-                    >
-                      <Label fontSize="16px" lineHeight={"16px"}>
-                        {item.xp}
-                      </Label>
-                      <Label fontSize="12px" lineHeight="13px" fontWeight={400}>
-                        XP
-                      </Label>
-                    </Box>
-                    <Label
-                      fontSize="15px"
-                      style={{
-                        textAlign: "center",
-                        overflowWrap: "anywhere",
-                      }}
-                    >
-                      {item.label}
-                    </Label>
-                    <Box display="flex" justifyContent="center" alignItems="center">
-                      <Box
-                        bgcolor="#C1B6F6"
-                        padding="8px"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        borderRadius="6px"
-                      >
-                        <Label fontSize="14px" lineHeight="14px">
-                          {item.completions} {item.completions === 1 ? "Completion" : "Completions"}
-                        </Label>
-                      </Box>
-                      {item.inReview > 0 && (
-                        <Box
-                          bgcolor="#F8AFDB"
-                          padding="8px"
-                          display="flex"
-                          justifyContent="center"
-                          alignItems="center"
-                          borderRadius="6px"
-                          marginLeft="8px"
-                        >
-                          <Label fontSize="14px" lineHeight="14px">
-                            {item?.inReview} To review
-                          </Label>
-                        </Box>
-                      )}
-                    </Box>
-                    <QuestCardMenu quest={item} />
-                  </CardWrapper>
-                </CardHoverWrapper>
-              ))}
-              <CardHoverWrapper
-                flex={1}
-                flexBasis={{
-                  xs: "48%",
-                  sm: "30%",
-                  md: "24%",
-                }}
-                minHeight="100%"
-                maxWidth={{
-                  xs: "50%",
-                  sm: "33%",
-                  md: "24%",
-                }}
-              >
-                <CardWrapper
-                  onClick={() => {
-                    if (plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
-                      setPaywall(true);
-                      setPaywallMessage("You have reached the limit of quests for your current plan.");
-                    } else {
-                      navigate("/quests/create");
-                    }
-                  }}
-                  sx={{
-                    minHeight: "155px",
-                  }}
-                >
-                  <RoundedSecondaryButton background="#F8642D">
-                    <AddIcon
-                      sx={{
-                        color: "white",
-                      }}
-                    />
-                  </RoundedSecondaryButton>
-                  <Label fontSize="15px">New Quest</Label>
-                </CardWrapper>
-              </CardHoverWrapper>
-            </Grid>
-          </Grid>
+          <QuestItemCard
+            level={level}
+            formattedData={formattedData}
+            isOpen={isOpen}
+            totalQuests={totalQuests}
+            plan={plan}
+            key={idx}
+          />
         );
       })}
     </PageWrapper>
