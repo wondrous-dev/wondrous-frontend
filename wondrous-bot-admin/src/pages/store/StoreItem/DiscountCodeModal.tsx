@@ -1,18 +1,14 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { Label } from "components/CreateTemplate/styles";
 import SelectComponent from "components/Shared/Select";
-import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
+import { SharedSecondaryButton } from "components/Shared/styles";
 import Modal from "components/Shared/Modal";
-import { PUSH_QUEST_DISCORD_NOTFICATION, PUSH_DIRECTORY_DISCORD_NOTFICATION } from "graphql/mutations/discord";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import useAlerts from "utils/hooks";
-import Switch from "components/Shared/Switch";
 import TextField from "components/Shared/TextField";
-import { GET_CMTY_ORG_DISCORD_CONFIG, GET_GUILD_DISCORD_CHANNELS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import isEqual from "lodash/isEqual";
-import { format } from "date-fns";
 import { IMPORT_DISCOUNT_CODES } from "graphql/mutations/cmtyStore";
 import CSVFileDropzone from "components/CSVFileDropZone";
 import { redColors } from "utils/theme/colors";
@@ -31,9 +27,9 @@ const getFormattedCSVData = (data) => {
   return formattedData;
 };
 
-const getCodesFromData = ({ data, orgId, itemId }) => {
+const getCodesFromData = ({ data, setError }) => {
   if (!isEqual(data[0], DISCOUNT_CODE_HEADERS)) {
-    throw new Error("CSV format does not match with the given format");
+    setError("CSV format does not match with the given format");
   }
   const formattedData = getFormattedCSVData(data);
   return formattedData;
@@ -41,7 +37,7 @@ const getCodesFromData = ({ data, orgId, itemId }) => {
 
 export const DEFAULT_CODES_DATA = { codes: [] as any, key: Date.now() };
 
-const DISCOUNT_SCHEME = [
+export const DISCOUNT_SCHEME = [
   {
     value: "percent",
     label: "Percentage",
@@ -51,7 +47,7 @@ const DISCOUNT_SCHEME = [
     label: "Amount",
   },
 ];
-const DISCOUNT_TYPE = [
+export const DISCOUNT_TYPE = [
   {
     value: "one_time",
     label: "One Time",
@@ -68,6 +64,7 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
         horizontal: "center",
       });
     },
+    refetchQueries: ["getStoreItemDiscountCodeInfo"],
   });
   const { activeOrg } = useContext(GlobalContext);
   const [isImportInProgress, setIsImportInProgress] = useState(false);
@@ -80,7 +77,7 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
     try {
       setError("");
       setCodesData(DEFAULT_CODES_DATA);
-      const formattedData = getCodesFromData({ data, orgId: activeOrg?.id, itemId });
+      const formattedData = getCodesFromData({ data, setError });
 
       const formattedDataIdentifier = Date.now();
       setCodesData({ codes: formattedData, key: formattedDataIdentifier });
@@ -151,7 +148,11 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
           placeholder="Discount"
           value={discount}
           onChange={(value) => {
-            setDiscount(Number(value));
+            if (value) {
+              setDiscount(Number(value));
+            } else {
+              setDiscount(null);
+            }
           }}
           multiline={false}
           // style={TextInputStyle}

@@ -57,3 +57,11 @@ export const IMPORT_DISCOUNT_CODES = gql`
     }
   }
 `;
+
+export const UPDATE_DISCOUNT_CODES = gql`
+  mutation updateStoreItemDiscountCodes($storeItemId: ID!, $discount: Int, $scheme: String, $type: String) {
+    updateStoreItemDiscountCodes(storeItemId: $storeItemId, discount: $discount, scheme: $scheme, type: $type) {
+      success
+    }
+  }
+`;
