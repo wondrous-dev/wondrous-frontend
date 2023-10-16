@@ -61,31 +61,16 @@ const QuestsPage = () => {
     }
   };
 
-  const [getQuestsForOrg, { data, refetch }] = useLazyQuery(GET_QUESTS_FOR_ORG, {
-    notifyOnNetworkStatusChange: true,
-    onCompleted: (data) => {
-      if (
-        user &&
-        !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) &&
-        data?.getQuestsForOrg?.length
-      ) {
-        setIsOpen(true);
-        const quest = data?.getQuestsForOrg[0];
-        setMeta(quest?.id);
-      }
-    },
-  });
-
-  const handleFetch = async () => {
-    const { data } = await getQuestsForOrg({
-      variables: {
-        input: {
-          orgId: activeOrg?.id,
-          limit: 1000,
-          status: QUEST_STATUSES.OPEN,
-        },
-      },
-    });
+  const handleOnFetchCompleted = async (data) => {
+    if (
+      user &&
+      !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) &&
+      data?.getQuestsForOrg?.length
+    ) {
+      setIsOpen(true);
+      const quest = data?.getQuestsForOrg[0];
+      setMeta(quest?.id);
+    }
     if (!data?.getQuestsForOrg?.length) {
       const variables: any = {
         input: {
@@ -98,11 +83,18 @@ const QuestsPage = () => {
       await refetch(variables);
     }
   };
-  useEffect(() => {
-    if (activeOrg?.id) {
-      handleFetch();
-    }
-  }, [activeOrg?.id]);
+  const { data, refetch } = useQuery(GET_QUESTS_FOR_ORG, {
+    notifyOnNetworkStatusChange: true,
+    skip: !activeOrg?.id,
+    variables: {
+      input: {
+        orgId: activeOrg?.id,
+        limit: 1000,
+        status: QUEST_STATUSES.OPEN,
+      },
+    },
+    onCompleted: (data) => handleOnFetchCompleted(data),
+  });
 
   const handleChange = (value) => {
     const variables: any = {
@@ -120,9 +112,8 @@ const QuestsPage = () => {
     refetch(variables);
   };
 
-
   const sortedData = useMemo(() => {
-    return [...data?.getQuestsForOrg || []]?.sort((a, b) => {
+    return [...(data?.getQuestsForOrg || [])]?.sort((a, b) => {
       if (a.order !== null && b.order !== null) {
         return a.order - b.order;
       } else if (a.order !== null) {
@@ -132,13 +123,15 @@ const QuestsPage = () => {
       } else {
         return 0;
       }
-    })
-  }, [data?.getQuestsForOrg])
+    });
+  }, [data?.getQuestsForOrg]);
+
+  const questsLength = useMemo(() => data?.getQuestsForOrg?.length || 0, [data?.getQuestsForOrg?.length]);
 
   return (
     <>
       <PageHeader
-        title={`${data?.getQuestsForOrg?.length || 0} Quests`}
+        title={`${questsLength || 0} Quests`}
         withBackButton={false}
         renderActions={() => (
           <Box display="flex" gap="10px" width="100%">

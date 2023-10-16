@@ -1,15 +1,14 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { Box, Grid } from "@mui/material";
+import { RoundedSecondaryButton } from "components/Shared/styles";
+import { useContext, useMemo, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 
-import { pinkColors } from "utils/theme/colors";
 import { CardHoverWrapper, CardWrapper, Label } from "./styles";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "components/Shared/PageWrapper";
 import { BG_TYPES } from "utils/constants";
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_ORG_QUEST_STATS, GET_QUESTS_FOR_ORG } from "graphql/queries";
+import { GET_ORG_QUEST_STATS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { LEVELS_DEFAULT_NAMES } from "utils/levels/constants";
 import useLevels from "utils/levels/hooks";
@@ -115,23 +114,8 @@ const SortableItem = ({ item, idx, isOpen }) => {
   );
 };
 
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  MouseSensor,
-  TouchSensor,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  rectSortingStrategy,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, TouchSensor } from "@dnd-kit/core";
+import { SortableContext, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { UPDATE_QUEST_ORDER } from "graphql/mutations";
 
 const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan }) => {
@@ -147,23 +131,31 @@ const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan }) => {
   const toggleIsDragging = () => setIsDragging((prev) => !prev);
 
   const handleDragEnd = async (event) => {
+    toggleIsDragging();
+
     const { active: current, over: destination } = event;
     const questId = current.id;
+    const currentOrder = current?.data?.current?.sortable?.index;
     const destinationOrder = destination?.data?.current?.sortable?.index;
-    await updateQuestOrder({
-      variables: {
-        questId,
-        order: destinationOrder,
-      },
-    });
-    toggleIsDragging();
+    if (currentOrder > destinationOrder || currentOrder < destinationOrder) {
+      await updateQuestOrder({
+        variables: {
+          questId,
+          order: destinationOrder + 1,
+        },
+      });
+    }
   };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 200,
-        tolerance: 5,
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        distance: 8,
       },
     })
   );

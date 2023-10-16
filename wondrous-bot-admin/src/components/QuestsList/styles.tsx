@@ -18,6 +18,7 @@ export const Label = styled(Typography)`
 export const CardHoverWrapper = styled(Grid)`
   && {
     background: #000212;
+    touch-action: none;
     border-radius: 16px;
   }
 `;

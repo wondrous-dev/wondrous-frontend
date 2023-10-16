@@ -1,12 +1,9 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { Box, ButtonBase, Popper, createFilterOptions } from "@mui/material";
+import { ButtonBase, createFilterOptions } from "@mui/material";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
-import AutocompleteComponent from "components/Autocomplete";
-import SelectComponent from "components/Shared/Select";
-import { ButtonIconWrapper } from "components/Shared/styles";
 import { CREATE_ORG_QUEST_CATEGORY, DELETE_ORG_QUEST_CATEGORY } from "graphql/mutations";
 import { GET_QUEST_CATEGORIES } from "graphql/queries";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useGlobalContext } from "utils/hooks";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -19,6 +16,16 @@ const CategorySelectComponent = ({ onChange, stateKey, value, ...props }) => {
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
   });
+
+  useEffect(() => {
+    if(!data && value) {
+      getQuestCategories({
+        variables: {
+          orgId: activeOrg?.id,
+        },
+      });
+    }
+  }, [data, value])
 
   const [deleteOrgQuestCategory, { loading: deleteLoading }] = useMutation(DELETE_ORG_QUEST_CATEGORY, {
     refetchQueries: ["getOrgQuestCategories"],
@@ -34,18 +41,19 @@ const CategorySelectComponent = ({ onChange, stateKey, value, ...props }) => {
         categoryId: id,
       },
     });
-    console.log(category, value, "ASD");
     if (category === value) {
       onChange(null);
     }
   };
 
   const handleSelectOpen = async () => {
-    await getQuestCategories({
-      variables: {
-        orgId: activeOrg?.id,
-      },
-    });
+    if(!data) {
+      await getQuestCategories({
+        variables: {
+          orgId: activeOrg?.id,
+        },
+      });  
+    }
   };
   const options = useMemo(() => {
     if (!data?.getOrgQuestCategories) return [];
