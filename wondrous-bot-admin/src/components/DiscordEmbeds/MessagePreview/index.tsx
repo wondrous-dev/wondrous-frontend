@@ -3,6 +3,8 @@ import { format, parseISO } from "date-fns";
 import { toHTML } from "../utils/markdown";
 import { colorIntToHex } from "../utils";
 import { useState } from "react";
+import { useEmbedCreatorContext } from "utils/context/EmbedCreatorContext";
+import { Grid } from "@mui/material";
 
 
 export const defaultMessage: any = {
@@ -60,9 +62,10 @@ const buttonColors = {
 const MessagePreviewComponent = () => {
   const currentTime = format(new Date(), "hh:mm aa");
   const [responses, setResponses] = useState([]);
-  const msg = defaultMessage;
+  const {message} = useEmbedCreatorContext();
+  // const message = defaultMessage;
   return (
-    <div>
+    <Grid width="100%">
       <div
         className="discord-messages"
         style={{
@@ -74,27 +77,27 @@ const MessagePreviewComponent = () => {
         <div className="discord-message">
           <div className="discord-message-inner">
             <div className="discord-author-avatar">
-              <img src={msg.avatar_url || "/app/logo.svg"} alt="" />
+              <img src={message.avatar_url || "/app/logo.svg"} alt="" />
             </div>
             <div className="discord-message-content">
               <span className="discord-author-info">
-                <span className="discord-author-username">{msg.username || "Embed Generator"}</span>
+                <span className="discord-author-username">{message.username || "Embed Generator"}</span>
                 <span className="discord-application-tag">Bot</span>
               </span>
               <span className="discord-message-timestamp pl-1">Today at {currentTime}</span>
-              {!!msg.content && (
+              {!!message.content && (
                 <div className="discord-message-body">
                   <div
                     className="discord-message-markup"
                     dangerouslySetInnerHTML={{
-                      __html: toHTML(msg.content || "", {}),
+                      __html: toHTML(message.content || "", {}),
                     }}
                   />
                 </div>
               )}
               <div className="discord-message-compact-indent">
-                {msg.embeds &&
-                  msg.embeds.map((embed) => {
+                {message?.embeds &&
+                  message?.embeds?.map((embed) => {
                     let inlineFieldIndex = 0;
                     const hexColor = embed.color ? colorIntToHex(embed.color) : "#1f2225";
                     let timestamp = "";
@@ -154,7 +157,7 @@ const MessagePreviewComponent = () => {
                               )}
                               {!!embed.fields.length && (
                                 <div className="discord-embed-fields">
-                                  {embed.fields.map((field) => (
+                                  {embed?.fields?.map((field) => (
                                     <div
                                       key={field.id}
                                       className={`discord-embed-field${
@@ -212,9 +215,9 @@ const MessagePreviewComponent = () => {
                 <div className="discord-attachments">
                   {/* TODO: fix me */}
                   {"channel" === "channel" &&
-                    msg.components.map((row) => (
+                    message?.components?.map((row) => (
                       <div className="discord-action-row" key={row.id}>
-                        {row.components.map((comp) =>
+                        {row?.components?.map((comp) =>
                           comp.type === 2 ? (
                             comp.style === 5 ? (
                               <a
@@ -262,11 +265,11 @@ const MessagePreviewComponent = () => {
         {responses.map((resp) => (
           <div className="discord-message discord-highlight-ephemeral" key={resp.id}>
             <div className="discord-replied-message">
-              <img src={msg.avatar_url || "/app/logo.svg"} alt="" className="discord-replied-message-avatar" />
+              <img src={message.avatar_url || "/app/logo.svg"} alt="" className="discord-replied-message-avatar" />
               <span className="discord-application-tag">Bot</span>
-              <span className="discord-replied-message-username">{msg.username || "Embed Generator"}</span>
+              <span className="discord-replied-message-username">{message.username || "Embed Generator"}</span>
               <div className="discord-replied-message-content truncate">
-                {msg.content || <span className="italic">Click to see attachment</span>}
+                {message.content || <span className="italic">Click to see attachment</span>}
               </div>
             </div>
             <div className="discord-message-inner">
@@ -326,7 +329,7 @@ const MessagePreviewComponent = () => {
           </div>
         ))}
       </div>
-    </div>
+    </Grid>
   );
 };
 
