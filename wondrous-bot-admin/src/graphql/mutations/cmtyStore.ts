@@ -49,3 +49,11 @@ export const DEACTIVATE_STORE_ITEM = gql`
     }
   }
 `;
+
+export const IMPORT_DISCOUNT_CODES = gql`
+  mutation importDiscountCodes($input: DiscountCodeImportInput) {
+    importDiscountCodes(input: $input) {
+      success
+    }
+  }
+`;
