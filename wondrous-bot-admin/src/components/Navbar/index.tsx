@@ -58,7 +58,9 @@ const Header = () => {
     if (
       !isStoreAdded &&
       ((import.meta.env.VITE_PRODUCTION &&
-        (activeOrg?.id === "98989259425317451" || activeOrg?.id === "45956686890926082")) ||
+        (activeOrg?.id === "98989259425317451" ||
+          activeOrg?.id === "45956686890926082" ||
+          activeOrg?.id === "100884993427899088")) ||
         (import.meta.env.VITE_STAGING && activeOrg?.id === "89444950095167649") ||
         (!import.meta.env.VITE_STAGING && !import.meta.env.VITE_PRODUCTION))
     ) {
