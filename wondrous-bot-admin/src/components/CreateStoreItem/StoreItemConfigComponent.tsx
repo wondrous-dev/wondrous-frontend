@@ -156,6 +156,11 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       value: DELIVERY_METHODS.NFT_PAYMENT,
       disabled: storeItemData.type !== STORE_ITEM_TYPES.NFT,
     },
+    {
+      label: "Raffle",
+      value: DELIVERY_METHODS.RAFFLE,
+      disabled: storeItemData.type !== STORE_ITEM_TYPES.PHYSICAL,
+    },
   ];
 
   const componentProps = useMemo(() => Config?.componentProps, [Config]);
@@ -193,6 +198,17 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   onChange={(value) => setStoreItemData((prev) => ({ ...prev, deliveryMethod: value }))}
                 />
               </Grid>
+              {storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE && (
+                <Grid display="flex" flexDirection="column" gap="12px">
+                  <Label fontWeight={600}>Delivery Message</Label>
+                  <TextField
+                    multiline={false}
+                    width="100%"
+                    value={storeItemData.deliveryMessage}
+                    onChange={(value) => setStoreItemData((prev) => ({ ...prev, deliveryMessage: value }))}
+                  ></TextField>
+                </Grid>
+              )}
             </Grid>
           );
         }}

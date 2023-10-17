@@ -64,6 +64,7 @@ const StoreItem = () => {
   const defaultStoreItemData = {
     mediaUploads: data?.getStoreItem?.media || [],
     deliveryMethod: data?.getStoreItem?.deliveryMethod,
+    deliveryMessage: data?.getStoreItem?.deliveryMessage,
     config: {
       url: data?.getStoreItem?.url,
       nftMetadataId: data?.getStoreItem?.nftMetadataId,

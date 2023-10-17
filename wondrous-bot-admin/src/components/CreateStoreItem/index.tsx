@@ -42,6 +42,7 @@ const DEFAULT_STORE_ITEM_DATA = {
   config: {
     url: null,
   },
+  deliveryMessage: null,
 };
 
 const CreateStoreItem = ({
@@ -129,6 +130,7 @@ const CreateStoreItem = ({
       url: storeItemData?.config?.url || null,
       nftMetadataId: storeItemData?.config?.nftMetadataId,
       deliveryMethod: storeItemData.deliveryMethod,
+      deliveryMessage: storeItemData.deliveryMessage,
       deactivatedAt: storeItemSettings?.deactivatedAt ? moment().toISOString() : null,
       additionalData: storeItemData?.config?.additionalData,
       maxPurchase: storeItemSettings?.maxPurchase ? parseInt(storeItemSettings?.maxPurchase) : null,

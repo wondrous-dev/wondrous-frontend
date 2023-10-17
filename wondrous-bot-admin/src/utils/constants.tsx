@@ -439,7 +439,8 @@ export const STORE_ITEM_LABELS = {
 export const DELIVERY_METHODS = {
   DISCORD_ROLE: 'discord_role',
   DISCOUNT_CODE: 'discount_code',
-  NFT_PAYMENT: 'nft_payment'
+  NFT_PAYMENT: 'nft_payment',
+  RAFFLE: 'raffle'
 };
 
 export const NFT_ORIGIN_TYPES = {
