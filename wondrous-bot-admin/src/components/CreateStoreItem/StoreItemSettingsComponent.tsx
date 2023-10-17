@@ -136,7 +136,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
   }, [storeItemSettings?.id]);
 
   useEffect(() => {
-    if (discountInfo) {
+    if (discountInfo?.itemId) {
       const newConfig = config.filter((c) => c.key !== "storeItemDiscountCode");
       setConfig([
         ...newConfig,

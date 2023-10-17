@@ -94,7 +94,7 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
           codes: codesData.codes,
           storeItemId: itemId,
           orgId: activeOrg?.id,
-          discount: Math.round(Number(discount)),
+          discount,
           type: discountType,
           scheme: discountScheme,
         },
