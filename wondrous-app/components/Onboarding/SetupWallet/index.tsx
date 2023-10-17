@@ -15,7 +15,7 @@ import { Wallet } from 'components/Onboarding/SetupWallet/styles';
 import { useWonderWeb3 } from 'services/web3';
 import { GRAPHQL_ERRORS } from 'utils/constants';
 import LeftArrowIcon from 'components/Icons/leftArrow';
-import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
+import { getUserSigningMessage, linkWallet } from '../../Auth/withAuth';
 import WalletIcon from '../../../public/images/onboarding/union.svg';
 
 function SetupWallet() {

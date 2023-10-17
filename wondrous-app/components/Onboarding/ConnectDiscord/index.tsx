@@ -21,9 +21,8 @@ enum Text {
 
 const DISCORD_OAUTH_URL = getDiscordUrl();
 
-export function ConnectDiscord({ updateUser }) {
+function ConnectDiscord() {
   const router = useRouter();
-  const [bio, setBio] = useState('');
   const user = useMe();
   const { discordUserExists, discordError, success, collabInvite } = router.query;
   const isMobile = useIsMobile();
@@ -89,3 +88,5 @@ export function ConnectDiscord({ updateUser }) {
     </>
   );
 }
+
+export default ConnectDiscord;

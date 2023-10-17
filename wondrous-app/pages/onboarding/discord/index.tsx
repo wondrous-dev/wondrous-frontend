@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 
-import { ConnectDiscord } from 'components/Onboarding/ConnectDiscord';
+import ConnectDiscord from 'components/Onboarding/ConnectDiscord';
 import { MainWrapper } from 'components/Onboarding/styles';
 import { SET_USER_SIGNUP_COMPLETE, UPDATE_USER } from 'graphql/mutations';
 import { useMe, withAuth } from 'components/Auth/withAuth';
@@ -23,12 +23,6 @@ function ConnectDiscordPage() {
     router.push(nextStep, undefined, { shallow: true });
   };
 
-  const [updateUser] = useMutation(UPDATE_USER, {
-    onCompleted: () => {
-      goToNextStep();
-    },
-  });
-
   useEffect(() => {
     if (!user?.signupComplete) {
       setUserSignupComplete();
@@ -43,7 +37,7 @@ function ConnectDiscordPage() {
 
   return (
     <MainWrapper>
-      <ConnectDiscord updateUser={updateUser} />
+      <ConnectDiscord />
     </MainWrapper>
   );
 }
