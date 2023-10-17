@@ -75,3 +75,14 @@ export const GET_STORE_ITEM_BY_ID = gql`
     }
   }
 `;
+
+export const GET_STORE_ITEM_DISCOUNT_CODE_INFO = gql`
+  query getStoreItemDiscountCodeInfo($storeItemId: ID!) {
+    getStoreItemDiscountCodeInfo(storeItemId: $storeItemId) {
+      itemId
+      type
+      scheme
+      discount
+    }
+  }
+`;

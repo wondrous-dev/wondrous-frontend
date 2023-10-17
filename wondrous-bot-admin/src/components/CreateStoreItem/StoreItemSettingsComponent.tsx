@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "components/Shared/TextField";
 
 import { Label } from "components/CreateTemplate/styles";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import SelectComponent from "components/Shared/Select";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
@@ -10,23 +10,25 @@ import { CONDITION_TYPES, DELIVERY_METHODS } from "utils/constants";
 import ActivateStoreItem from "./components/ActivateStoreItem";
 import MaxInput from "components/CreateTemplate/MaxInput";
 import DynamicCondition from "components/DynamicCondition";
+import { useLazyQuery } from "@apollo/client";
+import { GET_STORE_ITEM_DISCOUNT_CODE_INFO } from "graphql/queries";
+import { DiscountEdit } from "./components/DiscountEdit";
+
+type StoreItemSettingsConfig = {
+  label?: string;
+  component?: any;
+  value?: string;
+  componentProps?: any;
+  key?: string;
+  divider?: boolean;
+  direction?: string;
+};
 
 const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
-  const handleChange = (key, value) => {
-    if (errors[key]) {
-      setErrors({
-        ...errors,
-        [key]: null,
-      });
-    }
-    setStoreItemSettings({
-      ...storeItemSettings,
-      [key]: value,
-    });
-  };
-
-  const CONFIG = [
+  const [getDiscountCodeInfo, { data: discountInfoData }] = useLazyQuery(GET_STORE_ITEM_DISCOUNT_CODE_INFO);
+  const discountInfo = discountInfoData?.getStoreItemDiscountCodeInfo;
+  const [config, setConfig] = useState([
     {
       label: "Product title",
       component: TextField,
@@ -96,7 +98,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
       componentProps: {
         handleUpdate: setStoreItemSettings,
         value: storeItemSettings.storeItemConditions,
-        options: [CONDITION_TYPES.LEVEL, CONDITION_TYPES.DISCORD_ROLE]
+        options: [CONDITION_TYPES.LEVEL, CONDITION_TYPES.DISCORD_ROLE],
       },
     },
     {
@@ -109,11 +111,51 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         storeItemId: storeItemSettings?.id,
       },
     },
-  ];
-  
+  ] as StoreItemSettingsConfig[]);
+  const handleChange = (key, value) => {
+    if (errors[key]) {
+      setErrors({
+        ...errors,
+        [key]: null,
+      });
+    }
+    setStoreItemSettings({
+      ...storeItemSettings,
+      [key]: value,
+    });
+  };
+
+  useEffect(() => {
+    if (storeItemSettings?.id) {
+      getDiscountCodeInfo({
+        variables: {
+          storeItemId: storeItemSettings?.id,
+        },
+      });
+    }
+  }, [storeItemSettings?.id]);
+
+  useEffect(() => {
+    if (discountInfo?.itemId) {
+      const newConfig = config.filter((c) => c.key !== "storeItemDiscountCode");
+      setConfig([
+        ...newConfig,
+        {
+          label: "Discount Codes",
+          direction: "row",
+          component: DiscountEdit,
+          key: "storeItemDiscountCode",
+          componentProps: {
+            storeItem: storeItemSettings,
+            discountInfo,
+          },
+        },
+      ]);
+    }
+  }, [discountInfo]);
   return (
     <>
-      {CONFIG.map(
+      {config.map(
         (
           {
             divider = false,

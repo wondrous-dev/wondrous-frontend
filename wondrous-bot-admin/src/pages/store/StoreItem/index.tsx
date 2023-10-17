@@ -6,16 +6,17 @@ import PageSpinner from "components/PageSpinner";
 import TextField from "components/Shared/TextField";
 
 import QuestTitle from "components/QuestTitle";
-import { SharedSecondaryButton } from "components/Shared/styles";
+import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 import { GET_STORE_ITEM_BY_ID } from "graphql/queries";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import CreateQuestContext from "utils/context/CreateQuestContext";
+import DiscountCodeModal from "./DiscountCodeModal";
 
 const StoreItem = () => {
   const headerActionsRef = useRef(null);
   const [errors, setErrors] = useState({});
-
+  const [openDiscountUploadModal, setOpenDiscountUploadModal] = useState(false);
   let { id } = useParams();
   const [getStoreItemById, { data, loading }] = useLazyQuery(GET_STORE_ITEM_BY_ID, {
     notifyOnNetworkStatusChange: true,
@@ -58,8 +59,8 @@ const StoreItem = () => {
             };
           })
         : null,
-    }
-  }, [data?.getStoreItem])
+    };
+  }, [data?.getStoreItem]);
 
   const defaultStoreItemData = {
     mediaUploads: data?.getStoreItem?.media || [],
@@ -74,26 +75,40 @@ const StoreItem = () => {
 
   const isDeactivated = !!data?.getStoreItem?.deactivatedAt;
 
-  if(!data) return null;
+  if (!data) return null;
   return (
     <>
       <CreateQuestContext.Provider
         value={{
           errors,
-          setErrors
+          setErrors,
         }}
       >
+        <DiscountCodeModal
+          openDiscountUploadModal={openDiscountUploadModal}
+          setOpenDiscountUploadModal={setOpenDiscountUploadModal}
+          itemId={data?.getStoreItem?.id}
+        />
         <PageHeader
           withBackButton
           title={data?.getStoreItem?.name || "Product Listing"}
           renderActions={() => (
-            <SharedSecondaryButton
-              $reverse={isDeactivated}
-              onClick={() => headerActionsRef.current?.handleSave()}
-              disabled={isDeactivated}
-            >
-              {isDeactivated ? "Product deactivated" : "Update Product"}
-            </SharedSecondaryButton>
+            <>
+              <SharedBlackOutlineButton
+                onClick={() => {
+                  setOpenDiscountUploadModal(true);
+                }}
+              >
+                Upload discount codes
+              </SharedBlackOutlineButton>
+              <SharedSecondaryButton
+                $reverse={isDeactivated}
+                onClick={() => headerActionsRef.current?.handleSave()}
+                disabled={isDeactivated}
+              >
+                {isDeactivated ? "Product deactivated" : "Update Product"}
+              </SharedSecondaryButton>
+            </>
           )}
         />
         <CreateStoreItem
