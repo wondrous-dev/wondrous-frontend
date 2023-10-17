@@ -131,6 +131,7 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
             lineHeight="14px"
             color={redColors.red400}
             paddingLeft="4px"
+            marginTop={"8px"}
           >
             {error}
           </Typography>
