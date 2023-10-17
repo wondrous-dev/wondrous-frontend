@@ -88,19 +88,23 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
 
   const handleImportCodes = useCallback(() => {
     setIsImportInProgress(true);
-    uploadDiscountCodes({
-      variables: {
-        input: {
-          codes: codesData.codes,
-          storeItemId: itemId,
-          orgId: activeOrg?.id,
-          discount,
-          type: discountType,
-          scheme: discountScheme,
+    if (!discount) {
+      setError("Please enter discount");
+    } else {
+      uploadDiscountCodes({
+        variables: {
+          input: {
+            codes: codesData.codes,
+            storeItemId: itemId,
+            orgId: activeOrg?.id,
+            discount,
+            type: discountType,
+            scheme: discountScheme,
+          },
         },
-      },
-    });
-  }, [codesData.key]);
+      });
+    }
+  }, [codesData.key, discount, discountType, discountScheme, itemId]);
   const handleFileRemove = useCallback(() => {
     setCodesData(DEFAULT_CODES_DATA);
   }, [DEFAULT_CODES_DATA]);
