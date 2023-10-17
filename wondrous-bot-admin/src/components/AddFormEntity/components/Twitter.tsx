@@ -50,7 +50,7 @@ const TwitterReplyText = ({ handleOnChange, value, error }) => (
 
 const TwitterFollowText = ({ handleOnChange, value, error }) => (
   <>
-    <Label>Follow this Twitter account</Label>
+    <Label>Follow this Twitter account (enter without @)</Label>
     <TextField
       placeholder="Please enter the twitter handle to follow e.g. wonderverse_xyz"
       value={value?.tweetHandle}
