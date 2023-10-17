@@ -53,7 +53,7 @@ const TwitterFollowText = ({ handleOnChange, value, error }) => (
     <Label>Follow this Twitter account</Label>
     <TextField
       placeholder="Please enter the twitter handle to follow e.g. wonderverse_xyz"
-      value={value?.tweetHandle?.replace("@", "")}
+      value={value?.tweetHandle}
       onChange={(value) => handleOnChange("tweetHandle", value)}
       multiline={false}
       error={error}
