@@ -6,7 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { CardHoverWrapper, CardWrapper, Label } from "./styles";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "components/Shared/PageWrapper";
-import { BG_TYPES } from "utils/constants";
+import { BG_TYPES, QUEST_STATUSES } from "utils/constants";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_ORG_QUEST_STATS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
@@ -18,8 +18,8 @@ import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsL
 import { useTour } from "@reactour/tour";
 import { CSS } from "@dnd-kit/utilities";
 
-const SortableItem = ({ item, idx, isOpen }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id });
+const SortableItem = ({ item, idx, isOpen, status }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id, disabled: status !== QUEST_STATUSES.OPEN });
 
   const navigate = useNavigate();
   const style = {
@@ -118,7 +118,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, TouchS
 import { SortableContext, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { UPDATE_QUEST_ORDER } from "graphql/mutations";
 
-const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan }) => {
+const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan, status }) => {
   const navigate = useNavigate();
   const [updateQuestOrder] = useMutation(UPDATE_QUEST_ORDER, {
     refetchQueries: ["getQuestsForOrg"],
@@ -174,13 +174,14 @@ const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan }) => {
       <Grid container gap="30px 14px">
         <DndContext
           onDragEnd={handleDragEnd}
+          
           onDragStart={toggleIsDragging}
           sensors={sensors}
           collisionDetection={closestCenter}
         >
           <SortableContext items={formattedData[level].items || []} strategy={rectSortingStrategy}>
             {formattedData[level].items.map((item, idx) => (
-              <SortableItem key={item.id} item={item} isOpen={isOpen} idx={idx} />
+              <SortableItem key={item.id} item={item} isOpen={isOpen} idx={idx} status={status}/>
             ))}
             {isDragging ? null : (
               <CardHoverWrapper
@@ -250,7 +251,7 @@ const formatQuestsData = (LEVELS, data) => {
   return result;
 };
 
-const QuestsList = ({ data }) => {
+const QuestsList = ({ data, status }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { isOpen } = useTour();
 
@@ -296,6 +297,7 @@ const QuestsList = ({ data }) => {
         }
         return (
           <QuestItemCard
+          status={status}
             level={level}
             formattedData={formattedData}
             isOpen={isOpen}

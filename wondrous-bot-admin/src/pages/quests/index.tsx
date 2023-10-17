@@ -149,7 +149,9 @@ const QuestsPage = () => {
           </Box>
         )}
       />
-      <QuestsList data={sortedData} />
+      <QuestsList data={sortedData} 
+      status={statuses}
+      />
     </>
   );
 };
