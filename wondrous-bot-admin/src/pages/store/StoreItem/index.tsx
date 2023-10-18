@@ -12,30 +12,23 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import DiscountCodeModal from "./DiscountCodeModal";
+import ViewStoreItem from "components/ViewStoreItem";
 
 const StoreItem = () => {
   const headerActionsRef = useRef(null);
   const [errors, setErrors] = useState({});
   const [openDiscountUploadModal, setOpenDiscountUploadModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   let { id } = useParams();
-  const [getStoreItemById, { data, loading }] = useLazyQuery(GET_STORE_ITEM_BY_ID, {
+  const { data, loading } = useQuery(GET_STORE_ITEM_BY_ID, {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "network-only",
     variables: {
       storeItemId: id,
     },
+    skip: !id,
   });
-
-  useEffect(() => {
-    if (!data && !loading) {
-      getStoreItemById({
-        variables: {
-          storeItemId: id,
-        },
-      });
-    }
-  }, [data, loading]);
 
   const setRefValue = (value) => (headerActionsRef.current = value);
 
@@ -76,6 +69,12 @@ const StoreItem = () => {
 
   const isDeactivated = !!data?.getStoreItem?.deactivatedAt;
 
+  const buttonTitle = isEditMode ? "Save product" : "Edit product";
+
+  const handleOnClick = () => {
+    if (isEditMode) return headerActionsRef.current?.handleSave();
+    return setIsEditMode(true);
+  };
   if (!data) return null;
   return (
     <>
@@ -92,31 +91,33 @@ const StoreItem = () => {
         />
         <PageHeader
           withBackButton
-          title={data?.getStoreItem?.name || "Product Listing"}
+          title={isEditMode ? "Edit Product" : "View Product"}
           renderActions={() => (
             <>
-              <SharedBlackOutlineButton
-                onClick={() => {
-                  setOpenDiscountUploadModal(true);
-                }}
-              >
-                Upload discount codes
-              </SharedBlackOutlineButton>
-              <SharedSecondaryButton
-                $reverse={isDeactivated}
-                onClick={() => headerActionsRef.current?.handleSave()}
-                disabled={isDeactivated}
-              >
-                {isDeactivated ? "Product deactivated" : "Update Product"}
+              {isEditMode ? (
+                <SharedBlackOutlineButton
+                  onClick={() => {
+                    setOpenDiscountUploadModal(true);
+                  }}
+                >
+                  Upload discount codes
+                </SharedBlackOutlineButton>
+              ) : null}
+              <SharedSecondaryButton $reverse={isDeactivated} onClick={handleOnClick} disabled={isDeactivated}>
+                {isDeactivated ? "Product deactivated" : buttonTitle}
               </SharedSecondaryButton>
             </>
           )}
         />
-        <CreateStoreItem
-          setRefValue={setRefValue}
-          defaultStoreItemData={defaultStoreItemData}
-          defaultStoreItemStetings={defaultStoreItemSettings}
-        />
+        {isEditMode ? (
+          <CreateStoreItem
+            setRefValue={setRefValue}
+            defaultStoreItemData={defaultStoreItemData}
+            defaultStoreItemStetings={defaultStoreItemSettings}
+          />
+        ) : (
+          <ViewStoreItem data={data?.getStoreItem} />
+        )}
       </CreateQuestContext.Provider>
     </>
   );
