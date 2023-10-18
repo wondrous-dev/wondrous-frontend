@@ -23,7 +23,7 @@ const MaxInput = (props) => {
 
   const infoLabel = INFO_LABELS[stateKey];
 
-  const isActive = keyValue || value?.trim() === "";
+  const isActive = value || keyValue?.trim() === "";
 
   return (
     <Box display="flex" gap={isActive ? "10px" : "0px"} alignItems="center">
@@ -43,7 +43,7 @@ const MaxInput = (props) => {
           }}
         />
       </Box>
-      <Switch {...props} value={value || keyValue === ' '} />
+      <Switch {...props} value={isActive} />
       {infoLabel ? (
         <StyledInformationTooltip placement="right" title={infoLabel}>
           <img
