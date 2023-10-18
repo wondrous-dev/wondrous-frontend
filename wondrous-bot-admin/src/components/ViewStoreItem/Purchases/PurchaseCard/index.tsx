@@ -16,7 +16,6 @@ const PurchaseCard = ({ purchase, discordRoles, storeItem, nftMetadata }) => {
     return allRoles?.find((item) => item.id === storeItem.additionalData?.discordRoleId)?.name;
   }, [discordRoles, storeItem?.additionalData?.discordRoleId]);
 
-  console.log(nftMetadata, "nft meta");
   return (
     <AccordionComponent
       renderTitle={() => (

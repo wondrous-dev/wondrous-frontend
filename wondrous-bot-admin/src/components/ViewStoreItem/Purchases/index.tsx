@@ -14,7 +14,7 @@ const StoreItemPurchases = ({ data, discordRoles, nftMetadata }) => {
     {
       notifyOnNetworkStatusChange: true,
       fetchPolicy: "cache-and-network",
-      nextFetchPolicy: "cache-first",
+      nextFetchPolicy: "network-only",
     }
   );
 
@@ -28,7 +28,7 @@ const StoreItemPurchases = ({ data, discordRoles, nftMetadata }) => {
         offset: 0,
       },
     }).then(({ data }) => {
-      setHasMore(data?.getStoreItemPurchases?.length < LIMIT);
+      setHasMore(data?.getStoreItemPurchases?.length <= LIMIT);
     });
   }, [data?.id, data?.orgId]);
 
