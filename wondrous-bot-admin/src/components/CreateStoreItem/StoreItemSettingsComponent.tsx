@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "components/Shared/TextField";
 
 import { Label } from "components/CreateTemplate/styles";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import SelectComponent from "components/Shared/Select";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
@@ -28,90 +28,111 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [getDiscountCodeInfo, { data: discountInfoData }] = useLazyQuery(GET_STORE_ITEM_DISCOUNT_CODE_INFO);
   const discountInfo = discountInfoData?.getStoreItemDiscountCodeInfo;
-  const [config, setConfig] = useState([
-    {
-      label: "Product title",
-      component: TextField,
-      value: storeItemSettings.title,
-      componentProps: {
-        multiline: false,
-        placeholder: "Enter product title",
+  const config = useMemo(() => {
+    let data:StoreItemSettingsConfig[] = [
+      {
+        label: "Product title",
+        component: TextField,
+        value: storeItemSettings.title,
+        componentProps: {
+          multiline: false,
+          placeholder: "Enter product title",
+        },
+        key: "name",
       },
-      key: "name",
-    },
-    {
-      label: "Product description",
-      component: TextField,
-      componentProps: {
-        multiline: true,
-        placeholder: "Enter product description",
+      {
+        label: "Product description",
+        component: TextField,
+        componentProps: {
+          multiline: true,
+          placeholder: "Enter product description",
+        },
+        value: storeItemSettings.description,
+        key: "description",
       },
-      value: storeItemSettings.description,
-      key: "description",
-    },
-    {
-      divider: true,
-    },
-    {
-      label: "Price",
-      direction: "row",
-      key: "price",
-      component: TextField,
-      componentProps: {
-        type: "number",
-        multiline: false,
-        placeholder: "Price",
+      {
+        divider: true,
       },
-    },
-    {
-      label: "Price in Points",
-      direction: "row",
-      key: "ptPrice",
-      component: TextField,
-      componentProps: {
-        type: "number",
-        multiline: false,
-        placeholder: "Price in Points",
-      },
-    },
-    {
-      label: "Max purchases",
-      direction: "row",
-      key: "maxPurchase",
-      component: MaxInput,
-      componentProps: {
-        keyValue: storeItemSettings?.maxPurchase,
-        handleValueChange: (value) => handleChange("maxPurchase", value),
-        onChange: (value) => {
-          if (!value && storeItemSettings?.maxPurchase) {
-            return handleChange("maxPurchase", null);
-          }
-          return handleChange("maxPurchase", 1);
+      {
+        label: "Price",
+        direction: "row",
+        key: "price",
+        component: TextField,
+        componentProps: {
+          type: "number",
+          multiline: false,
+          placeholder: "Price",
         },
       },
-    },
-    {
-      label: "Conditions",
-      component: DynamicCondition,
-      direction: "row",
-      key: "storeItemConditions",
-      componentProps: {
-        handleUpdate: setStoreItemSettings,
-        value: storeItemSettings.storeItemConditions,
-        options: [CONDITION_TYPES.LEVEL, CONDITION_TYPES.DISCORD_ROLE],
+      {
+        label: "Price in Points",
+        direction: "row",
+        key: "ptPrice",
+        component: TextField,
+        componentProps: {
+          type: "number",
+          multiline: false,
+          placeholder: "Price in Points",
+        },
       },
-    },
-    {
-      label: "Activate Product",
-      direction: "row",
-      component: ActivateStoreItem,
-      key: "deactivatedAt",
-      componentProps: {
-        value: !storeItemSettings?.deactivatedAt,
-        storeItemId: storeItemSettings?.id,
+      {
+        label: "Max purchases",
+        direction: "row",
+        key: "maxPurchase",
+        component: MaxInput,
+        componentProps: {
+          keyValue: storeItemSettings?.maxPurchase,
+          handleValueChange: (value) => handleChange("maxPurchase", value),
+          onChange: (value) => {
+            if (!value && storeItemSettings?.maxPurchase) {
+              return handleChange("maxPurchase", null);
+            }
+            return handleChange("maxPurchase", 1);
+          },
+        },
       },
-    },
-  ] as StoreItemSettingsConfig[]);
+      {
+        label: "Conditions",
+        component: DynamicCondition,
+        direction: "row",
+        key: "storeItemConditions",
+        componentProps: {
+          handleUpdate: setStoreItemSettings,
+          value: storeItemSettings.storeItemConditions,
+          options: [CONDITION_TYPES.LEVEL, CONDITION_TYPES.DISCORD_ROLE],
+        },
+      },
+      {
+        label: "Activate Product",
+        direction: "row",
+        component: ActivateStoreItem,
+        key: "deactivatedAt",
+        componentProps: {
+          value: !storeItemSettings?.deactivatedAt,
+          storeItemId: storeItemSettings?.id,
+        },
+      },
+    ] 
+    if (discountInfo?.itemId) {
+      const newConfig = data.filter((c) => c.key !== "storeItemDiscountCode");
+      data = [
+        ...newConfig,
+        {
+          label: "Discount Codes",
+          direction: "row",
+          component: (props) => <DiscountEdit {...props}/>,
+          key: "storeItemDiscountCode",
+          componentProps: {
+            storeItem: storeItemSettings,
+            discountInfo,
+          },
+        },
+      ];
+    }
+    return data;
+
+  }, [discountInfo, storeItemSettings])
+
   const handleChange = (key, value) => {
     if (errors[key]) {
       setErrors({
@@ -135,24 +156,6 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
     }
   }, [storeItemSettings?.id]);
 
-  useEffect(() => {
-    if (discountInfo?.itemId) {
-      const newConfig = config.filter((c) => c.key !== "storeItemDiscountCode");
-      setConfig([
-        ...newConfig,
-        {
-          label: "Discount Codes",
-          direction: "row",
-          component: DiscountEdit,
-          key: "storeItemDiscountCode",
-          componentProps: {
-            storeItem: storeItemSettings,
-            discountInfo,
-          },
-        },
-      ]);
-    }
-  }, [discountInfo]);
   return (
     <>
       {config.map(
