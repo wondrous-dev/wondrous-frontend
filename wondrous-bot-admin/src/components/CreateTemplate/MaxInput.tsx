@@ -4,6 +4,7 @@ import Switch from "components/Shared/Switch";
 import Tooltip from "@mui/material/Tooltip";
 import InformationTooltip from "components/Icons/information.svg";
 import { StyledInformationTooltip } from "components/Shared/Tooltip";
+import { useMemo } from "react";
 
 const KEYS = {
   MAX_SUBMISSION: "maxSubmission",
@@ -18,16 +19,18 @@ const INFO_LABELS = {
 };
 
 const MaxInput = (props) => {
-  const { keyValue, stateKey, handleValueChange } = props;
+  const { keyValue, stateKey, handleValueChange, value } = props;
 
   const infoLabel = INFO_LABELS[stateKey];
 
+  const isActive = keyValue || value?.trim() === "";
+
   return (
-    <Box display="flex" gap={keyValue ? "10px" : "0px"} alignItems="center">
+    <Box display="flex" gap={isActive ? "10px" : "0px"} alignItems="center">
       <Box
         sx={{
-          width: keyValue ? "100%" : "0px",
-          visibility: keyValue ? "visible" : "hidden",
+          width: isActive ? "100%" : "0px",
+          visibility: isActive ? "visible" : "hidden",
           transition: "width 0.3s ease-in-out, visibility 0.3s ease-in-out",
         }}
       >
@@ -36,10 +39,11 @@ const MaxInput = (props) => {
           type="number"
           value={keyValue}
           onChange={(e) => {
-            handleValueChange(e.target.value)}}
+            handleValueChange(e.target.value);
+          }}
         />
       </Box>
-      <Switch {...props} />
+      <Switch {...props} value={value || keyValue === ' '} />
       {infoLabel ? (
         <StyledInformationTooltip placement="right" title={infoLabel}>
           <img
