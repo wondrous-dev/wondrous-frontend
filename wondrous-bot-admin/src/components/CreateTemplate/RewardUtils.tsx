@@ -107,7 +107,7 @@ export const TokenComponent = ({
 
       <SelectComponent
         options={options}
-        disabled={!(editPaymentMethod?.id && editPaymentMethod?.type)}
+        disabled
         value={editPaymentMethod?.id && editPaymentMethod?.type ? editPaymentMethod?.type : tokenReward?.type}
         onChange={(value) => {
           if (editPaymentMethod?.id) {
@@ -660,7 +660,6 @@ export const RewardFooterLeftComponent = ({
                 contractAddress: editPaymentMethod?.contractAddress,
                 tokenName: editPaymentMethod?.tokenName,
                 chain: editPaymentMethod?.chain,
-                type: editPaymentMethod?.type?.toUpperCase() || "ERC20",
               },
             },
           }).then(() => {

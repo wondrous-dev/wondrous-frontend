@@ -190,7 +190,7 @@ const useTokenRewardData = () => {
       getCmtyPaymentMethods({
         variables: {
           orgId: activeOrg?.id,
-          types: ['ERC20', 'ERC721', 'ERC1155']
+          types: ['ERC20']
         },
       });
     }
