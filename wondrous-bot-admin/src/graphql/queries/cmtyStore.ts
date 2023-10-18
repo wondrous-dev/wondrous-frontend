@@ -24,6 +24,7 @@ export const GET_STORE_ITEMS_FOR_ORG = gql`
         videoProcessingStatus
       }
       deliveryMethod
+      deliveryMessage
       url
       nftMetadataId
       additionalData {
@@ -65,6 +66,7 @@ export const GET_STORE_ITEM_BY_ID = gql`
         videoProcessingStatus
       }
       deliveryMethod
+      deliveryMessage
       url
       nftMetadataId
       additionalData {
