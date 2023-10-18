@@ -38,8 +38,8 @@ export const PAYMENT_OPTIONS = {
 
 const REWARD_TYPES = [
   { label: "ERC20", value: "erc20" },
-  // { label: "ERC721", value: "erc721" },
-  // { label: "ERC1155", value: "erc1155" },
+  { label: "ERC721", value: "erc721" },
+  { label: "ERC1155", value: "erc1155" },
 ];
 
 const isDev = !import.meta.env.VITE_PRODUCTION;
@@ -103,11 +103,10 @@ export const TokenComponent = ({
         error={errors?.chain}
       />
       <Label>Token type</Label>
-      
+
       <SelectComponent
         options={options}
-        disabled
-        value={editPaymentMethod?.id && editPaymentMethod?.type ? editPaymentMethod?.type : 'erc20'}
+        value={editPaymentMethod?.id && editPaymentMethod?.type ? editPaymentMethod?.type : tokenReward?.type}
         onChange={(value) => {
           if (editPaymentMethod?.id) {
             setEditPaymentMethod({
@@ -798,7 +797,7 @@ export const RewardFooterLeftComponent = ({
                 contractAddress: editPaymentMethod?.contractAddress,
                 tokenName: editPaymentMethod?.tokenName,
                 chain: editPaymentMethod?.chain,
-                type: 'ERC20',
+                type: "ERC20",
               },
             },
           }).then(() => {
