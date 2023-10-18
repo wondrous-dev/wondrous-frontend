@@ -27,7 +27,7 @@ const ActivateStoreItem = (props) => {
           });
         }
 
-        if (!value && isActive) {
+        if (!value && isActive && storeItemId) {
           await deactivateStoreItem({
             variables: {
               storeItemId,
