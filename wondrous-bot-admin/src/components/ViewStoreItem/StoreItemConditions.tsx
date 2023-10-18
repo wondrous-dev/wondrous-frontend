@@ -16,14 +16,6 @@ const StoreItemConditions = ({ storeItemData, discordData }) => {
     };
   }, [storeItemData?.conditions]);
 
-  // const { data, loading } = useQuery(GET_ORG_DISCORD_ROLES, {
-  //   variables: {
-  //     orgId: storeItemData?.orgId,
-  //   },
-  //   skip: !fetchConditions.shouldFetchDiscord,
-  //   // skip: !storeItemData || storeItemData?.type !== STORE_ITEM_TYPES.DISCORD_ROLE,
-  // });
-
   const { levels, loading: levelsLoading } = useLevels({
     orgId: storeItemData?.orgId,
     shouldFetch: fetchConditions.shouldFetchLevels,

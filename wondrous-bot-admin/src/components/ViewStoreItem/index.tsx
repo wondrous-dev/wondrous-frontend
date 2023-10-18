@@ -17,7 +17,7 @@ import StoreItemMetadata from "./StoreItemMetadata";
 import StoreItemConditions from "./StoreItemConditions";
 import StoreItemPurchases from "./Purchases";
 import { useQuery } from "@apollo/client";
-import { GET_ORG_DISCORD_ROLES } from "graphql/queries";
+import { GET_COMMUNITY_NFT_BY_METADATA_ID, GET_ORG_DISCORD_ROLES } from "graphql/queries";
 
 const METADATA_STORE_ITEM_LABELS_MAP = {
   [STORE_ITEM_TYPES.DISCORD_ROLE]: "Discord Role",
@@ -37,6 +37,13 @@ const ViewStoreItem = ({ data }) => {
       orgId: data?.orgId,
     },
     skip: !shouldFetchDiscord,
+  });
+
+  const { data: nftMetadata, loading: nftMetadataLoading } = useQuery(GET_COMMUNITY_NFT_BY_METADATA_ID, {
+    variables: {
+      nftMetadataId: data?.nftMetadataId,
+    },
+    skip: !data || !data?.nftMetadataId || data?.type !== STORE_ITEM_TYPES.NFT,
   });
 
   const sections = useMemo(() => {
@@ -104,13 +111,16 @@ const ViewStoreItem = ({ data }) => {
             label: METADATA_STORE_ITEM_LABELS_MAP[data?.type],
             value: data?.url || data?.nftMetadataId || data?.additionalData?.discordRoleName || "None",
             type: "custom",
-            customComponent: () => <StoreItemMetadata storeItemData={data} />,
+            customComponent: () => <StoreItemMetadata 
+            nftMetadata={nftMetadata?.getCmtyNFTByMetadataId}
+            discordRoles={orgDiscordRolesData?.getCmtyOrgDiscordRoles}
+            storeItemData={data} />,
           },
         ],
         showBorder: false,
       },
     ];
-  }, [data, orgDiscordRolesData?.getCmtyOrgDiscordRoles]);
+  }, [data, orgDiscordRolesData?.getCmtyOrgDiscordRoles, nftMetadata?.getCmtyNFTByMetadataId]);
 
   return (
     <PageWrapper
@@ -150,7 +160,9 @@ const ViewStoreItem = ({ data }) => {
           alignItems="center"
           width="100%"
         >
-          <StoreItemPurchases data={data} discordRoles={orgDiscordRolesData?.getCmtyOrgDiscordRoles} />
+          <StoreItemPurchases 
+            nftMetadata={nftMetadata?.getCmtyNFTByMetadataId}
+            data={data} discordRoles={orgDiscordRolesData?.getCmtyOrgDiscordRoles} />
         </Grid>
       </Grid>
     </PageWrapper>

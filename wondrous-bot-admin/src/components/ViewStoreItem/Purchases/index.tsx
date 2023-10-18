@@ -7,7 +7,7 @@ import { useInView } from "react-intersection-observer";
 import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import PurchaseCard from "./PurchaseCard";
 
-const StoreItemPurchases = ({ data, discordRoles }) => {
+const StoreItemPurchases = ({ data, discordRoles, nftMetadata }) => {
   const [hasMore, setHasMore] = useState(true);
   const [getStoreItemPurchases, { data: storeItemPurchases, loading, fetchMore }] = useLazyQuery(
     GET_STORE_ITEM_PURCHASES,
@@ -75,7 +75,13 @@ const StoreItemPurchases = ({ data, discordRoles }) => {
       <Box width="100%" gap="14px" display="flex" alignItems="center" flexDirection="column">
         {storeItemPurchases?.getStoreItemPurchases?.length ? (
           storeItemPurchases?.getStoreItemPurchases?.map((purchase, index) => (
-            <PurchaseCard storeItem={data} discordRoles={discordRoles} key={purchase.id} purchase={purchase} />
+            <PurchaseCard
+              nftMetadata={nftMetadata}
+              storeItem={data}
+              discordRoles={discordRoles}
+              key={purchase.id}
+              purchase={purchase}
+            />
           ))
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.PURCHASES} />

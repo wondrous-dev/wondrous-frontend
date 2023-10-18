@@ -23,7 +23,7 @@ const EMPTY_STATE_MAP = {
   },
 
   [EMPTY_STATE_TYPES.PURCHASES]: {
-    title: "This item has purchases yet",
+    title: "This item has no purchases yet",
     Image: MembersArtwork,
   },
 };
