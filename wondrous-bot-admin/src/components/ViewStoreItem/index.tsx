@@ -3,124 +3,114 @@ import { CampaignOverviewHeader } from "components/CreateTemplate/CampaignOvervi
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import ViewCampaignOverview from "components/ViewQuestResults/ViewCampaignOverview";
-import ViewRewards from "components/ViewQuestResults/ViewRewards";
-import { BG_TYPES, STORE_ITEM_STATUSES } from "utils/constants";
+import { useEffect, useMemo, useState } from "react";
+import { getTextForCondition } from "utils/common";
+import {
+  BG_TYPES,
+  CONDITION_TYPES,
+  DELIVERY_METHOD_LABELS,
+  STORE_ITEM_LABELS,
+  STORE_ITEM_STATUSES,
+  STORE_ITEM_TYPES,
+} from "utils/constants";
+import StoreItemMetadata from "./StoreItemMetadata";
+import StoreItemConditions from "./StoreItemConditions";
+import StoreItemPurchases from "./Purchases";
+import { useQuery } from "@apollo/client";
+import { GET_ORG_DISCORD_ROLES } from "graphql/queries";
+
+const METADATA_STORE_ITEM_LABELS_MAP = {
+  [STORE_ITEM_TYPES.DISCORD_ROLE]: "Discord Role",
+  [STORE_ITEM_TYPES.NFT]: "NFT",
+  [STORE_ITEM_TYPES.PHYSICAL]: "Shopify link",
+};
 
 const ViewStoreItem = ({ data }) => {
-    console.log(data)
-  const sections = [
-    {
-      settings: [
-        {
-          label: "Product title",
-          value: data?.name,
-          type: "titleOrDescription",
-        },
-        {
-          label: "Description",
-          value: data?.description,
-          type: "titleOrDescription",
-        },
-      ],
-      settingsLayout: {
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: "14px",
-      },
-    },
-    {
-      settings: [
-        {
-          label: "Price",
-          value: data?.price || "None",
-          type: "text",
-        },
-        {
-          label: "Price in Points",
-          value: data?.ptPrice,
-          type: "text",
-        },
-        { label: "Active Listing", value: data?.status === STORE_ITEM_STATUSES.ACTIVE, type: "boolean" },
-      ],
-    },
-    {
-      settings: [
-        {
-          label: "Max Purchases",
-          value: data?.maxPurchase || "Unlimited",
-          type: "text",
-        },
-        // {
-        //     label: "Conditions",
-        //     value: questSettingsConditions?.length > 0 ? questSettingsConditions : "None",
-        //     type: questSettingsConditions?.length > 0 ? "questConditions" : "text",
-        //   },  
-      ],
-    },
-  ];
-  // const sections = [
-  //     {
-  //       settings: [
-  //         { label: "Quest Title", value: quest?.title, type: "titleOrDescription" },
-  //         { label: "Description", value: quest?.description, type: "titleOrDescription" },
-  //       ],
-  //       settingsLayout: {
-  //         flexDirection: "column",
-  //         alignItems: "flex-start",
-  //         gap: "14px",
-  //       },
-  //     },
-  //     {
-  //       settings: [
-  //         {
-  //           label: "Level Requirement",
-  //           value: quest?.level || "None",
-  //           type: "level",
-  //         },
-  //         {
-  //           label: "Require Review",
-  //           value: quest?.requireReview,
-  //           type: "boolean",
-  //         },
-  //         { label: "Active Quest", value: quest?.status === QUEST_STATUSES.OPEN, type: "boolean" },
-  //       ],
-  //     },
+  const shouldFetchDiscord = useMemo(() => {
+    const hasDiscordCondition = data?.conditions?.some((condition) => condition.type === CONDITION_TYPES.DISCORD_ROLE);
+    const hasDiscordData = data?.additionalData?.discordRoleId;
+    return hasDiscordCondition || hasDiscordData;
+  }, [data?.conditions, data?.additionalData?.discordRoleId]);
 
-  //     {
-  //       settings: [
-  //   {
-  //     label: "Max Submissions",
-  //     value: quest?.maxSubmission || "Unlimited",
-  //     type: "text",
-  //   },
-  //         {
-  //           label: "Max Approvals",
-  //           value: quest?.maxApproval || "Unlimited",
-  //           type: "text",
-  //         },
-  //         {
-  //           label: "Onboarding Quest",
-  //           value: quest?.isOnboarding ? "Yes" : "No",
-  //           type: "boolean",
-  //         },
-  //         {
-  //           label: "Time Bound",
-  //           ...timeboundDate,
-  //         },
-  //         {
-  //           label: "Daily submission",
-  //           value: quest?.submissionCooldownPeriod ? "Yes" : "No",
-  //           type: "text",
-  //         },
-  //         {
-  //           label: "Conditions",
-  //           value: questSettingsConditions?.length > 0 ? questSettingsConditions : "None",
-  //           type: questSettingsConditions?.length > 0 ? "questConditions" : "text",
-  //         },
-  //       ],
-  //       showBorder: false,
-  //     },
-  //   ];
+  const { data: orgDiscordRolesData, loading } = useQuery(GET_ORG_DISCORD_ROLES, {
+    variables: {
+      orgId: data?.orgId,
+    },
+    skip: !shouldFetchDiscord,
+  });
+
+  const sections = useMemo(() => {
+    return [
+      {
+        settings: [
+          {
+            label: "Product title",
+            value: data?.name,
+            type: "titleOrDescription",
+          },
+          {
+            label: "Description",
+            value: data?.description,
+            type: "titleOrDescription",
+          },
+        ],
+        settingsLayout: {
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: "14px",
+        },
+      },
+      {
+        settings: [
+          {
+            label: "Price",
+            value: data?.price || "None",
+            type: "text",
+          },
+          {
+            label: "Price in Points",
+            value: data?.ptPrice,
+            type: "text",
+          },
+          { label: "Active Listing", value: !data?.deactivatedAt, type: "boolean" },
+        ],
+      },
+      {
+        settings: [
+          {
+            label: "Max Purchases",
+            value: data?.maxPurchase || "Unlimited",
+            type: "text",
+          },
+          {
+            label: "Product type",
+            value: STORE_ITEM_LABELS[data?.type],
+            type: "text",
+          },
+          {
+            label: "Delivery method",
+            value: DELIVERY_METHOD_LABELS[data?.deliveryMethod],
+            type: "text",
+          },
+          {
+            label: "Conditions",
+            value: data?.conditions,
+            type: "custom",
+            customComponent: () => (
+              <StoreItemConditions discordData={orgDiscordRolesData?.getCmtyOrgDiscordRoles} storeItemData={data} />
+            ),
+          },
+          {
+            label: METADATA_STORE_ITEM_LABELS_MAP[data?.type],
+            value: data?.url || data?.nftMetadataId || data?.additionalData?.discordRoleName || "None",
+            type: "custom",
+            customComponent: () => <StoreItemMetadata storeItemData={data} />,
+          },
+        ],
+        showBorder: false,
+      },
+    ];
+  }, [data, orgDiscordRolesData?.getCmtyOrgDiscordRoles]);
 
   return (
     <PageWrapper
@@ -148,7 +138,7 @@ const ViewStoreItem = ({ data }) => {
       >
         <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
           <PanelComponent
-            renderHeader={() => <CampaignOverviewHeader title="Quest Information" />}
+            renderHeader={() => <CampaignOverviewHeader title="Product Information" />}
             renderBody={() => <ViewCampaignOverview sections={sections} />}
           />
         </Box>
@@ -160,15 +150,7 @@ const ViewStoreItem = ({ data }) => {
           alignItems="center"
           width="100%"
         >
-          {/* <QuestResults
-            submissions={submissions}
-            stats={submissionStats?.getQuestSubmissionStats}
-            handleFilterChange={handleFilterChange}
-            filter={filter}
-            fetchMore={handleFetchMore}
-            hasMore={hasMore}
-            quest={quest}
-          /> */}
+          <StoreItemPurchases data={data} discordRoles={orgDiscordRolesData?.getCmtyOrgDiscordRoles} />
         </Grid>
       </Grid>
     </PageWrapper>
