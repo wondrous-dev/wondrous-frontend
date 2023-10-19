@@ -5,7 +5,7 @@ import styled from 'styled-components';
 export const StyledViewQuestResults = styled(Box)`
   && {
     background: ${({ bgcolor }) => bgcolor || "#d8e7df"};
-    outline: ${({ outlineColor }) => `1px solid ${outlineColor || "#2a8d5c"}`};
+    outline: ${({ $outlineColor }) => `1px solid ${$outlineColor || "#2a8d5c"}`};
     padding: 6px;
     border-radius: 6px;
     font-family: "Poppins";

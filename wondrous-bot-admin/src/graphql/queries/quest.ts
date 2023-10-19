@@ -386,3 +386,12 @@ export const GET_CMTY_USER_TOKEN_EXPIRE_CHECK = gql`
     }
   }
 `;
+
+export const GET_QUEST_CATEGORIES = gql`
+  query getOrgQuestCategories($orgId: ID!) {
+    getOrgQuestCategories(orgId: $orgId) {
+      id
+      category
+    }
+  }
+`;

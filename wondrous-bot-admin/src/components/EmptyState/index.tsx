@@ -18,12 +18,21 @@ const EMPTY_STATE_MAP = {
     Image: MembersArtwork,
   },
   [EMPTY_STATE_TYPES.NFT]: {
-    title: 'You have no community NFTs yet',
+    title: "You have no community NFTs yet",
     Image: MembersArtwork,
   },
+
+  [EMPTY_STATE_TYPES.PURCHASES]: {
+    title: "This item has no purchases yet",
+    Image: MembersArtwork,
+  },
+  [EMPTY_STATE_TYPES.CATEGORIES]: {
+    title: 'No categories yet',
+    Image: SubmissionsArtwork
+  }
 };
 
-const EmptyState = ({ type, sx = {}, labelColor = "white" }) => {
+const EmptyState = ({ type, sx = {}, labelColor = "white", children = null }) => {
   const { title, Image } = EMPTY_STATE_MAP[type];
   if (!title || !Image) return null;
 
@@ -44,6 +53,7 @@ const EmptyState = ({ type, sx = {}, labelColor = "white" }) => {
       <Label color={labelColor} fontSize="14px" fontWeight={500}>
         {title}
       </Label>
+      {children}
     </Grid>
   );
 };
