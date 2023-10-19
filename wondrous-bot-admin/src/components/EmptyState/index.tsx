@@ -26,9 +26,13 @@ const EMPTY_STATE_MAP = {
     title: "This item has no purchases yet",
     Image: MembersArtwork,
   },
+  [EMPTY_STATE_TYPES.CATEGORIES]: {
+    title: 'No categories yet',
+    Image: SubmissionsArtwork
+  }
 };
 
-const EmptyState = ({ type, sx = {}, labelColor = "white" }) => {
+const EmptyState = ({ type, sx = {}, labelColor = "white", children = null }) => {
   const { title, Image } = EMPTY_STATE_MAP[type];
   if (!title || !Image) return null;
 
@@ -49,6 +53,7 @@ const EmptyState = ({ type, sx = {}, labelColor = "white" }) => {
       <Label color={labelColor} fontSize="14px" fontWeight={500}>
         {title}
       </Label>
+      {children}
     </Grid>
   );
 };

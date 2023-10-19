@@ -175,7 +175,8 @@ export const EMPTY_STATE_TYPES = {
   MEMBERS: "members",
   PAYMENTS: "payments",
   NFT: "nft",
-  PURCHASES: 'purchases'
+  PURCHASES: 'purchases',
+  CATEGORIES: 'categories',
 };
 
 export const ERRORS = {

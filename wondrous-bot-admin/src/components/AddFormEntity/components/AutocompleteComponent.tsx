@@ -1,4 +1,4 @@
-import { Autocomplete, Grid, MenuItem, TextField } from "@mui/material";
+import { Autocomplete, Box, Grid, MenuItem, TextField } from "@mui/material";
 import ArrowDropDownIcon from "components/Icons/ArrowDropDown";
 import CheckCircleIcon from "components/Icons/CheckCircle";
 import SearchIcon from "components/Icons/Search";
@@ -7,6 +7,7 @@ import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 import { useState } from "react";
 import { scrollbarStyles } from "components/Shared/styles";
 import { TYPES } from "utils/constants";
+import { CustomComponentWrapper, MenuItemOptionWrapper } from "./styles";
 
 const AutocompleteOptionsComponent = ({
   options,
@@ -18,12 +19,12 @@ const AutocompleteOptionsComponent = ({
   autocompletProps = {},
   inputProps = {},
   placeholder = "Search",
-  bgColor = '#C1B6F6',
-  listBoxProps = {}
+  bgColor = "#C1B6F6",
+  listBoxProps = {},
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
-  const selectedValue = options?.find((option) => option.value === value);
+  const selectedValue = options?.find((option) => option.value === value) || null;
   const [openReferralDialog, setOpenReferralDialog] = useState(false);
   const setReferralStep = () => {
     setSteps([
@@ -49,10 +50,10 @@ const AutocompleteOptionsComponent = ({
         onOpen={handleOpenClose(true)}
         onClose={handleOpenClose(false)}
         onChange={(e, option) => {
-          if (option.value === TYPES.REFERRAL && order > 1) {
+          if (option?.value === TYPES.REFERRAL && order > 1) {
             setOpenReferralDialog(true);
           } else {
-            onChange(option.value);
+            onChange(option?.value, option);
           }
         }}
         options={options}
@@ -75,6 +76,7 @@ const AutocompleteOptionsComponent = ({
         renderOption={(props, option) => {
           return (
             <MenuItem
+              disabled={option.disabled}
               {...props}
               sx={{
                 height: "40px",
@@ -88,10 +90,13 @@ const AutocompleteOptionsComponent = ({
                 }),
               }}
             >
-              <Grid container justifyContent="space-between" alignItems="center" padding="0">
+              <MenuItemOptionWrapper container justifyContent="space-between" alignItems="center" padding="0">
                 {option.label || option.value}
-                {option.value === value && <CheckCircleIcon />}
-              </Grid>
+                {option.value === value && !option.customComponent && <CheckCircleIcon />}
+                {option.displayCustomOnHover && option.customComponent ? (
+                  <CustomComponentWrapper>{option.customComponent()}</CustomComponentWrapper>
+                ) : null}
+              </MenuItemOptionWrapper>
             </MenuItem>
           );
         }}
@@ -126,7 +131,7 @@ const AutocompleteOptionsComponent = ({
             },
             ...scrollbarStyles,
           },
-          ...listBoxProps
+          ...listBoxProps,
         }}
         slotProps={{
           paper: {

@@ -176,3 +176,29 @@ export const MIGRATE_ORG_CMTY_USER_TELEGRAM = gql`
     }
   }
 `;
+
+
+export const UPDATE_QUEST_ORDER = gql`
+  mutation updateQuestOrder($questId: ID!, $order: Int!) {
+    updateQuestOrder(questId: $questId, order: $order) {
+      id
+      order
+    }
+  }
+`;
+
+export const CREATE_ORG_QUEST_CATEGORY = gql`
+  mutation createOrgQuestCategory($orgId: ID!, $category: String!) {
+    createOrgQuestCategory(orgId: $orgId, category: $category) {
+      success
+    }
+  }
+`;
+
+export const DELETE_ORG_QUEST_CATEGORY = gql`
+  mutation deleteOrgQuestCategory($categoryId: ID!) {
+    deleteOrgQuestCategory(categoryId: $categoryId) {
+      success
+    }
+  }
+`;

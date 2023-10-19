@@ -233,6 +233,7 @@ const CreateTemplate = ({
       maxSubmission: maxSubmission ? parseInt(maxSubmission, 10) : null,
       maxApproval: maxApproval ? parseInt(maxApproval, 10) : null,
       conditionLogic: "and",
+      category: questSettings.category || null,
       questConditions: filteredQuestConditions,
       status: status || (isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE),
       startAt: startAt && timeBound ? startAt.utcOffset(0).startOf("day").toISOString() : null,
