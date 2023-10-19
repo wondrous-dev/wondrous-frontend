@@ -16,6 +16,7 @@ import GlobalContext from "utils/context/GlobalContext";
 import DropdownSelect from "components/DropdownSelect/DropdownSelect";
 import { format } from "date-fns";
 import { ErrorText } from "components/Shared/styles";
+import AutocompleteOptionsComponent from "./AutocompleteComponent";
 const TextInputStyle = {
   width: "50%",
 };
@@ -59,17 +60,12 @@ const DiscordChannelMessage = ({ handleOnChange, value, error }) => {
   return (
     <>
       <Label>Ask members to message a particular channel</Label>
-      <SelectComponent
-        boxStyle={{
-          flex: 1,
-        }}
-        options={channels}
+      <AutocompleteOptionsComponent 
         value={value?.discordChannelId || ""}
         onChange={(value) => handleOnChange("discordChannelId", value)}
-        background="#C1B6F6"
-        style={{
-          width: "50%",
-        }}
+        options={channels}
+        placeholder="Select a channel"
+        
       />
       {error?.discordChannelId ? <ErrorText>{error?.discordChannelId}</ErrorText> : null}
 

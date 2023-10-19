@@ -10,6 +10,7 @@ import { useMutation } from "@apollo/client";
 import useAlerts from "utils/hooks";
 import Switch from "components/Shared/Switch";
 import TextField from "components/Shared/TextField";
+import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 
 const PublishQuestModal = ({ onClose, channelName, handlePublish, message, setMessage }) => {
   return (
@@ -120,14 +121,12 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
       </Modal>
       <Grid display="flex" justifyContent="flex-start" alignItems="center" width="100%">
         <Label>Discord Channel</Label>
-        <SelectComponent
-          boxStyle={{
-            flex: 1,
-          }}
+        <AutocompleteOptionsComponent 
           options={channels}
-          background="#C1B6F6"
           value={channel}
           onChange={(value) => setChannel(value)}
+          placeholder="Select a channel"
+          fullWidth
         />
       </Grid>
       {errors?.discordChannel && (
