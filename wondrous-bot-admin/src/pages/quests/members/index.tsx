@@ -11,11 +11,12 @@ import { GET_COMMUNITY_USERS_FOR_ORG } from "graphql/queries";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
+import { MemberPageSearchBar } from "./MemberSearchBar";
 
 const MembersPage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [hasMore, setHasMore] = useState(true);
-
+  const [memberSearch, setMemberSearch] = useState(null);
   const [getCmtyUsersForOrg, { data, fetchMore, refetch, loading }] = useLazyQuery(GET_COMMUNITY_USERS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -39,7 +40,7 @@ const MembersPage = () => {
         },
       }).then(({ data }) => setHasMore(data?.getCmtyUsersForOrg?.length >= LIMIT));
     }
-  }, [])
+  }, []);
 
   const handleFetchMore = () => {
     fetchMore({
@@ -51,7 +52,7 @@ const MembersPage = () => {
         },
       },
     }).then(({ data }) => setHasMore(data?.getCmtyUsersForOrg?.length >= LIMIT));
-  }
+  };
   const tableConfig = useMemo(() => {
     return data?.getCmtyUsersForOrg?.map((user) => {
       const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
@@ -60,7 +61,7 @@ const MembersPage = () => {
         name: {
           component: "custom",
           value: user,
-          customComponent: (props) => <MembersAnalytics {...props}/>
+          customComponent: (props) => <MembersAnalytics {...props} />,
         },
         level: {
           component: "hexagon",
@@ -74,18 +75,27 @@ const MembersPage = () => {
           component: "twitter",
           value: `https://twitter.com/${user?.twitterInfo?.twitterUsername}` || "N/A",
         },
-        xp: {
-          component: "label",
+        pointsBalance: {
+          component: "xp_balance",
+          value: user.pointBalance,
+          componentProps: {
+            fontWeight: 500,
+            cmtyUser: user,
+          },
+        },
+        points: {
+          component: "xp",
           value: user.point,
           componentProps: {
             fontWeight: 500,
+            cmtyUser: user,
           },
         },
       };
     });
   }, [data]);
 
-  const headers = ["Name", "Level", "Discord", "Twitter", "XP"];
+  const headers = ["Name", "Level", "Discord", "Twitter", "Points Balance", "Total Points Accumulated"];
   return (
     <>
       <PageHeader title="Community Members" withBackButton={false} />
@@ -105,8 +115,9 @@ const MembersPage = () => {
           sm: "24px 56px",
         }}
       >
+        <MemberPageSearchBar onChange={setMemberSearch} member={memberSearch} />
         {data?.getCmtyUsersForOrg?.length ? (
-          <TableComponent data={tableConfig} headers={headers} title="Top Members"/>
+          <TableComponent data={tableConfig} headers={headers} title="Top Members" />
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
         )}

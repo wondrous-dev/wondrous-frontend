@@ -18,8 +18,8 @@ const AutocompleteOptionsComponent = ({
   autocompletProps = {},
   inputProps = {},
   placeholder = "Search",
-  bgColor = '#C1B6F6',
-  listBoxProps = {}
+  bgColor = "#C1B6F6",
+  listBoxProps = {},
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
@@ -56,22 +56,24 @@ const AutocompleteOptionsComponent = ({
           }
         }}
         options={options}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label=""
-            placeholder={placeholder}
-            sx={{
-              padding: 0,
-              outline: "none",
-              "& input": {
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: "500",
-              },
-            }}
-            {...inputProps}
-          />
-        )}
+        renderInput={(params) => {
+          return (
+            <TextField
+              {...params}
+              label=""
+              placeholder={placeholder}
+              sx={{
+                padding: 0,
+                outline: "none",
+                "& input": {
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: "500",
+                },
+              }}
+              {...inputProps}
+            />
+          );
+        }}
         renderOption={(props, option) => {
           return (
             <MenuItem
@@ -126,7 +128,7 @@ const AutocompleteOptionsComponent = ({
             },
             ...scrollbarStyles,
           },
-          ...listBoxProps
+          ...listBoxProps,
         }}
         slotProps={{
           paper: {
