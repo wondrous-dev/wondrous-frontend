@@ -18,7 +18,12 @@ const EMPTY_STATE_MAP = {
     Image: MembersArtwork,
   },
   [EMPTY_STATE_TYPES.NFT]: {
-    title: 'You have no community NFTs yet',
+    title: "You have no community NFTs yet",
+    Image: MembersArtwork,
+  },
+
+  [EMPTY_STATE_TYPES.PURCHASES]: {
+    title: "This item has no purchases yet",
     Image: MembersArtwork,
   },
 };
