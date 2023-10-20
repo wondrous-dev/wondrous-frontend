@@ -159,7 +159,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
     {
       label: "Raffle",
       value: DELIVERY_METHODS.RAFFLE,
-      disabled: storeItemData.type !== STORE_ITEM_TYPES.PHYSICAL,
+      disabled: storeItemData.type !== STORE_ITEM_TYPES.PHYSICAL && storeItemData.type !== STORE_ITEM_TYPES.NFT
     },
   ];
 

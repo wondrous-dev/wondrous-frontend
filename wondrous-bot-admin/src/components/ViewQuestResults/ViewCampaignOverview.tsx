@@ -17,7 +17,7 @@ const getBooleanText = (value) =>
   ) : (
     <StyledViewQuestResults
       bgcolor="#E8E8E8"
-      outlineColor="transparent"
+      $outlineColor="transparent"
       color="#828282"
       style={{
         position: "relative",
@@ -28,6 +28,8 @@ const getBooleanText = (value) =>
   );
 
 const Settings = ({ quest, idx, settingsLayout }) => {
+
+  //TODO Adrian - refactor this to use configs
   return (
     <Grid
       display="flex"
@@ -47,7 +49,7 @@ const Settings = ({ quest, idx, settingsLayout }) => {
         {quest.type == "titleOrDescription" ? (
           <StyledViewQuestResults
             bgcolor="#F7F7F7"
-            outlineColor="transparent"
+            $outlineColor="transparent"
             style={{
               position: "relative",
             }}
@@ -95,7 +97,7 @@ const Settings = ({ quest, idx, settingsLayout }) => {
           <>
             {quest?.value?.map((condition, idx) => {
               return (
-                <StyledViewQuestResults
+                <StyledViewQuestResults key={idx + "condition"}
                   style={{
                     position: "relative",
                   }}
@@ -130,6 +132,23 @@ const Settings = ({ quest, idx, settingsLayout }) => {
             />
           </StyledInformationTooltip>
         )}
+        {quest.label === 'Max Purchases' && (
+          <StyledInformationTooltip
+          placement="right"
+          title="The maximum number of times a user can purchase this item"
+
+          >
+                        <img
+              src={InformationTooltip}
+              alt="information"
+              style={{
+                width: "16px",
+                height: "16px",
+              }}
+            />
+
+          </StyledInformationTooltip>
+        )}
         {quest.label === "Max Approvals" && (
           <StyledInformationTooltip
             placement="right"
@@ -145,6 +164,7 @@ const Settings = ({ quest, idx, settingsLayout }) => {
             />
           </StyledInformationTooltip>
         )}
+        {quest.type === 'custom' ? quest.customComponent() : null}
       </Grid>
     </Grid>
   );
@@ -153,11 +173,11 @@ const Settings = ({ quest, idx, settingsLayout }) => {
 const ViewCampaignOverview = ({ sections }) => {
   return (
     <>
-      {sections.map(({ settings, settingsLayout, showBorder = true }) => {
+      {sections.map(({ settings, settingsLayout, showBorder = true }, key) => {
         return (
-          <Grid container gap="14px" {...(showBorder && { paddingBottom: "14px", borderBottom: "1px solid #E8E8E8" })}>
+          <Grid container gap="14px" {...(showBorder && { paddingBottom: "14px", borderBottom: "1px solid #E8E8E8" })} key={`section-${key}`}>
             {settings?.map((quest, idx) => (
-              <Settings quest={quest} idx={idx} settingsLayout={settingsLayout} />
+              <Settings quest={quest} idx={idx} settingsLayout={settingsLayout} key={`setting-${idx}`}/>
             ))}
           </Grid>
         );

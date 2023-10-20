@@ -190,7 +190,7 @@ const useTokenRewardData = () => {
       getCmtyPaymentMethods({
         variables: {
           orgId: activeOrg?.id,
-          includeCommunityBadges: false
+          types: ['ERC20']
         },
       });
     }
@@ -287,7 +287,7 @@ export const useAddRewardModalState = () => {
     contractAddress: null,
     symbol: null,
     icon: null,
-    type: null,
+    type: 'erc20',
     chain: null,
     amount: null,
   });
@@ -402,14 +402,14 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
       rewardType: rewardType,
       onClick: () => {
         setRewardType(PAYMENT_OPTIONS.TOKEN);
-        // if (plan === PricingOptionsTitle.Basic) {
-        //   setPaywall(true);
-        //   setPaywallMessage("This reward option is not available under the basic plan.");
-        //   setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
-        //   return;
-        // } else {
-        //   setRewardType(PAYMENT_OPTIONS.TOKEN);
-        // }
+        if (plan === PricingOptionsTitle.Basic) {
+          setPaywall(true);
+          setPaywallMessage("This reward option is not available under the basic plan.");
+          setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
+          return;
+        } else {
+          setRewardType(PAYMENT_OPTIONS.TOKEN);
+        }
       },
       Icon: TokensIcon,
       text: "Token reward",

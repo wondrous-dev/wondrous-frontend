@@ -38,8 +38,8 @@ export const PAYMENT_OPTIONS = {
 
 const REWARD_TYPES = [
   { label: "ERC20", value: "erc20" },
-  // { label: "ERC721", value: "erc721" },
-  // { label: "ERC1155", value: "erc1155" },
+  { label: "ERC721", value: "erc721" },
+  { label: "ERC1155", value: "erc1155" },
 ];
 
 const isDev = !import.meta.env.VITE_PRODUCTION;
@@ -57,6 +57,7 @@ export const TokenComponent = ({
   options = REWARD_TYPES,
   withAmount = true,
 }) => {
+  
   if (paymentMethod && !editPaymentMethod?.id) {
     return (
       <AddExistingPaymentMethod
@@ -103,11 +104,11 @@ export const TokenComponent = ({
         error={errors?.chain}
       />
       <Label>Token type</Label>
-      
+
       <SelectComponent
         options={options}
         disabled
-        value={editPaymentMethod?.id && editPaymentMethod?.type ? editPaymentMethod?.type : 'erc20'}
+        value={editPaymentMethod?.id && editPaymentMethod?.type ? editPaymentMethod?.type : tokenReward?.type}
         onChange={(value) => {
           if (editPaymentMethod?.id) {
             setEditPaymentMethod({
@@ -215,20 +216,22 @@ export const CHAIN_SELECT_OPTIONS = [
       />
     ),
   },
-  isDev
-    ? {
-        label: "Goerli",
-        value: "goerli",
-        icon: (
-          <Ethereum
-            style={{
-              width: "20px",
-              marginRight: "8px",
-            }}
-          />
-        ),
-      }
-    : {},
+  ...(isDev
+    ? [
+        {
+          label: "Goerli",
+          value: "goerli",
+          icon: (
+            <Ethereum
+              style={{
+                width: "20px",
+                marginRight: "8px",
+              }}
+            />
+          ),
+        },
+      ]
+    : []),
   {
     label: "Polygon",
     value: "polygon",
@@ -501,7 +504,7 @@ export const RewardMethod = ({
   if (rewardType === PAYMENT_OPTIONS.POAP) {
     return (
       <>
-        <Label>Poap event ID * </Label>
+        <Label>POAP event ID * </Label>
         <TextField
           placeholder="Please enter your POAP event ID"
           value={poapReward?.id}
@@ -549,7 +552,7 @@ export const RewardMethod = ({
             }
           }}
         />
-        <Label>Poap event secret * (check your emails for this) </Label>
+        <Label>POAP event secret * (check your emails for this) </Label>
         <TextField
           placeholder="Please enter your 6 digit POAP event secret"
           value={poapReward?.eventSecret}
@@ -562,34 +565,34 @@ export const RewardMethod = ({
           multiline={false}
           error={errors?.eventSecret}
         />
-        <Label>Poap name</Label>
+        <Label>POAP name</Label>
         <TextField
           onChange={() => {}}
-          placeholder="Poap name"
+          placeholder="POAP name"
           value={poapReward?.name}
           multiline={false}
           disabled={true}
         />
-        <Label>Poap description</Label>
+        <Label>POAP description</Label>
         <TextField
           onChange={() => {}}
-          placeholder="Poap description"
+          placeholder="POAP description"
           value={poapReward?.description}
           multiline={false}
           disabled={true}
         />
         {poapReward?.imageUrl && (
           <>
-            <Label>Poap badge</Label>
+            <Label>POAP badge</Label>
             <PoapImage src={poapReward?.imageUrl} />
           </>
         )}
         {poapReward?.eventUrl && (
           <>
-            <Label>Poap event url</Label>
+            <Label>POAP event url</Label>
             <TextField
               onChange={() => {}}
-              placeholder="Poap event url"
+              placeholder="POAP event url"
               value={poapReward?.eventUrl}
               disabled={true}
               multiline={false}
@@ -613,147 +616,6 @@ export const RewardMethod = ({
         errors={errors}
       />
     );
-    // if (paymentMethod && !editPaymentMethod?.id) {
-    //   return (
-    //     <AddExistingPaymentMethod
-    //       paymentMethod={paymentMethod}
-    //       setTokenReward={setTokenReward}
-    //       tokenReward={tokenReward}
-    //       errors={errors}
-    //     />
-    //   );
-    // }
-    // if (!addPaymentMethod && !editPaymentMethod?.id) {
-    //   return (
-    //     <>
-    //       {paymentMethods?.map((paymentMethod, index) => (
-    //         <PaymentMethodRow
-    //           paymentMethod={paymentMethod}
-    //           index={index + 1}
-    //           setPaymentMethod={setPaymentMethod}
-    //           setEditPaymentMethod={setEditPaymentMethod}
-    //         />
-    //       ))}
-    //     </>
-    //   );
-    // }
-    // return (
-    //   <>
-    //     <Label>Chain</Label>
-    //     <SelectComponent
-    //       options={CHAIN_SELECT_OPTIONS}
-    //       value={editPaymentMethod?.id ? editPaymentMethod?.chain : tokenReward?.chain}
-    //       onChange={(value) => {
-    //         if (editPaymentMethod?.id) {
-    //           setEditPaymentMethod({
-    //             ...editPaymentMethod,
-    //             chain: value,
-    //           });
-    //         } else {
-    //           setTokenReward({
-    //             ...tokenReward,
-    //             chain: value,
-    //           });
-    //         }
-    //       }}
-    //       error={errors?.chain}
-    //     />
-    //     <Label>Token type</Label>
-    //     <SelectComponent
-    //       options={REWARD_TYPES}
-    //       value={editPaymentMethod?.id ? editPaymentMethod?.type : tokenReward?.type}
-    //       onChange={(value) => {
-    //         if (editPaymentMethod?.id) {
-    //           setEditPaymentMethod({
-    //             ...editPaymentMethod,
-    //             type: value,
-    //           });
-    //         } else {
-    //           setTokenReward({
-    //             ...tokenReward,
-    //             type: value,
-    //           });
-    //         }
-    //       }}
-    //       error={errors?.tokenType}
-    //     />
-    //     <Label
-    //       style={{
-    //         marginTop: "4px",
-    //       }}
-    //     >
-    //       Token
-    //     </Label>
-    //     <TextField
-    //       placeholder="Please paste in the contract address"
-    //       value={editPaymentMethod?.id ? editPaymentMethod?.contractAddress : tokenReward?.contractAddress}
-    //       onChange={(value) => {
-    //         if (editPaymentMethod?.id) {
-    //           setEditPaymentMethod({
-    //             ...editPaymentMethod,
-    //             contractAddress: value,
-    //           });
-    //         } else {
-    //           setTokenReward({
-    //             ...tokenReward,
-    //             contractAddress: value,
-    //           });
-    //         }
-    //       }}
-    //       error={errors?.contractAddress}
-    //       multiline={false}
-    //     />
-    //     <Label
-    //       style={{
-    //         marginTop: "4px",
-    //       }}
-    //     >
-    //       Name
-    //     </Label>
-    //     <TextField
-    //       placeholder="Token name"
-    //       value={editPaymentMethod?.id ? editPaymentMethod?.tokenName : tokenReward?.tokenName}
-    //       onChange={(value) => {
-    //         if (editPaymentMethod?.id) {
-    //           setEditPaymentMethod({
-    //             ...editPaymentMethod,
-    //             tokenName: value,
-    //           });
-    //         } else {
-    //           setTokenReward({
-    //             ...tokenReward,
-    //             tokenName: value,
-    //           });
-    //         }
-    //       }}
-    //       multiline={false}
-    //     />
-    //     {!editPaymentMethod?.id && (
-    //       <>
-    //         <Label
-    //           style={{
-    //             marginTop: "4px",
-    //           }}
-    //         >
-    //           Amount
-    //         </Label>
-    //         <TextField
-    //           placeholder="Please enter the amount of tokens to be rewarded"
-    //           value={tokenReward?.amount}
-    //           onChange={(value) =>
-    //             setTokenReward({
-    //               ...tokenReward,
-    //               amount: value,
-    //             })
-    //           }
-    //           multiline={false}
-    //           error={errors?.tokenAmount}
-    //           type="number"
-    //         />
-    //       </>
-    //     )}
-    //   </>
-    // );
   }
 };
 
@@ -798,7 +660,6 @@ export const RewardFooterLeftComponent = ({
                 contractAddress: editPaymentMethod?.contractAddress,
                 tokenName: editPaymentMethod?.tokenName,
                 chain: editPaymentMethod?.chain,
-                type: 'ERC20',
               },
             },
           }).then(() => {

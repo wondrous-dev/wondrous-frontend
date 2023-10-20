@@ -8,8 +8,9 @@ interface IUseLevels {
   shouldFetch?: boolean;
 }
 const useLevels = ({ orgId, shouldFetch = true }: IUseLevels) => {
-  const [getLevels, { data, refetch }] = useLazyQuery(GET_ORG_QUESTS_LEVELS, {
+  const [getLevels, { data, refetch, loading }] = useLazyQuery(GET_ORG_QUESTS_LEVELS, {
     fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
     nextFetchPolicy: 'network-only',
   });
   useEffect(() => {
@@ -37,6 +38,7 @@ const useLevels = ({ orgId, shouldFetch = true }: IUseLevels) => {
 
   return {
     levels: normalzdValues,
+    loading
   };
 };
 

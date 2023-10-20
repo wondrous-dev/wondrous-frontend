@@ -127,23 +127,29 @@ const Submissions = ({ user }) => {
     });
   };
 
+  const approvedSubmissions = submissionStats?.getQuestSubmissionStats[QUEST_SUBMISSION_STATUS.APPROVED] || 0;
+
+  const inReviewSubmissions = submissionStats?.getQuestSubmissionStats[QUEST_SUBMISSION_STATUS.IN_REVIEW] || 0;
+
+  const rejectedSubmissions = submissionStats?.getQuestSubmissionStats[QUEST_SUBMISSION_STATUS.REJECTED] || 0;
   const filters = {
     [QUEST_SUBMISSION_STATUS.APPROVED]: {
       label: "Approved",
-      value: submissionStats?.getQuestSubmissionStats[QUEST_SUBMISSION_STATUS.APPROVED] || 0,
+      value: approvedSubmissions
     },
 
     [QUEST_SUBMISSION_STATUS.IN_REVIEW]: {
       label: "Awaiting Approval",
-      value: submissionStats?.getQuestSubmissionStats[QUEST_SUBMISSION_STATUS.IN_REVIEW] || 0,
+      value: inReviewSubmissions
     },
 
     [QUEST_SUBMISSION_STATUS.REJECTED]: {
       label: "Rejected",
-      value: submissionStats?.getQuestSubmissionStats[QUEST_SUBMISSION_STATUS.REJECTED] || 0,
+      value: rejectedSubmissions
     },
   };
 
+  const totalSubmissions = approvedSubmissions + inReviewSubmissions + rejectedSubmissions;
   const handleFilterChange = async (value) => {
     setActiveFilter(value);
     const {data} = await refetch({
@@ -156,7 +162,7 @@ const Submissions = ({ user }) => {
 
   return (
     <Grid gap="24px" display="flex" flexDirection="column">
-      <CardLabel>6 submissions</CardLabel>
+      <CardLabel>{totalSubmissions} submissions</CardLabel>
       <Box display="flex" flexDirection="column" gap="14px">
         <Box maxWidth="267px">
           <AutocompleteComponent
