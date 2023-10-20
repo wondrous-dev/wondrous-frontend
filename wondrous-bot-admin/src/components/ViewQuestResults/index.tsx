@@ -30,6 +30,7 @@ import ViewCampaignOverview from "./ViewCampaignOverview";
 import PublishQuestCardBody from "./PublishQuestCardBody";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import ViewRewards from "./ViewRewards";
+import { StyledViewQuestResults } from "./styles";
 
 const ViewQuestResults = ({ quest, rewards }) => {
   const { activeOrg } = useContext(GlobalContext);
@@ -214,9 +215,9 @@ const ViewQuestResults = ({ quest, rewards }) => {
     {
       settings: [
         {
-          label: 'Category',
-          value: quest?.category || 'None',
-          type: 'text'
+          label: "Category",
+          value: quest?.category || "None",
+          type: "text",
         },
         {
           label: "Max Submissions",
@@ -279,7 +280,26 @@ const ViewQuestResults = ({ quest, rewards }) => {
         <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
           <PanelComponent
             renderHeader={() => <CampaignOverviewHeader title="Quest Information" />}
-            renderBody={() => <ViewCampaignOverview sections={sections} />}
+            renderBody={() => (
+              <>
+                {quest?.maxedAt ? (
+                  <Box paddingBottom="10px">
+                    <StyledViewQuestResults
+                      bgcolor="#E8E8E8"
+                      $outlineColor="transparent"
+                      color="#828282"
+                      style={{
+                        position: "relative",
+                      }}
+                    >
+                      Maximum approvals reached
+                    </StyledViewQuestResults>
+                  </Box>
+                ) : null}
+
+                <ViewCampaignOverview sections={sections} />
+              </>
+            )}
           />
           <PanelComponent renderHeader={null} renderBody={() => <ViewRewards rewards={rewards} />} />
           <PanelComponent
