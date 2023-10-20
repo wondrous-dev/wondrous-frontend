@@ -44,6 +44,7 @@ export const MemberPageSearchBar = ({ onChange, member, setMemberInfo }) => {
         onChange(value);
       }}
       disableClearable={false}
+      onClear={() => setMemberInfo(null)}
       inputProps={{
         onChange: (e) => {
           setSearchString(e.target.value);
