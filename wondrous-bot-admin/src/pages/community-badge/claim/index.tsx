@@ -247,6 +247,8 @@ const CommunityBadgeClaimPage = () => {
               <ClaimButton
                 chain={data?.getCmtyUserNftMetadata?.chain}
                 signature={signature}
+                nftMetadataId={data?.getCmtyUserNftMetadata?.nftMetadataId}
+                cmtyUserId={cmtyUserId}
                 tokenId={tokenId}
                 setSuccess={setSuccess}
                 nonce={data?.getCmtyUserNftMetadata?.nonce}
