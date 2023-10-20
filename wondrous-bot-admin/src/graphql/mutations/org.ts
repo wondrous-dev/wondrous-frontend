@@ -58,3 +58,19 @@ export const KICK_ORG_USER = gql`
     }
   }
 `;
+
+export const RESET_ORG_CMTY_USER_POINT_BALANCE = gql`
+  mutation resetOrgCmtyUserPointBalance($orgId: ID!) {
+    resetOrgCmtyUserPointBalance(orgId: $orgId) {
+      success
+    }
+  }
+`;
+
+export const RESET_ORG_CMTY_USER_POINTS = gql`
+  mutation resetOrgCmtyUserPoints($orgId: ID!) {
+    resetOrgCmtyUserPoints(orgId: $orgId) {
+      success
+    }
+  }
+`;

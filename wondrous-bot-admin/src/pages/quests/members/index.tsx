@@ -1,5 +1,5 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import EmptyState from "components/EmptyState";
 import MembersAnalytics from "components/MembersAnalytics";
 import PageHeader from "components/PageHeader";
@@ -12,6 +12,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { MemberPageSearchBar } from "./MemberSearchBar";
+import ResetPointsModal from "./ResetPointsModal";
 
 const transformUser = (user) => {
   const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
@@ -56,6 +57,8 @@ const MembersPage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [hasMore, setHasMore] = useState(true);
   const [memberSearch, setMemberSearch] = useState(null);
+  const [resetPointsBalance, setResetPointsBalance] = useState(null);
+  const [openResetPointsModal, setOpenResetPointsModal] = useState(false);
   const [memberInfo, setMemberInfo] = useState(null);
   const [getCmtyUsersForOrg, { data, fetchMore, refetch, loading }] = useLazyQuery(GET_COMMUNITY_USERS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
@@ -102,6 +105,11 @@ const MembersPage = () => {
   const headers = ["Name", "Level", "Discord", "Twitter", "Points Balance", "Total Points Accumulated"];
   return (
     <>
+      <ResetPointsModal
+        openResetPointsModal={openResetPointsModal}
+        setOpenResetPointsModal={setOpenResetPointsModal}
+        pointsBalance={resetPointsBalance}
+      />
       <PageHeader title="Community Members" withBackButton={false} />
       <Grid
         minHeight="100vh"
@@ -119,7 +127,34 @@ const MembersPage = () => {
           sm: "24px 56px",
         }}
       >
-        <MemberPageSearchBar onChange={setMemberSearch} member={memberSearch} setMemberInfo={setMemberInfo} />
+        <Box display="flex" alignItems="center">
+          <MemberPageSearchBar onChange={setMemberSearch} member={memberSearch} setMemberInfo={setMemberInfo} />
+          <SharedSecondaryButton
+            style={{
+              marginLeft: "8px",
+              minWidth: "none",
+            }}
+            onClick={() => {
+              setResetPointsBalance(false);
+              setOpenResetPointsModal(true);
+            }}
+          >
+            Reset member points
+          </SharedSecondaryButton>
+          <SharedSecondaryButton
+            style={{
+              marginRight: "8px",
+              marginLeft: "8px",
+              minWidth: "none",
+            }}
+            onClick={() => {
+              setResetPointsBalance(true);
+              setOpenResetPointsModal(true);
+            }}
+          >
+            Reset member point balances
+          </SharedSecondaryButton>
+        </Box>
         {data?.getCmtyUsersForOrg?.length ? (
           <TableComponent
             data={memberInfo ? [transformUser(memberInfo)] : tableConfig}

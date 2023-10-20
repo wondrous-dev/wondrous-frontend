@@ -37,7 +37,6 @@ export const MemberPageSearchBar = ({ onChange, member, setMemberInfo }) => {
   }, [member, data?.searchCmtyUsersForOrg]);
   return (
     <AutocompleteOptionsComponent
-      fullWidth
       options={options || []}
       bgColor="white"
       value={member}
