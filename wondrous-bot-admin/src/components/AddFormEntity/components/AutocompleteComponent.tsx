@@ -21,6 +21,7 @@ const AutocompleteOptionsComponent = ({
   bgColor = "#C1B6F6",
   listBoxProps = {},
   disableClearable = true,
+  onClear = null,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
@@ -57,6 +58,9 @@ const AutocompleteOptionsComponent = ({
               onChange(option?.value);
             } else {
               onChange(null);
+              if (onClear) {
+                onClear();
+              }
             }
           }
         }}
