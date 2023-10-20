@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "pages/home";
 import { ThemeProvider as StyledComponentProvider } from "styled-components";
@@ -42,8 +42,6 @@ import QuestsPaymentPage from "pages/quests/Payments";
 import PricingPage from "pages/pricing";
 import VerifyLinkPage from "pages/verify-link";
 import AnalyticsPage from "pages/analytics";
-import PremiumFeatureDialog from "components/PremiumFeatureDialog";
-import PaywallContext from "utils/context/PaywallContext";
 import ConnectPage from "pages/settings/connect";
 import TelegramStatQuest from "pages/telegram/start-quest";
 import PaywallContextProvider from "utils/context/PaywallContext";
@@ -211,7 +209,8 @@ const router = createBrowserRouter([
       {
         path: '/community-badge/claim',
         element: <CommunityBadgeClaimPage />
-      }
+      },
+      
     ],
   },
 ]);

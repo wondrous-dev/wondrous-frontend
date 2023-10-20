@@ -175,6 +175,8 @@ export const EMPTY_STATE_TYPES = {
   MEMBERS: "members",
   PAYMENTS: "payments",
   NFT: "nft",
+  PURCHASES: 'purchases',
+  CATEGORIES: 'categories',
 };
 
 export const ERRORS = {
@@ -446,4 +448,11 @@ export const DELIVERY_METHODS = {
 export const NFT_ORIGIN_TYPES = {
   CREATED: 'created',
   IMPORTED: 'imported'
+}
+
+export const DELIVERY_METHOD_LABELS = {
+  [DELIVERY_METHODS.DISCORD_ROLE]: 'Discord Role',
+  [DELIVERY_METHODS.DISCOUNT_CODE]: 'Discount Code',
+  [DELIVERY_METHODS.NFT_PAYMENT]: 'NFT Payment',
+  [DELIVERY_METHODS.RAFFLE]: 'Raffle'
 }

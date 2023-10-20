@@ -214,6 +214,11 @@ const ViewQuestResults = ({ quest, rewards }) => {
     {
       settings: [
         {
+          label: 'Category',
+          value: quest?.category || 'None',
+          type: 'text'
+        },
+        {
           label: "Max Submissions",
           value: quest?.maxSubmission || "Unlimited",
           type: "text",

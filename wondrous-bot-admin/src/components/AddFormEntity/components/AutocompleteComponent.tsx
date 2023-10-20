@@ -1,4 +1,4 @@
-import { Autocomplete, Grid, MenuItem, TextField } from "@mui/material";
+import { Autocomplete, Box, Grid, MenuItem, TextField } from "@mui/material";
 import ArrowDropDownIcon from "components/Icons/ArrowDropDown";
 import CheckCircleIcon from "components/Icons/CheckCircle";
 import SearchIcon from "components/Icons/Search";
@@ -7,6 +7,7 @@ import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 import { useState } from "react";
 import { scrollbarStyles } from "components/Shared/styles";
 import { TYPES } from "utils/constants";
+import { CustomComponentWrapper, MenuItemOptionWrapper } from "./styles";
 
 const AutocompleteOptionsComponent = ({
   options,
@@ -25,7 +26,7 @@ const AutocompleteOptionsComponent = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
-  const selectedValue = options?.find((option) => option.value === value);
+  const selectedValue = options?.find((option) => option.value === value) || null;
   const [openReferralDialog, setOpenReferralDialog] = useState(false);
   const setReferralStep = () => {
     setSteps([
@@ -62,6 +63,7 @@ const AutocompleteOptionsComponent = ({
                 onClear();
               }
             }
+            onChange(option?.value, option);
           }
         }}
         options={options}
@@ -86,6 +88,7 @@ const AutocompleteOptionsComponent = ({
         renderOption={(props, option) => {
           return (
             <MenuItem
+              disabled={option.disabled}
               {...props}
               sx={{
                 height: "40px",
@@ -99,10 +102,13 @@ const AutocompleteOptionsComponent = ({
                 }),
               }}
             >
-              <Grid container justifyContent="space-between" alignItems="center" padding="0">
-                {option?.label || option?.value}
-                {option?.value === value && <CheckCircleIcon />}
-              </Grid>
+              <MenuItemOptionWrapper container justifyContent="space-between" alignItems="center" padding="0">
+                {option.label || option.value}
+                {option.value === value && !option.customComponent && <CheckCircleIcon />}
+                {option.displayCustomOnHover && option.customComponent ? (
+                  <CustomComponentWrapper>{option.customComponent()}</CustomComponentWrapper>
+                ) : null}
+              </MenuItemOptionWrapper>
             </MenuItem>
           );
         }}

@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { CmtyUserFragment } from "graphql/fragments";
 
 export const GET_STORE_ITEMS_FOR_ORG = gql`
   query getStoreItemsForOrg($input: OrgStoreItemQueryInput) {
@@ -48,6 +49,9 @@ export const GET_STORE_ITEM_BY_ID = gql`
       deactivatedAt
       ptPrice
       maxPurchase
+      stats {
+        totalPurchases
+      }
       price
       conditions {
         type
@@ -87,4 +91,25 @@ export const GET_STORE_ITEM_DISCOUNT_CODE_INFO = gql`
       discount
     }
   }
+`;
+
+export const GET_STORE_ITEM_PURCHASES = gql`
+  query getStoreItemPurchases($storeItemId: ID!, $orgId: ID!, $limit: Int, $offset: Int) {
+    getStoreItemPurchases(storeItemId: $storeItemId, orgId: $orgId, limit: $limit, offset: $offset) {
+      id
+      createdAt
+      itemId
+      orgId
+      cmtyUser {
+        ...CmtyUserFragment
+      }
+      type
+      pointAmount
+      discountCodeId
+      discountCode {
+        code
+      }
+    }
+  }
+  ${CmtyUserFragment}
 `;

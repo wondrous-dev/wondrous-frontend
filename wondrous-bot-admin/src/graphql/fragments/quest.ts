@@ -12,6 +12,8 @@ export const QuestListFragment = gql`
     level
     startAt
     endAt
+    order
+    category
     maxSubmission
     submissionCooldownPeriod
     requireReview
@@ -40,6 +42,7 @@ export const QuestFragment = gql`
     endAt
     submissionCooldownPeriod
     maxSubmission
+    category
     isOnboarding
     maxApproval
     requireReview
