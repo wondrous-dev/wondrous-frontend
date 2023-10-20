@@ -203,7 +203,6 @@ const CreateTemplate = ({
     });
   };
 
-
   const handleSave = async (status = null) => {
     if (Object.keys(errors).length > 0) {
       setErrors({});
@@ -229,7 +228,7 @@ const CreateTemplate = ({
       description,
       orgId: activeOrg.id,
       isOnboarding,
-      requireReview,
+      requireReview: !!requireReview,
       maxSubmission: maxSubmission ? parseInt(maxSubmission, 10) : null,
       maxApproval: maxApproval ? parseInt(maxApproval, 10) : null,
       conditionLogic: "and",
