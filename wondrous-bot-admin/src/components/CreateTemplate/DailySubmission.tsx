@@ -8,7 +8,6 @@ import { MONTH_DAY_FULL_YEAR } from "utils/constants";
 const ONE_DAY_IN_SECONDS = 86400;
 const DailySubmissionComponent = (props) => {
   const { questSettings, setQuestSettings } = props;
-  console.log("questSettings", questSettings);
   const isDailySubmission = !!questSettings?.submissionCooldownPeriod;
   const handleChange = () => {
     if (!questSettings?.submissionCooldownPeriod) {

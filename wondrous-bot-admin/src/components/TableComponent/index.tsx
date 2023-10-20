@@ -23,10 +23,10 @@ import { useGlobalContext } from "utils/hooks";
 const XPEditInput = ({ column, pointBalance = false, cmtyUser }) => {
   const { activeOrg } = useGlobalContext();
   const [updateOrgCmtyUserPoints] = useMutation(UPDATE_ORG_CMTY_USER_POINTS, {
-    refetchQueries: ["getCmtyUsersForOrg"],
+    refetchQueries: ["getCmtyUsersForOrg", "searchCmtyUsersForOrg"],
   });
   const [updateOrgCmtyUserPointBalance] = useMutation(UPDATE_ORG_CMTY_USER_POINT_BALANCE, {
-    refetchQueries: ["getCmtyUsersForOrg"],
+    refetchQueries: ["getCmtyUsersForOrg", "searchCmtyUsersForOrg"],
   });
   const [points, setPoints] = useState(column.value);
   const [editHover, setEditHover] = useState(false);
@@ -97,26 +97,26 @@ const XPEditInput = ({ column, pointBalance = false, cmtyUser }) => {
       </div>
     );
   }
+
   return (
-    <div
+    <Label
       onMouseEnter={() => {
-        console.log("huh?");
         setEditHover(true);
+        setTimeout(() => {
+          setEditHover(false);
+        }, 1000);
       }}
       onMouseLeave={() => {
         setEditHover(false);
       }}
+      fontSize="14px"
+      lineHeight="14px"
+      textAlign={column.textAlign || "center"}
+      width={column.width || "100%"}
+      {...(column.componentProps || {})}
     >
-      <Label
-        fontSize="14px"
-        lineHeight="14px"
-        textAlign={column.textAlign || "center"}
-        width={column.width || "100%"}
-        {...(column.componentProps || {})}
-      >
-        {column.value}
-      </Label>
-    </div>
+      {column.value}
+    </Label>
   );
 };
 const TableComponent = ({ headers = null, data, title = "", headerComponent = null, footerComponent = null }) => {

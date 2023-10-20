@@ -20,6 +20,7 @@ const AutocompleteOptionsComponent = ({
   placeholder = "Search",
   bgColor = "#C1B6F6",
   listBoxProps = {},
+  disableClearable = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
@@ -44,15 +45,19 @@ const AutocompleteOptionsComponent = ({
       />
       <Autocomplete
         value={selectedValue}
-        disableClearable
+        disableClearable={disableClearable}
         popupIcon={isOpen ? <SearchIcon /> : <ArrowDropDownIcon />}
         onOpen={handleOpenClose(true)}
         onClose={handleOpenClose(false)}
         onChange={(e, option) => {
-          if (option.value === TYPES.REFERRAL && order > 1) {
+          if (option?.value === TYPES.REFERRAL && order > 1) {
             setOpenReferralDialog(true);
           } else {
-            onChange(option.value);
+            if (option) {
+              onChange(option?.value);
+            } else {
+              onChange(null);
+            }
           }
         }}
         options={options}
@@ -91,8 +96,8 @@ const AutocompleteOptionsComponent = ({
               }}
             >
               <Grid container justifyContent="space-between" alignItems="center" padding="0">
-                {option.label || option.value}
-                {option.value === value && <CheckCircleIcon />}
+                {option?.label || option?.value}
+                {option?.value === value && <CheckCircleIcon />}
               </Grid>
             </MenuItem>
           );

@@ -13,10 +13,50 @@ import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { MemberPageSearchBar } from "./MemberSearchBar";
 
+const transformUser = (user) => {
+  const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
+  return {
+    id: user.id,
+    name: {
+      component: "custom",
+      value: user,
+      customComponent: (props) => <MembersAnalytics {...props} />,
+    },
+    level: {
+      component: "hexagon",
+      value: user?.level,
+    },
+    discord: {
+      component: "discord",
+      value: userDiscordDiscriminator || "N/A",
+    },
+    twitter: {
+      component: "twitter",
+      value: `https://twitter.com/${user?.twitterInfo?.twitterUsername}` || "N/A",
+    },
+    pointsBalance: {
+      component: "xp_balance",
+      value: user.pointBalance,
+      componentProps: {
+        fontWeight: 500,
+        cmtyUser: user,
+      },
+    },
+    points: {
+      component: "xp",
+      value: user.point,
+      componentProps: {
+        fontWeight: 500,
+        cmtyUser: user,
+      },
+    },
+  };
+};
 const MembersPage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [hasMore, setHasMore] = useState(true);
   const [memberSearch, setMemberSearch] = useState(null);
+  const [memberInfo, setMemberInfo] = useState(null);
   const [getCmtyUsersForOrg, { data, fetchMore, refetch, loading }] = useLazyQuery(GET_COMMUNITY_USERS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -55,43 +95,7 @@ const MembersPage = () => {
   };
   const tableConfig = useMemo(() => {
     return data?.getCmtyUsersForOrg?.map((user) => {
-      const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
-      return {
-        id: user.id,
-        name: {
-          component: "custom",
-          value: user,
-          customComponent: (props) => <MembersAnalytics {...props} />,
-        },
-        level: {
-          component: "hexagon",
-          value: user?.level,
-        },
-        discord: {
-          component: "discord",
-          value: userDiscordDiscriminator || "N/A",
-        },
-        twitter: {
-          component: "twitter",
-          value: `https://twitter.com/${user?.twitterInfo?.twitterUsername}` || "N/A",
-        },
-        pointsBalance: {
-          component: "xp_balance",
-          value: user.pointBalance,
-          componentProps: {
-            fontWeight: 500,
-            cmtyUser: user,
-          },
-        },
-        points: {
-          component: "xp",
-          value: user.point,
-          componentProps: {
-            fontWeight: 500,
-            cmtyUser: user,
-          },
-        },
-      };
+      return transformUser(user);
     });
   }, [data]);
 
@@ -115,9 +119,13 @@ const MembersPage = () => {
           sm: "24px 56px",
         }}
       >
-        <MemberPageSearchBar onChange={setMemberSearch} member={memberSearch} />
+        <MemberPageSearchBar onChange={setMemberSearch} member={memberSearch} setMemberInfo={setMemberInfo} />
         {data?.getCmtyUsersForOrg?.length ? (
-          <TableComponent data={tableConfig} headers={headers} title="Top Members" />
+          <TableComponent
+            data={memberInfo ? [transformUser(memberInfo)] : tableConfig}
+            headers={headers}
+            title="Top Members"
+          />
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
         )}
