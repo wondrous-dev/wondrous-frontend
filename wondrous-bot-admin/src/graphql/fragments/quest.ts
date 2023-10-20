@@ -45,6 +45,7 @@ export const QuestFragment = gql`
     category
     isOnboarding
     maxApproval
+    maxedAt
     requireReview
     submissionsCount {
       inReview
