@@ -504,7 +504,7 @@ export const RewardMethod = ({
   if (rewardType === PAYMENT_OPTIONS.POAP) {
     return (
       <>
-        <Label>Poap event ID * </Label>
+        <Label>POAP event ID * </Label>
         <TextField
           placeholder="Please enter your POAP event ID"
           value={poapReward?.id}
@@ -552,7 +552,7 @@ export const RewardMethod = ({
             }
           }}
         />
-        <Label>Poap event secret * (check your emails for this) </Label>
+        <Label>POAP event secret * (check your emails for this) </Label>
         <TextField
           placeholder="Please enter your 6 digit POAP event secret"
           value={poapReward?.eventSecret}
@@ -565,34 +565,34 @@ export const RewardMethod = ({
           multiline={false}
           error={errors?.eventSecret}
         />
-        <Label>Poap name</Label>
+        <Label>POAP name</Label>
         <TextField
           onChange={() => {}}
-          placeholder="Poap name"
+          placeholder="POAP name"
           value={poapReward?.name}
           multiline={false}
           disabled={true}
         />
-        <Label>Poap description</Label>
+        <Label>POAP description</Label>
         <TextField
           onChange={() => {}}
-          placeholder="Poap description"
+          placeholder="POAP description"
           value={poapReward?.description}
           multiline={false}
           disabled={true}
         />
         {poapReward?.imageUrl && (
           <>
-            <Label>Poap badge</Label>
+            <Label>POAP badge</Label>
             <PoapImage src={poapReward?.imageUrl} />
           </>
         )}
         {poapReward?.eventUrl && (
           <>
-            <Label>Poap event url</Label>
+            <Label>POAP event url</Label>
             <TextField
               onChange={() => {}}
-              placeholder="Poap event url"
+              placeholder="POAP event url"
               value={poapReward?.eventUrl}
               disabled={true}
               multiline={false}
