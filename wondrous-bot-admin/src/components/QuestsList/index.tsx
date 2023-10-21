@@ -64,10 +64,10 @@ const SortableItem = ({ item, idx, isOpen, status }) => {
           flexDirection="column"
         >
           <Label fontSize="16px" lineHeight={"16px"}>
-            {item.xp}
+            {item.pointReward}
           </Label>
           <Label fontSize="12px" lineHeight="13px" fontWeight={400}>
-            XP
+            PTS 
           </Label>
         </Box>
         <Label
@@ -239,12 +239,13 @@ const formatQuestsData = (LEVELS, data) => {
     }
 
     result[questLevel].items.push({
-      xp: quest.pointReward,
+      pointReward: quest.pointReward,
       label: quest.title,
       id: quest.id,
       completions: quest.submissionsCount?.approved || 0,
       inReview: quest.submissionsCount?.inReview,
       status: quest.status,
+      order : quest.order,
     });
   });
 
