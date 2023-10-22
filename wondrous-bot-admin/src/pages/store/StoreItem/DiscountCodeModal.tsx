@@ -12,6 +12,8 @@ import isEqual from "lodash/isEqual";
 import { IMPORT_DISCOUNT_CODES } from "graphql/mutations/cmtyStore";
 import CSVFileDropzone from "components/CSVFileDropZone";
 import { redColors } from "utils/theme/colors";
+import { useEffect } from "react";
+import { GET_STORE_ITEM_DISCOUNT_CODE_INFO } from "graphql/queries";
 
 export const DISCOUNT_CODE_HEADERS = ["codes"];
 
@@ -53,7 +55,7 @@ export const DISCOUNT_TYPE = [
     label: "One Time",
   },
 ];
-const UploadDiscountModal = ({ onClose, itemId }) => {
+const UploadDiscountModal = ({ onClose, itemId, setCodesOnCreate = [] as any, setFilenameOnCreate = "" as any }) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
   const [uploadDiscountCodes] = useMutation(IMPORT_DISCOUNT_CODES, {
     onCompleted: () => {
@@ -69,6 +71,7 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
   const { activeOrg } = useContext(GlobalContext);
   const [isImportInProgress, setIsImportInProgress] = useState(false);
   const [codesData, setCodesData] = useState(DEFAULT_CODES_DATA);
+  const [filename, setFilename] = useState("");
   const [discount, setDiscount] = useState(null);
   const [discountType, setDiscountType] = useState("one_time");
   const [discountScheme, setDiscountScheme] = useState("percent");
@@ -85,29 +88,53 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
       setError(error.message);
     }
   }, []);
-
+  const [getDiscountCodeInfo, { data: discountInfoData }] = useLazyQuery(GET_STORE_ITEM_DISCOUNT_CODE_INFO);
+  const discountInfo = discountInfoData?.getStoreItemDiscountCodeInfo;
+  useEffect(() => {
+    if (itemId) {
+      getDiscountCodeInfo({
+        variables: {
+          storeItemId: itemId,
+        },
+      });
+    }
+  }, [itemId]);
+  useEffect(() => {
+    if (discountInfo?.type) {
+      setDiscountType(discountInfo?.type);
+    }
+    if (discountInfo?.scheme) {
+      setDiscountScheme(discountInfo?.scheme);
+    }
+    if (discountInfo?.discount) {
+      setDiscount(discountInfo?.discount);
+    }
+  }, [discountInfo?.discountType, discountInfo?.scheme, discountInfo?.discount]);
   const handleImportCodes = useCallback(() => {
     setIsImportInProgress(true);
     if (!discount) {
       setError("Please enter discount");
+    } else if (!codesData?.codes || codesData?.codes?.length === 0) {
+      setError("Please upload CSV!");
     } else {
-      uploadDiscountCodes({
-        variables: {
-          input: {
-            codes: codesData.codes,
-            storeItemId: itemId,
-            orgId: activeOrg?.id,
-            discount,
-            type: discountType,
-            scheme: discountScheme,
-          },
-        },
-      });
+      if (setCodesOnCreate && setFilename) {
+        setCodesOnCreate({
+          codes: codesData?.codes,
+          discount,
+          type: discountType,
+          scheme: discountScheme,
+        });
+        setFilenameOnCreate(filename);
+        onClose();
+      } else {
+        setError("No item ID!");
+      }
     }
-  }, [codesData.key, discount, discountType, discountScheme, itemId]);
+  }, [codesData.key, discount, discountType, discountScheme, itemId, onClose]);
   const handleFileRemove = useCallback(() => {
     setCodesData(DEFAULT_CODES_DATA);
   }, [DEFAULT_CODES_DATA]);
+
   return (
     <Grid display="flex" flexDirection="column" gap="10px">
       <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" color="#06040A">
@@ -121,11 +148,19 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
         </a>{" "}
         when uploading a CSV:
       </Typography>
+      {discountInfo?.discount && (
+        <Typography fontFamily="Poppins" fontWeight={600} fontSize="12px" color="grey">
+          P.S You can upload more codes but you cannot upload with different discount amount/percentage, types and
+          scheme. You can change these settings on the left panel.{" "}
+          <b>Note: codes will be imported after you save your changes</b>
+        </Typography>
+      )}
       <Box>
         <CSVFileDropzone
           handleFileUpload={handleFileUpload}
           handleFileRemove={handleFileRemove}
           isDisabled={isImportInProgress}
+          setFilename={setFilename}
         />
         {error && (
           <Typography
@@ -147,11 +182,12 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
             marginBottom: "10px",
           }}
         >
-          Discount
+          Discount amount/percentage
         </Label>
         <TextField
           placeholder="Discount"
           value={discount}
+          disabled={!!discountInfo?.discount}
           onChange={(value) => {
             if (value) {
               setDiscount(Number(value));
@@ -173,16 +209,17 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
           marginBottom="8px"
           marginTop={"8px"}
         >
-          Discount scheme
+          Discount type
         </Typography>
         <SelectComponent
           boxStyle={{
             flex: 1,
           }}
-          options={DISCOUNT_SCHEME}
+          options={DISCOUNT_TYPE}
+          disabled={!!discountInfo?.type}
           background="#C1B6F6"
-          value={discountScheme}
-          onChange={(value) => setDiscountScheme(value)}
+          value={discountType}
+          onChange={(value) => setDiscountType(value)}
         />
       </Box>
       <Box>
@@ -194,16 +231,17 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
           marginBottom="8px"
           marginTop={"8px"}
         >
-          Discount type
+          Discount scheme
         </Typography>
         <SelectComponent
+          disabled={!!discountInfo?.scheme}
           boxStyle={{
             flex: 1,
           }}
-          options={DISCOUNT_TYPE}
+          options={DISCOUNT_SCHEME}
           background="#C1B6F6"
-          value={discountType}
-          onChange={(value) => setDiscountType(value)}
+          value={discountScheme}
+          onChange={(value) => setDiscountScheme(value)}
         />
       </Box>
       <Box display="flex" gap="10px" alignItems="center" width="100%" marginTop="8px">
@@ -222,16 +260,21 @@ const UploadDiscountModal = ({ onClose, itemId }) => {
           }}
           onClick={() => {
             handleImportCodes();
-            onClose();
           }}
         >
-          Start importing
+          Import codes
         </SharedSecondaryButton>
       </Box>
     </Grid>
   );
 };
-const DiscountCodeModal = ({ openDiscountUploadModal, setOpenDiscountUploadModal, itemId }) => {
+const DiscountCodeModal = ({
+  openDiscountUploadModal,
+  setOpenDiscountUploadModal,
+  itemId,
+  setCodesOnCreate = false as any,
+  setFilenameOnCreate = false as any,
+}) => {
   return (
     <>
       <Modal
@@ -240,7 +283,12 @@ const DiscountCodeModal = ({ openDiscountUploadModal, setOpenDiscountUploadModal
         onClose={() => setOpenDiscountUploadModal(false)}
         title="Upload discount codes for this item"
       >
-        <UploadDiscountModal onClose={() => setOpenDiscountUploadModal(false)} itemId={itemId} />
+        <UploadDiscountModal
+          onClose={() => setOpenDiscountUploadModal(false)}
+          itemId={itemId}
+          setCodesOnCreate={setCodesOnCreate}
+          setFilenameOnCreate={setFilenameOnCreate}
+        />
       </Modal>
     </>
   );

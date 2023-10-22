@@ -32,7 +32,6 @@ export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
   id: null,
   maxPurchase: null,
   storeItemConditions: [],
-
 };
 
 const DEFAULT_STORE_ITEM_DATA = {
@@ -62,8 +61,8 @@ const CreateStoreItem = ({
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } = useAlerts();
 
-  const [storeItemData, setStoreItemData] = useState<any>({...defaultStoreItemData});
-  const [storeItemSettings, setStoreItemSettings] = useState({...defaultStoreItemStetings});
+  const [storeItemData, setStoreItemData] = useState<any>({ ...defaultStoreItemData });
+  const [storeItemSettings, setStoreItemSettings] = useState({ ...defaultStoreItemStetings });
 
   const [createStoreItem] = useMutation(CREATE_STORE_ITEM, {
     onCompleted: (data) => {
@@ -118,7 +117,9 @@ const CreateStoreItem = ({
       setErrors({});
     }
 
-    const filteredStoreItemConditions = storeItemSettings?.storeItemConditions?.filter((condition) => condition.type && condition.conditionData);
+    const filteredStoreItemConditions = storeItemSettings?.storeItemConditions?.filter(
+      (condition) => condition.type && condition.conditionData
+    );
 
     const body = {
       orgId: activeOrg.id,
@@ -134,19 +135,24 @@ const CreateStoreItem = ({
       deactivatedAt: storeItemSettings?.deactivatedAt ? moment().toISOString() : null,
       additionalData: storeItemData?.config?.additionalData,
       maxPurchase: storeItemSettings?.maxPurchase ? parseInt(storeItemSettings?.maxPurchase) : null,
-      conditionLogic: 'and',
+      discountCodeImport: {
+        codes: storeItemData?.discountCodeImport?.codes,
+        type: storeItemData?.discountCodeImport?.type,
+        scheme: storeItemData?.discountCodeImport?.scheme,
+        discount: Number(storeItemData?.discountCodeImport?.discount),
+      },
+      conditionLogic: "and",
       storeItemConditions: filteredStoreItemConditions?.map((condition) => {
-        if(condition.type === CONDITION_TYPES.LEVEL) {
+        if (condition.type === CONDITION_TYPES.LEVEL) {
           return {
             type: condition.type,
             conditionData: {
               minLevel: parseInt(condition.conditionData.minLevel),
-            }
-          }
+            },
+          };
         }
         return condition;
-      })
-      
+      }),
     };
     try {
       await storeItemValidator(body);
@@ -241,6 +247,7 @@ const CreateStoreItem = ({
             setStoreItemData={setStoreItemData}
             onTypeChange={onTypeChange}
             storeItemData={storeItemData}
+            storeItemSettings={storeItemSettings}
           />
         </Grid>
       </PageWrapper>

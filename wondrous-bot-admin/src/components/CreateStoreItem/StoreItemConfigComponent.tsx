@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Box, Typography } from "@mui/material";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { Label } from "components/CreateTemplate/styles";
@@ -11,10 +11,15 @@ import ProductImage from "./ProductImage";
 import TokenStoreItem from "./components/TokenStoreItem";
 import SelectComponent from "components/Shared/Select";
 import DiscordRoles from "./components/DiscordRoles";
+import DiscountCodeModal, { DEFAULT_CODES_DATA } from "pages/store/StoreItem/DiscountCodeModal";
+import { ErrorText, SharedButton } from "components/Shared/styles";
+import DeleteIcon from "components/Icons/Delete";
+import { redColors } from "utils/theme/colors";
 
-const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChange }) => {
+const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChange, storeItemSettings }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
-
+  const [openDiscountUploadModal, setOpenDiscountUploadModal] = useState(false);
+  const [uploadedFilename, setUploadedFilename] = useState("");
   const COMPONENTS = {
     [STORE_ITEM_TYPES.PHYSICAL]: {
       component: TextField,
@@ -159,14 +164,35 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
     {
       label: "Raffle",
       value: DELIVERY_METHODS.RAFFLE,
-      disabled: storeItemData.type !== STORE_ITEM_TYPES.PHYSICAL && storeItemData.type !== STORE_ITEM_TYPES.NFT
+      disabled: storeItemData.type !== STORE_ITEM_TYPES.PHYSICAL && storeItemData.type !== STORE_ITEM_TYPES.NFT,
+    },
+    {
+      label: "Raffle (Code) - users will be given a code that is eligible for a raffle entry",
+      value: DELIVERY_METHODS.RAFFLE_CODE,
+      disabled: false,
     },
   ];
 
   const componentProps = useMemo(() => Config?.componentProps, [Config]);
-
   return (
     <Grid display="flex" flexDirection="column" justifyContent="flex-start" gap="24px" alignItems="center" width="100%">
+      <DiscountCodeModal
+        openDiscountUploadModal={openDiscountUploadModal}
+        setOpenDiscountUploadModal={setOpenDiscountUploadModal}
+        itemId={storeItemSettings?.id}
+        setFilenameOnCreate={setUploadedFilename}
+        setCodesOnCreate={(value) => {
+          setStoreItemData({
+            ...storeItemData,
+            discountCodeImport: {
+              type: value?.type,
+              scheme: value?.scheme,
+              discount: value?.discount,
+              codes: value?.codes,
+            },
+          });
+        }}
+      />
       <PanelComponent
         renderBody={() => {
           return (
@@ -189,6 +215,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   storeItemData={storeItemData}
                   {...componentProps}
                 />
+                {Config.error && <ErrorText>{Config.error}</ErrorText>}
               </Grid>
               <Grid display="flex" flexDirection="column" gap="12px">
                 <Label fontWeight={600}>Delivery method</Label>
@@ -207,6 +234,51 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                     value={storeItemData.deliveryMessage}
                     onChange={(value) => setStoreItemData((prev) => ({ ...prev, deliveryMessage: value }))}
                   ></TextField>
+                </Grid>
+              )}
+              {storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE_CODE && (
+                <Grid display="flex" flexDirection="column" gap="12px">
+                  <Label fontWeight={600}>Upload Code list</Label>
+                  {uploadedFilename && storeItemData?.discountCodeImport?.codes?.length > 0 ? (
+                    <Box display="flex" alignItems="center">
+                      <Box backgroundColor="rgba(193, 182, 246, 1)" borderRadius="8px" marginRight="8px">
+                        <Typography
+                          fontFamily="Poppins"
+                          fontWeight={500}
+                          fontSize="12px"
+                          color="black"
+                          padding="2px 8px"
+                          borderRadius="60px"
+                        >
+                          {uploadedFilename}
+                        </Typography>
+                      </Box>
+                      <DeleteIcon
+                        stroke={redColors.red400}
+                        style={{
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          setStoreItemData({
+                            ...storeItemData,
+                            discountCodeImport: null,
+                          });
+                        }}
+                      />
+                    </Box>
+                  ) : (
+                    <SharedButton
+                      style={{
+                        backgroundColor: "rgba(193, 182, 246, 1)",
+                        width: "fit-content",
+                        color: "black",
+                        fontSize: "15px",
+                      }}
+                      onClick={() => setOpenDiscountUploadModal(true)}
+                    >
+                      {storeItemSettings?.id ? "Upload More Codes" : "Upload Codes"}
+                    </SharedButton>
+                  )}
                 </Grid>
               )}
             </Grid>

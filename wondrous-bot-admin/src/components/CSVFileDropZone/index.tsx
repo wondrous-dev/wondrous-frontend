@@ -3,12 +3,14 @@ import { useCSVReader, formatFileSize } from "react-papaparse";
 import DocumentIcon from "./DocumentIcon";
 import { DropZone } from "./styles";
 import { redColors } from "utils/theme/colors";
+import { useEffect } from "react";
 
 interface Props {
   handleFileUpload: (results) => void;
   handleFileRemove?: () => void;
   dropText?: string;
   isDisabled?: boolean;
+  setFilename?: (filename) => void;
 }
 
 const CSVFileDropzone = (props: Props) => {
@@ -17,6 +19,7 @@ const CSVFileDropzone = (props: Props) => {
     handleFileRemove,
     dropText = "Drop CSV file here or click to upload",
     isDisabled = false,
+    setFilename = false,
   } = props;
   const { CSVReader } = useCSVReader();
 
@@ -30,6 +33,11 @@ const CSVFileDropzone = (props: Props) => {
       skipEmptyLines
     >
       {({ getRootProps, acceptedFile, getRemoveFileProps, Remove }) => {
+        useEffect(() => {
+          if (acceptedFile?.name && setFilename) {
+            setFilename(`${acceptedFile?.name} ${formatFileSize(acceptedFile.size)}`);
+          }
+        }, [acceptedFile?.name]);
         return (
           <DropZone
             {...getRootProps()}
