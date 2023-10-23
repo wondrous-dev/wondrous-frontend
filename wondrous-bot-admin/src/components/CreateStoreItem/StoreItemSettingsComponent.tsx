@@ -37,6 +37,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         componentProps: {
           multiline: false,
           placeholder: "Enter product title",
+          error: errors["name"],
         },
         key: "name",
       },
