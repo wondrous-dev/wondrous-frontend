@@ -90,6 +90,7 @@ const AutocompleteOptionsComponent = ({
             <MenuItem
               disabled={option.disabled}
               {...props}
+              {...(option.onClick ? { onClick: option.onClick } : {})}
               sx={{
                 height: "40px",
                 marginY: "1px",
@@ -103,7 +104,11 @@ const AutocompleteOptionsComponent = ({
               }}
             >
               <MenuItemOptionWrapper container justifyContent="space-between" alignItems="center" padding="0">
-                {option.label || option.value}
+                <Grid container item flex="1" gap="4px">
+                    {option.icon}
+                    {option.label || option.value}
+                  </Grid>
+
                 {option.value === value && !option.customComponent && <CheckCircleIcon />}
                 {option.displayCustomOnHover && option.customComponent ? (
                   <CustomComponentWrapper>{option.customComponent()}</CustomComponentWrapper>

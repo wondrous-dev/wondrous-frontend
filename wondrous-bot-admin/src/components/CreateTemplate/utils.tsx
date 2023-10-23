@@ -59,6 +59,11 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
             type: reward?.type,
             poapRewardData: rewardData,
           };
+        case PAYMENT_OPTIONS.CMTY_STORE_ITEM:
+          return {
+            type: reward?.type,
+            storeItemId: reward?.storeItem?.id,
+          }
         default:
           return null;
       }

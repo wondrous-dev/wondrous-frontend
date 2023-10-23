@@ -116,7 +116,7 @@ const handleAddTokenOnModal = ({
           symbol: newReward?.symbol,
           icon: newReward?.icon,
           chain: newReward?.chain,
-          type: 'ERC20'
+          type: "ERC20",
         },
       },
     })
@@ -190,7 +190,7 @@ const useTokenRewardData = () => {
       getCmtyPaymentMethods({
         variables: {
           orgId: activeOrg?.id,
-          types: ['ERC20']
+          types: ["ERC20"],
         },
       });
     }
@@ -228,7 +228,7 @@ const useDiscordRoleRewardData = () => {
   const discordRoleOptions = discordRoles?.map((role) => ({
     label: role.name,
     value: role.id,
-  }))
+  }));
 
   return {
     discordRoleOptions,
@@ -282,12 +282,13 @@ export const useAddRewardModalState = () => {
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
+  const [cmtyStoreItemReward, setCmtyStoreItemReward] = useState(null);
   const [tokenReward, setTokenReward] = useState({
     tokenName: null,
     contractAddress: null,
     symbol: null,
     icon: null,
-    type: 'erc20',
+    type: "erc20",
     chain: null,
     amount: null,
   });
@@ -323,11 +324,25 @@ export const useAddRewardModalState = () => {
     isTourOpen,
     setCurrentStep,
     currentStep,
+    cmtyStoreItemReward,
+    setCmtyStoreItemReward,
     ...tokenRewardData,
   };
 };
 
-const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [], rewardModalState }) => {
+const RewardModal = ({
+  handleRewardModalToggle,
+  handleOnRewardAdd,
+  rewards = [],
+  rewardModalState,
+  options = [
+    PAYMENT_OPTIONS.TOKEN,
+    PAYMENT_OPTIONS.POAP,
+    PAYMENT_OPTIONS.DISCORD_ROLE,
+    PAYMENT_OPTIONS.COMMUNITY_BADGE,
+    PAYMENT_OPTIONS.CMTY_STORE_ITEM,
+  ],
+}) => {
   const { activeOrg } = useContext(GlobalContext);
   const { plan, setPaywall, setPaywallMessage } = useSubscriptionPaywall();
   const { discordRoleOptions, discordRoleData } = useDiscordRoleRewardData();
@@ -350,6 +365,8 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
     setPoapReward,
     paymentMethods,
     createPaymentMethod,
+    setCmtyStoreItemReward,
+    cmtyStoreItemReward,
   } = rewardModalState;
 
   const handleAddRewardOnModal = () => {
@@ -361,8 +378,9 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
         discordRoleData,
         discordRoleOptions,
       });
-      handleRewardModalToggle();
-    } else if (rewardType === PAYMENT_OPTIONS.TOKEN || rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
+      return handleRewardModalToggle();
+    }
+    if (rewardType === PAYMENT_OPTIONS.TOKEN || rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
       handleAddTokenOnModal({
         newReward: tokenReward,
         handleOnRewardAdd,
@@ -376,30 +394,40 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
         setAddPaymentMethod,
         rewardType,
       });
-    } else if (rewardType === PAYMENT_OPTIONS.POAP) {
+      return;
+    }
+    if (rewardType === PAYMENT_OPTIONS.POAP) {
       handleAddPoap({ poapReward, setErrors, errors, handleOnRewardAdd, rewardType });
-      handleRewardModalToggle();
+      return handleRewardModalToggle();
+    }
+
+    if (rewardType === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+      handleOnRewardAdd({
+        type: rewardType,
+        storeItem: cmtyStoreItemReward,
+      });
+      return handleRewardModalToggle();
     }
   };
 
   const modalRewardButtonsProps = [
     {
       paymentOption: PAYMENT_OPTIONS.DISCORD_ROLE,
-      rewardType: rewardType,
+      rewardType,
       onClick: () => setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE),
       Icon: DiscordRoleIcon,
       text: "Discord Role",
     },
     {
       paymentOption: PAYMENT_OPTIONS.POAP,
-      rewardType: rewardType,
+      rewardType,
       onClick: () => setRewardType(PAYMENT_OPTIONS.POAP),
       Icon: PoapIcon,
       text: "POAP",
     },
     {
       paymentOption: PAYMENT_OPTIONS.TOKEN,
-      rewardType: rewardType,
+      rewardType,
       onClick: () => {
         setRewardType(PAYMENT_OPTIONS.TOKEN);
         if (plan === PricingOptionsTitle.Basic) {
@@ -416,11 +444,18 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
     },
     {
       paymentOption: PAYMENT_OPTIONS.COMMUNITY_BADGE,
-      rewardType: rewardType,
+      rewardType,
       onClick: () => setRewardType(PAYMENT_OPTIONS.COMMUNITY_BADGE),
       Icon: NFTIcon,
-      text: 'Community Badge',
-    }
+      text: "Community Badge",
+    },
+    {
+      paymentOption: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
+      rewardType,
+      onClick: () => setRewardType(PAYMENT_OPTIONS.CMTY_STORE_ITEM),
+      Icon: NFTIcon,
+      text: "Store Item",
+    },
   ];
 
   return (
@@ -454,9 +489,9 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
         <Grid container item gap="14px">
           <Label>Reward Type</Label>
           <Grid container item alignItems="center" gap="14px" width="100%" justifyContent="center">
-            {modalRewardButtonsProps.map((props) => (
-              <RewardMethodOptionButton {...props} />
-            ))}
+            {modalRewardButtonsProps.map((props) =>
+              options.includes(props.paymentOption) ? <RewardMethodOptionButton {...props} /> : null
+            )}
           </Grid>
         </Grid>
         <Grid container item flexDirection="column" gap="14px">
@@ -475,10 +510,11 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
             setEditPaymentMethod={setEditPaymentMethod}
             errors={errors}
             setErrors={setErrors}
+            setCmtyStoreItemReward={setCmtyStoreItemReward}
+            cmtyStoreItemReward={cmtyStoreItemReward}
             poapReward={poapReward}
             setPoapReward={setPoapReward}
             guildId={discordRoleData[0]?.guildId}
-
           />
         </Grid>
       </Grid>

@@ -20,6 +20,7 @@ interface AddOrgLevelRewardInput {
   paymentMethod?: any;
   amount?: number;
   poapRewardData?: any;
+  storeItem?: any;
 }
 
 const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => {
@@ -66,6 +67,9 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
     if (reward?.type === PAYMENT_OPTIONS.POAP) {
       input.poapRewardData = reward?.poapRewardData;
     }
+    if (reward?.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+      input.storeItem = reward?.storeItem;
+    }
     addOrgLevelReward({
       variables: {
         input,
@@ -81,6 +85,12 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
         handleRewardModalToggle={() => setIsRewardModalOpen(false)}
         handleOnRewardAdd={onRewardAdd}
         rewardModalState={rewardModalState}
+        options={[
+          PAYMENT_OPTIONS.TOKEN,
+          PAYMENT_OPTIONS.COMMUNITY_BADGE,
+          PAYMENT_OPTIONS.DISCORD_ROLE,
+          PAYMENT_OPTIONS.POAP,
+        ]}
       />
       <Box style={{ display: "flex", gap: 5 }}>
         <div style={{ display: "flex", gap: 5 }}>
@@ -146,7 +156,7 @@ const ExistingLevelsReward = ({ reward, allRoles, level, refetchLevelRewards, ha
       )}
       {reward?.type === PAYMENT_OPTIONS.POAP && (
         <>
-        {reward?.poapRewardData?.name} <PoapIcon />
+          {reward?.poapRewardData?.name} <PoapIcon />
           <ButtonBase onClick={() => handleRemove()}>
             <CloseIcon />
           </ButtonBase>

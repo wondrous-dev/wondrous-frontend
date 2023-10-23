@@ -28,12 +28,14 @@ import {
 import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 import { useCommunityBadgePaymentMethods } from "./shared";
 import TokenStoreItem from "components/CreateStoreItem/components/TokenStoreItem";
+import StoreItemReward from "./StoreItemReward";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
   TOKEN: "token",
   POAP: "poap",
   COMMUNITY_BADGE: "COMMUNITY_BADGE",
+  CMTY_STORE_ITEM: "cmty_store_item",
 };
 
 const REWARD_TYPES = [
@@ -57,7 +59,6 @@ export const TokenComponent = ({
   options = REWARD_TYPES,
   withAmount = true,
 }) => {
-  
   if (paymentMethod && !editPaymentMethod?.id) {
     return (
       <AddExistingPaymentMethod
@@ -441,6 +442,8 @@ export const RewardMethod = ({
   poapReward,
   setPoapReward,
   guildId,
+  setCmtyStoreItemReward,
+  cmtyStoreItemReward,
 }) => {
   const [getPoapEventInfo] = useLazyQuery(GET_POAP_EVENT);
   const [displayRoleDisclaimer, setDisplayRoleDisclaimer] = useState(false);
@@ -472,6 +475,14 @@ export const RewardMethod = ({
     return <DiscordRoleDisclaimer onClose={() => setDisplayRoleDisclaimer(false)} />;
   }
 
+  if (rewardType === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+    return (
+      <>
+        <Label>Select Store Item</Label>
+        <StoreItemReward onChange={setCmtyStoreItemReward} storeItem={cmtyStoreItemReward} />
+      </>
+    );
+  }
   if (rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
     const handleTokenStoreItemChange = async (value) => {
       const existingMethod = cmtyBadgePaymentMethods?.find((method) => method.nftMetadataId === value.id);
@@ -688,25 +699,27 @@ export const RewardFooterLeftComponent = ({
   ) {
     return (
       <>
-        {rewardType !== PAYMENT_OPTIONS.POAP && rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE && (
-          <ButtonBase onClick={() => (paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false))}>
-            <Box
-              height="40px"
-              width="40px"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              bgcolor="#2A8D5C"
-              borderRadius="35px"
-            >
-              <WestIcon
-                sx={{
-                  color: "white",
-                }}
-              />
-            </Box>
-          </ButtonBase>
-        )}
+        {rewardType !== PAYMENT_OPTIONS.POAP &&
+          rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE &&
+          rewardType !== PAYMENT_OPTIONS.CMTY_STORE_ITEM && (
+            <ButtonBase onClick={() => (paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false))}>
+              <Box
+                height="40px"
+                width="40px"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                bgcolor="#2A8D5C"
+                borderRadius="35px"
+              >
+                <WestIcon
+                  sx={{
+                    color: "white",
+                  }}
+                />
+              </Box>
+            </ButtonBase>
+          )}
         <SharedSecondaryButton onClick={handleReward}>Add Reward</SharedSecondaryButton>
       </>
     );
@@ -906,6 +919,7 @@ export const RewardsComponent = ({ rewards, rewardComponents }) => {
             </Grid>
             <Grid
               item
+              onClick={() => handleOnRemove(reward)}
               container
               bgcolor="#C1B6F6"
               width="30px"
@@ -921,7 +935,7 @@ export const RewardsComponent = ({ rewards, rewardComponents }) => {
                 },
               }}
             >
-              <DeleteIcon onClick={() => handleOnRemove(reward)} />
+              <DeleteIcon />
             </Grid>
           </Grid>
         );
