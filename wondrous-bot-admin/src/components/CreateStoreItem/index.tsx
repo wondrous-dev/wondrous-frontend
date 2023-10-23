@@ -134,12 +134,14 @@ const CreateStoreItem = ({
       deactivatedAt: storeItemSettings?.deactivatedAt ? moment().toISOString() : null,
       additionalData: storeItemData?.config?.additionalData,
       maxPurchase: storeItemSettings?.maxPurchase ? parseInt(storeItemSettings?.maxPurchase) : null,
-      discountCodeImport: {
-        codes: storeItemData?.discountCodeImport?.codes,
-        type: storeItemData?.discountCodeImport?.type,
-        scheme: storeItemData?.discountCodeImport?.scheme,
-        discount: Number(storeItemData?.discountCodeImport?.discount),
-      },
+      ...(storeItemData?.discountCodeImport?.codes && {
+        discountCodeImport: {
+          codes: storeItemData?.discountCodeImport?.codes,
+          type: storeItemData?.discountCodeImport?.type,
+          scheme: storeItemData?.discountCodeImport?.scheme,
+          discount: Number(storeItemData?.discountCodeImport?.discount),
+        },
+      }),
       conditionLogic: "and",
       storeItemConditions: filteredStoreItemConditions?.map((condition) => {
         if (condition.type === CONDITION_TYPES.LEVEL) {
