@@ -35,7 +35,7 @@ export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
 };
 
 const DEFAULT_STORE_ITEM_DATA = {
-  type: STORE_ITEM_TYPES.PHYSICAL,
+  type: STORE_ITEM_TYPES.EXTERNAL_SHOP,
   deliveryMethod: null,
   mediaUploads: [],
   config: {

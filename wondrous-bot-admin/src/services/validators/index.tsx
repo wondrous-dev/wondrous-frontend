@@ -244,7 +244,7 @@ const STORE_FIELDS = Yup.object().shape({
 });
 
 const storeItemTypes = {
-  [STORE_ITEM_TYPES.PHYSICAL]: STORE_FIELDS.shape({
+  [STORE_ITEM_TYPES.EXTERNAL_SHOP]: STORE_FIELDS.shape({
     url: Yup.string().url("This is not a valid url").required("URL is required"),
   }),
   [STORE_ITEM_TYPES.DISCORD_ROLE]: STORE_FIELDS.shape({

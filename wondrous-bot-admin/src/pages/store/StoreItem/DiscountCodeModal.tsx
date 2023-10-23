@@ -108,7 +108,7 @@ const UploadDiscountModal = ({
   }, [itemId]);
 
   useEffect(() => {
-    if (deliveryMethod === DELIVERY_METHODS.RAFFLE_CODE || deliveryMethod === DELIVERY_METHODS.RAFFLE) {
+    if (deliveryMethod === DELIVERY_METHODS.EXTERNAL_CODE || deliveryMethod === DELIVERY_METHODS.RAFFLE) {
       setDiscountType("raffle_entry");
     } else {
       setDiscountType("one_time");
@@ -153,7 +153,7 @@ const UploadDiscountModal = ({
   return (
     <Grid display="flex" flexDirection="column" gap="10px">
       <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" color="#06040A">
-        Upload {deliveryMethod === DELIVERY_METHODS.RAFFLE_CODE ? "raffle" : "discount"} codes for this item. Please
+        Upload {deliveryMethod === DELIVERY_METHODS.EXTERNAL_CODE ? "raffle" : "discount"} codes for this item. Please
         make sure to follow{" "}
         <a
           href="https://docs.google.com/spreadsheets/d/1Pw_nn0nMXjwUoE7N44O1e5dwSCyxYipJ0jN5afYUDsE/edit?usp=sharing"

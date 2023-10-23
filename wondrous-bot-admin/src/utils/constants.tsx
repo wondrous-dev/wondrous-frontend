@@ -429,12 +429,12 @@ export const OPTION_TEXT_LIMIT = 250;
 
 export const STORE_ITEM_TYPES = {
   NFT: "nft",
-  PHYSICAL: "physical",
+  EXTERNAL_SHOP: "external_shop",
   DISCORD_ROLE: "discord_role",
 };
 export const STORE_ITEM_LABELS = {
-  [STORE_ITEM_TYPES.NFT]: "NFT Products",
-  [STORE_ITEM_TYPES.PHYSICAL]: "Shopify Products",
+  [STORE_ITEM_TYPES.NFT]: "NFT",
+  [STORE_ITEM_TYPES.EXTERNAL_SHOP]: "External Shop",
   [STORE_ITEM_TYPES.DISCORD_ROLE]: "Discord Roles",
 };
 
@@ -443,7 +443,7 @@ export const DELIVERY_METHODS = {
   DISCOUNT_CODE: "discount_code",
   NFT_PAYMENT: "nft_payment",
   RAFFLE: "raffle",
-  RAFFLE_CODE: "raffle_code",
+  EXTERNAL_CODE: "external_code",
 };
 
 export const NFT_ORIGIN_TYPES = {
@@ -456,5 +456,5 @@ export const DELIVERY_METHOD_LABELS = {
   [DELIVERY_METHODS.DISCOUNT_CODE]: "Discount Code",
   [DELIVERY_METHODS.NFT_PAYMENT]: "NFT Payment",
   [DELIVERY_METHODS.RAFFLE]: "Raffle ",
-  [DELIVERY_METHODS.RAFFLE_CODE]: "Raffle (Code) - users will be given one of the codes you upload",
+  [DELIVERY_METHODS.EXTERNAL_CODE]: "External Code - users will be given a code",
 };

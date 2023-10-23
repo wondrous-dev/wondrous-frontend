@@ -19,12 +19,6 @@ import StoreItemPurchases from "./Purchases";
 import { useQuery } from "@apollo/client";
 import { GET_COMMUNITY_NFT_BY_METADATA_ID, GET_ORG_DISCORD_ROLES } from "graphql/queries";
 
-const METADATA_STORE_ITEM_LABELS_MAP = {
-  [STORE_ITEM_TYPES.DISCORD_ROLE]: "Discord Role",
-  [STORE_ITEM_TYPES.NFT]: "NFT",
-  [STORE_ITEM_TYPES.PHYSICAL]: "Shopify link",
-};
-
 const ViewStoreItem = ({ data }) => {
   const shouldFetchDiscord = useMemo(() => {
     const hasDiscordCondition = data?.conditions?.some((condition) => condition.type === CONDITION_TYPES.DISCORD_ROLE);
@@ -108,7 +102,7 @@ const ViewStoreItem = ({ data }) => {
             ),
           },
           {
-            label: METADATA_STORE_ITEM_LABELS_MAP[data?.type],
+            label: STORE_ITEM_LABELS[data?.type],
             value: data?.url || data?.nftMetadataId || data?.additionalData?.discordRoleName || "None",
             type: "custom",
             customComponent: () => <StoreItemMetadata 

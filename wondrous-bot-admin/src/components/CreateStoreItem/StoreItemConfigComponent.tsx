@@ -4,7 +4,7 @@ import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { Label } from "components/CreateTemplate/styles";
 import TextField from "components/Shared/TextField";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { DELIVERY_METHODS, NFT_ORIGIN_TYPES, STORE_ITEM_TYPES } from "utils/constants";
+import { DELIVERY_METHODS, NFT_ORIGIN_TYPES, STORE_ITEM_TYPES, DELIVERY_METHOD_LABELS } from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
 import ProductImage from "./ProductImage";
@@ -21,9 +21,9 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
   const [openDiscountUploadModal, setOpenDiscountUploadModal] = useState(false);
   const [uploadedFilename, setUploadedFilename] = useState("");
   const COMPONENTS = {
-    [STORE_ITEM_TYPES.PHYSICAL]: {
+    [STORE_ITEM_TYPES.EXTERNAL_SHOP]: {
       component: TextField,
-      label: "Shopify link",
+      label: "External shop link",
       componentProps: {
         multiline: false,
         type: "url",
@@ -102,8 +102,8 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
 
   const TYPES = [
     {
-      label: "Shopify",
-      value: STORE_ITEM_TYPES.PHYSICAL,
+      label: "External Shop",
+      value: STORE_ITEM_TYPES.EXTERNAL_SHOP,
     },
     {
       label: "NFT",
@@ -123,7 +123,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       additionalChanges.mediaUploads = [];
     }
 
-    if (type === STORE_ITEM_TYPES.PHYSICAL) {
+    if (type === STORE_ITEM_TYPES.EXTERNAL_SHOP) {
       additionalChanges.deliveryMethod = DELIVERY_METHODS.DISCOUNT_CODE;
     }
     if (type === STORE_ITEM_TYPES.DISCORD_ROLE) {
@@ -145,30 +145,30 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
 
   const DELIVERY_METHODS_OPTIONS = [
     {
-      label: "Discord Role",
+      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.DISCORD_ROLE],
       value: DELIVERY_METHODS.DISCORD_ROLE,
       disabled: storeItemData.type !== STORE_ITEM_TYPES.DISCORD_ROLE,
     },
     {
-      label: "Discount Code",
+      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.DISCOUNT_CODE],
       value: DELIVERY_METHODS.DISCOUNT_CODE,
       disabled:
-        storeItemData.type !== STORE_ITEM_TYPES.PHYSICAL &&
+        storeItemData.type !== STORE_ITEM_TYPES.EXTERNAL_SHOP &&
         storeItemData?.config?.nftType !== NFT_ORIGIN_TYPES.IMPORTED,
     },
     {
-      label: "NFT Payment",
+      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.NFT_PAYMENT],
       value: DELIVERY_METHODS.NFT_PAYMENT,
       disabled: storeItemData.type !== STORE_ITEM_TYPES.NFT,
     },
     {
-      label: "Raffle",
+      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.RAFFLE],
       value: DELIVERY_METHODS.RAFFLE,
-      disabled: storeItemData.type !== STORE_ITEM_TYPES.PHYSICAL && storeItemData.type !== STORE_ITEM_TYPES.NFT,
+      disabled: storeItemData.type !== STORE_ITEM_TYPES.EXTERNAL_SHOP && storeItemData.type !== STORE_ITEM_TYPES.NFT,
     },
     {
-      label: "Raffle (Code) - users will be given a code that is eligible for a raffle entry",
-      value: DELIVERY_METHODS.RAFFLE_CODE,
+      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.EXTERNAL_CODE],
+      value: DELIVERY_METHODS.EXTERNAL_CODE,
       disabled: storeItemData.type === STORE_ITEM_TYPES.DISCORD_ROLE,
     },
   ];
@@ -227,7 +227,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                 />
               </Grid>
               {(storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE ||
-                storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE_CODE) && (
+                storeItemData?.deliveryMethod === DELIVERY_METHODS.EXTERNAL_CODE) && (
                 <Grid display="flex" flexDirection="column" gap="12px">
                   <Label fontWeight={600}>Delivery Message</Label>
                   <TextField
@@ -238,7 +238,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   ></TextField>
                 </Grid>
               )}
-              {(storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE_CODE ||
+              {(storeItemData?.deliveryMethod === DELIVERY_METHODS.EXTERNAL_CODE ||
                 storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE) && (
                 <Grid display="flex" flexDirection="column" gap="12px">
                   <Label fontWeight={600}>Upload Code list</Label>
