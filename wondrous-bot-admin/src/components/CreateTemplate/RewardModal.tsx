@@ -13,11 +13,13 @@ import Modal from "components/Shared/Modal";
 import { CREATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
 import { GET_CMTY_PAYMENT_METHODS_FOR_ORG } from "graphql/queries/payment";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import truncateEthAddress from "truncate-eth-address";
 import GlobalContext from "utils/context/GlobalContext";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { Label } from "./styles";
+
+const isStoreAdded = false;
 
 const useSubscriptionPaywall = () => {
   const subscription = useSubscription();
@@ -410,53 +412,66 @@ const RewardModal = ({
     }
   };
 
-  const modalRewardButtonsProps = [
-    {
-      paymentOption: PAYMENT_OPTIONS.DISCORD_ROLE,
-      rewardType,
-      onClick: () => setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE),
-      Icon: DiscordRoleIcon,
-      text: "Discord Role",
-    },
-    {
-      paymentOption: PAYMENT_OPTIONS.POAP,
-      rewardType,
-      onClick: () => setRewardType(PAYMENT_OPTIONS.POAP),
-      Icon: PoapIcon,
-      text: "POAP",
-    },
-    {
-      paymentOption: PAYMENT_OPTIONS.TOKEN,
-      rewardType,
-      onClick: () => {
-        setRewardType(PAYMENT_OPTIONS.TOKEN);
-        if (plan === PricingOptionsTitle.Basic) {
-          setPaywall(true);
-          setPaywallMessage("This reward option is not available under the basic plan.");
-          setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
-          return;
-        } else {
-          setRewardType(PAYMENT_OPTIONS.TOKEN);
-        }
+  const modalRewardButtonsProps = useMemo(() => {
+    const items = [
+      {
+        paymentOption: PAYMENT_OPTIONS.DISCORD_ROLE,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE),
+        Icon: DiscordRoleIcon,
+        text: "Discord Role",
       },
-      Icon: TokensIcon,
-      text: "Token reward",
-    },
-    {
-      paymentOption: PAYMENT_OPTIONS.COMMUNITY_BADGE,
-      rewardType,
-      onClick: () => setRewardType(PAYMENT_OPTIONS.COMMUNITY_BADGE),
-      Icon: NFTIcon,
-      text: "Community Badge",
-    },
-    {
-      paymentOption: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
-      rewardType,
-      onClick: () => setRewardType(PAYMENT_OPTIONS.CMTY_STORE_ITEM),
-      Icon: NFTIcon,
-      text: "Store Item",
-    },
-  ];
+      {
+        paymentOption: PAYMENT_OPTIONS.POAP,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.POAP),
+        Icon: PoapIcon,
+        text: "POAP",
+      },
+      {
+        paymentOption: PAYMENT_OPTIONS.TOKEN,
+        rewardType,
+        onClick: () => {
+          setRewardType(PAYMENT_OPTIONS.TOKEN);
+          if (plan === PricingOptionsTitle.Basic) {
+            setPaywall(true);
+            setPaywallMessage("This reward option is not available under the basic plan.");
+            setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
+            return;
+          } else {
+            setRewardType(PAYMENT_OPTIONS.TOKEN);
+          }
+        },
+        Icon: TokensIcon,
+        text: "Token reward",
+      },
+      {
+        paymentOption: PAYMENT_OPTIONS.COMMUNITY_BADGE,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.COMMUNITY_BADGE),
+        Icon: NFTIcon,
+        text: "Community Badge",
+      },
+    ];
+    if (
+      !isStoreAdded &&
+      ((import.meta.env.VITE_PRODUCTION &&
+        (activeOrg?.id === "98989259425317451" ||
+          activeOrg?.id === "45956686890926082" ||
+          activeOrg?.id === "100884993427899088")) ||
+        (import.meta.env.VITE_STAGING && activeOrg?.id === "89444950095167649") ||
+        (!import.meta.env.VITE_STAGING && !import.meta.env.VITE_PRODUCTION))
+    ) {
+      items.push({
+        paymentOption: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.CMTY_STORE_ITEM),
+        Icon: NFTIcon,
+        text: "Store Item",
+      });
+    }
+    return items;
+  }, [isStoreAdded, activeOrg?.id, rewardType, plan, setRewardType, setPaywall, setPaywallMessage]);
 
   return (
     <Modal
