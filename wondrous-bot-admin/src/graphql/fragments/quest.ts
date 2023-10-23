@@ -89,6 +89,11 @@ export const QuestFragment = gql`
         optionText
         rewardData {
           type
+          storeItem {
+            name
+            id
+          }
+          storeItemId
           discordRewardData {
             discordRoleId
             discordGuildId

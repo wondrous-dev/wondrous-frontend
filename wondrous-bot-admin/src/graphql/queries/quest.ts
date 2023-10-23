@@ -174,6 +174,11 @@ export const GET_QUEST_REWARDS = gql`
       }
       paymentMethodId
       amount
+      storeItemId
+      storeItem {
+        name
+        id
+      }
       paymentMethod {
         name
         contractAddress

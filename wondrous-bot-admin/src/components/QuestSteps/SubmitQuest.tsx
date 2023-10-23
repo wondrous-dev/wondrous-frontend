@@ -7,8 +7,9 @@ import { useTakeQuest } from "utils/hooks";
 import { GET_QUEST_REWARDS } from "graphql/queries";
 import { useLazyQuery } from "@apollo/client";
 import { useEffect, useMemo } from "react";
-import { NFTIcon, PointsIcon } from "components/Icons/Rewards";
+import { NFTIcon, PointsIcon, StoreItemRewardIcon } from "components/Icons/Rewards";
 import { TextLabel } from "components/ViewQuest/styles";
+import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 
 const Body = ({ header, subHeader, renderComponents = null }) => {
   return (
@@ -92,6 +93,12 @@ const SubmittedQuestRewards = ({ quest }) => {
               </a>
             ),
           };
+        }
+        if(reward.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+          return {
+            label: `Store Item: ${reward?.storeItem?.name}`,
+            icon: StoreItemRewardIcon,
+          }
         }
       }) || [];
     return [...roles, ...questRewards];

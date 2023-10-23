@@ -265,6 +265,12 @@ const CreateTemplate = ({
               poapRewardData: rewardData,
             };
           }
+          else if(reward?.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+            return {
+              type: reward?.type,
+              storeItemId: reward?.storeItem?.id
+            }
+          }
         })
         ?.filter((reward) => reward),
       steps: steps.reduce((acc, next, index) => {
