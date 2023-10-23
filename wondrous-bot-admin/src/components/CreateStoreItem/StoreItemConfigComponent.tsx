@@ -225,7 +225,8 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   onChange={(value) => setStoreItemData((prev) => ({ ...prev, deliveryMethod: value }))}
                 />
               </Grid>
-              {storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE && (
+              {(storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE ||
+                storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE_CODE) && (
                 <Grid display="flex" flexDirection="column" gap="12px">
                   <Label fontWeight={600}>Delivery Message</Label>
                   <TextField
@@ -236,58 +237,58 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   ></TextField>
                 </Grid>
               )}
-              {storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE_CODE ||
-                (storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE && (
-                  <Grid display="flex" flexDirection="column" gap="12px">
-                    <Label fontWeight={600}>Upload Code list</Label>
-                    {uploadedFilename && storeItemData?.discountCodeImport?.codes?.length > 0 ? (
-                      <Box display="flex" alignItems="center">
-                        <Box
-                          style={{
-                            backgroundColor: "rgba(193, 182, 246, 1)",
-                          }}
-                          borderRadius="8px"
-                          marginRight="8px"
-                        >
-                          <Typography
-                            fontFamily="Poppins"
-                            fontWeight={500}
-                            fontSize="12px"
-                            color="black"
-                            padding="2px 8px"
-                            borderRadius="60px"
-                          >
-                            {uploadedFilename}
-                          </Typography>
-                        </Box>
-                        <DeleteIcon
-                          stroke={redColors.red400}
-                          style={{
-                            cursor: "pointer",
-                          }}
-                          onClick={() => {
-                            setStoreItemData({
-                              ...storeItemData,
-                              discountCodeImport: null,
-                            });
-                          }}
-                        />
-                      </Box>
-                    ) : (
-                      <SharedButton
+              {(storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE_CODE ||
+                storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE) && (
+                <Grid display="flex" flexDirection="column" gap="12px">
+                  <Label fontWeight={600}>Upload Code list</Label>
+                  {uploadedFilename && storeItemData?.discountCodeImport?.codes?.length > 0 ? (
+                    <Box display="flex" alignItems="center">
+                      <Box
                         style={{
                           backgroundColor: "rgba(193, 182, 246, 1)",
-                          width: "fit-content",
-                          color: "black",
-                          fontSize: "15px",
                         }}
-                        onClick={() => setOpenDiscountUploadModal(true)}
+                        borderRadius="8px"
+                        marginRight="8px"
                       >
-                        {storeItemSettings?.id ? "Upload More Codes" : "Upload Codes"}
-                      </SharedButton>
-                    )}
-                  </Grid>
-                ))}
+                        <Typography
+                          fontFamily="Poppins"
+                          fontWeight={500}
+                          fontSize="12px"
+                          color="black"
+                          padding="2px 8px"
+                          borderRadius="60px"
+                        >
+                          {uploadedFilename}
+                        </Typography>
+                      </Box>
+                      <DeleteIcon
+                        stroke={redColors.red400}
+                        style={{
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          setStoreItemData({
+                            ...storeItemData,
+                            discountCodeImport: null,
+                          });
+                        }}
+                      />
+                    </Box>
+                  ) : (
+                    <SharedButton
+                      style={{
+                        backgroundColor: "rgba(193, 182, 246, 1)",
+                        width: "fit-content",
+                        color: "black",
+                        fontSize: "15px",
+                      }}
+                      onClick={() => setOpenDiscountUploadModal(true)}
+                    >
+                      {storeItemSettings?.id ? "Upload More Codes" : "Upload Codes"}
+                    </SharedButton>
+                  )}
+                </Grid>
+              )}
             </Grid>
           );
         }}
