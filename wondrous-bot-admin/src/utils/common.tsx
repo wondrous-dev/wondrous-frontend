@@ -109,7 +109,7 @@ export const constructRewards = ({ rewards }) => {
     }
     if(reward.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
       return {
-        type: '',
+        type: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
         value: reward?.storeItem?.name || null
       }
     }

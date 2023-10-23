@@ -84,6 +84,7 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
       <RewardModal
         handleRewardModalToggle={() => setIsRewardModalOpen(false)}
         handleOnRewardAdd={onRewardAdd}
+        maxModalWidth={800}
         rewardModalState={rewardModalState}
         options={[
           PAYMENT_OPTIONS.TOKEN,

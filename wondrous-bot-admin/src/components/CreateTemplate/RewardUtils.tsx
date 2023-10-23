@@ -634,6 +634,7 @@ export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, I
   <SharedBlackOutlineButton
     style={{
       flex: 1,
+      width: '100%'
     }}
     background={paymentOption === rewardType ? "#BFB4F3" : "#BFB4F366"}
     borderColor={paymentOption === rewardType ? "#000" : "transparent"}

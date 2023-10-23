@@ -3,7 +3,7 @@ import { Box, Grid } from "@mui/material";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import { PoapImage } from "components/CreateTemplate/styles";
 import DeleteIcon from "components/Icons/Delete";
-import { DiscordRoleIcon, NFTIcon, PoapIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import { TextLabel } from "components/ViewQuest/styles";
 
@@ -12,6 +12,7 @@ const ICONS_MAP = {
   [PAYMENT_OPTIONS.POAP]: PoapIcon,
   [PAYMENT_OPTIONS.TOKEN]: TokensIcon,
   [PAYMENT_OPTIONS.COMMUNITY_BADGE]: NFTIcon,
+  [PAYMENT_OPTIONS.CMTY_STORE_ITEM]: StoreItemRewardIcon
 };
 
 const RewardContent = ({ reward }) => {

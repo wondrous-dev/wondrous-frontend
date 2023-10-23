@@ -1,6 +1,6 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Box, CircularProgress, Divider, Grid } from "@mui/material";
-import { DiscordRoleIcon, NFTIcon, PointsIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, NFTIcon, PointsIcon, StoreItemRewardIcon } from "components/Icons/Rewards";
 import PageSpinner from "components/PageSpinner";
 import PageWrapper from "components/Shared/PageWrapper";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
@@ -13,6 +13,7 @@ import { getDiscordUrl } from "utils/discord";
 import useAlerts from "utils/hooks";
 import { ImageComponent, StyledLink, TextLabel } from "./styles";
 import useErrorHandler from "./useErrorHandler";
+import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 
 const ViewQuest = ({ quest, loading }) => {
   const params = {
@@ -86,6 +87,12 @@ const ViewQuest = ({ quest, loading }) => {
             label: `POAP: ${reward.poapRewardData?.name}`,
             icon: NFTIcon,
           };
+        }
+        else if(reward.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+          return {
+            label: `Store Item: ${reward?.storeItem?.name}`,
+            icon: StoreItemRewardIcon,
+          }
         }
       }) || [];
     return [...roles, ...questRewards];

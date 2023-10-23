@@ -5,7 +5,7 @@ import {
   RewardWrapperWithTextField,
   RewardsComponent,
 } from "components/CreateTemplate/RewardUtils";
-import { DiscordRoleIcon, PointsIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import RewardModal, { useAddRewardModalState } from "./RewardModal";
 import { PoapImage } from "./styles";
@@ -175,7 +175,7 @@ const RewardComponent = ({
     },
     [PAYMENT_OPTIONS.CMTY_STORE_ITEM]: {
       Component: ({ reward }) => {
-        return <RewardWrapper Icon={TokensIcon} text={reward?.storeItem?.name} />;
+        return <RewardWrapper Icon={StoreItemRewardIcon} text={reward?.storeItem?.name} />;
       },
       handleOnRemove: (reward) => handleStoreItemRewardRemove({ reward, setQuestSettings }),
     },

@@ -7,7 +7,7 @@ import {
   RewardMethod,
   RewardMethodOptionButton,
 } from "components/CreateTemplate/RewardUtils";
-import { DiscordRoleIcon, NFTIcon, PoapIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import Modal from "components/Shared/Modal";
 import { CREATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
@@ -337,6 +337,7 @@ const RewardModal = ({
   handleOnRewardAdd,
   rewards = [],
   rewardModalState,
+  maxModalWidth = 640,
   options = [
     PAYMENT_OPTIONS.TOKEN,
     PAYMENT_OPTIONS.POAP,
@@ -466,7 +467,7 @@ const RewardModal = ({
         paymentOption: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
         rewardType,
         onClick: () => setRewardType(PAYMENT_OPTIONS.CMTY_STORE_ITEM),
-        Icon: NFTIcon,
+        Icon: StoreItemRewardIcon,
         text: "Store Item",
       });
     }
@@ -484,7 +485,7 @@ const RewardModal = ({
       dialogComponentProps={{
         className: "tutorials-quest-reward-modal",
       }}
-      maxWidth={800}
+      maxWidth={maxModalWidth}
       footerLeft={
         <RewardFooterLeftComponent
           rewardType={rewardType}
@@ -503,7 +504,12 @@ const RewardModal = ({
       <Grid display="flex" flexDirection="column" gap="24px">
         <Grid container item gap="14px">
           <Label>Reward Type</Label>
-          <Grid container item alignItems="center" gap="14px" width="100%" justifyContent="center">
+          <Grid container item alignItems="center" gap="14px" width="100%" justifyContent="center" sx={{
+            flexDirection: {
+              xs: 'column',
+              sm: 'row'
+            }
+          }}>
             {modalRewardButtonsProps.map((props) =>
               options.includes(props.paymentOption) ? <RewardMethodOptionButton {...props} /> : null
             )}
