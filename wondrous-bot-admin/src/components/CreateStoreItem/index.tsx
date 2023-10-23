@@ -60,7 +60,6 @@ const CreateStoreItem = ({
   });
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } = useAlerts();
-
   const [storeItemData, setStoreItemData] = useState<any>({ ...defaultStoreItemData });
   const [storeItemSettings, setStoreItemSettings] = useState({ ...defaultStoreItemStetings });
 

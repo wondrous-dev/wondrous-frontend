@@ -11,6 +11,7 @@ interface Props {
   dropText?: string;
   isDisabled?: boolean;
   setFilename?: (filename) => void;
+  setError?: (errorMessage) => void;
 }
 
 const CSVFileDropzone = (props: Props) => {
@@ -20,13 +21,25 @@ const CSVFileDropzone = (props: Props) => {
     dropText = "Drop CSV file here or click to upload",
     isDisabled = false,
     setFilename = false,
+    setError = null,
   } = props;
   const { CSVReader } = useCSVReader();
 
   return (
     <CSVReader
       onUploadAccepted={(results: any) => {
-        handleFileUpload(results?.data);
+        // clean data
+        const cleanedResults = [];
+        results?.data?.forEach((result) => {
+          if (result?.length !== 1) {
+            setError("CSV format does not match with the given format");
+          }
+          const splitResult = result[0].split("\n");
+          splitResult.forEach((res) => {
+            cleanedResults.push([res]);
+          });
+        });
+        handleFileUpload(cleanedResults);
       }}
       noDrag={isDisabled}
       noClick={isDisabled}

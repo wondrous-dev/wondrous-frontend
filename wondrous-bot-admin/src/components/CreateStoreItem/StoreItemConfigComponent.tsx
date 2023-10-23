@@ -169,11 +169,12 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
     {
       label: "Raffle (Code) - users will be given a code that is eligible for a raffle entry",
       value: DELIVERY_METHODS.RAFFLE_CODE,
-      disabled: false,
+      disabled: storeItemData.type === STORE_ITEM_TYPES.DISCORD_ROLE,
     },
   ];
 
   const componentProps = useMemo(() => Config?.componentProps, [Config]);
+
   return (
     <Grid display="flex" flexDirection="column" justifyContent="flex-start" gap="24px" alignItems="center" width="100%">
       <DiscountCodeModal
@@ -181,6 +182,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
         setOpenDiscountUploadModal={setOpenDiscountUploadModal}
         itemId={storeItemSettings?.id}
         setFilenameOnCreate={setUploadedFilename}
+        deliveryMethod={storeItemData?.deliveryMethod}
         setCodesOnCreate={(value) => {
           setStoreItemData({
             ...storeItemData,
@@ -215,7 +217,6 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   storeItemData={storeItemData}
                   {...componentProps}
                 />
-                {Config.error && <ErrorText>{Config.error}</ErrorText>}
               </Grid>
               <Grid display="flex" flexDirection="column" gap="12px">
                 <Label fontWeight={600}>Delivery method</Label>
