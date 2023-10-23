@@ -19,7 +19,10 @@ import { useTour } from "@reactour/tour";
 import { CSS } from "@dnd-kit/utilities";
 
 const SortableItem = ({ item, idx, isOpen, status }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id, disabled: status !== QUEST_STATUSES.OPEN });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: item.id,
+    disabled: status !== QUEST_STATUSES.OPEN,
+  });
 
   const navigate = useNavigate();
   const style = {
@@ -67,7 +70,7 @@ const SortableItem = ({ item, idx, isOpen, status }) => {
             {item.pointReward}
           </Label>
           <Label fontSize="12px" lineHeight="13px" fontWeight={400}>
-            PTS 
+            PTS
           </Label>
         </Box>
         <Label
@@ -174,14 +177,13 @@ const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan, status
       <Grid container gap="30px 14px">
         <DndContext
           onDragEnd={handleDragEnd}
-          
           onDragStart={toggleIsDragging}
           sensors={sensors}
           collisionDetection={closestCenter}
         >
           <SortableContext items={formattedData[level].items || []} strategy={rectSortingStrategy}>
             {formattedData[level].items.map((item, idx) => (
-              <SortableItem key={item.id} item={item} isOpen={isOpen} idx={idx} status={status}/>
+              <SortableItem key={item.id} item={item} isOpen={isOpen} idx={idx} status={status} />
             ))}
             {isDragging ? null : (
               <CardHoverWrapper
@@ -245,7 +247,7 @@ const formatQuestsData = (LEVELS, data) => {
       completions: quest.submissionsCount?.approved || 0,
       inReview: quest.submissionsCount?.inReview,
       status: quest.status,
-      order : quest.order,
+      order: quest.order,
     });
   });
 
@@ -298,7 +300,7 @@ const QuestsList = ({ data, status }) => {
         }
         return (
           <QuestItemCard
-          status={status}
+            status={status}
             level={level}
             formattedData={formattedData}
             isOpen={isOpen}

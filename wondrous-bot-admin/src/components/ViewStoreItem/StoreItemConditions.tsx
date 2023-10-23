@@ -52,7 +52,7 @@ const StoreItemConditions = ({ storeItemData, discordData }) => {
         None
       </StyledViewQuestResults>
     );
-    
+
   return (
     <>
       {conditionTexts?.map((condition, idx) => {

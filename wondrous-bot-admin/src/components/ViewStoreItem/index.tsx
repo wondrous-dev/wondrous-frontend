@@ -105,10 +105,13 @@ const ViewStoreItem = ({ data }) => {
             label: STORE_ITEM_LABELS[data?.type],
             value: data?.url || data?.nftMetadataId || data?.additionalData?.discordRoleName || "None",
             type: "custom",
-            customComponent: () => <StoreItemMetadata 
-            nftMetadata={nftMetadata?.getCmtyNFTByMetadataId}
-            discordRoles={orgDiscordRolesData?.getCmtyOrgDiscordRoles}
-            storeItemData={data} />,
+            customComponent: () => (
+              <StoreItemMetadata
+                nftMetadata={nftMetadata?.getCmtyNFTByMetadataId}
+                discordRoles={orgDiscordRolesData?.getCmtyOrgDiscordRoles}
+                storeItemData={data}
+              />
+            ),
           },
         ],
         showBorder: false,
@@ -154,9 +157,11 @@ const ViewStoreItem = ({ data }) => {
           alignItems="center"
           width="100%"
         >
-          <StoreItemPurchases 
+          <StoreItemPurchases
             nftMetadata={nftMetadata?.getCmtyNFTByMetadataId}
-            data={data} discordRoles={orgDiscordRolesData?.getCmtyOrgDiscordRoles} />
+            data={data}
+            discordRoles={orgDiscordRolesData?.getCmtyOrgDiscordRoles}
+          />
         </Grid>
       </Grid>
     </PageWrapper>

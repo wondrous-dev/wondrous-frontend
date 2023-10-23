@@ -105,9 +105,9 @@ const AutocompleteOptionsComponent = ({
             >
               <MenuItemOptionWrapper container justifyContent="space-between" alignItems="center" padding="0">
                 <Grid container item flex="1" gap="4px">
-                    {option.icon}
-                    {option.label || option.value}
-                  </Grid>
+                  {option.icon}
+                  {option.label || option.value}
+                </Grid>
 
                 {option.value === value && !option.customComponent && <CheckCircleIcon />}
                 {option.displayCustomOnHover && option.customComponent ? (
