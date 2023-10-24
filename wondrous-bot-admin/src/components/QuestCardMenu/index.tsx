@@ -1,26 +1,16 @@
 import { useMutation } from "@apollo/client";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { ButtonBase, Box, Grid, Popper, ClickAwayListener, Typography } from "@mui/material";
+import { ButtonBase, Grid, Popper, ClickAwayListener, Typography } from "@mui/material";
 import ConfirmActionModal from "components/ConfirmActionModal";
 import { DELETE_QUEST, ACTIVATE_QUEST, DEACTIVATE_QUEST } from "graphql/mutations";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAlerts from "utils/hooks";
-import { BoxWrapper } from "./styles";
-import { useSortable } from "@dnd-kit/sortable";
-import { useDndContext } from "@dnd-kit/core";
-const QuestCardMenu = ({ quest, setIsDndDisabled }) => {
+
+const QuestCardMenu = ({ quest, anchorEl, setAnchorEl }) => {
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const [confirmModalData, setConfirmModalData] = useState(null);
 
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleClick = (e) => {
-    e.stopPropagation();
-    const newAnchorEl = anchorEl ? null : e.currentTarget;
-    setIsDndDisabled(prev => !prev);
-    setAnchorEl(newAnchorEl);
-  };
 
   const [deleteQuest] = useMutation(DELETE_QUEST, {
     onCompleted: () => {
@@ -147,7 +137,7 @@ const QuestCardMenu = ({ quest, setIsDndDisabled }) => {
     <>
       <ConfirmActionModal isOpen={!!confirmModalData} {...confirmModalData} />
       <ClickAwayListener onClickAway={onReset}>
-        <div onClick={(e) => e.stopPropagation()}>
+        <div onClick={(e) => e.stopPropagation()} style={{position: 'absolute'}}>
           <Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom">
             <Grid
               bgcolor="white"
@@ -186,28 +176,6 @@ const QuestCardMenu = ({ quest, setIsDndDisabled }) => {
               ))}
             </Grid>
           </Popper>
-          <BoxWrapper>
-            <ButtonBase
-              onClick={handleClick}
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: "100%",
-                padding: "4px",
-                transition: "background 0.1s ease-in-out",
-                ":hover": {
-                  background: "white",
-                },
-              }}
-            >
-              <MoreVertIcon
-                sx={{
-                  color: "black",
-                }}
-              />
-            </ButtonBase>
-          </BoxWrapper>
         </div>
       </ClickAwayListener>
     </>

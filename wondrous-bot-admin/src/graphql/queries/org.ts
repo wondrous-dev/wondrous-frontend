@@ -25,6 +25,8 @@ export const GET_CMTY_ORG_DISCORD_CONFIG = gql`
         parentChannel
         submissionNotificationsChannel
         submissionNotificationsChannelActive
+        leaderboardNotificationsChannel
+        leaderboardNotificationsChannelActive
       }
     }
   }
