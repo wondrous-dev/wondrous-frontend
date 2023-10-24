@@ -67,7 +67,7 @@ const NOTIFICATIONS = [
     title: "Submissions Notifications",
     description: "This channel will be used to post notifications when members make submissions to quests",
     channelType: CHANNEL_TYPE.SUBMISSION_NOTIFICATIONS,
-  }
+  },
   {
     title: "Leaderboard Notifications",
     description: "This channel will be used to post leaderboard daily",
