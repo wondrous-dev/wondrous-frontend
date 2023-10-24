@@ -7,7 +7,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAlerts from "utils/hooks";
 import { BoxWrapper } from "./styles";
-const QuestCardMenu = ({ quest }) => {
+import { useSortable } from "@dnd-kit/sortable";
+import { useDndContext } from "@dnd-kit/core";
+const QuestCardMenu = ({ quest, setIsDndDisabled }) => {
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const [confirmModalData, setConfirmModalData] = useState(null);
 
@@ -15,7 +17,9 @@ const QuestCardMenu = ({ quest }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (e) => {
     e.stopPropagation();
-    setAnchorEl((prev) => (prev ? null : e.currentTarget));
+    const newAnchorEl = anchorEl ? null : e.currentTarget;
+    setIsDndDisabled(prev => !prev);
+    setAnchorEl(newAnchorEl);
   };
 
   const [deleteQuest] = useMutation(DELETE_QUEST, {

@@ -19,9 +19,10 @@ import { useTour } from "@reactour/tour";
 import { CSS } from "@dnd-kit/utilities";
 
 const SortableItem = ({ item, idx, isOpen, status }) => {
+  const [isDndDisabled, setIsDndDisabled] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.id,
-    disabled: status !== QUEST_STATUSES.OPEN,
+    disabled: status !== QUEST_STATUSES.OPEN || isDndDisabled,
   });
 
   const navigate = useNavigate();
@@ -111,7 +112,9 @@ const SortableItem = ({ item, idx, isOpen, status }) => {
             </Box>
           )}
         </Box>
-        <QuestCardMenu quest={item} />
+        <QuestCardMenu quest={item} 
+        setIsDndDisabled={setIsDndDisabled}
+        />
       </CardWrapper>
     </CardHoverWrapper>
   );
