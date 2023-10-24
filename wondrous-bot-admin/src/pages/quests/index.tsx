@@ -85,6 +85,8 @@ const QuestsPage = () => {
   };
   const { data, refetch } = useQuery(GET_QUESTS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "cache-and-network",
     skip: !activeOrg?.id,
     variables: {
       input: {
