@@ -11,9 +11,12 @@ import { nftFactoryABI } from "services/contracts/nftFactory.abi";
 import { ethers } from "ethers";
 import { CHAIN_TO_NFT_FACTORY } from "services/web3/contractRouter";
 import Spinner from "components/Shared/Spinner";
+import { useMutation } from "@apollo/client";
+import { LINK_TRANSACTION_TO_COMMUNITY_NFT } from "graphql/mutations/payment";
 
-const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess }) => {
+const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadataId, cmtyUserId }) => {
   const wonderWeb3 = useWonderWeb3();
+  const [linkTx] = useMutation(LINK_TRANSACTION_TO_COMMUNITY_NFT)
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
 
   const [isMinting, setIsMinting] = useState(false);
@@ -31,6 +34,13 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess }) => {
       const transaction = await contractInstance.claimBadge(1, BigInt(tokenId), nonce, signature);
       await transaction.wait();
 
+      await linkTx({
+        variables: {
+          txHash: transaction.hash,
+          nftMetadataId,
+          cmtyUserId
+        }
+      })
       setSnackbarAlertMessage("Minting successful");
       setSnackbarAlertOpen(true);
       setSuccess(true);

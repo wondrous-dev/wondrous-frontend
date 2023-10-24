@@ -11,6 +11,7 @@ import Switch from "components/Shared/Switch";
 import TextField from "components/Shared/TextField";
 import { GET_CMTY_ORG_DISCORD_CONFIG, GET_GUILD_DISCORD_CHANNELS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
+import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 
 const PublishModal = ({ onClose }) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
@@ -48,14 +49,10 @@ const PublishModal = ({ onClose }) => {
       <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" color="#06040A">
         Please choose a channel to publish the directory
       </Typography>
-      <SelectComponent
-        boxStyle={{
-          flex: 1,
-        }}
-        options={channels}
-        background="#C1B6F6"
+      <AutocompleteOptionsComponent 
         value={channel}
         onChange={(value) => setChannel(value)}
+        options={channels}
       />
       <Box display="flex" gap="10px" alignItems="center" width="100%" marginTop="8px">
         <SharedSecondaryButton

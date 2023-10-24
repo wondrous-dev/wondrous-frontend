@@ -148,7 +148,7 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
 export const CONDITION_TYPES = {
   DISCORD_ROLE: "discord_role",
   QUEST: "quest",
-  LEVEL: 'level'
+  LEVEL: "level",
 };
 export const QUEST_STATUSES = {
   ARCHIVED: "archived",
@@ -175,8 +175,8 @@ export const EMPTY_STATE_TYPES = {
   MEMBERS: "members",
   PAYMENTS: "payments",
   NFT: "nft",
-  PURCHASES: 'purchases',
-  CATEGORIES: 'categories',
+  PURCHASES: "purchases",
+  CATEGORIES: "categories",
 };
 
 export const ERRORS = {
@@ -428,31 +428,33 @@ export const CUSTOM_INTEGRATIONS = {
 export const OPTION_TEXT_LIMIT = 250;
 
 export const STORE_ITEM_TYPES = {
-  NFT: 'nft',
-  PHYSICAL: 'physical',
-  DISCORD_ROLE: 'discord_role'
-}
+  NFT: "nft",
+  EXTERNAL_SHOP: "external_shop",
+  DISCORD_ROLE: "discord_role",
+};
 export const STORE_ITEM_LABELS = {
-  [STORE_ITEM_TYPES.NFT]: 'NFT Products',
-  [STORE_ITEM_TYPES.PHYSICAL]: 'Shopify Products',
-  [STORE_ITEM_TYPES.DISCORD_ROLE]: 'Discord Roles',
-}
+  [STORE_ITEM_TYPES.NFT]: "NFT",
+  [STORE_ITEM_TYPES.EXTERNAL_SHOP]: "External Shop",
+  [STORE_ITEM_TYPES.DISCORD_ROLE]: "Discord Roles",
+};
 
 export const DELIVERY_METHODS = {
-  DISCORD_ROLE: 'discord_role',
-  DISCOUNT_CODE: 'discount_code',
-  NFT_PAYMENT: 'nft_payment',
-  RAFFLE: 'raffle'
+  DISCORD_ROLE: "discord_role",
+  DISCOUNT_CODE: "discount_code",
+  NFT_PAYMENT: "nft_payment",
+  RAFFLE: "raffle",
+  EXTERNAL_CODE: "external_code",
 };
 
 export const NFT_ORIGIN_TYPES = {
-  CREATED: 'created',
-  IMPORTED: 'imported'
-}
+  CREATED: "created",
+  IMPORTED: "imported",
+};
 
 export const DELIVERY_METHOD_LABELS = {
-  [DELIVERY_METHODS.DISCORD_ROLE]: 'Discord Role',
-  [DELIVERY_METHODS.DISCOUNT_CODE]: 'Discount Code',
-  [DELIVERY_METHODS.NFT_PAYMENT]: 'NFT Payment',
-  [DELIVERY_METHODS.RAFFLE]: 'Raffle'
-}
+  [DELIVERY_METHODS.DISCORD_ROLE]: "Discord Role",
+  [DELIVERY_METHODS.DISCOUNT_CODE]: "Discount Code",
+  [DELIVERY_METHODS.NFT_PAYMENT]: "NFT Payment",
+  [DELIVERY_METHODS.RAFFLE]: "Raffle ",
+  [DELIVERY_METHODS.EXTERNAL_CODE]: "External Code - users will be given a code",
+};

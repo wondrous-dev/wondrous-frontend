@@ -178,3 +178,19 @@ export const CONNECT_COMMUNITY_USER_GOOGLE = gql`
     }
   }
 `;
+
+export const UPDATE_ORG_CMTY_USER_POINTS = gql`
+  mutation updateOrgCmtyUserPoints($cmtyUserId: ID!, $orgId: ID!, $xpPoints: Int!) {
+    updateOrgCmtyUserPoints(cmtyUserId: $cmtyUserId, orgId: $orgId, xpPoints: $xpPoints) {
+      success
+    }
+  }
+`;
+
+export const UPDATE_ORG_CMTY_USER_POINT_BALANCE = gql`
+  mutation updateOrgCmtyUserPointBalance($cmtyUserId: ID!, $orgId: ID!, $xpPoints: Int!) {
+    updateOrgCmtyUserPointBalance(cmtyUserId: $cmtyUserId, orgId: $orgId, xpPoints: $xpPoints) {
+      success
+    }
+  }
+`;

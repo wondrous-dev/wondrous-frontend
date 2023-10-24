@@ -24,7 +24,7 @@ const StoreItemConditions = ({ storeItemData, discordData }) => {
   const getNameForCondition = (condition) => {
     if (condition.type === CONDITION_TYPES.DISCORD_ROLE) {
       const allRoles = discordData?.map((role) => role.roles).flat();
-      return allRoles.find((item) => item.id === condition.conditionData?.discordRoleId)?.name;
+      return allRoles?.find((item) => item.id === condition.conditionData?.discordRoleId)?.name;
     }
     if (condition.type === CONDITION_TYPES.LEVEL) {
       return levels[condition.conditionData?.minLevel];
@@ -52,7 +52,7 @@ const StoreItemConditions = ({ storeItemData, discordData }) => {
         None
       </StyledViewQuestResults>
     );
-    
+
   return (
     <>
       {conditionTexts?.map((condition, idx) => {

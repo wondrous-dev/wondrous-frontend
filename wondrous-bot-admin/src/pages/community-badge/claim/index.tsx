@@ -23,9 +23,11 @@ const CommunityBadgeClaimPage = () => {
   const cmtyUserId = searchParams.get("cmtyUserId");
   const tokenId = searchParams.get("tokenId");
 
-  const [getMetadata, { data }] = useLazyQuery(GET_CMTY_USER_NFT_METADATA, {
+  const [getMetadata, { data, error }] = useLazyQuery(GET_CMTY_USER_NFT_METADATA, {
     notifyOnNetworkStatusChange: true,
-  });
+  }); 
+
+  const signatureAlreadyUsed = error?.graphQLErrors?.[0]?.extensions?.errorCode === "used_signature";
 
   useEffect(() => {
     if (tokenId) {
@@ -67,7 +69,7 @@ const CommunityBadgeClaimPage = () => {
     <PageWrapper
       containerProps={{
         direction: "column",
-        justifyContent: isSuccess ? "center" : "flex-start",
+        justifyContent: isSuccess || signatureAlreadyUsed ? "center" : "flex-start",
         alignItems: "center",
         minHeight: "100vh",
         gap: "38px",
@@ -81,7 +83,7 @@ const CommunityBadgeClaimPage = () => {
         },
       }}
     >
-      {isSuccess ? (
+      {isSuccess || signatureAlreadyUsed ? (
         <Grid
           bgcolor="#FFF"
           borderRadius="12px"
@@ -103,9 +105,9 @@ const CommunityBadgeClaimPage = () => {
             },
           }}
         >
-          <Label>Minted Successfully!</Label>
+          <Label>{signatureAlreadyUsed ? 'Woops!' : 'Minted Successfully!'}</Label>
           <Label fontSize="12px" fontWeight={400}>
-            You can now close this page and go back to Discord
+            {signatureAlreadyUsed ? 'You have already minted this NFT': 'You can now close this page and go back to Discord'}
           </Label>
         </Grid>
       ) : (
@@ -247,6 +249,8 @@ const CommunityBadgeClaimPage = () => {
               <ClaimButton
                 chain={data?.getCmtyUserNftMetadata?.chain}
                 signature={signature}
+                nftMetadataId={data?.getCmtyUserNftMetadata?.nftMetadataId}
+                cmtyUserId={cmtyUserId}
                 tokenId={tokenId}
                 setSuccess={setSuccess}
                 nonce={data?.getCmtyUserNftMetadata?.nonce}

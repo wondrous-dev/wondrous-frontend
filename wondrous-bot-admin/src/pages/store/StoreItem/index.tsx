@@ -94,15 +94,6 @@ const StoreItem = () => {
           title={isEditMode ? "Edit Product" : "View Product"}
           renderActions={() => (
             <>
-              {isEditMode ? (
-                <SharedBlackOutlineButton
-                  onClick={() => {
-                    setOpenDiscountUploadModal(true);
-                  }}
-                >
-                  Upload discount codes
-                </SharedBlackOutlineButton>
-              ) : null}
               <SharedSecondaryButton $reverse={isDeactivated} onClick={handleOnClick} disabled={isDeactivated}>
                 {isDeactivated ? "Product deactivated" : buttonTitle}
               </SharedSecondaryButton>

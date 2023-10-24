@@ -29,7 +29,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
   const [getDiscountCodeInfo, { data: discountInfoData }] = useLazyQuery(GET_STORE_ITEM_DISCOUNT_CODE_INFO);
   const discountInfo = discountInfoData?.getStoreItemDiscountCodeInfo;
   const config = useMemo(() => {
-    let data:StoreItemSettingsConfig[] = [
+    let data: StoreItemSettingsConfig[] = [
       {
         label: "Product title",
         component: TextField,
@@ -37,6 +37,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         componentProps: {
           multiline: false,
           placeholder: "Enter product title",
+          error: errors["name"],
         },
         key: "name",
       },
@@ -112,7 +113,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
           storeItemId: storeItemSettings?.id,
         },
       },
-    ] 
+    ];
     if (discountInfo?.itemId) {
       const newConfig = data.filter((c) => c.key !== "storeItemDiscountCode");
       data = [
@@ -120,7 +121,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         {
           label: "Discount Codes",
           direction: "row",
-          component: (props) => <DiscountEdit {...props}/>,
+          component: (props) => <DiscountEdit {...props} />,
           key: "storeItemDiscountCode",
           componentProps: {
             storeItem: storeItemSettings,
@@ -130,8 +131,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
       ];
     }
     return data;
-
-  }, [discountInfo, storeItemSettings])
+  }, [discountInfo, storeItemSettings]);
 
   const handleChange = (key, value) => {
     if (errors[key]) {

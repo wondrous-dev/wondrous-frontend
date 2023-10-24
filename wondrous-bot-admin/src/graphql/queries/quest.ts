@@ -89,6 +89,14 @@ export const GET_COMMUNITY_USERS_FOR_ORG = gql`
   ${CmtyUserFragment}
 `;
 
+export const SEARCH_COMMUNITY_USERS_FOR_ORG = gql`
+  query searchCmtyUsersForOrg($input: OrgIdInput!) {
+    searchCmtyUsersForOrg(input: $input) {
+      ...CmtyUserFragment
+    }
+  }
+  ${CmtyUserFragment}
+`;
 export const GET_SUBMISSIONS_FOR_QUEST = gql`
   query getQuestSubmissions($questId: ID!, $status: String, $limit: Int, $offset: Int) {
     getQuestSubmissions(questId: $questId, status: $status, limit: $limit, offset: $offset) {
@@ -166,6 +174,11 @@ export const GET_QUEST_REWARDS = gql`
       }
       paymentMethodId
       amount
+      storeItemId
+      storeItem {
+        name
+        id
+      }
       paymentMethod {
         name
         contractAddress

@@ -31,7 +31,7 @@ const ALL_TYPES = [
   TYPES.VERIFY_APEIRON_10_MINS_PLAYED,
 ];
 
-export const STORE_TYPES = [STORE_ITEM_TYPES.PHYSICAL, STORE_ITEM_TYPES.DISCORD_ROLE, STORE_ITEM_TYPES.NFT];
+export const STORE_TYPES = [STORE_ITEM_TYPES.EXTERNAL_SHOP, STORE_ITEM_TYPES.DISCORD_ROLE, STORE_ITEM_TYPES.NFT];
 
 const sharedValidation = {
   type: Yup.string().required("Type is required").oneOf(ALL_TYPES, "Type is not valid"),
@@ -244,7 +244,7 @@ const STORE_FIELDS = Yup.object().shape({
 });
 
 const storeItemTypes = {
-  [STORE_ITEM_TYPES.PHYSICAL]: STORE_FIELDS.shape({
+  [STORE_ITEM_TYPES.EXTERNAL_SHOP]: STORE_FIELDS.shape({
     url: Yup.string().url("This is not a valid url").required("URL is required"),
   }),
   [STORE_ITEM_TYPES.DISCORD_ROLE]: STORE_FIELDS.shape({

@@ -5,7 +5,7 @@ import {
   RewardWrapperWithTextField,
   RewardsComponent,
 } from "components/CreateTemplate/RewardUtils";
-import { DiscordRoleIcon, PointsIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import RewardModal, { useAddRewardModalState } from "./RewardModal";
 import { PoapImage } from "./styles";
@@ -15,6 +15,21 @@ const handleDiscordRoleRewardRemove = ({ reward, setQuestSettings }) => {
     const newRewards = prev.rewards.filter((r) => {
       if (r.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
         return r.discordRewardData.discordRoleId !== reward.discordRewardData.discordRoleId;
+      }
+      return true;
+    });
+    return {
+      ...prev,
+      rewards: newRewards,
+    };
+  });
+};
+
+const handleStoreItemRewardRemove = ({ reward, setQuestSettings }) => {
+  setQuestSettings((prev) => {
+    const newRewards = prev.rewards.filter((r) => {
+      if (r.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+        return r?.storeItem?.id !== reward?.storeItem?.id;
       }
       return true;
     });
@@ -151,13 +166,18 @@ const RewardComponent = ({
       Component: ({ reward }) => {
         return (
           <RewardWrapper
-          Icon={() => <PoapImage src={reward?.paymentMethod?.nftMetadata?.mediaUrl} />}
-          text={reward?.paymentMethod?.name}
-        />
-        )
+            Icon={() => <PoapImage src={reward?.paymentMethod?.nftMetadata?.mediaUrl} />}
+            text={reward?.paymentMethod?.name}
+          />
+        );
       },
       handleOnRemove: (reward) => OnPaymentMethodRewardRemove({ reward, setQuestSettings }),
-
+    },
+    [PAYMENT_OPTIONS.CMTY_STORE_ITEM]: {
+      Component: ({ reward }) => {
+        return <RewardWrapper Icon={StoreItemRewardIcon} text={reward?.storeItem?.name} />;
+      },
+      handleOnRemove: (reward) => handleStoreItemRewardRemove({ reward, setQuestSettings }),
     },
   };
   const pointReward = rewards.filter((reward) => reward?.type === "points")[0];

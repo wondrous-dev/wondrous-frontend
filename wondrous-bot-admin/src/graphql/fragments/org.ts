@@ -12,26 +12,12 @@ export const OrgFragment = gql`
     thumbnailPicture
     createdBy
     createdAt
-    contributorCount
-    podCount
-    category
     shared
     cmtyEnabled
-    parentOrgs {
-      id
-      profilePicture
-      username
-      thumbnailPicture
-      name
-    }
     links {
       url
       displayName
       type
-    }
-    hasGr15TasksAndBounties {
-      hasGr15Tasks
-      hasGr15Bounties
     }
   }
 `;
@@ -42,7 +28,6 @@ export const OrgInviteFragment = gql`
     name
     username
     profilePicture
-    contributorCount
     shared
   }
 `;

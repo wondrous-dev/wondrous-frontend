@@ -45,6 +45,7 @@ export const QuestFragment = gql`
     category
     isOnboarding
     maxApproval
+    maxedAt
     requireReview
     submissionsCount {
       inReview
@@ -88,6 +89,11 @@ export const QuestFragment = gql`
         optionText
         rewardData {
           type
+          storeItem {
+            name
+            id
+          }
+          storeItemId
           discordRewardData {
             discordRoleId
             discordGuildId

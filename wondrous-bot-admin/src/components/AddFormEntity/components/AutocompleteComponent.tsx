@@ -21,6 +21,8 @@ const AutocompleteOptionsComponent = ({
   placeholder = "Search",
   bgColor = "#C1B6F6",
   listBoxProps = {},
+  disableClearable = true,
+  onClear = null,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
@@ -45,7 +47,7 @@ const AutocompleteOptionsComponent = ({
       />
       <Autocomplete
         value={selectedValue}
-        disableClearable
+        disableClearable={disableClearable}
         popupIcon={isOpen ? <SearchIcon /> : <ArrowDropDownIcon />}
         onOpen={handleOpenClose(true)}
         onClose={handleOpenClose(false)}
@@ -53,31 +55,42 @@ const AutocompleteOptionsComponent = ({
           if (option?.value === TYPES.REFERRAL && order > 1) {
             setOpenReferralDialog(true);
           } else {
+            if (option) {
+              onChange(option?.value);
+            } else {
+              onChange(null);
+              if (onClear) {
+                onClear();
+              }
+            }
             onChange(option?.value, option);
           }
         }}
         options={options}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label=""
-            placeholder={placeholder}
-            sx={{
-              padding: 0,
-              outline: "none",
-              "& input": {
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: "500",
-              },
-            }}
-            {...inputProps}
-          />
-        )}
+        renderInput={(params) => {
+          return (
+            <TextField
+              {...params}
+              label=""
+              placeholder={placeholder}
+              sx={{
+                padding: 0,
+                outline: "none",
+                "& input": {
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: "500",
+                },
+              }}
+              {...inputProps}
+            />
+          );
+        }}
         renderOption={(props, option) => {
           return (
             <MenuItem
               disabled={option.disabled}
               {...props}
+              {...(option.onClick ? { onClick: option.onClick } : {})}
               sx={{
                 height: "40px",
                 marginY: "1px",
@@ -91,7 +104,11 @@ const AutocompleteOptionsComponent = ({
               }}
             >
               <MenuItemOptionWrapper container justifyContent="space-between" alignItems="center" padding="0">
-                {option.label || option.value}
+                <Grid container item flex="1" gap="4px">
+                  {option.icon}
+                  {option.label || option.value}
+                </Grid>
+
                 {option.value === value && !option.customComponent && <CheckCircleIcon />}
                 {option.displayCustomOnHover && option.customComponent ? (
                   <CustomComponentWrapper>{option.customComponent()}</CustomComponentWrapper>

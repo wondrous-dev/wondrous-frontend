@@ -203,7 +203,6 @@ const CreateTemplate = ({
     });
   };
 
-
   const handleSave = async (status = null) => {
     if (Object.keys(errors).length > 0) {
       setErrors({});
@@ -229,7 +228,7 @@ const CreateTemplate = ({
       description,
       orgId: activeOrg.id,
       isOnboarding,
-      requireReview,
+      requireReview: !!requireReview,
       maxSubmission: maxSubmission ? parseInt(maxSubmission, 10) : null,
       maxApproval: maxApproval ? parseInt(maxApproval, 10) : null,
       conditionLogic: "and",
@@ -265,6 +264,12 @@ const CreateTemplate = ({
               type: reward?.type,
               poapRewardData: rewardData,
             };
+          }
+          else if(reward?.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+            return {
+              type: reward?.type,
+              storeItemId: reward?.storeItem?.id
+            }
           }
         })
         ?.filter((reward) => reward),

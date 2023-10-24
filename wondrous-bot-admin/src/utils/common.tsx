@@ -107,6 +107,12 @@ export const constructRewards = ({ rewards }) => {
         value: reward?.poapRewardData?.name || null,
       };
     }
+    if(reward.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+      return {
+        type: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
+        value: reward?.storeItem?.name || null
+      }
+    }
   });
 };
 

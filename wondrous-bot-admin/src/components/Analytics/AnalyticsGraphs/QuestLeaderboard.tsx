@@ -82,7 +82,7 @@ const QuestLeaderboard = () => {
       sortKey: "rewards_awarded",
     },
     {
-      label: "XP Awarded",
+      label: "PTS Awarded",
       sortKey: "points",
     },
   ];

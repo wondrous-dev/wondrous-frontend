@@ -7,17 +7,19 @@ import {
   RewardMethod,
   RewardMethodOptionButton,
 } from "components/CreateTemplate/RewardUtils";
-import { DiscordRoleIcon, NFTIcon, PoapIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import Modal from "components/Shared/Modal";
 import { CREATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import { GET_ORG_DISCORD_ROLES } from "graphql/queries/discord";
 import { GET_CMTY_PAYMENT_METHODS_FOR_ORG } from "graphql/queries/payment";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import truncateEthAddress from "truncate-eth-address";
 import GlobalContext from "utils/context/GlobalContext";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { Label } from "./styles";
+
+const isStoreAdded = false;
 
 const useSubscriptionPaywall = () => {
   const subscription = useSubscription();
@@ -116,7 +118,7 @@ const handleAddTokenOnModal = ({
           symbol: newReward?.symbol,
           icon: newReward?.icon,
           chain: newReward?.chain,
-          type: 'ERC20'
+          type: "ERC20",
         },
       },
     })
@@ -190,7 +192,7 @@ const useTokenRewardData = () => {
       getCmtyPaymentMethods({
         variables: {
           orgId: activeOrg?.id,
-          types: ['ERC20']
+          types: ["ERC20"],
         },
       });
     }
@@ -228,7 +230,7 @@ const useDiscordRoleRewardData = () => {
   const discordRoleOptions = discordRoles?.map((role) => ({
     label: role.name,
     value: role.id,
-  }))
+  }));
 
   return {
     discordRoleOptions,
@@ -282,12 +284,13 @@ export const useAddRewardModalState = () => {
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
+  const [cmtyStoreItemReward, setCmtyStoreItemReward] = useState(null);
   const [tokenReward, setTokenReward] = useState({
     tokenName: null,
     contractAddress: null,
     symbol: null,
     icon: null,
-    type: 'erc20',
+    type: "erc20",
     chain: null,
     amount: null,
   });
@@ -323,11 +326,26 @@ export const useAddRewardModalState = () => {
     isTourOpen,
     setCurrentStep,
     currentStep,
+    cmtyStoreItemReward,
+    setCmtyStoreItemReward,
     ...tokenRewardData,
   };
 };
 
-const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [], rewardModalState }) => {
+const RewardModal = ({
+  handleRewardModalToggle,
+  handleOnRewardAdd,
+  rewards = [],
+  rewardModalState,
+  maxModalWidth = 640,
+  options = [
+    PAYMENT_OPTIONS.TOKEN,
+    PAYMENT_OPTIONS.POAP,
+    PAYMENT_OPTIONS.DISCORD_ROLE,
+    PAYMENT_OPTIONS.COMMUNITY_BADGE,
+    PAYMENT_OPTIONS.CMTY_STORE_ITEM,
+  ],
+}) => {
   const { activeOrg } = useContext(GlobalContext);
   const { plan, setPaywall, setPaywallMessage } = useSubscriptionPaywall();
   const { discordRoleOptions, discordRoleData } = useDiscordRoleRewardData();
@@ -350,6 +368,8 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
     setPoapReward,
     paymentMethods,
     createPaymentMethod,
+    setCmtyStoreItemReward,
+    cmtyStoreItemReward,
   } = rewardModalState;
 
   const handleAddRewardOnModal = () => {
@@ -361,8 +381,9 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
         discordRoleData,
         discordRoleOptions,
       });
-      handleRewardModalToggle();
-    } else if (rewardType === PAYMENT_OPTIONS.TOKEN || rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
+      return handleRewardModalToggle();
+    }
+    if (rewardType === PAYMENT_OPTIONS.TOKEN || rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
       handleAddTokenOnModal({
         newReward: tokenReward,
         handleOnRewardAdd,
@@ -376,52 +397,82 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
         setAddPaymentMethod,
         rewardType,
       });
-    } else if (rewardType === PAYMENT_OPTIONS.POAP) {
+      return;
+    }
+    if (rewardType === PAYMENT_OPTIONS.POAP) {
       handleAddPoap({ poapReward, setErrors, errors, handleOnRewardAdd, rewardType });
-      handleRewardModalToggle();
+      return handleRewardModalToggle();
+    }
+
+    if (rewardType === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+      handleOnRewardAdd({
+        type: rewardType,
+        storeItem: cmtyStoreItemReward,
+      });
+      return handleRewardModalToggle();
     }
   };
 
-  const modalRewardButtonsProps = [
-    {
-      paymentOption: PAYMENT_OPTIONS.DISCORD_ROLE,
-      rewardType: rewardType,
-      onClick: () => setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE),
-      Icon: DiscordRoleIcon,
-      text: "Discord Role",
-    },
-    {
-      paymentOption: PAYMENT_OPTIONS.POAP,
-      rewardType: rewardType,
-      onClick: () => setRewardType(PAYMENT_OPTIONS.POAP),
-      Icon: PoapIcon,
-      text: "POAP",
-    },
-    {
-      paymentOption: PAYMENT_OPTIONS.TOKEN,
-      rewardType: rewardType,
-      onClick: () => {
-        setRewardType(PAYMENT_OPTIONS.TOKEN);
-        if (plan === PricingOptionsTitle.Basic) {
-          setPaywall(true);
-          setPaywallMessage("This reward option is not available under the basic plan.");
-          setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
-          return;
-        } else {
-          setRewardType(PAYMENT_OPTIONS.TOKEN);
-        }
+  const modalRewardButtonsProps = useMemo(() => {
+    const items = [
+      {
+        paymentOption: PAYMENT_OPTIONS.DISCORD_ROLE,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE),
+        Icon: DiscordRoleIcon,
+        text: "Discord Role",
       },
-      Icon: TokensIcon,
-      text: "Token reward",
-    },
-    {
-      paymentOption: PAYMENT_OPTIONS.COMMUNITY_BADGE,
-      rewardType: rewardType,
-      onClick: () => setRewardType(PAYMENT_OPTIONS.COMMUNITY_BADGE),
-      Icon: NFTIcon,
-      text: 'Community Badge',
+      {
+        paymentOption: PAYMENT_OPTIONS.POAP,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.POAP),
+        Icon: PoapIcon,
+        text: "POAP",
+      },
+      {
+        paymentOption: PAYMENT_OPTIONS.TOKEN,
+        rewardType,
+        onClick: () => {
+          setRewardType(PAYMENT_OPTIONS.TOKEN);
+          if (plan === PricingOptionsTitle.Basic) {
+            setPaywall(true);
+            setPaywallMessage("This reward option is not available under the basic plan.");
+            setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
+            return;
+          } else {
+            setRewardType(PAYMENT_OPTIONS.TOKEN);
+          }
+        },
+        Icon: TokensIcon,
+        text: "Token reward",
+      },
+      {
+        paymentOption: PAYMENT_OPTIONS.COMMUNITY_BADGE,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.COMMUNITY_BADGE),
+        Icon: NFTIcon,
+        text: "Community Badge",
+      },
+    ];
+    if (
+      !isStoreAdded &&
+      ((import.meta.env.VITE_PRODUCTION &&
+        (activeOrg?.id === "98989259425317451" ||
+          activeOrg?.id === "45956686890926082" ||
+          activeOrg?.id === "100884993427899088")) ||
+        (import.meta.env.VITE_STAGING && activeOrg?.id === "89444950095167649") ||
+        (!import.meta.env.VITE_STAGING && !import.meta.env.VITE_PRODUCTION))
+    ) {
+      items.push({
+        paymentOption: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.CMTY_STORE_ITEM),
+        Icon: StoreItemRewardIcon,
+        text: "Store Item",
+      });
     }
-  ];
+    return items;
+  }, [isStoreAdded, activeOrg?.id, rewardType, plan, setRewardType, setPaywall, setPaywallMessage]);
 
   return (
     <Modal
@@ -434,7 +485,7 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
       dialogComponentProps={{
         className: "tutorials-quest-reward-modal",
       }}
-      maxWidth={800}
+      maxWidth={maxModalWidth}
       footerLeft={
         <RewardFooterLeftComponent
           rewardType={rewardType}
@@ -453,10 +504,15 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
       <Grid display="flex" flexDirection="column" gap="24px">
         <Grid container item gap="14px">
           <Label>Reward Type</Label>
-          <Grid container item alignItems="center" gap="14px" width="100%" justifyContent="center">
-            {modalRewardButtonsProps.map((props) => (
-              <RewardMethodOptionButton {...props} />
-            ))}
+          <Grid container item alignItems="center" gap="14px" width="100%" justifyContent="center" sx={{
+            flexDirection: {
+              xs: 'column',
+              sm: 'row'
+            }
+          }}>
+            {modalRewardButtonsProps.map((props) =>
+              options.includes(props.paymentOption) ? <RewardMethodOptionButton {...props} /> : null
+            )}
           </Grid>
         </Grid>
         <Grid container item flexDirection="column" gap="14px">
@@ -475,10 +531,11 @@ const RewardModal = ({ handleRewardModalToggle, handleOnRewardAdd, rewards = [],
             setEditPaymentMethod={setEditPaymentMethod}
             errors={errors}
             setErrors={setErrors}
+            setCmtyStoreItemReward={setCmtyStoreItemReward}
+            cmtyStoreItemReward={cmtyStoreItemReward}
             poapReward={poapReward}
             setPoapReward={setPoapReward}
             guildId={discordRoleData[0]?.guildId}
-
           />
         </Grid>
       </Grid>

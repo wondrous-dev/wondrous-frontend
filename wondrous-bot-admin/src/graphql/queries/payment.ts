@@ -121,6 +121,7 @@ export const GET_CMTY_USER_NFT_METADATA = gql`
       chain
       receiverAddress
       name
+      nftMetadataId
       mediaUrl
       cmtyUserUsername
       cmtyUserDiscordUsername

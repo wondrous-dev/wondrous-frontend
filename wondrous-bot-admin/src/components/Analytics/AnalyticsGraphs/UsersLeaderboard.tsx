@@ -84,7 +84,7 @@ const UsersLeaderboard = () => {
     });
   }, [data]);
 
-  const headers = ["Username", "LVL", "Wallet Address", "Submissions", "XP Earned", "# of Messages", "#of Reactions"];
+  const headers = ["Username", "LVL", "Wallet Address", "Submissions", "PTS Earned", "# of Messages", "#of Reactions"];
 
   return (
     <>

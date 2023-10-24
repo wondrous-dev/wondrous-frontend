@@ -28,12 +28,14 @@ import {
 import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 import { useCommunityBadgePaymentMethods } from "./shared";
 import TokenStoreItem from "components/CreateStoreItem/components/TokenStoreItem";
+import StoreItemReward from "./StoreItemReward";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
   TOKEN: "token",
   POAP: "poap",
   COMMUNITY_BADGE: "COMMUNITY_BADGE",
+  CMTY_STORE_ITEM: "cmty_store_item",
 };
 
 const REWARD_TYPES = [
@@ -57,7 +59,6 @@ export const TokenComponent = ({
   options = REWARD_TYPES,
   withAmount = true,
 }) => {
-  
   if (paymentMethod && !editPaymentMethod?.id) {
     return (
       <AddExistingPaymentMethod
@@ -441,6 +442,8 @@ export const RewardMethod = ({
   poapReward,
   setPoapReward,
   guildId,
+  setCmtyStoreItemReward,
+  cmtyStoreItemReward,
 }) => {
   const [getPoapEventInfo] = useLazyQuery(GET_POAP_EVENT);
   const [displayRoleDisclaimer, setDisplayRoleDisclaimer] = useState(false);
@@ -472,6 +475,14 @@ export const RewardMethod = ({
     return <DiscordRoleDisclaimer onClose={() => setDisplayRoleDisclaimer(false)} />;
   }
 
+  if (rewardType === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+    return (
+      <>
+        <Label>Select Store Item</Label>
+        <StoreItemReward onChange={setCmtyStoreItemReward} storeItem={cmtyStoreItemReward} />
+      </>
+    );
+  }
   if (rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
     const handleTokenStoreItemChange = async (value) => {
       const existingMethod = cmtyBadgePaymentMethods?.find((method) => method.nftMetadataId === value.id);
@@ -504,7 +515,7 @@ export const RewardMethod = ({
   if (rewardType === PAYMENT_OPTIONS.POAP) {
     return (
       <>
-        <Label>Poap event ID * </Label>
+        <Label>POAP event ID * </Label>
         <TextField
           placeholder="Please enter your POAP event ID"
           value={poapReward?.id}
@@ -552,7 +563,7 @@ export const RewardMethod = ({
             }
           }}
         />
-        <Label>Poap event secret * (check your emails for this) </Label>
+        <Label>POAP event secret * (check your emails for this) </Label>
         <TextField
           placeholder="Please enter your 6 digit POAP event secret"
           value={poapReward?.eventSecret}
@@ -565,34 +576,34 @@ export const RewardMethod = ({
           multiline={false}
           error={errors?.eventSecret}
         />
-        <Label>Poap name</Label>
+        <Label>POAP name</Label>
         <TextField
           onChange={() => {}}
-          placeholder="Poap name"
+          placeholder="POAP name"
           value={poapReward?.name}
           multiline={false}
           disabled={true}
         />
-        <Label>Poap description</Label>
+        <Label>POAP description</Label>
         <TextField
           onChange={() => {}}
-          placeholder="Poap description"
+          placeholder="POAP description"
           value={poapReward?.description}
           multiline={false}
           disabled={true}
         />
         {poapReward?.imageUrl && (
           <>
-            <Label>Poap badge</Label>
+            <Label>POAP badge</Label>
             <PoapImage src={poapReward?.imageUrl} />
           </>
         )}
         {poapReward?.eventUrl && (
           <>
-            <Label>Poap event url</Label>
+            <Label>POAP event url</Label>
             <TextField
               onChange={() => {}}
-              placeholder="Poap event url"
+              placeholder="POAP event url"
               value={poapReward?.eventUrl}
               disabled={true}
               multiline={false}
@@ -623,6 +634,7 @@ export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, I
   <SharedBlackOutlineButton
     style={{
       flex: 1,
+      width: '100%'
     }}
     background={paymentOption === rewardType ? "#BFB4F3" : "#BFB4F366"}
     borderColor={paymentOption === rewardType ? "#000" : "transparent"}
@@ -688,25 +700,27 @@ export const RewardFooterLeftComponent = ({
   ) {
     return (
       <>
-        {rewardType !== PAYMENT_OPTIONS.POAP && rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE && (
-          <ButtonBase onClick={() => (paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false))}>
-            <Box
-              height="40px"
-              width="40px"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              bgcolor="#2A8D5C"
-              borderRadius="35px"
-            >
-              <WestIcon
-                sx={{
-                  color: "white",
-                }}
-              />
-            </Box>
-          </ButtonBase>
-        )}
+        {rewardType !== PAYMENT_OPTIONS.POAP &&
+          rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE &&
+          rewardType !== PAYMENT_OPTIONS.CMTY_STORE_ITEM && (
+            <ButtonBase onClick={() => (paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false))}>
+              <Box
+                height="40px"
+                width="40px"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                bgcolor="#2A8D5C"
+                borderRadius="35px"
+              >
+                <WestIcon
+                  sx={{
+                    color: "white",
+                  }}
+                />
+              </Box>
+            </ButtonBase>
+          )}
         <SharedSecondaryButton onClick={handleReward}>Add Reward</SharedSecondaryButton>
       </>
     );
@@ -906,6 +920,7 @@ export const RewardsComponent = ({ rewards, rewardComponents }) => {
             </Grid>
             <Grid
               item
+              onClick={() => handleOnRemove(reward)}
               container
               bgcolor="#C1B6F6"
               width="30px"
@@ -921,7 +936,7 @@ export const RewardsComponent = ({ rewards, rewardComponents }) => {
                 },
               }}
             >
-              <DeleteIcon onClick={() => handleOnRemove(reward)} />
+              <DeleteIcon />
             </Grid>
           </Grid>
         );
