@@ -234,6 +234,7 @@ const QuestStepsList = () => {
       telegramUserId: webApp?.initDataUnsafe?.user?.id?.toString(),
       telegramUsername: webApp?.initDataUnsafe?.user?.username,
       stepsData: questSubmissions,
+      platform: 'telegram'
     };
 
     try {

@@ -144,12 +144,14 @@ export const SUBMIT_QUEST = gql`
     $telegramUserId: String
     $telegramUsername: String
     $stepsData: [StepSubmissionInput]
+    $platform: String
   ) {
     createQuestSubmission(
       questId: $questId
       telegramUserId: $telegramUserId
       telegramUsername: $telegramUsername
       stepsData: $stepsData
+      platform: $platform
     ) {
       success
     }
