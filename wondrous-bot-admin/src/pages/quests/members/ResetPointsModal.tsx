@@ -129,7 +129,7 @@ const ResetPointsModal = ({ openResetPointsModal, setOpenResetPointsModal, point
         maxWidth={600}
         open={openResetPointsModal}
         onClose={() => setOpenResetPointsModal(false)}
-        title="Reset member points"
+        title={pointsBalance ? 'Reset member point balances' : 'Reset member points'}
       >
         <ResetPointsModalBody onClose={() => setOpenResetPointsModal(false)} pointsBalance={pointsBalance} />
       </Modal>
