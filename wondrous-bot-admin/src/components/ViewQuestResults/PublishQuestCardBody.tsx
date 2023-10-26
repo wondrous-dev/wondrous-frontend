@@ -12,11 +12,11 @@ import Switch from "components/Shared/Switch";
 import TextField from "components/Shared/TextField";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 
-const PublishQuestModal = ({ onClose, channelName, handlePublish, message, setMessage }) => {
+export const PublishQuestModal = ({ onClose, channelName, handlePublish, message, setMessage, customLabel = null }) => {
   return (
     <Grid display="flex" flexDirection="column" gap="10px" width="10)%">
       <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" color="#06040A">
-        Are you sure you want to publish this quest to #{channelName} in Discord?
+        {customLabel || `Are you sure you want to publish this quest to #${channelName} in Discord?`}
       </Typography>
       <Box display="flex" gap="10px" alignItems="center" width="100%">
         <Label

@@ -51,3 +51,20 @@ export const UPDATE_DISCORD_PARENT_CHANNEL_NAME = gql`
     }
   }
 `;
+
+export const PUSH_QUEST_TELEGRAM_NOTFICATION = gql`
+  mutation postQuestToTelegram(
+    $questId: ID!
+    $orgId: ID!
+    $message: String
+  ) {
+    postQuestToTelegram(
+      orgId: $orgId
+      questId: $questId
+      message: $message
+    ) {
+      success
+    }
+  }
+`;
+

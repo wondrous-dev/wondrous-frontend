@@ -31,10 +31,20 @@ import PublishQuestCardBody from "./PublishQuestCardBody";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import ViewRewards from "./ViewRewards";
 import { StyledViewQuestResults } from "./styles";
+import PublishTelegramQuestcard from "./PublishTelegramQuestCardBody";
+import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
 
 const ViewQuestResults = ({ quest, rewards }) => {
   const { activeOrg } = useContext(GlobalContext);
   const [conditionName, setConditionName] = useState(null);
+
+  const { data: telegramConfigData, loading: isTelegramConfigLoading } = useQuery(GET_TELEGRAM_CONFIG_FOR_ORG, {
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    notifyOnNetworkStatusChange: true,
+    skip: !activeOrg?.id,
+  });
 
   const [hasMore, setHasMore] = useState(true);
   const [filter, setFilter] = useState(QUEST_SUBMISSION_STATUS.IN_REVIEW);
@@ -253,6 +263,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
     },
   ];
 
+  console.log(activeOrg, 'act org', telegramConfigData)
   return (
     <PageWrapper
       containerProps={{
@@ -302,17 +313,31 @@ const ViewQuestResults = ({ quest, rewards }) => {
             )}
           />
           <PanelComponent renderHeader={null} renderBody={() => <ViewRewards rewards={rewards} />} />
-          <PanelComponent
-            renderHeader={() => <CampaignOverviewHeader title="Send quest notification" />}
-            renderBody={() => (
-              <PublishQuestCardBody
-                guildDiscordChannels={guildDiscordChannels}
-                quest={quest}
-                orgId={activeOrg?.id}
-                existingNotificationChannelId={existingNotificationChannelId}
-              />
-            )}
-          />
+          {guildDiscordChannels?.length ? (
+            <PanelComponent
+              renderHeader={() => <CampaignOverviewHeader title="Send quest notification to Discord" />}
+              renderBody={() => (
+                <PublishQuestCardBody
+                  guildDiscordChannels={guildDiscordChannels}
+                  quest={quest}
+                  orgId={activeOrg?.id}
+                  existingNotificationChannelId={existingNotificationChannelId}
+                />
+              )}
+            />
+          ) : null}
+          {telegramConfigData?.getTelegramConfigForOrg?.chatId ? (
+            <PanelComponent
+              renderHeader={() => <CampaignOverviewHeader title="Send quest notification to Telegram" />}
+              renderBody={() => (
+                <PublishTelegramQuestcard
+                  quest={quest}
+                  orgId={activeOrg?.id}
+                  telegramConfig={telegramConfigData?.getTelegramConfigForOrg}
+                />
+              )}
+            />
+          ) : null}
         </Box>
         <Grid
           display="flex"
