@@ -68,7 +68,7 @@ const EditDiscountModalBody = ({ discountInfo, onClose }) => {
           onChange={(value) => setDiscountScheme(value)}
         />
       </Box>
-      <Box>
+      {/* <Box>
         <Typography
           fontFamily="Poppins"
           fontWeight={600}
@@ -88,7 +88,7 @@ const EditDiscountModalBody = ({ discountInfo, onClose }) => {
           value={discountType}
           onChange={(value) => setDiscountType(value)}
         />
-      </Box>
+      </Box> */}
       <Box display="flex" gap="10px" alignItems="center" width="100%" marginTop="8px">
         <SharedSecondaryButton
           sx={{
