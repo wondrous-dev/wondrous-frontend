@@ -202,6 +202,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
         openViewDiscounModal={openViewDiscounModal}
         setOpenViewDiscounModal={setOpenViewDiscounModal}
         itemId={storeItemSettings?.id}
+        storeItemSettings={storeItemSettings}
       />
       <PanelComponent
         renderBody={() => {

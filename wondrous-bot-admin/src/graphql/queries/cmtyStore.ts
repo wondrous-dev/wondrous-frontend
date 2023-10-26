@@ -115,8 +115,8 @@ export const GET_STORE_ITEM_PURCHASES = gql`
 `;
 
 export const GET_ALL_STORE_ITEM_DISCOUNT_CODES = gql`
-  query getAllStoreItemDiscountCodes($storeItemId: ID!, $limit: Int, $offset: Int) {
-    getAllStoreItemDiscountCodes(storeItemId: $storeItemId, limit: $limit, offset: $offset) {
+  query getAllStoreItemDiscountCodes($storeItemId: ID!, $limit: Int, $offset: Int, $all: Boolean) {
+    getAllStoreItemDiscountCodes(storeItemId: $storeItemId, limit: $limit, offset: $offset, all: $all) {
       itemId
       type
       scheme
@@ -124,6 +124,11 @@ export const GET_ALL_STORE_ITEM_DISCOUNT_CODES = gql`
       discount
       deliveredAt
       receiverId
+      receiver {
+        discordUsername
+        username
+        telegramUsername
+      }
     }
   }
 `;

@@ -3,7 +3,7 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import Modal from "components/Shared/Modal";
 import { useLazyQuery } from "@apollo/client";
-import useAlerts from "utils/hooks";
+import { format } from "date-fns";
 import { useEffect } from "react";
 import { GET_ALL_STORE_ITEM_DISCOUNT_CODES, GET_STORE_ITEM_DISCOUNT_CODE_COUNT } from "graphql/queries";
 import TableComponent from "components/TableComponent";
@@ -13,17 +13,66 @@ import { NoBorderElement } from "components/TableComponent/styles";
 import { LIMIT } from "utils/constants";
 import { useInView } from "react-intersection-observer";
 import { DISCOUNT_SCHEME } from "./DiscountCodeModal";
+import Spinner from "components/Shared/Spinner";
 
 export const DISCOUNT_CODE_HEADERS = ["codes"];
 
-const ViewDiscountCodeModalBody = ({ onClose, itemId }) => {
+export const exportStoreItemDiscountCodes = async ({
+  getAllStoreItemDiscountCodes,
+  storeItemId,
+  storeItemSettings,
+  setCSVExportLoading,
+}) => {
+  const headers = ["Discount Code", "Used By", "Date Used", "Discount"];
+  setCSVExportLoading(true);
+  const storeItemDiscountCodeData = await getAllStoreItemDiscountCodes({
+    variables: {
+      storeItemId,
+      all: true,
+    },
+  });
+  setCSVExportLoading(false);
+  const storeItemDiscountCodes = storeItemDiscountCodeData?.data?.getAllStoreItemDiscountCodes;
+
+  const rows = [[headers]];
+  storeItemDiscountCodes.forEach((discountCode) => {
+    const usedAt = discountCode?.deliveredAt ? format(new Date(discountCode?.deliveredAt), "yyyy-MM-dd") : "";
+    const usedBy =
+      discountCode?.receiver?.username ||
+      discountCode?.receiver?.discordUsername ||
+      discountCode?.receiver?.telegramUsername ||
+      "";
+    let finalArr = [
+      discountCode?.code,
+      usedBy,
+      usedAt,
+      discountCode?.scheme === DISCOUNT_SCHEME[0].value ? `${discountCode?.discount}%` : `$${discountCode?.discount}`,
+    ];
+
+    rows.push(finalArr);
+  });
+  let csvContent = "data:text/csv;charset=utf-8,";
+  rows.forEach((rowArray) => {
+    const row = rowArray.join(",");
+    csvContent += `${row}\r\n`;
+  });
+
+  let encodedUri = encodeURI(csvContent);
+  encodedUri = encodedUri.replace(/#/g, "%23");
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `wonderverse_store_item_${storeItemSettings?.name}_data_.csv`);
+  document.body.appendChild(link); // Required for FF
+  link.click();
+};
+const ViewDiscountCodeModalBody = ({ onClose, itemId, storeItemSettings }) => {
   const [getAllStoreItemDiscountCodes, { data: discountInfoData, error, fetchMore }] = useLazyQuery(
     GET_ALL_STORE_ITEM_DISCOUNT_CODES,
     {
       fetchPolicy: "cache-and-network",
     }
   );
-
+  const [CSVExportLoading, setCSVExportLoading] = useState(false);
   const [getStoreItemDiscountCodeCount, { data: discountCodeCountData }] = useLazyQuery(
     GET_STORE_ITEM_DISCOUNT_CODE_COUNT
   );
@@ -70,6 +119,11 @@ const ViewDiscountCodeModalBody = ({ onClose, itemId }) => {
 
   const tableConfig = useMemo(() => {
     return discountInfo?.map((discountCode) => {
+      const usedBy =
+        discountCode?.receiver?.username ||
+        discountCode?.receiver?.discordUsername ||
+        discountCode?.receiver?.telegramUsername ||
+        "";
       return {
         id: discountCode?.id,
         code: {
@@ -78,11 +132,11 @@ const ViewDiscountCodeModalBody = ({ onClose, itemId }) => {
         },
         usedBy: {
           component: "label",
-          value: discountCode?.receiver?.username,
+          value: usedBy,
         },
         dateUsed: {
           component: "label",
-          value: discountCode?.deliverdAt,
+          value: discountCode?.deliveredAt ? format(new Date(discountCode?.deliveredAt), "yyyy-MM-dd") : "",
         },
         discount: {
           component: "label",
@@ -140,16 +194,29 @@ const ViewDiscountCodeModalBody = ({ onClose, itemId }) => {
             radius: "6px",
             width: "fit-content",
           }}
-          onClick={() => {}}
+          onClick={() => {
+            exportStoreItemDiscountCodes({
+              getAllStoreItemDiscountCodes,
+              storeItemId: itemId,
+              storeItemSettings,
+              setCSVExportLoading,
+            });
+          }}
         >
-          <ShareIcon />
-          Export CSV
+          {CSVExportLoading ? (
+            <Spinner />
+          ) : (
+            <>
+              <ShareIcon />
+              Export CSV
+            </>
+          )}
         </SharedSecondaryButton>
       </Box>
     </Grid>
   );
 };
-const ViewDiscountCodeModal = ({ openViewDiscounModal, setOpenViewDiscounModal, itemId }) => {
+const ViewDiscountCodeModal = ({ openViewDiscounModal, setOpenViewDiscounModal, itemId, storeItemSettings }) => {
   return (
     <>
       <ModalComponent
@@ -170,7 +237,11 @@ const ViewDiscountCodeModal = ({ openViewDiscounModal, setOpenViewDiscounModal, 
             backgroundColor: "white",
           }}
         >
-          <ViewDiscountCodeModalBody onClose={() => setOpenViewDiscounModal(false)} itemId={itemId} />
+          <ViewDiscountCodeModalBody
+            onClose={() => setOpenViewDiscounModal(false)}
+            itemId={itemId}
+            storeItemSettings={storeItemSettings}
+          />
         </Box>
       </ModalComponent>
     </>
