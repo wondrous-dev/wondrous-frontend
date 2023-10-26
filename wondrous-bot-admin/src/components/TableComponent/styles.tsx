@@ -63,7 +63,7 @@ export const NoBorderElement = styled(Paper)`
     border-bottom-right-radius: 0;
     border: none;
     overflow-y: scroll;
-    height: 80vh;
+    max-height: 80vh;
   }
 `;
 

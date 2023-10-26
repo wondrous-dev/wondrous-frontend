@@ -455,5 +455,5 @@ export const DELIVERY_METHOD_LABELS = {
   [DELIVERY_METHODS.DISCORD_ROLE]: "Discord Role",
   [DELIVERY_METHODS.DISCOUNT_CODE]: "Voucher Code",
   [DELIVERY_METHODS.NFT_PAYMENT]: "NFT Payment",
-  [DELIVERY_METHODS.RAFFLE]: "Apeiron Raffle",
+  [DELIVERY_METHODS.RAFFLE]: "Apeiron Raffle (raffle for after a user makes a purchase)",
 };

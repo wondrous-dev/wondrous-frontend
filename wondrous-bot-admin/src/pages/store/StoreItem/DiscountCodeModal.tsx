@@ -63,19 +63,6 @@ const UploadDiscountModal = ({
   setFilenameOnCreate = "" as any,
   deliveryMethod = null,
 }) => {
-  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
-  const [uploadDiscountCodes] = useMutation(IMPORT_DISCOUNT_CODES, {
-    onCompleted: () => {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage("Success!");
-      setSnackbarAlertAnchorOrigin({
-        vertical: "top",
-        horizontal: "center",
-      });
-    },
-    refetchQueries: ["getStoreItemDiscountCodeInfo", "getAllStoreItemDiscountCodes"],
-  });
-  const { activeOrg } = useContext(GlobalContext);
   const [isImportInProgress, setIsImportInProgress] = useState(false);
   const [codesData, setCodesData] = useState(DEFAULT_CODES_DATA);
   const [filename, setFilename] = useState("");

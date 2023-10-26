@@ -65,31 +65,26 @@ export const exportStoreItemDiscountCodes = async ({
   document.body.appendChild(link); // Required for FF
   link.click();
 };
-const ViewDiscountCodeModalBody = ({ onClose, itemId, storeItemSettings }) => {
-  const [getAllStoreItemDiscountCodes, { data: discountInfoData, error, fetchMore }] = useLazyQuery(
-    GET_ALL_STORE_ITEM_DISCOUNT_CODES,
+const ViewDiscountCodeModalBody = ({
+  onClose,
+  itemId,
+  storeItemSettings,
+  hasMore,
+  handleFetchMore,
+  discountCodes,
+  getAllStoreItemDiscountCodes,
+}) => {
+  const [CSVExportLoading, setCSVExportLoading] = useState(false);
+  const [getStoreItemDiscountCodeCount, { data: discountCodeCountData }] = useLazyQuery(
+    GET_STORE_ITEM_DISCOUNT_CODE_COUNT,
     {
       fetchPolicy: "cache-and-network",
     }
   );
-  const [CSVExportLoading, setCSVExportLoading] = useState(false);
-  const [getStoreItemDiscountCodeCount, { data: discountCodeCountData }] = useLazyQuery(
-    GET_STORE_ITEM_DISCOUNT_CODE_COUNT
-  );
-  const [hasMore, setHasMore] = useState(false);
   const [ref, inView] = useInView({});
-  const discountInfo = discountInfoData?.getAllStoreItemDiscountCodes;
 
   useEffect(() => {
     if (itemId) {
-      getAllStoreItemDiscountCodes({
-        variables: {
-          storeItemId: itemId,
-        },
-      }).then((results) => {
-        setHasMore(results?.data?.getAllStoreItemDiscountCodes?.length >= LIMIT);
-      });
-
       getStoreItemDiscountCodeCount({
         variables: {
           storeItemId: itemId,
@@ -97,17 +92,6 @@ const ViewDiscountCodeModalBody = ({ onClose, itemId, storeItemSettings }) => {
       });
     }
   }, [itemId]);
-
-  const handleFetchMore = async () => {
-    const res = await fetchMore({
-      variables: {
-        storeItemId: itemId,
-        offset: discountInfo?.length,
-        limit: LIMIT,
-      },
-    });
-    setHasMore(res?.data?.getCmtyUsersLeaderboard?.length >= LIMIT);
-  };
 
   useEffect(() => {
     if (inView && hasMore) {
@@ -118,7 +102,7 @@ const ViewDiscountCodeModalBody = ({ onClose, itemId, storeItemSettings }) => {
   const discountCodeCounts = discountCodeCountData?.getStoreItemDiscountCodeCount;
 
   const tableConfig = useMemo(() => {
-    return discountInfo?.map((discountCode) => {
+    return discountCodes?.map((discountCode) => {
       const usedBy =
         discountCode?.receiver?.username ||
         discountCode?.receiver?.discordUsername ||
@@ -147,7 +131,7 @@ const ViewDiscountCodeModalBody = ({ onClose, itemId, storeItemSettings }) => {
         },
       };
     });
-  }, [discountInfo]);
+  }, [discountCodes]);
 
   return (
     <Grid display="flex" flexDirection="column" gap="10px">
@@ -216,7 +200,16 @@ const ViewDiscountCodeModalBody = ({ onClose, itemId, storeItemSettings }) => {
     </Grid>
   );
 };
-const ViewDiscountCodeModal = ({ openViewDiscounModal, setOpenViewDiscounModal, itemId, storeItemSettings }) => {
+const ViewDiscountCodeModal = ({
+  openViewDiscounModal,
+  setOpenViewDiscounModal,
+  itemId,
+  storeItemSettings,
+  hasMore,
+  handleFetchMore,
+  discountCodes,
+  getAllStoreItemDiscountCodes,
+}) => {
   return (
     <>
       <ModalComponent
@@ -241,6 +234,10 @@ const ViewDiscountCodeModal = ({ openViewDiscounModal, setOpenViewDiscounModal, 
             onClose={() => setOpenViewDiscounModal(false)}
             itemId={itemId}
             storeItemSettings={storeItemSettings}
+            hasMore={hasMore}
+            handleFetchMore={handleFetchMore}
+            discountCodes={discountCodes}
+            getAllStoreItemDiscountCodes={getAllStoreItemDiscountCodes}
           />
         </Box>
       </ModalComponent>
