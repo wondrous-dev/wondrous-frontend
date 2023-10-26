@@ -464,3 +464,9 @@ export const NFT_TYPE_LABELS = {
   "ERC1155": "ERC1155",
   COMMUNITY_BADGE: "Community Badge",
 }
+
+export const NFT_TYPES = {
+  ERC721: 'ERC721',
+  ERC1155: 'ERC1155',
+  COMMUNITY_BADGE: 'COMMUNITY_BADGE',
+}

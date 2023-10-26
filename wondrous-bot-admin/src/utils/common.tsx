@@ -1,6 +1,6 @@
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import moment from "moment";
-import { CONDITION_TYPES } from "./constants";
+import { CONDITION_TYPES, NFT_TYPES } from "./constants";
 import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
 
 const DEFAULT_TWITTER_SCOPE =
@@ -201,3 +201,5 @@ export const validateTypes = (type, value) => {
   }
   return true;
 };
+
+export const verifyIsImportedToken = (type) => [NFT_TYPES.ERC721, NFT_TYPES.ERC1155].includes(type);
