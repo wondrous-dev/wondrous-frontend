@@ -273,21 +273,16 @@ const DynamicCondition = ({ value, handleUpdate, options, stateKey, conditionLog
       label: "OR",
     },
   ];
-  console.log(conditionLogic, "cond logic");
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
       <div>
         <Box display="flex" alignItems="center" gap="4px">
-          <SelectComponent
-            options={CONDITION_LOGIC_TYPES}
-            onChange={(value) => {
-              handleUpdate((prev) => ({
-                ...prev,
-                conditionLogic: value,
-              }));
-            }}
-            value={conditionLogic}
-          />
+          <SelectComponent options={CONDITION_LOGIC_TYPES} onChange={(value) => {
+            handleUpdate((prev) => ({
+              ...prev,
+              conditionLogic: value
+            }))
+          }} value={conditionLogic} />
           <CustomTextField
             onClick={openPopper}
             placeholder="Add Condition"
