@@ -24,7 +24,7 @@ const RewardContent = ({ reward }) => {
     [PAYMENT_OPTIONS.DISCORD_ROLE]: `Role: ${reward?.discordRewardData?.discordRoleName}`,
     [PAYMENT_OPTIONS.TOKEN]: `Token: ${reward?.amount} ${reward?.paymentMethod?.name}`,
     [PAYMENT_OPTIONS.POAP]: `POAP: ${reward?.poapRewardData?.name}`,
-    [PAYMENT_OPTIONS.COMMUNITY_BADGE]: `NFT: ${reward?.paymentMethod?.name}`,
+    [PAYMENT_OPTIONS.COMMUNITY_BADGE]: `NFT: ${reward?.amount} ${reward?.paymentMethod?.name}`,
     [PAYMENT_OPTIONS.CMTY_STORE_ITEM]: `Store Item: ${reward?.storeItem?.name}`,
   };
 

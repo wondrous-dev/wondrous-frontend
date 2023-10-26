@@ -51,7 +51,7 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
           return {
             type: PAYMENT_OPTIONS.TOKEN,
             paymentMethodId: reward?.paymentMethodId,
-            amount: reward?.paymentMethod === PAYMENT_OPTIONS.COMMUNITY_BADGE ? null : reward?.amount,
+            amount: reward?.paymentMethod === PAYMENT_OPTIONS.COMMUNITY_BADGE ? 1 : reward?.amount,
           };
         case PAYMENT_OPTIONS.POAP:
           const { __typename, ...rewardData } = reward?.poapRewardData || {};

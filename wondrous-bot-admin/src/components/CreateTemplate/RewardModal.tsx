@@ -72,11 +72,13 @@ const handleAddTokenOnModal = ({
       return;
     }
 
+    const isCmtyBadge = rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE && paymentMethod?.type === 'COMMUNITY_BADGE';
+
     handleOnRewardAdd({
       type: rewardType,
       paymentMethodId: paymentMethod?.id,
       paymentMethod,
-      amount: rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE ? 1 : Number(newReward?.amount),
+      amount: isCmtyBadge ? 1 : Number(newReward?.amount),
     });
     handleToggle();
   } else if (addPaymentMethod) {
