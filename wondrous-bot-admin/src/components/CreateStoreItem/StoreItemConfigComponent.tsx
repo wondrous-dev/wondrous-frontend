@@ -297,7 +297,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   <Label fontWeight={600}>
                     {`${
                       storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE
-                        ? "Deliver Message: (message sent to user when they get their code)"
+                        ? "Deliver Message (message sent to user when they get their code)"
                         : "Post Purchase message"
                     }`}
                   </Label>
