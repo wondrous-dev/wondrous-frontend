@@ -73,7 +73,7 @@ const UploadDiscountModal = ({
         horizontal: "center",
       });
     },
-    refetchQueries: ["getStoreItemDiscountCodeInfo"],
+    refetchQueries: ["getStoreItemDiscountCodeInfo", "getAllStoreItemDiscountCodes"],
   });
   const { activeOrg } = useContext(GlobalContext);
   const [isImportInProgress, setIsImportInProgress] = useState(false);

@@ -15,10 +15,14 @@ import DiscountCodeModal, { DEFAULT_CODES_DATA } from "pages/store/StoreItem/Dis
 import { ErrorText, SharedButton } from "components/Shared/styles";
 import DeleteIcon from "components/Icons/Delete";
 import { redColors } from "utils/theme/colors";
+import ViewDiscountCodeModal from "pages/store/StoreItem/ViewDiscountCodesModal";
 
+let apeironRaffle = false;
 const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChange, storeItemSettings }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
+  const { activeOrg } = useContext(GlobalContext);
   const [openDiscountUploadModal, setOpenDiscountUploadModal] = useState(false);
+  const [openViewDiscounModal, setOpenViewDiscounModal] = useState(false);
   const [uploadedFilename, setUploadedFilename] = useState("");
   const COMPONENTS = {
     [STORE_ITEM_TYPES.EXTERNAL_SHOP]: {
@@ -161,20 +165,19 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       value: DELIVERY_METHODS.NFT_PAYMENT,
       disabled: storeItemData.type !== STORE_ITEM_TYPES.NFT,
     },
-    {
-      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.RAFFLE],
-      value: DELIVERY_METHODS.RAFFLE,
-      disabled: storeItemData.type !== STORE_ITEM_TYPES.EXTERNAL_SHOP && storeItemData.type !== STORE_ITEM_TYPES.NFT,
-    },
-    {
-      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.EXTERNAL_CODE],
-      value: DELIVERY_METHODS.EXTERNAL_CODE,
-      disabled: storeItemData.type === STORE_ITEM_TYPES.DISCORD_ROLE,
-    },
   ];
 
   const componentProps = useMemo(() => Config?.componentProps, [Config]);
 
+  useEffect(() => {
+    if (activeOrg?.id === "98989259425317451" && !apeironRaffle) {
+      DELIVERY_METHODS_OPTIONS.push({
+        label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.RAFFLE],
+        value: DELIVERY_METHODS.RAFFLE,
+        disabled: storeItemData.type !== STORE_ITEM_TYPES.EXTERNAL_SHOP && storeItemData.type !== STORE_ITEM_TYPES.NFT,
+      });
+    }
+  }, [activeOrg?.id]);
   return (
     <Grid display="flex" flexDirection="column" justifyContent="flex-start" gap="24px" alignItems="center" width="100%">
       <DiscountCodeModal
@@ -194,6 +197,11 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
             },
           });
         }}
+      />
+      <ViewDiscountCodeModal
+        openViewDiscounModal={openViewDiscounModal}
+        setOpenViewDiscounModal={setOpenViewDiscounModal}
+        itemId={storeItemSettings?.id}
       />
       <PanelComponent
         renderBody={() => {
@@ -227,7 +235,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                 />
               </Grid>
               {(storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE ||
-                storeItemData?.deliveryMethod === DELIVERY_METHODS.EXTERNAL_CODE) && (
+                storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE) && (
                 <Grid display="flex" flexDirection="column" gap="12px">
                   <Label fontWeight={600}>Delivery Message</Label>
                   <TextField
@@ -276,17 +284,35 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                       />
                     </Box>
                   ) : (
-                    <SharedButton
-                      style={{
-                        backgroundColor: "rgba(193, 182, 246, 1)",
-                        width: "fit-content",
-                        color: "black",
-                        fontSize: "15px",
-                      }}
-                      onClick={() => setOpenDiscountUploadModal(true)}
-                    >
-                      {storeItemSettings?.id ? "Upload More Codes" : "Upload Codes"}
-                    </SharedButton>
+                    <Box display="flex" alignItems="center">
+                      {storeItemSettings?.id && (
+                        <SharedButton
+                          style={{
+                            backgroundColor: "rgba(193, 182, 246, 1)",
+                            width: "fit-content",
+                            color: "black",
+                            fontSize: "15px",
+                            marginRight: "8px",
+                          }}
+                          onClick={() => {
+                            setOpenViewDiscounModal(true);
+                          }}
+                        >
+                          View Codes
+                        </SharedButton>
+                      )}
+                      <SharedButton
+                        style={{
+                          backgroundColor: "rgba(193, 182, 246, 1)",
+                          width: "fit-content",
+                          color: "black",
+                          fontSize: "15px",
+                        }}
+                        onClick={() => setOpenDiscountUploadModal(true)}
+                      >
+                        {storeItemSettings?.id ? "Upload More Codes" : "Upload Codes"}
+                      </SharedButton>
+                    </Box>
                   )}
                 </Grid>
               )}

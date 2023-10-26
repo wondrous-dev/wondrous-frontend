@@ -16,7 +16,7 @@ import EditSvg from "components/Icons/edit.svg";
 
 const EditDiscountModalBody = ({ discountInfo, onClose }) => {
   const [updateDiscountCodes] = useMutation(UPDATE_DISCOUNT_CODES, {
-    refetchQueries: ["getStoreItemDiscountCodeInfo"],
+    refetchQueries: ["getStoreItemDiscountCodeInfo", "getAllStoreItemDiscountCodes"],
   });
   const [discount, setDiscount] = useState(discountInfo?.discount);
   const [discountType, setDiscountType] = useState(discountInfo?.type);

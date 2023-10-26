@@ -113,3 +113,26 @@ export const GET_STORE_ITEM_PURCHASES = gql`
   }
   ${CmtyUserFragment}
 `;
+
+export const GET_ALL_STORE_ITEM_DISCOUNT_CODES = gql`
+  query getAllStoreItemDiscountCodes($storeItemId: ID!, $limit: Int, $offset: Int) {
+    getAllStoreItemDiscountCodes(storeItemId: $storeItemId, limit: $limit, offset: $offset) {
+      itemId
+      type
+      scheme
+      code
+      discount
+      deliveredAt
+      receiverId
+    }
+  }
+`;
+
+export const GET_STORE_ITEM_DISCOUNT_CODE_COUNT = gql`
+  query getStoreItemDiscountCodeCount($storeItemId: ID!) {
+    getStoreItemDiscountCodeCount(storeItemId: $storeItemId) {
+      totalCount
+      unavailableCount
+    }
+  }
+`;

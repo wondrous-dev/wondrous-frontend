@@ -65,3 +65,19 @@ export const UPDATE_DISCOUNT_CODES = gql`
     }
   }
 `;
+
+export const DELETE_DISCOUNT_CODE_BY_ID = gql`
+  mutation deleteDiscountCodeById($discountCodeId: ID!) {
+    deleteDiscountCodeById(discountCodeId: $discountCodeId) {
+      success
+    }
+  }
+`;
+
+export const DELETE_ALL_STORE_ITEM_DISCOUNT_CODES = gql`
+  mutation deleteAllStoreItemDiscountCodes($storeItemId: ID!) {
+    deleteAllStoreItemDiscountCodes(storeItemId: $storeItemId) {
+      success
+    }
+  }
+`;
