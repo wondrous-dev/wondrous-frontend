@@ -180,32 +180,6 @@ const UploadDiscountModal = ({
           </Typography>
         )}
       </Box>
-      {deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE && (
-        <Box>
-          <Label
-            style={{
-              marginBottom: "10px",
-            }}
-          >
-            Discount amount/percentage
-          </Label>
-          <TextField
-            placeholder="Discount"
-            value={discount}
-            disabled={!!discountInfo?.discount}
-            onChange={(value) => {
-              if (value) {
-                setDiscount(Number(value));
-              } else {
-                setDiscount(null);
-              }
-            }}
-            multiline={false}
-            // style={TextInputStyle}
-            type="number"
-          />
-        </Box>
-      )}
       {/* <Box>
         <Typography
           fontFamily="Poppins"
@@ -249,6 +223,35 @@ const UploadDiscountModal = ({
             background="#C1B6F6"
             value={discountScheme}
             onChange={(value) => setDiscountScheme(value)}
+          />
+        </Box>
+      )}
+      {deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE && (
+        <Box>
+          <Label
+            style={{
+              marginTop: "10px",
+              marginBottom: "10px",
+              lineHeight: "20px",
+            }}
+          >
+            Discount amount/percentage (for full redemption just enter{" "}
+            {discountScheme === "percent" ? "100" : "the full price amount"})
+          </Label>
+          <TextField
+            placeholder="Discount"
+            value={discount}
+            disabled={!!discountInfo?.discount}
+            onChange={(value) => {
+              if (value) {
+                setDiscount(Number(value));
+              } else {
+                setDiscount(null);
+              }
+            }}
+            multiline={false}
+            // style={TextInputStyle}
+            type="number"
           />
         </Box>
       )}
