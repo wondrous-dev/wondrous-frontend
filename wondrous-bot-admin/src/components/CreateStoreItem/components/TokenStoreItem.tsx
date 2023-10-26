@@ -14,6 +14,7 @@ import Modal from "components/Shared/Modal";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { Label } from "components/QuestsList/styles";
 import ImportComponent from "components/NFT/ImportComponent";
+import { NFT_TYPE_LABELS } from "utils/constants";
 
 const NFT_MODAL_TYPES = {
   CREATE: "create",
@@ -54,6 +55,7 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
       label: item.name,
       value: item.id,
       tokenId: item.tokenId,
+      type: item.type,
       icon: (
         <Box display="flex" marginRight="8px">
           <PoapImage src={item?.mediaUrl} />
@@ -61,8 +63,11 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
       ),
     }));
 
-    const group1 = communityNFTItems?.filter((item) => item.tokenId);
-    const group2 = communityNFTItems?.filter((item) => !item.tokenId);
+    const cmtyBadges = communityNFTItems?.filter((item) => item?.type === 'COMMUNITY_BADGE');
+    const erc721NFTs = communityNFTItems?.filter((item) => item?.type === 'ERC721');
+    const erc1155NFTs = communityNFTItems?.filter((item) => item?.type === 'ERC1155');
+
+    
     const options = [
       {
         label: "Add NFT",
@@ -98,12 +103,16 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
         ],
       },
       {
-        groupName: group1?.length ? "Created NFT" : null,
-        items: group1,
+        groupName: cmtyBadges?.length ? "Community Badges" : null,
+        items: cmtyBadges,
       },
       {
-        groupName: group2?.length ? "Imported NFT" : null,
-        items: group2,
+        groupName: erc721NFTs?.length ? "ERC721" : null,
+        items: erc721NFTs,
+      },
+      {
+        groupName: erc1155NFTs?.length ? "ERC1155" : null,
+        items: erc1155NFTs,
       },
     ];
     return {

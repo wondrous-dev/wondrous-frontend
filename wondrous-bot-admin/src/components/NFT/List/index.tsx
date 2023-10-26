@@ -11,7 +11,8 @@ import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { useState } from "react";
 import ViewNFTComponent from "../ViewNFTComponent";
 import EmptyState from "components/EmptyState";
-import { EMPTY_STATE_TYPES } from "utils/constants";
+import { EMPTY_STATE_TYPES, NFT_TYPE_LABELS } from "utils/constants";
+import { CONTRACT_LABELS } from "../utils";
 
 const NFTMediaItem = ({ slug, type, name }) => {
   const mediaTypeIsImage = isImage(slug, type);
@@ -24,6 +25,7 @@ const NFTMediaItem = ({ slug, type, name }) => {
     </>
   );
 };
+
 
 const NFTList = () => {
   const { activeOrg } = useGlobalContext();
@@ -70,7 +72,21 @@ const NFTList = () => {
               {/* TODO: change this */}
               <NFTMediaItem slug={item.mediaUrl} type={mediaItem?.type} name={mediaItem?.name} />
               <Label>{item.name}</Label>
-              <Box flex="1" justifyContent="flex-end" alignItems="center" display="flex">
+              <Box flex="1" justifyContent="flex-end" alignItems="center" display="flex" gap="12px">
+              <Box
+                  padding="8px"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  width="fit-content"
+                  borderRadius="6px"
+                  bgcolor="#AF9EFF"
+                >
+                  <Label fontSize="16px" fontWeight={500} lineHeight="16px">
+                {NFT_TYPE_LABELS[item.type]}
+                  </Label>
+                  
+                </Box>
                 <Box
                   padding="8px"
                   display="flex"
@@ -83,6 +99,7 @@ const NFTList = () => {
                   <Label fontSize="16px" fontWeight={500} lineHeight="16px">
                     {item.maxSupply > 0 ? `X${item.maxSupply}` : "Unlimited"}
                   </Label>
+                  
                 </Box>
               </Box>
             </CardWrapper>

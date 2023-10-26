@@ -458,3 +458,9 @@ export const DELIVERY_METHOD_LABELS = {
   [DELIVERY_METHODS.RAFFLE]: "Raffle ",
   [DELIVERY_METHODS.EXTERNAL_CODE]: "External Code - users will be given a code",
 };
+
+export const NFT_TYPE_LABELS = {
+  "ERC721": "ERC721",
+  "ERC1155": "ERC1155",
+  COMMUNITY_BADGE: "Community Badge",
+}
