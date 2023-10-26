@@ -58,6 +58,7 @@ export const CommunityNFTFragment = gql`
     chain
     contractAddress
     name
+    type
     description
     mediaUrl
     externalUrl

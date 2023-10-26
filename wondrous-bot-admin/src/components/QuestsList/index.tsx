@@ -1,8 +1,7 @@
-import { Box, Grid } from "@mui/material";
+import { Box, ButtonBase, Grid } from "@mui/material";
 import { RoundedSecondaryButton } from "components/Shared/styles";
 import { useContext, useMemo, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-
 import { CardHoverWrapper, CardWrapper, Label } from "./styles";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "components/Shared/PageWrapper";
@@ -17,8 +16,14 @@ import { usePaywall, useSubscription } from "utils/hooks";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import { useTour } from "@reactour/tour";
 import { CSS } from "@dnd-kit/utilities";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, TouchSensor } from "@dnd-kit/core";
+import { SortableContext, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
+import { UPDATE_QUEST_ORDER } from "graphql/mutations";
+import { BoxWrapper } from "components/QuestCardMenu/styles";
 
 const SortableItem = ({ item, idx, isOpen, status }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.id,
     disabled: status !== QUEST_STATUSES.OPEN,
@@ -30,96 +35,122 @@ const SortableItem = ({ item, idx, isOpen, status }) => {
     transition: transition || undefined,
   };
 
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
+    const newAnchorEl = anchorEl ? null : e.currentTarget;
+    setAnchorEl(newAnchorEl);
+  };
+
   return (
-    <CardHoverWrapper
-      width="100%"
-      id={item.id}
-      ref={setNodeRef}
-      style={style}
-      onClick={() => navigate(`/quests/${item.id}`)}
-      flex={1}
-      data-tour={idx === 0 ? "tutorial-quest-card" : ""}
-      key={item.id}
-      flexBasis={{
-        xs: "48%",
-        sm: "30%",
-        md: "24%",
-      }}
-      maxWidth={{
-        xs: "50%",
-        sm: "33%",
-        md: "24%",
-      }}
-      {...attributes}
-      {...listeners}
-    >
-      <CardWrapper item disableHover={isOpen}>
-        <Box
-          height="40px"
-          width="auto"
-          minWidth="40px"
-          bgcolor="#84bcff"
-          borderRadius="35px"
-          display="flex"
-          padding="4px"
-          justifyContent="center"
-          alignItems="center"
-          flexDirection="column"
-        >
-          <Label fontSize="16px" lineHeight={"16px"}>
-            {item.pointReward}
-          </Label>
-          <Label fontSize="12px" lineHeight="13px" fontWeight={400}>
-            PTS
-          </Label>
-        </Box>
-        <Label
-          fontSize="15px"
-          style={{
-            textAlign: "center",
-            overflowWrap: "anywhere",
-          }}
-        >
-          {item.label}
-        </Label>
-        <Box display="flex" justifyContent="center" alignItems="center">
+    <>
+      <QuestCardMenu quest={item} anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
+      <CardHoverWrapper
+        width="100%"
+        id={item.id}
+        ref={setNodeRef}
+        style={style}
+        onClick={() => navigate(`/quests/${item.id}`)}
+        flex={1}
+        data-tour={idx === 0 ? "tutorial-quest-card" : ""}
+        key={item.id}
+        flexBasis={{
+          xs: "48%",
+          sm: "30%",
+          md: "24%",
+        }}
+        maxWidth={{
+          xs: "50%",
+          sm: "33%",
+          md: "24%",
+        }}
+        {...attributes}
+        {...listeners}
+      >
+        <CardWrapper item disableHover={isOpen}>
           <Box
-            bgcolor="#C1B6F6"
-            padding="8px"
+            height="40px"
+            width="auto"
+            minWidth="40px"
+            bgcolor="#84bcff"
+            borderRadius="35px"
             display="flex"
+            padding="4px"
             justifyContent="center"
             alignItems="center"
-            borderRadius="6px"
+            flexDirection="column"
           >
-            <Label fontSize="14px" lineHeight="14px">
-              {item.completions} {item.completions === 1 ? "Completion" : "Completions"}
+            <Label fontSize="16px" lineHeight={"16px"}>
+              {item.pointReward}
+            </Label>
+            <Label fontSize="12px" lineHeight="13px" fontWeight={400}>
+              PTS
             </Label>
           </Box>
-          {item.inReview > 0 && (
+          <Label
+            fontSize="15px"
+            style={{
+              textAlign: "center",
+              overflowWrap: "anywhere",
+            }}
+          >
+            {item.label}
+          </Label>
+          <Box display="flex" justifyContent="center" alignItems="center">
             <Box
-              bgcolor="#F8AFDB"
+              bgcolor="#C1B6F6"
               padding="8px"
               display="flex"
               justifyContent="center"
               alignItems="center"
               borderRadius="6px"
-              marginLeft="8px"
             >
               <Label fontSize="14px" lineHeight="14px">
-                {item?.inReview} To review
+                {item.completions} {item.completions === 1 ? "Completion" : "Completions"}
               </Label>
             </Box>
-          )}
-        </Box>
-        <QuestCardMenu quest={item} />
-      </CardWrapper>
-    </CardHoverWrapper>
+            {item.inReview > 0 && (
+              <Box
+                bgcolor="#F8AFDB"
+                padding="8px"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                borderRadius="6px"
+                marginLeft="8px"
+              >
+                <Label fontSize="14px" lineHeight="14px">
+                  {item?.inReview} To review
+                </Label>
+              </Box>
+            )}
+          </Box>
+          <BoxWrapper>
+            <ButtonBase
+              onClick={handleDropdownClick}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "100%",
+                padding: "4px",
+                transition: "background 0.1s ease-in-out",
+                ":hover": {
+                  background: "white",
+                },
+              }}
+            >
+              <MoreVertIcon
+                sx={{
+                  color: "black",
+                }}
+              />
+            </ButtonBase>
+          </BoxWrapper>
+        </CardWrapper>
+      </CardHoverWrapper>
+    </>
   );
 };
-
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, TouchSensor } from "@dnd-kit/core";
-import { SortableContext, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
-import { UPDATE_QUEST_ORDER } from "graphql/mutations";
 
 const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan, status }) => {
   const navigate = useNavigate();

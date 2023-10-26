@@ -12,6 +12,7 @@ export const DEFAULT_QUEST_SETTINGS_STATE_VALUE = {
   endAt: null,
   questConditions: [],
   title: "",
+  conditionLogic: "and",
   category: null,
   description: "",
   submissionCooldownPeriod: null,
@@ -51,7 +52,7 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
           return {
             type: PAYMENT_OPTIONS.TOKEN,
             paymentMethodId: reward?.paymentMethodId,
-            amount: reward?.paymentMethod === PAYMENT_OPTIONS.COMMUNITY_BADGE ? null : reward?.amount,
+            amount: reward?.paymentMethod === PAYMENT_OPTIONS.COMMUNITY_BADGE ? 1 : reward?.amount,
           };
         case PAYMENT_OPTIONS.POAP:
           const { __typename, ...rewardData } = reward?.poapRewardData || {};

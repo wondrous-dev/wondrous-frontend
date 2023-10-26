@@ -220,6 +220,7 @@ const CreateTemplate = ({
       isOnboarding,
       title,
       description,
+      conditionLogic
     } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
@@ -231,7 +232,7 @@ const CreateTemplate = ({
       requireReview: !!requireReview,
       maxSubmission: maxSubmission ? parseInt(maxSubmission, 10) : null,
       maxApproval: maxApproval ? parseInt(maxApproval, 10) : null,
-      conditionLogic: "and",
+      conditionLogic,
       category: questSettings.category || null,
       questConditions: filteredQuestConditions,
       status: status || (isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE),
@@ -252,11 +253,12 @@ const CreateTemplate = ({
               },
               type: reward?.type,
             };
-          } else if (reward?.type === PAYMENT_OPTIONS.TOKEN || reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
+          } 
+          else if (reward?.type === PAYMENT_OPTIONS.TOKEN || reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
             return {
               type: PAYMENT_OPTIONS.TOKEN,
               paymentMethodId: reward?.paymentMethodId,
-              amount: reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE ? null : Number(reward?.amount),
+              amount: Number(reward?.amount),
             };
           } else if (reward?.type === PAYMENT_OPTIONS.POAP) {
             const { __typename, ...rewardData } = reward?.poapRewardData;

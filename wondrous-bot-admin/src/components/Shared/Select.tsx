@@ -92,9 +92,10 @@ const SelectComponent = ({
                       {option.icon}
                       {option.label}
                     </Grid>
-                    <Grid container item width="fit-content">
-                      {option.value === value && <CheckCircleIcon />}
-                    </Grid>
+                    <Grid container item width="fit-content" alignItems="center" gap="8px">
+                    {option?.customComponent?.()}
+                    {option.value === value && <CheckCircleIcon />}
+                  </Grid>
                   </Grid>
                 </MenuItem>
               )),
@@ -125,7 +126,8 @@ const SelectComponent = ({
                     {option.icon}
                     {option.label}
                   </Grid>
-                  <Grid container item width="fit-content">
+                  <Grid container item width="fit-content" alignItems="center" gap="8px">
+                    {option?.customComponent?.()}
                     {option.value === value && <CheckCircleIcon />}
                   </Grid>
                 </Grid>

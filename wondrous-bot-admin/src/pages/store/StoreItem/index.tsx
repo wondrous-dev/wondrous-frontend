@@ -39,6 +39,7 @@ const StoreItem = () => {
       name: data?.getStoreItem?.name,
       description: data?.getStoreItem?.description,
       ptPrice: data?.getStoreItem?.ptPrice,
+      conditionLogic: data?.getStoreItem?.conditionLogic,
       price: data?.getStoreItem?.price,
       deactivatedAt: data?.getStoreItem?.deactivatedAt,
       id: data?.getStoreItem?.id,

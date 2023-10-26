@@ -14,13 +14,25 @@ import Modal from "components/Shared/Modal";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { Label } from "components/QuestsList/styles";
 import ImportComponent from "components/NFT/ImportComponent";
+import { NFT_TYPES, NFT_TYPE_LABELS } from "utils/constants";
+import TextField from "components/Shared/TextField";
+import { validateTypes, verifyIsImportedToken } from "utils/common";
 
 const NFT_MODAL_TYPES = {
   CREATE: "create",
   IMPORT: "import",
 };
 
-const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, errors = null, setErrors = null }) => {
+const TokenStoreItem = ({
+  onChange,
+  value,
+  postInitialFetch = null,
+  key = null,
+  errors = null,
+  setErrors = null,
+  amount = null,
+  onAmountChange = null,
+}) => {
   const { activeOrg } = useGlobalContext();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [nftModalType, setNftModalType] = useState(null);
@@ -54,6 +66,7 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
       label: item.name,
       value: item.id,
       tokenId: item.tokenId,
+      type: item.type,
       icon: (
         <Box display="flex" marginRight="8px">
           <PoapImage src={item?.mediaUrl} />
@@ -61,8 +74,10 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
       ),
     }));
 
-    const group1 = communityNFTItems?.filter((item) => item.tokenId);
-    const group2 = communityNFTItems?.filter((item) => !item.tokenId);
+    const cmtyBadges = communityNFTItems?.filter((item) => item?.type === NFT_TYPES.COMMUNITY_BADGE);
+    const erc721NFTs = communityNFTItems?.filter((item) => item?.type === NFT_TYPES.ERC721);
+    const erc1155NFTs = communityNFTItems?.filter((item) => item?.type === NFT_TYPES.ERC1155);
+
     const options = [
       {
         label: "Add NFT",
@@ -98,12 +113,16 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
         ],
       },
       {
-        groupName: group1?.length ? "Created NFT" : null,
-        items: group1,
+        groupName: cmtyBadges?.length ? "Community Badges" : null,
+        items: cmtyBadges,
       },
       {
-        groupName: group2?.length ? "Imported NFT" : null,
-        items: group2,
+        groupName: erc721NFTs?.length ? "ERC721" : null,
+        items: erc721NFTs,
+      },
+      {
+        groupName: erc1155NFTs?.length ? "ERC1155" : null,
+        items: erc1155NFTs,
       },
     ];
     return {
@@ -148,6 +167,16 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
     setIsAddModalOpen(false);
   };
 
+  const isValueSubjectToAmount = useMemo(() => {
+    if (!data?.getCommunityNFTsForOrg?.length || !value) return false;
+    const option = data?.getCommunityNFTsForOrg?.find((item) => item.id === value);
+    const isImportedToken = verifyIsImportedToken(option?.type);
+    if (isImportedToken) {
+      return true;
+    }
+    return false;
+  }, [value, data?.getCommunityNFTsForOrg]);
+
   return (
     <>
       <Modal
@@ -184,6 +213,24 @@ const TokenStoreItem = ({ onChange, value, postInitialFetch = null, key = null, 
           grouped
         />
       )}
+      {isValueSubjectToAmount && amount !== null ? (
+        <>
+          <Label fontSize="14px" color="#626262">
+            Enter amount
+          </Label>
+
+          <TextField
+            multiline={false}
+            value={amount}
+            onChange={(value) => {
+              const isValid = validateTypes("number", value);
+              if (isValid) {
+                return onAmountChange(value);
+              }
+            }}
+          />
+        </>
+      ) : null}
     </>
   );
 };

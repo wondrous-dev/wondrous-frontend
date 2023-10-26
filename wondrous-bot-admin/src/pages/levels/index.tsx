@@ -104,7 +104,7 @@ const LevelsPage = () => {
   const headers = ["Level", "Point Requirement", "Reward"];
   return (
     <>
-      <PageHeader title="" withBackButton={false} />
+      <PageHeader title="Levels" withBackButton={false} />
       <PageWrapper
         bgType={BG_TYPES.LEVELS}
         containerProps={{

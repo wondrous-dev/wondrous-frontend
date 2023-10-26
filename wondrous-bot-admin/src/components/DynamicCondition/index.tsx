@@ -105,7 +105,7 @@ const FilterGroup = ({ condition, handleChange, options, handleClose, typeOption
   );
 };
 
-const DynamicCondition = ({ value, handleUpdate, options, stateKey }) => {
+const DynamicCondition = ({ value, handleUpdate, options, stateKey, conditionLogic = null }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { activeOrg } = useContext(GlobalContext);
 
@@ -140,13 +140,13 @@ const DynamicCondition = ({ value, handleUpdate, options, stateKey }) => {
     setIsOpen(false);
     let conditionItem = data?.conditionData ? data : condition;
 
-    if(!conditionItem?.conditionData || !conditionItem?.type) return;
+    if (!conditionItem?.conditionData || !conditionItem?.type) return;
     handleUpdate((prev) => {
       const prevState = prev[stateKey] || [];
       return {
         ...prev,
         [stateKey]: [...prevState, conditionItem],
-      }
+      };
     });
     setCondition({
       type: null,
@@ -262,10 +262,27 @@ const DynamicCondition = ({ value, handleUpdate, options, stateKey }) => {
   const typeOptions = useMemo(() => {
     return CONDITION_MAP.filter((item) => options.includes(item.value));
   }, [options]);
+
+  const CONDITION_LOGIC_TYPES = [
+    {
+      value: "and",
+      label: "AND",
+    },
+    {
+      value: "or",
+      label: "OR",
+    },
+  ];
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
       <div>
         <Box display="flex" alignItems="center" gap="4px">
+          <SelectComponent options={CONDITION_LOGIC_TYPES} onChange={(value) => {
+            handleUpdate((prev) => ({
+              ...prev,
+              conditionLogic: value
+            }))
+          }} value={conditionLogic} />
           <CustomTextField
             onClick={openPopper}
             placeholder="Add Condition"

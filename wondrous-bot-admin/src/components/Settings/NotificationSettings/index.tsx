@@ -35,6 +35,7 @@ const CHANNEL_TYPE = {
   WELCOME_MESSAGE: "welcome_message_channel",
   GENERAL_NOTIFICATIONS: "general_notifications_channel",
   SUBMISSION_NOTIFICATIONS: "submission_notifications_channel",
+  LEADERBOARD_NOTIFICATIONS: "leaderboard_notifications_channel",
 };
 
 const MESSAGE_TYPE = {
@@ -66,6 +67,11 @@ const NOTIFICATIONS = [
     title: "Submissions Notifications",
     description: "This channel will be used to post notifications when members make submissions to quests",
     channelType: CHANNEL_TYPE.SUBMISSION_NOTIFICATIONS,
+  },
+  {
+    title: "Leaderboard Notifications",
+    description: "This channel will be used to post leaderboard daily",
+    channelType: CHANNEL_TYPE.LEADERBOARD_NOTIFICATIONS,
   },
 ];
 
@@ -281,7 +287,13 @@ const NotificationSetting = (props) => {
               </Box>
             )}
           </Box>
-          <EditImg src={EditSvg} onClick={() => setOpenModal(true)} />
+          <EditImg
+            src={EditSvg}
+            onClick={() => {
+              setErrors(null);
+              setOpenModal(true);
+            }}
+          />
         </NotificationHalves>
       </NotificationWrapper>
     </>
