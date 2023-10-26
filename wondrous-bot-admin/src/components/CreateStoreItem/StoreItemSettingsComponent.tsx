@@ -97,6 +97,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         key: "storeItemConditions",
         componentProps: {
           handleUpdate: setStoreItemSettings,
+          conditionLogic: storeItemSettings?.conditionLogic,
           value: storeItemSettings.storeItemConditions,
           options: [CONDITION_TYPES.LEVEL, CONDITION_TYPES.DISCORD_ROLE],
         },

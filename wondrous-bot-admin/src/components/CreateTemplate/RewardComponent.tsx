@@ -5,10 +5,13 @@ import {
   RewardWrapperWithTextField,
   RewardsComponent,
 } from "components/CreateTemplate/RewardUtils";
-import { DiscordRoleIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, NFTIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import RewardModal, { useAddRewardModalState } from "./RewardModal";
 import { PoapImage } from "./styles";
+import { NFT_TYPES } from "utils/constants";
+import { verifyIsImportedToken } from "utils/common";
+
 
 const handleDiscordRoleRewardRemove = ({ reward, setQuestSettings }) => {
   setQuestSettings((prev) => {
@@ -60,8 +63,9 @@ const handleTokenRewardOnChange = ({ setQuestSettings, reward, value }) => {
     return {
       ...prev,
       rewards: prev.rewards.map((compareReward) => {
+        const isImportedToken = verifyIsImportedToken(compareReward?.paymentMethod?.type);
         if (
-          compareReward.type === PAYMENT_OPTIONS.TOKEN &&
+          (compareReward.type === PAYMENT_OPTIONS.TOKEN || isImportedToken) &&
           compareReward.paymentMethod?.id === reward?.paymentMethod?.id
         ) {
           return {
@@ -148,7 +152,7 @@ const RewardComponent = ({
           handleOnClear={() => handleTokenRewardOnChange({ setQuestSettings, reward, value: null })}
           text={String(reward?.paymentMethod.name)}
           placeholder={`How much ${String(reward?.paymentMethod.name)}?`}
-          Icon={TokensIcon}
+          Icon={reward?.paymentMethod?.nftMetadata?.mediaUrl ? () => <PoapImage src={reward?.paymentMethod?.nftMetadata?.mediaUrl} /> : TokensIcon}
         />
       ),
       handleOnRemove: (reward) => OnPaymentMethodRewardRemove({ reward, setQuestSettings }),
@@ -164,6 +168,19 @@ const RewardComponent = ({
     },
     [PAYMENT_OPTIONS.COMMUNITY_BADGE]: {
       Component: ({ reward }) => {
+        const isImportedToken = verifyIsImportedToken(reward?.paymentMethod?.type);
+        if (isImportedToken) {
+          return (
+            <RewardWrapperWithTextField
+              reward={reward}
+              handleOnChange={(e) => handleTokenRewardOnChange({ setQuestSettings, reward, value: e.target.value })}
+              handleOnClear={() => handleTokenRewardOnChange({ setQuestSettings, reward, value: null })}
+              text={String(reward?.paymentMethod.name)}
+              placeholder={`How much ${String(reward?.paymentMethod.name)}?`}
+              Icon={() => <PoapImage src={reward?.paymentMethod?.nftMetadata?.mediaUrl} />}
+            />
+          );
+        }
         return (
           <RewardWrapper
             Icon={() => <PoapImage src={reward?.paymentMethod?.nftMetadata?.mediaUrl} />}

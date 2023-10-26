@@ -457,3 +457,15 @@ export const DELIVERY_METHOD_LABELS = {
   [DELIVERY_METHODS.NFT_PAYMENT]: "NFT Payment",
   [DELIVERY_METHODS.RAFFLE]: "Apeiron Raffle (raffle for after a user makes a purchase)",
 };
+
+export const NFT_TYPE_LABELS = {
+  "ERC721": "ERC721",
+  "ERC1155": "ERC1155",
+  COMMUNITY_BADGE: "Community Badge",
+}
+
+export const NFT_TYPES = {
+  ERC721: 'ERC721',
+  ERC1155: 'ERC1155',
+  COMMUNITY_BADGE: 'COMMUNITY_BADGE',
+}

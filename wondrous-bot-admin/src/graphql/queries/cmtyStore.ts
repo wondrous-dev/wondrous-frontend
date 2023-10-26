@@ -49,6 +49,7 @@ export const GET_STORE_ITEM_BY_ID = gql`
       deactivatedAt
       ptPrice
       maxPurchase
+      conditionLogic
       stats {
         totalPurchases
       }
