@@ -125,7 +125,7 @@ const ResetPointsModal = ({ openResetPointsModal, setOpenResetPointsModal, point
         maxWidth={600}
         open={openResetPointsModal}
         onClose={() => setOpenResetPointsModal(false)}
-        title="Upload discount codes for this item"
+        title="Reset points for all members"
       >
         <ResetPointsModalBody onClose={() => setOpenResetPointsModal(false)} pointsBalance={pointsBalance} />
       </Modal>

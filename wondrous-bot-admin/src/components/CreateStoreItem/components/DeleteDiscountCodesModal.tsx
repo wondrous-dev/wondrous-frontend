@@ -105,7 +105,7 @@ const DeleteDiscountCodesModal = ({ openDeleteDiscountCodesModal, setOpenDeleteD
         maxWidth={600}
         open={openDeleteDiscountCodesModal}
         onClose={() => setOpenDeleteDiscountCodesModal(false)}
-        title="Upload discount codes for this item"
+        title="Delete discount codes"
       >
         <DeleteDiscountCodesModalBody
           onClose={() => setOpenDeleteDiscountCodesModal(false)}
