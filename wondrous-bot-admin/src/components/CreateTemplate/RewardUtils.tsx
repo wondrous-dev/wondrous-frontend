@@ -483,6 +483,7 @@ export const RewardMethod = ({
       </>
     );
   }
+
   if (rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
     const handleTokenStoreItemChange = async (value) => {
       const existingMethod = cmtyBadgePaymentMethods?.find((method) => method.nftMetadataId === value.id);
@@ -499,7 +500,15 @@ export const RewardMethod = ({
     return (
       <>
         <Label>Select NFT</Label>
-        <TokenStoreItem onChange={handleTokenStoreItemChange} value={paymentMethod?.nftMetadataId} />
+        <TokenStoreItem 
+        amount={tokenReward.amount === null ? 1 : tokenReward.amount}
+        onAmountChange={(value) => {
+          setTokenReward({
+            ...tokenReward,
+            amount: value,
+          });
+        }}
+        onChange={handleTokenStoreItemChange} value={paymentMethod?.nftMetadataId} />
       </>
     );
   }
