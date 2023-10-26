@@ -16,7 +16,7 @@ import EditSvg from "components/Icons/edit.svg";
 
 const EditDiscountModalBody = ({ discountInfo, onClose }) => {
   const [updateDiscountCodes] = useMutation(UPDATE_DISCOUNT_CODES, {
-    refetchQueries: ["getStoreItemDiscountCodeInfo"],
+    refetchQueries: ["getStoreItemDiscountCodeInfo", "getAllStoreItemDiscountCodes", "getStoreItemDiscountCodeCount"],
   });
   const [discount, setDiscount] = useState(discountInfo?.discount);
   const [discountType, setDiscountType] = useState(discountInfo?.type);
@@ -27,9 +27,10 @@ const EditDiscountModalBody = ({ discountInfo, onClose }) => {
         <Label
           style={{
             marginBottom: "10px",
+            lineHeight: "24px",
           }}
         >
-          Discount
+          Discount percentage/amount: You can only edit for codes that have not been delivered!
         </Label>
         <TextField
           placeholder="Discount"
@@ -143,18 +144,15 @@ export const DiscountEdit = ({ discountInfo }) => {
         editDiscountModalOpen={editDiscountModalOpen}
         setEditDiscountModalOpen={setEditDiscountModalOpen}
       />
-      <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" width="100%">
-        <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" color="#06040A">
-          {discountInfo?.scheme === "percent" ? `${discountInfo?.discount}%` : `$${discountInfo?.discount}`}
-        </Typography>
-        <img
-          style={{
-            cursor: "pointer",
-          }}
-          src={EditSvg}
-          onClick={() => setEditDiscountModalOpen(true)}
-        />
-      </Box>
+      <img
+        style={{
+          cursor: "pointer",
+          marginLeft: "12px",
+          width: "38px",
+        }}
+        src={EditSvg}
+        onClick={() => setEditDiscountModalOpen(true)}
+      />
     </>
   );
 };

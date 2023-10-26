@@ -26,8 +26,6 @@ type StoreItemSettingsConfig = {
 
 const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
-  const [getDiscountCodeInfo, { data: discountInfoData }] = useLazyQuery(GET_STORE_ITEM_DISCOUNT_CODE_INFO);
-  const discountInfo = discountInfoData?.getStoreItemDiscountCodeInfo;
   const config = useMemo(() => {
     let data: StoreItemSettingsConfig[] = [
       {
@@ -54,17 +52,17 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
       {
         divider: true,
       },
-      {
-        label: "Price",
-        direction: "row",
-        key: "price",
-        component: TextField,
-        componentProps: {
-          type: "number",
-          multiline: false,
-          placeholder: "Price",
-        },
-      },
+      // {
+      //   label: "Price",
+      //   direction: "row",
+      //   key: "price",
+      //   component: TextField,
+      //   componentProps: {
+      //     type: "number",
+      //     multiline: false,
+      //     placeholder: "Price",
+      //   },
+      // },
       {
         label: "Price in Points",
         direction: "row",
@@ -115,24 +113,8 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         },
       },
     ];
-    if (discountInfo?.itemId) {
-      const newConfig = data.filter((c) => c.key !== "storeItemDiscountCode");
-      data = [
-        ...newConfig,
-        {
-          label: "Discount Codes",
-          direction: "row",
-          component: (props) => <DiscountEdit {...props} />,
-          key: "storeItemDiscountCode",
-          componentProps: {
-            storeItem: storeItemSettings,
-            discountInfo,
-          },
-        },
-      ];
-    }
     return data;
-  }, [discountInfo, storeItemSettings]);
+  }, [storeItemSettings]);
 
   const handleChange = (key, value) => {
     if (errors[key]) {
@@ -146,16 +128,6 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
       [key]: value,
     });
   };
-
-  useEffect(() => {
-    if (storeItemSettings?.id) {
-      getDiscountCodeInfo({
-        variables: {
-          storeItemId: storeItemSettings?.id,
-        },
-      });
-    }
-  }, [storeItemSettings?.id]);
 
   return (
     <>

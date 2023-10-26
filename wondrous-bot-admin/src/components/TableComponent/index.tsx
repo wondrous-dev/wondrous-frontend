@@ -119,9 +119,17 @@ const XPEditInput = ({ column, pointBalance = false, cmtyUser }) => {
     </Label>
   );
 };
-const TableComponent = ({ headers = null, data, title = "", headerComponent = null, footerComponent = null }) => {
+const TableComponent = ({
+  headers = null,
+  data,
+  title = "",
+  headerComponent = null,
+  footerComponent = null,
+  paperComponent = null,
+  tableRowStyle = null,
+}) => {
   return (
-    <TableContainer component={PaperComponent} key={title}>
+    <TableContainer component={paperComponent || PaperComponent} key={title}>
       <Grid bgcolor="#2a8d5c" padding="24px 14px">
         <Typography color="#F7F7F7" fontFamily="Poppins" fontWeight={600} fontSize="16px" lineHeight="16px">
           {title}
@@ -142,7 +150,7 @@ const TableComponent = ({ headers = null, data, title = "", headerComponent = nu
           </TableHead>
           <TableBody>
             {data?.map((row, idx) => (
-              <StyledTableRow key={row.id} id={row.id}>
+              <StyledTableRow key={row.id} id={row.id} style={tableRowStyle}>
                 {Object.keys(row)?.map((key, rowIdx) => {
                   if (key === "id") return null;
                   const column = row[key];
