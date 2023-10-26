@@ -32,6 +32,7 @@ export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
   id: null,
   maxPurchase: null,
   storeItemConditions: [],
+  conditionLogic: "and",
 };
 
 const DEFAULT_STORE_ITEM_DATA = {
@@ -142,7 +143,7 @@ const CreateStoreItem = ({
           discount: Number(storeItemData?.discountCodeImport?.discount),
         },
       }),
-      conditionLogic: "and",
+      conditionLogic: storeItemSettings?.conditionLogic,
       storeItemConditions: filteredStoreItemConditions?.map((condition) => {
         if (condition.type === CONDITION_TYPES.LEVEL) {
           return {

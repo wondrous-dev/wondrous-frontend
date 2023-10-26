@@ -279,6 +279,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           key: "questConditions",
           componentProps: {
             value: questSettings.questConditions,
+            conditionLogic: questSettings.conditionLogic,
             handleUpdate: setQuestSettings,
             options: [CONDITION_TYPES.DISCORD_ROLE, CONDITION_TYPES.QUEST]
           },

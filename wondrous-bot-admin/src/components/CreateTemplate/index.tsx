@@ -220,6 +220,7 @@ const CreateTemplate = ({
       isOnboarding,
       title,
       description,
+      conditionLogic
     } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
@@ -231,7 +232,7 @@ const CreateTemplate = ({
       requireReview: !!requireReview,
       maxSubmission: maxSubmission ? parseInt(maxSubmission, 10) : null,
       maxApproval: maxApproval ? parseInt(maxApproval, 10) : null,
-      conditionLogic: "and",
+      conditionLogic,
       category: questSettings.category || null,
       questConditions: filteredQuestConditions,
       status: status || (isActive ? QUEST_STATUSES.OPEN : QUEST_STATUSES.INACTIVE),
