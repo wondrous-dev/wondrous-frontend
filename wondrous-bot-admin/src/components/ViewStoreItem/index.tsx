@@ -16,8 +16,16 @@ import {
 import StoreItemMetadata from "./StoreItemMetadata";
 import StoreItemConditions from "./StoreItemConditions";
 import StoreItemPurchases from "./Purchases";
-import { useQuery } from "@apollo/client";
-import { GET_COMMUNITY_NFT_BY_METADATA_ID, GET_ORG_DISCORD_ROLES } from "graphql/queries";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import {
+  GET_COMMUNITY_NFT_BY_METADATA_ID,
+  GET_ORG_DISCORD_ROLES,
+  GET_STORE_ITEM_PURCHASES,
+  GET_STORE_ITEM_PURCHASES_EXPORT,
+} from "graphql/queries";
+import { FilterPill } from "components/ViewQuestResults/styles";
+import { exportStoreItemPurchasesToCsv } from "utils/exports";
+import Spinner from "components/Shared/Spinner";
 
 const ViewStoreItem = ({ data }) => {
   const shouldFetchDiscord = useMemo(() => {
@@ -25,6 +33,24 @@ const ViewStoreItem = ({ data }) => {
     const hasDiscordData = data?.additionalData?.discordRoleId;
     return hasDiscordCondition || hasDiscordData;
   }, [data?.conditions, data?.additionalData?.discordRoleId]);
+
+  const [getExportData, { loading: exportLoading }] = useLazyQuery(GET_STORE_ITEM_PURCHASES_EXPORT, {
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const handleExportClick = async () => {
+    const result = await getExportData({
+      variables: {
+        orgId: data?.orgId,
+        storeItemId: data?.id,
+      },
+    });
+    await exportStoreItemPurchasesToCsv({
+      data: result?.data?.getStoreItemPurchasesExport,
+    });
+  };
 
   const { data: orgDiscordRolesData, loading } = useQuery(GET_ORG_DISCORD_ROLES, {
     variables: {
@@ -157,6 +183,23 @@ const ViewStoreItem = ({ data }) => {
           alignItems="center"
           width="100%"
         >
+          <Box display="flex" width="100%">
+            <div
+              style={{
+                flex: 1,
+              }}
+            />
+            <FilterPill
+              style={{
+                color: "#2a8d5c",
+              }}
+              disabled={exportLoading}
+              onClick={handleExportClick}
+            >
+              {exportLoading ? <Spinner /> : "Export purchases to CSV"}
+            </FilterPill>
+          </Box>
+
           <StoreItemPurchases
             nftMetadata={nftMetadata?.getCmtyNFTByMetadataId}
             data={data}
