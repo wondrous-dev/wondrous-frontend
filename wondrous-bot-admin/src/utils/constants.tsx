@@ -453,10 +453,9 @@ export const NFT_ORIGIN_TYPES = {
 
 export const DELIVERY_METHOD_LABELS = {
   [DELIVERY_METHODS.DISCORD_ROLE]: "Discord Role",
-  [DELIVERY_METHODS.DISCOUNT_CODE]: "Discount Code",
+  [DELIVERY_METHODS.DISCOUNT_CODE]: "Voucher Code",
   [DELIVERY_METHODS.NFT_PAYMENT]: "NFT Payment",
-  [DELIVERY_METHODS.RAFFLE]: "Raffle ",
-  [DELIVERY_METHODS.EXTERNAL_CODE]: "External Code - users will be given a code",
+  [DELIVERY_METHODS.RAFFLE]: "Apeiron Raffle (raffle for after a user makes a purchase)",
 };
 
 export const NFT_TYPE_LABELS = {

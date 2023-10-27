@@ -14,6 +14,7 @@ export const DEFAULT_QUEST_SETTINGS_STATE_VALUE = {
   isActive: false,
   isOnboarding: false,
   startAt: null,
+  conditionLogic: "and",
   endAt: null,
   questConditions: [],
   submissionCooldownPeriod: null,

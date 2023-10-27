@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, ButtonBase } from "@mui/material";
 import { Box } from "@mui/system";
-import {ScrollBarStylesHorizontal} from "components/Shared/ScrollBarStyles";
+import { ScrollBarStylesHorizontal } from "components/Shared/ScrollBarStyles";
 
 export const StyledTableHeaderCell = styled(TableCell)`
   && {
@@ -53,6 +53,17 @@ export const PaperComponent = styled(Paper)`
     border-radius: 16px;
     border: 2px solid black;
     overflow: hidden;
+  }
+`;
+
+export const NoBorderElement = styled(Paper)`
+  && {
+    border-radius: 16px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border: none;
+    overflow-y: scroll;
+    max-height: 80vh;
   }
 `;
 

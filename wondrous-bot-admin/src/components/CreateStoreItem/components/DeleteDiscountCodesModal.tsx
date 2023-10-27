@@ -7,13 +7,13 @@ import { useMutation } from "@apollo/client";
 import useAlerts from "utils/hooks";
 import TextField from "components/Shared/TextField";
 import GlobalContext from "utils/context/GlobalContext";
+import { DELETE_ALL_STORE_ITEM_DISCOUNT_CODES } from "graphql/mutations/cmtyStore";
 import { redColors } from "utils/theme/colors";
-import { RESET_ORG_CMTY_USER_POINTS, RESET_ORG_CMTY_USER_POINT_BALANCE } from "graphql/mutations";
-const RESET_TEXT = "RESET";
+const RESET_TEXT = "DELETE";
 
-const ResetPointsModalBody = ({ onClose, pointsBalance }) => {
+const DeleteDiscountCodesModalBody = ({ onClose, storeItemId }) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
-  const [resetPoints] = useMutation(RESET_ORG_CMTY_USER_POINTS, {
+  const [deleteDiscountCodes] = useMutation(DELETE_ALL_STORE_ITEM_DISCOUNT_CODES, {
     onCompleted: () => {
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage("Success!");
@@ -22,28 +22,16 @@ const ResetPointsModalBody = ({ onClose, pointsBalance }) => {
         horizontal: "center",
       });
     },
-    refetchQueries: ["getCmtyUsersForOrg", "searchCmtyUsersForOrg"],
-  });
-  const [resetPointBalance] = useMutation(RESET_ORG_CMTY_USER_POINT_BALANCE, {
-    onCompleted: () => {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage("Success!");
-      setSnackbarAlertAnchorOrigin({
-        vertical: "top",
-        horizontal: "center",
-      });
-    },
-    refetchQueries: ["getCmtyUsersForOrg", "searchCmtyUsersForOrg"],
+    refetchQueries: ["getStoreItemDiscountCodeInfo", "getAllStoreItemDiscountCodes", "getStoreItemDiscountCodeCount"],
   });
   const { activeOrg } = useContext(GlobalContext);
-  const [isImportInProgress, setIsImportInProgress] = useState(false);
   const [resetText, setResetText] = useState("");
   const [error, setError] = useState("");
 
   return (
     <Grid display="flex" flexDirection="column" gap="10px">
       <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" color="#06040A">
-        Please type RESET in all caps to reset points. This action cannot be undone.
+        Please type DELETE in all caps to delete discount codes. This action cannot be undone.
       </Typography>
       <Box></Box>
       <Box>
@@ -52,10 +40,10 @@ const ResetPointsModalBody = ({ onClose, pointsBalance }) => {
             marginBottom: "10px",
           }}
         >
-          Reset Points {pointsBalance && "Balance"}
+          Delete All Discount Codes
         </Label>
         <TextField
-          placeholder="Type RESET"
+          placeholder="Type DELETE"
           value={resetText}
           onChange={(value) => {
             setResetText(value);
@@ -93,44 +81,39 @@ const ResetPointsModalBody = ({ onClose, pointsBalance }) => {
           }}
           onClick={() => {
             if (resetText === RESET_TEXT) {
-              if (pointsBalance && activeOrg?.id) {
-                resetPointBalance({
-                  variables: {
-                    orgId: activeOrg?.id,
-                  },
-                });
-              } else {
-                resetPoints({
-                  variables: {
-                    orgId: activeOrg?.id,
-                  },
-                });
-              }
+              deleteDiscountCodes({
+                variables: {
+                  storeItemId,
+                },
+              });
               onClose();
             } else {
               setError("Text did not match. Please try again");
             }
           }}
         >
-          Reset Points {pointsBalance && "Balance"}
+          Delete Discount Codes
         </SharedSecondaryButton>
       </Box>
     </Grid>
   );
 };
-const ResetPointsModal = ({ openResetPointsModal, setOpenResetPointsModal, pointsBalance }) => {
+const DeleteDiscountCodesModal = ({ openDeleteDiscountCodesModal, setOpenDeleteDiscountCodesModal, storeItemId }) => {
   return (
     <>
       <Modal
         maxWidth={600}
-        open={openResetPointsModal}
-        onClose={() => setOpenResetPointsModal(false)}
-        title={pointsBalance ? 'Reset member point balances' : 'Reset member points'}
+        open={openDeleteDiscountCodesModal}
+        onClose={() => setOpenDeleteDiscountCodesModal(false)}
+        title="Delete discount codes"
       >
-        <ResetPointsModalBody onClose={() => setOpenResetPointsModal(false)} pointsBalance={pointsBalance} />
+        <DeleteDiscountCodesModalBody
+          onClose={() => setOpenDeleteDiscountCodesModal(false)}
+          storeItemId={storeItemId}
+        />
       </Modal>
     </>
   );
 };
 
-export default ResetPointsModal;
+export default DeleteDiscountCodesModal;

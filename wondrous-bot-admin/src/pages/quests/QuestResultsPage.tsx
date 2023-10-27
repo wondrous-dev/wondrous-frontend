@@ -123,6 +123,7 @@ const QuestResultsPage = () => {
     maxSubmission: getQuestById?.maxSubmission || null,
     maxApproval: getQuestById?.maxApproval || null,
     requireReview: getQuestById?.requireReview || false,
+    conditionLogic: getQuestById?.conditionLogic,
     isActive: getQuestById?.status === QUEST_STATUSES.OPEN || false,
     startAt: getQuestById?.startAt ? moment(getQuestById?.startAt) : null,
     endAt: getQuestById?.endAt ? moment(getQuestById?.endAt) : null,
