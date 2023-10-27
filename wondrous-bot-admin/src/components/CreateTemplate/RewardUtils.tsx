@@ -501,7 +501,7 @@ export const RewardMethod = ({
       <>
         <Label>Select NFT</Label>
         <TokenStoreItem 
-        amount={tokenReward.amount === null ? 1 : tokenReward.amount}
+        amount={tokenReward.amount}
         onAmountChange={(value) => {
           setTokenReward({
             ...tokenReward,

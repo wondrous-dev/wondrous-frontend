@@ -294,7 +294,7 @@ export const useAddRewardModalState = () => {
     icon: null,
     type: "erc20",
     chain: null,
-    amount: null,
+    amount: 1,
   });
   const [editPaymentMethod, setEditPaymentMethod] = useState({
     id: null,
