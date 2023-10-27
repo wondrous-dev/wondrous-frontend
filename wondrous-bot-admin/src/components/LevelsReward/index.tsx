@@ -58,7 +58,7 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
     };
     if (reward?.type === PAYMENT_OPTIONS.TOKEN || isCommunityBadge) {
       input.paymentMethodId = reward?.paymentMethodId;
-      input.amount = isCommunityBadge ? null : parseInt(reward?.amount);
+      input.amount = parseInt(reward?.amount);
       input.type = PAYMENT_OPTIONS.TOKEN;
     }
     if (reward?.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
