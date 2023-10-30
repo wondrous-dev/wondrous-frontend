@@ -142,3 +142,25 @@ export const GET_STORE_ITEM_DISCOUNT_CODE_COUNT = gql`
     }
   }
 `;
+
+export const GET_STORE_ITEM_PURCHASES_EXPORT = gql`
+  query getStoreItemPurchasesExport($storeItemId: ID!, $orgId: ID!) {
+    getStoreItemPurchasesExport(storeItemId: $storeItemId, orgId: $orgId) {
+      id
+      createdAt
+      itemId
+      orgId
+      cmtyUser {
+        ...CmtyUserFragment
+      }
+      type
+      pointAmount
+      discountCodeId
+      discountCode {
+        code
+      }
+    }
+  }
+
+  ${CmtyUserFragment}
+`;

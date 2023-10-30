@@ -14,6 +14,7 @@ import useAlerts from "utils/hooks";
 import { ImageComponent, StyledLink, TextLabel } from "./styles";
 import useErrorHandler from "./useErrorHandler";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
+import { format } from "date-fns";
 
 const ViewQuest = ({ quest, loading }) => {
   const params = {
@@ -87,12 +88,11 @@ const ViewQuest = ({ quest, loading }) => {
             label: `POAP: ${reward.poapRewardData?.name}`,
             icon: NFTIcon,
           };
-        }
-        else if(reward.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+        } else if (reward.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
           return {
             label: `Store Item: ${reward?.storeItem?.name}`,
             icon: StoreItemRewardIcon,
-          }
+          };
         }
       }) || [];
     return [...roles, ...questRewards];
@@ -209,6 +209,14 @@ const ViewQuest = ({ quest, loading }) => {
                   <TextLabel>Requirements: </TextLabel>
                   <TextLabel weight={600} color="#2A8D5C">
                     Level {quest?.level}
+                  </TextLabel>
+                </Box>
+              ) : null}
+              {quest?.endAt ? (
+                <Box display="flex" alignItems="center" gap="4px">
+                  <TextLabel>Submission Deadline: </TextLabel>
+                  <TextLabel weight={600} color="#2A8D5C">
+                    {format(new Date(quest?.endAt), "MM/DD/YY")}
                   </TextLabel>
                 </Box>
               ) : null}
