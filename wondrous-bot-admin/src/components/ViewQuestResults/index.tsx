@@ -14,7 +14,7 @@ import { GET_GUILD_DISCORD_CHANNELS, GET_ORG_DISCORD_ROLES } from "graphql/queri
 import moment from "moment";
 import { useContext, useEffect, useMemo, useState } from "react";
 import apollo from "services/apollo";
-import { constructRewards, getTextForCondition } from "utils/common";
+import { constructRewards, getNameForCondition, getTextForCondition } from "utils/common";
 
 import {
   BG_TYPES,
@@ -116,33 +116,11 @@ const ViewQuestResults = ({ quest, rewards }) => {
     return { type: "text", value: `Ends on ${endDate}` };
   }, [quest?.startAt, quest?.endAt]);
 
-  const getNameForCondition = async (condition) => {
-    if (condition.type === CONDITION_TYPES.DISCORD_ROLE) {
-      const { data } = await apollo.query({
-        query: GET_ORG_DISCORD_ROLES,
-        variables: {
-          orgId: activeOrg?.id,
-        },
-      });
-      const allRoles = data?.getCmtyOrgDiscordRoles?.map((role) => role.roles).flat();
-      return allRoles.find((item) => item.id === condition.conditionData?.discordRoleId)?.name;
-    }
-    if (condition.type === CONDITION_TYPES.QUEST) {
-      const { data } = await apollo.query({
-        query: GET_QUEST_BY_ID,
-        variables: {
-          questId: condition.conditionData?.questId,
-        },
-      });
-      return data?.getQuestById?.title;
-    }
-    return null;
-  };
 
   const setQuestConditionsAsync = async (questConditions) => {
     const results = await Promise.all(
       questConditions.map(async (item) => {
-        const result = await getNameForCondition(item);
+        const result = await getNameForCondition(item, activeOrg?.id);
         return getTextForCondition({
           type: item?.type,
           name: result,

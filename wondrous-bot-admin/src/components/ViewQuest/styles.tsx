@@ -7,7 +7,7 @@ export const TextLabel = styled(Typography)`
     font-family: Poppins;
     font-weight: ${({ weight }) => weight || 500};
     font-size: ${({ fontSize }) => fontSize || "15px"};
-    line-height: 15px;
+    line-height: ${({ fontSize }) => fontSize || "15px"};
     color: ${({ color }) => color || "#000000"};
   }
 `;

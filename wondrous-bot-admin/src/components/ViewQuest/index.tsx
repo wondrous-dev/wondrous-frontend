@@ -8,15 +8,17 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import { START_QUEST } from "graphql/mutations";
 import { GET_ORG_DISCORD_INVITE_LINK, GET_QUEST_REWARDS, GET_CMTY_USER_TOKEN_EXPIRE_CHECK } from "graphql/queries";
 import { useEffect, useMemo, useState } from "react";
-import { BG_TYPES, ERRORS_LABELS } from "utils/constants";
-import { getDiscordUrl } from "utils/discord";
+import { BG_TYPES, ERRORS_LABELS, TELEGRAM_ACTION_CODES } from "utils/constants";
+import { getDiscordUrl, getTelegramBotLink } from "utils/discord";
 import useAlerts from "utils/hooks";
 import { ImageComponent, StyledLink, TextLabel } from "./styles";
 import useErrorHandler from "./useErrorHandler";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import { format } from "date-fns";
+import { ConnectPlatformButton } from "./ActionButtons";
+import ViewQuestConditions from "./Conditions";
 
-const ViewQuest = ({ quest, loading }) => {
+const ViewQuest = ({ quest, loading, hasTelegramIntegration, hasDiscordIntegration }) => {
   const params = {
     questId: quest?.id,
     orgId: quest?.org?.id,
@@ -27,8 +29,15 @@ const ViewQuest = ({ quest, loading }) => {
     `&state=${encodeURIComponent(JSON.stringify(params))}`
   );
 
+  const telegramAuthUrl = getTelegramBotLink(
+    `?start=str-${btoa(`${params.questId}:${TELEGRAM_ACTION_CODES.CONNECT_CMTY_USER_TELEGRAM}`)}`
+  );
+
   const cmtyUserToken = localStorage.getItem("cmtyUserToken");
+
   const [isDiscordConnected, setIsDiscordConnected] = useState(false);
+  const [isTelegramConnected, setIsTelegramConnected] = useState(false);
+
   const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
   const [getOrgDiscordInviteLink, { data: orgDiscordInviteLinkData }] = useLazyQuery(GET_ORG_DISCORD_INVITE_LINK);
   const [verifyToken] = useLazyQuery(GET_CMTY_USER_TOKEN_EXPIRE_CHECK, {
@@ -116,9 +125,9 @@ const ViewQuest = ({ quest, loading }) => {
     },
   });
 
-  const handleConnectDiscord = () => {
-    window.open(discordAuthUrl);
-  };
+  // const handleConnectDiscord = () => {
+  //   window.open(discordAuthUrl);
+  // };
   const handleStartQuest = async (e) => {
     e.preventDefault();
     await startQuest({
@@ -126,6 +135,34 @@ const ViewQuest = ({ quest, loading }) => {
         questId: quest?.id,
       },
     });
+  };
+
+  const FootNoteText = () => {
+    if (loading) return null;
+
+    if (hasTelegramIntegration && !hasDiscordIntegration) {
+      return (
+        <TextLabel>
+          Please first make sure you've joined the Telegram of this community before taking the quest
+        </TextLabel>
+      );
+    }
+    if (hasDiscordIntegration && !hasTelegramIntegration) {
+      return (
+        <TextLabel>
+          Please first make sure you've joined the <a href={link}>Discord</a> of this community before taking the quest
+        </TextLabel>
+      );
+    }
+
+    if (hasDiscordIntegration && hasTelegramIntegration) {
+      return (
+        <TextLabel>
+          Please first make sure you've joined the <a href={link}>Discord</a> or Telegram of this community before
+          taking the quest
+        </TextLabel>
+      );
+    }
   };
   const link = orgDiscordInviteLinkData?.getOrgDiscordInviteLink?.link;
   return (
@@ -201,17 +238,20 @@ const ViewQuest = ({ quest, loading }) => {
               <TextLabel weight={600} color="#846AFF">
                 Community Quest
               </TextLabel>
-              <TextLabel weight={600} fontSize="24px">
+              <TextLabel weight={600} fontSize="24px" padding="0px 8px">
                 {quest?.title}
               </TextLabel>
+              <TextLabel>Requirements: </TextLabel>
               {quest?.level ? (
                 <Box display="flex" alignItems="center" gap="4px">
-                  <TextLabel>Requirements: </TextLabel>
                   <TextLabel weight={600} color="#2A8D5C">
                     Level {quest?.level}
                   </TextLabel>
                 </Box>
               ) : null}
+              <ViewQuestConditions conditions={quest?.conditions} orgId={quest?.orgId} 
+              conditionLogic={quest?.conditionLogic}
+              />
               {quest?.endAt ? (
                 <Box display="flex" alignItems="center" gap="4px">
                   <TextLabel>Submission Deadline: </TextLabel>
@@ -220,11 +260,8 @@ const ViewQuest = ({ quest, loading }) => {
                   </TextLabel>
                 </Box>
               ) : null}
-              <Box display="flex" alignItems="center" gap="4px">
-                <TextLabel>
-                  Please first make sure you've joined the <a href={link}> Discord </a> of this community before taking
-                  the quest
-                </TextLabel>
+              <Box display="flex" alignItems="center" gap="4px" padding="8px">
+                <FootNoteText />
               </Box>
               <ImageComponent src="/images/view-quest-artwork.png" />
               <TextLabel color="#2A8D5C" fontSize="16px" weight={600}>
@@ -265,9 +302,24 @@ const ViewQuest = ({ quest, loading }) => {
                   )}
                 </SharedSecondaryButton>
               ) : null}
-              {!isDiscordConnected ? (
-                <SharedSecondaryButton onClick={handleConnectDiscord}>Connect your Discord</SharedSecondaryButton>
-              ) : null}
+              <Box
+                display="flex"
+                alignItems="center"
+                gap="14px"
+                sx={{
+                  flexDirection: {
+                    xs: "column",
+                    md: "row",
+                  },
+                }}
+              >
+                {!isDiscordConnected && hasDiscordIntegration ? (
+                  <ConnectPlatformButton authUrl={discordAuthUrl} label="Connect your Discord" />
+                ) : null}
+                {!isTelegramConnected && hasTelegramIntegration ? (
+                  <ConnectPlatformButton authUrl={telegramAuthUrl} label="Start Quest on Telegram" />
+                ) : null}
+              </Box>
               <Box
                 height="42px"
                 width="52px"
