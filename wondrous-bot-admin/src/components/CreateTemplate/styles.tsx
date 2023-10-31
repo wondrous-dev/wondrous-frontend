@@ -28,7 +28,7 @@ export const Label = styled(Typography)`
     font-family: Poppins;
     font-style: normal;
     font-weight: ${({ fontWeight = 700 }) => fontWeight};
-    font-size: 14px;
+    font-size: ${({ fontSize = "14px" }) => fontSize};
     line-height: 15px;
     min-width: 150px;
     letter-spacing: 0.01em;

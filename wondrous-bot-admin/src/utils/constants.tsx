@@ -428,8 +428,8 @@ export const CUSTOM_INTEGRATIONS = {
 export const OPTION_TEXT_LIMIT = 250;
 
 export const STORE_ITEM_TYPES = {
-  NFT: "nft",
   EXTERNAL_SHOP: "external_shop",
+  NFT: "nft",
   DISCORD_ROLE: "discord_role",
 };
 export const STORE_ITEM_LABELS = {
