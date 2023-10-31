@@ -16,6 +16,7 @@ import TableComponent from "components/TableComponent";
 import { getBaseUrl } from "utils/common";
 import { exportQuestSubmissionsToCsv } from "utils/exports";
 
+
 const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fetchMore, hasMore, quest }) => {
   const { ref, inView, entry } = useInView();
   const [exportQuestSubmissionData] = useLazyQuery(EXPORT_QUEST_SUBMISSIONS);
@@ -153,7 +154,8 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
             {submissions?.length ? (
               submissions?.map((submission, idx) => <QuestResultsCard submission={submission} key={idx} />)
             ) : (
-              <EmptyState type={EMPTY_STATE_TYPES.SUBMISSIONS} />
+              <EmptyState 
+              type={EMPTY_STATE_TYPES.SUBMISSIONS} />
             )}
           </Box>
         </>

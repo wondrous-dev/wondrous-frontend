@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import OnboardingComponent from "components/AddFormEntity/components/OnboardingComponent";
 import DynamicCondition from "components/DynamicCondition";
 import ArrowDropDownIcon from "components/Icons/ArrowDropDown";
@@ -13,10 +13,12 @@ import GlobalContext from "utils/context/GlobalContext";
 import useLevels from "utils/levels/hooks";
 import MaxInput from "./MaxInput";
 import TimeboundComponent from "./TimeboundComponent";
-import { CampaignOverviewTitle, Label } from "./styles";
+import { CampaignOverviewTitle, ExtraFeaturesWrapper, Label } from "./styles";
 import DailySubmissionComponent from "./DailySubmission";
 import { CONDITION_TYPES } from "utils/constants";
 import CategorySelectComponent from "./CategorySelectComponent";
+import InfoLabel from "./InfoLabel";
+import LevelComponent from "components/AddFormEntity/components/LevelComponent";
 
 const REQUIRE_REVIEW_OPTIONS = [
   {
@@ -46,7 +48,7 @@ const CampaignOverviewSections = ({
       flexDirection="column"
       borderBottom={showBorder && `1px solid #E8E8E8`}
       paddingBottom={showBorder && "24px"}
-      gap="14px"
+      gap={show ? "14px" : "0px"}
     >
       {canBeHidden && (
         <Grid
@@ -58,9 +60,8 @@ const CampaignOverviewSections = ({
           onClick={() => setShow((prev) => !prev)}
         >
           <Grid container item alignItems="center" gap="10px" width="fit-content">
-            <SortIcon />
             <Typography color="#626262" fontWeight="600" fontFamily="Poppins" fontSize="13px">
-              {show ? "Hide" : "Show"} extra features
+              {show ? "Hide" : "Show"} Extra Features
             </Typography>
           </Grid>
           <Grid
@@ -80,23 +81,30 @@ const CampaignOverviewSections = ({
           </Grid>
         </Grid>
       )}
-      {show && (
-        <Grid container item gap="14px">
-          {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }) => {
-            return (
-              <Grid
-                container
-                key={key}
-                {...wrapperProps}
-                {...settingsLayout}
-                style={{
-                  ...(key === "questConditions" && {
-                    alignItems: "baseline",
-                  }),
+      <ExtraFeaturesWrapper container item show={show}>
+        {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }) => {
+          if (!show) return <Box flex="1" height="100%" width="100%" />;
+          return (
+            <Grid
+              container
+              key={key}
+              {...wrapperProps}
+              {...settingsLayout}
+              style={{
+                ...(key === "questConditions" && {
+                  alignItems: "baseline",
+                }),
+              }}
+            >
+              <Label
+                sx={{
+                  capitalize: true,
                 }}
               >
-                <Label>{label}</Label>
-                <Grid container item flex="1">
+                {label}
+              </Label>
+              <Grid container item flex="1">
+                <Box display="flex" alignItems="center" width="100%">
                   {Component ? (
                     <Component
                       onChange={(value) => handleChange(key, value)}
@@ -108,12 +116,13 @@ const CampaignOverviewSections = ({
                       {...componentProps}
                     />
                   ) : null}
-                </Grid>
+                  <InfoLabel stateKey={key} />
+                </Box>
               </Grid>
-            );
-          })}
-        </Grid>
-      )}
+            </Grid>
+          );
+        })}
+      </ExtraFeaturesWrapper>
     </Grid>
   );
 };
@@ -134,16 +143,6 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
     });
   };
 
-  const { levels } = useLevels({
-    orgId: activeOrg?.id,
-  });
-
-  const levelsOptions = useMemo(() => {
-    return Object.keys(levels).map((key) => ({
-      label: levels[key],
-      value: key,
-    }));
-  }, [levels]);
 
   const sections: {
     canBeHidden?: boolean;
@@ -162,7 +161,9 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
         {
           label: "Quest Title",
           component: QuestTitle,
-          componentProps: {},
+          componentProps: {
+            stateKey: 'title'
+          },
           key: "title",
         },
         {
@@ -170,7 +171,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           component: QuestTitle,
           componentProps: {
             placeholder: "Describe the quest",
-            key: "description",
+            stateKey: "description",
             multiline: true,
             showMaxLength: true,
           },
@@ -184,13 +185,14 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
     },
     {
       settings: [
+        // {
+        //   label: "Onboarding Quest",
+        //   component: OnboardingComponent,
+        //   key: "isOnboarding",
+        // },
         {
           label: "Level Requirement",
-          component: SelectComponent,
-          componentProps: {
-            options: levelsOptions,
-            disabled: questSettings.isOnboarding,
-          },
+          component: LevelComponent,
           key: "level",
         },
         {
@@ -221,12 +223,12 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       showBorder: false,
       settings: [
         {
-          label: 'Category',
+          label: "Category",
           component: CategorySelectComponent,
           componentProps: {
             value: questSettings?.category,
           },
-          key: 'category',
+          key: "category",
         },
         {
           label: "Max Submissions",
@@ -254,14 +256,9 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
               }
               return handleChange("maxApproval", 1);
             },
-            handleValueChange: (value) => handleChange("maxApproval", value)
+            handleValueChange: (value) => handleChange("maxApproval", value),
           },
           key: "maxApproval",
-        },
-        {
-          label: "Onboarding Quest",
-          component: OnboardingComponent,
-          key: "isOnboarding",
         },
         {
           label: "Time Bound",
@@ -281,7 +278,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
             value: questSettings.questConditions,
             conditionLogic: questSettings.conditionLogic,
             handleUpdate: setQuestSettings,
-            options: [CONDITION_TYPES.DISCORD_ROLE, CONDITION_TYPES.QUEST]
+            options: [CONDITION_TYPES.DISCORD_ROLE, CONDITION_TYPES.QUEST],
           },
         },
       ],
@@ -291,7 +288,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
       },
     },
   ];
-  
+
   return (
     <>
       {sections.map(({ canBeHidden, settingsLayout, settings, showBorder }) => {

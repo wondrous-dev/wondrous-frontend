@@ -3,6 +3,7 @@ import { Box, Grid, ListSubheader, MenuItem } from "@mui/material";
 import CheckCircleIcon from "components/Icons/CheckCircle";
 import { scrollbarStyles } from "components/Shared/styles";
 import { ErrorText, StyledTextFieldSelect } from "./styles";
+import ErrorField from "./ErrorField";
 
 const SelectComponent = ({
   onChange,
@@ -18,6 +19,7 @@ const SelectComponent = ({
   onOpen = null,
   grouped = false,
   groupedOptions = [],
+  minWidth = "100px"
 }) => {
   const handleChange = (e) => onChange(e.target.value);
 
@@ -29,6 +31,7 @@ const SelectComponent = ({
         disabled={disabled}
         value={value}
         style={style}
+        minWidth={minWidth}
         placeholder={placeholder}
         background={background}
         onChange={handleChange}
@@ -43,7 +46,7 @@ const SelectComponent = ({
             sx: { marginTop: "8px" },
             PaperProps: {
               sx: {
-                outline: "1px solid #000",
+                outline: `1px solid ${error ? '#CE414D' : '#000'}`,
               },
             },
             MenuListProps: {
@@ -134,7 +137,7 @@ const SelectComponent = ({
               </MenuItem>
             ))}
       </StyledTextFieldSelect>
-      {error ? <ErrorText>{error}</ErrorText> : null}
+      <ErrorField errorText={error}/>
     </Box>
   );
 };

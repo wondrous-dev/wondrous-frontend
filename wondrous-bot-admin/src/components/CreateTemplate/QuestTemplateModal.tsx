@@ -58,6 +58,7 @@ const questTemplates: {
     label: "Start From Scratch",
     title: "New quest",
     image: StartFromScratchImage,
+    requireReview: false,
     steps: [],
     rewards: [
       {

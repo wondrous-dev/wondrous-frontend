@@ -29,6 +29,8 @@ import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 import { useCommunityBadgePaymentMethods } from "./shared";
 import TokenStoreItem from "components/CreateStoreItem/components/TokenStoreItem";
 import StoreItemReward from "./StoreItemReward";
+import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
+import { LockOutlined } from "@mui/icons-material";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -500,15 +502,17 @@ export const RewardMethod = ({
     return (
       <>
         <Label>Select NFT</Label>
-        <TokenStoreItem 
-        amount={tokenReward.amount}
-        onAmountChange={(value) => {
-          setTokenReward({
-            ...tokenReward,
-            amount: value,
-          });
-        }}
-        onChange={handleTokenStoreItemChange} value={paymentMethod?.nftMetadataId} />
+        <TokenStoreItem
+          amount={tokenReward.amount}
+          onAmountChange={(value) => {
+            setTokenReward({
+              ...tokenReward,
+              amount: value,
+            });
+          }}
+          onChange={handleTokenStoreItemChange}
+          value={paymentMethod?.nftMetadataId}
+        />
       </>
     );
   }
@@ -517,7 +521,13 @@ export const RewardMethod = ({
     return (
       <>
         <Label>Select role</Label>
-        <SelectComponent options={componentsOptions} value={discordRoleReward} onChange={handleRoleChange} />
+        <AutocompleteOptionsComponent
+          options={componentsOptions}
+          value={discordRoleReward}
+          onChange={handleRoleChange}
+          fullWidth
+          bgColor="#e8e8e8"
+        />
       </>
     );
   }
@@ -639,23 +649,26 @@ export const RewardMethod = ({
   }
 };
 
-export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, Icon, text }) => (
-  <SharedBlackOutlineButton
-    style={{
-      flex: 1,
-      width: '100%'
-    }}
-    background={paymentOption === rewardType ? "#BFB4F3" : "#BFB4F366"}
-    borderColor={paymentOption === rewardType ? "#000" : "transparent"}
-    justifyContent="flex-start"
-    height="44px"
-    padding="10px"
-    minWidth="fit-content"
-    onClick={onClick}
-  >
-    <Icon /> {text}
-  </SharedBlackOutlineButton>
-);
+export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, Icon, text, isUnavailable = false }) => {
+
+  return   <SharedBlackOutlineButton
+  style={{
+    flex: 1,
+    width: "100%",
+    opacity: isUnavailable ? 0.7 : 1
+  }}
+  background={paymentOption === rewardType ? "#BFB4F3" : "#BFB4F366"}
+  borderColor={paymentOption === rewardType ? "#000" : "transparent"}
+  justifyContent="flex-start"
+  height="44px"
+  padding="10px"
+  minWidth="fit-content"
+  onClick={onClick}
+>
+  <Icon /> {text}
+</SharedBlackOutlineButton>
+
+}
 
 export const RewardFooterLeftComponent = ({
   rewardType,

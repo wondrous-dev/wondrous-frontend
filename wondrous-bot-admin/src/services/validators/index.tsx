@@ -264,7 +264,7 @@ export const QUEST_FIELDS = {
   steps: Yup.array()
     .of(Yup.lazy((value) => (stepTypes[value.type] ? stepTypes[value.type] : Yup.object().shape({}))))
     .required("Steps is required.")
-    .min(1, "Steps must have at least one element."),
+    .min(1, "Please add at least one quest step"),
 };
 
 export const questValidator = async (body) =>

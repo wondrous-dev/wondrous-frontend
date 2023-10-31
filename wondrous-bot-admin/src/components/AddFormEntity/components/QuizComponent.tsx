@@ -11,6 +11,7 @@ import { ERRORS, ERRORS_LABELS, OPTION_TEXT_LIMIT, TYPES } from "utils/constants
 import TextField, { ResizeTextField } from "../../Shared/TextField";
 import OptionRewards from "./OptionRewards";
 import { IndexContainer, Label } from "./styles";
+import ErrorField from "components/Shared/ErrorField";
 
 const CORRECT_ANSWERS_TYPES = {
   CORRECT: "correct",
@@ -179,7 +180,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
 
           <Grid display="flex" gap="8px" flexDirection="column">
             {error?.options === ERRORS.MIN_OPTION_LENGTH ? (
-              <ErrorText>{ERRORS_LABELS.MIN_OPTION_LENGTH}</ErrorText>
+              <ErrorField errorText={ERRORS_LABELS.MIN_OPTION_LENGTH} />
             ) : null}
             {answers?.map((answer, idx) => (
               <Grid display="flex" flexDirection="column" gap="10px">
