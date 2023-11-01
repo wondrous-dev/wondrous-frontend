@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import { Label } from "components/AddFormEntity/components/styles";
+import ErrorField from "components/Shared/ErrorField";
 import Spinner from "components/Shared/Spinner";
 import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
 
@@ -30,7 +31,7 @@ export const LinkComponent = ({
           <SharedSecondaryButton onClick={onClick}>{linkText}</SharedSecondaryButton>
         </Box>
       )}
-      {error ? <ErrorText>{error}</ErrorText> : null}
+      {error ? <ErrorField errorText={error} /> : null}
     </Box>
   );
 };

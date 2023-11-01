@@ -432,8 +432,16 @@ const RewardModal = ({
         text: "POAP",
       },
       {
+        paymentOption: PAYMENT_OPTIONS.COMMUNITY_BADGE,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.COMMUNITY_BADGE),
+        Icon: NFTIcon,
+        text: "Community Badge",
+      },
+      {
         paymentOption: PAYMENT_OPTIONS.TOKEN,
         rewardType,
+        isUnavailable: plan === PricingOptionsTitle.Basic,
         onClick: () => {
           setRewardType(PAYMENT_OPTIONS.TOKEN);
           if (plan === PricingOptionsTitle.Basic) {
@@ -447,13 +455,6 @@ const RewardModal = ({
         },
         Icon: TokensIcon,
         text: "Token reward",
-      },
-      {
-        paymentOption: PAYMENT_OPTIONS.COMMUNITY_BADGE,
-        rewardType,
-        onClick: () => setRewardType(PAYMENT_OPTIONS.COMMUNITY_BADGE),
-        Icon: NFTIcon,
-        text: "Community Badge",
       },
     ];
     if (

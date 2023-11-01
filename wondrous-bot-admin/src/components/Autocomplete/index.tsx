@@ -1,5 +1,6 @@
 import { Autocomplete, Popper, Typography } from "@mui/material";
 import { Label } from "components/CreateTemplate/styles";
+import ErrorField from "components/Shared/ErrorField";
 import { ErrorText, StyledTextFieldSelect } from "components/Shared/styles";
 import { useState } from "react";
 
@@ -76,7 +77,7 @@ const AutocompleteComponent = ({
               {disclaimer}
             </Typography>
           ) : null}
-          {error ? <ErrorText>{error}</ErrorText> : null}
+          {error ? <ErrorField errorText={error} /> : null}
         </>
       )}
       {...autocompleteProps}

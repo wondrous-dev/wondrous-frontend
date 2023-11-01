@@ -132,3 +132,12 @@ export const PoapImage = styled.img`
   height: 30px;
   border-radius: 15px;
 `;
+
+export const ExtraFeaturesWrapper = styled(Grid)`
+  && {
+    transition: all 0.1s ease;
+    max-height: 100%;
+    height: ${({ show }) => (show ? "100%" : "0px")};
+    gap: ${({ show }) => (show ? "14px" : "0px")};
+  }
+`;

@@ -96,7 +96,7 @@ export const StyledTextFieldSelect = styled(TextField)`
     height: 40px;
     max-width: 100%;
     width: 100%;
-    min-width: 100px;
+    min-width: ${({minWidth}) => minWidth};
     display: flex;
     justify-content: center;
     background: ${({ background }) => background || "#e8e8e8"};
@@ -193,9 +193,10 @@ export const RoundedSecondaryButton = styled(SharedSecondaryButton)`
 
 export const ErrorText = styled(Typography)`
   && {
-    color: #ee4852;
+    color: #CE414D;
     font-size: 13px;
     margin-top: 5px;
+    font-weight: 500;
     font-family: "Poppins";
   }
 `;

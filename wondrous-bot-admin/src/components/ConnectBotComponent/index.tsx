@@ -15,6 +15,7 @@ import { CONNECT_TELEGRAM_BOT, DISCONNECT_DISCORD_TO_CMTY_ORG } from "graphql/mu
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
 import { DiscordRoleIcon } from "components/Icons/Rewards";
 import { GET_CMTY_ORG_DISCORD_CONFIG } from "graphql/queries";
+import ErrorField from "components/Shared/ErrorField";
 
 const telegramGroupIdSchema = yup
   .number()
@@ -125,7 +126,7 @@ const useTelegramModal = () => {
             );
           })}
         </Grid>
-        {error ? <ErrorText>{error}</ErrorText> : null}
+        <ErrorField errorText={error}/>
         <Box>
           <SharedSecondaryButton disabled={!groupId} onClick={handleSubmit}>
             {data?.getTelegramConfigForOrg?.chatId ? "Update" : "Connect"}

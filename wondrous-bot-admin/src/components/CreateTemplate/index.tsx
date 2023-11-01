@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Divider, Grid, Typography } from "@mui/material";
-import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
+import { ErrorText, RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
@@ -24,6 +24,9 @@ import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE, mapAnswersToOptions, reduceConditionalRewards } from "./utils";
 import { useTour } from "@reactour/tour";
+import { Warning, WarningAmberOutlined } from "@mui/icons-material";
+import WarningIcon from "components/Icons/WarningIcon";
+import ErrorField from "components/Shared/ErrorField";
 
 const CreateTemplate = ({
   setRefValue,
@@ -59,7 +62,7 @@ const CreateTemplate = ({
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
-  const [questSettings, setQuestSettings] = useState(defaultQuestSettings);
+  const [questSettings, setQuestSettings] = useState({ ...defaultQuestSettings });
   const [removedMediaSlugs, setRemovedMediaSlugs] = useState({});
   const handleAdd = (type) => {
     setSteps([
@@ -220,7 +223,7 @@ const CreateTemplate = ({
       isOnboarding,
       title,
       description,
-      conditionLogic
+      conditionLogic,
     } = questSettings;
     const filteredQuestConditions = questConditions?.filter((condition) => condition.type && condition.conditionData);
 
@@ -240,7 +243,7 @@ const CreateTemplate = ({
       endAt: endAt && timeBound ? endAt.utcOffset(0).endOf("day").toISOString() : null,
       pointReward: questSettings.rewards[0].value,
       submissionCooldownPeriod: questSettings?.submissionCooldownPeriod,
-      level: level ? parseInt(level, 10) : null,
+      level: level ? parseInt(level, 10) : 1,
       // TODO: refactor this
       rewards: questSettings.rewards
         ?.map((reward: any) => {
@@ -253,8 +256,7 @@ const CreateTemplate = ({
               },
               type: reward?.type,
             };
-          } 
-          else if (reward?.type === PAYMENT_OPTIONS.TOKEN || reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
+          } else if (reward?.type === PAYMENT_OPTIONS.TOKEN || reward?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
             return {
               type: PAYMENT_OPTIONS.TOKEN,
               paymentMethodId: reward?.paymentMethodId,
@@ -266,12 +268,11 @@ const CreateTemplate = ({
               type: reward?.type,
               poapRewardData: rewardData,
             };
-          }
-          else if(reward?.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+          } else if (reward?.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
             return {
               type: reward?.type,
-              storeItemId: reward?.storeItem?.id
-            }
+              storeItemId: reward?.storeItem?.id,
+            };
           }
         })
         ?.filter((reward) => reward),
@@ -404,22 +405,27 @@ const CreateTemplate = ({
     } catch (err) {
       const errors: any = {};
       if (err instanceof ValidationError) {
-        err.inner.forEach((error) => {
-          console.log("error", error);
-          console.log(error.path, "ERR PATH");
+        err?.inner?.forEach((error) => {
           const path = getPathArray(error.path);
           set(errors, path, error.message);
         });
         // this is a hacky way to scroll to the title
+
         if (errors?.title) {
           window.scrollTo({
             top: 0,
             behavior: "smooth",
           });
         } else {
+          if (typeof errors?.steps === "string") {
+            refs?.current[0].scrollIntoView({ behavior: "smooth", block: "center" });
+            setErrors(errors);
+            setIsSaving(false);
+            return;
+          }
           const stepsFirstErrorIndex = errors?.steps?.findIndex((err) => !!err);
           if (stepsFirstErrorIndex !== -1) {
-            refs?.current[stepsFirstErrorIndex]?.scrollIntoView({ behavior: "smooth", block: "center" });
+            refs?.current[stepsFirstErrorIndex + 1]?.scrollIntoView({ behavior: "smooth", block: "center" });
           }
         }
         setErrors(errors);
@@ -544,8 +550,9 @@ const CreateTemplate = ({
                   />
                 </RoundedSecondaryButton>
                 <Typography color="black" fontFamily="Poppins" fontWeight={600} fontSize="15px" lineHeight="15px">
-                  Add new block
+                  Add a step
                 </Typography>
+                {errors?.steps && typeof errors?.steps === "string" ? <ErrorField errorText={errors?.steps} /> : null}
               </Panel>
             )}
 

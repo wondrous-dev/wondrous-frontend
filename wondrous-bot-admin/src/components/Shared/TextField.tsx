@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { memo } from "react";
 import { CustomTextField } from "../AddFormEntity/components/styles";
 import { CustomResizableTextField, ErrorText } from "./styles";
+import ErrorField from "./ErrorField";
 
 export const ResizeTextField = ({ value, onChange, label = "", error, placeholder, maxRows = 4, ...props }) => {
   return (
@@ -18,7 +19,7 @@ export const ResizeTextField = ({ value, onChange, label = "", error, placeholde
         maxRows={maxRows}
         {...props}
       />
-      {error ? <ErrorText>{error}</ErrorText> : null}
+      {error ? <ErrorField errorText={error}/> : null}
     </Box>
   );
 };
@@ -52,7 +53,7 @@ const TextFieldComponent = ({
         borderRadius={props?.borderRadius}
         {...props}
       />
-      {error ? <ErrorText>{error}</ErrorText> : null}
+      {error ? <ErrorField errorText={error} /> : null}
     </Box>
   );
 };

@@ -9,6 +9,7 @@ import ReplaceIcon from "components/Icons/ReplaceIcon";
 import { Label } from "components/QuestsList/styles";
 import { useMemo } from "react";
 import * as yup from "yup";
+import ErrorField from "components/Shared/ErrorField";
 
 const Asset = ({ file }) => {
   const url = useMemo(() => {
@@ -124,7 +125,7 @@ const AssetUpload = ({ value, onChange, error, limit, setError }: AssetUploadPro
             }}
           />
         )}
-        {error ? <ErrorText>{error}</ErrorText> : null}
+        {error ? <ErrorField errorText={error}/> : null}
       </Container>
       <Container>
         <AssetDisclaimer>
