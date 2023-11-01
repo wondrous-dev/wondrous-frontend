@@ -18,6 +18,9 @@ import { ConfigureNotificationsOnboardingModal } from "./onboarding/discord/conf
 import { usePaywall, useSubscription } from "utils/hooks";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
+import HomeBackgroundQuests from "components/Icons/HomePageBackgroundQuests.svg";
+import HomeBackgroundLevels from "components/Icons/HomePageBackgroundLevels.svg";
+import HomeBackgroundMembers from "components/Icons/HomePageBackgroundMembers.svg";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -63,11 +66,19 @@ const CardsComponent = ({ cards }) => {
           justifyContent="center"
           flex="1"
           width="100%"
-          padding="10px"
+          padding="0"
           alignItems="center"
           onClick={() => navigate(card.path)}
         >
-          <card.Icon />
+          <img
+            style={{
+              borderTopLeftRadius: "16px",
+              borderTopRightRadius: "16px",
+              marginTop: "-1px",
+              width: "100%",
+            }}
+            src={card.Icon}
+          />
           <Typography {...typographyStyles}>{card.count}</Typography>
           <Typography {...typographyStyles} letterSpacing="0.08em" fontSize="20px" fontWeight={600}>
             {card.title}
@@ -94,7 +105,11 @@ const HomePage = () => {
     notifyOnNetworkStatusChange: true,
     skip: !activeOrg?.id,
   });
-  const { data: orgDiscordConfig, error: getDiscordConfigError, loading: isDiscordConfigLoading } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
+  const {
+    data: orgDiscordConfig,
+    error: getDiscordConfigError,
+    loading: isDiscordConfigLoading,
+  } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
     notifyOnNetworkStatusChange: true,
     variables: {
       orgId: activeOrg?.id,
@@ -117,21 +132,21 @@ const HomePage = () => {
     {
       title: "Members Onboarded",
       count: totalMembers,
-      Icon: OnboardedIcon,
+      Icon: HomeBackgroundMembers,
       bgColor: "#F8642D",
       path: "/members",
     },
     {
       title: "Quests",
       count: totalQuests,
-      Icon: QuestIcon,
+      Icon: HomeBackgroundQuests,
       bgColor: "#F8AFDB",
       path: "/quests",
     },
     {
       title: "Levels",
       count: 10,
-      Icon: LevelsIcon,
+      Icon: HomeBackgroundLevels,
       bgColor: "#84BCFF",
       path: "/levels",
     },
@@ -145,7 +160,6 @@ const HomePage = () => {
       navigate("/quests/create");
     }
   };
-
 
   useEffect(() => {
     if (!loading && orgDiscordConfig?.getCmtyOrgDiscordConfig && !additionalData) {
@@ -168,7 +182,7 @@ const HomePage = () => {
   const hasShownModal = useMemo(() => localStorage.getItem("wndr-show-connectingModal"), []);
 
   const shouldDisplayAddModal = useMemo(() => {
-    if(isTelegramConfigLoading || isDiscordConfigLoading || loading) return false;
+    if (isTelegramConfigLoading || isDiscordConfigLoading || loading) return false;
     const discordConfigExists = orgDiscordConfig?.getCmtyOrgDiscordConfig?.id;
     const telegramConfigExists = telegramConfigData?.getTelegramConfigForOrg?.chatId;
     if (!discordConfigExists && !telegramConfigExists && openAddBotModal) {
@@ -178,7 +192,15 @@ const HomePage = () => {
       return true;
     }
     return false;
-  }, [orgDiscordConfig, telegramConfigData, openAddBotModal, hasShownModal, isDiscordConfigLoading, isTelegramConfigLoading, loading]);
+  }, [
+    orgDiscordConfig,
+    telegramConfigData,
+    openAddBotModal,
+    hasShownModal,
+    isDiscordConfigLoading,
+    isTelegramConfigLoading,
+    loading,
+  ]);
 
   const handleOnBotModalClose = () => {
     const hasDiscordConnected = !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id;
@@ -189,14 +211,12 @@ const HomePage = () => {
     setOpenAddBotModal(false);
   };
 
-  const isTelegramOrDiscordConnected = !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
+  const isTelegramOrDiscordConnected =
+    !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
 
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
-      <AddBotModal
-        open={shouldDisplayAddModal}
-        onClose={handleOnBotModalClose}
-      />
+      <AddBotModal open={shouldDisplayAddModal} onClose={handleOnBotModalClose} />
       <ConfigureNotificationsOnboardingModal
         open={openDiscordNotificationModal}
         onClose={() => setOpenDiscordNotificationModal(false)}
