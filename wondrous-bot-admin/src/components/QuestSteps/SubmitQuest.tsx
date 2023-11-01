@@ -71,6 +71,13 @@ const SubmittedQuestRewards = ({ quest }) => {
     let questRewards =
       questRewardsData?.getQuestRewards?.map((reward) => {
         if (reward.type === "token") {
+          if(reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
+            return {
+              label: 'Mint Community Badge',
+              icon: NFTIcon,
+              subLabel: "You've earned a badge! After you close this window you will receive a link to mint your badge.",
+            }
+          }
           return {
             label: `Token: ${reward.amount} ${reward?.paymentMethod?.name || reward?.paymentMethod?.contractAddress}`,
             icon: reward?.paymentMethod?.type?.toLowerCase() === "erc20" ? PointsIcon : NFTIcon,

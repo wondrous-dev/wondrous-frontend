@@ -186,6 +186,7 @@ export const GET_QUEST_REWARDS = gql`
         nftMetadataId
         nftMetadata {
           mediaUrl
+          tokenId
         }
       }
     }

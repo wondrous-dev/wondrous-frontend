@@ -30,11 +30,13 @@ const handleMediaUpload = async (mediaUploads) =>
     })
   );
 
-const ErrorHelpers = ({ error, callback, telegramUserId }) => {
+const ErrorHelpers = ({ error, callback, telegramUserId, }) => {
   const errorCode = error?.graphQLErrors?.[0]?.extensions?.errorCode;
   const errorMessage = error?.graphQLErrors?.[0]?.extensions?.message;
-
+  const missingDiscountCode = errorCode === "no_discount_code_available";
+  
   if (!error) return null;
+
 
   if (errorCode === "no_active_wallet") {
     return (
@@ -49,6 +51,10 @@ const ErrorHelpers = ({ error, callback, telegramUserId }) => {
   if (errorMessage?.includes("You already minted a POAP for this drop")) {
     return <ErrorText>{errorMessage}</ErrorText>;
   }
+  if(missingDiscountCode) {
+    return (<ErrorText>No discount code available. Please reach out to an admin</ErrorText>)
+  }
+  if(errorMessage)
   return <ErrorText>Something went wrong</ErrorText>;
 };
 
@@ -70,6 +76,7 @@ const QuestStepsList = () => {
       document.title = data?.getQuestById?.title;
     },
   });
+
 
   const [canUserStartQuest, { data: canStartData, error: canStartError }] = useLazyQuery(USER_CAN_START_QUEST, {
     fetchPolicy: "network-only",
@@ -234,6 +241,7 @@ const QuestStepsList = () => {
       telegramUserId: webApp?.initDataUnsafe?.user?.id?.toString(),
       telegramUsername: webApp?.initDataUnsafe?.user?.username,
       stepsData: questSubmissions,
+      platform: 'telegram'
     };
 
     try {

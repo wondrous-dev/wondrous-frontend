@@ -5,6 +5,10 @@ export const GET_TELEGRAM_CONFIG_FOR_ORG = gql`
         getTelegramConfigForOrg(orgId: $orgId) {
             chatId
             orgId
+            chatInfo {
+                id
+                title
+            }
         }
     }
 `;
