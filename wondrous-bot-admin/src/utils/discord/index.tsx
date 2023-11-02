@@ -81,18 +81,18 @@ export const getDiscordUrl = (callbackUrl = "/discord/callback", params = "") =>
   return `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=email%20identify${params}`;
 };
 
-export const getTelegramBotLink = () => {
+export const getTelegramBotLink = (state = '?startgroup=true&admin=post_messages') => {
   let botName = "wonderverse_bot";
-  let link = `https://t.me/${botName}?startgroup=true&admin=post_messages`;
+  let link = `https://t.me/${botName}${state}`;
   if (import.meta.env.VITE_PRODUCTION) {
     return link;
   }
   if (import.meta.env.VITE_STAGING) {
     botName = "wonderverse_staging_bot";
-    link = `https://t.me/${botName}?startgroup=true&admin=post_messages`;
+    link = `https://t.me/${botName}${state}`;
     return link;
   }
-  return "https://t.me/communities_test_bot?startgroup=true&admin=post_messages";
+  return `https://t.me/communities_test_bot${state}`;
 };
 
 export const useDiscordRoles = ({ orgId, skip = false }) => {

@@ -2,6 +2,8 @@ import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import moment from "moment";
 import { CONDITION_TYPES, NFT_TYPES } from "./constants";
 import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
+import { GET_ORG_DISCORD_ROLES, GET_QUEST_BY_ID } from "graphql/queries";
+import apollo from "services/apollo";
 
 const DEFAULT_TWITTER_SCOPE =
   "users.read%20tweet.read%20follows.read%20follows.write%20like.read%20like.write%20offline.access";
@@ -203,3 +205,26 @@ export const validateTypes = (type, value) => {
 };
 
 export const verifyIsImportedToken = (type) => [NFT_TYPES.ERC721, NFT_TYPES.ERC1155].includes(type);
+
+export const getNameForCondition = async (condition, orgId) => {
+  if (condition.type === CONDITION_TYPES.DISCORD_ROLE) {
+    const { data } = await apollo.query({
+      query: GET_ORG_DISCORD_ROLES,
+      variables: {
+        orgId,
+      },
+    });
+    const allRoles = data?.getCmtyOrgDiscordRoles?.map((role) => role.roles).flat();
+    return allRoles.find((item) => item.id === condition.conditionData?.discordRoleId)?.name;
+  }
+  if (condition.type === CONDITION_TYPES.QUEST) {
+    const { data } = await apollo.query({
+      query: GET_QUEST_BY_ID,
+      variables: {
+        questId: condition.conditionData?.questId,
+      },
+    });
+    return data?.getQuestById?.title;
+  }
+  return null;
+};

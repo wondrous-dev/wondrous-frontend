@@ -469,3 +469,7 @@ export const NFT_TYPES = {
   ERC1155: 'ERC1155',
   COMMUNITY_BADGE: 'COMMUNITY_BADGE',
 }
+
+export const TELEGRAM_ACTION_CODES = {
+  CONNECT_CMTY_USER_TELEGRAM: 'connect-cmty-user'
+};
