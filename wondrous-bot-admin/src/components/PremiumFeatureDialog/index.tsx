@@ -4,9 +4,10 @@ type PremiumFeatureDialogProps = {
   open: boolean;
   onClose: (value: string) => void;
   paywallMessage?: string;
+  onCancel?: () => void;
 };
 
-const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: PremiumFeatureDialogProps) => {
+const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage, onCancel = null }: PremiumFeatureDialogProps) => {
   return (
     <Dialog
       open={open}
@@ -79,8 +80,9 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: Premium
           >
             Upgrade Community
           </Button>
-          {/* <Button
+          {onCancel ? <Button
             disableRipple
+            onClick={onCancel}
             disableFocusRipple
             sx={{
               height: "40px",
@@ -99,7 +101,7 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage }: Premium
             }}
           >
             I'll upgrade later
-          </Button> */}
+          </Button> : null}
         </Grid>
       </Grid>
     </Dialog>

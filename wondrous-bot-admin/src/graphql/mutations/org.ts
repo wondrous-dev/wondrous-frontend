@@ -74,3 +74,11 @@ export const RESET_ORG_CMTY_USER_POINTS = gql`
     }
   }
 `;
+
+export const UPDATE_ORG_MODULES = gql`
+  mutation updateOrgModules($orgId: ID!, $input: ModulesInput) {
+    updateOrgModules(orgId: $orgId, input: $input) {
+      success
+    }
+  }
+`;
