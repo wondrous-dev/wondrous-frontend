@@ -103,6 +103,7 @@ export const PaymentRowContentBox = styled.div`
   display: flex;
   align-items: center;
   margin-left: 8px;
+  gap: 12px;
 `;
 
 export const PaymentRowContentText = styled(PaymentMethodSecondRowHeader)`

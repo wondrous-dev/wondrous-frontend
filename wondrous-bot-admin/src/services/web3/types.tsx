@@ -85,7 +85,7 @@ export interface WonderWeb3 {
   /**
    * The symbol of the current chain gas token.
    */
-  nativeTokenSymbol: string;
+  nativeTokenSymbol?: string;
 
   /**
    * True if the current chain is not supported by wonderverse.
