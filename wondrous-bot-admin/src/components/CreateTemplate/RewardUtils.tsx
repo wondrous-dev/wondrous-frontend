@@ -1,13 +1,7 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
 import WestIcon from "@mui/icons-material/West";
 import { Box, ButtonBase, Divider, Grid, InputAdornment, TextField as MUITextField, Typography } from "@mui/material";
-import Arbitrum from "assets/arbitrum";
-import Avalanche from "assets/avalanche";
-import Base from "assets/base.svg";
-import Binance from "assets/binance";
-import Ethereum from "assets/ethereum";
-import Optimism from "assets/optimism";
-import Polygon from "assets/polygonMaticLogo.svg";
+import { CHAIN_SELECT_OPTIONS } from "utils/web3Constants";
 import CloseModalIcon from "components/Icons/CloseModal";
 import DeleteIcon from "components/Icons/Delete";
 import SelectComponent from "components/Shared/Select";
@@ -206,110 +200,6 @@ export const TokenComponent = ({
   );
 };
 
-export const CHAIN_SELECT_OPTIONS = [
-  {
-    label: "Ethereum",
-    value: "ethereum",
-    icon: (
-      <Ethereum
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  ...(isDev
-    ? [
-        {
-          label: "Goerli",
-          value: "goerli",
-          icon: (
-            <Ethereum
-              style={{
-                width: "20px",
-                marginRight: "8px",
-              }}
-            />
-          ),
-        },
-      ]
-    : []),
-  {
-    label: "Polygon",
-    value: "polygon",
-    icon: (
-      <img
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-        src={Polygon}
-      />
-    ),
-  },
-  {
-    label: "Optimism",
-    value: "optimism",
-    icon: (
-      <Optimism
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "Arbitrum",
-    value: "arbitrum",
-    icon: (
-      <Arbitrum
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "BNB",
-    value: "bsc",
-    icon: (
-      <Binance
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "Avalanche",
-    value: "avalanche",
-    icon: (
-      <Avalanche
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "Base",
-    value: "base",
-    icon: (
-      <img
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-        src={Base}
-      />
-    ),
-  },
-];
 
 export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPaymentMethod, index }) => {
   return (

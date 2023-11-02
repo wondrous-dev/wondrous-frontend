@@ -12,7 +12,6 @@ import { useState } from "react";
 import ViewNFTComponent from "../ViewNFTComponent";
 import EmptyState from "components/EmptyState";
 import { EMPTY_STATE_TYPES, NFT_TYPE_LABELS } from "utils/constants";
-import { CONTRACT_LABELS } from "../utils";
 
 const NFTMediaItem = ({ slug, type, name }) => {
   const mediaTypeIsImage = isImage(slug, type);
