@@ -225,34 +225,6 @@ export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPayme
       },
     });
 
-  //   <ButtonBase
-  //   onClick={() => {
-  //     setAnchorEl(null);
-  //     setIsConfirmationModalOpen(true);
-  //   }}
-  //   sx={{
-  //     display: "flex",
-  //     justifyContent: "flex-start",
-  //     width: "100%",
-  //     padding: "6px 10px",
-  //     borderRadius: "6px",
-  //     ":hover": {
-  //       background: "#C1B6F6",
-  //     },
-  //   }}
-  // >
-  //   <Typography
-  //     fontFamily="Poppins"
-  //     fontSize="14px"
-  //     fontWeight={500}
-  //     color="#ee4852"
-  //     sx={{
-  //       textWrap: "nowrap",
-  //     }}
-  //   >
-  //     Delete Payment Method
-  //   </Typography>
-  // </ButtonBase>
   const CONTEXT_MENU_ACTIONS = [
     {
       label: "Edit payment method",
@@ -382,39 +354,6 @@ export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPayme
                     </ButtonBase>
                   );
                 })}
-                {/* <ButtonBase
-                onClick={() => {
-                  setAnchorEl(null);
-                  setIsConfirmationModalOpen(true);
-                }}
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  width: "100%",
-                  padding: "6px 10px",
-                  borderRadius: "6px",
-                  ":hover": {
-                    background: "#C1B6F6",
-                  },
-                }}
-              >
-                <Typography
-                  fontFamily="Poppins"
-                  fontSize="14px"
-                  fontWeight={500}
-                  color="#ee4852"
-                  sx={{
-                    textWrap: "nowrap",
-                  }}
-                >
-                  Delete Payment Method
-                </Typography>
-              </ButtonBase> */}
-                {/* setEditPaymentMethod({
-                ...paymentMethod,
-                tokenName: paymentMethod?.name,
-                type: paymentMethod?.type?.toLowerCase(),
-              }); */}
               </>
             )}
           />
