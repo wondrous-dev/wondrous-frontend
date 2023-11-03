@@ -394,7 +394,7 @@ const APEIRON_INTEGRATIONS = [
 
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
-  "65854367353274369": {
+  "58318954576216128": {
     name: "Lifi",
     integrations: [
       {
