@@ -4,7 +4,14 @@ import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { Label } from "components/CreateTemplate/styles";
 import TextField from "components/Shared/TextField";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { DELIVERY_METHODS, NFT_ORIGIN_TYPES, STORE_ITEM_TYPES, DELIVERY_METHOD_LABELS, LIMIT } from "utils/constants";
+import {
+  DELIVERY_METHODS,
+  NFT_ORIGIN_TYPES,
+  STORE_ITEM_TYPES,
+  DELIVERY_METHOD_LABELS,
+  LIMIT,
+  APEIRON_ORG_ID,
+} from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
 import ProductImage from "./ProductImage";
@@ -21,7 +28,6 @@ import { GET_ALL_STORE_ITEM_DISCOUNT_CODES, GET_STORE_ITEM_DISCOUNT_CODE_INFO } 
 import { useLazyQuery } from "@apollo/client";
 import DeleteDiscountCodesModal from "./components/DeleteDiscountCodesModal";
 
-let apeironRaffle = false;
 const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChange, storeItemSettings }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [hasMore, setHasMore] = useState(false);
@@ -161,7 +167,6 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
   };
 
   const Config: any = COMPONENTS[storeItemData.type];
-
   const DELIVERY_METHODS_OPTIONS = [
     {
       label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.DISCORD_ROLE],
@@ -183,16 +188,16 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
   ];
 
   const componentProps = useMemo(() => Config?.componentProps, [Config]);
-
-  useEffect(() => {
-    if (activeOrg?.id === "98989259425317451" && !apeironRaffle) {
+  if (activeOrg?.id === APEIRON_ORG_ID) {
+    const hasRaffle = DELIVERY_METHODS_OPTIONS.find((item) => item.value === DELIVERY_METHODS.RAFFLE);
+    if (!hasRaffle) {
       DELIVERY_METHODS_OPTIONS.push({
         label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.RAFFLE],
         value: DELIVERY_METHODS.RAFFLE,
         disabled: storeItemData.type !== STORE_ITEM_TYPES.EXTERNAL_SHOP && storeItemData.type !== STORE_ITEM_TYPES.NFT,
       });
     }
-  }, [activeOrg?.id]);
+  }
   useEffect(() => {
     if (storeItemSettings?.id) {
       getDiscountCodeInfo({
@@ -220,7 +225,6 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
     });
     setHasMore(res?.data?.getCmtyUsersLeaderboard?.length >= LIMIT);
   };
-
   return (
     <Grid display="flex" flexDirection="column" justifyContent="flex-start" gap="24px" alignItems="center" width="100%">
       <DiscountCodeModal
