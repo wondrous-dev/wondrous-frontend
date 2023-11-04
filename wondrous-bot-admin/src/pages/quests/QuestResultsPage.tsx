@@ -114,10 +114,12 @@ const QuestResultsPage = () => {
     });
   };
 
+  const isOnboardingLevel = getQuestById?.isOnboarding ? null : getQuestById?.level;
+
   const questSettings = {
     title: getQuestById?.title || "",
     description: getQuestById?.description || "",
-    level: getQuestById?.level ? String(getQuestById?.level) : null,
+    level: isOnboardingLevel ? String(getQuestById?.level) : null,
     timeBound: getQuestById?.startAt || getQuestById?.endAt,
     isOnboarding: getQuestById?.isOnboarding || false,
     maxSubmission: getQuestById?.maxSubmission || null,
@@ -186,7 +188,7 @@ const QuestResultsPage = () => {
         </Typography>
       </Modal>
       <PageHeader
-        title={isEditMode ? "Edit Quest" : "View Quest"}
+        title={isEditMode ? "Edit Quest" : "Quest Activity"}
         withBackButton
         onBackButtonClick={() => {
           if (isEditMode) {
@@ -195,8 +197,6 @@ const QuestResultsPage = () => {
         }}
         renderActions={() => (
           <Grid display="flex" gap="10px" alignItems="center">
-            <DeleteQuestButton questId={getQuestById?.id} />
-
             {/* 
             ShareComponent is used to share the link to the SSR page. This will work in a local dev environment only with vercel launched.
             */}
@@ -222,6 +222,7 @@ const QuestResultsPage = () => {
                 <SharedSecondaryButton onClick={toggleEdit}>Edit Quest</SharedSecondaryButton>
               </>
             )}
+            <DeleteQuestButton questId={getQuestById?.id} />
           </Grid>
         )}
       />

@@ -52,7 +52,7 @@ const StoreItemsList = ({ data }) => {
       }}
     >
       {Object.keys(STORE_ITEM_TYPES).map((type, idx) => {
-        if (!storeData[STORE_ITEM_TYPES[type]]) return null;
+        if (!storeData[STORE_ITEM_TYPES[type]] && idx > 0) return null;
         return (
           <Grid
             display="flex"

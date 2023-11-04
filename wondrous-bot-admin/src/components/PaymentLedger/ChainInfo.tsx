@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { CHAIN_SELECT_OPTIONS } from "components/CreateTemplate/RewardUtils";
-import { Label } from "components/CreateTemplate/styles";
+import { CHAIN_SELECT_OPTIONS } from "utils/web3Constants";
 
 const ChainInfo = ({
     chain,

@@ -279,8 +279,8 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       width="100%"
     >
       <EcosystemFeature open={openEcosystemDialog} onClose={() => setOpenEcosystemDialog(false)} />
-      <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-        {steps?.length} Quest Steps
+      <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black" ref={(ref) => refs.current[0] = ref}>
+        {steps?.length} {steps?.length === 1 ? "Quest Step" : "Quest Steps"}
       </Typography>
       <DragDropContext onDragEnd={handleDragEnd}>
         <StrictModeDroppable droppableId="droppableId">
@@ -299,7 +299,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                 const Component = CONFIG_COMPONENTS[item.type];
                 if (!Component) return null;
                 return (
-                  <Box width="100%" height="100%" ref={(ref) => (refs.current[idx] = ref)}>
+                  <Box width="100%" height="100%" ref={(ref) => (refs.current[idx + 1] = ref)}>
                     <Draggable key={idx} draggableId={`${idx}`} index={idx}>
                       {(provided, snapshot) => (
                         <Grid

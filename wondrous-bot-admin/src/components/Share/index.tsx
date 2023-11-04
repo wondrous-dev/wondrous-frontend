@@ -1,8 +1,12 @@
+import { Link } from "@mui/icons-material";
+import { ExternalLinkIcon } from "components/Icons/ExternalLink";
+import LinkIcon from "components/Icons/LinkIcon";
 import ShareIcon from "components/Icons/Share";
+import CopyIcon from "components/Icons/copy";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import useAlerts from "utils/hooks";
 
-const ShareComponent = ({link = ''}) => {
+const ShareComponent = ({ link = "" }) => {
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const onClick = (e) => {
     e.stopPropagation();
@@ -13,7 +17,7 @@ const ShareComponent = ({link = ''}) => {
   };
   return (
     <ButtonIconWrapper onClick={onClick}>
-      <ShareIcon />
+      <LinkIcon />
     </ButtonIconWrapper>
   );
 };

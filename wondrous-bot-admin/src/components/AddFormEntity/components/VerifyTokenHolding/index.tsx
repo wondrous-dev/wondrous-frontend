@@ -3,59 +3,13 @@ import { IndexContainer, Label } from "components/AddFormEntity/components/style
 
 import { TYPES } from "utils/constants";
 import TextField from "components/Shared/TextField";
-import Ethereum from "assets/ethereum";
-import { Matic } from "components/Icons/web3";
-import Optimism from "assets/optimism";
-import Avalanche from "assets/avalanche";
-import Binance from "assets/binance";
-import Base from "assets/base.svg";
 import { useEffect, useState } from "react";
 import DropdownSelect from "components/DropdownSelect/DropdownSelect";
 import { useLazyQuery } from "@apollo/client";
 import { GET_NFT_INFO, GET_TOKEN_INFO } from "graphql/queries";
 import { TokenImage, TokenText } from "./styles";
 import { ErrorText } from "components/Shared/styles";
-
-const chainOptions = [
-  {
-    label: "Ethereum",
-    icon: <Ethereum />,
-    value: "ethereum",
-  },
-  {
-    label: "Polygon",
-    icon: <Matic />,
-    value: "polygon",
-  },
-  {
-    label: "Optimism",
-    icon: <Optimism />,
-    value: "optimism",
-  },
-  {
-    label: "Avalanche",
-    icon: <Avalanche />,
-    value: "avalanche",
-  },
-  {
-    label: "BNB",
-    icon: <Binance />,
-    value: "bsc",
-  },
-  {
-    label: "Base",
-    icon: (
-      <img
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-        src={Base}
-      />
-    ),
-    vaue: "base",
-  },
-];
+import { CHAIN_SELECT_OPTIONS } from "utils/web3Constants";
 
 const SUPPORTED_ACCESS_CONDITION_TYPES = [
   {
@@ -180,7 +134,7 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
           formSelectStyle={{
             height: "auto",
           }}
-          options={chainOptions}
+          options={CHAIN_SELECT_OPTIONS}
           name="chain"
         />
         {error?.additionalData?.tokenChain && (

@@ -184,6 +184,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
     rejectedAt: submission?.rejectedAt,
   }));
 
+  const levelText = quest?.isOnboarding ? "None - Onboarding Quest" : quest?.level;
   const sections = [
     {
       settings: [
@@ -200,8 +201,8 @@ const ViewQuestResults = ({ quest, rewards }) => {
       settings: [
         {
           label: "Level Requirement",
-          value: quest?.level || "None",
-          type: "level",
+          value: levelText,
+          type: quest.isOnboarding ? "text" : "level",
         },
         {
           label: "Require Review",
@@ -229,11 +230,11 @@ const ViewQuestResults = ({ quest, rewards }) => {
           value: quest?.maxApproval || "Unlimited",
           type: "text",
         },
-        {
-          label: "Onboarding Quest",
-          value: quest?.isOnboarding ? "Yes" : "No",
-          type: "boolean",
-        },
+        // {
+        //   label: "Onboarding Quest",
+        //   value: quest?.isOnboarding ? "Yes" : "No",
+        //   type: "boolean",
+        // },
         {
           label: "Time Bound",
           ...timeboundDate,

@@ -13,6 +13,7 @@ import EditModal from "./EditModal";
 import QuestStepComponent from "./QuestStepComponent";
 import { transformAndUploadTelegramMedia } from "utils/media";
 import FailReasons from "./FailReasons";
+import ErrorField from "components/Shared/ErrorField";
 
 const handleMediaUpload = async (mediaUploads) =>
   Promise.all(
@@ -39,17 +40,19 @@ const ErrorHelpers = ({ error, callback, telegramUserId }) => {
   if (errorCode === "no_active_wallet") {
     return (
       <>
-        <ErrorText>
-          There is a token reward with this quest! Please connect your wallet first and then click submit again.
-        </ErrorText>
+        <ErrorField
+          errorText={
+            "There is a token reward with this quest! Please connect your wallet first and then click submit again."
+          }
+        />
         <Web3Connect telegramUserId={telegramUserId} callback={callback} />
       </>
     );
   }
   if (errorMessage?.includes("You already minted a POAP for this drop")) {
-    return <ErrorText>{errorMessage}</ErrorText>;
+    return <ErrorField errorText={errorMessage}/>
   }
-  return <ErrorText>Something went wrong</ErrorText>;
+  return <ErrorField errorText="Something went wrong"/>;
 };
 
 const QuestStepsList = () => {
@@ -109,52 +112,51 @@ const QuestStepsList = () => {
       [id]: skip ? null : value,
     });
 
-    const validate = (step, value) => {
-      const { type, id, options } = step;
-      
-      if (!SELECT_TYPES.includes(type)) return true;
-      setErrors({})
+  const validate = (step, value) => {
+    const { type, id, options } = step;
 
-      const correctValues = options?.filter((option) => option.correct).map((option) => option.position) || [];
-      
+    if (!SELECT_TYPES.includes(type)) return true;
+    setErrors({});
 
-      const isMultiQuizValid = () => {
-        const hasAllValuesCorrect = 
-          correctValues.every((correctValue) => value?.includes(correctValue)) &&
-          value.every((selectedValue) => correctValues.includes(selectedValue));
-      
-        if (!hasAllValuesCorrect) {
-          setErrors(prevErrors => ({ ...prevErrors, [id]: "Please select only the correct options" }));
-        }
-        return hasAllValuesCorrect;
-      };
-        
-      const isSingleQuizValid = () => {
-        const isCorrect = correctValues.includes(value?.[0]);
-        if (!isCorrect) {
-          setErrors(prevErrors => ({ ...prevErrors, [id]: "Please select only the correct options" }));
-        }
-        return isCorrect;
-      };
-    
-      if (type === TYPES.MULTI_QUIZ && correctValues?.length > 0) {
-        return isMultiQuizValid();
+    const correctValues = options?.filter((option) => option.correct).map((option) => option.position) || [];
+
+    const isMultiQuizValid = () => {
+      const hasAllValuesCorrect =
+        correctValues.every((correctValue) => value?.includes(correctValue)) &&
+        value.every((selectedValue) => correctValues.includes(selectedValue));
+
+      if (!hasAllValuesCorrect) {
+        setErrors((prevErrors) => ({ ...prevErrors, [id]: "Please select only the correct options" }));
       }
-    
-      if (type === TYPES.SINGLE_QUIZ && correctValues?.length > 0) {
-        return isSingleQuizValid();
-      }
-    
-      return true;
+      return hasAllValuesCorrect;
     };
-  
+
+    const isSingleQuizValid = () => {
+      const isCorrect = correctValues.includes(value?.[0]);
+      if (!isCorrect) {
+        setErrors((prevErrors) => ({ ...prevErrors, [id]: "Please select only the correct options" }));
+      }
+      return isCorrect;
+    };
+
+    if (type === TYPES.MULTI_QUIZ && correctValues?.length > 0) {
+      return isMultiQuizValid();
+    }
+
+    if (type === TYPES.SINGLE_QUIZ && correctValues?.length > 0) {
+      return isSingleQuizValid();
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
     const questSubmissions = [];
 
     for (const step of data?.getQuestById.steps) {
       const answer = responses[step.id];
       const isValid = validate(step, answer);
-      if(!isValid) return;
+      if (!isValid) return;
       const isQuestSkipped = responses[step.id] === null;
       if (step.type === TYPES.TEXT_FIELD) {
         questSubmissions.push({
@@ -170,7 +172,9 @@ const QuestStepsList = () => {
           order: step.order,
         });
       } else if (SELECT_TYPES.includes(step.type)) {
-        const selectedValues = step.options.filter(option => answer.includes(option.position))?.map(value => value.text)
+        const selectedValues = step.options
+          .filter((option) => answer.includes(option.position))
+          ?.map((value) => value.text);
         questSubmissions.push({
           stepId: step.id,
           order: step.order,
@@ -246,7 +250,6 @@ const QuestStepsList = () => {
 
   const steps = data?.getQuestById?.steps || [];
 
-  
   const nextStep = () => {
     const currentStepIdx = steps?.findIndex((step) => step.id === activeStepId);
     const currentStep = steps[currentStepIdx];

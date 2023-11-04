@@ -4,6 +4,8 @@ export const APEIRON_TYPES = {
   VERIFY_APEIRON_DEFEAT_FIRST_BOSS: "verify_apeiron_defeat_first_boss",
   VERIFY_APEIRON_10_MINS_PLAYED: "verify_apeiron_10_mins_played",
 };
+
+export const APEIRON_ORG_ID = "98989259425317451";
 export const TYPES = {
   TEXT_FIELD: "text",
   MULTI_QUIZ: "multiple_quiz",
@@ -428,8 +430,8 @@ export const CUSTOM_INTEGRATIONS = {
 export const OPTION_TEXT_LIMIT = 250;
 
 export const STORE_ITEM_TYPES = {
-  NFT: "nft",
   EXTERNAL_SHOP: "external_shop",
+  NFT: "nft",
   DISCORD_ROLE: "discord_role",
 };
 export const STORE_ITEM_LABELS = {
@@ -459,13 +461,13 @@ export const DELIVERY_METHOD_LABELS = {
 };
 
 export const NFT_TYPE_LABELS = {
-  "ERC721": "ERC721",
-  "ERC1155": "ERC1155",
+  ERC721: "ERC721",
+  ERC1155: "ERC1155",
   COMMUNITY_BADGE: "Community Badge",
-}
+};
 
 export const NFT_TYPES = {
-  ERC721: 'ERC721',
-  ERC1155: 'ERC1155',
-  COMMUNITY_BADGE: 'COMMUNITY_BADGE',
-}
+  ERC721: "ERC721",
+  ERC1155: "ERC1155",
+  COMMUNITY_BADGE: "COMMUNITY_BADGE",
+};

@@ -29,6 +29,7 @@ import TextField from "components/Shared/TextField";
 import { ButtonIconWrapper, ErrorText, SharedSecondaryButton } from "components/Shared/styles";
 import { UPDATE_ORG_DISCORD_ADDITIONAL_DATA } from "graphql/mutations/discord";
 import { camelToSnake, snakeToCamel } from "utils/common";
+import ErrorField from "components/Shared/ErrorField";
 
 const CHANNEL_TYPE = {
   STICKY_MESSAGE: "sticky_message_channel",
@@ -264,7 +265,7 @@ const NotificationSetting = (props) => {
         </NotificationHalves>
         {errors && (
           <Box paddingLeft="16px">
-            <ErrorText>{errors}</ErrorText>
+            <ErrorField errorText={errors}/>
           </Box>
         )}
         <NotificationHalves>

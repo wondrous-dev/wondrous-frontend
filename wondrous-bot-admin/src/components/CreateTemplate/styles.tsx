@@ -28,7 +28,7 @@ export const Label = styled(Typography)`
     font-family: Poppins;
     font-style: normal;
     font-weight: ${({ fontWeight = 700 }) => fontWeight};
-    font-size: 14px;
+    font-size: ${({ fontSize = "14px" }) => fontSize};
     line-height: 15px;
     min-width: 150px;
     letter-spacing: 0.01em;
@@ -131,4 +131,13 @@ export const PoapImage = styled.img`
   width: 30px;
   height: 30px;
   border-radius: 15px;
+`;
+
+export const ExtraFeaturesWrapper = styled(Grid)`
+  && {
+    transition: all 0.1s ease;
+    max-height: 100%;
+    height: ${({ show }) => (show ? "100%" : "0px")};
+    gap: ${({ show }) => (show ? "14px" : "0px")};
+  }
 `;

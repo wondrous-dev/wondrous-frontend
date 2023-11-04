@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from "react";
 import { TYPES } from "utils/constants";
 import { useTakeQuest } from "utils/hooks";
 import CheckboxOption from "components/QuestSteps/Checkbox";
+import ErrorField from "components/Shared/ErrorField";
 
 export const OptionSelect = ({ step, onChange, value }) => {
   const { errors } = useTakeQuest();
@@ -53,7 +54,7 @@ export const OptionSelect = ({ step, onChange, value }) => {
           />
         );
       })}
-      {errors[step.id] ? <ErrorText>{errors[step.id]}</ErrorText> : null}
+      {errors[step.id] ? <ErrorField errorText={errors[step.id]} /> : null}
     </Grid>
   );
 };

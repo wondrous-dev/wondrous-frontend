@@ -1,4 +1,5 @@
 import { Grid } from "@mui/material";
+import ErrorField from "components/Shared/ErrorField";
 import TextField from "components/Shared/TextField";
 import { ErrorText } from "components/Shared/styles";
 import { useContext } from "react";
@@ -8,26 +9,26 @@ type QuestTitleProps = {
   value: any;
   onChange: (value: any) => void;
   placeholder?: string;
-  key?: string;
   multiline?: boolean;
   maxLength?: number;
   showMaxLength?: boolean;
+  stateKey?: string 
 };
 
 const QuestTitle = ({
   value,
   onChange = null,
   placeholder = "Enter a quest title",
-  key = "title",
   multiline = false,
   maxLength = 125,
   showMaxLength = false,
+  stateKey,
 }: QuestTitleProps) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const handleChange = (value) => {
-    if(!onChange) return null;
+    if (!onChange) return null;
     if (value.length > maxLength) return;
-    if (errors?.[key]) {
+    if (errors?.[stateKey]) {
       setErrors({
         ...errors,
         title: null,
@@ -63,16 +64,7 @@ const QuestTitle = ({
           </Grid>
         ) : null}
       </Grid>
-      {errors?.[key] ? (
-        <ErrorText
-          sx={{
-            position: "absolute",
-            top: "100%",
-          }}
-        >
-          {errors?.[key]}
-        </ErrorText>
-      ) : null}
+      {errors?.[stateKey] ? <ErrorField errorText={errors?.[stateKey]} /> : null}
     </Grid>
   );
 };

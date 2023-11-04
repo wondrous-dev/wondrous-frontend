@@ -1,13 +1,7 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
 import WestIcon from "@mui/icons-material/West";
 import { Box, ButtonBase, Divider, Grid, InputAdornment, TextField as MUITextField, Typography } from "@mui/material";
-import Arbitrum from "assets/arbitrum";
-import Avalanche from "assets/avalanche";
-import Base from "assets/base.svg";
-import Binance from "assets/binance";
-import Ethereum from "assets/ethereum";
-import Optimism from "assets/optimism";
-import Polygon from "assets/polygonMaticLogo.svg";
+import { CHAIN_SELECT_OPTIONS } from "utils/web3Constants";
 import CloseModalIcon from "components/Icons/CloseModal";
 import DeleteIcon from "components/Icons/Delete";
 import SelectComponent from "components/Shared/Select";
@@ -29,6 +23,8 @@ import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 import { useCommunityBadgePaymentMethods } from "./shared";
 import TokenStoreItem from "components/CreateStoreItem/components/TokenStoreItem";
 import StoreItemReward from "./StoreItemReward";
+import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
+import { LockOutlined } from "@mui/icons-material";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -204,110 +200,6 @@ export const TokenComponent = ({
   );
 };
 
-export const CHAIN_SELECT_OPTIONS = [
-  {
-    label: "Ethereum",
-    value: "ethereum",
-    icon: (
-      <Ethereum
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  ...(isDev
-    ? [
-        {
-          label: "Goerli",
-          value: "goerli",
-          icon: (
-            <Ethereum
-              style={{
-                width: "20px",
-                marginRight: "8px",
-              }}
-            />
-          ),
-        },
-      ]
-    : []),
-  {
-    label: "Polygon",
-    value: "polygon",
-    icon: (
-      <img
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-        src={Polygon}
-      />
-    ),
-  },
-  {
-    label: "Optimism",
-    value: "optimism",
-    icon: (
-      <Optimism
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "Arbitrum",
-    value: "arbitrum",
-    icon: (
-      <Arbitrum
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "BNB",
-    value: "bsc",
-    icon: (
-      <Binance
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "Avalanche",
-    value: "avalanche",
-    icon: (
-      <Avalanche
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-      />
-    ),
-  },
-  {
-    label: "Base",
-    value: "base",
-    icon: (
-      <img
-        style={{
-          width: "20px",
-          marginRight: "8px",
-        }}
-        src={Base}
-      />
-    ),
-  },
-];
 
 export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPaymentMethod, index }) => {
   return (
@@ -500,15 +392,17 @@ export const RewardMethod = ({
     return (
       <>
         <Label>Select NFT</Label>
-        <TokenStoreItem 
-        amount={tokenReward.amount}
-        onAmountChange={(value) => {
-          setTokenReward({
-            ...tokenReward,
-            amount: value,
-          });
-        }}
-        onChange={handleTokenStoreItemChange} value={paymentMethod?.nftMetadataId} />
+        <TokenStoreItem
+          amount={tokenReward.amount}
+          onAmountChange={(value) => {
+            setTokenReward({
+              ...tokenReward,
+              amount: value,
+            });
+          }}
+          onChange={handleTokenStoreItemChange}
+          value={paymentMethod?.nftMetadataId}
+        />
       </>
     );
   }
@@ -517,7 +411,13 @@ export const RewardMethod = ({
     return (
       <>
         <Label>Select role</Label>
-        <SelectComponent options={componentsOptions} value={discordRoleReward} onChange={handleRoleChange} />
+        <AutocompleteOptionsComponent
+          options={componentsOptions}
+          value={discordRoleReward}
+          onChange={handleRoleChange}
+          fullWidth
+          bgColor="#e8e8e8"
+        />
       </>
     );
   }
@@ -639,23 +539,26 @@ export const RewardMethod = ({
   }
 };
 
-export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, Icon, text }) => (
-  <SharedBlackOutlineButton
-    style={{
-      flex: 1,
-      width: '100%'
-    }}
-    background={paymentOption === rewardType ? "#BFB4F3" : "#BFB4F366"}
-    borderColor={paymentOption === rewardType ? "#000" : "transparent"}
-    justifyContent="flex-start"
-    height="44px"
-    padding="10px"
-    minWidth="fit-content"
-    onClick={onClick}
-  >
-    <Icon /> {text}
-  </SharedBlackOutlineButton>
-);
+export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, Icon, text, isUnavailable = false }) => {
+
+  return   <SharedBlackOutlineButton
+  style={{
+    flex: 1,
+    width: "100%",
+    opacity: isUnavailable ? 0.7 : 1
+  }}
+  background={paymentOption === rewardType ? "#BFB4F3" : "#BFB4F366"}
+  borderColor={paymentOption === rewardType ? "#000" : "transparent"}
+  justifyContent="flex-start"
+  height="44px"
+  padding="10px"
+  minWidth="fit-content"
+  onClick={onClick}
+>
+  <Icon /> {text}
+</SharedBlackOutlineButton>
+
+}
 
 export const RewardFooterLeftComponent = ({
   rewardType,

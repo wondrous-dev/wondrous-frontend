@@ -1,5 +1,5 @@
-import { AbstractConnector } from '@web3-react/abstract-connector';
-import { ethers, BigNumber } from 'ethers';
+import { AbstractConnector } from "@web3-react/abstract-connector";
+import { ethers, BigNumber } from "ethers";
 
 export interface WonderWeb3Asset {
   balance: string;
@@ -81,11 +81,6 @@ export interface WonderWeb3 {
    * True after we have subscribed to the provider events
    */
   subscribed: boolean;
-
-  /**
-   * The symbol of the current chain gas token.
-   */
-  nativeTokenSymbol: string;
 
   /**
    * True if the current chain is not supported by wonderverse.

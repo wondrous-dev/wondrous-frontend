@@ -32,8 +32,8 @@ const EMPTY_STATE_MAP = {
   }
 };
 
-const EmptyState = ({ type, sx = {}, labelColor = "white", children = null }) => {
-  const { title, Image } = EMPTY_STATE_MAP[type];
+const EmptyState = ({ type, sx = {}, labelColor = "white", children = null, customType = {title: '', Image: null} }) => {
+  const { title, Image } = customType ? customType : EMPTY_STATE_MAP[type]
   if (!title || !Image) return null;
 
   return (

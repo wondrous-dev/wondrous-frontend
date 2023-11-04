@@ -277,12 +277,6 @@ const DynamicCondition = ({ value, handleUpdate, options, stateKey, conditionLog
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
       <div>
         <Box display="flex" alignItems="center" gap="4px">
-          <SelectComponent options={CONDITION_LOGIC_TYPES} onChange={(value) => {
-            handleUpdate((prev) => ({
-              ...prev,
-              conditionLogic: value
-            }))
-          }} value={conditionLogic} />
           <CustomTextField
             onClick={openPopper}
             placeholder="Add Condition"
@@ -293,20 +287,36 @@ const DynamicCondition = ({ value, handleUpdate, options, stateKey, conditionLog
               exclusiveQuest: condition?.conditionData?.exclusiveQuest,
             })}
           />
-          <ButtonIconWrapper
-            style={{
-              height: "30px",
-              width: "35px",
-              marginLeft: "8px",
-            }}
-            onClick={addCondition}
-          >
-            <AddIcon
-              sx={{
-                color: "black",
-              }}
-            />
-          </ButtonIconWrapper>
+          {value?.length ? (
+            <>
+              <SelectComponent
+                options={CONDITION_LOGIC_TYPES}
+                onChange={(value) => {
+                  handleUpdate((prev) => ({
+                    ...prev,
+                    conditionLogic: value,
+                  }));
+                }}
+                minWidth="30px"
+                value={conditionLogic}
+              />
+              <ButtonIconWrapper
+                style={{
+                  height: "30px",
+                  width: "30px",
+                  minWidth: "30px",
+                  marginLeft: "8px",
+                }}
+                onClick={addCondition}
+              >
+                <AddIcon
+                  sx={{
+                    color: "black",
+                  }}
+                />
+              </ButtonIconWrapper>
+            </>
+          ) : null}
           {/* <ButtonBase onClick={onResetClick}>
             <CloseModalIcon strokeColor="black" />
           </ButtonBase> */}

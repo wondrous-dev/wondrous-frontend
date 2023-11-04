@@ -17,6 +17,7 @@ import DropdownSelect from "components/DropdownSelect/DropdownSelect";
 import { format } from "date-fns";
 import { ErrorText } from "components/Shared/styles";
 import AutocompleteOptionsComponent from "./AutocompleteComponent";
+import ErrorField from "components/Shared/ErrorField";
 const TextInputStyle = {
   width: "50%",
 };
@@ -67,7 +68,7 @@ const DiscordChannelMessage = ({ handleOnChange, value, error }) => {
         placeholder="Select a channel"
         
       />
-      {error?.discordChannelId ? <ErrorText>{error?.discordChannelId}</ErrorText> : null}
+      {error?.discordChannelId ? <ErrorField errorText={error?.discordChannelId}/> : null}
 
       {/* <Label>Select message type</Label>
       <SelectComponent
