@@ -30,8 +30,8 @@ const getBooleanText = (value) =>
   const Settings = ({ quest, idx, settingsLayout }) => {
     const renderQuestComponents = {
       titleOrDescription: () => (
-        <StyledViewQuestResults bgcolor="#F7F7F7" $outlineColor="transparent" style={{ position: "relative" }}>
-          <Typography color={quest.value ? "#000" : "#828282"} fontSize="15px" fontWeight="500" padding="6px" fontFamily="Poppins">
+        <StyledViewQuestResults bgcolor="#E8E8E8" $outlineColor="transparent" style={{ position: "relative" }}>
+          <Typography color={quest.value ? "#000" : "#828282"} fontSize="15px" fontWeight="500"  fontFamily="Poppins">
             {quest.value || 'No description'}
           </Typography>
         </StyledViewQuestResults>
