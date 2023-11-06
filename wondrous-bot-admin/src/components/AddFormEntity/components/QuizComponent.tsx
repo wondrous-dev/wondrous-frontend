@@ -31,7 +31,7 @@ const CORRECT_ANSWERS_OPTIONS = [
 const QuizComponent = ({ onChange, value, stepType, error }) => {
   const [rewardOptionId, setRewardOptionId] = useState(null);
   const rewardModalState = useAddRewardModalState();
-  const { setIsRewardModalOpen } = rewardModalState;
+  const { setIsRewardModalOpen, resetStates } = rewardModalState;
 
   const OPTIONS = [
     {
@@ -82,7 +82,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
 
   const handleRewardModalClose = () => {
     setRewardOptionId(null);
-    setIsRewardModalOpen(false);
+    resetStates();
   };
 
   const onRewardsChange = (reward) => {

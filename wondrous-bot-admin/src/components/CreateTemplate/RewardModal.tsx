@@ -232,7 +232,7 @@ const useDiscordRoleRewardData = () => {
   const discordRoleOptions = discordRoles?.map((role) => ({
     label: role.name,
     value: role.id,
-  }));
+  })).sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
 
   return {
     discordRoleOptions,
@@ -241,6 +241,8 @@ const useDiscordRoleRewardData = () => {
 };
 
 export const useAddRewardModalState = () => {
+
+  //TODO: refactor this to reduce
   const tokenRewardData = useTokenRewardData();
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const { isOpen: isTourOpen, setCurrentStep, currentStep, setSteps, steps } = useTour();
@@ -308,6 +310,35 @@ export const useAddRewardModalState = () => {
   });
   const [addPaymentMethod, setAddPaymentMethod] = useState(!tokenRewardData?.paymentMethods.length);
   const [poapReward, setPoapReward] = useState(null);
+
+  const resetStates = () => {
+
+    //TODO : refactor this asap
+    setIsRewardModalOpen(false);
+    setDiscordRoleReward(null);
+    setPaymentMethod(null);
+    setTokenReward({
+      tokenName: null,
+      contractAddress: null,
+      symbol: null,
+      icon: null,
+      type: "erc20",
+      chain: null,
+      amount: 1,
+    });
+    setEditPaymentMethod({
+      id: null,
+      tokenName: null,
+      contractAddress: null,
+      symbol: null,
+      icon: null,
+      type: null,
+      chain: null,
+      amount: null,
+    });
+    setAddPaymentMethod(!tokenRewardData?.paymentMethods.length);
+    setPoapReward(null);
+  };
   return {
     isRewardModalOpen,
     setIsRewardModalOpen,
@@ -330,6 +361,7 @@ export const useAddRewardModalState = () => {
     currentStep,
     cmtyStoreItemReward,
     setCmtyStoreItemReward,
+    resetStates,
     ...tokenRewardData,
   };
 };
@@ -340,6 +372,7 @@ const RewardModal = ({
   rewards = [],
   rewardModalState,
   maxModalWidth = 640,
+  title = "Add reward to quest",
   options = [
     PAYMENT_OPTIONS.TOKEN,
     PAYMENT_OPTIONS.POAP,
@@ -481,7 +514,7 @@ const RewardModal = ({
     <Modal
       open={isRewardModalOpen}
       onClose={handleRewardModalToggle}
-      title="Add reward to quest"
+      title={title}
       modalComponentProps={{
         className: "tour-default-modal",
       }}
@@ -514,7 +547,14 @@ const RewardModal = ({
             }
           }}>
             {modalRewardButtonsProps.map((props) =>
-              options.includes(props.paymentOption) ? <RewardMethodOptionButton {...props} /> : null
+              options.includes(props.paymentOption) ? <RewardMethodOptionButton 
+              {...props} 
+              onClick={() => {
+                setAddPaymentMethod(false);
+                setEditPaymentMethod(null);
+                props.onClick();
+              }}
+              /> : null
             )}
           </Grid>
         </Grid>

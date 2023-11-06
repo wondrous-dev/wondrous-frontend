@@ -9,6 +9,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import useAlerts from "utils/hooks";
 import { ButtonBase, ClickAwayListener, Grid, Popper, Typography } from "@mui/material";
+import ContextMenu from "components/ContextMenu";
 
 const DeleteQuestButton = ({ questId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,66 +33,30 @@ const DeleteQuestButton = ({ questId }) => {
 
   return (
     <>
-      <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-        <div>
+      <ContextMenu
+        renderButtons={({ setAnchorEl }) => (
           <ButtonBase
-            onClick={(e) => setAnchorEl(e.currentTarget)}
+            onClick={() => {
+              setAnchorEl(null);
+              setIsOpen(true);
+            }}
             sx={{
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: "100%",
-              padding: "4px",
-              transition: "background 0.1s ease-in-out",
+              justifyContent: "flex-start",
+              width: "100%",
+              padding: "6px 10px",
+              borderRadius: "6px",
               ":hover": {
-                background: "#E8E8E8",
+                background: "#C1B6F6",
               },
             }}
           >
-            <MoreVertIcon
-              sx={{
-                color: "black",
-              }}
-            />
+            <Typography fontFamily="Poppins" fontSize="14px" fontWeight={500} color="#ee4852">
+              Delete Quest
+            </Typography>
           </ButtonBase>
-
-          <Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom">
-            <Grid
-              bgcolor="white"
-              zIndex="100"
-              border="1px solid #000000"
-              boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
-              borderRadius="6px"
-              container
-              width="150px"
-              direction={"column"}
-              gap="10px"
-              maxHeight="500px"
-              overflow="scroll"
-              flexWrap="nowrap"
-              padding="14px"
-            >
-              <ButtonBase
-                onClick={() => setIsOpen(true)}
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  width: "100%",
-                  padding: "6px 10px",
-                  borderRadius: "6px",
-                  ":hover": {
-                    background: "#C1B6F6",
-                  },
-                }}
-              >
-                <Typography fontFamily="Poppins" fontSize="14px" fontWeight={500} color="#ee4852">
-                  Delete Quest
-                </Typography>
-              </ButtonBase>
-            </Grid>
-          </Popper>
-        </div>
-      </ClickAwayListener>
+        )}
+      />
 
       <ConfirmActionModal
         isOpen={isOpen}
@@ -109,10 +74,6 @@ const DeleteQuestButton = ({ questId }) => {
         cancelButtonTitle="Cancel"
         confirmButtonTitle="Delete"
       />
-
-      {/* <ButtonIconWrapper onClick={() => setIsOpen(true)}>
-        <DeleteIcon />
-      </ButtonIconWrapper> */}
     </>
   );
 };
