@@ -1,6 +1,11 @@
 import { useMutation } from "@apollo/client";
+import { VisibilityOffOutlined } from "@mui/icons-material";
 import { ButtonBase, Grid, Popper, ClickAwayListener, Typography } from "@mui/material";
 import ConfirmActionModal from "components/ConfirmActionModal";
+import { ContextMenuButtonStyle } from "components/ContextMenu/styles";
+import DeleteIcon from "components/Icons/Delete";
+import { EditIcon, PublishIcon, UnpublishIcon } from "components/Icons/QuestCardMenu";
+import { ButtonIconWrapper } from "components/Shared/styles";
 import { DELETE_QUEST, ACTIVATE_QUEST, DEACTIVATE_QUEST } from "graphql/mutations";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -58,12 +63,23 @@ const QuestCardMenu = ({ quest, anchorEl, setAnchorEl }) => {
 
   const ALL_ACTIONS = [
     {
-      label: "Edit",
+      label: "Edit quest",
       onClick: () => navigate(`/quests/${quest.id}?edit=true`),
-      show: true
+      show: true,
+      Icon: () => (
+        <ButtonIconWrapper width="24px" height="24px" bgcolor="#E4E4E4">
+          <EditIcon />
+        </ButtonIconWrapper>
+      ),
+      // Icon:
     },
     {
-      label: "Delete",
+      label: "Delete quest",
+      Icon: () => (
+        <ButtonIconWrapper width="24px" height="24px" bgcolor="#E4E4E4">
+          <DeleteIcon />
+        </ButtonIconWrapper>
+      ),
       onClick: () => {
         setConfirmModalData({
           title: "Delete Quest",
@@ -83,14 +99,19 @@ const QuestCardMenu = ({ quest, anchorEl, setAnchorEl }) => {
           confirmButtonTitle: "Delete",
         });
       },
-      show: true
+      show: true,
     },
     {
-      label: "Deactivate",
+      label: "Unpublish quest",
+      Icon: () => (
+        <ButtonIconWrapper width="24px" height="24px" bgcolor="#E4E4E4">
+          <UnpublishIcon />
+        </ButtonIconWrapper>
+      ),
       onClick: () => {
         setConfirmModalData({
-          title: "Deactivate Quest",
-          body: "Are you sure you want to deactivate this quest?",
+          title: "Unpublish Quest",
+          body: "Are you sure you want to unpublish this quest?",
           onConfirm: () => {
             deactivateQuest({ variables: { questId: quest.id } });
           },
@@ -103,17 +124,22 @@ const QuestCardMenu = ({ quest, anchorEl, setAnchorEl }) => {
             setConfirmModalData(null);
           },
           cancelButtonTitle: "Cancel",
-          confirmButtonTitle: "Deactivate",
+          confirmButtonTitle: "Unpublish",
         });
       },
       show: quest?.status === "open",
     },
     {
-      label: "Activate",
+      label: "Publish quest",
+      Icon: () => (
+        <ButtonIconWrapper width="24px" height="24px" bgcolor="#E4E4E4">
+          <PublishIcon />
+        </ButtonIconWrapper>
+      ),
       onClick: () => {
         setConfirmModalData({
-          title: "Activate Quest",
-          body: "Are you sure you want to activate this quest?",
+          title: "Publish Quest",
+          body: "Are you sure you want to publish this quest?",
           onConfirm: () => {
             activateQuest({ variables: { questId: quest.id } });
           },
@@ -126,7 +152,7 @@ const QuestCardMenu = ({ quest, anchorEl, setAnchorEl }) => {
             setConfirmModalData(null);
           },
           cancelButtonTitle: "Cancel",
-          confirmButtonTitle: "Activate",
+          confirmButtonTitle: "Publish",
         });
       },
       show: quest?.status === "inactive",
@@ -137,7 +163,7 @@ const QuestCardMenu = ({ quest, anchorEl, setAnchorEl }) => {
     <>
       <ConfirmActionModal isOpen={!!confirmModalData} {...confirmModalData} />
       <ClickAwayListener onClickAway={onReset}>
-        <div onClick={(e) => e.stopPropagation()} style={{position: 'absolute'}}>
+        <div onClick={(e) => e.stopPropagation()} style={{ position: "absolute" }}>
           <Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom">
             <Grid
               bgcolor="white"
@@ -146,33 +172,39 @@ const QuestCardMenu = ({ quest, anchorEl, setAnchorEl }) => {
               boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
               borderRadius="6px"
               container
-              width="150px"
+              width="100%"
               direction={"column"}
               gap="10px"
               maxHeight="500px"
-              overflow="scroll"
+              overflow="hidden"
               flexWrap="nowrap"
-              padding="14px"
+              padding="6px"
             >
               {ACTIONS.map((action) => (
-                <ButtonBase
+                <ContextMenuButtonStyle
                   onClick={() => action.onClick()}
                   key={action.label}
                   sx={{
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    width: "100%",
-                    padding: "6px 10px",
-                    borderRadius: "6px",
-                    ":hover": {
-                      background: "#C1B6F6",
+                    "&:hover": {
+                      [`.${ButtonIconWrapper.styledComponentId}`]: {
+                        backgroundColor: "#F1F1F1",
+                      },
                     },
                   }}
                 >
-                  <Typography fontFamily="Poppins" fontSize="14px" fontWeight={500} color="black">
+                  {action.Icon()}
+                  <Typography
+                    fontFamily="Poppins"
+                    fontSize="14px"
+                    fontWeight={500}
+                    color="black"
+                    sx={{
+                      wordBreak: "no-break",
+                    }}
+                  >
                     {action.label}
                   </Typography>
-                </ButtonBase>
+                </ContextMenuButtonStyle>
               ))}
             </Grid>
           </Popper>

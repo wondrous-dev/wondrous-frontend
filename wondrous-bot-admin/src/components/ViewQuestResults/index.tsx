@@ -230,11 +230,6 @@ const ViewQuestResults = ({ quest, rewards }) => {
           value: quest?.maxApproval || "Unlimited",
           type: "text",
         },
-        // {
-        //   label: "Onboarding Quest",
-        //   value: quest?.isOnboarding ? "Yes" : "No",
-        //   type: "boolean",
-        // },
         {
           label: "Time Bound",
           ...timeboundDate,

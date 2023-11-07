@@ -30,7 +30,6 @@ import ErrorField from "components/Shared/ErrorField";
 
 const CreateTemplate = ({
   setRefValue,
-  displaySavePanel,
   defaultQuestSettings = DEFAULT_QUEST_SETTINGS_STATE_VALUE,
   questId = null,
   postUpdate = null,
@@ -556,22 +555,6 @@ const CreateTemplate = ({
               </Panel>
             )}
 
-            {displaySavePanel ? (
-              <Grid
-                position="fixed"
-                bgcolor="#FFEBDA"
-                width="70%"
-                bottom="5%"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                padding="14px"
-                borderRadius="16px"
-                border="1px solid #000212"
-              >
-                <SharedSecondaryButton onClick={() => handleSave()}>Save Quest</SharedSecondaryButton>
-              </Grid>
-            ) : null}
           </Grid>
         </Grid>
       </PageWrapper>

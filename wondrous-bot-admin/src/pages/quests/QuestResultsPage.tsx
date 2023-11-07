@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import CreateTemplate from "components/CreateTemplate";
 import DeleteQuestButton from "components/DeleteQuestButton";
 import PageHeader from "components/PageHeader";
@@ -39,10 +39,8 @@ const QuestResultsPage = () => {
   const [connectDiscordModalOpen, setConnectDiscordModalOpen] = useState(false);
   const [notInGuildError, setNotInGuildError] = useState(false);
   let { id } = useParams();
-  const handleNavigationToNewQuest = () => navigate("/quests/create");
   const headerActionsRef = useRef(null);
   const { setIsOpen } = useTour();
-  const [getQuestRewards, { data: questRewardsData }] = useLazyQuery(GET_QUEST_REWARDS);
   useEffect(() => {
     if (discordError) {
       setSnackbarAlertMessage("Error connecting Discord");
@@ -53,21 +51,6 @@ const QuestResultsPage = () => {
       setSnackbarAlertOpen(true);
     }
   }, [discordError, discordUserExists]);
-  useEffect(() => {
-    if (id) {
-      getQuestRewards({
-        variables: {
-          questId: id,
-          includeConditionRewards: false,
-        },
-      });
-    }
-  }, [id]);
-  const questRewards = questRewardsData?.getQuestRewards;
-
-  const { ref, inView, entry } = useInView({
-    threshold: 1,
-  });
 
   const setRefValue = (value) => (headerActionsRef.current = value);
 
@@ -145,10 +128,11 @@ const QuestResultsPage = () => {
         value: getQuestById?.pointReward || 0,
         type: "points",
       },
-      ...(questRewards ? questRewards : []),
+      ...(getQuestById?.rewards ? getQuestById?.rewards : []),
     ],
   };
   const shareUrl = `${getBaseUrl()}/quest?id=${getQuestById?.id}`;
+  console.log(window.scrollY, "window.pageYOffset");
   return (
     <CreateQuestContext.Provider
       value={{
@@ -187,49 +171,62 @@ const QuestResultsPage = () => {
           You're Discord user is not a member of the Server!
         </Typography>
       </Modal>
-      <PageHeader
-        title={isEditMode ? "Edit Quest" : "Quest Activity"}
-        withBackButton
-        onBackButtonClick={() => {
-          if (isEditMode) {
-            toggleEdit();
-          }
-        }}
-        renderActions={() => (
-          <Grid display="flex" gap="10px" alignItems="center">
-            {/* 
+      <Box
+        // paddingTop="82px"
+        // {...(isEditMode
+        //   ? {
+        //       position: "sticky",
+        //       top: "0",
+        //       bgcolor: "white",
+        //       zIndex: 10,
+        //     }
+        //   : {})}
+      >
+        <PageHeader
+          title={isEditMode ? "Edit Quest" : "Quest Activity"}
+          withBackButton
+          onBackButtonClick={() => {
+            if (isEditMode) {
+              toggleEdit();
+            }
+          }}
+          renderActions={() => (
+            <Grid display="flex" gap="10px" alignItems="center">
+              {/* 
             ShareComponent is used to share the link to the SSR page. This will work in a local dev environment only with vercel launched.
             */}
-            <ShareComponent link={shareUrl} />
-            <ShareQuestTweet link={shareUrl} />
-            {isEditMode ? (
-              <>
-                <SharedSecondaryButton $reverse onClick={toggleEdit}>
-                  Cancel
-                </SharedSecondaryButton>
+              <ShareComponent link={shareUrl} />
+              <ShareQuestTweet link={shareUrl} />
+              {isEditMode ? (
+                <>
+                  <SharedSecondaryButton $reverse onClick={toggleEdit}>
+                    Cancel
+                  </SharedSecondaryButton>
 
-                <SharedSecondaryButton
-                  onClick={async () => {
-                    await headerActionsRef.current?.handleSave();
-                  }}
-                >
-                  Save Quest
-                </SharedSecondaryButton>
-              </>
-            ) : (
-              <>
-                <SharedSecondaryButton onClick={handlePreviewQuest}>Preview Quest</SharedSecondaryButton>
-                <SharedSecondaryButton onClick={toggleEdit}>Edit Quest</SharedSecondaryButton>
-              </>
-            )}
-            <DeleteQuestButton questId={getQuestById?.id} />
-          </Grid>
-        )}
-      />
+                  <SharedSecondaryButton
+                    onClick={async () => {
+                      await headerActionsRef.current?.handleSave();
+                    }}
+                  >
+                    Save Quest
+                  </SharedSecondaryButton>
+                </>
+              ) : (
+                <>
+                  <SharedSecondaryButton $reverse onClick={handlePreviewQuest}>
+                    Preview Quest
+                  </SharedSecondaryButton>
+                  <SharedSecondaryButton onClick={toggleEdit}>Edit Quest</SharedSecondaryButton>
+                </>
+              )}
+              <DeleteQuestButton questId={getQuestById?.id} />
+            </Grid>
+          )}
+        />
+      </Box>
       {isEditMode && getQuestById ? (
         <CreateTemplate
           setRefValue={setRefValue}
-          displaySavePanel={!inView}
           defaultQuestSettings={questSettings}
           questId={id}
           getQuestById={getQuestById}

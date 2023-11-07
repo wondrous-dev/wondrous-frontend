@@ -28,6 +28,7 @@ import { LockOutlined } from "@mui/icons-material";
 import ContextMenu from "components/ContextMenu";
 import ConfirmActionModal from "components/ConfirmActionModal";
 import useAlerts from "utils/hooks";
+import { ContextMenuButtonStyle } from "components/ContextMenu/styles";
 
 export const PAYMENT_OPTIONS = {
   DISCORD_ROLE: "discord_role",
@@ -42,8 +43,6 @@ const REWARD_TYPES = [
   { label: "ERC721", value: "erc721" },
   { label: "ERC1155", value: "erc1155" },
 ];
-
-const isDev = !import.meta.env.VITE_PRODUCTION;
 
 export const TokenComponent = ({
   paymentMethod = null,
@@ -324,19 +323,9 @@ export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPayme
               <>
                 {CONTEXT_MENU_ACTIONS.map((button, idx) => {
                   return (
-                    <ButtonBase
+                    <ContextMenuButtonStyle
                       onClick={() => {
                         button?.onClick({ setAnchorEl });
-                      }}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        width: "100%",
-                        padding: "6px 10px",
-                        borderRadius: "6px",
-                        ":hover": {
-                          background: "#C1B6F6",
-                        },
                       }}
                     >
                       <Typography
@@ -351,7 +340,7 @@ export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPayme
                       >
                         {button.label}
                       </Typography>
-                    </ButtonBase>
+                    </ContextMenuButtonStyle>
                   );
                 })}
               </>

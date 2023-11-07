@@ -2,6 +2,7 @@ import { useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { ButtonBase, ClickAwayListener, Grid, Popper } from "@mui/material";
+import { ContextMenuItemsWrapper } from "./styles";
 
 const ContextMenu = ({ renderButtons }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -15,7 +16,9 @@ const ContextMenu = ({ renderButtons }) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            borderRadius: "100%",
+            borderRadius: "6px",
+            height: "40px",
+            backgroundColor: "#E8E8E8",
             padding: "4px",
             transition: "background 0.1s ease-in-out",
             ":hover": {
@@ -33,12 +36,11 @@ const ContextMenu = ({ renderButtons }) => {
         <Popper
           open={!!anchorEl}
           anchorEl={anchorEl}
-          placement="bottom"
           sx={{
             zIndex: 9999,
           }}
         >
-          <Grid
+          <ContextMenuItemsWrapper
             bgcolor="white"
             zIndex="100"
             border="1px solid #000000"
@@ -48,13 +50,11 @@ const ContextMenu = ({ renderButtons }) => {
             width="100%"
             direction={"column"}
             gap="10px"
-            maxHeight="500px"
-            overflow="scroll"
             flexWrap="nowrap"
-            padding="14px"
+            padding="6px"
           >
             {renderButtons?.({ setAnchorEl })}
-          </Grid>
+          </ContextMenuItemsWrapper>
         </Popper>
       </div>
     </ClickAwayListener>

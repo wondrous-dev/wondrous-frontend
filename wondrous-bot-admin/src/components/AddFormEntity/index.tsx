@@ -2,8 +2,6 @@ import { Grid, Typography, Box } from "@mui/material";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { Header } from "./styles";
-import SelectComponent from "components/Shared/Select";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 
@@ -17,8 +15,6 @@ import StepAttachments from "components/StepAttachments";
 import { useContext, useEffect, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
-import { useMutation } from "@apollo/client";
-import { REMOVE_QUEST_STEP_MEDIA } from "graphql/mutations";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import { usePaywall, useSubscription } from "utils/hooks";
 import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
@@ -296,6 +292,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
               {...provided.droppableProps}
             >
               {steps?.map((item, idx) => {
+                console.log(item.type, 'ITEM TYPE', item)
                 const Component = CONFIG_COMPONENTS[item.type];
                 if (!Component) return null;
                 return (

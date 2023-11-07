@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import QuestTemplateModal from "components/CreateTemplate/QuestTemplateModal";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "components/CreateTemplate/shared";
 import PageHeader from "components/PageHeader";
@@ -32,7 +33,7 @@ const CreatePage = () => {
           setErrors,
         }}
       >
-        <div ref={ref}>
+        <Box ref={ref}>
           <PageHeader
             withBackButton
             title="Create Quest"
@@ -42,14 +43,13 @@ const CreatePage = () => {
               </SharedSecondaryButton>
             )}
           />
-        </div>
+        </Box>
         {entry && !questTemplate.open && (
           <Suspense>
             <CreateTemplate
               defaultSteps={questTemplate.steps}
               defaultQuestSettings={questTemplate.questSettings}
               setRefValue={setRefValue}
-              displaySavePanel={!inView}
             />
           </Suspense>
         )}

@@ -21,8 +21,10 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, TouchS
 import { SortableContext, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { UPDATE_QUEST_ORDER } from "graphql/mutations";
 import { BoxWrapper } from "components/QuestCardMenu/styles";
+import CompletionsCount from "./CompletionsCount";
+import QuestCardRewards from "./QuestCardRewards";
 
-const SortableItem = ({ item, idx, isOpen, status }) => {
+const SortableItem = ({ item, idx, status }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.id,
@@ -41,6 +43,7 @@ const SortableItem = ({ item, idx, isOpen, status }) => {
     setAnchorEl(newAnchorEl);
   };
 
+  console.log(item ,'ITEM')
   return (
     <>
       <QuestCardMenu quest={item} anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
@@ -66,24 +69,27 @@ const SortableItem = ({ item, idx, isOpen, status }) => {
         {...attributes}
         {...listeners}
       >
-        <CardWrapper item disableHover={isOpen}>
+        <CardWrapper item>
+          <CompletionsCount completions={item.completions || 0} />
+
           <Box
             height="40px"
             width="auto"
             minWidth="40px"
-            bgcolor="#84bcff"
+            bgcolor="#7FBB9D"
             borderRadius="35px"
             display="flex"
             padding="4px"
             justifyContent="center"
             alignItems="center"
             flexDirection="column"
+            position="relative"
           >
             <Label fontSize="16px" lineHeight={"16px"}>
-              {item.pointReward}
+              {item.inReview || 0}
             </Label>
-            <Label fontSize="12px" lineHeight="13px" fontWeight={400}>
-              PTS
+            <Label fontSize="12px" lineHeight="13px">
+              new
             </Label>
           </Box>
           <Label
@@ -95,35 +101,8 @@ const SortableItem = ({ item, idx, isOpen, status }) => {
           >
             {item.label}
           </Label>
-          <Box display="flex" justifyContent="center" alignItems="center">
-            <Box
-              bgcolor="#C1B6F6"
-              padding="8px"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              borderRadius="6px"
-            >
-              <Label fontSize="14px" lineHeight="14px">
-                {item.completions} {item.completions === 1 ? "Completion" : "Completions"}
-              </Label>
-            </Box>
-            {item.inReview > 0 && (
-              <Box
-                bgcolor="#F8AFDB"
-                padding="8px"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                borderRadius="6px"
-                marginLeft="8px"
-              >
-                <Label fontSize="14px" lineHeight="14px">
-                  {item?.inReview} To review
-                </Label>
-              </Box>
-            )}
-          </Box>
+          {/* <Box display="flex" justifyContent="center" alignItems="center" flexWrap="wrap" width="100%"></Box> */}
+          <QuestCardRewards rewards={item.rewards} pointReward={item.pointReward}/>
           <BoxWrapper>
             <ButtonBase
               onClick={handleDropdownClick}
@@ -131,11 +110,13 @@ const SortableItem = ({ item, idx, isOpen, status }) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                borderRadius: "100%",
-                padding: "4px",
-                transition: "background 0.1s ease-in-out",
+                borderRadius: "5px",
+                height: "32px",
+                background: "white",
+                border: "1px solid transparent",
+                transition: "all 0.1s ease-in-out",
                 ":hover": {
-                  background: "white",
+                  borderColor: "#000000",
                 },
               }}
             >
@@ -214,10 +195,10 @@ const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan, status
         >
           <SortableContext items={formattedData[level].items || []} strategy={rectSortingStrategy}>
             {formattedData[level].items.map((item, idx) => (
-              <SortableItem key={item.id} item={item} isOpen={isOpen} idx={idx} status={status} />
+              <SortableItem key={item.id} item={item} idx={idx} status={status} />
             ))}
             {isDragging ? null : (
-              <CardHoverWrapper
+              <Grid
                 flexBasis={{
                   xs: "48%",
                   sm: "30%",
@@ -251,7 +232,7 @@ const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan, status
                   </RoundedSecondaryButton>
                   <Label fontSize="15px">New Quest</Label>
                 </CardWrapper>
-              </CardHoverWrapper>
+              </Grid>
             )}
           </SortableContext>
         </DndContext>
@@ -279,6 +260,7 @@ const formatQuestsData = (LEVELS, data) => {
       inReview: quest.submissionsCount?.inReview,
       status: quest.status,
       order: quest.order,
+      rewards: quest.rewards,
     });
   });
 

@@ -114,6 +114,7 @@ const Layout = () => {
   const isMatchedAuthPath = matchRoute(location.pathname, EXCLUDED_PATHS);
   const AuthenticationLayout = isMatchedAuthPath ? TutorialComponent : withAuth(TutorialComponent);
 
+  
   return (
     <GlobalContext.Provider
       value={{

@@ -10,6 +10,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import useAlerts from "utils/hooks";
 import { ButtonBase, ClickAwayListener, Grid, Popper, Typography } from "@mui/material";
 import ContextMenu from "components/ContextMenu";
+import { ContextMenuButtonStyle } from "components/ContextMenu/styles";
 
 const DeleteQuestButton = ({ questId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,26 +36,27 @@ const DeleteQuestButton = ({ questId }) => {
     <>
       <ContextMenu
         renderButtons={({ setAnchorEl }) => (
-          <ButtonBase
+          <ContextMenuButtonStyle
             onClick={() => {
               setAnchorEl(null);
               setIsOpen(true);
             }}
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              width: "100%",
-              padding: "6px 10px",
-              borderRadius: "6px",
-              ":hover": {
-                background: "#C1B6F6",
-              },
-            }}
           >
-            <Typography fontFamily="Poppins" fontSize="14px" fontWeight={500} color="#ee4852">
+            <ButtonIconWrapper bgcolor="#CE414D" height="24px" width="24px">
+              <DeleteIcon stroke="white" />
+            </ButtonIconWrapper>
+            <Typography
+              fontFamily="Poppins"
+              fontSize="14px"
+              fontWeight={500}
+              color="#CE414D"
+              sx={{
+                wordBreak: "break-word",
+              }}
+            >
               Delete Quest
             </Typography>
-          </ButtonBase>
+          </ContextMenuButtonStyle>
         )}
       />
 

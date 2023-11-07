@@ -172,7 +172,7 @@ const handleAddPoap = ({ poapReward, setErrors, errors, handleOnRewardAdd, rewar
   });
 };
 
-const useTokenRewardData = () => {
+const useTokenRewardData = ({setAddPaymentMethod, shouldFetch}) => {
   const { activeOrg } = useContext(GlobalContext);
 
   const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD, {
@@ -180,7 +180,17 @@ const useTokenRewardData = () => {
   });
 
   const [getCmtyPaymentMethods, { data: getCmtyPaymentMethodsData }] = useLazyQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
+    onCompleted: (data) => {
+      console.log(data, 'DATA DATA TA')
+      if(!data?.getCmtyPaymentMethodsForOrg?.length) {
+        setAddPaymentMethod(true);
+      }
+    },
+    onError:(err) => {
+      console.log(err,'err')
+    },
     fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const paymentMethods = getCmtyPaymentMethodsData?.getCmtyPaymentMethodsForOrg || [];
@@ -190,7 +200,7 @@ const useTokenRewardData = () => {
   }));
 
   useEffect(() => {
-    if (activeOrg?.id) {
+    if (activeOrg?.id && shouldFetch) {
       getCmtyPaymentMethods({
         variables: {
           orgId: activeOrg?.id,
@@ -198,7 +208,7 @@ const useTokenRewardData = () => {
         },
       });
     }
-  }, [activeOrg?.id]);
+  }, [activeOrg?.id, shouldFetch]);
 
   return {
     paymentMethodOptions,
@@ -243,7 +253,7 @@ const useDiscordRoleRewardData = () => {
 export const useAddRewardModalState = () => {
 
   //TODO: refactor this to reduce
-  const tokenRewardData = useTokenRewardData();
+  const [addPaymentMethod, setAddPaymentMethod] = useState(false);
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const { isOpen: isTourOpen, setCurrentStep, currentStep, setSteps, steps } = useTour();
   useEffect(() => {
@@ -308,9 +318,13 @@ export const useAddRewardModalState = () => {
     chain: null,
     amount: null,
   });
-  const [addPaymentMethod, setAddPaymentMethod] = useState(!tokenRewardData?.paymentMethods.length);
   const [poapReward, setPoapReward] = useState(null);
 
+  const tokenRewardData = useTokenRewardData({
+    setAddPaymentMethod,
+    shouldFetch: isRewardModalOpen && rewardType === PAYMENT_OPTIONS.TOKEN,
+  });
+  
   const resetStates = () => {
 
     //TODO : refactor this asap

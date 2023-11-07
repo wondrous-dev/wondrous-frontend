@@ -93,7 +93,7 @@ export const ButtonIconWrapper = styled(ButtonBase)`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #c6bbfc;
+    background: ${({bgcolor = "#c6bbfc"}) => bgcolor};
     gap: 6px;
     border-radius: 6px;
 
