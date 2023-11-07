@@ -28,7 +28,7 @@ export const mapAnswersToOptions = (answers: any[], withCorrectAnswers: boolean)
   return answers.map((answer, idx) => ({
     position: idx,
     text: answer.value?.trim(),
-    ...(withCorrectAnswers ? { correct: answer.isCorrect } : {}),
+    ...(withCorrectAnswers ? { correct: answer.isCorrect || false } : {}),
   }));
 };
 
