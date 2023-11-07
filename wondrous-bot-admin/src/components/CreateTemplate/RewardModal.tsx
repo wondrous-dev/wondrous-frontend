@@ -181,7 +181,6 @@ const useTokenRewardData = ({setAddPaymentMethod, shouldFetch}) => {
 
   const [getCmtyPaymentMethods, { data: getCmtyPaymentMethodsData }] = useLazyQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
     onCompleted: (data) => {
-      console.log(data, 'DATA DATA TA')
       if(!data?.getCmtyPaymentMethodsForOrg?.length) {
         setAddPaymentMethod(true);
       }

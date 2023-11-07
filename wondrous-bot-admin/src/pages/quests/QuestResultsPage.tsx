@@ -132,7 +132,6 @@ const QuestResultsPage = () => {
     ],
   };
   const shareUrl = `${getBaseUrl()}/quest?id=${getQuestById?.id}`;
-  console.log(window.scrollY, "window.pageYOffset");
   return (
     <CreateQuestContext.Provider
       value={{

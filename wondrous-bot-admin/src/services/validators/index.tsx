@@ -55,7 +55,7 @@ const stepTypes = {
         Yup.object().shape({
           position: Yup.number().required("Position is required"),
           text: Yup.string().required("Answer is required"),
-          correct: Yup.boolean().optional(),
+          correct: Yup.boolean().optional().nullable(),
         })
       )
       .min(1, ERRORS.MIN_OPTION_LENGTH)

@@ -114,7 +114,6 @@ const QuestsPage = () => {
     refetch(variables);
   };
 
-  console.log(data, "DATA");
   const sortedData = useMemo(() => {
     return [...(data?.getQuestsForOrg || [])]?.sort((a, b) => {
       if (a.order !== null && b.order !== null) {

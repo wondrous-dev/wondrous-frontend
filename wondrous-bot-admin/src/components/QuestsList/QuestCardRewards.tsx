@@ -6,7 +6,6 @@ import { useMemo } from "react";
 import { constructRewards } from "utils/common";
 
 const CardReward = ({ reward }) => {
-  console.log(reward, "REWARD");
 
   const REWARD_TEXT_ICON_MAP = {
     points: {

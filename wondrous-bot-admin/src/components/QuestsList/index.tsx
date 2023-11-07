@@ -43,7 +43,6 @@ const SortableItem = ({ item, idx, status }) => {
     setAnchorEl(newAnchorEl);
   };
 
-  console.log(item ,'ITEM')
   return (
     <>
       <QuestCardMenu quest={item} anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
