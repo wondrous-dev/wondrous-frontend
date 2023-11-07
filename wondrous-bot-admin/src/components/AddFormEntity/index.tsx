@@ -98,11 +98,11 @@ const COMPONENT_OPTIONS = [
     label: "Click on link",
     value: TYPES.LINK_CLICK,
   },
+  {
+    label: "+ Add custom on chain action",
+    value: TYPES.CUSTOM_ONCHAIN_ACTION,
+  }
 ];
-COMPONENT_OPTIONS.push({
-  label: "+ Add custom on chain action",
-  value: TYPES.CUSTOM_ONCHAIN_ACTION,
-});
 let activeOrgPushed = false;
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -292,7 +292,10 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
               {...provided.droppableProps}
             >
               {steps?.map((item, idx) => {
-                const Component = CONFIG_COMPONENTS[item.type];
+                const isQuiz = item.type === TYPES.MULTI_QUIZ || item.type === TYPES.SINGLE_QUIZ;
+
+                const Component = CONFIG_COMPONENTS[item?.type];
+
                 if (!Component) return null;
                 return (
                   <Box width="100%" height="100%" ref={(ref) => (refs.current[idx + 1] = ref)}>
@@ -326,7 +329,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                   </Typography>
                                   <AutocompleteOptionsComponent
                                     options={COMPONENT_OPTIONS}
-                                    value={item.type}
+                                    value={isQuiz ? TYPES.MULTI_QUIZ : item.type}
                                     onChange={(value) => handleChangeType(value, item.order, idx)}
                                     setSteps={setSteps}
                                     order={idx + 1}
