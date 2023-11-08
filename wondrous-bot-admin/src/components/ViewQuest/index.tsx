@@ -125,9 +125,6 @@ const ViewQuest = ({ quest, loading, hasTelegramIntegration, hasDiscordIntegrati
     },
   });
 
-  // const handleConnectDiscord = () => {
-  //   window.open(discordAuthUrl);
-  // };
   const handleStartQuest = async (e) => {
     e.preventDefault();
     await startQuest({
