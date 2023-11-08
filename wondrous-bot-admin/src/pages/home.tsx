@@ -1,26 +1,23 @@
 import { useQuery } from "@apollo/client";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { LevelsIcon, OnboardedIcon, QuestIcon } from "components/Icons/HomePageIcons";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
-import ConnectDiscordButton, { getDiscordBotOauthURL } from "components/ConnectDiscord/ConnectDiscordButton";
+import ConnectDiscordButton from "components/ConnectDiscord/ConnectDiscordButton";
 import { GET_CMTY_ORG_DISCORD_CONFIG, GET_ORG_QUEST_STATS } from "graphql/queries";
 import { useContext, useEffect, useMemo, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
-import { GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL } from "graphql/queries";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import StarIcon from "components/Icons/StarIcon";
-import { useTour } from "@reactour/tour";
 import { AddBotModal } from "pages/onboarding/discord/addBotModal";
 import { ConfigureNotificationsOnboardingModal } from "./onboarding/discord/configureNotificationsModal";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
-import HomeBackgroundQuests from "components/Icons/HomePageBackgroundQuests.svg";
-import HomeBackgroundLevels from "components/Icons/HomePageBackgroundLevels.svg";
-import HomeBackgroundMembers from "components/Icons/HomePageBackgroundMembers.svg";
+// import HomeBackgroundQuests from "components/Icons/HomePageBackgroundQuests.svg";
+// import HomeBackgroundLevels from "components/Icons/HomePageBackgroundLevels.svg";
+// import HomeBackgroundMembers from "components/Icons/HomePageBackgroundMembers.svg";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -33,6 +30,13 @@ export const HomeCardWrapper = styled(Grid)`
   && {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    overflow: hidden;
+    &:hover {
+      img {
+        transition: all 0.2s ease-in-out;
+        transform: scale(1.1);
+      }
+    }
   }
 `;
 const CardsComponent = ({ cards }) => {
@@ -48,11 +52,11 @@ const CardsComponent = ({ cards }) => {
       top="-40%"
       padding={{
         xs: "14px",
-        sm: "42px",
+        md: "42px",
       }}
       direction={{
         xs: "column",
-        sm: "row",
+        md: "row",
       }}
     >
       {cards.map((card, idx) => (
@@ -66,7 +70,7 @@ const CardsComponent = ({ cards }) => {
           justifyContent="center"
           flex="1"
           width="100%"
-          padding="0"
+          paddingBottom="24px"
           alignItems="center"
           onClick={() => navigate(card.path)}
         >
@@ -97,7 +101,6 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [openAddBotModal, setOpenAddBotModal] = useState(false);
   const [openDiscordNotificationModal, setOpenDiscordNotificationModal] = useState(false);
-  const { setIsOpen, setCurrentStep } = useTour();
   const { data: telegramConfigData, loading: isTelegramConfigLoading } = useQuery(GET_TELEGRAM_CONFIG_FOR_ORG, {
     variables: {
       orgId: activeOrg?.id,
@@ -132,21 +135,21 @@ const HomePage = () => {
     {
       title: "Members Onboarded",
       count: totalMembers,
-      Icon: HomeBackgroundMembers,
+      Icon: '/images/home-images/members.png',
       bgColor: "#F8642D",
       path: "/members",
     },
     {
       title: "Quests",
       count: totalQuests,
-      Icon: HomeBackgroundQuests,
+      Icon: '/images/home-images/quests.png',
       bgColor: "#F8AFDB",
       path: "/quests",
     },
     {
       title: "Levels",
       count: 10,
-      Icon: HomeBackgroundLevels,
+      Icon: '/images/home-images/levels.png',
       bgColor: "#84BCFF",
       path: "/levels",
     },

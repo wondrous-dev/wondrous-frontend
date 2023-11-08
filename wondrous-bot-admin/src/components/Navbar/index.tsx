@@ -4,7 +4,16 @@ import { DefaultLink } from "components/Shared/styles";
 import { useContext, useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 
-import { HeaderBar, HoveredImage, ImageContainer, ImageDefault, LinkButton, MenuIconWrapper } from "./styles";
+import {
+  HeaderBar,
+  HoveredImage,
+  ImageContainer,
+  ImageDefault,
+  LinkButton,
+  MenuIconWrapper,
+  NavbarLinkText,
+  NavbarLinkWrapper,
+} from "./styles";
 import { Link, useLocation } from "react-router-dom";
 import { HEADER_HEIGHT } from "utils/constants";
 import CloseIcon from "@mui/icons-material/Close";
@@ -20,29 +29,29 @@ const checkActive = (path, location, partialMatch = false) => {
 const LINKS = [
   {
     path: "/",
-    label: "HOME",
-    activeBgColor: "#BAACFA",
+    label: "Home",
+    textColor: "#BAACFA",
   },
   {
     path: "/members",
-    label: "MEMBERS",
-    activeBgColor: "#F8642D",
+    label: "Members",
+    textColor: "#F8642D",
   },
   {
     path: "/quests",
-    label: "QUESTS",
-    activeBgColor: "#F8AFDB",
+    label: "Quests",
+    textColor: "#F8AFDB",
     partialMatch: true,
   },
   {
     path: "/levels",
-    label: "LEVELS",
-    activeBgColor: "#84BCFF",
+    label: "Levels",
+    textColor: "#84BCFF",
   },
   {
     path: "/analytics",
-    label: "ANALYTICS",
-    activeBgColor: "#FEE2CA",
+    label: "Analytics",
+    textColor: "#FEE2CA",
   },
 ];
 let isStoreAdded = false;
@@ -66,8 +75,8 @@ const Header = () => {
     ) {
       LINKS.splice(3, 0, {
         path: "/store",
-        label: "STORE",
-        activeBgColor: "#FFCB5D",
+        label: "Store",
+        textColor: "#30BA76",
         partialMatch: true,
       });
       isStoreAdded = true;
@@ -82,44 +91,27 @@ const Header = () => {
         </ImageContainer>
       </Link>
       <Box sx={{ display: { xs: "none", md: "flex" } }}>
-        <Grid
-          container
-          display="flex"
-          gap="42px"
-          alignItems="center"
-          bgcolor="#1E1E1E"
-          borderRadius="80px"
-          padding="4px 0px"
-        >
+        <Grid container display="flex" gap="26px" alignItems="center" padding="4px 0px">
           {LINKS.map((link) => {
             const isActive = checkActive(link.path, location, link.partialMatch);
             return (
-              <Grid
-                item
-                key={link.label}
-                bgcolor={isActive ? link.activeBgColor : "transparent"}
-                padding="6px 28px"
-                borderRadius="60px"
-              >
-                <DefaultLink to={link.path}>
-                  <Typography
-                    fontFamily="Poppins"
-                    fontWeight={600}
-                    fontSize="13px"
-                    lineHeight="16px"
-                    color={isActive ? "black" : "#BAACFA"}
+              <DefaultLink to={link.path}>
+                <NavbarLinkWrapper item key={link.label} color={link.textColor}>
+                  <NavbarLinkText
+                    color={isActive ? link.textColor : "#E8E8E8"}
+                    borderBottomColor={isActive ? link.textColor : "transparent"}
                   >
                     {link.label}
-                  </Typography>
-                </DefaultLink>
-              </Grid>
+                  </NavbarLinkText>
+                </NavbarLinkWrapper>
+              </DefaultLink>
             );
           })}
         </Grid>
       </Box>
       <WorkspaceSwitch />
       <Box sx={{ display: { xs: "flex", md: "none" } }}>
-        <MenuIconWrapper onClick={toggleDrawer}>
+        <MenuIconWrapper onClick={toggleDrawer} $isOpen={drawerOpen}>
           {drawerOpen ? (
             <CloseIcon
               sx={{
@@ -160,7 +152,7 @@ const Header = () => {
           >
             {LINKS.map((link) => (
               <DefaultLink to={link.path} key={link.label} onClick={toggleDrawer}>
-                <LinkButton bgColor={link.activeBgColor}>
+                <LinkButton bgColor={link.textColor}>
                   {link.label}
                   <ArrowOutwardIcon
                     sx={{
