@@ -15,9 +15,6 @@ import { ConfigureNotificationsOnboardingModal } from "./onboarding/discord/conf
 import { usePaywall, useSubscription } from "utils/hooks";
 import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
-// import HomeBackgroundQuests from "components/Icons/HomePageBackgroundQuests.svg";
-// import HomeBackgroundLevels from "components/Icons/HomePageBackgroundLevels.svg";
-// import HomeBackgroundMembers from "components/Icons/HomePageBackgroundMembers.svg";
 
 const typographyStyles = {
   fontFamily: "Poppins",

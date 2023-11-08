@@ -106,13 +106,6 @@ export const ImageContainer = styled.div`
   }
 `;
 
-// fontFamily="Poppins"
-// fontWeight={600}
-// fontSize="14px"
-// borderBottom={isActive ? `2px solid ${link.textColor}` : "2px solid transparent"}
-// paddingBottom="2px"
-// lineHeight="16px"
-// color={isActive ? link.textColor : "#E8E8E8"}
 
 export const NavbarLinkText = styled(Typography)`
   && {
