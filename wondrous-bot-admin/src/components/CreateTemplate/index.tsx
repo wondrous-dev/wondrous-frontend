@@ -6,7 +6,7 @@ import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
-import { APEIRON_TYPES, BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
+import { APEIRON_TYPES, BG_TYPES, QUEST_STATUSES, TUTORIALS, TYPES } from "utils/constants";
 import { RewardComponent } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
@@ -24,9 +24,11 @@ import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE, mapAnswersToOptions, reduceConditionalRewards } from "./utils";
 import { useTour } from "@reactour/tour";
-import { Warning, WarningAmberOutlined } from "@mui/icons-material";
 import WarningIcon from "components/Icons/WarningIcon";
 import ErrorField from "components/Shared/ErrorField";
+import ConfettiComponent from "components/ConfettiComponent";
+import { useMe } from "components/Auth";
+import QuestCelebrationComponent from "./QuestCelebration";
 
 const CreateTemplate = ({
   setRefValue,
@@ -58,6 +60,11 @@ const CreateTemplate = ({
 
   const { isOpen, setCurrentStep, currentStep, setSteps: setTourSteps, steps: tourSteps } = useTour();
 
+  const { user } = useMe() || {};
+  const completedQuestGuides = user?.completedQuestGuides;
+
+  const [isFirstCreatedQuest, setIsFirstCreatedQuest] = useState(false);
+
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -79,6 +86,10 @@ const CreateTemplate = ({
   const [createQuest] = useMutation(CREATE_QUEST, {
     onCompleted: async ({ createQuest }) => {
       handleUpdateQuestStepsMedia(createQuest.id, createQuest?.steps, steps);
+
+      if (!completedQuestGuides?.includes(TUTORIALS.FIRST_CREATED_QUEST)) {
+        return setIsFirstCreatedQuest(true);
+      }
       navigate(`/quests/${createQuest.id}`);
     },
     refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
@@ -449,6 +460,7 @@ const CreateTemplate = ({
   const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
   return (
     <>
+      {isFirstCreatedQuest ? <QuestCelebrationComponent /> : null}
       <Modal
         open={isSaving}
         onClose={() => setIsSaving(false)}
@@ -554,7 +566,6 @@ const CreateTemplate = ({
                 {errors?.steps && typeof errors?.steps === "string" ? <ErrorField errorText={errors?.steps} /> : null}
               </Panel>
             )}
-
           </Grid>
         </Grid>
       </PageWrapper>
