@@ -11,7 +11,13 @@ import { RewardComponent } from "./RewardComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
-import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, REMOVE_QUEST_STEP_MEDIA, UPDATE_QUEST } from "graphql/mutations";
+import {
+  ATTACH_QUEST_STEPS_MEDIA,
+  CREATE_QUEST,
+  REMOVE_QUEST_STEP_MEDIA,
+  SET_USER_COMPLETED_GUIDE,
+  UPDATE_QUEST,
+} from "graphql/mutations";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
 import { questValidator, ValidationError } from "services/validators";
@@ -29,6 +35,7 @@ import ErrorField from "components/Shared/ErrorField";
 import ConfettiComponent from "components/ConfettiComponent";
 import { useMe } from "components/Auth";
 import QuestCelebrationComponent from "./QuestCelebration";
+import { GET_LOGGED_IN_USER } from "graphql/queries";
 
 const CreateTemplate = ({
   setRefValue,
@@ -63,7 +70,11 @@ const CreateTemplate = ({
   const { user } = useMe() || {};
   const completedQuestGuides = user?.completedQuestGuides;
 
-  const [isFirstCreatedQuest, setIsFirstCreatedQuest] = useState(false);
+  const [firstCreatedQuest, setFirstCreatedQuest] = useState(null);
+
+  const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
+    refetchQueries: [{query: GET_LOGGED_IN_USER}],
+  });
 
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
@@ -88,7 +99,12 @@ const CreateTemplate = ({
       handleUpdateQuestStepsMedia(createQuest.id, createQuest?.steps, steps);
 
       if (!completedQuestGuides?.includes(TUTORIALS.FIRST_CREATED_QUEST)) {
-        return setIsFirstCreatedQuest(true);
+        setFirstCreatedQuest(createQuest.id);
+        return setUserCompletedGuide({
+          variables: {
+            guideId: TUTORIALS.FIRST_CREATED_QUEST,
+          },
+        });
       }
       navigate(`/quests/${createQuest.id}`);
     },
@@ -458,9 +474,14 @@ const CreateTemplate = ({
     }));
   };
   const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
+
+  const handleCelebrationClose = () => {
+    setFirstCreatedQuest(null);
+    navigate(`/quests/${firstCreatedQuest}`);
+  };
   return (
     <>
-      {isFirstCreatedQuest ? <QuestCelebrationComponent /> : null}
+      {firstCreatedQuest ? <QuestCelebrationComponent onClose={handleCelebrationClose} /> : null}
       <Modal
         open={isSaving}
         onClose={() => setIsSaving(false)}

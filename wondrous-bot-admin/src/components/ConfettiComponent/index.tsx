@@ -1,14 +1,18 @@
 import Confetti from "react-confetti";
 import useWindowSize from "utils/useWindowSize";
 
-const ConfettiComponent = ({ shouldShow = false }) => {
+const ConfettiComponent = ({ shouldShow = false, confettiProps = {} }) => {
   const { height, width } = useWindowSize();
-  if (!shouldShow) return;
-  return <Confetti 
-  style={{
-    zIndex: 9999,
-  }}
-  height={height} width={width} />;
+  return (
+    <Confetti
+      style={{
+        zIndex: 9999,
+      }}
+      height={height}
+      width={width}
+      {...confettiProps}
+    />
+  );
 };
 
 export default ConfettiComponent;
