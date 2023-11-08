@@ -45,8 +45,8 @@ const CardsComponent = ({ cards }) => {
       gap="24px"
       justifyContent="center"
       alignItems="center"
-      position="absolute"
       top="-40%"
+      position="absolute"
       padding={{
         xs: "14px",
         md: "42px",
@@ -71,19 +71,25 @@ const CardsComponent = ({ cards }) => {
           alignItems="center"
           onClick={() => navigate(card.path)}
         >
-          <img
-            style={{
-              borderTopLeftRadius: "16px",
-              borderTopRightRadius: "16px",
-              marginTop: "-1px",
-              width: "100%",
-            }}
-            src={card.Icon}
-          />
-          <Typography {...typographyStyles}>{card.count}</Typography>
-          <Typography {...typographyStyles} letterSpacing="0.08em" fontSize="20px" fontWeight={600}>
-            {card.title}
-          </Typography>
+          <Box overflow="hidden" maxHeight="126px" maxWidth="auto">
+            <img
+              style={{
+                borderTopLeftRadius: "16px",
+                borderTopRightRadius: "16px",
+                marginTop: "-1px",
+                width: "100%",
+                maxHeight: "100%",
+                overflow: "hidden"
+              }}
+              src={card.Icon}
+            />
+          </Box>
+          <Box display="flex" gap="14px" flexDirection="column" justifyContent="center" alignItems="center" paddingTop="24px">
+            <Typography {...typographyStyles} lineHeight="62px">{card.count}</Typography>
+            <Typography {...typographyStyles} letterSpacing="0.08em" fontSize="20px" fontWeight={600}>
+              {card.title}
+            </Typography>
+          </Box>
         </HomeCardWrapper>
       ))}
     </Grid>
@@ -132,21 +138,21 @@ const HomePage = () => {
     {
       title: "Members Onboarded",
       count: totalMembers,
-      Icon: '/images/home-images/members.png',
+      Icon: "/images/home-images/members.png",
       bgColor: "#F8642D",
       path: "/members",
     },
     {
       title: "Quests",
       count: totalQuests,
-      Icon: '/images/home-images/quests.png',
+      Icon: "/images/home-images/quests.png",
       bgColor: "#F8AFDB",
       path: "/quests",
     },
     {
       title: "Levels",
       count: 10,
-      Icon: '/images/home-images/levels.png',
+      Icon: "/images/home-images/levels.png",
       bgColor: "#84BCFF",
       path: "/levels",
     },

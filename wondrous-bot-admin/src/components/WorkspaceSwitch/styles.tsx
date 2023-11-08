@@ -25,7 +25,7 @@ export const WorkspaceWrapper = styled(ButtonBase)`
     gap: 10px;
     justify-content: space-between;
     padding: 3px;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     ${Label} {
       text-align: left;
