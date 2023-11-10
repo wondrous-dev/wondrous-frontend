@@ -14,11 +14,6 @@ import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 import AddIcon from "@mui/icons-material/Add";
 import ReferralRewardsComponent from "./ReferralRewardsComponent";
 
-// endDate
-// referrerPointReward
-// referredPointReward
-// maxPerUser
-
 const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [hasMore, setHasMore] = useState(false);
@@ -87,6 +82,7 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
     {
       value: QUALIFYING_ACTION_TYPES.PURCHASE,
       label: "Complete a purchase",
+      disabled: true,
     },
   ];
 
@@ -123,12 +119,16 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
   const options = useMemo(() => {
     if (!storeItemsData && !questsData) return [];
     if (referralItemData?.type === QUALIFYING_ACTION_TYPES.PURCHASE) {
-      let items = storeItemsData?.getStoreItemsForOrg?.map((item) => ({
-        label: item.name,
-        value: item.id,
-      }));
-      console.log(items, "IIITEMS");
+      let items =
+        storeItemsData?.getStoreItemsForOrg?.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })) || [];
       return [
+        {
+          label: "All Products",
+          value: "all-products",
+        },
         ...items,
         {
           label: "Add Store Item",
@@ -148,12 +148,17 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
       ];
     }
     if (referralItemData?.type === QUALIFYING_ACTION_TYPES.QUEST) {
-      let items = questsData?.getQuestsForOrg?.map((item) => ({
-        label: item.title,
-        value: item.id,
-      }));
+      let items =
+        questsData?.getQuestsForOrg?.map((item) => ({
+          label: item.title,
+          value: item.id,
+        })) || [];
 
       return [
+        {
+          label: "All Quests",
+          value: "all-quests",
+        },
         ...items,
         {
           label: "Add Quest",
@@ -185,11 +190,15 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
 
   const handleTypeChange = (value) => setReferralItemData({ ...referralItemData, type: value });
 
-  const handleEntityChange = (value) => {
+  const handleEntityChange = (value, idx) => {
     stopQuestsPolling();
     stopStoreItemsPolling();
-    setReferralItemData({ ...referralItemData, ...value });
+    setReferralItemData({
+      ...referralItemData,
+      questIds: referralItemData?.questIds?.map((item, i) => (i === idx ? value : item)),
+    });
   };
+
   return (
     <Grid display="flex" flexDirection="column" justifyContent="flex-start" gap="24px" alignItems="center" width="100%">
       <PanelComponent
@@ -226,6 +235,7 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
                 options={options}
                 referralItemData={referralItemData}
                 handleEntityChange={handleEntityChange}
+                setReferralItemData={setReferralItemData}
               />
             </Grid>
           );

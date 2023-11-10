@@ -3,6 +3,9 @@ import AutocompleteOptionsComponent from "components/AddFormEntity/components/Au
 import InfoLabel from "components/CreateTemplate/InfoLabel";
 import { QUALIFYING_ACTION_TYPES } from "utils/constants";
 import { Label } from "components/CreateTemplate/styles";
+import { ButtonIconWrapper } from "components/Shared/styles";
+import DeleteIcon from "components/Icons/Delete";
+import AddIcon from "@mui/icons-material/Add";
 
 const TYPES_MAP = {
   [QUALIFYING_ACTION_TYPES.PURCHASE]: {
@@ -10,46 +13,71 @@ const TYPES_MAP = {
     placeholder: "Select products",
   },
   [QUALIFYING_ACTION_TYPES.QUEST]: {
-    label: "Which quests should this apply to?",
+    label: "Which quest(s) should this apply to?",
     placeholder: "Select quests",
   },
 };
 
 const KEYS_MAP = {
   [QUALIFYING_ACTION_TYPES.PURCHASE]: "storeItemId",
-  [QUALIFYING_ACTION_TYPES.QUEST]: "questId",
+  [QUALIFYING_ACTION_TYPES.QUEST]: "questIds",
 };
 
-const SelectorsComponent = ({ referralItemData, handleEntityChange, options = [] }) => {
-  const handleChange = (value) => {
-    handleEntityChange({
-      [KEYS_MAP[referralItemData.type]]: value,
-    });
-  };
-
-  console.log(referralItemData, 'ref data')
-  const value = referralItemData[KEYS_MAP[referralItemData.type]];
+const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntityChange, options = [] }) => {
+  const values = referralItemData[KEYS_MAP[referralItemData.type]];
 
   const typeConfig = TYPES_MAP[referralItemData.type];
+
+  const Buttons = ({ idx }) => {
+    return (
+      <>
+        {idx !== 0 && (
+          <ButtonIconWrapper
+            onClick={() => {
+              setReferralItemData((prev) => ({
+                ...prev,
+                questIds: prev.questIds.filter((_, index) => index !== idx),
+              }));
+            }}
+          >
+            <DeleteIcon />
+          </ButtonIconWrapper>
+        )}
+        {idx === values.length - 1 && (
+          <ButtonIconWrapper
+            onClick={() => {
+              setReferralItemData((prev) => ({
+                ...prev,
+                questIds: [...prev.questIds, ""],
+              }));
+            }}
+          >
+            <AddIcon
+              sx={{
+                color: "black",
+              }}
+            />
+          </ButtonIconWrapper>
+        )}
+      </>
+    );
+  };
 
   return (
     <Grid display="flex" flexDirection="column" gap="12px">
       <Label fontWeight={600}>{typeConfig?.label}</Label>
-      <Box display="flex" gap="14px" alignItems="center">
-        <AutocompleteOptionsComponent
-          options={options}
-          value={value}
-          placeholder={typeConfig?.placeholder}
-          onChange={handleChange}
-          bgColor="#E8E8E8"
-        />
-        <InfoLabel
-          imgStyle={{
-            marginLeft: "0",
-          }}
-          title="//TODO: Select qualifying action"
-        />
-      </Box>
+      {values?.map((value, idx) => (
+        <Box display="flex" gap="14px" alignItems="center">
+          <AutocompleteOptionsComponent
+            options={options}
+            value={value}
+            placeholder={typeConfig?.placeholder}
+            onChange={(value) => handleEntityChange(value, idx)}
+            bgColor="#E8E8E8"
+          />
+          <Buttons idx={idx} />
+        </Box>
+      ))}
     </Grid>
   );
 };

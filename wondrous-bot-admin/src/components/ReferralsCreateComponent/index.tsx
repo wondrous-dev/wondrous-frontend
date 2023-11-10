@@ -69,7 +69,7 @@ const DEFAULT_QUEST_SETTINGS = {
 
 const DEFAULT_QUEST_DATA = {
   type: null,
-  questId: null,
+  questIds: [null],
   storeItemId: null,
   rewardType: "advocateReward",
   rewards: [],

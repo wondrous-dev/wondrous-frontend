@@ -52,7 +52,6 @@ const TextFieldComponent = ({
         disableUnderline
         helperText={error}
         borderRadius={props?.borderRadius}
-        startAdornment={<InputAdornment position="start">%</InputAdornment>}
         {...props}
       >
         <div>yo</div>

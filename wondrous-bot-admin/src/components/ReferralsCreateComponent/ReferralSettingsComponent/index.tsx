@@ -129,6 +129,16 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
         {
           label: "Max Per User",
           component: MaxInput,
+          componentProps: {
+            keyValue: referralItemSettings?.maxPerUser,
+            handleValueChange: (value) => handleChange("maxPerUser", value),
+            onChange: (value) => {
+              if (!value && referralItemSettings.maxPerUser) {
+                return handleChange("maxPerUser", null);
+              }
+              return handleChange("maxPerUser", 1);
+            },
+          },
           key: "maxPerUser",
         },
         {
@@ -165,75 +175,6 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
         alignItems: "center",
       },
     },
-    // {
-    //   canBeHidden: true,
-    //   showBorder: false,
-    //   settings: [
-    //     {
-    //       label: "Category",
-    //       component: CategorySelectComponent,
-    //       componentProps: {
-    //         value: questSettings?.category,
-    //       },
-    //       key: "category",
-    //     },
-    //     {
-    //       label: "Max Submissions",
-    //       component: MaxInput,
-    //       componentProps: {
-    //         keyValue: questSettings?.maxSubmission,
-    //         handleValueChange: (value) => handleChange("maxSubmission", value),
-    //         onChange: (value) => {
-    //           if (!value && questSettings.maxSubmission) {
-    //             return handleChange("maxSubmission", null);
-    //           }
-    //           return handleChange("maxSubmission", 1);
-    //         },
-    //       },
-    //       key: "maxSubmission",
-    //     },
-    //     {
-    //       label: "Max Approvals",
-    //       component: MaxInput,
-    //       componentProps: {
-    //         keyValue: questSettings?.maxApproval,
-    //         onChange: (value) => {
-    //           if (!value && questSettings.maxApproval) {
-    //             return handleChange("maxApproval", null);
-    //           }
-    //           return handleChange("maxApproval", 1);
-    //         },
-    //         handleValueChange: (value) => handleChange("maxApproval", value),
-    //       },
-    //       key: "maxApproval",
-    //     },
-    //     {
-    //       label: "Time Bound",
-    //       component: TimeboundComponent,
-    //       key: "timeBound",
-    //     },
-    //     {
-    //       label: "Daily submission",
-    //       component: DailySubmissionComponent,
-    //       key: "dailySubmission",
-    //     },
-    //     {
-    //       label: "Conditions",
-    //       component: DynamicCondition,
-    //       key: "questConditions",
-    //       componentProps: {
-    //         value: questSettings.questConditions,
-    //         conditionLogic: questSettings.conditionLogic,
-    //         handleUpdate: setQuestSettings,
-    //         options: [CONDITION_TYPES.DISCORD_ROLE, CONDITION_TYPES.QUEST],
-    //       },
-    //     },
-    //   ],
-    //   settingsLayout: {
-    //     flexDirection: "row",
-    //     alignItems: "center",
-    //   },
-    // },
   ];
 
   return (
