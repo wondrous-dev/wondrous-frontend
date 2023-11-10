@@ -7,17 +7,17 @@ import { MONTH_DAY_FULL_YEAR } from "utils/constants";
 
 const ONE_DAY_IN_SECONDS = 86400;
 const DailySubmissionComponent = (props) => {
-  const { questSettings, setQuestSettings } = props;
-  const isDailySubmission = !!questSettings?.submissionCooldownPeriod;
+  const { entitySettings, setEntitySettings } = props;
+  const isDailySubmission = !!entitySettings?.submissionCooldownPeriod;
   const handleChange = () => {
-    if (!questSettings?.submissionCooldownPeriod) {
-      setQuestSettings({
-        ...questSettings,
+    if (!entitySettings?.submissionCooldownPeriod) {
+      setEntitySettings({
+        ...entitySettings,
         submissionCooldownPeriod: ONE_DAY_IN_SECONDS,
       });
     } else {
-      setQuestSettings({
-        ...questSettings,
+      setEntitySettings({
+        ...entitySettings,
         submissionCooldownPeriod: null,
       });
     }

@@ -35,6 +35,12 @@ const LINKS = [
     partialMatch: true,
   },
   {
+    path: "/referrals",
+    label: "REFERRALS",
+    activeBgColor: "#E9FF90",
+    partialMatch: true,
+  },
+  {
     path: "/levels",
     label: "LEVELS",
     activeBgColor: "#84BCFF",

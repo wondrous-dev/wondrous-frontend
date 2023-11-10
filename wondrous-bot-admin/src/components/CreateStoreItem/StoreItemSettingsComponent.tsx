@@ -2,17 +2,13 @@ import Grid from "@mui/material/Grid";
 import TextField from "components/Shared/TextField";
 
 import { Label } from "components/CreateTemplate/styles";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
-import SelectComponent from "components/Shared/Select";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
-import { CONDITION_TYPES, DELIVERY_METHODS } from "utils/constants";
+import { CONDITION_TYPES } from "utils/constants";
 import ActivateStoreItem from "./components/ActivateStoreItem";
 import MaxInput from "components/CreateTemplate/MaxInput";
 import DynamicCondition from "components/DynamicCondition";
-import { useLazyQuery } from "@apollo/client";
-import { GET_STORE_ITEM_DISCOUNT_CODE_INFO } from "graphql/queries";
-import { DiscountEdit } from "./components/DiscountEdit";
 
 type StoreItemSettingsConfig = {
   label?: string;

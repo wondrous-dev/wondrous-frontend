@@ -23,8 +23,6 @@ const INFO_LABELS = {
 const MaxInput = (props) => {
   const { keyValue, stateKey, handleValueChange, value } = props;
 
-  const infoLabel = INFO_LABELS[stateKey];
-
   const isActive = value || keyValue?.trim() === "";
 
   return (

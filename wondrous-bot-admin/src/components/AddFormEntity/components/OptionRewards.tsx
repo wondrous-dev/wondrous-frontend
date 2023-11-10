@@ -45,7 +45,7 @@ const RewardContent = ({ reward }) => {
   );
 };
 
-const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward, id }) => {
+const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward, id = null, wrapperStyle = {} }) => {
   if (!rewards?.length) return null;
 
   const addEmptyReward = (reward) => {
@@ -54,7 +54,7 @@ const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward, id }) => 
   };
 
   return (
-    <Grid display="flex" gap="10px" flexDirection="column" paddingLeft="46px" width="100%">
+    <Grid display="flex" gap="10px" flexDirection="column" paddingLeft="46px" width="100%" {...wrapperStyle}>
       {rewards?.map((reward, idx) => {
         return (
           <Grid display="flex" gap="14px" alignItems="center" width="100%" key={idx}>
