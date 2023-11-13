@@ -20,7 +20,7 @@ import CloseModalIcon from 'components/Icons/CloseModal';
 import AvatarEditor, { AVATAR_EDITOR_TYPES } from './AvatarEditor';
 import { Grid } from '@mui/material';
 import AddPicture from 'components/Icons/AddPicture';
-import { CloseIcon } from 'components/Shared/DatePicker/Icons';
+import { CloseIcon } from 'components/Shared/DatePicker/Shared/Icons';
 import { ButtonIconWrapper } from 'components/Shared/styles';
 import ReplaceIcon from 'components/Icons/ReplaceIcon';
 import DeleteIcon from 'components/Icons/Delete';

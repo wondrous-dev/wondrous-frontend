@@ -55,6 +55,7 @@ import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
 import ReferralsPage from "pages/referrals";
 import ReferralsCreatePage from "pages/referrals/ReferralsCreate";
+import ViewReferralPage from "pages/referrals/ViewReferral";
 
 const router = createBrowserRouter([
   {
@@ -219,6 +220,10 @@ const router = createBrowserRouter([
       {
         path: "/referrals/create",
         element: <ReferralsCreatePage />,
+      },
+      {
+        path: "/referrals/:id",
+        element: <ViewReferralPage />,
       },
     ],
   },

@@ -8,6 +8,7 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import OptionRewards from "components/AddFormEntity/components/OptionRewards";
 import TextField from "components/Shared/TextField";
+import { REFERRAL_REWARD_SCHEME } from "utils/constants";
 
 const AdvocateRewardComponent = ({ handleAddNewReward, rewards, handleRewardDelete }) => (
   <>
@@ -29,13 +30,7 @@ const FriendRewardComponent = ({}) => (
   <Box display="flex" flexDirection="column" gap="24px">
     <Box display="flex" flexDirection="column" gap="14px">
       <Label fontWeight={600}>Discount</Label>
-      <TextField
-        placeholder="Enter discount"
-        value={""}
-        onChange={() => {}}
-        type="number"
-        multiline={false}
-      />
+      <TextField placeholder="Enter discount" value={""} onChange={() => {}} type="number" multiline={false} />
     </Box>
     <Label fontWeight={600}>Minimum Order (USD)</Label>
   </Box>
@@ -47,11 +42,11 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
   const REWARD_OPTIONS = [
     {
       label: "Advocate Reward",
-      value: "advocateReward",
+      value: REFERRAL_REWARD_SCHEME.REFERRER,
     },
     {
       label: "Friend Reward",
-      value: "friendReward",
+      value: REFERRAL_REWARD_SCHEME.REFERRED,
     },
   ];
 
@@ -101,14 +96,11 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
                 <Divider />
               </Grid>
 
-              {referralItemData?.rewardType === "advocateReward" && (
-                <AdvocateRewardComponent
-                  handleAddNewReward={() => setIsRewardModalOpen(true)}
-                  rewards={referralItemData?.rewards}
-                  handleRewardDelete={handleRewardDelete}
-                />
-              )}
-              {referralItemData?.rewardType === "friendReward" && <FriendRewardComponent />}
+              <AdvocateRewardComponent
+                handleAddNewReward={() => setIsRewardModalOpen(true)}
+                rewards={referralItemData?.rewards}
+                handleRewardDelete={handleRewardDelete}
+              />
             </Grid>
           </>
         );

@@ -1,6 +1,6 @@
 import { ButtonBase, Grid } from "@mui/material";
 import { useTour } from "@reactour/tour";
-import { CloseIcon } from "components/Shared/DatePicker/Icons";
+import { CloseIcon } from "components/Shared/DatePicker/Shared/Icons";
 import { ModalContent, ModalHeader, ModalTitle } from "components/Shared/Modal/styles";
 
 const ContentComponent = ({ children, title }) => {

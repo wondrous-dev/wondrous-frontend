@@ -2,10 +2,10 @@ import { Dispatch, useContext, useMemo } from "react";
 import TextField from "components/Shared/TextField";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
-import { Grid } from "@mui/material";
+import { ButtonBase, Grid } from "@mui/material";
 import { Label } from "components/CreateTemplate/styles";
 import LevelComponent from "components/AddFormEntity/components/LevelComponent";
-import { REFERRAL_STATUSES } from "utils/constants";
+import { MONTH_DAY_FULL_YEAR, REFERRAL_STATUSES } from "utils/constants";
 import { CampaignOverviewSections } from "components/CreateTemplate/CampaignOverview";
 import SelectComponent from "components/Shared/Select";
 import useLevels from "utils/levels/hooks";
@@ -14,6 +14,8 @@ import Switch from "components/Shared/Switch";
 import CategorySelectComponent from "components/CreateTemplate/CategorySelectComponent";
 import MaxInput from "components/CreateTemplate/MaxInput";
 import { validateTypes } from "utils/common";
+import { CustomTextField } from "components/AddFormEntity/components/styles";
+import DateRangePicker from "components/Shared/DatePicker";
 
 // endDate
 // referrerPointReward
@@ -72,10 +74,10 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
           label: "Referal Title",
           component: TextField,
           componentProps: {
-            stateKey: "title",
+            stateKey: "name",
             multiline: false,
           },
-          key: "title",
+          key: "name",
         },
         {
           label: "Description",
@@ -116,6 +118,7 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
             },
           },
         },
+
       ],
       settingsLayout: {
         flexDirection: "row",
@@ -126,6 +129,36 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
       canBeHidden: true,
       showBorder: false,
       settings: [
+        {
+          label: "End Date",
+          component: () => (
+            <DateRangePicker
+              startToday
+              onConfirm={(value) => {
+                setReferralItemSettings((prev) => ({
+                  ...prev,
+                  ...value,
+                }));
+              }}
+              ButtonComponent={(props) => (
+                <ButtonBase {...props}>
+                  <CustomTextField
+                    disabled
+                    placeholder="Select Date Range"
+                    value={
+                      referralItemSettings?.startAt && referralItemSettings?.endAt
+                        ? `${referralItemSettings?.startAt?.format(
+                            MONTH_DAY_FULL_YEAR
+                          )} - ${referralItemSettings?.endAt?.format(MONTH_DAY_FULL_YEAR)}`
+                        : null
+                    }
+                  />
+                </ButtonBase>
+              )}
+            />
+          ),
+          key: "endDate",
+        },
         {
           label: "Max Per User",
           component: MaxInput,

@@ -117,6 +117,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/telegram/start-quest/:id",
   "/telegram/connect",
   "/community-badge/claim",
+  "/referrals/:id",
 ];
 
 export const BG_TYPES = {
@@ -337,7 +338,7 @@ export const EXCLUDED_PATHS = [
   "/verify-link",
   "/wallet/connect",
   "/telegram/start-quest/:id",
-  "/referral",
+  "/referrals/:id",
   "/telegram/connect",
   "/community-badge/claim",
 ];
@@ -484,6 +485,6 @@ export const REFERRAL_REWARD_SCHEME = {
 }
 
 export const QUALIFYING_ACTION_TYPES = {
-  PURCHASE: "PURCHASE",
-  QUEST: "QUEST",
+  PURCHASE: "purchase",
+  QUEST: "quest",
 };

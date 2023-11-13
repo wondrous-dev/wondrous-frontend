@@ -67,8 +67,8 @@ export const TutorialButton = styled.div`
   width: 34.5px;
   height: 34.5px;
   border-radius: 50%;
-  margin-right: 16px;
-  margin-left: -40px;
+  // margin-right: 16px;
+  // margin-left: -40px;
   border: 1.5px solid #baacfa;
   color: #baacfa;
   display: flex;

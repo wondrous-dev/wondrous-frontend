@@ -47,6 +47,42 @@ export const QuestFragment = gql`
     maxApproval
     maxedAt
     requireReview
+    rewards {
+      id
+      type
+      discordRewardData {
+        discordRoleId
+        discordGuildId
+        discordRoleName
+      }
+      poapRewardData {
+        id
+        name
+        description
+        startDate
+        endDate
+        eventUrl
+        imageUrl
+        expiryDate
+        eventSecret
+      }
+      paymentMethodId
+      amount
+      storeItemId
+      storeItem {
+        name
+        id
+      }
+      paymentMethod {
+        name
+        contractAddress
+        type
+        nftMetadataId
+        nftMetadata {
+          mediaUrl
+        }
+      }
+    }
     submissionsCount {
       inReview
       approved

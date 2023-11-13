@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { Box, ButtonBase } from "@mui/material";
 import GlobalContext from "utils/context/GlobalContext";
 import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
-import { CloseIcon } from "components/Shared/DatePicker/Icons";
+import { CloseIcon } from "components/Shared/DatePicker/Shared/Icons";
 import { useMutation } from "@apollo/client";
 import { ADD_ORG_LEVEL_REWARD, REMOVE_ORG_LEVEL_REWARD } from "graphql/mutations";
 import RewardModal, { useAddRewardModalState } from "components/CreateTemplate/RewardModal";

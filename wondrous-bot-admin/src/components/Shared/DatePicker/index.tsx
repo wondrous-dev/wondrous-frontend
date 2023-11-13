@@ -12,57 +12,17 @@ import Typography from "@mui/material/Typography";
 
 import { DATEPICKER_FIELDS, MONTH_DAY_FULL_YEAR, DEFAULT_DATEPICKER_VALUE } from "utils/constants";
 
-import DatePickerNavButton from "./DatePickerNavButton";
-import CalendarDay from "./CalendarDay";
-import { ClearIcon, CloseIcon } from "./Icons";
+import DatePickerNavButton from "./Shared/DatePickerNavButton";
+import CalendarDay from "./Shared/CalendarDay";
+import { ClearIcon, CloseIcon } from "./Shared/Icons";
 // import ClearIcon from 'components/Icons/clear.svg';
 import { SharedSecondaryButton } from "../styles";
 import Popper from "@mui/material/Popper";
 import { ButtonBase, ClickAwayListener } from "@mui/material";
 import { BackspaceOutlined } from "@mui/icons-material";
+import { textFieldInputProps } from "./Shared/utils";
 
 // import palette from 'theme/palette';
-
-const textFieldInputProps = ({ dateString, onClick }) => ({
-  readOnly: true,
-  endAdornment: dateString && (
-    <Grid
-      onClick={onClick}
-      container
-      alignItems="center"
-      justifyContent="center"
-      width="12px"
-      sx={{
-        "&:hover": {
-          cursor: "pointer",
-        },
-        svg: {
-          transform: "scale(0.8)",
-          path: {
-            fill: "white",
-          },
-        },
-      }}
-    >
-      <CloseIcon />
-    </Grid>
-  ),
-  sx: {
-    borderRadius: "6px",
-    height: "40px",
-    background: " #C6BBFC",
-    fontSize: "15px",
-    color: "black",
-    fontWeight: "500",
-    padding: "8px",
-    "& .MuiInputBase-input": {
-      padding: "0",
-      "&::placeholder": {
-        color: "black",
-      },
-    },
-  },
-});
 
 type DateRangePickerProps = {
   hideRecurring?: boolean;
@@ -73,6 +33,7 @@ type DateRangePickerProps = {
   ButtonComponentProps?: { [key: string]: any };
   startToday?: boolean;
   blockFutureDates?: boolean;
+  singleDate?: boolean;
 };
 
 const DateRangePicker = ({
@@ -82,6 +43,7 @@ const DateRangePicker = ({
   ButtonComponent,
   ButtonComponentOnClick,
   ButtonComponentProps,
+  singleDate = false,
 }: DateRangePickerProps) => {
   const [dateRange, setDateRange] = useState(DEFAULT_DATEPICKER_VALUE);
   const [focusedInput, setFocusedInput] = useState(null);
