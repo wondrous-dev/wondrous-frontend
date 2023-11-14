@@ -60,7 +60,7 @@ export const getPlan = (plan) => {
   if (!plan) return PricingOptionsTitle.Basic;
   if (plan === "hobby" || plan === "hobby_annual") return PricingOptionsTitle.Hobby;
   if (plan === "premium" || plan === "premium_annual") return PricingOptionsTitle.Premium;
-  if (plan === "ecosystem" || plan === "ecomosystem_annual") return PricingOptionsTitle.Ecosystem;
+  if (plan === "ecosystem" || plan === "ecoosystem_annual") return PricingOptionsTitle.Ecosystem;
 };
 const STRIPE_MANAGE_SUBSCRIPTION_LINK = import.meta.env.VITE_PRODUCTION
   ? "https://billing.stripe.com/p/login/fZefYZfFDdyk6NG8ww"
