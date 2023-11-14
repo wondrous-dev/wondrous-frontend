@@ -175,7 +175,7 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
           key: "maxPerUser",
         },
         {
-          label: "Referrer Point Reward",
+          label: "Referrer Reward",
           component: TextField,
           componentProps: {
             multiline: false,
@@ -189,7 +189,7 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
           key: "referrerPointReward",
         },
         {
-          label: "Referred Point Reward",
+          label: "Referred Reward",
           component: TextField,
           key: "referredPointReward",
           componentProps: {

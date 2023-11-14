@@ -15,33 +15,8 @@ const ReferralsList = () => {
     order: "desc",
   });
 
-  const [selectedCampaignIds, setSelectedCampaignIds] = useState([]);
-
   const headers = useMemo(() => {
     return [
-      {
-        label: null,
-        labelComponent: () => (
-          // <CheckboxOption
-          //   option={false}
-          //   value={false}
-          //   handleCheckboxChange={(e) => {}}
-          //   // handleCheckboxChange={(e) => handleCheckboxChange(option.text)}
-          //   checkboxProps={{
-          //     checked: false,
-          //   }}
-          // />
-          <StyledCheckbox
-            bgcolor={"#2A8D5C"}
-            height="28px"
-            width="28px"
-            onClick={() => {}}
-            disabled={false}
-            onChange={() => {}}
-            // {...checkboxProps}
-          />
-        ),
-      },
       {
         label: "Off / On",
       },
@@ -53,41 +28,26 @@ const ReferralsList = () => {
         label: "Referrals",
       },
       {
-        label: "Results",
+        label: "Approved",
         sortKey: "results",
       },
       {
-        label: "Budget",
-        sortKey: "budget",
+        label: "Referrer Points",
+        sortKey: "referrerPointReward",
       },
       {
-        label: "Pending Approvals",
-        sortKey: "approvals",
+        label: "Referred Points",
+        sortKey: "referredPointReward",
       },
     ];
   }, []);
 
   const data = [
     {
-      refId: {
-        component: "custom",
-        customComponent: () => (
-          <Box width="100%" display="flex" justifyContent="center">
-            <StyledCheckbox
-              bgcolor={"#2A8D5C"}
-              height="28px"
-              width="28px"
-              onClick={() => {}}
-              disabled={false}
-              onChange={() => {}}
-            />
-          </Box>
-        ),
-      },
       status: {
         component: "custom",
         customComponent: () => (
-          <Box display="flex" justifyContent="center" alignItems="center" width="100%">
+          <Box display="flex" justifyContent="center !important" alignItems="center" width="100%">
             <Switch value={true} onChange={() => {}} />
           </Box>
         ),
@@ -104,16 +64,17 @@ const ReferralsList = () => {
         component: "label",
         value: 20,
       },
-      budget: {
+      referredPoints: {
         component: "label",
-        value: `20,000 Points`,
+        value: 100,
       },
-      pendingApprovals: {
+      referrerPoints: {
         component: "label",
-        value: 20,
+        value: 42,
       },
     },
   ];
+
   const onSortOrderChange = ({}) => {};
   return (
     <PageWrapper
@@ -134,16 +95,9 @@ const ReferralsList = () => {
           return (
             <StyledTableHeader>
               {headers?.map((header) => (
-                <StyledTableHeaderCell
-                  sortKey={header}
-                  sx={
-                    {
-                      // background: "white",
-                    }
-                  }
-                >
+                <StyledTableHeaderCell sortKey={header}>
                   <Box display="flex" alignItems="center" gap="6px" justifyContent="center">
-                    {header.label ? header.label : header.labelComponent?.()}
+                    {header.label}
                     {header.sortKey ? (
                       <ButtonBase type="button" onClick={() => onSortOrderChange({ header })}>
                         <ArrowUpward

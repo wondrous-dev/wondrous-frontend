@@ -67,11 +67,10 @@ const QuestCard = ({ quest }) => {
 
 const ViewRefferal = ({ referralCampaign }) => {
   const cmtyUserToken = localStorage.getItem("cmtyUserToken");
-  const [searchParams] = useSearchParams();
-  const referralCode = searchParams?.get("referralCode");
   const params = {
-    referralCode,
+    referralCode: referralCampaign?.referralCode,
   };
+  console.log(referralCampaign, 'ref camp')
   const discordAuthUrl = getDiscordUrl(
     "/discord/callback/referral",
     `&state=${encodeURIComponent(JSON.stringify(params))}`
@@ -110,7 +109,7 @@ const ViewRefferal = ({ referralCampaign }) => {
     return { xs: 1, sm: 2, md: 2, lg: 3 };
   }, [quests?.length]);
 
-  console.log(masonryColumnsConfig, "col");
+  
   return (
     <>
       {isReffererView ? (
@@ -201,7 +200,7 @@ const ViewRefferal = ({ referralCampaign }) => {
           justifyContent="center"
           alignItems="flex-start"
         >
-          <Masonry
+         {isDiscordConnected ?  <Masonry
             spacing={4}
             columns={masonryColumnsConfig}
             sx={{
@@ -223,7 +222,9 @@ const ViewRefferal = ({ referralCampaign }) => {
                 <QuestCard quest={quest} key={index} />
               </Box>
             ))}
-          </Masonry>
+          </Masonry> : (
+            <SharedSecondaryButton>Connect Discord</SharedSecondaryButton>
+          )}
         </Box>
       </Grid>
     </>
