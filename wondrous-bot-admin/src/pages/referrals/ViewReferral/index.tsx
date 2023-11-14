@@ -31,8 +31,8 @@ const ViewReferralPage = () => {
   return (
     <>
       <HeaderBar>
-        <Box display="flex" justifyContent="space-between" width="100%">
-          <StyledLink to="/" style={{ left: "2%" }}>
+        <Box display="flex" justifyContent="space-between" width="100%" alignItems="center">
+          <StyledLink to="/" style={{ position: "relative" }}>
             <ImageContainer>
               <ImageDefault src="/wonder.svg" />
               <HoveredImage src="/wonder-colored.svg" />
@@ -50,12 +50,14 @@ const ViewReferralPage = () => {
           sx: {
             justifyContent: "center",
             backgroundImage: "none",
-            marginTop: "168px"
+            marginTop: "182px",
+            flexDirection: "column",
+            overflow: "hidden"
           },
         }}
         bgType={BG_TYPES.VIEW_QUESTS}
       >
-        <Grid justifyContent="center" alignItems="center" display="flex" height="100%">
+        <Grid justifyContent="center" alignItems="center" display="flex" height="100%" width="100%" flexDirection="column" flex="1">
           {/* <Link to="/"> */}
           {!data?.getReferralCampaignById || loading ? (
             <PageSpinner color="#fee2ca" />
