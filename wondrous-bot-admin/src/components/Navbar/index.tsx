@@ -47,7 +47,6 @@ const LINKS = [
     activeBgColor: "#FEE2CA",
   },
 ];
-let isStoreAdded = false;
 const Header = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -57,17 +56,15 @@ const Header = () => {
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
-  useEffect(() => {
-    if (plan === PricingOptionsTitle.Ecosystem) {
-      LINKS.splice(3, 0, {
-        path: "/store",
-        label: "STORE",
-        activeBgColor: "#FFCB5D",
-        partialMatch: true,
-      });
-      isStoreAdded = true;
-    }
-  }, [activeOrg?.id]);
+  console.log("subscription", subscription, plan);
+  if (plan === PricingOptionsTitle.Ecosystem && !LINKS.some((link) => link.path === "/store")) {
+    LINKS.splice(3, 0, {
+      path: "/store",
+      label: "STORE",
+      activeBgColor: "#FFCB5D",
+      partialMatch: true,
+    });
+  }
   return (
     <HeaderBar>
       <Link to="/">
