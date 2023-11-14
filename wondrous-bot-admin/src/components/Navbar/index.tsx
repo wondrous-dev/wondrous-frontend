@@ -56,7 +56,6 @@ const Header = () => {
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
-  console.log("subscription", subscription, plan);
   if (plan === PricingOptionsTitle.Ecosystem && !LINKS.some((link) => link.path === "/store")) {
     LINKS.splice(3, 0, {
       path: "/store",
