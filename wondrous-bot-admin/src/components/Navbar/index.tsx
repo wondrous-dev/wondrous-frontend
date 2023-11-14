@@ -10,6 +10,8 @@ import { HEADER_HEIGHT } from "utils/constants";
 import CloseIcon from "@mui/icons-material/Close";
 import WorkspaceSwitch from "components/WorkspaceSwitch";
 import GlobalContext from "utils/context/GlobalContext";
+import { useSubscription } from "utils/hooks";
+import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 
 const checkActive = (path, location, partialMatch = false) => {
   if (partialMatch) {
@@ -53,17 +55,10 @@ const Header = () => {
 
   const theme: any = useTheme();
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
-
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.tier);
   useEffect(() => {
-    if (
-      !isStoreAdded &&
-      ((import.meta.env.VITE_PRODUCTION &&
-        (activeOrg?.id === "98989259425317451" ||
-          activeOrg?.id === "45956686890926082" ||
-          activeOrg?.id === "100884993427899088")) ||
-        (import.meta.env.VITE_STAGING && activeOrg?.id === "89444950095167649") ||
-        (!import.meta.env.VITE_STAGING && !import.meta.env.VITE_PRODUCTION))
-    ) {
+    if (plan === PricingOptionsTitle.Ecosystem) {
       LINKS.splice(3, 0, {
         path: "/store",
         label: "STORE",
