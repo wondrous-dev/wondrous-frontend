@@ -117,6 +117,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/telegram/start-quest/:id",
   "/telegram/connect",
   "/community-badge/claim",
+  "/redirect"
 ];
 
 export const BG_TYPES = {
@@ -340,6 +341,7 @@ export const EXCLUDED_PATHS = [
   "/referral",
   "/telegram/connect",
   "/community-badge/claim",
+  "/redirect"
 ];
 
 export const TUTORIALS = {

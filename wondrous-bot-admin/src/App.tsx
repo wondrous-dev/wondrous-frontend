@@ -53,6 +53,7 @@ import CreateStoreItem from "pages/store/CreateStoreItem";
 import StoreItem from "pages/store/StoreItem";
 import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
+import RedirectPage from "pages/redirect";
 
 const router = createBrowserRouter([
   {
@@ -210,7 +211,10 @@ const router = createBrowserRouter([
         path: '/community-badge/claim',
         element: <CommunityBadgeClaimPage />
       },
-      
+      {
+        path: '/redirect',
+        element: <RedirectPage />
+      }
     ],
   },
 ]);
