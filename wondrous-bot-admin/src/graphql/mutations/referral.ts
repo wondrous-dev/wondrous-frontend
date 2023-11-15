@@ -7,3 +7,11 @@ export const CREATE_REFERRAL = gql`
         }
     }
 `;
+export const UPDATE_REFERRAL = gql`
+    mutation updateReferralCampaign($referralCampaignId: ID!, $input: ReferralCampaignInput) {
+        updateReferralCampaign(referralCampaignId: $referralCampaignId, input: $input) {
+            id
+            status
+        }
+    }
+`;

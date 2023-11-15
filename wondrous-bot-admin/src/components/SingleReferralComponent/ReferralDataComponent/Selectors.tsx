@@ -66,18 +66,19 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
   return (
     <Grid display="flex" flexDirection="column" gap="12px">
       <Label fontWeight={600}>{typeConfig?.label}</Label>
-      {values?.map((value, idx) => (
-        <Box display="flex" gap="14px" alignItems="center">
-          <AutocompleteOptionsComponent
-            options={options}
-            value={value}
-            placeholder={typeConfig?.placeholder}
-            onChange={(value) => handleEntityChange(value, idx)}
-            bgColor="#E8E8E8"
-          />
-          <Buttons idx={idx} />
-        </Box>
-      ))}
+      {values?.map((value, idx) => {
+        console.log(value, 'value', options)
+        return <Box display="flex" gap="14px" alignItems="center" key={idx}>
+        <AutocompleteOptionsComponent
+          options={options}
+          value={value}
+          placeholder={typeConfig?.placeholder}
+          onChange={(value) => handleEntityChange(value, idx)}
+          bgColor="#E8E8E8"
+        />
+        <Buttons idx={idx} />
+      </Box>
+      })}
     </Grid>
   );
 };

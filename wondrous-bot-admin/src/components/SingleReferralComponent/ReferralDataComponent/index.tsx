@@ -33,7 +33,11 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
   const [
     getQuestsForOrg,
     { fetchMore: fetchMoreQuests, data: questsData, startPolling: startQuestsPolling, stopPolling: stopQuestsPolling },
-  ] = useLazyQuery(GET_QUESTS_FOR_ORG);
+  ] = useLazyQuery(GET_QUESTS_FOR_ORG, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "network-only",
+  });
 
   const { activeOrg } = useContext(GlobalContext);
 

@@ -6,35 +6,34 @@ import { Divider } from "components/SignupComponent/CollectCredentials/styles";
 import RewardModal, { useAddRewardModalState } from "components/CreateTemplate/RewardModal";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
-import OptionRewards from "components/AddFormEntity/components/OptionRewards";
+import OptionRewards, { InlineRewardUIComponent } from "components/AddFormEntity/components/OptionRewards";
 import TextField from "components/Shared/TextField";
 import { REFERRAL_REWARD_SCHEME } from "utils/constants";
+import { useMemo } from "react";
 
-const AdvocateRewardComponent = ({ handleAddNewReward, rewards, handleRewardDelete }) => (
-  <>
-    <Box>
-      <SharedSecondaryButton onClick={handleAddNewReward}>Add New Reward</SharedSecondaryButton>
-    </Box>
-    <OptionRewards
-      wrapperStyle={{
-        paddingLeft: "0",
-      }}
-      rewards={rewards}
-      handleRewardDelete={handleRewardDelete}
-      handleAddReward={handleAddNewReward}
-    />
-  </>
-);
-
-const FriendRewardComponent = ({}) => (
-  <Box display="flex" flexDirection="column" gap="24px">
-    <Box display="flex" flexDirection="column" gap="14px">
-      <Label fontWeight={600}>Discount</Label>
-      <TextField placeholder="Enter discount" value={""} onChange={() => {}} type="number" multiline={false} />
-    </Box>
-    <Label fontWeight={600}>Minimum Order (USD)</Label>
-  </Box>
-);
+const CampaignRewardComponent = ({ handleAddNewReward, rewards, handleRewardDelete, rewardScheme }) => {
+  if (!rewards?.length) return null;
+  return (
+    <>
+      <Box>
+        <SharedSecondaryButton onClick={handleAddNewReward}>Add New Reward</SharedSecondaryButton>
+      </Box>
+      <Grid display="flex" gap="10px" flexDirection="column" width="100%">
+        {rewards?.map((reward, idx) => {
+          if (reward?.scheme !== rewardScheme) return null;
+          return (
+            <InlineRewardUIComponent
+              reward={reward}
+              handleRewardDelete={() => handleRewardDelete(idx)}
+              hasDeleteButton={rewards?.length > 1}
+              handleAddReward={handleAddNewReward}
+            />
+          );
+        })}
+      </Grid>
+    </>
+  );
+};
 
 const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => {
   const rewardModalState = useAddRewardModalState();
@@ -61,7 +60,13 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
         }) || [];
       return {
         ...prev,
-        rewards: [...filteredRewards, reward],
+        rewards: [
+          ...filteredRewards,
+          {
+            ...reward,
+            scheme: prev?.rewardScheme,
+          },
+        ],
       };
     });
   };
@@ -85,19 +90,20 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
                 <Label fontWeight={600}>Reward Type</Label>
                 <RewardTypeSwitch
                   options={REWARD_OPTIONS}
-                  value={referralItemData?.rewardType}
+                  value={referralItemData?.rewardScheme}
                   onChange={(value) =>
                     setReferralItemData((prev) => ({
                       ...prev,
-                      rewardType: value,
+                      rewardScheme: value,
                     }))
                   }
                 />
                 <Divider />
               </Grid>
 
-              <AdvocateRewardComponent
+              <CampaignRewardComponent
                 handleAddNewReward={() => setIsRewardModalOpen(true)}
+                rewardScheme={referralItemData?.rewardScheme}
                 rewards={referralItemData?.rewards}
                 handleRewardDelete={handleRewardDelete}
               />

@@ -8,10 +8,10 @@ export const GET_REFERRAL_CAMPAIGN_BY_ID = gql`
       createdAt
       createdBy
       name
+      status
       description
       orgId
       questIds
-      referralCode
       type
       endDate
       referrerPointReward
@@ -77,4 +77,68 @@ export const GET_REFERRAL_CAMPAIGN_BY_ID = gql`
     }
   }
   ${QuestFragment}
+`;
+
+export const GET_REFERRAL_CAMPAIGN_FOR_ORG = gql`
+  query getReferralCampaignForOrg($input: OrgReferralCampaignQueryInput) {
+    getReferralCampaignForOrg(input: $input) {
+      total
+      items {
+        id
+        name
+        rewards {
+          id
+          type
+          scheme
+          paymentMethodId
+          paymentMethod {
+            id
+            createdAt
+            orgId
+            contractAddress
+            chain
+            name
+            symbol
+            icon
+            decimal
+            maxPayout
+            deactivatedAt
+            notes
+            type
+            nftMetadata {
+              mediaUrl
+            }
+            nftMetadataId
+          }
+          amount
+          storeItemId
+          storeItem {
+            id
+            name
+            description
+            ptPrice
+            price
+            media {
+              slug
+            }
+          }
+          discordRewardData {
+            discordRoleId
+            discordGuildId
+            discordRoleName
+          }
+        }
+        status
+        referredPointReward
+        referrerPointReward
+        campaignStats {
+          approvedSubmissions
+          referralsCount
+        }
+        quests {
+          id
+        }
+      }
+    }
+  }
 `;
