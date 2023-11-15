@@ -18,6 +18,7 @@ import SingleReferralPage from "components/SingleReferralComponent";
 import { StyledLink } from "components/ViewQuest/styles";
 import ViewRefferal from "components/ViewReferral";
 import { GET_REFERRAL_CAMPAIGN_BY_ID } from "graphql/queries/referral";
+import moment from "moment";
 import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BG_TYPES, REFERRAL_REWARD_SCHEME } from "utils/constants";
@@ -111,7 +112,7 @@ const ViewReferralPage = () => {
   const referralItemSettings = {
     name: referralItem?.name,
     description: referralItem?.description,
-    endDate: referralItem?.endDate,
+    endDate: referralItem?.endDate ? moment(referralItem?.endDate) : null,
     referrerPointReward: referralItem?.referrerPointReward,
     referredPointReward: referralItem?.referredPointReward,
     maxPerUser: referralItem?.maxPerUser,

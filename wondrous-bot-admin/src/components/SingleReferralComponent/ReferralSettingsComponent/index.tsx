@@ -1,26 +1,17 @@
 import { Dispatch, useContext, useMemo } from "react";
 import TextField from "components/Shared/TextField";
 import CreateQuestContext from "utils/context/CreateQuestContext";
-import { Divider } from "components/SignupComponent/CollectCredentials/styles";
-import { ButtonBase, Grid } from "@mui/material";
-import { Label } from "components/CreateTemplate/styles";
-import LevelComponent from "components/AddFormEntity/components/LevelComponent";
+import { ButtonBase } from "@mui/material";
 import { MONTH_DAY_FULL_YEAR, REFERRAL_STATUSES } from "utils/constants";
 import { CampaignOverviewSections } from "components/CreateTemplate/CampaignOverview";
 import SelectComponent from "components/Shared/Select";
 import useLevels from "utils/levels/hooks";
 import { useGlobalContext } from "utils/hooks";
 import Switch from "components/Shared/Switch";
-import CategorySelectComponent from "components/CreateTemplate/CategorySelectComponent";
 import MaxInput from "components/CreateTemplate/MaxInput";
 import { validateTypes } from "utils/common";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
-import DateRangePicker from "components/Shared/DatePicker";
-
-// endDate
-// referrerPointReward
-// referredPointReward
-// maxPerUser
+import SingleDatePicker from "components/Shared/DatePicker/SingleDatePicker";
 
 interface IProps {
   referralItemSettings: any;
@@ -118,7 +109,6 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
             },
           },
         },
-
       ],
       settingsLayout: {
         flexDirection: "row",
@@ -132,24 +122,17 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
         {
           label: "End Date",
           component: () => (
-            <DateRangePicker
-              startToday
-              onConfirm={(value) => {
-                setReferralItemSettings((prev) => ({
-                  ...prev,
-                  ...value,
-                }));
-              }}
+            <SingleDatePicker
+              value={referralItemSettings?.endDate}
+              setValue={(value) => handleChange("endDate", value)}
               ButtonComponent={(props) => (
                 <ButtonBase {...props}>
                   <CustomTextField
                     disabled
                     placeholder="Select Date Range"
                     value={
-                      referralItemSettings?.startAt && referralItemSettings?.endAt
-                        ? `${referralItemSettings?.startAt?.format(
-                            MONTH_DAY_FULL_YEAR
-                          )} - ${referralItemSettings?.endAt?.format(MONTH_DAY_FULL_YEAR)}`
+                      referralItemSettings?.endDate
+                        ? `${referralItemSettings?.endDate?.format(MONTH_DAY_FULL_YEAR)}`
                         : null
                     }
                   />

@@ -41,3 +41,13 @@ export const textFieldInputProps = ({ dateString, onClick }) => ({
     },
   },
 });
+
+export const WEEK_DAYS = {
+  monday: false,
+  tuesday: false,
+  wednesday: false,
+  thursday: false,
+  friday: false,
+  saturday: false,
+  sunday: false,
+};

@@ -14,53 +14,6 @@ import { CREATE_REFERRAL, UPDATE_REFERRAL } from "graphql/mutations/referral";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import useAlerts from "utils/hooks";
 
-/*
-
-FIELDS:
-
-title
-description
-level
-requireReview
-status = ACTIVE / INACTIVE
-quest_id
-store_item_id
-referrer_point_reward
-referred_point_reward
-max_per_user
-
-REFERRAL_TYPES = {
-  type: COMPLETE_PURCHASE
-  label: Complete a purchase
-  type: Complete a quest
-  label: Complete a quest
-}
-
-INPUT: {
-  orgId - DONE
-  name - DONE
-  description - DONE
-  type - DONE
-  questId - DONE
-  storeItemId - DONE
-  endDate
-  referrerPointReward
-  referredPointReward
-  maxPerUser
-  level - DONE
-  rewards: [ - DONE
-    {
-      type
-      scheme
-      discordRewardData
-      paymentMethodId
-      amount
-      storeItemId
-    }
-  ]
-}
-
-*/
 const DEFAULT_REFERRAL_SETTINGS = {
   name: "",
   description: "",
@@ -142,7 +95,9 @@ const SingleReferralComponent = ({
       name: referralItemSettings?.name,
       description: referralItemSettings?.description,
       type: referralItemData?.type,
-      // endDate: referralItemSettings?.endDate,
+      endDate: referralItemSettings?.endDate
+        ? referralItemSettings?.endDate?.utcOffset(0)?.endOf("day")?.toISOString()
+        : null,
       referrerPointReward: referralItemSettings?.referrerPointReward
         ? parseInt(referralItemSettings?.referrerPointReward, 10)
         : null,

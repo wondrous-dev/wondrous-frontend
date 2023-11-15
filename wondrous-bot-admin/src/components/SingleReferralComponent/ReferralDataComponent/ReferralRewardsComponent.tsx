@@ -12,25 +12,26 @@ import { REFERRAL_REWARD_SCHEME } from "utils/constants";
 import { useMemo } from "react";
 
 const CampaignRewardComponent = ({ handleAddNewReward, rewards, handleRewardDelete, rewardScheme }) => {
-  if (!rewards?.length) return null;
   return (
     <>
       <Box>
         <SharedSecondaryButton onClick={handleAddNewReward}>Add New Reward</SharedSecondaryButton>
       </Box>
-      <Grid display="flex" gap="10px" flexDirection="column" width="100%">
-        {rewards?.map((reward, idx) => {
-          if (reward?.scheme !== rewardScheme) return null;
-          return (
-            <InlineRewardUIComponent
-              reward={reward}
-              handleRewardDelete={() => handleRewardDelete(idx)}
-              hasDeleteButton={rewards?.length > 1}
-              handleAddReward={handleAddNewReward}
-            />
-          );
-        })}
-      </Grid>
+      {rewards?.length ? (
+        <Grid display="flex" gap="10px" flexDirection="column" width="100%">
+          {rewards?.map((reward, idx) => {
+            if (reward?.scheme !== rewardScheme) return null;
+            return (
+              <InlineRewardUIComponent
+                reward={reward}
+                handleRewardDelete={() => handleRewardDelete(idx)}
+                hasDeleteButton={rewards?.length > 1}
+                handleAddReward={handleAddNewReward}
+              />
+            );
+          })}
+        </Grid>
+      ) : null}
     </>
   );
 };
