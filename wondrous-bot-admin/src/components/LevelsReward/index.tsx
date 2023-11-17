@@ -78,6 +78,7 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
     });
   };
 
+  if (level === "1") return null;
   return (
     <>
       <RewardModal

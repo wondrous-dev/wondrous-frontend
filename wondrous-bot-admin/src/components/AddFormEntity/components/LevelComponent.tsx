@@ -50,16 +50,7 @@ const LevelComponent = (props) => {
       label: levels[key],
       value: key,
     }));
-    return [
-      {
-        label: "None - Onboarding Quest",
-        value: null,
-        onClick: () => {
-          handleModal(true);
-        },
-      },
-      ...levelOptions,
-    ];
+    return [...levelOptions];
   }, [levels]);
 
   const handleChange = (value) => {

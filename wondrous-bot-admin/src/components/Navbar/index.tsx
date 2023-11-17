@@ -10,6 +10,8 @@ import { HEADER_HEIGHT } from "utils/constants";
 import CloseIcon from "@mui/icons-material/Close";
 import WorkspaceSwitch from "components/WorkspaceSwitch";
 import GlobalContext from "utils/context/GlobalContext";
+import { useSubscription } from "utils/hooks";
+import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
 
 const checkActive = (path, location, partialMatch = false) => {
   if (partialMatch) {
@@ -51,7 +53,6 @@ const LINKS = [
     activeBgColor: "#FEE2CA",
   },
 ];
-let isStoreAdded = false;
 const Header = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -59,26 +60,16 @@ const Header = () => {
 
   const theme: any = useTheme();
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
-
-  useEffect(() => {
-    if (
-      !isStoreAdded &&
-      ((import.meta.env.VITE_PRODUCTION &&
-        (activeOrg?.id === "98989259425317451" ||
-          activeOrg?.id === "45956686890926082" ||
-          activeOrg?.id === "100884993427899088")) ||
-        (import.meta.env.VITE_STAGING && activeOrg?.id === "89444950095167649") ||
-        (!import.meta.env.VITE_STAGING && !import.meta.env.VITE_PRODUCTION))
-    ) {
-      LINKS.splice(3, 0, {
-        path: "/store",
-        label: "STORE",
-        activeBgColor: "#FFCB5D",
-        partialMatch: true,
-      });
-      isStoreAdded = true;
-    }
-  }, [activeOrg?.id]);
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.tier);
+  if (plan === PricingOptionsTitle.Ecosystem && !LINKS.some((link) => link.path === "/store")) {
+    LINKS.splice(3, 0, {
+      path: "/store",
+      label: "STORE",
+      activeBgColor: "#FFCB5D",
+      partialMatch: true,
+    });
+  }
   return (
     <HeaderBar>
       <Link to="/">
