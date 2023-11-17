@@ -5,23 +5,24 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { handleUserOnboardingRedirect } from "utils/common";
 import CollectCredentials from "./CollectCredentials";
+import MetaPixel from "components/MetaPixel";
 
 const SignupComponent = () => {
   const navigate = useNavigate();
 
-  const {search} = useLocation();
+  const { search } = useLocation();
 
   const searchParams = new URLSearchParams(search);
 
-  const discordConnectError = searchParams.get('discordConnectError');
-  const token = searchParams.get('token');
-  const type = searchParams.get('type');
-  
+  const discordConnectError = searchParams.get("discordConnectError");
+  const token = searchParams.get("token");
+  const type = searchParams.get("type");
+
   const params = {
     discordConnectError,
     token,
-    type
-  }
+    type,
+  };
 
   const moveForward = () => handleUserOnboardingRedirect(null, navigate, params, "/onboarding/welcome");
 
@@ -33,6 +34,7 @@ const SignupComponent = () => {
         </LinkWithQuery>
       )}
     >
+      <MetaPixel />
       <CollectCredentials moveForward={moveForward} />
     </AuthLayout>
   );

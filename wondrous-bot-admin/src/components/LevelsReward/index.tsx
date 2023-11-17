@@ -79,6 +79,7 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
     });
   };
 
+  if (level === "1") return null;
   return (
     <>
       <RewardModal
@@ -128,7 +129,7 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
 
 const ExistingLevelsReward = ({ reward, allRoles, level, refetchLevelRewards, handleRemove }) => {
   const selectedRole = allRoles.find((item) => item.id === reward.discordRewardData?.discordRoleId);
-
+  if (level === "1") return null;
   return (
     <StyledViewQuestResults>
       {reward.type === PAYMENT_OPTIONS.DISCORD_ROLE && (
