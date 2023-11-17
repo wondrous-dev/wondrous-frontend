@@ -9,16 +9,19 @@ import QuestTitle from "components/QuestTitle";
 import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 import { GET_STORE_ITEM_BY_ID } from "graphql/queries";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import DiscountCodeModal from "./DiscountCodeModal";
 import ViewStoreItem from "components/ViewStoreItem";
+import StoreModule from "components/ModulesActivation/StoreModule";
+import { useStorePaywall } from "utils/storeUtils";
 
 const StoreItem = () => {
   const headerActionsRef = useRef(null);
   const [errors, setErrors] = useState({});
   const [openDiscountUploadModal, setOpenDiscountUploadModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const navigate = useNavigate();
   let { id } = useParams();
   const { data, loading } = useQuery(GET_STORE_ITEM_BY_ID, {
     notifyOnNetworkStatusChange: true,
@@ -33,6 +36,8 @@ const StoreItem = () => {
   const setRefValue = (value) => (headerActionsRef.current = value);
 
   const { __typename, ...restAdditionalData } = data?.getStoreItem?.additionalData || {};
+
+  const { isActivateModuleModalOpen, handleSuccess } = useStorePaywall();
 
   const defaultStoreItemSettings = useMemo(() => {
     return {
@@ -76,6 +81,7 @@ const StoreItem = () => {
     if (isEditMode) return headerActionsRef.current?.handleSave();
     return setIsEditMode(true);
   };
+  if (isActivateModuleModalOpen) return <StoreModule onSuccess={handleSuccess} onCancel={() => navigate("/")} />;
   if (!data) return null;
   return (
     <>
