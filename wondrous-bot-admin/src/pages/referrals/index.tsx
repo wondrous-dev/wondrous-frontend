@@ -12,6 +12,9 @@ const ReferralsPage = () => {
   const navigate = useNavigate();
   const { activeOrg } = useGlobalContext();
   const { data, fetchMore, refetch, loading } = useQuery(GET_REFERRAL_CAMPAIGN_FOR_ORG, {
+    fetchPolicy: "cache-first",
+    nextFetchPolicy: "cache-first",
+    notifyOnNetworkStatusChange: true,
     variables: {
       input: {
         orgId: activeOrg?.id,
@@ -19,6 +22,7 @@ const ReferralsPage = () => {
         offset: 0,
         statuses: [REFERRAL_STATUSES.ACTIVE, REFERRAL_STATUSES.INACTIVE],
       },
+      skip: !activeOrg?.id,
     },
   });
 
@@ -35,7 +39,7 @@ const ReferralsPage = () => {
           </Box>
         )}
       />
-      <ReferralsList data={data?.getReferralCampaignForOrg?.items} refetch={refetch} fetchMore={fetchMore} />
+      <ReferralsList data={data} refetch={refetch} fetchMore={fetchMore} loading={loading}/>
     </>
   );
 };

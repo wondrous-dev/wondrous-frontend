@@ -25,7 +25,7 @@ const CampaignRewardComponent = ({ handleAddNewReward, rewards, handleRewardDele
               <InlineRewardUIComponent
                 reward={reward}
                 handleRewardDelete={() => handleRewardDelete(idx)}
-                hasDeleteButton={rewards?.length > 1}
+                hasDeleteButton={rewards?.length > 1 || reward?.type !== null}
                 handleAddReward={handleAddNewReward}
               />
             );

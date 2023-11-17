@@ -8,6 +8,7 @@ import { useState } from "react";
 import { scrollbarStyles } from "components/Shared/styles";
 import { TYPES } from "utils/constants";
 import { CustomComponentWrapper, MenuItemOptionWrapper } from "./styles";
+import ErrorField from "components/Shared/ErrorField";
 
 const AutocompleteOptionsComponent = ({
   options,
@@ -23,6 +24,7 @@ const AutocompleteOptionsComponent = ({
   listBoxProps = {},
   disableClearable = true,
   onClear = null,
+  error = null,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenClose = (status) => () => setIsOpen(() => status);
@@ -69,20 +71,22 @@ const AutocompleteOptionsComponent = ({
         options={options}
         renderInput={(params) => {
           return (
-            <TextField
-              {...params}
-              label=""
-              placeholder={placeholder}
-              sx={{
-                padding: 0,
-                outline: "none",
-                "& input": {
-                  fontFamily: "Poppins, sans-serif",
-                  fontWeight: "500",
-                },
-              }}
-              {...inputProps}
-            />
+            <>
+              <TextField
+                {...params}
+                label=""
+                placeholder={placeholder}
+                sx={{
+                  padding: 0,
+                  outline: "none",
+                  "& input": {
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: "500",
+                  },
+                }}
+                {...inputProps}
+              />
+            </>
           );
         }}
         renderOption={(props, option) => {

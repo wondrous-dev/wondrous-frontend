@@ -1,4 +1,4 @@
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { Masonry } from "@mui/lab";
 import { Grid, Box, Typography, ButtonBase, Paper, styled } from "@mui/material";
 import { CardHoverWrapper, CardWrapper, Label } from "components/QuestsList/styles";
@@ -6,31 +6,57 @@ import { CloseIcon } from "components/Shared/DatePicker/Shared/Icons";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
+import useErrorHandler from "components/ViewQuest/useErrorHandler";
 import ViewRewards, { Reward } from "components/ViewQuestResults/ViewRewards";
+import { START_QUEST } from "graphql/mutations";
 import { GET_CMTY_USER_TOKEN_EXPIRE_CHECK, GET_ORG_DISCORD_INVITE_LINK } from "graphql/queries";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { constructRewards } from "utils/common";
+import { ERRORS_LABELS, REFERRAL_REWARD_SCHEME } from "utils/constants";
 import { getDiscordUrl } from "utils/discord";
+import useAlerts from "utils/hooks";
 
-const QuestCard = ({ quest }) => {
+const IndividualQuestComponent = ({ quest, referralCode, referralCampaignExternalId, resetConnection }) => {
   const rewardsValue = constructRewards({ rewards: quest?.rewards || [] });
 
-  return (
-    <CardHoverWrapper
-      width="100%"
-      height="100%"
-      // maxWidth={{
-      //   xs: "100%",
-      //   sm: "50%",
-      //   md: "50%",
-      //   lg: "33.333333%",
+  const { handleError } = useErrorHandler();
 
-      // }}
-      // maxWidth={{}}
-      // onClick={() => navigate(`/quests/${item.id}`)}
-      flex={1}
-    >
+  const cmtyUserToken = localStorage.getItem("cmtyUserToken");
+
+  const [startQuest, { loading: startQuestLoading }] = useMutation(START_QUEST, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${cmtyUserToken}`,
+      },
+    },
+    onCompleted: ({ startQuest }) => {
+      if (startQuest?.channelLink) {
+        window.open(startQuest?.channelLink, "_blank");
+      }
+      if (startQuest?.error) {
+        return handleError({ questInfo: quest, error: startQuest?.error });
+      }
+    },
+    onError: (error) => {
+      if(error?.graphQLErrors?.[0]?.extensions?.code === 'UNAUTHENTICATED') {
+        resetConnection();
+      }
+    }
+  });
+
+  const onStartQuest = async () => {
+    await startQuest({
+      variables: {
+        questId: quest?.id,
+        referralCode,
+        referralCampaignExternalId,
+      },
+    });
+  };
+
+  return (
+    <CardHoverWrapper width="100%" height="100%" flex={1}>
       <CardWrapper
         item
         sx={{
@@ -52,33 +78,53 @@ const QuestCard = ({ quest }) => {
         </Typography>
         <Divider style={{ backgroundColor: "#F5F5F5" }} />
         <Box display="flex" gap="14px" alignItems="center" justifyContent="center" flexDirection="column">
-          <Typography fontFamily="Poppins" fontSize="13px" color="black" fontWeight={500}>
-            Quest Rewards
-          </Typography>
-          <Grid container alignItems="center" gap="14px" flex="1" justifyContent="center">
-            {rewardsValue.map(Reward)}
-          </Grid>
-          <SharedSecondaryButton>Start Quest</SharedSecondaryButton>
+          {rewardsValue?.length ? (
+            <>
+              <Typography fontFamily="Poppins" fontSize="13px" color="black" fontWeight={500}>
+                Quest Rewards
+              </Typography>
+              <Grid container alignItems="center" gap="14px" flex="1" justifyContent="center">
+                {rewardsValue.map(Reward)}
+              </Grid>
+            </>
+          ) : null}
+          <SharedSecondaryButton onClick={onStartQuest}>Start Quest</SharedSecondaryButton>
         </Box>
       </CardWrapper>
     </CardHoverWrapper>
   );
 };
 
-const ViewRefferal = ({ referralCampaign }) => {
+const StartReferralQuests = ({ referralCampaign, referralCode, referralExternalId, paramsError, paramsMessage }) => {
   const cmtyUserToken = localStorage.getItem("cmtyUserToken");
+
   const params = {
-    referralCode: referralCampaign?.referralCode,
+    referralCode,
+    referralExternalId,
+    orgId: referralCampaign?.orgId,
   };
-  console.log(referralCampaign, 'ref camp')
+
   const discordAuthUrl = getDiscordUrl(
-    "/discord/callback/referral",
+    "/discord/callback/cmty-user-connect",
     `&state=${encodeURIComponent(JSON.stringify(params))}`
   );
 
-
+  const [hasClickedInvite, setHasClickedInvite] = useState(false);
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertAutoHideDuration } = useAlerts();
   const [isDiscordConnected, setIsDiscordConnected] = useState(false);
-  const [getOrgDiscordInviteLink, { data: orgDiscordInviteLinkData }] = useLazyQuery(GET_ORG_DISCORD_INVITE_LINK);
+  const [getOrgDiscordInviteLink, { data: orgDiscordInviteLinkData, loading }] = useLazyQuery(
+    GET_ORG_DISCORD_INVITE_LINK,
+    {
+      onCompleted: () => {
+        setHasClickedInvite(false);
+        setSnackbarAlertMessage(
+          "It seems you are not a member of the discord server. Please join the server to continue."
+        );
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertAutoHideDuration(10000);
+      },
+    }
+  );
   const [verifyToken] = useLazyQuery(GET_CMTY_USER_TOKEN_EXPIRE_CHECK, {
     context: {
       headers: {
@@ -93,12 +139,39 @@ const ViewRefferal = ({ referralCampaign }) => {
     }
   }, [cmtyUserToken]);
 
+  useEffect(() => {
+    if (paramsError && paramsMessage) {
+      if (paramsMessage === "discord_user_not_in_guild") {
+        getOrgDiscordInviteLink({
+          variables: {
+            orgId: referralCampaign?.orgId,
+          },
+        });
+      } else {
+        setSnackbarAlertMessage(ERRORS_LABELS[paramsMessage] || "Something went wrong, please try again later");
+        setSnackbarAlertOpen(true);
+      }
+    }
+  }, [paramsError, paramsMessage]);
+
   const org = referralCampaign?.org;
   const [isReffererView, setIsReffererView] = useState(true);
 
-  // const quests = [...referralCampaign?.quests, ...referralCampaign?.quests, ...referralCampaign?.quests, ...referralCampaign?.quests] || [];
+  const referredRewards = useMemo(() => {
+    const { rewards, referredPointReward } = referralCampaign || {};
+    return rewards?.reduce(
+      (acc, reward) => {
+        if (reward?.scheme === REFERRAL_REWARD_SCHEME.REFERRED || reward?.scheme === REFERRAL_REWARD_SCHEME.TWO_WAY) {
+          acc.push(reward);
+        }
+        return acc;
+      },
+      referredPointReward ? [{ type: "points", value: referredPointReward }] : []
+    );
+  }, [referralCampaign?.rewards, referralCampaign?.referredPointReward]);
+
   const quests = referralCampaign?.quests || [];
-  const rewardsValue = constructRewards({ rewards: referralCampaign?.rewards || [] });
+  const rewardsValue = constructRewards({ rewards: referredRewards || [] });
 
   const masonryColumnsConfig = useMemo(() => {
     if (quests?.length <= 1) {
@@ -109,7 +182,24 @@ const ViewRefferal = ({ referralCampaign }) => {
     return { xs: 1, sm: 2, md: 2, lg: 3 };
   }, [quests?.length]);
 
-  
+  const inviteLink = orgDiscordInviteLinkData?.getOrgDiscordInviteLink?.link;
+
+  const handleOnConnect = (inviteLink) => {
+    if (inviteLink && !hasClickedInvite) {
+      setSnackbarAlertOpen(false);
+      setHasClickedInvite(true);
+      window.open(inviteLink);
+    }
+    window.open(discordAuthUrl);
+  };
+
+  const resetConnection = () => {
+    setSnackbarAlertMessage("Please reconnect your discord account to continue");
+    setSnackbarAlertOpen(true);
+    setIsDiscordConnected(false);
+    localStorage.removeItem("cmtyUserToken");
+  };
+
   return (
     <>
       {isReffererView ? (
@@ -178,7 +268,7 @@ const ViewRefferal = ({ referralCampaign }) => {
             {org?.description}
           </Typography>
         ) : null}
-        {referralCampaign?.rewards?.length ? (
+        {referredRewards?.length ? (
           <Box display="flex" gap="14px" alignItems="center" justifyContent="center" flexDirection="column">
             <Typography fontFamily="Poppins" fontSize="13px" color="black" fontWeight={500}>
               Earn rewards for completing these quests!
@@ -200,30 +290,40 @@ const ViewRefferal = ({ referralCampaign }) => {
           justifyContent="center"
           alignItems="flex-start"
         >
-         {isDiscordConnected ?  <Masonry
-            spacing={4}
-            columns={masonryColumnsConfig}
-            sx={{
-              alignContent: "center",
-              width: "100%",
-            }}
-          >
-            {quests?.map((quest, index) => (
-              <Box
-                width="100%"
-                display="flex"
-                justifyContent="center"
-                sx={{
-                  ...(quests?.length === 1 && {
-                    maxWidth: "40%",
-                  }),
-                }}
-              >
-                <QuestCard quest={quest} key={index} />
-              </Box>
-            ))}
-          </Masonry> : (
-            <SharedSecondaryButton>Connect Discord</SharedSecondaryButton>
+          {isDiscordConnected ? (
+            <Masonry
+              spacing={4}
+              columns={masonryColumnsConfig}
+              sx={{
+                alignContent: "center",
+                width: "100%",
+              }}
+            >
+              {quests?.map((quest, index) => (
+                <Box
+                  width="100%"
+                  display="flex"
+                  justifyContent="center"
+                  sx={{
+                    ...(quests?.length === 1 && {
+                      maxWidth: "40%",
+                    }),
+                  }}
+                >
+                  <IndividualQuestComponent
+                    quest={quest}
+                    key={index}
+                    referralCampaignExternalId={referralExternalId}
+                    referralCode={referralCode}
+                    resetConnection={resetConnection}
+                  />
+                </Box>
+              ))}
+            </Masonry>
+          ) : (
+            <SharedSecondaryButton onClick={() => handleOnConnect(inviteLink)}>
+              {inviteLink && !hasClickedInvite ? "Join Discord" : "Connect Discord"}
+            </SharedSecondaryButton>
           )}
         </Box>
       </Grid>
@@ -231,4 +331,4 @@ const ViewRefferal = ({ referralCampaign }) => {
   );
 };
 
-export default ViewRefferal;
+export default StartReferralQuests;

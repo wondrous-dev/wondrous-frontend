@@ -16,12 +16,12 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import SingleReferralComponent from "components/SingleReferralComponent";
 import SingleReferralPage from "components/SingleReferralComponent";
 import { StyledLink } from "components/ViewQuest/styles";
-import ViewRefferal from "components/ViewReferral";
+import ViewRefferal from "components/StartReferralQuests";
 import { GET_REFERRAL_CAMPAIGN_BY_ID } from "graphql/queries/referral";
 import moment from "moment";
 import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { BG_TYPES, REFERRAL_REWARD_SCHEME } from "utils/constants";
+import { BG_TYPES, QUALIFYING_ACTION_TYPES, REFERRAL_REWARD_SCHEME } from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 
 // const StartReferralPage = () =>  (
@@ -103,7 +103,10 @@ const ViewReferralPage = () => {
 
   const referralItemData = {
     type: referralItem?.type,
-    questIds: referralItem?.quests?.map((item) => item.id) || [null],
+    questIds:
+      referralItem?.type === QUALIFYING_ACTION_TYPES.ANY_QUEST
+        ? ["all-quests"]
+        : referralItem?.quests?.map((item) => item.id),
     storeItemId: referralItem?.storeItem?.id || null,
     rewards: referralItem?.rewards || [],
     rewardScheme: REFERRAL_REWARD_SCHEME.REFERRER,

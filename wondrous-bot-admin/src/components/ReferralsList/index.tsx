@@ -8,16 +8,24 @@ import TableComponent from "components/TableComponent";
 import { StyledTableHeader, StyledTableHeaderCell } from "components/TableComponent/styles";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { BG_TYPES, REFERRAL_STATUSES } from "utils/constants";
+import { BG_TYPES, EMPTY_STATE_TYPES, LIMIT, REFERRAL_STATUSES } from "utils/constants";
 import { Label } from "components/QuestsList/styles";
 import { useMutation } from "@apollo/client";
-import { UPDATE_REFERRAL } from "graphql/mutations";
+import { MINIMAL_REFERRAL_UPDATE, UPDATE_REFERRAL } from "graphql/mutations";
 import { ExistingLevelsReward } from "components/LevelsReward";
 import { useDiscordRoles } from "utils/discord";
 import { useGlobalContext } from "utils/hooks";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
+import { SharedSecondaryButton } from "components/Shared/styles";
+import Spinner from "components/Shared/Spinner";
+import EmptyState from "components/EmptyState";
+import apollo from "services/apollo";
+import { GET_REFERRAL_CAMPAIGN_FOR_ORG } from "graphql/queries/referral";
+import { updateReferralCampaignCache } from "utils/apolloHelpers";
 
-const ReferralsList = ({ data, refetch, fetchMore }) => {
+const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
+  const [hasMore, setHasMore] = useState(true);
+
   const [sortOrder, setSortOrder] = useState({
     sortKey: "submissions",
     order: "desc",
@@ -27,10 +35,21 @@ const ReferralsList = ({ data, refetch, fetchMore }) => {
     orgId: activeOrg?.id,
   });
 
-  const [updateReferralCampaign] = useMutation(UPDATE_REFERRAL, {
-    onCompleted: () => {
-      refetch();
-    },
+  const [updateReferralCampaign] = useMutation(MINIMAL_REFERRAL_UPDATE, {
+    update: (cache, { data }) =>
+      updateReferralCampaignCache(
+        cache,
+        data,
+        "updateReferralCampaign",
+        {
+          orgId: activeOrg?.id,
+          limit: LIMIT,
+          statuses: [REFERRAL_STATUSES.ACTIVE, REFERRAL_STATUSES.INACTIVE],
+          offset: data?.getReferralCampaignForOrg?.items?.length,
+        },
+        "update",
+        ["status"]
+      ),
   });
 
   const headers = useMemo(() => {
@@ -70,6 +89,15 @@ const ReferralsList = ({ data, refetch, fetchMore }) => {
         input: {
           status: status === REFERRAL_STATUSES.ACTIVE ? REFERRAL_STATUSES.INACTIVE : REFERRAL_STATUSES.ACTIVE,
         },
+        optimisticResponse: {
+          updateReferralCampaign: {
+            updateReferralCampaign: {
+              id: referralCampaignId,
+              status: status === REFERRAL_STATUSES.ACTIVE ? REFERRAL_STATUSES.INACTIVE : REFERRAL_STATUSES.ACTIVE,
+              __typename: "ReferralCampaign",
+            },
+          },
+        },
       },
     });
   };
@@ -81,7 +109,7 @@ const ReferralsList = ({ data, refetch, fetchMore }) => {
   };
 
   const tableItems = useMemo(() => {
-    return data?.map((referral, idx) => {
+    return data?.getReferralCampaignForOrg?.items?.map((referral, idx) => {
       return {
         status: {
           component: "custom",
@@ -157,9 +185,45 @@ const ReferralsList = ({ data, refetch, fetchMore }) => {
         },
       };
     });
-  }, [data, discordRoles]);
+  }, [data?.getReferralCampaignForOrg?.items, discordRoles]);
 
-  console.log(tableItems, "table items");
+  const handleFetchMore = () => {
+    const prevData = data?.getReferralCampaignForOrg?.items;
+    fetchMore({
+      variables: {
+        input: {
+          orgId: activeOrg?.id,
+          limit: LIMIT,
+          statuses: [REFERRAL_STATUSES.ACTIVE, REFERRAL_STATUSES.INACTIVE],
+          offset: prevData?.length,
+        },
+      },
+    }).then(({ data }) => {
+      apollo.cache.updateQuery(
+        {
+          query: GET_REFERRAL_CAMPAIGN_FOR_ORG,
+          variables: {
+            input: {
+              orgId: activeOrg?.id,
+              limit: LIMIT,
+              statuses: [REFERRAL_STATUSES.ACTIVE, REFERRAL_STATUSES.INACTIVE],
+              offset: 0,
+            },
+          },
+        },
+        () => {
+          const updatedItems = [...prevData, ...data?.getReferralCampaignForOrg?.items];
+          return {
+            getReferralCampaignForOrg: {
+              ...data?.getReferralCampaignForOrg,
+              items: updatedItems,
+            },
+          };
+        }
+      );
+      setHasMore(data?.getReferralCampaignForOrg?.items?.length >= LIMIT);
+    });
+  };
 
   const onSortOrderChange = ({}) => {};
 
@@ -207,6 +271,17 @@ const ReferralsList = ({ data, refetch, fetchMore }) => {
         }}
         title="Referrals"
       />
+      {hasMore && data?.getReferralCampaignForOrg?.items?.length > 0 ? (
+        <SharedSecondaryButton
+          style={{
+            width: "fit-content",
+            alignSelf: "center",
+          }}
+          onClick={handleFetchMore}
+        >
+          {loading ? <Spinner /> : `Show more`}
+        </SharedSecondaryButton>
+      ) : null}
     </PageWrapper>
   );
 };

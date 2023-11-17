@@ -13,11 +13,13 @@ import { GET_QUESTS_FOR_ORG, GET_STORE_ITEMS_FOR_ORG } from "graphql/queries";
 import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 import AddIcon from "@mui/icons-material/Add";
 import ReferralRewardsComponent from "./ReferralRewardsComponent";
+import ErrorField from "components/Shared/ErrorField";
 
 const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [hasMore, setHasMore] = useState(false);
 
+  console.log(errors, 'errs')
   const [
     getStoreItemsForOrg,
     {
@@ -58,7 +60,10 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
       });
       length = data?.getStoreItemsForOrg?.length;
     }
-    if (referralItemData?.type === QUALIFYING_ACTION_TYPES.QUEST) {
+    if (
+      referralItemData?.type === QUALIFYING_ACTION_TYPES.QUEST ||
+      referralItemData?.type === QUALIFYING_ACTION_TYPES.ANY_QUEST
+    ) {
       const { data } = await getQuestsForOrg({
         variables: {
           input: {
@@ -105,7 +110,7 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
       });
       setHasMore(data?.getStoreItemsForOrg?.length === LIMIT);
     }
-    if (type === QUALIFYING_ACTION_TYPES.QUEST) {
+    if (type === QUALIFYING_ACTION_TYPES.QUEST || type === QUALIFYING_ACTION_TYPES.ANY_QUEST) {
       const { data } = await fetchMoreQuests({
         variables: {
           input: {
@@ -151,7 +156,10 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
         },
       ];
     }
-    if (referralItemData?.type === QUALIFYING_ACTION_TYPES.QUEST) {
+    if (
+      referralItemData?.type === QUALIFYING_ACTION_TYPES.QUEST ||
+      referralItemData?.type === QUALIFYING_ACTION_TYPES.ANY_QUEST
+    ) {
       let items =
         questsData?.getQuestsForOrg?.map((item) => ({
           label: item.title,
@@ -192,14 +200,41 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
     stopStoreItemsPolling,
   ]);
 
-  const handleTypeChange = (value) => setReferralItemData({ ...referralItemData, type: value });
+  const handleTypeChange = (value) => {
+    setErrors((prev) => ({
+      ...prev,
+      type: null,
+    }));
+    setReferralItemData({ ...referralItemData, type: value });
+  };
 
-  const handleEntityChange = (value, idx) => {
+  const handleEntityChange = (value, idx, type) => {
     stopQuestsPolling();
     stopStoreItemsPolling();
-    setReferralItemData({
-      ...referralItemData,
-      questIds: referralItemData?.questIds?.map((item, i) => (i === idx ? value : item)),
+
+    setErrors((prev) => {
+      return {
+        ...prev,
+        questIds: prev?.questIds?.map((item, i) => (i === idx ? null : item)),
+      }
+    });
+
+    if (value === "all-quests") {
+      return setReferralItemData((prev) => ({
+        ...prev,
+        type: QUALIFYING_ACTION_TYPES.ANY_QUEST,
+        questIds: ["all-quests"],
+      }));
+    }
+
+    setReferralItemData((prev) => {
+      const currentQuestIds = prev?.questIds || [];
+
+      return {
+        ...prev,
+        type: prev.type === QUALIFYING_ACTION_TYPES.ANY_QUEST ? QUALIFYING_ACTION_TYPES.QUEST : prev.type,
+        questIds: currentQuestIds?.length ? currentQuestIds?.map((item, i) => (i === idx ? value : item)) : [value],
+      };
     });
   };
 
@@ -215,7 +250,11 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
                 <Box display="flex" gap="14px" alignItems="center">
                   <AutocompleteOptionsComponent
                     options={QUALIIFYING_ACTION_TYPES_OPTIONS}
-                    value={referralItemData.type}
+                    value={
+                      referralItemData.type === QUALIFYING_ACTION_TYPES.ANY_QUEST
+                        ? QUALIFYING_ACTION_TYPES.QUEST
+                        : referralItemData?.type
+                    }
                     placeholder="Select qualifying action"
                     onChange={handleTypeChange}
                     bgColor="#E8E8E8"
@@ -231,9 +270,10 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
                     imgStyle={{
                       marginLeft: "0",
                     }}
-                    title="//TODO: Select qualifying action"
+                    title="Select a qualifying action for your referral program."
                   />
                 </Box>
+                <ErrorField errorText={errors?.type} />
               </Grid>
               <SelectorsComponent
                 options={options}

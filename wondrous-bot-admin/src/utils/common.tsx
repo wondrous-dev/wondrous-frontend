@@ -52,6 +52,11 @@ export function getPathArray(path) {
   return path.split(/[[\].]+/).filter(Boolean);
 }
 
+export function convertPath(path) {
+  return path?.replace(/\[|\]\.?/g, '.').replace(/""/g, "").replace(/^\./, '');
+}
+
+
 export const matchRoute = (pathname, options) => {
   return !!options.find((route) => {
     // Replace potential URL parameters (e.g., ":id") with wildcard for RegExp match

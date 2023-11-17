@@ -4,7 +4,7 @@ import PanelComponent from "components/CreateTemplate/PanelComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BG_TYPES, REFERRAL_REWARD_SCHEME, REFERRAL_STATUSES } from "utils/constants";
+import { BG_TYPES, LIMIT, QUALIFYING_ACTION_TYPES, REFERRAL_REWARD_SCHEME, REFERRAL_STATUSES } from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
 import ReferralSettingsComponent from "./ReferralSettingsComponent";
@@ -13,6 +13,10 @@ import { useMutation } from "@apollo/client";
 import { CREATE_REFERRAL, UPDATE_REFERRAL } from "graphql/mutations/referral";
 import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import useAlerts from "utils/hooks";
+import { updateReferralCampaignCache } from "utils/apolloHelpers";
+import { ValidationError, referralValidator } from "services/validators";
+import { convertPath, getPathArray } from "utils/common";
+import { set } from "lodash";
 
 const DEFAULT_REFERRAL_SETTINGS = {
   name: "",
@@ -43,28 +47,58 @@ const SingleReferralComponent = ({
   const referralItemSettingsDefaultState = existingReferralItemSettings || { ...DEFAULT_REFERRAL_SETTINGS };
   const navigate = useNavigate();
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
-  const { errors, setErrors } = useContext(CreateQuestContext);
+  const { setErrors } = useContext(CreateQuestContext);
   const [referralItemData, setReferralItemData] = useState<any>(referralItemDataDefaultState);
   const [referralItemSettings, setReferralItemSettings] = useState<any>(referralItemSettingsDefaultState);
 
   const [createReferral] = useMutation(CREATE_REFERRAL, {
-    // refetchQueries: ["getReferralCampaignForOrg"],
     onCompleted: (data) => {
       setSnackbarAlertMessage("Referral campaign created successfully");
       setSnackbarAlertOpen(true);
       navigate(`/referrals`);
     },
+    update: (cache, { data }) => {
+      return updateReferralCampaignCache(
+        cache,
+        data,
+        "createReferralCampaign",
+        {
+          orgId: activeOrg?.id,
+          limit: LIMIT,
+          statuses: [REFERRAL_STATUSES.ACTIVE, REFERRAL_STATUSES.INACTIVE],
+          offset: 0,
+        },
+        "create",
+        ["status", "name", "referrerPointReward", "referredPointReward", "rewards"]
+      );
+    },
+
     onError: (err) => {
       console.log(err);
     },
   });
 
   const [updateReferralCampaign] = useMutation(UPDATE_REFERRAL, {
-    refetchQueries: ["getReferralCampaignById"],
+    // refetchQueries: ["getReferralCampaignById"],
     onCompleted: () => {
       setSnackbarAlertMessage("Referral campaign updated successfully");
       setSnackbarAlertOpen(true);
       navigate(`/referrals`);
+    },
+    update: (cache, { data }) => {
+      return updateReferralCampaignCache(
+        cache,
+        data,
+        "updateReferralCampaign",
+        {
+          orgId: activeOrg?.id,
+          limit: LIMIT,
+          statuses: [REFERRAL_STATUSES.ACTIVE, REFERRAL_STATUSES.INACTIVE],
+          offset: 0,
+        },
+        "update",
+        ["status", "name", "referrerPointReward", "referredPointReward", "rewards"]
+      );
     },
   });
 
@@ -90,11 +124,12 @@ const SingleReferralComponent = ({
     });
   };
   const handleSave = async () => {
+    const hasAllQuests = referralItemData?.questIds?.includes("all-quests");
     const body = {
       orgId: activeOrg?.id,
       name: referralItemSettings?.name,
       description: referralItemSettings?.description,
-      type: referralItemData?.type,
+      type: hasAllQuests ? QUALIFYING_ACTION_TYPES.ANY_QUEST : referralItemData?.type,
       endDate: referralItemSettings?.endDate
         ? referralItemSettings?.endDate?.utcOffset(0)?.endOf("day")?.toISOString()
         : null,
@@ -106,7 +141,7 @@ const SingleReferralComponent = ({
         : null,
       maxPerUser: referralItemSettings?.maxPerUser ? parseInt(referralItemSettings?.maxPerUser, 10) : null,
       level: referralItemSettings?.level ? parseInt(referralItemSettings?.level, 10) : null,
-      questIds: referralItemData?.questIds,
+      questIds: hasAllQuests ? null : referralItemData?.questIds,
       status: referralItemSettings?.status,
       rewards: referralItemData?.rewards?.map((reward) => {
         let rewardBody: any = {
@@ -145,7 +180,25 @@ const SingleReferralComponent = ({
       }),
     };
 
-    return await handleMutation(body);
+    try {
+      await referralValidator(body);
+      return await handleMutation(body);
+    } catch (err) {
+      let errors = {};
+      if (err instanceof ValidationError) {
+        err.inner.forEach((error) => {
+          let arrAdjustedPath = error.path.includes("questIds") ? error.path.replace(/\["(\d+)"\]/g, (match, index) => `[${index}]`) : error.path
+          const path = getPathArray(arrAdjustedPath);
+          set(errors, path, error.message);
+        });
+        
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+        setErrors(errors);
+      }
+    }
   };
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);

@@ -6,6 +6,10 @@ import { Label } from "components/CreateTemplate/styles";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import DeleteIcon from "components/Icons/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import { useGlobalContext } from "utils/hooks";
+import CreateQuestContext from "utils/context/CreateQuestContext";
+import { useContext } from "react";
+import ErrorField from "components/Shared/ErrorField";
 
 const TYPES_MAP = {
   [QUALIFYING_ACTION_TYPES.PURCHASE]: {
@@ -16,42 +20,49 @@ const TYPES_MAP = {
     label: "Which quest(s) should this apply to?",
     placeholder: "Select quests",
   },
+  [QUALIFYING_ACTION_TYPES.ANY_QUEST]: {
+    label: "Which quest(s) should this apply to?",
+    placeholder: "Select quests",
+  },
 };
 
 const KEYS_MAP = {
   [QUALIFYING_ACTION_TYPES.PURCHASE]: "storeItemId",
   [QUALIFYING_ACTION_TYPES.QUEST]: "questIds",
+  [QUALIFYING_ACTION_TYPES.ANY_QUEST]: "questIds",
 };
 
 const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntityChange, options = [] }) => {
   const values = referralItemData[KEYS_MAP[referralItemData.type]];
 
+  const { errors, setErrors } = useContext(CreateQuestContext);
+
   const typeConfig = TYPES_MAP[referralItemData.type];
 
-  const Buttons = ({ idx }) => {
+  const Buttons = ({ idx = 0 }) => {
+    const handleDelete = () => {
+      setReferralItemData((prev) => ({
+        ...prev,
+        questIds: prev.questIds.filter((_, index) => index !== idx),
+      }));
+    };
+
+    const handleAdd = () =>
+      setReferralItemData((prev) => ({
+        ...prev,
+        questIds: [...prev.questIds, ""],
+      }));
+
+    if (referralItemData.type === QUALIFYING_ACTION_TYPES.ANY_QUEST) return null;
     return (
       <>
         {idx !== 0 && (
-          <ButtonIconWrapper
-            onClick={() => {
-              setReferralItemData((prev) => ({
-                ...prev,
-                questIds: prev.questIds.filter((_, index) => index !== idx),
-              }));
-            }}
-          >
+          <ButtonIconWrapper onClick={handleDelete}>
             <DeleteIcon />
           </ButtonIconWrapper>
         )}
-        {idx === values.length - 1 && (
-          <ButtonIconWrapper
-            onClick={() => {
-              setReferralItemData((prev) => ({
-                ...prev,
-                questIds: [...prev.questIds, ""],
-              }));
-            }}
-          >
+        {idx === values?.length - 1 && (
+          <ButtonIconWrapper onClick={handleAdd}>
             <AddIcon
               sx={{
                 color: "black",
@@ -63,21 +74,40 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
     );
   };
 
+  if (!typeConfig) return null;
   return (
     <Grid display="flex" flexDirection="column" gap="12px">
       <Label fontWeight={600}>{typeConfig?.label}</Label>
+      {!values?.length ? (
+        <Box display="flex" gap="14px" alignItems="center">
+          <AutocompleteOptionsComponent
+            options={options}
+            value={null}
+            error={errors?.questIds?.[0]}
+            placeholder={typeConfig?.placeholder}
+            onChange={(value) => handleEntityChange(value, 0, referralItemData.type)}
+            bgColor="#E8E8E8"
+          />
+          <Buttons />
+        </Box>
+      ) : null}
       {values?.map((value, idx) => {
-        console.log(value, 'value', options)
-        return <Box display="flex" gap="14px" alignItems="center" key={idx}>
-        <AutocompleteOptionsComponent
-          options={options}
-          value={value}
-          placeholder={typeConfig?.placeholder}
-          onChange={(value) => handleEntityChange(value, idx)}
-          bgColor="#E8E8E8"
-        />
-        <Buttons idx={idx} />
-      </Box>
+        return (
+          <Box display="flex" gap="4px" flexDirection="column">
+            <Box display="flex" gap="14px" alignItems="center" key={idx}>
+              <AutocompleteOptionsComponent
+                options={options}
+                value={value}
+                error={errors?.questIds?.[idx]}
+                placeholder={typeConfig?.placeholder}
+                onChange={(value) => handleEntityChange(value, idx, referralItemData.type)}
+                bgColor="#E8E8E8"
+              />
+              <Buttons idx={idx} />
+            </Box>
+            <ErrorField errorText={errors?.questIds?.[idx]} />
+          </Box>
+        );
       })}
     </Grid>
   );

@@ -339,6 +339,7 @@ export const EXCLUDED_PATHS = [
   "/telegram/start-quest/:id",
   "/telegram/connect",
   "/community-badge/claim",
+  "/referral"
 ];
 
 export const TUTORIALS = {
@@ -485,4 +486,5 @@ export const REFERRAL_REWARD_SCHEME = {
 export const QUALIFYING_ACTION_TYPES = {
   PURCHASE: "purchase",
   QUEST: "quest",
+  ANY_QUEST: "any_quest",
 };
