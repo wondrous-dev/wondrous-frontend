@@ -5,33 +5,63 @@ import { RewardTypeSwitch } from "./Helpers";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
 import RewardModal, { useAddRewardModalState } from "components/CreateTemplate/RewardModal";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
-import OptionRewards, { InlineRewardUIComponent } from "components/AddFormEntity/components/OptionRewards";
-import TextField from "components/Shared/TextField";
+import { PAYMENT_OPTIONS, RewardWrapperWithTextField } from "components/CreateTemplate/RewardUtils";
+import { InlineRewardUIComponent } from "components/AddFormEntity/components/OptionRewards";
 import { REFERRAL_REWARD_SCHEME } from "utils/constants";
-import { useMemo } from "react";
+import { PointsIcon } from "components/Icons/Rewards";
 
-const CampaignRewardComponent = ({ handleAddNewReward, rewards, handleRewardDelete, rewardScheme }) => {
+const POINT_REWARD_MAP = {
+  [REFERRAL_REWARD_SCHEME.REFERRER]: "referrerPointReward",
+  [REFERRAL_REWARD_SCHEME.REFERRED]: "referredPointReward",
+};
+
+const CampaignRewardComponent = ({
+  handleAddNewReward,
+  rewards,
+  handleRewardDelete,
+  rewardScheme,
+  referredPointReward,
+  referrerPointReward,
+  handleOnChangePoints,
+}) => {
+  const pointsKey = POINT_REWARD_MAP[rewardScheme];
+  const pointsValue = rewardScheme === REFERRAL_REWARD_SCHEME.REFERRER ? referrerPointReward : referredPointReward;
+
   return (
     <>
       <Box>
         <SharedSecondaryButton onClick={handleAddNewReward}>Add New Reward</SharedSecondaryButton>
       </Box>
-      {rewards?.length ? (
-        <Grid display="flex" gap="10px" flexDirection="column" width="100%">
-          {rewards?.map((reward, idx) => {
-            if (reward?.scheme !== rewardScheme) return null;
-            return (
-              <InlineRewardUIComponent
-                reward={reward}
-                handleRewardDelete={() => handleRewardDelete(idx)}
-                hasDeleteButton={rewards?.length > 1 || reward?.type !== null}
-                handleAddReward={handleAddNewReward}
-              />
-            );
-          })}
-        </Grid>
-      ) : null}
+      <Grid display="flex" gap="10px" flexDirection="column" width="100%">
+        <RewardWrapperWithTextField
+          reward={{
+            value: pointsValue,
+          }}
+          handleOnChange={(e) => {
+            handleOnChangePoints(pointsKey, e.target.value);
+          }}
+          text="Points"
+          placeholder="How many points?"
+          Icon={PointsIcon}
+          handleOnClear={() => {
+            handleOnChangePoints(pointsKey, null);
+          }}
+        />
+
+        {rewards?.length
+          ? rewards?.map((reward, idx) => {
+              if (reward?.scheme !== rewardScheme) return null;
+              return (
+                <InlineRewardUIComponent
+                  reward={reward}
+                  handleRewardDelete={() => handleRewardDelete(idx)}
+                  hasDeleteButton={rewards?.length > 1 || reward?.type !== null}
+                  handleAddReward={handleAddNewReward}
+                />
+              );
+            })
+          : null}
+      </Grid>
     </>
   );
 };
@@ -72,6 +102,13 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
     });
   };
 
+  const handleOnChangePoints = (type, value) => {
+    setReferralItemData((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
+  };
+
   const handleRewardDelete = (idx) =>
     setReferralItemData((prev) => ({ ...prev, rewards: prev?.rewards?.filter((_, i) => i !== idx) }));
 
@@ -101,12 +138,14 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
                 />
                 <Divider />
               </Grid>
-
               <CampaignRewardComponent
                 handleAddNewReward={() => setIsRewardModalOpen(true)}
                 rewardScheme={referralItemData?.rewardScheme}
                 rewards={referralItemData?.rewards}
                 handleRewardDelete={handleRewardDelete}
+                referredPointReward={referralItemData?.referredPointReward}
+                referrerPointReward={referralItemData?.referrerPointReward}
+                handleOnChangePoints={handleOnChangePoints}
               />
             </Grid>
           </>

@@ -69,7 +69,7 @@ const WorkspaceSwitch = () => {
           md: "unset",
         }}
       >
-        <Box alignItems={"center"} display="flex">
+        <Box alignItems={"center"} display="flex" gap="10px">
           <TutorialLink href="https://wonderverse.gitbook.io/wonder-communities/" target="_blank">
             <TutorialButton>?</TutorialButton>
           </TutorialLink>

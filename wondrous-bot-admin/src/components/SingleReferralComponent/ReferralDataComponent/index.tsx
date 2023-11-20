@@ -19,7 +19,6 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [hasMore, setHasMore] = useState(false);
 
-  console.log(errors, 'errs')
   const [
     getStoreItemsForOrg,
     {
@@ -168,8 +167,8 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
 
       return [
         {
-          label: "All Quests",
-          value: "all-quests",
+          label: "Any Quest",
+          value: QUALIFYING_ACTION_TYPES.ANY_QUEST,
         },
         ...items,
         {
@@ -219,11 +218,11 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
       }
     });
 
-    if (value === "all-quests") {
+    if (value === QUALIFYING_ACTION_TYPES.ANY_QUEST) {
       return setReferralItemData((prev) => ({
         ...prev,
         type: QUALIFYING_ACTION_TYPES.ANY_QUEST,
-        questIds: ["all-quests"],
+        questIds: [QUALIFYING_ACTION_TYPES.ANY_QUEST],
       }));
     }
 

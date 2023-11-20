@@ -22,8 +22,6 @@ const DEFAULT_REFERRAL_SETTINGS = {
   name: "",
   description: "",
   endDate: null,
-  referrerPointReward: null,
-  referredPointReward: null,
   maxPerUser: null,
   level: null,
   status: REFERRAL_STATUSES.ACTIVE,
@@ -34,6 +32,8 @@ const DEFAULT_REFERRAL_DATA = {
   questIds: [null],
   storeItemId: null,
   rewards: [],
+  referrerPointReward: null,
+  referredPointReward: null,
   rewardScheme: REFERRAL_REWARD_SCHEME.REFERRER,
 };
 
@@ -124,7 +124,7 @@ const SingleReferralComponent = ({
     });
   };
   const handleSave = async () => {
-    const hasAllQuests = referralItemData?.questIds?.includes("all-quests");
+    const hasAllQuests = referralItemData?.questIds?.includes(QUALIFYING_ACTION_TYPES.ANY_QUEST);
     const body = {
       orgId: activeOrg?.id,
       name: referralItemSettings?.name,
@@ -133,11 +133,11 @@ const SingleReferralComponent = ({
       endDate: referralItemSettings?.endDate
         ? referralItemSettings?.endDate?.utcOffset(0)?.endOf("day")?.toISOString()
         : null,
-      referrerPointReward: referralItemSettings?.referrerPointReward
-        ? parseInt(referralItemSettings?.referrerPointReward, 10)
+      referrerPointReward: referralItemData?.referrerPointReward
+        ? parseInt(referralItemData?.referrerPointReward, 10)
         : null,
-      referredPointReward: referralItemSettings?.referredPointReward
-        ? parseInt(referralItemSettings?.referredPointReward, 10)
+      referredPointReward: referralItemData?.referredPointReward
+        ? parseInt(referralItemData?.referredPointReward, 10)
         : null,
       maxPerUser: referralItemSettings?.maxPerUser ? parseInt(referralItemSettings?.maxPerUser, 10) : null,
       level: referralItemSettings?.level ? parseInt(referralItemSettings?.level, 10) : null,

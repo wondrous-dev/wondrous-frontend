@@ -22,6 +22,7 @@ import EmptyState from "components/EmptyState";
 import apollo from "services/apollo";
 import { GET_REFERRAL_CAMPAIGN_FOR_ORG } from "graphql/queries/referral";
 import { updateReferralCampaignCache } from "utils/apolloHelpers";
+import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
 
 const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
   const [hasMore, setHasMore] = useState(true);
@@ -166,7 +167,7 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
           },
           customComponent: () => (
             <div style={{ display: "flex", gap: 5, flexWrap: "wrap", maxWidth: "350px" }}>
-              {referral?.rewards?.length &&
+              {referral?.rewards?.length ? (
                 referral?.rewards?.map((reward) => {
                   const rewardLink = getLinkForReward(reward) || "";
                   return (
@@ -179,7 +180,10 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
                       <ExistingLevelsReward reward={reward} discordRoles={discordRoles} />
                     </Link>
                   );
-                })}
+                })
+              ) : (
+                <StyledViewQuestResults bgcolor="#E8E8E8" $outlineColor="#E8E8E8">None</StyledViewQuestResults>
+              )}
             </div>
           ),
         },
@@ -224,8 +228,6 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
       setHasMore(data?.getReferralCampaignForOrg?.items?.length >= LIMIT);
     });
   };
-
-  const onSortOrderChange = ({}) => {};
 
   return (
     <PageWrapper

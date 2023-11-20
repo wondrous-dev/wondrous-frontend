@@ -129,7 +129,7 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
                 <ButtonBase {...props}>
                   <CustomTextField
                     disabled
-                    placeholder="Select Date Range"
+                    placeholder="Select End Date"
                     value={
                       referralItemSettings?.endDate
                         ? `${referralItemSettings?.endDate?.format(MONTH_DAY_FULL_YEAR)}`
@@ -156,34 +156,6 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
             },
           },
           key: "maxPerUser",
-        },
-        {
-          label: "Referrer Reward",
-          component: TextField,
-          componentProps: {
-            multiline: false,
-            onChange: (value) => {
-              const isValid = validateTypes("number", value);
-              if (isValid) {
-                return handleChange("referrerPointReward", value);
-              }
-            },
-          },
-          key: "referrerPointReward",
-        },
-        {
-          label: "Referred Reward",
-          component: TextField,
-          key: "referredPointReward",
-          componentProps: {
-            multiline: false,
-            onChange: (value) => {
-              const isValid = validateTypes("number", value);
-              if (isValid) {
-                return handleChange("referredPointReward", value);
-              }
-            },
-          },
         },
       ],
       settingsLayout: {

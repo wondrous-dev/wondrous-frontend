@@ -32,6 +32,28 @@ const KEYS_MAP = {
   [QUALIFYING_ACTION_TYPES.ANY_QUEST]: "questIds",
 };
 
+const ActionEntityButtons = ({ idx = 0, referralItemType, handleDelete, handleAdd, canAddItem }) => {
+  if (referralItemType === QUALIFYING_ACTION_TYPES.ANY_QUEST) return null;
+  return (
+    <>
+      {idx !== 0 && (
+        <ButtonIconWrapper onClick={handleDelete}>
+          <DeleteIcon />
+        </ButtonIconWrapper>
+      )}
+      {canAddItem && (
+        <ButtonIconWrapper onClick={handleAdd}>
+          <AddIcon
+            sx={{
+              color: "black",
+            }}
+          />
+        </ButtonIconWrapper>
+      )}
+    </>
+  );
+};
+
 const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntityChange, options = [] }) => {
   const values = referralItemData[KEYS_MAP[referralItemData.type]];
 
@@ -39,40 +61,18 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
 
   const typeConfig = TYPES_MAP[referralItemData.type];
 
-  const Buttons = ({ idx = 0 }) => {
-    const handleDelete = () => {
-      setReferralItemData((prev) => ({
-        ...prev,
-        questIds: prev.questIds.filter((_, index) => index !== idx),
-      }));
-    };
-
-    const handleAdd = () =>
-      setReferralItemData((prev) => ({
-        ...prev,
-        questIds: [...prev.questIds, ""],
-      }));
-
-    if (referralItemData.type === QUALIFYING_ACTION_TYPES.ANY_QUEST) return null;
-    return (
-      <>
-        {idx !== 0 && (
-          <ButtonIconWrapper onClick={handleDelete}>
-            <DeleteIcon />
-          </ButtonIconWrapper>
-        )}
-        {idx === values?.length - 1 && (
-          <ButtonIconWrapper onClick={handleAdd}>
-            <AddIcon
-              sx={{
-                color: "black",
-              }}
-            />
-          </ButtonIconWrapper>
-        )}
-      </>
-    );
+  const handleDelete = (idx) => {
+    setReferralItemData((prev) => ({
+      ...prev,
+      questIds: prev.questIds.filter((_, index) => index !== idx),
+    }));
   };
+
+  const handleAdd = () =>
+    setReferralItemData((prev) => ({
+      ...prev,
+      questIds: [...prev.questIds, ""],
+    }));
 
   if (!typeConfig) return null;
   return (
@@ -88,13 +88,18 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
             onChange={(value) => handleEntityChange(value, 0, referralItemData.type)}
             bgColor="#E8E8E8"
           />
-          <Buttons />
+          <ActionEntityButtons
+            referralItemType={referralItemData.type}
+            handleDelete={handleDelete}
+            handleAdd={handleAdd}
+            canAddItem={false}
+          />
         </Box>
       ) : null}
       {values?.map((value, idx) => {
         return (
-          <Box display="flex" gap="4px" flexDirection="column">
-            <Box display="flex" gap="14px" alignItems="center" key={idx}>
+          <Box display="flex" gap="4px" flexDirection="column" key={idx}>
+            <Box display="flex" gap="14px" alignItems="center">
               <AutocompleteOptionsComponent
                 options={options}
                 value={value}
@@ -103,7 +108,13 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
                 onChange={(value) => handleEntityChange(value, idx, referralItemData.type)}
                 bgColor="#E8E8E8"
               />
-              <Buttons idx={idx} />
+              <ActionEntityButtons
+                idx={idx}
+                handleAdd={handleAdd}
+                handleDelete={() => handleDelete(idx)}
+                canAddItem={idx === values.length - 1}
+                referralItemType={referralItemData.type}
+              />
             </Box>
             <ErrorField errorText={errors?.questIds?.[idx]} />
           </Box>
