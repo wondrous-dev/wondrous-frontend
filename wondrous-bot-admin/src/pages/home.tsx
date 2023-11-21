@@ -16,11 +16,12 @@ import { useTour } from "@reactour/tour";
 import { AddBotModal } from "pages/onboarding/discord/addBotModal";
 import { ConfigureNotificationsOnboardingModal } from "./onboarding/discord/configureNotificationsModal";
 import { usePaywall, useSubscription } from "utils/hooks";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
 import HomeBackgroundQuests from "components/Icons/HomePageBackgroundQuests.svg";
 import HomeBackgroundLevels from "components/Icons/HomePageBackgroundLevels.svg";
 import HomeBackgroundMembers from "components/Icons/HomePageBackgroundMembers.svg";
+import { getPlan } from "utils/common";
 
 const typographyStyles = {
   fontFamily: "Poppins",

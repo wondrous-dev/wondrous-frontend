@@ -1,15 +1,16 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Box } from "@mui/material";
 import { useTour } from "@reactour/tour";
 import { useMe } from "components/Auth";
 import PageHeader from "components/PageHeader";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import QuestsList from "components/QuestsList";
 import SelectComponent from "components/Shared/Select";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { GET_ORG_QUEST_STATS, GET_QUESTS_FOR_ORG } from "graphql/queries";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getPlan } from "utils/common";
 import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { usePaywall, useSubscription } from "utils/hooks";
@@ -83,10 +84,11 @@ const QuestsPage = () => {
       await refetch(variables);
     }
   };
+
   const { data, refetch } = useQuery(GET_QUESTS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: "network-only",
-    nextFetchPolicy: "cache-and-network",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
     skip: !activeOrg?.id,
     variables: {
       input: {
@@ -151,9 +153,7 @@ const QuestsPage = () => {
           </Box>
         )}
       />
-      <QuestsList data={sortedData} 
-      status={statuses}
-      />
+      <QuestsList data={sortedData} status={statuses} />
     </>
   );
 };

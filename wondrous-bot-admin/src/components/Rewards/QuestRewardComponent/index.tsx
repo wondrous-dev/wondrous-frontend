@@ -1,85 +1,21 @@
 import { Divider, Grid } from "@mui/material";
-import {
-  PAYMENT_OPTIONS,
-  RewardWrapper,
-  RewardWrapperWithTextField,
-  RewardsComponent,
-} from "components/CreateTemplate/RewardUtils";
-import { DiscordRoleIcon, NFTIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import { RewardWrapper, RewardWrapperWithTextField, RewardsComponent } from "components/Rewards/RewardUtils";
+import { DiscordRoleIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import RewardModal, { useAddRewardModalState } from "./RewardModal";
-import { PoapImage } from "./styles";
-import { NFT_TYPES } from "utils/constants";
+import RewardModal from "../RewardModal";
+import { PoapImage } from "components/CreateTemplate/styles";
 import { verifyIsImportedToken } from "utils/common";
+import {
+  handleDiscordRoleRewardRemove,
+  handleTokenRewardOnChange,
+  onPaymentMethodRewardRemove,
+  handleStoreItemRewardRemove,
+  handleOnRewardAdd,
+} from "./questUtils";
+import { useAddRewardModalState } from "components/Rewards/utils";
+import { PAYMENT_OPTIONS } from "../constants";
 
-
-const handleDiscordRoleRewardRemove = ({ reward, setQuestSettings }) => {
-  setQuestSettings((prev) => {
-    const newRewards = prev.rewards.filter((r) => {
-      if (r.type === PAYMENT_OPTIONS.DISCORD_ROLE) {
-        return r.discordRewardData.discordRoleId !== reward.discordRewardData.discordRoleId;
-      }
-      return true;
-    });
-    return {
-      ...prev,
-      rewards: newRewards,
-    };
-  });
-};
-
-const handleStoreItemRewardRemove = ({ reward, setQuestSettings }) => {
-  setQuestSettings((prev) => {
-    const newRewards = prev.rewards.filter((r) => {
-      if (r.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
-        return r?.storeItem?.id !== reward?.storeItem?.id;
-      }
-      return true;
-    });
-    return {
-      ...prev,
-      rewards: newRewards,
-    };
-  });
-};
-
-const OnPaymentMethodRewardRemove = ({ reward, setQuestSettings }) => {
-  setQuestSettings((prev) => {
-    const newRewards = prev.rewards.filter((r) => {
-      if (r.type === PAYMENT_OPTIONS.TOKEN || r.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
-        return r.paymentMethodId !== reward.paymentMethodId;
-      }
-      return true;
-    });
-    return {
-      ...prev,
-      rewards: newRewards,
-    };
-  });
-};
-
-const handleTokenRewardOnChange = ({ setQuestSettings, reward, value }) => {
-  setQuestSettings((prev) => {
-    return {
-      ...prev,
-      rewards: prev.rewards.map((compareReward) => {
-        const isImportedToken = verifyIsImportedToken(compareReward?.paymentMethod?.type);
-        if (
-          (compareReward.type === PAYMENT_OPTIONS.TOKEN || isImportedToken) &&
-          compareReward.paymentMethod?.id === reward?.paymentMethod?.id
-        ) {
-          return {
-            ...reward,
-            amount: value ? Number(value) : null,
-          };
-        }
-        return compareReward;
-      }),
-    };
-  });
-};
-
-const RewardComponent = ({
+const QuestRewardComponent = ({
   rewards,
   setQuestSettings,
   hasReferralStep,
@@ -88,21 +24,6 @@ const RewardComponent = ({
   setQuestSettings: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
   hasReferralStep: boolean;
 }) => {
-  const onRewardAdd = (reward) => {
-    setQuestSettings((prev) => {
-      const filteredRewards = prev.rewards.filter((i) => {
-        if (i.type === PAYMENT_OPTIONS.TOKEN) {
-          return i.paymentMethodId !== reward.paymentMethod?.id;
-        }
-        return true;
-      });
-      return {
-        ...prev,
-        rewards: [...filteredRewards, reward],
-      };
-    });
-  };
-
   const rewardModalState = useAddRewardModalState();
   const { setIsRewardModalOpen, isTourOpen, setCurrentStep } = rewardModalState;
 
@@ -152,10 +73,14 @@ const RewardComponent = ({
           handleOnClear={() => handleTokenRewardOnChange({ setQuestSettings, reward, value: null })}
           text={String(reward?.paymentMethod.name)}
           placeholder={`How much ${String(reward?.paymentMethod.name)}?`}
-          Icon={reward?.paymentMethod?.nftMetadata?.mediaUrl ? () => <PoapImage src={reward?.paymentMethod?.nftMetadata?.mediaUrl} /> : TokensIcon}
+          Icon={
+            reward?.paymentMethod?.nftMetadata?.mediaUrl
+              ? () => <PoapImage src={reward?.paymentMethod?.nftMetadata?.mediaUrl} />
+              : TokensIcon
+          }
         />
       ),
-      handleOnRemove: (reward) => OnPaymentMethodRewardRemove({ reward, setQuestSettings }),
+      handleOnRemove: (reward) => onPaymentMethodRewardRemove({ reward, setQuestSettings }),
     },
     [PAYMENT_OPTIONS.POAP]: {
       Component: ({ reward }) => (
@@ -188,7 +113,7 @@ const RewardComponent = ({
           />
         );
       },
-      handleOnRemove: (reward) => OnPaymentMethodRewardRemove({ reward, setQuestSettings }),
+      handleOnRemove: (reward) => onPaymentMethodRewardRemove({ reward, setQuestSettings }),
     },
     [PAYMENT_OPTIONS.CMTY_STORE_ITEM]: {
       Component: ({ reward }) => {
@@ -204,7 +129,7 @@ const RewardComponent = ({
       <RewardModal
         rewardModalState={rewardModalState}
         handleRewardModalToggle={handleToggleModal}
-        handleOnRewardAdd={onRewardAdd}
+        handleOnRewardAdd={(reward) => handleOnRewardAdd({ reward, setQuestSettings })}
         rewards={rewards}
       />
 
@@ -238,4 +163,4 @@ const RewardComponent = ({
   );
 };
 
-export { RewardComponent };
+export default QuestRewardComponent;
