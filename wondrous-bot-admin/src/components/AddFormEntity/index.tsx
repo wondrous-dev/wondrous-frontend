@@ -21,7 +21,6 @@ import AutocompleteOptionsComponent from "./components/AutocompleteComponent";
 import GlobalContext from "utils/context/GlobalContext";
 import { COMPONENT_OPTIONS, MULTICHOICE_DEFAULT_VALUE } from "./constants";
 
-let activeOrgPushed = false;
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { activeOrg } = useContext(GlobalContext);
@@ -31,15 +30,20 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
 
   const componentOptions = useMemo(() => {
     let defaultOptions = [...COMPONENT_OPTIONS];
-    if (activeOrg?.id in CUSTOM_INTEGRATIONS && !activeOrgPushed) {
+    if (activeOrg?.id in CUSTOM_INTEGRATIONS) {
       const customIntegrations = CUSTOM_INTEGRATIONS[activeOrg?.id];
       customIntegrations?.integrations.forEach((integration) => {
         defaultOptions.push(integration);
       });
-      activeOrgPushed = true;
     }
-    return defaultOptions;
-  }, [activeOrg?.id, activeOrgPushed]);
+    return [
+      ...defaultOptions,
+      {
+        label: "+ Add custom on chain action",
+        value: TYPES.CUSTOM_ONCHAIN_ACTION,
+      },
+    ];
+  }, [activeOrg?.id]);
 
   const handleDragEnd = (result) => {
     if (!result.destination) return;
@@ -79,7 +83,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
         },
       };
     });
-
 
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.order === order) {

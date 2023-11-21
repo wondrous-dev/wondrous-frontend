@@ -76,11 +76,7 @@ export const COMPONENT_OPTIONS = [
   {
     label: "Click on link",
     value: TYPES.LINK_CLICK,
-  },
-  {
-    label: "+ Add custom on chain action",
-    value: TYPES.CUSTOM_ONCHAIN_ACTION,
-  },
+  }
 ];
 
 export const MULTICHOICE_DEFAULT_VALUE = {
