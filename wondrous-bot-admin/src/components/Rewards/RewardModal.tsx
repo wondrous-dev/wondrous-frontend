@@ -7,7 +7,13 @@ import { useContext, useMemo, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { Label } from "../CreateTemplate/styles";
-import { handleAddPoap, handleAddTokenOnModal, handleNewDiscordRole, useDiscordRoleRewardData } from "./utils";
+import {
+  handleAddCmtyStoreItem,
+  handleAddPoap,
+  handleAddTokenOnModal,
+  handleNewDiscordRole,
+  useDiscordRoleRewardData,
+} from "./utils";
 import { PAYMENT_OPTIONS } from "./constants";
 import { getPlan } from "utils/common";
 
@@ -65,17 +71,20 @@ const RewardModal = ({
   } = rewardModalState;
 
   const handleAddRewardOnModal = () => {
+    setErrors(null);
     switch (rewardType) {
       case PAYMENT_OPTIONS.DISCORD_ROLE:
         handleNewDiscordRole({
           newReward: { value: discordRoleReward, type: rewardType },
           rewards,
+          errors,
           handleOnRewardAdd,
+          setErrors,
           discordRoleData,
+          handleToggle: handleRewardModalToggle,
           discordRoleOptions,
         });
-        break;
-
+        return;
       case PAYMENT_OPTIONS.TOKEN:
       case PAYMENT_OPTIONS.COMMUNITY_BADGE:
         handleAddTokenOnModal({
@@ -98,15 +107,20 @@ const RewardModal = ({
           poapReward,
           setErrors,
           errors,
+          handleToggle: handleRewardModalToggle,
           handleOnRewardAdd,
           rewardType,
         });
-        break;
+        return;
 
       case PAYMENT_OPTIONS.CMTY_STORE_ITEM:
-        handleOnRewardAdd({
+        handleAddCmtyStoreItem({
           type: rewardType,
           storeItem: cmtyStoreItemReward,
+          handleToggle: handleRewardModalToggle,
+          setErrors,
+          errors,
+          handleOnRewardAdd,
         });
         break;
 
@@ -114,7 +128,6 @@ const RewardModal = ({
         console.warn("Unknown reward type:", rewardType);
         return;
     }
-    handleRewardModalToggle();
   };
 
   const modalRewardButtonsProps = useMemo(() => {
@@ -195,6 +208,7 @@ const RewardModal = ({
         <RewardModalFooterLeftComponent
           rewardType={rewardType}
           paymentMethod={paymentMethod}
+          errors={errors}
           setPaymentMethod={setPaymentMethod}
           addPaymentMethod={addPaymentMethod}
           handleReward={handleAddRewardOnModal}

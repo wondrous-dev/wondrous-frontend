@@ -13,12 +13,17 @@ export const handleNewDiscordRole = ({
   handleOnRewardAdd,
   discordRoleOptions,
   discordRoleData,
+  handleToggle,
+  setErrors,
+  errors,
 }) => {
+  if (!newReward?.value) return setErrors({ ...errors, discordRole: "Please select a discord role" });
   const discordRoleSelected = discordRoleOptions.find((option) => option.value === newReward.value);
   const discordRoleAlreadyExists = rewards.some(
     (reward) =>
       reward.type === PAYMENT_OPTIONS.DISCORD_ROLE && reward.discordRewardData.discordRoleId === newReward?.value
   );
+
   if (!discordRoleAlreadyExists) {
     handleOnRewardAdd({
       type: newReward?.type,
@@ -29,6 +34,7 @@ export const handleNewDiscordRole = ({
       },
     });
   }
+  return handleToggle();
 };
 
 export const handleAddTokenOnModal = ({
@@ -125,7 +131,7 @@ export const handleAddTokenOnModal = ({
   }
 };
 
-export const handleAddPoap = ({ poapReward, setErrors, errors, handleOnRewardAdd, rewardType }) => {
+export const handleAddPoap = ({ poapReward, setErrors, errors, handleOnRewardAdd, rewardType, handleToggle }) => {
   if (!poapReward?.id) {
     setErrors({
       ...errors,
@@ -151,8 +157,23 @@ export const handleAddPoap = ({ poapReward, setErrors, errors, handleOnRewardAdd
     type: rewardType,
     poapRewardData: poapReward,
   });
+  handleToggle();
 };
 
+export const handleAddCmtyStoreItem = ({ setErrors, type, storeItem, handleToggle, errors, handleOnRewardAdd }) => {
+  if (!storeItem) {
+    setErrors({
+      ...errors,
+      storeItem: "Please select a store item",
+    });
+    return;
+  }
+  handleOnRewardAdd({
+    type,
+    storeItem,
+  });
+  handleToggle();
+};
 export const useTokenRewardData = () => {
   const { activeOrg } = useContext(GlobalContext);
 

@@ -25,6 +25,7 @@ import StoreItemReward from "./StoreItemRewards";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 import { getRewardMethodOptionButtonStyle } from "./helpers";
 import { REWARD_TYPES, PAYMENT_OPTIONS } from "./constants";
+import ErrorField from "components/Shared/ErrorField";
 
 export const TokenComponent = ({
   paymentMethod = null,
@@ -299,6 +300,7 @@ export const RewardMethod = ({
   });
 
   const handleRoleChange = async (value) => {
+    setErrors(null);
     const { data } = await getPermissionToRewardRole({
       variables: {
         roleId: value,
@@ -316,10 +318,19 @@ export const RewardMethod = ({
   }
 
   if (rewardType === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+    const handleStoreItemChange = (value) => {
+      if (!value) return;
+      setCmtyStoreItemReward(value);
+      setErrors(null);
+    };
+
     return (
       <>
         <Label>Select Store Item</Label>
-        <StoreItemReward onChange={setCmtyStoreItemReward} storeItem={cmtyStoreItemReward} />
+        <Box display="flex" gap="4px" flexDirection="column">
+          <StoreItemReward onChange={handleStoreItemChange} storeItem={cmtyStoreItemReward} />
+          <ErrorField errorText={errors?.cmtyStoreItem} />
+        </Box>
       </>
     );
   }
@@ -359,13 +370,16 @@ export const RewardMethod = ({
     return (
       <>
         <Label>Select role</Label>
-        <AutocompleteOptionsComponent
-          options={componentsOptions}
-          value={discordRoleReward}
-          onChange={handleRoleChange}
-          fullWidth
-          bgColor="#e8e8e8"
-        />
+        <Box display="flex" gap="4px" flexDirection="column">
+          <AutocompleteOptionsComponent
+            options={componentsOptions}
+            value={discordRoleReward}
+            onChange={handleRoleChange}
+            fullWidth
+            bgColor="#e8e8e8"
+          />
+          <ErrorField errorText={errors?.discordRole} />
+        </Box>
       </>
     );
   }
@@ -507,6 +521,7 @@ export const RewardModalFooterLeftComponent = ({
   setAddPaymentMethod,
   editPaymentMethod,
   setEditPaymentMethod,
+  errors,
 }) => {
   const [updateCmtyPaymentMethod] = useMutation(UPDATE_CMTY_PAYMENT_METHOD, {
     refetchQueries: ["getCmtyPaymentMethodsForOrg"],
