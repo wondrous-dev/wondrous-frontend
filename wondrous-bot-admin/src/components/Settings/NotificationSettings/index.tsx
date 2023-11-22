@@ -2,7 +2,6 @@ import { useMutation, useLazyQuery, useQuery } from "@apollo/client";
 import { Grid, Box } from "@mui/material";
 import { GET_CMTY_ORG_DISCORD_CONFIG, GET_ORG_ADMINS, GET_ORG_ROLES } from "graphql/queries";
 import Modal from "components/Shared/Modal";
-import { UPDATE_ORG } from "graphql/mutations";
 import { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import EditSvg from "components/Icons/edit.svg";
@@ -28,9 +27,15 @@ import { GET_GUILD_DISCORD_CHANNELS } from "graphql/queries/discord";
 import TextField from "components/Shared/TextField";
 import { ButtonIconWrapper, ErrorText, SharedSecondaryButton } from "components/Shared/styles";
 import { UPDATE_ORG_DISCORD_ADDITIONAL_DATA } from "graphql/mutations/discord";
-import { camelToSnake, snakeToCamel } from "utils/common";
+import { camelToSnake, snakeToCamel, snakeToCamelObj } from "utils/common";
 import ErrorField from "components/Shared/ErrorField";
 
+const filterOrgDiscordAdditionalData = (orgDiscordAdditionalData) => {
+  const nullCheckedOrgDiscordAdditionalData = orgDiscordAdditionalData || {};
+  const { __typename, parent_channel, guild_name, parentChannel, guildName, ...filteredOrgDiscordAdditionalData } =
+    nullCheckedOrgDiscordAdditionalData;
+  return filteredOrgDiscordAdditionalData;
+};
 const CHANNEL_TYPE = {
   STICKY_MESSAGE: "sticky_message_channel",
   WELCOME_MESSAGE: "welcome_message_channel",
@@ -137,16 +142,17 @@ const NotificationModal = ({
             flex: 1,
           }}
           onClick={() => {
+            const filteredOrgDiscordAdditionalData = filterOrgDiscordAdditionalData(orgDiscordAdditionalData);
             updateOrgDiscordAdditionalData({
               variables: {
                 orgId,
-                additionalData: {
-                  ...orgDiscordAdditionalData,
+                additionalData: snakeToCamelObj({
+                  ...filteredOrgDiscordAdditionalData,
                   ...(editMessageKey && {
                     [editMessageKey]: message,
                   }),
                   [channelType]: discordChannel,
-                },
+                }),
               },
             }).then(() => {
               onClose();
@@ -226,13 +232,14 @@ const NotificationSetting = (props) => {
                   setErrors("Please first select a channel");
                   return;
                 }
+                const filteredOrgDiscordAdditionalData = filterOrgDiscordAdditionalData(orgDiscordAdditionalData);
                 updateOrgDiscordAdditionalData({
                   variables: {
                     orgId,
-                    additionalData: {
-                      ...orgDiscordAdditionalData,
+                    additionalData: snakeToCamelObj({
+                      ...filteredOrgDiscordAdditionalData,
                       [`${channelType}Active`]: !active,
-                    },
+                    }),
                   },
                 });
                 setActive(!active);
@@ -247,13 +254,14 @@ const NotificationSetting = (props) => {
                   setErrors("Please first select a channel");
                   return;
                 }
+                const filteredOrgDiscordAdditionalData = filterOrgDiscordAdditionalData(orgDiscordAdditionalData);
                 updateOrgDiscordAdditionalData({
                   variables: {
                     orgId,
-                    additionalData: {
-                      ...orgDiscordAdditionalData,
+                    additionalData: snakeToCamelObj({
+                      ...filteredOrgDiscordAdditionalData,
                       [`${channelType}Active`]: !active,
-                    },
+                    }),
                   },
                 });
                 setActive(!active);
@@ -265,7 +273,7 @@ const NotificationSetting = (props) => {
         </NotificationHalves>
         {errors && (
           <Box paddingLeft="16px">
-            <ErrorField errorText={errors}/>
+            <ErrorField errorText={errors} />
           </Box>
         )}
         <NotificationHalves>

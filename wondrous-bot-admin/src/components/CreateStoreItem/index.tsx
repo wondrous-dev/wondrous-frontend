@@ -37,7 +37,7 @@ export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
 
 const DEFAULT_STORE_ITEM_DATA = {
   type: STORE_ITEM_TYPES.EXTERNAL_SHOP,
-  deliveryMethod: null,
+  deliveryMethod: DELIVERY_METHODS.DISCOUNT_CODE,
   mediaUploads: [],
   config: {
     url: null,

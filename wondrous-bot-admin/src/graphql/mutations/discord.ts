@@ -29,7 +29,7 @@ export const PUSH_QUEST_DISCORD_NOTFICATION = gql`
 `;
 
 export const UPDATE_ORG_DISCORD_ADDITIONAL_DATA = gql`
-  mutation updateOrgDiscordAdditionalData($orgId: ID!, $additionalData: JSON) {
+  mutation updateOrgDiscordAdditionalData($orgId: ID!, $additionalData: OrgDiscordAdditionalData) {
     updateOrgDiscordAdditionalData(orgId: $orgId, additionalData: $additionalData) {
       success
     }
