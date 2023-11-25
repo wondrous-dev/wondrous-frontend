@@ -346,6 +346,7 @@ const VerifyTokenHoldingButton = ({ step, startCmtyUserPolling, stopCmtyUserPoll
   const tokenAmount = step?.additionalData?.tokenAmount;
   const tokenType = step?.additionalData?.tokenType;
   const tokenDecimals = step?.additionalData?.tokenDecimals;
+  const tokenId = step?.additionalData?.tokenId;
 
   const [verifyTokenHolding, { loading, data }] = useLazyQuery(VERIFY_TOKEN_HOLDING, {
     notifyOnNetworkStatusChange: true,
@@ -372,6 +373,7 @@ const VerifyTokenHoldingButton = ({ step, startCmtyUserPolling, stopCmtyUserPoll
             tokenAmount,
             tokenType,
             tokenDecimals,
+            tokenId
           },
         });
       },
