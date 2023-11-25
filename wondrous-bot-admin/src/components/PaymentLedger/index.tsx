@@ -60,6 +60,7 @@ const PaymentLedger = ({ questId = null }) => {
   const { hasMore, paymentView, items, hasLength, batchPaymentData, togglePaymentView, handleFetchMore } = useData({
     orgId: activeOrg?.id,
     questId,
+    setTokenIds
   });
 
   useEffect(() => {
