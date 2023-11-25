@@ -19,8 +19,9 @@ import { StyledCheckbox, StyledRewardImg, StyledRewardText } from "./styles";
 import { Box, ClickAwayListener, TextField } from "@mui/material";
 import EditSvg from "components/Icons/edit.svg";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
+import { ContractType } from "services/web3/contractRouter";
 
-export const useData = ({ orgId, questId }) => {
+export const useData = ({ orgId, questId, setTokenIds }) => {
   const [paymentView, setPaymentView] = useState("unpaid");
   const [hasMore, setHasMore] = useState(false);
 
@@ -73,6 +74,16 @@ export const useData = ({ orgId, questId }) => {
       },
     });
     const unpaidPayments = result?.data?.getUnpaidCmtyPaymentsForOrg;
+    const unpaidQuestPaymentsTokenIds = unpaidPayments?.reduce((acc, payment) => {
+      if(payment.contractType === ContractType.ERC1155) {
+        return {
+          ...acc,
+          [payment.id]: payment.tokenId,
+        };
+      }
+      return acc
+    }, {});
+    setTokenIds(unpaidQuestPaymentsTokenIds);
     setHasMore(unpaidPayments?.length >= LIMIT);
   };
 
@@ -85,7 +96,18 @@ export const useData = ({ orgId, questId }) => {
         },
       },
     });
+
     const unpaidPayments = result?.data?.getUnpaidCmtyPaymentsForQuest;
+    const unpaidQuestPaymentsTokenIds = unpaidPayments?.reduce((acc, payment) => {
+      if(payment.contractType === ContractType.ERC1155) {
+        return {
+          ...acc,
+          [payment.id]: payment.tokenId,
+        };
+      }
+      return acc
+    }, {});
+    setTokenIds(unpaidQuestPaymentsTokenIds);
     setHasMore(unpaidPayments?.length >= LIMIT);
   };
 
@@ -459,8 +481,8 @@ export const useTableComponents = ({
         },
         tokenId: {
           component: "custom",
-          value: payment.id,
-          customComponent: () => <TokenIdSelect payment={payment} setTokenIds={setTokenIds} />,
+          value: tokenIds?.[payment.id],
+          customComponent: ({ value }) => <TokenIdSelect value={value} payment={payment} setTokenIds={setTokenIds} />,
         },
         questName: {
           component: "label",
