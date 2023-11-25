@@ -14,14 +14,14 @@ const useLevels = ({ orgId, shouldFetch = true }: IUseLevels) => {
     nextFetchPolicy: 'network-only',
   });
   useEffect(() => {
-    if (shouldFetch && orgId) {
+    if (shouldFetch && orgId && !data) {
       getLevels({
         variables: {
           orgId,
         },
       });
     }
-  }, [orgId, shouldFetch]);
+  }, [orgId, shouldFetch, data]);
 
   const normalzdValues = useMemo(() => {
     const levels = { ...LEVELS_DEFAULT_NAMES };

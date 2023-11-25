@@ -1,20 +1,18 @@
-import { getPlan, PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getPlan } from "utils/common";
 import GlobalContext from "utils/context/GlobalContext";
-import useAlerts, { usePaywall, useSubscription } from "utils/hooks";
+import useAlerts, { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks";
 
 export const useStorePaywall = () => {
-  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall();
   const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertAnchorOrigin } = useAlerts();
   const { activeOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
 
   const [isActivateModuleModalOpen, setIsActivateModuleModalOpen] = useState(false);
 
-  const subscription = useSubscription();
-
-  const plan = getPlan(subscription?.tier);
+  const { plan, setPaywall, setCanBeClosed, setOnCancel, setPaywallMessage } = useSubscriptionPaywall();
 
   useEffect(() => {
     if (plan === PricingOptionsTitle.Basic) {

@@ -9,9 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { STORE_ITEM_STATUSES } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import PublishDirectoryModal from "./PublishDirectoryModal";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
-import useAlerts, { usePaywall, useSubscription } from "utils/hooks";
-import PageSpinner from "components/PageSpinner";
 import StoreModule from "components/ModulesActivation/StoreModule";
 import { useStorePaywall } from "utils/storeUtils";
 

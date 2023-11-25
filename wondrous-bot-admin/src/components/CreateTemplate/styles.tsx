@@ -100,6 +100,7 @@ export const PaymentRowContentBox = styled.div`
   border-radius: 8px;
   border: 1px solid rgba(232, 232, 232, 1);
   padding: 8px;
+  gap: 8px;
   display: flex;
   align-items: center;
   margin-left: 8px;

@@ -9,7 +9,7 @@ import { useLazyQuery } from "@apollo/client";
 import { useEffect, useMemo } from "react";
 import { NFTIcon, PointsIcon, StoreItemRewardIcon } from "components/Icons/Rewards";
 import { TextLabel } from "components/ViewQuest/styles";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
 const Body = ({ header, subHeader, renderComponents = null }) => {
   return (

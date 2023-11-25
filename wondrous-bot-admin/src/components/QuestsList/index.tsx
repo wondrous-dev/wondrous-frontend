@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 import PageWrapper from "components/Shared/PageWrapper";
 import { BG_TYPES, QUEST_STATUSES } from "utils/constants";
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_ORG_QUEST_STATS } from "graphql/queries";
+import { GET_ORG_QUESTS_LEVELS, GET_ORG_QUEST_STATS } from "graphql/queries";
 import GlobalContext from "utils/context/GlobalContext";
 import { LEVELS_DEFAULT_NAMES } from "utils/levels/constants";
 import useLevels from "utils/levels/hooks";
 import QuestCardMenu from "components/QuestCardMenu";
-import { usePaywall, useSubscription } from "utils/hooks";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { usePaywall, useSubscriptionPaywall } from "utils/hooks";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { useTour } from "@reactour/tour";
 import { CSS } from "@dnd-kit/utilities";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -289,7 +289,6 @@ const QuestsList = ({ data, status }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { isOpen } = useTour();
 
-  const subscription = useSubscription();
   const { data: getOrgQuestStatsData } = useQuery(GET_ORG_QUEST_STATS, {
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -298,18 +297,36 @@ const QuestsList = ({ data, status }) => {
     skip: !activeOrg?.id,
   });
 
+  const { plan } = useSubscriptionPaywall();
   const { totalQuests } = getOrgQuestStatsData?.getOrgQuestStats || {};
-  const plan = getPlan(subscription?.tier);
-  const { levels } = useLevels({
-    orgId: activeOrg?.id,
+
+  const { data: levelsData } = useQuery(GET_ORG_QUESTS_LEVELS, {
+    fetchPolicy: "cache-first",
+    notifyOnNetworkStatusChange: true,
+    nextFetchPolicy: "cache-first",
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
   });
+
   const formattedData = useMemo(() => {
+    const levels = { ...LEVELS_DEFAULT_NAMES };
+
+    levelsData?.getOrgQuestsLevels.forEach((item) => {
+      const key = item.key;
+      const value = item.value;
+      if (key in levels) {
+        levels[key] = value;
+      }
+    });
+
     if (!data) {
       return [];
     }
 
     return formatQuestsData(levels, data);
-  }, [levels, data]);
+  }, [data]);
 
   return (
     <PageWrapper

@@ -2,7 +2,6 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import WestIcon from "@mui/icons-material/West";
 import { Box, ButtonBase, Divider, Grid, InputAdornment, TextField as MUITextField, Typography } from "@mui/material";
 import { CHAIN_SELECT_OPTIONS } from "utils/web3Constants";
-import CloseModalIcon from "components/Icons/CloseModal";
 import DeleteIcon from "components/Icons/Delete";
 import SelectComponent from "components/Shared/Select";
 import TextField from "components/Shared/TextField";
@@ -18,29 +17,15 @@ import {
   PaymentRowContentBox,
   PaymentRowContentText,
   PoapImage,
-} from "./styles";
+} from "../CreateTemplate/styles";
 import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
-import { useCommunityBadgePaymentMethods } from "./shared";
+import { useCommunityBadgePaymentMethods } from "../CreateTemplate/shared";
 import TokenStoreItem from "components/CreateStoreItem/components/TokenStoreItem";
-import StoreItemReward from "./StoreItemReward";
+import StoreItemReward from "./StoreItemRewards";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
-import { LockOutlined } from "@mui/icons-material";
-
-export const PAYMENT_OPTIONS = {
-  DISCORD_ROLE: "discord_role",
-  TOKEN: "token",
-  POAP: "poap",
-  COMMUNITY_BADGE: "COMMUNITY_BADGE",
-  CMTY_STORE_ITEM: "cmty_store_item",
-};
-
-const REWARD_TYPES = [
-  { label: "ERC20", value: "erc20" },
-  { label: "ERC721", value: "erc721" },
-  { label: "ERC1155", value: "erc1155" },
-];
-
-const isDev = !import.meta.env.VITE_PRODUCTION;
+import { getRewardMethodOptionButtonStyle } from "./helpers";
+import { REWARD_TYPES, PAYMENT_OPTIONS } from "./constants";
+import ErrorField from "components/Shared/ErrorField";
 
 export const TokenComponent = ({
   paymentMethod = null,
@@ -55,7 +40,34 @@ export const TokenComponent = ({
   options = REWARD_TYPES,
   withAmount = true,
 }) => {
-  if (paymentMethod && !editPaymentMethod?.id) {
+  const isEditingPaymentMethod = !!editPaymentMethod?.id;
+  const currentTokenReward = isEditingPaymentMethod ? editPaymentMethod : tokenReward;
+
+  const handleChainChange = (value) => {
+    const updateMethod = isEditingPaymentMethod ? setEditPaymentMethod : setTokenReward;
+    updateMethod((prev) => ({ ...prev, chain: value }));
+  };
+
+  const handleTokenTypeChange = (value) => {
+    const updateMethod = isEditingPaymentMethod ? setEditPaymentMethod : setTokenReward;
+    updateMethod({ ...currentTokenReward, type: value });
+  };
+
+  const handleContractAddressChange = (value) => {
+    const updateMethod = isEditingPaymentMethod ? setEditPaymentMethod : setTokenReward;
+    updateMethod({ ...currentTokenReward, contractAddress: value });
+  };
+
+  const handleTokenNameChange = (value) => {
+    const updateMethod = isEditingPaymentMethod ? setEditPaymentMethod : setTokenReward;
+    updateMethod({ ...currentTokenReward, tokenName: value });
+  };
+
+  const handleAmountChange = (value) => {
+    setTokenReward({ ...tokenReward, amount: value });
+  };
+
+  if (paymentMethod && !isEditingPaymentMethod) {
     return (
       <AddExistingPaymentMethod
         paymentMethod={paymentMethod}
@@ -65,13 +77,14 @@ export const TokenComponent = ({
       />
     );
   }
-  if (!addPaymentMethod && !editPaymentMethod?.id) {
+  if (!addPaymentMethod && !isEditingPaymentMethod) {
     return (
       <>
         {paymentMethods?.map((paymentMethod, index) => (
           <PaymentMethodRow
             paymentMethod={paymentMethod}
             index={index + 1}
+            key={paymentMethod.id || index}
             setPaymentMethod={setPaymentMethod}
             setEditPaymentMethod={setEditPaymentMethod}
           />
@@ -84,20 +97,8 @@ export const TokenComponent = ({
       <Label>Chain</Label>
       <SelectComponent
         options={CHAIN_SELECT_OPTIONS}
-        value={editPaymentMethod?.id ? editPaymentMethod?.chain : tokenReward?.chain}
-        onChange={(value) => {
-          if (editPaymentMethod?.id) {
-            setEditPaymentMethod({
-              ...editPaymentMethod,
-              chain: value,
-            });
-          } else {
-            setTokenReward({
-              ...tokenReward,
-              chain: value,
-            });
-          }
-        }}
+        value={currentTokenReward?.chain}
+        onChange={handleChainChange}
         error={errors?.chain}
       />
       <Label>Token type</Label>
@@ -105,45 +106,15 @@ export const TokenComponent = ({
       <SelectComponent
         options={options}
         disabled
-        value={editPaymentMethod?.id && editPaymentMethod?.type ? editPaymentMethod?.type : tokenReward?.type}
-        onChange={(value) => {
-          if (editPaymentMethod?.id) {
-            setEditPaymentMethod({
-              ...editPaymentMethod,
-              type: value,
-            });
-          } else {
-            setTokenReward({
-              ...tokenReward,
-              type: value,
-            });
-          }
-        }}
+        value={currentTokenReward?.type}
+        onChange={handleTokenTypeChange}
         error={errors?.tokenType || errors?.type}
       />
-      <Label
-        style={{
-          marginTop: "4px",
-        }}
-      >
-        Token
-      </Label>
+      <Label style={{ marginTop: "4px" }}>Token</Label>
       <TextField
         placeholder="Please paste in the contract address"
-        value={editPaymentMethod?.id ? editPaymentMethod?.contractAddress : tokenReward?.contractAddress}
-        onChange={(value) => {
-          if (editPaymentMethod?.id) {
-            setEditPaymentMethod({
-              ...editPaymentMethod,
-              contractAddress: value,
-            });
-          } else {
-            setTokenReward({
-              ...tokenReward,
-              contractAddress: value,
-            });
-          }
-        }}
+        value={currentTokenReward?.contractAddress}
+        onChange={handleContractAddressChange}
         error={errors?.contractAddress}
         multiline={false}
       />
@@ -156,20 +127,8 @@ export const TokenComponent = ({
       </Label>
       <TextField
         placeholder="Token name"
-        value={editPaymentMethod?.id ? editPaymentMethod?.tokenName : tokenReward?.tokenName}
-        onChange={(value) => {
-          if (editPaymentMethod?.id) {
-            setEditPaymentMethod({
-              ...editPaymentMethod,
-              tokenName: value,
-            });
-          } else {
-            setTokenReward({
-              ...tokenReward,
-              tokenName: value,
-            });
-          }
-        }}
+        value={currentTokenReward?.tokenName}
+        onChange={handleTokenNameChange}
         multiline={false}
       />
       {!editPaymentMethod?.id && withAmount && (
@@ -184,12 +143,7 @@ export const TokenComponent = ({
           <TextField
             placeholder="Please enter the amount of tokens to be rewarded"
             value={tokenReward?.amount}
-            onChange={(value) =>
-              setTokenReward({
-                ...tokenReward,
-                amount: value,
-              })
-            }
+            onChange={handleAmountChange}
             multiline={false}
             error={errors?.tokenAmount}
             type="number"
@@ -200,121 +154,116 @@ export const TokenComponent = ({
   );
 };
 
-
-export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPaymentMethod, index }) => {
-  return (
-    <PaymentMethodRowContainer>
-      <PaymentMethodRowHeader>
-        Payment Method {index}:{" "}
-        <span
-          style={{
-            color: "black",
-          }}
-        >
-          {paymentMethod?.name || paymentMethod?.contractAddress}
-        </span>
-      </PaymentMethodRowHeader>
-      <Box alignItems="center" display="flex" marginBottom="12px">
-        <PaymentMethodSecondRowHeader>Chain</PaymentMethodSecondRowHeader>
-        <PaymentRowContentBox>
-          {CHAIN_SELECT_OPTIONS.find((option) => option.value === paymentMethod?.chain)?.icon}
-          <PaymentRowContentText>{paymentMethod?.chain}</PaymentRowContentText>
-        </PaymentRowContentBox>
-        <PaymentMethodSecondRowHeader
-          style={{
-            marginLeft: "24px",
-          }}
-        >
-          Token type
-        </PaymentMethodSecondRowHeader>
-        <PaymentRowContentBox>
-          <PaymentRowContentText
-            style={{
-              textTransform: "uppercase",
-            }}
-          >
-            {paymentMethod?.type}
-          </PaymentRowContentText>
-        </PaymentRowContentBox>
-      </Box>
-      <Box alignItems="center" display="flex" marginBottom="16px">
-        <PaymentMethodSecondRowHeader
-          style={{
-            fontWeight: 600,
-          }}
-        >
-          Token address
-        </PaymentMethodSecondRowHeader>
-        <PaymentRowContentBox>
-          <PaymentRowContentText
-            style={{
-              textTransform: "uppercase",
-            }}
-          >
-            {paymentMethod?.contractAddress}
-          </PaymentRowContentText>
-        </PaymentRowContentBox>
-      </Box>
-      <Divider color="#E8E8E8" />
-      <Box justifyContent="flex-end" display="flex" marginTop="16px">
-        <SharedSecondaryButton
-          style={{
-            background: "white",
-            border: "1px solid black",
-            marginRight: "8px",
-          }}
-          onClick={() => {
-            setEditPaymentMethod({
-              ...paymentMethod,
-              tokenName: paymentMethod?.name,
-              type: paymentMethod?.type?.toLowerCase(),
-            });
-          }}
-        >
-          Edit
-        </SharedSecondaryButton>
-        <SharedSecondaryButton onClick={() => setPaymentMethod(paymentMethod)}>Add Reward</SharedSecondaryButton>
-      </Box>
-    </PaymentMethodRowContainer>
-  );
-};
-
-export const AddExistingPaymentMethod = ({ paymentMethod, tokenReward, setTokenReward, errors }) => {
-  return (
-    <>
-      <PaymentMethodRowHeader>
-        Payment Method:{" "}
-        <span
-          style={{
-            color: "black",
-          }}
-        >
-          {paymentMethod?.name || paymentMethod?.contractAddress}
-        </span>
-      </PaymentMethodRowHeader>
-      <Label
+export const PaymentMethodRow = ({ paymentMethod, setPaymentMethod, setEditPaymentMethod, index }) => (
+  <PaymentMethodRowContainer>
+    <PaymentMethodRowHeader>
+      Payment Method {index}:{" "}
+      <span
         style={{
-          marginTop: "4px",
+          color: "black",
         }}
       >
-        Amount
-      </Label>
-      <TextField
-        placeholder="Please enter the amount of tokens to be rewarded"
-        value={tokenReward?.amount}
-        onChange={(value) =>
-          setTokenReward({
-            ...tokenReward,
-            amount: value,
-          })
-        }
-        multiline={false}
-        type="number"
-        error={errors?.tokenAmount}
-      />
-    </>
-  );
-};
+        {paymentMethod?.name || paymentMethod?.contractAddress}
+      </span>
+    </PaymentMethodRowHeader>
+    <Box alignItems="center" display="flex" marginBottom="12px">
+      <PaymentMethodSecondRowHeader>Chain</PaymentMethodSecondRowHeader>
+      <PaymentRowContentBox>
+        {CHAIN_SELECT_OPTIONS.find((option) => option.value === paymentMethod?.chain)?.icon}
+        <PaymentRowContentText>{paymentMethod?.chain}</PaymentRowContentText>
+      </PaymentRowContentBox>
+      <PaymentMethodSecondRowHeader
+        style={{
+          marginLeft: "24px",
+        }}
+      >
+        Token type
+      </PaymentMethodSecondRowHeader>
+      <PaymentRowContentBox>
+        <PaymentRowContentText
+          style={{
+            textTransform: "uppercase",
+          }}
+        >
+          {paymentMethod?.type}
+        </PaymentRowContentText>
+      </PaymentRowContentBox>
+    </Box>
+    <Box alignItems="center" display="flex" marginBottom="16px">
+      <PaymentMethodSecondRowHeader
+        style={{
+          fontWeight: 600,
+        }}
+      >
+        Token address
+      </PaymentMethodSecondRowHeader>
+      <PaymentRowContentBox>
+        <PaymentRowContentText
+          style={{
+            textTransform: "uppercase",
+          }}
+        >
+          {paymentMethod?.contractAddress}
+        </PaymentRowContentText>
+      </PaymentRowContentBox>
+    </Box>
+    <Divider color="#E8E8E8" />
+    <Box justifyContent="flex-end" display="flex" marginTop="16px">
+      <SharedSecondaryButton
+        style={{
+          background: "white",
+          border: "1px solid black",
+          marginRight: "8px",
+        }}
+        onClick={() => {
+          setEditPaymentMethod({
+            ...paymentMethod,
+            tokenName: paymentMethod?.name,
+            type: paymentMethod?.type?.toLowerCase(),
+          });
+        }}
+      >
+        Edit
+      </SharedSecondaryButton>
+      <SharedSecondaryButton onClick={() => setPaymentMethod(paymentMethod)}>Add Reward</SharedSecondaryButton>
+    </Box>
+  </PaymentMethodRowContainer>
+);
+
+export const AddExistingPaymentMethod = ({ paymentMethod, tokenReward, setTokenReward, errors }) => (
+  <>
+    <PaymentMethodRowHeader>
+      Payment Method:{" "}
+      <span
+        style={{
+          color: "black",
+        }}
+      >
+        {paymentMethod?.name || paymentMethod?.contractAddress}
+      </span>
+    </PaymentMethodRowHeader>
+    <Label
+      style={{
+        marginTop: "4px",
+      }}
+    >
+      Amount
+    </Label>
+    <TextField
+      placeholder="Please enter the amount of tokens to be rewarded"
+      value={tokenReward?.amount}
+      onChange={(value) =>
+        setTokenReward({
+          ...tokenReward,
+          amount: value,
+        })
+      }
+      multiline={false}
+      type="number"
+      error={errors?.tokenAmount}
+    />
+  </>
+);
 
 export const RewardMethod = ({
   rewardType,
@@ -351,6 +300,7 @@ export const RewardMethod = ({
   });
 
   const handleRoleChange = async (value) => {
+    setErrors(null);
     const { data } = await getPermissionToRewardRole({
       variables: {
         roleId: value,
@@ -368,10 +318,19 @@ export const RewardMethod = ({
   }
 
   if (rewardType === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+    const handleStoreItemChange = (value) => {
+      if (!value) return;
+      setCmtyStoreItemReward(value);
+      setErrors(null);
+    };
+
     return (
       <>
         <Label>Select Store Item</Label>
-        <StoreItemReward onChange={setCmtyStoreItemReward} storeItem={cmtyStoreItemReward} />
+        <Box display="flex" gap="4px" flexDirection="column">
+          <StoreItemReward onChange={handleStoreItemChange} storeItem={cmtyStoreItemReward} />
+          <ErrorField errorText={errors?.cmtyStoreItem} />
+        </Box>
       </>
     );
   }
@@ -411,13 +370,16 @@ export const RewardMethod = ({
     return (
       <>
         <Label>Select role</Label>
-        <AutocompleteOptionsComponent
-          options={componentsOptions}
-          value={discordRoleReward}
-          onChange={handleRoleChange}
-          fullWidth
-          bgColor="#e8e8e8"
-        />
+        <Box display="flex" gap="4px" flexDirection="column">
+          <AutocompleteOptionsComponent
+            options={componentsOptions}
+            value={discordRoleReward}
+            onChange={handleRoleChange}
+            fullWidth
+            bgColor="#e8e8e8"
+          />
+          <ErrorField errorText={errors?.discordRole} />
+        </Box>
       </>
     );
   }
@@ -540,27 +502,17 @@ export const RewardMethod = ({
 };
 
 export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, Icon, text, isUnavailable = false }) => {
+  const isActive = paymentOption === rewardType;
+  const buttonStyle = getRewardMethodOptionButtonStyle(isActive, isUnavailable);
 
-  return   <SharedBlackOutlineButton
-  style={{
-    flex: 1,
-    width: "100%",
-    opacity: isUnavailable ? 0.7 : 1
-  }}
-  background={paymentOption === rewardType ? "#BFB4F3" : "#BFB4F366"}
-  borderColor={paymentOption === rewardType ? "#000" : "transparent"}
-  justifyContent="flex-start"
-  height="44px"
-  padding="10px"
-  minWidth="fit-content"
-  onClick={onClick}
->
-  <Icon /> {text}
-</SharedBlackOutlineButton>
+  return (
+    <SharedBlackOutlineButton {...buttonStyle} onClick={onClick}>
+      <Icon /> {text}
+    </SharedBlackOutlineButton>
+  );
+};
 
-}
-
-export const RewardFooterLeftComponent = ({
+export const RewardModalFooterLeftComponent = ({
   rewardType,
   paymentMethod,
   setPaymentMethod,
@@ -569,76 +521,74 @@ export const RewardFooterLeftComponent = ({
   setAddPaymentMethod,
   editPaymentMethod,
   setEditPaymentMethod,
+  errors,
 }) => {
   const [updateCmtyPaymentMethod] = useMutation(UPDATE_CMTY_PAYMENT_METHOD, {
     refetchQueries: ["getCmtyPaymentMethodsForOrg"],
   });
+  const handleEditPaymentMethod = () => {
+    updateCmtyPaymentMethod({
+      variables: {
+        paymentMethodId: editPaymentMethod?.id,
+        input: {
+          contractAddress: editPaymentMethod?.contractAddress,
+          tokenName: editPaymentMethod?.tokenName,
+          chain: editPaymentMethod?.chain,
+        },
+      },
+    }).then(() => {
+      setEditPaymentMethod({
+        id: null,
+        tokenName: null,
+        contractAddress: null,
+        symbol: null,
+        icon: null,
+        type: null,
+        chain: null,
+        amount: null,
+      });
+    });
+  };
+
+  const handleBackClick = () => {
+    paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false);
+  };
+
+  const isRewardTypeSelectable =
+    rewardType !== PAYMENT_OPTIONS.POAP &&
+    rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE &&
+    rewardType !== PAYMENT_OPTIONS.CMTY_STORE_ITEM;
+
   if (editPaymentMethod?.id) {
-    return (
-      <SharedSecondaryButton
-        onClick={() => {
-          updateCmtyPaymentMethod({
-            variables: {
-              paymentMethodId: editPaymentMethod?.id,
-              input: {
-                contractAddress: editPaymentMethod?.contractAddress,
-                tokenName: editPaymentMethod?.tokenName,
-                chain: editPaymentMethod?.chain,
-              },
-            },
-          }).then(() => {
-            setEditPaymentMethod({
-              id: null,
-              tokenName: null,
-              contractAddress: null,
-              symbol: null,
-              icon: null,
-              type: null,
-              chain: null,
-              amount: null,
-            });
-          });
-        }}
-      >
-        Edit payment method
-      </SharedSecondaryButton>
-    );
+    return <SharedSecondaryButton onClick={handleEditPaymentMethod}>Edit payment method</SharedSecondaryButton>;
   }
-  if (
-    addPaymentMethod ||
-    paymentMethod ||
-    rewardType === PAYMENT_OPTIONS.POAP ||
-    rewardType === PAYMENT_OPTIONS.DISCORD_ROLE
-  ) {
+  if (addPaymentMethod || !!paymentMethod || isRewardTypeSelectable) {
     return (
       <>
-        {rewardType !== PAYMENT_OPTIONS.POAP &&
-          rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE &&
-          rewardType !== PAYMENT_OPTIONS.CMTY_STORE_ITEM && (
-            <ButtonBase onClick={() => (paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false))}>
-              <Box
-                height="40px"
-                width="40px"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                bgcolor="#2A8D5C"
-                borderRadius="35px"
-              >
-                <WestIcon
-                  sx={{
-                    color: "white",
-                  }}
-                />
-              </Box>
-            </ButtonBase>
-          )}
+        {isRewardTypeSelectable && (
+          <ButtonBase onClick={handleBackClick}>
+            <Box
+              height="40px"
+              width="40px"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              bgcolor="#2A8D5C"
+              borderRadius="35px"
+            >
+              <WestIcon
+                sx={{
+                  color: "white",
+                }}
+              />
+            </Box>
+          </ButtonBase>
+        )}
         <SharedSecondaryButton onClick={handleReward}>Add Reward</SharedSecondaryButton>
       </>
     );
-  } else {
-    return <SharedSecondaryButton onClick={() => setAddPaymentMethod(true)}>New payment method</SharedSecondaryButton>;
   }
+  return <SharedSecondaryButton onClick={() => setAddPaymentMethod(true)}>New payment method</SharedSecondaryButton>;
 };
 
 export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, onRewardsChange, rewards }) => {
@@ -707,29 +657,6 @@ export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, o
       value={reward}
       onChange={handleChange}
     />
-  );
-};
-
-const ClearRewardValue = ({ onClick }) => {
-  return (
-    <Grid
-      container
-      item
-      alignItems="center"
-      justifyContent="center"
-      width="18px"
-      height="24px"
-      onClick={onClick}
-      borderRadius="6px"
-      sx={{
-        cursor: "pointer",
-        "&:hover": {
-          background: "rgba(40, 40, 40, 0.2)",
-        },
-      }}
-    >
-      <CloseModalIcon strokeColor="#4D4D4D" />
-    </Grid>
   );
 };
 

@@ -13,8 +13,8 @@ import { getDiscordUrl } from "utils/discord";
 import useAlerts from "utils/hooks";
 import { ImageComponent, StyledLink, TextLabel } from "./styles";
 import useErrorHandler from "./useErrorHandler";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import { format } from "date-fns";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
 const ViewQuest = ({ quest, loading }) => {
   const params = {
