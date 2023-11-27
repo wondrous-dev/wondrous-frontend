@@ -67,7 +67,7 @@ const Header = () => {
   if (isEcosystemPlan && !LINKS.some((link) => link.path === "/store")) {
     LINKS.splice(3, 0, {
       path: "/store",
-      label: "STORE",
+      label: "Store",
       textColor: "#30BA76",
       partialMatch: true,
     });
