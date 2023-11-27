@@ -1,7 +1,8 @@
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import moment from "moment";
 import { CONDITION_TYPES, NFT_TYPES } from "./constants";
 import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 
 const DEFAULT_TWITTER_SCOPE =
   "users.read%20tweet.read%20follows.read%20follows.write%20like.read%20like.write%20offline.access";
@@ -32,8 +33,8 @@ export const getTextForCondition = (condition) => {
   if (type === CONDITION_TYPES.QUEST) {
     text = `${exclusiveQuest ? "Exclude" : "Quest"}: ${name || "None"}`;
   }
-  if(type === CONDITION_TYPES.LEVEL) {
-    text = `Level: ${condition?.name || "None"}`
+  if (type === CONDITION_TYPES.LEVEL) {
+    text = `Level: ${condition?.name || "None"}`;
   }
   return text;
 };
@@ -66,6 +67,30 @@ export const toggleHtmlOverflow = () => {
   style.overflow = style.overflow ? "" : "hidden";
 };
 
+export const snakeToCamelArr = (arr) => {
+  return arr.map((arrItem) => {
+    if (arrItem && typeof arrItem === "object") {
+      return snakeToCamelObj(arrItem);
+    } else if (arrItem && Array.isArray(arrItem)) {
+      return snakeToCamelArr(arrItem);
+    } else {
+      return arrItem;
+    }
+  });
+};
+export const snakeToCamelObj = (obj) => {
+  const newObj = {};
+  for (const key in obj) {
+    if (obj[key] && typeof obj[key] === "object" && !Array.isArray(obj[key])) {
+      obj[key] = snakeToCamelObj(obj[key]);
+    } else if (obj[key] && Array.isArray(obj[key])) {
+      obj[key] = snakeToCamelArr(obj[key]);
+    }
+    newObj[snakeToCamel(key)] = obj[key];
+  }
+  return newObj;
+};
+
 export const snakeToCamel = (str) => {
   if (str === null || str === undefined) return str;
   return str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace("-", "").replace("_", ""));
@@ -83,11 +108,11 @@ export const constructRewards = ({ rewards }) => {
     if (reward.type === "points") {
       return reward;
     }
-    if(reward.type === PAYMENT_OPTIONS.TOKEN && reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
+    if (reward.type === PAYMENT_OPTIONS.TOKEN && reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
       return {
         type: PAYMENT_OPTIONS.COMMUNITY_BADGE,
-        value: reward?.paymentMethod?.name
-      }
+        value: reward?.paymentMethod?.name,
+      };
     }
     if (reward.type === PAYMENT_OPTIONS.TOKEN) {
       return {
@@ -107,11 +132,11 @@ export const constructRewards = ({ rewards }) => {
         value: reward?.poapRewardData?.name || null,
       };
     }
-    if(reward.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
+    if (reward.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM) {
       return {
         type: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
-        value: reward?.storeItem?.name || null
-      }
+        value: reward?.storeItem?.name || null,
+      };
     }
   });
 };
@@ -190,7 +215,6 @@ export const buildTwitterAuthUrl = (state?) => {
   return `https://twitter.com/i/oauth2/authorize?client_id=${CLIENT_ID}&scope=${DEFAULT_TWITTER_SCOPE}&response_type=code&redirect_uri=${redirectUri}&state=${state}&code_challenge=${TWITTER_CHALLENGE_CODE}&code_challenge_method=plain`;
 };
 
-
 export const validateTypes = (type, value) => {
   if (type === "number" || type === "tel") {
     const re = /^[0-9\b]+$/;
@@ -203,3 +227,10 @@ export const validateTypes = (type, value) => {
 };
 
 export const verifyIsImportedToken = (type) => [NFT_TYPES.ERC721, NFT_TYPES.ERC1155].includes(type);
+
+export const getPlan = (plan) => {
+  if (!plan) return PricingOptionsTitle.Basic;
+  if (plan === "hobby" || plan === "hobby_annual") return PricingOptionsTitle.Hobby;
+  if (plan === "premium" || plan === "premium_annual") return PricingOptionsTitle.Premium;
+  if (plan === "ecosystem" || plan === "ecoosystem_annual") return PricingOptionsTitle.Ecosystem;
+};

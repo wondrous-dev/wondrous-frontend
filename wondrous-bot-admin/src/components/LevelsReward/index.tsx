@@ -7,9 +7,10 @@ import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { CloseIcon } from "components/Shared/DatePicker/Icons";
 import { useMutation } from "@apollo/client";
 import { ADD_ORG_LEVEL_REWARD, REMOVE_ORG_LEVEL_REWARD } from "graphql/mutations";
-import RewardModal, { useAddRewardModalState } from "components/CreateTemplate/RewardModal";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
+import RewardModal from "components/Rewards/RewardModal";
 import { NFTIcon, PoapIcon, TokensIcon } from "components/Icons/Rewards";
+import { useAddRewardModalState } from "components/Rewards/utils";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
 interface AddOrgLevelRewardInput {
   orgId: string;

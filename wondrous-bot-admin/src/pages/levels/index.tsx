@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { Box } from "@mui/material";
 import LevelsReward from "components/LevelsReward";
 import PageHeader from "components/PageHeader";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import PageWrapper from "components/Shared/PageWrapper";
 import { StyledInformationTooltip } from "components/Shared/Tooltip";
 import TableComponent from "components/TableComponent";
@@ -10,6 +10,7 @@ import { StyledTableHeader, StyledTableHeaderCell } from "components/TableCompon
 import { UPDATE_QUEST_LABEL } from "graphql/mutations";
 import { GET_ORG_LEVEL_REWARDS } from "graphql/queries";
 import { useContext, useMemo, useState } from "react";
+import { getPlan } from "utils/common";
 import { BG_TYPES } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { useDiscordRoles } from "utils/discord";

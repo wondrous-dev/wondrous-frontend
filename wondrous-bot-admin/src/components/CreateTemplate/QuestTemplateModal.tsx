@@ -21,11 +21,12 @@ import StartFromScratchImage from "assets/questTemplatesImages/startFromScratch.
 import VerifyTokenHoldingsImage from "assets/questTemplatesImages/verifyTokenHoldings.jpeg";
 import VerifyYourSubscriptionImage from "assets/questTemplatesImages/verifyYourSubscription.jpeg";
 import CloseModalIcon from "components/Icons/CloseModal";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import React, { Suspense, useState } from "react";
 import { TYPES } from "utils/constants";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { scrollbarStyles } from "components/Shared/styles";
+import { getPlan } from "utils/common";
 
 const EcosystemFeature = React.lazy(() => import("components/PremiumFeatureDialog/ecosystem"));
 

@@ -97,12 +97,11 @@ const QuestResultsPage = () => {
     });
   };
 
-  const isOnboardingLevel = getQuestById?.isOnboarding ? null : getQuestById?.level;
 
   const questSettings = {
     title: getQuestById?.title || "",
     description: getQuestById?.description || "",
-    level: isOnboardingLevel ? String(getQuestById?.level) : null,
+    level: String(getQuestById?.level),
     timeBound: getQuestById?.startAt || getQuestById?.endAt,
     isOnboarding: getQuestById?.isOnboarding || false,
     maxSubmission: getQuestById?.maxSubmission || null,

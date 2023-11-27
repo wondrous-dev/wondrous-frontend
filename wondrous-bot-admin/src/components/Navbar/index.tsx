@@ -1,7 +1,7 @@
 import { Box, Grid, Typography, Drawer, useTheme } from "@mui/material";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { DefaultLink } from "components/Shared/styles";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 
 import {
@@ -19,8 +19,7 @@ import { HEADER_HEIGHT } from "utils/constants";
 import CloseIcon from "@mui/icons-material/Close";
 import WorkspaceSwitch from "components/WorkspaceSwitch";
 import GlobalContext from "utils/context/GlobalContext";
-import { useSubscription } from "utils/hooks";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { useSubscriptionPaywall } from "utils/hooks";
 
 const checkActive = (path, location, partialMatch = false) => {
   if (partialMatch) {
@@ -63,9 +62,9 @@ const Header = () => {
 
   const theme: any = useTheme();
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
-  const subscription = useSubscription();
-  const plan = getPlan(subscription?.tier);
-  if (plan === PricingOptionsTitle.Ecosystem && !LINKS.some((link) => link.path === "/store")) {
+  const {isEcosystemPlan} = useSubscriptionPaywall();
+  
+  if (isEcosystemPlan && !LINKS.some((link) => link.path === "/store")) {
     LINKS.splice(3, 0, {
       path: "/store",
       label: "STORE",

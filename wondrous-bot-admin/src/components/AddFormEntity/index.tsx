@@ -12,105 +12,39 @@ import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
 import StepAttachments from "components/StepAttachments";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
-import { usePaywall, useSubscription } from "utils/hooks";
+import { useSubscriptionPaywall } from "utils/hooks";
 import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
 import AutocompleteOptionsComponent from "./components/AutocompleteComponent";
 import GlobalContext from "utils/context/GlobalContext";
+import { COMPONENT_OPTIONS, MULTICHOICE_DEFAULT_VALUE } from "./constants";
 
-const COMPONENT_OPTIONS = [
-  {
-    label: "Text",
-    value: TYPES.TEXT_FIELD,
-  },
-  {
-    label: "Referral",
-    value: TYPES.REFERRAL,
-  },
-  {
-    label: "Multiple Choice",
-    value: TYPES.MULTI_QUIZ,
-  },
-  {
-    label: "Number",
-    value: TYPES.NUMBER,
-  },
-  {
-    label: "Attachments",
-    value: TYPES.ATTACHMENTS,
-  },
-  {
-    label: "Like A Tweet",
-    value: TYPES.LIKE_TWEET,
-  },
-  {
-    label: "Follow A Twitter Account",
-    value: TYPES.FOLLOW_TWITTER,
-  },
-  {
-    label: "Reply To A Tweet",
-    value: TYPES.REPLY_TWEET,
-  },
-  {
-    label: "Retweet A Tweet",
-    value: TYPES.RETWEET,
-  },
-  {
-    label: "Tweet With A Mention Or Hashtag",
-    value: TYPES.TWEET_WITH_PHRASE,
-  },
-  {
-    label: "Vote On Snapshot Proposal",
-    value: TYPES.SNAPSHOT_PROPOSAL_VOTE,
-  },
-  {
-    label: "Vote On Snapshot Space",
-    value: TYPES.SNAPSHOT_SPACE_VOTE,
-  },
-  {
-    label: "Send A Message in Discord Channel",
-    value: TYPES.DISCORD_MESSAGE_IN_CHANNEL,
-  },
-  {
-    label: "Verify Discord event attendance",
-    value: TYPES.DISCORD_EVENT_ATTENDANCE,
-  },
-  {
-    label: "Data Collection",
-    value: TYPES.DATA_COLLECTION,
-  },
-  {
-    label: "Verify Token Holding",
-    value: TYPES.VERIFY_TOKEN_HOLDING,
-  },
-  {
-    label: "Verify Youtube Subscription",
-    value: TYPES.SUBSCRIBE_YT_CHANNEL,
-  },
-  {
-    label: "Verify Youtube Like",
-    value: TYPES.LIKE_YT_VIDEO,
-  },
-  {
-    label: "Click on link",
-    value: TYPES.LINK_CLICK,
-  },
-  {
-    label: "+ Add custom on chain action",
-    value: TYPES.CUSTOM_ONCHAIN_ACTION,
-  }
-];
-let activeOrgPushed = false;
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { activeOrg } = useContext(GlobalContext);
   const [openEcosystemDialog, setOpenEcosystemDialog] = useState(false);
-  const subscription = useSubscription();
-  const plan = getPlan(subscription?.tier);
-  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { setPaywall, setPaywallMessage, isBasicPLan, isHobbyPlan, isEcosystemPlan, isPremiumPlan } =
+    useSubscriptionPaywall();
+
+  const componentOptions = useMemo(() => {
+    let defaultOptions = [...COMPONENT_OPTIONS];
+    if (activeOrg?.id in CUSTOM_INTEGRATIONS) {
+      const customIntegrations = CUSTOM_INTEGRATIONS[activeOrg?.id];
+      customIntegrations?.integrations.forEach((integration) => {
+        defaultOptions.push(integration);
+      });
+    }
+    return [
+      ...defaultOptions,
+      {
+        label: "+ Add custom on chain action",
+        value: TYPES.CUSTOM_ONCHAIN_ACTION,
+      },
+    ];
+  }, [activeOrg?.id]);
+
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -127,17 +61,14 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
   const handleChangeType = (type, order, idx) => {
     if (!type) return;
     if (
-      (plan === PricingOptionsTitle.Basic || plan === PricingOptionsTitle.Hobby) &&
+      (isBasicPLan || isHobbyPlan) &&
       (type === TYPES.SUBSCRIBE_YT_CHANNEL || type === TYPES.LIKE_YT_VIDEO || type === TYPES.CUSTOM_ONCHAIN_ACTION)
     ) {
       setPaywall(true);
       setPaywallMessage("This feature is only available on the Pro plan and above");
       return;
     }
-    if (
-      (plan === PricingOptionsTitle.Premium || plan === PricingOptionsTitle.Ecosystem) &&
-      type === TYPES.CUSTOM_ONCHAIN_ACTION
-    ) {
+    if ((isPremiumPlan || isEcosystemPlan) && type === TYPES.CUSTOM_ONCHAIN_ACTION) {
       setOpenEcosystemDialog(true);
       return;
     }
@@ -152,19 +83,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
         },
       };
     });
-
-    const MULTICHOICE_DEFAULT_VALUE = {
-      question: "",
-      withCorrectAnswers: false,
-      withConditionalRewards: false,
-      multiSelectValue: TYPES.MULTI_QUIZ,
-      answers: [
-        {
-          value: "",
-          isCorrect: true,
-        },
-      ],
-    };
 
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.order === order) {
@@ -185,15 +103,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     setSteps(newConfiguration);
   };
 
-  useEffect(() => {
-    if (activeOrg?.id in CUSTOM_INTEGRATIONS && !activeOrgPushed) {
-      const customIntegrations = CUSTOM_INTEGRATIONS[activeOrg?.id];
-      customIntegrations?.integrations.forEach((integration) => {
-        COMPONENT_OPTIONS.push(integration);
-      });
-      activeOrgPushed = true;
-    }
-  }, [activeOrg?.id, activeOrgPushed]);
   const handleRequiredChange = (required, order) => {
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.order === order) {
@@ -275,7 +184,14 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       width="100%"
     >
       <EcosystemFeature open={openEcosystemDialog} onClose={() => setOpenEcosystemDialog(false)} />
-      <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black" ref={(ref) => refs.current[0] = ref}>
+      <Typography
+        fontFamily="Poppins"
+        fontWeight={600}
+        fontSize="18px"
+        lineHeight="24px"
+        color="black"
+        ref={(ref) => (refs.current[0] = ref)}
+      >
         {steps?.length} {steps?.length === 1 ? "Quest Step" : "Quest Steps"}
       </Typography>
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -328,8 +244,8 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                     Step {idx + 1}
                                   </Typography>
                                   <AutocompleteOptionsComponent
-                                    options={COMPONENT_OPTIONS}
-                                    value={isQuiz ? TYPES.MULTI_QUIZ : item.type}
+                                    options={componentOptions}
+                                    value={item.type}
                                     onChange={(value) => handleChangeType(value, item.order, idx)}
                                     setSteps={setSteps}
                                     order={idx + 1}

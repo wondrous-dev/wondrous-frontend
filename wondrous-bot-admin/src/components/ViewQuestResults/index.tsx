@@ -1,11 +1,10 @@
 import { useQuery, useLazyQuery } from "@apollo/client";
-import { Box, Grid, Typography } from "@mui/material";
-import { CampaignOverview, CampaignOverviewHeader } from "components/CreateTemplate/CampaignOverview";
+import { Box, Grid } from "@mui/material";
+import { CampaignOverviewHeader } from "components/CreateTemplate/CampaignOverview";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import {
   GET_CMTY_ORG_DISCORD_CONFIG,
-  GET_QUESTS_FOR_ORG,
   GET_QUEST_BY_ID,
   GET_QUEST_SUBMISSION_STATS,
   GET_SUBMISSIONS_FOR_QUEST,
@@ -14,7 +13,7 @@ import { GET_GUILD_DISCORD_CHANNELS, GET_ORG_DISCORD_ROLES } from "graphql/queri
 import moment from "moment";
 import { useContext, useEffect, useMemo, useState } from "react";
 import apollo from "services/apollo";
-import { constructRewards, getTextForCondition } from "utils/common";
+import { getTextForCondition } from "utils/common";
 
 import {
   BG_TYPES,
@@ -28,13 +27,11 @@ import GlobalContext from "utils/context/GlobalContext";
 import QuestResults from "./QuestResults";
 import ViewCampaignOverview from "./ViewCampaignOverview";
 import PublishQuestCardBody from "./PublishQuestCardBody";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import ViewRewards from "./ViewRewards";
 import { StyledViewQuestResults } from "./styles";
 
 const ViewQuestResults = ({ quest, rewards }) => {
   const { activeOrg } = useContext(GlobalContext);
-  const [conditionName, setConditionName] = useState(null);
 
   const [hasMore, setHasMore] = useState(true);
   const [filter, setFilter] = useState(QUEST_SUBMISSION_STATUS.IN_REVIEW);

@@ -1,14 +1,11 @@
 import { useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { BillingIntervalValue } from "./BillingInterval";
-import PricingOptionsListItem, {
-  PricingOptionsListItemType,
-  PricingOptionsTitle,
-  getPlan,
-} from "./PricingOptionsListItem";
+import PricingOptionsListItem, { PricingOptionsListItemType, PricingOptionsTitle } from "./PricingOptionsListItem";
 import { PricingListOptionWrapper } from "./styles";
 import { useSubscription } from "utils/hooks";
 import { useMe, withAuth } from "components/Auth";
+import { getPlan } from "utils/common";
 
 const STRIPE_MANAGE_SUBSCRIPTION_LINK = import.meta.env.VITE_PRODUCTION
   ? "https://billing.stripe.com/p/login/fZefYZfFDdyk6NG8ww"

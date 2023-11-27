@@ -6,6 +6,8 @@ import SubscriptionContext from "./context/SubscriptionContext";
 import TakeQuestContext from "./context/TakeQuestContext";
 import { PaywallContext } from "./context/PaywallContext";
 import GlobalContext from "./context/GlobalContext";
+import { getPlan } from "./common";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 
 const useAlerts = () => {
   const {
@@ -58,6 +60,17 @@ export const useSubscription = () => useContext(SubscriptionContext);
 
 export const usePaywall = () => useContext(PaywallContext);
 
-export const useTakeQuest = () => useContext(TakeQuestContext)
+export const useTakeQuest = () => useContext(TakeQuestContext);
 
 export const useGlobalContext = () => useContext(GlobalContext);
+
+export const useSubscriptionPaywall = () => {
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.tier);
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall();
+  const isBasicPLan = plan === PricingOptionsTitle.Basic;
+  const isHobbyPlan = plan === PricingOptionsTitle.Hobby;
+  const isPremiumPlan = plan === PricingOptionsTitle.Premium;
+  const isEcosystemPlan = plan === PricingOptionsTitle.Ecosystem;
+  return { plan, setPaywall, setPaywallMessage,isBasicPLan, isHobbyPlan, isPremiumPlan, isEcosystemPlan, setOnCancel, setCanBeClosed };
+};

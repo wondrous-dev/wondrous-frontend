@@ -395,6 +395,7 @@ export const VERIFY_TOKEN_HOLDING = gql`
     $tokenAmount: String
     $tokenType: String
     $tokenDecimals: String
+    $tokenId: String
   ) {
     verifyTokenHolding(
       telegramUserId: $telegramUserId
@@ -403,6 +404,7 @@ export const VERIFY_TOKEN_HOLDING = gql`
       tokenAmount: $tokenAmount
       tokenType: $tokenType
       tokenDecimals: $tokenDecimals
+      tokenId: $tokenId
     ) {
       userHasTokens
     }

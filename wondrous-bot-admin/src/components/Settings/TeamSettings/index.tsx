@@ -16,13 +16,13 @@ import { UPDATE_ORG } from "graphql/mutations";
 import { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import EditSvg from "components/Icons/edits.svg";
-import { getBaseUrl } from "utils/common";
+import { getBaseUrl, getPlan } from "utils/common";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { handleImageFile, uploadMedia } from "utils/media";
 import SafeImage from "components/SafeImage";
 import Dropdown from "components/Shared/Dropdown";
 import { Wrapper } from "components/Shared/Dropdown/styles";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 
 export const TeamsAndInvite = ({ adminNumbers }) => {
   const { activeOrg } = useContext(GlobalContext);

@@ -185,11 +185,11 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
     },
     {
       settings: [
-        // {
-        //   label: "Onboarding Quest",
-        //   component: OnboardingComponent,
-        //   key: "isOnboarding",
-        // },
+        {
+          label: "Onboarding Quest",
+          component: OnboardingComponent,
+          key: "isOnboarding",
+        },
         {
           label: "Level Requirement",
           component: LevelComponent,
