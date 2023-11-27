@@ -15,7 +15,6 @@ import { MINIMAL_REFERRAL_UPDATE, UPDATE_REFERRAL } from "graphql/mutations";
 import { ExistingLevelsReward } from "components/LevelsReward";
 import { useDiscordRoles } from "utils/discord";
 import { useGlobalContext } from "utils/hooks";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import Spinner from "components/Shared/Spinner";
 import EmptyState from "components/EmptyState";
@@ -23,6 +22,7 @@ import apollo from "services/apollo";
 import { GET_REFERRAL_CAMPAIGN_FOR_ORG } from "graphql/queries/referral";
 import { updateReferralCampaignCache } from "utils/apolloHelpers";
 import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
 const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
   const [hasMore, setHasMore] = useState(true);

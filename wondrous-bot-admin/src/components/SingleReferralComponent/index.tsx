@@ -11,12 +11,12 @@ import ReferralSettingsComponent from "./ReferralSettingsComponent";
 import ReferralDataComponent from "./ReferralDataComponent";
 import { useMutation } from "@apollo/client";
 import { CREATE_REFERRAL, UPDATE_REFERRAL } from "graphql/mutations/referral";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import useAlerts from "utils/hooks";
 import { updateReferralCampaignCache } from "utils/apolloHelpers";
 import { ValidationError, referralValidator } from "services/validators";
 import { convertPath, getPathArray } from "utils/common";
 import { set } from "lodash";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
 const DEFAULT_REFERRAL_SETTINGS = {
   name: "",

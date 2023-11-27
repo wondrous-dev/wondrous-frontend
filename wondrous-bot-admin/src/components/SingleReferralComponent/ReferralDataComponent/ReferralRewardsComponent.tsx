@@ -3,12 +3,14 @@ import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { Label } from "components/CreateTemplate/styles";
 import { RewardTypeSwitch } from "./Helpers";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
-import RewardModal, { useAddRewardModalState } from "components/CreateTemplate/RewardModal";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { PAYMENT_OPTIONS, RewardWrapperWithTextField } from "components/CreateTemplate/RewardUtils";
 import { InlineRewardUIComponent } from "components/AddFormEntity/components/OptionRewards";
 import { REFERRAL_REWARD_SCHEME } from "utils/constants";
 import { PointsIcon } from "components/Icons/Rewards";
+import { RewardWrapperWithTextField } from "components/Rewards";
+import RewardModal from "components/Rewards/RewardModal";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
+import { useAddRewardModalState } from "components/Rewards/utils";
 
 const POINT_REWARD_MAP = {
   [REFERRAL_REWARD_SCHEME.REFERRER]: "referrerPointReward",
