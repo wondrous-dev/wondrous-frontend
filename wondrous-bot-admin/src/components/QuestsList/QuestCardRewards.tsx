@@ -1,9 +1,7 @@
 import { Box } from "@mui/material";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import { DiscordRoleIcon, NFTIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { StyledInformationTooltip } from "components/Shared/Tooltip";
-import { useMemo } from "react";
-import { constructRewards } from "utils/common";
 
 const CardReward = ({ reward }) => {
 

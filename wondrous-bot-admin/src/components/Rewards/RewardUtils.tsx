@@ -666,41 +666,75 @@ export const RewardModalFooterLeftComponent = ({
     paymentMethod ? setPaymentMethod(null) : setAddPaymentMethod(false);
   };
 
+  const renderEditPaymentButton = () => (
+    <>
+      <ButtonBase onClick={() => setEditPaymentMethod(null)}>
+        <Box
+          height="40px"
+          width="40px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          bgcolor="#2A8D5C"
+          borderRadius="35px"
+        >
+          <WestIcon sx={{ color: "white" }} />
+        </Box>
+      </ButtonBase>
+      <SharedSecondaryButton onClick={handleEditPaymentMethod}>Edit payment method</SharedSecondaryButton>
+    </>
+  );
+
+  
   const isRewardTypeSelectable =
     rewardType !== PAYMENT_OPTIONS.POAP &&
     rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE &&
-    rewardType !== PAYMENT_OPTIONS.CMTY_STORE_ITEM;
+    rewardType !== PAYMENT_OPTIONS.CMTY_STORE_ITEM &&
+    rewardType !== PAYMENT_OPTIONS.COMMUNITY_BADGE;
+
+  const renderAddRewardButtons = () => (
+    <>
+      {isRewardTypeSelectable ? (
+        <ButtonBase onClick={handleBackClick}>
+          <Box
+            height="40px"
+            width="40px"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            bgcolor="#2A8D5C"
+            borderRadius="35px"
+          >
+            <WestIcon sx={{ color: "white" }} />
+          </Box>
+        </ButtonBase>
+      ) : null}
+      <SharedSecondaryButton onClick={handleReward}>
+        {addPaymentMethod && rewardType === PAYMENT_OPTIONS.TOKEN ? "Add New Payment Method" : "Add Reward"}
+      </SharedSecondaryButton>
+    </>
+  );
+
+  const renderNewPaymentMethodButton = () => (
+    <SharedSecondaryButton onClick={() => setAddPaymentMethod(true)}>New payment method</SharedSecondaryButton>
+  );
 
   if (editPaymentMethod?.id) {
-    return <SharedSecondaryButton onClick={handleEditPaymentMethod}>Edit payment method</SharedSecondaryButton>;
+    return renderEditPaymentButton();
   }
-  if (addPaymentMethod || !!paymentMethod || isRewardTypeSelectable) {
-    return (
-      <>
-        {isRewardTypeSelectable && (
-          <ButtonBase onClick={handleBackClick}>
-            <Box
-              height="40px"
-              width="40px"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              bgcolor="#2A8D5C"
-              borderRadius="35px"
-            >
-              <WestIcon
-                sx={{
-                  color: "white",
-                }}
-              />
-            </Box>
-          </ButtonBase>
-        )}
-        <SharedSecondaryButton onClick={handleReward}>Add Reward</SharedSecondaryButton>
-      </>
-    );
+
+  if (
+    addPaymentMethod ||
+    paymentMethod ||
+    rewardType === PAYMENT_OPTIONS.POAP ||
+    rewardType === PAYMENT_OPTIONS.DISCORD_ROLE ||
+    rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE ||
+    rewardType === PAYMENT_OPTIONS.CMTY_STORE_ITEM
+  ) {
+    return renderAddRewardButtons();
   }
-  return <SharedSecondaryButton onClick={() => setAddPaymentMethod(true)}>New payment method</SharedSecondaryButton>;
+
+  return renderNewPaymentMethodButton();
 };
 
 export const ExistingPaymentMethodSelectComponent = ({ options, initialReward, onRewardsChange, rewards }) => {
