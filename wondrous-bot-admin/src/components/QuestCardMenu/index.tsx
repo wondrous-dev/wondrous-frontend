@@ -33,13 +33,13 @@ const QuestCardMenu = ({ quest, anchorEl, setAnchorEl }) => {
 
   const [deactivateQuest] = useMutation(DEACTIVATE_QUEST, {
     onCompleted: () => {
-      setSnackbarAlertMessage("Quest deactivated successfully");
+      setSnackbarAlertMessage("Quest unpublished successfully");
       setSnackbarAlertOpen(true);
       setAnchorEl(null);
       setConfirmModalData(null);
     },
     onError: (error) => {
-      setSnackbarAlertMessage("Error deactivating quest");
+      setSnackbarAlertMessage("Error unpublishing quest");
       setSnackbarAlertOpen(true);
     },
     refetchQueries: ["getQuestsForOrg", "getOrgQuestStats"],
@@ -47,13 +47,13 @@ const QuestCardMenu = ({ quest, anchorEl, setAnchorEl }) => {
 
   const [activateQuest] = useMutation(ACTIVATE_QUEST, {
     onCompleted: () => {
-      setSnackbarAlertMessage("Quest deactivated successfully");
+      setSnackbarAlertMessage("Quest published successfully");
       setSnackbarAlertOpen(true);
       setAnchorEl(null);
       setConfirmModalData(null);
     },
     onError: (error) => {
-      setSnackbarAlertMessage("Error deactivating quest");
+      setSnackbarAlertMessage("Error publishing quest");
       setSnackbarAlertOpen(true);
     },
     refetchQueries: ["getQuestsForOrg", "getOrgQuestStats"],
