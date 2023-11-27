@@ -46,7 +46,7 @@ const LINKS = [
   },
   {
     path: "/referrals",
-    label: "REFERRALS",
+    label: "Referrals",
     activeBgColor: "#E9FF90",
     partialMatch: true,
   },
