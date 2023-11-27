@@ -74,7 +74,7 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
           label: "Description",
           component: TextField,
           componentProps: {
-            placeholder: "Describe the quest",
+            placeholder: "Describe the referral",
             stateKey: "description",
             multiline: true,
             showMaxLength: true,

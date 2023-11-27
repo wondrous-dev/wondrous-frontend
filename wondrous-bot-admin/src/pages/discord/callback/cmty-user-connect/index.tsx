@@ -13,7 +13,7 @@ const DiscordCallbackCmtyUserConnect = () => {
   const code = searchParams?.get("code");
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const state = searchParams?.get("state");
-  const { questId, orgId, referralCode, referralExternalId } = JSON.parse(state || "{}");
+  const { questId, orgId, referralCode, referralCampaignExternalId } = JSON.parse(state || "{}");
   const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL, {
     variables: {
       orgId,
@@ -27,9 +27,9 @@ const DiscordCallbackCmtyUserConnect = () => {
     let label = typeof message === "string" ? ERRORS_LABELS[message] : null;
 
     if (message === "discord_user_not_in_guild") {
-      if (referralCode && referralExternalId) {
+      if (referralCode && referralCampaignExternalId) {
         return navigate(
-          `/referral?referralCode=${referralCode}&referralExternalId=${referralExternalId}&error=true&message=${message}`
+          `/referral?referralCode=${referralCode}&referralCampaignExternalId=${referralCampaignExternalId}&error=true&message=${message}`
         );
       }
       let guildName = guildInfo?.guildName || "the guild";
@@ -45,8 +45,8 @@ const DiscordCallbackCmtyUserConnect = () => {
     onCompleted: ({ connectCmtyUser }) => {
       if (connectCmtyUser?.token) {
         localStorage.setItem("cmtyUserToken", connectCmtyUser?.token);
-        if (referralCode && referralExternalId) {
-          return navigate(`/referral?referralCode=${referralCode}&referralExternalId=${referralExternalId}`);
+        if (referralCode && referralCampaignExternalId) {
+          return navigate(`/referral?referralCode=${referralCode}&referralCampaignExternalId=${referralCampaignExternalId}`);
         }
         navigate(`/quests/view/${questId}`);
       }
@@ -58,17 +58,16 @@ const DiscordCallbackCmtyUserConnect = () => {
   });
 
   useEffect(() => {
-    console.log("code", code, loading, questId, referralCode);
     if (code && !loading && (questId || referralCode)) {
       connectCmtyUser({
         variables: {
           code,
           questId,
-          referralCampaignExternalId: referralExternalId,
+          referralCampaignExternalId,
         },
       });
     }
-  }, [code, loading, questId, referralExternalId]);
+  }, [code, loading, questId, referralCampaignExternalId]);
   return <PageSpinner />;
 };
 

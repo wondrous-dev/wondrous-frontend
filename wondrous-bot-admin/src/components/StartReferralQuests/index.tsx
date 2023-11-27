@@ -95,12 +95,12 @@ const IndividualQuestComponent = ({ quest, referralCode, referralCampaignExterna
   );
 };
 
-const StartReferralQuests = ({ referralCampaign, referralCode, referralExternalId, paramsError, paramsMessage }) => {
+const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignExternalId, paramsError, paramsMessage, referralCodeInfo }) => {
   const cmtyUserToken = localStorage.getItem("cmtyUserToken");
 
   const params = {
     referralCode,
-    referralExternalId,
+    referralCampaignExternalId,
     orgId: referralCampaign?.orgId,
   };
 
@@ -221,7 +221,7 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralExternalI
           >
             <Box />
             <Typography color="black" fontSize="14px" fontFamily="Poppins" fontWeight={500}>
-              {<strong>{referralCampaign?.creator?.firstName}</strong>} referred you, complete the quests below!
+              {<strong>{referralCodeInfo?.referrerDisplayName}</strong>} referred you, complete the quests below!
             </Typography>
             <ButtonBase onClick={() => setIsReffererView(false)}>
               <CloseIcon />
@@ -251,7 +251,7 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralExternalI
             position="relative"
           >
             <OrgProfilePicture
-              profilePicture={org?.profilePicture}
+              profilePicture={referralCodeInfo?.orgProfilePicture}
               style={{
                 width: "64px",
                 height: "64px",
@@ -261,7 +261,7 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralExternalI
           </Box>
         </Box>
         <Typography fontWeight={600} fontFamily="Poppins" fontSize="22px" color="black">
-          {org?.name}
+          {referralCodeInfo?.orgDisplayName}
         </Typography>
         {org.description ? (
           <Typography fontWeight={500} fontFamily="Poppins" fontSize="17" color="#626262" textAlign="center">
@@ -313,7 +313,7 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralExternalI
                   <IndividualQuestComponent
                     quest={quest}
                     key={index}
-                    referralCampaignExternalId={referralExternalId}
+                    referralCampaignExternalId={referralCampaignExternalId}
                     referralCode={referralCode}
                     resetConnection={resetConnection}
                   />

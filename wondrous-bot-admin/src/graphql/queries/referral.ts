@@ -85,3 +85,18 @@ export const GET_REFERRAL_CAMPAIGN_BY_EXTERNAL_ID = gql`
   ${ReferralCampaignFragment}
   ${QuestFragment}
 `;
+
+export const GET_REFERRAL_CODE_INFO = gql`
+  query getReferralCodeInfo($referralCode: String!) {
+    getReferralCodeInfo(referralCode: $referralCode) {
+      id
+      orgId
+      cmtyUserId
+      referralCampaignId
+      referralCode
+      referrerDisplayName
+      orgDisplayName
+      orgProfilePicture
+    }
+  }
+`;
