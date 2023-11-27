@@ -43,6 +43,7 @@
     "react-avatar-editor": "^13.0.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-chartjs-2": "^5.2.0",
+    "react-confetti": "^6.1.0",
     "react-dates": "^21.8.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",

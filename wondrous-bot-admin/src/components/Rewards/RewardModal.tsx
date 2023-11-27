@@ -43,6 +43,7 @@ const RewardModal = ({
     PAYMENT_OPTIONS.COMMUNITY_BADGE,
     PAYMENT_OPTIONS.CMTY_STORE_ITEM,
   ],
+  title = "Add reward to quest",
 }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { plan, setPaywall, setPaywallMessage } = useSubscriptionPaywall();
@@ -196,7 +197,7 @@ const RewardModal = ({
     <Modal
       open={isRewardModalOpen}
       onClose={handleRewardModalToggle}
-      title="Add reward to quest"
+      title={title}
       modalComponentProps={{
         className: "tour-default-modal",
       }}
@@ -238,7 +239,16 @@ const RewardModal = ({
             }}
           >
             {modalRewardButtonsProps.map((props) =>
-              options.includes(props.paymentOption) ? <RewardMethodOptionButton {...props} /> : null
+              options.includes(props.paymentOption) ? (
+                <RewardMethodOptionButton
+                  {...props}
+                  onClick={() => {
+                    setAddPaymentMethod(false);
+                    setEditPaymentMethod(null);
+                    props.onClick();
+                  }}
+                />
+              ) : null
             )}
           </Grid>
         </Grid>

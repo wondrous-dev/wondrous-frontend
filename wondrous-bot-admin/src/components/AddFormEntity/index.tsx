@@ -12,7 +12,7 @@ import TypeComponent from "./components/TypeComponent";
 import Switch from "components/Shared/Switch";
 import { Label } from "./components/styles";
 import StepAttachments from "components/StepAttachments";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
 import { useSubscriptionPaywall } from "utils/hooks";
@@ -208,7 +208,10 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
               {...provided.droppableProps}
             >
               {steps?.map((item, idx) => {
-                const Component = CONFIG_COMPONENTS[item.type];
+                const isQuiz = item.type === TYPES.MULTI_QUIZ || item.type === TYPES.SINGLE_QUIZ;
+
+                const Component = CONFIG_COMPONENTS[item?.type];
+
                 if (!Component) return null;
                 return (
                   <Box width="100%" height="100%" ref={(ref) => (refs.current[idx + 1] = ref)}>

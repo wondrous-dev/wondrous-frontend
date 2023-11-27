@@ -28,7 +28,7 @@ export const StyledSwitch = styled.div`
   position: relative;
   width: 50px;
   height: 24px;
-  background: ${({ checked }) => (checked ? "#C1B6F6" : "#ABABAB")};
+  background: ${({ checked }) => (checked ? "#32BA77" : "#8E8E93")};
   border-radius: 32px;
   transition: 300ms all;
 
@@ -43,6 +43,21 @@ export const StyledSwitch = styled.div`
     left: 2px;
     background: white;
     transform: ${({ checked }) => (checked ? "translate(26px, -50%)" : "translate(0px, -50%)")};
+  }
+  &:after {
+    content: "";
+    transition: 300ms all;
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    transform: ${({ checked }) => (checked ? "translate(26px, -50%)" : "translate(0px, -50%)")};
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none;
+    background-image: ${({ checked }) => (!checked ? "url(/images/close-icon.svg)" : "")};
   }
 `;
 
@@ -78,7 +93,7 @@ export const ButtonIconWrapper = styled(ButtonBase)`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #c6bbfc;
+    background: ${({bgcolor = "#c6bbfc"}) => bgcolor};
     gap: 6px;
     border-radius: 6px;
 
@@ -96,7 +111,7 @@ export const StyledTextFieldSelect = styled(TextField)`
     height: 40px;
     max-width: 100%;
     width: 100%;
-    min-width: ${({minWidth}) => minWidth};
+    min-width: ${({ minWidth }) => minWidth};
     display: flex;
     justify-content: center;
     background: ${({ background }) => background || "#e8e8e8"};
@@ -193,7 +208,7 @@ export const RoundedSecondaryButton = styled(SharedSecondaryButton)`
 
 export const ErrorText = styled(Typography)`
   && {
-    color: #CE414D;
+    color: #ce414d;
     font-size: 13px;
     margin-top: 5px;
     font-weight: 500;

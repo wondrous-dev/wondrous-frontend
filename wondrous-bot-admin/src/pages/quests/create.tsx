@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import QuestTemplateModal from "components/CreateTemplate/QuestTemplateModal";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "components/CreateTemplate/shared";
 import PageHeader from "components/PageHeader";
@@ -6,10 +7,13 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import CreateQuestContext from "utils/context/CreateQuestContext";
+import Confetti from "react-confetti";
+import useWindowSize from "utils/useWindowSize";
 
 const CreateTemplate = React.lazy(() => import("components/CreateTemplate"));
 
 const CreatePage = () => {
+
   const headerActionsRef = useRef(null);
   const [errors, setErrors] = useState({});
   const { ref, inView, entry } = useInView({
@@ -32,7 +36,7 @@ const CreatePage = () => {
           setErrors,
         }}
       >
-        <div ref={ref}>
+        <Box ref={ref}>
           <PageHeader
             withBackButton
             title="Create Quest"
@@ -42,14 +46,13 @@ const CreatePage = () => {
               </SharedSecondaryButton>
             )}
           />
-        </div>
+        </Box>
         {entry && !questTemplate.open && (
           <Suspense>
             <CreateTemplate
               defaultSteps={questTemplate.steps}
               defaultQuestSettings={questTemplate.questSettings}
               setRefValue={setRefValue}
-              displaySavePanel={!inView}
             />
           </Suspense>
         )}

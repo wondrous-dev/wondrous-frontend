@@ -15,7 +15,7 @@ const ExpandIcon = () => {
     <ChevronButton>
       <KeyboardArrowDownIcon
         sx={{
-          color: '#FFEBDA',
+          color: 'black',
         }}
       />
     </ChevronButton>

@@ -1,20 +1,22 @@
 import { Box, Button, ButtonBase, ClickAwayListener, Divider, Grid, Popper } from "@mui/material";
 import { Label } from "components/CreateTemplate/styles";
-import SettingsIcon from "components/Icons/SettingsIcon";
+import SettingsIcon, { OutlinedSettingsIcon } from "components/Icons/SettingsIcon";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import { forwardRef, ForwardRefRenderFunction, useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import GlobalContext from "utils/context/GlobalContext";
-import { WorkspaceWrapper } from "./styles";
+import { WorkspaceContainer, WorkspaceImageWrapper, WorkspaceWrapper } from "./styles";
 import { TutorialButton, TutorialLink } from "components/Navbar/styles";
 import AddImage from "components/Icons/Add.svg";
+import { WorkspaceDAOIcon } from "components/Icons/DAOIcon";
 
-interface WrenchButtonProps {
+interface GearIconProps {
   onClick?: () => void;
+  Icon?: () => JSX.Element;
 }
 
-const WrenchButton = forwardRef<HTMLButtonElement, WrenchButtonProps>(({ onClick = (e) => {} }, ref) => (
+const GearButton = forwardRef<HTMLButtonElement, GearIconProps>(({ onClick = (e) => {}, Icon = SettingsIcon }, ref) => (
   <ButtonBase
     ref={ref}
     onClick={onClick}
@@ -22,15 +24,15 @@ const WrenchButton = forwardRef<HTMLButtonElement, WrenchButtonProps>(({ onClick
     sx={{
       borderRadius: "140px",
       backgroundColor: "#BAACFA",
-      width: "36px",
-      height: "36px",
+      width: "30px",
+      height: "30px",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       gap: "10px",
     }}
   >
-    <SettingsIcon />
+    <Icon />
   </ButtonBase>
 ));
 
@@ -69,11 +71,11 @@ const WorkspaceSwitch = () => {
           md: "unset",
         }}
       >
-        <Box alignItems={"center"} display="flex">
+        <Box alignItems={"center"} display="flex" gap="10px">
           <TutorialLink href="https://wonderverse.gitbook.io/wonder-communities/" target="_blank">
             <TutorialButton>?</TutorialButton>
           </TutorialLink>
-          <WrenchButton ref={ref} onClick={togglePopper} />
+          <GearButton ref={ref} onClick={togglePopper} />
         </Box>
         <Popper
           open={isOpen}
@@ -83,37 +85,49 @@ const WorkspaceSwitch = () => {
             zIndex: 1000,
           }}
         >
-          <Grid
+          <WorkspaceContainer
             bgcolor="white"
             border="1px solid #000000"
             boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
-            borderRadius="6px"
+            borderRadius="12px"
             container
-            width="300px"
             direction={"column"}
-            gap="10px"
+            gap="8px"
+            maxHeight="300px"
+            flexWrap="nowrap"
+            overflow="auto"
             padding="14px"
           >
-            <Label>Workspaces</Label>
+            <Label color="#4D4D4D" fontWeight="600" fontSize="13px">
+              Workspaces
+            </Label>
             {userOrgs?.map((org, idx) => {
               const isActive = org.id === activeOrg?.id;
               return (
                 <WorkspaceWrapper onClick={() => onOrgClick(org)} key={org.id}>
                   <Box display="flex" gap="10px" alignItems="center">
-                    <OrgProfilePicture
-                      profilePicture={org?.profilePicture}
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "10px",
-                      }}
-                    />
-                    <Label color="#1D1D1D">{org.name}</Label>
+                    <WorkspaceImageWrapper>
+                    {org?.profilePicture ? (
+                      <OrgProfilePicture
+                        profilePicture={org?.profilePicture}
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          borderRadius: "6px",
+                        }}
+                      />
+                    ) : (
+                      <WorkspaceDAOIcon />
+                    )}
+                    </WorkspaceImageWrapper>
+                    <Label fontWeight={500} fontSize="15px" color="#1D1D1D">
+                      {org.name}
+                    </Label>
                   </Box>
                   {isActive && (
                     <CheckCircleOutlineOutlinedIcon
                       sx={{
-                        color: "#F8AFDB",
+                        color: "#2A8D5C",
                       }}
                     />
                   )}
@@ -124,12 +138,14 @@ const WorkspaceSwitch = () => {
               <Box display="flex" gap="10px" alignItems="center">
                 <img
                   style={{
-                    width: "36px",
-                    height: "36px",
+                    width: "30px",
+                    height: "30px",
                   }}
                   src={AddImage}
                 />
-                <Label color="#1D1D1D">Add new</Label>
+                <Label color="#1D1D1D" fontWeight={500} fontSize="15px">
+                  Add new
+                </Label>
               </Box>
             </WorkspaceWrapper>
             <Divider />
@@ -144,13 +160,20 @@ const WorkspaceSwitch = () => {
                 alignItems: "center",
                 gap: "10px",
                 justifyContent: "flex-start",
-                padding: "10px 4px",
+                marginTop: "4px",
+                padding: "3px",
+                borderRadius: "30px",
+                "&:hover": {
+                  background: "#e3e3e3",
+                },
               }}
             >
-              <WrenchButton />
-              <Label color="#1D1D1D">Settings</Label>
+              <GearButton Icon={OutlinedSettingsIcon} />
+              <Label color="#1D1D1D" fontWeight={500} fontSize="15px">
+                Settings
+              </Label>
             </ButtonBase>
-          </Grid>
+          </WorkspaceContainer>
         </Popper>
       </Box>
     </ClickAwayListener>

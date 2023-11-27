@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { BoxWrapper } from "components/QuestCardMenu/styles";
 import styled from "styled-components";
 
@@ -22,6 +22,24 @@ export const CardHoverWrapper = styled(Grid)`
     border-radius: 16px;
   }
 `;
+
+/* 
+HOVER ANIMATION - for future usecases
+    ${({ disableHover }) =>
+    disableHover
+        ? ""
+        : `&:hover {
+      transform: translateY(-20px);
+      background: #fee2ca;
+      ${BoxWrapper} {
+        display: flex;
+      }
+    }`}
+
+*/
+
+export const CompletionsCountBox = styled(Box)``;
+
 export const CardWrapper = styled(Grid)`
   && {
     background: white;
@@ -36,16 +54,19 @@ export const CardWrapper = styled(Grid)`
     padding: 14px;
     flex-direction: column;
     gap: 14px;
-    transition: all 0.2s ease-in-out;
-    ${({ disableHover }) =>
-    disableHover
-        ? ""
-        : `&:hover {
-      transform: translateY(-20px);
+    transition: all 0.1s ease-in-out;
+    border: 1px solid transparent;
+
+    &:hover {
       background: #fee2ca;
+      border-color: #000000;
       ${BoxWrapper} {
         display: flex;
       }
-    }`}
+      ${CompletionsCountBox} {
+        border: 1px solid transparent;
+      }
+    }
   }
 `;
+

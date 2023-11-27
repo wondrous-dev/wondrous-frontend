@@ -67,17 +67,17 @@ const CampaignOverviewSections = ({
           <Grid
             container
             item
-            bgcolor="#2A8D5C"
             width="30px"
             height="30px"
             alignItems="center"
             justifyContent="center"
             borderRadius="6px"
+            border="1px solid #828282"
             sx={{
               transform: show && "rotate(180deg)",
             }}
           >
-            <ArrowDropDownIcon fill="#fff" />
+            <ArrowDropDownIcon fill="black" />
           </Grid>
         </Grid>
       )}

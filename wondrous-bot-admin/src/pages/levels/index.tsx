@@ -1,9 +1,12 @@
 import { useMutation, useQuery } from "@apollo/client";
+import { Box } from "@mui/material";
 import LevelsReward from "components/LevelsReward";
 import PageHeader from "components/PageHeader";
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import PageWrapper from "components/Shared/PageWrapper";
+import { StyledInformationTooltip } from "components/Shared/Tooltip";
 import TableComponent from "components/TableComponent";
+import { StyledTableHeader, StyledTableHeaderCell } from "components/TableComponent/styles";
 import { UPDATE_QUEST_LABEL } from "graphql/mutations";
 import { GET_ORG_LEVEL_REWARDS } from "graphql/queries";
 import { useContext, useMemo, useState } from "react";
@@ -14,6 +17,7 @@ import { useDiscordRoles } from "utils/discord";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { LEVELS_XP } from "utils/levels";
 import useLevels from "utils/levels/hooks";
+import InformationTooltip from "components/Icons/information.svg";
 
 const LevelsPage = () => {
   const { activeOrg } = useContext(GlobalContext);
@@ -30,18 +34,15 @@ const LevelsPage = () => {
       orgId: activeOrg?.id,
     },
     onCompleted: ({ getOrgLevelsRewards }) => {
-      if (getOrgLevelsRewards?.length === 0) return
       const formattedRewards = {};
       for (const reward of getOrgLevelsRewards) {
         if (reward.level in formattedRewards) {
           formattedRewards[reward.level].push(reward);
-        }
-        else {
+        } else {
           formattedRewards[reward.level] = [reward];
         }
       }
       setRewards(formattedRewards);
-      
     },
     skip: !activeOrg?.id,
   });
@@ -95,14 +96,58 @@ const LevelsPage = () => {
           component: "custom",
           value: rewards[key] || {},
           customComponent: ({ value }) => (
-            <LevelsReward refetchLevelRewards={refetchLevelRewards} rewards={value} discordRoles={discordRoles} level={key} />
+            <LevelsReward
+              refetchLevelRewards={refetchLevelRewards}
+              rewards={value}
+              discordRoles={discordRoles}
+              level={key}
+            />
           ),
         },
       };
     });
   }, [levels, rewards, discordRoles]);
 
-  const headers = ["Level", "Point Requirement", "Reward"];
+
+  const headers = [
+    {
+      title: "Level",
+      key: "level",
+      justify: "flex-start",
+    },
+    {
+      title: "Point Requirement",
+      key: "xp",
+      info: true,
+      infoText: "Points required to reach this level. Points are earned by completing quests.",
+    },
+    {
+      title: "Reward",
+      key: "reward",
+    },
+  ];
+  const headerComponent = () => {
+    return (
+      <StyledTableHeader>
+        {headers?.map((header) => (
+          <StyledTableHeaderCell key={header?.key}>
+            <Box display="flex" alignItems={"center"} justifyContent={header?.justify || "center"}>
+              {header?.title}
+              {header?.infoText ? (
+                <StyledInformationTooltip placement="right" title={header?.infoText}>
+                  <img
+                    src={InformationTooltip}
+                    alt="information"
+                    style={{ width: "16px", height: "16px", marginLeft: "8px" }}
+                  />
+                </StyledInformationTooltip>
+              ) : null}
+            </Box>
+          </StyledTableHeaderCell>
+        ))}
+      </StyledTableHeader>
+    );
+  };
   return (
     <>
       <PageHeader title="Levels" withBackButton={false} />
@@ -118,7 +163,7 @@ const LevelsPage = () => {
           },
         }}
       >
-        <TableComponent data={data} headers={headers} title="Levels" />
+        <TableComponent data={data} headerComponent={headerComponent} title="Levels" />
       </PageWrapper>
     </>
   );

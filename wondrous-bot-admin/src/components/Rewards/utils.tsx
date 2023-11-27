@@ -174,7 +174,7 @@ export const handleAddCmtyStoreItem = ({ setErrors, type, storeItem, handleToggl
   });
   handleToggle();
 };
-export const useTokenRewardData = () => {
+export const useTokenRewardData = ({setAddPaymentMethod, shouldFetch = true}) => {
   const { activeOrg } = useContext(GlobalContext);
 
   const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD, {
@@ -182,7 +182,16 @@ export const useTokenRewardData = () => {
   });
 
   const [getCmtyPaymentMethods, { data: getCmtyPaymentMethodsData }] = useLazyQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
+    onCompleted: (data) => {
+      if(!data?.getCmtyPaymentMethodsForOrg?.length) {
+        setAddPaymentMethod(true);
+      }
+    },
+    onError:(err) => {
+      console.log(err,'err')
+    },
     fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const paymentMethods = getCmtyPaymentMethodsData?.getCmtyPaymentMethodsForOrg || [];
@@ -192,7 +201,7 @@ export const useTokenRewardData = () => {
   }));
 
   useEffect(() => {
-    if (activeOrg?.id) {
+    if (activeOrg?.id && shouldFetch) {
       getCmtyPaymentMethods({
         variables: {
           orgId: activeOrg?.id,
@@ -200,7 +209,7 @@ export const useTokenRewardData = () => {
         },
       });
     }
-  }, [activeOrg?.id]);
+  }, [activeOrg?.id, shouldFetch]);
 
   return {
     paymentMethodOptions,
@@ -231,10 +240,9 @@ export const useDiscordRoleRewardData = () => {
     getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles?.length > 0
       ? getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles[0]?.roles
       : [];
-  const discordRoleOptions = discordRoles?.map((role) => ({
-    label: role.name,
-    value: role.id,
-  }));
+  const discordRoleOptions = discordRoles?.map((role) => ({ label: role.name,
+        value: role.id,
+      })).sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
 
   return {
     discordRoleOptions,
@@ -243,7 +251,6 @@ export const useDiscordRoleRewardData = () => {
 };
 
 export const useAddRewardModalState = () => {
-  const tokenRewardData = useTokenRewardData();
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const { isOpen: isTourOpen, setCurrentStep, currentStep, setSteps, steps } = useTour();
   useEffect(() => {
@@ -308,8 +315,43 @@ export const useAddRewardModalState = () => {
     chain: null,
     amount: null,
   });
-  const [addPaymentMethod, setAddPaymentMethod] = useState(!tokenRewardData?.paymentMethods.length);
+  const [addPaymentMethod, setAddPaymentMethod] = useState(false);
   const [poapReward, setPoapReward] = useState(null);
+
+  const tokenRewardData = useTokenRewardData({
+    setAddPaymentMethod,
+    shouldFetch: isRewardModalOpen && rewardType === PAYMENT_OPTIONS.TOKEN,
+  });
+
+  const resetStates = () => {
+
+    //TODO : refactor this asap
+    setIsRewardModalOpen(false);
+    setDiscordRoleReward(null);
+    setPaymentMethod(null);
+    setTokenReward({
+      tokenName: null,
+      contractAddress: null,
+      symbol: null,
+      icon: null,
+      type: "erc20",
+      chain: null,
+      amount: 1,
+    });
+    setEditPaymentMethod({
+      id: null,
+      tokenName: null,
+      contractAddress: null,
+      symbol: null,
+      icon: null,
+      type: null,
+      chain: null,
+      amount: null,
+    });
+    setAddPaymentMethod(!tokenRewardData?.paymentMethods.length);
+    setPoapReward(null);
+  };
+
   return {
     isRewardModalOpen,
     setIsRewardModalOpen,
@@ -332,6 +374,7 @@ export const useAddRewardModalState = () => {
     currentStep,
     cmtyStoreItemReward,
     setCmtyStoreItemReward,
+    resetStates,
     ...tokenRewardData,
   };
 };

@@ -25,10 +25,10 @@ const QuestRewardComponent = ({
   hasReferralStep: boolean;
 }) => {
   const rewardModalState = useAddRewardModalState();
-  const { setIsRewardModalOpen, isTourOpen, setCurrentStep } = rewardModalState;
+  const { setIsRewardModalOpen, isTourOpen, setCurrentStep, resetStates } = rewardModalState;
 
   const handleToggleModal = () => {
-    setIsRewardModalOpen((prev) => !prev);
+    resetStates()
     if (isTourOpen) {
       setCurrentStep((prev) => prev + 1);
     }

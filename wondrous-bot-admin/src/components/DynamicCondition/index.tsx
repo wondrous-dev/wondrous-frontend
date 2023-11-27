@@ -189,7 +189,7 @@ const DynamicCondition = ({ value, handleUpdate, options, stateKey, conditionLog
           value: role.id,
           label: role.name,
           discordGuildId: role.discordGuildId,
-        }));
+        })).sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);;
       }
 
       if (type === CONDITION_TYPES.QUEST) {

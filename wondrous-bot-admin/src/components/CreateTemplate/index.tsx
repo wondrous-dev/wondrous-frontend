@@ -6,11 +6,17 @@ import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
-import { BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
+import { BG_TYPES, QUEST_STATUSES, TUTORIALS, TYPES } from "utils/constants";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
-import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, REMOVE_QUEST_STEP_MEDIA, UPDATE_QUEST } from "graphql/mutations";
+import {
+  ATTACH_QUEST_STEPS_MEDIA,
+  CREATE_QUEST,
+  REMOVE_QUEST_STEP_MEDIA,
+  SET_USER_COMPLETED_GUIDE,
+  UPDATE_QUEST,
+} from "graphql/mutations";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
 import { questValidator } from "services/validators";
@@ -23,10 +29,12 @@ import { useTour } from "@reactour/tour";
 import ErrorField from "components/Shared/ErrorField";
 import QuestRewardComponent from "components/Rewards/QuestRewardComponent";
 import { constructRequestBody, handleSaveError, processSave } from "./helpers";
+import { useMe } from "components/Auth";
+import { GET_LOGGED_IN_USER } from "graphql/queries";
+import QuestCelebrationComponent from "./QuestCelebration";
 
 const CreateTemplate = ({
   setRefValue,
-  displaySavePanel,
   defaultQuestSettings = DEFAULT_QUEST_SETTINGS_STATE_VALUE,
   questId = null,
   postUpdate = null,
@@ -55,6 +63,15 @@ const CreateTemplate = ({
 
   const { isOpen, setCurrentStep, setSteps: setTourSteps, steps: tourSteps } = useTour();
 
+  const { user } = useMe() || {};
+  const completedQuestGuides = user?.completedQuestGuides;
+
+  const [firstCreatedQuest, setFirstCreatedQuest] = useState(null);
+
+  const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
+    refetchQueries: [{query: GET_LOGGED_IN_USER}],
+  });
+
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -76,6 +93,15 @@ const CreateTemplate = ({
   const [createQuest] = useMutation(CREATE_QUEST, {
     onCompleted: async ({ createQuest }) => {
       handleUpdateQuestStepsMedia(createQuest.id, createQuest?.steps, steps);
+
+      if (!completedQuestGuides?.includes(TUTORIALS.FIRST_CREATED_QUEST)) {
+        setFirstCreatedQuest(createQuest.id);
+        return setUserCompletedGuide({
+          variables: {
+            guideId: TUTORIALS.FIRST_CREATED_QUEST,
+          },
+        });
+      }
       navigate(`/quests/${createQuest.id}`);
     },
     refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
@@ -223,8 +249,14 @@ const CreateTemplate = ({
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
 
   const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
+
+  const handleCelebrationClose = () => {
+    setFirstCreatedQuest(null);
+    navigate(`/quests/${firstCreatedQuest}`);
+  };
   return (
     <>
+      {firstCreatedQuest ? <QuestCelebrationComponent onClose={handleCelebrationClose} /> : null}
       <Modal
         open={isSaving}
         onClose={() => setIsSaving(false)}
@@ -330,23 +362,6 @@ const CreateTemplate = ({
                 {errors?.steps && typeof errors?.steps === "string" ? <ErrorField errorText={errors?.steps} /> : null}
               </Panel>
             )}
-
-            {displaySavePanel ? (
-              <Grid
-                position="fixed"
-                bgcolor="#FFEBDA"
-                width="70%"
-                bottom="5%"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                padding="14px"
-                borderRadius="16px"
-                border="1px solid #000212"
-              >
-                <SharedSecondaryButton onClick={() => handleSave()}>Save Quest</SharedSecondaryButton>
-              </Grid>
-            ) : null}
           </Grid>
         </Grid>
       </PageWrapper>

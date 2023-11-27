@@ -32,7 +32,7 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
   const rewardModalState = useAddRewardModalState();
 
   const { activeOrg } = useContext(GlobalContext);
-  const { setIsRewardModalOpen } = rewardModalState;
+  const { setIsRewardModalOpen, resetStates } = rewardModalState;
 
   const [removeOrgLevelReward] = useMutation(REMOVE_ORG_LEVEL_REWARD, {
     refetchQueries: ["getOrgLevelsRewards"],
@@ -84,7 +84,8 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
   return (
     <>
       <RewardModal
-        handleRewardModalToggle={() => setIsRewardModalOpen(false)}
+        title={`Add Reward for Level ${level}`}
+        handleRewardModalToggle={resetStates}
         handleOnRewardAdd={onRewardAdd}
         maxModalWidth={800}
         rewardModalState={rewardModalState}
