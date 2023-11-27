@@ -58,7 +58,7 @@ export const ModalTitle = styled(Typography)`
 export const ModalHeader = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({justifyContent = "space-between"}) => justifyContent};
   padding: 12px;
   background: ${({ bgColor = "#2a8d5c" }) => bgColor};
   border-bottom: 1px solid black;

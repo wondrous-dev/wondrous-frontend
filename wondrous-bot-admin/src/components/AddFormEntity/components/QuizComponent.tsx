@@ -1,7 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Grid, Typography } from "@mui/material";
-import RewardModal, { useAddRewardModalState } from "components/CreateTemplate/RewardModal";
+import RewardModal from "components/Rewards/RewardModal";
 import SelectComponent from "components/Shared/Select";
 import Switch from "components/Shared/Switch";
 import ToggleComponent from "components/Shared/Toggle";
@@ -12,6 +12,7 @@ import TextField, { ResizeTextField } from "../../Shared/TextField";
 import OptionRewards from "./OptionRewards";
 import { IndexContainer, Label } from "./styles";
 import ErrorField from "components/Shared/ErrorField";
+import { useAddRewardModalState } from "components/Rewards/utils";
 
 const CORRECT_ANSWERS_TYPES = {
   CORRECT: "correct",
@@ -31,7 +32,7 @@ const CORRECT_ANSWERS_OPTIONS = [
 const QuizComponent = ({ onChange, value, stepType, error }) => {
   const [rewardOptionId, setRewardOptionId] = useState(null);
   const rewardModalState = useAddRewardModalState();
-  const { setIsRewardModalOpen } = rewardModalState;
+  const { setIsRewardModalOpen, resetStates } = rewardModalState;
 
   const OPTIONS = [
     {
@@ -82,7 +83,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
 
   const handleRewardModalClose = () => {
     setRewardOptionId(null);
-    setIsRewardModalOpen(false);
+    resetStates();
   };
 
   const onRewardsChange = (reward) => {

@@ -17,6 +17,7 @@ const useLevels = ({ orgId, shouldFetch = true }: IUseLevels) => {
       orgId,
     },
   });
+  
   const normalzdValues = useMemo(() => {
     const levels = { ...LEVELS_DEFAULT_NAMES };
 

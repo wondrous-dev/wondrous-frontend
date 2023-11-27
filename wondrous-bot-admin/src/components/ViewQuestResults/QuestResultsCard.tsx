@@ -12,6 +12,7 @@ import { APPROVE_SUBMISSION, REJECT_SUBMISSION } from "graphql/mutations";
 import useAlerts from "utils/hooks";
 import { StyledCheckbox } from "components/PaymentLedger/styles";
 import { CommonTypography, TextWrapper } from "components/MembersAnalytics/styles";
+import { PointsIcon } from "components/Icons/Rewards";
 
 /*
 
@@ -100,13 +101,13 @@ export const StatusComponent = ({ approvedAt, rejectedAt, handleApprove = null, 
   if (rejectedAt) {
     return (
       <Box width="fit-content">
-      <TextWrapper border="1px solid #ee4852" bgcolor="rgba(238, 72, 82, 0.2)">
-        <CommonTypography>Rejected</CommonTypography>
-      </TextWrapper>
-    </Box>
+        <TextWrapper border="1px solid #ee4852" bgcolor="rgba(238, 72, 82, 0.2)">
+          <CommonTypography>Rejected</CommonTypography>
+        </TextWrapper>
+      </Box>
     );
   }
-  if(!handleApprove || !handleReject) return null;
+  if (!handleApprove || !handleReject) return null;
   return (
     <Box display="flex" gap="6px">
       <SharedSecondaryButton borderRadius="6px" $reverse color="#ff0000" onClick={handleReject}>
@@ -172,10 +173,20 @@ const QuestResultsCard = ({ submission }) => {
           </StyledViewQuestResults>
         ))} */}
         <Grid display="flex" justifyContent="space-between">
-          <StyledViewQuestResults $isReward>
-            Points: {submission?.pointReward}
-            {/* {reward.value} {reward.type} */}
-          </StyledViewQuestResults>
+          <Box
+            display="flex"
+            gap="6px"
+            border="1px solid #AF9EFF"
+            alignItems="center"
+            justifyContent="center"
+            padding="4px"
+            borderRadius="6px"
+          >
+            <PointsIcon />
+            <Typography fontWeight={500} fontFamily="Poppins" fontSize="14px" lineHeight="14px" color="black">
+              {submission?.pointReward} Points
+            </Typography>
+          </Box>
           <StatusComponent
             handleApprove={handleApprove}
             handleReject={handleReject}

@@ -105,3 +105,11 @@ export const LINK_TRANSACTION_TO_COMMUNITY_NFT = gql`
     }
   }
 `;
+
+export const DEACTIVATE_CMTY_PAYMENT = gql`
+  mutation deactivateCmtyPaymentMethod($paymentMethodId: ID!) {
+    deactivateCmtyPaymentMethod(paymentMethodId: $paymentMethodId) {
+      id
+    }
+  }
+`;

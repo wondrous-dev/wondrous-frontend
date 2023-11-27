@@ -59,7 +59,7 @@ const Modal = ({
         <ModalDialog maxWidth={maxWidth} {...dialogComponentProps}>
           <ModalContent>
             {!noHeader && (
-              <ModalHeader>
+              <ModalHeader justifyContent={title ? "space-between" : "flex-end"}>
                 {!!title && <ModalTitle>{title}</ModalTitle>}
                 {onClose && <CloseModalBtn onClick={onClose} />}
               </ModalHeader>

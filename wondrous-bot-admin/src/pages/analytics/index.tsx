@@ -1,8 +1,9 @@
 import { usePaywall, useSubscription } from "utils/hooks";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 
 import AnalyticsComponent from "components/Analytics";
 import MockCharts from "components/Analytics/MockCharts";
+import { getPlan } from "utils/common";
 
 const AnalyticsPage = () => {
   const subscription = useSubscription();

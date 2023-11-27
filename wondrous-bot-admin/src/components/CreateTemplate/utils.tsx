@@ -1,4 +1,4 @@
-import { PAYMENT_OPTIONS } from "./RewardUtils";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
 export const DEFAULT_QUEST_SETTINGS_STATE_VALUE = {
   level: "1",
@@ -64,7 +64,7 @@ export const mapAnswerToConditionalRewards = (answer: any) => {
           return {
             type: reward?.type,
             storeItemId: reward?.storeItem?.id,
-          }
+          };
         default:
           return null;
       }

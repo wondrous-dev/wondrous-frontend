@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useSchema } from "./validator";
 import GlobalContext from "utils/context/GlobalContext";
 import MetaPixel from "components/MetaPixel";
+import GoogleTag from "components/GoogleTag";
 
 const OnboardingComponent = () => {
   const { setActiveOrg } = useContext(GlobalContext);
@@ -136,6 +137,7 @@ const OnboardingComponent = () => {
   return (
     <AuthLayout>
       <MetaPixel />
+      <GoogleTag />
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" padding="80px">
           <CircularProgress

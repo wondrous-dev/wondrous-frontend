@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import AppBar from "@mui/material/AppBar";
 import { HEADER_HEIGHT } from "utils/constants";
-import { ButtonBase } from "@mui/material";
+import { ButtonBase, Grid, Typography } from "@mui/material";
 
 export const HeaderBar = styled(AppBar)`
   && {
@@ -29,20 +29,19 @@ export const HeaderBar = styled(AppBar)`
 
 export const MenuIconWrapper = styled(ButtonBase)`
   && {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: white;
+    background: ${({ $isOpen }) => ($isOpen ? "white" : "#AF9EFF")};
     border-radius: 12px;
   }
 `;
 
 export const LinkButton = styled(ButtonBase)`
   && {
-    border: 2px solid #ffffff;
     width: 100%;
     background: ${({ bgColor }) => bgColor || "white"};
     border-radius: 12px;
@@ -64,11 +63,9 @@ export const LinkButton = styled(ButtonBase)`
 `;
 
 export const TutorialButton = styled.div`
-  width: 34.5px;
-  height: 34.5px;
+  width: 27px;
+  height: 27px;
   border-radius: 50%;
-  // margin-right: 16px;
-  // margin-left: -40px;
   border: 1.5px solid #baacfa;
   color: #baacfa;
   display: flex;
@@ -105,6 +102,33 @@ export const ImageContainer = styled.div`
       opacity: 1;
       height: 100%;
       width: 100%;
+    }
+  }
+`;
+
+
+export const NavbarLinkText = styled(Typography)`
+  && {
+    font-family: Poppins;
+    font-weight: 600;
+    font-size: 14px;
+    padding-bottom: 2px;
+    line-height: 16px;
+    border-bottom: ${({ borderBottomColor = "transparent" }) => `2px solid ${borderBottomColor}`};
+    color: ${({ color = "#e8e8e8" }) => color};
+  }
+`;
+
+export const NavbarLinkWrapper = styled(Grid)`
+  && {
+    cursor: pointer;
+    padding: 6px 8px;
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      ${NavbarLinkText} {
+        border-color: ${({ color = "transparent" }) => color}; 
+      }
     }
   }
 `;

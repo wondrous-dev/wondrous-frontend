@@ -1,16 +1,10 @@
 import CreateStoreItem from "components/CreateStoreItem";
 import StoreModule from "components/ModulesActivation/StoreModule";
 import PageHeader from "components/PageHeader";
-import { PricingOptionsTitle, getPlan } from "components/Pricing/PricingOptionsListItem";
-import QuestTitle from "components/QuestTitle";
-import TextField from "components/Shared/TextField";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { useContext, useEffect, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateQuestContext from "utils/context/CreateQuestContext";
-import GlobalContext from "utils/context/GlobalContext";
-import useAlerts, { usePaywall, useSubscription } from "utils/hooks";
 import { useStorePaywall } from "utils/storeUtils";
 
 const CreateStoreItemPage = () => {

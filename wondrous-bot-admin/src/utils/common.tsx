@@ -1,7 +1,8 @@
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import moment from "moment";
 import { CONDITION_TYPES, NFT_TYPES } from "./constants";
 import { CHAIN_TO_EXPLORER_URL } from "./web3Constants";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 
 const DEFAULT_TWITTER_SCOPE =
   "users.read%20tweet.read%20follows.read%20follows.write%20like.read%20like.write%20offline.access";
@@ -231,3 +232,10 @@ export const validateTypes = (type, value) => {
 };
 
 export const verifyIsImportedToken = (type) => [NFT_TYPES.ERC721, NFT_TYPES.ERC1155].includes(type);
+
+export const getPlan = (plan) => {
+  if (!plan) return PricingOptionsTitle.Basic;
+  if (plan === "hobby" || plan === "hobby_annual") return PricingOptionsTitle.Hobby;
+  if (plan === "premium" || plan === "premium_annual") return PricingOptionsTitle.Premium;
+  if (plan === "ecosystem" || plan === "ecoosystem_annual") return PricingOptionsTitle.Ecosystem;
+};

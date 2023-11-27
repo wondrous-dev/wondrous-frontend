@@ -1,9 +1,9 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Grid } from "@mui/material";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import { PoapImage } from "components/CreateTemplate/styles";
 import DeleteIcon from "components/Icons/Delete";
 import { DiscordRoleIcon, NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import { TextLabel } from "components/ViewQuest/styles";
 
