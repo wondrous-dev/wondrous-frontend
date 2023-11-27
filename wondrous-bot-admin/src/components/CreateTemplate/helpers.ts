@@ -125,7 +125,7 @@ export const processSave = async ({
   setSnackbarAlertAutoHideDuration,
 }) => {
   if (!isActive && !isSaving) {
-    setIsSaving(true);
+    return setIsSaving(true);
   }
 
   handleMutation({ body });
