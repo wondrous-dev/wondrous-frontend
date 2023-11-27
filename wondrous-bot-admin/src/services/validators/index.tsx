@@ -3,6 +3,8 @@ import * as Yup from "yup";
 import { getYouTubeVideoId, validateChannelUrl } from "services/validators/customValidation";
 export const ValidationError = Yup.ValidationError;
 
+const twitterHandleRegex = /^[A-Za-z0-9_]{1,15}$/;
+
 const ALL_TYPES = [
   TYPES.TEXT_FIELD,
   TYPES.MULTI_QUIZ,
@@ -96,7 +98,14 @@ const stepTypes = {
   [TYPES.FOLLOW_TWITTER]: Yup.object().shape({
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
-      tweetHandle: Yup.string().required("Tweet handle is required"),
+      tweetHandle: Yup.string()
+      .matches(twitterHandleRegex, 'Invalid Twitter handle')
+      .required("Tweet handle is required")
+      .test(
+        'is-not-url', 
+        'Tweet handle must not be a URL', 
+        value => !/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-]*)*\/?$/.test(value)
+      )
     }),
   }),
   [TYPES.TWEET_WITH_PHRASE]: Yup.object().shape({
