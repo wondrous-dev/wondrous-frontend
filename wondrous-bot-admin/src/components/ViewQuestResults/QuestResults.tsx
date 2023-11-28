@@ -15,9 +15,9 @@ import { useNavigate } from "react-router-dom";
 import TableComponent from "components/TableComponent";
 import { getBaseUrl } from "utils/common";
 import { exportQuestSubmissionsToCsv } from "utils/exports";
+import Spinner from "components/Shared/Spinner";
 
-
-const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fetchMore, hasMore, quest }) => {
+const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fetchMore, hasMore, quest, loading }) => {
   const { ref, inView, entry } = useInView();
   const [exportQuestSubmissionData] = useLazyQuery(EXPORT_QUEST_SUBMISSIONS);
   const { activeOrg } = useContext(GlobalContext);
@@ -111,7 +111,12 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
           </Typography>
           <Grid display="flex" gap="14px" alignItems="center" width="100%">
             {Object.keys(filters).map((key, idx) => (
-              <FilterPill type="button" key={key} $isActive={key === filter} onClick={() => handleFilterChange(key)}>
+              <FilterPill
+                type="button"
+                key={key}
+                $isActive={key === filter}
+                onClick={() => handleFilterChange(filter, key)}
+              >
                 {filters[key].value} {filters[key].label}
               </FilterPill>
             ))}
@@ -150,14 +155,22 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
               </FilterPill>
             )}
           </Grid>
-          <Box ref={ref} width="100%" gap="14px" display="flex" alignItems="center" flexDirection="column">
+          <Box width="100%" gap="14px" display="flex" alignItems="center" flexDirection="column">
             {submissions?.length ? (
               submissions?.map((submission, idx) => <QuestResultsCard submission={submission} key={idx} />)
-            ) : (
-              <EmptyState 
-              type={EMPTY_STATE_TYPES.SUBMISSIONS} />
+            ) : loading ? null : (
+              <EmptyState type={EMPTY_STATE_TYPES.SUBMISSIONS} />
+            )}
+            {loading && (
+              <Spinner
+                sx={{
+                  marginTop: "24px",
+                }}
+                size={60}
+              />
             )}
           </Box>
+          {submissions?.length > 0 && !loading ? <Box ref={ref} height="1px" /> : null}
         </>
       )}
     </Grid>
