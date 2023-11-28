@@ -25,7 +25,7 @@ const DiscordRoles = ({ setStoreItemData, storeItemData }) => {
         value: role.id,
         label: role.name,
         discordGuildId: role.discordGuildId,
-      }));
+      })).sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);;
   }, [roles]);
 
   const onChange = (value) => {

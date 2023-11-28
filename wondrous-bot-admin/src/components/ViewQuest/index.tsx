@@ -13,8 +13,8 @@ import { getDiscordUrl } from "utils/discord";
 import useAlerts from "utils/hooks";
 import { ImageComponent, StyledLink, TextLabel } from "./styles";
 import useErrorHandler from "./useErrorHandler";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
 import { format } from "date-fns";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
 const ViewQuest = ({ quest, loading }) => {
   const params = {
@@ -216,7 +216,7 @@ const ViewQuest = ({ quest, loading }) => {
                 <Box display="flex" alignItems="center" gap="4px">
                   <TextLabel>Submission Deadline: </TextLabel>
                   <TextLabel weight={600} color="#2A8D5C">
-                    {format(new Date(quest?.endAt), "MM/DD/YY")}
+                    {format(new Date(quest?.endAt), "MM/dd/YY")}
                   </TextLabel>
                 </Box>
               ) : null}

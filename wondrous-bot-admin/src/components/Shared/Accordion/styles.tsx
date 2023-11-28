@@ -16,7 +16,7 @@ export const Accordion = styled(AccordionMui)`
 		border-bottom-right-radius: 16px !important;
 		border-top-left-radius: 16px !important;
 		border-top-right-radius: 16px !important;
-
+		border: 1px solid transparent;
 		width: 100%;
 		&::before {
 			display: none;
@@ -24,6 +24,10 @@ export const Accordion = styled(AccordionMui)`
 
 		&.Mui-expanded {
 			margin: 0;
+		}
+		&:hover {
+			background-color: #ffebda;
+			border: 1px solid black;
 		}
 	}
 `
@@ -78,7 +82,8 @@ export const ChevronButton = styled(ButtonBase)`
 		justify-content: center;
 		width: 28px;
 		height: 28px;
-		background: #2a8d5c;
-		border-radius: 4px;
+		background: transparent;
+		border: 1px solid black;
+		border-radius: 6px;
 	}
 `

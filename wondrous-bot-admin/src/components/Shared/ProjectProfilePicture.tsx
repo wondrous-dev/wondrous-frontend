@@ -8,8 +8,8 @@ const NoLogoDAO = styled((props) => (
       stroke='#787878'
       encircled={false}
       style={{
-        width: '36px',
-        height: '36px',
+        width: '30px',
+        height: '30px',
       }}
     />
   </div>

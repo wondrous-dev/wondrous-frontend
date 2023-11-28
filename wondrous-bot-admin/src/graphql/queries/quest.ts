@@ -5,6 +5,42 @@ import { CmtyUserFragment } from "graphql/fragments/user";
 export const GET_QUESTS_FOR_ORG = gql`
   query getQuestsForOrg($input: OrgQuestQueryInput) {
     getQuestsForOrg(input: $input) {
+      rewards {
+        id
+        type
+        discordRewardData {
+          discordRoleId
+          discordGuildId
+          discordRoleName
+        }
+        poapRewardData {
+          id
+          name
+          description
+          startDate
+          endDate
+          eventUrl
+          imageUrl
+          expiryDate
+          eventSecret
+        }
+        paymentMethodId
+        amount
+        storeItemId
+        storeItem {
+          name
+          id
+        }
+        paymentMethod {
+          name
+          contractAddress
+          type
+          nftMetadataId
+          nftMetadata {
+            mediaUrl
+          }
+        }
+      }
       ...QuestListFragment
     }
   }
@@ -359,6 +395,7 @@ export const VERIFY_TOKEN_HOLDING = gql`
     $tokenAmount: String
     $tokenType: String
     $tokenDecimals: String
+    $tokenId: String
   ) {
     verifyTokenHolding(
       telegramUserId: $telegramUserId
@@ -367,6 +404,7 @@ export const VERIFY_TOKEN_HOLDING = gql`
       tokenAmount: $tokenAmount
       tokenType: $tokenType
       tokenDecimals: $tokenDecimals
+      tokenId: $tokenId
     ) {
       userHasTokens
     }

@@ -1,6 +1,6 @@
 import { useLazyQuery } from "@apollo/client";
 import { Box, ButtonBase, Grid } from "@mui/material";
-import { TokenComponent } from "components/CreateTemplate/RewardUtils";
+import { TokenComponent } from "components/Rewards/RewardUtils";
 import { PoapImage } from "components/CreateTemplate/styles";
 import { PoapIcon } from "components/Icons/Rewards";
 import SelectComponent from "components/Shared/Select";

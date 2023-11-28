@@ -7,9 +7,10 @@ import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { CloseIcon } from "components/Shared/DatePicker/Icons";
 import { useMutation } from "@apollo/client";
 import { ADD_ORG_LEVEL_REWARD, REMOVE_ORG_LEVEL_REWARD } from "graphql/mutations";
-import RewardModal, { useAddRewardModalState } from "components/CreateTemplate/RewardModal";
-import { PAYMENT_OPTIONS } from "components/CreateTemplate/RewardUtils";
+import RewardModal from "components/Rewards/RewardModal";
 import { NFTIcon, PoapIcon, TokensIcon } from "components/Icons/Rewards";
+import { useAddRewardModalState } from "components/Rewards/utils";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
 interface AddOrgLevelRewardInput {
   orgId: string;
@@ -31,7 +32,7 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
   const rewardModalState = useAddRewardModalState();
 
   const { activeOrg } = useContext(GlobalContext);
-  const { setIsRewardModalOpen } = rewardModalState;
+  const { setIsRewardModalOpen, resetStates } = rewardModalState;
 
   const [removeOrgLevelReward] = useMutation(REMOVE_ORG_LEVEL_REWARD, {
     refetchQueries: ["getOrgLevelsRewards"],
@@ -83,7 +84,8 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
   return (
     <>
       <RewardModal
-        handleRewardModalToggle={() => setIsRewardModalOpen(false)}
+        title={`Add Reward for Level ${level}`}
+        handleRewardModalToggle={resetStates}
         handleOnRewardAdd={onRewardAdd}
         maxModalWidth={800}
         rewardModalState={rewardModalState}
