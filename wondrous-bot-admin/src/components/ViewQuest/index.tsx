@@ -216,7 +216,7 @@ const ViewQuest = ({ quest, loading }) => {
                 <Box display="flex" alignItems="center" gap="4px">
                   <TextLabel>Submission Deadline: </TextLabel>
                   <TextLabel weight={600} color="#2A8D5C">
-                    {format(new Date(quest?.endAt), "MM/DD/YY")}
+                    {format(new Date(quest?.endAt), "MM/dd/YY")}
                   </TextLabel>
                 </Box>
               ) : null}
