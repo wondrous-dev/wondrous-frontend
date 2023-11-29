@@ -11,6 +11,7 @@ import OptionSelect from "./Steps/OptionSelect";
 import { VerifyButton } from "./Steps/VerifyButton";
 import { Image } from "./styles";
 import DataCollectionComponent from "./Steps/DataCollection";
+import { ConnectWalletField } from "./Steps/ConnectWallet";
 
 const COMPONENTS_CONFIG: any = {
   [TYPES.TEXT_FIELD]: StepTextField,
@@ -30,6 +31,7 @@ const COMPONENTS_CONFIG: any = {
   [TYPES.REPLY_TWEET]: VerifyButton,
   [TYPES.RETWEET]: VerifyButton,
   [TYPES.TWEET_WITH_PHRASE]: VerifyButton,
+  [TYPES.CONNECT_WALLET]: ConnectWalletField,
 };
 
 const IMAGES_CONFIG = {

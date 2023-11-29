@@ -23,6 +23,7 @@ const buttonStyles = {
 const WalletConnectPage = () => {
   const [searchParams] = useSearchParams();
   const discordUserId = searchParams?.get("discordUserId");
+  const verificationCode = searchParams?.get("verificationCode");
   const telegramUserId = searchParams?.get("telegramUserId");
   const migrateOrgId = searchParams?.get("migrateOrgId");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

@@ -58,6 +58,10 @@ export const COMPONENT_OPTIONS = [
     value: TYPES.DATA_COLLECTION,
   },
   {
+    label: "Connect Wallet",
+    value: TYPES.CONNECT_WALLET,
+  },
+  {
     label: "Verify Token Holding",
     value: TYPES.VERIFY_TOKEN_HOLDING,
   },
