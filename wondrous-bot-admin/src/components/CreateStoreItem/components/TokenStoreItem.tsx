@@ -1,5 +1,5 @@
 import { useLazyQuery } from "@apollo/client";
-import { Box, ButtonBase, Grid } from "@mui/material";
+import { Box, ButtonBase, Grid, Typography } from "@mui/material";
 import { TokenComponent } from "components/Rewards/RewardUtils";
 import { PoapImage } from "components/CreateTemplate/styles";
 import { PoapIcon } from "components/Icons/Rewards";
@@ -17,6 +17,7 @@ import ImportComponent from "components/NFT/ImportComponent";
 import { NFT_TYPES, NFT_TYPE_LABELS } from "utils/constants";
 import TextField from "components/Shared/TextField";
 import { validateTypes, verifyIsImportedToken } from "utils/common";
+import { Link } from "react-router-dom";
 
 const NFT_MODAL_TYPES = {
   CREATE: "create",
@@ -188,12 +189,40 @@ const TokenStoreItem = ({
           padding: "0px",
         }}
       >
-        <Grid display="flex" width="100%" gap="18px" alignItems="center" justifyContent="center">
-          <SharedSecondaryButton onClick={() => onModalSelect(NFT_MODAL_TYPES.CREATE)}>
-            Create NFT
-          </SharedSecondaryButton>
+        <Box>
+          <Typography marginBottom={"8px"}>
+            If you{" "}
+            <span
+              style={{
+                fontWeight: "600",
+              }}
+            >
+              create an NFT
+            </span>
+            , users can automatically mint them from interacting with the bot.
+          </Typography>
+          <Typography>
+            If you{" "}
+            <span
+              style={{
+                fontWeight: "600",
+              }}
+            >
+              import an NFT
+            </span>
+            , you will pay/batch pay them in the{" "}
+            <Link to="/settings/payments" target="__blank">
+              settings
+            </Link>{" "}
+            menu.
+          </Typography>
+        </Box>
+        <Grid display="flex" width="100%" gap="18px" alignItems="center" justifyContent="center" marginTop="24px">
           <SharedSecondaryButton onClick={() => onModalSelect(NFT_MODAL_TYPES.IMPORT)} $reverse>
             Import NFT
+          </SharedSecondaryButton>
+          <SharedSecondaryButton onClick={() => onModalSelect(NFT_MODAL_TYPES.CREATE)}>
+            Create NFT
           </SharedSecondaryButton>
         </Grid>
       </Modal>
