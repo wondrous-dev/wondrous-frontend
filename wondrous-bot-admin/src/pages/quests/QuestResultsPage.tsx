@@ -137,6 +137,7 @@ const QuestResultsPage = () => {
         errors,
         setErrors,
         isEditMode,
+        questId: id,
       }}
     >
       <Modal
