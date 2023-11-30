@@ -1,7 +1,14 @@
 import { ethers } from "ethers";
 import { TransactionData, WonderWeb3AssetMap } from "./types";
-import { useWeb3ModalAccount, useWeb3ModalProvider, useDisconnect, useWeb3Modal, useWeb3ModalEvents } from "@web3modal/ethers5/react";
-import { useState } from "react";
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+  useDisconnect,
+  useWeb3Modal,
+  useWeb3ModalEvents,
+} from "@web3modal/ethers5/react";
+import { useMemo, useState } from "react";
+import { SUPPORTED_CHAIN_IDS } from "utils/web3Constants";
 
 const useWonderWeb3Modal = () => {
   const { chainId, isConnected, address } = useWeb3ModalAccount();
@@ -12,10 +19,10 @@ const useWonderWeb3Modal = () => {
   const [assets, setAssets] = useState<WonderWeb3AssetMap>(null);
   const [ensName, setENSName] = useState(null);
 
-  const {open} = useWeb3Modal();
-    
-  const {data} = useWeb3ModalEvents();
-  console.log(data, 'events')
+  const { open } = useWeb3Modal();
+
+  const { data } = useWeb3ModalEvents();
+
   const sendTransaction = async (txData: TransactionData) => {
     const prov = new ethers.providers.Web3Provider(walletProvider);
     const signer = prov.getSigner();
@@ -69,10 +76,47 @@ const useWonderWeb3Modal = () => {
       return null;
     }
   };
+
+  const checkedAddress: string = useMemo(() => (address ? ethers.utils.getAddress(address) : null), [address]);
+
+  const signMessage = async (message: string) => {
+    if (!walletProvider || !isConnected) return;
+    // if (connecting) {
+    //   setConnecting(false);
+    //   return;
+    // }
+
+    // setConnecting(true);
+    try {
+      const prov = new ethers.providers.Web3Provider(walletProvider);
+      if (!SUPPORTED_CHAIN_IDS[chainId]) {
+        disconnect();
+        return false;
+      }
+      const signer = prov.getSigner();
+
+      // Now sign message
+      const signedMessage = await signer.signMessage(message);
+      console.log(signedMessage, "signed msg");
+      const recoverMessage = ethers.utils.verifyMessage(message, signedMessage);
+      console.log(recoverMessage, "recover msg");
+      // setConnecting(false);
+      return signedMessage;
+    } catch (error) {
+      console.log("Error signing message ", error);
+      // Error Signed message
+      // setConnecting(false);
+      if (error.code && error.code == 4001) {
+        return false;
+      }
+    }
+    return null;
+  };
+
   return {
     chainId,
     isConnected,
-    address,
+    address: checkedAddress,
     disconnect,
     walletProvider,
     assets,
@@ -85,8 +129,9 @@ const useWonderWeb3Modal = () => {
     ensName,
     open,
     eventsData: data,
-    lastEvent: data?.event
-  }
+    lastEvent: data?.event,
+    signMessage,
+  };
 };
 
 export default useWonderWeb3Modal;

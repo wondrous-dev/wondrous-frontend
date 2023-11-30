@@ -26,7 +26,7 @@ const CollectCredentials = ({ moveForward }) => {
   const searchParams = new URLSearchParams(search);
   const [notSupportedChain, setNotSupportedChain] = useState(false);
 
-  const { signupWithWallet, address, isConnected, chainId, open, isActivating } = useWeb3Auth();
+  const { signupWithWallet, address, isConnected, chainId, open, isActivating } = useWeb3Auth({ setErrorMessage });
 
   const discordConnectError = searchParams.get("discordConnectError");
   const token = searchParams.get("token");

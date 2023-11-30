@@ -1,18 +1,34 @@
 import { useState } from "react";
 import useWonderWeb3Modal from "./useWonderWeb3Modal";
-import { getUserSigningMessage, walletSignin, walletSignup } from "components/Auth";
+import { getUserSigningMessage, linkCmtyUserWallet, walletSignin, walletSignup } from "components/Auth";
 import { handleUserOnboardingRedirect } from "utils/common";
 import { GRAPHQL_ERRORS } from "utils/constants";
 import { SUPPORTED_CHAIN_IDS, SupportedChainType, signedMessageIsString } from "utils/web3Constants";
 import useWonderWeb3 from "./useWonderWeb3";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const useWeb3Auth = () => {
+function getFormattedDate() {
+  var date = new Date();
+  var str =
+    date.getFullYear() +
+    "-" +
+    (date.getMonth() + 1) +
+    "-" +
+    date.getDate() +
+    " " +
+    date.getHours() +
+    ":" +
+    date.getMinutes() +
+    ":" +
+    date.getSeconds();
+
+  return str;
+}
+
+const useWeb3Auth = ({ setErrorMessage }) => {
   // since we can't disconnect a user's wallet this is used in order to check if the user actually clicked the login button
   const [isActivating, setIsActivating] = useState(false);
-  const { address, chainId, open, disconnect, isConnected } = useWonderWeb3Modal();
-  const [errorMessage, setErrorMessage] = useState("");
-  const { signMessage } = useWonderWeb3();
+  const { address, chainId, open, disconnect, isConnected, signMessage } = useWonderWeb3Modal();
   const { search } = useLocation();
 
   const searchParams = new URLSearchParams(search);
@@ -45,7 +61,6 @@ const useWeb3Auth = () => {
           } catch (err) {
             setIsActivating(false);
             disconnect();
-            console.log("err?.graphQLErrors", err?.graphQLErrors);
             if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.NO_WEB3_ADDRESS_FOUND) {
               setErrorMessage("Address not found, check you are connected to the correct address");
             } else {
@@ -121,11 +136,51 @@ const useWeb3Auth = () => {
     }
   };
 
+  const linkUserWithWallet = async ({
+    discordUserId,
+    telegramUserId,
+    migrateOrgId,
+    onSuccess,
+    onFail
+  }) => {
+    if (address && chainId && isConnected) {
+      const messageToSign = `Welcome to wonder\nDate: ${getFormattedDate()}\nTimestamp: ${Date.now().toString()}`;
+      if (messageToSign) {
+        const signedMessage = await signMessage(messageToSign);
+        if (signedMessageIsString(signedMessage)) {
+          const result = await linkCmtyUserWallet(
+            discordUserId,
+            address,
+            signedMessage,
+            SupportedChainType.ETH,
+            messageToSign,
+            telegramUserId,
+            migrateOrgId
+          );
+          if (result === true) {
+            // setConnectionComplete(true);
+            setIsActivating(false);
+            onSuccess()
+          }
+          if (result === false) {
+            onFail()
+            setIsActivating(false);
+            // setErrorMessage("Error linking wallet, please contact support");
+            disconnect();
+          }
+        } else if (signedMessage === false) {
+          setIsActivating(false);
+          setErrorMessage("Signature rejected. Try again.");
+          disconnect();
+        }
+      }
+    }
+  };
+
   return {
     loginWithWallet,
     signupWithWallet,
     isActivating,
-    errorMessage,
     open: () => {
       open();
       setIsActivating(true);
@@ -134,6 +189,7 @@ const useWeb3Auth = () => {
     chainId,
     disconnect,
     isConnected,
+    linkUserWithWallet
   };
 };
 

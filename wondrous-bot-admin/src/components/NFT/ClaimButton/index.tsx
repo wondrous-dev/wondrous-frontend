@@ -1,3 +1,5 @@
+
+//TODO : fix
 import Modal from "components/Shared/Modal";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { CoinbaseConnector, MetaMaskConnector, WalletConnectConnector } from "components/Connectors";
@@ -13,9 +15,10 @@ import { CHAIN_TO_NFT_FACTORY } from "services/web3/contractRouter";
 import Spinner from "components/Shared/Spinner";
 import { useMutation } from "@apollo/client";
 import { LINK_TRANSACTION_TO_COMMUNITY_NFT } from "graphql/mutations/payment";
+import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
 
 const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadataId, cmtyUserId }) => {
-  const wonderWeb3 = useWonderWeb3();
+  const {address, walletProvider, chainId} = useWonderWeb3Modal();
   const [linkTx] = useMutation(LINK_TRANSACTION_TO_COMMUNITY_NFT)
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
 
@@ -23,13 +26,13 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
   const [openConnectModal, setOpenConnectModal] = useState(false);
 
   const handleMint = async () => {
-    if (!wonderWeb3?.address) return;
+    if (!address) return;
 
     try {
       setIsMinting(true);
-      const prov = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
+      const prov = new ethers.providers.Web3Provider(walletProvider);
       const signer = prov.getSigner();
-      const contractInstance = new ethers.Contract(CHAIN_TO_NFT_FACTORY[wonderWeb3.chainName], nftFactoryABI, signer);
+      const contractInstance = new ethers.Contract(CHAIN_TO_NFT_FACTORY[chainId], nftFactoryABI, signer);
 
       const transaction = await contractInstance.claimBadge(1, BigInt(tokenId), nonce, signature);
       await transaction.wait();
@@ -54,16 +57,16 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
   };
 
   useEffect(() => {
-    if (wonderWeb3?.address && openConnectModal) {
+    if (address && openConnectModal) {
       setOpenConnectModal(false);
     }
-  }, [wonderWeb3?.address]);
+  }, [address]);
 
   const handleChainVerify = ({ chain }) => {
     try {
       verifyChain({
         chain,
-        connectedChain: wonderWeb3?.chain,
+        connectedChainId: chain,
       });
     } catch (error) {
       setSnackbarAlertMessage(`Please switch to ${chain} chain`);
@@ -73,7 +76,7 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
   };
 
   const toggleModal = () => {
-    if (!wonderWeb3.address) {
+    if (!address) {
       return setOpenConnectModal(!openConnectModal);
     }
     handleChainVerify({ chain });
@@ -95,7 +98,7 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
         </Grid>
       </Modal>
       <SharedSecondaryButton onClick={toggleModal}>
-        <>{isMinting ? <Spinner /> : <>{wonderWeb3?.address ? "Claim now" : "Connect wallet"}</>}</>
+        <>{isMinting ? <Spinner /> : <>{address ? "Claim now" : "Connect wallet"}</>}</>
       </SharedSecondaryButton>
     </>
   );

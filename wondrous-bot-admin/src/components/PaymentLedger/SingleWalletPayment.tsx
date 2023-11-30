@@ -9,8 +9,7 @@ import { ERC20abi } from "services/contracts/erc20.abi";
 import GlobalContext from "utils/context/GlobalContext";
 import { DEFAULT_ERC20_GAS_LIMIT, SUPPORTED_CHAINS } from "utils/web3Constants";
 import { checkERC20Allowance, approveERC20, checkNFTAllowance, checkERC1155Allowance, setNFTApprovalForAll721 } from "services/web3/tokenHelpers";
-import { useWeb3React } from "@web3-react/core";
-import useWeb3 from "services/web3/useWeb3";
+// import useWeb3 from "services/web3/useWeb3";
 import useAlerts from "utils/hooks";
 import ERC721ABI from "services/web3/abi/ERC721";
 import ERC1155ABI from "services/web3/abi/ERC1155";
@@ -18,6 +17,7 @@ import BigNumber from "bignumber.js";
 import { CircularProgress } from "@mui/material";
 import { ContractType } from "services/web3/contractRouter";
 import { getMessageFromError, verifyChain } from "./utils";
+import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
 
 interface IPaymentData {
   chain: string;
@@ -59,24 +59,21 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     }
   );
 
-  useEffect(() => {
-    wonderWeb3.activateAndStore("injected");
-  }, []);
-  const wonderWeb3 = useWonderWeb3();
-  const { provider } = useWeb3();
-  const { address, chain: connectedChain } = wonderWeb3;
+  // useEffect(() => {
+  //   wonderWeb3.activateAndStore("injected");
+  // }, []);
+  // const wonderWeb3 = useWonderWeb3();
+  // const { provider } = useWeb3();
+  // const { address, chain: connectedChain } = wonderWeb3;
 
-  const getChainIdFromChainName = (chainName: string) => {
-    const chainIdx = Object.values(SUPPORTED_CHAINS).findIndex((chainId) => chainId === chainName);
-    const chainId = Object.keys(SUPPORTED_CHAINS)[chainIdx];
-    return chainId;
-  };
+  const {chainId, sendTransaction, walletProvider, address, getGasPrice} = useWonderWeb3Modal();
+
 
   const handleChainVerify = () => {
     try {
       verifyChain({
         chain: paymentData?.chain,
-        connectedChain,
+        connectedChainId: chainId,
       })
     } catch (error) {
       setSnackbarAlertMessage(`Please switch to ${paymentData?.chain} chain`);
@@ -87,25 +84,25 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
 
   const handleAllowance = ({contractType}) => {
     if (contractType === ContractType.ERC20) {
-      return checkERC20Allowance(provider, paymentData.contractAddress, address, paymentData.recipient);
+      return checkERC20Allowance(walletProvider, paymentData.contractAddress, address, paymentData.recipient);
     }
     if (contractType === ContractType.ERC721) {
-      return checkNFTAllowance(provider, paymentData.contractAddress, address, paymentData.recipient);
+      return checkNFTAllowance(walletProvider, paymentData.contractAddress, address, paymentData.recipient);
     }
     if (contractType === ContractType.ERC1155) {
-      return checkERC1155Allowance(provider, paymentData.contractAddress, address, paymentData.recipient);
+      return checkERC1155Allowance(walletProvider, paymentData.contractAddress, address, paymentData.recipient);
     }
   }
 
   const handleApproval = ({contractType}) => {
     if(contractType === ContractType.ERC20) {
-      return approveERC20(provider, paymentData.contractAddress, address, paymentData.recipient);
+      return approveERC20(walletProvider, paymentData.contractAddress, address, paymentData.recipient);
     }
     if(contractType === ContractType.ERC721) {
-      return setNFTApprovalForAll721(provider, paymentData.contractAddress, address);
+      return setNFTApprovalForAll721(walletProvider, paymentData.contractAddress, address);
     }
     if(contractType === ContractType.ERC1155) {
-      return setNFTApprovalForAll721(provider, paymentData.contractAddress, address);
+      return setNFTApprovalForAll721(walletProvider, paymentData.contractAddress, address);
     }
   };
 
@@ -113,7 +110,7 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     if(contractType === ContractType.ERC20) {
       const callData = iface.encodeFunctionData("transfer", [paymentData.recipient, finalAmount]);
       return {
-        from: wonderWeb3?.address,
+        from: address,
         to: paymentData.contractAddress,
         data: callData,
         value: "0",
@@ -125,7 +122,7 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     if(contractType === ContractType.ERC721) {
       const callData = iface.encodeFunctionData("safeTransferFrom(address,address,uint256)", [address, paymentData.recipient, tokenId]);
       return {
-        from: wonderWeb3?.address,
+        from: address,
         to: paymentData.contractAddress,
         data: callData,
         value: "0",
@@ -134,9 +131,9 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
       };
     }
     if(contractType === ContractType.ERC1155) {
-      const callData = iface.encodeFunctionData("safeTransferFrom", [wonderWeb3?.address, paymentData.recipient, tokenId, paymentData.amount, '0x']);
+      const callData = iface.encodeFunctionData("safeTransferFrom", [address, paymentData.recipient, tokenId, paymentData.amount, '0x']);
       return {
-        from: wonderWeb3?.address,
+        from: address,
         to: paymentData.contractAddress,
         data: callData,
         value: "0",
@@ -153,7 +150,7 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
       return;
     }
     setLoading(true);
-    wonderWeb3.onConnect();
+    // wonderWeb3.onConnect();
     try {
       await handleAllowance({contractType: paymentData.contractType});
     } catch (error) {
@@ -175,7 +172,7 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     const iface = new ethers.utils.Interface(iabi);
     const chain = paymentData?.chain;
     let transactionData: TransactionData;
-    const gasPrice = await wonderWeb3.getGasPrice();
+    const gasPrice = await getGasPrice();
 
     const erc20DefaultDecimal = paymentData?.contractType === ContractType.ERC20 ? 18 : 1;
     const decimal = Number(paymentData?.decimal) || erc20DefaultDecimal;
@@ -184,7 +181,7 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     let finalAmount = bigChangedAmount.times(newDecimal).toString();    
     if (paymentData?.currency === "ETH" || paymentData?.currency === 'MATIC') {
       transactionData = {
-        from: wonderWeb3.address,
+        from: address,
         to: paymentData.recipient,
         data: "0x00",
         value: finalAmount,
@@ -195,13 +192,13 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
       transactionData = handleTransfer({contractType: paymentData.contractType, iface, gasPrice, finalAmount, tokenId})
     }
     try {
-      const transactionObj = await wonderWeb3.sendTransaction(transactionData);
+      const transactionObj = await sendTransaction(transactionData);
       const txHash = transactionObj?.hash;
       linkCmtyPaymentsWithTransaction({
         variables: {
           input: {
             chain,
-            fromAddress: wonderWeb3.address,
+            fromAddress: address,
             txHash,
             paymentIds: [paymentData.id],
             orgId: activeOrg?.id,

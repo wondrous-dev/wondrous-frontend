@@ -26,12 +26,12 @@ import {
   setNFTApprovalForAll721,
 } from "services/web3/tokenHelpers";
 
-import useWonderWeb3 from "services/web3/useWonderWeb3";
 import GlobalContext from "utils/context/GlobalContext";
 import useAlerts from "utils/hooks";
 
 import { SUPPORTED_CHAINS } from "utils/web3Constants";
 import { getMessageFromError, verifyChain } from "./utils";
+import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
 
 const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompleted }) => {
   const { activeOrg } = useContext(GlobalContext);
@@ -66,14 +66,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     }
   );
 
-  const wonderWeb3 = useWonderWeb3();
-
-  const { chain: connectedChain } = wonderWeb3;
-
-  useEffect(() => {
-    wonderWeb3.activateAndStore("injected");
-    wonderWeb3.onConnect();
-  }, []);
+  const { chainId, address, walletProvider } = useWonderWeb3Modal();
 
   const conditions = useMemo(() => {
     const contractAddress = paymentItems?.[0]?.contractAddress;
@@ -112,7 +105,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     try {
       verifyChain({
         chain,
-        connectedChain,
+        connectedChainId: chainId,
       });
     } catch (error) {
       setSnackbarAlertMessage(`Please switch to ${chain} chain`);
@@ -124,17 +117,17 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
   const handleAllowance = async ({ contractType, tokenAddress, batchTransferContractAddress }) => {
     if (contractType === ContractType.ERC20) {
       return await approveERC20(
-        wonderWeb3.web3Provider,
+        walletProvider,
         tokenAddress,
         batchTransferContractAddress,
         ethers.constants.MaxUint256.toString()
       );
     }
     if (contractType === ContractType.ERC1155) {
-      return await setNFTApprovalForAll(wonderWeb3.web3Provider, tokenAddress, batchTransferContractAddress);
+      return await setNFTApprovalForAll(walletProvider, tokenAddress, batchTransferContractAddress);
     }
     if (contractType === ContractType.ERC721) {
-      return await setNFTApprovalForAll721(wonderWeb3.web3Provider, tokenAddress, batchTransferContractAddress);
+      return await setNFTApprovalForAll721(walletProvider, tokenAddress, batchTransferContractAddress);
     }
   };
 
@@ -149,42 +142,27 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
       return acc + finalAmount;
     }, 0);
     if (contractType === ContractType.ERC20) {
-      allowance = await checkERC20Allowance(
-        wonderWeb3.web3Provider,
-        tokenAddress,
-        wonderWeb3.address,
-        batchTransferContractAddress
-      );
+      allowance = await checkERC20Allowance(walletProvider, tokenAddress, address, batchTransferContractAddress);
     }
 
     if (contractType === ContractType.ERC721) {
-      const isAllowed = await checkNFTAllowance(
-        wonderWeb3.web3Provider,
-        tokenAddress,
-        batchTransferContractAddress,
-        wonderWeb3.address
-      );
+      const isAllowed = await checkNFTAllowance(walletProvider, tokenAddress, batchTransferContractAddress, address);
       allowance = isAllowed ? totalAmount : 0;
-      const erc721Balance = await getERC721Balance(wonderWeb3.web3Provider, tokenAddress, wonderWeb3.address);
+      const erc721Balance = await getERC721Balance(walletProvider, tokenAddress, address);
       balance = Number(erc721Balance?.toString());
     }
     if (contractType === ContractType.ERC1155) {
       const isAllowed = await checkERC1155Allowance(
-        wonderWeb3.web3Provider,
+        walletProvider,
         tokenAddress,
         batchTransferContractAddress,
-        wonderWeb3.address
+        address
       );
       try {
         balance = await Promise.all(
           Object.values(tokenIds).map(async (tokenId: string) => {
             try {
-              const erc1155Balance = await getERC1155Balance(
-                wonderWeb3.web3Provider,
-                tokenAddress,
-                wonderWeb3.address,
-                tokenId
-              );
+              const erc1155Balance = await getERC1155Balance(walletProvider, tokenAddress, address, tokenId);
               return Number(erc1155Balance?.toString());
             } catch (error) {
               return totalAmount;
@@ -213,7 +191,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     const tokens = paymentItems.map((payment) => tokenIds[payment.id]);
     if (contractType === ContractType.ERC20) {
       const txHash = await batchTransferERC20(
-        wonderWeb3.web3Provider,
+        walletProvider,
         tokenAddress,
         addresses,
         paymentItems.map((item) => {
@@ -229,7 +207,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     }
     if (contractType === ContractType.ERC1155) {
       const txHash = await batchTransferERC1155(
-        wonderWeb3.web3Provider,
+        walletProvider,
         tokenAddress,
         addresses,
         tokens,
@@ -241,7 +219,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
       return txHash;
     }
     if (contractType === ContractType.ERC721) {
-      const txHash = await batchTransferERC721(wonderWeb3.web3Provider, tokenAddress, addresses, tokens, chainId);
+      const txHash = await batchTransferERC721(walletProvider, tokenAddress, addresses, tokens, chainId);
       return txHash;
     }
   };
@@ -269,7 +247,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
         variables: {
           input: {
             chain: paymentItem?.chain,
-            fromAddress: wonderWeb3.address,
+            fromAddress: address,
             txHash: txHash.hash,
             paymentIds: selectedPayments,
             orgId: activeOrg?.id,

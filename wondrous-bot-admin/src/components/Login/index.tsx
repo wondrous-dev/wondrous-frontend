@@ -15,11 +15,9 @@ import { handleUserOnboardingRedirect } from "utils/common";
 import AuthLayout from "components/Shared/AuthLayout";
 import { LinkWithQuery } from "components/Shared/LinkWithQuery";
 import WalletConnect from "components/Icons/Login/walletconnect.svg";
-import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
 import useWeb3Auth from "services/web3/useWeb3Auth";
 
 function Login() {
-  const wonderWeb3 = useWonderWeb3();
   // since we can't disconnect a user's wallet this is used in order to check if the user actually clicked the login button
   const [email, setEmail] = useState("");
   const { search } = useLocation();
@@ -57,7 +55,7 @@ function Login() {
     }
   };
 
-  const { loginWithWallet, address, isConnected, chainId, open, isActivating } = useWeb3Auth();
+  const { loginWithWallet, address, isConnected, chainId, open, isActivating } = useWeb3Auth({ setErrorMessage });
 
   useEffect(() => {
     if (discordConnectError) {
@@ -77,7 +75,7 @@ function Login() {
 
   useEffect(() => {
     if (chainId) {
-      setNotSupportedChain(!SUPPORTED_CHAIN_IDS[wonderWeb3.chain]);
+      setNotSupportedChain(!SUPPORTED_CHAIN_IDS[chainId]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
