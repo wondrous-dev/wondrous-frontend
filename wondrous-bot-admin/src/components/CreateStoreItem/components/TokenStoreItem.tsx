@@ -190,7 +190,7 @@ const TokenStoreItem = ({
         }}
       >
         <Box>
-          <Typography marginBottom={"8px"}>
+          <Typography marginBottom={"8px"} color="black">
             If you{" "}
             <span
               style={{
@@ -201,7 +201,7 @@ const TokenStoreItem = ({
             </span>
             , users can automatically mint them from interacting with the bot.
           </Typography>
-          <Typography>
+          <Typography color="black">
             If you{" "}
             <span
               style={{
