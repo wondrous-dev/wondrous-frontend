@@ -24,6 +24,7 @@ export default function useWeb3() {
 	const { provider, setProvider, isActivating, setIsActivating } =
 		useContext(WonderWeb3Context)
 
+		console.log(account, 'account')
 	const { showError } = useAlerts()
 
 	useEffect(() => {

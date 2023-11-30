@@ -1,20 +1,19 @@
-import { Box, FormControl, Grid, Typography, useMediaQuery } from "@mui/material";
+import { Box, ButtonBase, FormControl, Grid, Typography, useMediaQuery } from "@mui/material";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
-import { emailSignup, getUserSigningMessage, walletSignin, walletSignup } from "components/Auth";
-import { MetaMaskConnector, DiscordConnector, CoinbaseConnector, WalletConnectConnector } from "components/Connectors";
+import { emailSignup } from "components/Auth";
+import { DiscordConnector } from "components/Connectors";
 import { Connectors, ErrorTypography } from "components/Login/styles";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import useWonderWeb3 from "services/web3/useWonderWeb3";
+import { useLocation } from "react-router-dom";
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from "utils/constants";
-import { signedMessageIsString, SupportedChainType, SUPPORTED_CHAINS } from "utils/web3Constants";
-
+import { SUPPORTED_CHAIN_IDS } from "utils/web3Constants";
+import WalletConnect from "components/Icons/Login/walletconnect.svg";
 import { Divider } from "./styles";
 import { validate } from "./validator";
+import useWeb3Auth from "services/web3/useWeb3Auth";
 
 const CollectCredentials = ({ moveForward }) => {
-  const wonderWeb3 = useWonderWeb3();
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -23,10 +22,11 @@ const CollectCredentials = ({ moveForward }) => {
   const [errors, setErrors] = useState({});
   const { email, password, confirmPassword } = credentials;
   const [errorMessage, setErrorMessage] = useState("");
-  const isMobile = useMediaQuery("(max-width:600px)");
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const [notSupportedChain, setNotSupportedChain] = useState(false);
+
+  const { signupWithWallet, address, isConnected, chainId, open, isActivating } = useWeb3Auth();
 
   const discordConnectError = searchParams.get("discordConnectError");
   const token = searchParams.get("token");
@@ -37,69 +37,24 @@ const CollectCredentials = ({ moveForward }) => {
     ...(type ? { type } : {}),
   });
 
-  const signupWithWallet = async () => {
-    if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
-      // Retrieve Signed Message
-      const messageToSignObject = await getUserSigningMessage(wonderWeb3.address, SupportedChainType.ETH, true);
-      if (messageToSignObject?.userExists) {
-        // TODO: log user into their dashboard
-      }
-      const messageToSign = messageToSignObject?.signingMessage;
-      if (messageToSign) {
-        const signedMessage = await wonderWeb3.signMessage(messageToSign);
-        if (signedMessageIsString(signedMessage)) {
-          // Sign with Wallet
-          let user;
-          try {
-            user = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
-          } catch (err) {
-            if (
-              err?.graphQLErrors &&
-              err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.WEB3_ADDRESS_ALREADY_EXISTS
-            ) {
-              try {
-                user = await walletSignin(wonderWeb3.address, signedMessage);
-              } catch (err) {
-                setErrorMessage("Unable to log in existing user - please contact support in discord");
-              }
-              // setErrorMessage('Account already exists');
-            } else {
-              setErrorMessage("Unable to join org - please contact support in discord.");
-            }
-          }
-          if (user) {
-            //
-            moveForward();
-          }
-        } else if (signedMessage === false) {
-          setErrorMessage("Signature rejected. Try again.");
-          wonderWeb3.disconnect();
-        } else {
-          setErrorMessage("There has been an issue, contact with support.");
-        }
-      } else {
-        setErrorMessage("Signup failed - please contact support.");
-      }
-    }
-  };
   useEffect(() => {
     if (discordConnectError) {
       setErrorMessage("Error connecting your Discord. Please try again or connect with Metamask instead.");
     }
   }, [discordConnectError]);
   useEffect(() => {
-    if (wonderWeb3.address && wonderWeb3.active && wonderWeb3.web3Provider) {
+    if (address && isConnected && isActivating) {
       signupWithWallet();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet, wonderWeb3.active, wonderWeb3.web3Provider]);
+  }, [address, isConnected, isActivating]);
 
   useEffect(() => {
-    if (wonderWeb3.wallet.chain) {
-      setNotSupportedChain(!SUPPORTED_CHAINS[wonderWeb3.chain]);
+    if (chainId) {
+      setNotSupportedChain(!SUPPORTED_CHAIN_IDS[chainId]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet.chain]);
+  }, [chainId]);
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -174,6 +129,10 @@ const CollectCredentials = ({ moveForward }) => {
         )}
         <Connectors bgcolor="transparent">
           {/* {!isMobile && <MetaMaskConnector />} */}
+          <ButtonBase onClick={open}>
+            <img src={WalletConnect} />
+          </ButtonBase>
+
           <DiscordConnector state={state} />
           {/* <CoinbaseConnector />
           <WalletConnectConnector /> */}

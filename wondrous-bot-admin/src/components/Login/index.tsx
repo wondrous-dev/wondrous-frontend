@@ -1,43 +1,45 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useWonderWeb3 from "services/web3/useWonderWeb3";
-import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from "utils/constants";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { DISCORD_CONNECT_TYPES } from "utils/constants";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { emailSignin, getUserSigningMessage, logout, walletSignin } from "components/Auth";
-import { signedMessageIsString, SUPPORTED_CHAINS } from "utils/web3Constants";
+import { emailSignin } from "components/Auth";
+import { SUPPORTED_CHAIN_IDS } from "utils/web3Constants";
 import { Connectors, ErrorTypography } from "./styles";
-import { Box, FormControl, Grid, Typography } from "@mui/material";
+import { ButtonBase, FormControl, Grid, Typography } from "@mui/material";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
 import { RoundedSecondaryButton, SharedSecondaryButton } from "components/Shared/styles";
-import { CoinbaseConnector, DiscordConnector, MetaMaskConnector, WalletConnectConnector } from "components/Connectors";
+import { DiscordConnector } from "components/Connectors";
 import { handleUserOnboardingRedirect } from "utils/common";
-import { MainWrapper } from "components/Shared/AuthLayout/styles";
 import AuthLayout from "components/Shared/AuthLayout";
 import { LinkWithQuery } from "components/Shared/LinkWithQuery";
+import WalletConnect from "components/Icons/Login/walletconnect.svg";
+import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
+import useWeb3Auth from "services/web3/useWeb3Auth";
 
 function Login() {
   const wonderWeb3 = useWonderWeb3();
+  // since we can't disconnect a user's wallet this is used in order to check if the user actually clicked the login button
   const [email, setEmail] = useState("");
-  const {search} = useLocation();
+  const { search } = useLocation();
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [notSupportedChain, setNotSupportedChain] = useState(false);
 
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
-  const searchParams = new URLSearchParams(search)
+  const searchParams = new URLSearchParams(search);
 
-  const discordConnectError = searchParams.get('discordConnectError');
-  const token = searchParams.get('token');
-  const type = searchParams.get('type');
-  
+  const discordConnectError = searchParams.get("discordConnectError");
+  const token = searchParams.get("token");
+  const type = searchParams.get("type");
+
   const params = {
     discordConnectError,
     token,
-    type
-  }
-
+    type,
+  };
 
   const state = JSON.stringify({
     callbackType: DISCORD_CONNECT_TYPES.login,
@@ -55,60 +57,30 @@ function Login() {
     }
   };
 
-  // This happens async, so we bind it to the
-  // state of the component.
-  const loginWithWallet = async () => {
-    setErrorMessage(null);
-    if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
-      // Retrieve Signed Message
-      const messageToSign = await getUserSigningMessage(wonderWeb3.address, "eth");
-      if (messageToSign) {
-        const signedMessage = await wonderWeb3.signMessage(messageToSign);
-        if (signedMessageIsString(signedMessage)) {
-          // Sign with Wallet
-          try {
-            const user = await walletSignin(wonderWeb3.address, signedMessage);
-            if (user) {
-              handleUserOnboardingRedirect(null, navigate, params, '/')
-            }
-          } catch (err) {
-            console.log("err?.graphQLErrors", err?.graphQLErrors);
-            if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.NO_WEB3_ADDRESS_FOUND) {
-              setErrorMessage("Address not found, check you are connected to the correct address");
-            } else {
-              setErrorMessage(err?.message || err);
-            }
-          }
-        } else if (signedMessage !== undefined) {
-          setErrorMessage("You need to sign the message on your wallet");
-        }
-      } else {
-        setErrorMessage("Login failed - try again.");
-      }
-    }
-  };
+  const { loginWithWallet, address, isConnected, chainId, open, isActivating } = useWeb3Auth();
 
   useEffect(() => {
     if (discordConnectError) {
       setErrorMessage("Error connecting your Discord. Please try again or connect with Metamask instead.");
     }
   }, [discordConnectError]);
+
   useEffect(() => {
-    if (wonderWeb3.wallet.address && !wonderWeb3.isActivating) {
+    if (address && isConnected && isActivating) {
       // Wallet sign in
       loginWithWallet();
     } else {
       // Error Login Here
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet, wonderWeb3.isActivating]);
+  }, [isConnected, address, isActivating]);
 
   useEffect(() => {
-    if (wonderWeb3.wallet.chain) {
-      setNotSupportedChain(!SUPPORTED_CHAINS[wonderWeb3.chain]);
+    if (chainId) {
+      setNotSupportedChain(!SUPPORTED_CHAIN_IDS[wonderWeb3.chain]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.wallet.chain]);
+  }, [chainId]);
 
   return (
     <AuthLayout
@@ -157,10 +129,10 @@ function Login() {
       </Grid>
       {/* FOOTER */}
       <Connectors>
-        {!isMobile && <MetaMaskConnector />}
+        <ButtonBase onClick={open}>
+          <img src={WalletConnect} />
+        </ButtonBase>
         <DiscordConnector state={state} />
-        <CoinbaseConnector />
-        <WalletConnectConnector />
       </Connectors>
     </AuthLayout>
   );

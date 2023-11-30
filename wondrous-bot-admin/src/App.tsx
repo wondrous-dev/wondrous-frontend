@@ -53,6 +53,39 @@ import CreateStoreItem from "pages/store/CreateStoreItem";
 import StoreItem from "pages/store/StoreItem";
 import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
+import { createWeb3Modal, defaultConfig, useWeb3Modal } from '@web3modal/ethers5/react';
+import WalletTestPage from "pages/wallet-test";
+
+const projectId = 'c6c9bacd35afa3eb9e6cccf6d8464395';
+
+const mainnet = {
+  chainId: 1,
+  name: 'Ethereum',
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://cloudflare-eth.com',
+};
+
+const metadata = {
+  name: 'Wonderverse',
+  description: 'My Wonderverse Desc',
+  url: 'https://web3modal.com',
+  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  // icons: ['https://avatars.mywebsite.com/']
+};
+
+createWeb3Modal({
+  ethersConfig: defaultConfig({
+    metadata,
+    defaultChainId: 1,
+    enableEIP6963: true,
+    enableInjected: true,
+    enableCoinbase: true,
+    // rpcUrl: '...' // used for the Coinbase SDK
+  }),
+  chains: [mainnet],
+  projectId,
+});
 
 const router = createBrowserRouter([
   {
@@ -210,7 +243,10 @@ const router = createBrowserRouter([
         path: '/community-badge/claim',
         element: <CommunityBadgeClaimPage />
       },
-      
+      {
+        path: '/wallet/test',
+        element: <WalletTestPage />
+      }
     ],
   },
 ]);

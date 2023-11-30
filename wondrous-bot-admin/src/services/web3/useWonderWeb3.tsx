@@ -7,10 +7,11 @@ import { SUPPORTED_CHAINS } from 'utils/web3Constants';
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { formatEther } from 'ethers/lib/utils';
 import { WonderWeb3, WonderWeb3AssetMap, TransactionData } from 'services/web3/types';
-import connectors, { ConnectorName } from './connectors';
+// import connectors, { ConnectorName } from './connectors';
 import useStoredConnector from './useStoredConnector';
 import useWeb3 from './useWeb3';
 import { WonderWeb3Context } from 'utils/context/WonderWeb3Context';
+import { useDisconnect, useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
 
 /**
  * High level hook for Web3. Uses our react-web3 hook wrapper and adds some additional business functionality.
@@ -21,7 +22,7 @@ export default function useWonderWeb3(): WonderWeb3 {
   const {
     connector,
     library,
-    chainId,
+    // chainId,
     account,
     activate,
     deactivate,
@@ -32,6 +33,11 @@ export default function useWonderWeb3(): WonderWeb3 {
     isSubscribed,
   } = useWeb3();
 
+  const { chainId, isConnected, ...rest } = useWeb3ModalAccount()
+
+  const {walletProvider} = useWeb3ModalProvider();
+
+  const {disconnect} = useDisconnect()
   const [assets, setAssets] = useState<WonderWeb3AssetMap>(null);
   const [ensName, setENSName] = useState(null);
   const [fetching, setFetching] = useState(false);
@@ -70,13 +76,13 @@ export default function useWonderWeb3(): WonderWeb3 {
 
 
   const onConnect = () => {
-    console.log('onConnect', connector);
+    
     if (!connector) return;
     try {
       activate(connector);
       // Gate Keeper for Usupported chains
       if (!SUPPORTED_CHAINS[chainId]) {
-        disconnect();
+        disconnectWallet();
         return false;
       }
     } catch (e) {
@@ -86,7 +92,7 @@ export default function useWonderWeb3(): WonderWeb3 {
   };
 
   const signMessage = async (message: string) => {
-    if (!provider || !active) return;
+    if (!walletProvider || !isConnected) return;
     if (connecting) {
       setConnecting(false);
       return;
@@ -94,10 +100,9 @@ export default function useWonderWeb3(): WonderWeb3 {
 
     setConnecting(true);
     try {
-      const prov = new ethers.providers.Web3Provider(provider);
-      const { chainId } = await prov.getNetwork();
+      const prov = new ethers.providers.Web3Provider(walletProvider);
       if (!SUPPORTED_CHAINS[chainId]) {
-        disconnect();
+        disconnectWallet();
         return false;
       }
       const signer = await prov.getSigner();
@@ -170,8 +175,8 @@ export default function useWonderWeb3(): WonderWeb3 {
     }
   };
 
-  const disconnect = () => {
-    deactivate();
+  const disconnectWallet = () => {
+    disconnect();
     setConnecting(false);
     return true;
   };
@@ -183,27 +188,26 @@ export default function useWonderWeb3(): WonderWeb3 {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, chainId, provider]);
 
-  useEffect(() => {
-    if (chainId) {
-      setLastChainId(chainId);
-    }
-  }, [chainId]);
+  // useEffect(() => {
+  //   if (chainId) {
+  //     setLastChainId(chainId);
+  //   }
+  // }, [chainId]);
 
   const chain = chainId || lastChainId;
 
-  const { setStoredConnector } = useStoredConnector();
+  // const { setStoredConnector } = useStoredConnector();
 
-  const activateAndStore = (connectorName: ConnectorName) => {
-    const conn = connectors[connectorName];
-    activate(conn, () => {
-      setStoredConnector(connectorName);
-    });
+  const activateAndStore = () => {
+    // const conn = connectors[connectorName];
+    // activate(conn, () => {
+    //   setStoredConnector(connectorName);
+    // });
   };
 
   const sendTransaction = async (txData: TransactionData) => {
     const prov = new ethers.providers.Web3Provider(provider);
-    const { chainId } = await prov.getNetwork(); // TODO add validation here that chainId equals current chain id
-    const signer = await prov.getSigner();
+    const signer = prov.getSigner();
     const transactionObj = await signer.sendTransaction(txData);
     return transactionObj;
   };
@@ -219,7 +223,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     subscribed: isSubscribed,
     notSupportedChain: chain ? !SUPPORTED_CHAINS[chain] : false,
     onConnect,
-    disconnect,
+    disconnect: disconnectWallet,
     signMessage,
     web3Provider: provider,
     toChecksumAddress,

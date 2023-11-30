@@ -340,6 +340,7 @@ export const EXCLUDED_PATHS = [
   "/referral",
   "/telegram/connect",
   "/community-badge/claim",
+  '/wallet/test'
 ];
 
 export const TUTORIALS = {
