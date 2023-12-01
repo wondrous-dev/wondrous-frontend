@@ -101,7 +101,7 @@ const SortableItem = ({ item, idx, status }) => {
             {item.label}
           </Label>
           {/* <Box display="flex" justifyContent="center" alignItems="center" flexWrap="wrap" width="100%"></Box> */}
-          <QuestCardRewards rewards={item.rewards} pointReward={item.pointReward}/>
+          <QuestCardRewards rewards={item.rewards} pointReward={item.pointReward} />
           <BoxWrapper>
             <ButtonBase
               onClick={handleDropdownClick}
@@ -137,7 +137,7 @@ const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan, status
   const [updateQuestOrder] = useMutation(UPDATE_QUEST_ORDER, {
     refetchQueries: ["getQuestsForOrg"],
   });
-  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall();
 
   // the reason for separate state is to hide the New Quest card when dragging
   const [isDragging, setIsDragging] = useState(false);
@@ -213,7 +213,7 @@ const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan, status
                   onClick={() => {
                     if (plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
                       setPaywall(true);
-                      setPaywallMessage("You have reached the limit of quests for your current plan.");
+                      return setPaywallMessage("You have reached the limit of quests for your current plan.");
                     } else {
                       navigate("/quests/create");
                     }

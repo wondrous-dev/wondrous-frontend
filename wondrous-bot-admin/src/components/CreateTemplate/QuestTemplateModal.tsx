@@ -277,7 +277,7 @@ const questTemplates: {
   },
   verifyYoutubeSubscription: {
     label: "Verify YouTube Subscription",
-    title: "Subscribe to our Youtube Channel",
+    title: "Subscribe to our YouTube Channel",
     image: VerifyYourSubscriptionImage,
     category: questTemplateCategories.socialMedia,
     steps: [{ type: TYPES.SUBSCRIBE_YT_CHANNEL }],
@@ -423,7 +423,7 @@ type QuestTemplateModalProps = {
 
 const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps) => {
   const { selectedCategory, setSelectedCategory, filteredQuestTemplates } = useFilteredQuestTemplateByCategory();
-  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall();
   const [ecoSystemFeatureModal, setEcoSystemFeatureModal] = useState({
     open: false,
     message: "",

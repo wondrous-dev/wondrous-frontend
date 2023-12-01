@@ -472,3 +472,10 @@ export const NFT_TYPES = {
   ERC1155: "ERC1155",
   COMMUNITY_BADGE: "COMMUNITY_BADGE",
 };
+
+export const LOCKED_PATHS = [
+  '/store',
+  '/store/items/create',
+  '/store/items/:id',
+  '/analytics'
+];

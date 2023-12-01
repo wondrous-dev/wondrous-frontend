@@ -1,4 +1,5 @@
 import { Button, Dialog, Grid, Typography } from "@mui/material";
+import { CloseModalBtn, ModalHeader, ModalTitle } from "components/Shared/Modal/styles";
 
 type PremiumFeatureDialogProps = {
   open: boolean;
@@ -7,7 +8,12 @@ type PremiumFeatureDialogProps = {
   onCancel?: () => void;
 };
 
-const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage, onCancel = null }: PremiumFeatureDialogProps) => {
+const PremiumFeatureDialog = ({
+  open = false,
+  onClose,
+  paywallMessage,
+  onCancel = null,
+}: PremiumFeatureDialogProps) => {
   return (
     <Dialog
       open={open}
@@ -21,6 +27,10 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage, onCancel 
         },
       }}
     >
+      <ModalHeader justifyContent={"space-between"}>
+        <ModalTitle>Upgrade Community</ModalTitle>
+        {onCancel && <CloseModalBtn onClick={onCancel} />}
+      </ModalHeader>
       <Grid
         container
         width="fit-content"
@@ -80,28 +90,30 @@ const PremiumFeatureDialog = ({ open = false, onClose, paywallMessage, onCancel 
           >
             Upgrade Community
           </Button>
-          {onCancel ? <Button
-            disableRipple
-            onClick={onCancel}
-            disableFocusRipple
-            sx={{
-              height: "40px",
-              width: "100%",
-              borderRadius: "100px",
-              textTransform: "none",
-              color: "#6D6D6D",
-              textAlign: "center",
-              fontFamily: "Space Grotesk",
-              fontSize: "16px",
-              fontWeight: 700,
+          {onCancel ? (
+            <Button
+              disableRipple
+              onClick={onCancel}
+              disableFocusRipple
+              sx={{
+                height: "40px",
+                width: "100%",
+                borderRadius: "100px",
+                textTransform: "none",
+                color: "#6D6D6D",
+                textAlign: "center",
+                fontFamily: "Space Grotesk",
+                fontSize: "16px",
+                fontWeight: 700,
 
-              "&:hover": {
-                backgroundColor: "#fff",
-              },
-            }}
-          >
-            I'll upgrade later
-          </Button> : null}
+                "&:hover": {
+                  backgroundColor: "#fff",
+                },
+              }}
+            >
+              I'll upgrade later
+            </Button>
+          ) : null}
         </Grid>
       </Grid>
     </Dialog>
