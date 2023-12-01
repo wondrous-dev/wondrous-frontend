@@ -38,6 +38,7 @@ const WalletConnectPage = () => {
       discordUserId,
       telegramUserId,
       migrateOrgId,
+      verificationCode,
       onSuccess: () => {
         setConnectionComplete(true);
       },
@@ -45,11 +46,11 @@ const WalletConnectPage = () => {
     });
 
   useEffect(() => {
-    if (address && isConnected && isActivating) {
+    if (address && isConnected && isActivating && verificationCode) {
       connectCmtyUserWallet();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, isConnected, isActivating]);
+  }, [address, isConnected, isActivating, verificationCode]);
 
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">

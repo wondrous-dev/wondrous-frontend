@@ -227,7 +227,7 @@ export const linkCmtyUserWallet = async (
   } catch (err) {
     console.log("Error linking wallet: ", err?.graphQLErrors);
     if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.code) {
-      return err?.graphQLErrors[0]?.extensions.errorCode;
+      return err?.graphQLErrors[0]?.extensions.errorCode || err?.graphQLErrors[0]?.extensions.message;
     }
     return false;
   }
