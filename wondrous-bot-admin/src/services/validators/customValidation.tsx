@@ -17,7 +17,7 @@ export const getYouTubeVideoId = (url) => {
 
 export const validateChannelUrl = (url) => {
   // Extract channel ID from the first format: https://www.youtube.com/@channelName
-  const regex1 = /^https:\/\/www\.youtube\.com\/@([^\?]+)/;
+  const regex1 = /^https:\/\/www\.youtube\.com\/@?([^\?]+)/;
   const match1 = url.match(regex1);
   if (match1 && match1.length >= 2) {
     return true;
@@ -26,6 +26,11 @@ export const validateChannelUrl = (url) => {
   const regex2 = /^https:\/\/www\.youtube\.com\/channel\/([^\?]+)/;
   const match2 = url.match(regex2);
   if (match2 && match2.length >= 2) {
+    return true;
+  }
+  const regex3 = /^https:\/\/www\.youtube\.com\/([^\?]+)/;
+  const match3 = url.match(regex3);
+  if (match3 && match3.length >= 2) {
     return true;
   }
   return false;

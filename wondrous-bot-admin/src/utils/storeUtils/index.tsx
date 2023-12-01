@@ -24,6 +24,8 @@ export const useStorePaywall = () => {
           setPaywall(false);
           setPaywallMessage("");
           navigate("/");
+          setOnCancel(null);
+          setCanBeClosed(true);
         };
       });
     }

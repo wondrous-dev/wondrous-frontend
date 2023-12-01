@@ -17,7 +17,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import EditSvg from "components/Icons/edits.svg";
 import { getBaseUrl, getPlan } from "utils/common";
-import { usePaywall, useSubscription } from "utils/hooks";
+import { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks";
 import { handleImageFile, uploadMedia } from "utils/media";
 import SafeImage from "components/SafeImage";
 import Dropdown from "components/Shared/Dropdown";
@@ -30,7 +30,7 @@ export const TeamsAndInvite = ({ adminNumbers }) => {
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const subscription = useSubscription();
-  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = useSubscriptionPaywall();
   const plan = getPlan(subscription?.tier);
   const ref = useRef(null);
   const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
@@ -95,8 +95,8 @@ export const TeamsAndInvite = ({ adminNumbers }) => {
               (plan === PricingOptionsTitle.Hobby && adminNumbers >= 2) ||
               (plan === PricingOptionsTitle.Premium && adminNumbers >= 10)
             ) {
-              setPaywall(true);
               setPaywallMessage("You have reached the limit of admins for your current plan.");
+              return setPaywall(true);
             } else {
               setInviteModalOpen(true);
             }

@@ -97,7 +97,6 @@ const QuestResultsPage = () => {
     });
   };
 
-
   const questSettings = {
     title: getQuestById?.title || "",
     description: getQuestById?.description || "",
@@ -170,24 +169,15 @@ const QuestResultsPage = () => {
           You're Discord user is not a member of the Server!
         </Typography>
       </Modal>
-      <Box
-        // paddingTop="82px"
-        // {...(isEditMode
-        //   ? {
-        //       position: "sticky",
-        //       top: "0",
-        //       bgcolor: "white",
-        //       zIndex: 10,
-        //     }
-        //   : {})}
-      >
+      <Box>
         <PageHeader
           title={isEditMode ? "Edit Quest" : "Quest Activity"}
           withBackButton
           onBackButtonClick={() => {
             if (isEditMode) {
-              toggleEdit();
+              return toggleEdit();
             }
+            navigate("/quests");
           }}
           renderActions={() => (
             <Grid display="flex" gap="10px" alignItems="center">

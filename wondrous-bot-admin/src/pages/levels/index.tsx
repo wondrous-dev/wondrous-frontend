@@ -14,7 +14,7 @@ import { getPlan } from "utils/common";
 import { BG_TYPES } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { useDiscordRoles } from "utils/discord";
-import { usePaywall, useSubscription } from "utils/hooks";
+import { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks";
 import { LEVELS_XP } from "utils/levels";
 import useLevels from "utils/levels/hooks";
 import InformationTooltip from "components/Icons/information.svg";
@@ -26,7 +26,7 @@ const LevelsPage = () => {
   });
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
-  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = useSubscriptionPaywall();
   //TODO we probably don't need this state. We can just use the data from the query, change later
   const [rewards, setRewards] = useState({});
   const { data: rewardsData, refetch: refetchLevelRewards } = useQuery(GET_ORG_LEVEL_REWARDS, {
@@ -78,7 +78,7 @@ const LevelsPage = () => {
             onEdit: (value) => {
               if (plan === PricingOptionsTitle.Basic) {
                 setPaywall(true);
-                setPaywallMessage("You need to upgrade from a basic plan to edit level names");
+                return setPaywallMessage("You need to upgrade from a basic plan to edit level names");
               } else {
                 updateLevel(key, value);
               }
