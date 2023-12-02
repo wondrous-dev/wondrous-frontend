@@ -45,12 +45,6 @@ const LINKS = [
     partialMatch: true,
   },
   {
-    path: "/referrals",
-    label: "Referrals",
-    activeBgColor: "#E9FF90",
-    partialMatch: true,
-  },
-  {
     path: "/levels",
     label: "Levels",
     textColor: "#84BCFF",
@@ -68,8 +62,8 @@ const Header = () => {
 
   const theme: any = useTheme();
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
-  const {isEcosystemPlan} = useSubscriptionPaywall();
-  
+  const { isEcosystemPlan } = useSubscriptionPaywall();
+
   if (isEcosystemPlan && !LINKS.some((link) => link.path === "/store")) {
     LINKS.splice(3, 0, {
       path: "/store",
@@ -77,8 +71,15 @@ const Header = () => {
       textColor: "#30BA76",
       partialMatch: true,
     });
+    if (activeOrg?.modules?.cmtyReferral && !LINKS.some((link) => link.path === "/referrals")) {
+      LINKS.splice(4, 0, { path: "/referrals", label: "Referrals", textColor: "#E9FF90", partialMatch: true });
+    }
+  } else {
+    if (activeOrg?.modules?.cmtyReferral && !LINKS.some((link) => link.path === "/referrals")) {
+      LINKS.splice(3, 0, { path: "/referrals", label: "Referrals", textColor: "#E9FF90", partialMatch: true });
+    }
   }
-  
+
   return (
     <HeaderBar>
       <Link to="/">
