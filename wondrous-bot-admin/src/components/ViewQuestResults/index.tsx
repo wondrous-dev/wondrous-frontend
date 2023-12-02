@@ -34,6 +34,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
   const { activeOrg } = useContext(GlobalContext);
 
   const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState(QUEST_SUBMISSION_STATUS.IN_REVIEW);
   const { data: orgDiscordConfig, error: getDiscordConfigError } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
     notifyOnNetworkStatusChange: true,
@@ -48,19 +49,31 @@ const ViewQuestResults = ({ quest, rewards }) => {
   const guildDiscordChannels = guildDiscordChannelsData?.getAvailableChannelsForDiscordGuild;
   const existingNotificationChannelId =
     orgDiscordConfig?.getCmtyOrgDiscordConfig?.additionalData?.notificationChannelId;
-  const {
-    data: submissionsData,
-    refetch,
-    fetchMore,
-  } = useQuery(GET_SUBMISSIONS_FOR_QUEST, {
-    variables: {
-      questId: quest?.id,
-      status: filter,
-      limit: LIMIT,
-      offset: 0,
-    },
-    skip: !quest?.id || !filter,
-  });
+  const [getSubmissionsForQuest, { data: submissionsData, refetch, fetchMore, previousData }] = useLazyQuery(
+    GET_SUBMISSIONS_FOR_QUEST,
+    {
+      notifyOnNetworkStatusChange: true,
+      variables: {
+        questId: quest?.id,
+        status: filter,
+        limit: LIMIT,
+        offset: 0,
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (quest?.id && filter && !previousData) {
+      getSubmissionsForQuest({
+        variables: {
+          questId: quest?.id,
+          status: filter,
+          limit: LIMIT,
+          offset: 0,
+        },
+      }).then(() => setLoading(false));
+    }
+  }, [quest?.id, filter, previousData]);
 
   const handleFetchMore = () => {
     const currentLength = submissionsData?.getQuestSubmissions?.length;
@@ -89,14 +102,17 @@ const ViewQuestResults = ({ quest, rewards }) => {
     skip: !quest?.id,
   });
 
-  const handleFilterChange = (value) => {
+  const handleFilterChange = (filter, value) => {
     if (filter === value) return;
-
+    setLoading(true);
+    setFilter(value);
     refetch({
       questId: quest?.id,
       status: value,
+    }).then(({ data }) => {
+      setLoading(false);
+      setHasMore(data?.getQuestSubmissions?.length >= LIMIT);
     });
-    setFilter(value);
   };
 
   const timeboundDate = useMemo(() => {
@@ -166,20 +182,23 @@ const ViewQuestResults = ({ quest, rewards }) => {
     }
   }, [quest?.conditions?.length]);
 
+  const submissions = useMemo(() => {
+    if (loading || !submissionsData?.getQuestSubmissions?.length || !quest) return [];
+    return submissionsData?.getQuestSubmissions?.map((submission) => ({
+      user:
+        submission?.creator?.username || submission?.creator?.discordUsername || submission?.creator?.telegramUsername,
+      pointReward: quest?.pointReward,
+      stepsData: submission?.stepsData,
+      steps: quest?.steps,
+      id: submission?.id,
+      approvedAt: submission?.approvedAt,
+      rejectedAt: submission?.rejectedAt,
+    }));
+  }, [submissionsData?.getQuestSubmissions, loading, quest]);
+
   if (!quest) {
     return null;
   }
-
-  const submissions = submissionsData?.getQuestSubmissions?.map((submission) => ({
-    user:
-      submission?.creator?.username || submission?.creator?.discordUsername || submission?.creator?.telegramUsername,
-    pointReward: quest?.pointReward,
-    stepsData: submission?.stepsData,
-    steps: quest?.steps,
-    id: submission?.id,
-    approvedAt: submission?.approvedAt,
-    rejectedAt: submission?.rejectedAt,
-  }));
 
   const levelText = quest?.isOnboarding ? "None - Onboarding Quest" : quest?.level;
   const sections = [
@@ -321,6 +340,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
             handleFilterChange={handleFilterChange}
             filter={filter}
             fetchMore={handleFetchMore}
+            loading={loading}
             hasMore={hasMore}
             quest={quest}
           />

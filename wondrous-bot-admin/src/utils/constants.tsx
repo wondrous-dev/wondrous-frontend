@@ -489,3 +489,11 @@ export const QUALIFYING_ACTION_TYPES = {
   QUEST: "quest",
   ANY_QUEST: "any_quest",
 };
+
+export const LOCKED_PATHS = [
+  '/store',
+  '/store/items/create',
+  '/store/items/:id',
+  '/analytics'
+];
+

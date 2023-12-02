@@ -269,6 +269,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           component: DynamicCondition,
           key: "questConditions",
           componentProps: {
+            questId: questSettings.id,
             value: questSettings.questConditions,
             conditionLogic: questSettings.conditionLogic,
             handleUpdate: setQuestSettings,

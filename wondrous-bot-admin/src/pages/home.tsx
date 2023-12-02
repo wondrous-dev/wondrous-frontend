@@ -12,7 +12,7 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import StarIcon from "components/Icons/StarIcon";
 import { AddBotModal } from "pages/onboarding/discord/addBotModal";
 import { ConfigureNotificationsOnboardingModal } from "./onboarding/discord/configureNotificationsModal";
-import { usePaywall, useSubscription } from "utils/hooks";
+import { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks";
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
 import HomeBackgroundQuests from "components/Icons/HomePageBackgroundQuests.svg";
@@ -104,7 +104,7 @@ const CardsComponent = ({ cards }) => {
 const HomePage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const subscription = useSubscription();
-  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { setPaywall, setPaywallMessage, setCanBeClosed, setOnCancel } = useSubscriptionPaywall();
   const plan = getPlan(subscription?.tier);
   const navigate = useNavigate();
   const [openAddBotModal, setOpenAddBotModal] = useState(false);
@@ -166,7 +166,7 @@ const HomePage = () => {
   const handleNavigationToNewQuest = () => {
     if (plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
       setPaywall(true);
-      setPaywallMessage("You have reached the limit of quests for your current plan.");
+      return setPaywallMessage("You have reached the limit of quests for your current plan.");
     } else {
       navigate("/quests/create");
     }

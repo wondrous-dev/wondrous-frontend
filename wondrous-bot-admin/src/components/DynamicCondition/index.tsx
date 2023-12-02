@@ -15,6 +15,7 @@ import { useDiscordRoles } from "utils/discord";
 import AddIcon from "@mui/icons-material/Add";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import useLevels from "utils/levels/hooks";
+import CreateQuestContext from "utils/context/CreateQuestContext";
 
 const CONDITION_MAP = [
   {
@@ -108,7 +109,7 @@ const FilterGroup = ({ condition, handleChange, options, handleClose, typeOption
 const DynamicCondition = ({ value, handleUpdate, options, stateKey, conditionLogic = null }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { activeOrg } = useContext(GlobalContext);
-
+  const {questId} = useContext(CreateQuestContext)
   const fetchConditions = useMemo(() => {
     return {
       [CONDITION_TYPES.QUEST]: options.includes(CONDITION_TYPES.QUEST),
@@ -197,6 +198,9 @@ const DynamicCondition = ({ value, handleUpdate, options, stateKey, conditionLog
           value: quest.id,
           label: quest.title,
         }));
+        if(questId) {
+          return quests.filter((quest) => quest.value !== questId)
+        }
         return quests;
       }
       if (type === CONDITION_TYPES.LEVEL) {

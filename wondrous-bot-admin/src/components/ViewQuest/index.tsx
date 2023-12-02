@@ -15,6 +15,8 @@ import { ImageComponent, StyledLink, TextLabel } from "./styles";
 import useErrorHandler from "./useErrorHandler";
 import { format } from "date-fns";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
+import { HoveredImage, ImageContainer, ImageDefault } from "components/Navbar/styles";
+import { Link } from "react-router-dom";
 
 const ViewQuest = ({ quest, loading }) => {
   const params = {
@@ -152,7 +154,10 @@ const ViewQuest = ({ quest, loading }) => {
         }}
       >
         <StyledLink to="/">
-          <img src="/images/wonder-logo-3.svg" />
+          <ImageContainer>
+            <ImageDefault src="/wonder.svg" />
+            <HoveredImage src="/wonder-colored.svg" />
+          </ImageContainer>
         </StyledLink>
         {!quest || loading ? (
           <PageSpinner color="#fee2ca" />
@@ -216,7 +221,7 @@ const ViewQuest = ({ quest, loading }) => {
                 <Box display="flex" alignItems="center" gap="4px">
                   <TextLabel>Submission Deadline: </TextLabel>
                   <TextLabel weight={600} color="#2A8D5C">
-                    {format(new Date(quest?.endAt), "MM/DD/YY")}
+                    {format(new Date(quest?.endAt), "MM/dd/yy")}
                   </TextLabel>
                 </Box>
               ) : null}

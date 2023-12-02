@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { getPlan } from "utils/common";
 import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
-import { usePaywall, useSubscription } from "utils/hooks";
+import { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks";
 
 const INACTIVE_QUESTS = {
   type: QUEST_STATUSES.INACTIVE,
@@ -42,7 +42,7 @@ const QuestsPage = () => {
   const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
   const { user } = useMe() || {};
   const subscription = useSubscription();
-  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { setPaywall, setPaywallMessage, setCanBeClosed, setOnCancel } = useSubscriptionPaywall();
   const { data: getOrgQuestStatsData, loading } = useQuery(GET_ORG_QUEST_STATS, {
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -56,7 +56,7 @@ const QuestsPage = () => {
   const handleNavigationToNewQuest = () => {
     if (plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
       setPaywall(true);
-      setPaywallMessage("You have reached the limit of quests for your current plan.");
+      return setPaywallMessage("You have reached the limit of quests for your current plan.");
     } else {
       navigate("/quests/create");
     }
