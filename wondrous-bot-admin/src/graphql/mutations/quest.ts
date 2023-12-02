@@ -90,8 +90,8 @@ export const ATTACH_QUEST_STEPS_MEDIA = gql`
 `;
 
 export const START_QUEST = gql`
-  mutation startQuest($questId: ID!) {
-    startQuest(questId: $questId) {
+  mutation startQuest($questId: ID!, $referralCode: String, $referralCampaignExternalId: ID) {
+    startQuest(questId: $questId, referralCode: $referralCode, referralCampaignExternalId: $referralCampaignExternalId) {
       channelLink
       error
     }
@@ -99,8 +99,8 @@ export const START_QUEST = gql`
 `;
 
 export const CONNECT_CMTY_USER = gql`
-  mutation connectCmtyUser($code: String!, $questId: ID!) {
-    connectCmtyUser(code: $code, questId: $questId) {
+  mutation connectCmtyUser($code: String!, $questId: ID, $referralCampaignExternalId: ID) {
+    connectCmtyUser(code: $code, questId: $questId, referralCampaignExternalId: $referralCampaignExternalId) {
       token
     }
   }

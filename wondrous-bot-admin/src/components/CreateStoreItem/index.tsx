@@ -158,9 +158,7 @@ const CreateStoreItem = ({
     };
     try {
       await storeItemValidator(body);
-      const { ...rest } = body;
-
-      await handleMutation(rest);
+      await handleMutation(body);
 
       const storeItemDataMediaUploads = Array.isArray(storeItemData?.mediaUploads) ? storeItemData?.mediaUploads : [];
       const defaultStoreItemDataMediaUploads = Array.isArray(defaultStoreItemData?.mediaUploads)

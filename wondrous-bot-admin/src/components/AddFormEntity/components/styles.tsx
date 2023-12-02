@@ -20,6 +20,7 @@ export const CustomTextField = styled(InputUnstyled)`
       font-family: Poppins;
       font-size: 15px;
       font-style: normal;
+      // padding-left: 40px;
       font-weight: 400;
       height: ${({ multiline }) => (multiline ? "110px" : "40px")};
       resize: none;

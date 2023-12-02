@@ -7,7 +7,7 @@ interface Props {
 }
 
 const ErrorField = ({ errorText }) => {
-  if(!errorText || typeof errorText !== 'string') return;
+  if(!errorText || typeof errorText !== 'string') return null;
   return (
     <Box display="flex" gap="2px" alignItems="flex-start" paddingTop="5px"> 
       <WarningIcon />

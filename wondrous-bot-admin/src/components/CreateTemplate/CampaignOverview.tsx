@@ -31,14 +31,14 @@ const REQUIRE_REVIEW_OPTIONS = [
   },
 ];
 
-const CampaignOverviewSections = ({
+export const CampaignOverviewSections = ({
   canBeHidden = false,
   settingsLayout,
   settings,
   showBorder = true,
   errors,
-  questSettings,
-  setQuestSettings,
+  entitySettings,
+  setEntitySettings,
   handleChange,
 }) => {
   const [show, setShow] = useState(!canBeHidden);
@@ -95,14 +95,9 @@ const CampaignOverviewSections = ({
                   alignItems: "baseline",
                 }),
               }}
-            >
-              <Label
-                sx={{
-                  capitalize: true,
-                }}
-              >
-                {label}
-              </Label>
+            > 
+            {/* //TODO: check back the minWidth */}
+              <Label minWidth="190px">{label}</Label>
               <Grid container item flex="1">
                 <Box display="flex" alignItems="center" width="100%">
                   {Component ? (
@@ -110,9 +105,9 @@ const CampaignOverviewSections = ({
                       onChange={(value) => handleChange(key, value)}
                       error={errors[key]}
                       stateKey={key}
-                      value={questSettings[key]}
-                      questSettings={questSettings}
-                      setQuestSettings={setQuestSettings}
+                      value={entitySettings[key]}
+                      entitySettings={entitySettings}
+                      setEntitySettings={setEntitySettings}
                       {...componentProps}
                     />
                   ) : null}
@@ -143,7 +138,6 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
     });
   };
 
-
   const sections: {
     canBeHidden?: boolean;
     showBorder?: boolean;
@@ -162,7 +156,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           label: "Quest Title",
           component: QuestTitle,
           componentProps: {
-            stateKey: 'title'
+            stateKey: "title",
           },
           key: "title",
         },
@@ -301,8 +295,8 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
             showBorder={showBorder}
             handleChange={handleChange}
             errors={errors}
-            questSettings={questSettings}
-            setQuestSettings={setQuestSettings}
+            entitySettings={questSettings}
+            setEntitySettings={setQuestSettings}
           />
         );
       })}

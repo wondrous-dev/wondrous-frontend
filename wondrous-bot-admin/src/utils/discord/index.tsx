@@ -96,20 +96,12 @@ export const getTelegramBotLink = () => {
 };
 
 export const useDiscordRoles = ({ orgId, skip = false }) => {
-  const [getCmtyOrgDiscordRoles, { data: getCmtyOrgDiscordRolesData, variables }] = useLazyQuery(
-    GET_ORG_DISCORD_ROLES,
-    {
-      fetchPolicy: "cache-and-network",
-    }
-  );
-  useEffect(() => {
-    if (skip || !orgId || orgId === variables?.orgId) return;
-
-    getCmtyOrgDiscordRoles({
-      variables: {
-        orgId,
-      },
-    });
-  }, [getCmtyOrgDiscordRolesData, orgId, skip]);
+  const { data: getCmtyOrgDiscordRolesData, variables } = useQuery(GET_ORG_DISCORD_ROLES, {
+    fetchPolicy: "cache-and-network",
+    skip: skip || !orgId,
+    variables: {
+      orgId,
+    },
+  });
   return getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles || [];
 };

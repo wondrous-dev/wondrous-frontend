@@ -4,7 +4,7 @@ import CelebrationArtwork from "components/Shared/CelebrationArtwork";
 import Modal from "components/Shared/Modal";
 import { useEffect, useState } from "react";
 
-const QuestCelebrationComponent = ({ duration = 2000, title = "Wooho! You created your first quest!", onClose }) => {
+const QuestCelebrationComponent = ({ duration = 2000, title = "Woohoo! You created your first quest!", onClose }) => {
   const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {

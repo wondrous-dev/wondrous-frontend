@@ -30,7 +30,7 @@ const selectReward = ({ type, value }) => {
   return rewardProps[type] || { text: `${value} ${type}`, Icon: TokensIcon };
 };
 
-const Reward = ({ type, value }) => {
+export const Reward = ({ type, value }) => {
   const { text, Icon = null } = selectReward({ type, value });
   return (
     <Grid
