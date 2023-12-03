@@ -125,45 +125,6 @@ const CreateTemplate = ({
     );
   };
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const newSteps = tourSteps.map((step: any) => {
-      if (step.id === "tutorial-quest-rewards") {
-        return {
-          ...step,
-          handleNextAction: () => {
-            setIsRewardModalOpen(true);
-            setCurrentStep((prev) => prev + 1);
-          },
-        };
-      }
-      if (step.id === "tutorial-add-rewards") {
-        return {
-          ...step,
-          handleNextAction: () => {
-            setIsRewardModalOpen(false);
-            setCurrentStep((prev) => prev + 1);
-          },
-          handlePrevAction: () => {
-            setIsRewardModalOpen(false);
-            setCurrentStep((prev) => prev - 1);
-          },
-        };
-      }
-      if (step.id === "tutorial-activate-quest") {
-        return {
-          ...step,
-          handlePrevAction: () => {
-            setIsRewardModalOpen(true);
-            setCurrentStep((prev) => prev - 1);
-          },
-        };
-      }
-      return step;
-    });
-    setTourSteps(newSteps);
-  }, [isOpen]);
-
   const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
     const stepsMedia = await Promise.all(
       localSteps.map(async (step, idx) => {
