@@ -19,7 +19,7 @@ const useWonderWeb3Modal = () => {
   const [assets, setAssets] = useState<WonderWeb3AssetMap>(null);
   const [ensName, setENSName] = useState(null);
 
-  const { open } = useWeb3Modal();
+  const { open, close } = useWeb3Modal();
 
   const { data } = useWeb3ModalEvents();
 
@@ -81,12 +81,6 @@ const useWonderWeb3Modal = () => {
 
   const signMessage = async (message: string) => {
     if (!walletProvider || !isConnected) return;
-    // if (connecting) {
-    //   setConnecting(false);
-    //   return;
-    // }
-
-    // setConnecting(true);
     try {
       const prov = new ethers.providers.Web3Provider(walletProvider);
       if (!SUPPORTED_CHAIN_IDS[chainId]) {
@@ -97,13 +91,10 @@ const useWonderWeb3Modal = () => {
 
       // Now sign message
       const signedMessage = await signer.signMessage(message);
-      console.log(signedMessage, "signed msg");
       const recoverMessage = ethers.utils.verifyMessage(message, signedMessage);
-      console.log(recoverMessage, "recover msg");
       // setConnecting(false);
       return signedMessage;
     } catch (error) {
-      console.log("Error signing message ", error);
       // Error Signed message
       // setConnecting(false);
       if (error.code && error.code == 4001) {
@@ -131,6 +122,7 @@ const useWonderWeb3Modal = () => {
     eventsData: data,
     lastEvent: data?.event,
     signMessage,
+    closeWeb3Modal: close,
   };
 };
 

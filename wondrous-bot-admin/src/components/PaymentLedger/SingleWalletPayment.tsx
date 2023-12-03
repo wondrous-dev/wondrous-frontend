@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import { LINK_CMTY_PAYMENTS_WITH_TRANSACTION } from "graphql/mutations/payment";
 import { useContext, useEffect, useState } from "react";
 import { TransactionData } from "services/web3/types";
-import useWonderWeb3 from "services/web3/useWonderWeb3";
 import { ERC20abi } from "services/contracts/erc20.abi";
 import GlobalContext from "utils/context/GlobalContext";
 import { DEFAULT_ERC20_GAS_LIMIT, SUPPORTED_CHAINS } from "utils/web3Constants";
@@ -59,15 +58,14 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     }
   );
 
-  // useEffect(() => {
-  //   wonderWeb3.activateAndStore("injected");
-  // }, []);
-  // const wonderWeb3 = useWonderWeb3();
-  // const { provider } = useWeb3();
-  // const { address, chain: connectedChain } = wonderWeb3;
+  const {chainId, sendTransaction, walletProvider, address, getGasPrice, open, closeWeb3Modal, lastEvent} = useWonderWeb3Modal();
+    
 
-  const {chainId, sendTransaction, walletProvider, address, getGasPrice} = useWonderWeb3Modal();
-
+  useEffect(() => {
+    if(paymentData?.chain === SUPPORTED_CHAINS[chainId] && lastEvent === 'MODAL_OPEN') {
+      closeWeb3Modal();
+    }
+  }, [chainId, paymentData?.chain, lastEvent])
 
   const handleChainVerify = () => {
     try {
@@ -76,6 +74,7 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
         connectedChainId: chainId,
       })
     } catch (error) {
+      open({view: "Networks"});
       setSnackbarAlertMessage(`Please switch to ${paymentData?.chain} chain`);
       setSnackbarAlertOpen(true);
       throw new Error();
@@ -216,10 +215,8 @@ const SingleWalletPayment = ({ paymentData , disabled = false, tokenId, onPaymen
     }
   };
 
-  const handlePaymentClick = () => sendTransactionFromMetamask();
-
   return (
-    <SharedSecondaryButton onClick={handlePaymentClick} disabled={disabled}>
+    <SharedSecondaryButton onClick={sendTransactionFromMetamask} disabled={disabled}>
       {loading ? (
         <CircularProgress
           size={30}

@@ -63,7 +63,7 @@ export const exportSubmissionPaymentCsv = (data) => {
 
 export const verifyChain = ({ chain, connectedChainId }) => {
   if (chain && connectedChainId) {
-    if (chain !== SUPPORTED_CHAIN_IDS[connectedChainId]) {
+    if (chain !== SUPPORTED_CHAINS[connectedChainId]) {
       throw new Error();
     }
   }

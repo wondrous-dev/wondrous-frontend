@@ -55,6 +55,7 @@ import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
 import { createWeb3Modal, defaultConfig, useWeb3Modal } from '@web3modal/ethers5/react';
 import WalletTestPage from "pages/wallet-test";
+import { SUPPORTED_CHAINS_META } from "utils/web3Constants";
 
 const projectId = 'c6c9bacd35afa3eb9e6cccf6d8464395';
 
@@ -83,7 +84,7 @@ createWeb3Modal({
     enableCoinbase: true,
     // rpcUrl: '...' // used for the Coinbase SDK
   }),
-  chains: [mainnet],
+  chains: SUPPORTED_CHAINS_META,
   projectId,
 });
 

@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { CircularProgress, Typography } from "@mui/material";
+import { Box, ButtonBase, CircularProgress, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { CONNECT_COMMUNITY_USER_WALLET, VERIFY_COMMUNITY_USER_TWITTER } from "graphql/mutations";
 import { useCallback, useEffect, useState } from "react";
@@ -12,6 +12,9 @@ import apollo from "services/apollo";
 import { linkCmtyUserWallet } from "components/Auth";
 import { GRAPHQL_ERRORS } from "utils/constants";
 import useWeb3Auth from "services/web3/useWeb3Auth";
+import WalletConnect from "components/Icons/Login/walletconnect.svg";
+import { SharedSecondaryButton } from "components/Shared/styles";
+import Spinner from "components/Shared/Spinner";
 
 const buttonStyles = {
   marginRight: "8px",
@@ -25,7 +28,9 @@ const WalletConnectPage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [connectionComplete, setConnectionComplete] = useState(false);
 
-  const { linkUserWithWallet, address, chainId, isActivating, isConnected, open } = useWeb3Auth({ setErrorMessage });
+  const { linkUserWithWallet, address, closeWeb3Modal, isActivating, isConnected, open } = useWeb3Auth({
+    setErrorMessage,
+  });
   // const linkUserWithWallet = useCallback(async () => {
   //   if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
   //     // get current timestamp
@@ -64,7 +69,9 @@ const WalletConnectPage = () => {
       discordUserId,
       telegramUserId,
       migrateOrgId,
-      onSuccess: () => setConnectionComplete(true),
+      onSuccess: () => {
+        setConnectionComplete(true);
+      },
       onFail: () => setErrorMessage("Error linking wallet, please contact support"),
     });
 
@@ -79,26 +86,27 @@ const WalletConnectPage = () => {
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
       <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
         {!connectionComplete ? (
-          <>
+          <Box display="flex" gap="24px" flexDirection="column">
             <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-              Connect your wallet via the providers below
+              Connect your wallet
             </Typography>
-            <div
+            <SharedSecondaryButton onClick={open}>{isActivating ? <Spinner /> : "Connect"}</SharedSecondaryButton>
+            {/* <div
               style={{
                 flex: "display",
                 flexDirection: "row",
               }}
-            >
-              <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
+            > */}
+            {/* <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
               <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
-              <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
-            </div>
+              <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} /> */}
+            {/* </div> */}
             {errorMessage && (
               <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" lineHeight="24px" color="red">
                 {errorMessage}
               </Typography>
             )}
-          </>
+          </Box>
         ) : (
           <>
             <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">

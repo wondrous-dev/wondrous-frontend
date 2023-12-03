@@ -31,6 +31,18 @@ export const COMMUNITY_BADGE_CHAIN_SELECT_OPTIONS = [
         />
       ),
     },
+    {
+      label: 'Goerli',
+      value: 'goerli',
+      icon: (
+        <Ethereum
+          style={{
+            width: "20px",
+            marginRight: "8px",
+          }}
+        />
+      ),
+    }
   ];
   
 export const CONTRACT_LABELS = {

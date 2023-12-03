@@ -1,4 +1,3 @@
-
 import {
   Arbitrum,
   Binance,
@@ -14,9 +13,8 @@ import {
   WonderCoin,
   Aurora,
   BaseCoin,
-  Linea
+  Linea,
 } from "components/Icons/web3";
-
 
 export enum SupportedChainType {
   ETH = "eth", // should be evm
@@ -35,7 +33,7 @@ const SUPPORTED_CHAINS = {
   1313161554: "aurora",
   5: "goerli",
   8453: "base",
-  59144: "linea"
+  59144: "linea",
 };
 
 export const RPC_URLS: { [chainId: number]: string } = {
@@ -48,9 +46,9 @@ export const RPC_URLS: { [chainId: number]: string } = {
   288: import.meta.env.VITE_URL_BOBA,
   10: import.meta.env.VITE_URL_OPTIMISM,
   43114: import.meta.env.VITE_URL_AVALANCHE,
-  1313161554: 'https://mainnet.aurora.dev',
-  8453: 'https://base.llamarpc.com',
-  59144: 'https://rpc.linea.build',
+  1313161554: "https://mainnet.aurora.dev",
+  8453: "https://base.llamarpc.com",
+  59144: "https://rpc.linea.build",
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -67,7 +65,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   gnosis: "Gnosis Chain",
   aurora: "Aurora",
   base: "Base",
-  linea: "Linea"
+  linea: "Linea",
 };
 
 export const CHAIN_TO_EXPLORER_URL = {
@@ -83,8 +81,8 @@ export const CHAIN_TO_EXPLORER_URL = {
   avalanche: "https://snowtrace.io",
   gnosis: "https://gnosisscan.io",
   aurora: "https://explorer.mainnet.aurora.dev",
-  base: 'https://basescan.org',
-  linea: 'https://lineascan.build',
+  base: "https://basescan.org",
+  linea: "https://lineascan.build",
 };
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
@@ -109,7 +107,6 @@ export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) =
 
 export const DEFAULT_ERC20_GAS_LIMIT = "0x3D090"; // TODO hackey == 250000
 
-
 const CHAIN_SELECT_OPTIONS = [
   { label: "Ethereum", value: "ethereum", icon: <Ethereum /> },
   { label: "Polygon", value: "polygon", icon: <Matic /> },
@@ -121,12 +118,13 @@ const CHAIN_SELECT_OPTIONS = [
   { label: "Avalanche", value: "avalanche", icon: <Avalanche /> },
   // { label: "Harmony", value: "harmony", icon: <Harmony /> },
   // { label: "Boba", value: "boba", icon: <Boba /> },
-  {label: "Linea", value: "linea", icon: <Linea/>},
+  { label: "Linea", value: "linea", icon: <Linea /> },
   {
-    label: "Base", value: "base", icon: <BaseCoin/>
+    label: "Base",
+    value: "base",
+    icon: <BaseCoin />,
   },
   { label: "Aurora", value: "aurora", icon: <Aurora /> },
-
 ];
 
 if (!import.meta.env.VITE_PRODUCTION) {
@@ -141,4 +139,96 @@ export function signedMessageIsString(message: string | boolean): message is str
   return typeof message === "string";
 }
 
-export { SUPPORTED_CHAINS, CHAIN_SELECT_OPTIONS };
+const SUPPORTED_CHAINS_META = [
+  {
+    chainId: 1,
+    name: "Ethereum Mainnet",
+    currency: "ETH",
+    explorerUrl: "https://etherscan.io",
+    rpcUrl: import.meta.env.VITE_URL_ETH,
+  },
+  ...(import.meta.env.VITE_PRODUCTION
+    ? []
+    : [
+        {
+          chainId: 5,
+          name: "Goerli",
+          currency: "ETH",
+          explorerUrl: "https://goerli.etherscan.io",
+          rpcUrl: import.meta.env.VITE_URL_GOERLI,
+        },
+      ]),
+  {
+    chainId: 137,
+    name: "Polygon Mainnet",
+    currency: "MATIC",
+    explorerUrl: "https://polygonscan.com",
+    rpcUrl: import.meta.env.VITE_URL_MATIC,
+  },
+  {
+    chainId: 1666600000,
+    name: "Harmony Mainnet",
+    currency: "ONE",
+    explorerUrl: "https://explorer.harmony.one",
+    rpcUrl: import.meta.env.VITE_URL_HARMONY,
+  },
+  {
+    chainId: 42161,
+    name: "Arbitrum One",
+    currency: "ETH",
+    explorerUrl: "https://arbiscan.io",
+    rpcUrl: import.meta.env.VITE_URL_ARBITRUM,  
+  },
+  {
+    chainId: 56,
+    name: "BSC Mainnet",
+    currency: "BNB",
+    explorerUrl: "https://www.bscscan.com",
+    rpcUrl: import.meta.env.VITE_URL_BSC,
+  },
+  {
+    chainId: 288,
+    name: "Boba Mainnet",
+    currency: "BOBA",
+    explorerUrl: "https://bobascan.com",
+    rpcUrl: import.meta.env.VITE_URL_BOBA,
+  },
+  {
+    chainId: 10,
+    name: "Optimism Mainnet",
+    currency: "ETH",
+    explorerUrl: "https://optimistic.etherscan.io",
+    rpcUrl: import.meta.env.VITE_URL_OPTIMISM,
+  },
+  {
+    chainId: 43114,
+    name: "Avalanche",
+    currency: "AVAX",
+    explorerUrl: "https://snowtrace.io",
+    rpcUrl: import.meta.env.VITE_URL_AVALANCHE,
+
+  },
+  {
+    chainId: 1313161554,
+    name: "Aurora",
+    currency: "ETH",
+    explorerUrl: "https://explorer.mainnet.aurora.dev",
+    rpcUrl: "https://mainnet.aurora.dev",
+  },
+  {
+    chainId: 8453,
+    name: "Base",
+    currency: "ETH",
+    explorerUrl: "https://basescan.org",
+    rpcUrl: "https://base.llamarpc.com",
+  },
+  {
+    chainId: 59144,
+    name: "Linea",
+    currency: "ETH",
+    explorerUrl: "https://lineascan.build",
+    rpcUrl: "https://rpc.linea.build",
+  }
+];
+
+export { SUPPORTED_CHAINS, CHAIN_SELECT_OPTIONS, SUPPORTED_CHAINS_META };

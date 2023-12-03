@@ -192,29 +192,6 @@ function Login({ csrfToken }) {
             <Button height={40} minWidth={40} borderRadius={300} onClick={() => (window.location.href = discordUrl)}>
               <DiscordIcon />
             </Button>
-
-            {/* <Button
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '300px',
-                margin: '0 6px',
-                background: '#474747',
-              }}
-              onClick={() => {
-                router.push('/signup/email', undefined, {
-                  shallow: true,
-                });
-              }}
-            >
-              <EmailIcon
-                style={{
-                  width: '18px',
-                  height: '18px',
-                  filter: 'grayscale(1)',
-                }}
-              />
-            </Button> */}
           </Connectors>
         </div>
       </Layout>

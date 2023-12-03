@@ -66,7 +66,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     }
   );
 
-  const { chainId, address, walletProvider } = useWonderWeb3Modal();
+  const { chainId, address, walletProvider, open } = useWonderWeb3Modal();
 
   const conditions = useMemo(() => {
     const contractAddress = paymentItems?.[0]?.contractAddress;
@@ -110,6 +110,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     } catch (error) {
       setSnackbarAlertMessage(`Please switch to ${chain} chain`);
       setSnackbarAlertOpen(true);
+      open({ view: "Networks" });
       throw new Error();
     }
   };

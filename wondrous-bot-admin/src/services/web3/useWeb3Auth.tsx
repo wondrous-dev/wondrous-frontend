@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useWonderWeb3Modal from "./useWonderWeb3Modal";
 import { getUserSigningMessage, linkCmtyUserWallet, walletSignin, walletSignup } from "components/Auth";
 import { handleUserOnboardingRedirect } from "utils/common";
@@ -28,7 +28,7 @@ function getFormattedDate() {
 const useWeb3Auth = ({ setErrorMessage }) => {
   // since we can't disconnect a user's wallet this is used in order to check if the user actually clicked the login button
   const [isActivating, setIsActivating] = useState(false);
-  const { address, chainId, open, disconnect, isConnected, signMessage } = useWonderWeb3Modal();
+  const { address, chainId, open, disconnect, isConnected, signMessage, closeWeb3Modal } = useWonderWeb3Modal();
   const { search } = useLocation();
 
   const searchParams = new URLSearchParams(search);
@@ -49,6 +49,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
     if (address && isConnected && !!SUPPORTED_CHAIN_IDS[chainId]) {
       // Retrieve Signed Message
       const messageToSign = await getUserSigningMessage(address, "eth");
+      closeWeb3Modal();
       if (messageToSign) {
         const signedMessage = await signMessage(messageToSign);
         if (signedMessageIsString(signedMessage)) {
@@ -90,6 +91,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
       if (messageToSignObject?.userExists && isSignedMessageString) {
         const user = await walletSignin(address, signedMessage);
         if (user) {
+          closeWeb3Modal();
           return handleUserOnboardingRedirect(null, navigate, params, "/");
         }
       }
@@ -106,6 +108,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
             ) {
               try {
                 user = await walletSignin(address, signedMessage);
+                closeWeb3Modal();
               } catch (err) {
                 disconnect();
                 setIsActivating(false);
@@ -119,10 +122,11 @@ const useWeb3Auth = ({ setErrorMessage }) => {
             }
           }
           if (user) {
+            closeWeb3Modal();
             handleUserOnboardingRedirect(null, navigate, params, "/onboarding/welcome");
           }
-        } else if (signedMessage === false) {
-          setErrorMessage("Signature rejected. Try again.");
+        } else if (isSignedMessageString === false) {
+          setErrorMessage("You need to sign the message on your wallet");
           disconnect();
           setIsActivating(false);
         } else {
@@ -136,17 +140,12 @@ const useWeb3Auth = ({ setErrorMessage }) => {
     }
   };
 
-  const linkUserWithWallet = async ({
-    discordUserId,
-    telegramUserId,
-    migrateOrgId,
-    onSuccess,
-    onFail
-  }) => {
+  const linkUserWithWallet = async ({ discordUserId, telegramUserId, migrateOrgId, onSuccess, onFail }) => {
     if (address && chainId && isConnected) {
       const messageToSign = `Welcome to wonder\nDate: ${getFormattedDate()}\nTimestamp: ${Date.now().toString()}`;
       if (messageToSign) {
         const signedMessage = await signMessage(messageToSign);
+        console.log(signedMessage, 'signed message')
         if (signedMessageIsString(signedMessage)) {
           const result = await linkCmtyUserWallet(
             discordUserId,
@@ -158,17 +157,16 @@ const useWeb3Auth = ({ setErrorMessage }) => {
             migrateOrgId
           );
           if (result === true) {
-            // setConnectionComplete(true);
             setIsActivating(false);
-            onSuccess()
+            closeWeb3Modal();
+            onSuccess();
           }
           if (result === false) {
-            onFail()
+            onFail();
             setIsActivating(false);
-            // setErrorMessage("Error linking wallet, please contact support");
             disconnect();
           }
-        } else if (signedMessage === false) {
+        } else if (!signedMessageIsString(signedMessage)) {
           setIsActivating(false);
           setErrorMessage("Signature rejected. Try again.");
           disconnect();
@@ -189,7 +187,8 @@ const useWeb3Auth = ({ setErrorMessage }) => {
     chainId,
     disconnect,
     isConnected,
-    linkUserWithWallet
+    linkUserWithWallet,
+    closeWeb3Modal
   };
 };
 
