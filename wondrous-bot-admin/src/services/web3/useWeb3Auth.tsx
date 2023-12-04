@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useWonderWeb3Modal from "./useWonderWeb3Modal";
 import { getUserSigningMessage, linkCmtyUserWallet, walletSignin, walletSignup } from "components/Auth";
 import { handleUserOnboardingRedirect } from "utils/common";
 import { GRAPHQL_ERRORS } from "utils/constants";
 import { SUPPORTED_CHAIN_IDS, SupportedChainType, signedMessageIsString } from "utils/web3Constants";
-import useWonderWeb3 from "./useWonderWeb3";
 import { useLocation, useNavigate } from "react-router-dom";
+import useAlerts from "utils/hooks";
 
 function getFormattedDate() {
   var date = new Date();
@@ -30,7 +30,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
   const [isActivating, setIsActivating] = useState(false);
   const { address, chainId, open, disconnect, isConnected, signMessage, closeWeb3Modal } = useWonderWeb3Modal();
   const { search } = useLocation();
-
+  const {setSnackbarAlertMessage, setSnackbarAlertOpen} = useAlerts();
   const searchParams = new URLSearchParams(search);
 
   const discordConnectError = searchParams.get("discordConnectError");
@@ -43,6 +43,11 @@ const useWeb3Auth = ({ setErrorMessage }) => {
     type,
   };
 
+  const onSignAlert = () => {
+    setSnackbarAlertMessage("Please sign the message on your wallet");
+    setSnackbarAlertOpen(true);
+  };
+
   const navigate = useNavigate();
   const loginWithWallet = async () => {
     setErrorMessage(null);
@@ -51,6 +56,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
       const messageToSign = await getUserSigningMessage(address, "eth");
       closeWeb3Modal();
       if (messageToSign) {
+        onSignAlert();
         const signedMessage = await signMessage(messageToSign);
         if (signedMessageIsString(signedMessage)) {
           // Sign with Wallet
@@ -86,6 +92,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
     if (address && isConnected && !!SUPPORTED_CHAIN_IDS[chainId]) {
       const messageToSignObject = await getUserSigningMessage(address, SupportedChainType.ETH, true);
       const messageToSign = messageToSignObject?.signingMessage;
+      onSignAlert();
       const signedMessage = await signMessage(messageToSign);
       const isSignedMessageString = signedMessageIsString(signedMessage);
       if (messageToSignObject?.userExists && isSignedMessageString) {
@@ -144,6 +151,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
     if (address && chainId && isConnected) {
       const messageToSign = `Welcome to wonder\nDate: ${getFormattedDate()}\nTimestamp: ${Date.now().toString()}`;
       if (messageToSign) {
+        onSignAlert();
         const signedMessage = await signMessage(messageToSign);
         if (signedMessageIsString(signedMessage)) {
           const result = await linkCmtyUserWallet(

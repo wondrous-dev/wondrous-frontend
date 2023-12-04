@@ -91,8 +91,6 @@ const useWonderWeb3Modal = () => {
 
       // Now sign message
       const signedMessage = await signer.signMessage(message);
-      const recoverMessage = ethers.utils.verifyMessage(message, signedMessage);
-      // setConnecting(false);
       return signedMessage;
     } catch (error) {
       // Error Signed message
