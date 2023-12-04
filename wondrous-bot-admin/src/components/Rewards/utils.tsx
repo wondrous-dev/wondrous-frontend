@@ -252,46 +252,6 @@ export const useDiscordRoleRewardData = () => {
 
 export const useAddRewardModalState = () => {
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
-  const { isOpen: isTourOpen, setCurrentStep, currentStep, setSteps, steps } = useTour();
-  useEffect(() => {
-    if (isTourOpen) {
-      const newSteps = steps.map((step: any) => {
-        if (step.id === "tutorial-quest-rewards") {
-          return {
-            ...step,
-            handleNextAction: () => {
-              setIsRewardModalOpen(true);
-              setCurrentStep((prev) => prev + 1);
-            },
-          };
-        }
-        if (step.id === "tutorial-add-rewards") {
-          return {
-            ...step,
-            handleNextAction: () => {
-              setIsRewardModalOpen(false);
-              setCurrentStep((prev) => prev + 1);
-            },
-            handlePrevAction: () => {
-              setIsRewardModalOpen(false);
-              setCurrentStep((prev) => prev - 1);
-            },
-          };
-        }
-        if (step.id === "tutorial-activate-quest") {
-          return {
-            ...step,
-            handlePrevAction: () => {
-              setIsRewardModalOpen(true);
-              setCurrentStep((prev) => prev - 1);
-            },
-          };
-        }
-        return step;
-      });
-      setSteps(newSteps);
-    }
-  }, [isTourOpen]);
   const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -369,9 +329,6 @@ export const useAddRewardModalState = () => {
     setAddPaymentMethod,
     poapReward,
     setPoapReward,
-    isTourOpen,
-    setCurrentStep,
-    currentStep,
     cmtyStoreItemReward,
     setCmtyStoreItemReward,
     resetStates,

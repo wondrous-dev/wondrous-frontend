@@ -337,10 +337,9 @@ export const EXCLUDED_PATHS = [
   "/verify-link",
   "/wallet/connect",
   "/telegram/start-quest/:id",
-  "/referral",
   "/telegram/connect",
   "/community-badge/claim",
-  '/wallet/test'
+  "/referral"
 ];
 
 export const TUTORIALS = {
@@ -473,3 +472,28 @@ export const NFT_TYPES = {
   ERC1155: "ERC1155",
   COMMUNITY_BADGE: "COMMUNITY_BADGE",
 };
+
+export const REFERRAL_STATUSES = {
+  ACTIVE: 'active',
+  INACTIVE: 'inactive'
+}
+
+export const REFERRAL_REWARD_SCHEME = {
+  REFERRER: "referrer",
+  REFERRED: "referred",
+  TWO_WAY: "two_way",
+}
+
+export const QUALIFYING_ACTION_TYPES = {
+  PURCHASE: "purchase",
+  QUEST: "quest",
+  ANY_QUEST: "any_quest",
+};
+
+export const LOCKED_PATHS = [
+  '/store',
+  '/store/items/create',
+  '/store/items/:id',
+  '/analytics'
+];
+

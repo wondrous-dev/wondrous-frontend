@@ -66,11 +66,11 @@ export const COMPONENT_OPTIONS = [
     value: TYPES.VERIFY_TOKEN_HOLDING,
   },
   {
-    label: "Verify Youtube Subscription",
+    label: "Verify YouTube Subscription",
     value: TYPES.SUBSCRIBE_YT_CHANNEL,
   },
   {
-    label: "Verify Youtube Like",
+    label: "Verify YouTube Like",
     value: TYPES.LIKE_YT_VIDEO,
   },
   {

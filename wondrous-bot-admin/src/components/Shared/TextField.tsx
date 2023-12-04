@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, InputAdornment, Typography } from "@mui/material";
 import { memo } from "react";
 import { CustomTextField } from "../AddFormEntity/components/styles";
 import { CustomResizableTextField, ErrorText } from "./styles";
@@ -49,10 +49,13 @@ const TextFieldComponent = ({
         variant="standard"
         placeholder={placeholder}
         error={!!error}
+        disableUnderline
         helperText={error}
         borderRadius={props?.borderRadius}
         {...props}
-      />
+      >
+        <div>yo</div>
+        </CustomTextField>
       {error ? <ErrorField errorText={error} /> : null}
     </Box>
   );

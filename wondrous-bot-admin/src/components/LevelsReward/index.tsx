@@ -1,14 +1,14 @@
 import { RoundedSecondaryButton } from "components/Shared/styles";
 import AddIcon from "@mui/icons-material/Add";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { Box, ButtonBase } from "@mui/material";
 import GlobalContext from "utils/context/GlobalContext";
 import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
-import { CloseIcon } from "components/Shared/DatePicker/Icons";
+import { CloseIcon } from "components/Shared/DatePicker/Shared/Icons";
 import { useMutation } from "@apollo/client";
 import { ADD_ORG_LEVEL_REWARD, REMOVE_ORG_LEVEL_REWARD } from "graphql/mutations";
 import RewardModal from "components/Rewards/RewardModal";
-import { NFTIcon, PoapIcon, TokensIcon } from "components/Icons/Rewards";
+import { NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { useAddRewardModalState } from "components/Rewards/utils";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
@@ -27,7 +27,6 @@ interface AddOrgLevelRewardInput {
 const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => {
   // FIXME we should pass reward current level rewards probably
   // need to fetch somewhere?
-  const allRoles = discordRoles.map((role) => role.roles).flat();
 
   const rewardModalState = useAddRewardModalState();
 
@@ -102,9 +101,7 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
             rewards?.map((reward) => (
               <ExistingLevelsReward
                 reward={reward}
-                allRoles={allRoles}
-                level={level}
-                refetchLevelRewards={refetchLevelRewards}
+                discordRoles={discordRoles}
                 handleRemove={() => handleRemove(reward.id)}
               />
             ))}
@@ -128,9 +125,11 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
   );
 };
 
-const ExistingLevelsReward = ({ reward, allRoles, level, refetchLevelRewards, handleRemove }) => {
-  const selectedRole = allRoles.find((item) => item.id === reward.discordRewardData?.discordRoleId);
-  if (level === "1") return null;
+export const ExistingLevelsReward = ({ reward, discordRoles, handleRemove = null }) => {
+  const allRoles = useMemo(() => discordRoles.map((role) => role.roles).flat(), [discordRoles]);
+
+  const selectedRole = allRoles?.find((item) => item.id === reward.discordRewardData?.discordRoleId);
+
   return (
     <StyledViewQuestResults>
       {reward.type === PAYMENT_OPTIONS.DISCORD_ROLE && (
@@ -144,26 +143,42 @@ const ExistingLevelsReward = ({ reward, allRoles, level, refetchLevelRewards, ha
             }}
           />
           {selectedRole?.name}
-          <ButtonBase onClick={() => handleRemove()}>
-            <CloseIcon />
-          </ButtonBase>
+          {handleRemove ? (
+            <ButtonBase onClick={() => handleRemove()}>
+              <CloseIcon />
+            </ButtonBase>
+          ) : null}
         </>
       )}
       {reward.type === PAYMENT_OPTIONS.TOKEN && (
         <>
           {reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE ? <NFTIcon /> : <TokensIcon />}
           {reward?.amount} {reward?.paymentMethod?.name}
-          <ButtonBase onClick={() => handleRemove()}>
-            <CloseIcon />
-          </ButtonBase>
+          {handleRemove ? (
+            <ButtonBase onClick={() => handleRemove()}>
+              <CloseIcon />
+            </ButtonBase>
+          ) : null}
         </>
       )}
       {reward?.type === PAYMENT_OPTIONS.POAP && (
         <>
           {reward?.poapRewardData?.name} <PoapIcon />
-          <ButtonBase onClick={() => handleRemove()}>
-            <CloseIcon />
-          </ButtonBase>
+          {handleRemove ? (
+            <ButtonBase onClick={() => handleRemove()}>
+              <CloseIcon />
+            </ButtonBase>
+          ) : null}
+        </>
+      )}
+      {reward?.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM && (
+        <>
+          {reward?.storeItem?.name} <StoreItemRewardIcon />
+          {handleRemove ? (
+            <ButtonBase onClick={() => handleRemove()}>
+              <CloseIcon />
+            </ButtonBase>
+          ) : null}
         </>
       )}
     </StyledViewQuestResults>

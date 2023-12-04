@@ -25,7 +25,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { activeOrg } = useContext(GlobalContext);
   const [openEcosystemDialog, setOpenEcosystemDialog] = useState(false);
-  const { setPaywall, setPaywallMessage, isBasicPLan, isHobbyPlan, isEcosystemPlan, isPremiumPlan } =
+  const { setPaywall, setPaywallMessage, isBasicPLan, isHobbyPlan, isEcosystemPlan, isPremiumPlan, setOnCancel, setCanBeClosed } =
     useSubscriptionPaywall();
 
   const componentOptions = useMemo(() => {

@@ -5,7 +5,7 @@ import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import Modal from "components/Shared/Modal";
 import { useContext, useMemo, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
-import { usePaywall, useSubscription } from "utils/hooks";
+import { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks";
 import { Label } from "../CreateTemplate/styles";
 import {
   handleAddCmtyStoreItem,
@@ -19,16 +19,6 @@ import { getPlan } from "utils/common";
 
 const isStoreAdded = false;
 
-const useSubscriptionPaywall = () => {
-  const subscription = useSubscription();
-  const plan = getPlan(subscription?.tier);
-  const { setPaywall, setPaywallMessage } = usePaywall();
-  return {
-    plan,
-    setPaywall,
-    setPaywallMessage,
-  };
-};
 
 const RewardModal = ({
   handleRewardModalToggle,
@@ -46,7 +36,7 @@ const RewardModal = ({
   title = "Add reward to quest",
 }) => {
   const { activeOrg } = useContext(GlobalContext);
-  const { plan, setPaywall, setPaywallMessage } = useSubscriptionPaywall();
+  const { plan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = useSubscriptionPaywall();
   const { discordRoleOptions, discordRoleData } = useDiscordRoleRewardData();
   const [errors, setErrors] = useState(null);
   const {
@@ -159,11 +149,9 @@ const RewardModal = ({
         rewardType,
         isUnavailable: plan === PricingOptionsTitle.Basic,
         onClick: () => {
-          setRewardType(PAYMENT_OPTIONS.TOKEN);
           if (plan === PricingOptionsTitle.Basic) {
             setPaywall(true);
             setPaywallMessage("This reward option is not available under the basic plan.");
-            setRewardType(PAYMENT_OPTIONS.DISCORD_ROLE);
             return;
           } else {
             setRewardType(PAYMENT_OPTIONS.TOKEN);

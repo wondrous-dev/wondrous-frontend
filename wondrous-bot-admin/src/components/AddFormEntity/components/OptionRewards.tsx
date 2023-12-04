@@ -7,6 +7,49 @@ import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import { TextLabel } from "components/ViewQuest/styles";
 
+export const InlineRewardUIComponent = ({
+  reward,
+  addEmptyReward = null,
+  hasDeleteButton,
+  handleRewardDelete,
+  handleAddReward,
+}) => {
+  return (
+    <Grid display="flex" gap="14px" alignItems="center" width="100%">
+      <Box
+        width="auto"
+        display="flex"
+        padding="6px 10px"
+        height="28px"
+        alignItems="center"
+        bgcolor="#E8E8E8"
+        borderRadius="6px"
+        flex="1"
+        gap="8px"
+        onClick={() => addEmptyReward?.(reward)}
+        color="#000"
+        sx={{
+          cursor: "pointer",
+        }}
+      >
+        {reward?.type === null ? "Select a reward" : <RewardContent reward={reward} />}
+      </Box>
+      {hasDeleteButton ? (
+        <ButtonIconWrapper onClick={handleRewardDelete}>
+          <DeleteIcon />
+        </ButtonIconWrapper>
+      ) : null}
+      <ButtonIconWrapper onClick={handleAddReward}>
+        <AddIcon
+          sx={{
+            color: "black",
+          }}
+        />
+      </ButtonIconWrapper>
+    </Grid>
+  );
+};
+
 const ICONS_MAP = {
   [PAYMENT_OPTIONS.DISCORD_ROLE]: DiscordRoleIcon,
   [PAYMENT_OPTIONS.POAP]: PoapIcon,
@@ -45,7 +88,7 @@ const RewardContent = ({ reward }) => {
   );
 };
 
-const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward, id }) => {
+const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward, id = null }) => {
   if (!rewards?.length) return null;
 
   const addEmptyReward = (reward) => {
@@ -57,38 +100,13 @@ const OptionRewards = ({ rewards, handleRewardDelete, handleAddReward, id }) => 
     <Grid display="flex" gap="10px" flexDirection="column" paddingLeft="46px" width="100%">
       {rewards?.map((reward, idx) => {
         return (
-          <Grid display="flex" gap="14px" alignItems="center" width="100%" key={idx}>
-            <Box
-              width="auto"
-              display="flex"
-              padding="6px 10px"
-              height="28px"
-              alignItems="center"
-              bgcolor="#E8E8E8"
-              borderRadius="6px"
-              flex="1"
-              gap="8px"
-              onClick={() => addEmptyReward(reward)}
-              color="#000"
-              sx={{
-                cursor: "pointer",
-              }}
-            >
-              {reward?.type === null ? "Select a reward" : <RewardContent reward={reward} />}
-            </Box>
-            {rewards?.length > 1 ? (
-              <ButtonIconWrapper onClick={() => handleRewardDelete(idx)}>
-                <DeleteIcon />
-              </ButtonIconWrapper>
-            ) : null}
-            <ButtonIconWrapper onClick={() => handleAddReward(id)}>
-              <AddIcon
-                sx={{
-                  color: "black",
-                }}
-              />
-            </ButtonIconWrapper>
-          </Grid>
+          <InlineRewardUIComponent
+            reward={reward}
+            handleRewardDelete={() => handleRewardDelete(idx)}
+            hasDeleteButton={rewards?.length > 1}
+            handleAddReward={() => handleAddReward(id)}
+            addEmptyReward={() => addEmptyReward(reward)}
+          />
         );
       })}
     </Grid>

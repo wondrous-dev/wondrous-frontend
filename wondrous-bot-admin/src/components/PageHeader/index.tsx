@@ -7,13 +7,14 @@ const PageHeader = ({
   withBackButton = true,
   renderActions = null,
   titleComponent = null,
-  onBackButtonClick = () => {},
+  onBackButtonClick = null,
 }) => {
   const navigate = useNavigate();
+
   const handleBackButton = () => {
-    navigate(-1);
-    onBackButtonClick?.();
+    onBackButtonClick ? onBackButtonClick?.() : navigate(-1);
   };
+
   return (
     <Grid
       display="flex"

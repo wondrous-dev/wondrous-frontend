@@ -51,6 +51,9 @@ import CreateStoreItem from "pages/store/CreateStoreItem";
 import StoreItem from "pages/store/StoreItem";
 import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
+import ReferralsPage from "pages/referrals";
+import ReferralsCreatePage from "pages/referrals/ReferralsCreate";
+import ViewReferralPage from "pages/referrals/ViewReferral";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 import { SUPPORTED_CHAINS_META } from "utils/web3Constants";
 
@@ -226,6 +229,18 @@ const router = createBrowserRouter([
       {
         path: "/community-badge/claim",
         element: <CommunityBadgeClaimPage />,
+      },
+      {
+        path: "/referrals",
+        element: <ReferralsPage />,
+      },
+      {
+        path: "/referrals/create",
+        element: <ReferralsCreatePage />,
+      },
+      {
+        path: "/referrals/:id",
+        element: <ViewReferralPage />,
       },
     ],
   },

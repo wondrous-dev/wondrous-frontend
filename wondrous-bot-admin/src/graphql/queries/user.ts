@@ -50,6 +50,7 @@ export const GET_LOGGED_IN_USER_FULL_ACCESS_ORGS = gql`
       cmtyEnabled
       modules {
         cmtyStore
+        cmtyReferral
       }
       cmtyDiscordConfig {
         guildId

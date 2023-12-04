@@ -5,8 +5,8 @@ import Switch from "components/Shared/Switch";
 import { MONTH_DAY_FULL_YEAR } from "utils/constants";
 
 const TimeboundComponent = (props) => {
-  const { setQuestSettings, questSettings } = props;
-  const isTimebound = questSettings.timeBound;
+  const { setEntitySettings, entitySettings } = props;
+  const isTimebound = entitySettings.timeBound;
   return (
     <Box display="flex" gap={isTimebound ? "10px" : "0px"} alignItems="center">
       <Box
@@ -19,7 +19,7 @@ const TimeboundComponent = (props) => {
         <DateRangePicker
           startToday
           onConfirm={(value) => {
-            setQuestSettings((prev) => ({
+            setEntitySettings((prev) => ({
               ...prev,
               ...value,
             }));
@@ -30,8 +30,10 @@ const TimeboundComponent = (props) => {
                 disabled
                 placeholder="Select Date Range"
                 value={
-                  questSettings?.startAt && questSettings?.endAt
-                    ? `${questSettings?.startAt?.format(MONTH_DAY_FULL_YEAR)} - ${questSettings?.endAt?.format(
+                  entitySettings?.startAt && entitySettings?.endAt
+                    ? `${entitySettings?.startAt?.format(
+                        MONTH_DAY_FULL_YEAR
+                      )} - ${entitySettings?.endAt?.format(
                         MONTH_DAY_FULL_YEAR
                       )}`
                     : null
