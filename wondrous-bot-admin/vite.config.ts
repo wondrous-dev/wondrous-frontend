@@ -1,8 +1,6 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
@@ -30,5 +28,6 @@ export default defineConfig({
     VITE_DISCORD_CLIENT_ID: process.env.VITE_DISCORD_CLIENT_ID,
     VITE_PRODUCTION: process.env.VITE_PRODUCTION,
     VITE_STAGING: process.env.VITE_STAGING,
+    VITE_WALLET_CONNECT_PROJECT_ID: process.env.VITE_WALLET_CONNECT_PROJECT_ID,
   },
 });

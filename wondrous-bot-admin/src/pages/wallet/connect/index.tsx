@@ -31,38 +31,6 @@ const WalletConnectPage = () => {
   const { linkUserWithWallet, address, closeWeb3Modal, isActivating, isConnected, open } = useWeb3Auth({
     setErrorMessage,
   });
-  // const linkUserWithWallet = useCallback(async () => {
-  //   if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
-  //     // get current timestamp
-  //     const timestamp = Date.now().toString();
-
-  //     const messageToSign = `Welcome to wonder\nDate: ${getFormattedDate()}\nTimestamp: ${Date.now().toString()}`;
-  //     if (messageToSign) {
-  //       const signedMessage = await wonderWeb3.signMessage(messageToSign);
-  //       if (signedMessageIsString(signedMessage)) {
-  //         const result = await linkCmtyUserWallet(
-  //           discordUserId,
-  //           wonderWeb3.address,
-  //           signedMessage,
-  //           SupportedChainType.ETH,
-  //           messageToSign,
-  //           telegramUserId,
-  //           migrateOrgId
-  //         );
-  //         if (result === true) {
-  //           setConnectionComplete(true);
-  //         }
-  //         if (result === false) {
-  //           setErrorMessage("Error linking wallet, please contact support");
-  //           wonderWeb3.disconnect();
-  //         }
-  //       } else if (signedMessage === false) {
-  //         setErrorMessage("Signature rejected. Try again.");
-  //         wonderWeb3.disconnect();
-  //       }
-  //     }
-  //   }
-  // }, [wonderWeb3]);
 
   const connectCmtyUserWallet = () =>
     linkUserWithWallet({
@@ -91,16 +59,6 @@ const WalletConnectPage = () => {
               Connect your wallet
             </Typography>
             <SharedSecondaryButton onClick={open}>{isActivating ? <Spinner /> : "Connect"}</SharedSecondaryButton>
-            {/* <div
-              style={{
-                flex: "display",
-                flexDirection: "row",
-              }}
-            > */}
-            {/* <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
-              <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
-              <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} /> */}
-            {/* </div> */}
             {errorMessage && (
               <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" lineHeight="24px" color="red">
                 {errorMessage}

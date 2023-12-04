@@ -1,14 +1,13 @@
-import { BigNumber, ethers } from "ethers";
+/*
+DEPREACTED
+*/
+import { ethers } from "ethers";
 
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import { SUPPORTED_CHAINS } from "utils/web3Constants";
 
-import { ERC20abi } from "services/contracts/erc20.abi";
-import { formatEther } from "ethers/lib/utils";
 import { WonderWeb3, WonderWeb3AssetMap, TransactionData } from "services/web3/types";
-// import connectors, { ConnectorName } from './connectors';
-import useStoredConnector from "./useStoredConnector";
 import useWeb3 from "./useWeb3";
 import { WonderWeb3Context } from "utils/context/WonderWeb3Context";
 import { useDisconnect, useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/react";
@@ -17,11 +16,11 @@ import { useDisconnect, useWeb3ModalAccount, useWeb3ModalProvider } from "@web3m
  * High level hook for Web3. Uses our react-web3 hook wrapper and adds some additional business functionality.
  */
 
+//TODO: deprecated hook, remove this after testing
 export default function useWonderWeb3(): WonderWeb3 {
   const {
     connector,
     library,
-    // chainId,
     account,
     deactivate,
     active,
@@ -71,20 +70,8 @@ export default function useWonderWeb3(): WonderWeb3 {
     [account, address, addressTag, assets, chainId]
   );
 
-  const onConnect = () => {
-    // if (!connector) return;
-    // try {
-    //   activate(connector);
-    //   // Gate Keeper for Usupported chains
-    //   if (!SUPPORTED_CHAINS[chainId]) {
-    //     disconnectWallet();
-    //     return false;
-    //   }
-    // } catch (e) {
-    //   console.log('Error', e);
-    // }
-    // setConnecting(false);
-  };
+  //TODO: remove, this is deprecated
+  const onConnect = () => {};
 
   const signMessage = async (message: string) => {
     if (!walletProvider || !isConnected) return;
@@ -183,21 +170,11 @@ export default function useWonderWeb3(): WonderWeb3 {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, chainId, provider]);
 
-  // useEffect(() => {
-  //   if (chainId) {
-  //     setLastChainId(chainId);
-  //   }
-  // }, [chainId]);
 
   const chain = chainId || lastChainId;
 
-  // const { setStoredConnector } = useStoredConnector();
 
   const activateAndStore = () => {
-    // const conn = connectors[connectorName];
-    // activate(conn, () => {
-    //   setStoredConnector(connectorName);
-    // });
   };
 
   const sendTransaction = async (txData: TransactionData) => {

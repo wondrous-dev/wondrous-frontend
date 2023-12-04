@@ -1,3 +1,6 @@
+/*
+DEPRECATED
+*/
 import { RPC_URLS, SUPPORTED_CHAIN_IDS } from 'utils/web3Constants';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 

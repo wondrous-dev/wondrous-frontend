@@ -1,5 +1,8 @@
 
 
+/*
+DEPRECATED
+*/
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import walletlink from 'walletlink';
 

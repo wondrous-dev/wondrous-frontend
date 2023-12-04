@@ -145,7 +145,6 @@ const useWeb3Auth = ({ setErrorMessage }) => {
       const messageToSign = `Welcome to wonder\nDate: ${getFormattedDate()}\nTimestamp: ${Date.now().toString()}`;
       if (messageToSign) {
         const signedMessage = await signMessage(messageToSign);
-        console.log(signedMessage, 'signed message')
         if (signedMessageIsString(signedMessage)) {
           const result = await linkCmtyUserWallet(
             discordUserId,

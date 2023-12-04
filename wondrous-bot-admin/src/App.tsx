@@ -11,7 +11,6 @@ import QuestsPage from "pages/quests";
 import { createTheme, PaletteMode, ThemeProvider } from "@mui/material";
 import { THEME_TYPES } from "utils/constants";
 import MembersPage from "pages/quests/members";
-import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
 import QuestResultsPage from "pages/quests/QuestResultsPage";
@@ -30,7 +29,6 @@ import WalletConnectPage from "pages/wallet/connect";
 import OnboardingPage from "pages/onboarding";
 import DiscordOrgCallbackPage from "pages/discord/callback/org-connect";
 import DiscordCallbackPage from "pages/discord/callback";
-import TestPage from "pages/test";
 import ViewQuest from "pages/quests/ViewQuest";
 import DiscordCallbackCmtyUserConnect from "pages/discord/callback/cmty-user-connect";
 import SignupPage from "pages/signup";
@@ -53,26 +51,16 @@ import CreateStoreItem from "pages/store/CreateStoreItem";
 import StoreItem from "pages/store/StoreItem";
 import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
-import { createWeb3Modal, defaultConfig, useWeb3Modal } from '@web3modal/ethers5/react';
-import WalletTestPage from "pages/wallet-test";
+import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 import { SUPPORTED_CHAINS_META } from "utils/web3Constants";
 
-const projectId = 'c6c9bacd35afa3eb9e6cccf6d8464395';
-
-const mainnet = {
-  chainId: 1,
-  name: 'Ethereum',
-  currency: 'ETH',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://cloudflare-eth.com',
-};
+const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 
 const metadata = {
-  name: 'Wonderverse',
-  description: 'My Wonderverse Desc',
-  url: 'https://web3modal.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
-  // icons: ['https://avatars.mywebsite.com/']
+  name: "Wonderverse",
+  description: "My Wonderverse Desc",
+  url: "https://communities.wonderverse.xyz/",
+  icons: ["https://communities.wonderverse.xyz/wonder-black.svg"],
 };
 
 createWeb3Modal({
@@ -82,7 +70,6 @@ createWeb3Modal({
     enableEIP6963: true,
     enableInjected: true,
     enableCoinbase: true,
-    // rpcUrl: '...' // used for the Coinbase SDK
   }),
   chains: SUPPORTED_CHAINS_META,
   projectId,
@@ -122,7 +109,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/settings/nft",
-        element: <CommunityNFTSettingsPage />
+        element: <CommunityNFTSettingsPage />,
       },
       {
         path: "/",
@@ -177,10 +164,6 @@ const router = createBrowserRouter([
         element: <DiscordCallbackPage />,
       },
       {
-        path: "/test",
-        element: <TestPage />,
-      },
-      {
         path: "/discord/callback/cmty-user-connect",
         element: <DiscordCallbackCmtyUserConnect />,
       },
@@ -229,25 +212,21 @@ const router = createBrowserRouter([
         element: <TelegramConnect />,
       },
       {
-        path: '/store',
-        element: <StorePage />
+        path: "/store",
+        element: <StorePage />,
       },
       {
-        path: '/store/items/create',
-        element: <CreateStoreItem />
+        path: "/store/items/create",
+        element: <CreateStoreItem />,
       },
       {
-        path: '/store/items/:id',
-        element: <StoreItem />
+        path: "/store/items/:id",
+        element: <StoreItem />,
       },
       {
-        path: '/community-badge/claim',
-        element: <CommunityBadgeClaimPage />
+        path: "/community-badge/claim",
+        element: <CommunityBadgeClaimPage />,
       },
-      {
-        path: '/wallet/test',
-        element: <WalletTestPage />
-      }
     ],
   },
 ]);
@@ -309,13 +288,11 @@ function App() {
       <ThemeProvider theme={theme}>
         <ApolloProvider client={client}>
           <SnackbarAlertProvider>
-            <Web3ReactProvider getLibrary={getLibrary}>
-              <WonderWeb3Provider>
-                <PaywallContextProvider>
-                  <RouterProvider router={router} />
-                </PaywallContextProvider>
-              </WonderWeb3Provider>
-            </Web3ReactProvider>
+            <WonderWeb3Provider>
+              <PaywallContextProvider>
+                <RouterProvider router={router} />
+              </PaywallContextProvider>
+            </WonderWeb3Provider>
           </SnackbarAlertProvider>
         </ApolloProvider>
       </ThemeProvider>
