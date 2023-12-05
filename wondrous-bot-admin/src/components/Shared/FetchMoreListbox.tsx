@@ -4,7 +4,7 @@ import { useInView } from "react-intersection-observer";
 export const ListboxComponent = ({ children, hasMore = false, handleFetchMore, ...props }) => {
   const [inViewRef, inView] = useInView({});
 
-  console.log(hasMore, inView, 'HERE?')
+
   useEffect(() => {
     if (hasMore && inView) handleFetchMore();
   }, [hasMore, inView]);
