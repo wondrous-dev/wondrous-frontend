@@ -75,6 +75,7 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
     }));
 
   if (!typeConfig) return null;
+    
   return (
     <Grid display="flex" flexDirection="column" gap="12px">
       <Label fontWeight={600}>{typeConfig?.label}</Label>
@@ -112,7 +113,7 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
                 idx={idx}
                 handleAdd={handleAdd}
                 handleDelete={() => handleDelete(idx)}
-                canAddItem={idx === values.length - 1}
+                canAddItem={idx === values.length - 1 && values[idx]}
                 referralItemType={referralItemData.type}
               />
             </Box>
