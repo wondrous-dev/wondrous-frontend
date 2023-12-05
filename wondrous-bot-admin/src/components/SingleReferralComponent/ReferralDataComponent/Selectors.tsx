@@ -11,6 +11,7 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 import { useContext } from "react";
 import ErrorField from "components/Shared/ErrorField";
 import { KEYS_MAP } from "../constants";
+import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 
 const TYPES_MAP = {
   [QUALIFYING_ACTION_TYPES.PURCHASE]: {
@@ -49,7 +50,14 @@ const ActionEntityButtons = ({ idx = 0, referralItemType, handleDelete, handleAd
   );
 };
 
-const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntityChange, options = [] }) => {
+const SelectorsComponent = ({
+  setReferralItemData,
+  referralItemData,
+  handleEntityChange,
+  options = [],
+  handleFetchMore,
+  hasMore,
+}) => {
   const values = referralItemData[KEYS_MAP[referralItemData.type]];
 
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -103,6 +111,13 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
                 placeholder={typeConfig?.placeholder}
                 onChange={(value) => handleEntityChange(value, idx, referralItemData.type)}
                 bgColor="#E8E8E8"
+                autocompletProps={{
+                  ListboxComponent: ListboxComponent,
+                }}
+                listBoxProps={{
+                  handleFetchMore: async () => handleFetchMore(referralItemData?.type),
+                  hasMore,
+                }}
               />
               <ActionEntityButtons
                 idx={idx}

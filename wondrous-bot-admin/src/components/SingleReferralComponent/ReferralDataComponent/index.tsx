@@ -116,7 +116,7 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
           input: {
             orgId: activeOrg?.id,
             limit: LIMIT,
-            offset: referralItemData?.questId?.length || 0,
+            offset: questsData?.getQuestsForOrg?.length || 0,
             status: QUEST_STATUSES.OPEN,
           },
         },
@@ -262,13 +262,6 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
                     placeholder="Select qualifying action"
                     onChange={handleTypeChange}
                     bgColor="#E8E8E8"
-                    autocompletProps={{
-                      ListboxComponent: ListboxComponent,
-                    }}
-                    listBoxProps={{
-                      handleFetchMore: async () => handleFetchMore(referralItemData?.type),
-                      hasMore,
-                    }}
                   />
                   <InfoLabel
                     imgStyle={{
@@ -281,6 +274,8 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
               </Grid>
               <SelectorsComponent
                 options={options}
+                handleFetchMore={handleFetchMore}
+                hasMore={hasMore}
                 referralItemData={referralItemData}
                 handleEntityChange={handleEntityChange}
                 setReferralItemData={setReferralItemData}
