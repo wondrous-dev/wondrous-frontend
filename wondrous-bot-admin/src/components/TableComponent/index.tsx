@@ -142,7 +142,7 @@ const TableComponent = ({
               headerComponent()
             ) : (
               <StyledTableHeader>
-                {headers?.map((header) => (
+                {headers?.map((header, headerIdx) => (
                   <StyledTableHeaderCell key={header}>{header}</StyledTableHeaderCell>
                 ))}
               </StyledTableHeader>

@@ -8,7 +8,7 @@ import { CloseIcon } from "components/Shared/DatePicker/Shared/Icons";
 import { useMutation } from "@apollo/client";
 import { ADD_ORG_LEVEL_REWARD, REMOVE_ORG_LEVEL_REWARD } from "graphql/mutations";
 import RewardModal from "components/Rewards/RewardModal";
-import { NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { useAddRewardModalState } from "components/Rewards/utils";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
@@ -134,14 +134,7 @@ export const ExistingLevelsReward = ({ reward, discordRoles, handleRemove = null
     <StyledViewQuestResults>
       {reward.type === PAYMENT_OPTIONS.DISCORD_ROLE && (
         <>
-          <img
-            src="/images/discord-official-logo.png"
-            height="18px"
-            width="18px"
-            style={{
-              borderRadius: "300px",
-            }}
-          />
+          <DiscordRoleIcon height={25} />
           {selectedRole?.name}
           {handleRemove ? (
             <ButtonBase onClick={() => handleRemove()}>
@@ -152,7 +145,7 @@ export const ExistingLevelsReward = ({ reward, discordRoles, handleRemove = null
       )}
       {reward.type === PAYMENT_OPTIONS.TOKEN && (
         <>
-          {reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE ? <NFTIcon /> : <TokensIcon />}
+          {reward?.paymentMethod?.type === PAYMENT_OPTIONS.COMMUNITY_BADGE ? <NFTIcon height={25} /> : <TokensIcon />}
           {reward?.amount} {reward?.paymentMethod?.name}
           {handleRemove ? (
             <ButtonBase onClick={() => handleRemove()}>
@@ -163,7 +156,8 @@ export const ExistingLevelsReward = ({ reward, discordRoles, handleRemove = null
       )}
       {reward?.type === PAYMENT_OPTIONS.POAP && (
         <>
-          {reward?.poapRewardData?.name} <PoapIcon />
+          <PoapIcon height={25} />
+          {reward?.poapRewardData?.name}
           {handleRemove ? (
             <ButtonBase onClick={() => handleRemove()}>
               <CloseIcon />
@@ -173,7 +167,8 @@ export const ExistingLevelsReward = ({ reward, discordRoles, handleRemove = null
       )}
       {reward?.type === PAYMENT_OPTIONS.CMTY_STORE_ITEM && (
         <>
-          {reward?.storeItem?.name} <StoreItemRewardIcon />
+          <StoreItemRewardIcon height={25} />
+          {reward?.storeItem?.name}
           {handleRemove ? (
             <ButtonBase onClick={() => handleRemove()}>
               <CloseIcon />

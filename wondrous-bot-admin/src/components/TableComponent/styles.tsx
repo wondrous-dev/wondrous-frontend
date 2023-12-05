@@ -19,6 +19,9 @@ export const StyledTableHeaderCell = styled(TableCell)`
     &:first-child {
       text-align: left;
     }
+    &:last-child {
+      border-right: none;
+    }
   }
 `;
 
@@ -51,7 +54,7 @@ export const StyledTableRow = styled(TableRow)`
 export const PaperComponent = styled(Paper)`
   && {
     border-radius: 16px;
-    border: 2px solid black;
+    border: 1px solid black;
     overflow: hidden;
   }
 `;
