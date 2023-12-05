@@ -14,6 +14,7 @@ import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 import AddIcon from "@mui/icons-material/Add";
 import ReferralRewardsComponent from "./ReferralRewardsComponent";
 import ErrorField from "components/Shared/ErrorField";
+import { KEYS_MAP } from "../constants";
 
 const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -159,10 +160,14 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
       referralItemData?.type === QUALIFYING_ACTION_TYPES.QUEST ||
       referralItemData?.type === QUALIFYING_ACTION_TYPES.ANY_QUEST
     ) {
+      const selectedValues =   referralItemData[KEYS_MAP[referralItemData.type]];
+
       let items =
         questsData?.getQuestsForOrg?.map((item) => ({
           label: item.title,
           value: item.id,
+          disabled: selectedValues?.includes(item.id),
+          isSelected: selectedValues?.includes(item.id),
         })) || [];
 
       return [
@@ -192,7 +197,7 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
   }, [
     storeItemsData,
     questsData,
-    referralItemData?.type,
+    referralItemData,
     startQuestsPolling,
     stopQuestsPolling,
     startStoreItemsPolling,

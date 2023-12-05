@@ -10,6 +10,7 @@ import { useGlobalContext } from "utils/hooks";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { useContext } from "react";
 import ErrorField from "components/Shared/ErrorField";
+import { KEYS_MAP } from "../constants";
 
 const TYPES_MAP = {
   [QUALIFYING_ACTION_TYPES.PURCHASE]: {
@@ -24,12 +25,6 @@ const TYPES_MAP = {
     label: "Which quest(s) should this apply to?",
     placeholder: "Select quests",
   },
-};
-
-const KEYS_MAP = {
-  [QUALIFYING_ACTION_TYPES.PURCHASE]: "storeItemId",
-  [QUALIFYING_ACTION_TYPES.QUEST]: "questIds",
-  [QUALIFYING_ACTION_TYPES.ANY_QUEST]: "questIds",
 };
 
 const ActionEntityButtons = ({ idx = 0, referralItemType, handleDelete, handleAdd, canAddItem }) => {
@@ -75,7 +70,7 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
     }));
 
   if (!typeConfig) return null;
-    
+
   return (
     <Grid display="flex" flexDirection="column" gap="12px">
       <Label fontWeight={600}>{typeConfig?.label}</Label>
