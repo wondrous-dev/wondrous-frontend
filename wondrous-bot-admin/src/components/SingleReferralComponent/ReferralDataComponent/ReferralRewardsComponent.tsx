@@ -131,7 +131,7 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
                       rewards={referralItemData?.rewards}
                       handleRewardDelete={handleRewardDelete}
                       pointsValue={referralItemData[POINT_REWARD_MAP[option.value]]}
-                      handleOnChangePoints={handleOnChangePoints}
+                      handleOnChangePoints={(value) => handleOnChangePoints(POINT_REWARD_MAP[option.value], value)}
                     />
                   </Grid>
                 </>
