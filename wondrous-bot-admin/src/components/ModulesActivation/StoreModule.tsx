@@ -68,7 +68,7 @@ const StoreModule = ({ onCancel, onSuccess }) => {
               }}
               lineHeight="33px"
             >
-              Enable your <br /> community store?
+              Enable your <br /> store?
             </Typography>
             <Typography
               color="#5E5E5E"
@@ -80,7 +80,7 @@ const StoreModule = ({ onCancel, onSuccess }) => {
               lineHeight="24px"
               fontWeight={500}
             >
-              Enabling your community store allows you to sell products or let members earn them via the{" "}
+              Enabling your store allows you to sell products or let members earn them via the{" "}
               <span
                 style={{
                   color: "#F8642D",

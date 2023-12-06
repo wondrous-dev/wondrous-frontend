@@ -47,7 +47,7 @@ const ReferralRewardUIComponent = ({
               rewardModalState={rewardModalState}
               handleRewardModalToggle={() => setIsRewardModalOpen(false)}
               handleOnRewardAdd={(reward) => onRewardAdd(scheme, reward)}
-              title="Add reward to referral campaign"
+              title="Add reward to referral"
             />
 
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">
@@ -91,7 +91,7 @@ const CampaignRewardComponent = ({
           }}
           handleOnChange={(e) => handleOnChangePoints(e.target.value)}
           text="Points"
-          placeholder="How many points?"
+          placeholder="How many points awarded?"
           Icon={PointsIcon}
           handleOnClear={() => handleOnChangePoints(null)}
         />

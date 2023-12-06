@@ -193,7 +193,7 @@ const QuestRewardComponent = ({
               handleOnChangePoints(pointReward?.type, e.target.value);
             }}
             text="Points"
-            placeholder="How many points?"
+            placeholder="How many points awarded?"
             Icon={PointsIcon}
             handleOnClear={() => {
               handleOnChangePoints(pointReward.type, null);

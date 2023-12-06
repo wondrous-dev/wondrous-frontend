@@ -21,14 +21,12 @@ import { updateReferralCampaignCache } from "utils/apolloHelpers";
 import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
+import { StyledInformationTooltip } from "components/Shared/Tooltip";
+import InformationTooltip from "components/Icons/information.svg";
 
 const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
   const [hasMore, setHasMore] = useState(true);
 
-  const [sortOrder, setSortOrder] = useState({
-    sortKey: "submissions",
-    order: "desc",
-  });
   const { activeOrg } = useGlobalContext();
   const discordRoles = useDiscordRoles({
     orgId: activeOrg?.id,
@@ -55,28 +53,35 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
     return [
       {
         label: "Active",
+        infoText: "Toggle to activate or deactivate the referral campaign.",
       },
       {
         label: "Campaign Name",
         sortKey: "name",
+        infoText: "Click to view the referral campaign.",
       },
       {
         label: "Referrals",
+        infoText: "Number of referrals that have been made.",
       },
       {
         label: "Approved",
         sortKey: "results",
+        infoText: "Number of referrals that have been approved.",
       },
       {
         label: "Referrer Points",
         sortKey: "referrerPointReward",
+        infoText: "Number of points the referrer will receive.",
       },
       {
         label: "Referred Points",
         sortKey: "referredPointReward",
+        infoText: "Number of points the referred will receive.",
       },
       {
         label: "Rewards",
+        infoText: "Rewards that will be given to the referrer and referred.",
       },
     ];
   }, []);
@@ -249,7 +254,7 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
             <EmptyState type={EMPTY_STATE_TYPES.REFERRALS} labelColor="#828282">
               <Divider />
               <Typography fontFamily="Poppins" fontWeight={500} fontSize="16px" lineHeight="16px">
-                Start a referral campaign by <Link to="/referrals/create">clicking here.</Link>
+                Start a referral by <Link to="/referrals/create">clicking here.</Link>
               </Typography>
             </EmptyState>
           </TableCell>
@@ -261,6 +266,15 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
                 <StyledTableHeaderCell sortKey={header}>
                   <Box display="flex" alignItems="center" gap="6px" justifyContent="center">
                     {header.label}
+                    {header?.infoText ? (
+                      <StyledInformationTooltip placement="right" title={header?.infoText}>
+                        <img
+                          src={InformationTooltip}
+                          alt="information"
+                          style={{ width: "16px", height: "16px", marginLeft: "8px" }}
+                        />
+                      </StyledInformationTooltip>
+                    ) : null}
                   </Box>
                 </StyledTableHeaderCell>
               ))}

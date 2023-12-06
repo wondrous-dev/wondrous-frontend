@@ -27,10 +27,10 @@ const CreateStoreItemPage = () => {
       >
         <PageHeader
           withBackButton
-          title="Add Product Listing"
+          title="Add Store Item"
           renderActions={() => (
             <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
-              Save Product
+              Save Store Item
             </SharedSecondaryButton>
           )}
         />
