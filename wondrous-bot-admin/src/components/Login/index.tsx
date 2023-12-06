@@ -57,6 +57,7 @@ function Login() {
 
   // This happens async, so we bind it to the
   // state of the component.
+  
   const loginWithWallet = async () => {
     setErrorMessage(null);
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
