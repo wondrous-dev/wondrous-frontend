@@ -179,6 +179,7 @@ export const EMPTY_STATE_TYPES = {
   NFT: "nft",
   PURCHASES: "purchases",
   CATEGORIES: "categories",
+  REFERRALS: "referrals",
 };
 
 export const ERRORS = {
