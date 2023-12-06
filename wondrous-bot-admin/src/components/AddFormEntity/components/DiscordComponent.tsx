@@ -18,6 +18,8 @@ import { format } from "date-fns";
 import { ErrorText } from "components/Shared/styles";
 import AutocompleteOptionsComponent from "./AutocompleteComponent";
 import ErrorField from "components/Shared/ErrorField";
+import InfoLabel from "components/CreateTemplate/InfoLabel";
+
 const TextInputStyle = {
   width: "50%",
 };
@@ -151,6 +153,10 @@ const DiscordJoinCommunityCall = ({ handleOnChange, value, error }) => {
 
   return (
     <>
+      <div style={{display: 'flex'}}>
+      <Label>Select Event </Label>
+      <InfoLabel title={'First create the event on Discord, refresh the page'}/>
+      </div>
       {options && (
         <SelectComponent
           options={options}
@@ -163,14 +169,6 @@ const DiscordJoinCommunityCall = ({ handleOnChange, value, error }) => {
           }}
         />
       )}
-      <Label>Event Id </Label>
-      <TextField
-        placeholder="Discord event link"
-        value={value?.discordEventId || ""}
-        onChange={(value) => {}}
-        multiline={false}
-        disabled
-      />
       <Label>Minimum Attendance Duration</Label>
       <SelectComponent
         options={durationOptions}
@@ -238,7 +236,7 @@ const DiscordComponent = ({ onChange, value, stepType, error }) => {
         >
           <Label>Question/Prompt</Label>
           <TextField
-            placeholder="Enter prompt here"
+            placeholder="Enter prompt here (Ex. Join our weekly community call for a minimum of 10 minutes)"
             value={prompt || ""}
             onChange={(value) => handleOnChange("prompt", value)}
             multiline={false}
