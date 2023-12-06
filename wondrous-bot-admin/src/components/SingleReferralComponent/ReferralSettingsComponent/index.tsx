@@ -62,11 +62,12 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
     {
       settings: [
         {
-          label: "Referal Title",
+          label: "Campaign Name",
           component: TextField,
           componentProps: {
             stateKey: "name",
             multiline: false,
+            placeholder: "Enter the campaign name",
           },
           key: "name",
         },
@@ -116,7 +117,7 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
       },
     },
     {
-      canBeHidden: true,
+      canBeHidden: false,
       showBorder: false,
       settings: [
         {

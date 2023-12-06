@@ -65,11 +65,11 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
   const { setIsRewardModalOpen } = rewardModalState;
   const REWARD_OPTIONS = [
     {
-      label: "Advocate Reward",
+      label: "Referrer",
       value: REFERRAL_REWARD_SCHEME.REFERRER,
     },
     {
-      label: "Friend Reward",
+      label: "Person being referred",
       value: REFERRAL_REWARD_SCHEME.REFERRED,
     },
   ];
@@ -118,6 +118,7 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
                     rewardModalState={rewardModalState}
                     handleRewardModalToggle={() => setIsRewardModalOpen(false)}
                     handleOnRewardAdd={(reward) => onRewardAdd(option.value, reward)}
+                    title="Add reward to referral campaign"
                   />
 
                   <Grid display="flex" flexDirection="column" gap="24px" width="100%">

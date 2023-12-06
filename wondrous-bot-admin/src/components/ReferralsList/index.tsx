@@ -56,7 +56,7 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
   const headers = useMemo(() => {
     return [
       {
-        label: "Off / On",
+        label: "Active",
       },
       {
         label: "Campaign Name",
@@ -273,7 +273,7 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
         }}
         title="Referrals"
       />
-      {hasMore && data?.getReferralCampaignForOrg?.items?.length > 0 ? (
+      {hasMore && data?.getReferralCampaignForOrg?.items?.length >= LIMIT ? (
         <SharedSecondaryButton
           style={{
             width: "fit-content",
