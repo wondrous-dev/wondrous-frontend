@@ -1,7 +1,6 @@
 import { Box, Grid } from "@mui/material";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { Label } from "components/CreateTemplate/styles";
-import { RewardTypeSwitch } from "./Helpers";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { InlineRewardUIComponent } from "components/AddFormEntity/components/OptionRewards";
@@ -12,9 +11,64 @@ import RewardModal from "components/Rewards/RewardModal";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { useAddRewardModalState } from "components/Rewards/utils";
 
+const REWARD_OPTIONS = [
+  {
+    label: "Referrer",
+    value: REFERRAL_REWARD_SCHEME.REFERRER,
+  },
+  {
+    label: "Person being referred",
+    value: REFERRAL_REWARD_SCHEME.REFERRED,
+  },
+];
+
 const POINT_REWARD_MAP = {
   [REFERRAL_REWARD_SCHEME.REFERRER]: "referrerPointReward",
   [REFERRAL_REWARD_SCHEME.REFERRED]: "referredPointReward",
+};
+
+const ReferralRewardUIComponent = ({
+  onRewardAdd,
+  option,
+  referralItemData,
+  handleRewardDelete,
+  handleOnChangePoints,
+  scheme,
+}) => {
+  const rewardModalState = useAddRewardModalState();
+  const { setIsRewardModalOpen } = rewardModalState;
+
+  return (
+    <PanelComponent
+      renderBody={() => {
+        return (
+          <>
+            <RewardModal
+              rewardModalState={rewardModalState}
+              handleRewardModalToggle={() => setIsRewardModalOpen(false)}
+              handleOnRewardAdd={(reward) => onRewardAdd(scheme, reward)}
+              title="Add reward to referral campaign"
+            />
+
+            <Grid display="flex" flexDirection="column" gap="24px" width="100%">
+              <Grid display="flex" flexDirection="column" gap="12px">
+                <Label fontWeight={600}>{option.label}</Label>
+                <Divider />
+              </Grid>
+              <CampaignRewardComponent
+                handleAddNewReward={() => setIsRewardModalOpen(true)}
+                rewardScheme={option.value}
+                rewards={referralItemData?.rewards}
+                handleRewardDelete={handleRewardDelete}
+                pointsValue={referralItemData[POINT_REWARD_MAP[option.value]]}
+                handleOnChangePoints={(value) => handleOnChangePoints(POINT_REWARD_MAP[option.value], value)}
+              />
+            </Grid>
+          </>
+        );
+      }}
+    />
+  );
 };
 
 const CampaignRewardComponent = ({
@@ -61,19 +115,6 @@ const CampaignRewardComponent = ({
 };
 
 const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => {
-  const rewardModalState = useAddRewardModalState();
-  const { setIsRewardModalOpen } = rewardModalState;
-  const REWARD_OPTIONS = [
-    {
-      label: "Referrer",
-      value: REFERRAL_REWARD_SCHEME.REFERRER,
-    },
-    {
-      label: "Person being referred",
-      value: REFERRAL_REWARD_SCHEME.REFERRED,
-    },
-  ];
-
   const onRewardAdd = (scheme, reward) => {
     setReferralItemData((prev) => {
       const filteredRewards =
@@ -108,36 +149,16 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
 
   return (
     <>
-      {REWARD_OPTIONS.map((option) => {
+      {REWARD_OPTIONS.map((option, idx) => {
         return (
-          <PanelComponent
-            renderBody={() => {
-              return (
-                <>
-                  <RewardModal
-                    rewardModalState={rewardModalState}
-                    handleRewardModalToggle={() => setIsRewardModalOpen(false)}
-                    handleOnRewardAdd={(reward) => onRewardAdd(option.value, reward)}
-                    title="Add reward to referral campaign"
-                  />
-
-                  <Grid display="flex" flexDirection="column" gap="24px" width="100%">
-                    <Grid display="flex" flexDirection="column" gap="12px">
-                      <Label fontWeight={600}>{option.label}</Label>
-                      <Divider />
-                    </Grid>
-                    <CampaignRewardComponent
-                      handleAddNewReward={() => setIsRewardModalOpen(true)}
-                      rewardScheme={option.value}
-                      rewards={referralItemData?.rewards}
-                      handleRewardDelete={handleRewardDelete}
-                      pointsValue={referralItemData[POINT_REWARD_MAP[option.value]]}
-                      handleOnChangePoints={(value) => handleOnChangePoints(POINT_REWARD_MAP[option.value], value)}
-                    />
-                  </Grid>
-                </>
-              );
-            }}
+          <ReferralRewardUIComponent
+            key={option.value}
+            handleRewardDelete={handleRewardDelete}
+            onRewardAdd={onRewardAdd}
+            option={option}
+            scheme={option.value}
+            referralItemData={referralItemData}
+            handleOnChangePoints={handleOnChangePoints}
           />
         );
       })}
