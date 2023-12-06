@@ -15,7 +15,7 @@ import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 
 const TYPES_MAP = {
   [QUALIFYING_ACTION_TYPES.PURCHASE]: {
-    label: "Which products should this apply to?",
+    label: "Which store item(s) should this apply to?",
     placeholder: "Select products",
   },
   [QUALIFYING_ACTION_TYPES.QUEST]: {

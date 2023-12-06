@@ -267,7 +267,7 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
                     imgStyle={{
                       marginLeft: "0",
                     }}
-                    title="Select a qualifying action for your referral program."
+                    title="Do you want your referral to be when someone completes a quest or completes a purchase of a store item? You can then select which specific quests or store items are eligible under this referral campaign."
                   />
                 </Box>
                 <ErrorField errorText={errors?.type} />

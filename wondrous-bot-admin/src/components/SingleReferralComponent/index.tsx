@@ -53,7 +53,7 @@ const SingleReferralComponent = ({
 
   const [createReferral] = useMutation(CREATE_REFERRAL, {
     onCompleted: (data) => {
-      setSnackbarAlertMessage("Referral campaign created successfully");
+      setSnackbarAlertMessage("Referral created successfully");
       setSnackbarAlertOpen(true);
       navigate(`/referrals`);
     },
@@ -81,7 +81,7 @@ const SingleReferralComponent = ({
   const [updateReferralCampaign] = useMutation(UPDATE_REFERRAL, {
     // refetchQueries: ["getReferralCampaignById"],
     onCompleted: () => {
-      setSnackbarAlertMessage("Referral campaign updated successfully");
+      setSnackbarAlertMessage("Referral updated successfully");
       setSnackbarAlertOpen(true);
       navigate(`/referrals`);
     },

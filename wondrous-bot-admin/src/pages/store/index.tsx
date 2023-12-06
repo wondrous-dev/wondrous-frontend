@@ -63,7 +63,7 @@ const StorePage = () => {
               </SharedBlackOutlineButton>
             </Box>
             <Box>
-              <SharedSecondaryButton onClick={handleNavigationToNewProduct}>New Product</SharedSecondaryButton>
+              <SharedSecondaryButton onClick={handleNavigationToNewProduct}>New Store Item</SharedSecondaryButton>
             </Box>
           </Box>
         )}
