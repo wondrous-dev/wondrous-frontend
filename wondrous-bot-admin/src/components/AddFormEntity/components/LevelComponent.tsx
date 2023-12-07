@@ -16,7 +16,7 @@ const LevelComponent = (props) => {
       onConfirm: () => {
         onChange(value);
         if (value) {
-          setQuestSettings((prev) => ({
+          setEntitySettings((prev) => ({
             ...prev,
             level: null,
             isOnboarding: true,
@@ -56,14 +56,14 @@ const LevelComponent = (props) => {
   const handleChange = (value) => {
     if (value === null) return;
 
-    return setQuestSettings((prev) => ({
+    return setEntitySettings((prev) => ({
       ...prev,
       level: value,
       isOnboarding: false,
     }));
   };
 
-  const { onChange, setQuestSettings } = props;
+  const { onChange, setEntitySettings } = props;
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(null);
 
   return (

@@ -2,17 +2,13 @@ import Grid from "@mui/material/Grid";
 import TextField from "components/Shared/TextField";
 
 import { Label } from "components/CreateTemplate/styles";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
-import SelectComponent from "components/Shared/Select";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
-import { CONDITION_TYPES, DELIVERY_METHODS } from "utils/constants";
+import { CONDITION_TYPES } from "utils/constants";
 import ActivateStoreItem from "./components/ActivateStoreItem";
 import MaxInput from "components/CreateTemplate/MaxInput";
 import DynamicCondition from "components/DynamicCondition";
-import { useLazyQuery } from "@apollo/client";
-import { GET_STORE_ITEM_DISCOUNT_CODE_INFO } from "graphql/queries";
-import { DiscountEdit } from "./components/DiscountEdit";
 
 type StoreItemSettingsConfig = {
   label?: string;
@@ -29,22 +25,22 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
   const config = useMemo(() => {
     let data: StoreItemSettingsConfig[] = [
       {
-        label: "Product title",
+        label: "Store Item Title",
         component: TextField,
         value: storeItemSettings.title,
         componentProps: {
           multiline: false,
-          placeholder: "Enter product title",
+          placeholder: "Enter store item title",
           error: errors["name"],
         },
         key: "name",
       },
       {
-        label: "Product description",
+        label: "Store Item Description",
         component: TextField,
         componentProps: {
           multiline: true,
-          placeholder: "Enter product description",
+          placeholder: "Enter store item description",
         },
         value: storeItemSettings.description,
         key: "description",
@@ -52,17 +48,6 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
       {
         divider: true,
       },
-      // {
-      //   label: "Price",
-      //   direction: "row",
-      //   key: "price",
-      //   component: TextField,
-      //   componentProps: {
-      //     type: "number",
-      //     multiline: false,
-      //     placeholder: "Price",
-      //   },
-      // },
       {
         label: "Price in Points",
         direction: "row",
@@ -75,7 +60,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         },
       },
       {
-        label: "Max purchases",
+        label: "Max Purchases",
         direction: "row",
         key: "maxPurchase",
         component: MaxInput,
@@ -103,7 +88,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
         },
       },
       {
-        label: "Activate Product",
+        label: "Activate Store Item",
         direction: "row",
         component: ActivateStoreItem,
         key: "deactivatedAt",

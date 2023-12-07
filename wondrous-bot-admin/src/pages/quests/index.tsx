@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import { useTour } from "@reactour/tour";
 import { useMe } from "components/Auth";
 import PageHeader from "components/PageHeader";
+import PageSpinner from "components/PageSpinner";
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import QuestsList from "components/QuestsList";
 import SelectComponent from "components/Shared/Select";
@@ -13,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { getPlan } from "utils/common";
 import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
-import { usePaywall, useSubscription } from "utils/hooks";
+import { useSubscription, useSubscriptionPaywall } from "utils/hooks";
 
 const INACTIVE_QUESTS = {
   type: QUEST_STATUSES.INACTIVE,
@@ -42,7 +43,9 @@ const QuestsPage = () => {
   const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
   const { user } = useMe() || {};
   const subscription = useSubscription();
-  const { setPaywall, setPaywallMessage } = usePaywall();
+  const { setPaywall, setPaywallMessage } = useSubscriptionPaywall();
+  const [isLoading, setIsLoading] = useState(true);
+
   const { data: getOrgQuestStatsData, loading } = useQuery(GET_ORG_QUEST_STATS, {
     notifyOnNetworkStatusChange: true,
     variables: {
@@ -56,7 +59,7 @@ const QuestsPage = () => {
   const handleNavigationToNewQuest = () => {
     if (plan === PricingOptionsTitle.Basic && totalQuests >= 100) {
       setPaywall(true);
-      setPaywallMessage("You have reached the limit of quests for your current plan.");
+      return setPaywallMessage("You have reached the limit of quests for your current plan.");
     } else {
       navigate("/quests/create");
     }
@@ -72,7 +75,7 @@ const QuestsPage = () => {
       const quest = data?.getQuestsForOrg[0];
       setMeta(quest?.id);
     }
-    if (!data?.getQuestsForOrg?.length) {
+    if (!data?.getQuestsForOrg?.length && statuses === QUEST_STATUSES.OPEN && isLoading) {
       const variables: any = {
         input: {
           orgId: activeOrg?.id,
@@ -81,8 +84,9 @@ const QuestsPage = () => {
         },
       };
       setStatuses(null);
-      await refetch(variables);
+      return await refetch(variables);
     }
+    setIsLoading(false);
   };
 
   const { data, refetch } = useQuery(GET_QUESTS_FOR_ORG, {
@@ -131,6 +135,8 @@ const QuestsPage = () => {
   }, [data?.getQuestsForOrg]);
 
   const questsLength = useMemo(() => data?.getQuestsForOrg?.length || 0, [data?.getQuestsForOrg?.length]);
+
+  if (isLoading) return <PageSpinner />;
 
   return (
     <>

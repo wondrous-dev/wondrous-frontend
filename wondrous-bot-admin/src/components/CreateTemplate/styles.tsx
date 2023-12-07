@@ -30,7 +30,7 @@ export const Label = styled(Typography)`
     font-weight: ${({ fontWeight = 700 }) => fontWeight};
     font-size: ${({ fontSize = "14px" }) => fontSize};
     line-height: 15px;
-    min-width: 150px;
+    min-width: ${({minWidth = "150px"}) => minWidth};
     letter-spacing: 0.01em;
     text-align: left;
     color: ${({ color = "#626262" }) => color};

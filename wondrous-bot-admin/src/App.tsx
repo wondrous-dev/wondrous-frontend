@@ -53,6 +53,9 @@ import CreateStoreItem from "pages/store/CreateStoreItem";
 import StoreItem from "pages/store/StoreItem";
 import CommunityNFTSettingsPage from "pages/settings/nft";
 import CommunityBadgeClaimPage from "pages/community-badge/claim";
+import ReferralsPage from "pages/referrals";
+import ReferralsCreatePage from "pages/referrals/ReferralsCreate";
+import ViewReferralPage from "pages/referrals/ViewReferral";
 
 const router = createBrowserRouter([
   {
@@ -88,7 +91,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/settings/nft",
-        element: <CommunityNFTSettingsPage />
+        element: <CommunityNFTSettingsPage />,
       },
       {
         path: "/",
@@ -195,22 +198,33 @@ const router = createBrowserRouter([
         element: <TelegramConnect />,
       },
       {
-        path: '/store',
-        element: <StorePage />
+        path: "/store",
+        element: <StorePage />,
       },
       {
-        path: '/store/items/create',
-        element: <CreateStoreItem />
+        path: "/store/items/create",
+        element: <CreateStoreItem />,
       },
       {
-        path: '/store/items/:id',
-        element: <StoreItem />
+        path: "/store/items/:id",
+        element: <StoreItem />,
       },
       {
-        path: '/community-badge/claim',
-        element: <CommunityBadgeClaimPage />
+        path: "/community-badge/claim",
+        element: <CommunityBadgeClaimPage />,
       },
-      
+      {
+        path: "/referrals",
+        element: <ReferralsPage />,
+      },
+      {
+        path: "/referrals/create",
+        element: <ReferralsCreatePage />,
+      },
+      {
+        path: "/referrals/:id",
+        element: <ViewReferralPage />,
+      },
     ],
   },
 ]);

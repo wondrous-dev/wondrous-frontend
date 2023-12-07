@@ -110,12 +110,12 @@ const ViewStoreItem = ({ data }) => {
             type: "text",
           },
           {
-            label: "Product type",
+            label: "Store Item Type",
             value: STORE_ITEM_LABELS[data?.type],
             type: "text",
           },
           {
-            label: "Delivery method",
+            label: "Delivery Method",
             value: DELIVERY_METHOD_LABELS[data?.deliveryMethod],
             type: "text",
           },

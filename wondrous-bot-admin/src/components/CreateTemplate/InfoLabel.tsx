@@ -15,12 +15,12 @@ const INFO_LABELS = {
   [KEYS.REQUIRE_REVIEW]: "If enabled, all submissions will require review before being approved",
 };
 
-const InfoLabel = ({stateKey}) => {
-  const infoLabel = INFO_LABELS[stateKey];
+const InfoLabel = ({stateKey = null, title = null, imgStyle = {}}) => {
+  const infoLabel = stateKey ? INFO_LABELS[stateKey] : title;
 
   return infoLabel ? (
     <StyledInformationTooltip placement="right" title={infoLabel}>
-      <img src={InformationTooltip} alt="information" style={{ width: "16px", height: "16px", marginLeft: "8px" }} />
+      <img src={InformationTooltip} alt="information" style={{ width: "16px", height: "16px", marginLeft: "8px", ...imgStyle }} />
     </StyledInformationTooltip>
   ) : null;
 };

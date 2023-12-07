@@ -14,6 +14,8 @@ import {
 } from "./questUtils";
 import { useAddRewardModalState } from "components/Rewards/utils";
 import { PAYMENT_OPTIONS } from "../constants";
+import { useTour } from "@reactour/tour";
+import { useEffect } from "react";
 
 const QuestRewardComponent = ({
   rewards,
@@ -25,7 +27,49 @@ const QuestRewardComponent = ({
   hasReferralStep: boolean;
 }) => {
   const rewardModalState = useAddRewardModalState();
-  const { setIsRewardModalOpen, isTourOpen, setCurrentStep, resetStates } = rewardModalState;
+  const { setIsRewardModalOpen,resetStates } = rewardModalState;
+
+  const { isOpen: isTourOpen, setCurrentStep, setSteps, steps } = useTour();
+
+  useEffect(() => {
+    if (isTourOpen) {
+      const newSteps = steps.map((step: any) => {
+        if (step.id === "tutorial-quest-rewards") {
+          return {
+            ...step,
+            handleNextAction: () => {
+              setIsRewardModalOpen(true);
+              setCurrentStep((prev) => prev + 1);
+            },
+          };
+        }
+        if (step.id === "tutorial-add-rewards") {
+          return {
+            ...step,
+            handleNextAction: () => {
+              setIsRewardModalOpen(false);
+              setCurrentStep((prev) => prev + 1);
+            },
+            handlePrevAction: () => {
+              setIsRewardModalOpen(false);
+              setCurrentStep((prev) => prev - 1);
+            },
+          };
+        }
+        if (step.id === "tutorial-activate-quest") {
+          return {
+            ...step,
+            handlePrevAction: () => {
+              setIsRewardModalOpen(true);
+              setCurrentStep((prev) => prev - 1);
+            },
+          };
+        }
+        return step;
+      });
+      setSteps(newSteps);
+    }
+  }, [isTourOpen]);
 
   const handleToggleModal = () => {
     resetStates()
@@ -124,6 +168,14 @@ const QuestRewardComponent = ({
   };
   const pointReward = rewards.filter((reward) => reward?.type === "points")[0];
   const otherRewards = rewards.filter((reward) => reward?.type !== "points");
+
+  const handleOpenRewardModal = () => {
+    if(isTourOpen) {
+      setCurrentStep((prev) => prev + 1);
+    }
+    setIsRewardModalOpen(true)
+  }
+
   return (
     <>
       <RewardModal
@@ -141,7 +193,7 @@ const QuestRewardComponent = ({
               handleOnChangePoints(pointReward?.type, e.target.value);
             }}
             text="Points"
-            placeholder="How many points?"
+            placeholder="How many points awarded?"
             Icon={PointsIcon}
             handleOnClear={() => {
               handleOnChangePoints(pointReward.type, null);
@@ -154,7 +206,7 @@ const QuestRewardComponent = ({
             }}
           />
           <RewardsComponent rewards={otherRewards} rewardComponents={rewardComponents} />
-          <SharedSecondaryButton onClick={() => setIsRewardModalOpen(true)}>
+          <SharedSecondaryButton onClick={handleOpenRewardModal}>
             {hasReferralStep ? "Add reward per referral" : "Add New Reward"}
           </SharedSecondaryButton>
         </Grid>

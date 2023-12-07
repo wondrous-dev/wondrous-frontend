@@ -3,9 +3,9 @@ import styled from "styled-components";
 
 export const StyledCheckbox = styled(Checkbox)`
   && {
-    width: 18px;
-    height: 18px;
-    color: #707070;
+    width: ${({width = "18px"}) => width};
+    height: ${({height = "18px"}) => height};
+    color: ${({borderColor}) => borderColor};
     &.Mui-checked {
       color: ${({ bgcolor = "#F8642D" }) => bgcolor};
     }

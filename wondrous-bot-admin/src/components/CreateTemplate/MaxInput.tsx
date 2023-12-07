@@ -3,7 +3,7 @@ import { CustomTextField } from "components/AddFormEntity/components/styles";
 import Switch from "components/Shared/Switch";
 
 const MaxInput = (props) => {
-  const { keyValue, handleValueChange, value } = props;
+  const { keyValue, stateKey, handleValueChange, value } = props;
 
   const isActive = value || keyValue?.trim() === "";
 
