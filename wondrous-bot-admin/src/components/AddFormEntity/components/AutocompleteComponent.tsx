@@ -102,7 +102,7 @@ const AutocompleteOptionsComponent = ({
                 padding: "6px",
                 fontWeight: "500",
                 fontFamily: "Poppins, sans-serif",
-                ...(value === option.value && {
+                ...((value === option.value || option.isSelected) && {
                   backgroundColor: "#E4E4E4 !important",
                 }),
               }}
@@ -113,7 +113,7 @@ const AutocompleteOptionsComponent = ({
                   {option.label || option.value}
                 </Grid>
 
-                {option.value === value && !option.customComponent && <CheckCircleIcon />}
+                {(option.value === value || option.isSelected) && !option.customComponent && <CheckCircleIcon />}
                 {option.displayCustomOnHover && option.customComponent ? (
                   <CustomComponentWrapper>{option.customComponent()}</CustomComponentWrapper>
                 ) : null}

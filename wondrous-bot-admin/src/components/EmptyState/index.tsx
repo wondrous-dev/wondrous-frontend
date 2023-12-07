@@ -1,4 +1,4 @@
-import { SubmissionsArtwork, MembersArtwork } from "./Images";
+import { SubmissionsArtwork, MembersArtwork, ReferralsArtwork } from "./Images";
 
 import { EMPTY_STATE_TYPES } from "utils/constants";
 import { Grid } from "@mui/material";
@@ -29,6 +29,10 @@ const EMPTY_STATE_MAP = {
   [EMPTY_STATE_TYPES.CATEGORIES]: {
     title: 'No categories yet',
     Image: SubmissionsArtwork
+  },
+  [EMPTY_STATE_TYPES.REFERRALS]: {
+    title: 'No referrals yet',
+    Image: ReferralsArtwork
   }
 };
 
@@ -53,6 +57,7 @@ const EmptyState = ({ type, sx = {}, labelColor = "white", children = null, cust
       <Label color={labelColor} fontSize="14px" fontWeight={500}>
         {title}
       </Label>
+      
       {children}
     </Grid>
   );

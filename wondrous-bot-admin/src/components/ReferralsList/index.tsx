@@ -1,7 +1,4 @@
-import { ArrowUpward } from "@mui/icons-material";
-import { Box, ButtonBase } from "@mui/material";
-import { StyledCheckbox } from "components/PaymentLedger/styles";
-import CheckboxOption from "components/QuestSteps/Checkbox";
+import { Box, TableCell, Typography } from "@mui/material";
 import PageWrapper from "components/Shared/PageWrapper";
 import Switch from "components/Shared/Switch";
 import TableComponent from "components/TableComponent";
@@ -11,7 +8,7 @@ import { Link } from "react-router-dom";
 import { BG_TYPES, EMPTY_STATE_TYPES, LIMIT, REFERRAL_STATUSES } from "utils/constants";
 import { Label } from "components/QuestsList/styles";
 import { useMutation } from "@apollo/client";
-import { MINIMAL_REFERRAL_UPDATE, UPDATE_REFERRAL } from "graphql/mutations";
+import { MINIMAL_REFERRAL_UPDATE } from "graphql/mutations";
 import { ExistingLevelsReward } from "components/LevelsReward";
 import { useDiscordRoles } from "utils/discord";
 import { useGlobalContext } from "utils/hooks";
@@ -23,14 +20,13 @@ import { GET_REFERRAL_CAMPAIGN_FOR_ORG } from "graphql/queries/referral";
 import { updateReferralCampaignCache } from "utils/apolloHelpers";
 import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
+import { Divider } from "components/SignupComponent/CollectCredentials/styles";
+import { StyledInformationTooltip } from "components/Shared/Tooltip";
+import InformationTooltip from "components/Icons/information.svg";
 
 const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
   const [hasMore, setHasMore] = useState(true);
 
-  const [sortOrder, setSortOrder] = useState({
-    sortKey: "submissions",
-    order: "desc",
-  });
   const { activeOrg } = useGlobalContext();
   const discordRoles = useDiscordRoles({
     orgId: activeOrg?.id,
@@ -56,29 +52,36 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
   const headers = useMemo(() => {
     return [
       {
-        label: "Off / On",
+        label: "Active",
+        infoText: "Toggle to activate or deactivate the referral campaign.",
       },
       {
         label: "Campaign Name",
         sortKey: "name",
+        infoText: "Click to view the referral campaign.",
       },
       {
         label: "Referrals",
+        infoText: "Number of referrals that have been made.",
       },
       {
         label: "Approved",
         sortKey: "results",
+        infoText: "Number of referrals that have been approved.",
       },
       {
         label: "Referrer Points",
         sortKey: "referrerPointReward",
+        infoText: "Number of points the referrer will receive.",
       },
       {
         label: "Referred Points",
         sortKey: "referredPointReward",
+        infoText: "Number of points the referred will receive.",
       },
       {
         label: "Rewards",
+        infoText: "Rewards that will be given to the referrer and referred.",
       },
     ];
   }, []);
@@ -182,7 +185,9 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
                   );
                 })
               ) : (
-                <StyledViewQuestResults bgcolor="#E8E8E8" $outlineColor="#E8E8E8">None</StyledViewQuestResults>
+                <StyledViewQuestResults bgcolor="#E8E8E8" $outlineColor="#E8E8E8">
+                  None
+                </StyledViewQuestResults>
               )}
             </div>
           ),
@@ -244,6 +249,16 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
     >
       <TableComponent
         data={tableItems}
+        emptyStateComponent={() => (
+          <TableCell colSpan={headers?.length}>
+            <EmptyState type={EMPTY_STATE_TYPES.REFERRALS} labelColor="#828282">
+              <Divider />
+              <Typography fontFamily="Poppins" fontWeight={500} fontSize="16px" lineHeight="16px">
+                Start a referral by <Link to="/referrals/create">clicking here.</Link>
+              </Typography>
+            </EmptyState>
+          </TableCell>
+        )}
         headerComponent={() => {
           return (
             <StyledTableHeader>
@@ -251,20 +266,15 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
                 <StyledTableHeaderCell sortKey={header}>
                   <Box display="flex" alignItems="center" gap="6px" justifyContent="center">
                     {header.label}
-                    {/* {header.sortKey ? (
-                      <ButtonBase type="button" onClick={() => onSortOrderChange({ header })}>
-                        <ArrowUpward
-                          sx={{
-                            fontSize: "14px",
-                            color: sortOrder.sortKey === header.sortKey ? "red" : "#949494",
-                            transform:
-                              sortOrder.sortKey === header.sortKey && sortOrder.order === "desc"
-                                ? "rotate(180deg)"
-                                : "rotate(0deg)",
-                          }}
+                    {header?.infoText ? (
+                      <StyledInformationTooltip placement="right" title={header?.infoText}>
+                        <img
+                          src={InformationTooltip}
+                          alt="information"
+                          style={{ width: "16px", height: "16px", marginLeft: "8px" }}
                         />
-                      </ButtonBase>
-                    ) : null} */}
+                      </StyledInformationTooltip>
+                    ) : null}
                   </Box>
                 </StyledTableHeaderCell>
               ))}
@@ -273,7 +283,7 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
         }}
         title="Referrals"
       />
-      {hasMore && data?.getReferralCampaignForOrg?.items?.length > 0 ? (
+      {hasMore && data?.getReferralCampaignForOrg?.items?.length >= LIMIT ? (
         <SharedSecondaryButton
           style={{
             width: "fit-content",

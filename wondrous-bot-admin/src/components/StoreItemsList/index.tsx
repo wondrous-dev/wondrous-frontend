@@ -159,7 +159,7 @@ const StoreItemsList = ({ data }) => {
                       }}
                     />
                   </RoundedSecondaryButton>
-                  <Label fontSize="15px">New product</Label>
+                  <Label fontSize="15px">New Store Item</Label>
                 </CardWrapper>
               </CardHoverWrapper>
             </Grid>

@@ -10,10 +10,12 @@ import { useGlobalContext } from "utils/hooks";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import { useContext } from "react";
 import ErrorField from "components/Shared/ErrorField";
+import { KEYS_MAP } from "../constants";
+import { ListboxComponent } from "components/Shared/FetchMoreListbox";
 
 const TYPES_MAP = {
   [QUALIFYING_ACTION_TYPES.PURCHASE]: {
-    label: "Which products should this apply to?",
+    label: "Which store item(s) should this apply to?",
     placeholder: "Select products",
   },
   [QUALIFYING_ACTION_TYPES.QUEST]: {
@@ -24,12 +26,6 @@ const TYPES_MAP = {
     label: "Which quest(s) should this apply to?",
     placeholder: "Select quests",
   },
-};
-
-const KEYS_MAP = {
-  [QUALIFYING_ACTION_TYPES.PURCHASE]: "storeItemId",
-  [QUALIFYING_ACTION_TYPES.QUEST]: "questIds",
-  [QUALIFYING_ACTION_TYPES.ANY_QUEST]: "questIds",
 };
 
 const ActionEntityButtons = ({ idx = 0, referralItemType, handleDelete, handleAdd, canAddItem }) => {
@@ -54,7 +50,14 @@ const ActionEntityButtons = ({ idx = 0, referralItemType, handleDelete, handleAd
   );
 };
 
-const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntityChange, options = [] }) => {
+const SelectorsComponent = ({
+  setReferralItemData,
+  referralItemData,
+  handleEntityChange,
+  options = [],
+  handleFetchMore,
+  hasMore,
+}) => {
   const values = referralItemData[KEYS_MAP[referralItemData.type]];
 
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -75,6 +78,7 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
     }));
 
   if (!typeConfig) return null;
+
   return (
     <Grid display="flex" flexDirection="column" gap="12px">
       <Label fontWeight={600}>{typeConfig?.label}</Label>
@@ -107,12 +111,19 @@ const SelectorsComponent = ({ setReferralItemData, referralItemData, handleEntit
                 placeholder={typeConfig?.placeholder}
                 onChange={(value) => handleEntityChange(value, idx, referralItemData.type)}
                 bgColor="#E8E8E8"
+                autocompletProps={{
+                  ListboxComponent: ListboxComponent,
+                }}
+                listBoxProps={{
+                  handleFetchMore: async () => handleFetchMore(referralItemData?.type),
+                  hasMore,
+                }}
               />
               <ActionEntityButtons
                 idx={idx}
                 handleAdd={handleAdd}
                 handleDelete={() => handleDelete(idx)}
-                canAddItem={idx === values.length - 1}
+                canAddItem={idx === values.length - 1 && values[idx]}
                 referralItemType={referralItemData.type}
               />
             </Box>

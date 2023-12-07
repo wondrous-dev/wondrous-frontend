@@ -48,7 +48,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
   const COMPONENTS = {
     [STORE_ITEM_TYPES.EXTERNAL_SHOP]: {
       component: TextField,
-      label: "External shop link",
+      label: "External Shop Link",
       componentProps: {
         multiline: false,
         type: "url",
@@ -269,12 +269,12 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
           return (
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">
               <Grid display="flex" flexDirection="column" gap="12px">
-                <Label fontWeight={600}>Product type</Label>
+                <Label fontWeight={600}>Store Item Type</Label>
 
                 <AutocompleteOptionsComponent
                   options={TYPES}
                   value={storeItemData.type}
-                  placeholder="Select Product Type"
+                  placeholder="Select Store Item Type"
                   onChange={handleTypeChange}
                 />
               </Grid>
@@ -288,7 +288,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                 />
               </Grid>
               <Grid display="flex" flexDirection="column" gap="12px">
-                <Label fontWeight={600}>Delivery method</Label>
+                <Label fontWeight={600}>Delivery Method</Label>
                 <SelectComponent
                   options={DELIVERY_METHODS_OPTIONS}
                   value={storeItemData.deliveryMethod || null}
@@ -316,7 +316,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
               {(storeItemData?.deliveryMethod === DELIVERY_METHODS.EXTERNAL_CODE ||
                 storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE) && (
                 <Grid display="flex" flexDirection="column" gap="12px">
-                  <Label fontWeight={600}>Upload Code list</Label>
+                  <Label fontWeight={600}>Upload Code List</Label>
                   {uploadedFilename && storeItemData?.discountCodeImport?.codes?.length > 0 ? (
                     <Box display="flex" alignItems="center">
                       <Box

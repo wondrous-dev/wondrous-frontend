@@ -1,14 +1,10 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { CircularProgress } from "@mui/material";
+import { useQuery } from "@apollo/client";
 import CreateStoreItem from "components/CreateStoreItem";
 import PageHeader from "components/PageHeader";
-import PageSpinner from "components/PageSpinner";
-import TextField from "components/Shared/TextField";
 
-import QuestTitle from "components/QuestTitle";
-import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
+import { SharedSecondaryButton } from "components/Shared/styles";
 import { GET_STORE_ITEM_BY_ID } from "graphql/queries";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import DiscountCodeModal from "./DiscountCodeModal";
@@ -75,7 +71,7 @@ const StoreItem = () => {
 
   const isDeactivated = !!data?.getStoreItem?.deactivatedAt;
 
-  const buttonTitle = isEditMode ? "Save product" : "Edit product";
+  const buttonTitle = isEditMode ? "Save store item" : "Edit store item";
 
   const handleOnClick = () => {
     if (isEditMode) return headerActionsRef.current?.handleSave();
@@ -98,7 +94,7 @@ const StoreItem = () => {
         />
         <PageHeader
           withBackButton
-          title={isEditMode ? "Edit Product" : "View Product"}
+          title={isEditMode ? "Edit Store Item" : "View Store Item"}
           renderActions={() => (
             <>
               <SharedSecondaryButton $reverse={isDeactivated} onClick={handleOnClick} disabled={isDeactivated}>

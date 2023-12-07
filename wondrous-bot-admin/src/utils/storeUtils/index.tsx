@@ -38,7 +38,7 @@ export const useStorePaywall = () => {
   }, [plan, activeOrg]);
 
   const handleSuccess = () => {
-    setSnackbarAlertMessage("Community store enabled!");
+    setSnackbarAlertMessage("Store enabled!");
     setSnackbarAlertAnchorOrigin({
       vertical: "bottom",
       horizontal: "right",
