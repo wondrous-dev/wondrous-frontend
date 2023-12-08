@@ -11,7 +11,6 @@ import QuestsPage from "pages/quests";
 import { createTheme, PaletteMode, ThemeProvider } from "@mui/material";
 import { THEME_TYPES } from "utils/constants";
 import MembersPage from "pages/quests/members";
-import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
 import QuestResultsPage from "pages/quests/QuestResultsPage";
@@ -30,7 +29,6 @@ import WalletConnectPage from "pages/wallet/connect";
 import OnboardingPage from "pages/onboarding";
 import DiscordOrgCallbackPage from "pages/discord/callback/org-connect";
 import DiscordCallbackPage from "pages/discord/callback";
-import TestPage from "pages/test";
 import ViewQuest from "pages/quests/ViewQuest";
 import DiscordCallbackCmtyUserConnect from "pages/discord/callback/cmty-user-connect";
 import SignupPage from "pages/signup";
@@ -56,6 +54,29 @@ import CommunityBadgeClaimPage from "pages/community-badge/claim";
 import ReferralsPage from "pages/referrals";
 import ReferralsCreatePage from "pages/referrals/ReferralsCreate";
 import ViewReferralPage from "pages/referrals/ViewReferral";
+import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
+import { SUPPORTED_CHAINS_META } from "utils/web3Constants";
+
+const projectId = import.meta.env.VITE_DISCORD_CLIENT_ID;
+
+const metadata = {
+  name: "Wonderverse",
+  description: "Empower your community",
+  url: "https://communities.wonderverse.xyz/",
+  icons: ["https://communities.wonderverse.xyz/wonder-black.svg"],
+};
+
+createWeb3Modal({
+  ethersConfig: defaultConfig({
+    metadata,
+    defaultChainId: 1,
+    enableEIP6963: true,
+    enableInjected: true,
+    enableCoinbase: true,
+  }),
+  chains: SUPPORTED_CHAINS_META,
+  projectId,
+});
 
 const router = createBrowserRouter([
   {
@@ -144,10 +165,6 @@ const router = createBrowserRouter([
       {
         path: "/discord/callback",
         element: <DiscordCallbackPage />,
-      },
-      {
-        path: "/test",
-        element: <TestPage />,
       },
       {
         path: "/discord/callback/cmty-user-connect",
@@ -286,13 +303,11 @@ function App() {
       <ThemeProvider theme={theme}>
         <ApolloProvider client={client}>
           <SnackbarAlertProvider>
-            <Web3ReactProvider getLibrary={getLibrary}>
-              <WonderWeb3Provider>
-                <PaywallContextProvider>
-                  <RouterProvider router={router} />
-                </PaywallContextProvider>
-              </WonderWeb3Provider>
-            </Web3ReactProvider>
+            <WonderWeb3Provider>
+              <PaywallContextProvider>
+                <RouterProvider router={router} />
+              </PaywallContextProvider>
+            </WonderWeb3Provider>
           </SnackbarAlertProvider>
         </ApolloProvider>
       </ThemeProvider>

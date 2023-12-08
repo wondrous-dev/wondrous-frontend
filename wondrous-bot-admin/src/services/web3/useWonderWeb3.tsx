@@ -1,29 +1,27 @@
-import { BigNumber, ethers } from 'ethers';
+/*
+DEPREACTED
+*/
+import { ethers } from "ethers";
 
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from "react";
 
-import { SUPPORTED_CHAINS } from 'utils/web3Constants';
+import { SUPPORTED_CHAINS } from "utils/web3Constants";
 
-import { ERC20abi } from 'services/contracts/erc20.abi';
-import { formatEther } from 'ethers/lib/utils';
-import { WonderWeb3, WonderWeb3AssetMap, TransactionData } from 'services/web3/types';
-import connectors, { ConnectorName } from './connectors';
-import useStoredConnector from './useStoredConnector';
-import useWeb3 from './useWeb3';
-import { WonderWeb3Context } from 'utils/context/WonderWeb3Context';
+import { WonderWeb3, WonderWeb3AssetMap, TransactionData } from "services/web3/types";
+import useWeb3 from "./useWeb3";
+import { WonderWeb3Context } from "utils/context/WonderWeb3Context";
+import { useDisconnect, useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/react";
 
 /**
  * High level hook for Web3. Uses our react-web3 hook wrapper and adds some additional business functionality.
  */
 
-
+//TODO: deprecated hook, remove this after testing
 export default function useWonderWeb3(): WonderWeb3 {
   const {
     connector,
     library,
-    chainId,
     account,
-    activate,
     deactivate,
     active,
     error,
@@ -32,20 +30,24 @@ export default function useWonderWeb3(): WonderWeb3 {
     isSubscribed,
   } = useWeb3();
 
+  const { chainId, isConnected, ...rest } = useWeb3ModalAccount();
+
+  const { walletProvider } = useWeb3ModalProvider();
+
+  const { disconnect } = useDisconnect();
   const [assets, setAssets] = useState<WonderWeb3AssetMap>(null);
   const [ensName, setENSName] = useState(null);
   const [fetching, setFetching] = useState(false);
   const { connecting, setConnecting } = useContext(WonderWeb3Context);
   const [lastChainId, setLastChainId] = useState(chainId);
 
-
-  const chainName = useMemo(() => SUPPORTED_CHAINS[chainId] || 'none', [chainId]); // i have no idea why this needs to be 'none' but it somehow doesnt work if it's null
+  const chainName = useMemo(() => SUPPORTED_CHAINS[chainId] || "none", [chainId]); // i have no idea why this needs to be 'none' but it somehow doesnt work if it's null
 
   const address = useMemo(() => account, [account]);
 
   const addressTag = useMemo(() => {
     if (!address) {
-      return '';
+      return "";
     }
     if (ensName) {
       return ensName;
@@ -68,25 +70,11 @@ export default function useWonderWeb3(): WonderWeb3 {
     [account, address, addressTag, assets, chainId]
   );
 
-
-  const onConnect = () => {
-    console.log('onConnect', connector);
-    if (!connector) return;
-    try {
-      activate(connector);
-      // Gate Keeper for Usupported chains
-      if (!SUPPORTED_CHAINS[chainId]) {
-        disconnect();
-        return false;
-      }
-    } catch (e) {
-      console.log('Error', e);
-    }
-    setConnecting(false);
-  };
+  //TODO: remove, this is deprecated
+  const onConnect = () => {};
 
   const signMessage = async (message: string) => {
-    if (!provider || !active) return;
+    if (!walletProvider || !isConnected) return;
     if (connecting) {
       setConnecting(false);
       return;
@@ -94,21 +82,22 @@ export default function useWonderWeb3(): WonderWeb3 {
 
     setConnecting(true);
     try {
-      const prov = new ethers.providers.Web3Provider(provider);
-      const { chainId } = await prov.getNetwork();
+      const prov = new ethers.providers.Web3Provider(walletProvider);
       if (!SUPPORTED_CHAINS[chainId]) {
-        disconnect();
+        disconnectWallet();
         return false;
       }
-      const signer = await prov.getSigner();
+      const signer = prov.getSigner();
 
       // Now sign message
       const signedMessage = await signer.signMessage(message);
+      console.log(signedMessage, "signed msg");
+      const recoverMessage = ethers.utils.verifyMessage(message, signedMessage);
+      console.log(recoverMessage, "recover msg");
       setConnecting(false);
       return signedMessage;
     } catch (error) {
-      
-      console.log('Error signing message ', error);
+      console.log("Error signing message ", error);
       // Error Signed message
       setConnecting(false);
       if (error.code && error.code == 4001) {
@@ -117,8 +106,6 @@ export default function useWonderWeb3(): WonderWeb3 {
     }
     return null;
   };
-
-
 
   // If the wallet has an ENS Name, represent it
   // instead of the address.
@@ -139,14 +126,14 @@ export default function useWonderWeb3(): WonderWeb3 {
   const getENSNameFromEthAddress = async (address: string) => {
     try {
       if (!provider) {
-        console.warn('No provider found');
+        console.warn("No provider found");
         return;
       }
       const prov = new ethers.providers.Web3Provider(provider);
       const name = await prov.lookupAddress(address);
       return name;
     } catch (err) {
-      console.log('Error getting ENS name', err);
+      console.log("Error getting ENS name", err);
       return null;
     }
   };
@@ -170,8 +157,8 @@ export default function useWonderWeb3(): WonderWeb3 {
     }
   };
 
-  const disconnect = () => {
-    deactivate();
+  const disconnectWallet = () => {
+    disconnect();
     setConnecting(false);
     return true;
   };
@@ -183,27 +170,16 @@ export default function useWonderWeb3(): WonderWeb3 {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, chainId, provider]);
 
-  useEffect(() => {
-    if (chainId) {
-      setLastChainId(chainId);
-    }
-  }, [chainId]);
 
   const chain = chainId || lastChainId;
 
-  const { setStoredConnector } = useStoredConnector();
 
-  const activateAndStore = (connectorName: ConnectorName) => {
-    const conn = connectors[connectorName];
-    activate(conn, () => {
-      setStoredConnector(connectorName);
-    });
+  const activateAndStore = () => {
   };
 
   const sendTransaction = async (txData: TransactionData) => {
     const prov = new ethers.providers.Web3Provider(provider);
-    const { chainId } = await prov.getNetwork(); // TODO add validation here that chainId equals current chain id
-    const signer = await prov.getSigner();
+    const signer = prov.getSigner();
     const transactionObj = await signer.sendTransaction(txData);
     return transactionObj;
   };
@@ -219,7 +195,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     subscribed: isSubscribed,
     notSupportedChain: chain ? !SUPPORTED_CHAINS[chain] : false,
     onConnect,
-    disconnect,
+    disconnect: disconnectWallet,
     signMessage,
     web3Provider: provider,
     toChecksumAddress,
@@ -229,7 +205,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     isActivating,
     active,
     library,
-    activate,
+    activate: () => {},
     activateAndStore,
     getENSNameFromEthAddress,
     getAddressFromENS,
