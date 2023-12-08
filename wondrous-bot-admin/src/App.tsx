@@ -57,11 +57,11 @@ import ViewReferralPage from "pages/referrals/ViewReferral";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 import { SUPPORTED_CHAINS_META } from "utils/web3Constants";
 
-const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
+const projectId = import.meta.env.VITE_DISCORD_CLIENT_ID;
 
 const metadata = {
   name: "Wonderverse",
-  description: "My Wonderverse Desc",
+  description: "Empower your community",
   url: "https://communities.wonderverse.xyz/",
   icons: ["https://communities.wonderverse.xyz/wonder-black.svg"],
 };
