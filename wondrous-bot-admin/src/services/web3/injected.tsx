@@ -1,3 +1,7 @@
+/*
+DEPRECATED
+*/
+
 import { InjectedConnector } from '@web3-react/injected-connector';
 
 class PatchedInjectedConnector extends InjectedConnector {

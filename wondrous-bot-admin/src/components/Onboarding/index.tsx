@@ -12,8 +12,10 @@ import { useSchema } from "./validator";
 import GlobalContext from "utils/context/GlobalContext";
 import MetaPixel from "components/MetaPixel";
 import GoogleTag from "components/GoogleTag";
+import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
 
 const OnboardingComponent = () => {
+  const { address, chainId, open, disconnect, isConnected } = useWonderWeb3Modal();
   const { setActiveOrg } = useContext(GlobalContext);
   const [orgData, setOrgData] = useState({
     name: "",
