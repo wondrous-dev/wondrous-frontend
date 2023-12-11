@@ -1,9 +1,9 @@
 import { Box, ClickAwayListener, Dialog, Grid, Typography } from "@mui/material";
 import { useCallback, useContext, useMemo, useState } from "react";
+import { utcToZonedTime, format } from "date-fns-tz";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import Modal from "components/Shared/Modal";
 import { useLazyQuery } from "@apollo/client";
-import { format } from "date-fns";
 import { useEffect } from "react";
 import { GET_ALL_STORE_ITEM_DISCOUNT_CODES, GET_STORE_ITEM_DISCOUNT_CODE_COUNT } from "graphql/queries";
 import TableComponent from "components/TableComponent";
@@ -17,6 +17,17 @@ import Spinner from "components/Shared/Spinner";
 
 export const DISCOUNT_CODE_HEADERS = ["codes"];
 
+const getDateAndTimeString = (date) => {
+  try {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const time = utcToZonedTime(date, timeZone);
+
+    return format(new Date(time), "MM/dd/yyyy 'at' h:m a");
+  } catch (e) {
+    console.log("Error getting timezone: ", e);
+    return date;
+  }
+};
 export const exportStoreItemDiscountCodes = async ({
   getAllStoreItemDiscountCodes,
   storeItemId,
@@ -120,7 +131,7 @@ const ViewDiscountCodeModalBody = ({
         },
         dateUsed: {
           component: "label",
-          value: discountCode?.deliveredAt ? format(new Date(discountCode?.deliveredAt), "yyyy-MM-dd") : "",
+          value: discountCode?.deliveredAt ? getDateAndTimeString(discountCode?.deliveredAt) : "",
         },
         discount: {
           component: "label",
