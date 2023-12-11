@@ -16,17 +16,21 @@ import { StyledLink, UnderlinedLink } from "components/ViewQuest/styles";
 const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadataId, cmtyUserId }) => {
   const { address, walletProvider, chainId, open, isConnected } = useWonderWeb3Modal();
   const [linkTx] = useMutation(LINK_TRANSACTION_TO_COMMUNITY_NFT);
+  const isMobile = useMediaQuery("(max-width: 600px)");
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
 
   const [isMinting, setIsMinting] = useState(false);
   const [openConnectModal, setOpenConnectModal] = useState(false);
 
   const handleMint = async () => {
-    console.log("minting");
     if (!address) return;
 
     try {
       setIsMinting(true);
+      if(isMobile) {
+        setSnackbarAlertMessage("Please open your wallet and proceed with the transaction");
+        setSnackbarAlertOpen(true);
+      }
       const prov = new ethers.providers.Web3Provider(walletProvider);
       const signer = prov.getSigner();
       const contractInstance = new ethers.Contract(CHAIN_TO_NFT_FACTORY[chainId], nftFactoryABI, signer);
