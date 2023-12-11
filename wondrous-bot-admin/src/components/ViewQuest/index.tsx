@@ -43,7 +43,7 @@ const ViewQuest = ({ quest, loading }) => {
 
   useEffect(() => {
     if (cmtyUserToken) {
-      verifyToken().then(({ data }) => setIsDiscordConnected(data?.getCmtyUserTokenExpireCheck?.success));
+      verifyToken().then(({ data }) => setIsDiscordConnected(!!data?.getCmtyUserTokenExpireCheck?.cmtyUserId));
     }
   }, [cmtyUserToken]);
 

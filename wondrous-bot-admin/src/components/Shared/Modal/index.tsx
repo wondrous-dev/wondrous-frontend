@@ -15,7 +15,7 @@ import {
 interface IModalProps {
   open: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   maxWidth?: number;
   noHeader?: boolean;
   children: React.ReactNode;
@@ -36,7 +36,7 @@ interface IModalProps {
 const Modal = ({
   open,
   onClose,
-  title,
+  title = "",
   maxWidth = 400,
   children,
   footerLeft = null,

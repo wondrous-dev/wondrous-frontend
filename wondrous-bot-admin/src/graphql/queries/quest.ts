@@ -433,7 +433,7 @@ export const GET_PERMISSION_TO_REWARD_ROLE = gql`
 export const GET_CMTY_USER_TOKEN_EXPIRE_CHECK = gql`
   query getCmtyUserTokenExpireCheck {
     getCmtyUserTokenExpireCheck {
-      success
+      cmtyUserId
     }
   }
 `;
@@ -443,6 +443,14 @@ export const GET_QUEST_CATEGORIES = gql`
     getOrgQuestCategories(orgId: $orgId) {
       id
       category
+    }
+  }
+`;
+
+export const CHECK_CMTY_USER_GUILD_MEMBERSHIP = gql`
+  query checkCmtyUserGuildMembership($input: CheckGuildMemberInput) {
+    checkCmtyUserGuildMembership(input: $input) {
+      isMember
     }
   }
 `;

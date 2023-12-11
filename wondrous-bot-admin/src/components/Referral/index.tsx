@@ -16,14 +16,13 @@ import { useLocation } from "react-router-dom";
 import { GET_REFERRAL_CAMPAIGN_BY_EXTERNAL_ID, GET_REFERRAL_CODE_INFO } from "graphql/queries/referral";
 import StartReferralQuests from "components/StartReferralQuests";
 
-
 const StartReferralPage = () => {
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const referralCode = searchParams?.get("referralCode");
   const referralCampaignExternalId = searchParams?.get("referralCampaignExternalId") || null;
 
-  const {data: referralCodeInfoData} = useQuery(GET_REFERRAL_CODE_INFO, {
+  const { data: referralCodeInfoData } = useQuery(GET_REFERRAL_CODE_INFO, {
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
     notifyOnNetworkStatusChange: true,
@@ -31,9 +30,7 @@ const StartReferralPage = () => {
       referralCode,
     },
     skip: !referralCode,
-  })
-  const error = searchParams?.get("error") || null;
-  const message = searchParams?.get("message") || null;
+  });
 
   const { data, loading } = useQuery(GET_REFERRAL_CAMPAIGN_BY_EXTERNAL_ID, {
     fetchPolicy: "cache-and-network",
@@ -91,8 +88,6 @@ const StartReferralPage = () => {
               referralCode={referralCode}
               referralCodeInfo={referralCodeInfoData?.getReferralCodeInfo}
               referralCampaignExternalId={referralCampaignExternalId}
-              paramsError={error}
-              paramsMessage={message}
             />
           )}
         </Grid>

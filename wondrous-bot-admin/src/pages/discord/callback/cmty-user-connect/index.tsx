@@ -37,7 +37,9 @@ const DiscordCallbackCmtyUserConnect = () => {
     }
     setSnackbarAlertMessage(label || "Something went wrong, please try again later");
     setSnackbarAlertOpen(true);
-    navigate(`/quests/view/${questId}?error=true&message=${message}`);
+    if(questId) {
+      navigate(`/quests/view/${questId}?error=true&message=${message}`);
+    }
   };
 
   const navigate = useNavigate();
