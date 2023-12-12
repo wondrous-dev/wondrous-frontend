@@ -35,6 +35,7 @@ const DEFAULT_REFERRAL_DATA = {
   referrerPointReward: null,
   referredPointReward: null,
   rewardScheme: REFERRAL_REWARD_SCHEME.REFERRER,
+  media: [],
 };
 
 const SingleReferralComponent = ({
@@ -46,7 +47,7 @@ const SingleReferralComponent = ({
   const referralItemDataDefaultState = existingReferralItemData || { ...DEFAULT_REFERRAL_DATA };
   const referralItemSettingsDefaultState = existingReferralItemSettings || { ...DEFAULT_REFERRAL_SETTINGS };
   const navigate = useNavigate();
-  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertAutoHideDuration } = useAlerts();
   const { setErrors } = useContext(CreateQuestContext);
   const [referralItemData, setReferralItemData] = useState<any>(referralItemDataDefaultState);
   const [referralItemSettings, setReferralItemSettings] = useState<any>(referralItemSettingsDefaultState);
@@ -182,7 +183,35 @@ const SingleReferralComponent = ({
 
     try {
       await referralValidator(body);
-      return await handleMutation(body);
+      await handleMutation(body);
+      const referralDataMediaUploads = Array.isArray(referralItemData?.media) ? referralItemData?.media : [];
+      const defaultReferralDataMediaUploads = Array.isArray(existingReferralItemData?.media)
+        ? existingReferralItemData?.mediaUploads
+        : [];
+
+      const hasMediaToUpload = referralDataMediaUploads.some((media) => media instanceof File);
+
+      const storeItemSlugs = referralDataMediaUploads.filter((media) => media?.slug).map((media) => media.slug); // Ensures that you are working with the slug strings directly.
+
+      const mediaSlugsToRemove = defaultReferralDataMediaUploads
+        .filter((media) => !storeItemSlugs.includes(media?.slug))
+        .map((media) => media?.slug); // Map to get the slugs to remove.
+
+      if (hasMediaToUpload) {
+        setSnackbarAlertMessage("Wrapping up with your media. Please keep this window open");
+        setSnackbarAlertAutoHideDuration(2000);
+        setSnackbarAlertOpen(true);
+      }
+      if (mediaSlugsToRemove?.length > 0) {
+        // await removeStoreItemMedia({
+        //   variables: {
+        //     storeItemId: storeItemSettings?.id,
+        //     // until we support more media
+        //     slug: mediaSlugsToRemove[0],
+        //   },
+        // });
+      }
+
     } catch (err) {
       let errors = {};
       if (err instanceof ValidationError) {

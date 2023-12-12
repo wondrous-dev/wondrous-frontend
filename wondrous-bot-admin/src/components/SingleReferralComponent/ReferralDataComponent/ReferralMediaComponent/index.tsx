@@ -3,8 +3,11 @@ import InfoLabel from "components/CreateTemplate/InfoLabel";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import { Label } from "components/CreateTemplate/styles";
 import InfoIcon from "components/Icons/InfoIcon";
+import MediaHandler from "./MediaHandler";
 
 const ReferralMediaComponent = ({ referralItemData, setReferralItemData }) => {
+  const handleChange = (newMedia) => setReferralItemData((prev) => ({ ...prev, media: newMedia }));
+
   return (
     <PanelComponent
       renderBody={() => (
@@ -25,6 +28,7 @@ const ReferralMediaComponent = ({ referralItemData, setReferralItemData }) => {
               <Label fontWeight={500} fontSize="13px" color="#4D4D4D" minWidth="50px">
                 This image will be seen by members when they start the referral quest and share the link.
               </Label>
+              <MediaHandler media={referralItemData?.media} onChange={handleChange} />
             </Grid>
           </Grid>
         </>
