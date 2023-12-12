@@ -106,6 +106,7 @@ const useStartQuest = ({
   };
 
   const handleOnStartQuestCompleted = (res, questId) => {
+    setIsConnectionLoading(false);
     if (res?.data?.startQuest?.channelLink) {
       window.open(res?.data?.startQuest?.channelLink, "_blank");
       return setInfoModalQuestId(null);
@@ -114,7 +115,6 @@ const useStartQuest = ({
       const selectedQuest = quest?.id || quests?.find((quest) => quest?.id === questId);
       if (res?.data?.startQuest?.error === "discord_user_not_in_guild") {
         setIsMember(false);
-        setIsConnectionLoading(false);
         return setInfoModalQuestId(questId);
       }
       return handleError({ questInfo: selectedQuest, error: res?.data?.startQuest?.error });

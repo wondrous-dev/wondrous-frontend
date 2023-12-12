@@ -1,12 +1,13 @@
-import Hexagon from "components/Icons/Hexagon";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { Label } from "components/QuestsList/styles";
 import Modal from "components/Shared/Modal";
 import Spinner from "components/Shared/Spinner";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { getDiscordUrl } from "utils/discord";
-import CheckIcon from "components/Icons/Check";
-import { useMemo } from "react";
+import { GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL } from "graphql/queries";
+import { useQuery } from "@apollo/client";
+import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
+import { Divider } from "components/SignupComponent/CollectCredentials/styles";
+import { SuccessInfoButton } from "./styles";
 
 const InfoModal = ({
   isOpen,
@@ -19,18 +20,33 @@ const InfoModal = ({
   handleJoinDiscord,
   handleOnConnect,
   label = "Start Quest",
+  orgId,
+  orgProfilePicture,
 }) => {
+  const { data, loading } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG_MINIMAL, {
+    variables: {
+      orgId: orgId,
+    },
+    skip: !isOpen,
+  });
+
   const STEPS_CONFIG = [
     {
+      buttonLabel: showJoinDiscord ? "Connected" : "Connect",
+      isActive: showConnect,
       label: "Connect Discord",
-      checked: !showConnect,
+      hasCompleted: showJoinDiscord || showStartQuest,
+      img: "/images/info-discord-icon.png",
+      onClick: handleOnConnect,
     },
     {
-      label: "Join Discord",
-      checked: !showJoinDiscord && showStartQuest,
-    },
-    {
-      label: "Start Quest",
+      buttonLabel: showStartQuest ? "Joined" : `Join`,
+      label: `Join ${data?.getCmtyOrgDiscordConfig?.guildInfo?.guildName || "server"}`,
+      isActive: showJoinDiscord,
+      hasCompleted: showStartQuest,
+      img: orgProfilePicture,
+      imgType: "org",
+      onClick: handleJoinDiscord,
     },
   ];
 
@@ -46,158 +62,123 @@ const InfoModal = ({
     }
   };
 
-  const buttonTitle = useMemo(() => {
-    if (showConnect) {
-      return "Connect Discord";
-    }
-    if (showJoinDiscord) {
-      return "Join Discord";
-    }
-    return "Start Quest";
-  }, [showConnect, showJoinDiscord, showStartQuest]);
-
   return (
     <>
-      <Modal open={isOpen} onClose={onClose} title={null} maxWidth={792} noHeader>
-        <Grid
-          display="flex"
-          gap="24px"
-          sx={{
-            flexDirection: {
-              xs: "column-reverse",
+      <Modal
+        open={isOpen}
+        onClose={onClose}
+        title={null}
+        maxWidth={700}
+        footerCenter
+        footerRight={
+          <SharedSecondaryButton disabled={!showStartQuest || isConnectionLoading} onClick={onStartQuest}>
+            {isConnectionLoading && showStartQuest ? <Spinner /> : "Start Quest"}
+          </SharedSecondaryButton>
+        }
+      >
+        <Grid display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="24px">
+          <Box display="flex" flexDirection="column" gap="12px">
+            <Label
+              fontSize={{
+                xs: "14px",
+                sm: "17px",
+              }}
+              color="#626262"
+              fontWeight={700}
+              sx={{
+                textAlign: "center",
+              }}
+            >
+              Hold Up, Adventurer!
+            </Label>
+            <Label
+              fontSize={{
+                xs: "14px",
+                sm: "17px",
+              }}
+              color="#626262"
+              sx={{
+                textAlign: "center",
+              }}
+              fontWeight={500}
+            >
+              To unlock your quest, connect Discord and join our realm!
+            </Label>
+          </Box>
+          <Box
+            display="flex"
+            width="100%"
+            gap="14px"
+            justifyContent="center"
+            flexDirection={{
+              xs: "column",
               sm: "row",
-            },
-          }}
-        >
-          <Box display="flex" justifyContent="space-between" alignItems="center" flexDirection="column" gap="24px">
-            <Box display="flex" flexDirection="column" gap="14px" height="100%" justifyContent="center">
-              <Typography
-                color="#2A8D5C"
-                fontWeight={700}
-                fontFamily="Poppins"
-                fontSize={{
-                  xs: "20px",
-                  sm: "24px",
-                }}
-                lineHeight="33px"
-              >
-                {label}
-              </Typography>
-              <Typography
-                color="#5E5E5E"
-                fontFamily="Poppins"
-                fontSize={{
-                  xs: "12px",
-                  sm: "15px",
-                }}
-                lineHeight="24px"
-                fontWeight={500}
-              >
-                In order to start this quest make sure you have connected your Discord account and joined the Discord
-              </Typography>
-              <Box display="flex" flexDirection="column" gap="8px">
-                <Label
-                  fontSize={{
-                    xs: "12px",
-                    sm: "15px",
-                  }}
-                  fontWeight={600}
+            }}
+          >
+            {STEPS_CONFIG.map((step, idx) => {
+              return (
+                <Box
+                  bgcolor="#F7F7F7"
+                  borderRadius="16px"
+                  flex="1"
+                  display="flex"
+                  padding="24px"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  gap="14px"
                 >
-                  How to:
-                </Label>
-                {STEPS_CONFIG.map((step, index) => (
-                  <Grid display="flex" alignItems="center" gap="8px" key={`step-${index}`}>
-                    <Grid
-                      container
-                      item
-                      position="relative"
+                  {step.imgType === "org" ? (
+                    <Box
+                      border="1px solid black"
+                      borderRadius="300px"
+                      height={"65px"}
+                      width="65px"
+                      display="flex"
                       justifyContent="center"
                       alignItems="center"
-                      width="fit-content"
-                      height="fit-content"
-                      lineHeight="0"
+                      overflow="hidden"
                     >
-                      <Typography
-                        position="absolute"
-                        top="50%"
-                        color="white"
-                        zIndex="10"
-                        fontSize="13px"
-                        lineHeight="0"
-                        fontFamily="Poppins"
-                        fontWeight="500"
+                      <OrgProfilePicture
+                        profilePicture={orgProfilePicture}
+                        style={{
+                          height: "65px",
+                          width: "100%",
+                          borderRadius: "100%",
+                        }}
+                      />
+                    </Box>
+                  ) : (
+                    <img src={step.img} width="65px" />
+                  )}
+                  <Label
+                    color="#2A8D5C"
+                    fontSize={{
+                      xs: "14px",
+                      sm: "18px",
+                    }}
+                    fontWeight={600}
+                  >
+                    {step.label}
+                  </Label>
+                  <Divider bgColor="#E8E8E8" />
+                  <Box flex="1" display="flex" alignItems="flex-end">
+                    {step.hasCompleted ? (
+                      <SuccessInfoButton>{step.buttonLabel}</SuccessInfoButton>
+                    ) : (
+                      <SharedSecondaryButton
+                        width="100%"
+                        disabled={!step.isActive || isConnectionLoading}
+                        onClick={step.onClick}
                       >
-                        {index + 1}
-                      </Typography>
-                      <Box position="relative">
-                        <Hexagon />
-                      </Box>
-                    </Grid>
-                    <Label
-                      fontSize={{
-                        xs: "12px",
-                        sm: "15px",
-                        minWidth: "145px",
-                      }}
-                      fontWeight={500}
-                    >
-                      {step.label}
-                    </Label>
-                    {step.checked ? (
-                      <Box
-                        width="18px"
-                        height="18px"
-                        minWidth="18px"
-                        minHeight="18px"
-                        bgcolor={"#2A8D5C"}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        borderRadius="100px"
-                      >
-                        <CheckIcon />
-                      </Box>
-                    ) : null}
-                  </Grid>
-                ))}
-              </Box>
-            </Box>
-            <Box display="flex" gap="24px" alignItems="center" justifyContent="flex-start" width="100%">
-              <SharedSecondaryButton onClick={handleOnClick} disabled={isConnectionLoading}>
-                {isConnectionLoading ? <Spinner /> : buttonTitle}
-              </SharedSecondaryButton>
-              <Button
-                disableRipple
-                onClick={onClose}
-                disableFocusRipple
-                sx={{
-                  height: "40px",
-                  width: "fit-content",
-                  borderRadius: "100px",
-                  textTransform: "none",
-                  color: "#6D6D6D",
-                  textAlign: "center",
-                  fontFamily: "Space Grotesk",
-                  fontSize: "16px",
-                  fontWeight: 700,
-                  textWrap: "nowrap",
-
-                  "&:hover": {
-                    backgroundColor: "#fff",
-                  },
-                }}
-              >
-                Cancel
-              </Button>
-            </Box>
+                        {isConnectionLoading && step.isActive ? <Spinner /> : step.buttonLabel}
+                      </SharedSecondaryButton>
+                    )}
+                  </Box>
+                </Box>
+              );
+            })}
           </Box>
-          <img
-            src={"/images/bot-graphics.png"}
-            style={{
-              maxWidth: "360px",
-              borderRadius: "100%",
-            }}
-          />
         </Grid>
       </Modal>
     </>

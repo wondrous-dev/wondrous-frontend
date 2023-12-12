@@ -35,10 +35,11 @@ const ViewQuest = ({ quest, loading }) => {
     onStartQuest,
   } = useStartQuest({
     setInfoModalQuestId,
-    orgId: quest?.orgId,
+    orgId: quest?.org?.id,
     quest,
     discordUrlParams,
   });
+  
   useEffect(() => {
     if (quest?.id) {
       getQuestRewards({
@@ -95,6 +96,8 @@ const ViewQuest = ({ quest, loading }) => {
         handleJoinDiscord={handleJoinDiscord}
         handleOnConnect={handleOnConnect}
         isConnectionLoading={isConnectionLoading}
+        orgId={quest?.orgId}
+        orgProfilePicture={quest?.org?.profilePicture}
       />
       <PageWrapper
         containerProps={{

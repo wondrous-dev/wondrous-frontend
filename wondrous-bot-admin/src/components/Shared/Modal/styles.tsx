@@ -68,6 +68,7 @@ export const ModalBody = styled.div`
   position: relative;
   flex: 1 1 auto;
   padding: 24px;
+  padding-right: 0px;
   max-height: calc(100vh - 200px);
   overflow: scroll;
   ${ScrollBarStyles}
@@ -95,7 +96,7 @@ export const ModalFooterRight = styled.div`
 
 export const CloseModalBtn = styled((props) => (
   <div {...props}>
-    <CloseModalIcon />
+    <CloseModalIcon strokeColor="black"/>
   </div>
 ))`
   width: 32px;

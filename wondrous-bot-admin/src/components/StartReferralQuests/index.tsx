@@ -75,6 +75,8 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
         handleJoinDiscord={handleJoinDiscord}
         handleOnConnect={handleOnConnect}
         isConnectionLoading={isConnectionLoading}
+        orgId={referralCampaign?.orgId}
+        orgProfilePicture={referralCampaign?.org?.profilePicture}
       />
 
       {displayReferrer ? (
