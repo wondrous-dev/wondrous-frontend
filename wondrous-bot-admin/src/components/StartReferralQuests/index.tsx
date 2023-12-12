@@ -1,200 +1,39 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
 import { Masonry } from "@mui/lab";
 import { Grid, Box, Typography, ButtonBase } from "@mui/material";
 import { CloseIcon } from "components/Shared/DatePicker/Shared/Icons";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
-import useErrorHandler from "components/ViewQuest/useErrorHandler";
 import { Reward } from "components/ViewQuestResults/ViewRewards";
-import { START_QUEST } from "graphql/mutations";
-import {
-  CHECK_CMTY_USER_GUILD_MEMBERSHIP,
-  GET_CMTY_USER_TOKEN_EXPIRE_CHECK,
-  GET_ORG_DISCORD_INVITE_LINK,
-} from "graphql/queries";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { constructRewards } from "utils/common";
 import { REFERRAL_REWARD_SCHEME } from "utils/constants";
 import InfoModal from "./InfoModal";
-import useAlerts from "utils/hooks";
-import { getDiscordUrl } from "utils/discord";
 import IndividualQuestComponent from "./IndividualQuestComponent";
-
-const getCmtyUserToken = () => localStorage.getItem("cmtyUserToken");
+import useStartQuest from "./utils/hooks";
 
 const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignExternalId, referralCodeInfo }) => {
-  const [isConnectionLoading, setIsConnectionLoading] = useState(false);
   const [infoModalQuestId, setInfoModalQuestId] = useState(null);
-
-  const [isMember, setIsMember] = useState(false);
-  const [isDiscordConneceted, setIsDiscordConnected] = useState(false);
-
-  const [verifyToken] = useLazyQuery(GET_CMTY_USER_TOKEN_EXPIRE_CHECK, {
-    fetchPolicy: "no-cache",
-    onCompleted: (data) => {
-      setIsDiscordConnected(!!data?.getCmtyUserTokenExpireCheck?.cmtyUserId);
-    },
+  const discordUrlParams = {
+    referralCode,
+    referralCampaignExternalId,
+    orgId: referralCampaign?.orgId,
+  };
+  const {
+    isDiscordConneceted,
+    isMember,
+    isConnectionLoading,
+    handleJoinDiscord,
+    handleOnConnect,
+    handleInfoModalClose,
+    onStartQuest,
+  } = useStartQuest({
+    setInfoModalQuestId,
+    orgId: referralCampaign?.orgId,
+    quest: null,
+    quests: referralCampaign?.quests,
+    referralCode,
+    referralCampaignExternalId,
+    discordUrlParams,
   });
-
-  const { handleError } = useErrorHandler();
-
-  const [startQuest] = useMutation(START_QUEST, {
-    fetchPolicy: "no-cache",
-  });
-
-  const handleOnCheckMembershipCompleted = async (data) => {
-    if (data?.checkCmtyUserGuildMembership?.isMember !== isMember) {
-      setIsMember(data?.checkCmtyUserGuildMembership?.isMember);
-    }
-    if (data?.checkCmtyUserGuildMembership?.isMember) {
-      setIsConnectionLoading(false);
-    }
-  };
-
-  const [checkCmtyUserGuildMembership, { startPolling: membershipStartPolling, stopPolling, data: membershipData }] =
-    useLazyQuery(CHECK_CMTY_USER_GUILD_MEMBERSHIP, {
-      notifyOnNetworkStatusChange: true,
-      fetchPolicy: "no-cache",
-      nextFetchPolicy: "no-cache",
-      onCompleted: handleOnCheckMembershipCompleted,
-    });
-
-  const handleTokenCheck = async (questId) => {
-    try {
-      const cmtyUserToken = getCmtyUserToken();
-      const verifyTokenRes = await verifyToken({
-        context: {
-          headers: {
-            Authorization: `Bearer ${cmtyUserToken}`,
-          },
-        },
-      });
-      const cmtyUserId = verifyTokenRes?.data?.getCmtyUserTokenExpireCheck?.cmtyUserId;
-      if (!cmtyUserId) {
-        setInfoModalQuestId(questId);
-      }
-      return cmtyUserId;
-    } catch (error) {
-      return null;
-    }
-  };
-
-  const handleMembershipCheck = async (questId, orgId, cmtyUserId) => {
-    const membershipRes = await checkCmtyUserGuildMembership({
-      variables: {
-        input: {
-          orgId: referralCampaign?.orgId,
-          cmtyUserId,
-        },
-      },
-    });
-    if (!membershipRes?.data?.checkCmtyUserGuildMembership?.isMember) {
-      setInfoModalQuestId(questId);
-      throw new Error("discord_user_not_in_guild");
-    }
-    return membershipRes?.data?.checkCmtyUserGuildMembership?.isMember;
-  };
-
-  const handleOnStartQuestCompleted = (res, questId) => {
-    if (res?.data?.startQuest?.channelLink) {
-      window.open(res?.data?.startQuest?.channelLink, "_blank");
-    }
-    if (res?.data?.startQuest?.error) {
-      const quest = referralCampaign?.quests?.find((quest) => quest?.id === questId);
-      if (res?.data?.startQuest?.error === "discord_user_not_in_guild") {
-        getOrgDiscordInviteLink({
-          variables: {
-            orgId: referralCampaign?.orgId,
-          },
-        });
-        setIsMember(false);
-        setIsConnectionLoading(false);
-        return setInfoModalQuestId(questId);
-      }
-      return handleError({ questInfo: quest, error: res?.data?.startQuest?.error });
-    }
-  };
-  const onStartQuest = async (questId) => {
-    try {
-      const cmtyUserId = await handleTokenCheck(questId);
-
-      if (!cmtyUserId) return;
-
-      const isMember = await handleMembershipCheck(questId, referralCampaign?.orgId, cmtyUserId);
-
-      if (!isMember) return;
-
-      const cmtyUserToken = getCmtyUserToken();
-
-      const res = await startQuest({
-        variables: {
-          questId: questId,
-          referralCode,
-          referralCampaignExternalId,
-        },
-        context: {
-          headers: {
-            Authorization: `Bearer ${cmtyUserToken}`,
-          },
-        },
-      });
-      handleOnStartQuestCompleted(res, questId);
-    } catch (error) {
-      //TODO: handle error
-    }
-  };
-
-  const { setSnackbarAlertMessage } = useAlerts();
-
-  const [getOrgDiscordInviteLink, { data: orgDiscordInviteLinkData }] = useLazyQuery(GET_ORG_DISCORD_INVITE_LINK);
-
-  const inviteLink = orgDiscordInviteLinkData?.getOrgDiscordInviteLink?.link;
-
-  const onStorageChange = (e) => {
-    if (e?.key === "cmtyUserToken") {
-      if (e.newValue) {
-        verifyToken({
-          context: {
-            headers: {
-              Authorization: `Bearer ${e.newValue}`,
-            },
-          },
-        }).then(({ data }) => {
-          setIsDiscordConnected(!!data?.getCmtyUserTokenExpireCheck?.cmtyUserId);
-          if (!data?.getCmtyUserTokenExpireCheck?.cmtyUserId) {
-            localStorage.removeItem("cmtyUserToken");
-            return setSnackbarAlertMessage("Something went wrong. Please try again.");
-          }
-          checkCmtyUserGuildMembership({
-            variables: {
-              input: {
-                orgId: referralCampaign?.orgId,
-                cmtyUserId: data?.getCmtyUserTokenExpireCheck?.cmtyUserId,
-              },
-            },
-          }).then(({ data }) => {
-            if (!data?.checkCmtyUserGuildMembership?.isMember) {
-              setIsMember(false);
-              getOrgDiscordInviteLink({
-                variables: {
-                  orgId: referralCampaign?.orgId,
-                },
-              });
-            }
-          });
-        });
-        setIsConnectionLoading(false);
-      }
-      if (!e?.newValue) {
-        setIsConnectionLoading(false);
-        return setIsDiscordConnected(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("storage", onStorageChange);
-    return () => window.removeEventListener("storage", onStorageChange);
-  }, []);
 
   const org = referralCampaign?.org;
   const [displayReferrer, setDisplayReferrer] = useState(true);
@@ -223,33 +62,6 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
     }
     return { xs: 1, sm: 2, md: 2, lg: 3 };
   }, [quests?.length]);
-
-  const handleJoinDiscord = () => {
-    window.open(inviteLink);
-    setIsConnectionLoading(true);
-    membershipStartPolling(1000);
-  };
-
-  const params = {
-    referralCode,
-    referralCampaignExternalId,
-    orgId: referralCampaign?.orgId,
-  };
-
-  const handleOnConnect = () => {
-    setIsConnectionLoading(true);
-    const discordAuthUrl = getDiscordUrl(
-      "/discord/callback/cmty-user-connect",
-      `&state=${encodeURIComponent(JSON.stringify(params))}`
-    );
-    window.open(discordAuthUrl);
-  };
-
-  const handleInfoModalClose = () => {
-    setInfoModalQuestId(null);
-    stopPolling?.();
-    setIsConnectionLoading(false);
-  };
 
   return (
     <>
