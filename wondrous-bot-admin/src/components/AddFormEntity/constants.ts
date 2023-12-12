@@ -6,10 +6,6 @@ export const COMPONENT_OPTIONS = [
     value: TYPES.TEXT_FIELD,
   },
   {
-    label: "Referral",
-    value: TYPES.REFERRAL,
-  },
-  {
     label: "Multiple Choice",
     value: TYPES.MULTI_QUIZ,
   },
@@ -76,7 +72,7 @@ export const COMPONENT_OPTIONS = [
   {
     label: "Click on link",
     value: TYPES.LINK_CLICK,
-  }
+  },
 ];
 
 export const MULTICHOICE_DEFAULT_VALUE = {
