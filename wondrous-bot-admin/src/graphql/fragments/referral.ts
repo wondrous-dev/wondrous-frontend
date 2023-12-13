@@ -12,6 +12,11 @@ export const ReferralCampaignFragment = gql`
     questIds
     type
     endDate
+    media {
+      slug
+      name
+      type
+    }
     referrerPointReward
     referredPointReward
     maxPerUser

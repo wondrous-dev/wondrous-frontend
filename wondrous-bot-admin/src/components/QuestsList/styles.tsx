@@ -55,7 +55,7 @@ export const CardWrapper = styled(Grid)`
     flex-direction: column;
     gap: 14px;
     transition: all 0.1s ease-in-out;
-    border: 1px solid transparent;
+    border: 1px solid black;
 
     &:hover {
       background: #fee2ca;

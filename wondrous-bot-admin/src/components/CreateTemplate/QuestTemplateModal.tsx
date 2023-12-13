@@ -81,19 +81,6 @@ const questTemplates: {
       },
     ],
   },
-  createReferrals: {
-    title: "Refer a friend to join and complete quests!",
-    label: "Create Referral system",
-    image: ReferralsImage,
-    category: questTemplateCategories.community,
-    steps: [{ type: TYPES.REFERRAL }],
-    rewards: [
-      {
-        type: rewardTypePoints,
-        value: 5,
-      },
-    ],
-  },
   promoteATweet: {
     label: "Promote a Tweet",
     title: "Engage with our Twitter",

@@ -6,6 +6,7 @@ import Modal from "components/Shared/Modal";
 import Spinner from "components/Shared/Spinner";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { UPDATE_ORG_MODULES } from "graphql/mutations";
+import { useEffect } from "react";
 import { useGlobalContext } from "utils/hooks";
 
 const StoreModule = ({ onCancel, onSuccess }) => {

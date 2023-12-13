@@ -10,13 +10,19 @@ import GlobalContext from "utils/context/GlobalContext";
 import ReferralSettingsComponent from "./ReferralSettingsComponent";
 import ReferralDataComponent from "./ReferralDataComponent";
 import { useMutation } from "@apollo/client";
-import { CREATE_REFERRAL, UPDATE_REFERRAL } from "graphql/mutations/referral";
+import {
+  ATTACH_REFERRAL_CAMPAIGN_MEDIA,
+  CREATE_REFERRAL,
+  REMOVE_REFERRAL_CAMPAIGN_MEDIA,
+  UPDATE_REFERRAL,
+} from "graphql/mutations/referral";
 import useAlerts from "utils/hooks";
 import { updateReferralCampaignCache } from "utils/apolloHelpers";
 import { ValidationError, referralValidator } from "services/validators";
 import { convertPath, getPathArray } from "utils/common";
 import { set } from "lodash";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
+import { handleMediaUpload } from "utils/media";
 
 const DEFAULT_REFERRAL_SETTINGS = {
   name: "",
@@ -35,6 +41,7 @@ const DEFAULT_REFERRAL_DATA = {
   referrerPointReward: null,
   referredPointReward: null,
   rewardScheme: REFERRAL_REWARD_SCHEME.REFERRER,
+  media: [],
 };
 
 const SingleReferralComponent = ({
@@ -46,15 +53,24 @@ const SingleReferralComponent = ({
   const referralItemDataDefaultState = existingReferralItemData || { ...DEFAULT_REFERRAL_DATA };
   const referralItemSettingsDefaultState = existingReferralItemSettings || { ...DEFAULT_REFERRAL_SETTINGS };
   const navigate = useNavigate();
-  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertAutoHideDuration } = useAlerts();
   const { setErrors } = useContext(CreateQuestContext);
   const [referralItemData, setReferralItemData] = useState<any>(referralItemDataDefaultState);
   const [referralItemSettings, setReferralItemSettings] = useState<any>(referralItemSettingsDefaultState);
+
+  const [attachReferralCampaignMedia] = useMutation(ATTACH_REFERRAL_CAMPAIGN_MEDIA, {
+    refetchQueries: ["getReferralCampaignById"],
+  });
+
+  const [removeReferralCampaignMedia] = useMutation(REMOVE_REFERRAL_CAMPAIGN_MEDIA, {
+    refetchQueries: ["getReferralCampaignById"],
+  });
 
   const [createReferral] = useMutation(CREATE_REFERRAL, {
     onCompleted: (data) => {
       setSnackbarAlertMessage("Referral created successfully");
       setSnackbarAlertOpen(true);
+      handleUpdateReferralCampaignMedia(data?.createReferralCampaign?.id, referralItemData?.media);
       navigate(`/referrals`);
     },
     update: (cache, { data }) => {
@@ -80,9 +96,10 @@ const SingleReferralComponent = ({
 
   const [updateReferralCampaign] = useMutation(UPDATE_REFERRAL, {
     // refetchQueries: ["getReferralCampaignById"],
-    onCompleted: () => {
+    onCompleted: (data) => {
       setSnackbarAlertMessage("Referral updated successfully");
       setSnackbarAlertOpen(true);
+      handleUpdateReferralCampaignMedia(data?.updateReferralCampaign?.id, referralItemData?.media);
       navigate(`/referrals`);
     },
     update: (cache, { data }) => {
@@ -104,8 +121,17 @@ const SingleReferralComponent = ({
 
   const { activeOrg } = useContext(GlobalContext);
 
-  const onTypeChange = (newType) => {
-    setErrors({});
+  const handleUpdateReferralCampaignMedia = async (referralCampaignId, mediaUploads) => {
+    const mediaToUpload = mediaUploads.filter((media) => media instanceof File);
+    if(!mediaToUpload?.length) return;
+    const media = await handleMediaUpload(mediaToUpload);
+
+    await attachReferralCampaignMedia({
+      variables: {
+        referralCampaignId,
+        mediaUploads: media,
+      },
+    });
   };
 
   const handleMutation = async (body) => {
@@ -182,16 +208,46 @@ const SingleReferralComponent = ({
 
     try {
       await referralValidator(body);
-      return await handleMutation(body);
+      await handleMutation(body);
+      const referralDataMediaUploads = Array.isArray(referralItemData?.media) ? referralItemData?.media : [];
+      const defaultReferralDataMediaUploads = Array.isArray(existingReferralItemData?.media)
+        ? existingReferralItemData?.media
+        : [];
+
+      const hasMediaToUpload = referralDataMediaUploads.some((media) => media instanceof File);
+
+      const referralCampaignSlugs = referralDataMediaUploads.filter((media) => media?.slug).map((media) => media.slug); // Ensures that you are working with the slug strings directly.
+
+      const mediaSlugsToRemove = defaultReferralDataMediaUploads
+        .filter((media) => !referralCampaignSlugs.includes(media?.slug))
+        .map((media) => media?.slug); // Map to get the slugs to remove.
+
+      if (hasMediaToUpload) {
+        setSnackbarAlertMessage("Wrapping up with your media. Please keep this window open");
+        setSnackbarAlertAutoHideDuration(2000);
+        setSnackbarAlertOpen(true);
+      }
+  
+      if (mediaSlugsToRemove?.length > 0 && !hasMediaToUpload) {
+        await removeReferralCampaignMedia({
+          variables: {
+            referralCampaignId,
+            // until we support more media
+            slug: mediaSlugsToRemove[0],
+          },
+        });
+      }
     } catch (err) {
       let errors = {};
       if (err instanceof ValidationError) {
         err.inner.forEach((error) => {
-          let arrAdjustedPath = error.path.includes("questIds") ? error.path.replace(/\["(\d+)"\]/g, (match, index) => `[${index}]`) : error.path
+          let arrAdjustedPath = error.path.includes("questIds")
+            ? error.path.replace(/\["(\d+)"\]/g, (match, index) => `[${index}]`)
+            : error.path;
           const path = getPathArray(arrAdjustedPath);
           set(errors, path, error.message);
         });
-        
+
         window.scrollTo({
           top: 0,
           behavior: "smooth",

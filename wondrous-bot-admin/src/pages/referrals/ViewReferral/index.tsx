@@ -39,6 +39,11 @@ const ViewReferralPage = () => {
     rewardScheme: REFERRAL_REWARD_SCHEME.REFERRER,
     referrerPointReward: referralItem?.referrerPointReward,
     referredPointReward: referralItem?.referredPointReward,
+    media: referralItem?.media?.map((item) => ({
+      slug: item.slug,
+      type: item.type,
+      name: item.name,
+    })),
   };
 
   const referralItemSettings = {

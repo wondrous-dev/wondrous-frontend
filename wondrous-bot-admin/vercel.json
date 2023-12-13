@@ -5,6 +5,10 @@
       "destination": "/api/quest"
     },
     {
+      "source": "/referral",
+      "destination": "/api/referral"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
