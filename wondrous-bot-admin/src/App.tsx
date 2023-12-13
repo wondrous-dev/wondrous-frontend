@@ -139,7 +139,7 @@ const router = createBrowserRouter([
         element: <ViewQuest />,
       },
       {
-        path: "/referral",
+        path: "/referral-campaign",
         element: <ReferralComponent />,
       },
       {

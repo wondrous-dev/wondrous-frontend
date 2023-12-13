@@ -15,15 +15,21 @@ import { isVideo } from "utils/media";
 import VideoPlayer from "components/Shared/SubmissionMedia/VideoPlayer";
 import { Filename } from "components/Shared/SubmissionMedia/styles";
 
-export const Media = ({ file }) => {
-  if(file === 'string') {
-    return <img src={file}/>
+export const Media = ({ file, mediaStyle = {} }) => {
+  if (file === "string") {
+    return <img src={file} style={mediaStyle} />;
   }
   if (file.type?.includes("image")) {
-    return <img src={URL.createObjectURL(file)}/>;
+    return <img src={URL.createObjectURL(file)} style={mediaStyle} />;
   }
   if (file.type?.includes("video")) {
-    return <VideoPlayer src={URL.createObjectURL(file)} name={file?.name} style={{ width: "10%", height: "10%" }} />;
+    return (
+      <VideoPlayer
+        src={URL.createObjectURL(file)}
+        name={file?.name}
+        style={{ width: "10%", height: "10%", ...mediaStyle }}
+      />
+    );
   }
   return <Filename>{file}</Filename>;
 };

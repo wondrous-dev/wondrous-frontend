@@ -29,3 +29,19 @@ export const MINIMAL_REFERRAL_UPDATE = gql`
     }
   }
 `;
+
+export const ATTACH_REFERRAL_CAMPAIGN_MEDIA = gql`
+  mutation attachReferralCampaignMedia($referralCampaignId: ID!, $mediaUploads: [MediaUploadInput]) {
+    attachReferralCampaignMedia(referralCampaignId: $referralCampaignId, mediaUploads: $mediaUploads) {
+      success
+    }
+  }
+`;
+
+export const REMOVE_REFERRAL_CAMPAIGN_MEDIA = gql`
+  mutation removeReferralCampaignMedia($referralCampaignId: ID!, $slug: String!) {
+    removeReferralCampaignMedia(referralCampaignId: $referralCampaignId, slug: $slug) {
+      success
+    }
+  }
+`;

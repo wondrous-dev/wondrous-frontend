@@ -15,6 +15,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ReferralRewardsComponent from "./ReferralRewardsComponent";
 import ErrorField from "components/Shared/ErrorField";
 import { KEYS_MAP } from "../constants";
+import ReferralMediaComponent from "./ReferralMediaComponent";
 
 const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -160,7 +161,7 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
       referralItemData?.type === QUALIFYING_ACTION_TYPES.QUEST ||
       referralItemData?.type === QUALIFYING_ACTION_TYPES.ANY_QUEST
     ) {
-      const selectedValues =   referralItemData[KEYS_MAP[referralItemData.type]];
+      const selectedValues = referralItemData[KEYS_MAP[referralItemData.type]];
 
       let items =
         questsData?.getQuestsForOrg?.map((item) => ({
@@ -220,7 +221,7 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
       return {
         ...prev,
         questIds: prev?.questIds?.map((item, i) => (i === idx ? null : item)),
-      }
+      };
     });
 
     if (value === QUALIFYING_ACTION_TYPES.ANY_QUEST) {
@@ -285,6 +286,7 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
         }}
       />
       <ReferralRewardsComponent referralItemData={referralItemData} setReferralItemData={setReferralItemData} />
+      <ReferralMediaComponent referralItemData={referralItemData} setReferralItemData={setReferralItemData} />
     </Grid>
   );
 };
