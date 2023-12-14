@@ -14,7 +14,7 @@ import {
 
 interface IModalProps {
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   title?: string;
   maxWidth?: number;
   noHeader?: boolean;

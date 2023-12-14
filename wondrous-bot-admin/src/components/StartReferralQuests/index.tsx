@@ -9,6 +9,7 @@ import { REFERRAL_REWARD_SCHEME } from "utils/constants";
 import InfoModal from "./InfoModal";
 import IndividualQuestComponent from "./IndividualQuestComponent";
 import useStartQuest from "./utils/hooks";
+import InactiveQuestInfoModal from "./InactiveQuest";
 
 const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignExternalId, referralCodeInfo }) => {
   const [infoModalQuestId, setInfoModalQuestId] = useState(null);
@@ -25,6 +26,8 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
     handleOnConnect,
     handleInfoModalClose,
     onStartQuest,
+    isQuestInactive,
+    setIsQuestInactive,
   } = useStartQuest({
     setInfoModalQuestId,
     orgId: referralCampaign?.orgId,
@@ -77,6 +80,11 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
         isConnectionLoading={isConnectionLoading}
         orgId={referralCampaign?.orgId}
         orgProfilePicture={referralCampaign?.org?.profilePicture}
+      />
+      <InactiveQuestInfoModal
+        isOpen={isQuestInactive}
+        onClose={() => setIsQuestInactive(false)}
+        orgId={referralCampaign?.orgId}
       />
 
       {displayReferrer ? (

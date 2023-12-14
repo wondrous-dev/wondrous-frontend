@@ -7,6 +7,7 @@ import {
   GET_ORG_DISCORD_INVITE_LINK,
 } from "graphql/queries";
 import { useEffect, useState } from "react";
+import { QUEST_STATUSES } from "utils/constants";
 import { getDiscordUrl } from "utils/discord";
 import useAlerts from "utils/hooks";
 
@@ -31,6 +32,7 @@ const useStartQuest = ({
   referralCampaignExternalId = null,
   discordUrlParams,
 }: IProps) => {
+  const [isQuestInactive, setIsQuestInactive] = useState(false);
   const [isDiscordConneceted, setIsDiscordConnected] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [isConnectionLoading, setIsConnectionLoading] = useState(false);
@@ -123,6 +125,13 @@ const useStartQuest = ({
 
   const onStartQuest = async (questId) => {
     try {
+      const selectedQuest = quest || quests?.find((quest) => quest?.id === questId);
+      if(selectedQuest?.status === QUEST_STATUSES.INACTIVE) {
+        return setIsQuestInactive(true);
+      }
+      if(selectedQuest?.status !== QUEST_STATUSES.INACTIVE && isQuestInactive) {
+        setIsQuestInactive(false);
+      }
       const cmtyUserId = await handleTokenCheck(questId);
 
       if (!cmtyUserId) return;
@@ -248,6 +257,8 @@ const useStartQuest = ({
     handleOnConnect,
     handleInfoModalClose,
     orgDiscordInviteLinkData,
+    isQuestInactive,
+    setIsQuestInactive
   }
 };
 
