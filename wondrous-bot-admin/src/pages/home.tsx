@@ -50,8 +50,8 @@ const CardsComponent = ({ cards }) => {
       gap="24px"
       justifyContent="center"
       alignItems="center"
-      top="-40%"
-      position="absolute"
+      // top="-20%"
+      // position="absolute"
       padding={{
         xs: "14px",
         md: "42px",
