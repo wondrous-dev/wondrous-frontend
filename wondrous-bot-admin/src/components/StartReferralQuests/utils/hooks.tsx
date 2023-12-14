@@ -126,10 +126,10 @@ const useStartQuest = ({
   const onStartQuest = async (questId) => {
     try {
       const selectedQuest = quest || quests?.find((quest) => quest?.id === questId);
-      if(selectedQuest?.status === QUEST_STATUSES.INACTIVE) {
+      if (selectedQuest?.status === QUEST_STATUSES.INACTIVE) {
         return setIsQuestInactive(true);
       }
-      if(selectedQuest?.status !== QUEST_STATUSES.INACTIVE && isQuestInactive) {
+      if (selectedQuest?.status !== QUEST_STATUSES.INACTIVE && isQuestInactive) {
         setIsQuestInactive(false);
       }
       const cmtyUserId = await handleTokenCheck(questId);
@@ -258,8 +258,8 @@ const useStartQuest = ({
     handleInfoModalClose,
     orgDiscordInviteLinkData,
     isQuestInactive,
-    setIsQuestInactive
-  }
+    setIsQuestInactive,
+  };
 };
 
 export default useStartQuest;

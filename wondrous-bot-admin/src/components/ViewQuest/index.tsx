@@ -34,14 +34,13 @@ const ViewQuest = ({ quest, loading }) => {
     handleOnConnect,
     handleInfoModalClose,
     onStartQuest,
-    isQuestInactive
+    isQuestInactive,
   } = useStartQuest({
     setInfoModalQuestId,
     orgId: quest?.org?.id,
     quest,
     discordUrlParams,
   });
-
   useEffect(() => {
     if (quest?.id) {
       getQuestRewards({
@@ -85,7 +84,7 @@ const ViewQuest = ({ quest, loading }) => {
       }) || [];
     return [...roles, ...questRewards];
   }, [quest, questRewardsData]);
-  
+
   return (
     <>
       <InfoModal
@@ -101,7 +100,10 @@ const ViewQuest = ({ quest, loading }) => {
         orgId={quest?.orgId}
         orgProfilePicture={quest?.org?.profilePicture}
       />
-      <InactiveQuestInfoModal isOpen={quest?.status === QUEST_STATUSES.INACTIVE || isQuestInactive} orgId={quest?.orgId}/>
+      <InactiveQuestInfoModal
+        isOpen={quest?.status === QUEST_STATUSES.INACTIVE || isQuestInactive}
+        orgId={quest?.orgId}
+      />
       <PageWrapper
         containerProps={{
           sx: {
