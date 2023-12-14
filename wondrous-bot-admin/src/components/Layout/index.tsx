@@ -114,7 +114,6 @@ const Layout = () => {
   const isMatchedAuthPath = matchRoute(location.pathname, EXCLUDED_PATHS);
   const AuthenticationLayout = isMatchedAuthPath ? TutorialComponent : withAuth(TutorialComponent);
 
-  
   return (
     <GlobalContext.Provider
       value={{
@@ -126,14 +125,16 @@ const Layout = () => {
       <SubscriptionContext.Provider value={subscription?.status === "active" ? subscription : null}>
         <TutorialComponent>
           {/* <FeedbackButton /> */}
-          {isPageWithoutHeader ? null : <Navbar />}
-          <Main $isPageWithoutHeader={isPageWithoutHeader}>
-            <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
-              <AuthenticationLayout>
-                <Outlet />
-              </AuthenticationLayout>
-            </ErrorCatcher>
-          </Main>
+          <Grid display="flex" width="100%">
+            {isPageWithoutHeader ? null : <Navbar />}
+            <Main $isPageWithoutHeader={isPageWithoutHeader}>
+              <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
+                <AuthenticationLayout>
+                  <Outlet />
+                </AuthenticationLayout>
+              </ErrorCatcher>
+            </Main>
+          </Grid>
         </TutorialComponent>
       </SubscriptionContext.Provider>
     </GlobalContext.Provider>
