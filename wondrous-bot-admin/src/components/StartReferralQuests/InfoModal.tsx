@@ -50,18 +50,6 @@ const InfoModal = ({
     },
   ];
 
-  const handleOnClick = () => {
-    if (showConnect) {
-      handleOnConnect();
-    }
-    if (showJoinDiscord) {
-      handleJoinDiscord();
-    }
-    if (showStartQuest) {
-      onStartQuest();
-    }
-  };
-
   return (
     <>
       <Modal

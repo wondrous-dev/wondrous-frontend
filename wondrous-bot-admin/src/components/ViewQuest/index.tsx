@@ -7,13 +7,14 @@ import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { GET_QUEST_REWARDS } from "graphql/queries";
 import { useEffect, useMemo, useState } from "react";
-import { BG_TYPES } from "utils/constants";
+import { BG_TYPES, QUEST_STATUSES } from "utils/constants";
 import { ImageComponent, StyledLink, TextLabel } from "./styles";
 import { format } from "date-fns";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { HoveredImage, ImageContainer, ImageDefault } from "components/Navbar/styles";
 import InfoModal from "components/StartReferralQuests/InfoModal";
 import useStartQuest from "components/StartReferralQuests/utils/hooks";
+import InactiveQuestInfoModal from "components/StartReferralQuests/InactiveQuest";
 
 const ViewQuest = ({ quest, loading }) => {
   const discordUrlParams = {
@@ -33,13 +34,13 @@ const ViewQuest = ({ quest, loading }) => {
     handleOnConnect,
     handleInfoModalClose,
     onStartQuest,
+    isQuestInactive,
   } = useStartQuest({
     setInfoModalQuestId,
     orgId: quest?.org?.id,
     quest,
     discordUrlParams,
   });
-  
   useEffect(() => {
     if (quest?.id) {
       getQuestRewards({
@@ -98,6 +99,10 @@ const ViewQuest = ({ quest, loading }) => {
         isConnectionLoading={isConnectionLoading}
         orgId={quest?.orgId}
         orgProfilePicture={quest?.org?.profilePicture}
+      />
+      <InactiveQuestInfoModal
+        isOpen={quest?.status === QUEST_STATUSES.INACTIVE || isQuestInactive}
+        orgId={quest?.orgId}
       />
       <PageWrapper
         containerProps={{
