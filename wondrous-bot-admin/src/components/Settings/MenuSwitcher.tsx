@@ -1,9 +1,11 @@
 import { ButtonBase, Grid, Typography } from "@mui/material";
 import { logout } from "components/Auth";
 import RightArrowIcon from "components/Icons/RightArrow";
+import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useGlobalContext } from "utils/hooks";
+import { getPlan } from "utils/common";
+import { useGlobalContext, useSubscription } from "utils/hooks";
 
 const MENU_ITEMS = [
   {
@@ -43,25 +45,21 @@ MENU_ITEMS.splice(1, 0, {
   path: "/settings/billing",
 });
 MENU_ITEMS.join();
-let isCommunityNFTsAdded = false;
 const MenuSwitcher = () => {
   const location = useLocation();
   const { activeOrg } = useGlobalContext();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (
-      !isCommunityNFTsAdded &&
-      ((import.meta.env.VITE_PRODUCTION && activeOrg?.id === "45956686890926082") ||
-        (import.meta.env.VITE_STAGING && activeOrg?.id === "89444950095167649") ||
-        (!import.meta.env.VITE_STAGING && !import.meta.env.VITE_PRODUCTION))
-    ) {
-      MENU_ITEMS.splice(4, 0, {
-        title: "Community NFTs",
-        path: "/settings/nft",
-      });
-      isCommunityNFTsAdded = true;
-    }
-  }, [activeOrg?.id]);
+  const subscription = useSubscription();
+  const plan = getPlan(subscription?.tier);
+  if (
+    (plan === PricingOptionsTitle.Premium || plan === PricingOptionsTitle.Ecosystem) &&
+    !MENU_ITEMS.some((item) => item?.title === "Community NFTs")
+  ) {
+    MENU_ITEMS.splice(4, 0, {
+      title: "Community NFTs",
+      path: "/settings/nft",
+    });
+  }
   return (
     <Grid
       display="flex"
