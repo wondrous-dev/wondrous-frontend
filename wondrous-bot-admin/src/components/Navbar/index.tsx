@@ -20,6 +20,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import WorkspaceSwitch from "components/WorkspaceSwitch";
 import GlobalContext from "utils/context/GlobalContext";
 import { useSubscriptionPaywall } from "utils/hooks";
+import SidebarComponent from "components/Sidebar";
 
 const checkActive = (path, location, partialMatch = false) => {
   if (partialMatch) {
@@ -81,90 +82,93 @@ const Header = () => {
   }
 
   return (
-    <HeaderBar>
-      <Link to="/">
-        <ImageContainer>
-          <ImageDefault src="/wonder.svg" />
-          <HoveredImage src="/wonder-colored.svg" />
-        </ImageContainer>
-      </Link>
-      <Box sx={{ display: { xs: "none", md: "flex" } }}>
-        <Grid container display="flex" gap="26px" alignItems="center" padding="4px 0px">
-          {LINKS.map((link) => {
-            const isActive = checkActive(link.path, location, link.partialMatch);
-            return (
-              <DefaultLink to={link.path}>
-                <NavbarLinkWrapper item key={link.label} color={link.textColor}>
-                  <NavbarLinkText
-                    color={isActive ? link.textColor : "#E8E8E8"}
-                    borderBottomColor={isActive ? link.textColor : "transparent"}
-                  >
-                    {link.label}
-                  </NavbarLinkText>
-                </NavbarLinkWrapper>
-              </DefaultLink>
-            );
-          })}
-        </Grid>
-      </Box>
-      <WorkspaceSwitch />
-      <Box sx={{ display: { xs: "flex", md: "none" } }}>
-        <MenuIconWrapper onClick={toggleDrawer} $isOpen={drawerOpen}>
-          {drawerOpen ? (
-            <CloseIcon
-              sx={{
-                color: "black",
-              }}
-            />
-          ) : (
-            <MenuIcon
-              sx={{
-                color: "black",
-              }}
-            />
-          )}
-        </MenuIconWrapper>
-        <Drawer
-          anchor="top"
-          open={drawerOpen}
-          onClose={toggleDrawer}
-          sx={{
-            "& .MuiDrawer-paper": {
-              top: HEADER_HEIGHT,
-              padding: "1rem",
-              backgroundColor: theme.palette.background?.header,
-            },
-            display: {
-              xs: "",
-              md: "none",
-            },
-          }}
-        >
-          <Box
-            sx={{
-              width: "100%",
-            }}
-            display="flex"
-            flexDirection="column"
-            gap="24px"
-          >
-            {LINKS.map((link) => (
-              <DefaultLink to={link.path} key={link.label} onClick={toggleDrawer}>
-                <LinkButton bgColor={link.textColor}>
-                  {link.label}
-                  <ArrowOutwardIcon
-                    sx={{
-                      fontWeight: 700,
-                    }}
-                  />
-                </LinkButton>
-              </DefaultLink>
-            ))}
-          </Box>
-        </Drawer>
-      </Box>
-    </HeaderBar>
-  );
+    <SidebarComponent />
+  )
+  // return (
+  //   <HeaderBar>
+  //     <Link to="/">
+  //       <ImageContainer>
+  //         <ImageDefault src="/wonder.svg" />
+  //         <HoveredImage src="/wonder-colored.svg" />
+  //       </ImageContainer>
+  //     </Link>
+  //     <Box sx={{ display: { xs: "none", md: "flex" } }}>
+  //       <Grid container display="flex" gap="26px" alignItems="center" padding="4px 0px">
+  //         {LINKS.map((link) => {
+  //           const isActive = checkActive(link.path, location, link.partialMatch);
+  //           return (
+  //             <DefaultLink to={link.path}>
+  //               <NavbarLinkWrapper item key={link.label} color={link.textColor}>
+  //                 <NavbarLinkText
+  //                   color={isActive ? link.textColor : "#E8E8E8"}
+  //                   borderBottomColor={isActive ? link.textColor : "transparent"}
+  //                 >
+  //                   {link.label}
+  //                 </NavbarLinkText>
+  //               </NavbarLinkWrapper>
+  //             </DefaultLink>
+  //           );
+  //         })}
+  //       </Grid>
+  //     </Box>
+  //     <WorkspaceSwitch />
+  //     <Box sx={{ display: { xs: "flex", md: "none" } }}>
+  //       <MenuIconWrapper onClick={toggleDrawer} $isOpen={drawerOpen}>
+  //         {drawerOpen ? (
+  //           <CloseIcon
+  //             sx={{
+  //               color: "black",
+  //             }}
+  //           />
+  //         ) : (
+  //           <MenuIcon
+  //             sx={{
+  //               color: "black",
+  //             }}
+  //           />
+  //         )}
+  //       </MenuIconWrapper>
+  //       <Drawer
+  //         anchor="top"
+  //         open={drawerOpen}
+  //         onClose={toggleDrawer}
+  //         sx={{
+  //           "& .MuiDrawer-paper": {
+  //             top: HEADER_HEIGHT,
+  //             padding: "1rem",
+  //             backgroundColor: theme.palette.background?.header,
+  //           },
+  //           display: {
+  //             xs: "",
+  //             md: "none",
+  //           },
+  //         }}
+  //       >
+  //         <Box
+  //           sx={{
+  //             width: "100%",
+  //           }}
+  //           display="flex"
+  //           flexDirection="column"
+  //           gap="24px"
+  //         >
+  //           {LINKS.map((link) => (
+  //             <DefaultLink to={link.path} key={link.label} onClick={toggleDrawer}>
+  //               <LinkButton bgColor={link.textColor}>
+  //                 {link.label}
+  //                 <ArrowOutwardIcon
+  //                   sx={{
+  //                     fontWeight: 700,
+  //                   }}
+  //                 />
+  //               </LinkButton>
+  //             </DefaultLink>
+  //           ))}
+  //         </Box>
+  //       </Drawer>
+  //     </Box>
+  //   </HeaderBar>
+  // );
 };
 
 export default Header;
