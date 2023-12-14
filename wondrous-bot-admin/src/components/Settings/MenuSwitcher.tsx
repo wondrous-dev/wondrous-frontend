@@ -51,14 +51,15 @@ const MenuSwitcher = () => {
   const navigate = useNavigate();
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
-  useEffect(() => {
-    if (plan === PricingOptionsTitle.Premium || plan === PricingOptionsTitle.Ecosystem) {
-      MENU_ITEMS.splice(4, 0, {
-        title: "Community NFTs",
-        path: "/settings/nft",
-      });
-    }
-  }, [activeOrg?.id]);
+  if (
+    (plan === PricingOptionsTitle.Premium || plan === PricingOptionsTitle.Ecosystem) &&
+    !MENU_ITEMS.some((item) => item?.title === "Community NFTs")
+  ) {
+    MENU_ITEMS.splice(4, 0, {
+      title: "Community NFTs",
+      path: "/settings/nft",
+    });
+  }
   return (
     <Grid
       display="flex"
