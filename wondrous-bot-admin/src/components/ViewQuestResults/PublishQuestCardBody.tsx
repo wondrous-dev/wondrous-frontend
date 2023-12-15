@@ -1,23 +1,53 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Label } from "components/CreateTemplate/styles";
 import SelectComponent from "components/Shared/Select";
 import { StyledViewQuestResults } from "./styles";
 import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
 import Modal from "components/Shared/Modal";
 import { PUSH_QUEST_DISCORD_NOTFICATION } from "graphql/mutations/discord";
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import useAlerts from "utils/hooks";
 import Switch from "components/Shared/Switch";
 import TextField from "components/Shared/TextField";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
+import { useDiscordRoles } from "utils/discord";
+import GlobalContext from "utils/context/GlobalContext";
+import ErrorField from "components/Shared/ErrorField";
+import { useDiscordRoleRewardData } from "components/Rewards/utils";
 
-const PublishQuestModal = ({ onClose, channelName, handlePublish, message, setMessage }) => {
+const PublishQuestModal = ({
+  onClose,
+  channelName,
+  handlePublish,
+  message,
+  setMessage,
+  discordRoleTagged,
+  handleDiscordRoleTagged,
+}) => {
+  const { activeOrg } = useContext(GlobalContext);
+  const { discordRoleOptions, discordRoleData } = useDiscordRoleRewardData();
+  const [errors, setErrors] = useState({
+    discordRole: false,
+  });
   return (
     <Grid display="flex" flexDirection="column" gap="10px" width="10)%">
       <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" color="#06040A">
         Are you sure you want to publish this quest to #{channelName} in Discord?
       </Typography>
+      <>
+        <Label>Select role to tag</Label>
+        <Box display="flex" gap="4px" flexDirection="column">
+          <AutocompleteOptionsComponent
+            options={discordRoleOptions}
+            value={discordRoleTagged}
+            onChange={handleDiscordRoleTagged}
+            fullWidth
+            bgColor="#e8e8e8"
+          />
+          <ErrorField errorText={errors?.discordRole} />
+        </Box>
+      </>
       <Box display="flex" gap="10px" alignItems="center" width="100%">
         <Label
           style={{
@@ -66,9 +96,8 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAnchorOrigin } = useAlerts();
   const [errors, setErrors] = useState(null);
   const [mentionChannel, setMentionChannel] = useState(false);
-  const [message, setMessage] = useState(
-    `@here ${quest?.title} is now available! Check it out here and make a submission`
-  );
+  const [discordRoleTagged, handleDiscordRoleTagged] = useState(null);
+  const [message, setMessage] = useState(`${quest?.title} is now available! Check it out here and make a submission`);
   const [publishQuest] = useMutation(PUSH_QUEST_DISCORD_NOTFICATION, {
     onCompleted: () => {
       setSnackbarAlertOpen(true);
@@ -92,7 +121,7 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
       setChannel(existingNotificationChannelId);
     }
   }, [guildDiscordChannels]);
-
+  console.log("discordRoleTagged", discordRoleTagged);
   return (
     <>
       <Modal
@@ -103,8 +132,10 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
         <PublishQuestModal
           onClose={() => setOpenPublishModal(false)}
           channelName={channels?.find((c) => c.value === channel)?.label}
+          handleDiscordRoleTagged={handleDiscordRoleTagged}
           setMessage={setMessage}
           message={message}
+          discordRoleTagged={discordRoleTagged}
           handlePublish={() =>
             publishQuest({
               variables: {
@@ -114,6 +145,7 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
                 channelId: channel,
                 mentionChannel,
                 message,
+                taggedRole: discordRoleTagged,
               },
             })
           }
@@ -121,7 +153,7 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
       </Modal>
       <Grid display="flex" justifyContent="flex-start" alignItems="center" width="100%">
         <Label>Discord Channel</Label>
-        <AutocompleteOptionsComponent 
+        <AutocompleteOptionsComponent
           options={channels}
           value={channel}
           onChange={(value) => setChannel(value)}
