@@ -121,7 +121,7 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
       setChannel(existingNotificationChannelId);
     }
   }, [guildDiscordChannels]);
-  console.log("discordRoleTagged", discordRoleTagged);
+
   return (
     <>
       <Modal
