@@ -15,6 +15,7 @@ export const PUSH_QUEST_DISCORD_NOTFICATION = gql`
     $orgId: ID!
     $mentionChannel: Boolean
     $message: String
+    $taggedRole: String
   ) {
     postQuestToDiscord(
       orgId: $orgId
@@ -22,6 +23,7 @@ export const PUSH_QUEST_DISCORD_NOTFICATION = gql`
       channelId: $channelId
       mentionChannel: $mentionChannel
       message: $message
+      taggedRole: $taggedRole
     ) {
       success
     }
