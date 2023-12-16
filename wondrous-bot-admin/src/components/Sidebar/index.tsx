@@ -1,26 +1,54 @@
 import {
-  Toolbar,
   Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   ButtonBase,
   Box,
-  Typography,
 } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { Link, useLocation } from "react-router-dom";
 import { ImageDefault } from "components/Navbar/styles";
 import { ChevronLeft } from "@mui/icons-material";
 import { useState } from "react";
+import { SidebarLabel } from "./styles";
 
 const drawerWidth = 240;
 
 const collapsedDrawerWidth = 64;
+
+const LinksWrapper = ({ links, isCollapsed }) => {
+  return links?.map((section, idx) => {
+    return (
+      <Box display="flex" flexDirection="column" gap="10px" padding="10px" key={`section-${idx}`}>
+        {section?.sectionTitle ? (
+          <SidebarLabel color="#949494">{isCollapsed ? null : section?.sectionTitle}</SidebarLabel>
+        ) : null}
+        {section?.items?.map((item, idx) => {
+          const isActive = checkActive(item.path, location, item.partialMatch);
+          return (
+            <Link to={item.path} key={item.path}>
+              <Box
+                display="flex"
+                gap="8px"
+                bgcolor={isActive ? "#D7E9FF" : "transparent"}
+                alignItems="center"
+                borderRadius="6px"
+                padding="10px"
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#EEE",
+                  },
+                }}
+              >
+                {isActive ? item.activeIcon?.() : item.inactiveIcon?.()}
+
+                {isCollapsed ? null : <SidebarLabel>{item.label}</SidebarLabel>}
+              </Box>
+            </Link>
+          );
+        })}
+      </Box>
+    );
+  });
+};
 
 const checkActive = (path, location, partialMatch = false) => {
   if (partialMatch) {
@@ -71,127 +99,14 @@ const SidebarComponent = ({ links, bottomLinks }) => {
         </ButtonBase>
       </Box>
       <Box display="flex" flexDirection="column" gap="24px">
-        {links?.map((section, idx) => {
-          return (
-            <Box display="flex" flexDirection="column" gap="10px" padding="10px">
-              {section?.sectionTitle ? (
-                <Typography
-                  padding="10px"
-                  fontFamily="Poppins"
-                  fontSize="14px"
-                  fontWeight={500}
-                  color="#949494"
-                  lineHeight="14px"
-                >
-                  {isCollapsed ? null : section?.sectionTitle}
-                </Typography>
-              ) : null}
-              {section?.items?.map((item, idx) => {
-                const isActive = checkActive(item.path, location, item.partialMatch);
-                return (
-                  <Link to={item.path}>
-                    <Box
-                      display="flex"
-                      gap="8px"
-                      bgcolor={isActive ? "#D7E9FF" : "transparent"}
-                      alignItems="center"
-                      borderRadius="6px"
-                      padding="10px"
-                      sx={{
-                        "&:hover": {
-                          backgroundColor: "#EEE",
-                        },
-                      }}
-                    >
-                      {isActive ? item.activeIcon?.() : item.inactiveIcon?.()}
-
-                      {isCollapsed ? null : (
-                        <Typography
-                          fontFamily="Poppins"
-                          color="black"
-                          fontSize="14px"
-                          fontWeight={500}
-                          lineHeight="14x"
-                        >
-                          {item.label}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Link>
-                );
-              })}
-            </Box>
-          );
-        })}
+        <LinksWrapper links={links} isCollapsed={isCollapsed} />
       </Box>
       <Box flex="1" />
       <Box display="flex" flexDirection="column" gap="24px">
-        {bottomLinks?.map((section, idx) => {
-          return (
-            <Box display="flex" flexDirection="column" gap="10px">
-              {section?.sectionTitle && !isCollapsed ? (
-                <Typography fontFamily="Poppins" fontSize="14px" fontWeight={500} color="#949494" lineHeight="14px">
-                  {section?.sectionTitle}
-                </Typography>
-              ) : null}
-              {section?.items?.map((item, idx) => {
-                return (
-                  <Link to={item.path}>
-                    <Typography fontFamily="Poppins" color="black" fontSize="14px" fontWeight={500} lineHeight="14x">
-                      {item.label}
-                    </Typography>
-                  </Link>
-                );
-              })}
-            </Box>
-          );
-        })}
+        <LinksWrapper links={bottomLinks} isCollapsed={isCollapsed} />
       </Box>
       <Divider />
-      <Box display="flex" flexDirection="column" gap="24px">
-        {bottomLinks?.map((section, idx) => {
-          return (
-            <Box display="flex" flexDirection="column" gap="10px">
-              {section?.sectionTitle ? (
-                <Typography fontFamily="Poppins" fontSize="14px" fontWeight={500} color="#949494" lineHeight="14px">
-                  {section?.sectionTitle}
-                </Typography>
-              ) : null}
-              {section?.items?.map((item, idx) => {
-                return (
-                  <Link to={item.path}>
-                    <Typography color="black" fontSize="14px" fontWeight={500} lineHeight="14x">
-                      {item.label}
-                    </Typography>
-                  </Link>
-                );
-              })}
-            </Box>
-          );
-        })}
-      </Box>
-
-      {/* <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List> */}
+      <Box display="flex" flexDirection="column" gap="24px"></Box>
     </Box>
   );
   return (
@@ -205,7 +120,9 @@ const SidebarComponent = ({ links, bottomLinks }) => {
       sx={{
         width: isCollapsed ? collapsedDrawerWidth : drawerWidth,
         flexShrink: 0,
+        transition: "all 0.2s ease-in-out",
         "& .MuiDrawer-paper": {
+          transition: "all 0.2s ease-in-out",
           width: isCollapsed ? collapsedDrawerWidth : drawerWidth,
           boxSizing: "border-box",
           overflow: isCollapsed ? "visible" : "hidden",
