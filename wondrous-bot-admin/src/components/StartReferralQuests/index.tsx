@@ -9,6 +9,7 @@ import { REFERRAL_REWARD_SCHEME } from "utils/constants";
 import InfoModal from "./InfoModal";
 import IndividualQuestComponent from "./IndividualQuestComponent";
 import useStartQuest from "./utils/hooks";
+import SafeImage from "components/SafeImage";
 import InactiveQuestInfoModal from "./InactiveQuest";
 
 const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignExternalId, referralCodeInfo }) => {
@@ -66,6 +67,8 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
     return { xs: 1, sm: 2, md: 2, lg: 3 };
   }, [quests?.length]);
 
+  const referralBannerImage = referralCampaign?.media?.[0]?.slug;
+
   return (
     <>
       <InfoModal
@@ -88,15 +91,24 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
       />
 
       {displayReferrer ? (
-        <Box display="flex" width="100%" justifyContent="center" alignItems="center">
+        <Box
+          display="flex"
+          width="calc(100% - 40px)"
+          position="fixed"
+          top="100px"
+          flex="1 0 0"
+          alignItems="center"
+          justifyContent="center"
+          zIndex="10"
+          maxWidth="620px"
+        >
           <Box
             display="flex"
-            padding="13px 14px"
+            padding="13px 20px"
             flex="1 0 0"
             top="100px"
             zIndex="10"
-            width="calc(100% - 56px)"
-            position="fixed"
+            width="100%"
             alignItems="center"
             justifyContent="space-between"
             alignSelf="stretch"
@@ -108,7 +120,12 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
             <Typography color="black" fontSize="14px" fontFamily="Poppins" fontWeight={500}>
               {<strong>{referralCodeInfo?.referrerDisplayName}</strong>} referred you, complete the quests below!
             </Typography>
-            <ButtonBase onClick={() => setDisplayReferrer(false)}>
+            <ButtonBase
+              onClick={() => setDisplayReferrer(false)}
+              sx={{
+                marginRight: "14px",
+              }}
+            >
               <CloseIcon />
             </ButtonBase>
           </Box>
@@ -125,29 +142,65 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
         height="100%"
         flex="1"
       >
-        <Box display="flex" flexDirection="column" gap="11px" justifyContent="center" alignItems="center">
+        <Box
+          display="flex"
+          marginBottom={{
+            xs: "0",
+            sm: referralBannerImage ? "48px" : "0",
+          }}
+          gap="14px"
+          justifyContent="center"
+          alignItems="center"
+          position="relative"
+          padding="20px 20px 0px 20px"
+          maxWidth="620px"
+          width="calc(100% - 40px)"
+          flexDirection="column"
+        >
+          <SafeImage
+            placeholderSrc={referralBannerImage ? "/images/referral-placeholder.png" : null}
+            src={referralBannerImage}
+            style={{
+              width: "100%",
+              borderRadius: "12px",
+              height: "auto",
+              maxHeight: "140px",
+              objectFit: "cover",
+            }}
+          />
           <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            border="2px solid #000000"
-            borderRadius="100%"
-            padding="2px"
-            position="relative"
+            position={{
+              xs: "relative",
+              sm: referralBannerImage ? "absolute" : "relative",
+            }}
+            bottom="calc(-20% - 32px)"
           >
-            <OrgProfilePicture
-              profilePicture={referralCodeInfo?.orgProfilePicture}
-              style={{
-                width: "64px",
-                height: "64px",
-                borderRadius: "100%",
-              }}
-            />
+            <Box display="flex" flexDirection="column" gap="11px" justifyContent="center" alignItems="center">
+              <Box
+                display="flex"
+                bgcolor="white"
+                justifyContent="center"
+                alignItems="center"
+                borderRadius="100%"
+                position="relative"
+                border="7px solid white"
+              >
+                <OrgProfilePicture
+                  profilePicture={referralCodeInfo?.orgProfilePicture}
+                  style={{
+                    width: "64px",
+                    height: "64px",
+                    borderRadius: "100%",
+                    border: "2px solid #000000",
+                  }}
+                />
+              </Box>
+            </Box>
+            <Typography fontWeight={600} fontFamily="Poppins" fontSize="22px" color="black">
+              {referralCodeInfo?.orgDisplayName}
+            </Typography>
           </Box>
         </Box>
-        <Typography fontWeight={600} fontFamily="Poppins" fontSize="22px" color="black">
-          {referralCodeInfo?.orgDisplayName}
-        </Typography>
         {org.description ? (
           <Typography fontWeight={500} fontFamily="Poppins" fontSize="17" color="#626262" textAlign="center">
             {org?.description}
