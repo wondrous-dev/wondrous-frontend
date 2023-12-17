@@ -22,6 +22,7 @@ export const TYPES = {
   DISCORD_MESSAGE_IN_CHANNEL: "discord_message_in_channel",
   DISCORD_EVENT_ATTENDANCE: "discord_event_attendance",
   DATA_COLLECTION: "data_collection",
+  CONNECT_WALLET: "connect_wallet",
   VERIFY_TOKEN_HOLDING: "verify_token_holding",
   LINK_CLICK: "link_click",
   LIKE_YT_VIDEO: "like_yt_video",

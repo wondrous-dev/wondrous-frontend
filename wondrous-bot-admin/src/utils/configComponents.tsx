@@ -14,6 +14,7 @@ import ReferralComponent from "components/AddFormEntity/components/Referral";
 import MigrateOriginUsers from "components/AddFormEntity/components/MigrateOriginUsers";
 import VerifyMarketsFlareTrial from "components/AddFormEntity/components/VerifyMarketsFlareTrial";
 import VerifyApeironIntegrations from "components/AddFormEntity/components/VerifyApeiron";
+import ConnectWallet from "components/AddFormEntity/components/ConnectWallet";
 
 const APEIRON_INTEGRATIONS = {
   [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: VerifyApeironIntegrations,
@@ -35,6 +36,7 @@ export const CONFIG_COMPONENTS = {
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: SnapshotComponent,
   [TYPES.SNAPSHOT_SPACE_VOTE]: SnapshotComponent,
   [TYPES.DISCORD_MESSAGE_IN_CHANNEL]: DiscordComponent,
+  [TYPES.CONNECT_WALLET]: ConnectWallet,
   [TYPES.DATA_COLLECTION]: DataCollectionComponent,
   [TYPES.VERIFY_TOKEN_HOLDING]: VerifyTokenHoldingComponent,
   [TYPES.LIKE_YT_VIDEO]: YoutubeLikeComponent,
