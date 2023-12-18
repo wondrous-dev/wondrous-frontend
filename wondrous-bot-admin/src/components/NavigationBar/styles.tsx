@@ -2,43 +2,9 @@ import styled from "styled-components";
 
 import AppBar from "@mui/material/AppBar";
 import { HEADER_HEIGHT } from "utils/constants";
-import { ButtonBase, Grid, Typography } from "@mui/material";
+import { Box, ButtonBase, Grid, Typography } from "@mui/material";
+import ScrollBarStyles from "components/Shared/ScrollBarStyles";
 
-export const HeaderBar = styled(AppBar)`
-  && {
-    padding: 10px 14px 10px 14px;
-    background: ${({ theme }) => theme.palette.background.header};
-    display: flex;
-    height: ${HEADER_HEIGHT}px;
-    z-index: 1000;
-    top: 14px;
-    width: calc(100% - 28px);
-    right: 14px;
-    border-radius: 16px;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: row;
-    ${({ theme }) => theme.breakpoints.down("md")} {
-      top: 0;
-      right: 0;
-      width: 100%;
-      border-radius: 0;
-    })
-  }
-`;
-
-export const MenuIconWrapper = styled(ButtonBase)`
-  && {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: ${({ $isOpen }) => ($isOpen ? "white" : "#AF9EFF")};
-    border-radius: 12px;
-  }
-`;
 
 export const LinkButton = styled(ButtonBase)`
   && {
@@ -130,5 +96,19 @@ export const NavbarLinkWrapper = styled(Grid)`
         border-color: ${({ color = "transparent" }) => color}; 
       }
     }
+  }
+`;
+
+
+export const DrawerContainer = styled(Box)`
+  && {
+    overflow: auto;
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 21px;
+    align-items: space-between;
+    ${ScrollBarStyles};
   }
 `;
