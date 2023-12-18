@@ -24,7 +24,7 @@ const SignupComponent = () => {
     type,
   };
 
-  const moveForward = () => handleUserOnboardingRedirect(null, navigate, params, "/onboarding/welcome");
+  const moveForward = () => handleUserOnboardingRedirect(null, navigate, params, "/onboarding/welcome?ref=signup");
 
   return (
     <AuthLayout

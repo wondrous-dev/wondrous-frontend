@@ -53,9 +53,11 @@ const MediaHandler = ({ media, onChange }) => {
           {mediaItem?.slug ? (
             <SafeImage
               style={{
-                height: "fit-content !important",
-                maxWidth: "100%",
-                borderRadius: "12px"
+                width: "100%",
+                borderRadius: "12px",
+                height: "auto",
+                maxHeight: "140px",
+                objectFit: "cover",  
               }}
               src={mediaItem?.slug}
             />
@@ -63,9 +65,11 @@ const MediaHandler = ({ media, onChange }) => {
             <Media
               file={mediaItem}
               mediaStyle={{
-                maxWidth: "100%",
-                height: "auto",
+                width: "100%",
                 borderRadius: "12px",
+                height: "auto",
+                maxHeight: "140px",
+                objectFit: "cover",  
               }}
             />
           )}

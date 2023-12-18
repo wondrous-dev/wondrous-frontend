@@ -30,7 +30,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
   const [isActivating, setIsActivating] = useState(false);
   const { address, chainId, open, disconnect, isConnected, signMessage, closeWeb3Modal } = useWonderWeb3Modal();
   const { search } = useLocation();
-  const {setSnackbarAlertMessage, setSnackbarAlertOpen} = useAlerts();
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const searchParams = new URLSearchParams(search);
 
   const discordConnectError = searchParams.get("discordConnectError");
@@ -130,7 +130,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
           }
           if (user) {
             closeWeb3Modal();
-            handleUserOnboardingRedirect(null, navigate, params, "/onboarding/welcome");
+            handleUserOnboardingRedirect(null, navigate, params, "/onboarding/welcome?ref=signup");
           }
         } else if (isSignedMessageString === false) {
           setErrorMessage("You need to sign the message on your wallet");
@@ -147,7 +147,14 @@ const useWeb3Auth = ({ setErrorMessage }) => {
     }
   };
 
-  const linkUserWithWallet = async ({ discordUserId, telegramUserId, migrateOrgId, onSuccess, onFail }) => {
+  const linkUserWithWallet = async ({
+    discordUserId,
+    telegramUserId,
+    migrateOrgId,
+    verificationCode,
+    onSuccess,
+    onFail,
+  }) => {
     if (address && chainId && isConnected) {
       const messageToSign = `Welcome to wonder\nDate: ${getFormattedDate()}\nTimestamp: ${Date.now().toString()}`;
       if (messageToSign) {
@@ -160,6 +167,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
             signedMessage,
             SupportedChainType.ETH,
             messageToSign,
+            verificationCode,
             telegramUserId,
             migrateOrgId
           );
@@ -195,7 +203,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
     disconnect,
     isConnected,
     linkUserWithWallet,
-    closeWeb3Modal
+    closeWeb3Modal,
   };
 };
 

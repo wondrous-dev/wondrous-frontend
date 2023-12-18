@@ -134,7 +134,7 @@ const WorkspaceSwitch = () => {
                 </WorkspaceWrapper>
               );
             })}
-            <WorkspaceWrapper onClick={() => navigate("/onboarding/welcome")}>
+            <WorkspaceWrapper onClick={() => navigate("/onboarding/welcome?ref=workspace")}>
               <Box display="flex" gap="10px" alignItems="center">
                 <img
                   style={{

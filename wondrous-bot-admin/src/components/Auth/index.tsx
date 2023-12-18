@@ -199,6 +199,7 @@ export const linkCmtyUserWallet = async (
   signedMessage: string,
   blockchain: string,
   originalMessage: string,
+  verificationCode: string,
   telegramUserId?: string,
   migrateOrgId?: string
 ) => {
@@ -215,6 +216,7 @@ export const linkCmtyUserWallet = async (
           blockchain,
           originalMessage,
           telegramUserId,
+          verificationCode,
           ...(migrateOrgId && {
             migrateOrgId,
           }),
@@ -225,7 +227,7 @@ export const linkCmtyUserWallet = async (
   } catch (err) {
     console.log("Error linking wallet: ", err?.graphQLErrors);
     if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.code) {
-      return err?.graphQLErrors[0]?.extensions.errorCode;
+      return err?.graphQLErrors[0]?.extensions.errorCode || err?.graphQLErrors[0]?.extensions.message;
     }
     return false;
   }
@@ -269,11 +271,11 @@ export const storeAuthWaitlistHeader = async (token, waitlistUser) => {
   }
 };
 
-export const logout = async () => {
+export const logout = async (redirectPath = "/login") => {
   try {
     localStorage.removeItem("wonderToken");
     await apollo.clearStore();
-    window.location.href = "/login";
+    window.location.href = redirectPath;
   } catch (exception) {
     return false;
   }
