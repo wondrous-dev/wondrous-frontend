@@ -9,10 +9,13 @@ export const WorkspaceImageWrapper = styled(Box)`
     width: ${({ width = "2.2rem" }) => width};
     min-width: 28px;
     min-height: 28px;
+    max-height: 2.2rem;
+    max-width: 2.2rem;
     overflow: hidden;
     border-radius: ${({ borderRadius = "300px" }) => borderRadius};
     border: 1px solid #8d8d8d;
     display: flex;
+    transition: 0s all;
     justify-content: center;
     align-items: center;
   }

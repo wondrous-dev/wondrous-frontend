@@ -71,6 +71,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
             bgcolor={isOpen ? "#D7E9FF" : "transparent"}
             alignItems="center"
             borderRadius="6px"
+            justifyContent="center"
             padding="10px"
             sx={{
               "&:hover": {
@@ -78,7 +79,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
               },
             }}
           >
-            <WorkspaceImageWrapper>
+            <WorkspaceImageWrapper height={isCollapsed ? "auto" : "2.2rem"} width={isCollapsed ? "auto" : "2.2rem"}>
               {activeOrg?.profilePicture ? (
                 <OrgProfilePicture
                   profilePicture={activeOrg?.profilePicture}
@@ -93,32 +94,34 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
             </WorkspaceImageWrapper>
 
             <SidebarLabel $isCollapsed={isCollapsed}>{activeOrg?.name}</SidebarLabel>
-            <Box flex="1" display="flex" justifyContent="flex-end" alignItems="center">
-              <ButtonBase
-                onClick={togglePopper}
-                ref={ref}
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: "5px",
-                  height: "32px",
-                  background: isOpen ? "white" : "#E7E7E7",
-                  border: "1px solid transparent",
-                  transition: "all 0.1s ease-in-out",
-                  ":hover": {
-                    borderColor: "#000000",
-                    background: "white",
-                  },
-                }}
-              >
-                <MoreVertIcon
+            {isCollapsed ? null : (
+              <Box flex="1" display="flex" justifyContent="flex-end" alignItems="center">
+                <ButtonBase
+                  onClick={togglePopper}
+                  ref={ref}
                   sx={{
-                    color: "black",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: "5px",
+                    height: "32px",
+                    background: isOpen ? "white" : "#E7E7E7",
+                    border: "1px solid transparent",
+                    transition: "all 0.1s ease-in-out",
+                    ":hover": {
+                      borderColor: "#000000",
+                      background: "white",
+                    },
                   }}
-                />
-              </ButtonBase>
-            </Box>
+                >
+                  <MoreVertIcon
+                    sx={{
+                      color: "black",
+                    }}
+                  />
+                </ButtonBase>
+              </Box>
+            )}
           </Box>
         </Box>
         <Popper

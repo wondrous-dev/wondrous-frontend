@@ -8,7 +8,7 @@ const collapsedDrawerWidth = 64;
 
 const SidebarComponent = ({ links }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  
+
   return (
     <>
       <Drawer
