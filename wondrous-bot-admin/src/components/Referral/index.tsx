@@ -1,12 +1,11 @@
 import { Box, Grid } from "@mui/material";
 import {
-  HeaderBar,
   ImageContainer,
   ImageDefault,
   HoveredImage,
   TutorialLink,
   TutorialButton,
-} from "components/Navbar/styles";
+} from "components/NavigationBar/styles";
 import PageSpinner from "components/PageSpinner";
 import PageWrapper from "components/Shared/PageWrapper";
 import { BG_TYPES } from "utils/constants";
@@ -44,7 +43,7 @@ const StartReferralPage = () => {
 
   return (
     <>
-      <HeaderBar>
+      {/* <HeaderBar>
         <Box display="flex" justifyContent="space-between" width="100%" alignItems="center">
           <StyledLink to="/" style={{ position: "relative" }}>
             <ImageContainer>
@@ -57,7 +56,7 @@ const StartReferralPage = () => {
             <TutorialButton>?</TutorialButton>
           </TutorialLink>
         </Box>
-      </HeaderBar>
+      </HeaderBar> */}
 
       <PageWrapper
         containerProps={{

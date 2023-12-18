@@ -11,7 +11,7 @@ import { matchRoute } from "utils/common";
 import ErrorCatcher from "components/ErrorCatcher";
 import GlobalContext from "utils/context/GlobalContext";
 import PageSpinner from "components/PageSpinner";
-import Navbar from "components/Navbar";
+import Navbar from "components/NavigationBar";
 import { Main } from "./styles";
 import TutorialComponent from "components/TutorialComponent";
 import { FeedbackButton } from "components/Feedback/button";
@@ -125,7 +125,14 @@ const Layout = () => {
       <SubscriptionContext.Provider value={subscription?.status === "active" ? subscription : null}>
         <TutorialComponent>
           {/* <FeedbackButton /> */}
-          <Grid display="flex" width="100%">
+          <Grid
+            display="flex"
+            width="100%"
+            flexDirection={{
+              xs: "column",
+              md: "row",
+            }}
+          >
             {isPageWithoutHeader ? null : <Navbar />}
             <Main $isPageWithoutHeader={isPageWithoutHeader}>
               <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>

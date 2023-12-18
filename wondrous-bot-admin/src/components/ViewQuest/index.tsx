@@ -11,7 +11,7 @@ import { BG_TYPES } from "utils/constants";
 import { ImageComponent, StyledLink, TextLabel } from "./styles";
 import { format } from "date-fns";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
-import { HoveredImage, ImageContainer, ImageDefault } from "components/Navbar/styles";
+import { HoveredImage, ImageContainer, ImageDefault } from "components/NavigationBar/styles";
 import InfoModal from "components/StartReferralQuests/InfoModal";
 import useStartQuest from "components/StartReferralQuests/utils/hooks";
 

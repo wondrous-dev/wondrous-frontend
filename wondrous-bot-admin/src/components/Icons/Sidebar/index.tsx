@@ -292,7 +292,7 @@ export const ActiveStoreIcon = (props) => (
   </svg>
 );
 
-export const InactiveSettingsButton = (props) => (
+export const InactiveSettingsIcon = (props) => (
   <svg width={24} height={25} viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       fillRule="evenodd"
@@ -304,7 +304,7 @@ export const InactiveSettingsButton = (props) => (
   </svg>
 );
 
-export const ActiveSettingsButton = (props) => (
+export const ActiveSettingsIcon = (props) => (
   <svg width={24} height={25} viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       fillRule="evenodd"
@@ -340,7 +340,7 @@ export const InactiveTutorialIcon = (props) => (
   </svg>
 );
 
-export const ActiveTutorialButton = (props) => (
+export const ActiveTutorialIcon = (props) => (
   <svg width={22} height={21} viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M11 20.5C16.5228 20.5 21 16.0228 21 10.5C21 4.97715 16.5228 0.5 11 0.5C5.47715 0.5 1 4.97715 1 10.5C1 16.0228 5.47715 20.5 11 20.5Z"
