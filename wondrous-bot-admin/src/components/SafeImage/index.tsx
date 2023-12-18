@@ -89,6 +89,7 @@ function SafeImage(safeImageArgs: SafeImageArgs) {
 
   if (safeImageUrl) {
     return <img src={safeImageUrl} alt={alt} width={width} height={height} 
+    placeholder={placeholderSrc}
 	{...props} />;
   }
   if (placeholderComp) {

@@ -32,7 +32,7 @@ const InfoModal = ({
 
   const STEPS_CONFIG = [
     {
-      buttonLabel: showJoinDiscord ? "Connected" : "Connect",
+      buttonLabel: showJoinDiscord || showStartQuest ? "Connected" : "Connect",
       isActive: showConnect,
       label: "Connect Discord",
       hasCompleted: showJoinDiscord || showStartQuest,
@@ -49,18 +49,6 @@ const InfoModal = ({
       onClick: handleJoinDiscord,
     },
   ];
-
-  const handleOnClick = () => {
-    if (showConnect) {
-      handleOnConnect();
-    }
-    if (showJoinDiscord) {
-      handleJoinDiscord();
-    }
-    if (showStartQuest) {
-      onStartQuest();
-    }
-  };
 
   return (
     <>

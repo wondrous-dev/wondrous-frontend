@@ -143,7 +143,12 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       value: "",
       mediaUploads: step?.media || [],
     };
-    if (step.type === TYPES.TEXT_FIELD || step.type === TYPES.NUMBER || step.type === TYPES.ATTACHMENTS) {
+    if (
+      step.type === TYPES.TEXT_FIELD ||
+      step.type === TYPES.NUMBER ||
+      step.type === TYPES.ATTACHMENTS ||
+      step.type === TYPES.CONNECT_WALLET
+    ) {
       outputStep.value = step.prompt;
     } else if ([TYPES.SINGLE_QUIZ, TYPES.MULTI_QUIZ].includes(step.type)) {
       const hasCorrectAnswer = step.options?.some((option) => option.correct !== null && option.correct !== undefined);

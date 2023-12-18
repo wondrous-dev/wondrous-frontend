@@ -63,7 +63,7 @@ const StartReferralPage = () => {
           sx: {
             justifyContent: "center",
             backgroundImage: "none",
-            marginTop: "182px",
+            marginTop: '59px',
             flexDirection: "column",
             overflow: "hidden",
           },

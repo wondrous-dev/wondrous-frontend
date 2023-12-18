@@ -37,6 +37,7 @@ const ALL_TYPES = [
   TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80,
   TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS,
   TYPES.VERIFY_APEIRON_10_MINS_PLAYED,
+  TYPES.CONNECT_WALLET,
 ];
 
 export const STORE_TYPES = [STORE_ITEM_TYPES.EXTERNAL_SHOP, STORE_ITEM_TYPES.DISCORD_ROLE, STORE_ITEM_TYPES.NFT];
@@ -168,6 +169,9 @@ const stepTypes = {
       .max(25, ERRORS.MAX_OPTION_LENGTH)
       .required("Options are required")
       .nullable(),
+  }),
+  [TYPES.CONNECT_WALLET]: Yup.object().shape({
+    ...sharedValidation,
   }),
   [TYPES.VERIFY_TOKEN_HOLDING]: Yup.object().shape({
     additionalData: Yup.object().shape({

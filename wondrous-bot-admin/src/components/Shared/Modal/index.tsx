@@ -14,7 +14,7 @@ import {
 
 interface IModalProps {
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   title?: string;
   maxWidth?: number;
   noHeader?: boolean;
@@ -30,7 +30,7 @@ interface IModalProps {
   };
   modalFooterStyle?: {
     padding?: string;
-  }
+  };
 }
 
 const Modal = ({
@@ -45,7 +45,7 @@ const Modal = ({
   noHeader = false,
   modalComponentProps = {},
   dialogComponentProps = {},
-  modalFooterStyle = {}
+  modalFooterStyle = {},
 }: IModalProps) => {
   const handleBackdropClick = (event) => {
     if (event.target.dataset.backdrop) {
@@ -68,7 +68,7 @@ const Modal = ({
             <ModalBody>{children}</ModalBody>
 
             {!!footerLeft || !!footerRight || !!footerCenter ? (
-              <ModalFooter alignCenter={!!footerCenter} style={{...modalFooterStyle}}>
+              <ModalFooter alignCenter={!!footerCenter} style={{ ...modalFooterStyle }}>
                 {footerLeft ? <ModalFooterLeft>{footerLeft}</ModalFooterLeft> : null}
                 {footerRight ? <ModalFooterRight>{footerRight}</ModalFooterRight> : null}
               </ModalFooter>
