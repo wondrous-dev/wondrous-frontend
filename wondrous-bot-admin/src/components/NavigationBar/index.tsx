@@ -51,7 +51,6 @@ const NavigationBar = () => {
           path: "/referrals",
           label: "Referrals",
           activeIcon: ActiveReferralsIcon,
-          isInactive: !activeOrg?.modules?.cmtyReferral,
           inactiveIcon: InactiveReferralsIcon,
         },
       ],
