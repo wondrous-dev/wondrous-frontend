@@ -130,7 +130,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
           }
           if (user) {
             closeWeb3Modal();
-            handleUserOnboardingRedirect(null, navigate, params, "/onboarding/welcome");
+            handleUserOnboardingRedirect(null, navigate, params, "/onboarding/welcome?ref=signup");
           }
         } else if (isSignedMessageString === false) {
           setErrorMessage("You need to sign the message on your wallet");
