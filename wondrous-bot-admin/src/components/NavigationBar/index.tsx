@@ -1,7 +1,5 @@
-import { useTheme } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 
-import { useLocation } from "react-router-dom";
 import GlobalContext from "utils/context/GlobalContext";
 import { useSubscriptionPaywall } from "utils/hooks";
 import SidebarComponent from "components/NavigationBar/Sidebar";
@@ -23,43 +21,10 @@ import {
 } from "components/Icons/Sidebar";
 import NavigationHeaderComponent from "./NavigationHeader";
 
-// const LINKS = [
-//   {
-//     path: "/",
-//     label: "Home",
-//     textColor: "#BAACFA",
-//   },
-//   {
-//     path: "/members",
-//     label: "Members",
-//     textColor: "#F8642D",
-//   },
-//   {
-//     path: "/quests",
-//     label: "Quests",
-//     textColor: "#F8AFDB",
-//     partialMatch: true,
-//   },
-//   {
-//     path: "/levels",
-//     label: "Levels",
-//     textColor: "#84BCFF",
-//   },
-//   {
-//     path: "/analytics",
-//     label: "Analytics",
-//     textColor: "#FEE2CA",
-//   },
-// ];
 const NavigationBar = () => {
   const { activeOrg } = useContext(GlobalContext);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const location = useLocation();
-
-  const theme: any = useTheme();
-  const toggleDrawer = () => setDrawerOpen((prev) => !prev);
   const { isEcosystemPlan } = useSubscriptionPaywall();
-
+  
   const LINKS = [
     {
       sectionTitle: null,

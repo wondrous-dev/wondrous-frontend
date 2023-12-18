@@ -14,27 +14,7 @@ const NavigationHeaderComponent = ({ links }) => {
   const toggleDrawer = () => setIsCollapsed((prev) => !prev);
   return (
     <>
-      {/* <Drawer
-        anchor="top"
-        open={isDrawerOpen}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        onClose={toggleDrawer}
-        sx={{
-          "& .MuiDrawer-paper": {
-            top: HEADER_HEIGHT,
-            padding: "1rem",
-          },
-          display: {
-            xs: "",
-            md: "none",
-          },
-        }}
-      > */}
       <Drawer
-        // variant="persistent"
-        // variant="persistent"
         open={!isCollapsed}
         anchor="top"
         ModalProps={{

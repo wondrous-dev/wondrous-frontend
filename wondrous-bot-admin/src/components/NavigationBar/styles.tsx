@@ -5,7 +5,6 @@ import { HEADER_HEIGHT } from "utils/constants";
 import { Box, ButtonBase, Grid, Typography } from "@mui/material";
 import ScrollBarStyles from "components/Shared/ScrollBarStyles";
 
-
 export const LinkButton = styled(ButtonBase)`
   && {
     width: 100%;
@@ -72,7 +71,6 @@ export const ImageContainer = styled.div`
   }
 `;
 
-
 export const NavbarLinkText = styled(Typography)`
   && {
     font-family: Poppins;
@@ -93,12 +91,11 @@ export const NavbarLinkWrapper = styled(Grid)`
       background: rgba(255, 255, 255, 0.15);
       border-radius: 6px;
       ${NavbarLinkText} {
-        border-color: ${({ color = "transparent" }) => color}; 
+        border-color: ${({ color = "transparent" }) => color};
       }
     }
   }
 `;
-
 
 export const DrawerContainer = styled(Box)`
   && {
@@ -107,8 +104,11 @@ export const DrawerContainer = styled(Box)`
     display: flex;
     flex-direction: column;
     flex: 1;
-    gap: 21px;
+    gap: 14px;
     align-items: space-between;
     ${ScrollBarStyles};
+    ${({ theme }) => theme.breakpoints.up("md")} {
+      gap: 21px;
+    }
   }
 `;

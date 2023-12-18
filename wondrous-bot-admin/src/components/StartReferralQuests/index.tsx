@@ -94,8 +94,7 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
         <Box
           display="flex"
           width="calc(100% - 40px)"
-          position="fixed"
-          top="100px"
+          position="sticky"
           flex="1 0 0"
           alignItems="center"
           justifyContent="center"
