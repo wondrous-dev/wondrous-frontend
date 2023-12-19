@@ -1,18 +1,8 @@
-import { useMutation } from "@apollo/client";
-import { Box, ButtonBase, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { CONNECT_COMMUNITY_USER_WALLET, VERIFY_COMMUNITY_USER_TWITTER } from "graphql/mutations";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "./styles";
-import { CoinbaseConnector, MetaMaskConnector, WalletConnectConnector } from "components/Connectors";
-import useWonderWeb3 from "services/web3/useWonderWeb3";
-import { SupportedChainType, signedMessageIsString } from "utils/web3Constants";
-import apollo from "services/apollo";
-import { linkCmtyUserWallet } from "components/Auth";
-import { GRAPHQL_ERRORS } from "utils/constants";
 import useWeb3Auth from "services/web3/useWeb3Auth";
-import WalletConnect from "components/Icons/Login/walletconnect.svg";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import Spinner from "components/Shared/Spinner";
 
