@@ -107,14 +107,14 @@ const LinksWrapper = ({ links, isCollapsed, toggleDrawer }) => {
             />
           );
         })}
-        {idx !== links.length - 1 && isMobile ? <Divider style={{marginTop: '3px'}} /> : null}
+        {idx !== links.length - 1 && isMobile ? <Divider style={{ marginTop: "3px" }} /> : null}
       </Box>
     );
   });
 };
 
 export const DrawerComponent = ({ isCollapsed, toggleDrawer, links }) => (
-  <DrawerContainer>
+  <DrawerContainer id="home-page-guide">
     <Box
       display="flex"
       justifyContent={isCollapsed ? "center" : "space-between"}

@@ -1,17 +1,14 @@
 import { TourProvider } from "@reactour/tour";
 import { useMutation } from "@apollo/client";
-import { SET_USER_COMPLETED_GUIDE, SET_PROJECT_GUIDE_COMPLETE } from "graphql/mutations/user";
-import { useMe, withAuth } from "components/Auth";
-import { useRect } from "@reactour/utils";
+import { SET_USER_COMPLETED_GUIDE } from "graphql/mutations/user";
+import { useMe } from "components/Auth";
 
-import { config } from "./config";
 import { useLocation } from "react-router-dom";
 import { toggleHtmlOverflow } from "utils/common";
 import { GET_LOGGED_IN_USER } from "graphql/queries";
 import NavigationWrapper from "./NavigationWrapper";
 import { NextNavigationButton, PrevNavigationButton } from "./NavigationButtons";
 import { getStepsConfig } from "./utils";
-import { useEffect, useRef, useState } from "react";
 
 const TutorialComponent = ({ children }) => {
   const { user } = useMe() || {};
@@ -70,7 +67,7 @@ const TutorialComponent = ({ children }) => {
         popover.classList.remove("shake-animation");
       }, 1000);
     }
-  }
+  };
 
   return (
     <TourProvider
