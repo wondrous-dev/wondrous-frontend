@@ -8,7 +8,7 @@ import {
   useWeb3ModalEvents,
 } from "@web3modal/ethers5/react";
 import { useMemo, useState } from "react";
-import { SUPPORTED_CHAIN_IDS } from "utils/web3Constants";
+import { SUPPORTED_CHAINS } from "utils/web3Constants";
 
 const useWonderWeb3Modal = () => {
   const { chainId, isConnected, address } = useWeb3ModalAccount();
@@ -83,7 +83,7 @@ const useWonderWeb3Modal = () => {
     if (!walletProvider || !isConnected) return;
     try {
       const prov = new ethers.providers.Web3Provider(walletProvider);
-      if (!SUPPORTED_CHAIN_IDS[chainId]) {
+      if (!SUPPORTED_CHAINS[chainId]) {
         disconnect();
         return false;
       }

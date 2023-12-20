@@ -7,7 +7,7 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from "utils/constants";
-import { SUPPORTED_CHAIN_IDS } from "utils/web3Constants";
+import { SUPPORTED_CHAINS } from "utils/web3Constants";
 import WalletConnect from "components/Icons/Login/walletconnect.svg";
 import { Divider } from "./styles";
 import { validate } from "./validator";
@@ -51,7 +51,7 @@ const CollectCredentials = ({ moveForward }) => {
 
   useEffect(() => {
     if (chainId) {
-      setNotSupportedChain(!SUPPORTED_CHAIN_IDS[chainId]);
+      setNotSupportedChain(!SUPPORTED_CHAINS[chainId]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
