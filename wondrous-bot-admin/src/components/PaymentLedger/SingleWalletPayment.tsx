@@ -100,7 +100,11 @@ const SingleWalletPayment = ({ paymentData, disabled = false, tokenId, onPayment
       });
     } catch (error) {
       setIsVerifyingChain(true);
-      open({ view: "Networks" });
+      if (paymentData?.chain === SUPPORTED_CHAINS[2020] || paymentData?.chain === SUPPORTED_CHAINS[59144]) { // ronin and linea
+        open()
+      } else {
+        open({ view: "Networks" });
+      }
       setSnackbarAlertMessage(`Please switch to ${paymentData?.chain} chain`);
       setSnackbarAlertOpen(true);
       throw new Error();
