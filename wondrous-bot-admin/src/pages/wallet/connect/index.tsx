@@ -1,20 +1,11 @@
-import { useMutation } from "@apollo/client";
-import { Box, ButtonBase, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { CONNECT_COMMUNITY_USER_WALLET, VERIFY_COMMUNITY_USER_TWITTER } from "graphql/mutations";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "./styles";
-import { CoinbaseConnector, MetaMaskConnector, WalletConnectConnector } from "components/Connectors";
-import useWonderWeb3 from "services/web3/useWonderWeb3";
-import { SupportedChainType, signedMessageIsString } from "utils/web3Constants";
-import apollo from "services/apollo";
-import { linkCmtyUserWallet } from "components/Auth";
-import { GRAPHQL_ERRORS } from "utils/constants";
 import useWeb3Auth from "services/web3/useWeb3Auth";
-import WalletConnect from "components/Icons/Login/walletconnect.svg";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import Spinner from "components/Shared/Spinner";
+import { CHAIN_TO_CHAIN_DIPLAY_NAME } from "utils/web3Constants";
 
 const buttonStyles = {
   marginRight: "8px",
@@ -26,6 +17,8 @@ const WalletConnectPage = () => {
   const verificationCode = searchParams?.get("verificationCode");
   const telegramUserId = searchParams?.get("telegramUserId");
   const migrateOrgId = searchParams?.get("migrateOrgId");
+  const chain = searchParams?.get("chain");
+  const chainDisplayName = CHAIN_TO_CHAIN_DIPLAY_NAME[chain as string];
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [connectionComplete, setConnectionComplete] = useState(false);
 
@@ -58,7 +51,7 @@ const WalletConnectPage = () => {
         {!connectionComplete ? (
           <Box display="flex" gap="24px" flexDirection="column">
             <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-              Connect your wallet
+              {`Connect your wallet ${chainDisplayName? `on ${chainDisplayName}`: ""}`}
             </Typography>
             <SharedSecondaryButton onClick={open}>{isActivating ? <Spinner /> : "Connect"}</SharedSecondaryButton>
             {errorMessage && (

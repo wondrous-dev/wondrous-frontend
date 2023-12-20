@@ -89,8 +89,8 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                   }}
                 />
               ) : (
-                <WorkspaceDAOIcon />
-              )}
+                <WorkspaceDAOIcon width="100%" height="100%"/>
+                )}
             </WorkspaceImageWrapper>
 
             <SidebarLabel $isCollapsed={isCollapsed}>{activeOrg?.name}</SidebarLabel>
@@ -163,7 +163,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                           }}
                         />
                       ) : (
-                        <WorkspaceDAOIcon />
+                        <WorkspaceDAOIcon width="100%" height="100%"/>
                       )}
                     </WorkspaceImageWrapper>
                     <Label fontWeight={500} fontSize="15px" color="#1D1D1D">
@@ -180,7 +180,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                 </WorkspaceWrapper>
               );
             })}
-            <WorkspaceWrapper onClick={() => navigate("/onboarding/welcome")}>
+            <WorkspaceWrapper onClick={() => navigate("/onboarding/welcome?ref=workspace")}>
               <Box display="flex" gap="10px" alignItems="center">
                 <img
                   style={{

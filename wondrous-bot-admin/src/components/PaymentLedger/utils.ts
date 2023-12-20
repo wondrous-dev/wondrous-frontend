@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { SUPPORTED_CHAINS, SUPPORTED_CHAIN_IDS } from "utils/web3Constants";
+import { SUPPORTED_CHAINS } from "utils/web3Constants";
 
 export const exportSubmissionPaymentCsv = (data) => {
   let headers = ["Username", "Address/ENS", "Amount", "Token Address", "Token Name", "Symbol", "Chain", "Decimals"];

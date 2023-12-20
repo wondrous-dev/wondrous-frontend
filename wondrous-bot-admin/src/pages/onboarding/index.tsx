@@ -157,7 +157,7 @@ const OnboardingPage = () => {
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {
       if(data?.getLoggedInUserFullAccessOrgs?.length === 0) {
-        navigate("/onboarding/welcome");
+        navigate("/onboarding/welcome?ref=login");
         return;
       }
       setAllOrgs(data?.getLoggedInUserFullAccessOrgs);
