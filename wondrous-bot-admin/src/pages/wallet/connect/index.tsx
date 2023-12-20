@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import useWeb3Auth from "services/web3/useWeb3Auth";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import Spinner from "components/Shared/Spinner";
+import { CHAIN_TO_CHAIN_DIPLAY_NAME } from "utils/web3Constants";
 
 const buttonStyles = {
   marginRight: "8px",
@@ -16,6 +17,8 @@ const WalletConnectPage = () => {
   const verificationCode = searchParams?.get("verificationCode");
   const telegramUserId = searchParams?.get("telegramUserId");
   const migrateOrgId = searchParams?.get("migrateOrgId");
+  const chain = searchParams?.get("chain");
+  const chainDisplayName = CHAIN_TO_CHAIN_DIPLAY_NAME[chain as string];
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [connectionComplete, setConnectionComplete] = useState(false);
 
@@ -48,7 +51,7 @@ const WalletConnectPage = () => {
         {!connectionComplete ? (
           <Box display="flex" gap="24px" flexDirection="column">
             <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-              Connect your wallet
+              {`Connect your wallet ${chainDisplayName? `on ${chainDisplayName}`: ""}`}
             </Typography>
             <SharedSecondaryButton onClick={open}>{isActivating ? <Spinner /> : "Connect"}</SharedSecondaryButton>
             {errorMessage && (
