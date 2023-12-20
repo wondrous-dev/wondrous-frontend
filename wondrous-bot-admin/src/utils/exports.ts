@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { TYPES } from "./constants";
-
-export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, questId }) => {
+const QUEST_PAGINATION_LIMIT = 100;
+export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, questId, loading, setLoading }) => {
   const headers = [
     "submissionCreatedAt",
     "submitterDiscordHandle",
@@ -11,12 +11,29 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
     "rejectedAt",
   ];
   const formatNowTime = format(new Date(), "yyyy-MM-dd");
+  setLoading(true);
   const questSubmissionData = await exportQuestSubmissionData({
     variables: {
       questId,
+      limit: QUEST_PAGINATION_LIMIT,
+      offset: 0,
     },
   });
-  const questSubmissions = questSubmissionData?.data?.exportQuestSubmissions?.questSubmissions;
+  let paginateArray = questSubmissionData?.data?.exportQuestSubmissions?.questSubmissions;
+  let questSubmissions = questSubmissionData?.data?.exportQuestSubmissions?.questSubmissions;
+  console.log("paringateArray", paginateArray?.length);
+  while (paginateArray?.length >= QUEST_PAGINATION_LIMIT) {
+    const questSubmissionDataContinued = await exportQuestSubmissionData({
+      variables: {
+        questId,
+        limit: QUEST_PAGINATION_LIMIT,
+        offset: questSubmissions?.length,
+      },
+    });
+    paginateArray = questSubmissionDataContinued?.data?.exportQuestSubmissions?.questSubmissions;
+    questSubmissions = [...questSubmissions, ...paginateArray];
+  }
+  setLoading(false);
   const questSteps = questSubmissionData?.data?.exportQuestSubmissions?.questSteps;
   questSteps.forEach((questStep) => {
     const questStepType = questStep?.type;
