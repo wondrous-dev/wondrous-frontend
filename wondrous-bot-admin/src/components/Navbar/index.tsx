@@ -62,9 +62,9 @@ const Header = () => {
 
   const theme: any = useTheme();
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
-  const { isEcosystemPlan } = useSubscriptionPaywall();
+  const { isPremiumPlan } = useSubscriptionPaywall();
 
-  if (isEcosystemPlan && !LINKS.some((link) => link.path === "/store")) {
+  if (isPremiumPlan && !LINKS.some((link) => link.path === "/store")) {
     LINKS.splice(3, 0, {
       path: "/store",
       label: "Store",
