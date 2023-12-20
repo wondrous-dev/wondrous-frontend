@@ -106,7 +106,7 @@ export const DrawerContainer = styled(Box)`
     flex: 1;
     gap: 14px;
     align-items: space-between;
-    // ${ScrollBarStyles};
+    ${ScrollBarStyles};
     ${({ theme }) => theme.breakpoints.up("md")} {
       gap: 21px;
     }

@@ -8,6 +8,7 @@ import { PaywallContext } from "./context/PaywallContext";
 import GlobalContext from "./context/GlobalContext";
 import { getPlan } from "./common";
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
+import { useMe } from "components/Auth";
 
 const useAlerts = () => {
   const {
@@ -73,4 +74,10 @@ export const useSubscriptionPaywall = () => {
   const isPremiumPlan = plan === PricingOptionsTitle.Premium;
   const isEcosystemPlan = plan === PricingOptionsTitle.Ecosystem;
   return { plan, setPaywall, setPaywallMessage,isBasicPLan, isHobbyPlan, isPremiumPlan, isEcosystemPlan, setOnCancel, setCanBeClosed };
+};
+
+export const useUserCompletedGuides = () => {
+  const { user } = useMe() || {};
+  const completedQuestGuides = user?.completedQuestGuides;
+  return completedQuestGuides;
 };

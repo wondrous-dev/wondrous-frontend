@@ -89,7 +89,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                   }}
                 />
               ) : (
-                <WorkspaceDAOIcon />
+                <WorkspaceDAOIcon height={"100%"} width="100%" />
               )}
             </WorkspaceImageWrapper>
 
@@ -163,7 +163,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                           }}
                         />
                       ) : (
-                        <WorkspaceDAOIcon />
+                        <WorkspaceDAOIcon height={"100%"} width={"100%"} />
                       )}
                     </WorkspaceImageWrapper>
                     <Label fontWeight={500} fontSize="15px" color="#1D1D1D">

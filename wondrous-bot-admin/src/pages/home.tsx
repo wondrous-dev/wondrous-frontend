@@ -17,7 +17,7 @@ import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
 import { getPlan } from "utils/common";
 import GoogleTag from "components/GoogleTag";
-import useHomeTutorial from "components/TutorialComponent/HomeTutorial";
+import HomeTutorial from "components/TutorialComponent/HomeTutorial";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -230,16 +230,17 @@ const HomePage = () => {
   const isTelegramOrDiscordConnected =
     !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
 
-  useHomeTutorial({ hasConnectedBot: isTelegramOrDiscordConnected });
+  // useHomeTutorial({ hasConnectedBot: isTelegramOrDiscordConnected });
 
   return (
     <>
       <GoogleTag />
 
+      {isTelegramOrDiscordConnected ? <HomeTutorial /> : null}
+
       <Grid
         display="flex"
         flexDirection="column"
-        id="home-page-wrapper"
         height="100%"
         minHeight="100vh"
         gap={{

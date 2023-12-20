@@ -92,6 +92,7 @@ export const ModalFooterLeft = styled.div`
 export const ModalFooterRight = styled.div`
   display: flex;
   gap: 18px;
+  width: 100%;
 `;
 
 export const CloseModalBtn = styled((props) => (

@@ -9,6 +9,7 @@ import { GET_LOGGED_IN_USER } from "graphql/queries";
 import NavigationWrapper from "./NavigationWrapper";
 import { NextNavigationButton, PrevNavigationButton } from "./NavigationButtons";
 import { getStepsConfig } from "./utils";
+import { HEADER_HEIGHT } from "utils/constants";
 
 const TutorialComponent = ({ children }) => {
   const { user } = useMe() || {};
@@ -44,18 +45,25 @@ const TutorialComponent = ({ children }) => {
       background: "white",
       padding: "0px",
       overflow: "hidden",
+      
       border: "0.5px solid rgba(75, 75, 75, 1)",
     }),
-    maskArea: (base) => {
-      return { ...base, rx: 15 };
+    maskArea: (base, {x, y, width, height}) => {
+      return { ...base, rx: 0, width: width - 19, zIndex: 999999 };
     },
     navigation: (base) => ({
       ...base,
+      width: 0,
       counterReset: null,
     }),
-    maskWrapper: (base) => ({
+    maskRect: (base, { x, y, width, height }) => ({
       ...base,
-      color: "rgba(175, 158, 255, 0.9)",
+      width: '100%'
+    }),
+    maskWrapper: (base, {x, y, width, height}) => ({
+      ...base,
+      width: 500,
+      color: "rgba(175, 158, 255, 1)",
     }),
   };
 

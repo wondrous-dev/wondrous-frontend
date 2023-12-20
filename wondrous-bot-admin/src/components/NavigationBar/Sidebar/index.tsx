@@ -23,7 +23,7 @@ const SidebarComponent = ({ links }) => {
             xs: "none",
             md: "block",
           },
-          zIndex: 1,
+          zIndex: 9999,
           width: isCollapsed ? collapsedDrawerWidth : drawerWidth,
           flexShrink: 0,
           transition: "all 0.2s ease-in-out",

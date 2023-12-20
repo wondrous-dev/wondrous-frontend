@@ -46,6 +46,9 @@ const NavigationBar = () => {
           inactiveIcon: InactiveQuestsIcon,
           label: "Quests",
           partialMatch: true,
+          props: {
+            'data-tour': 'sidebar-quest-item'
+          }
         },
         {
           path: "/referrals",

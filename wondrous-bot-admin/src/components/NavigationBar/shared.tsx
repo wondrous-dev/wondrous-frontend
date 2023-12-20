@@ -53,8 +53,9 @@ const NavigationItem = ({ item, isCollapsed, toggleDrawer }) => {
   };
 
   const linkProps = isMobile ? { onClick: closeDrawerOnRedirect } : {};
+  const itemProps = item.props || {};
   return (
-    <LinkItem item={item} {...linkProps}>
+    <LinkItem item={item} {...linkProps} {...itemProps}>
       <Box
         display="flex"
         gap="8px"
@@ -114,7 +115,7 @@ const LinksWrapper = ({ links, isCollapsed, toggleDrawer }) => {
 };
 
 export const DrawerComponent = ({ isCollapsed, toggleDrawer, links }) => (
-  <DrawerContainer id="home-page-guide">
+  <DrawerContainer data-tour="home-page-guide">
     <Box
       display="flex"
       justifyContent={isCollapsed ? "center" : "space-between"}
