@@ -241,7 +241,7 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
                 display="flex"
                 justifyContent="center"
                 sx={{
-                  maxWidth: "400px",
+                  maxWidth: "350px",
                 }}
               >
                 <IndividualQuestComponent quest={quest} key={index} onStartQuest={onStartQuest} />

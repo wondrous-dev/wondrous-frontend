@@ -20,10 +20,13 @@ import {
   InactiveStoreIcon,
 } from "components/Icons/Sidebar";
 import NavigationHeaderComponent from "./NavigationHeader";
+import { useMediaQuery } from "@mui/material";
 
 const NavigationBar = () => {
   const { activeOrg } = useContext(GlobalContext);
   const { isEcosystemPlan } = useSubscriptionPaywall();
+
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
   
   const LINKS = [
     {
@@ -101,7 +104,7 @@ const NavigationBar = () => {
   return (
     <>
       <NavigationHeaderComponent links={LINKS} />
-      <SidebarComponent links={LINKS} />
+      {isMobile ? null : <SidebarComponent links={LINKS} />}
     </>
   );
 };

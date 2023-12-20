@@ -129,7 +129,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
           placement="bottom-start"
           anchorEl={ref.current}
           sx={{
-            zIndex: 1000,
+            zIndex: 999999,
           }}
         >
           <WorkspaceContainer

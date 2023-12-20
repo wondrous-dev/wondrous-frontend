@@ -14,6 +14,7 @@ const SidebarComponent = ({ links }) => {
       <Drawer
         variant="persistent"
         open
+        data-tour="sidebar-drawer"
         anchor="left"
         ModalProps={{
           keepMounted: true,

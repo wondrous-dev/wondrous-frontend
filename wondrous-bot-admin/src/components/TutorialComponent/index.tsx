@@ -8,8 +8,7 @@ import { toggleHtmlOverflow } from "utils/common";
 import { GET_LOGGED_IN_USER } from "graphql/queries";
 import NavigationWrapper from "./NavigationWrapper";
 import { NextNavigationButton, PrevNavigationButton } from "./NavigationButtons";
-import { getStepsConfig } from "./utils";
-import { HEADER_HEIGHT } from "utils/constants";
+import { getStepsConfig, doArrow } from "./utils";
 
 const TutorialComponent = ({ children }) => {
   const { user } = useMe() || {};
@@ -39,16 +38,17 @@ const TutorialComponent = ({ children }) => {
 
   const styles = {
     close: (base) => ({ ...base }),
-    popover: (base) => ({
-      ...base,
-      borderRadius: "16px",
-      background: "white",
-      padding: "0px",
-      overflow: "hidden",
-      
-      border: "0.5px solid rgba(75, 75, 75, 1)",
-    }),
-    maskArea: (base, {x, y, width, height}) => {
+    popover: (base, state) => {
+      return {
+        ...base,
+        borderRadius: "16px",
+        background: "white",
+        padding: "0px",
+        zIndex: 1000000,
+        ...doArrow(state.position, state.verticalAlign, state.horizontalAlign),
+      }
+    },
+    maskArea: (base, { x, y, width, height }) => {
       return { ...base, rx: 0, width: width - 19, zIndex: 999999 };
     },
     navigation: (base) => ({
@@ -58,9 +58,9 @@ const TutorialComponent = ({ children }) => {
     }),
     maskRect: (base, { x, y, width, height }) => ({
       ...base,
-      width: '100%'
+      width: "100%",
     }),
-    maskWrapper: (base, {x, y, width, height}) => ({
+    maskWrapper: (base, { x, y, width, height }) => ({
       ...base,
       width: 500,
       color: "rgba(175, 158, 255, 1)",
@@ -83,7 +83,7 @@ const TutorialComponent = ({ children }) => {
       afterOpen={disableBody}
       beforeClose={beforeClose}
       styles={styles}
-      showCloseButton
+      showCloseButton={false}
       onClickMask={shakePopoverAnimation}
       disableInteraction={disableInteraction}
       disableDotsNavigation

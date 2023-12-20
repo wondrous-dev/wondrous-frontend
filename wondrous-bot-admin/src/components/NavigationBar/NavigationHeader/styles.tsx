@@ -6,7 +6,7 @@ export const HeaderBar = styled.header`
   padding: 14px;
   top: 0;
   height: calc(${HEADER_HEIGHT}px - 28px);
-  z-index: 1000;
+  z-index: 999999;
   position: sticky;
   justify-content: space-between;
   background-color: #fff;
@@ -26,7 +26,7 @@ export const MenuIconWrapper = styled(ButtonBase)`
     align-items: center;
     justify-content: center;
 
-    background: #AF9EFF;
+    background: #af9eff;
     border-radius: 12px;
   }
 `;

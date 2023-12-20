@@ -21,7 +21,10 @@ const ModalComponent = ({
       maxWidth={470}
       footerCenter
       footerRight={
-        <Box display="flex" width="100%" justifyContent="space-between">
+        <Box display="flex" width="100%" justifyContent="space-between" gap="12px" flexDirection={{
+          xs: 'column',
+          md: 'row'
+        }}>
           <SkipButton onClick={onStart}>Skip Tour</SkipButton>
           <SharedSecondaryButton onClick={onStart}>{startButtonLabel}</SharedSecondaryButton>
         </Box>

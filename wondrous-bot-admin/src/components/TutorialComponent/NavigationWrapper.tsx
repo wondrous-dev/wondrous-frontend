@@ -11,6 +11,9 @@ function NavigationWrapper({ nextButton, prevButton, currentStep, setIsOpen, set
   const currentStepConfig: any = steps[currentStep];
   const hideButtons = currentStepConfig?.hideButtons;
   const EndButton = currentStepConfig?.endButton;
+
+  if(hideButtons) return null;
+
   return (
     <Grid
       display="flex"
