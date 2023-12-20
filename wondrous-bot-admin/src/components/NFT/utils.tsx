@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import Ethereum from "assets/ethereum";
+import { Ronin } from "components/Icons/web3";
 import Polygon from "assets/polygonMaticLogo.svg";
 import { SharedSecondaryButton } from "components/Shared/styles";
 
@@ -28,6 +29,18 @@ export const COMMUNITY_BADGE_CHAIN_SELECT_OPTIONS = [
           marginRight: "8px",
         }}
         src={Polygon}
+      />
+    ),
+  },
+  {
+    label: "Ronin",
+    value: "ronin",
+    icon: (
+      <Ronin
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
       />
     ),
   },

@@ -5,7 +5,7 @@ import { DISCORD_CONNECT_TYPES } from "utils/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { emailSignin } from "components/Auth";
-import { SUPPORTED_CHAIN_IDS } from "utils/web3Constants";
+import { SUPPORTED_CHAINS } from "utils/web3Constants";
 import { Connectors, ErrorTypography } from "./styles";
 import { ButtonBase, FormControl, Grid, Typography } from "@mui/material";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
@@ -75,7 +75,7 @@ function Login() {
 
   useEffect(() => {
     if (chainId) {
-      setNotSupportedChain(!SUPPORTED_CHAIN_IDS[chainId]);
+      setNotSupportedChain(!SUPPORTED_CHAINS[chainId]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);

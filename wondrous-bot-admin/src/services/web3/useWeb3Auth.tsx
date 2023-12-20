@@ -3,7 +3,7 @@ import useWonderWeb3Modal from "./useWonderWeb3Modal";
 import { getUserSigningMessage, linkCmtyUserWallet, walletSignin, walletSignup } from "components/Auth";
 import { handleUserOnboardingRedirect } from "utils/common";
 import { GRAPHQL_ERRORS } from "utils/constants";
-import { SUPPORTED_CHAIN_IDS, SupportedChainType, signedMessageIsString } from "utils/web3Constants";
+import { SUPPORTED_CHAINS, SupportedChainType, signedMessageIsString } from "utils/web3Constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAlerts from "utils/hooks";
 
@@ -51,7 +51,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
   const navigate = useNavigate();
   const loginWithWallet = async () => {
     setErrorMessage(null);
-    if (address && isConnected && !!SUPPORTED_CHAIN_IDS[chainId]) {
+    if (address && isConnected && !!SUPPORTED_CHAINS[chainId]) {
       // Retrieve Signed Message
       const messageToSign = await getUserSigningMessage(address, "eth");
       closeWeb3Modal();
@@ -89,7 +89,7 @@ const useWeb3Auth = ({ setErrorMessage }) => {
 
   const signupWithWallet = async () => {
     setErrorMessage(null);
-    if (address && isConnected && !!SUPPORTED_CHAIN_IDS[chainId]) {
+    if (address && isConnected && !!SUPPORTED_CHAINS[chainId]) {
       const messageToSignObject = await getUserSigningMessage(address, SupportedChainType.ETH, true);
       const messageToSign = messageToSignObject?.signingMessage;
       onSignAlert();
