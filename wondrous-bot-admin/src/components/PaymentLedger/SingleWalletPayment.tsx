@@ -46,6 +46,7 @@ const SingleWalletPayment = ({ paymentData, disabled = false, tokenId, onPayment
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const [loading, setLoading] = useState(false);
 
+  const [isVerifyingChain, setIsVerifyingChain] = useState(false);
   const { activeOrg } = useContext(GlobalContext);
 
   const [linkCmtyPaymentsWithTransaction, { data: linkMetamaskPaymentData }] = useMutation(
@@ -77,13 +78,15 @@ const SingleWalletPayment = ({ paymentData, disabled = false, tokenId, onPayment
   } = useWonderWeb3Modal();
 
   useEffect(() => {
-    if (paymentData?.chain === SUPPORTED_CHAINS[chainId] && lastEvent === "MODAL_OPEN") {
+    if (paymentData?.chain === SUPPORTED_CHAINS[chainId] && lastEvent === "MODAL_OPEN" && isVerifyingChain) {
       closeWeb3Modal();
+      setIsVerifyingChain(false);
     }
-  }, [chainId, paymentData?.chain, lastEvent]);
+  }, [chainId, paymentData?.chain, lastEvent, isVerifyingChain]);
 
   
   const handleChainVerify = () => {
+    if(isVerifyingChain) setIsVerifyingChain(false);
     if (!isConnected) {
       setSnackbarAlertMessage(`Please connect your wallet first`);
       setSnackbarAlertOpen(true);
@@ -96,6 +99,7 @@ const SingleWalletPayment = ({ paymentData, disabled = false, tokenId, onPayment
         connectedChainId: chainId,
       });
     } catch (error) {
+      setIsVerifyingChain(true);
       open({ view: "Networks" });
       setSnackbarAlertMessage(`Please switch to ${paymentData?.chain} chain`);
       setSnackbarAlertOpen(true);
