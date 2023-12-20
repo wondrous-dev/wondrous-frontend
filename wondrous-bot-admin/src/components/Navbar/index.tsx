@@ -64,7 +64,7 @@ const Header = () => {
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
   const { isPremiumPlan } = useSubscriptionPaywall();
 
-  if (isPremiumPlan && !LINKS.some((link) => link.path === "/store")) {
+  if ((isPremiumPlan || isEcosystemPlan) && !LINKS.some((link) => link.path === "/store")) {
     LINKS.splice(3, 0, {
       path: "/store",
       label: "Store",
