@@ -62,7 +62,7 @@ const Header = () => {
 
   const theme: any = useTheme();
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
-  const { isPremiumPlan } = useSubscriptionPaywall();
+  const { isPremiumPlan, isEcosystemPlan } = useSubscriptionPaywall();
 
   if ((isPremiumPlan || isEcosystemPlan) && !LINKS.some((link) => link.path === "/store")) {
     LINKS.splice(3, 0, {
