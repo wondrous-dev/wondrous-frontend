@@ -23,7 +23,7 @@ import NavigationHeaderComponent from "./NavigationHeader";
 
 const NavigationBar = () => {
   const { activeOrg } = useContext(GlobalContext);
-  const { isEcosystemPlan } = useSubscriptionPaywall();
+  const { isEcosystemPlan, isPremiumPlan } = useSubscriptionPaywall();
   
   const LINKS = [
     {
@@ -80,12 +80,12 @@ const NavigationBar = () => {
     },
     {
       sectionTitle: "Monetize",
-      isInactive: !isEcosystemPlan,
+      isInactive: (!isEcosystemPlan && !isPremiumPlan),
       items: [
         {
           path: "/store",
           label: "Store",
-          isInactive: !isEcosystemPlan,
+          isInactive: (!isEcosystemPlan && !isPremiumPlan),
           activeIcon: ActiveStoreIcon,
           inactiveIcon: InactiveStoreIcon,
           partialMatch: true,
