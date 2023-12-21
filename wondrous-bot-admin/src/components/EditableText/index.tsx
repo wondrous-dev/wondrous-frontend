@@ -25,6 +25,10 @@ const EditableText = ({ canEdit = false, value, onEdit }) => {
           fontSize="13px"
           lineHeight="17px"
           color="black"
+          whiteSpace={{
+            xs: "nowrap",
+            md: "inherit",
+          }}
         >
           {value}
         </Typography>

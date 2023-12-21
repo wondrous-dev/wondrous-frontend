@@ -86,7 +86,7 @@ const LinksWrapper = ({ links, isCollapsed, toggleDrawer }) => {
         flexDirection="column"
         gap={{
           xs: "4px",
-          md: "10px",
+          md: "8px",
         }}
         padding="10px"
         key={`section-${idx}`}
@@ -173,7 +173,7 @@ export const DrawerComponent = ({ isCollapsed, toggleDrawer, links }) => (
       padding="0px 10px"
       gap={{
         xs: "4px",
-        md: "10px",
+        md: "8px",
       }}
     >
       {BOTTOM_LINKS.map((link, idx) => {

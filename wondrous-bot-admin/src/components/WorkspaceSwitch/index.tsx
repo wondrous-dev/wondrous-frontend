@@ -79,7 +79,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
               },
             }}
           >
-            <WorkspaceImageWrapper height={isCollapsed ? "auto" : "2.2rem"} width={isCollapsed ? "auto" : "2.2rem"}>
+            <WorkspaceImageWrapper height={isCollapsed ? "auto" : "100%"} width={isCollapsed ? "auto" : "100%"}>
               {activeOrg?.profilePicture ? (
                 <OrgProfilePicture
                   profilePicture={activeOrg?.profilePicture}
