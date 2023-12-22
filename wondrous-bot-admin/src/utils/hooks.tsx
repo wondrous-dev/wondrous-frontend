@@ -67,7 +67,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 export const useSubscriptionPaywall = () => {
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
-  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {}; 
   const isBasicPLan = plan === PricingOptionsTitle.Basic;
   const isHobbyPlan = plan === PricingOptionsTitle.Hobby;
   const isPremiumPlan = plan === PricingOptionsTitle.Premium;

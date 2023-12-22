@@ -49,11 +49,12 @@ const CardsComponent = ({ cards }) => {
       alignItems="center"
       padding={{
         xs: "14px",
-        md: "42px",
+        md: "42px 84px",
+        lg: "42px"
       }}
       direction={{
         xs: "column",
-        md: "row",
+        lg: "row",
       }}
     >
       {cards.map((card, idx) => (
@@ -221,10 +222,7 @@ const HomePage = () => {
     !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
 
   return (
-    <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh" gap={{
-      xs: '24px',
-      md: '0px'
-    }}>
+    <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh" gap="24px">
       <GoogleTag />
       <AddBotModal open={shouldDisplayAddModal} onClose={handleOnBotModalClose} />
       <ConfigureNotificationsOnboardingModal
