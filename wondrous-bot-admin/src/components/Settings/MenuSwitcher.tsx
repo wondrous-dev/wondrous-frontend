@@ -69,6 +69,7 @@ const MenuSwitcher = () => {
       flexDirection="column"
       alignItems="flex-start"
       borderRadius="12px"
+      maxWidth="200px"
       width={{
         xs: "100%",
         sm: "30%",
