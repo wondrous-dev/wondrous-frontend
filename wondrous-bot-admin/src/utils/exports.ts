@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { TYPES } from "./constants";
-
-export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, questId }) => {
+const QUEST_PAGINATION_LIMIT = 1000;
+export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, questId, loading, setLoading }) => {
   const headers = [
     "submissionCreatedAt",
     "submitterDiscordHandle",
@@ -11,12 +11,28 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
     "rejectedAt",
   ];
   const formatNowTime = format(new Date(), "yyyy-MM-dd");
+  setLoading(true);
   const questSubmissionData = await exportQuestSubmissionData({
     variables: {
       questId,
+      limit: QUEST_PAGINATION_LIMIT,
+      offset: 0,
     },
   });
-  const questSubmissions = questSubmissionData?.data?.exportQuestSubmissions?.questSubmissions;
+  let paginateArray = questSubmissionData?.data?.exportQuestSubmissions?.questSubmissions;
+  let questSubmissions = questSubmissionData?.data?.exportQuestSubmissions?.questSubmissions;
+  while (paginateArray?.length >= QUEST_PAGINATION_LIMIT) {
+    const questSubmissionDataContinued = await exportQuestSubmissionData({
+      variables: {
+        questId,
+        limit: QUEST_PAGINATION_LIMIT,
+        offset: questSubmissions?.length,
+      },
+    });
+    paginateArray = questSubmissionDataContinued?.data?.exportQuestSubmissions?.questSubmissions;
+    questSubmissions = [...questSubmissions, ...paginateArray];
+  }
+  setLoading(false);
   const questSteps = questSubmissionData?.data?.exportQuestSubmissions?.questSteps;
   questSteps.forEach((questStep) => {
     const questStepType = questStep?.type;
@@ -61,15 +77,16 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
   if (!questSubmissions) {
     return;
   }
-  questSubmissions.forEach((submission) => {
-    let submitterDiscordHandle = submission?.creator?.discordUsername;
-    if (submission?.creator?.discordDiscriminator) {
-      submitterDiscordHandle = `${submitterDiscordHandle}#${submission?.creator?.discordDiscriminator}`;
+  questSubmissions.forEach((submissionObj) => {
+    let submitterDiscordHandle = submissionObj?.submitter?.discordUsername;
+    if (submissionObj?.submitter?.discordDiscriminator) {
+      submitterDiscordHandle = `${submitterDiscordHandle}#${submissionObj?.submitter?.discordDiscriminator}`;
     }
-    const submitterTwitterHandle = submission?.creator?.twitterInfo?.twitterUsername;
-    const submitterLevel = submission?.creator?.level;
-    const submitterPoints = submission?.creator?.point;
-    const submitterWeb3Address = submission?.creator?.web3Address;
+    const submitterTwitterHandle = submissionObj?.submitter?.twitterInfo?.twitterUsername;
+    const submitterLevel = submissionObj?.submitter?.level;
+    const submitterPoints = submissionObj?.submitter?.point;
+    const submitterWeb3Address = submissionObj?.submitter?.web3Address;
+    const submission = submissionObj?.submission;
     const approvedAt = submission?.approvedAt ? format(new Date(submission?.approvedAt), "yyyy-MM-dd") : "";
     const rejectedAt = submission?.rejectedAt ? format(new Date(submission?.rejectedAt), "yyyy-MM-dd") : "";
     let finalArr = [
