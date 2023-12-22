@@ -264,25 +264,27 @@ export const EXPORT_QUEST_SUBMISSIONS = gql`
         }
       }
       questSubmissions {
-        createdAt
-        orgId
-        approvedAt
-        rejectedAt
-        reviewedBy
-        stepsData {
-          order
-          content
-          attachments {
-            slug
+        submission {
+          createdAt
+          orgId
+          approvedAt
+          rejectedAt
+          reviewedBy
+          stepsData {
+            order
+            content
+            attachments {
+              slug
+            }
+            additionalData {
+              txHash
+              tweetId
+            }
+            selectedValues
+            stepId
           }
-          additionalData {
-            txHash
-            tweetId
-          }
-          selectedValues
-          stepId
         }
-        creator {
+        submitter {
           discordUsername
           discordDiscriminator
           web3Address
