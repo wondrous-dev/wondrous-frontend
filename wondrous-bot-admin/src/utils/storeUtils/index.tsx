@@ -1,4 +1,5 @@
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
+import { is } from "date-fns/locale";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPlan } from "utils/common";
@@ -12,9 +13,9 @@ export const useStorePaywall = () => {
 
   const [isActivateModuleModalOpen, setIsActivateModuleModalOpen] = useState(false);
 
-  const { plan, setPaywall, setCanBeClosed, setOnCancel, setPaywallMessage } = useSubscriptionPaywall();
-
+  const { plan, setPaywall, setCanBeClosed, setOnCancel, setPaywallMessage,  isLoading: isSubscriptionLoading } = useSubscriptionPaywall();
   useEffect(() => {
+    if (isSubscriptionLoading) return;
     if (plan === PricingOptionsTitle.Basic) {
       setPaywall(true);
       setCanBeClosed(false);
@@ -35,7 +36,12 @@ export const useStorePaywall = () => {
     ) {
       setIsActivateModuleModalOpen(true);
     }
-  }, [plan, activeOrg]);
+    if (
+      (plan === PricingOptionsTitle.Premium || plan === PricingOptionsTitle.Ecosystem)
+    ) {
+      setPaywall(false);
+    }
+  }, [plan, activeOrg, isSubscriptionLoading]);
 
   const handleSuccess = () => {
     setSnackbarAlertMessage("Store enabled!");
