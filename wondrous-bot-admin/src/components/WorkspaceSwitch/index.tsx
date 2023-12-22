@@ -6,10 +6,15 @@ import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutli
 import { forwardRef, ForwardRefRenderFunction, useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import GlobalContext from "utils/context/GlobalContext";
-import { WorkspaceContainer, WorkspaceImageWrapper, WorkspaceWrapper } from "./styles";
-import { TutorialButton, TutorialLink } from "components/Navbar/styles";
+import { SidebarLabel, WorkspaceContainer, WorkspaceImageWrapper, WorkspaceWrapper } from "./styles";
+import { TutorialButton, TutorialLink } from "components/NavigationBar/styles";
 import AddImage from "components/Icons/Add.svg";
 import { WorkspaceDAOIcon } from "components/Icons/DAOIcon";
+import { BoxWrapper } from "components/QuestCardMenu/styles";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { logout } from "components/Auth";
+import { ArrowLeft, ExitToApp, LogoutOutlined, LogoutRounded, LogoutSharp } from "@mui/icons-material";
+import { ButtonIconWrapper } from "components/Shared/styles";
 
 interface GearIconProps {
   onClick?: () => void;
@@ -36,7 +41,7 @@ const GearButton = forwardRef<HTMLButtonElement, GearIconProps>(({ onClick = (e)
   </ButtonBase>
 ));
 
-const WorkspaceSwitch = () => {
+const WorkspaceSwitch = ({ isCollapsed = false }) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -53,29 +58,71 @@ const WorkspaceSwitch = () => {
   };
 
   const togglePopper = () => setIsOpen((prev) => !prev);
+
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
-      <Box
-        flex={{
-          xs: 1,
-          md: "unset",
-        }}
-        display={{
-          xs: "flex",
-          md: "block",
-        }}
-        justifyContent="flex-end"
-        alignItems="center"
-        marginRight={{
-          xs: "10px",
-          md: "unset",
-        }}
-      >
-        <Box alignItems={"center"} display="flex" gap="10px">
-          <TutorialLink href="https://wonderverse.gitbook.io/wonder-communities/" target="_blank">
-            <TutorialButton>?</TutorialButton>
-          </TutorialLink>
-          <GearButton ref={ref} onClick={togglePopper} />
+      <Box>
+        <Divider />
+
+        <Box padding="10px">
+          <Box
+            display="flex"
+            gap="8px"
+            bgcolor={isOpen ? "#D7E9FF" : "transparent"}
+            alignItems="center"
+            borderRadius="6px"
+            justifyContent="center"
+            padding="10px"
+            sx={{
+              "&:hover": {
+                backgroundColor: isOpen ? "#D7E9FF" : "#EEE",
+              },
+            }}
+          >
+            <WorkspaceImageWrapper height={isCollapsed ? "auto" : "100%"} width={isCollapsed ? "auto" : "100%"}>
+              {activeOrg?.profilePicture ? (
+                <OrgProfilePicture
+                  profilePicture={activeOrg?.profilePicture}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              ) : (
+                <WorkspaceDAOIcon width="100%" height="100%"/>
+                )}
+            </WorkspaceImageWrapper>
+
+            <SidebarLabel $isCollapsed={isCollapsed}>{activeOrg?.name}</SidebarLabel>
+            {isCollapsed ? null : (
+              <Box flex="1" display="flex" justifyContent="flex-end" alignItems="center">
+                <ButtonBase
+                  onClick={togglePopper}
+                  ref={ref}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: "5px",
+                    height: "32px",
+                    background: isOpen ? "white" : "#E7E7E7",
+                    border: "1px solid transparent",
+                    transition: "all 0.1s ease-in-out",
+                    ":hover": {
+                      borderColor: "#000000",
+                      background: "white",
+                    },
+                  }}
+                >
+                  <MoreVertIcon
+                    sx={{
+                      color: "black",
+                    }}
+                  />
+                </ButtonBase>
+              </Box>
+            )}
+          </Box>
         </Box>
         <Popper
           open={isOpen}
@@ -106,19 +153,18 @@ const WorkspaceSwitch = () => {
               return (
                 <WorkspaceWrapper onClick={() => onOrgClick(org)} key={org.id}>
                   <Box display="flex" gap="10px" alignItems="center">
-                    <WorkspaceImageWrapper>
-                    {org?.profilePicture ? (
-                      <OrgProfilePicture
-                        profilePicture={org?.profilePicture}
-                        style={{
-                          width: "30px",
-                          height: "30px",
-                          borderRadius: "6px",
-                        }}
-                      />
-                    ) : (
-                      <WorkspaceDAOIcon />
-                    )}
+                    <WorkspaceImageWrapper borderRadius="6px" height="30px" width="30px">
+                      {org?.profilePicture ? (
+                        <OrgProfilePicture
+                          profilePicture={org?.profilePicture}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
+                      ) : (
+                        <WorkspaceDAOIcon width="100%" height="100%"/>
+                      )}
                     </WorkspaceImageWrapper>
                     <Label fontWeight={500} fontSize="15px" color="#1D1D1D">
                       {org.name}
@@ -149,30 +195,23 @@ const WorkspaceSwitch = () => {
               </Box>
             </WorkspaceWrapper>
             <Divider />
-            <ButtonBase
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClickAway();
-                navigate("/settings");
-              }}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                justifyContent: "flex-start",
-                marginTop: "4px",
-                padding: "3px",
-                borderRadius: "30px",
-                "&:hover": {
-                  background: "#e3e3e3",
-                },
-              }}
-            >
-              <GearButton Icon={OutlinedSettingsIcon} />
-              <Label color="#1D1D1D" fontWeight={500} fontSize="15px">
-                Settings
-              </Label>
-            </ButtonBase>
+            <WorkspaceWrapper onClick={logout}>
+              <Box display="flex" gap="10px" alignItems="center">
+                <ButtonIconWrapper>
+                  <LogoutRounded
+                    sx={{
+                      color: "black",
+                      transform: "rotate(180deg)",
+                      width: "16px",
+                      height: "16px",
+                    }}
+                  />
+                </ButtonIconWrapper>
+                <Label color="#1D1D1D" fontWeight={500} fontSize="15px">
+                  Log Out
+                </Label>
+              </Box>
+            </WorkspaceWrapper>
           </WorkspaceContainer>
         </Popper>
       </Box>

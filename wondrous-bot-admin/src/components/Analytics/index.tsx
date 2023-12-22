@@ -74,7 +74,7 @@ const AnalyticsComponent = () => {
 
   return (
     <>
-      <PageHeader title="Analytics" withBackButton={true} />
+      <PageHeader title="Analytics" withBackButton={false} />
       <Grid
         minHeight="100vh"
         sx={{

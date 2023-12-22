@@ -48,7 +48,7 @@ export const RESPOND_TYPES = {
   [TYPES.ATTACHMENTS]: "files and/or links",
 };
 
-export const HEADER_HEIGHT = 68;
+export const HEADER_HEIGHT = 72;
 
 export const THEME_TYPES = {
   LIGHT: "light",
@@ -118,6 +118,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/telegram/start-quest/:id",
   "/telegram/connect",
   "/community-badge/claim",
+  "/referral-campaign"
 ];
 
 export const BG_TYPES = {

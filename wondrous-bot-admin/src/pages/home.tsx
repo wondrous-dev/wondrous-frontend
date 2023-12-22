@@ -12,12 +12,9 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import StarIcon from "components/Icons/StarIcon";
 import { AddBotModal } from "pages/onboarding/discord/addBotModal";
 import { ConfigureNotificationsOnboardingModal } from "./onboarding/discord/configureNotificationsModal";
-import { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks";
+import { useSubscription, useSubscriptionPaywall } from "utils/hooks";
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
-import HomeBackgroundQuests from "components/Icons/HomePageBackgroundQuests.svg";
-import HomeBackgroundLevels from "components/Icons/HomePageBackgroundLevels.svg";
-import HomeBackgroundMembers from "components/Icons/HomePageBackgroundMembers.svg";
 import { getPlan } from "utils/common";
 import GoogleTag from "components/GoogleTag";
 
@@ -50,8 +47,6 @@ const CardsComponent = ({ cards }) => {
       gap="24px"
       justifyContent="center"
       alignItems="center"
-      top="-40%"
-      position="absolute"
       padding={{
         xs: "14px",
         md: "42px",
@@ -226,7 +221,10 @@ const HomePage = () => {
     !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
 
   return (
-    <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
+    <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh" gap={{
+      xs: '24px',
+      md: '0px'
+    }}>
       <GoogleTag />
       <AddBotModal open={shouldDisplayAddModal} onClose={handleOnBotModalClose} />
       <ConfigureNotificationsOnboardingModal
@@ -279,7 +277,7 @@ const HomePage = () => {
         position="relative"
       >
         {!isTelegramOrDiscordConnected && !loading && (
-          <Grid container justifyContent="center" alignItems="center" position="absolute" top="-40%">
+          <Grid container justifyContent="center" alignItems="center" marginTop="40px">
             <ConnectDiscordButton orgId={activeOrg?.id} />
           </Grid>
         )}

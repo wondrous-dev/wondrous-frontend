@@ -223,8 +223,16 @@ const ConnectBotComponent = ({ cardBgColor = "white" }) => {
             >
               <card.icon />
             </Box>
+            <Box gap={{
+              xs: 'unset',
+              md: '14px'
+            }} display="flex" alignItems="flex-start" flexDirection={{
+              xs: 'column',
+              md: 'inherit'
+            }}>
             <SharedLabel>{card.title}</SharedLabel>
             {card.isConnected ? <SharedLabel color="#2A8D5C">Connected</SharedLabel> : null}
+            </Box>
             <Box flex="1" display="flex" justifyContent="flex-end">
               {card.customButton ? (
                 card.customButton()

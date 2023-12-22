@@ -56,14 +56,14 @@ const SortableItem = ({ item, idx, status }) => {
         data-tour={idx === 0 ? "tutorial-quest-card" : ""}
         key={item.id}
         flexBasis={{
-          xs: "48%",
+          xs: "45%",
           sm: "30%",
-          md: "24%",
+          lg: "24%",
         }}
         maxWidth={{
           xs: "50%",
           sm: "33%",
-          md: "24%",
+          lg: "24%",
         }}
         {...attributes}
         {...listeners}

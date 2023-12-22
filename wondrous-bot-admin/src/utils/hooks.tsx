@@ -72,5 +72,6 @@ export const useSubscriptionPaywall = () => {
   const isHobbyPlan = plan === PricingOptionsTitle.Hobby;
   const isPremiumPlan = plan === PricingOptionsTitle.Premium;
   const isEcosystemPlan = plan === PricingOptionsTitle.Ecosystem;
-  return { plan, setPaywall, setPaywallMessage,isBasicPLan, isHobbyPlan, isPremiumPlan, isEcosystemPlan, setOnCancel, setCanBeClosed };
+  const isLoading = !subscription;
+  return { plan, setPaywall, setPaywallMessage,isBasicPLan, isHobbyPlan, isPremiumPlan, isEcosystemPlan, setOnCancel, setCanBeClosed, isLoading };
 };

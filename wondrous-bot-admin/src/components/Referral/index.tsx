@@ -1,12 +1,11 @@
 import { Box, Grid } from "@mui/material";
 import {
-  HeaderBar,
   ImageContainer,
   ImageDefault,
   HoveredImage,
   TutorialLink,
   TutorialButton,
-} from "components/Navbar/styles";
+} from "components/NavigationBar/styles";
 import PageSpinner from "components/PageSpinner";
 import PageWrapper from "components/Shared/PageWrapper";
 import { BG_TYPES } from "utils/constants";
@@ -44,27 +43,12 @@ const StartReferralPage = () => {
 
   return (
     <>
-      <HeaderBar>
-        <Box display="flex" justifyContent="space-between" width="100%" alignItems="center">
-          <StyledLink to="/" style={{ position: "relative" }}>
-            <ImageContainer>
-              <ImageDefault src="/wonder.svg" />
-              <HoveredImage src="/wonder-colored.svg" />
-            </ImageContainer>
-          </StyledLink>
-          <Box flex="1" />
-          <TutorialLink href="https://wonderverse.gitbook.io/wonder-communities/" target="_blank">
-            <TutorialButton>?</TutorialButton>
-          </TutorialLink>
-        </Box>
-      </HeaderBar>
-
       <PageWrapper
         containerProps={{
           sx: {
             justifyContent: "center",
             backgroundImage: "none",
-            marginTop: '59px',
+            marginTop: '24px',
             flexDirection: "column",
             overflow: "hidden",
           },

@@ -28,6 +28,62 @@ export const QuestListFragment = gql`
   }
 `;
 
+
+export const MinimalQuestFragment = gql`
+  fragment MinimalQuestFragment on Quest {
+    id
+    title
+    description
+    status
+    level
+    startAt
+    endAt
+    maxSubmission
+    submissionCooldownPeriod
+    requireReview
+    maxApproval
+    pointReward
+    conditionLogic
+    rewards {
+      id
+      type
+      discordRewardData {
+        discordRoleId
+        discordGuildId
+        discordRoleName
+      }
+      poapRewardData {
+        id
+        name
+        description
+        startDate
+        endDate
+        eventUrl
+        imageUrl
+        expiryDate
+        eventSecret
+      }
+      paymentMethodId
+      amount
+      storeItemId
+      storeItem {
+        name
+        id
+      }
+      paymentMethod {
+        name
+        contractAddress
+        type
+        nftMetadataId
+        nftMetadata {
+          mediaUrl
+        }
+      }
+    }
+  }
+`;
+
+
 export const QuestFragment = gql`
   fragment QuestFragment on Quest {
     id

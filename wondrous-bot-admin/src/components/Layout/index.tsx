@@ -11,7 +11,7 @@ import { matchRoute } from "utils/common";
 import ErrorCatcher from "components/ErrorCatcher";
 import GlobalContext from "utils/context/GlobalContext";
 import PageSpinner from "components/PageSpinner";
-import Navbar from "components/Navbar";
+import Navbar from "components/NavigationBar";
 import { Main } from "./styles";
 import TutorialComponent from "components/TutorialComponent";
 import { FeedbackButton } from "components/Feedback/button";
@@ -114,7 +114,6 @@ const Layout = () => {
   const isMatchedAuthPath = matchRoute(location.pathname, EXCLUDED_PATHS);
   const AuthenticationLayout = isMatchedAuthPath ? TutorialComponent : withAuth(TutorialComponent);
 
-  
   return (
     <GlobalContext.Provider
       value={{
@@ -126,14 +125,23 @@ const Layout = () => {
       <SubscriptionContext.Provider value={subscription?.status === "active" ? subscription : null}>
         <TutorialComponent>
           {/* <FeedbackButton /> */}
-          {isPageWithoutHeader ? null : <Navbar />}
-          <Main $isPageWithoutHeader={isPageWithoutHeader}>
-            <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
-              <AuthenticationLayout>
-                <Outlet />
-              </AuthenticationLayout>
-            </ErrorCatcher>
-          </Main>
+          <Grid
+            display="flex"
+            width="100%"
+            flexDirection={{
+              xs: "column",
+              md: "row",
+            }}
+          >
+            {isPageWithoutHeader ? null : <Navbar />}
+            <Main $isPageWithoutHeader={isPageWithoutHeader}>
+              <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
+                <AuthenticationLayout>
+                  <Outlet />
+                </AuthenticationLayout>
+              </ErrorCatcher>
+            </Main>
+          </Grid>
         </TutorialComponent>
       </SubscriptionContext.Provider>
     </GlobalContext.Provider>

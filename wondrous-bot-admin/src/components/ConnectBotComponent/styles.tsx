@@ -9,7 +9,8 @@ export const SharedLabel = styled(Typography)`
     font-size: 15px;
     line-height: 24px;
     color: ${({ color = "black" }) => color};
-    white-space: nowrap;
+    text-align: center;
+    white-space: ${({ theme }) => (theme.breakpoints.down("md") === "xs" ? "nowrap" : "inherit")};
   }
 `;
 
@@ -64,10 +65,10 @@ export const DisconnectButton = styled(ButtonBase)`
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #CB3340;
-    border: 2px solid #CDCDCD;
+    color: #cb3340;
+    border: 2px solid #cdcdcd;
     &:hover {
-      background-color: #E8E8E8;
+      background-color: #e8e8e8;
       border: 1px solid #000;
     }
   }
