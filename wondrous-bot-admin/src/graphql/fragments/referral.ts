@@ -73,4 +73,5 @@ export const ReferralCampaignFragment = gql`
       ...MinimalQuestFragment
     }
   }
+  ${MinimalQuestFragment}
 `;
