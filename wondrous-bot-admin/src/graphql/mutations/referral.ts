@@ -9,7 +9,6 @@ export const CREATE_REFERRAL = gql`
     }
   }
   ${ReferralCampaignFragment}
-  ${QuestFragment}
 `;
 export const UPDATE_REFERRAL = gql`
   mutation updateReferralCampaign($referralCampaignId: ID!, $input: ReferralCampaignInput) {
