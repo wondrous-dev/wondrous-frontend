@@ -485,203 +485,207 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
           },
         }}
       >
-        <Grid
-          item
-          container
-          justifyContent="space-between"
-          alignItems="center"
-          bgcolor="#2A8D5C"
-          height="58px"
-          padding="14px"
-        >
-          <Typography color="#fff" fontWeight="500" fontFamily="Poppins">
-            Create New Quest
-          </Typography>
-          <Grid
-            container
-            alignItems="center"
-            width="30px"
-            height="30px"
-            justifyContent="center"
-            borderRadius="6px"
-            bgcolor="#C1B6F6"
-            onClick={handleOnClose}
-            sx={{
-              cursor: "pointer",
-            }}
-          >
-            <CloseModalIcon strokeColor="#000000" />
-          </Grid>
-        </Grid>
-        <Grid
-          item
-          container
-          flexGrow="1"
-          overflow="hidden"
-          flexDirection={{ xs: "column", md: "row" }}
-          flexWrap="nowrap"
-          justifyContent="flex-start"
-          width="100%"
-          height={{ xs: "100%", sm: "600px", md: "550px" }}
-          minWidth={{
-            xs: 0,
-            sm: "790px",
-            md: "830px",
-          }}
-        >
-          <List
-            sx={{
-              padding: "12px",
-              height: "80px",
-              display: "flex",
-              flexDirection: {
-                xs: "row",
-                md: "column",
-              },
-              flexWrap: {
-                xs: "wrap",
-                md: "nowrap",
-              },
-              gap: "8px",
-              width: {
-                xs: "fit-content",
-                md: "192px",
-              },
-            }}
-          >
-            {Object.keys(questTemplateCategories).map((category) => {
-              const categoryValue = questTemplateCategories[category];
-              const isSelected = categoryValue === selectedCategory;
-              return (
-                <ListItem
-                  key={categoryValue}
-                  disablePadding
-                  sx={{
-                    borderRadius: "6px",
-                    width: {
-                      xs: "fit-content",
-                      md: "192px",
-                    },
-                    background: isSelected ? "#AF9EFF" : "#f1f1f1",
-                    outline: isSelected && "1px solid black",
-                    height: "37px",
-                    "&:hover": {
-                      background: "#AF9EFF",
-                      outline: "1px solid black",
-                    },
-                  }}
-                >
-                  <ListItemButton
-                    disableRipple
-                    disableTouchRipple
-                    onClick={() => setSelectedCategory(() => categoryValue)}
-                    sx={{
-                      padding: "12px",
-                      height: "100%",
-                    }}
-                  >
-                    <Typography fontFamily="Poppins" fontSize="13px" margin="0" fontWeight="500">
-                      {categoryValue}
-                    </Typography>
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
+        <Box data-tour="quests-page-template-modal">
           <Grid
             item
             container
-            padding="12px"
-            height="100%"
-            flexDirection="column"
-            flexWrap="nowrap"
+            justifyContent="space-between"
+            alignItems="center"
+            bgcolor="#2A8D5C"
+            height="58px"
+            padding="14px"
+          >
+            <Typography color="#fff" fontWeight="500" fontFamily="Poppins">
+              Create New Quest
+            </Typography>
+            <Grid
+              container
+              alignItems="center"
+              width="30px"
+              height="30px"
+              justifyContent="center"
+              borderRadius="6px"
+              bgcolor="#C1B6F6"
+              onClick={handleOnClose}
+              data-tour="quests-page-template-modal-close-button"
+              sx={{
+                cursor: "pointer",
+              }}
+            >
+              <CloseModalIcon strokeColor="#000000" />
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            container
             flexGrow="1"
+            overflow="hidden"
+            flexDirection={{ xs: "column", md: "row" }}
+            flexWrap="nowrap"
+            justifyContent="flex-start"
+            width="100%"
+            height={{ xs: "100%", sm: "600px", md: "550px" }}
             minWidth={{
               xs: 0,
-              md: "600px",
-            }}
-            sx={{
-              overflowY: "auto",
-              overflowX: "hidden",
-              ...scrollbarStyles,
+              sm: "790px",
+              md: "830px",
             }}
           >
             <List
               sx={{
+                padding: "12px",
+                height: "80px",
                 display: "flex",
-                flexWrap: "wrap",
+                flexDirection: {
+                  xs: "row",
+                  md: "column",
+                },
+                flexWrap: {
+                  xs: "wrap",
+                  md: "nowrap",
+                },
                 gap: "8px",
-                width: "100%",
-                alignItems: "stretch",
+                width: {
+                  xs: "fit-content",
+                  md: "192px",
+                },
               }}
             >
-              {Object.keys(filteredQuestTemplates).map((questTemplate) => {
-                const questTemplateValue = filteredQuestTemplates[questTemplate];
+              {Object.keys(questTemplateCategories).map((category) => {
+                const categoryValue = questTemplateCategories[category];
+                const isSelected = categoryValue === selectedCategory;
                 return (
                   <ListItem
-                    key={questTemplateValue.label}
+                    key={categoryValue}
                     disablePadding
                     sx={{
+                      borderRadius: "6px",
                       width: {
-                        xs: "calc(50% - 4px)",
-                        sm: "calc(33% - 4px)",
+                        xs: "fit-content",
+                        md: "192px",
                       },
-                      minWidth: {
-                        xs: "calc(50% - 4px)",
-                        sm: "180px",
-                      },
-                      background: "#f1f1f1",
-                      padding: 0,
-                      borderRadius: "12px",
-                      overflow: "hidden",
+                      background: isSelected ? "#AF9EFF" : "#f1f1f1",
+                      outline: isSelected && "1px solid black",
+                      height: "37px",
                       "&:hover": {
                         background: "#AF9EFF",
                         outline: "1px solid black",
-                        "& img": {
-                          opacity: "70%",
-                        },
                       },
                     }}
                   >
                     <ListItemButton
                       disableRipple
                       disableTouchRipple
-                      onClick={handleTemplateSelect(questTemplate)}
+                      onClick={() => setSelectedCategory(() => categoryValue)}
                       sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        padding: 0,
-                        justifyContent: "flex-start",
-                        alignItems: "flex-start",
+                        padding: "12px",
                         height: "100%",
                       }}
                     >
-                      <img src={questTemplateValue.image} style={{ display: "block", width: "100%" }} />
-                      <Typography fontFamily="Poppins" padding="14px" margin="0" fontWeight="500">
-                        {questTemplateValue.label}
+                      <Typography fontFamily="Poppins" fontSize="13px" margin="0" fontWeight="500">
+                        {categoryValue}
                       </Typography>
                     </ListItemButton>
                   </ListItem>
                 );
               })}
             </List>
-            {selectedCategory !== questTemplateCategories.all && (
-              <Grid container item width="fit-content" paddingY="24px">
-                <Typography fontFamily="Poppins">
-                  Want to make your own?{" "}
-                  <Box
-                    display="inline"
-                    color="#3E96FF"
-                    sx={{ cursor: "pointer", textDecoration: "underline" }}
-                    onClick={handleOnClose}
-                  >
-                    Start from scratch
-                  </Box>
-                </Typography>
-              </Grid>
-            )}
+            <Grid
+              item
+              container
+              padding="12px"
+              height="100%"
+              flexDirection="column"
+              flexWrap="nowrap"
+              flexGrow="1"
+              minWidth={{
+                xs: 0,
+                md: "600px",
+              }}
+              sx={{
+                overflowY: "auto",
+                overflowX: "hidden",
+                ...scrollbarStyles,
+              }}
+            >
+              <List
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "8px",
+                  width: "100%",
+                  alignItems: "stretch",
+                }}
+              >
+                {Object.keys(filteredQuestTemplates).map((questTemplate) => {
+                  const questTemplateValue = filteredQuestTemplates[questTemplate];
+                  return (
+                    <ListItem
+                      key={questTemplateValue.label}
+                      disablePadding
+                      sx={{
+                        width: {
+                          xs: "calc(50% - 4px)",
+                          sm: "calc(33% - 4px)",
+                        },
+                        minWidth: {
+                          xs: "calc(50% - 4px)",
+                          sm: "180px",
+                        },
+                        background: "#f1f1f1",
+                        padding: 0,
+                        borderRadius: "12px",
+                        overflow: "hidden",
+                        "&:hover": {
+                          background: "#AF9EFF",
+                          outline: "1px solid black",
+                          "& img": {
+                            opacity: "70%",
+                          },
+                        },
+                      }}
+                    >
+                      <ListItemButton
+                        disableRipple
+                        disableTouchRipple
+                        data-tour="quests-page-template-modal-quest-template"
+                        onClick={handleTemplateSelect(questTemplate)}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          padding: 0,
+                          justifyContent: "flex-start",
+                          alignItems: "flex-start",
+                          height: "100%",
+                        }}
+                      >
+                        <img src={questTemplateValue.image} style={{ display: "block", width: "100%" }} />
+                        <Typography fontFamily="Poppins" padding="14px" margin="0" fontWeight="500">
+                          {questTemplateValue.label}
+                        </Typography>
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
+              </List>
+              {selectedCategory !== questTemplateCategories.all && (
+                <Grid container item width="fit-content" paddingY="24px">
+                  <Typography fontFamily="Poppins">
+                    Want to make your own?{" "}
+                    <Box
+                      display="inline"
+                      color="#3E96FF"
+                      sx={{ cursor: "pointer", textDecoration: "underline" }}
+                      onClick={handleOnClose}
+                    >
+                      Start from scratch
+                    </Box>
+                  </Typography>
+                </Grid>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        </Box>
       </Dialog>
     </>
   );

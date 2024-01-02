@@ -9,11 +9,14 @@ import { GET_LOGGED_IN_USER } from "graphql/queries";
 import NavigationWrapper from "./NavigationWrapper";
 import { NextNavigationButton, PrevNavigationButton } from "./NavigationButtons";
 import { getStepsConfig, doArrow } from "./utils";
+import { useState } from "react";
+import { TourDataContext } from "utils/context";
 
 const TutorialComponent = ({ children }) => {
   const { user } = useMe() || {};
   const completedQuestGuides = user?.completedQuestGuides;
   const location = useLocation();
+  const [currentId, setCurrentId] = useState(null);
 
   const { steps, id, disableInteraction } = getStepsConfig(location.pathname);
 
@@ -27,7 +30,7 @@ const TutorialComponent = ({ children }) => {
 
   const beforeClose = () => {
     toggleHtmlOverflow();
-    if (id && !completedQuestGuides?.includes(id)) {
+    if (currentId && !completedQuestGuides?.includes(currentId)) {
       setUserCompletedGuide({
         variables: {
           guideId: id,
@@ -46,20 +49,14 @@ const TutorialComponent = ({ children }) => {
         padding: "0px",
         zIndex: 1000000,
         ...doArrow(state.position, state.verticalAlign, state.horizontalAlign),
-      }
-    },
-    maskArea: (base, { x, y, width, height }) => {
-      return { ...base, rx: 0, width: width - 19, zIndex: 999999 };
+      };
     },
     navigation: (base) => ({
       ...base,
       width: 0,
       counterReset: null,
     }),
-    maskRect: (base, { x, y, width, height }) => ({
-      ...base,
-      width: "100%",
-    }),
+    maskArea: (base) => ({ ...base, rx: 24 }),
     maskWrapper: (base, { x, y, width, height }) => ({
       ...base,
       width: 500,
@@ -82,12 +79,13 @@ const TutorialComponent = ({ children }) => {
       steps={steps}
       afterOpen={disableBody}
       beforeClose={beforeClose}
+      maskClassName="mask"
       styles={styles}
       showCloseButton={false}
       onClickMask={shakePopoverAnimation}
       disableInteraction={disableInteraction}
       disableDotsNavigation
-      padding={{ popover: 15 }}
+      padding={{ popover: 15, mask: 6 }}
       components={{
         Badge: () => null,
 
@@ -108,7 +106,14 @@ const TutorialComponent = ({ children }) => {
         <PrevNavigationButton currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
       )}
     >
-      {children}
+      <TourDataContext.Provider
+        value={{
+          currentId,
+          setCurrentId,
+        }}
+      >
+        {children}
+      </TourDataContext.Provider>
     </TourProvider>
   );
 };

@@ -26,6 +26,11 @@ const desktopSteps: any = [
         }}
       />
     ),
+    styles: {
+      maskArea: (base, { x, y, width, height }) => {
+        return { ...base, rx: 0, width: width - 19, zIndex: 999999 };
+      },
+    },
     nextButtonTitle: null,
     prevButtonTitle: null,
     prevAction: null,
@@ -35,10 +40,10 @@ const desktopSteps: any = [
     disableInteraction: true,
     action: (node) => {
       const parent = node.closest("[data-tour=sidebar-drawer]");
-      const elementsToEnable = Array.from(parent.getElementsByTagName("a"))
-        .filter((anchorTag: HTMLAnchorElement) => anchorTag.getAttribute("data-tour") !== "sidebar-quest-item")
-        .concat(Array.from(parent.getElementsByTagName("button")));
-      elementsToEnable.forEach((htmlElement: HTMLAnchorElement | HTMLButtonElement) => {
+      const elementsToEnable = Array.from(parent?.getElementsByTagName("a") || [])
+        ?.filter((anchorTag: HTMLAnchorElement) => anchorTag.getAttribute("data-tour") !== "sidebar-quest-item")
+        ?.concat(Array.from(parent?.getElementsByTagName("button") || []));
+      elementsToEnable?.forEach((htmlElement: HTMLAnchorElement | HTMLButtonElement) => {
         if (htmlElement.getAttribute("data-tour") !== "sidebar-quest-item") {
           htmlElement.style.pointerEvents = "none";
         }
@@ -50,10 +55,10 @@ const desktopSteps: any = [
     },
     actionAfter: (node) => {
       const parent = node.closest("[data-tour=sidebar-drawer]");
-      const elementsToEnable = Array.from(parent.getElementsByTagName("a"))
-        .filter((anchorTag: HTMLAnchorElement) => anchorTag.getAttribute("data-tour") !== "sidebar-quest-item")
-        .concat(Array.from(parent.getElementsByTagName("button")));
-      elementsToEnable.forEach((anchorTag: HTMLAnchorElement) => {
+      const elementsToEnable = Array.from(parent?.getElementsByTagName("a"))
+        ?.filter((anchorTag: HTMLAnchorElement) => anchorTag.getAttribute("data-tour") !== "sidebar-quest-item")
+        ?.concat(Array.from(parent?.getElementsByTagName("button")));
+      elementsToEnable?.forEach((anchorTag: HTMLAnchorElement) => {
         if (anchorTag.getAttribute("data-tour") !== "sidebar-quest-item") {
           anchorTag.style.pointerEvents = "unset";
         }
@@ -89,13 +94,13 @@ const HomeTutorial = () => {
 
   const mobileQuestButtonAfterAction = (node) => {
     const parent = node.closest("[data-tour=header]");
-    const elementsToEnable = Array.from(parent.getElementsByTagName("a"))
-      .concat(Array.from(parent.getElementsByTagName("button")))
-      .filter(
+    const elementsToEnable = Array.from(parent?.getElementsByTagName("a"))
+      ?.concat(Array.from(parent?.getElementsByTagName("button")))
+      ?.filter(
         (anchorTag: HTMLAnchorElement) =>
           !["sidebar-quest-item", "homepage-guide-menu"].includes(anchorTag.getAttribute("data-tour"))
       );
-    elementsToEnable.forEach((anchorTag: HTMLAnchorElement) => {
+    elementsToEnable?.forEach((anchorTag: HTMLAnchorElement) => {
       anchorTag.style.pointerEvents = "unset";
     });
     node.style.borderRadius = "unset";
@@ -135,9 +140,9 @@ const HomeTutorial = () => {
       hideButtons: true,
       action: (node) => {
         const parent = node.closest("[data-tour=header]");
-        const elementsToDisable = Array.from(parent.getElementsByTagName("a"))
-          .concat(Array.from(parent.getElementsByTagName("button")))
-          .filter(
+        const elementsToDisable = Array.from(parent?.getElementsByTagName("a"))
+          ?.concat(Array.from(parent?.getElementsByTagName("button")))
+          ?.filter(
             (anchorTag: HTMLAnchorElement) =>
               !["sidebar-quest-item", "homepage-guide-menu"].includes(anchorTag.getAttribute("data-tour"))
           );
@@ -185,7 +190,7 @@ const HomeTutorial = () => {
 
   useEffect(() => {
     return () => {
-      nodes.current.forEach(({ element, event, action }) => {
+      nodes.current?.forEach(({ element, event, action }) => {
         element.removeEventListener(event, action);
       });
       setCurrentStep(0);
@@ -204,6 +209,7 @@ const HomeTutorial = () => {
     setIsOpen(true);
   };
 
+  //TODO handle skip
   const handleSkip = () => {};
   return (
     <ModalComponent

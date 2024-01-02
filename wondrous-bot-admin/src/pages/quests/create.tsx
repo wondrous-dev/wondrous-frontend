@@ -9,6 +9,7 @@ import { useInView } from "react-intersection-observer";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import Confetti from "react-confetti";
 import useWindowSize from "utils/useWindowSize";
+import useCreateQuestTutorial from "components/TutorialComponent/CreateQuestTutorial";
 
 const CreateTemplate = React.lazy(() => import("components/CreateTemplate"));
 
@@ -27,6 +28,7 @@ const CreatePage = () => {
 
   const setRefValue = (value) => (headerActionsRef.current = value);
 
+  useCreateQuestTutorial();
   return (
     <>
       <QuestTemplateModal setQuestTemplate={setQuestTemplate} open={questTemplate.open} />

@@ -48,6 +48,7 @@ export const CampaignOverviewSections = ({
       flexDirection="column"
       borderBottom={showBorder && `1px solid #E8E8E8`}
       paddingBottom={showBorder && "24px"}
+      className={canBeHidden ? "tutorial-quest-settings-expanded" : null}
       gap={show ? "14px" : "0px"}
     >
       {canBeHidden && (
@@ -81,9 +82,9 @@ export const CampaignOverviewSections = ({
           </Grid>
         </Grid>
       )}
-      <ExtraFeaturesWrapper container item show={show}>
+      <ExtraFeaturesWrapper container item show={show} className={canBeHidden ? 'quest-settings-test-1' : null}>
         {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }) => {
-          if (!show) return <Box flex="1" height="100%" width="100%" />;
+          if (!show) return null;
           return (
             <Grid
               container

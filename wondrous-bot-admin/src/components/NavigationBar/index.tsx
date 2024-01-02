@@ -27,7 +27,7 @@ const NavigationBar = () => {
   const { isEcosystemPlan } = useSubscriptionPaywall();
 
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
-  
+
   const LINKS = [
     {
       sectionTitle: null,
@@ -50,8 +50,8 @@ const NavigationBar = () => {
           label: "Quests",
           partialMatch: true,
           props: {
-            'data-tour': 'sidebar-quest-item'
-          }
+            "data-tour": "sidebar-quest-item",
+          },
         },
         {
           path: "/referrals",
@@ -101,12 +101,7 @@ const NavigationBar = () => {
     },
   ];
 
-  return (
-    <>
-      <NavigationHeaderComponent links={LINKS} />
-      {isMobile ? null : <SidebarComponent links={LINKS} />}
-    </>
-  );
+  return isMobile ? <NavigationHeaderComponent links={LINKS} /> : <SidebarComponent links={LINKS} />;
 };
 
 export default NavigationBar;

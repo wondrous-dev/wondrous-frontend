@@ -8,6 +8,7 @@ import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import QuestsList from "components/QuestsList";
 import SelectComponent from "components/Shared/Select";
 import { SharedSecondaryButton } from "components/Shared/styles";
+import QuestsTutorial from "components/TutorialComponent/QuestsTutorial";
 import { GET_ORG_QUEST_STATS, GET_QUESTS_FOR_ORG } from "graphql/queries";
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -154,11 +155,14 @@ const QuestsPage = () => {
               />
             </Box>
             <Box>
-              <SharedSecondaryButton onClick={handleNavigationToNewQuest}>New Quest</SharedSecondaryButton>
+              <SharedSecondaryButton 
+              data-tour="quests-page-guide-new-quest-button"
+              onClick={handleNavigationToNewQuest}>New Quest</SharedSecondaryButton>
             </Box>
           </Box>
         )}
       />
+      {data ?  <QuestsTutorial /> : null}
       <QuestsList data={sortedData} status={statuses} />
     </>
   );
