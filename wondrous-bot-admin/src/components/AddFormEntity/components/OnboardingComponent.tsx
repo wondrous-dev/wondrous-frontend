@@ -3,7 +3,7 @@ import Switch from "components/Shared/Switch";
 import { useState } from "react";
 
 const OnboardingComponent = (props) => {
-  const { onChange, setQuestSettings } = props;
+  const { onChange, setEntitySettings } = props;
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(null);
 
   const handleChange = (value) => {
@@ -11,7 +11,7 @@ const OnboardingComponent = (props) => {
       onConfirm: () => {
         onChange(value);
         if (value) {
-          setQuestSettings((prev) => ({
+          setEntitySettings((prev) => ({
             ...prev,
             level: "1",
           }));
