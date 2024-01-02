@@ -96,6 +96,8 @@ const AnalyticsComponent = () => {
           display="flex"
           gap="24px"
           flexWrap="nowrap"
+          maxWidth="100%"
+          overflow="hidden"
           flexDirection={{
             xs: "column",
             sm: "row",
