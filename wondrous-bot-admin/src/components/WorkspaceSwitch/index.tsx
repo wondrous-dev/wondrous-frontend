@@ -42,14 +42,13 @@ const GearButton = forwardRef<HTMLButtonElement, GearIconProps>(({ onClick = (e)
 ));
 
 const WorkspaceSwitch = ({ isCollapsed = false }) => {
-  const ref = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const { userOrgs, activeOrg, setActiveOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
 
   const handleClickAway = () => {
-    if (isOpen) setIsOpen(false);
+    if (anchorEl) setAnchorEl(null);
   };
   const onOrgClick = (org) => {
     setActiveOrg(org);
@@ -57,7 +56,9 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
     handleClickAway();
   };
 
-  const togglePopper = () => setIsOpen((prev) => !prev);
+  const togglePopper = (e) => {
+    return setAnchorEl((prev) => (prev ? null : e.currentTarget));
+  };
 
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
@@ -68,14 +69,16 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
           <Box
             display="flex"
             gap="8px"
-            bgcolor={isOpen ? "#D7E9FF" : "transparent"}
+            bgcolor={anchorEl ? "#D7E9FF" : "transparent"}
             alignItems="center"
             borderRadius="6px"
+            onClick={isCollapsed ? (e) => togglePopper(e) : () => {}}
             justifyContent="center"
             padding="10px"
             sx={{
+              cursor: "pointer",
               "&:hover": {
-                backgroundColor: isOpen ? "#D7E9FF" : "#EEE",
+                backgroundColor: anchorEl ? "#D7E9FF" : "#EEE",
               },
             }}
           >
@@ -89,8 +92,8 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                   }}
                 />
               ) : (
-                <WorkspaceDAOIcon width="100%" height="100%"/>
-                )}
+                <WorkspaceDAOIcon width="100%" height="100%" />
+              )}
             </WorkspaceImageWrapper>
 
             <SidebarLabel $isCollapsed={isCollapsed}>{activeOrg?.name}</SidebarLabel>
@@ -98,14 +101,13 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
               <Box flex="1" display="flex" justifyContent="flex-end" alignItems="center">
                 <ButtonBase
                   onClick={togglePopper}
-                  ref={ref}
                   sx={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: "5px",
                     height: "32px",
-                    background: isOpen ? "white" : "#E7E7E7",
+                    background: anchorEl ? "white" : "#E7E7E7",
                     border: "1px solid transparent",
                     transition: "all 0.1s ease-in-out",
                     ":hover": {
@@ -125,9 +127,9 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
           </Box>
         </Box>
         <Popper
-          open={isOpen}
+          open={!!anchorEl}
           placement="bottom-start"
-          anchorEl={ref.current}
+          anchorEl={anchorEl}
           sx={{
             zIndex: 1000,
           }}
@@ -163,7 +165,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                           }}
                         />
                       ) : (
-                        <WorkspaceDAOIcon width="100%" height="100%"/>
+                        <WorkspaceDAOIcon width="100%" height="100%" />
                       )}
                     </WorkspaceImageWrapper>
                     <Label fontWeight={500} fontSize="15px" color="#1D1D1D">
