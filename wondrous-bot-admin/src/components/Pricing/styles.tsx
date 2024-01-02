@@ -33,21 +33,23 @@ export const PricingOptionsListItemInnerWrapper = styled(Box)`
 
 export const PricingOptionsListItemWrapper = styled(Box)`
   && {
-    width: 23%;
     max-width: 300px;
-    min-width: 0;
+    min-width: 200px;
     border-radius: 16px;
     font-family: Poppins, sans-serif;
     background-color: #000;
     position: relative;
     height: ${({ $childHeight, $willExpire }) => ($willExpire ? $childHeight + 20 : $childHeight)}px;
-
+    flex: 1;
     ${({ theme }) => theme.breakpoints.down("md")} {
       width: 45%;
+      max-width: 100%;
+      min-width: 250px;
     }
 
     ${({ theme }) => theme.breakpoints.down("sm")} {
-      width: 85%;
+      width: 100%;
+      max-width: 100%;
     }
 
     ${({ theme }) => theme.breakpoints.up("md")} {
