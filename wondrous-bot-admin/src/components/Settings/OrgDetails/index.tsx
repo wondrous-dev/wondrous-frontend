@@ -214,16 +214,20 @@ const OrgDetails = () => {
           </Typography>
         )}
         renderBody={() => (
-          <QuestChannelName guildId={guildId} channelName={channelName} setChannelName={setChannelName} 
-          isLoading={discordChannelsLoading}
+          <QuestChannelName
+            guildId={guildId}
+            channelName={channelName}
+            setChannelName={setChannelName}
+            isLoading={discordChannelsLoading}
           />
         )}
       />
       <Grid
-        position="fixed"
+        marginTop="20%"
+        position="sticky"
         bgcolor="#FFEBDA"
-        width="70%"
-        bottom="5%"
+        width="100%"
+        bottom="10%"
         display="flex"
         justifyContent="center"
         alignItems="center"

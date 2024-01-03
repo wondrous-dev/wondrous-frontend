@@ -173,6 +173,7 @@ const PaymentLedger = ({ questId = null }) => {
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.PAYMENTS} />
         )}
+        <Box flex="1"/>
         {selectedPayments?.length && paymentView === "unpaid" ? (
           <BatchPayments
             selectedPayments={selectedPayments}
