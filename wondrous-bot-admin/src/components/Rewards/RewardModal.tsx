@@ -147,9 +147,10 @@ const RewardModal = ({
       {
         paymentOption: PAYMENT_OPTIONS.TOKEN,
         rewardType,
-        isUnavailable: plan === PricingOptionsTitle.Basic,
+        isUnavailable: plan === PricingOptionsTitle.Basic && options.length > 1,
         onClick: () => {
-          if (plan === PricingOptionsTitle.Basic) {
+          // allow token rewards for all plans except basic, also allow token rewards if there's only one option
+          if (plan === PricingOptionsTitle.Basic && options.length > 1) {
             setPaywall(true);
             setPaywallMessage("This reward option is not available under the basic plan.");
             return;

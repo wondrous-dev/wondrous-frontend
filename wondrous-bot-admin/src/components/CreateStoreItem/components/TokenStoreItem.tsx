@@ -1,21 +1,17 @@
 import { useLazyQuery } from "@apollo/client";
-import { Box, ButtonBase, Grid, Typography } from "@mui/material";
-import { TokenComponent } from "components/Rewards/RewardUtils";
+import { Box } from "@mui/material";
 import { PoapImage } from "components/CreateTemplate/styles";
 import SelectComponent from "components/Shared/Select";
-import { GET_COMMUNITY_NFTS_FOR_ORG, GET_CMTY_PAYMENT_METHODS_FOR_ORG } from "graphql/queries";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { GET_CMTY_PAYMENT_METHODS_FOR_ORG } from "graphql/queries";
+import { useEffect, useMemo, useState } from "react";
 import { useGlobalContext } from "utils/hooks";
 import AddIcon from "@mui/icons-material/Add";
-import Modal from "components/Shared/Modal";
-import { SharedSecondaryButton } from "components/Shared/styles";
 import { Label } from "components/QuestsList/styles";
-import ImportComponent from "components/NFT/ImportComponent";
-import { NFT_TYPES, NFT_TYPE_LABELS } from "utils/constants";
 import TextField from "components/Shared/TextField";
-import { validateTypes, verifyIsImportedToken } from "utils/common";
-import { Link } from "react-router-dom";
-
+import { validateTypes } from "utils/common";
+import RewardModal from "components/Rewards/RewardModal";
+import { useAddRewardModalState } from "components/Rewards/utils";
+import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 
 const TokenStoreItem = ({
   onChange,
@@ -27,14 +23,16 @@ const TokenStoreItem = ({
   amount = null,
   onAmountChange = null,
 }) => {
+  const rewardModalState = useAddRewardModalState(PAYMENT_OPTIONS.TOKEN);
+
   const { activeOrg } = useGlobalContext();
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const { setIsRewardModalOpen, resetStates } = rewardModalState;
   const [getCmtyPaymentMethodsForOrg, { data, loading }] = useLazyQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "network-only",
     notifyOnNetworkStatusChange: true,
   });
-  const [newToken, setNewToken] = useState(null);
+
   useEffect(() => {
     if (activeOrg?.id && !data && !loading) {
       getCmtyPaymentMethodsForOrg({
@@ -48,7 +46,7 @@ const TokenStoreItem = ({
     }
   }, [activeOrg?.id, data, loading]);
 
-  const toggleCreateModal = () => setIsAddModalOpen((prev) => !prev);
+  const toggleCreateModal = () => setIsRewardModalOpen((prev) => !prev);
 
   const items = useMemo(() => {
     if (!data?.getCmtyPaymentMethodsForOrg)
@@ -86,7 +84,7 @@ const TokenStoreItem = ({
       options,
     };
   }, [data?.getCmtyPaymentMethodsForOrg, toggleCreateModal]);
-  console.log(data?.getCmtyPaymentMethodsForOrg, "getCmtyPaymentMethodsForOrg");
+
   const handleChange = (value) => {
     if (value === "add-token") return;
     const option = data?.getCmtyPaymentMethodsForOrg?.find((item) => item.id === value);
@@ -98,16 +96,45 @@ const TokenStoreItem = ({
     onChange(option);
   };
 
+  const handleOnRewardAdd = (reward) => {
+    const { amount, paymentMethod, paymentMethodId, type } = reward;
+    const option = data?.getCmtyPaymentMethodsForOrg?.find((item) => item.id === paymentMethodId);
+    if (amount) {
+      onAmountChange(amount);
+    }
+    setErrors?.((prev) => ({
+      ...prev,
+      [key]: null,
+    }));
+    if (!option) return onChange(paymentMethod);
+    onChange(option);
+  };
+
+  const handleRewardModalClose = () => {
+    resetStates();
+  };
+
   return (
     <>
-      <AddERC20PaymentMethodModal
-        isOpen={isAddModalOpen}
-        onClose={toggleCreateModal}
-        newToken={newToken}
-        setNewToken={setNewToken}
-        errors={errors}
+      <RewardModal
+        options={[PAYMENT_OPTIONS.TOKEN]}
+        rewardModalState={rewardModalState}
+        handleRewardModalToggle={handleRewardModalClose}
+        handleOnRewardAdd={handleOnRewardAdd}
+        title="Add ERC20 Token"
       />
-      <SelectComponent error={errors?.[key]} options={items.options} value={value} onChange={handleChange} />
+      <SelectComponent
+        selectProps={{
+          renderValue: () => {
+            const selectedOption = items.options?.find((option) => option.value === value);
+            return selectedOption ? selectedOption.label : "Select";
+          },
+        }}
+        error={errors?.[key]}
+        options={items.options}
+        value={value}
+        onChange={handleChange}
+      />
 
       <>
         <Label fontSize="14px" color="#626262">
@@ -128,40 +155,5 @@ const TokenStoreItem = ({
     </>
   );
 };
-import { CHAIN_SELECT_OPTIONS } from "utils/web3Constants";
 
-const AddERC20PaymentMethodModal = ({ isOpen, onClose, newToken, setNewToken, errors }) => {
-  return (
-    <Modal open={isOpen} onClose={onClose} title="Add ERC20 Token">
-      <Label>Chain</Label>
-      <SelectComponent
-        options={CHAIN_SELECT_OPTIONS}
-        value={newToken?.chain}
-        onChange={(value) => setNewToken({ ...newToken, chain: value })}
-        error={errors?.chain}
-      />
-      <Label style={{ marginTop: "4px" }}>Token</Label>
-      <TextField
-        placeholder="Please paste in the contract address"
-        value={newToken?.contractAddress}
-        onChange={(value) => setNewToken({ ...newToken, contractAddress: value })}
-        error={errors?.contractAddress}
-        multiline={false}
-      />
-      <Label
-        style={{
-          marginTop: "4px",
-        }}
-      >
-        Name
-      </Label>
-      <TextField
-        placeholder="Token name"
-        value={newToken?.tokenName}
-        onChange={(value) => setNewToken({ ...newToken, tokenName: value })}
-        multiline={false}
-      />
-    </Modal>
-  );
-};
 export default TokenStoreItem;

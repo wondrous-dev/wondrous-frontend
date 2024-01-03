@@ -19,10 +19,11 @@ const SelectComponent = ({
   onOpen = null,
   grouped = false,
   groupedOptions = [],
-  minWidth = "100px"
+  minWidth = "100px",
+  selectProps={}
 }) => {
   const handleChange = (e) => onChange(e.target.value);
-
+  
   return (
     <Box style={boxStyle} data-tour="tutorial-quest-select">
       <StyledTextFieldSelect
@@ -64,6 +65,7 @@ const SelectComponent = ({
               },
             },
           },
+          ...selectProps
         }}
       >
         {grouped

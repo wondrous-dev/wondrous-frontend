@@ -44,6 +44,7 @@ const StoreItem = () => {
       price: data?.getStoreItem?.price,
       deactivatedAt: data?.getStoreItem?.deactivatedAt,
       id: data?.getStoreItem?.id,
+      quantity: data?.getStoreItem?.quantity,
       maxPurchase: data?.getStoreItem?.maxPurchase,
       storeItemConditions: data?.getStoreItem?.conditions
         ? data?.getStoreItem?.conditions?.map((condition) => {
