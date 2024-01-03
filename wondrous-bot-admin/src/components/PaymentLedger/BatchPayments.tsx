@@ -272,29 +272,31 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     }
   };
 
+  const hasErrorMessage = useMemo(() => conditions?.errorsList?.some(i => i.condition), [conditions?.errorsList]);
+
   return (
     <Grid
-      position="fixed"
+      position="sticky"
       bgcolor="#FFEBDA"
-      width="93%"
+      width="100%"
       bottom="10%"
       display="flex"
-      justifyContent="space-between"
+      justifyContent={hasErrorMessage ? "space-between" : "center"}
       alignItems="center"
       padding="14px"
       borderRadius="16px"
       border="1px solid #000212"
       gap="6px"
     >
-      <Box display="flex" flexDirection="column" gap="6px">
-        {conditions?.errorsList?.map(({ condition, message }, idx) =>
-          condition ? (
-            <Typography color="black" fontSize="14px" fontFamily="Poppins" fontWeight={500} key={idx}>
-              {message}
-            </Typography>
-          ) : null
-        )}
-      </Box>
+       {hasErrorMessage ?  <Box display="flex" flexDirection="column" gap="6px">
+          {conditions?.errorsList?.map(({ condition, message }, idx) =>
+            condition ? (
+              <Typography color="black" fontSize="14px" fontFamily="Poppins" fontWeight={500} key={idx}>
+                {message}
+              </Typography>
+            ) : null
+          )}
+        </Box> : null}
 
       <SharedSecondaryButton disabled={!showBatchPayButton} onClick={sendTransactionFromMetamask}>
         {loading ? (
