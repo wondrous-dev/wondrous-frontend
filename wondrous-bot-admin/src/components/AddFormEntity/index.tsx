@@ -19,14 +19,22 @@ import { useSubscriptionPaywall } from "utils/hooks";
 import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
 import AutocompleteOptionsComponent from "./components/AutocompleteComponent";
 import GlobalContext from "utils/context/GlobalContext";
-import { COMPONENT_OPTIONS, MULTICHOICE_DEFAULT_VALUE } from "./constants";
+import { COMPONENT_OPTIONS, getMultipleChoiceDefaultValue } from "./constants";
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
   const { activeOrg } = useContext(GlobalContext);
   const [openEcosystemDialog, setOpenEcosystemDialog] = useState(false);
-  const { setPaywall, setPaywallMessage, isBasicPLan, isHobbyPlan, isEcosystemPlan, isPremiumPlan, setOnCancel, setCanBeClosed } =
-    useSubscriptionPaywall();
+  const {
+    setPaywall,
+    setPaywallMessage,
+    isBasicPLan,
+    isHobbyPlan,
+    isEcosystemPlan,
+    isPremiumPlan,
+    setOnCancel,
+    setCanBeClosed,
+  } = useSubscriptionPaywall();
 
   const componentOptions = useMemo(() => {
     let defaultOptions = [...COMPONENT_OPTIONS];
@@ -84,6 +92,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
       };
     });
 
+    const multiChoiceDefaultValue = getMultipleChoiceDefaultValue();
     const newConfiguration = steps.reduce((acc, next) => {
       if (next.order === order) {
         acc = [
@@ -92,7 +101,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
             type,
             order,
             required: true,
-            value: type === TYPES.MULTI_QUIZ ? MULTICHOICE_DEFAULT_VALUE : "",
+            value: type === TYPES.MULTI_QUIZ ? multiChoiceDefaultValue : "",
           },
         ];
         return acc;
@@ -245,7 +254,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                   </Typography>
                                   <AutocompleteOptionsComponent
                                     options={componentOptions}
-                                    value={item.type}
+                                    value={item.type === TYPES.SINGLE_QUIZ ? TYPES.MULTI_QUIZ : item.type}
                                     onChange={(value) => handleChangeType(value, item.order, idx)}
                                     setSteps={setSteps}
                                     order={idx + 1}
