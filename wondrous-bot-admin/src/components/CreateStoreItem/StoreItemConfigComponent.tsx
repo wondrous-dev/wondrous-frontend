@@ -100,7 +100,10 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
           }
         },
         onChange: (nftItem) => {
-          const deliveryMethod = nftItem?.type === NFT_TYPES.COMMUNITY_BADGE ? DELIVERY_METHODS.CMTY_USER_CLAIM : DELIVERY_METHODS.ADMIN_WALLET_PAY;
+          const deliveryMethod =
+            nftItem?.type === NFT_TYPES.COMMUNITY_BADGE
+              ? DELIVERY_METHODS.CMTY_USER_CLAIM
+              : DELIVERY_METHODS.ADMIN_WALLET_PAY;
           setStoreItemData((prev) => ({
             ...prev,
             config: {
@@ -128,6 +131,31 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
     },
     [STORE_ITEM_TYPES.TOKEN]: {
       component: TokenStoreItem,
+      componentProps: {
+        value: storeItemData?.config?.cmtyPaymentMethodId,
+        onChange: (paymentMethod) => {
+          setStoreItemData((prev) => ({
+            ...prev,
+            config: {
+              ...prev.config,
+              cmtyPaymentMethodId: paymentMethod?.id,
+            },
+          }));
+        },
+        onAmountChange: (amount) => {
+          setStoreItemData((prev) => ({
+            ...prev,
+            quantity: amount,
+            config: {
+              ...prev.config,
+            },
+          }));
+        },
+        amount : storeItemData?.quantity,
+        key: "cmtyPaymentMethodId",
+        errors,
+        setErrors,
+      },
       label: "Token",
     },
   };
@@ -148,7 +176,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
     {
       label: "Token",
       value: STORE_ITEM_TYPES.TOKEN,
-    }
+    },
   ];
 
   const handleTypeChange = (type, nftType?) => {
@@ -169,7 +197,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       additionalChanges.deliveryMethod = DELIVERY_METHODS.ADMIN_WALLET_PAY;
     }
     if (type === STORE_ITEM_TYPES.NFT) {
-        additionalChanges.deliveryMethod = DELIVERY_METHODS.ADMIN_WALLET_PAY;
+      additionalChanges.deliveryMethod = DELIVERY_METHODS.ADMIN_WALLET_PAY;
     }
     setStoreItemData((prev) => ({
       ...prev,
@@ -190,12 +218,14 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
     {
       label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.DISCOUNT_CODE],
       value: DELIVERY_METHODS.DISCOUNT_CODE,
-      disabled: storeItemData.type !== STORE_ITEM_TYPES.EXTERNAL_SHOP 
+      disabled: storeItemData.type !== STORE_ITEM_TYPES.EXTERNAL_SHOP,
     },
     {
       label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.ADMIN_WALLET_PAY],
       value: DELIVERY_METHODS.ADMIN_WALLET_PAY,
-      disabled: (storeItemData.type !== STORE_ITEM_TYPES.NFT && storeItemData.type !== STORE_ITEM_TYPES.TOKEN) || storeItemData?.config?.nftType === NFT_TYPES.COMMUNITY_BADGE,
+      disabled:
+        (storeItemData.type !== STORE_ITEM_TYPES.NFT && storeItemData.type !== STORE_ITEM_TYPES.TOKEN) ||
+        storeItemData?.config?.nftType === NFT_TYPES.COMMUNITY_BADGE,
     },
     {
       label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.CMTY_USER_CLAIM],
@@ -203,6 +233,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       disabled: storeItemData?.config?.nftType !== NFT_TYPES.COMMUNITY_BADGE,
     },
   ];
+  console.log('storeItemData', storeItemData)
 
   const componentProps = useMemo(() => Config?.componentProps, [Config]);
   if (activeOrg?.id === APEIRON_ORG_ID) {
@@ -282,7 +313,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
           const deliveryMessage =
             storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE
               ? `Thanks for your purchase - you'll now be eligible for our raffle at the end of month.`
-              : 'Copy the code and use it at checkout to apply the discount. Visit the store by clicking the link below.'
+              : "Copy the code and use it at checkout to apply the discount. Visit the store by clicking the link below.";
           return (
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">
               <Grid display="flex" flexDirection="column" gap="12px">

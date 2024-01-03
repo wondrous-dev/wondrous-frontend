@@ -444,6 +444,7 @@ export const STORE_ITEM_LABELS = {
   [STORE_ITEM_TYPES.NFT]: "NFT",
   [STORE_ITEM_TYPES.EXTERNAL_SHOP]: "External Shop",
   [STORE_ITEM_TYPES.DISCORD_ROLE]: "Discord Roles",
+  [STORE_ITEM_TYPES.TOKEN]: "Token",
 };
 
 export const DELIVERY_METHODS = {

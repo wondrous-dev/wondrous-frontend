@@ -61,9 +61,11 @@ const StoreItem = () => {
     mediaUploads: data?.getStoreItem?.media || [],
     deliveryMethod: data?.getStoreItem?.deliveryMethod,
     deliveryMessage: data?.getStoreItem?.deliveryMessage,
+    quantity: data?.getStoreItem?.quantity,
     config: {
       url: data?.getStoreItem?.url,
       nftMetadataId: data?.getStoreItem?.nftMetadataId,
+      cmtyPaymentMethodId: data?.getStoreItem?.cmtyPaymentMethodId,
       additionalData: restAdditionalData,
     },
     type: data?.getStoreItem?.type,

@@ -69,7 +69,7 @@ const TokenStoreItem = ({
     const options = [
       {
         label: "Add ERC20 Token",
-        value: "add-nft",
+        value: "add-token",
         onClick: () => toggleCreateModal(),
         icon: (
           <AddIcon
@@ -86,12 +86,10 @@ const TokenStoreItem = ({
       options,
     };
   }, [data?.getCmtyPaymentMethodsForOrg, toggleCreateModal]);
-  console.log(items, "items");
   console.log(data?.getCmtyPaymentMethodsForOrg, "getCmtyPaymentMethodsForOrg");
   const handleChange = (value) => {
-    if (value === "add-nft") return;
-    const option = data?.getCommunityNFTsForOrg?.find((item) => item.id === value);
-
+    if (value === "add-token") return;
+    const option = data?.getCmtyPaymentMethodsForOrg?.find((item) => item.id === value);
     setErrors?.((prev) => ({
       ...prev,
       [key]: null,
@@ -113,7 +111,7 @@ const TokenStoreItem = ({
 
       <>
         <Label fontSize="14px" color="#626262">
-          Enter amount
+          Token amount per purchase
         </Label>
 
         <TextField

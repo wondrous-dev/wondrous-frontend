@@ -40,7 +40,7 @@ const ALL_TYPES = [
   TYPES.CONNECT_WALLET,
 ];
 
-export const STORE_TYPES = [STORE_ITEM_TYPES.EXTERNAL_SHOP, STORE_ITEM_TYPES.DISCORD_ROLE, STORE_ITEM_TYPES.NFT];
+export const STORE_TYPES = [STORE_ITEM_TYPES.EXTERNAL_SHOP, STORE_ITEM_TYPES.DISCORD_ROLE, STORE_ITEM_TYPES.NFT, STORE_ITEM_TYPES.TOKEN];
 
 const sharedValidation = {
   type: Yup.string().required("Type is required").oneOf(ALL_TYPES, "Type is not valid"),
@@ -275,6 +275,10 @@ const storeItemTypes = {
   }),
   [STORE_ITEM_TYPES.NFT]: STORE_FIELDS.shape({
     nftMetadataId: Yup.string().required("Please select an NFT"),
+  }),
+  [STORE_ITEM_TYPES.TOKEN]: STORE_FIELDS.shape({
+    cmtyPaymentMethodId: Yup.string().required("Please select an Token"),
+    quantity: Yup.number().required("Amount is required"),
   }),
 };
 
