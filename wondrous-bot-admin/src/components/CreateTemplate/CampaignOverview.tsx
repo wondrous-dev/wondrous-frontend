@@ -59,7 +59,7 @@ export const CampaignOverviewSections = ({
           sx={{ cursor: "pointer" }}
           onClick={() => setShow((prev) => !prev)}
         >
-          <Grid container item alignItems="center" gap="10px" width="fit-content" data-tour="tutorial-show-extra">
+          <Grid container item alignItems="center" gap="10px" width="fit-content">
             <Typography color="#626262" fontWeight="600" fontFamily="Poppins" fontSize="13px">
               {show ? "Hide" : "Show"} Extra Features
             </Typography>
@@ -72,6 +72,7 @@ export const CampaignOverviewSections = ({
             alignItems="center"
             justifyContent="center"
             borderRadius="6px"
+            data-tour="tutorial-show-extra"
             border="1px solid #828282"
             sx={{
               transform: show && "rotate(180deg)",
@@ -205,7 +206,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           label: "Active Quest",
           component: Switch,
           key: "isActive",
-          wrapperProps: {
+          componentProps: {
             "data-tour": "tutorial-activate-quest",
           },
         },

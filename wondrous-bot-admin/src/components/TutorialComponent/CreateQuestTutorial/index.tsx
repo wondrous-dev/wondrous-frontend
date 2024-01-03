@@ -1,5 +1,5 @@
 import { useTour } from "@reactour/tour";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { TUTORIALS } from "utils/constants";
 import { TourDataContext } from "utils/context";
 import ContentComponent from "../ContentComponent";
@@ -9,6 +9,13 @@ import { useMediaQuery } from "@mui/material";
 
 const guide = TUTORIALS.COMMUNITIES_QUEST;
 
+const getTemplateModalPosition = () => {
+  const element = document.querySelector("[data-tour=quests-page-template-modal]");
+  const x = element?.getBoundingClientRect().x;
+  const y = element?.getBoundingClientRect().y;
+  return { x, y };
+}
+
 const useCreateQuestTutorial = ({ shouldDisplay }) => {
   const { setIsOpen, setSteps, setCurrentStep, currentStep } = useTour();
 
@@ -16,10 +23,13 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
 
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
+
+  const {x, y} = useMemo(() => getTemplateModalPosition(), []);
+
   const steps: any = [
     {
       selector: "[data-tour=quests-page-template-modal]",
-      position: [400, 740],
+      position: [x + 100, y + 650],
       styles: {
         popover: (base, state) => {
           return {
@@ -109,7 +119,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
     },
     {
       selector: "[data-tour=tutorial-activate-quest]",
-      position: isMobile ? "bottom" : "right",
+      position: "right",
       action: (node) => {
         const questSettingsParent = node?.closest("[data-tour=tutorial-quest-settings]");
         if (questSettingsParent) {
@@ -136,6 +146,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
     {
       selector: "[data-tour=tutorial-show-extra]",
       position: "right",
+      disableInteraction: true,
       content: () => (
         <ContentComponent
           content="Advanced options"
@@ -204,7 +215,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       selector: ".tutorials-quest-reward-modal",
       id: "tutorial-add-rewards",
       highlightedSelectors: [".tutorials-quest-reward-modal"],
-      position: "bottom",
       mutationObservables: [".tour-default-modal", ".tutorials-quest-reward-modal"],
       disableInteraction: true,
       content: () => (
