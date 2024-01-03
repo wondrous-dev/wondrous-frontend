@@ -265,7 +265,7 @@ const CreateTemplate = ({
           <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
             <PanelComponent
               panelProps={{
-                className: "tutorial-quest-settings"
+                'data-tour': "tutorial-quest-settings"
               }}
               renderHeader={() => <CampaignOverviewHeader />}
               renderBody={() => <CampaignOverview questSettings={questSettings} setQuestSettings={setQuestSettings} />}

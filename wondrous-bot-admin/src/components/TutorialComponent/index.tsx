@@ -47,7 +47,7 @@ const TutorialComponent = ({ children }) => {
         borderRadius: "16px",
         background: "white",
         padding: "0px",
-        zIndex: 1000000,
+        zIndex: 10000,
         ...doArrow(state.position, state.verticalAlign, state.horizontalAlign),
       };
     },
@@ -60,6 +60,7 @@ const TutorialComponent = ({ children }) => {
     maskWrapper: (base, { x, y, width, height }) => ({
       ...base,
       width: 500,
+      zIndex: 2,
       color: "rgba(175, 158, 255, 1)",
     }),
   };

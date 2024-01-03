@@ -41,14 +41,13 @@ export const CampaignOverviewSections = ({
   setEntitySettings,
   handleChange,
 }) => {
-  const [show, setShow] = useState(!canBeHidden);
+  const [show, setShow] = useState(true);
   return (
     <Grid
       container
       flexDirection="column"
       borderBottom={showBorder && `1px solid #E8E8E8`}
       paddingBottom={showBorder && "24px"}
-      className={canBeHidden ? "tutorial-quest-settings-expanded" : null}
       gap={show ? "14px" : "0px"}
     >
       {canBeHidden && (
@@ -82,8 +81,9 @@ export const CampaignOverviewSections = ({
           </Grid>
         </Grid>
       )}
-      <ExtraFeaturesWrapper container item show={show} className={canBeHidden ? 'quest-settings-test-1' : null}>
-        {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }) => {
+      \{" "}
+      <ExtraFeaturesWrapper container item show={show}>
+        {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }: any) => {
           if (!show) return null;
           return (
             <Grid
@@ -96,8 +96,8 @@ export const CampaignOverviewSections = ({
                   alignItems: "baseline",
                 }),
               }}
-            > 
-            {/* //TODO: check back the minWidth */}
+            >
+              {/* //TODO: check back the minWidth */}
               <Label minWidth="190px">{label}</Label>
               <Grid container item flex="1">
                 <Box display="flex" alignItems="center" width="100%">
@@ -160,6 +160,9 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
             stateKey: "title",
           },
           key: "title",
+          wrapperProps: {
+            "data-tour": "tutorial-quest-title",
+          },
         },
         {
           label: "Description",
