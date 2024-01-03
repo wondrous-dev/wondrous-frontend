@@ -41,7 +41,7 @@ export const CampaignOverviewSections = ({
   setEntitySettings,
   handleChange,
 }) => {
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(!canBeHidden);
   return (
     <Grid
       container
@@ -59,7 +59,7 @@ export const CampaignOverviewSections = ({
           sx={{ cursor: "pointer" }}
           onClick={() => setShow((prev) => !prev)}
         >
-          <Grid container item alignItems="center" gap="10px" width="fit-content">
+          <Grid container item alignItems="center" gap="10px" width="fit-content" data-tour="tutorial-show-extra">
             <Typography color="#626262" fontWeight="600" fontFamily="Poppins" fontSize="13px">
               {show ? "Hide" : "Show"} Extra Features
             </Typography>
@@ -81,10 +81,9 @@ export const CampaignOverviewSections = ({
           </Grid>
         </Grid>
       )}
-      \{" "}
       <ExtraFeaturesWrapper container item show={show}>
         {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }: any) => {
-          if (!show) return null;
+          if (!show) return <Box flex="1" width="100%" height="100%"/>;
           return (
             <Grid
               container

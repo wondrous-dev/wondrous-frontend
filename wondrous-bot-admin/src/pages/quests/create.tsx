@@ -14,7 +14,6 @@ import useCreateQuestTutorial from "components/TutorialComponent/CreateQuestTuto
 const CreateTemplate = React.lazy(() => import("components/CreateTemplate"));
 
 const CreatePage = () => {
-
   const headerActionsRef = useRef(null);
   const [errors, setErrors] = useState({});
   const { ref, inView, entry } = useInView({
@@ -28,7 +27,7 @@ const CreatePage = () => {
 
   const setRefValue = (value) => (headerActionsRef.current = value);
 
-  useCreateQuestTutorial();
+  useCreateQuestTutorial({ shouldDisplay: questTemplate.open });
   return (
     <>
       <QuestTemplateModal setQuestTemplate={setQuestTemplate} open={questTemplate.open} />

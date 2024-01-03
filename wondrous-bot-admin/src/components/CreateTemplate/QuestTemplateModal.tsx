@@ -27,6 +27,7 @@ import { TYPES } from "utils/constants";
 import { usePaywall, useSubscription } from "utils/hooks";
 import { scrollbarStyles } from "components/Shared/styles";
 import { getPlan } from "utils/common";
+import { useTour } from "@reactour/tour";
 
 const EcosystemFeature = React.lazy(() => import("components/PremiumFeatureDialog/ecosystem"));
 
@@ -453,6 +454,12 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
 
   const handleOnClose = () => setQuestTemplate((prev) => ({ ...prev, open: false }));
 
+  const isScreenSmDown = useIsScreenSmDown();
+  const {isOpen} = useTour();
+
+  const mobileTourOpenHeight = isOpen ? '70%': '80%';
+
+  const desktopTourOpenHeight = isOpen ? '70%': '100%';
   return (
     <>
       <Suspense>
@@ -465,7 +472,7 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
 
       <Dialog
         open={open}
-        fullScreen={useIsScreenSmDown()}
+        fullScreen={false}
         onClose={handleOnClose}
         sx={{
           overflow: "hidden",
@@ -474,9 +481,12 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
           sx: {
             borderRadius: "16px",
             border: "1px solid black",
-            overflow: "hidden",
             boxSizing: "border-box",
-            maxWidth: useIsScreenSmDown() ? "100%" : "900px",
+            maxWidth: "900px",
+            marginTop: isScreenSmDown ? "100px" : "0",
+            overflow: isOpen ? "auto" : "hidden",
+            maxHeight: isScreenSmDown ? mobileTourOpenHeight : desktopTourOpenHeight,
+            ...(isOpen && isScreenSmDown ? {marginBottom: '24%'} : {})
           },
         }}
         slotProps={{
