@@ -6,7 +6,7 @@ import TextField from "components/Shared/TextField";
 import { useContext, useEffect, useMemo, useState } from "react";
 import {
   DELIVERY_METHODS,
-  NFT_ORIGIN_TYPES,
+  NFT_TYPES,
   STORE_ITEM_TYPES,
   DELIVERY_METHOD_LABELS,
   LIMIT,
@@ -15,6 +15,7 @@ import {
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
 import ProductImage from "./ProductImage";
+import NFTStoreItem from "./components/NFTStoreItem";
 import TokenStoreItem from "./components/TokenStoreItem";
 import SelectComponent from "components/Shared/Select";
 import DiscordRoles from "./components/DiscordRoles";
@@ -73,7 +74,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       },
     },
     [STORE_ITEM_TYPES.NFT]: {
-      component: TokenStoreItem,
+      component: NFTStoreItem,
       componentProps: {
         value: storeItemData?.config?.nftMetadataId,
         postInitialFetch: (data) => {
@@ -84,7 +85,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
               ...prev,
               config: {
                 ...prev.config,
-                nftType: option?.tokenId ? NFT_ORIGIN_TYPES.CREATED : NFT_ORIGIN_TYPES.IMPORTED,
+                nftType: option?.type,
               },
               ...(!hasMedia
                 ? {
@@ -99,13 +100,18 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
           }
         },
         onChange: (nftItem) => {
+          const deliveryMethod =
+            nftItem?.type === NFT_TYPES.COMMUNITY_BADGE
+              ? DELIVERY_METHODS.CMTY_USER_CLAIM
+              : DELIVERY_METHODS.ADMIN_WALLET_PAY;
           setStoreItemData((prev) => ({
             ...prev,
             config: {
               ...prev.config,
               nftMetadataId: nftItem?.id,
-              nftType: nftItem?.tokenId ? NFT_ORIGIN_TYPES.CREATED : NFT_ORIGIN_TYPES.IMPORTED,
+              nftType: nftItem?.type,
             },
+            deliveryMethod,
             mediaUploads: [
               {
                 slug: nftItem?.mediaUrl,
@@ -123,6 +129,35 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       component: DiscordRoles,
       label: "Discord Role",
     },
+    [STORE_ITEM_TYPES.TOKEN]: {
+      component: TokenStoreItem,
+      componentProps: {
+        value: storeItemData?.config?.cmtyPaymentMethodId,
+        onChange: (paymentMethod) => {
+          setStoreItemData((prev) => ({
+            ...prev,
+            config: {
+              ...prev.config,
+              cmtyPaymentMethodId: paymentMethod?.id,
+            },
+          }));
+        },
+        onAmountChange: (amount) => {
+          setStoreItemData((prev) => ({
+            ...prev,
+            quantity: amount,
+            config: {
+              ...prev.config,
+            },
+          }));
+        },
+        amount : storeItemData?.quantity,
+        key: "cmtyPaymentMethodId",
+        errors,
+        setErrors,
+      },
+      label: "Token",
+    },
   };
 
   const TYPES = [
@@ -138,9 +173,13 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       label: "Discord Role",
       value: STORE_ITEM_TYPES.DISCORD_ROLE,
     },
+    {
+      label: "Token",
+      value: STORE_ITEM_TYPES.TOKEN,
+    },
   ];
 
-  const handleTypeChange = (type) => {
+  const handleTypeChange = (type, nftType?) => {
     const additionalChanges: any = {};
     if (type === storeItemData.type) return null;
 
@@ -154,8 +193,11 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
     if (type === STORE_ITEM_TYPES.DISCORD_ROLE) {
       additionalChanges.deliveryMethod = DELIVERY_METHODS.DISCORD_ROLE;
     }
+    if (type === STORE_ITEM_TYPES.TOKEN) {
+      additionalChanges.deliveryMethod = DELIVERY_METHODS.ADMIN_WALLET_PAY;
+    }
     if (type === STORE_ITEM_TYPES.NFT) {
-      additionalChanges.deliveryMethod = DELIVERY_METHODS.NFT_PAYMENT;
+      additionalChanges.deliveryMethod = DELIVERY_METHODS.ADMIN_WALLET_PAY;
     }
     setStoreItemData((prev) => ({
       ...prev,
@@ -176,16 +218,22 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
     {
       label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.DISCOUNT_CODE],
       value: DELIVERY_METHODS.DISCOUNT_CODE,
-      disabled:
-        storeItemData.type !== STORE_ITEM_TYPES.EXTERNAL_SHOP &&
-        storeItemData?.config?.nftType !== NFT_ORIGIN_TYPES.IMPORTED,
+      disabled: storeItemData.type !== STORE_ITEM_TYPES.EXTERNAL_SHOP,
     },
     {
-      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.NFT_PAYMENT],
-      value: DELIVERY_METHODS.NFT_PAYMENT,
-      disabled: storeItemData.type !== STORE_ITEM_TYPES.NFT,
+      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.ADMIN_WALLET_PAY],
+      value: DELIVERY_METHODS.ADMIN_WALLET_PAY,
+      disabled:
+        (storeItemData.type !== STORE_ITEM_TYPES.NFT && storeItemData.type !== STORE_ITEM_TYPES.TOKEN) ||
+        storeItemData?.config?.nftType === NFT_TYPES.COMMUNITY_BADGE,
+    },
+    {
+      label: DELIVERY_METHOD_LABELS[DELIVERY_METHODS.CMTY_USER_CLAIM],
+      value: DELIVERY_METHODS.CMTY_USER_CLAIM,
+      disabled: storeItemData?.config?.nftType !== NFT_TYPES.COMMUNITY_BADGE,
     },
   ];
+  console.log('storeItemData', storeItemData)
 
   const componentProps = useMemo(() => Config?.componentProps, [Config]);
   if (activeOrg?.id === APEIRON_ORG_ID) {
@@ -263,9 +311,9 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       <PanelComponent
         renderBody={() => {
           const deliveryMessage =
-            storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE
-              ? `Copy the code and use it by clicking the link below!`
-              : `Thanks for your purchase - you'll now be eligible for our raffle at the end of month`;
+            storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE
+              ? `Thanks for your purchase - you'll now be eligible for our raffle at the end of month.`
+              : "Copy the code and use it at checkout to apply the discount. Visit the store by clicking the link below.";
           return (
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">
               <Grid display="flex" flexDirection="column" gap="12px">
@@ -313,8 +361,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   ></TextField>
                 </Grid>
               )}
-              {(storeItemData?.deliveryMethod === DELIVERY_METHODS.EXTERNAL_CODE ||
-                storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE) && (
+              {storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE && (
                 <Grid display="flex" flexDirection="column" gap="12px">
                   <Label fontWeight={600}>Upload Code List</Label>
                   {uploadedFilename && storeItemData?.discountCodeImport?.codes?.length > 0 ? (

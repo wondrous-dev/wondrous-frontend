@@ -486,7 +486,7 @@ export const useTableComponents = ({
         },
         questName: {
           component: "label",
-          value: payment.questTitle ? payment.questTitle : `Level: ${payment.level}`,
+          value: payment.questTitle? payment.questTitle : payment.level ? `Level: ${payment.level}` : payment.purchaseId? `Item Purchase` : 'N/A',
           componentProps: {
             fontWeight: 500,
           },

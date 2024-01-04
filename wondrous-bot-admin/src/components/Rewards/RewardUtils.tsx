@@ -20,7 +20,7 @@ import {
 } from "../CreateTemplate/styles";
 import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 import { useCommunityBadgePaymentMethods } from "../CreateTemplate/shared";
-import TokenStoreItem from "components/CreateStoreItem/components/TokenStoreItem";
+import NFTStoreItem from "components/CreateStoreItem/components/NFTStoreItem";
 import StoreItemReward from "./StoreItemRewards";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 import { getRewardMethodOptionButtonStyle } from "./helpers";
@@ -463,7 +463,7 @@ export const RewardMethod = ({
     return (
       <>
         <Label>Select NFT</Label>
-        <TokenStoreItem
+        <NFTStoreItem
           amount={tokenReward.amount}
           onAmountChange={(value) => {
             setTokenReward({

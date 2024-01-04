@@ -33,6 +33,7 @@ export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
   maxPurchase: null,
   storeItemConditions: [],
   conditionLogic: "and",
+  quantity: null,
 };
 
 const DEFAULT_STORE_ITEM_DATA = {
@@ -130,6 +131,8 @@ const CreateStoreItem = ({
       price: storeItemSettings.price ? parseInt(storeItemSettings.price) : null,
       url: storeItemData?.config?.url || null,
       nftMetadataId: storeItemData?.config?.nftMetadataId,
+      cmtyPaymentMethodId: storeItemData?.config?.cmtyPaymentMethodId,
+      quantity: storeItemData?.quantity ? parseFloat(storeItemData?.quantity) : null,
       deliveryMethod: storeItemData.deliveryMethod,
       deliveryMessage: storeItemData.deliveryMessage,
       deactivatedAt: storeItemSettings?.deactivatedAt ? moment().toISOString() : null,

@@ -26,6 +26,7 @@ export const CmtyPaymentFragment = gql`
     questTitle
     questId
     submissionId
+    purchaseId
     level
     payeeId
     cmtyUserDisordId
