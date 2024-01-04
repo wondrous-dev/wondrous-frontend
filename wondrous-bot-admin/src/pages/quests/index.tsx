@@ -41,8 +41,10 @@ const QuestsPage = () => {
   const { setIsOpen, setMeta } = useTour();
   const { activeOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
+
   const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
   const { user } = useMe() || {};
+
   const subscription = useSubscription();
   const { setPaywall, setPaywallMessage } = useSubscriptionPaywall();
   const [isLoading, setIsLoading] = useState(true);
@@ -155,14 +157,17 @@ const QuestsPage = () => {
               />
             </Box>
             <Box>
-              <SharedSecondaryButton 
-              data-tour="quests-page-guide-new-quest-button"
-              onClick={handleNavigationToNewQuest}>New Quest</SharedSecondaryButton>
+              <SharedSecondaryButton
+                data-tour="quests-page-guide-new-quest-button"
+                onClick={handleNavigationToNewQuest}
+              >
+                New Quest
+              </SharedSecondaryButton>
             </Box>
           </Box>
         )}
       />
-      {data ?  <QuestsTutorial /> : null}
+      {data ? <QuestsTutorial /> : null}
       <QuestsList data={sortedData} status={statuses} />
     </>
   );

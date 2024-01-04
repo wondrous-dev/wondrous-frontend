@@ -24,6 +24,7 @@ import { useTour } from "@reactour/tour";
 import { useMe } from "components/Auth";
 import useAlerts from "utils/hooks";
 import ShareQuestTweet from "components/ShareQuestTweet";
+import ViewQuestTutorial from "components/TutorialComponent/ViewQuestTutorial";
 
 const QuestResultsPage = () => {
   const navigate = useNavigate();

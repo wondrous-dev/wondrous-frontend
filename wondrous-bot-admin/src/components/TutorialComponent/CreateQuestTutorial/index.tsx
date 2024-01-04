@@ -164,10 +164,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
         />
       ),
       action: (node) => {
-        // node.scrollIntoView({
-        //   behavior: "smooth",
-        //   block: "center",
-        // });
         const questSettingsParent = node?.closest("[data-tour=tutorial-quest-settings]");
         if (questSettingsParent) {
           questSettingsParent.style.zIndex = 3;
@@ -190,9 +186,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
           questSettingsParent.style.zIndex = "unset";
         }
       },
-      // highlightedSelectors: [".tour-default-modal"],
-      // mutationObservables: [".tour-default-modal"],
-      // resizeObservables: [".tour-default-modal"],
       disableInteraction: true,
       content: () => (
         <ContentComponent
@@ -249,6 +242,9 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       handlePrevAction: () => {
         setCurrentStep((prev) => prev - 2);
       },
+      action: (node) => {
+        if (!node) return setCurrentStep((prev) => prev + 1);
+      },
       content: (
         <ContentComponent
           content="Quest steps"
@@ -274,13 +270,14 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
         if (!hasQuestStep) {
           return setCurrentStep((prev) => prev - 3);
         }
-        return setCurrentStep((prev) => prev - 2);
+        return setCurrentStep((prev) => prev - 1);
       },
       action: (node) => {
         // wait for state change to update the current step
+        const hasQuestStep = getQuestStep();
         const handleStepChange = () => {
           setIsOpen(false);
-          setTimeout(() => setCurrentStep((prev) => prev + 1), 500);
+          setTimeout(() => setCurrentStep((prev) => prev + (hasQuestStep ? 2 : 1)), 500);
           setIsOpen(true);
         };
         node.addEventListener("click", handleStepChange);
@@ -290,6 +287,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
           action: handleStepChange,
         });
       },
+      hideButtons: true,
       content: <ContentComponent content="Click here to add a new quest step" />,
     },
     {
@@ -300,7 +298,9 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       handlePrevAction: () => {
         setCurrentStep((prev) => prev - 2);
       },
-      action: () => {
+      action: (node) => {
+        //basically go to add quest step if there is no quest step
+        if (!node) return setCurrentStep(7);
         nodes.current.forEach(({ element, event, action }) => {
           element.removeEventListener(event, action);
         });
@@ -332,23 +332,16 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
         setCurrentStep((prev) => prev - 2);
       },
       action: (node) => {
+        if (!node) return setCurrentStep(7);
         nodes.current.forEach(({ element, event, action }) => {
           element.removeEventListener(event, action);
         });
         nodes.current = [];
-        const onChange = () => setCurrentStep((prev) => prev + 1);
-        const autocompleteElement = node.querySelector("[data-tour=tour-quest-step-type]")?.querySelector("input");
-        autocompleteElement?.addEventListener("change", onChange);
-        nodes.current.push({
-          element: autocompleteElement,
-          event: "change",
-          action: onChange,
-        });
       },
       content: (
         <ContentComponent
           content="Click on the dropdown to change the quest step type"
-          subHeader="There are 20 different types of quest steps - pick one and let’s customize it!"
+          subHeader="There are 20 different types of quest steps - pick one and let’s customize it! Press Next when ready"
           typographyProps={{
             textAlign: "left",
           }}
@@ -370,7 +363,10 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       handlePrevAction: () => {
         setCurrentStep((prev) => prev - 2);
       },
-      action: () => {
+      action: (node) => {
+        //basically go to add quest step if there is no quest step
+        if (!node) return setCurrentStep(7);
+
         nodes.current.forEach(({ element, event, action }) => {
           element.removeEventListener(event, action);
         });
@@ -425,6 +421,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       setIsOpen(true);
     }
     return () => {
+      console.log("im called here?");
       setCurrentId(null);
       nodes.current.forEach(({ element, event, action }) => {
         element.removeEventListener(event, action);
