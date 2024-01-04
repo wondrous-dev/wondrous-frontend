@@ -24,7 +24,7 @@ const useLevels = ({ orgId, shouldFetch = true }: IUseLevels) => {
     data?.getOrgQuestsLevels.forEach((item) => {
       const key = item.key;
       const value = item.value;
-      if (key in levels) {
+      if (key in levels && value) {
         levels[key] = value;
       }
     });
