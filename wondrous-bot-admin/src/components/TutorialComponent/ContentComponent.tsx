@@ -15,13 +15,14 @@ const ContentComponent = ({
   const closeTour = () => setIsOpen(false);
   return (
     <ModalContent>
-      <Box display="flex" justifyContent="center" alignItems="center" padding="24px" gap="8x" flexDirection="column" {...wrapperProps}>
+      <Box display="flex" justifyContent="center" alignItems="center" padding="24px" gap="18x" flexDirection="column" {...wrapperProps}>
         <Typography
           color="black"
           fontFamily="Poppins"
           fontSize="18px"
           fontWeight={600}
           lineHeight="24px"
+          maxWidth="85%"
           {...typographyProps}
         >
           {content}

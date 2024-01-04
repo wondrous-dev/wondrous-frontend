@@ -214,7 +214,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
 
                 if (!Component) return null;
                 return (
-                  <Box width="100%" height="100%" ref={(ref) => (refs.current[idx + 1] = ref)}>
+                  <Box width="100%" height="100%" ref={(ref) => (refs.current[idx + 1] = ref)} data-tour={idx === 0 ? "tour-quest-step" : null}>
                     <Draggable key={idx} draggableId={`${idx}`} index={idx}>
                       {(provided, snapshot) => (
                         <Grid
@@ -246,6 +246,9 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                   <AutocompleteOptionsComponent
                                     options={componentOptions}
                                     value={item.type}
+                                    autocompletProps={{
+                                      'data-tour': idx === 0 ? "tour-quest-step-type" : null,
+                                    }}
                                     onChange={(value) => handleChangeType(value, item.order, idx)}
                                     setSteps={setSteps}
                                     order={idx + 1}

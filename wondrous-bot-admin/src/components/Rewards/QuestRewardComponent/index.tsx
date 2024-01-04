@@ -47,20 +47,11 @@ const QuestRewardComponent = ({
           return {
             ...step,
             handleNextAction: () => {
+              step.handleNextAction?.();
               setIsRewardModalOpen(false);
-              setCurrentStep((prev) => prev + 1);
             },
             handlePrevAction: () => {
               setIsRewardModalOpen(false);
-              setCurrentStep((prev) => prev - 1);
-            },
-          };
-        }
-        if (step.id === "tutorial-activate-quest") {
-          return {
-            ...step,
-            handlePrevAction: () => {
-              setIsRewardModalOpen(true);
               setCurrentStep((prev) => prev - 1);
             },
           };

@@ -42,7 +42,7 @@ const CreatePage = () => {
             withBackButton
             title="Create Quest"
             renderActions={() => (
-              <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
+              <SharedSecondaryButton data-tour="tour-save-quest" onClick={() => headerActionsRef.current?.handleSave()}>
                 Save Quest
               </SharedSecondaryButton>
             )}

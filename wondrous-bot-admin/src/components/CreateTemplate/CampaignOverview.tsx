@@ -84,7 +84,7 @@ export const CampaignOverviewSections = ({
       )}
       <ExtraFeaturesWrapper container item show={show}>
         {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }: any) => {
-          if (!show) return <Box flex="1" width="100%" height="100%"/>;
+          if (!show) return <Box flex="1" width="100%" height="100%" />;
           return (
             <Grid
               container

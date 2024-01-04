@@ -4,8 +4,6 @@ import { TUTORIALS } from "utils/constants";
 import { TourDataContext } from "utils/context";
 import ContentComponent from "../ContentComponent";
 import { doArrow } from "../utils";
-import { toggleHtmlOverflow } from "utils/common";
-import { useMediaQuery } from "@mui/material";
 
 const guide = TUTORIALS.COMMUNITIES_QUEST;
 
@@ -14,17 +12,16 @@ const getTemplateModalPosition = () => {
   const x = element?.getBoundingClientRect().x;
   const y = element?.getBoundingClientRect().y;
   return { x, y };
-}
+};
 
 const useCreateQuestTutorial = ({ shouldDisplay }) => {
   const { setIsOpen, setSteps, setCurrentStep, currentStep } = useTour();
 
   const nodes = useRef([]);
 
-  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+  const { x, y } = useMemo(() => getTemplateModalPosition(), []);
 
-
-  const {x, y} = useMemo(() => getTemplateModalPosition(), []);
+  const getQuestStep = () => !!document.querySelector("[data-tour=tour-quest-step");
 
   const steps: any = [
     {
@@ -111,6 +108,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
         nodes.current.forEach(({ element, event, action }) => {
           element.removeEventListener(event, action);
         });
+        nodes.current = [];
         const questSettingsParent = node?.closest("[data-tour=tutorial-quest-settings]");
         if (questSettingsParent) {
           questSettingsParent.style.zIndex = 3;
@@ -146,11 +144,13 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
     {
       selector: "[data-tour=tutorial-show-extra]",
       position: "right",
+      mutationObservables: ["[data-tour=tutorial-show-extra]"],
+      resizeObservables: ["[data-tour=tutorial-show-extra]"],
       disableInteraction: true,
       content: () => (
         <ContentComponent
           content="Advanced options"
-          subHeader="Open this panel up for advanced options. If you want to learn more about a feature, just hover over the ⓘ."
+          subHeader="Open this panel up for advanced options. If you want to learn more about a feature, just hover over the ⓘ"
           typographyProps={{
             textAlign: "left",
           }}
@@ -164,10 +164,10 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
         />
       ),
       action: (node) => {
-        node.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
+        // node.scrollIntoView({
+        //   behavior: "smooth",
+        //   block: "center",
+        // });
         const questSettingsParent = node?.closest("[data-tour=tutorial-quest-settings]");
         if (questSettingsParent) {
           questSettingsParent.style.zIndex = 3;
@@ -217,6 +217,13 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       highlightedSelectors: [".tutorials-quest-reward-modal"],
       mutationObservables: [".tour-default-modal", ".tutorials-quest-reward-modal"],
       disableInteraction: true,
+      handleNextAction: () => {
+        const hasQuestStep = getQuestStep();
+        if (!hasQuestStep) {
+          return setCurrentStep((prev) => prev + 2);
+        }
+        return setCurrentStep((prev) => prev + 1);
+      },
       content: () => (
         <ContentComponent
           content="Add rewards for completions"
@@ -234,6 +241,178 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
         />
       ),
     },
+    {
+      selector: "[data-tour=tour-quest-step]",
+      mutationObservables: ["[data-tour=tour-quest-step]"],
+      resizeObservables: ["[data-tour=tour-quest-step]"],
+      position: "left",
+      handlePrevAction: () => {
+        setCurrentStep((prev) => prev - 2);
+      },
+      content: (
+        <ContentComponent
+          content="Quest steps"
+          subHeader="Quest steps are how you design the actions your members take. Fill out any relevant information for this quest step."
+          typographyProps={{
+            textAlign: "left",
+          }}
+          wrapperProps={{
+            sx: {
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+              width: "100%",
+            },
+          }}
+        />
+      ),
+    },
+    {
+      selector: "[data-tour=tutorial-add-quest-step]",
+      position: "left",
+      handlePrevAction: () => {
+        const hasQuestStep = getQuestStep();
+        if (!hasQuestStep) {
+          return setCurrentStep((prev) => prev - 3);
+        }
+        return setCurrentStep((prev) => prev - 2);
+      },
+      action: (node) => {
+        // wait for state change to update the current step
+        const handleStepChange = () => {
+          setIsOpen(false);
+          setTimeout(() => setCurrentStep((prev) => prev + 1), 500);
+          setIsOpen(true);
+        };
+        node.addEventListener("click", handleStepChange);
+        nodes.current.push({
+          element: node,
+          event: "click",
+          action: handleStepChange,
+        });
+      },
+      content: <ContentComponent content="Click here to add a new quest step" />,
+    },
+    {
+      selector: "[data-tour=tour-quest-step]",
+      mutationObservables: ["[data-tour=tour-quest-step]"],
+      resizeObservables: ["[data-tour=tour-quest-step]"],
+      position: "left",
+      handlePrevAction: () => {
+        setCurrentStep((prev) => prev - 2);
+      },
+      action: () => {
+        nodes.current.forEach(({ element, event, action }) => {
+          element.removeEventListener(event, action);
+        });
+        nodes.current = [];
+      },
+      content: (
+        <ContentComponent
+          content="Quest steps"
+          subHeader="Quest steps are how you design the actions your members take. Fill out any relevant information for this quest step."
+          typographyProps={{
+            textAlign: "left",
+          }}
+          wrapperProps={{
+            sx: {
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+              width: "100%",
+            },
+          }}
+        />
+      ),
+    },
+    {
+      selector: "[data-tour=tour-quest-step]",
+      position: "left",
+      mutationObservables: ["[data-tour=tour-quest-step]"],
+      resizeObservables: ["[data-tour=tour-quest-step]"],
+      handlePrevAction: () => {
+        setCurrentStep((prev) => prev - 2);
+      },
+      action: (node) => {
+        nodes.current.forEach(({ element, event, action }) => {
+          element.removeEventListener(event, action);
+        });
+        nodes.current = [];
+        const onChange = () => setCurrentStep((prev) => prev + 1);
+        const autocompleteElement = node.querySelector("[data-tour=tour-quest-step-type]")?.querySelector("input");
+        autocompleteElement?.addEventListener("change", onChange);
+        nodes.current.push({
+          element: autocompleteElement,
+          event: "change",
+          action: onChange,
+        });
+      },
+      content: (
+        <ContentComponent
+          content="Click on the dropdown to change the quest step type"
+          subHeader="There are 20 different types of quest steps - pick one and let’s customize it!"
+          typographyProps={{
+            textAlign: "left",
+          }}
+          wrapperProps={{
+            sx: {
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+              width: "100%",
+            },
+          }}
+        />
+      ),
+    },
+    {
+      selector: "[data-tour=tour-quest-step]",
+      position: "left",
+      mutationObservables: ["[data-tour=tour-quest-step]"],
+      resizeObservables: ["[data-tour=tour-quest-step]"],
+      handlePrevAction: () => {
+        setCurrentStep((prev) => prev - 2);
+      },
+      action: () => {
+        nodes.current.forEach(({ element, event, action }) => {
+          element.removeEventListener(event, action);
+        });
+        nodes.current = [];
+      },
+      content: (
+        <ContentComponent
+          content="Nice choice!"
+          subHeader="Customize of the quest step and let’s test your new quest!"
+          typographyProps={{
+            textAlign: "left",
+          }}
+          wrapperProps={{
+            sx: {
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+              width: "100%",
+            },
+          }}
+        />
+      ),
+    },
+
+    {
+      hideButtons: true,
+      selector: "[data-tour=tour-save-quest]",
+      position: "left",
+      action: (node) => {
+        const closeTour = () => {
+          setIsOpen(false);
+          setSteps([]);
+          setCurrentStep(0);
+        };
+        node.addEventListener("click", closeTour);
+        nodes.current.push({
+          element: node,
+          event: "click",
+          action: closeTour,
+        });
+      },
+      content: <ContentComponent content="Finish setting up your quest by clicking here" />,
+    },
   ];
 
   const completedGuides = [];
@@ -250,6 +429,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       nodes.current.forEach(({ element, event, action }) => {
         element.removeEventListener(event, action);
       });
+      nodes.current = [];
     };
   }, []);
 

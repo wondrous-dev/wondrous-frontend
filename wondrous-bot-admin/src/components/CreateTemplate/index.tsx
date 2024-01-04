@@ -229,7 +229,7 @@ const CreateTemplate = ({
           </SharedSecondaryButton>
         }
         footerRight={
-          <SharedSecondaryButton onClick={() => handleSave(QUEST_STATUSES.OPEN)}>
+          <SharedSecondaryButton sx={{marginLeft: '8px'}} onClick={() => handleSave(QUEST_STATUSES.OPEN)}>
             Yes, activate quest
           </SharedSecondaryButton>
         }
@@ -306,6 +306,7 @@ const CreateTemplate = ({
                 alignItems="center"
                 flexDirection="column"
                 gap="14px"
+                data-tour="tutorial-add-quest-step"
                 padding="14px 24px"
                 onClick={() => handleAdd(TYPES.TEXT_FIELD)}
                 sx={{
