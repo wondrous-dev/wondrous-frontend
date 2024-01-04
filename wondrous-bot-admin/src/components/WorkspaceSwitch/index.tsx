@@ -197,7 +197,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
               </Box>
             </WorkspaceWrapper>
             <Divider />
-            <WorkspaceWrapper onClick={logout}>
+            <WorkspaceWrapper onClick={() => logout()}>
               <Box display="flex" gap="10px" alignItems="center">
                 <ButtonIconWrapper>
                   <LogoutRounded
