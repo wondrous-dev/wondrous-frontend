@@ -1,8 +1,7 @@
-
 export * from "./questValidator";
 export * from "./storeValidator";
 export * from "./customValidation";
-export * from './referralValidator';
+export * from "./referralValidator";
 
 import { ERRORS, STORE_ITEM_TYPES, TYPES } from "utils/constants";
 import * as Yup from "yup";
@@ -40,7 +39,12 @@ const ALL_TYPES = [
   TYPES.CONNECT_WALLET,
 ];
 
-export const STORE_TYPES = [STORE_ITEM_TYPES.EXTERNAL_SHOP, STORE_ITEM_TYPES.DISCORD_ROLE, STORE_ITEM_TYPES.NFT, STORE_ITEM_TYPES.TOKEN];
+export const STORE_TYPES = [
+  STORE_ITEM_TYPES.EXTERNAL_SHOP,
+  STORE_ITEM_TYPES.DISCORD_ROLE,
+  STORE_ITEM_TYPES.NFT,
+  STORE_ITEM_TYPES.TOKEN,
+];
 
 const sharedValidation = {
   type: Yup.string().required("Type is required").oneOf(ALL_TYPES, "Type is not valid"),
@@ -106,13 +110,13 @@ const stepTypes = {
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       tweetHandle: Yup.string()
-      .matches(twitterHandleRegex, 'Invalid Twitter handle')
-      .required("Tweet handle is required")
-      .test(
-        'is-not-url', 
-        'Tweet handle must not be a URL', 
-        value => !/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-]*)*\/?$/.test(value)
-      )
+        .matches(twitterHandleRegex, "Invalid Twitter handle")
+        .required("Tweet handle is required")
+        .test(
+          "is-not-url",
+          "Tweet handle must not be a URL",
+          (value) => !/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-]*)*\/?$/.test(value)
+        ),
     }),
   }),
   [TYPES.TWEET_WITH_PHRASE]: Yup.object().shape({
@@ -144,7 +148,7 @@ const stepTypes = {
   [TYPES.DISCORD_MESSAGE_IN_CHANNEL]: Yup.object().shape({
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
-      discordChannelId: Yup.string().required("Discord channel is required"),
+      discordChannelIds: Yup.array().of(Yup.string()).required("At least one Discord channel is required"),
     }),
   }),
   [TYPES.NUMBER]: Yup.object().shape({
@@ -304,4 +308,3 @@ export const storeItemValidator = async (body) => {
     abortEarly: false,
   });
 };
-
