@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { QuestFragment } from "graphql/fragments/quest";
 import { ReferralCampaignFragment } from "graphql/fragments/referral";
 
 export const CREATE_REFERRAL = gql`
@@ -17,7 +16,6 @@ export const UPDATE_REFERRAL = gql`
     }
   }
   ${ReferralCampaignFragment}
-  ${QuestFragment}
 `;
 
 export const MINIMAL_REFERRAL_UPDATE = gql`
