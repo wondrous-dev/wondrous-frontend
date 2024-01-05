@@ -17,8 +17,6 @@ import {
 import { PAYMENT_OPTIONS } from "./constants";
 import { getPlan } from "utils/common";
 
-const isStoreAdded = false;
-
 
 const RewardModal = ({
   handleRewardModalToggle,
@@ -36,7 +34,8 @@ const RewardModal = ({
   title = "Add reward to quest",
 }) => {
   const { activeOrg } = useContext(GlobalContext);
-  const { plan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = useSubscriptionPaywall();
+  const { isEcosystemPlan, isPremiumPlan, plan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = useSubscriptionPaywall();
+
   const { discordRoleOptions, discordRoleData } = useDiscordRoleRewardData();
   const [errors, setErrors] = useState(null);
   const {
@@ -162,15 +161,7 @@ const RewardModal = ({
         text: "Token reward",
       },
     ];
-    if (
-      !isStoreAdded &&
-      ((import.meta.env.VITE_PRODUCTION &&
-        (activeOrg?.id === "98989259425317451" ||
-          activeOrg?.id === "45956686890926082" ||
-          activeOrg?.id === "100884993427899088")) ||
-        (import.meta.env.VITE_STAGING && activeOrg?.id === "89444950095167649") ||
-        (!import.meta.env.VITE_STAGING && !import.meta.env.VITE_PRODUCTION))
-    ) {
+    if (isEcosystemPlan || isPremiumPlan) {
       items.push({
         paymentOption: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
         rewardType,
@@ -180,7 +171,7 @@ const RewardModal = ({
       });
     }
     return items;
-  }, [isStoreAdded, activeOrg?.id, rewardType, plan, setRewardType, setPaywall, setPaywallMessage]);
+  }, [activeOrg?.id, rewardType, plan, setRewardType, setPaywall, setPaywallMessage, isEcosystemPlan]);
 
   return (
     <Modal
