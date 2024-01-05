@@ -309,7 +309,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       content: (
         <ContentComponent
           content="Quest steps"
-          subHeader="Quest steps are how you design the actions your members take. Fill out any relevant information for this quest step."
+          subHeader="Quest steps are how you design the actions your members take."
           typographyProps={{
             textAlign: "left",
           }}

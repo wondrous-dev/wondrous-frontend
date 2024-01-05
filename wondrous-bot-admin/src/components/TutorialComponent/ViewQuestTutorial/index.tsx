@@ -1,10 +1,14 @@
 import { useMe } from "components/Auth";
 import ContentComponent from "../ContentComponent";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useModalState } from "../shared";
 import { TUTORIALS } from "utils/constants";
 import { TourDataContext } from "utils/context";
 import { useTour } from "@reactour/tour";
+import Modal from "components/Shared/Modal";
+import { Box, Typography } from "@mui/material";
+import { QuestScrolLGraphics } from "components/Icons/Tour";
+import { SharedSecondaryButton } from "components/Shared/styles";
 
 // 'data-tour': 'tour-submissions-empty-state',
 // data-tour="tour-submissions-filter-buttons"
@@ -13,6 +17,7 @@ import { useTour } from "@reactour/tour";
 const ViewQuestTutorial = () => {
   const { user } = useMe() || {};
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { setCurrentId } = useContext(TourDataContext);
   const { setSteps, isOpen, setIsOpen, setCurrentStep } = useTour();
   const completedGuides = [];
@@ -46,6 +51,50 @@ const ViewQuestTutorial = () => {
         />
       ),
     },
+    {
+      selector: "[data-tour=tour-quest-preview-quest]",
+      id: "tour-quest-preview-quest",
+      content: () => {
+        return (
+          <ContentComponent
+            content="Click here to preview the Quest in your server."
+            subHeader="Preview what your members will see when you activate the quest. This will only be visible to you."
+            typographyProps={{
+              textAlign: "left",
+            }}
+            wrapperProps={{
+              sx: {
+                alignItems: "flex-start",
+                justifyContent: "flex-start",
+                width: "100%",
+              },
+            }}
+          />
+        );
+      },
+    },
+    {
+      selector: "[data-tour=tour-quest-preview-quest]",
+      id: "tour-quest-preview-quest",
+      content: () => {
+        return <ContentComponent content="Connect your Discord account and press Next" />;
+      },
+    },
+    {
+      selector: "body",
+      content: () => null,
+      action: () => {
+        setIsModalOpen(true);
+        setIsOpen(false);
+      },
+    },
+    {
+      selector: "[data-tour=tour-quest-back-button]",
+      hideButtons: true,
+      content: () => (
+        <ContentComponent content="Now you have saved your quest, press the back button to jump to all quests!" />
+      ),
+    },
   ];
 
   useEffect(() => {
@@ -58,7 +107,30 @@ const ViewQuestTutorial = () => {
     return () => setCurrentId(null);
   }, []);
 
-  return null;
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setCurrentStep((prev) => prev + 1);
+    setIsOpen(true);
+  };
+
+  return isModalOpen ? (
+    <Modal
+      footerCenter
+      footerLeft={<Box width="100%" display="flex" justifyContent="center"><SharedSecondaryButton onClick={handleModalClose}>Continue</SharedSecondaryButton></Box>}
+      open
+      noHeader
+    >
+      <Box display="flex" flexDirection="column" gap="9px" alignItems="center" justifyContent="center">
+        <QuestScrolLGraphics />
+        <Typography color="#2A8D5C" fontSize="16px" fontWeight={600} fontFamily="Poppins">
+          Previewing Quest in Discord
+        </Typography>
+        <Typography color="black" fontSize="14px" fontWeight={500} fontFamily="Poppins">
+          Once you’re done, please click continue
+        </Typography>
+      </Box>
+    </Modal>
+  ) : null;
 };
 
 export default ViewQuestTutorial;

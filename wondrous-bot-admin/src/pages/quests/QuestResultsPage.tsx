@@ -41,7 +41,7 @@ const QuestResultsPage = () => {
   const [notInGuildError, setNotInGuildError] = useState(false);
   let { id } = useParams();
   const headerActionsRef = useRef(null);
-  const { setIsOpen } = useTour();
+  const { setIsOpen, isOpen, steps, setSteps, setCurrentStep, currentStep } = useTour();
   useEffect(() => {
     if (discordError) {
       setSnackbarAlertMessage("Error connecting Discord");
@@ -68,24 +68,24 @@ const QuestResultsPage = () => {
       const channelId = data?.startPreviewQuest?.channelId;
       const discordUrl = `https://discord.com/channels/${guildId}/${channelId}`;
       window.open(discordUrl, "_blank");
+      if (isOpen) {
+        setCurrentStep((prev) => prev + 2);
+      }
     },
     onError: (err) => {
       if (err?.graphQLErrors[0]?.extensions?.errorCode === "discord_not_connected") {
+        if (isOpen) {
+          setCurrentStep((prev) => prev + 1);
+        }
         setConnectDiscordModalOpen(true);
       }
       if (err?.graphQLErrors[0]?.extensions?.errorCode === "discord_user_not_in_guild") {
         console.log("not in guild");
+        setIsOpen(false);
         setNotInGuildError(true);
       }
     },
   });
-
-  useEffect(() => {
-    if (user && !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUEST)) {
-      setIsEditMode(true);
-      setIsOpen(true);
-    }
-  }, [user, isEditMode]);
 
   const toggleEdit = () => {
     setIsEditMode((prev) => !prev);
@@ -131,6 +131,19 @@ const QuestResultsPage = () => {
     ],
   };
   const shareUrl = `${getBaseUrl()}/quest?id=${getQuestById?.id}`;
+
+  const handlePreviewConnectClick = () => {
+    const discordUrl = `${getDiscordUrl()}&state=${encodeURIComponent(
+      JSON.stringify({
+        callbackType: DISCORD_CONNECT_TYPES.questPreview,
+        questId: id,
+      })
+    )}`;
+    if (isOpen) {
+      return window.open(discordUrl, "_blank");
+    }
+    window.location.href = discordUrl;
+  };
   return (
     <CreateQuestContext.Provider
       value={{
@@ -145,21 +158,7 @@ const QuestResultsPage = () => {
         onClose={() => setConnectDiscordModalOpen(false)}
         title={"Connect Discord"}
         maxWidth={600}
-        footerRight={
-          <SharedSecondaryButton
-            onClick={() => {
-              const discordUrl = `${getDiscordUrl()}&state=${encodeURIComponent(
-                JSON.stringify({
-                  callbackType: DISCORD_CONNECT_TYPES.questPreview,
-                  questId: id,
-                })
-              )}`;
-              window.location.href = discordUrl;
-            }}
-          >
-            Connect
-          </SharedSecondaryButton>
-        }
+        footerRight={<SharedSecondaryButton onClick={handlePreviewConnectClick}>Connect</SharedSecondaryButton>}
       >
         <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
           To preview this quest, you need to connect your Discord account first!
@@ -172,6 +171,9 @@ const QuestResultsPage = () => {
       </Modal>
       <Box>
         <PageHeader
+          backButtonProps={{
+            "data-tour": "tour-quest-back-button",
+          }}
           title={isEditMode ? "Edit Quest" : "Quest Activity"}
           withBackButton
           onBackButtonClick={() => {
@@ -203,7 +205,7 @@ const QuestResultsPage = () => {
                 </>
               ) : (
                 <>
-                  <SharedSecondaryButton $reverse onClick={handlePreviewQuest}>
+                  <SharedSecondaryButton data-tour="tour-quest-preview-quest" $reverse onClick={handlePreviewQuest}>
                     Preview Quest
                   </SharedSecondaryButton>
                   <SharedSecondaryButton onClick={toggleEdit}>Edit Quest</SharedSecondaryButton>

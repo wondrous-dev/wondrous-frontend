@@ -25,9 +25,7 @@ interface IModalProps {
   modalComponentProps?: {
     className?: string;
   };
-  dialogComponentProps?: {
-    className?: string;
-  };
+  dialogComponentProps?: any;
   modalFooterStyle?: {
     padding?: string;
   };
