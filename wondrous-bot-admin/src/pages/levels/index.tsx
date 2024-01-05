@@ -80,6 +80,7 @@ const LevelsPage = () => {
                 setPaywall(true);
                 return setPaywallMessage("You need to upgrade from a basic plan to edit level names");
               } else {
+                if(!value) return;
                 updateLevel(key, value);
               }
             },

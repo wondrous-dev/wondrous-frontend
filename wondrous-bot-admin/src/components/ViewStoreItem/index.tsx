@@ -18,6 +18,7 @@ import StoreItemConditions from "./StoreItemConditions";
 import StoreItemPurchases from "./Purchases";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import {
+  GET_CMTY_PAYMENT_METHODS_FOR_ORG,
   GET_COMMUNITY_NFT_BY_METADATA_ID,
   GET_ORG_DISCORD_ROLES,
   GET_STORE_ITEM_PURCHASES,
@@ -65,6 +66,13 @@ const ViewStoreItem = ({ data }) => {
     },
     skip: !data || !data?.nftMetadataId || data?.type !== STORE_ITEM_TYPES.NFT,
   });
+
+  const {data: cmtyPaymentMethodsForOrg, loading: cmtyPaymentMethodsLoading} = useQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
+    variables: {
+      orgId: data?.orgId,
+    },
+    skip: !data || !data?.cmtyPaymentMethodId || data?.type !== STORE_ITEM_TYPES.TOKEN,
+  })
 
   const sections = useMemo(() => {
     return [
@@ -136,6 +144,7 @@ const ViewStoreItem = ({ data }) => {
                 nftMetadata={nftMetadata?.getCmtyNFTByMetadataId}
                 discordRoles={orgDiscordRolesData?.getCmtyOrgDiscordRoles}
                 storeItemData={data}
+                cmtyPaymentMethods={cmtyPaymentMethodsForOrg?.getCmtyPaymentMethodsForOrg}
               />
             ),
           },
@@ -143,7 +152,7 @@ const ViewStoreItem = ({ data }) => {
         showBorder: false,
       },
     ];
-  }, [data, orgDiscordRolesData?.getCmtyOrgDiscordRoles, nftMetadata?.getCmtyNFTByMetadataId]);
+  }, [data, orgDiscordRolesData?.getCmtyOrgDiscordRoles, nftMetadata?.getCmtyNFTByMetadataId, cmtyPaymentMethodsForOrg?.getCmtyPaymentMethodsForOrg]);
 
   return (
     <PageWrapper

@@ -250,9 +250,9 @@ export const useDiscordRoleRewardData = () => {
   };
 };
 
-export const useAddRewardModalState = () => {
+export const useAddRewardModalState = (defaultRewardType = PAYMENT_OPTIONS.DISCORD_ROLE) => {
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
-  const [rewardType, setRewardType] = useState(PAYMENT_OPTIONS.DISCORD_ROLE);
+  const [rewardType, setRewardType] = useState(defaultRewardType);
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [cmtyStoreItemReward, setCmtyStoreItemReward] = useState(null);
