@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { MinimalQuestFragment } from "graphql/fragments/quest";
 import { ReferralCampaignFragment } from "graphql/fragments/referral";
 
 export const GET_REFERRAL_CAMPAIGN_BY_ID = gql`
@@ -9,7 +8,6 @@ export const GET_REFERRAL_CAMPAIGN_BY_ID = gql`
     }
   }
   ${ReferralCampaignFragment}
-  ${MinimalQuestFragment}
 `;
 
 export const GET_REFERRAL_CAMPAIGN_FOR_ORG = gql`
@@ -83,7 +81,6 @@ export const GET_REFERRAL_CAMPAIGN_BY_EXTERNAL_ID = gql`
     }
   }
   ${ReferralCampaignFragment}
-  ${MinimalQuestFragment}
 `;
 
 export const GET_REFERRAL_CODE_INFO = gql`

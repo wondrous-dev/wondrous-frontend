@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { QuestFragment } from "graphql/fragments/quest";
 import { ReferralCampaignFragment } from "graphql/fragments/referral";
 
 export const CREATE_REFERRAL = gql`
