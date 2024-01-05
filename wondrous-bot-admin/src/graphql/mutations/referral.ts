@@ -17,7 +17,6 @@ export const UPDATE_REFERRAL = gql`
     }
   }
   ${ReferralCampaignFragment}
-  ${QuestFragment}
 `;
 
 export const MINIMAL_REFERRAL_UPDATE = gql`
