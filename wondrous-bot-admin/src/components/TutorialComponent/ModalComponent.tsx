@@ -3,6 +3,7 @@ import Modal from "components/Shared/Modal";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
 import { SkipButton } from "./styles";
+import useSkipTour from "./shared/useSkipTour";
 
 const ModalComponent = ({
   isModalOpen,
@@ -10,9 +11,17 @@ const ModalComponent = ({
   imgSrc,
   children,
   onStart,
-  onSkip,
+  onSkip = null,
   startButtonLabel = "Start Onboarding",
 }) => {
+  const { skipTour } = useSkipTour();
+
+  const handleSkip = () => {
+    skipTour();
+    onClose();
+    onSkip?.();
+  };
+
   return (
     <Modal
       open={isModalOpen}
@@ -21,11 +30,17 @@ const ModalComponent = ({
       maxWidth={470}
       footerCenter
       footerRight={
-        <Box display="flex" width="100%" justifyContent="space-between" gap="12px" flexDirection={{
-          xs: 'column',
-          md: 'row'
-        }}>
-          <SkipButton onClick={onStart}>Skip Tour</SkipButton>
+        <Box
+          display="flex"
+          width="100%"
+          justifyContent="space-between"
+          gap="12px"
+          flexDirection={{
+            xs: "column",
+            md: "row",
+          }}
+        >
+          <SkipButton onClick={handleSkip}>Skip Tour</SkipButton>
           <SharedSecondaryButton onClick={onStart}>{startButtonLabel}</SharedSecondaryButton>
         </Box>
       }

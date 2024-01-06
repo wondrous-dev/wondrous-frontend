@@ -8,11 +8,9 @@ import { ModalLabel, ModalTextBody } from "../styles";
 import ContentComponent from "../ContentComponent";
 import { TourDataContext } from "utils/context";
 
-
 const QuestsTutorial = () => {
-  const {setCurrentId} = useContext(TourDataContext)
+  const { handleTourVisit } = useContext(TourDataContext);
   const { setIsOpen, isOpen, setSteps, currentStep, setCurrentStep } = useTour();
-
 
   const STEPS = [
     {
@@ -22,7 +20,7 @@ const QuestsTutorial = () => {
           content="Create a quest by clicking here!"
           wrapperProps={{
             sx: {
-              width: "282px",
+              width: "100%",
             },
           }}
         />
@@ -30,7 +28,7 @@ const QuestsTutorial = () => {
       hideButtons: true,
     },
   ];
-  
+
   const { isModalOpen, setIsModalOpen } = useModalState({ guide: TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE });
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -39,18 +37,18 @@ const QuestsTutorial = () => {
     setSteps(STEPS);
     setIsModalOpen(false);
     setIsOpen(true);
+    handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE);
   };
 
-  const handleSkip = () => {};
+  const handleSkip = () => handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE);
 
   useEffect(() => {
-    setCurrentId
     return () => {
       setIsOpen(false);
       setCurrentStep(0);
       setSteps([]);
-    }
-  }, [])
+    };
+  }, []);
 
   //TODO: replace image with higher quality - ask Ben
   return (

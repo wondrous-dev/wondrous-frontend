@@ -37,6 +37,9 @@ export const BOTTOM_LINKS = [
     isExternalPath: true,
     inactiveIcon: InactiveTutorialIcon,
     activeIcon: ActiveTutorialIcon,
+    props: {
+      "data-tour": "tour-tutorial-link",
+    },
   },
 ];
 

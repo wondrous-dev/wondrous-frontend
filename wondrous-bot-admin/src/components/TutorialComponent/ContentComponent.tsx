@@ -9,10 +9,10 @@ const ContentComponent = ({
   wrapperProps = {},
   typographyProps = {},
   subHeader = null,
+  children = null
 }) => {
   const { setIsOpen } = useTour();
 
-  const closeTour = () => setIsOpen(false);
   return (
     <ModalContent>
       <Box display="flex" justifyContent="center" alignItems="center" padding="24px" gap="18x" flexDirection="column" {...wrapperProps}>
@@ -32,6 +32,7 @@ const ContentComponent = ({
             {subHeader}
           </Typography>
         ) : null}
+        {children}
       </Box>
     </ModalContent>
   );

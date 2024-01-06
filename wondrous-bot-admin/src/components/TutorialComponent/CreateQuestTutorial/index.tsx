@@ -4,6 +4,7 @@ import { TUTORIALS } from "utils/constants";
 import { TourDataContext } from "utils/context";
 import ContentComponent from "../ContentComponent";
 import { doArrow } from "../utils";
+import { useUserCompletedGuides } from "utils/hooks";
 
 const guide = TUTORIALS.COMMUNITIES_QUEST;
 
@@ -17,6 +18,7 @@ const getTemplateModalPosition = () => {
 const useCreateQuestTutorial = ({ shouldDisplay }) => {
   const { setIsOpen, setSteps, setCurrentStep, currentStep } = useTour();
 
+  const { handleTourVisit } = useContext(TourDataContext);
   const nodes = useRef([]);
 
   const { x, y } = useMemo(() => getTemplateModalPosition(), []);
@@ -389,12 +391,12 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
         />
       ),
     },
-
     {
       hideButtons: true,
       selector: "[data-tour=tour-save-quest]",
       position: "left",
       action: (node) => {
+        handleTourVisit(TUTORIALS.COMMUNITIES_QUEST);
         const closeTour = () => {
           setIsOpen(false);
           setSteps([]);
@@ -411,7 +413,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
     },
   ];
 
-  const completedGuides = [];
+  const completedGuides = useUserCompletedGuides();
   const { setCurrentId } = useContext(TourDataContext);
   useEffect(() => {
     if (completedGuides && !completedGuides?.includes(guide) && shouldDisplay) {
@@ -421,7 +423,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       setIsOpen(true);
     }
     return () => {
-      console.log("im called here?");
       setCurrentId(null);
       nodes.current.forEach(({ element, event, action }) => {
         element.removeEventListener(event, action);

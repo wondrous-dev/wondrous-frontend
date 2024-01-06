@@ -4,37 +4,32 @@ import { SharedSecondaryButton } from "components/Shared/styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import { config } from "./config";
 import { getStepsConfig } from "./utils";
+import useSkipTour from "./shared/useSkipTour";
 
-export function NextNavigationButton({
-  currentStep,
-  setIsOpen,
-  setCurrentStep,
-  buttonProps = {}
-}) {
-  const {meta, setMeta} = useTour();
-  const navigate = useNavigate()
-  const {steps}:any = useTour();
+export function NextNavigationButton({ currentStep, setIsOpen, setCurrentStep, buttonProps = {} }) {
+  const { meta, setMeta } = useTour();
+  const navigate = useNavigate();
+  const { steps }: any = useTour();
   const stepsData = steps[currentStep];
-  const buttonTitle = stepsData?.nextButtonTitle || 'Next';
+  const buttonTitle = stepsData?.nextButtonTitle || "Next";
   const action = async () => {
-
-    if(stepsData?.forceNextStep) {
-      const nextStep = stepsData?.forceNextStep(currentStep)
-      return setCurrentStep(nextStep)
+    if (stepsData?.forceNextStep) {
+      const nextStep = stepsData?.forceNextStep(currentStep);
+      return setCurrentStep(nextStep);
     }
-    if(stepsData?.nextHref && meta) {
-      navigate(stepsData?.nextHref.replace(':id', meta))
-      setMeta(null)
+    if (stepsData?.nextHref && meta) {
+      navigate(stepsData?.nextHref.replace(":id", meta));
+      setMeta(null);
     }
     if (currentStep === steps.length - 1) {
       return setIsOpen(false);
     }
-    if(stepsData?.handleNextAction) {
-      return stepsData?.handleNextAction?.()
+    if (stepsData?.handleNextAction) {
+      return stepsData?.handleNextAction?.();
     }
     return setCurrentStep((step) => step + 1);
   };
-  if (stepsData?.nextAction === 'skip') {
+  if (stepsData?.nextAction === "skip") {
     return null;
   }
   return (
@@ -44,29 +39,26 @@ export function NextNavigationButton({
   );
 }
 
-
-export function PrevNavigationButton({
-  currentStep,
-  setIsOpen,
-  setCurrentStep,
-  buttonProps = {}
-}) {
-  const {steps}:any = useTour();
+export function PrevNavigationButton({ currentStep, setIsOpen, setCurrentStep, buttonProps = {} }) {
+  const { steps }: any = useTour();
   const stepsData = steps[currentStep];
-  const buttonTitle = stepsData?.prevButtonTitle || 'Previous';
-  
+  const buttonTitle = stepsData?.prevButtonTitle || "Previous";
 
+  const { skipTour } = useSkipTour();
 
   const action = () => {
-    if(stepsData?.forcePrevStep) {
-      const prevStep = stepsData?.forcePrevStep(currentStep)
-      return setCurrentStep(prevStep)
+    if (stepsData?.forcePrevStep) {
+      const prevStep = stepsData?.forcePrevStep(currentStep);
+      return setCurrentStep(prevStep);
     }
-    if (currentStep === 0 || stepsData.prevAction === 'skip') {
+    if (currentStep === 0) {
       return setIsOpen(false);
     }
-    if(stepsData?.handlePrevAction) {
-      return stepsData?.handlePrevAction?.()
+    if (stepsData?.prevAction === "skip") {
+      return skipTour();
+    }
+    if (stepsData?.handlePrevAction) {
+      return stepsData?.handlePrevAction?.();
     }
     return setCurrentStep((step) => step - 1);
   };
@@ -76,4 +68,3 @@ export function PrevNavigationButton({
     </SharedSecondaryButton>
   );
 }
-

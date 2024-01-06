@@ -18,25 +18,14 @@ const TutorialComponent = ({ children }) => {
   const location = useLocation();
   const [currentId, setCurrentId] = useState(null);
 
-  const { steps, id, disableInteraction } = getStepsConfig(location.pathname);
+  // const { steps, id, disableInteraction } = getStepsConfig(location.pathname);
 
   const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
     refetchQueries: [{ query: GET_LOGGED_IN_USER }],
   });
 
-  const disableBody = () => {
+  const toggleBodyScroll = () => {
     toggleHtmlOverflow();
-  };
-
-  const beforeClose = () => {
-    toggleHtmlOverflow();
-    if (currentId && !completedQuestGuides?.includes(currentId)) {
-      setUserCompletedGuide({
-        variables: {
-          guideId: id,
-        },
-      });
-    }
   };
 
   const styles = {
@@ -75,16 +64,27 @@ const TutorialComponent = ({ children }) => {
     }
   };
 
+  const handleTourVisit = (guideId) => {
+    if (guideId && !completedQuestGuides?.includes(guideId)) {
+      setUserCompletedGuide({
+        variables: {
+          guideId,
+        },
+      });
+    }
+  };
+
   return (
     <TourProvider
-      steps={steps}
-      afterOpen={disableBody}
-      beforeClose={beforeClose}
+      steps={[]}
+      afterOpen={toggleBodyScroll}
+      beforeClose={toggleBodyScroll}
       maskClassName="mask"
+      scrollSmooth
+      inViewThreshold={500}
       styles={styles}
       showCloseButton={false}
       onClickMask={shakePopoverAnimation}
-      disableInteraction={disableInteraction}
       disableDotsNavigation
       padding={{ popover: 15, mask: 6 }}
       components={{
@@ -111,6 +111,7 @@ const TutorialComponent = ({ children }) => {
         value={{
           currentId,
           setCurrentId,
+          handleTourVisit,
         }}
       >
         {children}

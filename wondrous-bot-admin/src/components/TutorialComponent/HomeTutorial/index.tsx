@@ -2,13 +2,14 @@ import { Box, Typography, useMediaQuery } from "@mui/material";
 import { useTour } from "@reactour/tour";
 import { useMe, withAuth } from "components/Auth";
 import Modal from "components/Shared/Modal";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { TUTORIALS } from "utils/constants";
 import { useUserCompletedGuides } from "utils/hooks";
 import ModalComponent from "../ModalComponent";
 import { ModalLabel, ModalTextBody } from "../styles";
 import ContentComponent from "../ContentComponent";
 import { doArrow } from "../utils";
+import { TourDataContext } from "utils/context";
 
 const desktopSelector = "[data-tour=sidebar-quest-item]";
 const mobileSelector = "[data-tour=homepage-guide-menu]";
@@ -35,7 +36,6 @@ const desktopSteps: any = [
     prevButtonTitle: null,
     prevAction: null,
     hideButtons: true,
-    // position: [220, 180],
     position: "right",
     disableInteraction: true,
     action: (node) => {
@@ -71,12 +71,10 @@ const desktopSteps: any = [
 ];
 
 const HomeTutorial = () => {
-  // const completedGuides = useUserCompletedGuides();
+  const completedGuides = useUserCompletedGuides();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const completedGuides = [];
-
+  const { handleTourVisit } = useContext(TourDataContext);
   const { setIsOpen, isOpen, setSteps, currentStep, setCurrentStep } = useTour();
 
   const nodes = useRef([]);
@@ -114,7 +112,19 @@ const HomeTutorial = () => {
   const mobileSteps = [
     {
       selector: mobileSelector,
-      position: "bottom",
+      position: [90, 100],
+      styles: {
+        popover: (base, state) => {
+          return {
+            ...base,
+            background: "white",
+            borderRadius: "16px",
+            padding: "0px",
+            zIndex: 1000000,
+            ...doArrow(state.position, state.verticalAlign, state.horizontalAlign, "white", "bottom"),
+          };
+        },
+      },
       hideButtons: true,
       content: () => (
         <ContentComponent
@@ -207,10 +217,12 @@ const HomeTutorial = () => {
     setSteps(steps);
     setIsModalOpen(false);
     setIsOpen(true);
+    handleTourVisit(TUTORIALS.COMMUNITIES_HOME_GUIDE);
   };
 
+  const handleSkip = () => handleTourVisit(TUTORIALS.COMMUNITIES_HOME_GUIDE);
+
   //TODO handle skip
-  const handleSkip = () => {};
   return (
     <ModalComponent
       isModalOpen={isModalOpen}
