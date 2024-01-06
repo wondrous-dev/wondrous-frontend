@@ -27,6 +27,7 @@ type InputQuestStep = {
     snapshotSpaceLink?: string;
     snapshotVoteTimes?: number;
     discordChannelId?: string;
+    discordChannelIds?: string[];
     discordChannelName?: string;
     discordMessageType?: string;
     dataCollectionType?: string;
@@ -103,7 +104,8 @@ type OutputQuestStep = {
       }
     | {
         prompt?: string;
-        discordChannelId: string;
+        discordChannelId?: string;
+        discordChannelIds?: string[];
         discordMessageType?: string;
       }
     | {
@@ -229,6 +231,7 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       outputStep.value = {
         prompt: step?.prompt,
         discordChannelId: step?.additionalData?.discordChannelId,
+        discordChannelIds: step?.additionalData?.discordChannelIds,
         discordMessageType: step?.additionalData?.discordMessageType,
       };
     } else if (step.type === TYPES.DISCORD_EVENT_ATTENDANCE) {

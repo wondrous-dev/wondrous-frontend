@@ -1,7 +1,22 @@
 import { InputUnstyled } from "@mui/base";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Chip, Grid, Typography } from "@mui/material";
 import styled from "styled-components";
 
+export const StyledChipTag = styled(Chip)`
+  && {
+    background: rgba(0, 0, 0, 0.1);
+    border: 0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    > span {
+      font-weight: 500;
+      font-size: 16px;
+      font-family: "Poppins";
+    }
+  }
+`;
 export const CustomTextField = styled(InputUnstyled)`
   width: 100%;
   && {

@@ -53,8 +53,22 @@ export const GET_USER_QUEST_SUBMISSION_ANALYTICS = gql`
 `;
 
 export const GET_USER_QUEST_SUBMISSIONS = gql`
-  query getUserQuestSubmissions($cmtyUserId: ID!, $orgId: ID!, $limit: Int, $offset: Int, $questId: String, $status: String) {
-    getUserQuestSubmissions(cmtyUserId: $cmtyUserId, orgId: $orgId, limit: $limit, offset: $offset, questId: $questId, status: $status) {
+  query getUserQuestSubmissions(
+    $cmtyUserId: ID!
+    $orgId: ID!
+    $limit: Int
+    $offset: Int
+    $questId: String
+    $status: String
+  ) {
+    getUserQuestSubmissions(
+      cmtyUserId: $cmtyUserId
+      orgId: $orgId
+      limit: $limit
+      offset: $offset
+      questId: $questId
+      status: $status
+    ) {
       id
       createdAt
       orgId
@@ -97,6 +111,7 @@ export const GET_USER_QUEST_SUBMISSIONS = gql`
           additionalData {
             discordChannelName
             discordChannelId
+            discordChannelIds
             tweetHandle
             tweetLink
             tweetPhrase
@@ -127,7 +142,6 @@ export const GET_USER_QUEST_SUBMISSIONS = gql`
     }
   }
 `;
-
 
 export const GET_ONBOARDING_QUEST_SUBMISSIONS = gql`
   query getQuestSubmissionsOnboarding($cmtyUserId: ID!, $orgId: ID!, $limit: Int, $offset: Int) {
@@ -174,6 +188,7 @@ export const GET_ONBOARDING_QUEST_SUBMISSIONS = gql`
           additionalData {
             discordChannelName
             discordChannelId
+            discordChannelIds
             tweetHandle
             tweetLink
             tweetPhrase

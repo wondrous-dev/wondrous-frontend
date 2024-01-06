@@ -28,7 +28,6 @@ export const QuestListFragment = gql`
   }
 `;
 
-
 export const MinimalQuestFragment = gql`
   fragment MinimalQuestFragment on Quest {
     id
@@ -82,7 +81,6 @@ export const MinimalQuestFragment = gql`
     }
   }
 `;
-
 
 export const QuestFragment = gql`
   fragment QuestFragment on Quest {
@@ -218,6 +216,7 @@ export const QuestFragment = gql`
       additionalData {
         discordChannelName
         discordChannelId
+        discordChannelIds
         tweetHandle
         tweetLink
         tweetPhrase

@@ -19,6 +19,7 @@ import { ErrorText } from "components/Shared/styles";
 import AutocompleteOptionsComponent from "./AutocompleteComponent";
 import ErrorField from "components/Shared/ErrorField";
 import InfoLabel from "components/CreateTemplate/InfoLabel";
+import AutocompleteMultipleComponent from "./AutocompleteMultipleComponent";
 
 const TextInputStyle = {
   width: "50%",
@@ -60,17 +61,28 @@ const DiscordChannelMessage = ({ handleOnChange, value, error }) => {
     label: channel.name,
     value: channel.id,
   }));
+  const defaultSelectedChannels = channels?.filter((channel) => {
+    if (value?.discordChannelIds) {
+      return value?.discordChannelIds?.includes(channel.value);
+    }
+    return false;
+  });
+  const defaultSelectedChannel = channels?.filter((channel) => {
+    if (value?.discordChannelIds) {
+      return channel.value === value?.discordChannelId;
+    }
+    return false;
+  });
   return (
     <>
       <Label>Ask members to message a particular channel</Label>
-      <AutocompleteOptionsComponent 
-        value={value?.discordChannelId || ""}
-        onChange={(value) => handleOnChange("discordChannelId", value)}
-        options={channels}
+      <AutocompleteMultipleComponent
+        value={defaultSelectedChannels || (value?.discordChannelId ? [defaultSelectedChannel] : [])}
+        onChange={(value) => handleOnChange("discordChannelIds", value)}
+        options={channels || []}
         placeholder="Select a channel"
-        
       />
-      {error?.discordChannelId ? <ErrorField errorText={error?.discordChannelId}/> : null}
+      {error?.discordChannelIds ? <ErrorField errorText={error?.discordChannelId} /> : null}
 
       {/* <Label>Select message type</Label>
       <SelectComponent
@@ -153,9 +165,9 @@ const DiscordJoinCommunityCall = ({ handleOnChange, value, error }) => {
 
   return (
     <>
-      <div style={{display: 'flex'}}>
-      <Label>Select Event </Label>
-      <InfoLabel title={'First create the event on Discord, refresh the page'}/>
+      <div style={{ display: "flex" }}>
+        <Label>Select Event </Label>
+        <InfoLabel title={"First create the event on Discord, refresh the page"} />
       </div>
       {options && (
         <SelectComponent
