@@ -114,6 +114,7 @@ const PricingOptionsListItem = ({
             title !== PricingOptionsTitle.Basic &&
             userPurchasedSubscription && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}
           target="_blank"
+          data-rewardful
           style={{
             textDecoration: "none",
           }}
