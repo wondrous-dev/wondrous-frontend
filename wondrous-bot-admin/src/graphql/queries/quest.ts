@@ -239,6 +239,7 @@ export const EXPORT_QUEST_SUBMISSIONS = gql`
         additionalData {
           discordChannelName
           discordChannelId
+          discordChannelIds
           tweetHandle
           tweetLink
           tweetPhrase
