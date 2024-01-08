@@ -59,7 +59,7 @@ const Modal = ({
             {!noHeader && (
               <ModalHeader justifyContent={title ? "space-between" : "flex-end"}>
                 {!!title && <ModalTitle>{title}</ModalTitle>}
-                {onClose && <CloseModalBtn onClick={onClose} />}
+                {onClose && <CloseModalBtn data-tour="tutorial-default-modal-close-button" onClick={onClose} />}
               </ModalHeader>
             )}
 

@@ -125,9 +125,7 @@ const QuestsTutorial = () => {
           subHeader={"Now it’s time to get creative. Start testing out other quest templates and create your own."}
           bodyText={"To learn more about our other features, just select them on the sidebar and begin the tour."}
         />
-      ) : (
-        false
-      )}
+      ) : null}
       <ModalComponent
         isModalOpen={isModalOpen}
         onClose={handleModalClose}

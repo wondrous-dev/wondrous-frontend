@@ -14,46 +14,8 @@ import GlobalContext from "utils/context/GlobalContext";
 import { MemberPageSearchBar } from "./MemberSearchBar";
 import ResetPointsModal from "./ResetPointsModal";
 import MembersTutorial from "components/TutorialComponent/MembersTutorial";
+import { transformUser } from "utils/transformCmtyUserToMembers";
 
-const transformUser = (user) => {
-  const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
-  return {
-    id: user.id,
-    name: {
-      component: "custom",
-      value: user,
-      customComponent: (props) => <MembersAnalytics {...props} />,
-    },
-    level: {
-      component: "hexagon",
-      value: user?.level,
-    },
-    discord: {
-      component: "discord",
-      value: userDiscordDiscriminator || "N/A",
-    },
-    twitter: {
-      component: "twitter",
-      value: `https://twitter.com/${user?.twitterInfo?.twitterUsername}` || "N/A",
-    },
-    pointsBalance: {
-      component: "xp_balance",
-      value: user.pointBalance,
-      componentProps: {
-        fontWeight: 500,
-        cmtyUser: user,
-      },
-    },
-    points: {
-      component: "xp",
-      value: user.point,
-      componentProps: {
-        fontWeight: 500,
-        cmtyUser: user,
-      },
-    },
-  };
-};
 const MembersPage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [hasMore, setHasMore] = useState(true);
@@ -107,6 +69,7 @@ const MembersPage = () => {
   };
 
   const headers = ["Name", "Level", "Discord", "Twitter", "Points Balance", "Total Points Accumulated"];
+  console.log(membersData, "memb data", data?.getCmtyUsersForOrg);
   return (
     <>
       <ResetPointsModal
@@ -114,7 +77,9 @@ const MembersPage = () => {
         setOpenResetPointsModal={setOpenResetPointsModal}
         pointsBalance={resetPointsBalance}
       />
-      <MembersTutorial setMembersData={setMembersData} data={data} />
+      {data?.getCmtyUsersForOrg ? (
+        <MembersTutorial setMembersData={setMembersData} data={data?.getCmtyUsersForOrg} />
+      ) : null}
       <PageHeader title="Community Members" withBackButton={false} />
       <Grid
         minHeight="100vh"

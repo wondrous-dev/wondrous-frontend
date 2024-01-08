@@ -51,7 +51,7 @@ const GeneralInfo = ({ user }) => {
   );
 };
 
-const MembersAnalytics = ({ value }) => {
+const MembersAnalytics = ({ value, onClose = null }) => {
   const [activeCmtyUser, setActiveCmtyUser] = useState(null);
   const username = value?.username || value?.discordUsername || value?.telegramUsername || "N/A";
 
@@ -60,6 +60,7 @@ const MembersAnalytics = ({ value }) => {
   };
 
   const handleClose = () => {
+    onClose?.();
     return setActiveCmtyUser(null);
   };
 

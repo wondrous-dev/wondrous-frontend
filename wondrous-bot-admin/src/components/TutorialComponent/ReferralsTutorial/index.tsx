@@ -85,7 +85,6 @@ const ReferralsTutorial = () => {
     handleTourVisit(TUTORIALS.REFERRAL_PAGE_GUIDE);
   };
 
-  console.log(isFinishModalOpen, "is op");
   const handleSkip = () => handleTourVisit(TUTORIALS.REFERRAL_PAGE_GUIDE);
 
   const handleTourStart = () => {
