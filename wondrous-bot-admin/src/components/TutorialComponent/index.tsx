@@ -15,10 +15,6 @@ import { TourDataContext } from "utils/context";
 const TutorialComponent = ({ children }) => {
   const { user } = useMe() || {};
   const completedQuestGuides = user?.completedQuestGuides;
-  const location = useLocation();
-  const [currentId, setCurrentId] = useState(null);
-
-  // const { steps, id, disableInteraction } = getStepsConfig(location.pathname);
 
   const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
     refetchQueries: [{ query: GET_LOGGED_IN_USER }],
@@ -75,48 +71,47 @@ const TutorialComponent = ({ children }) => {
   };
 
   return (
-    <TourProvider
-      steps={[]}
-      afterOpen={toggleBodyScroll}
-      beforeClose={toggleBodyScroll}
-      maskClassName="mask"
-      scrollSmooth
-      inViewThreshold={500}
-      styles={styles}
-      showCloseButton={false}
-      onClickMask={shakePopoverAnimation}
-      disableDotsNavigation
-      padding={{ popover: 15, mask: 6 }}
-      components={{
-        Badge: () => null,
-
-        Navigation: ({ nextButton, prevButton, currentStep, setIsOpen, setCurrentStep }) => (
-          <NavigationWrapper
-            nextButton={nextButton}
-            prevButton={prevButton}
-            currentStep={currentStep}
-            setIsOpen={setIsOpen}
-            setCurrentStep={setCurrentStep}
-          />
-        ),
+    <TourDataContext.Provider
+      value={{
+        handleTourVisit,
       }}
-      nextButton={({ currentStep, setIsOpen, setCurrentStep }) => (
-        <NextNavigationButton currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
-      )}
-      prevButton={({ currentStep, setIsOpen, setCurrentStep }) => (
-        <PrevNavigationButton currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
-      )}
     >
-      <TourDataContext.Provider
-        value={{
-          currentId,
-          setCurrentId,
-          handleTourVisit,
+      <TourProvider
+        steps={[]}
+        afterOpen={toggleBodyScroll}
+        beforeClose={toggleBodyScroll}
+        maskClassName="mask"
+        scrollSmooth
+        inViewThreshold={500}
+        styles={styles}
+        showCloseButton={false}
+        onClickMask={shakePopoverAnimation}
+        disableDotsNavigation
+        disableKeyboardNavigation
+        padding={{ popover: 15, mask: 6 }}
+        components={{
+          Badge: () => null,
+
+          Navigation: ({ nextButton, prevButton, currentStep, setIsOpen, setCurrentStep }) => (
+            <NavigationWrapper
+              nextButton={nextButton}
+              prevButton={prevButton}
+              currentStep={currentStep}
+              setIsOpen={setIsOpen}
+              setCurrentStep={setCurrentStep}
+            />
+          ),
         }}
+        nextButton={({ currentStep, setIsOpen, setCurrentStep }) => (
+          <NextNavigationButton currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
+        )}
+        prevButton={({ currentStep, setIsOpen, setCurrentStep }) => (
+          <PrevNavigationButton currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
+        )}
       >
         {children}
-      </TourDataContext.Provider>
-    </TourProvider>
+      </TourProvider>
+    </TourDataContext.Provider>
   );
 };
 

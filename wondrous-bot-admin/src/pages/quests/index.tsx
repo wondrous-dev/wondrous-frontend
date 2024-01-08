@@ -38,12 +38,10 @@ const SELECT_QUESTS_TYPE = [
 ];
 
 const QuestsPage = () => {
-  const { setIsOpen, setMeta } = useTour();
   const { activeOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
 
   const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
-  const { user } = useMe() || {};
 
   const subscription = useSubscription();
   const { setPaywall, setPaywallMessage } = useSubscriptionPaywall();
@@ -69,15 +67,6 @@ const QuestsPage = () => {
   };
 
   const handleOnFetchCompleted = async (data) => {
-    if (
-      user &&
-      !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) &&
-      data?.getQuestsForOrg?.length
-    ) {
-      setIsOpen(true);
-      const quest = data?.getQuestsForOrg[0];
-      setMeta(quest?.id);
-    }
     if (!data?.getQuestsForOrg?.length && statuses === QUEST_STATUSES.OPEN && isLoading) {
       const variables: any = {
         input: {

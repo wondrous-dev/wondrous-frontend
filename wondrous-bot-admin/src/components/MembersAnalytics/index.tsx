@@ -7,7 +7,6 @@ import DiscordAnalytics from "./DiscordAnalytics";
 import Submissions from "./Submissions";
 import OnboardingSubmissions from "./OnboardingSubmissions";
 
-
 const GeneralInfo = ({ user }) => {
   const ITEMS = [
     {
@@ -86,7 +85,18 @@ const MembersAnalytics = ({ value }) => {
 
   return (
     <>
-      <Modal open={!!activeCmtyUser} onClose={handleClose} title={`${username}`} maxWidth={740}>
+      <Modal
+        modalComponentProps={{
+          className: "tour-default-modal",
+        }}
+        dialogComponentProps={{
+          className: "tutorials-onboarding-modal",
+        }}
+        open={!!activeCmtyUser}
+        onClose={handleClose}
+        title={`${username}`}
+        maxWidth={740}
+      >
         <Grid display="flex" gap="32px" flexDirection="column">
           {activeCmtyUser
             ? CONFIG.map((config, idx) => {
@@ -99,6 +109,7 @@ const MembersAnalytics = ({ value }) => {
         fontSize="14px"
         lineHeight="14px"
         textAlign="center"
+        data-tour="tutorial-members-username"
         width="100%"
         onClick={() => handleUsernameClick(value?.id)}
       >

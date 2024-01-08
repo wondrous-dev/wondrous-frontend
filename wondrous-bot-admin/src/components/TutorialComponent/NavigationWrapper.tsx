@@ -12,12 +12,12 @@ function NavigationWrapper({ nextButton, prevButton, currentStep, setIsOpen, set
   const hideButtons = currentStepConfig?.hideButtons;
   const EndButton = currentStepConfig?.endButton;
 
-  if(hideButtons) return null;
+  if (hideButtons) return null;
 
   return (
     <Grid
       display="flex"
-      justifyContent="space-between"
+      justifyContent={currentStepConfig.alignCenter ? 'center' : 'space-between'}
       alignItems="center"
       gap="32px"
       padding="16px"
@@ -27,10 +27,10 @@ function NavigationWrapper({ nextButton, prevButton, currentStep, setIsOpen, set
     >
       {(!hideButtons || !EndButton) && (
         <>
-          <PrevBtn currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
-          <Typography fontSize="14px" fontFamily="Poppins" color="#828282" fontWeight={500} whiteSpace="nowrap">
-            {currentStep + 1} of {steps?.length}
-          </Typography>
+          {currentStepConfig?.hidePrevButton ? null : (
+            <PrevBtn currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
+          )}
+          {currentStepConfig?.hidePrevButton || currentStepConfig?.hideNextButton ? null : <Box flex="1" />}
           <NextBtn currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
         </>
       )}

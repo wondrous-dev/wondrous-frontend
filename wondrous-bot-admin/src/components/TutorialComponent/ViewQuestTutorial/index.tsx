@@ -1,7 +1,6 @@
 import { useMe } from "components/Auth";
 import ContentComponent from "../ContentComponent";
 import { useContext, useEffect, useState } from "react";
-import { useModalState } from "../shared";
 import { TUTORIALS } from "utils/constants";
 import { TourDataContext } from "utils/context";
 import { useTour } from "@reactour/tour";
@@ -9,23 +8,19 @@ import Modal from "components/Shared/Modal";
 import { Box, Typography } from "@mui/material";
 import { QuestScrolLGraphics } from "components/Icons/Tour";
 import { SharedSecondaryButton } from "components/Shared/styles";
-
-// 'data-tour': 'tour-submissions-empty-state',
-// data-tour="tour-submissions-filter-buttons"
-// data-tour="tour-submissions-title"
+import { useUserCompletedGuides } from "utils/hooks";
+import { useParams } from "react-router-dom";
 
 const ViewQuestTutorial = () => {
-  const { user } = useMe() || {};
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { setCurrentId } = useContext(TourDataContext);
-  const { setSteps, isOpen, setIsOpen, setCurrentStep } = useTour();
+  const { setSteps, setIsOpen, setCurrentStep } = useTour();
+  const { handleTourVisit } = useContext(TourDataContext);
+  let { id } = useParams();
   const completedGuides = [];
   const STEPS = [
     {
       selector: "[data-tour=tour-submissions-empty-state]",
       action: (node) => {
-        // we need to wait for the empty state to mount
         const submissionsTitle = document.querySelector("[data-tour=tour-submissions-title]");
         const submissionsFilterButtons = document.querySelectorAll("[data-tour=tour-submissions-filter-buttons]") || [];
         const elements = [submissionsTitle, ...submissionsFilterButtons];
@@ -99,12 +94,11 @@ const ViewQuestTutorial = () => {
 
   useEffect(() => {
     if (completedGuides && !completedGuides?.includes(TUTORIALS.POST_CREATE_QUEST)) {
-      setCurrentId(TUTORIALS.POST_CREATE_QUEST);
+      handleTourVisit(TUTORIALS.POST_CREATE_QUEST);
       setSteps(STEPS);
       setCurrentStep(0);
       setIsOpen(true);
     }
-    return () => setCurrentId(null);
   }, []);
 
   const handleModalClose = () => {
@@ -116,7 +110,11 @@ const ViewQuestTutorial = () => {
   return isModalOpen ? (
     <Modal
       footerCenter
-      footerLeft={<Box width="100%" display="flex" justifyContent="center"><SharedSecondaryButton onClick={handleModalClose}>Continue</SharedSecondaryButton></Box>}
+      footerLeft={
+        <Box width="100%" display="flex" justifyContent="center">
+          <SharedSecondaryButton onClick={handleModalClose}>Continue</SharedSecondaryButton>
+        </Box>
+      }
       open
       noHeader
     >

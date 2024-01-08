@@ -352,6 +352,11 @@ export const TUTORIALS = {
   COMMUNITIES_QUEST: "communities_quest",
   FIRST_CREATED_QUEST: "first_created_quest",
   POST_CREATE_QUEST: "post_create_quest",
+  POST_CREATE_QUEST_QUESTS_PAGE_GUIDE: "post_create_quest_quests_page_guide",
+  REFERRAL_PAGE_GUIDE: "referral_page_guide",
+  REFERRAL_CREATE_PAGE_GUIDE: "referral_create_page_guide",
+  POST_CREATE_REFERRAL_PAGE_GUIDE: "post_create_referral_page_guide",
+  MEMBERS_PAGE_GUIDE: "members_page_guide",
 };
 
 export const DEFAULT_BANNER_IMAGES = {

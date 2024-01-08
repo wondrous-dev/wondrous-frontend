@@ -1,31 +1,28 @@
 import { useTour } from "@reactour/tour";
-import { useMe } from "components/Auth";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { useLocation, useNavigate } from "react-router-dom";
-import { config } from "./config";
-import { getStepsConfig } from "./utils";
+import { useNavigate } from "react-router-dom";
 import useSkipTour from "./shared/useSkipTour";
+import { ButtonBase, Typography } from "@mui/material";
+import { useContext } from "react";
+import { TourDataContext } from "utils/context";
 
 export function NextNavigationButton({ currentStep, setIsOpen, setCurrentStep, buttonProps = {} }) {
-  const { meta, setMeta } = useTour();
   const navigate = useNavigate();
   const { steps }: any = useTour();
   const stepsData = steps[currentStep];
-  const buttonTitle = stepsData?.nextButtonTitle || "Next";
+  const buttonTitle = stepsData?.nextButtonTitle || "Next Step";
+
   const action = async () => {
     if (stepsData?.forceNextStep) {
       const nextStep = stepsData?.forceNextStep(currentStep);
       return setCurrentStep(nextStep);
     }
-    if (stepsData?.nextHref && meta) {
-      navigate(stepsData?.nextHref.replace(":id", meta));
-      setMeta(null);
-    }
-    if (currentStep === steps.length - 1) {
-      return setIsOpen(false);
-    }
     if (stepsData?.handleNextAction) {
       return stepsData?.handleNextAction?.();
+    }
+
+    if (currentStep === steps.length - 1) {
+      return setIsOpen(false);
     }
     return setCurrentStep((step) => step + 1);
   };
@@ -40,31 +37,29 @@ export function NextNavigationButton({ currentStep, setIsOpen, setCurrentStep, b
 }
 
 export function PrevNavigationButton({ currentStep, setIsOpen, setCurrentStep, buttonProps = {} }) {
-  const { steps }: any = useTour();
+  const { steps, meta }: any = useTour();
+  const { handleTourVisit } = useContext(TourDataContext);
   const stepsData = steps[currentStep];
-  const buttonTitle = stepsData?.prevButtonTitle || "Previous";
-
   const { skipTour } = useSkipTour();
 
-  const action = () => {
-    if (stepsData?.forcePrevStep) {
-      const prevStep = stepsData?.forcePrevStep(currentStep);
-      return setCurrentStep(prevStep);
-    }
-    if (currentStep === 0) {
-      return setIsOpen(false);
-    }
-    if (stepsData?.prevAction === "skip") {
-      return skipTour();
-    }
-    if (stepsData?.handlePrevAction) {
-      return stepsData?.handlePrevAction?.();
-    }
-    return setCurrentStep((step) => step - 1);
+  const handleExitTour = () => {
+    skipTour();
+    console.log(meta, "meta");
+    // handleTourVisit(meta);
   };
   return (
-    <SharedSecondaryButton type="button" onClick={action} $reverse>
-      {buttonTitle}
-    </SharedSecondaryButton>
+    <ButtonBase onClick={handleExitTour}>
+      <Typography
+        color="#949494"
+        fontFamily="Poppins"
+        fontSize="15px"
+        fontWeight={500}
+        sx={{
+          textDecoration: "underline",
+        }}
+      >
+        Exit Tour
+      </Typography>
+    </ButtonBase>
   );
 }

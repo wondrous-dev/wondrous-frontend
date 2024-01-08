@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import PageHeader from "components/PageHeader";
 import ReferralsList from "components/ReferralsList";
 import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
+import ReferralsTutorial from "components/TutorialComponent/ReferralsTutorial";
 import { GET_REFERRAL_CAMPAIGN_FOR_ORG } from "graphql/queries/referral";
 import { useNavigate } from "react-router-dom";
 import { LIMIT, REFERRAL_STATUSES } from "utils/constants";
@@ -35,11 +36,14 @@ const ReferralsPage = () => {
         withBackButton={false}
         renderActions={() => (
           <Box display="flex" gap="10px" width="100%" alignItems="center">
-            <SharedSecondaryButton onClick={handleNewReferral}>New Referral</SharedSecondaryButton>
+            <SharedSecondaryButton data-tour="referrals-page-guide-new-referral-button" onClick={handleNewReferral}>
+              New Referral
+            </SharedSecondaryButton>
           </Box>
         )}
       />
-      <ReferralsList data={data} refetch={refetch} fetchMore={fetchMore} loading={loading}/>
+      {data ? <ReferralsTutorial /> : null}
+      <ReferralsList data={data} refetch={refetch} fetchMore={fetchMore} loading={loading} />
     </>
   );
 };

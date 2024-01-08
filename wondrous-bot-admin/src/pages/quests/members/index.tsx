@@ -13,6 +13,7 @@ import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { MemberPageSearchBar } from "./MemberSearchBar";
 import ResetPointsModal from "./ResetPointsModal";
+import MembersTutorial from "components/TutorialComponent/MembersTutorial";
 
 const transformUser = (user) => {
   const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
@@ -56,12 +57,20 @@ const transformUser = (user) => {
 const MembersPage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [hasMore, setHasMore] = useState(true);
+  const [membersData, setMembersData] = useState([]);
   const [memberSearch, setMemberSearch] = useState(null);
   const [resetPointsBalance, setResetPointsBalance] = useState(null);
   const [openResetPointsModal, setOpenResetPointsModal] = useState(false);
   const [memberInfo, setMemberInfo] = useState(null);
   const [getCmtyUsersForOrg, { data, fetchMore, refetch, loading }] = useLazyQuery(GET_COMMUNITY_USERS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      setMembersData(
+        data?.getCmtyUsersForOrg?.map((user) => {
+          return transformUser(user);
+        })
+      );
+    },
     variables: {
       input: {
         orgId: activeOrg?.id,
@@ -96,11 +105,6 @@ const MembersPage = () => {
       },
     }).then(({ data }) => setHasMore(data?.getCmtyUsersForOrg?.length >= LIMIT));
   };
-  const tableConfig = useMemo(() => {
-    return data?.getCmtyUsersForOrg?.map((user) => {
-      return transformUser(user);
-    });
-  }, [data]);
 
   const headers = ["Name", "Level", "Discord", "Twitter", "Points Balance", "Total Points Accumulated"];
   return (
@@ -110,6 +114,7 @@ const MembersPage = () => {
         setOpenResetPointsModal={setOpenResetPointsModal}
         pointsBalance={resetPointsBalance}
       />
+      <MembersTutorial setMembersData={setMembersData} data={data} />
       <PageHeader title="Community Members" withBackButton={false} />
       <Grid
         minHeight="100vh"
@@ -157,9 +162,12 @@ const MembersPage = () => {
         </Box>
         {data?.getCmtyUsersForOrg?.length ? (
           <TableComponent
-            data={memberInfo ? [transformUser(memberInfo)] : tableConfig}
+            data={memberInfo ? [transformUser(memberInfo)] : membersData}
             headers={headers}
             title="Top Members"
+            tableProps={{
+              "data-tour": "tutorial-members-table",
+            }}
           />
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />

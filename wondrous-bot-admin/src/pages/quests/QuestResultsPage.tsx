@@ -144,6 +144,14 @@ const QuestResultsPage = () => {
     }
     window.location.href = discordUrl;
   };
+
+  const onBackButtonClick = () => {
+    if (isEditMode) {
+      return toggleEdit();
+    }
+    const path = isOpen ? `/quests?tourQuestId=${getQuestById?.id}` : `/quests`;
+    navigate(path);
+  };
   return (
     <CreateQuestContext.Provider
       value={{
@@ -176,12 +184,7 @@ const QuestResultsPage = () => {
           }}
           title={isEditMode ? "Edit Quest" : "Quest Activity"}
           withBackButton
-          onBackButtonClick={() => {
-            if (isEditMode) {
-              return toggleEdit();
-            }
-            navigate("/quests");
-          }}
+          onBackButtonClick={onBackButtonClick}
           renderActions={() => (
             <Grid display="flex" gap="10px" alignItems="center">
               {/* 

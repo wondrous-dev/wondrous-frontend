@@ -5,6 +5,7 @@ import { TourDataContext } from "utils/context";
 import ContentComponent from "../ContentComponent";
 import { doArrow } from "../utils";
 import { useUserCompletedGuides } from "utils/hooks";
+import { useParams } from "react-router-dom";
 
 const guide = TUTORIALS.COMMUNITIES_QUEST;
 
@@ -16,7 +17,7 @@ const getTemplateModalPosition = () => {
 };
 
 const useCreateQuestTutorial = ({ shouldDisplay }) => {
-  const { setIsOpen, setSteps, setCurrentStep, currentStep } = useTour();
+  const { setIsOpen, setSteps, setCurrentStep, setMeta } = useTour();
 
   const { handleTourVisit } = useContext(TourDataContext);
   const nodes = useRef([]);
@@ -396,7 +397,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       selector: "[data-tour=tour-save-quest]",
       position: "left",
       action: (node) => {
-        handleTourVisit(TUTORIALS.COMMUNITIES_QUEST);
         const closeTour = () => {
           setIsOpen(false);
           setSteps([]);
@@ -414,16 +414,15 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
   ];
 
   const completedGuides = useUserCompletedGuides();
-  const { setCurrentId } = useContext(TourDataContext);
   useEffect(() => {
     if (completedGuides && !completedGuides?.includes(guide) && shouldDisplay) {
-      setCurrentId(guide);
+      handleTourVisit(TUTORIALS.COMMUNITIES_QUEST);
       setSteps(steps);
       setCurrentStep(0);
       setIsOpen(true);
     }
     return () => {
-      setCurrentId(null);
+      // setCurrentId(null);
       nodes.current.forEach(({ element, event, action }) => {
         element.removeEventListener(event, action);
       });

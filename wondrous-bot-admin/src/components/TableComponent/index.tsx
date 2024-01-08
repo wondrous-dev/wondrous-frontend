@@ -128,9 +128,10 @@ const TableComponent = ({
   paperComponent = null,
   tableRowStyle = null,
   emptyStateComponent = null,
+  tableProps = {},
 }) => {
   return (
-    <TableContainer component={paperComponent || PaperComponent} key={title}>
+    <TableContainer component={paperComponent || PaperComponent} key={title} {...tableProps}>
       <Grid bgcolor="#2a8d5c" padding="24px 14px">
         <Typography color="#F7F7F7" fontFamily="Poppins" fontWeight={600} fontSize="16px" lineHeight="16px">
           {title}

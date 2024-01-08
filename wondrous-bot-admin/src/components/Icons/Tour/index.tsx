@@ -102,3 +102,21 @@ export const QuestScrolLGraphics = (props) => (
     />
   </svg>
 );
+
+export const QuestionMarkIcon = (props) => (
+  <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M12.8516 22.1172C18.3744 22.1172 22.8516 17.64 22.8516 12.1172C22.8516 6.59434 18.3744 2.11719 12.8516 2.11719C7.32872 2.11719 2.85156 6.59434 2.85156 12.1172C2.85156 17.64 7.32872 22.1172 12.8516 22.1172Z"
+      fill="#AF9EFF"
+      stroke="black"
+      strokeWidth="0.8"
+    />
+    <path
+      d="M9.93652 9.00057C10.1716 8.33224 10.6357 7.76868 11.2465 7.4097C11.8573 7.05073 12.5754 6.91951 13.2737 7.03928C13.972 7.15906 14.6053 7.52209 15.0616 8.0641C15.5179 8.6061 15.7676 9.29209 15.7665 10.0006C15.7665 12.0006 12.7665 13.0006 12.7665 13.0006V14.6029"
+      stroke="black"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path d="M12.8467 17.2383H12.8567" stroke="black" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);

@@ -68,7 +68,7 @@ const SortableItem = ({ item, idx, status }) => {
         {...attributes}
         {...listeners}
       >
-        <CardWrapper item>
+        <CardWrapper item data-tour={`quest-card-${item.id}`}>
           <CompletionsCount completions={item.completions || 0} />
 
           <Box

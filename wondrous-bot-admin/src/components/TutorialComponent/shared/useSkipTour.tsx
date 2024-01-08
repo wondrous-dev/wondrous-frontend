@@ -3,6 +3,8 @@ import ContentComponent from "../ContentComponent";
 import { Box, useMediaQuery } from "@mui/material";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { doArrow } from "../utils";
+import { useContext, useMemo } from "react";
+import { TourDataContext } from "utils/context";
 
 const useSkipTour = () => {
   const onClose = () => {
@@ -10,6 +12,18 @@ const useSkipTour = () => {
   };
 
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
+
+  const getTutorialLinkPosition = () => {
+    const element = document.querySelector("[data-tour=tour-tutorial-link]");
+    if (element) {
+      const x = element?.getBoundingClientRect().x;
+      const y = element?.getBoundingClientRect().y;
+      return { x, y };
+    }
+    return { x: 0, y: 0 };
+  };
+
+  const { x, y } = useMemo(() => getTutorialLinkPosition(), []);
 
   const content = () => (
     <ContentComponent
@@ -56,10 +70,23 @@ const useSkipTour = () => {
 
   const desktopSteps: any = [
     {
-      selector: '[data-tour="tour-tutorial-link"]',
+      selector: "[data-tour=tour-tutorial-link]",
       hideButtons: true,
-      position: "right",
+      position: [x + 200, y - 160],
       content,
+      styles: {
+        popover: (base, state) => {
+          return {
+            ...base,
+            background: "white",
+            borderRadius: "16px",
+            padding: "0px",
+            zIndex: 1000000,
+            "--rtp-arrow-left": "50px !important",
+            ...doArrow(state.position, "bottom", "bottom", "white", "right"),
+          };
+        },
+      },
     },
   ];
 

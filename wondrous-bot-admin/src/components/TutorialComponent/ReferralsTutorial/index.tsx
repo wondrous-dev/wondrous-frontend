@@ -10,7 +10,7 @@ import { useUserCompletedGuides } from "utils/hooks";
 import { useLocation } from "react-router-dom";
 import FinishModalComponent from "../shared/FinishModalComponent";
 
-const QuestsTutorial = () => {
+const ReferralsTutorial = () => {
   // const completedGuides = [];
   const completedGuides = useUserCompletedGuides();
   const { handleTourVisit } = useContext(TourDataContext);
@@ -22,14 +22,12 @@ const QuestsTutorial = () => {
 
   const searchParams = new URLSearchParams(search);
 
-  const tourQuestId = searchParams.get("tourQuestId");
-
   const STEPS = [
     {
-      selector: "[data-tour=quests-page-guide-new-quest-button]",
+      selector: "[data-tour=referrals-page-guide-new-referral-button]",
       content: () => (
         <ContentComponent
-          content="Create a quest by clicking here!"
+          content="Create your first referral campaign by clicking here!"
           wrapperProps={{
             sx: {
               width: "100%",
@@ -41,23 +39,23 @@ const QuestsTutorial = () => {
     },
   ];
 
-  const POST_QUEST_CREATE_STEPS: any = [
+  const POST_REFERRAL_CREATE_STEPS: any = [
     {
-      selector: `[data-tour=quest-card-${tourQuestId}]`,
-      resizeObservables: [`[data-tour=quest-card-${tourQuestId}]`],
-      mutationObservables: [`[data-tour=quest-card-${tourQuestId}]`],
+      selector: "[data-tour=tutorial-referrals-table]",
+      resizeObservables: ["[data-tour=tutorial-referrals-table]"],
+      mutationObservables: ["[data-tour=tutorial-referrals-table]"],
       position: "bottom",
       hidePrevButton: true,
       alignCenter: true,
       nextButtonTitle: "Next",
       handleNextAction: () => {
-        setIsFinishModalOpen(true);
         setIsOpen(false);
+        return setIsFinishModalOpen(true);
       },
       content: () => (
         <ContentComponent
           content="Woohoo!"
-          subHeader="Congrats on creating your first quest. All of the quests you create will live on this page."
+          subHeader="Congrats on creating your first referral campaign. All of your referrals will live here!"
           typographyProps={{
             textAlign: "center",
             paddingTop: "24px",
@@ -84,22 +82,23 @@ const QuestsTutorial = () => {
     setSteps(STEPS);
     setIsModalOpen(false);
     setIsOpen(true);
-    handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE);
+    handleTourVisit(TUTORIALS.REFERRAL_PAGE_GUIDE);
   };
 
-  const handleSkip = () => handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE);
+  console.log(isFinishModalOpen, "is op");
+  const handleSkip = () => handleTourVisit(TUTORIALS.REFERRAL_PAGE_GUIDE);
 
   const handleTourStart = () => {
-    if (completedGuides && !completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE)) {
-      setIsModalOpen(true);
+    if (completedGuides && !completedGuides?.includes(TUTORIALS.REFERRAL_PAGE_GUIDE)) {
+      return setIsModalOpen(true);
     }
     if (
       completedGuides &&
-      !completedGuides?.includes(TUTORIALS.POST_CREATE_QUEST_QUESTS_PAGE_GUIDE) &&
-      completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) &&
-      tourQuestId
+      !completedGuides?.includes(TUTORIALS.POST_CREATE_REFERRAL_PAGE_GUIDE) &&
+      completedGuides?.includes(TUTORIALS.REFERRAL_PAGE_GUIDE)
     ) {
-      setSteps(POST_QUEST_CREATE_STEPS);
+      handleTourVisit(TUTORIALS.POST_CREATE_REFERRAL_PAGE_GUIDE);
+      setSteps(POST_REFERRAL_CREATE_STEPS);
       setIsOpen(true);
       setCurrentStep(0);
     }
@@ -119,10 +118,10 @@ const QuestsTutorial = () => {
       {isFinishModalOpen ? (
         <FinishModalComponent
           onClose={() => setIsFinishModalOpen(false)}
-          header={"Quests tour complete!"}
+          header={"Referrals tour complete!"}
           imgBgColor={"#D5AEFD"}
-          img={"/images/tour-images/quests-page.png"}
-          subHeader={"Now it’s time to get creative. Start testing out other quest templates and create your own."}
+          img={"/images/tour-images/referral-page.png"}
+          subHeader={"Keep testing campaigns, rewards, and ways to get your community involved."}
           bodyText={"To learn more about our other features, just select them on the sidebar and begin the tour."}
         />
       ) : (
@@ -131,13 +130,16 @@ const QuestsTutorial = () => {
       <ModalComponent
         isModalOpen={isModalOpen}
         onClose={handleModalClose}
-        imgSrc={"/images/tour-images/quests-page.png"}
+        imgSrc={"/images/tour-images/referral-page.png"}
         onStart={handleStart}
         onSkip={handleSkip}
+        startButtonLabel={"Start Tour"}
       >
         <Box display="flex" flexDirection="column" gap="8px">
-          <ModalLabel>Introducing Quests</ModalLabel>
-          <ModalTextBody>Quests are fun challenges that your members complete to earn rewards.</ModalTextBody>
+          <ModalLabel>Referrals make quests go viral</ModalLabel>
+          <ModalTextBody>
+            Referrals reward your members for promoting your quests. Let’s set a campaign together.
+          </ModalTextBody>
           <ModalTextBody>
             For more info check <a href="#">out this video.</a>
           </ModalTextBody>
@@ -147,4 +149,4 @@ const QuestsTutorial = () => {
   );
 };
 
-export default QuestsTutorial;
+export default ReferralsTutorial;

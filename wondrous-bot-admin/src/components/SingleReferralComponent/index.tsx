@@ -123,7 +123,7 @@ const SingleReferralComponent = ({
 
   const handleUpdateReferralCampaignMedia = async (referralCampaignId, mediaUploads) => {
     const mediaToUpload = mediaUploads.filter((media) => media instanceof File);
-    if(!mediaToUpload?.length) return;
+    if (!mediaToUpload?.length) return;
     const media = await handleMediaUpload(mediaToUpload);
 
     await attachReferralCampaignMedia({
@@ -227,7 +227,7 @@ const SingleReferralComponent = ({
         setSnackbarAlertAutoHideDuration(2000);
         setSnackbarAlertOpen(true);
       }
-  
+
       if (mediaSlugsToRemove?.length > 0 && !hasMediaToUpload) {
         await removeReferralCampaignMedia({
           variables: {
@@ -286,6 +286,9 @@ const SingleReferralComponent = ({
         >
           <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
             <PanelComponent
+              panelProps={{
+                "data-tour": "tutorial-referral-settings",
+              }}
               renderHeader={() => <CampaignOverviewHeader title="Referral Settings" />}
               renderBody={() => (
                 <ReferralSettingsComponent

@@ -4,6 +4,8 @@ import SingleReferralComponent from "components/SingleReferralComponent";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { useRef, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
+import useCreateReferralTutorial from "components/TutorialComponent/CreateReferralTutorial";
+import { useTour } from "@reactour/tour";
 
 const ReferralsCreatePage = () => {
   const [errors, setErrors] = useState({});
@@ -11,6 +13,8 @@ const ReferralsCreatePage = () => {
   const headerActionsRef = useRef(null);
 
   const setRefValue = (value) => (headerActionsRef.current = value);
+
+  useCreateReferralTutorial();
 
   return (
     <>
@@ -24,7 +28,10 @@ const ReferralsCreatePage = () => {
           withBackButton
           title="Create Referral"
           renderActions={() => (
-            <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
+            <SharedSecondaryButton
+              data-tour="tutorial-referral-save-button"
+              onClick={() => headerActionsRef.current?.handleSave()}
+            >
               Save Referral
             </SharedSecondaryButton>
           )}

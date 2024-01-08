@@ -54,6 +54,7 @@ const ModalComponent = ({
             background: `url(${imgSrc}), lightgray -55.176px -119.913px / 143.152% 208.628% no-repeat`,
             backgroundSize: "cover",
             backgroundPosition: "center",
+            backgroundColor: "#D5AEFD",
           }}
         />
         {children}
