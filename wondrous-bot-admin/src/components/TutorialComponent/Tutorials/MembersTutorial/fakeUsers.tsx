@@ -9,7 +9,7 @@ export const withTourProps = (Component) => {
       return null;
     }
     const onClose = () => setCurrentStep((prev) => prev + 1);
-    return <Component {...props} onClose={onClose} />;
+    return <Component {...props} onClose={onClose} onClick={() => setCurrentStep(1)} />;
   };
 };
 

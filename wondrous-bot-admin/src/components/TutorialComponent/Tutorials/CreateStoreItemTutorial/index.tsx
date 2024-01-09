@@ -1,16 +1,18 @@
 import { useTour } from "@reactour/tour";
 import ContentComponent from "components/TutorialComponent/ContentComponent";
-import { useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { TUTORIALS } from "utils/constants";
-import { useSubscriptionPaywall } from "utils/hooks";
+import { TourDataContext } from "utils/context";
+import { useSubscriptionPaywall, useUserCompletedGuides } from "utils/hooks";
 
 const useCreateStoreItemTutorial = (initialType, currentType) => {
   let { id } = useParams();
-  const completedGuides = [];
+  const completedGuides = useUserCompletedGuides();
 
   const { setSteps, setIsOpen, setCurrentStep, isOpen, currentStep } = useTour();
 
+  const { handleTourVisit, setShouldForceOpenTour, shouldForceOpenTour } = useContext(TourDataContext);
   const isBasicPLan = false;
   const plan = true;
   const steps: any = [
@@ -109,9 +111,21 @@ const useCreateStoreItemTutorial = (initialType, currentType) => {
     },
     {
       selector: "[data-tour=tutorial-store-item-save]",
+      action: () => handleTourVisit(TUTORIALS.STORE_ITEMS_CREATE_PAGE_GUIDE),
       position: "left",
       hideButtons: true,
-      content: () => <ContentComponent content="Save your product" />,
+      content: () => (
+        <ContentComponent
+          content="Save your product"
+          wrapperProps={{
+            sx: {
+              width: "100%",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+            },
+          }}
+        />
+      ),
     },
   ];
   const currentStepConfig = steps[currentStep];
@@ -126,12 +140,20 @@ const useCreateStoreItemTutorial = (initialType, currentType) => {
   }, [currentType, currentStep]);
 
   useEffect(() => {
-    if (!isOpen && !completedGuides.includes(TUTORIALS.STORE_ITEMS_CREATE_PAGE_GUIDE) && plan && !isBasicPLan && !id) {
+    if (
+      !isOpen &&
+      completedGuides &&
+      (!completedGuides?.includes(TUTORIALS.STORE_ITEMS_CREATE_PAGE_GUIDE) || shouldForceOpenTour) &&
+      plan &&
+      !isBasicPLan &&
+      !id
+    ) {
       setSteps(steps);
       setCurrentStep(0);
       setIsOpen(true);
+      if (shouldForceOpenTour) setShouldForceOpenTour(false);
     }
-  }, [plan, isBasicPLan]);
+  }, [plan, isBasicPLan, shouldForceOpenTour]);
 };
 
 export default useCreateStoreItemTutorial;

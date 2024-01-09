@@ -51,11 +51,12 @@ const GeneralInfo = ({ user }) => {
   );
 };
 
-const MembersAnalytics = ({ value, onClose = null }) => {
+const MembersAnalytics = ({ value, onClose = null, onClick = null }) => {
   const [activeCmtyUser, setActiveCmtyUser] = useState(null);
   const username = value?.username || value?.discordUsername || value?.telegramUsername || "N/A";
 
   const handleUsernameClick = (cmtyUserId) => {
+    onClick?.();
     return setActiveCmtyUser(cmtyUserId);
   };
 

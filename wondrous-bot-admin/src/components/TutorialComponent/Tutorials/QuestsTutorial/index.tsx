@@ -12,7 +12,7 @@ import FinishModalComponent from "../shared/FinishModalComponent";
 
 const QuestsTutorial = () => {
   const completedGuides = useUserCompletedGuides();
-  const { handleTourVisit } = useContext(TourDataContext);
+  const { handleTourVisit, setShouldForceOpenTour, shouldForceOpenTour } = useContext(TourDataContext);
   const { setIsOpen, isOpen, setSteps, currentStep, setCurrentStep } = useTour();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { search } = useLocation();
@@ -89,8 +89,9 @@ const QuestsTutorial = () => {
   const handleSkip = () => handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE);
 
   const handleTourStart = () => {
-    if (completedGuides && !completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE)) {
-      setIsModalOpen(true);
+    if (shouldForceOpenTour) setShouldForceOpenTour(false);
+    if (completedGuides && (!completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) || shouldForceOpenTour)) {
+      return setIsModalOpen(true);
     }
     if (
       completedGuides &&
@@ -110,7 +111,7 @@ const QuestsTutorial = () => {
       setCurrentStep(0);
       setSteps([]);
     };
-  }, []);
+  }, [shouldForceOpenTour]);
 
   return (
     <>

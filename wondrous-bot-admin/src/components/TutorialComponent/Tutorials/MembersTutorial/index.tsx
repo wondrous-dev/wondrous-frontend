@@ -19,14 +19,19 @@ const MembersTutorial = ({ setMembersData, data }) => {
   const { setIsOpen, setCurrentStep, currentStep, setSteps, meta, setMeta } = useTour();
 
   const handleResetData = () => {
-    if (data?.length) {
-      setMembersData(
-        data?.map((user) => {
-          return transformUser(user);
-        })
-      );
-    }
+    setMembersData(
+      data?.map((user) => {
+        return transformUser(user);
+      })
+    );
   };
+
+  useEffect(() => {
+    if (currentStep === 3) {
+      handleResetData();
+    }
+  }, [currentStep]);
+
   const nodes = useRef([]);
   const steps: any = [
     {
@@ -48,22 +53,6 @@ const MembersTutorial = ({ setMembersData, data }) => {
           }}
         />
       ),
-      action: (node) => {
-        if (!meta) {
-          setMeta(JSON.stringify({ hideModal: false }));
-        }
-        const usernameElement = node.querySelector("[data-tour=tutorial-members-username]");
-        if (!usernameElement) return;
-        const action = () => {
-          setCurrentStep(1);
-        };
-        usernameElement.addEventListener("click", action);
-        nodes.current.push({
-          element: usernameElement,
-          event: "click",
-          action,
-        });
-      },
     },
     {
       selector: ".tutorials-onboarding-modal",
@@ -72,7 +61,6 @@ const MembersTutorial = ({ setMembersData, data }) => {
       mutationObservables: [".tour-default-modal", ".tutorials-onboarding-modal"],
       disableInteraction: true,
       handleNextAction: () => {
-        handleResetData();
         setMeta(JSON.stringify({ hideModal: true }));
         return setCurrentStep(2);
       },
@@ -97,12 +85,16 @@ const MembersTutorial = ({ setMembersData, data }) => {
     },
     {
       selector: "[data-tour=tutorial-members-table]",
+      mutationObservables: ["[data-tour=tutorial-members-table]"],
       hidePrevButton: true,
       alignCenter: true,
       nextButtonTitle: "Next",
       handleNextAction: () => {
         setIsOpen(false);
         return setIsFinishModalOpen(true);
+      },
+      action: () => {
+        handleResetData();
       },
       content: () => (
         <ContentComponent
@@ -126,23 +118,25 @@ const MembersTutorial = ({ setMembersData, data }) => {
     },
   ];
   const completedGuides = useUserCompletedGuides();
-  const { handleTourVisit } = useContext(TourDataContext);
+  const { handleTourVisit, setShouldForceOpenTour, shouldForceOpenTour } = useContext(TourDataContext);
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
   const handleStart = () => {
+    setMembersData(fakeData);
     setIsModalOpen(false);
     setIsOpen(true);
     handleTourVisit(TUTORIALS.MEMBERS_PAGE_GUIDE);
-    setMembersData(fakeData);
   };
+
   const handleSkip = () => {
     handleTourVisit(TUTORIALS.MEMBERS_PAGE_GUIDE);
   };
 
   const handleTourStart = () => {
-    if (completedGuides && !completedGuides?.includes(TUTORIALS.MEMBERS_PAGE_GUIDE)) {
+    if (completedGuides && (!completedGuides?.includes(TUTORIALS.MEMBERS_PAGE_GUIDE) || shouldForceOpenTour)) {
       setIsModalOpen(true);
+      if (shouldForceOpenTour) return setShouldForceOpenTour(false);
     }
   };
   useEffect(() => {
@@ -155,7 +149,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
         element.removeEventListener(event, action);
       });
     };
-  }, []);
+  }, [shouldForceOpenTour]);
 
   return (
     <>

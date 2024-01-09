@@ -69,7 +69,9 @@ const MembersPage = () => {
   };
 
   const headers = ["Name", "Level", "Discord", "Twitter", "Points Balance", "Total Points Accumulated"];
-  console.log(membersData, "memb data", data?.getCmtyUsersForOrg);
+
+  console.log(membersData, "mem data");
+
   return (
     <>
       <ResetPointsModal
@@ -125,18 +127,20 @@ const MembersPage = () => {
             Reset member point balances
           </SharedSecondaryButton>
         </Box>
-        {data?.getCmtyUsersForOrg?.length ? (
-          <TableComponent
-            data={memberInfo ? [transformUser(memberInfo)] : membersData}
-            headers={headers}
-            title="Top Members"
-            tableProps={{
-              "data-tour": "tutorial-members-table",
-            }}
-          />
-        ) : (
-          <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
-        )}
+        <Box width="100%" height="100%" data-tour="tutorial-members-table">
+          {membersData?.length > 0 ? (
+            <TableComponent
+              data={memberInfo ? [transformUser(memberInfo)] : membersData}
+              headers={headers}
+              title="Top Members"
+              // tableProps={{
+              //   "data-tour": "tutorial-members-table",
+              // }}
+            />
+          ) : (
+            <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
+          )}
+        </Box>
         {hasMore && (
           <SharedSecondaryButton
             style={{

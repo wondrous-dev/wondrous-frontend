@@ -14,10 +14,10 @@ import { doArrow } from "../../utils";
 const AnalyticsTutorial = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
-  const { setIsOpen, setCurrentStep, currentStep, setSteps, meta, setMeta } = useTour();
+  const { setIsOpen, setCurrentStep, setSteps } = useTour();
 
   const completedGuides = useUserCompletedGuides();
-  const { handleTourVisit } = useContext(TourDataContext);
+  const { handleTourVisit, shouldForceOpenTour, setShouldForceOpenTour } = useContext(TourDataContext);
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
@@ -31,8 +31,9 @@ const AnalyticsTutorial = () => {
   };
 
   const handleTourStart = () => {
-    if (completedGuides && !completedGuides?.includes(TUTORIALS.ANALYTICS_PAGE_GUIDE)) {
+    if ((completedGuides && !completedGuides?.includes(TUTORIALS.ANALYTICS_PAGE_GUIDE)) || shouldForceOpenTour) {
       setIsModalOpen(true);
+      if (shouldForceOpenTour) setShouldForceOpenTour(false);
     }
   };
 
@@ -186,7 +187,7 @@ const AnalyticsTutorial = () => {
       setCurrentStep(0);
       setSteps(steps);
     };
-  }, []);
+  }, [shouldForceOpenTour]);
 
   return (
     <>

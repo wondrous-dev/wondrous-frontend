@@ -27,13 +27,13 @@ const QuestRewardComponent = ({
   hasReferralStep: boolean;
 }) => {
   const rewardModalState = useAddRewardModalState();
-  const { setIsRewardModalOpen,resetStates } = rewardModalState;
+  const { setIsRewardModalOpen, resetStates } = rewardModalState;
 
   const { isOpen: isTourOpen, setCurrentStep, setSteps, steps } = useTour();
 
   useEffect(() => {
     if (isTourOpen) {
-      const newSteps = steps.map((step: any) => {
+      const newSteps = steps?.map((step: any) => {
         if (step.id === "tutorial-quest-rewards") {
           return {
             ...step,
@@ -63,7 +63,7 @@ const QuestRewardComponent = ({
   }, [isTourOpen]);
 
   const handleToggleModal = () => {
-    resetStates()
+    resetStates();
     if (isTourOpen) {
       setCurrentStep((prev) => prev + 1);
     }
@@ -161,11 +161,11 @@ const QuestRewardComponent = ({
   const otherRewards = rewards.filter((reward) => reward?.type !== "points");
 
   const handleOpenRewardModal = () => {
-    if(isTourOpen) {
+    if (isTourOpen) {
       setCurrentStep((prev) => prev + 1);
     }
-    setIsRewardModalOpen(true)
-  }
+    setIsRewardModalOpen(true);
+  };
 
   return (
     <>

@@ -18,6 +18,7 @@ import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
 import { getPlan } from "utils/common";
 import GoogleTag from "components/GoogleTag";
 import HomeTutorial from "components/TutorialComponent/Tutorials/HomeTutorial";
+import { TourDataContext } from "utils/context";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -229,8 +230,6 @@ const HomePage = () => {
 
   const isTelegramOrDiscordConnected =
     !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
-
-  // useHomeTutorial({ hasConnectedBot: isTelegramOrDiscordConnected });
 
   return (
     <>

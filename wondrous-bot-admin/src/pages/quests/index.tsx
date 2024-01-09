@@ -14,6 +14,7 @@ import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPlan } from "utils/common";
 import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
+import { TourDataContext } from "utils/context";
 import GlobalContext from "utils/context/GlobalContext";
 import { useSubscription, useSubscriptionPaywall } from "utils/hooks";
 
@@ -41,6 +42,8 @@ const QuestsPage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
 
+  const props = useContext(TourDataContext);
+  console.log(props, 'PROPS')
   const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
 
   const subscription = useSubscription();

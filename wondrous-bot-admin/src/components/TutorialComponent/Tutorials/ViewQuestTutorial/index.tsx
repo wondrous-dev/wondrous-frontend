@@ -14,9 +14,8 @@ import { useParams } from "react-router-dom";
 const ViewQuestTutorial = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setSteps, setIsOpen, setCurrentStep } = useTour();
-  const { handleTourVisit } = useContext(TourDataContext);
-  let { id } = useParams();
-  const completedGuides = [];
+  const { handleTourVisit, setShouldForceOpenTour, shouldForceOpenTour } = useContext(TourDataContext);
+  const completedGuides = useUserCompletedGuides();
   const STEPS = [
     {
       selector: "[data-tour=tour-submissions-empty-state]",
@@ -93,13 +92,16 @@ const ViewQuestTutorial = () => {
   ];
 
   useEffect(() => {
-    if (completedGuides && !completedGuides?.includes(TUTORIALS.POST_CREATE_QUEST)) {
+    if (completedGuides && (!completedGuides?.includes(TUTORIALS.POST_CREATE_QUEST) || shouldForceOpenTour)) {
       handleTourVisit(TUTORIALS.POST_CREATE_QUEST);
       setSteps(STEPS);
       setCurrentStep(0);
       setIsOpen(true);
+      if (shouldForceOpenTour) {
+        setShouldForceOpenTour(false);
+      }
     }
-  }, []);
+  }, [shouldForceOpenTour]);
 
   const handleModalClose = () => {
     setIsModalOpen(false);

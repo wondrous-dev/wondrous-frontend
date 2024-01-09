@@ -45,7 +45,6 @@ const StorePage = () => {
 
   if (!activeOrg) return null;
 
-  //TODO: add check for plan
   return (
     <>
       {!!data?.getStoreItemsForOrg && <StoreItemsTutorial />}

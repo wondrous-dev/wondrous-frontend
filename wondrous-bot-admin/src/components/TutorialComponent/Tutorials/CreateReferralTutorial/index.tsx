@@ -1,28 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import ContentComponent from "../../ContentComponent";
 import { Box, Typography } from "@mui/material";
 import { useTour } from "@reactour/tour";
 import { useUserCompletedGuides } from "utils/hooks";
 import { TUTORIALS } from "utils/constants";
+import { TourDataContext } from "utils/context";
 
 const useCreateReferralTutorial = () => {
   const nodes = useRef([]);
   const styledNodes = useRef([]);
   const completedGuides = useUserCompletedGuides();
-  const { setIsOpen, isOpen, setSteps, currentStep, setCurrentStep } = useTour();
+  const { setIsOpen, isOpen, setSteps, setCurrentStep } = useTour();
 
   const getIfActionSelected = () => document.querySelector("[data-tour=tutorial-entity-selector]");
-
+  const { handleTourVisit, setShouldForceOpenTour, shouldForceOpenTour } = useContext(TourDataContext);
   const steps: any = [
     {
       selector: "[data-tour=tutorial-referral-description]",
       position: "right",
-      // prevButtonTitle: "Exit tour",
-      // prevAction: "skip",
       content: () => (
         <ContentComponent
           content="Start by filling out the settings"
-          //   subHeader="Set a title and description. This is what your members will see so make it descriptive. E.g. “Refer and earn!”"
           typographyProps={{
             textAlign: "left",
           }}
@@ -60,7 +58,7 @@ const useCreateReferralTutorial = () => {
           </Box>
         </ContentComponent>
       ),
-      action: (node, ...args) => {
+      action: (node) => {
         const questSettingsParent = node?.closest("[data-tour=tutorial-referral-settings]");
         if (questSettingsParent) {
           styledNodes.current.push({
@@ -141,7 +139,7 @@ const useCreateReferralTutorial = () => {
       ],
       position: "left",
       highlightedSelectors: [".tutorials-quest-reward-modal"],
-      action: (node) => {
+      action: () => {
         const qualifyingActionSelector = document.querySelector(
           "[data-tour=tutorial-referral-qualifying-action]"
         ) as HTMLElement;
@@ -218,6 +216,7 @@ const useCreateReferralTutorial = () => {
       position: "bottom",
       hideButtons: true,
       action: (node) => {
+        handleTourVisit(TUTORIALS.REFERRAL_CREATE_PAGE_GUIDE);
         const closeTour = () => {
           setIsOpen(false);
           setSteps([]);
@@ -235,12 +234,19 @@ const useCreateReferralTutorial = () => {
   ];
 
   useEffect(() => {
-    if (!isOpen && !completedGuides.includes(TUTORIALS.REFERRAL_CREATE_PAGE_GUIDE)) {
+    if (
+      !isOpen &&
+      completedGuides &&
+      (!completedGuides?.includes(TUTORIALS.REFERRAL_CREATE_PAGE_GUIDE) || shouldForceOpenTour)
+    ) {
       setSteps(steps);
       setCurrentStep(0);
       setIsOpen(true);
+      if (shouldForceOpenTour) {
+        setShouldForceOpenTour(false);
+      }
     }
-  }, []);
+  }, [shouldForceOpenTour]);
 };
 
 export default useCreateReferralTutorial;

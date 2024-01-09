@@ -15,7 +15,7 @@ const ContentComponent = ({
 
   return (
     <ModalContent>
-      <Box display="flex" justifyContent="center" alignItems="center" padding="24px" gap="18x" flexDirection="column" {...wrapperProps}>
+      <Box display="flex" justifyContent="center" alignItems="center" padding="24px" gap="18px" flexDirection="column" {...wrapperProps}>
         <Typography
           color="black"
           fontFamily="Poppins"

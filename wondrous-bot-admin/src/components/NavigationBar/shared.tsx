@@ -12,6 +12,7 @@ import WorkspaceSwitch from "components/WorkspaceSwitch";
 import { SidebarLabel } from "components/WorkspaceSwitch/styles";
 import { checkActive } from "./utils";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
+import SidebarHelpComponent from "components/SidebarHelpComponent";
 
 export const LinkItem = ({ item, children, ...props }) =>
   item.isExternalPath ? (
@@ -31,19 +32,19 @@ export const BOTTOM_LINKS = [
     activeIcon: ActiveSettingsIcon,
     inactiveIcon: InactiveSettingsIcon,
   },
-  {
-    label: "Tutorial",
-    path: "https://wonderverse.gitbook.io/wonder-communities",
-    isExternalPath: true,
-    inactiveIcon: InactiveTutorialIcon,
-    activeIcon: ActiveTutorialIcon,
-    props: {
-      "data-tour": "tour-tutorial-link",
-    },
-  },
+  // {
+  //   label: "Help",
+  //   path: "https://wonderverse.gitbook.io/wonder-communities",
+  //   isExternalPath: true,
+  //   inactiveIcon: InactiveTutorialIcon,
+  //   activeIcon: ActiveTutorialIcon,
+  //   props: {
+  //     "data-tour": "tour-tutorial-link",
+  //   },
+  // },
 ];
 
-const NavigationItem = ({ item, isCollapsed, toggleDrawer }) => {
+export const NavigationItem = ({ item, isCollapsed, toggleDrawer }) => {
   const location = useLocation();
 
   const isActive = checkActive(item.path, location, item.partialMatch);
@@ -190,6 +191,7 @@ export const DrawerComponent = ({ isCollapsed, toggleDrawer, links }) => (
           />
         );
       })}
+      <SidebarHelpComponent isCollapsed={isCollapsed} />
     </Box>
     <WorkspaceSwitch isCollapsed={isCollapsed} />
   </DrawerContainer>

@@ -159,6 +159,7 @@ const LevelsTutorial = () => {
         />
       ),
       handleNextAction: () => {
+        setIsOpen(false);
         return setIsFinishModalOpen(true);
       },
     },
@@ -173,6 +174,7 @@ const LevelsTutorial = () => {
       alignCenter: true,
       hidePrevButton: true,
       handleNextAction: () => {
+        setIsOpen(false);
         return setIsFinishModalOpen(true);
       },
       content: () => (
@@ -185,11 +187,13 @@ const LevelsTutorial = () => {
   ];
 
   const completedGuides = useUserCompletedGuides();
-  const { handleTourVisit } = useContext(TourDataContext);
+  const { handleTourVisit, setShouldForceOpenTour, shouldForceOpenTour } = useContext(TourDataContext);
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
   const handleStart = () => {
+    setSteps(steps);
+    setCurrentStep(0);
     setIsModalOpen(false);
     setIsOpen(true);
     handleTourVisit(TUTORIALS.LEVELS_PAGE_GUIDE);
@@ -199,18 +203,24 @@ const LevelsTutorial = () => {
   };
 
   const handleTourStart = () => {
-    if (completedGuides && !completedGuides?.includes(TUTORIALS.LEVELS_PAGE_GUIDE)) {
+    if (completedGuides && (!completedGuides?.includes(TUTORIALS.LEVELS_PAGE_GUIDE) || shouldForceOpenTour)) {
       setIsModalOpen(true);
+      if (shouldForceOpenTour) {
+        return setShouldForceOpenTour(false);
+      }
     }
   };
   useEffect(() => {
-    handleTourStart();
     return () => {
       setIsOpen(false);
       setCurrentStep(0);
-      setSteps(steps);
+      setSteps([]);
     };
   }, []);
+
+  useEffect(() => {
+    handleTourStart();
+  }, [shouldForceOpenTour]);
 
   return (
     <>

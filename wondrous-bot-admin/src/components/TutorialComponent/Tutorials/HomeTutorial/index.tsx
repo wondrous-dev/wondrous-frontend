@@ -4,7 +4,7 @@ import { useMe, withAuth } from "components/Auth";
 import Modal from "components/Shared/Modal";
 import { useContext, useEffect, useRef, useState } from "react";
 import { TUTORIALS } from "utils/constants";
-import { useUserCompletedGuides } from "utils/hooks";
+import { useGlobalContext, useUserCompletedGuides } from "utils/hooks";
 import ModalComponent from "../../ModalComponent";
 import { ModalLabel, ModalTextBody } from "../../styles";
 import ContentComponent from "../../ContentComponent";
@@ -28,7 +28,7 @@ const desktopSteps: any = [
       />
     ),
     styles: {
-      maskArea: (base, { x, y, width, height }) => {
+      maskArea: (base, { width }) => {
         return { ...base, rx: 0, width: width - 19, zIndex: 999999 };
       },
     },
@@ -74,19 +74,20 @@ const HomeTutorial = () => {
   const completedGuides = useUserCompletedGuides();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { handleTourVisit } = useContext(TourDataContext);
-  const { setIsOpen, isOpen, setSteps, currentStep, setCurrentStep } = useTour();
+  const { setIsOpen, setSteps, setCurrentStep } = useTour();
+  const { handleTourVisit, shouldForceOpenTour, setShouldForceOpenTour } = useContext(TourDataContext);
 
   const nodes = useRef([]);
   useEffect(() => {
-    if (completedGuides && !completedGuides?.includes(TUTORIALS.COMMUNITIES_HOME_GUIDE)) {
+    if ((completedGuides && !completedGuides?.includes(TUTORIALS.COMMUNITIES_HOME_GUIDE)) || shouldForceOpenTour) {
       setIsModalOpen(true);
+      setShouldForceOpenTour(false);
     }
-  }, []);
+  }, [shouldForceOpenTour]);
 
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
 
-  const handleMobileStep = (e) => {
+  const handleMobileStep = () => {
     setCurrentStep((currentStep) => (currentStep === 1 ? 0 : 1));
   };
 

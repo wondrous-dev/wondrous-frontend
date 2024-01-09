@@ -17,9 +17,9 @@ const getTemplateModalPosition = () => {
 };
 
 const useCreateQuestTutorial = ({ shouldDisplay }) => {
-  const { setIsOpen, setSteps, setCurrentStep, setMeta } = useTour();
+  const { setIsOpen, setSteps, setCurrentStep } = useTour();
 
-  const { handleTourVisit } = useContext(TourDataContext);
+  const { handleTourVisit, shouldForceOpenTour, setShouldForceOpenTour } = useContext(TourDataContext);
   const nodes = useRef([]);
 
   const { x, y } = useMemo(() => getTemplateModalPosition(), []);
@@ -107,7 +107,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
           }}
         />
       ),
-      action: (node, ...args) => {
+      action: (node) => {
         nodes.current.forEach(({ element, event, action }) => {
           element.removeEventListener(event, action);
         });
@@ -414,6 +414,21 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
   ];
 
   const completedGuides = useUserCompletedGuides();
+
+  useEffect(() => {
+    if (shouldForceOpenTour) {
+      setShouldForceOpenTour(false);
+      handleTourVisit(TUTORIALS.COMMUNITIES_QUEST);
+      const stepsClone = [...steps];
+      if (!shouldDisplay) {
+        stepsClone.shift();
+      }
+      setSteps(stepsClone);
+      setCurrentStep(0);
+      setIsOpen(true);
+    }
+  }, [shouldForceOpenTour]);
+
   useEffect(() => {
     if (completedGuides && !completedGuides?.includes(guide) && shouldDisplay) {
       handleTourVisit(TUTORIALS.COMMUNITIES_QUEST);
@@ -421,15 +436,16 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       setCurrentStep(0);
       setIsOpen(true);
     }
+  }, []);
+
+  useEffect(() => {
     return () => {
-      // setCurrentId(null);
       nodes.current.forEach(({ element, event, action }) => {
         element.removeEventListener(event, action);
       });
       nodes.current = [];
     };
   }, []);
-
   return null;
 };
 

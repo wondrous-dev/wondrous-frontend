@@ -14,7 +14,7 @@ const StoreItemsTutorial = () => {
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const completedGuides = useUserCompletedGuides();
-  const { handleTourVisit } = useContext(TourDataContext);
+  const { handleTourVisit, shouldForceOpenTour, setShouldForceOpenTour } = useContext(TourDataContext);
   const { setIsOpen, isOpen, setSteps, currentStep, setCurrentStep } = useTour();
 
   const { search } = useLocation();
@@ -37,6 +37,8 @@ const StoreItemsTutorial = () => {
           wrapperProps={{
             sx: {
               width: "100%",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
             },
           }}
         />
@@ -91,7 +93,9 @@ const StoreItemsTutorial = () => {
   ];
 
   const handleTourStart = () => {
-    if (completedGuides && !completedGuides?.includes(TUTORIALS.STORE_ITEMS_PAGE_GUIDE)) {
+    if (isOpen) return;
+    if (shouldForceOpenTour) setShouldForceOpenTour(false);
+    if (completedGuides && (!completedGuides?.includes(TUTORIALS.STORE_ITEMS_PAGE_GUIDE) || shouldForceOpenTour)) {
       setIsModalOpen(true);
     }
     if (
@@ -107,13 +111,15 @@ const StoreItemsTutorial = () => {
   };
   useEffect(() => {
     handleTourStart();
+  }, [shouldForceOpenTour, isOpen]);
+
+  useEffect(() => {
     return () => {
       setIsOpen(false);
       setCurrentStep(0);
       setSteps([]);
     };
   }, []);
-
   return (
     <>
       {isFinishModalOpen ? (

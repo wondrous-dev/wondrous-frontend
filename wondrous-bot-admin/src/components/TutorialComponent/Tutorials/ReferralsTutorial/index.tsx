@@ -11,9 +11,8 @@ import { useLocation } from "react-router-dom";
 import FinishModalComponent from "../shared/FinishModalComponent";
 
 const ReferralsTutorial = () => {
-  // const completedGuides = [];
   const completedGuides = useUserCompletedGuides();
-  const { handleTourVisit } = useContext(TourDataContext);
+  const { handleTourVisit, shouldForceOpenTour, setShouldForceOpenTour } = useContext(TourDataContext);
   const { setIsOpen, isOpen, setSteps, currentStep, setCurrentStep } = useTour();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { search } = useLocation();
@@ -80,6 +79,7 @@ const ReferralsTutorial = () => {
   };
   const handleStart = () => {
     setSteps(STEPS);
+    setCurrentStep(0);
     setIsModalOpen(false);
     setIsOpen(true);
     handleTourVisit(TUTORIALS.REFERRAL_PAGE_GUIDE);
@@ -88,7 +88,10 @@ const ReferralsTutorial = () => {
   const handleSkip = () => handleTourVisit(TUTORIALS.REFERRAL_PAGE_GUIDE);
 
   const handleTourStart = () => {
-    if (completedGuides && !completedGuides?.includes(TUTORIALS.REFERRAL_PAGE_GUIDE)) {
+    if (isOpen) return;
+    if (shouldForceOpenTour) setShouldForceOpenTour(false);
+
+    if (completedGuides && (!completedGuides?.includes(TUTORIALS.REFERRAL_PAGE_GUIDE) || shouldForceOpenTour)) {
       return setIsModalOpen(true);
     }
     if (
@@ -104,13 +107,15 @@ const ReferralsTutorial = () => {
   };
   useEffect(() => {
     handleTourStart();
+  }, [shouldForceOpenTour, isOpen]);
+
+  useEffect(() => {
     return () => {
       setIsOpen(false);
       setCurrentStep(0);
       setSteps([]);
     };
   }, []);
-
   //TODO: replace image with higher quality - ask Ben
   return (
     <>
