@@ -57,6 +57,7 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
         setIsMinting(false);
         return;
       }
+      console.error(error);
       setIsMinting(false);
       setSnackbarAlertMessage("Minting failed! Please try again or contact support.");
       setSnackbarAlertOpen(true);
@@ -92,8 +93,9 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
   return (
     <Box display="flex" flexDirection="column" gap="10px" alignItems="center" justifyContent="center">
       <SharedSecondaryButton onClick={handleOnClaimClick}>
-        <>{isMinting ? <Spinner /> : <>{address ? "Claim now" : "Connect wallet"}</>}</>
+        <>{isMinting ?<Spinner />: <>{address ? "Claim now" : "Connect wallet"}</>}</>
       </SharedSecondaryButton>
+      {isMinting && <Typography>Please don't close the webpage</Typography>}
       {isConnected ? (
         <ButtonBase onClick={() => open()} disabled={isMinting}>
           <Typography
