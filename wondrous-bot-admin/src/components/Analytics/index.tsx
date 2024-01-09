@@ -74,7 +74,7 @@ const AnalyticsComponent = () => {
 
   return (
     <>
-      <PageHeader title="Analytics" withBackButton={true} />
+      <PageHeader title="Analytics" withBackButton={false} />
       <Grid
         minHeight="100vh"
         sx={{
@@ -98,6 +98,8 @@ const AnalyticsComponent = () => {
           display="flex"
           gap="24px"
           flexWrap="nowrap"
+          maxWidth="100%"
+          overflow="hidden"
           flexDirection={{
             xs: "column",
             sm: "row",

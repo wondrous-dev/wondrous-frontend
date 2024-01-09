@@ -26,7 +26,7 @@ export const MenuIconWrapper = styled(ButtonBase)`
     align-items: center;
     justify-content: center;
 
-    background: #af9eff;
+    background: #AF9EFF;
     border-radius: 12px;
   }
 `;

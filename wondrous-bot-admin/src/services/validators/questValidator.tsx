@@ -126,7 +126,7 @@ const stepTypes = {
   [TYPES.DISCORD_MESSAGE_IN_CHANNEL]: Yup.object().shape({
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
-      discordChannelId: Yup.string().required("Discord channel is required"),
+      discordChannelIds: Yup.array().of(Yup.string()).required("At least one Discord channel is required"),
     }),
   }),
   [TYPES.NUMBER]: Yup.object().shape({

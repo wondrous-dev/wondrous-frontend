@@ -87,7 +87,8 @@ const PricingOptionsListItem = ({
     format(new Date(subscription?.additionalData?.currentPeriodEnd), "MM/dd/yyyy");
   const expired = canceled && new Date() > new Date(subscription?.additionalData?.currentPeriodEnd);
   const price = billingInterval === BillingIntervalValue.monthly ? monthlyPrice : annualPrice;
-  const billingPeriod = billingInterval === BillingIntervalValue.monthly ? "Per Server/Mo" : "Per Server/Year";
+  const billingPeriod =
+    billingInterval === BillingIntervalValue.monthly ? "Per Server/Mo" : "Per month billed annually";
   const savingsText =
     billingInterval === BillingIntervalValue.annual &&
     savings &&
@@ -113,6 +114,7 @@ const PricingOptionsListItem = ({
             title !== PricingOptionsTitle.Basic &&
             userPurchasedSubscription && { href: STRIPE_MANAGE_SUBSCRIPTION_LINK })}
           target="_blank"
+          data-rewardful
           style={{
             textDecoration: "none",
           }}

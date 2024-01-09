@@ -32,16 +32,6 @@ export const BOTTOM_LINKS = [
     activeIcon: ActiveSettingsIcon,
     inactiveIcon: InactiveSettingsIcon,
   },
-  // {
-  //   label: "Help",
-  //   path: "https://wonderverse.gitbook.io/wonder-communities",
-  //   isExternalPath: true,
-  //   inactiveIcon: InactiveTutorialIcon,
-  //   activeIcon: ActiveTutorialIcon,
-  //   props: {
-  //     "data-tour": "tour-tutorial-link",
-  //   },
-  // },
 ];
 
 export const NavigationItem = ({ item, isCollapsed, toggleDrawer }) => {

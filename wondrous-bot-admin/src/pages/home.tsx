@@ -51,11 +51,12 @@ const CardsComponent = ({ cards }) => {
       alignItems="center"
       padding={{
         xs: "14px",
-        md: "42px",
+        md: "42px 84px",
+        lg: "42px",
       }}
       direction={{
         xs: "column",
-        md: "row",
+        lg: "row",
       }}
     >
       {cards.map((card, idx) => (
@@ -233,20 +234,10 @@ const HomePage = () => {
 
   return (
     <>
-      <GoogleTag />
-
       {isTelegramOrDiscordConnected ? <HomeTutorial /> : null}
+      <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh" gap="24px">
+        <GoogleTag />
 
-      <Grid
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        minHeight="100vh"
-        gap={{
-          xs: "24px",
-          md: "0px",
-        }}
-      >
         <AddBotModal open={shouldDisplayAddModal} onClose={handleOnBotModalClose} />
         <ConfigureNotificationsOnboardingModal
           open={openDiscordNotificationModal}

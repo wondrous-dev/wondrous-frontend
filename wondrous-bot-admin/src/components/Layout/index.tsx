@@ -125,8 +125,8 @@ const Layout = () => {
     >
       <SubscriptionContext.Provider value={subscription?.status === "active" ? subscription : null}>
         <TutorialComponent>
-          {/* <FeedbackButton /> */}
           <TourDataProvider>
+            {/* <FeedbackButton /> */}
             <Grid
               display="flex"
               width="100%"

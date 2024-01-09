@@ -448,20 +448,22 @@ export const OPTION_TEXT_LIMIT = 250;
 export const STORE_ITEM_TYPES = {
   EXTERNAL_SHOP: "external_shop",
   NFT: "nft",
+  TOKEN: "token",
   DISCORD_ROLE: "discord_role",
 };
 export const STORE_ITEM_LABELS = {
   [STORE_ITEM_TYPES.NFT]: "NFT",
   [STORE_ITEM_TYPES.EXTERNAL_SHOP]: "External Shop",
   [STORE_ITEM_TYPES.DISCORD_ROLE]: "Discord Roles",
+  [STORE_ITEM_TYPES.TOKEN]: "Token",
 };
 
 export const DELIVERY_METHODS = {
   DISCORD_ROLE: "discord_role",
   DISCOUNT_CODE: "discount_code",
-  NFT_PAYMENT: "nft_payment",
+  ADMIN_WALLET_PAY: "admin_wallet_pay",
+  CMTY_USER_CLAIM: "cmty_user_claim",
   RAFFLE: "raffle",
-  EXTERNAL_CODE: "external_code",
 };
 
 export const NFT_ORIGIN_TYPES = {
@@ -472,7 +474,8 @@ export const NFT_ORIGIN_TYPES = {
 export const DELIVERY_METHOD_LABELS = {
   [DELIVERY_METHODS.DISCORD_ROLE]: "Discord Role",
   [DELIVERY_METHODS.DISCOUNT_CODE]: "Voucher Code",
-  [DELIVERY_METHODS.NFT_PAYMENT]: "NFT Payment",
+  [DELIVERY_METHODS.ADMIN_WALLET_PAY]: "Admin Wallet Pay",
+  [DELIVERY_METHODS.CMTY_USER_CLAIM]: "Community User Claim",
   [DELIVERY_METHODS.RAFFLE]: "Apeiron Raffle (raffle for after a user makes a purchase)",
 };
 

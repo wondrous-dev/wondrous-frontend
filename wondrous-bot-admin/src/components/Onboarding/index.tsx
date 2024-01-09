@@ -1,18 +1,19 @@
 import { useMutation } from "@apollo/client";
-import { Box, CircularProgress, FormControl, Grid, Typography } from "@mui/material";
+import { Box, ButtonBase, CircularProgress, FormControl, Grid, Typography } from "@mui/material";
 import { CustomTextField } from "components/AddFormEntity/components/styles";
 import { Label } from "components/CreateTemplate/styles";
 import { ErrorTypography } from "components/Login/styles";
 import AuthLayout from "components/Shared/AuthLayout";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { CREATE_ORG } from "graphql/mutations";
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useMemo, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useSchema } from "./validator";
 import GlobalContext from "utils/context/GlobalContext";
 import MetaPixel from "components/MetaPixel";
 import GoogleTag from "components/GoogleTag";
 import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
+import { logout } from "components/Auth";
 
 const OnboardingComponent = () => {
   const { address, chainId, open, disconnect, isConnected } = useWonderWeb3Modal();
@@ -23,6 +24,37 @@ const OnboardingComponent = () => {
     twitterHandle: "",
     productLink: "",
   });
+
+  const { search } = useLocation();
+
+  const searchParams = new URLSearchParams(search);
+
+  const referrerPage = searchParams.get("ref");
+
+  const handleGoBack = (e) => {
+    e.preventDefault();
+    if (referrerPage === "workspace") {
+      return navigate(-1);
+    }
+    if (referrerPage === "signup") {
+      logout("/signup");
+    }
+    if (referrerPage === "login") {
+      logout();
+    }
+  };
+
+  const goBackLabel = useMemo(() => {
+    if (referrerPage === "workspace") {
+      return "Go Back";
+    }
+    if (referrerPage === "signup") {
+      return "Back to Signup";
+    }
+    if (referrerPage === "login") {
+      return "Back to Login";
+    }
+  }, [referrerPage]);
 
   const navigate = useNavigate();
   const [createOrg, { loading }] = useMutation(CREATE_ORG, {
@@ -175,9 +207,27 @@ const OnboardingComponent = () => {
               </Box>
             ))}
           </FormControl>
-          <SharedSecondaryButton type="button" onClick={handleSubmit}>
-            Create Community 💖
-          </SharedSecondaryButton>
+          <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" gap="12px">
+            <SharedSecondaryButton type="button" onClick={handleSubmit}>
+              Create Community 💖
+            </SharedSecondaryButton>
+            <ButtonBase onClick={handleGoBack}>
+              <Typography
+                fontFamily="Poppins"
+                color="black"
+                fontSize="12px"
+                sx={{
+                  textDecoration: "underline",
+                  pointer: "cursor",
+                  "&:hover": {
+                    color: "#84bcff",
+                  },
+                }}
+              >
+                {goBackLabel}
+              </Typography>
+            </ButtonBase>
+          </Box>
         </Grid>
       )}
     </AuthLayout>

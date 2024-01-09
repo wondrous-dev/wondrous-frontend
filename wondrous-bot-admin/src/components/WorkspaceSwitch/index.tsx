@@ -1,19 +1,17 @@
-import { Box, Button, ButtonBase, ClickAwayListener, Divider, Grid, Popper } from "@mui/material";
+import { Box, ButtonBase, ClickAwayListener, Divider, Popper } from "@mui/material";
 import { Label } from "components/CreateTemplate/styles";
-import SettingsIcon, { OutlinedSettingsIcon } from "components/Icons/SettingsIcon";
+import SettingsIcon from "components/Icons/SettingsIcon";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import { forwardRef, ForwardRefRenderFunction, useContext, useRef, useState } from "react";
+import { forwardRef, useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import GlobalContext from "utils/context/GlobalContext";
 import { SidebarLabel, WorkspaceContainer, WorkspaceImageWrapper, WorkspaceWrapper } from "./styles";
-import { TutorialButton, TutorialLink } from "components/NavigationBar/styles";
 import AddImage from "components/Icons/Add.svg";
 import { WorkspaceDAOIcon } from "components/Icons/DAOIcon";
-import { BoxWrapper } from "components/QuestCardMenu/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { logout } from "components/Auth";
-import { ArrowLeft, ExitToApp, LogoutOutlined, LogoutRounded, LogoutSharp } from "@mui/icons-material";
+import { LogoutRounded } from "@mui/icons-material";
 import { ButtonIconWrapper } from "components/Shared/styles";
 
 interface GearIconProps {
@@ -42,14 +40,13 @@ const GearButton = forwardRef<HTMLButtonElement, GearIconProps>(({ onClick = (e)
 ));
 
 const WorkspaceSwitch = ({ isCollapsed = false }) => {
-  const ref = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const { userOrgs, activeOrg, setActiveOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
 
   const handleClickAway = () => {
-    if (isOpen) setIsOpen(false);
+    if (anchorEl) setAnchorEl(null);
   };
   const onOrgClick = (org) => {
     setActiveOrg(org);
@@ -57,7 +54,9 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
     handleClickAway();
   };
 
-  const togglePopper = () => setIsOpen((prev) => !prev);
+  const togglePopper = (e) => {
+    return setAnchorEl((prev) => (prev ? null : e.currentTarget));
+  };
 
   return (
     <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
@@ -68,18 +67,20 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
           <Box
             display="flex"
             gap="8px"
-            bgcolor={isOpen ? "#D7E9FF" : "transparent"}
+            bgcolor={anchorEl ? "#D7E9FF" : "transparent"}
             alignItems="center"
             borderRadius="6px"
+            onClick={isCollapsed ? (e) => togglePopper(e) : () => {}}
             justifyContent="center"
             padding="10px"
             sx={{
+              cursor: "pointer",
               "&:hover": {
-                backgroundColor: isOpen ? "#D7E9FF" : "#EEE",
+                backgroundColor: anchorEl ? "#D7E9FF" : "#EEE",
               },
             }}
           >
-            <WorkspaceImageWrapper height={isCollapsed ? "auto" : "2.2rem"} width={isCollapsed ? "auto" : "2.2rem"}>
+            <WorkspaceImageWrapper height={isCollapsed ? "auto" : "100%"} width={isCollapsed ? "auto" : "100%"}>
               {activeOrg?.profilePicture ? (
                 <OrgProfilePicture
                   profilePicture={activeOrg?.profilePicture}
@@ -89,7 +90,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                   }}
                 />
               ) : (
-                <WorkspaceDAOIcon height={"100%"} width="100%" />
+                <WorkspaceDAOIcon width="100%" height="100%" />
               )}
             </WorkspaceImageWrapper>
 
@@ -98,14 +99,13 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
               <Box flex="1" display="flex" justifyContent="flex-end" alignItems="center">
                 <ButtonBase
                   onClick={togglePopper}
-                  ref={ref}
                   sx={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: "5px",
                     height: "32px",
-                    background: isOpen ? "white" : "#E7E7E7",
+                    background: anchorEl ? "white" : "#E7E7E7",
                     border: "1px solid transparent",
                     transition: "all 0.1s ease-in-out",
                     ":hover": {
@@ -125,9 +125,9 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
           </Box>
         </Box>
         <Popper
-          open={isOpen}
+          open={!!anchorEl}
           placement="bottom-start"
-          anchorEl={ref.current}
+          anchorEl={anchorEl}
           sx={{
             zIndex: 999999,
           }}
@@ -163,7 +163,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                           }}
                         />
                       ) : (
-                        <WorkspaceDAOIcon height={"100%"} width={"100%"} />
+                        <WorkspaceDAOIcon width="100%" height="100%" />
                       )}
                     </WorkspaceImageWrapper>
                     <Label fontWeight={500} fontSize="15px" color="#1D1D1D">
@@ -180,7 +180,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                 </WorkspaceWrapper>
               );
             })}
-            <WorkspaceWrapper onClick={() => navigate("/onboarding/welcome")}>
+            <WorkspaceWrapper onClick={() => navigate("/onboarding/welcome?ref=workspace")}>
               <Box display="flex" gap="10px" alignItems="center">
                 <img
                   style={{
@@ -195,7 +195,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
               </Box>
             </WorkspaceWrapper>
             <Divider />
-            <WorkspaceWrapper onClick={logout}>
+            <WorkspaceWrapper onClick={() => logout()}>
               <Box display="flex" gap="10px" alignItems="center">
                 <ButtonIconWrapper>
                   <LogoutRounded

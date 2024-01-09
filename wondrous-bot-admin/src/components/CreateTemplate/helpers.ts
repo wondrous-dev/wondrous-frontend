@@ -70,6 +70,7 @@ const processSteps = (steps) =>
       step["additionalData"] = {
         discordMessageType: next.value?.discordMessageType,
         discordChannelId: next.value?.discordChannelId,
+        discordChannelIds: next.value?.discordChannelIds,
       };
     } else if (next.type === TYPES.DISCORD_EVENT_ATTENDANCE) {
       step.prompt = next.value?.prompt;

@@ -83,7 +83,7 @@ const handleRequest = async (req: VercelRequest, res: VercelResponse) => {
 
     const metadata = {
       title: referralData?.name || "Referral",
-      image: referralImage || "/og-start-referral.png",
+      image: referralImage || "/og-start-quest.png",
       description:
         referralData?.description ||
         "Referrals are a fun way to engage your community and reward them for their participation.",
@@ -98,7 +98,7 @@ const handleRequest = async (req: VercelRequest, res: VercelResponse) => {
         <meta name="twitter:site" content="@wonderverse_xyz" />
         <meta name="twitter:title" content="${metadata.title}" />
         <meta name="twitter:description" content="${metadata.description}" />
-        <meta name="twitter:image" content="/twitter-og-start.png" />
+        <meta name="twitter:image" content=${referralImage || "/twitter-og-start.png"} />
 
         <body>
         <div id="root"></div>

@@ -89,7 +89,7 @@ function DiscordCallback() {
                 {
                   token: inviteToken,
                 },
-                "/onboarding/welcome"
+                "/onboarding/welcome?ref=signup"
               );
             }
           })

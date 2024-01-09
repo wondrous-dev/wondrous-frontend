@@ -2,7 +2,7 @@ import { Box, ButtonBase, Drawer } from "@mui/material";
 import { Link } from "react-router-dom";
 import { ImageDefault } from "../styles";
 import { HeaderBar, MenuIconWrapper } from "./styles";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { BOTTOM_LINKS, DrawerComponent, LinkItem } from "../shared";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -11,12 +11,24 @@ import { HEADER_HEIGHT } from "utils/constants";
 const NavigationHeaderComponent = ({ links }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
-  const headerRef = useRef(null);
   const toggleDrawer = () => setIsCollapsed((prev) => !prev);
   return (
     <>
-      
-      <HeaderBar data-tour="header" ref={headerRef}>
+      <Drawer
+        open={!isCollapsed}
+        anchor="top"
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          zIndex: 99,
+        }}
+      >
+        <DrawerComponent links={links} toggleDrawer={toggleDrawer} isCollapsed={isCollapsed} />
+      </Drawer>
+      <HeaderBar
+      data-tour="header"
+      >
         <Link to="/">
           <ImageDefault
             src="/wonder.svg"
@@ -26,20 +38,7 @@ const NavigationHeaderComponent = ({ links }) => {
             }}
           />
         </Link>
-        <Drawer
-        open={!isCollapsed}
-        anchor="top"
-        ModalProps={{
-          keepMounted: true,
-          container: headerRef.current,
-        }}
-        sx={{
-          zIndex: 99999,
-        }}
-      >
-        <DrawerComponent links={links} toggleDrawer={toggleDrawer} isCollapsed={isCollapsed} />
-      </Drawer>
-        <Box display="flex" alignItems="center" justifyContent="space-between" gap="14px" zIndex="999999">
+        <Box display="flex" alignItems="center" justifyContent="space-between" gap="14px">
           <Box display="flex" gap="14px">
             {BOTTOM_LINKS?.map((link, idx) => {
               return (
@@ -65,7 +64,9 @@ const NavigationHeaderComponent = ({ links }) => {
               );
             })}
           </Box>
-          <MenuIconWrapper onClick={toggleDrawer} data-tour="homepage-guide-menu">
+          <MenuIconWrapper onClick={toggleDrawer}
+          data-tour="homepage-guide-menu"
+          >
             {!isCollapsed ? (
               <CloseIcon
                 sx={{

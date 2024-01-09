@@ -16,6 +16,7 @@ export const GET_STORE_ITEMS_FOR_ORG = gql`
       description
       ptPrice
       price
+      quantity
       media {
         slug
         name
@@ -28,6 +29,7 @@ export const GET_STORE_ITEMS_FOR_ORG = gql`
       deliveryMessage
       url
       nftMetadataId
+      cmtyPaymentMethodId
       additionalData {
         discordRoleId
         discordGuildId
@@ -54,6 +56,7 @@ export const GET_STORE_ITEM_BY_ID = gql`
         totalPurchases
       }
       price
+      quantity
       conditions {
         type
         conditionData {
@@ -74,6 +77,7 @@ export const GET_STORE_ITEM_BY_ID = gql`
       deliveryMessage
       url
       nftMetadataId
+      cmtyPaymentMethodId
       additionalData {
         discordRoleId
         discordGuildId

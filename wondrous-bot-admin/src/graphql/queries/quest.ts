@@ -229,8 +229,8 @@ export const GET_QUEST_REWARDS = gql`
 `;
 
 export const EXPORT_QUEST_SUBMISSIONS = gql`
-  query exportQuestSubmissions($questId: ID!) {
-    exportQuestSubmissions(questId: $questId) {
+  query exportQuestSubmissions($questId: ID!, $limit: Int, $offset: Int) {
+    exportQuestSubmissions(questId: $questId, limit: $limit, offset: $offset) {
       questSteps {
         id
         order
@@ -239,6 +239,7 @@ export const EXPORT_QUEST_SUBMISSIONS = gql`
         additionalData {
           discordChannelName
           discordChannelId
+          discordChannelIds
           tweetHandle
           tweetLink
           tweetPhrase
@@ -264,25 +265,27 @@ export const EXPORT_QUEST_SUBMISSIONS = gql`
         }
       }
       questSubmissions {
-        createdAt
-        orgId
-        approvedAt
-        rejectedAt
-        reviewedBy
-        stepsData {
-          order
-          content
-          attachments {
-            slug
+        submission {
+          createdAt
+          orgId
+          approvedAt
+          rejectedAt
+          reviewedBy
+          stepsData {
+            order
+            content
+            attachments {
+              slug
+            }
+            additionalData {
+              txHash
+              tweetId
+            }
+            selectedValues
+            stepId
           }
-          additionalData {
-            txHash
-            tweetId
-          }
-          selectedValues
-          stepId
         }
-        creator {
+        submitter {
           discordUsername
           discordDiscriminator
           web3Address

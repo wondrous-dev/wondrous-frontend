@@ -99,13 +99,17 @@ const MembersPage = () => {
           sm: "24px 56px",
         }}
       >
-        <Box display="flex" alignItems="center">
+        <Box 
+        paddingRight="12px"
+        display="flex" alignItems={{
+          xs: 'flex-start',
+          md: 'center'
+        }} gap="12px" flexDirection={{
+          xs: 'column',
+          md: 'row'
+        }}>
           <MemberPageSearchBar onChange={setMemberSearch} member={memberSearch} setMemberInfo={setMemberInfo} />
           <SharedSecondaryButton
-            style={{
-              marginLeft: "8px",
-              minWidth: "none",
-            }}
             onClick={() => {
               setResetPointsBalance(false);
               setOpenResetPointsModal(true);
@@ -114,11 +118,6 @@ const MembersPage = () => {
             Reset member points
           </SharedSecondaryButton>
           <SharedSecondaryButton
-            style={{
-              marginRight: "8px",
-              marginLeft: "8px",
-              minWidth: "none",
-            }}
             onClick={() => {
               setResetPointsBalance(true);
               setOpenResetPointsModal(true);

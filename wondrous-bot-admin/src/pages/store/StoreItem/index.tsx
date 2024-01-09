@@ -44,6 +44,7 @@ const StoreItem = () => {
       price: data?.getStoreItem?.price,
       deactivatedAt: data?.getStoreItem?.deactivatedAt,
       id: data?.getStoreItem?.id,
+      quantity: data?.getStoreItem?.quantity,
       maxPurchase: data?.getStoreItem?.maxPurchase,
       storeItemConditions: data?.getStoreItem?.conditions
         ? data?.getStoreItem?.conditions?.map((condition) => {
@@ -61,9 +62,11 @@ const StoreItem = () => {
     mediaUploads: data?.getStoreItem?.media || [],
     deliveryMethod: data?.getStoreItem?.deliveryMethod,
     deliveryMessage: data?.getStoreItem?.deliveryMessage,
+    quantity: data?.getStoreItem?.quantity,
     config: {
       url: data?.getStoreItem?.url,
       nftMetadataId: data?.getStoreItem?.nftMetadataId,
+      cmtyPaymentMethodId: data?.getStoreItem?.cmtyPaymentMethodId,
       additionalData: restAdditionalData,
     },
     type: data?.getStoreItem?.type,

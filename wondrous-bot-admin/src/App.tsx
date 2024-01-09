@@ -56,6 +56,7 @@ import ReferralsCreatePage from "pages/referrals/ReferralsCreate";
 import ViewReferralPage from "pages/referrals/ViewReferral";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 import { SUPPORTED_CHAINS_META } from "utils/web3Constants";
+import RewardfulTag from "components/AddFormEntity/components/RewardfulTag";
 
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 
@@ -308,6 +309,7 @@ function App() {
                 <RouterProvider router={router} />
               </PaywallContextProvider>
             </WonderWeb3Provider>
+            <RewardfulTag />
           </SnackbarAlertProvider>
         </ApolloProvider>
       </ThemeProvider>

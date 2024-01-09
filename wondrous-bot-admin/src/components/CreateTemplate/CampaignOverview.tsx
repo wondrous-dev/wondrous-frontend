@@ -98,7 +98,7 @@ export const CampaignOverviewSections = ({
               }}
             >
               {/* //TODO: check back the minWidth */}
-              <Label minWidth="190px">{label}</Label>
+              <Label minWidth="150px">{label}</Label>
               <Grid container item flex="1">
                 <Box display="flex" alignItems="center" width="100%">
                   {Component ? (

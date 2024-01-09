@@ -73,14 +73,14 @@ const StoreItemsList = ({ data }) => {
                     data-tour={`tutorial-store-items-page-store-item-${idx}`}
                     key={item.id}
                     flexBasis={{
-                      xs: "48%",
+                      xs: "45%",
                       sm: "30%",
-                      md: "24%",
+                      lg: "24%",
                     }}
                     maxWidth={{
                       xs: "50%",
                       sm: "33%",
-                      md: "24%",
+                      lg: "24%",
                     }}
                   >
                     <CardWrapper item>
@@ -146,7 +146,6 @@ const StoreItemsList = ({ data }) => {
                 <CardWrapper
                   onClick={() => {
                     navigate("/store/items/create");
-                    
                   }}
                   sx={{
                     minHeight: "155px",

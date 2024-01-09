@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-
+import { MinimalQuestFragment } from "./quest";
 export const ReferralCampaignFragment = gql`
   fragment ReferralCampaignFragment on ReferralCampaign {
     id
@@ -21,11 +21,6 @@ export const ReferralCampaignFragment = gql`
     referredPointReward
     maxPerUser
     level
-    creator {
-      firstName
-      lastName
-      username
-    }
     org {
       profilePicture
       name
@@ -75,7 +70,8 @@ export const ReferralCampaignFragment = gql`
       }
     }
     quests {
-      ...QuestFragment
+      ...MinimalQuestFragment
     }
   }
+  ${MinimalQuestFragment}
 `;

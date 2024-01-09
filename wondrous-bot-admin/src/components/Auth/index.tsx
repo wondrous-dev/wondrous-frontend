@@ -271,11 +271,11 @@ export const storeAuthWaitlistHeader = async (token, waitlistUser) => {
   }
 };
 
-export const logout = async () => {
+export const logout = async (redirectPath = "/login") => {
   try {
     localStorage.removeItem("wonderToken");
     await apollo.clearStore();
-    window.location.href = "/login";
+    window.location.href = redirectPath;
   } catch (exception) {
     return false;
   }

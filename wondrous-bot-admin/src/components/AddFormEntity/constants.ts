@@ -79,7 +79,7 @@ export const COMPONENT_OPTIONS = [
   },
 ];
 
-export const MULTICHOICE_DEFAULT_VALUE = {
+export const getMultipleChoiceDefaultValue = () => ({
   question: "",
   withCorrectAnswers: false,
   withConditionalRewards: false,
@@ -90,4 +90,4 @@ export const MULTICHOICE_DEFAULT_VALUE = {
       isCorrect: true,
     },
   ],
-};
+});

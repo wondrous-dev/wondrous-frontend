@@ -1,4 +1,5 @@
 import { useLazyQuery } from "@apollo/client";
+import { useMediaQuery } from "@mui/material";
 import AutocompleteOptionsComponent from "components/AddFormEntity/components/AutocompleteComponent";
 import { GET_COMMUNITY_USERS_FOR_ORG, SEARCH_COMMUNITY_USERS_FOR_ORG } from "graphql/queries";
 import { useEffect, useState } from "react";
@@ -35,10 +36,14 @@ export const MemberPageSearchBar = ({ onChange, member, setMemberInfo }) => {
       setMemberInfo(user);
     }
   }, [member, data?.searchCmtyUsersForOrg]);
+
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
+
   return (
     <AutocompleteOptionsComponent
       options={options || []}
       bgColor="white"
+      fullWidth={isMobile}
       value={member}
       onChange={(value) => {
         onChange(value);

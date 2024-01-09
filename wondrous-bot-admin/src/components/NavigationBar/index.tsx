@@ -24,7 +24,7 @@ import { useMediaQuery } from "@mui/material";
 
 const NavigationBar = () => {
   const { activeOrg } = useContext(GlobalContext);
-  const { isEcosystemPlan } = useSubscriptionPaywall();
+  const { isEcosystemPlan, isPremiumPlan } = useSubscriptionPaywall();
 
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
 
@@ -57,7 +57,6 @@ const NavigationBar = () => {
           path: "/referrals",
           label: "Referrals",
           activeIcon: ActiveReferralsIcon,
-          isInactive: !activeOrg?.modules?.cmtyReferral,
           inactiveIcon: InactiveReferralsIcon,
         },
       ],
@@ -87,12 +86,12 @@ const NavigationBar = () => {
     },
     {
       sectionTitle: "Monetize",
-      isInactive: !isEcosystemPlan,
+      isInactive: !isEcosystemPlan && !isPremiumPlan,
       items: [
         {
           path: "/store",
           label: "Store",
-          isInactive: !isEcosystemPlan,
+          isInactive: !isEcosystemPlan && !isPremiumPlan,
           activeIcon: ActiveStoreIcon,
           inactiveIcon: InactiveStoreIcon,
           partialMatch: true,

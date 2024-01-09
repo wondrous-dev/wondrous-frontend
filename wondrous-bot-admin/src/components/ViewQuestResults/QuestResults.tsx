@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Grid, Typography } from "@mui/material";
+import { Box, ButtonBase, CircularProgress, Grid, Typography } from "@mui/material";
 import EmptyState from "components/EmptyState";
 import { useEffect, useMemo, useState, useContext } from "react";
 import GlobalContext from "utils/context/GlobalContext";
@@ -21,6 +21,7 @@ import ViewQuestTutorial from "components/TutorialComponent/Tutorials/ViewQuestT
 const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fetchMore, hasMore, quest, loading, hasFetched }) => {
   const { ref, inView, entry } = useInView();
   const [exportQuestSubmissionData] = useLazyQuery(EXPORT_QUEST_SUBMISSIONS);
+  const [exportQuestLoading, setExportQuestLoading] = useState(false);
   const { activeOrg } = useContext(GlobalContext);
   const [getCmtyPaymentCount, { data: paymentCountData }] = useLazyQuery(GET_CMTY_PAYMENT_COUNTS);
   const [getQuestReferralLeaderboard, { data: referralData }] = useLazyQuery(GET_QUEST_REFERRAL_LEADERBOARD);
@@ -135,19 +136,25 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
                 flex: 1,
               }}
             />
-            <FilterPill
-              style={{
-                color: "#2a8d5c",
-              }}
-              onClick={() => {
-                exportQuestSubmissionsToCsv({
-                  exportQuestSubmissionData,
-                  questId: quest?.id,
-                });
-              }}
-            >
-              Export submissions to CSV
-            </FilterPill>
+            {exportQuestLoading ? (
+              <CircularProgress />
+            ) : (
+              <FilterPill
+                style={{
+                  color: "#2a8d5c",
+                }}
+                onClick={() => {
+                  exportQuestSubmissionsToCsv({
+                    exportQuestSubmissionData,
+                    questId: quest?.id,
+                    loading: exportQuestLoading,
+                    setLoading: setExportQuestLoading,
+                  });
+                }}
+              >
+                Export submissions to CSV
+              </FilterPill>
+            )}
             {unpaidPaymentsCount > 0 && (
               <FilterPill
                 type="button"
