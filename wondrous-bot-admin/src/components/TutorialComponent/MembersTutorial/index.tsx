@@ -5,7 +5,6 @@ import { TUTORIALS } from "utils/constants";
 import { ModalLabel, ModalTextBody } from "../styles";
 import { useTour } from "@reactour/tour";
 import { TourDataContext } from "utils/context";
-import useSkipTour from "../shared/useSkipTour";
 import { useUserCompletedGuides } from "utils/hooks";
 import ContentComponent from "../ContentComponent";
 import { doArrow } from "../utils";
@@ -68,7 +67,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
     },
     {
       selector: ".tutorials-onboarding-modal",
-      position: [300, 200],
+      position: "left",
       id: "tutorial-add-rewards",
       mutationObservables: [".tour-default-modal", ".tutorials-onboarding-modal"],
       disableInteraction: true,
@@ -126,8 +125,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
       ),
     },
   ];
-  const completedGuides = [];
-  //   const completedGuides = useUserCompletedGuides();
+  const completedGuides = useUserCompletedGuides();
   const { handleTourVisit } = useContext(TourDataContext);
   const handleModalClose = () => {
     setIsModalOpen(false);

@@ -1,5 +1,5 @@
 import { SnackbarAlertContext } from "utils/context";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { IS_ORG_USERNAME_TAKEN } from "graphql/queries";
 import SubscriptionContext from "./context/SubscriptionContext";
@@ -73,7 +73,17 @@ export const useSubscriptionPaywall = () => {
   const isHobbyPlan = plan === PricingOptionsTitle.Hobby;
   const isPremiumPlan = plan === PricingOptionsTitle.Premium;
   const isEcosystemPlan = plan === PricingOptionsTitle.Ecosystem;
-  return { plan, setPaywall, setPaywallMessage,isBasicPLan, isHobbyPlan, isPremiumPlan, isEcosystemPlan, setOnCancel, setCanBeClosed };
+  return {
+    plan,
+    setPaywall,
+    setPaywallMessage,
+    isBasicPLan,
+    isHobbyPlan,
+    isPremiumPlan,
+    isEcosystemPlan,
+    setOnCancel,
+    setCanBeClosed,
+  };
 };
 
 export const useUserCompletedGuides = () => {

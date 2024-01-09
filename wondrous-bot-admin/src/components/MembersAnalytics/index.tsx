@@ -90,7 +90,7 @@ const MembersAnalytics = ({ value, onClose = null }) => {
         modalComponentProps={{
           className: "tour-default-modal",
         }}
-        dialogComponentProps={{
+        headerProps={{
           className: "tutorials-onboarding-modal",
         }}
         open={!!activeCmtyUser}

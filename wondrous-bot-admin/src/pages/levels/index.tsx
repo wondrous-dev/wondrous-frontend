@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import LevelsReward from "components/LevelsReward";
 import PageHeader from "components/PageHeader";
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
@@ -18,6 +18,8 @@ import { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks
 import { LEVELS_XP } from "utils/levels";
 import useLevels from "utils/levels/hooks";
 import InformationTooltip from "components/Icons/information.svg";
+import LevelsTutorial from "components/TutorialComponent/LevelsTutorial";
+import { useTour } from "@reactour/tour";
 
 const LevelsPage = () => {
   const { activeOrg } = useContext(GlobalContext);
@@ -108,7 +110,6 @@ const LevelsPage = () => {
     });
   }, [levels, rewards, discordRoles]);
 
-
   const headers = [
     {
       title: "Level",
@@ -126,6 +127,7 @@ const LevelsPage = () => {
       key: "reward",
     },
   ];
+  const { isOpen } = useTour();
   const headerComponent = () => {
     return (
       <StyledTableHeader>
@@ -148,8 +150,11 @@ const LevelsPage = () => {
       </StyledTableHeader>
     );
   };
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
+
   return (
     <>
+      {!!data && !!rewardsData && <LevelsTutorial />}
       <PageHeader title="Levels" withBackButton={false} />
       <PageWrapper
         bgType={BG_TYPES.LEVELS}
@@ -163,7 +168,21 @@ const LevelsPage = () => {
           },
         }}
       >
-        <TableComponent data={data} headerComponent={headerComponent} title="Levels" />
+        <TableComponent
+          data={data}
+          headerComponent={headerComponent}
+          title="Levels"
+          tableTitleProps={{
+            "data-tour": "tutorial-levels-table-title",
+          }}
+          tableProps={{
+            "data-tour": "tutorial-levels-table",
+            sx: {
+              marginTop: isMobile && isOpen ? "30vh" : "0px",
+              width: isOpen && !isMobile ? "50%" : "100%",
+            },
+          }}
+        />
       </PageWrapper>
     </>
   );

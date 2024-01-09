@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import PageHeader from "components/PageHeader";
 import {
   GET_CMTY_ENTITIES_COUNT,
@@ -92,6 +92,8 @@ const AnalyticsComponent = () => {
         }}
       >
         <CardsComponent />
+        <Box data-tour="tutorial-analytics-graphs-selector" width="100%"/>
+        <Grid display="flex" flexDirection="column" data-tour="tutorial-analytics-graphs" container gap="42px" >
         <Grid
           display="flex"
           gap="24px"
@@ -127,6 +129,7 @@ const AnalyticsComponent = () => {
           />
           </Grid>
           <Heatmap data={presenceData?.getCmtyPresenceAnalytics} loading={presenceLoading} refetch={presenceRefetch} />
+        </Grid>
         </Grid>
         <QuestLeaderboard />
         <UsersLeaderboard />

@@ -357,6 +357,8 @@ export const TUTORIALS = {
   REFERRAL_CREATE_PAGE_GUIDE: "referral_create_page_guide",
   POST_CREATE_REFERRAL_PAGE_GUIDE: "post_create_referral_page_guide",
   MEMBERS_PAGE_GUIDE: "members_page_guide",
+  LEVELS_PAGE_GUIDE: "levels_page_guide",
+  ANALYTICS_PAGE_GUIDE: "analytics_page_guide",
 };
 
 export const DEFAULT_BANNER_IMAGES = {

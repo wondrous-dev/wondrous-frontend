@@ -1,6 +1,6 @@
 import { RoundedSecondaryButton } from "components/Shared/styles";
 import AddIcon from "@mui/icons-material/Add";
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { Box, ButtonBase } from "@mui/material";
 import GlobalContext from "utils/context/GlobalContext";
 import { StyledViewQuestResults } from "components/ViewQuestResults/styles";
@@ -11,6 +11,8 @@ import RewardModal from "components/Rewards/RewardModal";
 import { DiscordRoleIcon, NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { useAddRewardModalState } from "components/Rewards/utils";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
+import { useTour } from "@reactour/tour";
+import { useLevelsRewardTutorial } from "components/TutorialComponent/LevelsTutorial";
 
 interface AddOrgLevelRewardInput {
   orgId: string;
@@ -30,6 +32,7 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
 
   const rewardModalState = useAddRewardModalState();
 
+  const { isOpen, setCurrentStep, steps } = useTour();
   const { activeOrg } = useContext(GlobalContext);
   const { setIsRewardModalOpen, resetStates } = rewardModalState;
 
@@ -44,6 +47,8 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
     });
     refetchLevelRewards();
   };
+
+  useLevelsRewardTutorial(rewardModalState?.rewardType, setIsRewardModalOpen);
 
   const [addOrgLevelReward] = useMutation(ADD_ORG_LEVEL_REWARD, {
     refetchQueries: ["getOrgLevelsRewards"],
@@ -79,12 +84,31 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
     });
   };
 
+  const handleTourStepOnClose = () => {
+    if (!isOpen) return;
+    const hasRewards = rewards?.length > 0;
+    const stepId = hasRewards ? "levels-modal-close-with-rewards" : "levels-modal-close";
+    const nextStepIdx = steps.findIndex((step: any) => step.id === stepId);
+    setCurrentStep(nextStepIdx);
+  };
+  const handleModalClose = () => {
+    resetStates();
+    handleTourStepOnClose();
+  };
   if (level === "1") return null;
+
+  const handleOpen = () => {
+    setIsRewardModalOpen(true);
+    if (!isOpen) return;
+    const modalOpenStepIdx = steps.findIndex((step: any) => step.id === "levels-modal-open");
+    setCurrentStep(modalOpenStepIdx);
+  };
+
   return (
     <>
       <RewardModal
         title={`Add Reward for Level ${level}`}
-        handleRewardModalToggle={resetStates}
+        handleRewardModalToggle={handleModalClose}
         handleOnRewardAdd={onRewardAdd}
         maxModalWidth={800}
         rewardModalState={rewardModalState}
@@ -102,12 +126,15 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
               <ExistingLevelsReward
                 reward={reward}
                 discordRoles={discordRoles}
+                containerProps = {{
+                  'data-tour': `levels-modal-close-rewards-${reward.id}`
+                }}
                 handleRemove={() => handleRemove(reward.id)}
               />
             ))}
         </div>
         <RoundedSecondaryButton
-          onClick={(e) => setIsRewardModalOpen(true)}
+          onClick={handleOpen}
           sx={{
             padding: "4px 8px !important",
             borderRadius: "6px !important",
@@ -125,13 +152,13 @@ const LevelsReward = ({ rewards, discordRoles, level, refetchLevelRewards }) => 
   );
 };
 
-export const ExistingLevelsReward = ({ reward, discordRoles, handleRemove = null }) => {
+export const ExistingLevelsReward = ({ reward, discordRoles, handleRemove = null, containerProps = {} }) => {
   const allRoles = useMemo(() => discordRoles.map((role) => role.roles).flat(), [discordRoles]);
 
   const selectedRole = allRoles?.find((item) => item.id === reward.discordRewardData?.discordRoleId);
 
   return (
-    <StyledViewQuestResults>
+    <StyledViewQuestResults {...containerProps}>
       {reward.type === PAYMENT_OPTIONS.DISCORD_ROLE && (
         <>
           <DiscordRoleIcon height={25} />

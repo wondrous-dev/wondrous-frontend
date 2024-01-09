@@ -24,7 +24,7 @@ const opositeSide = {
   left: "right",
 };
 
-export function doArrow(position, verticalAlign, horizontalAlign, color = "white", overridenPosition = null) {
+export function doArrow(position, verticalAlign, horizontalAlign, color = "white", overridenPosition = null, spaceFromSide = 20) {
   
   const positionConfig = overridenPosition || position;
   
@@ -35,7 +35,6 @@ export function doArrow(position, verticalAlign, horizontalAlign, color = "white
   const width = 16;
   const height = 12;
   const isVertical = positionConfig === "top" || positionConfig === "bottom";
-  const spaceFromSide = 20;
 
   const obj = {
     [`--rtp-arrow-${isVertical ? opositeSide[horizontalAlign] : verticalAlign}`]: height + spaceFromSide + "px",

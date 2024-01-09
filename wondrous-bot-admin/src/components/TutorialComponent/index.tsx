@@ -82,13 +82,12 @@ const TutorialComponent = ({ children }) => {
         beforeClose={toggleBodyScroll}
         maskClassName="mask"
         scrollSmooth
-        inViewThreshold={500}
         styles={styles}
         showCloseButton={false}
         onClickMask={shakePopoverAnimation}
         disableDotsNavigation
         disableKeyboardNavigation
-        padding={{ popover: 15, mask: 6 }}
+        padding={{ popover: 12, mask: 6 }}
         components={{
           Badge: () => null,
 
