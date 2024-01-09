@@ -11,6 +11,7 @@ import GlobalContext from "utils/context/GlobalContext";
 import PublishDirectoryModal from "./PublishDirectoryModal";
 import StoreModule from "components/ModulesActivation/StoreModule";
 import { useStorePaywall } from "utils/storeUtils";
+import StoreItemsTutorial from "components/TutorialComponent/Tutorials/StoreItemsTutorial";
 
 const StorePage = () => {
   const { activeOrg } = useContext(GlobalContext);
@@ -22,7 +23,7 @@ const StorePage = () => {
     notifyOnNetworkStatusChange: true,
   });
 
-  const { isActivateModuleModalOpen, handleSuccess } = useStorePaywall();
+  // const { isActivateModuleModalOpen, handleSuccess, plan } = useStorePaywall();
 
   useEffect(() => {
     if (activeOrg?.id) {
@@ -44,9 +45,11 @@ const StorePage = () => {
 
   if (!activeOrg) return null;
 
+  //TODO: add check for plan
   return (
     <>
-      {isActivateModuleModalOpen ? <StoreModule onSuccess={handleSuccess} onCancel={() => navigate("/")} /> : null}
+      {!!data?.getStoreItemsForOrg && <StoreItemsTutorial />}
+      {/* {isActivateModuleModalOpen ? <StoreModule onSuccess={handleSuccess} onCancel={() => navigate("/")} /> : null} */}
       <PublishDirectoryModal openPublishModal={openPublishModal} setOpenPublishModal={setOpenPublishModal} />
       <PageHeader
         title={`${data?.getStoreItemsForOrg?.length || 0} Products`}
@@ -63,7 +66,12 @@ const StorePage = () => {
               </SharedBlackOutlineButton>
             </Box>
             <Box>
-              <SharedSecondaryButton onClick={handleNavigationToNewProduct}>New Store Item</SharedSecondaryButton>
+              <SharedSecondaryButton
+                data-tour="tutorial-store-items-page-new-store-item-button"
+                onClick={handleNavigationToNewProduct}
+              >
+                New Store Item
+              </SharedSecondaryButton>
             </Box>
           </Box>
         )}

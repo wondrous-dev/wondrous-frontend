@@ -1,5 +1,5 @@
 import { useMe } from "components/Auth";
-import ContentComponent from "../ContentComponent";
+import ContentComponent from "../../ContentComponent";
 import { useContext, useEffect, useState } from "react";
 import { TUTORIALS } from "utils/constants";
 import { TourDataContext } from "utils/context";

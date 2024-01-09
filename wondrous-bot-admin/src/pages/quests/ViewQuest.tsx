@@ -2,7 +2,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_QUEST_BY_ID } from "graphql/queries";
 import ViewQuest from "components/ViewQuest";
-import ViewQuestTutorial from "components/TutorialComponent/ViewQuestTutorial";
+import ViewQuestTutorial from "components/TutorialComponent/Tutorials/ViewQuestTutorial";
 
 const ViewQuestPage = () => {
   let { id, ...rest } = useParams();

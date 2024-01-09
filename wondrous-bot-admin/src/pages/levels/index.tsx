@@ -18,7 +18,7 @@ import { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks
 import { LEVELS_XP } from "utils/levels";
 import useLevels from "utils/levels/hooks";
 import InformationTooltip from "components/Icons/information.svg";
-import LevelsTutorial from "components/TutorialComponent/LevelsTutorial";
+import LevelsTutorial from "components/TutorialComponent/Tutorials/LevelsTutorial";
 import { useTour } from "@reactour/tour";
 
 const LevelsPage = () => {

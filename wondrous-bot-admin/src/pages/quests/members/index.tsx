@@ -13,7 +13,7 @@ import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { MemberPageSearchBar } from "./MemberSearchBar";
 import ResetPointsModal from "./ResetPointsModal";
-import MembersTutorial from "components/TutorialComponent/MembersTutorial";
+import MembersTutorial from "components/TutorialComponent/Tutorials/MembersTutorial";
 import { transformUser } from "utils/transformCmtyUserToMembers";
 
 const MembersPage = () => {

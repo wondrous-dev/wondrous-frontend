@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import ContentComponent from "../ContentComponent";
+import ContentComponent from "../../ContentComponent";
 import { Box, Typography } from "@mui/material";
 import { useTour } from "@reactour/tour";
 import { useUserCompletedGuides } from "utils/hooks";
@@ -8,8 +8,7 @@ import { TUTORIALS } from "utils/constants";
 const useCreateReferralTutorial = () => {
   const nodes = useRef([]);
   const styledNodes = useRef([]);
-  const completedGuides = [];
-  //   const completedGuides = useUserCompletedGuides();
+  const completedGuides = useUserCompletedGuides();
   const { setIsOpen, isOpen, setSteps, currentStep, setCurrentStep } = useTour();
 
   const getIfActionSelected = () => document.querySelector("[data-tour=tutorial-entity-selector]");

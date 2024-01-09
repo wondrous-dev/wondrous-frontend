@@ -359,6 +359,9 @@ export const TUTORIALS = {
   MEMBERS_PAGE_GUIDE: "members_page_guide",
   LEVELS_PAGE_GUIDE: "levels_page_guide",
   ANALYTICS_PAGE_GUIDE: "analytics_page_guide",
+  STORE_ITEMS_PAGE_GUIDE: "store_items_page_guide",
+  STORE_ITEMS_CREATE_PAGE_GUIDE: "store_items_create_page_guide",
+  STORE_ITEMS_POST_CREATE_PAGE_GUIDE: "store_items_post_create_page_guide",
 };
 
 export const DEFAULT_BANNER_IMAGES = {

@@ -4,7 +4,7 @@ import SingleReferralComponent from "components/SingleReferralComponent";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { useRef, useState } from "react";
 import CreateQuestContext from "utils/context/CreateQuestContext";
-import useCreateReferralTutorial from "components/TutorialComponent/CreateReferralTutorial";
+import useCreateReferralTutorial from "components/TutorialComponent/Tutorials/CreateReferralTutorial";
 import { useTour } from "@reactour/tour";
 
 const ReferralsCreatePage = () => {

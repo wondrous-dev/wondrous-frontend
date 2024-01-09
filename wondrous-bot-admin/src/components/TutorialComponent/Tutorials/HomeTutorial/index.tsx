@@ -5,10 +5,10 @@ import Modal from "components/Shared/Modal";
 import { useContext, useEffect, useRef, useState } from "react";
 import { TUTORIALS } from "utils/constants";
 import { useUserCompletedGuides } from "utils/hooks";
-import ModalComponent from "../ModalComponent";
-import { ModalLabel, ModalTextBody } from "../styles";
-import ContentComponent from "../ContentComponent";
-import { doArrow } from "../utils";
+import ModalComponent from "../../ModalComponent";
+import { ModalLabel, ModalTextBody } from "../../styles";
+import ContentComponent from "../../ContentComponent";
+import { doArrow } from "../../utils";
 import { TourDataContext } from "utils/context";
 
 const desktopSelector = "[data-tour=sidebar-quest-item]";

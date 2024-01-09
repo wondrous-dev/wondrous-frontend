@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import PageHeader from "components/PageHeader";
 import ReferralsList from "components/ReferralsList";
 import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
-import ReferralsTutorial from "components/TutorialComponent/ReferralsTutorial";
+import ReferralsTutorial from "components/TutorialComponent/Tutorials/ReferralsTutorial";
 import { GET_REFERRAL_CAMPAIGN_FOR_ORG } from "graphql/queries/referral";
 import { useNavigate } from "react-router-dom";
 import { LIMIT, REFERRAL_STATUSES } from "utils/constants";

@@ -17,7 +17,7 @@ import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
 import { getPlan } from "utils/common";
 import GoogleTag from "components/GoogleTag";
-import HomeTutorial from "components/TutorialComponent/HomeTutorial";
+import HomeTutorial from "components/TutorialComponent/Tutorials/HomeTutorial";
 
 const typographyStyles = {
   fontFamily: "Poppins",

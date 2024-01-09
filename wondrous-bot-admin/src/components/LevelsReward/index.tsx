@@ -12,7 +12,7 @@ import { DiscordRoleIcon, NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } f
 import { useAddRewardModalState } from "components/Rewards/utils";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { useTour } from "@reactour/tour";
-import { useLevelsRewardTutorial } from "components/TutorialComponent/LevelsTutorial";
+import { useLevelsRewardTutorial } from "components/TutorialComponent/Tutorials/LevelsTutorial";
 
 interface AddOrgLevelRewardInput {
   orgId: string;

@@ -22,6 +22,8 @@ import { ValidationError, storeItemValidator } from "services/validators";
 import { getPathArray } from "utils/common";
 import { set } from "lodash";
 import { handleMediaUpload } from "utils/media";
+import useCreateStoreItemTutorial from "components/TutorialComponent/Tutorials/CreateStoreItemTutorial";
+import { useTour } from "@reactour/tour";
 
 export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
   description: null,
@@ -64,10 +66,12 @@ const CreateStoreItem = ({
   const [storeItemData, setStoreItemData] = useState<any>({ ...defaultStoreItemData });
   const [storeItemSettings, setStoreItemSettings] = useState({ ...defaultStoreItemStetings });
 
+  const {isOpen} = useTour();
   const [createStoreItem] = useMutation(CREATE_STORE_ITEM, {
     onCompleted: (data) => {
       handleUpdateStoreItemMedia(data?.createStoreItem?.id, storeItemData?.mediaUploads);
-      navigate(`/store`);
+      const tourPath = isOpen ? "/store" : `/store?tourStoreItemId${data?.createStoreItem?.id}`;
+      navigate(tourPath);
     },
   });
 
@@ -207,6 +211,7 @@ const CreateStoreItem = ({
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
 
+  useCreateStoreItemTutorial(defaultStoreItemData?.type, storeItemData?.type);
   return (
     <>
       <PageWrapper
@@ -234,6 +239,9 @@ const CreateStoreItem = ({
         >
           <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
             <PanelComponent
+              panelProps={{
+                "data-tour": "tutorial-store-item-settings",
+              }}
               renderHeader={() => <CampaignOverviewHeader title="Product Settings" />}
               renderBody={() => (
                 <StoreItemSettingsComponent

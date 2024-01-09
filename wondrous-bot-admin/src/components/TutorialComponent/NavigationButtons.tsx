@@ -1,7 +1,7 @@
 import { useTour } from "@reactour/tour";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { useNavigate } from "react-router-dom";
-import useSkipTour from "./shared/useSkipTour";
+import useSkipTour from "./Tutorials/shared/useSkipTour";
 import { ButtonBase, Typography } from "@mui/material";
 import { useContext } from "react";
 import { TourDataContext } from "utils/context";

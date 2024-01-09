@@ -261,6 +261,9 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
         getAllStoreItemDiscountCodes={getAllStoreItemDiscountCodes}
       />
       <PanelComponent
+        panelProps={{
+          "data-tour": "tutorial-store-item-panel",
+        }}
         renderBody={() => {
           const deliveryMessage =
             storeItemData?.deliveryMethod === DELIVERY_METHODS.DISCOUNT_CODE
@@ -268,7 +271,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
               : `Thanks for your purchase - you'll now be eligible for our raffle at the end of month`;
           return (
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">
-              <Grid display="flex" flexDirection="column" gap="12px">
+              <Grid display="flex" flexDirection="column" gap="12px" data-tour="tutorial-store-item-type">
                 <Label fontWeight={600}>Store Item Type</Label>
 
                 <AutocompleteOptionsComponent
@@ -278,7 +281,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   onChange={handleTypeChange}
                 />
               </Grid>
-              <Grid display="flex" flexDirection="column" gap="12px">
+              <Grid display="flex" flexDirection="column" gap="12px" data-tour="tutorial-store-item-info">
                 <Label fontWeight={600}>{Config.label}</Label>
 
                 <Config.component
@@ -405,6 +408,9 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
         }}
       />
       <PanelComponent
+        panelProps={{
+          "data-tour": "tutorial-store-item-image-panel",
+        }}
         renderBody={() => {
           return (
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">

@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { TUTORIALS } from "utils/constants";
-import ModalComponent from "../ModalComponent";
+import ModalComponent from "../../ModalComponent";
 import { useTour } from "@reactour/tour";
 import { Box } from "@mui/material";
-import { ModalLabel, ModalTextBody } from "../styles";
-import ContentComponent from "../ContentComponent";
+import { ModalLabel, ModalTextBody } from "../../styles";
+import ContentComponent from "../../ContentComponent";
 import { TourDataContext } from "utils/context";
 import { useUserCompletedGuides } from "utils/hooks";
 import { useLocation } from "react-router-dom";

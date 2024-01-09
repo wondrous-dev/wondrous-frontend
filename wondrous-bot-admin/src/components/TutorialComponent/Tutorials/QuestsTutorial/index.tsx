@@ -1,17 +1,16 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { TUTORIALS } from "utils/constants";
-import ModalComponent from "../ModalComponent";
+import ModalComponent from "../../ModalComponent";
 import { useTour } from "@reactour/tour";
 import { Box } from "@mui/material";
-import { ModalLabel, ModalTextBody } from "../styles";
-import ContentComponent from "../ContentComponent";
+import { ModalLabel, ModalTextBody } from "../../styles";
+import ContentComponent from "../../ContentComponent";
 import { TourDataContext } from "utils/context";
 import { useUserCompletedGuides } from "utils/hooks";
 import { useLocation } from "react-router-dom";
 import FinishModalComponent from "../shared/FinishModalComponent";
 
 const QuestsTutorial = () => {
-  // const completedGuides = [];
   const completedGuides = useUserCompletedGuides();
   const { handleTourVisit } = useContext(TourDataContext);
   const { setIsOpen, isOpen, setSteps, currentStep, setCurrentStep } = useTour();
@@ -113,7 +112,6 @@ const QuestsTutorial = () => {
     };
   }, []);
 
-  //TODO: replace image with higher quality - ask Ben
   return (
     <>
       {isFinishModalOpen ? (

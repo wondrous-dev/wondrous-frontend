@@ -16,7 +16,7 @@ import TableComponent from "components/TableComponent";
 import { getBaseUrl } from "utils/common";
 import { exportQuestSubmissionsToCsv } from "utils/exports";
 import Spinner from "components/Shared/Spinner";
-import ViewQuestTutorial from "components/TutorialComponent/ViewQuestTutorial";
+import ViewQuestTutorial from "components/TutorialComponent/Tutorials/ViewQuestTutorial";
 
 const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fetchMore, hasMore, quest, loading, hasFetched }) => {
   const { ref, inView, entry } = useInView();

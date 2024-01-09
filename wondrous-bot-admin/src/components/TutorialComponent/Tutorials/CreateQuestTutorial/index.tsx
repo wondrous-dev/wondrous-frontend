@@ -2,8 +2,8 @@ import { useTour } from "@reactour/tour";
 import { useContext, useEffect, useMemo, useRef } from "react";
 import { TUTORIALS } from "utils/constants";
 import { TourDataContext } from "utils/context";
-import ContentComponent from "../ContentComponent";
-import { doArrow } from "../utils";
+import ContentComponent from "../../ContentComponent";
+import { doArrow } from "../../utils";
 import { useUserCompletedGuides } from "utils/hooks";
 import { useParams } from "react-router-dom";
 

@@ -1,12 +1,12 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import ModalComponent from "../ModalComponent";
+import ModalComponent from "../../ModalComponent";
 import { Box, useMediaQuery } from "@mui/material";
 import { TUTORIALS } from "utils/constants";
-import { ModalLabel, ModalTextBody } from "../styles";
+import { ModalLabel, ModalTextBody } from "../../styles";
 import { useTour } from "@reactour/tour";
 import { TourDataContext } from "utils/context";
-import ContentComponent from "../ContentComponent";
-import { doArrow } from "../utils";
+import ContentComponent from "../../ContentComponent";
+import { doArrow } from "../../utils";
 import FinishModalComponent from "../shared/FinishModalComponent";
 import { getNodePosition } from "utils/common";
 import { useUserCompletedGuides } from "utils/hooks";

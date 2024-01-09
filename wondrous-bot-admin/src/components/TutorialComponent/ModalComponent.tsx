@@ -3,7 +3,7 @@ import Modal from "components/Shared/Modal";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
 import { SkipButton } from "./styles";
-import useSkipTour from "./shared/useSkipTour";
+import useSkipTour from "./Tutorials/shared/useSkipTour";
 
 const ModalComponent = ({
   isModalOpen,

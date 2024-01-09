@@ -1,15 +1,15 @@
 import { Box, useMediaQuery } from "@mui/material";
 import { useTour } from "@reactour/tour";
 import { useContext, useEffect, useMemo, useState } from "react";
-import ModalComponent from "../ModalComponent";
+import ModalComponent from "../../ModalComponent";
 import FinishModalComponent from "../shared/FinishModalComponent";
-import { ModalLabel, ModalTextBody } from "../styles";
+import { ModalLabel, ModalTextBody } from "../../styles";
 import { TUTORIALS } from "utils/constants";
 import { TourDataContext } from "utils/context";
 import { useUserCompletedGuides } from "utils/hooks";
-import ContentComponent from "../ContentComponent";
+import ContentComponent from "../../ContentComponent";
 import { getNodePosition } from "utils/common";
-import { doArrow } from "../utils";
+import { doArrow } from "../../utils";
 
 const AnalyticsTutorial = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,8 +1,8 @@
 import { useTour } from "@reactour/tour";
-import ContentComponent from "../ContentComponent";
+import ContentComponent from "../../ContentComponent";
 import { Box, useMediaQuery } from "@mui/material";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { doArrow } from "../utils";
+import { doArrow } from "../../utils";
 import { useContext, useMemo } from "react";
 import { TourDataContext } from "utils/context";
 

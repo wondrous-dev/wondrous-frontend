@@ -1,13 +1,13 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import ModalComponent from "../ModalComponent";
+import ModalComponent from "../../ModalComponent";
 import { Box } from "@mui/material";
 import { TUTORIALS } from "utils/constants";
-import { ModalLabel, ModalTextBody } from "../styles";
+import { ModalLabel, ModalTextBody } from "../../styles";
 import { useTour } from "@reactour/tour";
 import { TourDataContext } from "utils/context";
 import { useUserCompletedGuides } from "utils/hooks";
-import ContentComponent from "../ContentComponent";
-import { doArrow } from "../utils";
+import ContentComponent from "../../ContentComponent";
+import { doArrow } from "../../utils";
 import FinishModalComponent from "../shared/FinishModalComponent";
 import { transformUser } from "utils/transformCmtyUserToMembers";
 import { getFakeData } from "./fakeUsers";
