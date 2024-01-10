@@ -411,7 +411,7 @@ type QuestTemplateModalProps = {
 
 const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps) => {
   const { selectedCategory, setSelectedCategory, filteredQuestTemplates } = useFilteredQuestTemplateByCategory();
-  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {}; 
   const [ecoSystemFeatureModal, setEcoSystemFeatureModal] = useState({
     open: false,
     message: "",

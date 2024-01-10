@@ -42,6 +42,8 @@ export function PrevNavigationButton({ currentStep, setIsOpen, setCurrentStep, b
   const stepsData = steps[currentStep];
   const { skipTour } = useSkipTour();
 
+  const prevButtonTypographyStyles = stepsData?.prevButtonTypographyStyles;
+
   const handleExitTour = () => {
     skipTour();
     console.log(meta, "meta");
@@ -57,6 +59,7 @@ export function PrevNavigationButton({ currentStep, setIsOpen, setCurrentStep, b
         sx={{
           textDecoration: "underline",
         }}
+        {...prevButtonTypographyStyles}
       >
         Exit Tour
       </Typography>

@@ -9,13 +9,21 @@ const ContentComponent = ({
   wrapperProps = {},
   typographyProps = {},
   subHeader = null,
-  children = null
+  children = null,
 }) => {
   const { setIsOpen } = useTour();
 
   return (
     <ModalContent>
-      <Box display="flex" justifyContent="center" alignItems="center" padding="24px" gap="18px" flexDirection="column" {...wrapperProps}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        padding="24px"
+        gap="18px"
+        flexDirection="column"
+        {...wrapperProps}
+      >
         <Typography
           color="black"
           fontFamily="Poppins"
@@ -28,7 +36,15 @@ const ContentComponent = ({
           {content}
         </Typography>
         {subHeader ? (
-          <Typography color="black" fontFamily="Poppins" fontSize="15px" fontWeight={500} lineHeight="28px" maxWidth="85%">
+          <Typography
+            color="black"
+            fontFamily="Poppins"
+            fontSize="15px"
+            fontWeight={500}
+            lineHeight="28px"
+            maxWidth="85%"
+            {...typographyProps}
+          >
             {subHeader}
           </Typography>
         ) : null}

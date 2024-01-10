@@ -181,7 +181,7 @@ export const DrawerComponent = ({ isCollapsed, toggleDrawer, links }) => (
           />
         );
       })}
-      <SidebarHelpComponent isCollapsed={isCollapsed} />
+      <SidebarHelpComponent isCollapsed={isCollapsed} toggleDrawer={toggleDrawer} />
     </Box>
     <WorkspaceSwitch isCollapsed={isCollapsed} />
   </DrawerContainer>

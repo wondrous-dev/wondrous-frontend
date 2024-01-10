@@ -137,7 +137,7 @@ const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan, status
   const [updateQuestOrder] = useMutation(UPDATE_QUEST_ORDER, {
     refetchQueries: ["getQuestsForOrg"],
   });
-  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {};
 
   // the reason for separate state is to hide the New Quest card when dragging
   const [isDragging, setIsDragging] = useState(false);

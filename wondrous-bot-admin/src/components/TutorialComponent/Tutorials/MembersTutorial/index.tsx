@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import ModalComponent from "../../ModalComponent";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { TUTORIALS } from "utils/constants";
 import { ModalLabel, ModalTextBody } from "../../styles";
 import { useTour } from "@reactour/tour";
@@ -26,6 +26,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
     );
   };
 
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
   useEffect(() => {
     if (currentStep === 3) {
       handleResetData();
@@ -55,8 +56,8 @@ const MembersTutorial = ({ setMembersData, data }) => {
       ),
     },
     {
-      selector: ".tutorials-onboarding-modal",
-      position: "left",
+      selector: isMobile ? "[data-tour=member-analytics-modal-username]" : ".tutorials-onboarding-modal",
+      position: isMobile ? "bottom" : "left",
       id: "tutorial-add-rewards",
       mutationObservables: [".tour-default-modal", ".tutorials-onboarding-modal"],
       disableInteraction: true,
@@ -64,20 +65,37 @@ const MembersTutorial = ({ setMembersData, data }) => {
         setMeta(JSON.stringify({ hideModal: true }));
         return setCurrentStep(2);
       },
+      ...(isMobile
+        ? {
+            prevButtonTypographyStyles: {
+              color: "white",
+            },
+          }
+        : {}),
       styles: {
         popover: (base, state) => {
           return {
             ...base,
-            background: "white",
+            background: isMobile ? "#2A8D5C" : "white",
             borderRadius: "16px",
             padding: "0px",
             zIndex: 1000000,
-            ...doArrow(state.position, state.verticalAlign, state.horizontalAlign, "white", "left"),
+            ...doArrow(
+              state.position,
+              state.verticalAlign,
+              state.horizontalAlign,
+              isMobile ? "#2A8D5C" : "white",
+              "bottom",
+              isMobile ? 120 : 20
+            ),
           };
         },
       },
       content: () => (
         <ContentComponent
+          typographyProps={{
+            color: "white",
+          }}
           content="Here is a sample data from Dwight."
           subHeader="You can see what quests they’ve submitted."
         />

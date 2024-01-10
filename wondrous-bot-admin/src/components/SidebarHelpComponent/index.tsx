@@ -1,4 +1,4 @@
-import { Box, ButtonBase, ClickAwayListener, Popper } from "@mui/material";
+import { Box, ButtonBase, ClickAwayListener, Popper, useMediaQuery } from "@mui/material";
 import { Label } from "components/CreateTemplate/styles";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
@@ -35,11 +35,13 @@ const ItemLinkElement = ({ children, path, onClick = () => {} }) => {
   }
   return <ButtonBase onClick={onClick}>{children}</ButtonBase>;
 };
-const SidebarHelpComponent = ({ isCollapsed }) => {
+const SidebarHelpComponent = ({ isCollapsed, toggleDrawer }) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
   const { setShouldForceOpenTour } = useContext(TourDataContext);
+
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
 
   const ITEMS = [
     {
@@ -70,6 +72,7 @@ const SidebarHelpComponent = ({ isCollapsed }) => {
       label: "Launch Tour",
       icon: InfoIcon,
       onClick: () => {
+        if (isMobile) toggleDrawer();
         return setShouldForceOpenTour((prev) => !prev);
       },
     },
@@ -107,7 +110,7 @@ const SidebarHelpComponent = ({ isCollapsed }) => {
         </Box>
         <Popper
           open={isOpen}
-          placement="right"
+          placement={isMobile ? "bottom" : "right"}
           anchorEl={ref.current}
           sx={{
             zIndex: 999999,
