@@ -39,6 +39,7 @@ const SidebarHelpComponent = ({ isCollapsed, toggleDrawer }) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  const { setIsOpen: setTourIsOpen, isOpen: isTourOpen } = useTour();
   const { setShouldForceOpenTour } = useContext(TourDataContext);
 
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
@@ -73,6 +74,7 @@ const SidebarHelpComponent = ({ isCollapsed, toggleDrawer }) => {
       icon: InfoIcon,
       onClick: () => {
         if (isMobile) toggleDrawer();
+        if (isTourOpen) setTourIsOpen(false);
         return setShouldForceOpenTour((prev) => !prev);
       },
     },

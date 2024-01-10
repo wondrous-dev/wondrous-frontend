@@ -102,7 +102,7 @@ const StoreItemsTutorial = () => {
       completedGuides &&
       !completedGuides?.includes(TUTORIALS.STORE_ITEMS_POST_CREATE_PAGE_GUIDE) &&
       completedGuides?.includes(TUTORIALS.STORE_ITEMS_PAGE_GUIDE) &&
-      tourStoreItemId
+      tourStoreItemId && !shouldForceOpenTour
     ) {
       handleTourVisit(TUTORIALS.STORE_ITEMS_POST_CREATE_PAGE_GUIDE);
       setSteps(POST_STORE_ITEM_CREATE_STEPS);

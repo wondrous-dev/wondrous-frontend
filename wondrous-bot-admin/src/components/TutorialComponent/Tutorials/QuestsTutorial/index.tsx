@@ -121,7 +121,7 @@ const QuestsTutorial = () => {
       completedGuides &&
       !completedGuides?.includes(TUTORIALS.POST_CREATE_QUEST_QUESTS_PAGE_GUIDE) &&
       completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) &&
-      tourQuestId
+      tourQuestId && !shouldForceOpenTour
     ) {
       setSteps(POST_QUEST_CREATE_STEPS);
       setIsOpen(true);

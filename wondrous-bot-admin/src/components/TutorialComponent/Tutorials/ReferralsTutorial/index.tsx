@@ -101,7 +101,7 @@ const ReferralsTutorial = () => {
       completedGuides &&
       !completedGuides?.includes(TUTORIALS.POST_CREATE_REFERRAL_PAGE_GUIDE) &&
       completedGuides?.includes(TUTORIALS.REFERRAL_PAGE_GUIDE) &&
-      referralCampaignId
+      referralCampaignId && !shouldForceOpenTour
     ) {
       handleTourVisit(TUTORIALS.POST_CREATE_REFERRAL_PAGE_GUIDE);
       setSteps(POST_REFERRAL_CREATE_STEPS);
