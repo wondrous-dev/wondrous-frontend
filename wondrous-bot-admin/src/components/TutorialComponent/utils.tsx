@@ -1,22 +1,3 @@
-import { config } from "./config";
-
-export const getStepsConfig = (pathname) => {
-  const {
-    steps = [],
-    id,
-    disableInteraction,
-  }: any = config.find((item) => {
-    const pattern = new RegExp(`^${item.path.replace(/:\w+/g, "[\\w-]+")}$`, "gi");
-
-    return pattern.test(pathname);
-  }) || {};
-  return {
-    steps,
-    id,
-    disableInteraction,
-  };
-};
-
 const opositeSide = {
   top: "bottom",
   bottom: "top",
@@ -24,10 +5,16 @@ const opositeSide = {
   left: "right",
 };
 
-export function doArrow(position, verticalAlign, horizontalAlign, color = "white", overridenPosition = null, spaceFromSide = 20) {
-  
+export function doArrow(
+  position,
+  verticalAlign,
+  horizontalAlign,
+  color = "white",
+  overridenPosition = null,
+  spaceFromSide = 20
+) {
   const positionConfig = overridenPosition || position;
-  
+
   if ((!position || position === "custom") && !overridenPosition) {
     return {};
   }
