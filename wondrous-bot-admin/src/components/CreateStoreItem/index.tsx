@@ -4,10 +4,10 @@ import PanelComponent from "components/CreateTemplate/PanelComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BG_TYPES, CONDITION_TYPES, DELIVERY_METHODS, STORE_ITEM_TYPES } from "utils/constants";
+import { BG_TYPES, CONDITION_TYPES, DELIVERY_METHODS, STORE_ITEM_TYPES, TUTORIALS } from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
-import useAlerts from "utils/hooks";
+import useAlerts, { useUserCompletedGuides } from "utils/hooks";
 import StoreItemSettingsComponent from "./StoreItemSettingsComponent";
 import StoreItemConfigComponent from "./StoreItemConfigComponent";
 import { useMutation } from "@apollo/client";
@@ -67,11 +67,16 @@ const CreateStoreItem = ({
   const [storeItemData, setStoreItemData] = useState<any>({ ...defaultStoreItemData });
   const [storeItemSettings, setStoreItemSettings] = useState({ ...defaultStoreItemStetings });
 
-  const {isOpen} = useTour();
+  const completedGuides = useUserCompletedGuides();
+
+  const { isOpen } = useTour();
   const [createStoreItem] = useMutation(CREATE_STORE_ITEM, {
     onCompleted: (data) => {
       handleUpdateStoreItemMedia(data?.createStoreItem?.id, storeItemData?.mediaUploads);
-      const tourPath = isOpen ? "/store" : `/store?tourStoreItemId${data?.createStoreItem?.id}`;
+      const tourPath =
+        isOpen || !completedGuides.includes(TUTORIALS.STORE_ITEMS_POST_CREATE_PAGE_GUIDE)
+          ? "/store"
+          : `/store?tourStoreItemId${data?.createStoreItem?.id}`;
       navigate(tourPath);
     },
   });

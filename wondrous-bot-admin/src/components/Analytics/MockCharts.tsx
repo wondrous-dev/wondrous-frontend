@@ -251,10 +251,13 @@ const MockCharts = () => {
         }}
       >
         <CardsComponent defaultStats={cardsStats} />
+        <Grid display="flex" flexDirection="column" data-tour="tutorial-analytics-graphs" container gap="42px" >
         <Grid
           display="flex"
           gap="24px"
           flexWrap="nowrap"
+          maxWidth="100%"
+          overflow="hidden"
           flexDirection={{
             xs: "column",
             sm: "row",
@@ -276,6 +279,7 @@ const MockCharts = () => {
             <Submissions data={SUBS_MOCK} refetch={() => {}} loading={false} />
           </Grid>
           <Heatmap data={HEATMAP_MOCK} loading={false} refetch={() => {}} />
+        </Grid>
         </Grid>
         <QuestLeaderboard />
       </Grid>

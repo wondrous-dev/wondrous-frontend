@@ -55,6 +55,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
         />
       ),
     },
+
     {
       selector: isMobile ? "[data-tour=member-analytics-modal-username]" : ".tutorials-onboarding-modal",
       position: isMobile ? "bottom" : "left",
@@ -85,7 +86,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
               state.verticalAlign,
               state.horizontalAlign,
               isMobile ? "#2A8D5C" : "white",
-              "bottom",
+              isMobile ? "bottom" : "left",
               isMobile ? 120 : 20
             ),
           };
@@ -94,7 +95,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
       content: () => (
         <ContentComponent
           typographyProps={{
-            color: isMobile ? 'white': 'black',
+            color: isMobile ? "white" : "black",
           }}
           content="Here is a sample data from Dwight."
           subHeader="You can see what quests they’ve submitted."
@@ -142,6 +143,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
   };
   const handleStart = () => {
     setMembersData(fakeData);
+    setSteps(steps);
     setIsModalOpen(false);
     setIsOpen(true);
     handleTourVisit(TUTORIALS.MEMBERS_PAGE_GUIDE);
@@ -157,18 +159,21 @@ const MembersTutorial = ({ setMembersData, data }) => {
       if (shouldForceOpenTour) return setShouldForceOpenTour(false);
     }
   };
+
   useEffect(() => {
     handleTourStart();
+  }, [shouldForceOpenTour]);
+
+  useEffect(() => {
     return () => {
       setIsOpen(false);
       setCurrentStep(0);
-      setSteps(steps);
+      setSteps([]);
       nodes.current.forEach(({ element, event, action }) => {
         element.removeEventListener(event, action);
       });
     };
-  }, [shouldForceOpenTour]);
-
+  }, []);
   return (
     <>
       {isFinishModalOpen ? (

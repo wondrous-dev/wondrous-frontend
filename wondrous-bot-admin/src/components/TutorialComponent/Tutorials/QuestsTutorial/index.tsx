@@ -105,7 +105,9 @@ const QuestsTutorial = () => {
     handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE);
   };
 
-  const handleSkip = () => handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE);
+  const handleSkip = () => {
+    handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE)
+  };
 
   const handleTourStart = () => {
     if (shouldForceOpenTour) setShouldForceOpenTour(false);

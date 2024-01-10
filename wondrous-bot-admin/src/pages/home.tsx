@@ -129,6 +129,7 @@ const HomePage = () => {
     loading: isDiscordConfigLoading,
   } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
     variables: {
       orgId: activeOrg?.id,
     },

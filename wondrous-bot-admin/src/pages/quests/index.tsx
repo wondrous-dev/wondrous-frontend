@@ -43,7 +43,6 @@ const QuestsPage = () => {
   const navigate = useNavigate();
 
   const props = useContext(TourDataContext);
-  console.log(props, 'PROPS')
   const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
 
   const subscription = useSubscription();

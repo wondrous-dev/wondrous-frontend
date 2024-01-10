@@ -4,7 +4,14 @@ import PanelComponent from "components/CreateTemplate/PanelComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BG_TYPES, LIMIT, QUALIFYING_ACTION_TYPES, REFERRAL_REWARD_SCHEME, REFERRAL_STATUSES } from "utils/constants";
+import {
+  BG_TYPES,
+  LIMIT,
+  QUALIFYING_ACTION_TYPES,
+  REFERRAL_REWARD_SCHEME,
+  REFERRAL_STATUSES,
+  TUTORIALS,
+} from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
 import ReferralSettingsComponent from "./ReferralSettingsComponent";
@@ -16,13 +23,14 @@ import {
   REMOVE_REFERRAL_CAMPAIGN_MEDIA,
   UPDATE_REFERRAL,
 } from "graphql/mutations/referral";
-import useAlerts from "utils/hooks";
+import useAlerts, { useUserCompletedGuides } from "utils/hooks";
 import { updateReferralCampaignCache } from "utils/apolloHelpers";
 import { ValidationError, referralValidator } from "services/validators";
 import { convertPath, getPathArray } from "utils/common";
 import { set } from "lodash";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { handleMediaUpload } from "utils/media";
+import { useTour } from "@reactour/tour";
 
 const DEFAULT_REFERRAL_SETTINGS = {
   name: "",
@@ -57,11 +65,12 @@ const SingleReferralComponent = ({
   const { setErrors } = useContext(CreateQuestContext);
   const [referralItemData, setReferralItemData] = useState<any>(referralItemDataDefaultState);
   const [referralItemSettings, setReferralItemSettings] = useState<any>(referralItemSettingsDefaultState);
-
+  const { isOpen } = useTour();
   const [attachReferralCampaignMedia] = useMutation(ATTACH_REFERRAL_CAMPAIGN_MEDIA, {
     refetchQueries: ["getReferralCampaignById"],
   });
 
+  const completedGuides = useUserCompletedGuides();
   const [removeReferralCampaignMedia] = useMutation(REMOVE_REFERRAL_CAMPAIGN_MEDIA, {
     refetchQueries: ["getReferralCampaignById"],
   });
@@ -71,7 +80,11 @@ const SingleReferralComponent = ({
       setSnackbarAlertMessage("Referral created successfully");
       setSnackbarAlertOpen(true);
       handleUpdateReferralCampaignMedia(data?.createReferralCampaign?.id, referralItemData?.media);
-      navigate(`/referrals`);
+      const link =
+        isOpen || !completedGuides.includes(TUTORIALS.POST_CREATE_REFERRAL_PAGE_GUIDE)
+          ? `/referrals?referralCampaignId=${data?.createReferralCampaign?.id}`
+          : `/referrals`;
+      navigate(link);
     },
     update: (cache, { data }) => {
       return updateReferralCampaignCache(

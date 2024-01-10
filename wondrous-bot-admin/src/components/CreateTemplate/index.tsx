@@ -22,6 +22,8 @@ import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "./utils";
 import ErrorField from "components/Shared/ErrorField";
 import QuestRewardComponent from "components/Rewards/QuestRewardComponent";
 import { constructRequestBody, handleSaveError, processSave } from "./helpers";
+import { useTour } from "@reactour/tour";
+import useDynamicSteps from "components/TutorialComponent/Tutorials/CreateQuestTutorial/useDynamicSteps";
 
 const CreateTemplate = ({
   setRefValue,
@@ -32,7 +34,6 @@ const CreateTemplate = ({
   defaultSteps = [],
 }) => {
   const navigate = useNavigate();
-  const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
     refetchQueries: ["getQuestById"],
@@ -45,6 +46,7 @@ const CreateTemplate = ({
   const [steps, setSteps] = useState(defaultSteps);
   const refs = useRef([]);
 
+  useDynamicSteps({ steps, getQuestById, defaultSteps });
   useEffect(() => {
     if (getQuestById) {
       setSteps(transformQuestConfig(getQuestById?.steps));
@@ -56,6 +58,7 @@ const CreateTemplate = ({
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState({ ...defaultQuestSettings });
   const [removedMediaSlugs, setRemovedMediaSlugs] = useState({});
+
   const handleAdd = (type) => {
     setSteps([
       ...steps,

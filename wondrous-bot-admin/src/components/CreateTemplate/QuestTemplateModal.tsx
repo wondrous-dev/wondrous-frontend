@@ -406,12 +406,13 @@ const useSubscriptionPlan = () => {
 
 type QuestTemplateModalProps = {
   open: boolean;
-  setQuestTemplate: React.Dispatch<React.SetStateAction<any>>;
+  handleOnClose: () => void;
+  handleSelect: (value: any) => void;
 };
 
-const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps) => {
+const QuestTemplateModal = ({ open, handleOnClose, handleSelect }: QuestTemplateModalProps) => {
   const { selectedCategory, setSelectedCategory, filteredQuestTemplates } = useFilteredQuestTemplateByCategory();
-  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {}; 
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {};
   const [ecoSystemFeatureModal, setEcoSystemFeatureModal] = useState({
     open: false,
     message: "",
@@ -439,27 +440,20 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
       value: "",
       ...step,
     }));
-    setQuestTemplate((prev) => ({
-      ...prev,
-      open: false,
+    handleSelect({
       steps,
-      questSettings: {
-        ...prev.questSettings,
-        rewards,
-        requireReview,
-        title,
-      },
-    }));
+      rewards,
+      requireReview,
+      title,
+    });
   };
 
-  const handleOnClose = () => setQuestTemplate((prev) => ({ ...prev, open: false }));
-
   const isScreenSmDown = useIsScreenSmDown();
-  const {isOpen} = useTour();
+  const { isOpen } = useTour();
 
-  const mobileTourOpenHeight = isOpen ? '70%': '80%';
+  const mobileTourOpenHeight = isOpen ? "70%" : "80%";
 
-  const desktopTourOpenHeight = isOpen ? '70%': '100%';
+  const desktopTourOpenHeight = isOpen ? "70%" : "100%";
   return (
     <>
       <Suspense>
@@ -486,7 +480,7 @@ const QuestTemplateModal = ({ open, setQuestTemplate }: QuestTemplateModalProps)
             marginTop: isScreenSmDown ? "100px" : "0",
             overflow: isOpen ? "auto" : "hidden",
             maxHeight: isScreenSmDown ? mobileTourOpenHeight : desktopTourOpenHeight,
-            ...(isOpen && isScreenSmDown ? {marginBottom: '24%'} : {})
+            ...(isOpen && isScreenSmDown ? { marginBottom: "24%" } : {}),
           },
         }}
         slotProps={{

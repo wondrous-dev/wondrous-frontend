@@ -70,7 +70,6 @@ const MembersPage = () => {
 
   const headers = ["Name", "Level", "Discord", "Twitter", "Points Balance", "Total Points Accumulated"];
 
-  console.log(membersData, "mem data");
 
   return (
     <>

@@ -29,7 +29,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
   const steps: any = [
     {
       selector: "[data-tour=quests-page-template-modal]",
-      position: [x + 100, y + 650],
+      position: [x + 100, y + 620],
       styles: {
         popover: (base, state) => {
           return {
@@ -53,44 +53,11 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
           }}
         />
       ),
-      action: (node) => {
-        const closeButton = node?.querySelector("[data-tour=quests-page-template-modal-close-button]");
-        const selectedElement = node?.querySelectorAll("[data-tour=quests-page-template-modal-quest-template]");
-        // the DOM is changed after the next step appears in spotlight, this allows us to access the node element inside the next step
-        const goToNextStep = () => {
-          setIsOpen(false);
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-          setTimeout(() => {
-            setCurrentStep(1);
-            setIsOpen(true);
-          }, 500);
-        };
-        closeButton?.addEventListener("click", goToNextStep);
-        nodes.current.push({
-          element: node,
-          event: "click",
-          action: goToNextStep,
-        });
-
-        selectedElement?.forEach((element) => {
-          element.addEventListener("click", goToNextStep);
-          nodes.current.push({
-            element,
-            event: "click",
-            action: goToNextStep,
-          });
-        });
-      },
       hideButtons: true,
     },
     {
       selector: "[data-tour=tutorial-quest-title]",
       position: "right",
-      // prevButtonTitle: "Exit tour",
-      // prevAction: "skip",
       content: () => (
         <ContentComponent
           content="Update quest settings"
@@ -108,14 +75,13 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
         />
       ),
       action: (node) => {
-        nodes.current.forEach(({ element, event, action }) => {
-          element.removeEventListener(event, action);
-        });
-        nodes.current = [];
-        const questSettingsParent = node?.closest("[data-tour=tutorial-quest-settings]");
-        if (questSettingsParent) {
-          questSettingsParent.style.zIndex = 3;
-        }
+        //we need to wait for the node to mount
+        setTimeout(() => {
+          const questSettingsParent = document?.querySelector("[data-tour=tutorial-quest-settings]") as HTMLElement;
+          if (questSettingsParent) {
+            questSettingsParent.style.zIndex = "3";
+          }
+        }, 200);
       },
     },
     {
@@ -166,12 +132,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
           }}
         />
       ),
-      action: (node) => {
-        const questSettingsParent = node?.closest("[data-tour=tutorial-quest-settings]");
-        if (questSettingsParent) {
-          questSettingsParent.style.zIndex = 3;
-        }
-      },
       afterAction: (node) => {
         const questSettingsParent = node?.closest("[data-tour=tutorial-quest-settings]");
         if (questSettingsParent) {
@@ -214,6 +174,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       mutationObservables: [".tour-default-modal", ".tutorials-quest-reward-modal"],
       disableInteraction: true,
       handleNextAction: () => {
+        //TODO: move the logic to the useDynamicSteps hook
         const hasQuestStep = getQuestStep();
         if (!hasQuestStep) {
           return setCurrentStep((prev) => prev + 2);
@@ -242,9 +203,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       mutationObservables: ["[data-tour=tour-quest-step]"],
       resizeObservables: ["[data-tour=tour-quest-step]"],
       position: "left",
-      handlePrevAction: () => {
-        setCurrentStep((prev) => prev - 2);
-      },
       action: (node) => {
         if (!node) return setCurrentStep((prev) => prev + 1);
       },
@@ -268,28 +226,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
     {
       selector: "[data-tour=tutorial-add-quest-step]",
       position: "left",
-      handlePrevAction: () => {
-        const hasQuestStep = getQuestStep();
-        if (!hasQuestStep) {
-          return setCurrentStep((prev) => prev - 3);
-        }
-        return setCurrentStep((prev) => prev - 1);
-      },
-      action: (node) => {
-        // wait for state change to update the current step
-        const hasQuestStep = getQuestStep();
-        const handleStepChange = () => {
-          setIsOpen(false);
-          setTimeout(() => setCurrentStep((prev) => prev + (hasQuestStep ? 2 : 1)), 500);
-          setIsOpen(true);
-        };
-        node.addEventListener("click", handleStepChange);
-        nodes.current.push({
-          element: node,
-          event: "click",
-          action: handleStepChange,
-        });
-      },
       hideButtons: true,
       content: <ContentComponent content="Click here to add a new quest step" />,
     },
@@ -298,17 +234,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       mutationObservables: ["[data-tour=tour-quest-step]"],
       resizeObservables: ["[data-tour=tour-quest-step]"],
       position: "left",
-      handlePrevAction: () => {
-        setCurrentStep((prev) => prev - 2);
-      },
-      action: (node) => {
-        //basically go to add quest step if there is no quest step
-        if (!node) return setCurrentStep(7);
-        nodes.current.forEach(({ element, event, action }) => {
-          element.removeEventListener(event, action);
-        });
-        nodes.current = [];
-      },
       content: (
         <ContentComponent
           content="Quest steps"
@@ -331,16 +256,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       position: "left",
       mutationObservables: ["[data-tour=tour-quest-step]"],
       resizeObservables: ["[data-tour=tour-quest-step]"],
-      handlePrevAction: () => {
-        setCurrentStep((prev) => prev - 2);
-      },
-      action: (node) => {
-        if (!node) return setCurrentStep(7);
-        nodes.current.forEach(({ element, event, action }) => {
-          element.removeEventListener(event, action);
-        });
-        nodes.current = [];
-      },
       content: (
         <ContentComponent
           content="Click on the dropdown to change the quest step type"
@@ -361,20 +276,9 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
     {
       selector: "[data-tour=tour-quest-step]",
       position: "left",
+      id: "tour-selected-step",
       mutationObservables: ["[data-tour=tour-quest-step]"],
       resizeObservables: ["[data-tour=tour-quest-step]"],
-      handlePrevAction: () => {
-        setCurrentStep((prev) => prev - 2);
-      },
-      action: (node) => {
-        //basically go to add quest step if there is no quest step
-        if (!node) return setCurrentStep(7);
-
-        nodes.current.forEach(({ element, event, action }) => {
-          element.removeEventListener(event, action);
-        });
-        nodes.current = [];
-      },
       content: (
         <ContentComponent
           content="Nice choice!"
@@ -396,19 +300,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       hideButtons: true,
       selector: "[data-tour=tour-save-quest]",
       position: "left",
-      action: (node) => {
-        const closeTour = () => {
-          setIsOpen(false);
-          setSteps([]);
-          setCurrentStep(0);
-        };
-        node.addEventListener("click", closeTour);
-        nodes.current.push({
-          element: node,
-          event: "click",
-          action: closeTour,
-        });
-      },
       content: <ContentComponent content="Finish setting up your quest by clicking here" />,
     },
   ];
@@ -446,6 +337,7 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       nodes.current = [];
     };
   }, []);
+
   return null;
 };
 

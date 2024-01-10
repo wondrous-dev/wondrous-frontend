@@ -21,6 +21,7 @@ const ReferralsTutorial = () => {
 
   const searchParams = new URLSearchParams(search);
 
+  const referralCampaignId = searchParams.get("referralCampaignId");
   const STEPS = [
     {
       selector: "[data-tour=referrals-page-guide-new-referral-button]",
@@ -85,7 +86,9 @@ const ReferralsTutorial = () => {
     handleTourVisit(TUTORIALS.REFERRAL_PAGE_GUIDE);
   };
 
-  const handleSkip = () => handleTourVisit(TUTORIALS.REFERRAL_PAGE_GUIDE);
+  const handleSkip = () => {
+    handleTourVisit(TUTORIALS.REFERRAL_PAGE_GUIDE);
+  };
 
   const handleTourStart = () => {
     if (isOpen) return;
@@ -97,7 +100,8 @@ const ReferralsTutorial = () => {
     if (
       completedGuides &&
       !completedGuides?.includes(TUTORIALS.POST_CREATE_REFERRAL_PAGE_GUIDE) &&
-      completedGuides?.includes(TUTORIALS.REFERRAL_PAGE_GUIDE)
+      completedGuides?.includes(TUTORIALS.REFERRAL_PAGE_GUIDE) &&
+      referralCampaignId
     ) {
       handleTourVisit(TUTORIALS.POST_CREATE_REFERRAL_PAGE_GUIDE);
       setSteps(POST_REFERRAL_CREATE_STEPS);

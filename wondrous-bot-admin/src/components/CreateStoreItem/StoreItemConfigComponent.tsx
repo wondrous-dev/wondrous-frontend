@@ -233,7 +233,6 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       disabled: storeItemData?.config?.nftType !== NFT_TYPES.COMMUNITY_BADGE,
     },
   ];
-  console.log('storeItemData', storeItemData)
 
   const componentProps = useMemo(() => Config?.componentProps, [Config]);
   if (activeOrg?.id === APEIRON_ORG_ID) {

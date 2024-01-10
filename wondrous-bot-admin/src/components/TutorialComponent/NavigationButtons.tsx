@@ -46,8 +46,6 @@ export function PrevNavigationButton({ currentStep, setIsOpen, setCurrentStep, b
 
   const handleExitTour = () => {
     skipTour();
-    console.log(meta, "meta");
-    // handleTourVisit(meta);
   };
   return (
     <ButtonBase onClick={handleExitTour}>

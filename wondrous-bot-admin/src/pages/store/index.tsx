@@ -23,7 +23,7 @@ const StorePage = () => {
     notifyOnNetworkStatusChange: true,
   });
 
-  // const { isActivateModuleModalOpen, handleSuccess, plan } = useStorePaywall();
+  const { isActivateModuleModalOpen, handleSuccess, isSubscriptionLoading } = useStorePaywall();
 
   useEffect(() => {
     if (activeOrg?.id) {
@@ -47,8 +47,8 @@ const StorePage = () => {
 
   return (
     <>
-      {!!data?.getStoreItemsForOrg && <StoreItemsTutorial />}
-      {/* {isActivateModuleModalOpen ? <StoreModule onSuccess={handleSuccess} onCancel={() => navigate("/")} /> : null} */}
+      {!!data?.getStoreItemsForOrg && !isSubscriptionLoading && activeOrg?.modules?.cmtyStore && <StoreItemsTutorial />}
+      {isActivateModuleModalOpen ? <StoreModule onSuccess={handleSuccess} onCancel={() => navigate("/")} /> : null}
       <PublishDirectoryModal openPublishModal={openPublishModal} setOpenPublishModal={setOpenPublishModal} />
       <PageHeader
         title={`${data?.getStoreItemsForOrg?.length || 0} Products`}

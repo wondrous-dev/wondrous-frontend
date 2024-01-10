@@ -74,11 +74,11 @@ const HomeTutorial = () => {
 
   const nodes = useRef([]);
   useEffect(() => {
-    if ((completedGuides && !completedGuides?.includes(TUTORIALS.COMMUNITIES_HOME_GUIDE)) || shouldForceOpenTour) {
+    if ((completedGuides && !completedGuides.includes(TUTORIALS.COMMUNITIES_HOME_GUIDE)) || shouldForceOpenTour) {
       setIsModalOpen(true);
       setShouldForceOpenTour(false);
     }
-  }, [shouldForceOpenTour]);
+  }, [shouldForceOpenTour, completedGuides]);
 
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
 
@@ -145,9 +145,7 @@ const HomeTutorial = () => {
       selector: "[data-tour=sidebar-quest-item]",
       hideButtons: true,
       action: (node) => {
-        console.log(node, 'NODE')
         const parent = node.closest("[data-tour=header]");
-        console.log(parent, 'PAREENT')
         const elementsToDisable = Array.from(parent?.getElementsByTagName("a") || [])
           ?.concat(Array.from(parent?.getElementsByTagName("button")))
           ?.filter(
@@ -220,7 +218,6 @@ const HomeTutorial = () => {
 
   const handleSkip = () => handleTourVisit(TUTORIALS.COMMUNITIES_HOME_GUIDE);
 
-  //TODO handle skip
   return (
     <ModalComponent
       isModalOpen={isModalOpen}

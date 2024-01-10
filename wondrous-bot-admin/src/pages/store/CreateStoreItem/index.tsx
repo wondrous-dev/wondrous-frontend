@@ -13,12 +13,12 @@ const CreateStoreItemPage = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  // const { isActivateModuleModalOpen, handleSuccess } = useStorePaywall();
+  const { isActivateModuleModalOpen, handleSuccess } = useStorePaywall();
   const setRefValue = (value) => (headerActionsRef.current = value);
   const { isOpen, setCurrentStep } = useTour();
   return (
     <>
-      {/* {isActivateModuleModalOpen ? <StoreModule onSuccess={handleSuccess} onCancel={() => navigate("/")} /> : null} */}
+      {isActivateModuleModalOpen ? <StoreModule onSuccess={handleSuccess} onCancel={() => navigate("/")} /> : null}
 
       <CreateQuestContext.Provider
         value={{

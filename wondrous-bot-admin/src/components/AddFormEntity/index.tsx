@@ -259,9 +259,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                   </Typography>
                                   <AutocompleteOptionsComponent
                                     options={componentOptions}
-                                    autocompletProps={{
-                                      "data-tour": idx === 0 ? "tour-quest-step-type" : null,
-                                    }}
                                     value={item.type === TYPES.SINGLE_QUIZ ? TYPES.MULTI_QUIZ : item.type}
                                     onChange={(value) => handleChangeType(value, item.order, idx)}
                                     setSteps={setSteps}
