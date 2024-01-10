@@ -2,13 +2,14 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { TUTORIALS } from "utils/constants";
 import ModalComponent from "../../ModalComponent";
 import { useTour } from "@reactour/tour";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { ModalLabel, ModalTextBody } from "../../styles";
 import ContentComponent from "../../ContentComponent";
 import { TourDataContext } from "utils/context";
 import { useUserCompletedGuides } from "utils/hooks";
 import { useLocation } from "react-router-dom";
 import FinishModalComponent from "../shared/FinishModalComponent";
+import { doArrow } from "components/TutorialComponent/utils";
 
 const QuestsTutorial = () => {
   const completedGuides = useUserCompletedGuides();
@@ -17,15 +18,17 @@ const QuestsTutorial = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { search } = useLocation();
 
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
 
   const searchParams = new URLSearchParams(search);
 
   const tourQuestId = searchParams.get("tourQuestId");
 
-  const STEPS = [
+  const STEPS: any = [
     {
       selector: "[data-tour=quests-page-guide-new-quest-button]",
+      position: isMobile ? "bottom" : "left",
       content: () => (
         <ContentComponent
           content="Create a quest by clicking here!"
@@ -36,6 +39,22 @@ const QuestsTutorial = () => {
           }}
         />
       ),
+      ...(isMobile
+        ? {
+            styles: {
+              popover: (base, state) => {
+                return {
+                  ...base,
+                  background: "white",
+                  borderRadius: "16px",
+                  padding: "0px",
+                  zIndex: 1000000,
+                  ...doArrow(state.position, state.verticalAlign, state.horizontalAlign, "white", "bottom", 120),
+                };
+              },
+            },
+          }
+        : {}),
       hideButtons: true,
     },
   ];
@@ -90,7 +109,10 @@ const QuestsTutorial = () => {
 
   const handleTourStart = () => {
     if (shouldForceOpenTour) setShouldForceOpenTour(false);
-    if (completedGuides && (!completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) || shouldForceOpenTour)) {
+    if (
+      completedGuides &&
+      (!completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) || shouldForceOpenTour)
+    ) {
       return setIsModalOpen(true);
     }
     if (

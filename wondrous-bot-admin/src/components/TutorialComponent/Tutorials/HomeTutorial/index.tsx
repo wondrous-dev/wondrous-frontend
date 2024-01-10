@@ -27,11 +27,6 @@ const desktopSteps: any = [
         }}
       />
     ),
-    styles: {
-      maskArea: (base, { width }) => {
-        return { ...base, rx: 0, width: width - 19, zIndex: 999999 };
-      },
-    },
     nextButtonTitle: null,
     prevButtonTitle: null,
     prevAction: null,
@@ -122,7 +117,7 @@ const HomeTutorial = () => {
             borderRadius: "16px",
             padding: "0px",
             zIndex: 1000000,
-            ...doArrow(state.position, state.verticalAlign, state.horizontalAlign, "white", "bottom"),
+            ...doArrow(state.position, "right", "left", "white", "bottom"),
           };
         },
       },
@@ -150,14 +145,16 @@ const HomeTutorial = () => {
       selector: "[data-tour=sidebar-quest-item]",
       hideButtons: true,
       action: (node) => {
+        console.log(node, 'NODE')
         const parent = node.closest("[data-tour=header]");
-        const elementsToDisable = Array.from(parent?.getElementsByTagName("a"))
+        console.log(parent, 'PAREENT')
+        const elementsToDisable = Array.from(parent?.getElementsByTagName("a") || [])
           ?.concat(Array.from(parent?.getElementsByTagName("button")))
           ?.filter(
             (anchorTag: HTMLAnchorElement) =>
               !["sidebar-quest-item", "homepage-guide-menu"].includes(anchorTag.getAttribute("data-tour"))
           );
-        elementsToDisable.forEach((htmlElement: HTMLAnchorElement | HTMLButtonElement) => {
+        elementsToDisable?.forEach((htmlElement: HTMLAnchorElement | HTMLButtonElement) => {
           htmlElement.style.pointerEvents = "none";
         });
         node.style.borderRadius = "6px";

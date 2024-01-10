@@ -97,6 +97,7 @@ const SidebarHelpComponent = ({ isCollapsed, toggleDrawer }) => {
           onClick={togglePopper}
           data-tour="tour-tutorial-link"
           padding="10px"
+          marginBottom="2px"
           sx={{
             cursor: "pointer",
             "&:hover": {

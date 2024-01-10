@@ -94,7 +94,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
       content: () => (
         <ContentComponent
           typographyProps={{
-            color: "white",
+            color: isMobile ? 'white': 'black',
           }}
           content="Here is a sample data from Dwight."
           subHeader="You can see what quests they’ve submitted."

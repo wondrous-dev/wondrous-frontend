@@ -116,31 +116,130 @@ const LevelsTutorial = () => {
     },
     {
       id: "levels-modal-open",
-      position: "left",
+      position: isMobile ? [50, 50] : "left",
       selector: ".tutorials-quest-reward-modal",
       highlightedSelectors: [".tutorials-quest-reward-modal"],
       mutationObservables: [".tour-default-modal", ".tutorials-quest-reward-modal"],
       resizeObservables: [".tour-default-modal", ".tutorials-quest-reward-modal"],
-      content: () => <ContentComponent content="Here is how to add rewards." />,
+      content: () => (
+        <ContentComponent
+          typographyProps={{
+            color: isMobile ? "white" : "black",
+          }}
+          content="Here is how to add rewards."
+        />
+      ),
+      ...(isMobile
+        ? {
+            prevButtonTypographyStyles: {
+              color: "white",
+            },
+          }
+        : {}),
+      styles: {
+        popover: (base, state) => {
+          return {
+            ...base,
+            background: isMobile ? "#2A8D5C" : "white",
+            borderRadius: "16px",
+            padding: "0px",
+            zIndex: 1000000,
+            ...doArrow(
+              state.position,
+              state.verticalAlign,
+              state.horizontalAlign,
+              isMobile ? "#2A8D5C" : "white",
+              "top",
+              isMobile ? 120 : 20
+            ),
+          };
+        },
+      },
     },
     {
-      position: "left",
+      position: isMobile ? [50, 50] : "left",
       id: "levels-type-change",
       selector: ".tutorials-quest-reward-modal",
       highlightedSelectors: [".tutorials-quest-reward-modal"],
       mutationObservables: [".tour-default-modal", ".tutorials-quest-reward-modal"],
       resizeObservables: [".tour-default-modal", ".tutorials-quest-reward-modal"],
-      content: () => <ContentComponent content="Select the reward type" />,
+      content: () => (
+        <ContentComponent
+          typographyProps={{
+            color: isMobile ? "white" : "black",
+          }}
+          content="Select the reward type"
+        />
+      ),
+      ...(isMobile
+        ? {
+            prevButtonTypographyStyles: {
+              color: "white",
+            },
+          }
+        : {}),
+      styles: {
+        popover: (base, state) => {
+          return {
+            ...base,
+            background: isMobile ? "#2A8D5C" : "white",
+            borderRadius: "16px",
+            padding: "0px",
+            zIndex: 1000000,
+            ...doArrow(
+              state.position,
+              state.verticalAlign,
+              state.horizontalAlign,
+              isMobile ? "#2A8D5C" : "white",
+              "top",
+              isMobile ? 120 : 20
+            ),
+          };
+        },
+      },
     },
 
     {
-      position: "left",
+      position: isMobile ? [50, 50] : "left",
       id: "levels-add-reward",
       selector: ".tutorials-quest-reward-modal",
       highlightedSelectors: [".tutorials-quest-reward-modal"],
       mutationObservables: [".tour-default-modal", ".tutorials-quest-reward-modal"],
       resizeObservables: [".tour-default-modal", ".tutorials-quest-reward-modal"],
-      content: () => <ContentComponent content="Add the reward information and press ‘Add Reward’!" />,
+      content: () => (
+        <ContentComponent
+          typographyProps={{
+            color: isMobile ? "white" : "black",
+          }}
+          content="Add the reward information and press ‘Add Reward’!"
+        />
+      ),
+      ...(isMobile
+        ? {
+            prevButtonTypographyStyles: {
+              color: "white",
+            },
+          }
+        : {}),
+      styles: {
+        popover: (base, state) => {
+          return {
+            ...base,
+            background: isMobile ? "#2A8D5C" : "white",
+            borderRadius: "16px",
+            padding: "0px",
+            zIndex: 1000000,
+            ...doArrow(
+              state.position,
+              state.verticalAlign,
+              state.horizontalAlign,
+              isMobile ? "#2A8D5C" : "white",
+              "top",
+              isMobile ? 120 : 20
+            ),
+          };
+        },
+      },
     },
     {
       position: "left",

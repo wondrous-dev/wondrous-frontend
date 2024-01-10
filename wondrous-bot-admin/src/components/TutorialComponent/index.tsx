@@ -58,7 +58,7 @@ const TutorialComponent = ({ children }) => {
       onClickMask={shakePopoverAnimation}
       disableDotsNavigation
       disableKeyboardNavigation
-      padding={{ popover: 12, mask: 6 }}
+      padding={{ popover: 20, mask: 6 }}
       components={{
         Badge: () => null,
 

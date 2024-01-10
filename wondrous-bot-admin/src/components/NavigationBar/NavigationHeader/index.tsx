@@ -2,7 +2,7 @@ import { Box, ButtonBase, Drawer } from "@mui/material";
 import { Link } from "react-router-dom";
 import { ImageDefault } from "../styles";
 import { HeaderBar, MenuIconWrapper } from "./styles";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { BOTTOM_LINKS, DrawerComponent, LinkItem } from "../shared";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -12,6 +12,8 @@ const NavigationHeaderComponent = ({ links }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const toggleDrawer = () => setIsCollapsed((prev) => !prev);
+  const headerRef = useRef(null);
+
   return (
     <>
       <Drawer
@@ -19,16 +21,15 @@ const NavigationHeaderComponent = ({ links }) => {
         anchor="top"
         ModalProps={{
           keepMounted: true,
+          container: headerRef.current,
         }}
         sx={{
-          zIndex: 99,
+          zIndex: 99999,
         }}
       >
         <DrawerComponent links={links} toggleDrawer={toggleDrawer} isCollapsed={isCollapsed} />
       </Drawer>
-      <HeaderBar
-      data-tour="header"
-      >
+      <HeaderBar data-tour="header" ref={headerRef}>
         <Link to="/">
           <ImageDefault
             src="/wonder.svg"
@@ -64,9 +65,7 @@ const NavigationHeaderComponent = ({ links }) => {
               );
             })}
           </Box>
-          <MenuIconWrapper onClick={toggleDrawer}
-          data-tour="homepage-guide-menu"
-          >
+          <MenuIconWrapper onClick={toggleDrawer} data-tour="homepage-guide-menu">
             {!isCollapsed ? (
               <CloseIcon
                 sx={{
