@@ -6,7 +6,7 @@ import { useDiscordRoles } from "utils/discord";
 
 const DiscordRoles = ({ setStoreItemData, storeItemData }) => {
   const { errors = {}, setErrors } = useContext(CreateQuestContext);
-  const activeError = errors["discordRoleName"]  || errors["discordRoleId"] || errors["discordGuildId"];
+  const activeError = errors["discordRoleName"] || errors["discordRoleId"] || errors["discordGuildId"];
   const { activeOrg } = useContext(GlobalContext);
   const roles = useDiscordRoles({
     orgId: activeOrg?.id,
@@ -25,11 +25,12 @@ const DiscordRoles = ({ setStoreItemData, storeItemData }) => {
         value: role.id,
         label: role.name,
         discordGuildId: role.discordGuildId,
-      })).sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);;
+      }))
+      .sort((a, b) => (a?.label?.toLowerCase() < b?.label?.toLowerCase() ? -1 : 1));
   }, [roles]);
 
   const onChange = (value) => {
-    const role = allRoles?.find((role) => role.value === value);
+    const role = allRoles?.find((role) => role?.value === value);
     setStoreItemData((prev) => {
       return {
         ...prev,
