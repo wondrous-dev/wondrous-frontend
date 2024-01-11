@@ -36,10 +36,19 @@ const TwitterOauth = ({ telegramUserId, callback }) => {
   const state = `telegramUserId=${telegramUserId}`;
   const link = buildTwitterAuthUrl(state);
 
+  const { webApp } = useTakeQuest();
+
+  const handleLinkClick = () => {
+    callback();
+    webApp?.openLink(link, {
+      try_instant_view: false,
+    });
+  };
+
   return (
-    <a href={link} target="__blank" onClick={callback}>
-      <SharedSecondaryButton $reverse>Connect Twitter</SharedSecondaryButton>
-    </a>
+    <SharedSecondaryButton onClick={handleLinkClick} $reverse>
+      Connect Twitter
+    </SharedSecondaryButton>
   );
 };
 
