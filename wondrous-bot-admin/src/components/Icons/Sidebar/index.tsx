@@ -340,20 +340,20 @@ export const InactiveTutorialIcon = (props) => (
   </svg>
 );
 
-export const ActiveTutorialIcon = (props) => (
+export const ActiveTutorialIcon = ({ fill = "#AF9EFF", stroke = "black", ...props }) => (
   <svg width={22} height={21} viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M11 20.5C16.5228 20.5 21 16.0228 21 10.5C21 4.97715 16.5228 0.5 11 0.5C5.47715 0.5 1 4.97715 1 10.5C1 16.0228 5.47715 20.5 11 20.5Z"
-      fill="#AF9EFF"
-      stroke="black"
+      fill={fill}
+      stroke={stroke}
       strokeWidth={0.8}
     />
     <path
       d="M8.08594 7.38338C8.32104 6.71505 8.78509 6.15149 9.39589 5.79252C10.0067 5.43354 10.7248 5.30232 11.4231 5.42209C12.1214 5.54187 12.7548 5.90491 13.211 6.44691C13.6673 6.98891 13.917 7.6749 13.9159 8.38338C13.9159 10.3834 10.9159 11.3834 10.9159 11.3834V12.9857"
-      stroke="black"
+      stroke={stroke}
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path d="M10.9961 15.6211H11.0061" stroke="black" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M10.9961 15.6211H11.0061" stroke={stroke} strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );

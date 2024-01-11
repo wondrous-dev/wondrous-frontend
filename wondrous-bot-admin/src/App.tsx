@@ -57,6 +57,7 @@ import ViewReferralPage from "pages/referrals/ViewReferral";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 import { SUPPORTED_CHAINS_META } from "utils/web3Constants";
 import RewardfulTag from "components/AddFormEntity/components/RewardfulTag";
+import CmtyUserActivityPage from "pages/activity";
 
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 
@@ -243,13 +244,21 @@ const router = createBrowserRouter([
         path: "/referrals/:id",
         element: <ViewReferralPage />,
       },
+      {
+        path: "/activity/:id",
+        element: <CmtyUserActivityPage />,
+      },
     ],
   },
 ]);
 
 const getDesignTokens = (mode) => ({
+  typography: {
+    fontFamily: "Poppins",
+  },
   palette: {
     mode,
+
     ...(mode === "light"
       ? {
           // palette values for light mode
@@ -299,6 +308,7 @@ function App() {
   }
 
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+  console.log(theme, 'theme')
   return (
     <StyledComponentProvider theme={theme}>
       <ThemeProvider theme={theme}>
