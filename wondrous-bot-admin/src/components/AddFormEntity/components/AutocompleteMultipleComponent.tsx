@@ -95,7 +95,7 @@ const AutocompleteMultipleComponent = ({
                   </div>
                 }
                 onClick={props.onDelete}
-                label={option.label}
+                label={option?.label}
                 // background={option.color}
                 variant="outlined"
                 onDelete={props.onDelete}
