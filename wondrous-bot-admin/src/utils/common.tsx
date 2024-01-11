@@ -210,7 +210,7 @@ export const getTwitterCallbackUrl = () => {
 };
 
 export const buildTwitterAuthUrl = (state?) => {
-  const CLIENT_ID = "alotNFdURk5Qd0FoRGpKeUpHMDE6MTpjaQ";
+  const CLIENT_ID = "Uy10TlUxWjF6RDM2MUJxRnptY2U6MTpjaQ";
   if (!state) {
     state = "state";
   }
