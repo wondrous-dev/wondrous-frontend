@@ -11,7 +11,7 @@ import { getPlan } from "utils/common";
 
 export enum PricingOptionsTitle {
   Basic = "Basic",
-  Hobby = "Hobby",
+  Hobby = "Plus",
   Premium = "Premium",
   Ecosystem = "Ecosystem",
 }
@@ -171,7 +171,8 @@ const PricingOptionsListItem = ({
               fontWeight="800"
               fontSize="62px"
               lineHeight="1"
-              marginTop="18px"
+              marginTop={title === PricingOptionsTitle.Ecosystem ? "10px" : "18px"}
+              marginBottom={title === PricingOptionsTitle.Ecosystem ? "8px" : "0px"}
               sx={{
                 fontSize: {
                   xs: "62px",
@@ -180,18 +181,18 @@ const PricingOptionsListItem = ({
                 },
               }}
             >
-              {title === PricingOptionsTitle.Ecosystem && (
+              {title === PricingOptionsTitle.Ecosystem ? (
                 <span
                   style={{
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    color: "black",
+                    fontSize: "35px",
+                    marginTop: "-20px",
                   }}
                 >
-                  From
+                  Enterprise
                 </span>
+              ) : (
+                <>{formatCurrency(price)}</>
               )}
-              {formatCurrency(price)}
             </Typography>
             <Typography
               fontFamily="Poppins, sans-serif"
@@ -206,7 +207,13 @@ const PricingOptionsListItem = ({
                 },
               }}
             >
-              {billingPeriod} {savingsText}
+              {title === PricingOptionsTitle.Ecosystem ? (
+                <span>Custom pricing per server</span>
+              ) : (
+                <>
+                  {billingPeriod} {savingsText}
+                </>
+              )}
             </Typography>
 
             <Button
@@ -264,7 +271,7 @@ const PricingOptionsListItem = ({
                 key={feature}
                 sx={{
                   display: "flex",
-                  alignItems: "center",
+                  alignItems: "flex-start",
                   gap: "6px",
                   color: "#4d4d4d",
                   fontSize: "13px",
@@ -284,7 +291,11 @@ const PricingOptionsListItem = ({
                   justifyContent="center"
                   borderRadius="100px"
                 >
-                  <CheckIcon />
+                  <CheckIcon
+                    style={{
+                      top: "2px",
+                    }}
+                  />
                 </Box>
                 {feature}
               </ListItem>
