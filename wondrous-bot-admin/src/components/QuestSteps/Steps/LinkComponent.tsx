@@ -3,6 +3,7 @@ import { Label } from "components/AddFormEntity/components/styles";
 import ErrorField from "components/Shared/ErrorField";
 import Spinner from "components/Shared/Spinner";
 import { ErrorText, SharedSecondaryButton } from "components/Shared/styles";
+import { useTakeQuest } from "utils/hooks";
 
 export const LinkComponent = ({
   loading,
@@ -12,20 +13,21 @@ export const LinkComponent = ({
   linkText = "Verify",
   error = null,
 }) => {
+  const { webApp } = useTakeQuest();
+
+  const handleLinkClick = (link) => {
+    onClick?.();
+    webApp?.openLink(link, {
+      try_instant_view: false,
+    });
+  };
+
   return (
     <Box display="flex" flexDirection="column" gap="14px" width="100%">
       {loading ? <Spinner /> : null}
       <Label>{label}</Label>
       {link ? (
-        <a
-          href={link}
-          onClick={onClick}
-          style={{
-            width: "fit-content",
-          }}
-        >
-          <SharedSecondaryButton>{linkText}</SharedSecondaryButton>
-        </a>
+        <SharedSecondaryButton onClick={() => handleLinkClick(link)}>{linkText}</SharedSecondaryButton>
       ) : (
         <Box>
           <SharedSecondaryButton onClick={onClick}>{linkText}</SharedSecondaryButton>

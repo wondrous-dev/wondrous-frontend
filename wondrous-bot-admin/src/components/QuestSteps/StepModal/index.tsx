@@ -7,12 +7,27 @@ import { TYPES } from "utils/constants";
 import { useTakeQuest } from "utils/hooks";
 
 const ContentComponent = ({ link = null, prompt }) => {
+  const { webApp } = useTakeQuest();
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    webApp?.openLink(link, {
+      try_instant_view: false,
+    });
+  };
+
   return (
     <Grid display="flex" flexDirection="column" gap="14px">
       <Typography color="#1D1D1D" fontFamily="Poppins" fontSize="16px" fontWeight={500} lineHeight="24px">
         {prompt}
       </Typography>
-      {link ? <a href={link}>Link</a> : null}
+      {link ? (
+        <ButtonBase sx={{ display: "flex", justifyContent: "flex-start", alignItems: "flex-start" }}>
+          <a href="#" onClick={handleClick}>
+            Link
+          </a>
+        </ButtonBase>
+      ) : null}
     </Grid>
   );
 };
