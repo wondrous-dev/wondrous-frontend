@@ -60,7 +60,7 @@ const PaymentLedger = ({ questId = null }) => {
   const { hasMore, paymentView, items, hasLength, batchPaymentData, togglePaymentView, handleFetchMore } = useData({
     orgId: activeOrg?.id,
     questId,
-    setTokenIds
+    setTokenIds,
   });
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const PaymentLedger = ({ questId = null }) => {
     "Reward",
     "Chain",
     "Token ID",
-    "Quest/Level/Purchase", 
+    "Quest/Level/Purchase",
     "Date",
   ];
   const paidHeaders = ["Name", "Reward", "Chain", "Link", "Quest/Level/Purchase", "Date"];
@@ -128,7 +128,7 @@ const PaymentLedger = ({ questId = null }) => {
     <>
       <PageHeader
         title="Payments"
-        withBackButton={false}
+        withBackButton={true}
         renderActions={() => (
           <Box display="flex" gap="10px" width="100%">
             {hasLength && selectedPayments?.length ? (
@@ -172,7 +172,7 @@ const PaymentLedger = ({ questId = null }) => {
         ) : (
           <EmptyState type={EMPTY_STATE_TYPES.PAYMENTS} />
         )}
-        <Box flex="1"/>
+        <Box flex="1" />
         {selectedPayments?.length && paymentView === "unpaid" ? (
           <BatchPayments
             selectedPayments={selectedPayments}
