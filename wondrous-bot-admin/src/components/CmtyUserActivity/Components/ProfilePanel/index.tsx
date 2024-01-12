@@ -11,7 +11,15 @@ import { Divider } from "components/SignupComponent/CollectCredentials/styles";
 
 const UserConfigItems = ({ config }) => {
   return (
-    <Box display="flex" gap="24px" alignItems="center">
+    <Box
+      display="flex"
+      gap={{
+        xs: "14px",
+        md: "24px",
+      }}
+      alignItems="center"
+      flexWrap="wrap"
+    >
       {config?.map((item, idx) => {
         return (
           <Box key={item.label} display="flex" alignItems="center" gap="6px">
