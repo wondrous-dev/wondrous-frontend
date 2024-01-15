@@ -2,7 +2,14 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box, Grid } from "@mui/material";
 import { PoapImage } from "components/CreateTemplate/styles";
 import DeleteIcon from "components/Icons/Delete";
-import { DiscordRoleIcon, NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import {
+  DiscordRoleIcon,
+  GatewayPDAIcon,
+  NFTIcon,
+  PoapIcon,
+  StoreItemRewardIcon,
+  TokensIcon,
+} from "components/Icons/Rewards";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import { TextLabel } from "components/ViewQuest/styles";
@@ -56,6 +63,7 @@ const ICONS_MAP = {
   [PAYMENT_OPTIONS.TOKEN]: TokensIcon,
   [PAYMENT_OPTIONS.COMMUNITY_BADGE]: NFTIcon,
   [PAYMENT_OPTIONS.CMTY_STORE_ITEM]: StoreItemRewardIcon,
+  [PAYMENT_OPTIONS.PDA]: GatewayPDAIcon,
 };
 
 const RewardContent = ({ reward }) => {
@@ -69,6 +77,7 @@ const RewardContent = ({ reward }) => {
     [PAYMENT_OPTIONS.POAP]: `POAP: ${reward?.poapRewardData?.name}`,
     [PAYMENT_OPTIONS.COMMUNITY_BADGE]: `NFT: ${reward?.amount} ${reward?.paymentMethod?.name}`,
     [PAYMENT_OPTIONS.CMTY_STORE_ITEM]: `Store Item: ${reward?.storeItem?.name}`,
+    [PAYMENT_OPTIONS.PDA]: `Citizen PDA`,
   };
 
   return (

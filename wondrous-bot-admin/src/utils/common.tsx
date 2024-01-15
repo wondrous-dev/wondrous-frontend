@@ -54,9 +54,11 @@ export function getPathArray(path) {
 }
 
 export function convertPath(path) {
-  return path?.replace(/\[|\]\.?/g, '.').replace(/""/g, "").replace(/^\./, '');
+  return path
+    ?.replace(/\[|\]\.?/g, ".")
+    .replace(/""/g, "")
+    .replace(/^\./, "");
 }
-
 
 export const matchRoute = (pathname, options) => {
   return !!options.find((route) => {
@@ -141,6 +143,12 @@ export const constructRewards = ({ rewards }) => {
       return {
         type: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
         value: reward?.storeItem?.name || null,
+      };
+    }
+    if (reward.type === PAYMENT_OPTIONS.PDA) {
+      return {
+        type: PAYMENT_OPTIONS.PDA,
+        value: "Citizen PDA",
       };
     }
   });

@@ -118,7 +118,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/telegram/start-quest/:id",
   "/telegram/connect",
   "/community-badge/claim",
-  "/referral-campaign"
+  "/referral-campaign",
 ];
 
 export const BG_TYPES = {
@@ -350,7 +350,7 @@ export const TUTORIALS = {
   COMMUNITIES_HOME_GUIDE: "communities_home_guide",
   COMMUNITIES_QUESTS_PAGE_GUIDE: "communities_quests_page_guide",
   COMMUNITIES_QUEST: "communities_quest",
-  FIRST_CREATED_QUEST: "first_created_quest"
+  FIRST_CREATED_QUEST: "first_created_quest",
 };
 
 export const DEFAULT_BANNER_IMAGES = {
@@ -396,6 +396,8 @@ const APEIRON_INTEGRATIONS = [
     value: TYPES.VERIFY_APEIRON_10_MINS_PLAYED,
   },
 ];
+
+export const POKT_ORG_ID = "105517885016768513";
 
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
@@ -481,15 +483,15 @@ export const NFT_TYPES = {
 };
 
 export const REFERRAL_STATUSES = {
-  ACTIVE: 'active',
-  INACTIVE: 'inactive'
-}
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+};
 
 export const REFERRAL_REWARD_SCHEME = {
   REFERRER: "referrer",
   REFERRED: "referred",
   TWO_WAY: "two_way",
-}
+};
 
 export const QUALIFYING_ACTION_TYPES = {
   PURCHASE: "purchase",
@@ -497,10 +499,4 @@ export const QUALIFYING_ACTION_TYPES = {
   ANY_QUEST: "any_quest",
 };
 
-export const LOCKED_PATHS = [
-  '/store',
-  '/store/items/create',
-  '/store/items/:id',
-  '/analytics'
-];
-
+export const LOCKED_PATHS = ["/store", "/store/items/create", "/store/items/:id", "/analytics"];

@@ -201,6 +201,10 @@ const mapReward = (reward) => {
       type: reward?.type,
       storeItemId: reward?.storeItem?.id,
     };
+  } else if (reward?.type === PAYMENT_OPTIONS.PDA) {
+    return {
+      type: reward?.type,
+    };
   }
 };
 
