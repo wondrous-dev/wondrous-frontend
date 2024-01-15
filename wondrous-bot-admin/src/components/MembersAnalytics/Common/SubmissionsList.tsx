@@ -10,6 +10,7 @@ import AccordionComponent from "components/Shared/Accordion";
 import { useInView } from "react-intersection-observer";
 import EmptyState from "components/EmptyState";
 import { EMPTY_STATE_TYPES } from "utils/constants";
+import { SubmissionContainer, SubmissionStyledDetails } from "./styles";
 
 export const SecondaryAccordion = ({ children, renderTitle = null, questName }) => {
   return (
@@ -22,7 +23,7 @@ export const SecondaryAccordion = ({ children, renderTitle = null, questName }) 
           ? renderTitle()
           : () => (
               <Typography fontFamily="Poppins" fontWeight={500} fontSize="13px" lineHeight="20px" color="black">
-                Submission to: <strong>{questName}</strong>
+                <span>Submission to:</span> <strong>{questName}</strong>
               </Typography>
             )
       }
@@ -32,19 +33,21 @@ export const SecondaryAccordion = ({ children, renderTitle = null, questName }) 
   );
 };
 
-export const SubmissionComponent = ({ submission }) => {
+export const SubmissionComponent = ({ submission, pointsIcon = () => <SecondaryPointsIcon /> }) => {
   const steps = useMemo(() => {
     return stepsNormalizr(submission?.quest?.steps, submission?.stepsData);
   }, [submission]);
 
   return (
     <SecondaryAccordion questName={submission?.quest?.title || "Quest"}>
-      <Grid bgcolor="white" gap="18px" padding="14px" display="flex" flexDirection="column">
-        <Grid display="flex" gap="24px">
-          <TextWrapper gap="10px" padding="0px 8px">
-            <SecondaryPointsIcon />
-            <CommonTypography fontSize="14px">{submission?.quest?.pointReward} Points</CommonTypography>
-          </TextWrapper>
+      <SubmissionContainer>
+        <Grid display="flex" gap="24px" justifyContent="space-between">
+          <SubmissionStyledDetails>
+            <TextWrapper gap="10px" padding="0px 8px">
+              {pointsIcon?.()}
+              <CommonTypography fontSize="14px">{submission?.quest?.pointReward} Points</CommonTypography>
+            </TextWrapper>
+          </SubmissionStyledDetails>
 
           <StatusComponent approvedAt={submission?.approvedAt} rejectedAt={submission?.rejectedAt} />
         </Grid>
@@ -90,12 +93,32 @@ export const SubmissionComponent = ({ submission }) => {
             </Grid>
           ))}
         </Grid>
-      </Grid>
+      </SubmissionContainer>
     </SecondaryAccordion>
   );
 };
 
-const SubmissionsList = ({ loading, data = [], fetchMore, hasMore }) => {
+interface SubmissionsListProps {
+  loading?: boolean;
+  data?: any[];
+  fetchMore?: () => void;
+  hasMore?: boolean;
+  emptyState?: () => JSX.Element;
+  wrapperSx?: any;
+  pointsIcon?: () => JSX.Element;
+}
+const SubmissionsList = ({
+  loading,
+  data = [],
+  fetchMore,
+  hasMore = false,
+  emptyState = null,
+  pointsIcon = () => <SecondaryPointsIcon />,
+  wrapperSx = {
+    maxHeight: "400px",
+    overflow: "scroll",
+  },
+}: SubmissionsListProps) => {
   const [ref, inView] = useInView({});
 
   useEffect(() => {
@@ -105,28 +128,34 @@ const SubmissionsList = ({ loading, data = [], fetchMore, hasMore }) => {
   }, [hasMore, inView]);
 
   return (
-    <SubmissinsWrapper maxHeight="400px" overflow="scroll">
+    <SubmissinsWrapper {...wrapperSx}>
       {loading && !data?.length ? (
-        <CircularProgress
+       <Box width="100%" height="100%" justifyContent="center" alignItems="center" display="flex">
+         <CircularProgress
           sx={{
             color: "#2A8D5C",
             animationDuration: "10000ms",
           }}
         />
+       </Box>
       ) : (
         <Box height="100%" display="flex" flexDirection="column" gap="14px" padding="2px">
           {data.map((submission) => (
-            <SubmissionComponent key={submission.id} submission={submission} />
+            <SubmissionComponent 
+            pointsIcon={pointsIcon}
+            key={submission.id} submission={submission} />
           ))}
-          {!data?.length && !loading && (
-            <EmptyState
-              type={EMPTY_STATE_TYPES.SUBMISSIONS}
-              labelColor="black"
-              sx={{
-                border: "1px solid black",
-              }}
-            />
-          )}
+          {!data?.length &&
+            !loading &&
+            (emptyState?.() || (
+              <EmptyState
+                type={EMPTY_STATE_TYPES.SUBMISSIONS}
+                labelColor="black"
+                sx={{
+                  border: "1px solid black",
+                }}
+              />
+            ))}
           <div ref={ref} style={{ height: "1px", display: "block" }} />
         </Box>
       )}

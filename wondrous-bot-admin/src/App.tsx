@@ -245,7 +245,7 @@ const router = createBrowserRouter([
         element: <ViewReferralPage />,
       },
       {
-        path: "/activity/:id",
+        path: "/activity",
         element: <CmtyUserActivityPage />,
       },
     ],

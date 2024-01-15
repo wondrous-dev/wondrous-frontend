@@ -8,6 +8,8 @@ import {
 } from "components/CmtyUserActivity/Icons";
 import { ProfilePicture } from "./styles";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
+import { useQuery } from "@apollo/client";
+import { GET_CMTY_USER_ACTIVITY_STATS } from "graphql/queries";
 
 const UserConfigItems = ({ config }) => {
   return (
@@ -34,42 +36,40 @@ const UserConfigItems = ({ config }) => {
   );
 };
 
-const ProfilePanel = () => {
+const ProfilePanel = ({ cmtyUser, stats }) => {
   const userDataConfig = {
     top: [
       {
-        label: "Level 4",
+        label: `Level ${stats?.level || 0}`,
         icon: LevelIcon,
       },
       {
-        label: "Points balance 8",
+        label: `Points balance ${stats?.totalPointsBalance || 0}`,
         icon: PointsBalanceIcon,
       },
       {
-        label: "Total points 468",
+        label: `Total points ${stats?.totalPoints || 0}`,
         icon: PointsBalanceIcon,
       },
     ],
     bottom: [
       {
-        label: "8 Badges",
+        label: `${stats?.badges || 0} Badges`,
         icon: BadgesIcon,
       },
       {
-        label: "32 Purchases",
+        label: `${stats?.purchases || 0} Purchases`,
         icon: PurchasesIcon,
       },
       {
-        label: "56 Submissions",
+        label: `${stats?.submissions || 0} Submissions`,
         icon: SubmissionsIcon,
       },
+
+      
     ],
   };
 
-  const username = "Joe Schmoe";
-
-  const profilePic =
-    "https://s3-alpha-sig.figma.com/img/b79e/dce2/e36a56336972f01f541cfca7a8129408?Expires=1705881600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=XqzCSaYV3miaEbIWdYq9Shasvo-9zfweyiQXQBdgcEbvIXQmqgP4B8VzMepGXo1zeVyS2SvtO0adOkav0o1TbzKO6DDgjELIGSTO9iIJc9YS9i6CONqAKZN2tGU3iLnDMfneJXl-E4ulX7iNBtcpYyMNZ2pR2UE3SkPbIncogNEfTz4XLxpLyvLI-dc~-WqhZ3J~it9O9Dz-~JME4fRHfDKmxM4uDvyV7u2D47~cL-gipc~plKyp~Vqqhtuofo-V0K6vQcc97UC0~LogYulVK6o0t5fnXZ~uz85xcCzrjOU0-qnHR4UGP8q380Gfb8PXWd9R-5M~WZHtTWsKo0HLlw__";
   return (
     <Grid
       display="flex"
@@ -81,7 +81,7 @@ const ProfilePanel = () => {
       width="100%"
     >
       <Box>
-        <ProfilePicture src={profilePic} />
+        <ProfilePicture src={cmtyUser?.profilePicture || "/images/profile-picture-placeholder.svg"} />
       </Box>
       <Box
         display="flex"
@@ -92,7 +92,7 @@ const ProfilePanel = () => {
         width="100%"
       >
         <Typography color="black" fontSize="18px" fontWeight={600} lineHeight="18px">
-          {username}
+          {cmtyUser?.discordUsername || cmtyUser?.username || cmtyUser?.telegramUsername || "Wonder User"}
         </Typography>
 
         <UserConfigItems config={userDataConfig.top} />

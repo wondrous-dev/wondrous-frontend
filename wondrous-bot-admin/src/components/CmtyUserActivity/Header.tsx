@@ -2,14 +2,21 @@ import { Box, ButtonBase, Typography } from "@mui/material";
 import { HeaderBar, HeaderInfoImage } from "./styles";
 import { QuestionMark } from "@mui/icons-material";
 import { ActiveTutorialIcon } from "components/Icons/Sidebar";
+import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 
-export default function CmtyUserHeaderComponent() {
+export default function CmtyUserHeaderComponent({ org }) {
   return (
     <HeaderBar>
       <Box padding="14px" display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" gap="24px" justifyContent="center" alignItems="center">
           <Box display="flex" alignItems="center" gap="8px">
-            <img src="/wonder.svg" />
+            <OrgProfilePicture
+              profilePicture={org?.profilePicture}
+              style={{
+                height: "100%",
+                width: "100%",
+              }}
+            />
             <Typography
               fontSize={{
                 xs: "14px",
@@ -19,7 +26,7 @@ export default function CmtyUserHeaderComponent() {
               lineHeight="14px"
               color="black"
             >
-              Pan - DAO
+              {org.name}
             </Typography>
           </Box>
           <Typography
@@ -37,9 +44,11 @@ export default function CmtyUserHeaderComponent() {
             Powered by <HeaderInfoImage src="/wonder.svg" /> Wonderverse
           </Typography>
         </Box>
-        <ButtonBase>
-          <ActiveTutorialIcon fill="black" stroke="white" width="24px" height="24px" />
-        </ButtonBase>
+        <a href="https://wonderverse.gitbook.io/wonder-communities" target="_blank">
+          <ButtonBase>
+            <ActiveTutorialIcon fill="black" stroke="white" width="24px" height="24px" />
+          </ButtonBase>
+        </a>
       </Box>
     </HeaderBar>
   );

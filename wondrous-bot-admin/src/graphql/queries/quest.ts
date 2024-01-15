@@ -116,23 +116,6 @@ export const GET_ORG_QUEST_STATS = gql`
   }
 `;
 
-export const GET_COMMUNITY_USERS_FOR_ORG = gql`
-  query getCmtyUsersForOrg($input: OrgIdInput!) {
-    getCmtyUsersForOrg(input: $input) {
-      ...CmtyUserFragment
-    }
-  }
-  ${CmtyUserFragment}
-`;
-
-export const SEARCH_COMMUNITY_USERS_FOR_ORG = gql`
-  query searchCmtyUsersForOrg($input: OrgIdInput!) {
-    searchCmtyUsersForOrg(input: $input) {
-      ...CmtyUserFragment
-    }
-  }
-  ${CmtyUserFragment}
-`;
 export const GET_SUBMISSIONS_FOR_QUEST = gql`
   query getQuestSubmissions($questId: ID!, $status: String, $limit: Int, $offset: Int) {
     getQuestSubmissions(questId: $questId, status: $status, limit: $limit, offset: $offset) {
@@ -330,26 +313,6 @@ export const USER_CAN_START_QUEST = gql`
   }
 `;
 
-export const GET_INTEGRATION_CMTY_USER = gql`
-  query getIntegrationCmtyUser($telegramUserId: String) {
-    getIntegrationCmtyUser(telegramUserId: $telegramUserId) {
-      ...CmtyUserFragment
-    }
-  }
-
-  ${CmtyUserFragment}
-`;
-
-export const GET_CMTY_USER_INFO = gql`
-  query getCmtyUserInfo($cmtyUserId: String) {
-    getCmtyUserInfo(cmtyUserId: $cmtyUserId) {
-      cmtyUserId
-      googleInfo {
-        expireAt
-      }
-    }
-  }
-`;
 export const VERIFY_LINK_CLICKED = gql`
   query verifyLinkClicked($cmtyUserId: String, $questStepId: String, $url: String) {
     verifyLinkClicked(cmtyUserId: $cmtyUserId, questStepId: $questStepId, url: $url) {

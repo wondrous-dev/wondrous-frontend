@@ -1,4 +1,5 @@
 import { ButtonBase } from "@mui/material";
+import EmptyState from "components/EmptyState";
 
 interface IShowMoreButtonProps {
   onClick: () => void;
@@ -36,5 +37,23 @@ export const SharedShowMoreButton = ({ onClick, label = "Show more" }) => {
     >
       {label}
     </ButtonBase>
+  );
+};
+
+export const CmtyActivityEmptyState = ({ Image, title, sx = {} }) => {
+  return (
+    <EmptyState
+      labelColor={"#828282"}
+      sx={{
+        bgcolor: "#F6F6F6",
+        border: "1px solid #CDCDCD",
+        borderRadius: "6px",
+        ...sx
+      }}
+      customType={{
+        Image,
+        title,
+      }}
+    />
   );
 };

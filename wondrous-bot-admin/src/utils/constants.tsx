@@ -119,7 +119,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/telegram/connect",
   "/community-badge/claim",
   "/referral-campaign",
-  "/activity/:id",
+  "/activity",
 ];
 
 export const BG_TYPES = {
@@ -345,7 +345,7 @@ export const EXCLUDED_PATHS = [
   "/community-badge/claim",
   "/referral",
   "/referral-campaign",
-  "/activity/:id",
+  "/activity",
 ];
 
 export const TUTORIALS = {

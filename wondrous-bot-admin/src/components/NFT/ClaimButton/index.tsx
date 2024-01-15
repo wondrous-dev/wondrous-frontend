@@ -95,7 +95,7 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
       <SharedSecondaryButton onClick={handleOnClaimClick}>
         <>{isMinting ?<Spinner />: <>{address ? "Claim now" : "Connect wallet"}</>}</>
       </SharedSecondaryButton>
-      {isMinting && <Typography>Please don't close the webpage</Typography>}
+      {isMinting && <Typography color="black">Please don't close the webpage</Typography>}
       {isConnected ? (
         <ButtonBase onClick={() => open()} disabled={isMinting}>
           <Typography
