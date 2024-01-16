@@ -25,7 +25,6 @@ const HomeTutorial = () => {
   useEffect(() => {
     if ((completedGuides && !completedGuides.includes(TUTORIALS.COMMUNITIES_HOME_GUIDE)) || shouldForceOpenTour) {
       setIsModalOpen(true);
-      setShouldForceOpenTour(false);
     }
   }, [shouldForceOpenTour, completedGuides]);
 
@@ -87,15 +86,6 @@ const HomeTutorial = () => {
         node.style.boxShadow = "0px 4px 14px 0px rgba(0, 0, 0, 0.15)";
         node.style.borderRadius = "6px";
         node.zIndex = 1000000;
-        const nodeAction = () => {
-          setShouldForceOpenTour(true);
-        }
-        node.addEventListener("click", nodeAction);
-        nodes.current.push({
-          element: node,
-          event: "click",
-          action: nodeAction,
-        });
       },
       actionAfter: (node) => {
         const parent = node.closest("[data-tour=sidebar-drawer]");
@@ -225,7 +215,10 @@ const HomeTutorial = () => {
     handleTourVisit(TUTORIALS.COMMUNITIES_HOME_GUIDE);
   };
 
-  const handleSkip = () => handleTourVisit(TUTORIALS.COMMUNITIES_HOME_GUIDE);
+  const handleSkip = () => {
+    handleTourVisit(TUTORIALS.COMMUNITIES_HOME_GUIDE);
+    if (shouldForceOpenTour) setShouldForceOpenTour(false);
+  };
 
   return (
     <ModalComponent
