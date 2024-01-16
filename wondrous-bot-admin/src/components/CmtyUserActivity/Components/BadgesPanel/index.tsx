@@ -4,22 +4,20 @@ import { CmtyActivityEmptyState, SharedShowMoreButton } from "../shared";
 import { useLazyQuery } from "@apollo/client";
 import { GET_CMTY_USER_BADGES } from "graphql/queries";
 import { useEffect, useMemo, useState } from "react";
-import { BadgeIcon } from "components/Icons/Badge";
+import { BadgeIcon, MintingStatusIcon } from "components/Icons/Badge";
 import SafeImage from "components/SafeImage";
 import BadgeModal from "./BadgeModal";
 
 const LIMIT = 6;
 
-const MintingStatus = () => (
-  <Box
-    position="absolute"
-    padding="4px 6px"
-    borderRadius="6px"
-    bgcolor="rgba(255, 255, 255, 0.40)"
-    top="8px"
-    left="8px"
-  >
-    <PanelTitle $fontSize="14px">Minted</PanelTitle>
+const MintingStatus = ({ isMinted }) => (
+  <Box position="absolute" top="8px" left="8px" right="8px" display="flex" justifyContent="space-between" width="95%">
+    {!isMinted ? (
+      <Box padding="4px 6px" borderRadius="6px" bgcolor="rgba(255, 255, 255, 0.40)">
+        <PanelTitle $fontSize="14px">Minted</PanelTitle>
+      </Box>
+    ) : <Box />}
+    <MintingStatusIcon stroke={!isMinted ? "black" : "#CDCDCD"} fill={!isMinted ? "#68DDA3" : "#E3E3E3"} />
   </Box>
 );
 
@@ -49,7 +47,7 @@ const Card = (props) => {
         overflow="hidden"
       >
         <Box width="100%" height="100%" position="relative" flex="1">
-          {txHash && <MintingStatus />}
+          <MintingStatus isMinted={!!txHash} />
           {/* <CardImage src={media?.slug} alt={`An image displaying user minted NFT`} /> */}
           <Box width="100%" height="100%" display="flex" justifyContent="center" alignItems="center">
             <SafeImage
@@ -63,7 +61,6 @@ const Card = (props) => {
               }}
             />
           </Box>
-          <Box></Box>
         </Box>
         <Box
           display="flex"
