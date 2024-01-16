@@ -7,6 +7,7 @@ import { getPlan } from "utils/common";
 import { useEffect, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PageSpinner from "components/PageSpinner";
+import AnalyticsTutorial from "components/TutorialComponent/Tutorials/AnalyticsTutorial";
 
 const AnalyticsPage = () => {
   const subscription = useSubscription();
@@ -35,7 +36,12 @@ const AnalyticsPage = () => {
   }, [plan]);
 
   if (plan === PricingOptionsTitle.Basic) return <MockCharts />;
-  return <AnalyticsComponent />;
+  return (
+    <>
+      <AnalyticsTutorial />
+      <AnalyticsComponent />
+    </>
+  );
 };
 
 export default AnalyticsPage;

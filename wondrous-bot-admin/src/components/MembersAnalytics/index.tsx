@@ -7,7 +7,6 @@ import DiscordAnalytics from "./DiscordAnalytics";
 import Submissions from "./Submissions";
 import OnboardingSubmissions from "./OnboardingSubmissions";
 
-
 const GeneralInfo = ({ user }) => {
   const ITEMS = [
     {
@@ -52,15 +51,17 @@ const GeneralInfo = ({ user }) => {
   );
 };
 
-const MembersAnalytics = ({ value }) => {
+const MembersAnalytics = ({ value, onClose = null, onClick = null }) => {
   const [activeCmtyUser, setActiveCmtyUser] = useState(null);
   const username = value?.username || value?.discordUsername || value?.telegramUsername || "N/A";
 
   const handleUsernameClick = (cmtyUserId) => {
+    onClick?.();
     return setActiveCmtyUser(cmtyUserId);
   };
 
   const handleClose = () => {
+    onClose?.();
     return setActiveCmtyUser(null);
   };
 
@@ -86,7 +87,18 @@ const MembersAnalytics = ({ value }) => {
 
   return (
     <>
-      <Modal open={!!activeCmtyUser} onClose={handleClose} title={`${username}`} maxWidth={740}>
+      <Modal
+        modalComponentProps={{
+          className: "tour-default-modal",
+        }}
+        headerProps={{
+          className: "tutorials-onboarding-modal",
+        }}
+        open={!!activeCmtyUser}
+        onClose={handleClose}
+        title={`${username}`}
+        maxWidth={740}
+      >
         <Grid display="flex" gap="32px" flexDirection="column">
           {activeCmtyUser
             ? CONFIG.map((config, idx) => {
@@ -99,6 +111,7 @@ const MembersAnalytics = ({ value }) => {
         fontSize="14px"
         lineHeight="14px"
         textAlign="center"
+        data-tour="tutorial-members-username"
         width="100%"
         onClick={() => handleUsernameClick(value?.id)}
       >

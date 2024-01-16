@@ -246,6 +246,9 @@ const ReferralDataComponent = ({ referralItemData, setReferralItemData }) => {
   return (
     <Grid display="flex" flexDirection="column" justifyContent="flex-start" gap="24px" alignItems="center" width="100%">
       <PanelComponent
+        panelProps={{
+          'data-tour': 'tutorial-referral-qualifying-action'
+        }}
         renderBody={() => {
           return (
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">

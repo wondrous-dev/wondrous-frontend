@@ -87,7 +87,7 @@ const CardsComponent = ({ defaultStats = null }: IProps) => {
 
   return (
     <Grid display="flex" flexDirection="column" gap="24px">
-      <Grid display="flex" gap="12px" alignItems="flex-start" width="100%">
+      <Grid display="flex" gap="12px" alignItems="flex-start" width="fit-content" data-tour="tutorial-analytics-filters">
         <FiltersComponent onChange={handleChange} activeFilter={activeFilter} />
         {activeFilter === "custom" ? (
           <DateRangePicker

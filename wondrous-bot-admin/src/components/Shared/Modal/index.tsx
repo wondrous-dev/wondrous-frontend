@@ -25,12 +25,11 @@ interface IModalProps {
   modalComponentProps?: {
     className?: string;
   };
-  dialogComponentProps?: {
-    className?: string;
-  };
+  dialogComponentProps?: any;
   modalFooterStyle?: {
     padding?: string;
   };
+  headerProps?: any;
 }
 
 const Modal = ({
@@ -46,6 +45,7 @@ const Modal = ({
   modalComponentProps = {},
   dialogComponentProps = {},
   modalFooterStyle = {},
+  headerProps = {},
 }: IModalProps) => {
   const handleBackdropClick = (event) => {
     if (event.target.dataset.backdrop) {
@@ -59,9 +59,9 @@ const Modal = ({
         <ModalDialog maxWidth={maxWidth} {...dialogComponentProps}>
           <ModalContent>
             {!noHeader && (
-              <ModalHeader justifyContent={title ? "space-between" : "flex-end"}>
+              <ModalHeader justifyContent={title ? "space-between" : "flex-end"} {...headerProps}>
                 {!!title && <ModalTitle>{title}</ModalTitle>}
-                {onClose && <CloseModalBtn onClick={onClose} />}
+                {onClose && <CloseModalBtn data-tour="tutorial-default-modal-close-button" onClick={onClose} />}
               </ModalHeader>
             )}
 

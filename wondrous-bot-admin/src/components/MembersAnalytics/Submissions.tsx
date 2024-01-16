@@ -61,17 +61,16 @@ const Submissions = ({ user }) => {
         questId: activeQuest,
       },
     });
-    const {data: statsData} = await getQuestSubmissionStats({
+    const { data: statsData } = await getQuestSubmissionStats({
       variables: {
         questId: activeQuest,
         cmtyUserId: user?.id,
         orgId: activeOrg?.id,
-      }
+      },
     });
     if (data?.getUserQuestSubmissions?.length >= LIMIT) {
       setHasMoreSubmissions(true);
     }
-
   };
   useEffect(() => {
     if (activeOrg?.id && user?.id) {
@@ -135,26 +134,26 @@ const Submissions = ({ user }) => {
   const filters = {
     [QUEST_SUBMISSION_STATUS.APPROVED]: {
       label: "Approved",
-      value: approvedSubmissions
+      value: approvedSubmissions,
     },
 
     [QUEST_SUBMISSION_STATUS.IN_REVIEW]: {
       label: "Awaiting Approval",
-      value: inReviewSubmissions
+      value: inReviewSubmissions,
     },
 
     [QUEST_SUBMISSION_STATUS.REJECTED]: {
       label: "Rejected",
-      value: rejectedSubmissions
+      value: rejectedSubmissions,
     },
   };
 
   const totalSubmissions = approvedSubmissions + inReviewSubmissions + rejectedSubmissions;
   const handleFilterChange = async (value) => {
     setActiveFilter(value);
-    const {data} = await refetch({
+    const { data } = await refetch({
       status: value,
-    })
+    });
     if (data?.getUserQuestSubmissions?.length >= LIMIT) {
       setHasMoreSubmissions(true);
     }
@@ -183,7 +182,12 @@ const Submissions = ({ user }) => {
         </Box>
         <Box display="flex" gap="14px" alignItems="center" width="100%">
           {Object.keys(filters).map((key, idx) => (
-            <FilterPill type="button" key={key} $isActive={key === activeFilter} onClick={() => handleFilterChange(key)}>
+            <FilterPill
+              type="button"
+              key={key}
+              $isActive={key === activeFilter}
+              onClick={() => handleFilterChange(key)}
+            >
               {filters[key].value} {filters[key].label}
             </FilterPill>
           ))}

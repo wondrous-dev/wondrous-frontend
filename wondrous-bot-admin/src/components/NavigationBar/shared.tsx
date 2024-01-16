@@ -12,6 +12,7 @@ import WorkspaceSwitch from "components/WorkspaceSwitch";
 import { SidebarLabel } from "components/WorkspaceSwitch/styles";
 import { checkActive } from "./utils";
 import { Divider } from "components/SignupComponent/CollectCredentials/styles";
+import SidebarHelpComponent from "components/SidebarHelpComponent";
 
 export const LinkItem = ({ item, children, ...props }) =>
   item.isExternalPath ? (
@@ -31,16 +32,9 @@ export const BOTTOM_LINKS = [
     activeIcon: ActiveSettingsIcon,
     inactiveIcon: InactiveSettingsIcon,
   },
-  {
-    label: "Tutorial",
-    path: "https://wonderverse.gitbook.io/wonder-communities",
-    isExternalPath: true,
-    inactiveIcon: InactiveTutorialIcon,
-    activeIcon: ActiveTutorialIcon,
-  },
 ];
 
-const NavigationItem = ({ item, isCollapsed, toggleDrawer }) => {
+export const NavigationItem = ({ item, isCollapsed, toggleDrawer }) => {
   const location = useLocation();
 
   const isActive = checkActive(item.path, location, item.partialMatch);
@@ -53,8 +47,9 @@ const NavigationItem = ({ item, isCollapsed, toggleDrawer }) => {
   };
 
   const linkProps = isMobile ? { onClick: closeDrawerOnRedirect } : {};
+  const itemProps = item.props || {};
   return (
-    <LinkItem item={item} {...linkProps}>
+    <LinkItem item={item} {...linkProps} {...itemProps}>
       <Box
         display="flex"
         gap="8px"
@@ -86,7 +81,7 @@ const LinksWrapper = ({ links, isCollapsed, toggleDrawer }) => {
         flexDirection="column"
         gap={{
           xs: "4px",
-          md: "8px",
+          md: "10px",
         }}
         padding="10px"
         key={`section-${idx}`}
@@ -107,14 +102,14 @@ const LinksWrapper = ({ links, isCollapsed, toggleDrawer }) => {
             />
           );
         })}
-        {idx !== links.length - 1 && isMobile ? <Divider style={{marginTop: '3px'}} /> : null}
+        {idx !== links.length - 1 && isMobile ? <Divider style={{ marginTop: "3px" }} /> : null}
       </Box>
     );
   });
 };
 
 export const DrawerComponent = ({ isCollapsed, toggleDrawer, links }) => (
-  <DrawerContainer>
+  <DrawerContainer data-tour="home-page-guide">
     <Box
       display="flex"
       justifyContent={isCollapsed ? "center" : "space-between"}
@@ -173,7 +168,7 @@ export const DrawerComponent = ({ isCollapsed, toggleDrawer, links }) => (
       padding="0px 10px"
       gap={{
         xs: "4px",
-        md: "8px",
+        md: "10px",
       }}
     >
       {BOTTOM_LINKS.map((link, idx) => {
@@ -186,6 +181,7 @@ export const DrawerComponent = ({ isCollapsed, toggleDrawer, links }) => (
           />
         );
       })}
+      <SidebarHelpComponent isCollapsed={isCollapsed} toggleDrawer={toggleDrawer} />
     </Box>
     <WorkspaceSwitch isCollapsed={isCollapsed} />
   </DrawerContainer>
