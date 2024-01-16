@@ -148,6 +148,10 @@ const AnalyticsTutorial = () => {
       position: "top",
       handleNextAction: () => {
         setIsOpen(false);
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
         setIsFinishModalOpen(true);
       },
       styles: {

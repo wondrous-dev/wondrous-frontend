@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import ModalComponent from "../../ModalComponent";
 import { Box, useMediaQuery } from "@mui/material";
 import { TUTORIALS } from "utils/constants";
@@ -68,35 +68,12 @@ const LevelsTutorial = () => {
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
   const { setIsOpen, setCurrentStep, currentStep, setSteps, meta, setMeta } = useTour();
 
-  const { x, y } = useMemo(() => {
-    return getNodePosition("[data-tour=tutorial-levels-table]");
-  }, []);
-
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
   const steps: any = [
     {
       id: "open-modal",
       selector: "[data-tour=tutorial-levels-table-title]",
-      highlightedSelectors: ["[data-tour=tutorial-levels-table-title]", "[data-tour=tutorial-levels-table]"],
-      resizeObservables: ["[data-tour=tutorial-levels-table]"],
-      mutationObservables: ["[data-tour=tutorial-levels-table]"],
-      position: isMobile ? "top" : [x + 950, y + 100],
-      ...(!isMobile
-        ? {
-            styles: {
-              popover: (base, state) => {
-                return {
-                  ...base,
-                  background: "white",
-                  borderRadius: "16px",
-                  padding: "0px",
-                  zIndex: 1000000,
-                  ...doArrow(state.position, state.verticalAlign, state.horizontalAlign, "white", "right"),
-                };
-              },
-            },
-          }
-        : {}),
+      position: "top",
       content: () => (
         <ContentComponent
           content="Add level rewards"
@@ -149,7 +126,7 @@ const LevelsTutorial = () => {
               state.verticalAlign,
               state.horizontalAlign,
               isMobile ? "#2A8D5C" : "white",
-              "top",
+              isMobile ? "top" : "left",
               isMobile ? 120 : 20
             ),
           };
@@ -191,7 +168,7 @@ const LevelsTutorial = () => {
               state.verticalAlign,
               state.horizontalAlign,
               isMobile ? "#2A8D5C" : "white",
-              "top",
+              isMobile ? "top" : "left",
               isMobile ? 120 : 20
             ),
           };
@@ -234,7 +211,7 @@ const LevelsTutorial = () => {
               state.verticalAlign,
               state.horizontalAlign,
               isMobile ? "#2A8D5C" : "white",
-              "top",
+              isMobile ? "top" : "left",
               isMobile ? 120 : 20
             ),
           };
