@@ -130,7 +130,6 @@ const QuestsPage = () => {
 
   const questsLength = useMemo(() => data?.getQuestsForOrg?.length || 0, [data?.getQuestsForOrg?.length]);
 
-  if (isLoading) return <PageSpinner />;
 
   return (
     <>
@@ -158,7 +157,7 @@ const QuestsPage = () => {
           </Box>
         )}
       />
-      {data ? <QuestsTutorial /> : null}
+      {data && !isLoading ? <QuestsTutorial /> : null}
       <QuestsList data={sortedData} status={statuses} />
     </>
   );

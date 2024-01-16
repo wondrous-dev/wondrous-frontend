@@ -72,6 +72,9 @@ const QuestsTutorial = () => {
         setIsFinishModalOpen(true);
         setIsOpen(false);
       },
+      afterAction: () => {
+        if (shouldForceOpenTour) return setShouldForceOpenTour(false);
+      },
       content: () => (
         <ContentComponent
           content="Woohoo!"
@@ -98,6 +101,7 @@ const QuestsTutorial = () => {
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
+
   const handleStart = () => {
     setSteps(STEPS);
     setIsModalOpen(false);
@@ -106,37 +110,42 @@ const QuestsTutorial = () => {
   };
 
   const handleSkip = () => {
-    handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE)
+    handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE);
+    if (shouldForceOpenTour) setShouldForceOpenTour(false);
   };
 
-  const handleTourStart = () => {
-    if (shouldForceOpenTour) setShouldForceOpenTour(false);
+  const handleTourStart = (shouldForceOpenTour) => {
     if (
       completedGuides &&
       (!completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) || shouldForceOpenTour)
     ) {
-      return setIsModalOpen(true);
+      setIsModalOpen(true);
+      return;
     }
     if (
       completedGuides &&
       !completedGuides?.includes(TUTORIALS.POST_CREATE_QUEST_QUESTS_PAGE_GUIDE) &&
       completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) &&
-      tourQuestId && !shouldForceOpenTour
+      tourQuestId &&
+      !shouldForceOpenTour
     ) {
       setSteps(POST_QUEST_CREATE_STEPS);
       setIsOpen(true);
       setCurrentStep(0);
     }
   };
+
   useEffect(() => {
-    handleTourStart();
+    handleTourStart(shouldForceOpenTour);
+  }, [shouldForceOpenTour]);
+
+  useEffect(() => {
     return () => {
       setIsOpen(false);
       setCurrentStep(0);
       setSteps([]);
     };
-  }, [shouldForceOpenTour]);
-
+  }, []);
   return (
     <>
       {isFinishModalOpen ? (
@@ -159,9 +168,6 @@ const QuestsTutorial = () => {
         <Box display="flex" flexDirection="column" gap="8px">
           <ModalLabel>Introducing Quests</ModalLabel>
           <ModalTextBody>Quests are fun challenges that your members complete to earn rewards.</ModalTextBody>
-          <ModalTextBody>
-            For more info check <a href="#">out this video.</a>
-          </ModalTextBody>
         </Box>
       </ModalComponent>
     </>
