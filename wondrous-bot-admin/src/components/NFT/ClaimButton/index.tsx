@@ -1,4 +1,3 @@
-//TODO : fix
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { useEffect, useState } from "react";
 import { Box, ButtonBase, Typography, useMediaQuery } from "@mui/material";
@@ -13,9 +12,11 @@ import { LINK_TRANSACTION_TO_COMMUNITY_NFT } from "graphql/mutations/payment";
 import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
 import { StyledLink, UnderlinedLink } from "components/ViewQuest/styles";
 
-const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadataId, cmtyUserId }) => {
+const ClaimButton = ({ chain, nonce, signature, tokenId, nftMetadataId, cmtyUserId, onSuccess, onFailure }) => {
   const { address, walletProvider, chainId, open, isConnected } = useWonderWeb3Modal();
-  const [linkTx] = useMutation(LINK_TRANSACTION_TO_COMMUNITY_NFT);
+  const [linkTx] = useMutation(LINK_TRANSACTION_TO_COMMUNITY_NFT, {
+    refetchQueries: ["getCmtyUserBadges"],
+  });
   const isMobile = useMediaQuery("(max-width: 600px)");
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
 
@@ -27,7 +28,7 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
 
     try {
       setIsMinting(true);
-      if(isMobile) {
+      if (isMobile) {
         setSnackbarAlertMessage("Please open your wallet and proceed with the transaction");
         setSnackbarAlertOpen(true);
       }
@@ -47,9 +48,10 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
       });
       setSnackbarAlertMessage("Minting successful");
       setSnackbarAlertOpen(true);
-      setSuccess(true);
+      onSuccess?.();
       setIsMinting(false);
     } catch (error) {
+      onFailure?.();
       //TODO: replace w code
       if (error.message?.toLowerCase()?.includes("signature has already been used")) {
         setSnackbarAlertMessage("Signature has already been used");
@@ -93,7 +95,7 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
   return (
     <Box display="flex" flexDirection="column" gap="10px" alignItems="center" justifyContent="center">
       <SharedSecondaryButton onClick={handleOnClaimClick}>
-        <>{isMinting ?<Spinner />: <>{address ? "Claim now" : "Connect wallet"}</>}</>
+        <>{isMinting ? <Spinner /> : <>{address ? "Claim now" : "Connect wallet"}</>}</>
       </SharedSecondaryButton>
       {isMinting && <Typography color="black">Please don't close the webpage</Typography>}
       {isConnected ? (

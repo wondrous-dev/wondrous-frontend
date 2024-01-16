@@ -10,6 +10,7 @@ import {
   ModalFooterRight,
   ModalHeader,
   ModalTitle,
+  StyledModalComponent,
 } from "./styles";
 
 interface IModalProps {
@@ -31,6 +32,9 @@ interface IModalProps {
   modalFooterStyle?: {
     padding?: string;
   };
+  modalHeaderStyle?: any;
+  modalTitleStyle?: any;
+  closeButtonStyle?: any;
 }
 
 const Modal = ({
@@ -46,6 +50,9 @@ const Modal = ({
   modalComponentProps = {},
   dialogComponentProps = {},
   modalFooterStyle = {},
+  modalHeaderStyle = {},
+  modalTitleStyle = {},
+  closeButtonStyle = {}
 }: IModalProps) => {
   const handleBackdropClick = (event) => {
     if (event.target.dataset.backdrop) {
@@ -54,14 +61,14 @@ const Modal = ({
   };
 
   return (
-    <ModalComponent open={open} onClose={onClose} {...modalComponentProps}>
+    <StyledModalComponent open={open} onClose={onClose} {...modalComponentProps}>
       <ModalContainer tabIndex={-1} data-backdrop="true" onClick={handleBackdropClick}>
         <ModalDialog maxWidth={maxWidth} {...dialogComponentProps}>
           <ModalContent>
             {!noHeader && (
-              <ModalHeader justifyContent={title ? "space-between" : "flex-end"}>
-                {!!title && <ModalTitle>{title}</ModalTitle>}
-                {onClose && <CloseModalBtn onClick={onClose} />}
+              <ModalHeader justifyContent={title ? "space-between" : "flex-end"} style={modalHeaderStyle}>
+                {!!title && <ModalTitle style={modalTitleStyle}>{title}</ModalTitle>}
+                {onClose && <CloseModalBtn style={closeButtonStyle} onClick={onClose} />}
               </ModalHeader>
             )}
 
@@ -76,7 +83,7 @@ const Modal = ({
           </ModalContent>
         </ModalDialog>
       </ModalContainer>
-    </ModalComponent>
+    </StyledModalComponent>
   );
 };
 

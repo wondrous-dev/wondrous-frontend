@@ -13,6 +13,7 @@ import { GET_CMTY_USER_NFT_METADATA } from "graphql/queries";
 import { useEffect, useState } from "react";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import ClaimButton from "components/NFT/ClaimButton";
+import BadgeClaimComponent from "components/BadgeClaimComponent";
 
 const CommunityBadgeClaimPage = () => {
   const { search } = useLocation();
@@ -25,7 +26,7 @@ const CommunityBadgeClaimPage = () => {
 
   const [getMetadata, { data, error }] = useLazyQuery(GET_CMTY_USER_NFT_METADATA, {
     notifyOnNetworkStatusChange: true,
-  }); 
+  });
 
   const signatureAlreadyUsed = error?.graphQLErrors?.[0]?.extensions?.errorCode === "used_signature";
 
@@ -41,29 +42,29 @@ const CommunityBadgeClaimPage = () => {
     }
   }, [cmtyUserId, tokenId, signature]);
 
-  const address = data?.getCmtyUserNftMetadata?.receiverAddress || "";
+  // const address = data?.getCmtyUserNftMetadata?.receiverAddress || "";
 
-  const config = [
-    {
-      label: "NFT Title",
-      value: data?.getCmtyUserNftMetadata?.name,
-    },
-    {
-      label: "Minting to your wallet:",
-      value: `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`,
-    },
-    {
-      label: "On this chain",
-      value: data?.getCmtyUserNftMetadata?.chain,
+  // const config = [
+  //   {
+  //     label: "NFT Title",
+  //     value: data?.getCmtyUserNftMetadata?.name,
+  //   },
+  //   {
+  //     label: "Minting to your wallet:",
+  //     value: `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`,
+  //   },
+  //   {
+  //     label: "On this chain",
+  //     value: data?.getCmtyUserNftMetadata?.chain,
 
-      component: (value) => (
-        <Box display="flex" justifyContent="center" alignItems="center" gap="8px">
-          {ChainIcons[value]}
-          <CommonTypography>{CHAIN_TO_CHAIN_DIPLAY_NAME[value]}</CommonTypography>,
-        </Box>
-      ),
-    },
-  ];
+  //     component: (value) => (
+  //       <Box display="flex" justifyContent="center" alignItems="center" gap="8px">
+  //         {ChainIcons[value]}
+  //         <CommonTypography>{CHAIN_TO_CHAIN_DIPLAY_NAME[value]}</CommonTypography>,
+  //       </Box>
+  //     ),
+  //   },
+  // ];
 
   return (
     <PageWrapper
@@ -105,9 +106,11 @@ const CommunityBadgeClaimPage = () => {
             },
           }}
         >
-          <Label>{signatureAlreadyUsed ? 'Woops!' : 'Minted Successfully!'}</Label>
+          <Label>{signatureAlreadyUsed ? "Woops!" : "Minted Successfully!"}</Label>
           <Label fontSize="12px" fontWeight={400}>
-            {signatureAlreadyUsed ? 'You have already minted this NFT': 'You can now close this page and go back to Discord'}
+            {signatureAlreadyUsed
+              ? "You have already minted this NFT"
+              : "You can now close this page and go back to Discord"}
           </Label>
         </Grid>
       ) : (
@@ -149,7 +152,21 @@ const CommunityBadgeClaimPage = () => {
               }}
             />
           </Box>
-          <Grid
+          <BadgeClaimComponent
+            tokenId={tokenId}
+            cmtyUserId={cmtyUserId}
+            signature={signature}
+            receiverAddress={data?.getCmtyUserNftMetadata?.receiverAddress}
+            name={data?.getCmtyUserNftMetadata?.name}
+            chain={data?.getCmtyUserNftMetadata?.chain}
+            orgProfilePicture={data?.getCmtyUserNftMetadata?.org?.profilePicture}
+            orgName={data?.getCmtyUserNftMetadata?.org?.name}
+            mediaUrl={data?.getCmtyUserNftMetadata?.mediaUrl}
+            nftMetadataId={data?.getCmtyUserNftMetadata?.nftMetadataId}
+            onSuccess={() => setSuccess(true)}
+            nonce={data?.getCmtyUserNftMetadata?.nonce}
+          />
+          {/* <Grid
             bgcolor="#FFF"
             borderRadius="12px"
             padding="24px"
@@ -256,7 +273,7 @@ const CommunityBadgeClaimPage = () => {
                 nonce={data?.getCmtyUserNftMetadata?.nonce}
               />
             </Box>
-          </Grid>
+          </Grid> */}
         </>
       )}
     </PageWrapper>

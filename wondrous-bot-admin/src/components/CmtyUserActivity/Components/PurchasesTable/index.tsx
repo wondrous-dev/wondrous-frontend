@@ -17,8 +17,6 @@ import { STORE_ITEM_TYPES } from "utils/constants";
 
 const LIMIT = 5;
 const PurchasesTable = ({ count = 0, orgId, cmtyUserId }) => {
-  const handleShowMore = () => {};
-
   const [hasMore, setHasMore] = useState(true);
   const headers = ["Product", "Price", "Deliverable", "Date"];
 
@@ -28,7 +26,20 @@ const PurchasesTable = ({ count = 0, orgId, cmtyUserId }) => {
     },
   });
 
-  const [getCmtyUserPurchases, { data: cmtyUserPurchasesData, loading }] = useLazyQuery(GET_CMTY_USER_PURCHASES);
+  const [getCmtyUserPurchases, { data: cmtyUserPurchasesData, loading, fetchMore }] =
+    useLazyQuery(GET_CMTY_USER_PURCHASES);
+
+  const handleFetchMore = async () => {
+    const { data } = await fetchMore({
+      variables: {
+        limit: LIMIT,
+        offset: cmtyUserPurchasesData?.getCmtyUserPurchases?.length,
+        orgId,
+        cmtyUserId,
+      },
+    });
+    setHasMore(data?.getCmtyUserPurchases?.length >= LIMIT);
+  };
 
   const { data: orgDiscordRolesData } = useQuery(GET_ORG_DISCORD_ROLES, {
     variables: {
@@ -122,8 +133,6 @@ const PurchasesTable = ({ count = 0, orgId, cmtyUserId }) => {
               </Typography>
             );
           },
-          // value: getDeliverableTextFromType(item, purchase),
-          // textAlign: "left",
         },
         date: {
           component: "label",
@@ -133,128 +142,7 @@ const PurchasesTable = ({ count = 0, orgId, cmtyUserId }) => {
       };
     });
   }, [cmtyUserPurchasesData, cmtyPaymentMethods, getDeliverableTextFromType, discordRoles, cmtyNFTsData]);
-  // const data = [
-  //   {
-  //     id: 1,
-  //     name: {
-  //       component: "label",
-  //       value: "The Reverse Umbrella",
-  //       textAlign: "left",
-  //     },
-  //     price: {
-  //       component: "label",
-  //       value: "2000",
-  //       textAlign: "left",
-  //     },
-  //     deliverable: {
-  //       component: "label",
-  //       value: "NFT",
-  //       textAlign: "left",
-  //     },
-  //     date: {
-  //       component: "label",
-  //       value: "10/10/2021",
-  //       textAlign: "left",
-  //     },
-  //   },
-  //   {
-  //     id: 2,
-  //     name: {
-  //       component: "label",
-  //       textAlign: "left",
 
-  //       value: "The Reverse Umbrella",
-  //     },
-  //     price: {
-  //       component: "label",
-  //       textAlign: "left",
-
-  //       value: "2000",
-  //     },
-  //     deliverable: {
-  //       component: "label",
-  //       value: "NFT",
-  //       textAlign: "left",
-  //     },
-  //     date: {
-  //       component: "label",
-  //       value: "10/10/2021",
-  //       textAlign: "left",
-  //     },
-  //   },
-  //   {
-  //     id: 3,
-  //     name: {
-  //       component: "label",
-  //       value: "The Reverse Umbrella",
-  //       textAlign: "left",
-  //     },
-  //     price: {
-  //       component: "label",
-  //       value: "2000",
-  //       textAlign: "left",
-  //     },
-  //     deliverable: {
-  //       component: "label",
-  //       textAlign: "left",
-
-  //       value: "NFT",
-  //     },
-  //     date: {
-  //       component: "label",
-  //       value: "10/10/2021",
-  //       textAlign: "left",
-  //     },
-  //   },
-  //   {
-  //     id: 4,
-  //     name: {
-  //       component: "label",
-  //       value: "The Reverse Umbrella",
-  //       textAlign: "left",
-  //     },
-  //     price: {
-  //       component: "label",
-  //       value: "2000",
-  //       textAlign: "left",
-  //     },
-  //     deliverable: {
-  //       component: "label",
-  //       value: "NFT",
-  //       textAlign: "left",
-  //     },
-  //     date: {
-  //       component: "label",
-  //       textAlign: "left",
-
-  //       value: "10/10/2021",
-  //     },
-  //   },
-  //   {
-  //     id: 5,
-  //     name: {
-  //       component: "label",
-  //       value: "The Reverse Umbrella",
-  //       textAlign: "left",
-  //     },
-  //     price: {
-  //       component: "label",
-  //       value: "2000",
-  //       textAlign: "left",
-  //     },
-  //     deliverable: {
-  //       component: "label",
-  //       textAlign: "left",
-
-  //       value: "NFT",
-  //     },
-  //     date: {
-  //       component: "label",
-  //       textAlign: "left",
-  //       value: "10/10/2021",
-  //     },
-  //   },
-  // ];
   return (
     <Wrapper display="flex" flexDirection="column" gap="18px" width="100%">
       <Box display="flex" alignItems="center" gap="8px" justifyContent="flex-start">
@@ -286,7 +174,7 @@ const PurchasesTable = ({ count = 0, orgId, cmtyUserId }) => {
           </TableCell>
         )}
       />
-      {hasMore && data?.length >= LIMIT && <SharedShowMoreButton onClick={handleShowMore} />}
+      {hasMore && data?.length >= LIMIT && <SharedShowMoreButton onClick={handleFetchMore} />}
     </Wrapper>
   );
 };

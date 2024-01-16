@@ -36,7 +36,7 @@ const CmtyUserActivityComponent = ({ cmtyUser, org }) => {
         position="relative"
       >
         <ProfilePanel cmtyUser={cmtyUser} stats={data?.getCmtyUserActivityStats} />
-        <BadgesPanel count={data?.getCmtyUserActivityStats?.badges} cmtyUserId={cmtyUser?.id} org={org} />
+        <BadgesPanel count={data?.getCmtyUserActivityStats?.badges} cmtyUser={cmtyUser} org={org} />
         <PurchasesTable count={data?.getCmtyUserActivityStats?.purchases} orgId={org?.id} cmtyUserId={cmtyUser?.id} />
         <Submissions count={data?.getCmtyUserActivityStats?.submissions} cmtyUserId={cmtyUser?.id} orgId={org?.id} />
       </Grid>

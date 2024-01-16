@@ -44,7 +44,7 @@ const CmtyUserSubmissions = ({ count = 0, cmtyUserId, orgId }) => {
         cmtyUserId,
         orgId,
       },
-    });
+    }).then(({ data }) => setHasMore(data?.getUserQuestSubmissions?.length >= LIMIT));
   };
 
   return (

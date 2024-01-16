@@ -78,11 +78,15 @@ export const GET_CMTY_USER_BADGES = gql`
       tokenId
       chain
       contractAddress
+      description
       name
       mediaUrl
+      nonce
       externalUrl
       attributes
+      receiverAddress
       maxSupply
+      nftMetadataId
       unlockableContent
       media {
         slug
