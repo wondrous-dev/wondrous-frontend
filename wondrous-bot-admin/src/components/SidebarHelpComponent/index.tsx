@@ -45,24 +45,25 @@ const SidebarHelpComponent = ({ isCollapsed, toggleDrawer }) => {
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
 
   const ITEMS = [
+    // {
+    //   label: "FAQ",
+    //   path: "https://wonderverse.gitbook.io/wonder-communities/faq/questions",
+    //   icon: FaqIcon,
+    // },
     {
-      label: "FAQ",
-      path: "https://wonderverse.gitbook.io/wonder-communities/faq/questions",
-      icon: FaqIcon,
-    },
-    {
-      label: "Set Up",
+      label: "Video tutorial",
       icon: WrenchIcon,
       path: "https://wonderverse.gitbook.io/wonder-communities/setting-up-wonderverse/video-tutorial",
     },
     {
       label: "Best Practices",
       icon: BestPracticesIcon,
+      path: "https://wonderverse.gitbook.io/wonder-communities/recommendations/best-practices",
     },
     {
       label: "Support",
       icon: SupportIcon,
-      path: "https://wonderverse.gitbook.io/wonder-communities/recommendations/best-practices",
+      path: "https://discord.gg/wonderverse-907435897568505866",
     },
     {
       label: "Share Feedback",
