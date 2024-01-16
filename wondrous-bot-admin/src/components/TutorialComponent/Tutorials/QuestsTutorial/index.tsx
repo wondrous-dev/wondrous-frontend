@@ -29,6 +29,10 @@ const QuestsTutorial = () => {
     {
       selector: "[data-tour=quests-page-guide-new-quest-button]",
       position: isMobile ? "bottom" : "left",
+      // action: (node) => {
+      //   const action = () => setShouldForceOpenTour(true);
+      //   node?.addEventListener("click", action);
+      // },
       content: () => (
         <ContentComponent
           content="Create a quest by clicking here!"
@@ -72,6 +76,9 @@ const QuestsTutorial = () => {
         setIsFinishModalOpen(true);
         setIsOpen(false);
       },
+      afterAction: () => {
+        if (shouldForceOpenTour) return setShouldForceOpenTour(false);
+      },
       content: () => (
         <ContentComponent
           content="Woohoo!"
@@ -98,6 +105,7 @@ const QuestsTutorial = () => {
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
+
   const handleStart = () => {
     setSteps(STEPS);
     setIsModalOpen(false);
@@ -106,37 +114,42 @@ const QuestsTutorial = () => {
   };
 
   const handleSkip = () => {
-    handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE)
+    handleTourVisit(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE);
+    if (shouldForceOpenTour) setShouldForceOpenTour(false);
   };
 
-  const handleTourStart = () => {
-    if (shouldForceOpenTour) setShouldForceOpenTour(false);
+  const handleTourStart = (shouldForceOpenTour) => {
     if (
       completedGuides &&
       (!completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) || shouldForceOpenTour)
     ) {
-      return setIsModalOpen(true);
+      setIsModalOpen(true);
+      return;
     }
     if (
       completedGuides &&
       !completedGuides?.includes(TUTORIALS.POST_CREATE_QUEST_QUESTS_PAGE_GUIDE) &&
       completedGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) &&
-      tourQuestId && !shouldForceOpenTour
+      tourQuestId &&
+      !shouldForceOpenTour
     ) {
       setSteps(POST_QUEST_CREATE_STEPS);
       setIsOpen(true);
       setCurrentStep(0);
     }
   };
+
   useEffect(() => {
-    handleTourStart();
+    handleTourStart(shouldForceOpenTour);
+  }, [shouldForceOpenTour]);
+
+  useEffect(() => {
     return () => {
       setIsOpen(false);
       setCurrentStep(0);
       setSteps([]);
     };
-  }, [shouldForceOpenTour]);
-
+  }, []);
   return (
     <>
       {isFinishModalOpen ? (

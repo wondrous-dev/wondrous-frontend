@@ -117,7 +117,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
       },
       content: () => (
         <ContentComponent
-          subHeader="We removed all of your friends from “The Office”. As you onboard more members you will see their information populate here."
+          subHeader="We removed Dwight for now. As you onboard more members you will see their information populate here."
           typographyProps={{
             textAlign: "center",
             paddingTop: "24px",

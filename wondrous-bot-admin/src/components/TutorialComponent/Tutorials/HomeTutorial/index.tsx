@@ -14,57 +14,6 @@ import { TourDataContext } from "utils/context";
 const desktopSelector = "[data-tour=sidebar-quest-item]";
 const mobileSelector = "[data-tour=homepage-guide-menu]";
 
-const desktopSteps: any = [
-  {
-    selector: desktopSelector,
-    content: () => (
-      <ContentComponent
-        content="Let's get started by creating your first quest!"
-        wrapperProps={{
-          sx: {
-            width: "282px",
-          },
-        }}
-      />
-    ),
-    nextButtonTitle: null,
-    prevButtonTitle: null,
-    prevAction: null,
-    hideButtons: true,
-    position: "right",
-    disableInteraction: true,
-    action: (node) => {
-      const parent = node.closest("[data-tour=sidebar-drawer]");
-      const elementsToEnable = Array.from(parent?.getElementsByTagName("a") || [])
-        ?.filter((anchorTag: HTMLAnchorElement) => anchorTag.getAttribute("data-tour") !== "sidebar-quest-item")
-        ?.concat(Array.from(parent?.getElementsByTagName("button") || []));
-      elementsToEnable?.forEach((htmlElement: HTMLAnchorElement | HTMLButtonElement) => {
-        if (htmlElement.getAttribute("data-tour") !== "sidebar-quest-item") {
-          htmlElement.style.pointerEvents = "none";
-        }
-      });
-      parent.style.zIndex = 999999;
-      node.style.boxShadow = "0px 4px 14px 0px rgba(0, 0, 0, 0.15)";
-      node.style.borderRadius = "6px";
-      node.zIndex = 1000000;
-    },
-    actionAfter: (node) => {
-      const parent = node.closest("[data-tour=sidebar-drawer]");
-      const elementsToEnable = Array.from(parent?.getElementsByTagName("a"))
-        ?.filter((anchorTag: HTMLAnchorElement) => anchorTag.getAttribute("data-tour") !== "sidebar-quest-item")
-        ?.concat(Array.from(parent?.getElementsByTagName("button")));
-      elementsToEnable?.forEach((anchorTag: HTMLAnchorElement) => {
-        if (anchorTag.getAttribute("data-tour") !== "sidebar-quest-item") {
-          anchorTag.style.pointerEvents = "unset";
-        }
-      });
-      node.style.boxShadow = "unset";
-      parent.style.zIndex = 9999;
-      node.zIndex = 1;
-    },
-  },
-];
-
 const HomeTutorial = () => {
   const completedGuides = useUserCompletedGuides();
 
@@ -104,6 +53,66 @@ const HomeTutorial = () => {
   const handleMobileStepItemClick = (e) => {
     return mobileQuestButtonAfterAction(e.currentTarget);
   };
+
+  const desktopSteps: any = [
+    {
+      selector: desktopSelector,
+      content: () => (
+        <ContentComponent
+          content="Let's get started by creating your first quest!"
+          wrapperProps={{
+            sx: {
+              width: "282px",
+            },
+          }}
+        />
+      ),
+      nextButtonTitle: null,
+      prevButtonTitle: null,
+      prevAction: null,
+      hideButtons: true,
+      position: "right",
+      disableInteraction: true,
+      action: (node) => {
+        const parent = node.closest("[data-tour=sidebar-drawer]");
+        const elementsToEnable = Array.from(parent?.getElementsByTagName("a") || [])
+          ?.filter((anchorTag: HTMLAnchorElement) => anchorTag.getAttribute("data-tour") !== "sidebar-quest-item")
+          ?.concat(Array.from(parent?.getElementsByTagName("button") || []));
+        elementsToEnable?.forEach((htmlElement: HTMLAnchorElement | HTMLButtonElement) => {
+          if (htmlElement.getAttribute("data-tour") !== "sidebar-quest-item") {
+            htmlElement.style.pointerEvents = "none";
+          }
+        });
+        parent.style.zIndex = 999999;
+        node.style.boxShadow = "0px 4px 14px 0px rgba(0, 0, 0, 0.15)";
+        node.style.borderRadius = "6px";
+        node.zIndex = 1000000;
+        const nodeAction = () => {
+          setShouldForceOpenTour(true);
+        }
+        node.addEventListener("click", nodeAction);
+        nodes.current.push({
+          element: node,
+          event: "click",
+          action: nodeAction,
+        });
+      },
+      actionAfter: (node) => {
+        const parent = node.closest("[data-tour=sidebar-drawer]");
+        const elementsToEnable = Array.from(parent?.getElementsByTagName("a"))
+          ?.filter((anchorTag: HTMLAnchorElement) => anchorTag.getAttribute("data-tour") !== "sidebar-quest-item")
+          ?.concat(Array.from(parent?.getElementsByTagName("button")));
+        elementsToEnable?.forEach((anchorTag: HTMLAnchorElement) => {
+          if (anchorTag.getAttribute("data-tour") !== "sidebar-quest-item") {
+            anchorTag.style.pointerEvents = "unset";
+          }
+        });
+        node.style.boxShadow = "unset";
+        parent.style.zIndex = 9999;
+        node.zIndex = 1;
+      },
+    },
+  ];
 
   const mobileSteps = [
     {
