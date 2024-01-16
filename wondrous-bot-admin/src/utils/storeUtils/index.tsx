@@ -55,5 +55,6 @@ export const useStorePaywall = () => {
   return {
     isActivateModuleModalOpen,
     handleSuccess,
+    isSubscriptionLoading
   };
 };

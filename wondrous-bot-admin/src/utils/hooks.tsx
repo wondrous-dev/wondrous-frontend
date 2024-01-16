@@ -1,5 +1,5 @@
 import { SnackbarAlertContext } from "utils/context";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { IS_ORG_USERNAME_TAKEN } from "graphql/queries";
 import SubscriptionContext from "./context/SubscriptionContext";
@@ -8,6 +8,7 @@ import { PaywallContext } from "./context/PaywallContext";
 import GlobalContext from "./context/GlobalContext";
 import { getPlan } from "./common";
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
+import { useMe } from "components/Auth";
 
 const useAlerts = () => {
   const {
@@ -67,11 +68,28 @@ export const useGlobalContext = () => useContext(GlobalContext);
 export const useSubscriptionPaywall = () => {
   const subscription = useSubscription();
   const plan = getPlan(subscription?.tier);
-  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {}; 
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {};
   const isBasicPLan = plan === PricingOptionsTitle.Basic;
   const isHobbyPlan = plan === PricingOptionsTitle.Hobby;
   const isPremiumPlan = plan === PricingOptionsTitle.Premium;
   const isEcosystemPlan = plan === PricingOptionsTitle.Ecosystem;
   const isLoading = !subscription;
-  return { plan, setPaywall, setPaywallMessage,isBasicPLan, isHobbyPlan, isPremiumPlan, isEcosystemPlan, setOnCancel, setCanBeClosed, isLoading };
+  return {
+    plan,
+    setPaywall,
+    setPaywallMessage,
+    isBasicPLan,
+    isHobbyPlan,
+    isPremiumPlan,
+    isEcosystemPlan,
+    setOnCancel,
+    setCanBeClosed,
+    isLoading,
+  };
+};
+
+export const useUserCompletedGuides = () => {
+  const { user } = useMe() || {};
+  const completedQuestGuides = user?.completedQuestGuides;
+  return completedQuestGuides;
 };

@@ -4,10 +4,10 @@ import PanelComponent from "components/CreateTemplate/PanelComponent";
 import PageWrapper from "components/Shared/PageWrapper";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BG_TYPES, CONDITION_TYPES, DELIVERY_METHODS, STORE_ITEM_TYPES } from "utils/constants";
+import { BG_TYPES, CONDITION_TYPES, DELIVERY_METHODS, STORE_ITEM_TYPES, TUTORIALS } from "utils/constants";
 import CreateQuestContext from "utils/context/CreateQuestContext";
 import GlobalContext from "utils/context/GlobalContext";
-import useAlerts from "utils/hooks";
+import useAlerts, { useUserCompletedGuides } from "utils/hooks";
 import StoreItemSettingsComponent from "./StoreItemSettingsComponent";
 import StoreItemConfigComponent from "./StoreItemConfigComponent";
 import { useMutation } from "@apollo/client";
@@ -22,6 +22,8 @@ import { ValidationError, storeItemValidator } from "services/validators";
 import { getPathArray } from "utils/common";
 import { set } from "lodash";
 import { handleMediaUpload } from "utils/media";
+import useCreateStoreItemTutorial from "components/TutorialComponent/Tutorials/CreateStoreItemTutorial";
+import { useTour } from "@reactour/tour";
 
 export const DEFAULT_STORE_ITEM_SETTINGS_STATE_VALUE = {
   description: null,
@@ -65,10 +67,17 @@ const CreateStoreItem = ({
   const [storeItemData, setStoreItemData] = useState<any>({ ...defaultStoreItemData });
   const [storeItemSettings, setStoreItemSettings] = useState({ ...defaultStoreItemStetings });
 
+  const completedGuides = useUserCompletedGuides();
+
+  const { isOpen } = useTour();
   const [createStoreItem] = useMutation(CREATE_STORE_ITEM, {
     onCompleted: (data) => {
       handleUpdateStoreItemMedia(data?.createStoreItem?.id, storeItemData?.mediaUploads);
-      navigate(`/store`);
+      const tourPath =
+        isOpen || !completedGuides.includes(TUTORIALS.STORE_ITEMS_POST_CREATE_PAGE_GUIDE)
+          ? "/store"
+          : `/store?tourStoreItemId${data?.createStoreItem?.id}`;
+      navigate(tourPath);
     },
   });
 
@@ -210,6 +219,7 @@ const CreateStoreItem = ({
 
   useMemo(() => setRefValue({ handleSave }), [setRefValue, handleSave]);
 
+  useCreateStoreItemTutorial(defaultStoreItemData?.type, storeItemData?.type);
   return (
     <>
       <PageWrapper
@@ -237,6 +247,9 @@ const CreateStoreItem = ({
         >
           <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
             <PanelComponent
+              panelProps={{
+                "data-tour": "tutorial-store-item-settings",
+              }}
               renderHeader={() => <CampaignOverviewHeader title="Product Settings" />}
               renderBody={() => (
                 <StoreItemSettingsComponent

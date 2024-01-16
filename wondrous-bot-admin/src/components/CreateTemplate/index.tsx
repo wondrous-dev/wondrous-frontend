@@ -6,17 +6,11 @@ import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
-import { BG_TYPES, QUEST_STATUSES, TUTORIALS, TYPES } from "utils/constants";
+import { BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
-import {
-  ATTACH_QUEST_STEPS_MEDIA,
-  CREATE_QUEST,
-  REMOVE_QUEST_STEP_MEDIA,
-  SET_USER_COMPLETED_GUIDE,
-  UPDATE_QUEST,
-} from "graphql/mutations";
+import { ATTACH_QUEST_STEPS_MEDIA, CREATE_QUEST, REMOVE_QUEST_STEP_MEDIA, UPDATE_QUEST } from "graphql/mutations";
 import GlobalContext from "utils/context/GlobalContext";
 import { useNavigate } from "react-router";
 import { questValidator } from "services/validators";
@@ -25,13 +19,11 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 import { transformQuestConfig } from "utils/transformQuestConfig";
 import useAlerts from "utils/hooks";
 import { DEFAULT_QUEST_SETTINGS_STATE_VALUE } from "./utils";
-import { useTour } from "@reactour/tour";
 import ErrorField from "components/Shared/ErrorField";
 import QuestRewardComponent from "components/Rewards/QuestRewardComponent";
 import { constructRequestBody, handleSaveError, processSave } from "./helpers";
-import { useMe } from "components/Auth";
-import { GET_LOGGED_IN_USER } from "graphql/queries";
-import QuestCelebrationComponent from "./QuestCelebration";
+import { useTour } from "@reactour/tour";
+import useDynamicSteps from "components/TutorialComponent/Tutorials/CreateQuestTutorial/useDynamicSteps";
 
 const CreateTemplate = ({
   setRefValue,
@@ -42,7 +34,6 @@ const CreateTemplate = ({
   defaultSteps = [],
 }) => {
   const navigate = useNavigate();
-  const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const { errors, setErrors } = useContext(CreateQuestContext);
   const [attachQuestStepsMedia] = useMutation(ATTACH_QUEST_STEPS_MEDIA, {
     refetchQueries: ["getQuestById"],
@@ -55,28 +46,19 @@ const CreateTemplate = ({
   const [steps, setSteps] = useState(defaultSteps);
   const refs = useRef([]);
 
+  useDynamicSteps({ steps, getQuestById, defaultSteps });
   useEffect(() => {
     if (getQuestById) {
       setSteps(transformQuestConfig(getQuestById?.steps));
     }
   }, [getQuestById]);
 
-  const { isOpen, setCurrentStep, setSteps: setTourSteps, steps: tourSteps } = useTour();
-
-  const { user } = useMe() || {};
-  const completedQuestGuides = user?.completedQuestGuides;
-
-  const [firstCreatedQuest, setFirstCreatedQuest] = useState(null);
-
-  const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
-    refetchQueries: [{query: GET_LOGGED_IN_USER}],
-  });
-
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);
 
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState({ ...defaultQuestSettings });
   const [removedMediaSlugs, setRemovedMediaSlugs] = useState({});
+
   const handleAdd = (type) => {
     setSteps([
       ...steps,
@@ -93,15 +75,6 @@ const CreateTemplate = ({
   const [createQuest] = useMutation(CREATE_QUEST, {
     onCompleted: async ({ createQuest }) => {
       handleUpdateQuestStepsMedia(createQuest.id, createQuest?.steps, steps);
-
-      if (!completedQuestGuides?.includes(TUTORIALS.FIRST_CREATED_QUEST)) {
-        setFirstCreatedQuest(createQuest.id);
-        return setUserCompletedGuide({
-          variables: {
-            guideId: TUTORIALS.FIRST_CREATED_QUEST,
-          },
-        });
-      }
       navigate(`/quests/${createQuest.id}`);
     },
     refetchQueries: ["getQuestsForOrg", "getQuestRewards"],
@@ -127,7 +100,7 @@ const CreateTemplate = ({
 
   const handleUpdateQuestStepsMedia = async (questId, questSteps, localSteps) => {
     const stepsMedia = await Promise.all(
-      localSteps.map(async (step, idx) => {
+      localSteps.map(async (step) => {
         const filteredMediaUploads = step.mediaUploads.filter((media) => media instanceof File);
         return await handleMediaUpload(filteredMediaUploads);
       })
@@ -211,13 +184,8 @@ const CreateTemplate = ({
 
   const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
 
-  const handleCelebrationClose = () => {
-    setFirstCreatedQuest(null);
-    navigate(`/quests/${firstCreatedQuest}`);
-  };
   return (
     <>
-      {firstCreatedQuest ? <QuestCelebrationComponent onClose={handleCelebrationClose} /> : null}
       <Modal
         open={isSaving}
         onClose={() => setIsSaving(false)}
@@ -229,7 +197,7 @@ const CreateTemplate = ({
           </SharedSecondaryButton>
         }
         footerRight={
-          <SharedSecondaryButton onClick={() => handleSave(QUEST_STATUSES.OPEN)}>
+          <SharedSecondaryButton sx={{ marginLeft: "8px" }} onClick={() => handleSave(QUEST_STATUSES.OPEN)}>
             Yes, activate quest
           </SharedSecondaryButton>
         }
@@ -264,6 +232,9 @@ const CreateTemplate = ({
         >
           <Box flexBasis="40%" display="flex" flexDirection="column" gap="24px">
             <PanelComponent
+              panelProps={{
+                "data-tour": "tutorial-quest-settings",
+              }}
               renderHeader={() => <CampaignOverviewHeader />}
               renderBody={() => <CampaignOverview questSettings={questSettings} setQuestSettings={setQuestSettings} />}
             />
@@ -303,6 +274,7 @@ const CreateTemplate = ({
                 alignItems="center"
                 flexDirection="column"
                 gap="14px"
+                data-tour="tutorial-add-quest-step"
                 padding="14px 24px"
                 onClick={() => handleAdd(TYPES.TEXT_FIELD)}
                 sx={{

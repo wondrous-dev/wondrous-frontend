@@ -13,55 +13,26 @@ import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { MemberPageSearchBar } from "./MemberSearchBar";
 import ResetPointsModal from "./ResetPointsModal";
+import MembersTutorial from "components/TutorialComponent/Tutorials/MembersTutorial";
+import { transformUser } from "utils/transformCmtyUserToMembers";
 
-const transformUser = (user) => {
-  const userDiscordDiscriminator = `${user?.discordUsername}#${user?.discordDiscriminator}`;
-  return {
-    id: user.id,
-    name: {
-      component: "custom",
-      value: user,
-      customComponent: (props) => <MembersAnalytics {...props} />,
-    },
-    level: {
-      component: "hexagon",
-      value: user?.level,
-    },
-    discord: {
-      component: "discord",
-      value: userDiscordDiscriminator || "N/A",
-    },
-    twitter: {
-      component: "twitter",
-      value: `https://twitter.com/${user?.twitterInfo?.twitterUsername}` || "N/A",
-    },
-    pointsBalance: {
-      component: "xp_balance",
-      value: user.pointBalance,
-      componentProps: {
-        fontWeight: 500,
-        cmtyUser: user,
-      },
-    },
-    points: {
-      component: "xp",
-      value: user.point,
-      componentProps: {
-        fontWeight: 500,
-        cmtyUser: user,
-      },
-    },
-  };
-};
 const MembersPage = () => {
   const { activeOrg } = useContext(GlobalContext);
   const [hasMore, setHasMore] = useState(true);
+  const [membersData, setMembersData] = useState([]);
   const [memberSearch, setMemberSearch] = useState(null);
   const [resetPointsBalance, setResetPointsBalance] = useState(null);
   const [openResetPointsModal, setOpenResetPointsModal] = useState(false);
   const [memberInfo, setMemberInfo] = useState(null);
   const [getCmtyUsersForOrg, { data, fetchMore, refetch, loading }] = useLazyQuery(GET_COMMUNITY_USERS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      setMembersData(
+        data?.getCmtyUsersForOrg?.map((user) => {
+          return transformUser(user);
+        })
+      );
+    },
     variables: {
       input: {
         orgId: activeOrg?.id,
@@ -96,13 +67,10 @@ const MembersPage = () => {
       },
     }).then(({ data }) => setHasMore(data?.getCmtyUsersForOrg?.length >= LIMIT));
   };
-  const tableConfig = useMemo(() => {
-    return data?.getCmtyUsersForOrg?.map((user) => {
-      return transformUser(user);
-    });
-  }, [data]);
 
   const headers = ["Name", "Level", "Discord", "Twitter", "Points Balance", "Total Points Accumulated"];
+
+
   return (
     <>
       <ResetPointsModal
@@ -110,6 +78,9 @@ const MembersPage = () => {
         setOpenResetPointsModal={setOpenResetPointsModal}
         pointsBalance={resetPointsBalance}
       />
+      {data?.getCmtyUsersForOrg ? (
+        <MembersTutorial setMembersData={setMembersData} data={data?.getCmtyUsersForOrg} />
+      ) : null}
       <PageHeader title="Community Members" withBackButton={false} />
       <Grid
         minHeight="100vh"
@@ -154,15 +125,20 @@ const MembersPage = () => {
             Reset member point balances
           </SharedSecondaryButton>
         </Box>
-        {data?.getCmtyUsersForOrg?.length ? (
-          <TableComponent
-            data={memberInfo ? [transformUser(memberInfo)] : tableConfig}
-            headers={headers}
-            title="Top Members"
-          />
-        ) : (
-          <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
-        )}
+        <Box width="100%" height="100%" data-tour="tutorial-members-table">
+          {membersData?.length > 0 ? (
+            <TableComponent
+              data={memberInfo ? [transformUser(memberInfo)] : membersData}
+              headers={headers}
+              title="Top Members"
+              // tableProps={{
+              //   "data-tour": "tutorial-members-table",
+              // }}
+            />
+          ) : (
+            <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
+          )}
+        </Box>
         {hasMore && (
           <SharedSecondaryButton
             style={{

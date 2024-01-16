@@ -26,15 +26,13 @@ interface IModalProps {
   modalComponentProps?: {
     className?: string;
   };
-  dialogComponentProps?: {
-    className?: string;
-  };
+  dialogComponentProps?: any;
   modalFooterStyle?: {
     padding?: string;
   };
-  modalHeaderStyle?: any;
   modalTitleStyle?: any;
   closeButtonStyle?: any;
+  headerProps?: any;
 }
 
 const Modal = ({
@@ -50,9 +48,9 @@ const Modal = ({
   modalComponentProps = {},
   dialogComponentProps = {},
   modalFooterStyle = {},
-  modalHeaderStyle = {},
+  headerProps = {},
   modalTitleStyle = {},
-  closeButtonStyle = {}
+  closeButtonStyle = {},
 }: IModalProps) => {
   const handleBackdropClick = (event) => {
     if (event.target.dataset.backdrop) {
@@ -66,9 +64,9 @@ const Modal = ({
         <ModalDialog maxWidth={maxWidth} {...dialogComponentProps}>
           <ModalContent>
             {!noHeader && (
-              <ModalHeader justifyContent={title ? "space-between" : "flex-end"} style={modalHeaderStyle}>
+              <ModalHeader justifyContent={title ? "space-between" : "flex-end"} {...headerProps}>
                 {!!title && <ModalTitle style={modalTitleStyle}>{title}</ModalTitle>}
-                {onClose && <CloseModalBtn style={closeButtonStyle} onClick={onClose} />}
+                {onClose && <CloseModalBtn style={closeButtonStyle} data-tour="tutorial-default-modal-close-button" onClick={onClose} />}
               </ModalHeader>
             )}
 

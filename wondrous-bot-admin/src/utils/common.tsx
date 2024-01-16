@@ -210,7 +210,7 @@ export const getTwitterCallbackUrl = () => {
 };
 
 export const buildTwitterAuthUrl = (state?) => {
-  const CLIENT_ID = "alotNFdURk5Qd0FoRGpKeUpHMDE6MTpjaQ";
+  const CLIENT_ID = "Uy10TlUxWjF6RDM2MUJxRnptY2U6MTpjaQ";
   if (!state) {
     state = "state";
   }
@@ -238,4 +238,11 @@ export const getPlan = (plan) => {
   if (plan === "hobby" || plan === "hobby_annual") return PricingOptionsTitle.Hobby;
   if (plan === "premium" || plan === "premium_annual") return PricingOptionsTitle.Premium;
   if (plan === "ecosystem" || plan === "ecoosystem_annual") return PricingOptionsTitle.Ecosystem;
+};
+
+export const getNodePosition = (selector) => {
+  const element = document.querySelector(selector);
+  const x = element?.getBoundingClientRect().x;
+  const y = element?.getBoundingClientRect().y;
+  return { x, y };
 };

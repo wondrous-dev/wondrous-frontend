@@ -223,7 +223,12 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
 
                 if (!Component) return null;
                 return (
-                  <Box width="100%" height="100%" ref={(ref) => (refs.current[idx + 1] = ref)}>
+                  <Box
+                    width="100%"
+                    height="100%"
+                    ref={(ref) => (refs.current[idx + 1] = ref)}
+                    data-tour={idx === steps?.length - 1 ? "tour-quest-step" : null}
+                  >
                     <Draggable key={idx} draggableId={`${idx}`} index={idx}>
                       {(provided, snapshot) => (
                         <Grid

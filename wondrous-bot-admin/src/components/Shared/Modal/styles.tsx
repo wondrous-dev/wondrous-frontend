@@ -30,6 +30,10 @@ export const ModalDialog = styled.div`
   border-radius: 16px;
   border: 1px solid black;
   max-height: 100%;
+  ${({theme}) => theme.breakpoints.down("md")} {
+    width: 100%;
+    margin-top: 16%;
+  }
   @media (min-width: 5716px) {
     .modal-dialog {
       max-width: 500px;
@@ -93,6 +97,7 @@ export const ModalFooterLeft = styled.div`
 export const ModalFooterRight = styled.div`
   display: flex;
   gap: 18px;
+  width: 100%;
 `;
 
 export const CloseModalBtn = styled((props) => (

@@ -277,8 +277,10 @@ const BadgeModal = ({ isOpen, item, onClose, org, cmtyUser }) => {
       title={isMintedBadge ? "View Badge" : "Mint Badge"}
       onClose={onClose}
       maxWidth={800}
-      modalHeaderStyle={{
-        backgroundColor: "#FFFFFF",
+      headerProps={{
+        style: {
+          backgroundColor: "#FFFFFF",
+        },
       }}
       modalTitleStyle={{
         color: "black",

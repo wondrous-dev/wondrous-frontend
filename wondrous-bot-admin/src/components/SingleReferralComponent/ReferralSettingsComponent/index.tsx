@@ -80,6 +80,9 @@ const ReferralSettingsComponent = ({ referralItemSettings, setReferralItemSettin
             multiline: true,
             showMaxLength: true,
           },
+          wrapperProps: {
+            "data-tour": "tutorial-referral-description",
+          },
           key: "description",
         },
       ],

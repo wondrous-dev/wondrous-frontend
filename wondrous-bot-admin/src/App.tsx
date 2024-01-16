@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "pages/home";
 import { ThemeProvider as StyledComponentProvider } from "styled-components";
-
+import "@reactour/popover/dist/index.css";
 import "./App.css";
 import CreatePage from "pages/quests/create";
 import Layout from "components/Layout";

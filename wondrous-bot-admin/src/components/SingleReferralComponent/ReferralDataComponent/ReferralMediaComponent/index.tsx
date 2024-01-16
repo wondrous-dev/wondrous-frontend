@@ -10,6 +10,9 @@ const ReferralMediaComponent = ({ referralItemData, setReferralItemData }) => {
 
   return (
     <PanelComponent
+      panelProps={{
+        "data-tour": "tutorial-referral-media",
+      }}
       renderBody={() => (
         <>
           <Grid display="flex" flexDirection="column" gap="24px" width="100%">

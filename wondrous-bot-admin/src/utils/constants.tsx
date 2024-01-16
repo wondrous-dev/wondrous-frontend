@@ -353,6 +353,17 @@ export const TUTORIALS = {
   COMMUNITIES_QUESTS_PAGE_GUIDE: "communities_quests_page_guide",
   COMMUNITIES_QUEST: "communities_quest",
   FIRST_CREATED_QUEST: "first_created_quest",
+  POST_CREATE_QUEST: "post_create_quest",
+  POST_CREATE_QUEST_QUESTS_PAGE_GUIDE: "post_create_quest_quests_page_guide",
+  REFERRAL_PAGE_GUIDE: "referral_page_guide",
+  REFERRAL_CREATE_PAGE_GUIDE: "referral_create_page_guide",
+  POST_CREATE_REFERRAL_PAGE_GUIDE: "post_create_referral_page_guide",
+  MEMBERS_PAGE_GUIDE: "members_page_guide",
+  LEVELS_PAGE_GUIDE: "levels_page_guide",
+  ANALYTICS_PAGE_GUIDE: "analytics_page_guide",
+  STORE_ITEMS_PAGE_GUIDE: "store_items_page_guide",
+  STORE_ITEMS_CREATE_PAGE_GUIDE: "store_items_create_page_guide",
+  STORE_ITEMS_POST_CREATE_PAGE_GUIDE: "store_items_post_create_page_guide",
 };
 
 export const DEFAULT_BANNER_IMAGES = {
