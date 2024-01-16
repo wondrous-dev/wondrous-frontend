@@ -102,7 +102,8 @@ const StoreItemsTutorial = () => {
       completedGuides &&
       !completedGuides?.includes(TUTORIALS.STORE_ITEMS_POST_CREATE_PAGE_GUIDE) &&
       completedGuides?.includes(TUTORIALS.STORE_ITEMS_PAGE_GUIDE) &&
-      tourStoreItemId && !shouldForceOpenTour
+      tourStoreItemId &&
+      !shouldForceOpenTour
     ) {
       handleTourVisit(TUTORIALS.STORE_ITEMS_POST_CREATE_PAGE_GUIDE);
       setSteps(POST_STORE_ITEM_CREATE_STEPS);
@@ -143,9 +144,6 @@ const StoreItemsTutorial = () => {
         <Box display="flex" flexDirection="column" gap="8px">
           <ModalLabel>Open your store</ModalLabel>
           <ModalTextBody>Welcome to your store. Let’s get it setup.</ModalTextBody>
-          <ModalTextBody>
-            For more info check <a href="#">out this video.</a>
-          </ModalTextBody>
         </Box>
       </ModalComponent>
     </>

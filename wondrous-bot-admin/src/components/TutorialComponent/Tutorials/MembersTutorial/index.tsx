@@ -197,9 +197,6 @@ const MembersTutorial = ({ setMembersData, data }) => {
         <Box display="flex" flexDirection="column" gap="8px">
           <ModalLabel>Your Member CRM</ModalLabel>
           <ModalTextBody>Here is where you can get deeper insight into your community members.</ModalTextBody>
-          <ModalTextBody>
-            For more info check <a href="#">out this video.</a>
-          </ModalTextBody>
         </Box>
       </ModalComponent>
     </>

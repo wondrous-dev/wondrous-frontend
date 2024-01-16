@@ -347,9 +347,6 @@ const LevelsTutorial = () => {
             Gamify your community with levels. Keep track of points and let your members compete to get to the top of
             the leaderboard.
           </ModalTextBody>
-          <ModalTextBody>
-            For more info check <a href="#">out this video.</a>
-          </ModalTextBody>
         </Box>
       </ModalComponent>
     </>

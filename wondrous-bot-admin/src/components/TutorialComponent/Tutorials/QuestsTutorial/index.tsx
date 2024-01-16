@@ -159,9 +159,6 @@ const QuestsTutorial = () => {
         <Box display="flex" flexDirection="column" gap="8px">
           <ModalLabel>Introducing Quests</ModalLabel>
           <ModalTextBody>Quests are fun challenges that your members complete to earn rewards.</ModalTextBody>
-          <ModalTextBody>
-            For more info check <a href="#">out this video.</a>
-          </ModalTextBody>
         </Box>
       </ModalComponent>
     </>

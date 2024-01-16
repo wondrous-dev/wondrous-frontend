@@ -148,9 +148,6 @@ const ReferralsTutorial = () => {
           <ModalTextBody>
             Referrals reward your members for promoting your quests. Let’s set a campaign together.
           </ModalTextBody>
-          <ModalTextBody>
-            For more info check <a href="#">out this video.</a>
-          </ModalTextBody>
         </Box>
       </ModalComponent>
     </>

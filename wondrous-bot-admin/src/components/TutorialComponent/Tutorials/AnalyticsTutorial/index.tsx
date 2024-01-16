@@ -212,9 +212,6 @@ const AnalyticsTutorial = () => {
         <Box display="flex" flexDirection="column" gap="8px">
           <ModalLabel>Get better data with Analytics</ModalLabel>
           <ModalTextBody>Access the data you need to make better decisions with analytics. </ModalTextBody>
-          <ModalTextBody>
-            For more info check <a href="#">out this video.</a>
-          </ModalTextBody>
         </Box>
       </ModalComponent>
     </>
