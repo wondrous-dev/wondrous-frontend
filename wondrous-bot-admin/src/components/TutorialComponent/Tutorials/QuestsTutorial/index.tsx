@@ -29,10 +29,6 @@ const QuestsTutorial = () => {
     {
       selector: "[data-tour=quests-page-guide-new-quest-button]",
       position: isMobile ? "bottom" : "left",
-      // action: (node) => {
-      //   const action = () => setShouldForceOpenTour(true);
-      //   node?.addEventListener("click", action);
-      // },
       content: () => (
         <ContentComponent
           content="Create a quest by clicking here!"
