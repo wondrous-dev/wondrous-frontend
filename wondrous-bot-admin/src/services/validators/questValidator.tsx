@@ -25,6 +25,7 @@ const ALL_TYPES = [
   TYPES.LIFI_VALUE_BRIDGED,
   TYPES.MIGRATE_ORIGIN_USERS,
   TYPES.VERIFY_MARKETSFLARE_TRIAL,
+  TYPES.VERIFY_GITCOIN_PASSPORT_SCORE,
   TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS,
   TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80,
   TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS,
@@ -193,6 +194,10 @@ const stepTypes = {
   }),
   [TYPES.VERIFY_MARKETSFLARE_TRIAL]: Yup.object().shape({
     ...sharedValidation,
+  }),
+  [TYPES.VERIFY_GITCOIN_PASSPORT_SCORE]: Yup.object().shape({
+    ...sharedValidation,
+    minimumScoreThreshold: Yup.number().required("Score is required"),
   }),
   [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: Yup.object().shape({
     ...sharedValidation,

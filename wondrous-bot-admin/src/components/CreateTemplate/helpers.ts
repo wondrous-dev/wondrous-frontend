@@ -109,6 +109,11 @@ const processSteps = (steps) =>
       };
     } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL || Object.values(APEIRON_TYPES).includes(next.type)) {
       step.prompt = next.value;
+    } else if (next.type === TYPES.VERIFY_GITCOIN_PASSPORT_SCORE) {
+      step.prompt = next.value?.prompt;
+      step["additionalData"] = {
+        minimumScoreThreshold: Number(next.value?.minimumScoreThreshold),
+      };
     }
     return [...acc, step];
   }, []);

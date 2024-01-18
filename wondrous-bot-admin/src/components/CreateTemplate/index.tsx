@@ -69,7 +69,7 @@ const CreateTemplate = ({
   const [firstCreatedQuest, setFirstCreatedQuest] = useState(null);
 
   const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
-    refetchQueries: [{query: GET_LOGGED_IN_USER}],
+    refetchQueries: [{ query: GET_LOGGED_IN_USER }],
   });
 
   const [removeQuestStepMedia] = useMutation(REMOVE_QUEST_STEP_MEDIA);

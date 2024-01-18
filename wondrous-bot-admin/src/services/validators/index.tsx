@@ -36,9 +36,9 @@ const ALL_TYPES = [
   TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80,
   TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS,
   TYPES.VERIFY_APEIRON_10_MINS_PLAYED,
+  TYPES.VERIFY_GITCOIN_PASSPORT_SCORE,
   TYPES.CONNECT_WALLET,
 ];
-
 
 export const STORE_TYPES = [
   STORE_ITEM_TYPES.EXTERNAL_SHOP,
@@ -219,6 +219,12 @@ const stepTypes = {
   }),
   [TYPES.VERIFY_MARKETSFLARE_TRIAL]: Yup.object().shape({
     ...sharedValidation,
+  }),
+  [TYPES.VERIFY_GITCOIN_PASSPORT_SCORE]: Yup.object().shape({
+    ...sharedValidation,
+    additionalData: Yup.object().shape({
+      minimumScoreThreshold: Yup.number().required("Score is required"),
+    }),
   }),
   [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: Yup.object().shape({
     ...sharedValidation,
