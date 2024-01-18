@@ -1,19 +1,17 @@
-import { Box, Button, ButtonBase, ClickAwayListener, Divider, Grid, Popper } from "@mui/material";
+import { Box, ButtonBase, ClickAwayListener, Divider, Popper } from "@mui/material";
 import { Label } from "components/CreateTemplate/styles";
-import SettingsIcon, { OutlinedSettingsIcon } from "components/Icons/SettingsIcon";
+import SettingsIcon from "components/Icons/SettingsIcon";
 import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import { forwardRef, ForwardRefRenderFunction, useContext, useRef, useState } from "react";
+import { forwardRef, useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import GlobalContext from "utils/context/GlobalContext";
 import { SidebarLabel, WorkspaceContainer, WorkspaceImageWrapper, WorkspaceWrapper } from "./styles";
-import { TutorialButton, TutorialLink } from "components/NavigationBar/styles";
 import AddImage from "components/Icons/Add.svg";
 import { WorkspaceDAOIcon } from "components/Icons/DAOIcon";
-import { BoxWrapper } from "components/QuestCardMenu/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { logout } from "components/Auth";
-import { ArrowLeft, ExitToApp, LogoutOutlined, LogoutRounded, LogoutSharp } from "@mui/icons-material";
+import { LogoutRounded } from "@mui/icons-material";
 import { ButtonIconWrapper } from "components/Shared/styles";
 
 interface GearIconProps {
@@ -131,7 +129,7 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
           placement="bottom-start"
           anchorEl={anchorEl}
           sx={{
-            zIndex: 1000,
+            zIndex: 999999,
           }}
         >
           <WorkspaceContainer

@@ -159,6 +159,12 @@ const QuestLeaderboard = () => {
       <TableComponent
         data={items}
         title="Quest Activity"
+        tableTitleProps={{
+          'data-tour': 'tutorial-analytics-leaderboard-title'
+        }}
+        tableProps={{
+          'data-tour': 'tutorial-analytics-leaderboard-table'
+        }}
         headerComponent={() => {
           return (
             <StyledTableHeader>

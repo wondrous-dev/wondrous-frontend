@@ -17,6 +17,7 @@ import TutorialComponent from "components/TutorialComponent";
 import { FeedbackButton } from "components/Feedback/button";
 import { GET_ORG_SUBSCRIPTION } from "graphql/queries/subscription";
 import SubscriptionContext from "utils/context/SubscriptionContext";
+import TourDataProvider from "components/TutorialComponent/Tutorials/TourDataProvider";
 
 const DefaultFallback = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const DefaultFallback = () => {
     <Grid
       width="100%"
       height="100%"
-      minWidth="100vw"
+      minWidth="100%"
       minHeight="100vh"
       display="flex"
       flexDirection="column"
@@ -124,24 +125,26 @@ const Layout = () => {
     >
       <SubscriptionContext.Provider value={subscription?.status === "active" ? subscription : null}>
         <TutorialComponent>
-          {/* <FeedbackButton /> */}
-          <Grid
-            display="flex"
-            width="100%"
-            flexDirection={{
-              xs: "column",
-              md: "row",
-            }}
-          >
-            {isPageWithoutHeader ? null : <Navbar />}
-            <Main $isPageWithoutHeader={isPageWithoutHeader}>
-              <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
-                <AuthenticationLayout>
-                  <Outlet />
-                </AuthenticationLayout>
-              </ErrorCatcher>
-            </Main>
-          </Grid>
+          <TourDataProvider>
+            {/* <FeedbackButton /> */}
+            <Grid
+              display="flex"
+              width="100%"
+              flexDirection={{
+                xs: "column",
+                md: "row",
+              }}
+            >
+              {isPageWithoutHeader ? null : <Navbar />}
+              <Main $isPageWithoutHeader={isPageWithoutHeader}>
+                <ErrorCatcher fallback={({ reset }) => <DefaultFallback />}>
+                  <AuthenticationLayout>
+                    <Outlet />
+                  </AuthenticationLayout>
+                </ErrorCatcher>
+              </Main>
+            </Grid>
+          </TourDataProvider>
         </TutorialComponent>
       </SubscriptionContext.Provider>
     </GlobalContext.Provider>

@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import { StyledSwitch } from './styles';
 
-const Switch = ({ onChange, value }) => {
+const Switch = ({ onChange, value, ...rest }) => {
   return (
     <Grid
       display='flex'
@@ -11,6 +11,7 @@ const Switch = ({ onChange, value }) => {
       sx={{
         cursor: 'pointer',
       }}
+      {...rest}
     >
       <StyledSwitch checked={value} />
     </Grid>

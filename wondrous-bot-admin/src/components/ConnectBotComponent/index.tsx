@@ -90,7 +90,7 @@ const useTelegramModal = () => {
         component: () => (
           <a href={`${botLink}`} target="__blank" rel="noreferrer">
             <AddBotLink>
-              Add Bot
+              Click here to add bot
               <ExternalLinkIcon />
             </AddBotLink>
           </a>

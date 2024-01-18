@@ -68,7 +68,7 @@ const SortableItem = ({ item, idx, status }) => {
         {...attributes}
         {...listeners}
       >
-        <CardWrapper item>
+        <CardWrapper item data-tour={`quest-card-${item.id}`}>
           <CompletionsCount completions={item.completions || 0} />
 
           <Box
@@ -137,7 +137,7 @@ const QuestItemCard = ({ level, formattedData, isOpen, totalQuests, plan, status
   const [updateQuestOrder] = useMutation(UPDATE_QUEST_ORDER, {
     refetchQueries: ["getQuestsForOrg"],
   });
-  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {};
 
   // the reason for separate state is to hide the New Quest card when dragging
   const [isDragging, setIsDragging] = useState(false);

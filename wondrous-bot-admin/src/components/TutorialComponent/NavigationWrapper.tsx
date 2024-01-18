@@ -11,10 +11,13 @@ function NavigationWrapper({ nextButton, prevButton, currentStep, setIsOpen, set
   const currentStepConfig: any = steps[currentStep];
   const hideButtons = currentStepConfig?.hideButtons;
   const EndButton = currentStepConfig?.endButton;
+
+  if (hideButtons) return null;
+
   return (
     <Grid
       display="flex"
-      justifyContent="space-between"
+      justifyContent={currentStepConfig.alignCenter ? "center" : "space-between"}
       alignItems="center"
       gap="32px"
       padding="16px"
@@ -24,11 +27,13 @@ function NavigationWrapper({ nextButton, prevButton, currentStep, setIsOpen, set
     >
       {(!hideButtons || !EndButton) && (
         <>
-          <PrevBtn currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
-          <Typography fontSize="14px" fontFamily="Poppins" color="#828282" fontWeight={500} whiteSpace="nowrap">
-            {currentStep + 1} of {steps?.length}
-          </Typography>
-          <NextBtn currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
+          {currentStepConfig?.hidePrevButton ? null : (
+            <PrevBtn currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
+          )}
+          {currentStepConfig?.hidePrevButton || currentStepConfig?.hideNextButton ? null : <Box flex="1" />}
+          {currentStepConfig?.hideNextButton ? null : (
+            <NextBtn currentStep={currentStep} setIsOpen={setIsOpen} setCurrentStep={setCurrentStep} />
+          )}
         </>
       )}
       {EndButton ? <EndButton onClick={() => setIsOpen(false)} /> : null}

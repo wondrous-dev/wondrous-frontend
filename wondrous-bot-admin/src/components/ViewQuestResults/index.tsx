@@ -343,6 +343,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
             loading={loading}
             hasMore={hasMore}
             quest={quest}
+            hasFetched={!!submissionsData}
           />
         </Grid>
       </Grid>

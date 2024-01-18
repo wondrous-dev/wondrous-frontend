@@ -20,11 +20,14 @@ import {
   InactiveStoreIcon,
 } from "components/Icons/Sidebar";
 import NavigationHeaderComponent from "./NavigationHeader";
+import { useMediaQuery } from "@mui/material";
 
 const NavigationBar = () => {
   const { activeOrg } = useContext(GlobalContext);
   const { isEcosystemPlan, isPremiumPlan } = useSubscriptionPaywall();
-  
+
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
+
   const LINKS = [
     {
       sectionTitle: null,
@@ -46,6 +49,9 @@ const NavigationBar = () => {
           inactiveIcon: InactiveQuestsIcon,
           label: "Quests",
           partialMatch: true,
+          props: {
+            "data-tour": "sidebar-quest-item",
+          },
         },
         {
           path: "/referrals",
@@ -80,12 +86,12 @@ const NavigationBar = () => {
     },
     {
       sectionTitle: "Monetize",
-      isInactive: (!isEcosystemPlan && !isPremiumPlan),
+      isInactive: !isEcosystemPlan && !isPremiumPlan,
       items: [
         {
           path: "/store",
           label: "Store",
-          isInactive: (!isEcosystemPlan && !isPremiumPlan),
+          isInactive: !isEcosystemPlan && !isPremiumPlan,
           activeIcon: ActiveStoreIcon,
           inactiveIcon: InactiveStoreIcon,
           partialMatch: true,
@@ -94,12 +100,7 @@ const NavigationBar = () => {
     },
   ];
 
-  return (
-    <>
-      <NavigationHeaderComponent links={LINKS} />
-      <SidebarComponent links={LINKS} />
-    </>
-  );
+  return isMobile ? <NavigationHeaderComponent links={LINKS} /> : <SidebarComponent links={LINKS} />;
 };
 
 export default NavigationBar;
