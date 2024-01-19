@@ -32,6 +32,7 @@ export const TYPES = {
   MIGRATE_ORIGIN_USERS: "migrate_origin_users",
   REFERRAL: "referral",
   VERIFY_MARKETSFLARE_TRIAL: "verify_marketsflare_trial",
+  VERIFY_GITCOIN_PASSPORT_SCORE: "verify_gitcoin_passport_score",
   ...APEIRON_TYPES,
 };
 
