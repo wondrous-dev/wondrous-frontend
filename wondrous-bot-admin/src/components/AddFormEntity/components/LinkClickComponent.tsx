@@ -3,13 +3,20 @@ import { IndexContainer, Label } from "./styles";
 import TextField from "../../Shared/TextField";
 import { TYPES } from "utils/constants";
 
-
 const YoutubeLikeText = ({ handleOnChange, value, error }) => (
   <>
-    <Label>Click this link</Label>
+    <Label>Question/Prompt</Label>
+    <TextField
+      placeholder="Enter prompt here (Eg. Go to this link to check out our mission + vision)"
+      value={value?.prompt || ""}
+      onChange={(value) => handleOnChange("prompt", value)}
+      multiline={false}
+      error={error?.prompt}
+    />
+    <Label>Link to visit</Label>
     <TextField
       placeholder="Please enter the url"
-      value={value.linkClickUrl || ""} 
+      value={value.linkClickUrl || ""}
       onChange={(value) => handleOnChange("linkClickUrl", value)}
       multiline={false}
       error={error}
