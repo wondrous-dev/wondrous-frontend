@@ -197,7 +197,7 @@ const stepTypes = {
   }),
   [TYPES.VERIFY_GITCOIN_PASSPORT_SCORE]: Yup.object().shape({
     ...sharedValidation,
-    minimumScoreThreshold: Yup.number().required("Score is required"),
+    gitcoinPassportMinimumScoreThreshold: Yup.number().required("Score is required"),
   }),
   [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: Yup.object().shape({
     ...sharedValidation,

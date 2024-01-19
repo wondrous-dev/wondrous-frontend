@@ -20,9 +20,9 @@ const GitcoinPassportScore = ({ handleOnChange, value, errors }) => (
     <Label>Verify that a user's Gitcoin Passport Score is above this threshold</Label>
     <TextField
       placeholder="Please enter the minimum score threshold"
-      value={value?.minimumScoreThreshold}
-      error={errors?.minimumScoreThreshold}
-      onChange={(value) => handleOnChange("minimumScoreThreshold", value)}
+      value={value?.gitcoinPassportMinimumScoreThreshold}
+      error={errors?.gitcoinPassportMinimumScoreThreshold}
+      onChange={(value) => handleOnChange("gitcoinPassportMinimumScoreThreshold", value)}
       multiline={false}
       style={TextInputStyle}
       type="number"

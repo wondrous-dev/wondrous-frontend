@@ -112,7 +112,7 @@ const processSteps = (steps) =>
     } else if (next.type === TYPES.VERIFY_GITCOIN_PASSPORT_SCORE) {
       step.prompt = next.value?.prompt;
       step["additionalData"] = {
-        minimumScoreThreshold: Number(next.value?.minimumScoreThreshold),
+        gitcoinPassportMinimumScoreThreshold: Number(next.value?.gitcoinPassportMinimumScoreThreshold),
       };
     }
     return [...acc, step];
