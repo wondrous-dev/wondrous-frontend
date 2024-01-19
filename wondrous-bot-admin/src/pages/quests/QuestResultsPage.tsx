@@ -166,7 +166,7 @@ const QuestResultsPage = () => {
       </Modal>
       <Modal open={notInGuildError} onClose={() => setNotInGuildError(false)} title={"Not in Server"} maxWidth={600}>
         <Typography fontFamily="Poppins" fontWeight={500} fontSize="14px" lineHeight="24px" color="black">
-          You're Discord user is not a member of the Server!
+          Your Discord user is not a member of the Server!
         </Typography>
       </Modal>
       <Box>
