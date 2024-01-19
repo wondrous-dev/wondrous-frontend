@@ -8,11 +8,13 @@ import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import QuestsList from "components/QuestsList";
 import SelectComponent from "components/Shared/Select";
 import { SharedSecondaryButton } from "components/Shared/styles";
+import QuestsTutorial from "components/TutorialComponent/Tutorials/QuestsTutorial";
 import { GET_ORG_QUEST_STATS, GET_QUESTS_FOR_ORG } from "graphql/queries";
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPlan } from "utils/common";
 import { QUEST_STATUSES, TUTORIALS } from "utils/constants";
+import { TourDataContext } from "utils/context";
 import GlobalContext from "utils/context/GlobalContext";
 import { useSubscription, useSubscriptionPaywall } from "utils/hooks";
 
@@ -37,11 +39,12 @@ const SELECT_QUESTS_TYPE = [
 ];
 
 const QuestsPage = () => {
-  const { setIsOpen, setMeta } = useTour();
   const { activeOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
+
+  const props = useContext(TourDataContext);
   const [statuses, setStatuses] = useState(QUEST_STATUSES.OPEN);
-  const { user } = useMe() || {};
+
   const subscription = useSubscription();
   const { setPaywall, setPaywallMessage } = useSubscriptionPaywall();
   const [isLoading, setIsLoading] = useState(true);
@@ -66,15 +69,6 @@ const QuestsPage = () => {
   };
 
   const handleOnFetchCompleted = async (data) => {
-    if (
-      user &&
-      !user?.completedQuestGuides?.includes(TUTORIALS.COMMUNITIES_QUESTS_PAGE_GUIDE) &&
-      data?.getQuestsForOrg?.length
-    ) {
-      setIsOpen(true);
-      const quest = data?.getQuestsForOrg[0];
-      setMeta(quest?.id);
-    }
     if (!data?.getQuestsForOrg?.length && statuses === QUEST_STATUSES.OPEN && isLoading) {
       const variables: any = {
         input: {
@@ -136,7 +130,6 @@ const QuestsPage = () => {
 
   const questsLength = useMemo(() => data?.getQuestsForOrg?.length || 0, [data?.getQuestsForOrg?.length]);
 
-  if (isLoading) return <PageSpinner />;
 
   return (
     <>
@@ -154,11 +147,17 @@ const QuestsPage = () => {
               />
             </Box>
             <Box>
-              <SharedSecondaryButton onClick={handleNavigationToNewQuest}>New Quest</SharedSecondaryButton>
+              <SharedSecondaryButton
+                data-tour="quests-page-guide-new-quest-button"
+                onClick={handleNavigationToNewQuest}
+              >
+                New Quest
+              </SharedSecondaryButton>
             </Box>
           </Box>
         )}
       />
+      {data && !isLoading ? <QuestsTutorial /> : null}
       <QuestsList data={sortedData} status={statuses} />
     </>
   );

@@ -1,40 +1,32 @@
 import { useTour } from "@reactour/tour";
-import { useMe } from "components/Auth";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { useLocation, useNavigate } from "react-router-dom";
-import { config } from "./config";
-import { getStepsConfig } from "./utils";
+import { useNavigate } from "react-router-dom";
+import useSkipTour from "./Tutorials/shared/useSkipTour";
+import { ButtonBase, Typography } from "@mui/material";
+import { useContext } from "react";
+import { TourDataContext } from "utils/context";
 
-export function NextNavigationButton({
-  currentStep,
-  setIsOpen,
-  setCurrentStep,
-  buttonProps = {}
-}) {
-  const {meta, setMeta} = useTour();
-  const navigate = useNavigate()
-  const {steps}:any = useTour();
+export function NextNavigationButton({ currentStep, setIsOpen, setCurrentStep, buttonProps = {} }) {
+  const navigate = useNavigate();
+  const { steps }: any = useTour();
   const stepsData = steps[currentStep];
-  const buttonTitle = stepsData?.nextButtonTitle || 'Next';
-  const action = async () => {
+  const buttonTitle = stepsData?.nextButtonTitle || "Next Step";
 
-    if(stepsData?.forceNextStep) {
-      const nextStep = stepsData?.forceNextStep(currentStep)
-      return setCurrentStep(nextStep)
+  const action = async () => {
+    if (stepsData?.forceNextStep) {
+      const nextStep = stepsData?.forceNextStep(currentStep);
+      return setCurrentStep(nextStep);
     }
-    if(stepsData?.nextHref && meta) {
-      navigate(stepsData?.nextHref.replace(':id', meta))
-      setMeta(null)
+    if (stepsData?.handleNextAction) {
+      return stepsData?.handleNextAction?.();
     }
+
     if (currentStep === steps.length - 1) {
       return setIsOpen(false);
     }
-    if(stepsData?.handleNextAction) {
-      return stepsData?.handleNextAction?.()
-    }
     return setCurrentStep((step) => step + 1);
   };
-  if (stepsData?.nextAction === 'skip') {
+  if (stepsData?.nextAction === "skip") {
     return null;
   }
   return (
@@ -44,36 +36,31 @@ export function NextNavigationButton({
   );
 }
 
-
-export function PrevNavigationButton({
-  currentStep,
-  setIsOpen,
-  setCurrentStep,
-  buttonProps = {}
-}) {
-  const {steps}:any = useTour();
+export function PrevNavigationButton({ currentStep, setIsOpen, setCurrentStep, buttonProps = {} }) {
+  const { steps, meta }: any = useTour();
+  const { handleTourVisit } = useContext(TourDataContext);
   const stepsData = steps[currentStep];
-  const buttonTitle = stepsData?.prevButtonTitle || 'Previous';
-  
+  const { skipTour } = useSkipTour();
 
+  const prevButtonTypographyStyles = stepsData?.prevButtonTypographyStyles;
 
-  const action = () => {
-    if(stepsData?.forcePrevStep) {
-      const prevStep = stepsData?.forcePrevStep(currentStep)
-      return setCurrentStep(prevStep)
-    }
-    if (currentStep === 0 || stepsData.prevAction === 'skip') {
-      return setIsOpen(false);
-    }
-    if(stepsData?.handlePrevAction) {
-      return stepsData?.handlePrevAction?.()
-    }
-    return setCurrentStep((step) => step - 1);
+  const handleExitTour = () => {
+    skipTour();
   };
   return (
-    <SharedSecondaryButton type="button" onClick={action} $reverse>
-      {buttonTitle}
-    </SharedSecondaryButton>
+    <ButtonBase onClick={handleExitTour}>
+      <Typography
+        color="#949494"
+        fontFamily="Poppins"
+        fontSize="15px"
+        fontWeight={500}
+        sx={{
+          textDecoration: "underline",
+        }}
+        {...prevButtonTypographyStyles}
+      >
+        Exit Tour
+      </Typography>
+    </ButtonBase>
   );
 }
-

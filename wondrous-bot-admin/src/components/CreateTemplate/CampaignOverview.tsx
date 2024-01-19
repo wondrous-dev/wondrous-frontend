@@ -72,6 +72,7 @@ export const CampaignOverviewSections = ({
             alignItems="center"
             justifyContent="center"
             borderRadius="6px"
+            data-tour="tutorial-show-extra"
             border="1px solid #828282"
             sx={{
               transform: show && "rotate(180deg)",
@@ -82,8 +83,8 @@ export const CampaignOverviewSections = ({
         </Grid>
       )}
       <ExtraFeaturesWrapper container item show={show}>
-        {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }) => {
-          if (!show) return <Box flex="1" height="100%" width="100%" />;
+        {settings.map(({ label, component: Component, key, componentProps = {}, wrapperProps = {} }: any) => {
+          if (!show) return <Box flex="1" width="100%" height="100%" />;
           return (
             <Grid
               container
@@ -159,6 +160,9 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
             stateKey: "title",
           },
           key: "title",
+          wrapperProps: {
+            "data-tour": "tutorial-quest-title",
+          },
         },
         {
           label: "Description",
@@ -202,7 +206,7 @@ const CampaignOverview = ({ questSettings, setQuestSettings }) => {
           label: "Active Quest",
           component: Switch,
           key: "isActive",
-          wrapperProps: {
+          componentProps: {
             "data-tour": "tutorial-activate-quest",
           },
         },

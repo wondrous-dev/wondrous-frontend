@@ -16,8 +16,9 @@ import TableComponent from "components/TableComponent";
 import { getBaseUrl } from "utils/common";
 import { exportQuestSubmissionsToCsv } from "utils/exports";
 import Spinner from "components/Shared/Spinner";
+import ViewQuestTutorial from "components/TutorialComponent/Tutorials/ViewQuestTutorial";
 
-const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fetchMore, hasMore, quest, loading }) => {
+const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fetchMore, hasMore, quest, loading, hasFetched }) => {
   const { ref, inView, entry } = useInView();
   const [exportQuestSubmissionData] = useLazyQuery(EXPORT_QUEST_SUBMISSIONS);
   const [exportQuestLoading, setExportQuestLoading] = useState(false);
@@ -101,13 +102,21 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
       justifyContent="flex-start"
       width="100%"
     >
+      {!hasReferralStep && !loading && !submissions?.length && hasFetched && <ViewQuestTutorial />}
       {hasReferralStep ? (
         <>
           <TableComponent headers={referralHeaders} data={tableConfig} />
         </>
       ) : (
         <>
-          <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
+          <Typography
+            data-tour="tour-submissions-title"
+            fontFamily="Poppins"
+            fontWeight={600}
+            fontSize="18px"
+            lineHeight="24px"
+            color="black"
+          >
             {totalValue} submissions
           </Typography>
           <Grid display="flex" gap="14px" alignItems="center" width="100%">
@@ -115,6 +124,7 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
               <FilterPill
                 type="button"
                 key={key}
+                data-tour="tour-submissions-filter-buttons"
                 $isActive={key === filter}
                 onClick={() => handleFilterChange(filter, key)}
               >
@@ -166,7 +176,12 @@ const QuestResults = ({ submissions, stats = {}, filter, handleFilterChange, fet
             {submissions?.length ? (
               submissions?.map((submission, idx) => <QuestResultsCard submission={submission} key={idx} />)
             ) : loading ? null : (
-              <EmptyState type={EMPTY_STATE_TYPES.SUBMISSIONS} />
+              <EmptyState
+                type={EMPTY_STATE_TYPES.SUBMISSIONS}
+                sx={{
+                  "data-tour": "tour-submissions-empty-state",
+                }}
+              />
             )}
             {loading && (
               <Spinner

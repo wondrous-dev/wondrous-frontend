@@ -233,7 +233,6 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
       disabled: storeItemData?.config?.nftType !== NFT_TYPES.COMMUNITY_BADGE,
     },
   ];
-  console.log('storeItemData', storeItemData)
 
   const componentProps = useMemo(() => Config?.componentProps, [Config]);
   if (activeOrg?.id === APEIRON_ORG_ID) {
@@ -309,6 +308,9 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
         getAllStoreItemDiscountCodes={getAllStoreItemDiscountCodes}
       />
       <PanelComponent
+        panelProps={{
+          "data-tour": "tutorial-store-item-panel",
+        }}
         renderBody={() => {
           const deliveryMessage =
             storeItemData?.deliveryMethod === DELIVERY_METHODS.RAFFLE
@@ -316,7 +318,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
               : "Copy the code and use it at checkout to apply the discount. Visit the store by clicking the link below.";
           return (
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">
-              <Grid display="flex" flexDirection="column" gap="12px">
+              <Grid display="flex" flexDirection="column" gap="12px" data-tour="tutorial-store-item-type">
                 <Label fontWeight={600}>Store Item Type</Label>
 
                 <AutocompleteOptionsComponent
@@ -326,7 +328,7 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
                   onChange={handleTypeChange}
                 />
               </Grid>
-              <Grid display="flex" flexDirection="column" gap="12px">
+              <Grid display="flex" flexDirection="column" gap="12px" data-tour="tutorial-store-item-info">
                 <Label fontWeight={600}>{Config.label}</Label>
 
                 <Config.component
@@ -452,6 +454,9 @@ const StoreItemConfigComponent = ({ storeItemData, setStoreItemData, onTypeChang
         }}
       />
       <PanelComponent
+        panelProps={{
+          "data-tour": "tutorial-store-item-image-panel",
+        }}
         renderBody={() => {
           return (
             <Grid display="flex" flexDirection="column" gap="24px" width="100%">

@@ -8,6 +8,7 @@ const PageHeader = ({
   renderActions = null,
   titleComponent = null,
   onBackButtonClick = null,
+  backButtonProps = {},
 }) => {
   const navigate = useNavigate();
 
@@ -42,7 +43,7 @@ const PageHeader = ({
     >
       <Grid display="flex" alignItems="center" gap="14px">
         {withBackButton ? (
-          <ButtonBase onClick={handleBackButton}>
+          <ButtonBase onClick={handleBackButton} {...backButtonProps}>
             <Box
               height="40px"
               width="40px"

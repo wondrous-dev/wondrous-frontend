@@ -6,7 +6,7 @@ export const HeaderBar = styled.header`
   padding: 14px;
   top: 0;
   height: calc(${HEADER_HEIGHT}px - 28px);
-  z-index: 1000;
+  z-index: 999999;
   position: sticky;
   justify-content: space-between;
   background-color: #fff;

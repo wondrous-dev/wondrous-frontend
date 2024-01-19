@@ -11,9 +11,7 @@ export const ConnectWalletField = ({ step, onChange, value, placeholder = "", ty
       return onChange(value);
     }
   };
-  console.log("what the");
   const { onBlur, onFocus } = useKeyboardEffect();
-  console.log("onFocus", onFocus);
   const { isEditMode } = useTakeQuest();
 
   const shouldAutoFocus = step.order > 1 && !isEditMode;

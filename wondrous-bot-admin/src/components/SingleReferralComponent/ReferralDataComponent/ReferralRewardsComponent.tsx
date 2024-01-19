@@ -15,10 +15,16 @@ const REWARD_OPTIONS = [
   {
     label: "Referrer",
     value: REFERRAL_REWARD_SCHEME.REFERRER,
+    wrapperProps: {
+      "data-tour": "tutorial-referral-referrer-reward",
+    },
   },
   {
     label: "Person being referred",
     value: REFERRAL_REWARD_SCHEME.REFERRED,
+    wrapperProps: {
+      "data-tour": "tutorial-referral-referred-reward",
+    },
   },
 ];
 
@@ -34,12 +40,14 @@ const ReferralRewardUIComponent = ({
   handleRewardDelete,
   handleOnChangePoints,
   scheme,
+  wrapperProps = {},
 }) => {
   const rewardModalState = useAddRewardModalState();
   const { setIsRewardModalOpen } = rewardModalState;
 
   return (
     <PanelComponent
+      panelProps={wrapperProps}
       renderBody={() => {
         return (
           <>
@@ -81,9 +89,6 @@ const CampaignRewardComponent = ({
 }) => {
   return (
     <>
-      <Box>
-        <SharedSecondaryButton onClick={handleAddNewReward}>Add New Reward</SharedSecondaryButton>
-      </Box>
       <Grid display="flex" gap="10px" flexDirection="column" width="100%">
         <RewardWrapperWithTextField
           reward={{
@@ -109,6 +114,9 @@ const CampaignRewardComponent = ({
               );
             })
           : null}
+        <Box marginTop="10px">
+          <SharedSecondaryButton onClick={handleAddNewReward}>Add New Reward</SharedSecondaryButton>
+        </Box>
       </Grid>
     </>
   );
@@ -158,6 +166,7 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
             option={option}
             scheme={option.value}
             referralItemData={referralItemData}
+            wrapperProps={option.wrapperProps}
             handleOnChangePoints={handleOnChangePoints}
           />
         );

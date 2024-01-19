@@ -32,6 +32,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
           multiline: false,
           placeholder: "Enter store item title",
           error: errors["name"],
+          "data-tour": "tutorial-store-item-title",
         },
         key: "name",
       },
