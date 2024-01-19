@@ -1,236 +1,148 @@
 import { useMutation } from "@apollo/client";
-import { Box, ButtonBase, CircularProgress, FormControl, Grid, Typography } from "@mui/material";
-import { CustomTextField } from "components/AddFormEntity/components/styles";
-import { Label } from "components/CreateTemplate/styles";
-import { ErrorTypography } from "components/Login/styles";
-import AuthLayout from "components/Shared/AuthLayout";
+import { Box, Typography, useMediaQuery } from "@mui/material";
+import { SignupAuthLayout } from "components/Shared/AuthLayout";
 import { SharedSecondaryButton } from "components/Shared/styles";
-import { CREATE_ORG } from "graphql/mutations";
-import { useContext, useMemo, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useSchema } from "./validator";
+import { CREATE_CMTY_ORG } from "graphql/mutations";
+import { useCallback, useContext, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import GlobalContext from "utils/context/GlobalContext";
 import MetaPixel from "components/MetaPixel";
 import GoogleTag from "components/GoogleTag";
-import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
-import { logout } from "components/Auth";
+import Modal from "components/Shared/Modal";
+import { getBaseUrl } from "utils/common";
+import useAlerts from "utils/hooks";
+
+const DiscordClientID = import.meta.env.VITE_DISCORD_CLIENT_ID;
 
 const OnboardingComponent = () => {
-  const { address, chainId, open, disconnect, isConnected } = useWonderWeb3Modal();
   const { setActiveOrg } = useContext(GlobalContext);
-  const [orgData, setOrgData] = useState({
-    name: "",
-    username: "",
-    twitterHandle: "",
-    productLink: "",
-  });
 
-  const { search } = useLocation();
-
-  const searchParams = new URLSearchParams(search);
-
-  const referrerPage = searchParams.get("ref");
-
-  const handleGoBack = (e) => {
-    e.preventDefault();
-    if (referrerPage === "workspace") {
-      return navigate(-1);
-    }
-    if (referrerPage === "signup") {
-      logout("/signup");
-    }
-    if (referrerPage === "login") {
-      logout();
+  const errorToText = (errorMessage) => {
+    switch (errorMessage) {
+      case "guild_already_exist":
+        return "This discord server is already connected to another account!";
+      case "guild_not_found":
+        return "This discord server was not found - please try again";
+      default:
+        return "Error connecting discord - please try again";
     }
   };
-
-  const goBackLabel = useMemo(() => {
-    if (referrerPage === "workspace") {
-      return "Go Back";
-    }
-    if (referrerPage === "signup") {
-      return "Back to Signup";
-    }
-    if (referrerPage === "login") {
-      return "Back to Login";
-    }
-  }, [referrerPage]);
 
   const navigate = useNavigate();
-  const [createOrg, { loading }] = useMutation(CREATE_ORG, {
+  const callbackURL = () => encodeURIComponent(`${getBaseUrl()}/discord/callback/org-connect`);
+
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
+  const [createGuildOrg, { loading: createOrgLoading }] = useMutation(CREATE_CMTY_ORG, {
     notifyOnNetworkStatusChange: true,
-  });
-  const [errors, setErrors] = useState({});
-  const handleChange = (e) => {
-    setErrors({
-      ...errors,
-      [e.target.name]: "",
-    });
-    setOrgData({ ...orgData, [e.target.name]: e.target.value });
-  };
-  const validationSchema = useSchema();
-
-  const formConfig = [
-    {
-      name: "name",
-      label: "Name",
-      value: orgData.name,
-      onChange: handleChange,
-      placeholder: "Enter project title",
-      required: true,
-    },
-    {
-      name: "username",
-      label: "Username",
-      value: orgData.username,
-      onChange: handleChange,
-      placeholder: "username",
-      required: true,
-      padding: "14px 14px 14px 24px",
-      startAdornment: (
-        <Typography
-          fontFamily={"Poppins"}
-          fontSize="15px"
-          fontStyle="normal"
-          fontWeight={400}
-          color="black"
-          position="absolute"
-          padding="8px 0px 0px 8px"
-        >
-          @
-        </Typography>
-      ),
-    },
-    {
-      name: "twitterHandle",
-      label: "Twitter Handle",
-      onChange: handleChange,
-      placeholder: "twitter handle",
-      required: true,
-      padding: "14px 14px 14px 24px",
-      startAdornment: (
-        <Typography
-          fontFamily={"Poppins"}
-          fontSize="15px"
-          fontStyle="normal"
-          fontWeight={400}
-          color="black"
-          position="absolute"
-          padding="8px 0px 0px 8px"
-        >
-          @
-        </Typography>
-      ),
-    },
-    {
-      name: "productLink",
-      label: "Product Website",
-      onChange: handleChange,
-      placeholder: "product-link.xyz",
-      required: true,
-      padding: "14px 14px 14px 65px",
-      startAdornment: (
-        <Typography
-          fontFamily={"Poppins"}
-          fontSize="15px"
-          fontStyle="normal"
-          fontWeight={400}
-          color="black"
-          position="absolute"
-          padding="8px 0px 0px 8px"
-        >
-          https://
-        </Typography>
-      ),
-    },
-  ];
-
-  const handleSubmit = async () => {
-    try {
-      await validationSchema.validate(orgData, { abortEarly: false });
-      const { data } = await createOrg({
-        variables: {
-          input: {
-            name: orgData.name,
-            username: orgData.username,
-            cmtyEnabled: true,
-            twitterHandle: orgData.twitterHandle,
-            productLink: orgData.productLink,
-          },
-        },
-      });
+    refetchQueries: ["getLoggedInUserFullAccessOrgs"],
+    onCompleted: (data) => {
       setActiveOrg(data?.createOrg);
-      navigate("/");
-    } catch (err) {
-      err?.inner?.forEach((e) => {
-        setErrors((prev) => ({ ...prev, [e.path]: e.message }));
-      });
-    }
+      navigate("/onboarding/plan-select");
+    },
+  });
+
+  const discordWindowRef = useRef(null);
+  const isConnectingRef = useRef(false);
+
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useAlerts();
+
+  const receiveMessage = useCallback(
+    (event) => {
+      if (!event.data) return;
+      const targetOrigin = window.location.origin;
+      if (event.origin !== targetOrigin) return;
+      let message = event.data;
+      try {
+        const data = JSON.parse(message);
+        if (data.type === "discordCallback") {
+          discordWindowRef.current?.close();
+          discordWindowRef.current = null;
+        }
+        if (
+          data.type !== "discordCallback" ||
+          createOrgLoading ||
+          isConnectingRef.current ||
+          !data.code ||
+          !data.guildId
+        ) {
+          return;
+        }
+
+        isConnectingRef.current = true;
+
+        createGuildOrg({
+          variables: {
+            code: data.code,
+            guildId: data.guildId,
+          },
+        }).catch((err) => {
+          const extensionMessage = err?.graphQLErrors?.[0]?.extensions?.message;
+          setSnackbarAlertMessage(errorToText(extensionMessage));
+          setSnackbarAlertOpen(true);
+          return;
+        });
+      } catch (error) {}
+    },
+    [createOrgLoading, createGuildOrg]
+  );
+
+  const handleDiscordConnect = () => {
+    const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${DiscordClientID}&permissions=8&scope=bot&response_type=code&state=${encodeURIComponent(
+      JSON.stringify({ create_org: true })
+    )}&redirect_uri=${callbackURL()}`;
+
+    const width = screen.width * 0.25;
+    const height = screen.height;
+
+    isConnectingRef.current = false;
+    const left = 0;
+    const top = 0;
+    const features = "width=" + width + ",height=" + height + ",top=" + top + ",left=" + left;
+
+    const openMethod = isMobile ? "_blank" : "NewWindow";
+    discordWindowRef.current = window.open(oauthUrl, openMethod, isMobile ? "" : features);
+
+    discordWindowRef.current?.focus();
+
+    window.addEventListener("message", receiveMessage, false);
+
+    discordWindowRef.current.onbeforeunload = () => {
+      window.removeEventListener("message", receiveMessage);
+    };
   };
 
   return (
-    <AuthLayout>
+    <SignupAuthLayout>
       <MetaPixel />
       <GoogleTag />
-      {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" padding="80px">
-          <CircularProgress
-            size={60}
-            thickness={5}
-            sx={{
-              color: "#2A8D5C",
-              animationDuration: "10000ms",
-            }}
-          />
-        </Box>
-      ) : (
-        <Grid container direction="column" gap="32px" padding="42px" justifyContent="left" alignItems="left">
-          <Box display="flex" gap="6px" flexDirection="column">
-            <Typography fontFamily="Poppins" fontSize="24px" fontWeight="700" lineHeight="24px" color="#2A8D5C">
-              Welcome!
-            </Typography>
-            <Label fontWeight={600}>Let's get your community setup.</Label>
-          </Box>
 
-          <FormControl
-            fullWidth
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-            }}
-          >
-            {formConfig.map((config, idx) => (
-              <Box display="flex" gap="6px" flexDirection="column" width="100%">
-                <CustomTextField key={config.name} {...config} />
-                {errors[config.name] ? <ErrorTypography>{errors[config.name]}</ErrorTypography> : null}
-              </Box>
-            ))}
-          </FormControl>
-          <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" gap="12px">
-            <SharedSecondaryButton type="button" onClick={handleSubmit}>
-              Create Community 💖
-            </SharedSecondaryButton>
-            <ButtonBase onClick={handleGoBack}>
-              <Typography
-                fontFamily="Poppins"
-                color="black"
-                fontSize="12px"
-                sx={{
-                  textDecoration: "underline",
-                  pointer: "cursor",
-                  "&:hover": {
-                    color: "#84bcff",
-                  },
-                }}
-              >
-                {goBackLabel}
-              </Typography>
-            </ButtonBase>
+      <Modal noHeader open {...(isMobile ? {} : { maxWidth: 600 })}>
+        <Box display="flex" flexDirection="column" gap="42px">
+          <Box display="flex" gap="18px" flexDirection="column" justifyContent="center" alignItems="center">
+            <Typography fontSize="32px" color="#2A8D5C" fontWeight={600} textAlign="center">
+              Connect your Community
+            </Typography>
+            <Typography color="#363636" textAlign="center" fontSize="15px" lineHeight="24px" fontWeight={500}>
+              The party doesn't start until you add Wonderverse to your server!
+              <br />
+              1,000+ premium communities trust our bot to help them grow.
+            </Typography>
+            <img
+              src="/connect-discord-bot.png"
+              style={{
+                height: "160px",
+                width: "auto",
+                objectFit: "cover",
+              }}
+            />
           </Box>
-        </Grid>
-      )}
-    </AuthLayout>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <SharedSecondaryButton onClick={handleDiscordConnect}>Add to Discord</SharedSecondaryButton>
+          </Box>
+        </Box>
+      </Modal>
+    </SignupAuthLayout>
   );
 };
 

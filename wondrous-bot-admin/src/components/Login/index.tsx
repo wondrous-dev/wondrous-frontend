@@ -16,6 +16,7 @@ import AuthLayout from "components/Shared/AuthLayout";
 import { LinkWithQuery } from "components/Shared/LinkWithQuery";
 import WalletConnect from "components/Icons/Login/walletconnect.svg";
 import useWeb3Auth from "services/web3/useWeb3Auth";
+import GoogleOAuthButton from "components/OAuth/GoogleOAuth";
 
 function Login() {
   // since we can't disconnect a user's wallet this is used in order to check if the user actually clicked the login button
@@ -96,6 +97,7 @@ function Login() {
         {notSupportedChain && (
           <ErrorTypography>Unsupported network, change to mainnet or a supported network</ErrorTypography>
         )}
+        <GoogleOAuthButton />
         <FormControl
           fullWidth
           sx={{

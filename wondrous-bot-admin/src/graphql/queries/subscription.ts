@@ -14,3 +14,11 @@ export const GET_ORG_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const GET_CHECKOUT_LINK = gql`
+  query getCheckoutLink($orgId: ID!, $tier: String!) {
+    getCheckoutLink(orgId: $orgId, tier: $tier) {
+      url
+    }
+  }
+`;

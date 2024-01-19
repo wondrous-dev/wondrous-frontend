@@ -68,6 +68,7 @@ const Layout = () => {
   const subscription = orgSubscriptionData?.getOrgSubscription;
   const isPageWithoutHeader = matchRoute(location.pathname, PAGES_WITHOUT_HEADER);
 
+  const isExcludedPath = matchRoute(location.pathname, EXCLUDED_PATHS);
   const handleActiveOrg = (org) => {
     localStorage.setItem(LOCAL_STORAGE_ORG_ID_KEY, org?.id);
     setActiveOrg(org);
@@ -98,7 +99,7 @@ const Layout = () => {
   );
 
   useEffect(() => {
-    if (!isPageWithoutHeader) {
+    if (!isExcludedPath) {
       getLoggedInUserFullAccessOrgs({
         variables: {
           excludeSharedOrgs: true,
@@ -106,7 +107,7 @@ const Layout = () => {
         },
       });
     }
-  }, [isPageWithoutHeader]);
+  }, [isExcludedPath]);
 
   if (loading) {
     return <PageSpinner />;
