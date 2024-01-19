@@ -178,7 +178,7 @@ const stepTypes = {
     }),
   }),
   [TYPES.LINK_CLICK]: Yup.object().shape({
-    ...twitterSnapshotSharedValidation,
+    ...sharedValidation,
     additionalData: Yup.object().shape({
       linkClickUrl: Yup.string().required("Link is required").url("Must be a url"),
     }),
