@@ -409,7 +409,7 @@ const APEIRON_INTEGRATIONS = [
   },
 ];
 
-export const POKT_ORG_ID = "105517885016768513";
+export const POKT_ORG_ID = "89444950095167649";
 
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
