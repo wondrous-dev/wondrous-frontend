@@ -15,6 +15,7 @@ import MigrateOriginUsers from "components/AddFormEntity/components/MigrateOrigi
 import VerifyMarketsFlareTrial from "components/AddFormEntity/components/VerifyMarketsFlareTrial";
 import VerifyApeironIntegrations from "components/AddFormEntity/components/VerifyApeiron";
 import ConnectWallet from "components/AddFormEntity/components/ConnectWallet";
+import GitcoinPassportComponent from "components/AddFormEntity/components/GitcoinPassportComponent";
 
 const APEIRON_INTEGRATIONS = {
   [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: VerifyApeironIntegrations,
@@ -47,5 +48,6 @@ export const CONFIG_COMPONENTS = {
   [TYPES.REFERRAL]: ReferralComponent,
   [TYPES.MIGRATE_ORIGIN_USERS]: MigrateOriginUsers,
   [TYPES.VERIFY_MARKETSFLARE_TRIAL]: VerifyMarketsFlareTrial,
+  [TYPES.VERIFY_GITCOIN_PASSPORT_SCORE]: GitcoinPassportComponent,
   ...APEIRON_INTEGRATIONS,
 };

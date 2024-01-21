@@ -32,6 +32,7 @@ export const TYPES = {
   MIGRATE_ORIGIN_USERS: "migrate_origin_users",
   REFERRAL: "referral",
   VERIFY_MARKETSFLARE_TRIAL: "verify_marketsflare_trial",
+  VERIFY_GITCOIN_PASSPORT_SCORE: "verify_gitcoin_passport_score",
   ...APEIRON_TYPES,
 };
 
@@ -118,7 +119,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/telegram/start-quest/:id",
   "/telegram/connect",
   "/community-badge/claim",
-  "/referral-campaign"
+  "/referral-campaign",
 ];
 
 export const BG_TYPES = {
@@ -408,6 +409,8 @@ const APEIRON_INTEGRATIONS = [
   },
 ];
 
+export const POKT_ORG_ID = "89444950095167649";
+
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
   "58318954576216128": {
@@ -492,15 +495,15 @@ export const NFT_TYPES = {
 };
 
 export const REFERRAL_STATUSES = {
-  ACTIVE: 'active',
-  INACTIVE: 'inactive'
-}
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+};
 
 export const REFERRAL_REWARD_SCHEME = {
   REFERRER: "referrer",
   REFERRED: "referred",
   TWO_WAY: "two_way",
-}
+};
 
 export const QUALIFYING_ACTION_TYPES = {
   PURCHASE: "purchase",
@@ -508,10 +511,4 @@ export const QUALIFYING_ACTION_TYPES = {
   ANY_QUEST: "any_quest",
 };
 
-export const LOCKED_PATHS = [
-  '/store',
-  '/store/items/create',
-  '/store/items/:id',
-  '/analytics'
-];
-
+export const LOCKED_PATHS = ["/store", "/store/items/create", "/store/items/:id", "/analytics"];

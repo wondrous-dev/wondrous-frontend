@@ -109,6 +109,11 @@ const processSteps = (steps) =>
       };
     } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL || Object.values(APEIRON_TYPES).includes(next.type)) {
       step.prompt = next.value;
+    } else if (next.type === TYPES.VERIFY_GITCOIN_PASSPORT_SCORE) {
+      step.prompt = next.value?.prompt;
+      step["additionalData"] = {
+        gitcoinPassportMinimumScoreThreshold: Number(next.value?.gitcoinPassportMinimumScoreThreshold),
+      };
     }
     return [...acc, step];
   }, []);
@@ -200,6 +205,10 @@ const mapReward = (reward) => {
     return {
       type: reward?.type,
       storeItemId: reward?.storeItem?.id,
+    };
+  } else if (reward?.type === PAYMENT_OPTIONS.PDA) {
+    return {
+      type: reward?.type,
     };
   }
 };
