@@ -6,10 +6,10 @@ export const APEIRON_TYPES = {
 };
 
 export const FHENIX_TYPES = {
-  VERIFY_FHENIX_WALLET_GAS_USAGE: "verify_fhenix_wallet_gas_usage",
-  VERIFY_FHENIX_CONTRACTS_CREATED: "verify_fhenix_contracts_created",
-  VERIFY_FHENIX_FAUCET_INTERACTION: "verify_fhenix_faucet_interaction",
-  VERIFY_FHENIX_ACTIVE_WALLET: "verify_fhenix_active_wallet",
+  VERIFY_FHENIX_WALLET_GAS_USAGE: "gas_usage",
+  VERIFY_FHENIX_CONTRACTS_CREATED: "contract_created",
+  VERIFY_FHENIX_FAUCET_INTERACTION: "contract_interaction",
+  VERIFY_FHENIX_ACTIVE_WALLET: "active_wallet",
 };
 
 export const APEIRON_ORG_ID = "98989259425317451";
@@ -468,12 +468,13 @@ export const CUSTOM_INTEGRATIONS = {
     name: "Apeiron",
     integrations: APEIRON_INTEGRATIONS,
   },
-  "105517885016768513": {
+  "89444950095167649": {
     name: "Fhenix",
     integrations: FHENIX_INTEGRATIONS,
   },
 };
 
+export const FHENIX_FAUCET_ADDRESS = "0x42B1909dbE62ad89a86095B6F7AC74690Bd8449C";
 export const OPTION_TEXT_LIMIT = 250;
 
 export const STORE_ITEM_TYPES = {
