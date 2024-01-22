@@ -15,6 +15,7 @@ import MigrateOriginUsers from "components/AddFormEntity/components/MigrateOrigi
 import VerifyMarketsFlareTrial from "components/AddFormEntity/components/VerifyMarketsFlareTrial";
 import VerifyApeironIntegrations from "components/AddFormEntity/components/VerifyApeiron";
 import ConnectWallet from "components/AddFormEntity/components/ConnectWallet";
+import VerifyFhenixIntegrations from "components/AddFormEntity/components/VerifyFhenix";
 import GitcoinPassportComponent from "components/AddFormEntity/components/GitcoinPassportComponent";
 
 const APEIRON_INTEGRATIONS = {
@@ -22,6 +23,13 @@ const APEIRON_INTEGRATIONS = {
   [TYPES.VERIFY_APEIRON_APOSTLES_IV_OVER_80]: VerifyApeironIntegrations,
   [TYPES.VERIFY_APEIRON_DEFEAT_FIRST_BOSS]: VerifyApeironIntegrations,
   [TYPES.VERIFY_APEIRON_ACCOUNT_BY_WALLET_ADDRESS]: VerifyApeironIntegrations,
+};
+
+const FHENIX_INTEGRATIONS = {
+  [TYPES.VERIFY_FHENIX_ACTIVE_WALLET]: VerifyFhenixIntegrations,
+  [TYPES.VERIFY_FHENIX_CONTRACTS_CREATED]: VerifyFhenixIntegrations,
+  [TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE]: VerifyFhenixIntegrations,
+  [TYPES.VERIFY_FHENIX_FAUCET_INTERACTION]: VerifyFhenixIntegrations,
 };
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
@@ -50,4 +58,5 @@ export const CONFIG_COMPONENTS = {
   [TYPES.VERIFY_MARKETSFLARE_TRIAL]: VerifyMarketsFlareTrial,
   [TYPES.VERIFY_GITCOIN_PASSPORT_SCORE]: GitcoinPassportComponent,
   ...APEIRON_INTEGRATIONS,
+  ...FHENIX_INTEGRATIONS,
 };
