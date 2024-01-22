@@ -39,6 +39,7 @@ export const TYPES = {
   MIGRATE_ORIGIN_USERS: "migrate_origin_users",
   REFERRAL: "referral",
   VERIFY_MARKETSFLARE_TRIAL: "verify_marketsflare_trial",
+  VERIFY_GITCOIN_PASSPORT_SCORE: "verify_gitcoin_passport_score",
   ...APEIRON_TYPES,
   ...FHENIX_TYPES,
 };
@@ -416,6 +417,7 @@ const APEIRON_INTEGRATIONS = [
   },
 ];
 
+
 const FHENIX_INTEGRATIONS = [
   {
     label: "Verify Fhenix Wallet Gas Usage",
@@ -434,6 +436,7 @@ const FHENIX_INTEGRATIONS = [
     value: TYPES.VERIFY_FHENIX_ACTIVE_WALLET,
   },
 ];
+export const POKT_ORG_ID = "89444950095167649";
 
 export const CUSTOM_INTEGRATIONS = {
   // LIFI

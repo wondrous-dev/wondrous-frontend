@@ -3,34 +3,41 @@ import { IndexContainer, Label } from "./styles";
 import TextField from "../../Shared/TextField";
 import { TYPES } from "utils/constants";
 
-const YoutubeLikeText = ({ handleOnChange, value, error }) => (
+const TextInputStyle = {
+  width: "50%",
+};
+
+const GitcoinPassportScore = ({ handleOnChange, value, errors }) => (
   <>
     <Label>Question/Prompt</Label>
     <TextField
-      placeholder="Enter prompt here (Eg. Go to this link to check out our mission + vision)"
+      placeholder="Enter prompt here"
       value={value?.prompt || ""}
       onChange={(value) => handleOnChange("prompt", value)}
       multiline={false}
-      error={error?.prompt}
+      error={errors?.prompt}
     />
-    <Label>Link to visit</Label>
+    <Label>Verify that a user's Gitcoin Passport Score is above this threshold</Label>
     <TextField
-      placeholder="Please enter the url"
-      value={value.linkClickUrl || ""}
-      onChange={(value) => handleOnChange("linkClickUrl", value)}
+      placeholder="Please enter the minimum score threshold"
+      value={value?.gitcoinPassportMinimumScoreThreshold}
+      error={errors?.gitcoinPassportMinimumScoreThreshold}
+      onChange={(value) => handleOnChange("gitcoinPassportMinimumScoreThreshold", value)}
       multiline={false}
-      error={error}
+      style={TextInputStyle}
+      type="number"
     />
   </>
 );
 
-const LinkClickComponent = ({ onChange, value, stepType, error }) => {
+const GitcoinPassportComponent = ({ onChange, value, stepType, error }) => {
   const handleOnChange = (key, val) => {
     onChange({
       ...value,
       [key]: val,
     });
   };
+
   return (
     <Grid
       gap="8px"
@@ -51,10 +58,10 @@ const LinkClickComponent = ({ onChange, value, stepType, error }) => {
           width: "100%",
         }}
       >
-        <YoutubeLikeText handleOnChange={handleOnChange} value={value} error={error?.additionalData?.linkClickUrl} />
+        <GitcoinPassportScore handleOnChange={handleOnChange} value={value} errors={error?.additionalData} />
       </Grid>
     </Grid>
   );
 };
 
-export default LinkClickComponent;
+export default GitcoinPassportComponent;
