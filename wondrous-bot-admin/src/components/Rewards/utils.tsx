@@ -160,6 +160,12 @@ export const handleAddPoap = ({ poapReward, setErrors, errors, handleOnRewardAdd
   handleToggle();
 };
 
+export const handleaddPDAItem = ({ type, handleToggle, handleOnRewardAdd }) => {
+  handleOnRewardAdd({
+    type,
+  });
+  handleToggle();
+};
 export const handleAddCmtyStoreItem = ({ setErrors, type, storeItem, handleToggle, errors, handleOnRewardAdd }) => {
   if (!storeItem) {
     setErrors({
@@ -174,7 +180,7 @@ export const handleAddCmtyStoreItem = ({ setErrors, type, storeItem, handleToggl
   });
   handleToggle();
 };
-export const useTokenRewardData = ({setAddPaymentMethod, shouldFetch = true}) => {
+export const useTokenRewardData = ({ setAddPaymentMethod, shouldFetch = true }) => {
   const { activeOrg } = useContext(GlobalContext);
 
   const [createPaymentMethod] = useMutation(CREATE_CMTY_PAYMENT_METHOD, {
@@ -183,12 +189,12 @@ export const useTokenRewardData = ({setAddPaymentMethod, shouldFetch = true}) =>
 
   const [getCmtyPaymentMethods, { data: getCmtyPaymentMethodsData }] = useLazyQuery(GET_CMTY_PAYMENT_METHODS_FOR_ORG, {
     onCompleted: (data) => {
-      if(!data?.getCmtyPaymentMethodsForOrg?.length) {
+      if (!data?.getCmtyPaymentMethodsForOrg?.length) {
         setAddPaymentMethod(true);
       }
     },
-    onError:(err) => {
-      console.log(err,'err')
+    onError: (err) => {
+      console.log(err, "err");
     },
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
@@ -240,9 +246,9 @@ export const useDiscordRoleRewardData = () => {
     getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles?.length > 0
       ? getCmtyOrgDiscordRolesData?.getCmtyOrgDiscordRoles[0]?.roles
       : [];
-  const discordRoleOptions = discordRoles?.map((role) => ({ label: role.name,
-        value: role.id,
-      })).sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
+  const discordRoleOptions = discordRoles
+    ?.map((role) => ({ label: role.name, value: role.id }))
+    .sort((a, b) => (a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1));
 
   return {
     discordRoleOptions,
@@ -284,7 +290,6 @@ export const useAddRewardModalState = (defaultRewardType = PAYMENT_OPTIONS.DISCO
   });
 
   const resetStates = () => {
-
     //TODO : refactor this asap
     setIsRewardModalOpen(false);
     setDiscordRoleReward(null);

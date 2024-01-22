@@ -46,6 +46,7 @@ type InputQuestStep = {
     discordEventId?: string;
     minDuration?: number;
     usdValue?: number;
+    minimumThreshold?: number;
   };
 };
 
@@ -131,6 +132,10 @@ type OutputQuestStep = {
         prompt?: string;
         discordEventId?: string;
         minDuration?: number;
+      }
+    | {
+        prompt?: string;
+        minimumThreshold?: number;
       };
 };
 
@@ -250,6 +255,11 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       outputStep.value = step?.prompt;
     } else if (step.type === TYPES.REFERRAL) {
       outputStep.value = step?.prompt;
+    } else if (step.type === TYPES.VERIFY_GITCOIN_PASSPORT_SCORE) {
+      outputStep.value = {
+        prompt: step?.prompt,
+        minimumThreshold: step?.additionalData?.minimumThreshold,
+      };
     } else if (step.type === TYPES.DATA_COLLECTION) {
       const dataCollectionType = step?.additionalData?.dataCollectionType;
       outputStep.value = {

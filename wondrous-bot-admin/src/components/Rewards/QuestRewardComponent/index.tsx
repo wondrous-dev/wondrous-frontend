@@ -1,6 +1,6 @@
 import { Divider, Grid } from "@mui/material";
 import { RewardWrapper, RewardWrapperWithTextField, RewardsComponent } from "components/Rewards/RewardUtils";
-import { DiscordRoleIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, GatewayPDAIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import RewardModal from "../RewardModal";
 import { PoapImage } from "components/CreateTemplate/styles";
@@ -11,6 +11,7 @@ import {
   onPaymentMethodRewardRemove,
   handleStoreItemRewardRemove,
   handleOnRewardAdd,
+  handlePDARewardRemove,
 } from "./questUtils";
 import { useAddRewardModalState } from "components/Rewards/utils";
 import { PAYMENT_OPTIONS } from "../constants";
@@ -155,6 +156,12 @@ const QuestRewardComponent = ({
         return <RewardWrapper Icon={StoreItemRewardIcon} text={reward?.storeItem?.name} />;
       },
       handleOnRemove: (reward) => handleStoreItemRewardRemove({ reward, setQuestSettings }),
+    },
+    [PAYMENT_OPTIONS.PDA]: {
+      Component: ({ reward }) => {
+        return <RewardWrapper Icon={GatewayPDAIcon} text={"Citizen PDA"} />;
+      },
+      handleOnRemove: (reward) => handlePDARewardRemove({ reward, setQuestSettings }),
     },
   };
   const pointReward = rewards.filter((reward) => reward?.type === "points")[0];

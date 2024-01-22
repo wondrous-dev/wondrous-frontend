@@ -38,6 +38,10 @@ export const COMPONENT_OPTIONS = [
     value: TYPES.TWEET_WITH_PHRASE,
   },
   {
+    label: "Verify Gitcoin Passport Score",
+    value: TYPES.VERIFY_GITCOIN_PASSPORT_SCORE,
+  },
+  {
     label: "Vote On Snapshot Proposal",
     value: TYPES.SNAPSHOT_PROPOSAL_VOTE,
   },
