@@ -248,6 +248,9 @@ const ReferralsList = ({ data, refetch, fetchMore, loading }) => {
       }}
     >
       <TableComponent
+        tableProps={{
+          "data-tour": "tutorial-referrals-table",
+        }}
         data={tableItems}
         emptyStateComponent={() => (
           <TableCell colSpan={headers?.length}>

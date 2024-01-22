@@ -70,7 +70,7 @@ const StoreItemsList = ({ data }) => {
                   <CardHoverWrapper
                     onClick={() => navigate(`/store/items/${item.id}`)}
                     flex={1}
-                    data-tour={idx === 0 ? "tutorial-quest-card" : ""}
+                    data-tour={`tutorial-store-items-page-store-item-${idx}`}
                     key={item.id}
                     flexBasis={{
                       xs: "45%",

@@ -42,6 +42,7 @@ const ProductImage = ({ setStoreItemData, storeItemData }) => {
       {storeItemData?.mediaUploads?.map((attachment, attachmentIdx) => {
         return (
           <ImageListItem
+            data-tour="tutorial-store-item-image"
             key={`attachment-${attachmentIdx}`}
             sx={{
               position: "relative",

@@ -1,6 +1,20 @@
 import { verifyIsImportedToken } from "utils/common";
 import { PAYMENT_OPTIONS } from "../constants";
 
+export const handlePDARewardRemove = ({ reward, setQuestSettings }) => {
+  setQuestSettings((prev) => {
+    const newRewards = prev.rewards.filter((r) => {
+      if (r.type === PAYMENT_OPTIONS.PDA) {
+        return false;
+      }
+      return true;
+    });
+    return {
+      ...prev,
+      rewards: newRewards,
+    };
+  });
+};
 export const handleDiscordRoleRewardRemove = ({ reward, setQuestSettings }) => {
   setQuestSettings((prev) => {
     const newRewards = prev.rewards.filter((r) => {

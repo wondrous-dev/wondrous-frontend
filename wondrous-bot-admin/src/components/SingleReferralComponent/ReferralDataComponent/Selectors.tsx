@@ -80,7 +80,7 @@ const SelectorsComponent = ({
   if (!typeConfig) return null;
 
   return (
-    <Grid display="flex" flexDirection="column" gap="12px">
+    <Grid display="flex" flexDirection="column" gap="12px" data-tour="tutorial-entity-selector">
       <Label fontWeight={600}>{typeConfig?.label}</Label>
       {!values?.length ? (
         <Box display="flex" gap="14px" alignItems="center">

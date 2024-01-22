@@ -1,6 +1,6 @@
 import { Divider, Grid } from "@mui/material";
 import { RewardWrapper, RewardWrapperWithTextField, RewardsComponent } from "components/Rewards/RewardUtils";
-import { DiscordRoleIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import { DiscordRoleIcon, GatewayPDAIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import RewardModal from "../RewardModal";
 import { PoapImage } from "components/CreateTemplate/styles";
@@ -11,6 +11,7 @@ import {
   onPaymentMethodRewardRemove,
   handleStoreItemRewardRemove,
   handleOnRewardAdd,
+  handlePDARewardRemove,
 } from "./questUtils";
 import { useAddRewardModalState } from "components/Rewards/utils";
 import { PAYMENT_OPTIONS } from "../constants";
@@ -27,13 +28,13 @@ const QuestRewardComponent = ({
   hasReferralStep: boolean;
 }) => {
   const rewardModalState = useAddRewardModalState();
-  const { setIsRewardModalOpen,resetStates } = rewardModalState;
+  const { setIsRewardModalOpen, resetStates } = rewardModalState;
 
   const { isOpen: isTourOpen, setCurrentStep, setSteps, steps } = useTour();
 
   useEffect(() => {
     if (isTourOpen) {
-      const newSteps = steps.map((step: any) => {
+      const newSteps = steps?.map((step: any) => {
         if (step.id === "tutorial-quest-rewards") {
           return {
             ...step,
@@ -47,20 +48,11 @@ const QuestRewardComponent = ({
           return {
             ...step,
             handleNextAction: () => {
+              step.handleNextAction?.();
               setIsRewardModalOpen(false);
-              setCurrentStep((prev) => prev + 1);
             },
             handlePrevAction: () => {
               setIsRewardModalOpen(false);
-              setCurrentStep((prev) => prev - 1);
-            },
-          };
-        }
-        if (step.id === "tutorial-activate-quest") {
-          return {
-            ...step,
-            handlePrevAction: () => {
-              setIsRewardModalOpen(true);
               setCurrentStep((prev) => prev - 1);
             },
           };
@@ -72,7 +64,7 @@ const QuestRewardComponent = ({
   }, [isTourOpen]);
 
   const handleToggleModal = () => {
-    resetStates()
+    resetStates();
     if (isTourOpen) {
       setCurrentStep((prev) => prev + 1);
     }
@@ -165,16 +157,22 @@ const QuestRewardComponent = ({
       },
       handleOnRemove: (reward) => handleStoreItemRewardRemove({ reward, setQuestSettings }),
     },
+    [PAYMENT_OPTIONS.PDA]: {
+      Component: ({ reward }) => {
+        return <RewardWrapper Icon={GatewayPDAIcon} text={"Citizen PDA"} />;
+      },
+      handleOnRemove: (reward) => handlePDARewardRemove({ reward, setQuestSettings }),
+    },
   };
   const pointReward = rewards.filter((reward) => reward?.type === "points")[0];
   const otherRewards = rewards.filter((reward) => reward?.type !== "points");
 
   const handleOpenRewardModal = () => {
-    if(isTourOpen) {
+    if (isTourOpen) {
       setCurrentStep((prev) => prev + 1);
     }
-    setIsRewardModalOpen(true)
-  }
+    setIsRewardModalOpen(true);
+  };
 
   return (
     <>

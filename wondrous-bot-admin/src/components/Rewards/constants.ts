@@ -10,4 +10,5 @@ export const PAYMENT_OPTIONS = {
   POAP: "poap",
   COMMUNITY_BADGE: "COMMUNITY_BADGE",
   CMTY_STORE_ITEM: "cmty_store_item",
+  PDA: "pda",
 };

@@ -17,6 +17,8 @@ import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { GET_TELEGRAM_CONFIG_FOR_ORG } from "graphql/queries/telegram";
 import { getPlan } from "utils/common";
 import GoogleTag from "components/GoogleTag";
+import HomeTutorial from "components/TutorialComponent/Tutorials/HomeTutorial";
+import { TourDataContext } from "utils/context";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -50,7 +52,7 @@ const CardsComponent = ({ cards }) => {
       padding={{
         xs: "14px",
         md: "42px 84px",
-        lg: "42px"
+        lg: "42px",
       }}
       direction={{
         xs: "column",
@@ -80,13 +82,22 @@ const CardsComponent = ({ cards }) => {
                 marginTop: "-1px",
                 width: "100%",
                 maxHeight: "100%",
-                overflow: "hidden"
+                overflow: "hidden",
               }}
               src={card.Icon}
             />
           </Box>
-          <Box display="flex" gap="14px" flexDirection="column" justifyContent="center" alignItems="center" paddingTop="24px">
-            <Typography {...typographyStyles} lineHeight="62px">{card.count}</Typography>
+          <Box
+            display="flex"
+            gap="14px"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            paddingTop="24px"
+          >
+            <Typography {...typographyStyles} lineHeight="62px">
+              {card.count}
+            </Typography>
             <Typography {...typographyStyles} letterSpacing="0.08em" fontSize="20px" fontWeight={600}>
               {card.title}
             </Typography>
@@ -118,6 +129,7 @@ const HomePage = () => {
     loading: isDiscordConfigLoading,
   } = useQuery(GET_CMTY_ORG_DISCORD_CONFIG, {
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
     variables: {
       orgId: activeOrg?.id,
     },
@@ -222,78 +234,82 @@ const HomePage = () => {
     !!orgDiscordConfig?.getCmtyOrgDiscordConfig?.id || !!telegramConfigData?.getTelegramConfigForOrg?.chatId;
 
   return (
-    <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh" gap="24px">
-      <GoogleTag />
-      <AddBotModal open={shouldDisplayAddModal} onClose={handleOnBotModalClose} />
-      <ConfigureNotificationsOnboardingModal
-        open={openDiscordNotificationModal}
-        onClose={() => setOpenDiscordNotificationModal(false)}
-        orgId={activeOrg?.id}
-      />
-      <Grid flex="1" display="flex" justifyContent="center" alignItems="center" gap="14px" flexDirection="column">
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          border="2px solid #000000"
-          borderRadius="100%"
-          padding="20px"
-          position="relative"
-        >
-          <Box position="absolute" left="-30%" top="70%">
-            <StarIcon />
-          </Box>
-          <Box position="absolute" right="-30%" top="10%">
-            <StarIcon />
-          </Box>
-          <OrgProfilePicture
-            profilePicture={activeOrg?.profilePicture}
-            style={{
-              width: "64px",
-              height: "64px",
-              borderRadius: "100%",
-            }}
-          />
-        </Box>
+    <>
+      {isTelegramOrDiscordConnected ? <HomeTutorial /> : null}
+      <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh" gap="24px">
+        <GoogleTag />
 
-        <Typography fontFamily="Poppins" fontWeight={600} fontSize="28px" color="#06040A">
-          {activeOrg?.name}
-        </Typography>
-        <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" lineHeight="14px" color="black">
-          {loading ? null : `${totalSubmissions} Submissions Received`}
-        </Typography>
-        <SharedSecondaryButton onClick={handleNavigationToNewQuest}>New Quest</SharedSecondaryButton>
-      </Grid>
-      <Grid
-        flex="1"
-        sx={{
-          backgroundImage: "url(/images/home-bg.png)",
-          backgroundPosition: "bottom",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-        }}
-        position="relative"
-      >
-        {!isTelegramOrDiscordConnected && !loading && (
-          <Grid container justifyContent="center" alignItems="center" marginTop="40px">
-            <ConnectDiscordButton orgId={activeOrg?.id} />
-          </Grid>
-        )}
-        {loading && (
-          <Grid container justifyContent="center" alignItems="center" position="absolute">
-            <CircularProgress
-              size={60}
-              thickness={5}
-              sx={{
-                color: "#2A8D5C",
-                animationDuration: "10000ms",
+        <AddBotModal open={shouldDisplayAddModal} onClose={handleOnBotModalClose} />
+        <ConfigureNotificationsOnboardingModal
+          open={openDiscordNotificationModal}
+          onClose={() => setOpenDiscordNotificationModal(false)}
+          orgId={activeOrg?.id}
+        />
+        <Grid flex="1" display="flex" justifyContent="center" alignItems="center" gap="14px" flexDirection="column">
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            border="2px solid #000000"
+            borderRadius="100%"
+            padding="20px"
+            position="relative"
+          >
+            <Box position="absolute" left="-30%" top="70%">
+              <StarIcon />
+            </Box>
+            <Box position="absolute" right="-30%" top="10%">
+              <StarIcon />
+            </Box>
+            <OrgProfilePicture
+              profilePicture={activeOrg?.profilePicture}
+              style={{
+                width: "64px",
+                height: "64px",
+                borderRadius: "100%",
               }}
             />
-          </Grid>
-        )}
-        {!loading && isTelegramOrDiscordConnected && <CardsComponent cards={CARDS_CONFIG} />}
+          </Box>
+
+          <Typography fontFamily="Poppins" fontWeight={600} fontSize="28px" color="#06040A">
+            {activeOrg?.name}
+          </Typography>
+          <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" lineHeight="14px" color="black">
+            {loading ? null : `${totalSubmissions} Submissions Received`}
+          </Typography>
+          <SharedSecondaryButton onClick={handleNavigationToNewQuest}>New Quest</SharedSecondaryButton>
+        </Grid>
+        <Grid
+          flex="1"
+          sx={{
+            backgroundImage: "url(/images/home-bg.png)",
+            backgroundPosition: "bottom",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+          position="relative"
+        >
+          {!isTelegramOrDiscordConnected && !loading && (
+            <Grid container justifyContent="center" alignItems="center" marginTop="40px">
+              <ConnectDiscordButton orgId={activeOrg?.id} />
+            </Grid>
+          )}
+          {loading && (
+            <Grid container justifyContent="center" alignItems="center" position="absolute">
+              <CircularProgress
+                size={60}
+                thickness={5}
+                sx={{
+                  color: "#2A8D5C",
+                  animationDuration: "10000ms",
+                }}
+              />
+            </Grid>
+          )}
+          {!loading && isTelegramOrDiscordConnected && <CardsComponent cards={CARDS_CONFIG} />}
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 

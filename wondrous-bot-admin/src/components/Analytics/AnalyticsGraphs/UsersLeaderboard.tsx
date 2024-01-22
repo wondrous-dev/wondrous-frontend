@@ -89,9 +89,26 @@ const UsersLeaderboard = () => {
   return (
     <>
       {data?.getCmtyUsersLeaderboard?.length ? (
-        <TableComponent data={tableConfig} headers={headers} title="Top Members" />
+        <TableComponent
+          tableTitleProps={{
+            "data-tour": "tutorial-analytics-users-leaderboard-title",
+          }}
+          tableProps={{
+            "data-tour": "tutorial-analytics-users-leaderboard-table",
+          }}
+          data={tableConfig}
+          headers={headers}
+          title="Top Members"
+        />
       ) : (
-        <EmptyState type={EMPTY_STATE_TYPES.MEMBERS} />
+        <Box width="100%" height="100%" data-tour="tutorial-analytics-users-leaderboard-table">
+          <EmptyState
+            sx={{
+              "data-tour": "tutorial-analytics-users-leaderboard-title",
+            }}
+            type={EMPTY_STATE_TYPES.MEMBERS}
+          />
+        </Box>
       )}
       {hasMore && (
         <SharedSecondaryButton
@@ -101,7 +118,7 @@ const UsersLeaderboard = () => {
           }}
           onClick={handleFetchMore}
         >
-          {loading ? <Spinner /> : 'Show more'}
+          {loading ? <Spinner /> : "Show more"}
         </SharedSecondaryButton>
       )}
     </>

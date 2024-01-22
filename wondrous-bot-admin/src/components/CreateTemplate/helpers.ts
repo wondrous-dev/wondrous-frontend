@@ -1,6 +1,6 @@
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { getPathArray, toCent } from "utils/common";
-import { QUEST_STATUSES, TYPES, APEIRON_TYPES } from "utils/constants";
+import { QUEST_STATUSES, TYPES, APEIRON_TYPES, FHENIX_FAUCET_ADDRESS } from "utils/constants";
 import { mapAnswersToOptions, reduceConditionalRewards } from "./utils";
 import { ValidationError } from "yup";
 import { set } from "lodash";
@@ -109,6 +109,24 @@ const processSteps = (steps) =>
       };
     } else if (next.type === TYPES.VERIFY_MARKETSFLARE_TRIAL || Object.values(APEIRON_TYPES).includes(next.type)) {
       step.prompt = next.value;
+    } else if (
+      next.type === TYPES.VERIFY_FHENIX_ACTIVE_WALLET ||
+      next.type === TYPES.VERIFY_FHENIX_CONTRACTS_CREATED ||
+      next.type === TYPES.VERIFY_FHENIX_FAUCET_INTERACTION ||
+      next.type === TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE
+    ) {
+      step.prompt = next.value?.prompt;
+      step["additionalData"] = {
+        chain: "fhenix",
+      };
+      if (next.type === TYPES.VERIFY_FHENIX_FAUCET_INTERACTION) {
+        step["additionalData"]["contractAddress"] = FHENIX_FAUCET_ADDRESS;
+      }
+    } else if (next.type === TYPES.VERIFY_GITCOIN_PASSPORT_SCORE) {
+      step.prompt = next.value?.prompt;
+      step["additionalData"] = {
+        gitcoinPassportMinimumScoreThreshold: Number(next.value?.gitcoinPassportMinimumScoreThreshold),
+      };
     }
     return [...acc, step];
   }, []);
@@ -200,6 +218,10 @@ const mapReward = (reward) => {
     return {
       type: reward?.type,
       storeItemId: reward?.storeItem?.id,
+    };
+  } else if (reward?.type === PAYMENT_OPTIONS.PDA) {
+    return {
+      type: reward?.type,
     };
   }
 };

@@ -30,7 +30,7 @@ export const Label = styled(Typography)`
     font-weight: ${({ fontWeight = 700 }) => fontWeight};
     font-size: ${({ fontSize = "14px" }) => fontSize};
     line-height: 15px;
-    min-width: ${({minWidth = "150px"}) => minWidth};
+    min-width: ${({ minWidth = "150px" }) => minWidth};
     letter-spacing: 0.01em;
     text-align: left;
     color: ${({ color = "#626262" }) => color};
@@ -124,7 +124,18 @@ export const RewardHeaderText = styled(Typography)`
     font-size: 13px;
     line-height: 15px;
     color: #626262;
-    white-space: nowrap;
+    min-width: 80px;
+  }
+`;
+
+export const RewardText = styled(Typography)`
+  && {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    color: black;
+    font-size: 13px;
+    line-height: 20px;
     min-width: 80px;
   }
 `;

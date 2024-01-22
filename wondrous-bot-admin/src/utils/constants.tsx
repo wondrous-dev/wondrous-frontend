@@ -5,6 +5,13 @@ export const APEIRON_TYPES = {
   VERIFY_APEIRON_10_MINS_PLAYED: "verify_apeiron_10_mins_played",
 };
 
+export const FHENIX_TYPES = {
+  VERIFY_FHENIX_WALLET_GAS_USAGE: "gas_usage",
+  VERIFY_FHENIX_CONTRACTS_CREATED: "contract_created",
+  VERIFY_FHENIX_FAUCET_INTERACTION: "contract_interaction",
+  VERIFY_FHENIX_ACTIVE_WALLET: "active_wallet",
+};
+
 export const APEIRON_ORG_ID = "98989259425317451";
 export const TYPES = {
   TEXT_FIELD: "text",
@@ -32,7 +39,9 @@ export const TYPES = {
   MIGRATE_ORIGIN_USERS: "migrate_origin_users",
   REFERRAL: "referral",
   VERIFY_MARKETSFLARE_TRIAL: "verify_marketsflare_trial",
+  VERIFY_GITCOIN_PASSPORT_SCORE: "verify_gitcoin_passport_score",
   ...APEIRON_TYPES,
+  ...FHENIX_TYPES,
 };
 
 export const CONFIG = [
@@ -118,7 +127,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/telegram/start-quest/:id",
   "/telegram/connect",
   "/community-badge/claim",
-  "/referral-campaign"
+  "/referral-campaign",
 ];
 
 export const BG_TYPES = {
@@ -350,7 +359,18 @@ export const TUTORIALS = {
   COMMUNITIES_HOME_GUIDE: "communities_home_guide",
   COMMUNITIES_QUESTS_PAGE_GUIDE: "communities_quests_page_guide",
   COMMUNITIES_QUEST: "communities_quest",
-  FIRST_CREATED_QUEST: "first_created_quest"
+  FIRST_CREATED_QUEST: "first_created_quest",
+  POST_CREATE_QUEST: "post_create_quest",
+  POST_CREATE_QUEST_QUESTS_PAGE_GUIDE: "post_create_quest_quests_page_guide",
+  REFERRAL_PAGE_GUIDE: "referral_page_guide",
+  REFERRAL_CREATE_PAGE_GUIDE: "referral_create_page_guide",
+  POST_CREATE_REFERRAL_PAGE_GUIDE: "post_create_referral_page_guide",
+  MEMBERS_PAGE_GUIDE: "members_page_guide",
+  LEVELS_PAGE_GUIDE: "levels_page_guide",
+  ANALYTICS_PAGE_GUIDE: "analytics_page_guide",
+  STORE_ITEMS_PAGE_GUIDE: "store_items_page_guide",
+  STORE_ITEMS_CREATE_PAGE_GUIDE: "store_items_create_page_guide",
+  STORE_ITEMS_POST_CREATE_PAGE_GUIDE: "store_items_post_create_page_guide",
 };
 
 export const DEFAULT_BANNER_IMAGES = {
@@ -397,6 +417,27 @@ const APEIRON_INTEGRATIONS = [
   },
 ];
 
+
+const FHENIX_INTEGRATIONS = [
+  {
+    label: "Verify Fhenix Wallet Gas Usage",
+    value: TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE,
+  },
+  {
+    label: "Verify Fhenix Wallet Faucet Interaction",
+    value: TYPES.VERIFY_FHENIX_FAUCET_INTERACTION,
+  },
+  {
+    label: "Verify Fhenix Wallet Contracts Created",
+    value: TYPES.VERIFY_FHENIX_CONTRACTS_CREATED,
+  },
+  {
+    label: "Verify Fhenix Wallet Active",
+    value: TYPES.VERIFY_FHENIX_ACTIVE_WALLET,
+  },
+];
+export const POKT_ORG_ID = "89444950095167649";
+
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
   "58318954576216128": {
@@ -430,8 +471,13 @@ export const CUSTOM_INTEGRATIONS = {
     name: "Apeiron",
     integrations: APEIRON_INTEGRATIONS,
   },
+  "89444950095167649": {
+    name: "Fhenix",
+    integrations: FHENIX_INTEGRATIONS,
+  },
 };
 
+export const FHENIX_FAUCET_ADDRESS = "0x42B1909dbE62ad89a86095B6F7AC74690Bd8449C";
 export const OPTION_TEXT_LIMIT = 250;
 
 export const STORE_ITEM_TYPES = {
@@ -481,15 +527,15 @@ export const NFT_TYPES = {
 };
 
 export const REFERRAL_STATUSES = {
-  ACTIVE: 'active',
-  INACTIVE: 'inactive'
-}
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+};
 
 export const REFERRAL_REWARD_SCHEME = {
   REFERRER: "referrer",
   REFERRED: "referred",
   TWO_WAY: "two_way",
-}
+};
 
 export const QUALIFYING_ACTION_TYPES = {
   PURCHASE: "purchase",
@@ -497,10 +543,4 @@ export const QUALIFYING_ACTION_TYPES = {
   ANY_QUEST: "any_quest",
 };
 
-export const LOCKED_PATHS = [
-  '/store',
-  '/store/items/create',
-  '/store/items/:id',
-  '/analytics'
-];
-
+export const LOCKED_PATHS = ["/store", "/store/items/create", "/store/items/:id", "/analytics"];

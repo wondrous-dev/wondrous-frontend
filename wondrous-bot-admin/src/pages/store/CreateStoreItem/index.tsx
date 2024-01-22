@@ -1,3 +1,4 @@
+import { useTour } from "@reactour/tour";
 import CreateStoreItem from "components/CreateStoreItem";
 import StoreModule from "components/ModulesActivation/StoreModule";
 import PageHeader from "components/PageHeader";
@@ -14,7 +15,7 @@ const CreateStoreItemPage = () => {
 
   const { isActivateModuleModalOpen, handleSuccess } = useStorePaywall();
   const setRefValue = (value) => (headerActionsRef.current = value);
-
+  const { isOpen, setCurrentStep } = useTour();
   return (
     <>
       {isActivateModuleModalOpen ? <StoreModule onSuccess={handleSuccess} onCancel={() => navigate("/")} /> : null}
@@ -29,7 +30,13 @@ const CreateStoreItemPage = () => {
           withBackButton
           title="Add Store Item"
           renderActions={() => (
-            <SharedSecondaryButton onClick={() => headerActionsRef.current?.handleSave()}>
+            <SharedSecondaryButton
+              data-tour="tutorial-store-item-save"
+              onClick={() => {
+                if (isOpen) setCurrentStep((prev) => prev + 1);
+                return headerActionsRef.current?.handleSave();
+              }}
+            >
               Save Store Item
             </SharedSecondaryButton>
           )}

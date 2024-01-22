@@ -9,7 +9,7 @@ import { useMemo } from "react";
 
 export const NameComponent = ({ name }) => {
   return (
-    <TextWrapper>
+    <TextWrapper data-tour="member-analytics-modal-username">
       <CommonTypography color="black" fontFamily="Poppins" fontSize="13px" fontWeight="600">
         {name}
       </CommonTypography>

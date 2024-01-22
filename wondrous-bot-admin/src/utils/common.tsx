@@ -54,9 +54,11 @@ export function getPathArray(path) {
 }
 
 export function convertPath(path) {
-  return path?.replace(/\[|\]\.?/g, '.').replace(/""/g, "").replace(/^\./, '');
+  return path
+    ?.replace(/\[|\]\.?/g, ".")
+    .replace(/""/g, "")
+    .replace(/^\./, "");
 }
-
 
 export const matchRoute = (pathname, options) => {
   return !!options.find((route) => {
@@ -141,6 +143,12 @@ export const constructRewards = ({ rewards }) => {
       return {
         type: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
         value: reward?.storeItem?.name || null,
+      };
+    }
+    if (reward.type === PAYMENT_OPTIONS.PDA) {
+      return {
+        type: PAYMENT_OPTIONS.PDA,
+        value: "Citizen PDA",
       };
     }
   });
@@ -238,4 +246,11 @@ export const getPlan = (plan) => {
   if (plan === "hobby" || plan === "hobby_annual") return PricingOptionsTitle.Hobby;
   if (plan === "premium" || plan === "premium_annual") return PricingOptionsTitle.Premium;
   if (plan === "ecosystem" || plan === "ecoosystem_annual") return PricingOptionsTitle.Ecosystem;
+};
+
+export const getNodePosition = (selector) => {
+  const element = document.querySelector(selector);
+  const x = element?.getBoundingClientRect().x;
+  const y = element?.getBoundingClientRect().y;
+  return { x, y };
 };
