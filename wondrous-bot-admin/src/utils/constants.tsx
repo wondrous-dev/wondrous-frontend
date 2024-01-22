@@ -5,6 +5,13 @@ export const APEIRON_TYPES = {
   VERIFY_APEIRON_10_MINS_PLAYED: "verify_apeiron_10_mins_played",
 };
 
+export const FHENIX_TYPES = {
+  VERIFY_FHENIX_WALLET_GAS_USAGE: "verify_fhenix_wallet_gas_usage",
+  VERIFY_FHENIX_CONTRACTS_CREATED: "verify_fhenix_contracts_created",
+  VERIFY_FHENIX_FAUCET_INTERACTION: "verify_fhenix_faucet_interaction",
+  VERIFY_FHENIX_ACTIVE_WALLET: "verify_fhenix_active_wallet",
+};
+
 export const APEIRON_ORG_ID = "98989259425317451";
 export const TYPES = {
   TEXT_FIELD: "text",
@@ -33,6 +40,7 @@ export const TYPES = {
   REFERRAL: "referral",
   VERIFY_MARKETSFLARE_TRIAL: "verify_marketsflare_trial",
   ...APEIRON_TYPES,
+  ...FHENIX_TYPES,
 };
 
 export const CONFIG = [
@@ -118,7 +126,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/telegram/start-quest/:id",
   "/telegram/connect",
   "/community-badge/claim",
-  "/referral-campaign"
+  "/referral-campaign",
 ];
 
 export const BG_TYPES = {
@@ -408,6 +416,25 @@ const APEIRON_INTEGRATIONS = [
   },
 ];
 
+const FHENIX_INTEGRATIONS = [
+  {
+    label: "Verify Fhenix Wallet Gas Usage",
+    value: TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE,
+  },
+  {
+    label: "Verify Fhenix Wallet Faucet Interaction",
+    value: TYPES.VERIFY_FHENIX_FAUCET_INTERACTION,
+  },
+  {
+    label: "Verify Fhenix Wallet Contracts Created",
+    value: TYPES.VERIFY_FHENIX_CONTRACTS_CREATED,
+  },
+  {
+    label: "Verify Fhenix Wallet Active",
+    value: TYPES.VERIFY_FHENIX_ACTIVE_WALLET,
+  },
+];
+
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
   "58318954576216128": {
@@ -440,6 +467,10 @@ export const CUSTOM_INTEGRATIONS = {
   "98989259425317451": {
     name: "Apeiron",
     integrations: APEIRON_INTEGRATIONS,
+  },
+  "105517885016768513": {
+    name: "Fhenix",
+    integrations: FHENIX_INTEGRATIONS,
   },
 };
 
@@ -492,15 +523,15 @@ export const NFT_TYPES = {
 };
 
 export const REFERRAL_STATUSES = {
-  ACTIVE: 'active',
-  INACTIVE: 'inactive'
-}
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+};
 
 export const REFERRAL_REWARD_SCHEME = {
   REFERRER: "referrer",
   REFERRED: "referred",
   TWO_WAY: "two_way",
-}
+};
 
 export const QUALIFYING_ACTION_TYPES = {
   PURCHASE: "purchase",
@@ -508,10 +539,4 @@ export const QUALIFYING_ACTION_TYPES = {
   ANY_QUEST: "any_quest",
 };
 
-export const LOCKED_PATHS = [
-  '/store',
-  '/store/items/create',
-  '/store/items/:id',
-  '/analytics'
-];
-
+export const LOCKED_PATHS = ["/store", "/store/items/create", "/store/items/:id", "/analytics"];
