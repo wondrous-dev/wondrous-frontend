@@ -5,6 +5,7 @@ import { useMutation } from "@apollo/client";
 import { GOOGLE_LOGIN_MUTATION } from "graphql/mutations";
 import { storeAuthHeader } from "components/Auth";
 import { useNavigate } from "react-router-dom";
+import { getBaseUrl } from "utils/common";
 const GoogleOAuthButton = ({ isSignup = false }) => {
   const handleCompleted = async ({ token, user, callback }) => {
     await storeAuthHeader(token, user);
@@ -35,6 +36,7 @@ const GoogleOAuthButton = ({ isSignup = false }) => {
   const login = useGoogleLogin({
     flow: "auth-code",
     scope: "email",
+    redirect_uri:  `${getBaseUrl()}/oauth/google/callback`,
     onSuccess: (tokenResponse) => {
       const { code } = tokenResponse;
       signInUser({ variables: { code: code } });
