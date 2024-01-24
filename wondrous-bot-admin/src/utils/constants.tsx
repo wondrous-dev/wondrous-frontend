@@ -129,7 +129,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/community-badge/claim",
   "/referral-campaign",
   "/onboarding/plan-select",
-  '/onboarding/finalize'
+  "/onboarding/finalize",
 ];
 
 export const BG_TYPES = {
@@ -419,7 +419,6 @@ const APEIRON_INTEGRATIONS = [
   },
 ];
 
-
 const FHENIX_INTEGRATIONS = [
   {
     label: "Verify Fhenix Wallet Gas Usage",
@@ -438,7 +437,7 @@ const FHENIX_INTEGRATIONS = [
     value: TYPES.VERIFY_FHENIX_ACTIVE_WALLET,
   },
 ];
-export const POKT_ORG_ID = "89444950095167649";
+export const POKT_ORG_ID = "110964182503916540";
 
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
@@ -473,7 +472,7 @@ export const CUSTOM_INTEGRATIONS = {
     name: "Apeiron",
     integrations: APEIRON_INTEGRATIONS,
   },
-  "89444950095167649": {
+  "110521236745880560": {
     name: "Fhenix",
     integrations: FHENIX_INTEGRATIONS,
   },
