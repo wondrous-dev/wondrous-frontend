@@ -12,7 +12,7 @@ const PlanSelectComponent = () => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } = useAlerts();
   const { activeOrg } = useGlobalContext();
 
-  const [getCheckoutLink, {loading}] = useLazyQuery(GET_CHECKOUT_LINK, {
+  const [getCheckoutLink, { loading }] = useLazyQuery(GET_CHECKOUT_LINK, {
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       const url = data?.getCheckoutLink?.url;
@@ -37,8 +37,7 @@ const PlanSelectComponent = () => {
 
   const handlePlanStart = () => navigate("/onboarding/finalize");
 
-  const talkToSalesLink =
-    "https://docs.google.com/forms/d/e/1FAIpQLSfUToCTDAfOT3EU5pGvgigcMyNyWiFdRuQzrTtZ8yS7ox4Y-Q/viewform";
+  const talkToSalesLink = "https://calendly.com/androswong418";
   const config = [
     {
       title: PricingOptionsTitle.Hobby,
@@ -73,7 +72,6 @@ const PlanSelectComponent = () => {
   ];
 
   const navigate = useNavigate();
-
 
   return (
     <SignupAuthLayout>
