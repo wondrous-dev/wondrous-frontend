@@ -240,6 +240,7 @@ export const QuestFragment = gql`
         discordEventId
         minDuration
         usdValue
+        gitcoinPassportMinimumScoreThreshold
       }
     }
   }

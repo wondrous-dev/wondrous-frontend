@@ -115,7 +115,7 @@ const processSteps = (steps) =>
       next.type === TYPES.VERIFY_FHENIX_FAUCET_INTERACTION ||
       next.type === TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE
     ) {
-      step.prompt = next.value?.prompt;
+      step.prompt = next.value;
       step["additionalData"] = {
         chain: "fhenix",
       };

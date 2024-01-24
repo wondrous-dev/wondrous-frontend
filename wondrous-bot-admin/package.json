@@ -21,6 +21,7 @@
     "@mui/lab": "^5.0.0-alpha.152",
     "@mui/material": "^5.12.1",
     "@mui/styled-engine-sc": "^5.11.11",
+    "@react-oauth/google": "^0.12.1",
     "@reactour/tour": "^3.4.0",
     "@vercel/node": "^2.14.2",
     "@web3-react/coinbase-wallet": "^8.2.0",

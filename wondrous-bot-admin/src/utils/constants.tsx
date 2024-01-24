@@ -128,6 +128,8 @@ export const PAGES_WITHOUT_HEADER = [
   "/telegram/connect",
   "/community-badge/claim",
   "/referral-campaign",
+  "/onboarding/plan-select",
+  '/onboarding/finalize'
 ];
 
 export const BG_TYPES = {
