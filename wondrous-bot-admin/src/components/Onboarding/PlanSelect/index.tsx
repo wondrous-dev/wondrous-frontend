@@ -37,7 +37,7 @@ const PlanSelectComponent = () => {
 
   const handlePlanStart = () => navigate("/onboarding/finalize");
 
-  const talkToSalesLink = "https://calendly.com/androswong418";
+  const talkToSalesLink = "https://wonderverse.com/talk-to-sales";
   const config = [
     {
       title: PricingOptionsTitle.Hobby,
