@@ -19,6 +19,8 @@ import { getPlan } from "utils/common";
 import GoogleTag from "components/GoogleTag";
 import HomeTutorial from "components/TutorialComponent/Tutorials/HomeTutorial";
 import { TourDataContext } from "utils/context";
+import PostHeaderGoogleTag from "components/GoogleTag/PostHeaderGoogleTag";
+import PostBodyGoogleTag from "components/GoogleTag/PostBodyGoogleTag";
 
 const typographyStyles = {
   fontFamily: "Poppins",
@@ -238,7 +240,8 @@ const HomePage = () => {
       {isTelegramOrDiscordConnected ? <HomeTutorial /> : null}
       <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh" gap="24px">
         <GoogleTag />
-
+        <PostHeaderGoogleTag />
+        <PostBodyGoogleTag />
         <AddBotModal open={shouldDisplayAddModal} onClose={handleOnBotModalClose} />
         <ConfigureNotificationsOnboardingModal
           open={openDiscordNotificationModal}
