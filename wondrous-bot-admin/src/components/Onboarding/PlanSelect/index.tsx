@@ -7,6 +7,8 @@ import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import { useLazyQuery } from "@apollo/client";
 import { GET_CHECKOUT_LINK } from "graphql/queries/subscription";
 import useAlerts, { useGlobalContext } from "utils/hooks";
+import PostHeaderGoogleTag from "components/GoogleTag/PostHeaderGoogleTag";
+import PostBodyGoogleTag from "components/GoogleTag/PostBodyGoogleTag";
 
 const PlanSelectComponent = () => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } = useAlerts();
@@ -75,6 +77,8 @@ const PlanSelectComponent = () => {
 
   return (
     <SignupAuthLayout>
+      <PostHeaderGoogleTag />
+      <PostBodyGoogleTag />
       <Grid
         display="flex"
         flexDirection="column"

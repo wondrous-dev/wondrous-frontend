@@ -6,6 +6,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { handleUserOnboardingRedirect } from "utils/common";
 import CollectCredentials from "./CollectCredentials";
 import MetaPixel from "components/MetaPixel";
+import PostHeaderGoogleTag from "components/GoogleTag/PostHeaderGoogleTag";
+import PostBodyGoogleTag from "components/GoogleTag/PostBodyGoogleTag";
 
 const SignupComponent = () => {
   const navigate = useNavigate();
@@ -28,6 +30,8 @@ const SignupComponent = () => {
 
   return (
     <SignupAuthLayout>
+      <PostHeaderGoogleTag />
+      <PostBodyGoogleTag />
       <MetaPixel />
       <Box display="flex" justifyContent="center" alignItems="center" height="100%" width="60%" flex="1">
         <Box display="flex" justifyContent="center" alignItems="center" padding="20px">

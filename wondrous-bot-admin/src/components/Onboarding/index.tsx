@@ -11,6 +11,8 @@ import GoogleTag from "components/GoogleTag";
 import Modal from "components/Shared/Modal";
 import { getBaseUrl } from "utils/common";
 import useAlerts from "utils/hooks";
+import PostHeaderGoogleTag from "components/GoogleTag/PostHeaderGoogleTag";
+import PostBodyGoogleTag from "components/GoogleTag/PostBodyGoogleTag";
 
 const DiscordClientID = import.meta.env.VITE_DISCORD_CLIENT_ID;
 
@@ -116,7 +118,8 @@ const OnboardingComponent = () => {
     <SignupAuthLayout>
       <MetaPixel />
       <GoogleTag />
-
+      <PostHeaderGoogleTag />
+      <PostBodyGoogleTag />
       <Modal noHeader open {...(isMobile ? {} : { maxWidth: 600 })}>
         <Box display="flex" flexDirection="column" gap="42px">
           <Box display="flex" gap="18px" flexDirection="column" justifyContent="center" alignItems="center">
