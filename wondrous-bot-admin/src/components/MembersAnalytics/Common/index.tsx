@@ -17,7 +17,7 @@ export const NameComponent = ({ name }) => {
   );
 };
 
-export const AddressComponent = ({ address }) => {
+export const AddressComponent = ({ address, sliceLen = 6 }) => {
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
 
   const handleClick = (e) => {
@@ -34,7 +34,7 @@ export const AddressComponent = ({ address }) => {
   return (
     <Box display="flex" gap="7px" alignItems="center">
       <TextWrapper>
-        <CommonTypography>{`${address.slice(0, 6)}...${address.slice(
+        <CommonTypography>{`${address.slice(0, sliceLen)}...${address.slice(
           address.length - 4,
           address.length
         )}`}</CommonTypography>

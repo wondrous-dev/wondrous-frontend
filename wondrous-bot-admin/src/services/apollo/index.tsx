@@ -101,6 +101,8 @@ const cache = new InMemoryCache({
         },
         getUserQuestSubmissions: offsetLimitPagination(["cmtyUserId", "orgId", "questId"]),
         getStoreItemPurchases: offsetLimitPagination(["cmtyUserId", "orgId", "storeItemId"]),
+        getCmtyUserBadges: offsetLimitPagination(["cmtyUserId", "orgId"]),
+        getCmtyUserPurchases: offsetLimitPagination(["cmtyUserId", "orgId"]),
       },
     },
   },

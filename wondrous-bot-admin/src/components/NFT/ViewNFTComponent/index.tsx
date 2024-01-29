@@ -18,6 +18,7 @@ export const ChainIcons = {
       src={Polygon}
     />
   ),
+  goerli: <Ethereum />
 };
 
 const ImageComponent = ({ src }) => (
