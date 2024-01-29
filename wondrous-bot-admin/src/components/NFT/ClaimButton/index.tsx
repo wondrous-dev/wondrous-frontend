@@ -37,14 +37,14 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
 
       const transaction = await contractInstance.claimBadge(1, BigInt(tokenId), nonce, signature);
       await transaction.wait();
-
       await linkTx({
         variables: {
           txHash: transaction.hash,
-          nftMetadataId,
+          signature,
           cmtyUserId,
         },
       });
+
       setSnackbarAlertMessage("Minting successful");
       setSnackbarAlertOpen(true);
       setSuccess(true);
@@ -95,7 +95,7 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, setSuccess, nftMetadata
       <SharedSecondaryButton onClick={handleOnClaimClick}>
         <>{isMinting ?<Spinner />: <>{address ? "Claim now" : "Connect wallet"}</>}</>
       </SharedSecondaryButton>
-      {isMinting && <Typography>Please don't close the webpage</Typography>}
+      {isMinting && <Typography color="black">Please don't close the webpage</Typography>}
       {isConnected ? (
         <ButtonBase onClick={() => open()} disabled={isMinting}>
           <Typography
