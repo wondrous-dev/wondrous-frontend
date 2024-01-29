@@ -107,9 +107,6 @@ const PlanSelectComponent = () => {
           >
             Select your plan
           </Typography>
-          <Typography color="white" fontWeight={500} fontSize={"15px"}>
-            Try one of our premium plans to experience our full suite of products or start for free.
-          </Typography>
         </Box>
         <Box
           display="flex"
