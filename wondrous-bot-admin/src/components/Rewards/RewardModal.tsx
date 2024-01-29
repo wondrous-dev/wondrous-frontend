@@ -1,6 +1,13 @@
 import { Grid } from "@mui/material";
 import { RewardModalFooterLeftComponent, RewardMethod, RewardMethodOptionButton } from "components/Rewards/RewardUtils";
-import { DiscordRoleIcon, NFTIcon, PoapIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import {
+  DiscordRoleIcon,
+  GatewayPDAIcon,
+  NFTIcon,
+  PoapIcon,
+  StoreItemRewardIcon,
+  TokensIcon,
+} from "components/Icons/Rewards";
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import Modal from "components/Shared/Modal";
 import { useContext, useMemo, useState } from "react";
@@ -12,11 +19,12 @@ import {
   handleAddPoap,
   handleAddTokenOnModal,
   handleNewDiscordRole,
+  handleaddPDAItem,
   useDiscordRoleRewardData,
 } from "./utils";
 import { PAYMENT_OPTIONS } from "./constants";
 import { getPlan } from "utils/common";
-
+import { POKT_ORG_ID } from "utils/constants";
 
 const RewardModal = ({
   handleRewardModalToggle,
@@ -30,11 +38,13 @@ const RewardModal = ({
     PAYMENT_OPTIONS.DISCORD_ROLE,
     PAYMENT_OPTIONS.COMMUNITY_BADGE,
     PAYMENT_OPTIONS.CMTY_STORE_ITEM,
+    PAYMENT_OPTIONS.PDA,
   ],
   title = "Add reward to quest",
 }) => {
   const { activeOrg } = useContext(GlobalContext);
-  const { isEcosystemPlan, isPremiumPlan, plan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = useSubscriptionPaywall();
+  const { isEcosystemPlan, isPremiumPlan, plan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } =
+    useSubscriptionPaywall();
 
   const { discordRoleOptions, discordRoleData } = useDiscordRoleRewardData();
   const [errors, setErrors] = useState(null);
@@ -113,7 +123,17 @@ const RewardModal = ({
           handleOnRewardAdd,
         });
         break;
-
+      case PAYMENT_OPTIONS.PDA:
+        const hasPDARewardAlready = rewards.some((reward) => reward.type === PAYMENT_OPTIONS.PDA);
+        if (hasPDARewardAlready) {
+          setErrors({ ...errors, pda: "You can only add one PDA reward per quest" });
+        } else {
+          handleaddPDAItem({
+            type: rewardType,
+            handleOnRewardAdd,
+            handleToggle: handleRewardModalToggle,
+          });
+        }
       default:
         console.warn("Unknown reward type:", rewardType);
         return;
@@ -160,19 +180,26 @@ const RewardModal = ({
         Icon: TokensIcon,
         text: "Token reward",
       },
-    ];
-    if (isEcosystemPlan || isPremiumPlan) {
-      items.push({
+      {
         paymentOption: PAYMENT_OPTIONS.CMTY_STORE_ITEM,
         rewardType,
+        isUnavailable: plan !== PricingOptionsTitle.Premium && plan !== PricingOptionsTitle.Ecosystem,
         onClick: () => setRewardType(PAYMENT_OPTIONS.CMTY_STORE_ITEM),
         Icon: StoreItemRewardIcon,
         text: "Store Item",
+      },
+    ];
+    if (activeOrg?.id === POKT_ORG_ID) {
+      items.push({
+        paymentOption: PAYMENT_OPTIONS.PDA,
+        rewardType,
+        onClick: () => setRewardType(PAYMENT_OPTIONS.PDA),
+        Icon: GatewayPDAIcon,
+        text: "Gateway PDA",
       });
     }
     return items;
   }, [activeOrg?.id, rewardType, plan, setRewardType, setPaywall, setPaywallMessage, isEcosystemPlan]);
-
   return (
     <Modal
       open={isRewardModalOpen}

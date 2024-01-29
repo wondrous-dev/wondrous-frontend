@@ -115,12 +115,13 @@ export const GET_COMMUNITY_NFT_BY_TOKEN_ID = gql`
 `;
 
 export const GET_CMTY_USER_NFT_METADATA = gql`
-  query getCmtyUserNftMetadata($signature: String!, $cmtyUserId: String!, $tokenId: String!) {
-    getCmtyUserNftMetadata(signature: $signature, cmtyUserId: $cmtyUserId, tokenId: $tokenId) {
+  query getCmtyUserNftMetadata($cmtyUserId: String!, $tokenId: String!) {
+    getCmtyUserNftMetadata(cmtyUserId: $cmtyUserId, tokenId: $tokenId) {
       orgId
       chain
       receiverAddress
       name
+      signature
       nftMetadataId
       mediaUrl
       cmtyUserUsername

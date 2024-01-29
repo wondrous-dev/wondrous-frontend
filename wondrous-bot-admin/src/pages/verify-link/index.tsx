@@ -11,7 +11,7 @@ const VerifyLinkPage = () => {
   const searchParams = new URLSearchParams(search);
 
   const paramsQuery = searchParams.get("query");
-  const decodedQuery = atob(paramsQuery || "");
+  const decodedQuery = window.atob(paramsQuery || "");
   const query = JSON.parse(decodedQuery || "{}");
 
   const handleVerify = async () => {

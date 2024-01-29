@@ -117,7 +117,7 @@ const MembersTutorial = ({ setMembersData, data }) => {
       },
       content: () => (
         <ContentComponent
-          subHeader="We removed all of your friends from “The Office”. As you onboard more members you will see their information populate here."
+          subHeader="We removed Dwight for now. As you onboard more members you will see their information populate here."
           typographyProps={{
             textAlign: "center",
             paddingTop: "24px",
@@ -197,9 +197,6 @@ const MembersTutorial = ({ setMembersData, data }) => {
         <Box display="flex" flexDirection="column" gap="8px">
           <ModalLabel>Your Member CRM</ModalLabel>
           <ModalTextBody>Here is where you can get deeper insight into your community members.</ModalTextBody>
-          <ModalTextBody>
-            For more info check <a href="#">out this video.</a>
-          </ModalTextBody>
         </Box>
       </ModalComponent>
     </>

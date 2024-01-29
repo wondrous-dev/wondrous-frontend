@@ -46,6 +46,7 @@ type InputQuestStep = {
     discordEventId?: string;
     minDuration?: number;
     usdValue?: number;
+    gitcoinPassportMinimumScoreThreshold?: number;
   };
 };
 
@@ -131,6 +132,10 @@ type OutputQuestStep = {
         prompt?: string;
         discordEventId?: string;
         minDuration?: number;
+      }
+    | {
+        prompt?: string;
+        gitcoinPassportMinimumScoreThreshold?: number;
       };
 };
 
@@ -249,6 +254,19 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
     ) {
       outputStep.value = step?.prompt;
     } else if (step.type === TYPES.REFERRAL) {
+      outputStep.value = step?.prompt;
+    } else if (step.type === TYPES.VERIFY_GITCOIN_PASSPORT_SCORE) {
+      console.log("step", step);
+      outputStep.value = {
+        prompt: step?.prompt,
+        gitcoinPassportMinimumScoreThreshold: step?.additionalData?.gitcoinPassportMinimumScoreThreshold,
+      };
+    } else if (
+      step.type === TYPES.VERIFY_FHENIX_ACTIVE_WALLET ||
+      step.type === TYPES.VERIFY_FHENIX_CONTRACTS_CREATED ||
+      step.type === TYPES.VERIFY_FHENIX_FAUCET_INTERACTION ||
+      step.type === TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE
+    ) {
       outputStep.value = step?.prompt;
     } else if (step.type === TYPES.DATA_COLLECTION) {
       const dataCollectionType = step?.additionalData?.dataCollectionType;

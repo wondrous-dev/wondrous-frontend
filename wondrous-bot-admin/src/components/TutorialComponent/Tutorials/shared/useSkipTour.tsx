@@ -93,11 +93,13 @@ const useSkipTour = () => {
   const steps = isMobile ? mobileSteps : desktopSteps;
 
   const { setIsOpen, setSteps, setCurrentStep } = useTour();
+  const { setShouldForceOpenTour, shouldForceOpenTour } = useContext(TourDataContext);
   const skipTour = () => {
     setIsOpen(false);
     setSteps(steps);
     setCurrentStep(0);
     setIsOpen(true);
+    if (shouldForceOpenTour) setShouldForceOpenTour(false);
   };
   return {
     skipTour,

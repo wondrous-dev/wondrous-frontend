@@ -82,3 +82,12 @@ export const UPDATE_ORG_MODULES = gql`
     }
   }
 `;
+
+export const CREATE_CMTY_ORG = gql`
+  mutation createCmtyOrg($code: String!, $guildId: String!) {
+    createCmtyOrg(code: $code, guildId: $guildId) {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
+`;

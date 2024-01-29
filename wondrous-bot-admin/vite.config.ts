@@ -29,5 +29,6 @@ export default defineConfig({
     VITE_PRODUCTION: process.env.VITE_PRODUCTION,
     VITE_STAGING: process.env.VITE_STAGING,
     VITE_WALLET_CONNECT_PROJECT_ID: process.env.VITE_WALLET_CONNECT_PROJECT_ID,
+    VITE_GOOGLE_CLIENT_ID: process.env.VITE_GOOGLE_CLIENT_ID,
   },
 });

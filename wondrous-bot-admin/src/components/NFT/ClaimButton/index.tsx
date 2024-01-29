@@ -38,14 +38,14 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, nftMetadataId, cmtyUser
 
       const transaction = await contractInstance.claimBadge(1, BigInt(tokenId), nonce, signature);
       await transaction.wait();
-
       await linkTx({
         variables: {
           txHash: transaction.hash,
-          nftMetadataId,
+          signature,
           cmtyUserId,
         },
       });
+
       setSnackbarAlertMessage("Minting successful");
       setSnackbarAlertOpen(true);
       onSuccess?.();

@@ -194,3 +194,15 @@ export const UPDATE_ORG_CMTY_USER_POINT_BALANCE = gql`
     }
   }
 `;
+
+export const GOOGLE_LOGIN_MUTATION = gql`
+  mutation googleSignin($code: String!) {
+    googleSignin(code: $code) {
+      user {
+        ...LoggedinUser
+      }
+      token
+    }
+  }
+  ${LoggedinUserFragment}
+`;

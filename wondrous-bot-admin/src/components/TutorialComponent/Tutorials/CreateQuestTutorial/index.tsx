@@ -18,10 +18,11 @@ const getTemplateModalPosition = () => {
 
 const useCreateQuestTutorial = ({ shouldDisplay }) => {
   const { setIsOpen, setSteps, setCurrentStep } = useTour();
-
+  
   const { handleTourVisit, shouldForceOpenTour, setShouldForceOpenTour } = useContext(TourDataContext);
   const nodes = useRef([]);
 
+  const initShouldOpenTour = useRef(shouldForceOpenTour);
   const { x, y } = useMemo(() => getTemplateModalPosition(), []);
 
   const getQuestStep = () => !!document.querySelector("[data-tour=tour-quest-step");
@@ -30,6 +31,9 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
     {
       selector: "[data-tour=quests-page-template-modal]",
       position: [x + 100, y + 620],
+      afterAction: () => {
+        if (shouldForceOpenTour) setShouldForceOpenTour(false);
+      },
       styles: {
         popover: (base, state) => {
           return {
@@ -297,6 +301,11 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
       ),
     },
     {
+      afterAction: () => {
+        if(initShouldOpenTour.current) {
+          setShouldForceOpenTour(true);
+        }
+      },
       hideButtons: true,
       selector: "[data-tour=tour-save-quest]",
       position: "left",
@@ -308,7 +317,6 @@ const useCreateQuestTutorial = ({ shouldDisplay }) => {
 
   useEffect(() => {
     if (shouldForceOpenTour) {
-      setShouldForceOpenTour(false);
       handleTourVisit(TUTORIALS.COMMUNITIES_QUEST);
       const stepsClone = [...steps];
       if (!shouldDisplay) {

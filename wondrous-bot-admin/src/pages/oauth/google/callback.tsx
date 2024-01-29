@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { getBaseUrl } from "utils/common";
 
 export function getGoogleOauthUrl({telegramUserId = null, discordId = null}) {
-	const GOOGLE_CLIENT_ID = '276263235787-efsi17itjf4d230126shg69h6r6qagf7.apps.googleusercontent.com';
+	const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 	const baseUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&response_type=code`;
 	const redirectUrl = encodeURIComponent(`${getBaseUrl()}/oauth/google/callback`);
 

@@ -58,6 +58,9 @@ import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 import { SUPPORTED_CHAINS_META } from "utils/web3Constants";
 import RewardfulTag from "components/AddFormEntity/components/RewardfulTag";
 import CmtyUserActivityPage from "pages/activity";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import PlanSelectComponent from "components/Onboarding/PlanSelect";
+import OnboardingFinalizeComponent from "components/Onboarding/FinalizeComponent";
 
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 
@@ -248,6 +251,14 @@ const router = createBrowserRouter([
         path: "/activity",
         element: <CmtyUserActivityPage />,
       },
+      {
+        path: "/onboarding/plan-select",
+        element: <PlanSelectComponent />,
+      },
+      {
+        path: "/onboarding/finalize",
+        element: <OnboardingFinalizeComponent />,
+      },
     ],
   },
 ]);
@@ -302,13 +313,10 @@ function App() {
     []
   );
 
-  function getLibrary(provider): Web3Provider {
-    const library = new Web3Provider(provider);
-    return library;
-  }
-
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
-  console.log(theme, 'theme')
+
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
   return (
     <StyledComponentProvider theme={theme}>
       <ThemeProvider theme={theme}>
@@ -316,7 +324,9 @@ function App() {
           <SnackbarAlertProvider>
             <WonderWeb3Provider>
               <PaywallContextProvider>
-                <RouterProvider router={router} />
+                <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+                  <RouterProvider router={router} />
+                </GoogleOAuthProvider>
               </PaywallContextProvider>
             </WonderWeb3Provider>
             <RewardfulTag />

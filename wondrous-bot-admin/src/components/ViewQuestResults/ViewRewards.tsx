@@ -1,6 +1,13 @@
 import { Grid, Typography } from "@mui/material";
 import { Label } from "components/CreateTemplate/styles";
-import { DiscordRoleIcon, NFTIcon, PointsIcon, StoreItemRewardIcon, TokensIcon } from "components/Icons/Rewards";
+import {
+  DiscordRoleIcon,
+  GatewayPDAIcon,
+  NFTIcon,
+  PointsIcon,
+  StoreItemRewardIcon,
+  TokensIcon,
+} from "components/Icons/Rewards";
 import { PAYMENT_OPTIONS } from "components/Rewards/constants";
 import { constructRewards } from "utils/common";
 
@@ -25,6 +32,10 @@ const selectReward = ({ type, value }) => {
     [PAYMENT_OPTIONS.CMTY_STORE_ITEM]: {
       text: value,
       Icon: StoreItemRewardIcon,
+    },
+    [PAYMENT_OPTIONS.PDA]: {
+      text: "Citizen PDA",
+      Icon: GatewayPDAIcon,
     },
   };
   return rewardProps[type] || { text: `${value} ${type}`, Icon: TokensIcon };

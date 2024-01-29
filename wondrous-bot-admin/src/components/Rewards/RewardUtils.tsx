@@ -5,7 +5,7 @@ import { CHAIN_SELECT_OPTIONS } from "utils/web3Constants";
 import DeleteIcon from "components/Icons/Delete";
 import SelectComponent from "components/Shared/Select";
 import TextField from "components/Shared/TextField";
-import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
+import { ErrorText, SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 import { DEACTIVATE_CMTY_PAYMENT, UPDATE_CMTY_PAYMENT_METHOD } from "graphql/mutations/payment";
 import { GET_PERMISSION_TO_REWARD_ROLE, GET_POAP_EVENT } from "graphql/queries";
 import { useEffect, useState } from "react";
@@ -17,6 +17,7 @@ import {
   PaymentRowContentBox,
   PaymentRowContentText,
   PoapImage,
+  RewardText,
 } from "../CreateTemplate/styles";
 import DiscordRoleDisclaimer from "components/Shared/DiscordRoleDisclaimer";
 import { useCommunityBadgePaymentMethods } from "../CreateTemplate/shared";
@@ -446,7 +447,25 @@ export const RewardMethod = ({
       </>
     );
   }
-
+  if (rewardType === PAYMENT_OPTIONS.PDA) {
+    const pdaTypeOptions = [
+      {
+        label: "Citizen",
+        value: "citizen",
+      },
+    ];
+    return (
+      <>
+        <Label>PDA Type</Label>
+        <SelectComponent options={pdaTypeOptions} value={pdaTypeOptions[0].value} disabled onChange={() => {}} />
+        <RewardText>
+          Please note that you can configure the <span style={{ fontWeight: "bold" }}> point </span>field of the PDA by
+          changing the points reward of this quest and the <span style={{ fontWeight: "bold" }}>pdaSubtype</span> field
+          by changing the quest title. For now, we only support the Citizen PDA type.
+        </RewardText>
+      </>
+    );
+  }
   if (rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE) {
     const handleTokenStoreItemChange = async (value) => {
       const existingMethod = cmtyBadgePaymentMethods?.find((method) => method.nftMetadataId === value.id);
@@ -615,6 +634,7 @@ export const RewardMethod = ({
 
 export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, Icon, text, isUnavailable = false }) => {
   const isActive = paymentOption === rewardType;
+  console.log("rfeward", rewardType);
   const buttonStyle = getRewardMethodOptionButtonStyle(isActive, isUnavailable);
 
   return (
@@ -685,7 +705,6 @@ export const RewardModalFooterLeftComponent = ({
     </>
   );
 
-  
   const isRewardTypeSelectable =
     rewardType !== PAYMENT_OPTIONS.POAP &&
     rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE &&
@@ -712,6 +731,18 @@ export const RewardModalFooterLeftComponent = ({
       <SharedSecondaryButton onClick={handleReward}>
         {addPaymentMethod && rewardType === PAYMENT_OPTIONS.TOKEN ? "Add New Payment Method" : "Add Reward"}
       </SharedSecondaryButton>
+      {errors &&
+        Object.keys(errors)?.map((key) => {
+          return (
+            <ErrorText
+              style={{
+                marginTop: "12px",
+              }}
+            >
+              {errors[key]}
+            </ErrorText>
+          );
+        })}
     </>
   );
 
@@ -729,7 +760,8 @@ export const RewardModalFooterLeftComponent = ({
     rewardType === PAYMENT_OPTIONS.POAP ||
     rewardType === PAYMENT_OPTIONS.DISCORD_ROLE ||
     rewardType === PAYMENT_OPTIONS.COMMUNITY_BADGE ||
-    rewardType === PAYMENT_OPTIONS.CMTY_STORE_ITEM
+    rewardType === PAYMENT_OPTIONS.CMTY_STORE_ITEM ||
+    rewardType === PAYMENT_OPTIONS.PDA
   ) {
     return renderAddRewardButtons();
   }

@@ -5,13 +5,14 @@ import { DiscordConnector } from "components/Connectors";
 import { Connectors, ErrorTypography } from "components/Login/styles";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from "utils/constants";
 import { SUPPORTED_CHAINS } from "utils/web3Constants";
 import WalletConnect from "components/Icons/Login/walletconnect.svg";
-import { Divider } from "./styles";
+import { Divider, StyledLink } from "./styles";
 import { validate } from "./validator";
 import useWeb3Auth from "services/web3/useWeb3Auth";
+import GoogleOAuthButton from "components/OAuth/GoogleOAuth";
 
 const CollectCredentials = ({ moveForward }) => {
   const [credentials, setCredentials] = useState({
@@ -118,30 +119,35 @@ const CollectCredentials = ({ moveForward }) => {
 
   return (
     <>
-      <Grid container direction="column" gap="24px" padding="24px" justifyContent="center" alignItems="center">
+      <Grid
+        container
+        direction="column"
+        gap="28px"
+        padding={{
+          xs: "42px 24px",
+          md: "42px",
+        }}
+        justifyContent="center"
+        alignItems="center"
+      >
         <Typography fontFamily="Poppins" fontSize="24px" fontWeight="700" lineHeight="24px" color="#2A8D5C">
-          Sign up to Communities
+          Sign up to Wonderverse
         </Typography>
-
+        <Box sx={{ width: "80%" }}>
+          <GoogleOAuthButton isSignup />
+        </Box>
         {!notSupportedChain && errorMessage ? <ErrorTypography>{errorMessage}</ErrorTypography> : ""}
         {notSupportedChain && (
           <ErrorTypography>Unsupported network, change to mainnet or a supported network</ErrorTypography>
         )}
-        <Connectors bgcolor="transparent">
-          {/* {!isMobile && <MetaMaskConnector />} */}
+        {/* <Connectors bgcolor="transparent">
           <ButtonBase onClick={open}>
             <img src={WalletConnect} />
           </ButtonBase>
 
           <DiscordConnector state={state} />
-          {/* <CoinbaseConnector />
-          <WalletConnectConnector /> */}
-        </Connectors>
+        </Connectors> */}
         <Box display="flex" alignItems="center" width="100%" gap="7px">
-          <Divider />
-          <Typography fontFamily="Poppins" fontWeight={600} fontSize="15px" lineHeight="15px" color="#949494">
-            Or
-          </Typography>
           <Divider />
         </Box>
         <FormControl
@@ -159,8 +165,30 @@ const CollectCredentials = ({ moveForward }) => {
             </Box>
           ))}
           <SharedSecondaryButton sx={{ marginTop: "10px" }} type="button" onClick={handleSubmit}>
-            Signup
+            Sign up with Email
           </SharedSecondaryButton>
+          <Divider />
+          <Box width="100%" display="flex" justifyContent="center" alignItems="center">
+            <Box display="flex" flexDirection="column" gap="28px" width="90%">
+              <Typography color="#808080" fontFamily="Poppins" fontSize="14px" fontWeight="500" textAlign="center">
+                By continuing, you acknowledge that you have read and understood, and agree to Wonderverse’s <br />{" "}
+                <StyledLink href="https://wonderverse.com/terms-of-service" target="_blank">
+                  Terms & Conditions
+                </StyledLink>{" "}
+                and{" "}
+                <StyledLink href="https://wonderverse.com/privacy-policy" target="_blank">
+                  Privacy Policy
+                </StyledLink>
+                .
+              </Typography>
+              <Typography color="#808080" fontFamily="Poppins" fontSize="14px" fontWeight="500" textAlign="center">
+                Already signed up?{" "}
+                <Link to="/login">
+                  <StyledLink>Go to login</StyledLink>
+                </Link>
+              </Typography>
+            </Box>
+          </Box>
         </FormControl>
       </Grid>
     </>

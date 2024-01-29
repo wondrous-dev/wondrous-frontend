@@ -24,10 +24,16 @@ const CallbackPage = () => {
       }
     },
     onError: (e) => {
+      const isAlreadyConnected = e?.graphQLErrors?.[0]?.extensions?.errorCode === "twitter_already_connected";
+      if (isAlreadyConnected) {
+        setErrorText("This Twitter account is already connected to another account!");
+        setFinishedVerification(true);
+        return;
+      }
       console.error("error verifying twitter", e);
-      setErrorText("Error verifying twitter - please try again");
     },
   });
+
   useEffect(() => {
     if (code && !finishedVerification && (discordId || telegramUserId || migrateOrgId)) {
       verifyTwitter({
@@ -46,7 +52,8 @@ const CallbackPage = () => {
       <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
         {finishedVerification && (
           <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-            Finished connecting your Twitter account! You can close this window now and return to Discord.
+            {errorText ||
+              "Finished connecting your Twitter account! You can close this window now and return to Discord."}
           </Typography>
         )}
         {!finishedVerification && (

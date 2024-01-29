@@ -82,7 +82,7 @@ const LevelsPage = () => {
                 setPaywall(true);
                 return setPaywallMessage("You need to upgrade from a basic plan to edit level names");
               } else {
-                if(!value) return;
+                if (!value) return;
                 updateLevel(key, value);
               }
             },
@@ -151,7 +151,7 @@ const LevelsPage = () => {
       </StyledTableHeader>
     );
   };
-  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
 
   return (
     <>
@@ -179,6 +179,7 @@ const LevelsPage = () => {
           tableProps={{
             "data-tour": "tutorial-levels-table",
             sx: {
+              zIndex: isOpen ? 9 : "auto",
               marginTop: isMobile && isOpen ? "30vh" : "0px",
               width: isOpen && !isMobile ? "50%" : "100%",
             },
