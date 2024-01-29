@@ -19,7 +19,6 @@ const CommunityBadgeClaimPage = () => {
 
   const [isSuccess, setSuccess] = useState(false);
   const searchParams = new URLSearchParams(search);
-  const signature = searchParams.get("signature");
   const cmtyUserId = searchParams.get("cmtyUserId");
   const tokenId = searchParams.get("tokenId");
 
@@ -35,11 +34,10 @@ const CommunityBadgeClaimPage = () => {
         variables: {
           tokenId,
           cmtyUserId,
-          signature,
         },
       });
     }
-  }, [cmtyUserId, tokenId, signature]);
+  }, [cmtyUserId, tokenId]);
 
   const address = data?.getCmtyUserNftMetadata?.receiverAddress || "";
 
@@ -248,7 +246,7 @@ const CommunityBadgeClaimPage = () => {
             >
               <ClaimButton
                 chain={data?.getCmtyUserNftMetadata?.chain}
-                signature={signature}
+                signature={data?.getCmtyUserNftMetadata?.signature}
                 nftMetadataId={data?.getCmtyUserNftMetadata?.nftMetadataId}
                 cmtyUserId={cmtyUserId}
                 tokenId={tokenId}

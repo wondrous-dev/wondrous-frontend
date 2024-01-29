@@ -99,8 +99,8 @@ export const IMPORT_COMMUNITY_NFT = gql`
 `;
 
 export const LINK_TRANSACTION_TO_COMMUNITY_NFT = gql`
-  mutation linkTransactionToCommunityNFT($cmtyUserId: String!, $nftMetadataId: String!, $txHash: String!) {
-    linkTransactionToCommunityNFT(cmtyUserId: $cmtyUserId, nftMetadataId: $nftMetadataId, txHash: $txHash) {
+  mutation linkTransactionToCommunityNFT($cmtyUserId: String!, $signature: String!, $txHash: String!) {
+    linkTransactionToCommunityNFT(cmtyUserId: $cmtyUserId, signature: $signature, txHash: $txHash) {
       success
     }
   }
