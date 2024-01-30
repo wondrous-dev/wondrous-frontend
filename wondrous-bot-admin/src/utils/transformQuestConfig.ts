@@ -256,7 +256,6 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
     } else if (step.type === TYPES.REFERRAL) {
       outputStep.value = step?.prompt;
     } else if (step.type === TYPES.VERIFY_GITCOIN_PASSPORT_SCORE) {
-      console.log("step", step);
       outputStep.value = {
         prompt: step?.prompt,
         gitcoinPassportMinimumScoreThreshold: step?.additionalData?.gitcoinPassportMinimumScoreThreshold,
