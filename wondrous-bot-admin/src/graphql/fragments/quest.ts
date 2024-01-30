@@ -62,6 +62,10 @@ export const MinimalQuestFragment = gql`
         expiryDate
         eventSecret
       }
+      pdaRewardData {
+        pdaSubtype
+        pdaPoints
+      }
       paymentMethodId
       amount
       storeItemId
@@ -119,6 +123,10 @@ export const QuestFragment = gql`
         imageUrl
         expiryDate
         eventSecret
+      }
+      pdaRewardData {
+        pdaSubtype
+        pdaPoints
       }
       paymentMethodId
       amount
@@ -199,6 +207,10 @@ export const QuestFragment = gql`
             imageUrl
             expiryDate
             eventSecret
+          }
+          pdaRewardData {
+            pdaSubtype
+            pdaPoints
           }
           paymentMethodId
           amount

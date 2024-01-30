@@ -159,7 +159,14 @@ const QuestRewardComponent = ({
     },
     [PAYMENT_OPTIONS.PDA]: {
       Component: ({ reward }) => {
-        return <RewardWrapper Icon={GatewayPDAIcon} text={"Citizen PDA"} />;
+        return (
+          <RewardWrapper
+            Icon={GatewayPDAIcon}
+            text={`${reward?.pdaSubtype || reward?.pdaRewardData?.pdaSubtype} - ${
+              reward?.pdaRewardData?.pdaPoints
+            } pts`}
+          />
+        );
       },
       handleOnRemove: (reward) => handlePDARewardRemove({ reward, setQuestSettings }),
     },

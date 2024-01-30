@@ -24,6 +24,10 @@ export const GET_QUESTS_FOR_ORG = gql`
           expiryDate
           eventSecret
         }
+        pdaRewardData {
+          pdaSubtype
+          pdaPoints
+        }
         paymentMethodId
         amount
         storeItemId
@@ -95,6 +99,10 @@ export const GET_ORG_LEVEL_REWARDS = gql`
         imageUrl
         expiryDate
         eventSecret
+      }
+      pdaRewardData {
+        pdaSubtype
+        pdaPoints
       }
       paymentMethodId
       amount
@@ -190,6 +198,10 @@ export const GET_QUEST_REWARDS = gql`
         imageUrl
         expiryDate
         eventSecret
+      }
+      pdaRewardData {
+        pdaSubtype
+        pdaPoints
       }
       paymentMethodId
       amount

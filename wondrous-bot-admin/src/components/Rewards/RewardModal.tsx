@@ -68,6 +68,10 @@ const RewardModal = ({
     createPaymentMethod,
     setCmtyStoreItemReward,
     cmtyStoreItemReward,
+    setPdaPoints,
+    setPdaSubtype,
+    pdaPoints,
+    pdaSubtype,
   } = rewardModalState;
 
   const handleAddRewardOnModal = () => {
@@ -132,6 +136,8 @@ const RewardModal = ({
             type: rewardType,
             handleOnRewardAdd,
             handleToggle: handleRewardModalToggle,
+            pdaPoints,
+            pdaSubtype,
           });
         }
       default:
@@ -280,6 +286,10 @@ const RewardModal = ({
             poapReward={poapReward}
             setPoapReward={setPoapReward}
             guildId={discordRoleData[0]?.guildId}
+            setPdaPoints={setPdaPoints}
+            setPdaSubtype={setPdaSubtype}
+            pdaPoints={pdaPoints}
+            pdaSubtype={pdaSubtype}
           />
         </Grid>
       </Grid>
