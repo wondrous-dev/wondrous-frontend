@@ -12,6 +12,7 @@ import {
   handleStoreItemRewardRemove,
   handleOnRewardAdd,
   handlePDARewardRemove,
+  handlePDARewardUpdate,
 } from "./questUtils";
 import { useAddRewardModalState } from "components/Rewards/utils";
 import { PAYMENT_OPTIONS } from "../constants";
@@ -28,7 +29,8 @@ const QuestRewardComponent = ({
   hasReferralStep: boolean;
 }) => {
   const rewardModalState = useAddRewardModalState();
-  const { setIsRewardModalOpen, resetStates } = rewardModalState;
+  const { setIsRewardModalOpen, setRewardType, setPdaPoints, setPdaSubtype, setIsUpdate, resetStates } =
+    rewardModalState;
 
   const { isOpen: isTourOpen, setCurrentStep, setSteps, steps } = useTour();
 
@@ -93,7 +95,18 @@ const QuestRewardComponent = ({
       return true;
     });
   };
-
+  const handleOpenRewardModal = () => {
+    if (isTourOpen) {
+      setCurrentStep((prev) => prev + 1);
+    }
+    setIsRewardModalOpen(true);
+  };
+  const handlePdaOpen = (reward) => {
+    setRewardType(PAYMENT_OPTIONS.PDA);
+    setPdaPoints(reward?.pdaPoints || reward?.pdaRewardData?.pdaPoints);
+    setPdaSubtype(reward?.pdaSubtype || reward?.pdaRewardData?.pdaSubtype);
+    setIsUpdate(true);
+  };
   const rewardComponents = {
     [PAYMENT_OPTIONS.DISCORD_ROLE]: {
       Component: ({ reward }) => (
@@ -159,20 +172,24 @@ const QuestRewardComponent = ({
     },
     [PAYMENT_OPTIONS.PDA]: {
       Component: ({ reward }) => {
-        return <RewardWrapper Icon={GatewayPDAIcon} text={"Citizen PDA"} />;
+        return (
+          <>
+            <RewardWrapper
+              onClick={() => {
+                handleOpenRewardModal();
+                handlePdaOpen(reward);
+              }}
+              Icon={GatewayPDAIcon}
+              text={`Citizen PDA - click to edit`}
+            />
+          </>
+        );
       },
       handleOnRemove: (reward) => handlePDARewardRemove({ reward, setQuestSettings }),
     },
   };
   const pointReward = rewards.filter((reward) => reward?.type === "points")[0];
   const otherRewards = rewards.filter((reward) => reward?.type !== "points");
-
-  const handleOpenRewardModal = () => {
-    if (isTourOpen) {
-      setCurrentStep((prev) => prev + 1);
-    }
-    setIsRewardModalOpen(true);
-  };
 
   return (
     <>
@@ -181,6 +198,7 @@ const QuestRewardComponent = ({
         handleRewardModalToggle={handleToggleModal}
         handleOnRewardAdd={(reward) => handleOnRewardAdd({ reward, setQuestSettings })}
         rewards={rewards}
+        handlePDARewardUpdate={(reward) => handlePDARewardUpdate({ reward, setQuestSettings })}
       />
 
       <Grid container flexWrap="nowrap" maxWidth="inherit">

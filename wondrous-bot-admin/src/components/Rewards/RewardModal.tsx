@@ -10,7 +10,7 @@ import {
 } from "components/Icons/Rewards";
 import { PricingOptionsTitle } from "components/Pricing/PricingOptionsListItem";
 import Modal from "components/Shared/Modal";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import GlobalContext from "utils/context/GlobalContext";
 import { usePaywall, useSubscription, useSubscriptionPaywall } from "utils/hooks";
 import { Label } from "../CreateTemplate/styles";
@@ -41,6 +41,7 @@ const RewardModal = ({
     PAYMENT_OPTIONS.PDA,
   ],
   title = "Add reward to quest",
+  handlePDARewardUpdate = null,
 }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { isEcosystemPlan, isPremiumPlan, plan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } =
@@ -68,8 +69,13 @@ const RewardModal = ({
     createPaymentMethod,
     setCmtyStoreItemReward,
     cmtyStoreItemReward,
+    setPdaPoints,
+    setPdaSubtype,
+    pdaPoints,
+    pdaSubtype,
+    isUpdate,
+    setIsUpdate,
   } = rewardModalState;
-
   const handleAddRewardOnModal = () => {
     setErrors(null);
     switch (rewardType) {
@@ -124,15 +130,28 @@ const RewardModal = ({
         });
         break;
       case PAYMENT_OPTIONS.PDA:
-        const hasPDARewardAlready = rewards.some((reward) => reward.type === PAYMENT_OPTIONS.PDA);
-        if (hasPDARewardAlready) {
-          setErrors({ ...errors, pda: "You can only add one PDA reward per quest" });
+        if (isUpdate) {
+          if (handlePDARewardUpdate) {
+            handlePDARewardUpdate({
+              type: rewardType,
+              pdaPoints,
+              pdaSubtype,
+            });
+            handleRewardModalToggle();
+          }
         } else {
-          handleaddPDAItem({
-            type: rewardType,
-            handleOnRewardAdd,
-            handleToggle: handleRewardModalToggle,
-          });
+          const hasPDARewardAlready = rewards.some((reward) => reward.type === PAYMENT_OPTIONS.PDA);
+          if (hasPDARewardAlready) {
+            setErrors({ ...errors, pda: "You can only add one PDA reward per quest" });
+          } else {
+            handleaddPDAItem({
+              type: rewardType,
+              handleOnRewardAdd,
+              handleToggle: handleRewardModalToggle,
+              pdaPoints,
+              pdaSubtype,
+            });
+          }
         }
       default:
         console.warn("Unknown reward type:", rewardType);
@@ -223,6 +242,7 @@ const RewardModal = ({
           setAddPaymentMethod={setAddPaymentMethod}
           editPaymentMethod={editPaymentMethod}
           setEditPaymentMethod={setEditPaymentMethod}
+          isUpdate={isUpdate}
         />
       }
       footerRight={undefined}
@@ -280,6 +300,10 @@ const RewardModal = ({
             poapReward={poapReward}
             setPoapReward={setPoapReward}
             guildId={discordRoleData[0]?.guildId}
+            setPdaPoints={setPdaPoints}
+            setPdaSubtype={setPdaSubtype}
+            pdaPoints={pdaPoints}
+            pdaSubtype={pdaSubtype}
           />
         </Grid>
       </Grid>

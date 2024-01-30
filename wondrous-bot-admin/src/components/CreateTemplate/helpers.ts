@@ -222,6 +222,10 @@ const mapReward = (reward) => {
   } else if (reward?.type === PAYMENT_OPTIONS.PDA) {
     return {
       type: reward?.type,
+      pdaRewardData: {
+        pdaSubtype: reward?.pdaSubtype || reward?.pdaRewardData?.pdaSubtype,
+        pdaPoints: Number(reward?.pdaPoints) || Number(reward?.pdaRewardData?.pdaPoints),
+      },
     };
   }
 };

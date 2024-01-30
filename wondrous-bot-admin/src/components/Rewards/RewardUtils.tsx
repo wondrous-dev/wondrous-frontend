@@ -31,6 +31,7 @@ import useAlerts from "utils/hooks";
 import ContextMenu from "components/ContextMenu";
 import { ContextMenuButtonStyle } from "components/ContextMenu/styles";
 import ConfirmActionModal from "components/ConfirmActionModal";
+import { useAddRewardModalState } from "./utils";
 
 export const TokenComponent = ({
   paymentMethod = null,
@@ -398,6 +399,10 @@ export const RewardMethod = ({
   guildId,
   setCmtyStoreItemReward,
   cmtyStoreItemReward,
+  setPdaPoints,
+  setPdaSubtype,
+  pdaPoints,
+  pdaSubtype,
 }) => {
   const [getPoapEventInfo] = useLazyQuery(GET_POAP_EVENT);
   const [displayRoleDisclaimer, setDisplayRoleDisclaimer] = useState(false);
@@ -458,11 +463,23 @@ export const RewardMethod = ({
       <>
         <Label>PDA Type</Label>
         <SelectComponent options={pdaTypeOptions} value={pdaTypeOptions[0].value} disabled onChange={() => {}} />
-        <RewardText>
-          Please note that you can configure the <span style={{ fontWeight: "bold" }}> point </span>field of the PDA by
-          changing the points reward of this quest and the <span style={{ fontWeight: "bold" }}>pdaSubtype</span> field
-          by changing the quest title. For now, we only support the Citizen PDA type.
-        </RewardText>
+        <Label>PDA Subtype</Label>
+        <TextField
+          placeholder="Please enter the PDA subtype for this reward"
+          value={pdaSubtype}
+          error={errors?.pdaSubtype}
+          onChange={(value) => setPdaSubtype(value)}
+          multiline={false}
+        />
+        <Label>PDA points</Label>
+        <TextField
+          placeholder="Please input the PDA points awarded for this reward"
+          value={pdaPoints}
+          error={errors?.pdaPoints}
+          onChange={(value) => setPdaPoints(value)}
+          multiline={false}
+          type="number"
+        />
       </>
     );
   }
@@ -634,7 +651,6 @@ export const RewardMethod = ({
 
 export const RewardMethodOptionButton = ({ paymentOption, rewardType, onClick, Icon, text, isUnavailable = false }) => {
   const isActive = paymentOption === rewardType;
-  console.log("rfeward", rewardType);
   const buttonStyle = getRewardMethodOptionButtonStyle(isActive, isUnavailable);
 
   return (
@@ -654,6 +670,7 @@ export const RewardModalFooterLeftComponent = ({
   editPaymentMethod,
   setEditPaymentMethod,
   errors,
+  isUpdate = null,
 }) => {
   const [updateCmtyPaymentMethod] = useMutation(UPDATE_CMTY_PAYMENT_METHOD, {
     refetchQueries: ["getCmtyPaymentMethodsForOrg"],
@@ -710,7 +727,7 @@ export const RewardModalFooterLeftComponent = ({
     rewardType !== PAYMENT_OPTIONS.DISCORD_ROLE &&
     rewardType !== PAYMENT_OPTIONS.CMTY_STORE_ITEM &&
     rewardType !== PAYMENT_OPTIONS.COMMUNITY_BADGE;
-
+  const rewardText = isUpdate ? "Update Reward" : "Add Reward";
   const renderAddRewardButtons = () => (
     <>
       {isRewardTypeSelectable ? (
@@ -729,7 +746,7 @@ export const RewardModalFooterLeftComponent = ({
         </ButtonBase>
       ) : null}
       <SharedSecondaryButton onClick={handleReward}>
-        {addPaymentMethod && rewardType === PAYMENT_OPTIONS.TOKEN ? "Add New Payment Method" : "Add Reward"}
+        {addPaymentMethod && rewardType === PAYMENT_OPTIONS.TOKEN ? "Add New Payment Method" : rewardText}
       </SharedSecondaryButton>
       {errors &&
         Object.keys(errors)?.map((key) => {
@@ -838,8 +855,8 @@ export const ExistingDiscordRewardSelectComponent = ({ options, initialReward, o
   );
 };
 
-export const RewardWrapper = ({ Icon, text }) => (
-  <Grid container item gap="8px" bgcolor="#E8E8E8" padding="8px" borderRadius="6px" alignItems="center">
+export const RewardWrapper = ({ Icon, text, ...props }) => (
+  <Grid container item gap="8px" bgcolor="#E8E8E8" padding="8px" borderRadius="6px" alignItems="center" {...props}>
     <Icon />
     <Typography color="#000000" fontWeight="500" fontFamily="Poppins">
       {text}

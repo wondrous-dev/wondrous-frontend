@@ -160,9 +160,11 @@ export const handleAddPoap = ({ poapReward, setErrors, errors, handleOnRewardAdd
   handleToggle();
 };
 
-export const handleaddPDAItem = ({ type, handleToggle, handleOnRewardAdd }) => {
+export const handleaddPDAItem = ({ type, pdaPoints, pdaSubtype, handleToggle, handleOnRewardAdd }) => {
   handleOnRewardAdd({
     type,
+    pdaPoints,
+    pdaSubtype,
   });
   handleToggle();
 };
@@ -262,6 +264,9 @@ export const useAddRewardModalState = (defaultRewardType = PAYMENT_OPTIONS.DISCO
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [cmtyStoreItemReward, setCmtyStoreItemReward] = useState(null);
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [pdaSubtype, setPdaSubtype] = useState("");
+  const [pdaPoints, setPdaPoints] = useState(null);
   const [tokenReward, setTokenReward] = useState({
     tokenName: null,
     contractAddress: null,
@@ -294,6 +299,8 @@ export const useAddRewardModalState = (defaultRewardType = PAYMENT_OPTIONS.DISCO
     setIsRewardModalOpen(false);
     setDiscordRoleReward(null);
     setPaymentMethod(null);
+    setPdaPoints(null);
+    setPdaSubtype("");
     setTokenReward({
       tokenName: null,
       contractAddress: null,
@@ -337,6 +344,12 @@ export const useAddRewardModalState = (defaultRewardType = PAYMENT_OPTIONS.DISCO
     cmtyStoreItemReward,
     setCmtyStoreItemReward,
     resetStates,
+    setPdaPoints,
+    setPdaSubtype,
+    pdaPoints,
+    pdaSubtype,
+    isUpdate,
+    setIsUpdate,
     ...tokenRewardData,
   };
 };

@@ -34,7 +34,7 @@ const selectReward = ({ type, value }) => {
       Icon: StoreItemRewardIcon,
     },
     [PAYMENT_OPTIONS.PDA]: {
-      text: "Citizen PDA",
+      text: value,
       Icon: GatewayPDAIcon,
     },
   };
