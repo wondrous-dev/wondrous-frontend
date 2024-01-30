@@ -15,6 +15,21 @@ export const handlePDARewardRemove = ({ reward, setQuestSettings }) => {
     };
   });
 };
+
+export const handlePDARewardUpdate = ({ reward, setQuestSettings }) => {
+  setQuestSettings((prev) => {
+    const newRewards = prev.rewards.map((r) => {
+      if (r.type === PAYMENT_OPTIONS.PDA) {
+        return reward;
+      }
+      return r;
+    });
+    return {
+      ...prev,
+      rewards: newRewards,
+    };
+  });
+};
 export const handleDiscordRoleRewardRemove = ({ reward, setQuestSettings }) => {
   setQuestSettings((prev) => {
     const newRewards = prev.rewards.filter((r) => {

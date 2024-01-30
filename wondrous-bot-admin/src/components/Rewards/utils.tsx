@@ -264,6 +264,7 @@ export const useAddRewardModalState = (defaultRewardType = PAYMENT_OPTIONS.DISCO
   const [discordRoleReward, setDiscordRoleReward] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [cmtyStoreItemReward, setCmtyStoreItemReward] = useState(null);
+  const [isUpdate, setIsUpdate] = useState(false);
   const [pdaSubtype, setPdaSubtype] = useState("");
   const [pdaPoints, setPdaPoints] = useState(null);
   const [tokenReward, setTokenReward] = useState({
@@ -347,6 +348,8 @@ export const useAddRewardModalState = (defaultRewardType = PAYMENT_OPTIONS.DISCO
     setPdaSubtype,
     pdaPoints,
     pdaSubtype,
+    isUpdate,
+    setIsUpdate,
     ...tokenRewardData,
   };
 };
