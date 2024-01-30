@@ -200,7 +200,6 @@ const HomePage = () => {
     telegramConfigData?.getTelegramConfigForOrg?.chatId,
   ]);
 
-  const hasShownModal = useMemo(() => localStorage.getItem("wndr-show-connectingModal"), []);
 
   const shouldDisplayAddModal = useMemo(() => {
     if (isTelegramConfigLoading || isDiscordConfigLoading || loading) return false;
@@ -209,15 +208,11 @@ const HomePage = () => {
     if (!discordConfigExists && !telegramConfigExists && openAddBotModal) {
       return true;
     }
-    if ((discordConfigExists || telegramConfigExists) && openAddBotModal && !hasShownModal) {
-      return true;
-    }
     return false;
   }, [
     orgDiscordConfig,
     telegramConfigData,
     openAddBotModal,
-    hasShownModal,
     isDiscordConfigLoading,
     isTelegramConfigLoading,
     loading,

@@ -57,6 +57,7 @@ import ViewReferralPage from "pages/referrals/ViewReferral";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 import { SUPPORTED_CHAINS_META } from "utils/web3Constants";
 import RewardfulTag from "components/AddFormEntity/components/RewardfulTag";
+import CmtyUserActivityPage from "pages/activity";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import PlanSelectComponent from "components/Onboarding/PlanSelect";
 import OnboardingFinalizeComponent from "components/Onboarding/FinalizeComponent";
@@ -247,6 +248,10 @@ const router = createBrowserRouter([
         element: <ViewReferralPage />,
       },
       {
+        path: "/activity",
+        element: <CmtyUserActivityPage />,
+      },
+      {
         path: "/onboarding/plan-select",
         element: <PlanSelectComponent />,
       },
@@ -264,6 +269,7 @@ const getDesignTokens = (mode) => ({
   },
   palette: {
     mode,
+
     ...(mode === "light"
       ? {
           // palette values for light mode

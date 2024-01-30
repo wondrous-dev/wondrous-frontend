@@ -129,15 +129,18 @@ const TableComponent = ({
   tableRowStyle = null,
   emptyStateComponent = null,
   tableProps = {},
-  tableTitleProps = {}
+  tableTitleProps = {},
+  hideTitle = false,
 }) => {
   return (
     <TableContainer component={paperComponent || PaperComponent} key={title} {...tableProps}>
-      <Grid bgcolor="#2a8d5c" padding="24px 14px" {...tableTitleProps}>
-        <Typography color="#F7F7F7" fontFamily="Poppins" fontWeight={600} fontSize="16px" lineHeight="16px">
-          {title}
-        </Typography>
-      </Grid>
+      {!hideTitle ? (
+        <Grid bgcolor="#2a8d5c" padding="24px 14px" {...tableTitleProps}>
+          <Typography color="#F7F7F7" fontFamily="Poppins" fontWeight={600} fontSize="16px" lineHeight="16px">
+            {title}
+          </Typography>
+        </Grid>
+      ) : null}
       <TableBodyWrapper>
         <Table>
           <TableHead>

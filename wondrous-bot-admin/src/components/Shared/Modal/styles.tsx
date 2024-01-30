@@ -2,6 +2,7 @@ import { Typography } from "@mui/material";
 import CloseModalIcon from "components/Icons/CloseModal";
 import styled from "styled-components";
 import ScrollBarStyles from "../ScrollBarStyles";
+import ModalComponent from "@mui/material/Modal";
 
 export const ModalContainer = styled.div`
   position: fixed;
@@ -101,7 +102,7 @@ export const ModalFooterRight = styled.div`
 
 export const CloseModalBtn = styled((props) => (
   <div {...props}>
-    <CloseModalIcon strokeColor="black"/>
+    <CloseModalIcon strokeColor={props?.style?.strokeColor || "black"}/>
   </div>
 ))`
   width: 32px;
@@ -121,3 +122,5 @@ export const CloseModalBtn = styled((props) => (
     transform: scale(88%);
   }
 `;
+
+export const StyledModalComponent = styled(ModalComponent)``;

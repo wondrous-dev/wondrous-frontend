@@ -62,7 +62,7 @@ export const CardLabel = styled(Typography)`
 export const SubmissinsWrapper = styled(Box)`
   && {
     max-height: 400px;
-    overflow: scroll;
+    overflow: auto;
     ${ScrollBarStyles};
   }
 `;

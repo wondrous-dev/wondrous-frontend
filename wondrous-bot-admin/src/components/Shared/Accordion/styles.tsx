@@ -12,10 +12,10 @@ export const Accordion = styled(AccordionMui)`
 		background-color: ${(props) => (props.expanded ? "#FFEBDA" : "white")};
 		box-shadow: none;
 		overflow: hidden;
-		border-bottom-left-radius: 16px !important;
-		border-bottom-right-radius: 16px !important;
-		border-top-left-radius: 16px !important;
-		border-top-right-radius: 16px !important;
+		border-bottom-left-radius: 17px !important;
+		border-bottom-right-radius: 17px !important;
+		border-top-left-radius: 17px !important;
+		border-top-right-radius: 17px !important;
 		border: 1px solid transparent;
 		width: 100%;
 		&::before {
