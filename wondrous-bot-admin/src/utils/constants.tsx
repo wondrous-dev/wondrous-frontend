@@ -474,7 +474,7 @@ export const CUSTOM_INTEGRATIONS = {
     name: "Apeiron",
     integrations: APEIRON_INTEGRATIONS,
   },
-  "89444950095167649": {
+  "110521236745880560": {
     name: "Fhenix",
     integrations: FHENIX_INTEGRATIONS,
   },
