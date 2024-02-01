@@ -439,6 +439,7 @@ const FHENIX_INTEGRATIONS = [
 ];
 export const POKT_ORG_ID = "89444950095167649";
 
+const FHENIX_ORG_ID = import.meta.env.VITE_PRODUCTION ? "110521236745880560" : "89444950095167649";
 export const CUSTOM_INTEGRATIONS = {
   // LIFI
   "58318954576216128": {
@@ -472,7 +473,7 @@ export const CUSTOM_INTEGRATIONS = {
     name: "Apeiron",
     integrations: APEIRON_INTEGRATIONS,
   },
-  "110521236745880560": {
+  [FHENIX_ORG_ID]: {
     name: "Fhenix",
     integrations: FHENIX_INTEGRATIONS,
   },
