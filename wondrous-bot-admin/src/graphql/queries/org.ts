@@ -103,3 +103,17 @@ export const GET_ORG_BY_REFERRAL_CODE = gql`
   }
   ${OrgFragment}
 `;
+
+export const EXPORT_USER_ROLE_SUBMISSIONS = gql`
+  query exportUserRolesSubmissions($orgId: String, $startDate: String, $endDate: String, $cmtyUserId: String) {
+    exportUserRolesSubmissions(orgId: $orgId, startDate: $startDate, endDate: $endDate, cmtyUserId: $cmtyUserId) {
+      acceptedSubmissions
+      rejectedSubmissions
+      discordUserId
+      discordUsername
+      questTitleAccepted
+      questTitleRejected
+      roles
+    }
+  }
+`;

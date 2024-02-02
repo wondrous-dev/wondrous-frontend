@@ -15,6 +15,9 @@ import { MemberPageSearchBar } from "./MemberSearchBar";
 import ResetPointsModal from "./ResetPointsModal";
 import MembersTutorial from "components/TutorialComponent/Tutorials/MembersTutorial";
 import { transformUser } from "utils/transformCmtyUserToMembers";
+import { FilterPill } from "components/ViewQuestResults/styles";
+import DownloadSvg from "components/Icons/download.svg";
+import ExportModal from "./ExportModal";
 
 const MembersPage = () => {
   const { activeOrg } = useContext(GlobalContext);
@@ -23,6 +26,7 @@ const MembersPage = () => {
   const [memberSearch, setMemberSearch] = useState(null);
   const [resetPointsBalance, setResetPointsBalance] = useState(null);
   const [openResetPointsModal, setOpenResetPointsModal] = useState(false);
+  const [openExportModal, setOpenExportModal] = useState(false);
   const [memberInfo, setMemberInfo] = useState(null);
   const [getCmtyUsersForOrg, { data, fetchMore, refetch, loading }] = useLazyQuery(GET_COMMUNITY_USERS_FOR_ORG, {
     notifyOnNetworkStatusChange: true,
@@ -70,7 +74,6 @@ const MembersPage = () => {
 
   const headers = ["Name", "Level", "Discord", "Twitter", "Points Balance", "Total Points Accumulated"];
 
-
   return (
     <>
       <ResetPointsModal
@@ -78,6 +81,7 @@ const MembersPage = () => {
         setOpenResetPointsModal={setOpenResetPointsModal}
         pointsBalance={resetPointsBalance}
       />
+      <ExportModal isOpen={!!openExportModal} onClose={() => setOpenExportModal(false)} />
       {data?.getCmtyUsersForOrg ? (
         <MembersTutorial setMembersData={setMembersData} data={data?.getCmtyUsersForOrg} />
       ) : null}
@@ -98,15 +102,19 @@ const MembersPage = () => {
           sm: "24px 56px",
         }}
       >
-        <Box 
-        paddingRight="12px"
-        display="flex" alignItems={{
-          xs: 'flex-start',
-          md: 'center'
-        }} gap="12px" flexDirection={{
-          xs: 'column',
-          md: 'row'
-        }}>
+        <Box
+          paddingRight="12px"
+          display="flex"
+          alignItems={{
+            xs: "flex-start",
+            md: "center",
+          }}
+          gap="12px"
+          flexDirection={{
+            xs: "column",
+            md: "row",
+          }}
+        >
           <MemberPageSearchBar onChange={setMemberSearch} member={memberSearch} setMemberInfo={setMemberInfo} />
           <SharedSecondaryButton
             onClick={() => {
@@ -114,7 +122,7 @@ const MembersPage = () => {
               setOpenResetPointsModal(true);
             }}
           >
-            Reset member points
+            Reset points
           </SharedSecondaryButton>
           <SharedSecondaryButton
             onClick={() => {
@@ -122,8 +130,26 @@ const MembersPage = () => {
               setOpenResetPointsModal(true);
             }}
           >
-            Reset member point balances
+            Reset point balances
           </SharedSecondaryButton>
+          <Box flex={1} />
+          <FilterPill
+            style={{
+              fontWeight: "600",
+            }}
+            onClick={() => {
+              setOpenExportModal(true);
+            }}
+          >
+            Export members{" "}
+            <img
+              style={{
+                cursor: "pointer",
+                marginLeft: "12px",
+              }}
+              src={DownloadSvg}
+            />
+          </FilterPill>
         </Box>
         <Box width="100%" height="100%" data-tour="tutorial-members-table">
           {membersData?.length > 0 ? (
