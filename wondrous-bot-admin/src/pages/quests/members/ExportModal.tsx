@@ -28,12 +28,12 @@ const exportUserRolesSubmissionsToCsv = (userRolesData, timeValue) => {
     const totalSubmissions = Number(userRole?.acceptedSubmissions) + Number(userRole?.rejectedSubmissions);
     const row = [
       userRole?.discordUsername,
-      userRole?.roles.join("; "),
+      userRole?.roles?.join("; "),
       totalSubmissions,
-      userRole?.acceptedSubmissions,
-      userRole?.rejectedSubmissions,
-      userRole?.questTitleAccepted.join("; "),
-      userRole?.questTitleRejected.join("; "),
+      userRole?.acceptedSubmissions || 0,
+      userRole?.rejectedSubmissions || 0,
+      userRole?.questTitleAccepted?.join("; "),
+      userRole?.questTitleRejected?.join("; "),
     ];
     rows.push(row);
   });
