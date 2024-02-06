@@ -97,7 +97,12 @@ function Login() {
         {notSupportedChain && (
           <ErrorTypography>Unsupported network, change to mainnet or a supported network</ErrorTypography>
         )}
-        <GoogleOAuthButton />
+        <GoogleOAuthButton
+          params={{
+            token,
+            type,
+          }}
+        />
         <FormControl
           fullWidth
           sx={{

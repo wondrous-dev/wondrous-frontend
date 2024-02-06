@@ -134,7 +134,12 @@ const CollectCredentials = ({ moveForward }) => {
           Sign up to Wonderverse
         </Typography>
         <Box sx={{ width: "80%" }}>
-          <GoogleOAuthButton isSignup />
+          <GoogleOAuthButton
+            params={{
+              token,
+              type,
+            }}
+          />
         </Box>
         {!notSupportedChain && errorMessage ? <ErrorTypography>{errorMessage}</ErrorTypography> : ""}
         {notSupportedChain && (
