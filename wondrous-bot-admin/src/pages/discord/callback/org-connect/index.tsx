@@ -15,9 +15,9 @@ const CallbackPage = () => {
     if (!state) return { isCreateOrg: null, orgId: null };
     try {
       let isCreateOrg = JSON.parse(state)?.create_org;
-      return { isCreateOrg, orgId: null };
+      return isCreateOrg ? { isCreateOrg, orgId: null } : { isCreateOrg: null, orgId: state };
     } catch (error) {
-      return { isCreateOrg: null, state };
+      return { isCreateOrg: null, orgId: state };
     }
   }, [state]);
 
