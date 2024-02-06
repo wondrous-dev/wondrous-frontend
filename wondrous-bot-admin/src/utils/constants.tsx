@@ -547,3 +547,5 @@ export const QUALIFYING_ACTION_TYPES = {
 };
 
 export const LOCKED_PATHS = ["/store", "/store/items/create", "/store/items/:id", "/analytics"];
+
+export const LOCAL_STORAGE_ORG_ID_KEY = "default-org-id";
