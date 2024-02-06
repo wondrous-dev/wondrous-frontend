@@ -1,24 +1,40 @@
 import { ButtonBase, Typography } from "@mui/material";
 import { useGoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
 import GoogleIcon from "./icon";
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { GOOGLE_LOGIN_MUTATION } from "graphql/mutations";
 import { storeAuthHeader } from "components/Auth";
 import { useNavigate } from "react-router-dom";
-import { getBaseUrl } from "utils/common";
-const GoogleOAuthButton = ({ isSignup = false }) => {
+import { getBaseUrl, handleUserOnboardingRedirect } from "utils/common";
+import { GET_LOGGED_IN_USER_FULL_ACCESS_ORGS } from "graphql/queries";
+
+const GoogleOAuthButton = ({ params = {} }) => {
+  const navigate = useNavigate();
+
+  const [getLoggedInUserFullAccessOrgs] = useLazyQuery(GET_LOGGED_IN_USER_FULL_ACCESS_ORGS, {
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      if (data?.getLoggedInUserFullAccessOrgs.length === 0) {
+        handleUserOnboardingRedirect(null, navigate, params, "/onboarding/welcome?ref=signup");
+        return;
+      }
+      handleUserOnboardingRedirect(null, navigate, params, "/");
+    },
+  });
   const handleCompleted = async ({ token, user, callback }) => {
     await storeAuthHeader(token, user);
     callback?.();
   };
 
-  const navigate = useNavigate();
-
   const handleRedirect = () => {
-    if (isSignup) {
-      navigate("/onboarding/welcome?ref=signup");
-    }
-    navigate("/");
+    getLoggedInUserFullAccessOrgs({
+      variables: {
+        excludeSharedOrgs: true,
+        cmtyEnabled: true,
+      },
+    });
   };
 
   const [signInUser] = useMutation(GOOGLE_LOGIN_MUTATION, {
@@ -36,7 +52,7 @@ const GoogleOAuthButton = ({ isSignup = false }) => {
   const login = useGoogleLogin({
     flow: "auth-code",
     scope: "email",
-    redirect_uri:  `${getBaseUrl()}/oauth/google/callback`,
+    redirect_uri: `${getBaseUrl()}/oauth/google/callback`,
     onSuccess: (tokenResponse) => {
       const { code } = tokenResponse;
       signInUser({ variables: { code: code } });

@@ -6,7 +6,7 @@ import { GET_LOGGED_IN_USER_FULL_ACCESS_ORGS } from "graphql/queries";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
-import { EXCLUDED_PATHS, PAGES_WITHOUT_HEADER } from "utils/constants";
+import { EXCLUDED_PATHS, LOCAL_STORAGE_ORG_ID_KEY, PAGES_WITHOUT_HEADER } from "utils/constants";
 import { matchRoute } from "utils/common";
 import ErrorCatcher from "components/ErrorCatcher";
 import GlobalContext from "utils/context/GlobalContext";
@@ -47,7 +47,6 @@ const DefaultFallback = () => {
   );
 };
 
-const LOCAL_STORAGE_ORG_ID_KEY = "default-org-id";
 const Layout = () => {
   const defaultActiveOrgId = localStorage.getItem(LOCAL_STORAGE_ORG_ID_KEY);
   const location = useLocation();
@@ -82,7 +81,7 @@ const Layout = () => {
       notifyOnNetworkStatusChange: true,
       onCompleted: ({ getLoggedInUserFullAccessOrgs }) => {
         if (getLoggedInUserFullAccessOrgs.length === 0) {
-          navigate("/onboarding");
+          navigate("/onboarding/welcome?ref=login");
           return;
         }
         if (defaultActiveOrgId) {
