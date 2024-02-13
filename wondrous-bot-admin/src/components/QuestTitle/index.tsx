@@ -12,7 +12,7 @@ type QuestTitleProps = {
   multiline?: boolean;
   maxLength?: number;
   showMaxLength?: boolean;
-  stateKey?: string 
+  stateKey?: string;
 };
 
 const QuestTitle = ({
@@ -27,7 +27,6 @@ const QuestTitle = ({
   const { errors, setErrors } = useContext(CreateQuestContext);
   const handleChange = (value) => {
     if (!onChange) return null;
-    if (value.length > maxLength) return;
     if (errors?.[stateKey]) {
       setErrors({
         ...errors,
