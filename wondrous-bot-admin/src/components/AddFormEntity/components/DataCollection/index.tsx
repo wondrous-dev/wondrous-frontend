@@ -9,6 +9,7 @@ import InterestsComponent from "./InterestsComponent";
 import LocationComponent from "./Location";
 import Skills from "./Skills";
 import { ErrorText } from "components/Shared/styles";
+import { Box } from "@mui/material";
 
 const OPTIONS = [
   {
@@ -79,7 +80,12 @@ const DataCollectionComponent = (props) => {
         }}
       >
         <Label>Select what you want to collect</Label>
-        <SelectComponent onChange={handleTypeChange} value={dataCollectionType} options={OPTIONS} error={error?.additionalData?.dataCollectionType}/>
+        <SelectComponent
+          onChange={handleTypeChange}
+          value={dataCollectionType}
+          options={OPTIONS}
+          error={error?.additionalData?.dataCollectionType}
+        />
       </Grid>
       <Grid
         item
@@ -95,10 +101,17 @@ const DataCollectionComponent = (props) => {
         <TextField
           placeholder="Enter prompt here"
           value={prompt || ""}
-          onChange={(value) => handleOnChange("prompt", value)}
+          onChange={(value) => {
+            if (value.length <= 256) {
+              handleOnChange("prompt", value);
+            }
+          }}
           multiline={false}
           error={error?.prompt}
         />
+        <Box fontSize="13px" color="#2A8D5C" fontWeight="500" marginTop="-8px">
+          {prompt.length} / 256
+        </Box>
       </Grid>
       {dataCollectionType === DATA_COLLECTION_TYPES.INTERESTS ? (
         <InterestsComponent

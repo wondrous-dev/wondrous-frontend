@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import apollo from "services/apollo";
 import { Label } from "./styles";
 import TextField from "../../Shared/TextField";
@@ -250,10 +250,17 @@ const DiscordComponent = ({ onChange, value, stepType, error }) => {
           <TextField
             placeholder="Enter prompt here (Ex. Join our weekly community call for a minimum of 10 minutes)"
             value={prompt || ""}
-            onChange={(value) => handleOnChange("prompt", value)}
+            onChange={(value) => {
+              if (value?.length <= 256) {
+                handleOnChange("prompt", value);
+              }
+            }}
             multiline={false}
             error={error?.prompt}
           />
+          <Box fontSize="13px" color="#2A8D5C" fontWeight="500" marginTop="-8px">
+            {prompt.length} / 256
+          </Box>
         </Grid>
         {getDiscordComponent(stepType, handleOnChange, value, error)}
       </Grid>

@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { IndexContainer, Label } from "./styles";
 import TextField from "../../Shared/TextField";
 import { TYPES } from "utils/constants";
@@ -9,10 +9,17 @@ const YoutubeLikeText = ({ handleOnChange, value, error }) => (
     <TextField
       placeholder="Enter prompt here (Eg. Go to this link to check out our mission + vision)"
       value={value?.prompt || ""}
-      onChange={(value) => handleOnChange("prompt", value)}
+      onChange={(value) => {
+        if (value.length <= 256) {
+          handleOnChange("prompt", value);
+        }
+      }}
       multiline={false}
       error={error?.prompt}
     />
+    <Box fontSize="13px" color="#2A8D5C" fontWeight="500" marginTop="-8px">
+      {value?.prompt?.length} / 256
+    </Box>
     <Label>Link to visit</Label>
     <TextField
       placeholder="Please enter the url"

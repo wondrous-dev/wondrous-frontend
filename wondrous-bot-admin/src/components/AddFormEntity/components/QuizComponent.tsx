@@ -154,10 +154,17 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
           <TextField
             placeholder="Enter question here"
             value={question || ""}
-            onChange={(value) => handleOnChange("question", value)}
+            onChange={(value) => {
+              if (value.length <= 256) {
+                handleOnChange("question", value);
+              }
+            }}
             multiline={false}
             error={error?.prompt}
           />
+          <Box fontSize="13px" color="#2A8D5C" fontWeight="500" marginTop="-8px">
+            {question.length} / 256
+          </Box>
         </Grid>
         <Grid item gap="14px" display="flex" flexDirection="column">
           <Typography fontFamily="Poppins" fontWeight={600} fontSize="13px" lineHeight="15px" color="#626262">
