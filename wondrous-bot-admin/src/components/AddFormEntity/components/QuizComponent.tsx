@@ -163,7 +163,7 @@ const QuizComponent = ({ onChange, value, stepType, error }) => {
             error={error?.prompt}
           />
           <Box fontSize="13px" color="#2A8D5C" fontWeight="500" marginTop="-8px">
-            {question.length} / 256
+            {question?.length} / 256
           </Box>
         </Grid>
         <Grid item gap="14px" display="flex" flexDirection="column">

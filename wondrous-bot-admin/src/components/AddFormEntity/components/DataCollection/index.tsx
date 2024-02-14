@@ -110,7 +110,7 @@ const DataCollectionComponent = (props) => {
           error={error?.prompt}
         />
         <Box fontSize="13px" color="#2A8D5C" fontWeight="500" marginTop="-8px">
-          {prompt.length} / 256
+          {prompt?.length} / 256
         </Box>
       </Grid>
       {dataCollectionType === DATA_COLLECTION_TYPES.INTERESTS ? (
