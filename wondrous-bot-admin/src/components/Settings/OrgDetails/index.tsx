@@ -72,7 +72,7 @@ const OrgDetails = () => {
     });
   };
   const [updateOrg, { data: updateOrgData, loading: updateLoading }] = useMutation(UPDATE_ORG, {
-    refetchQueries: ["getUserOrgs"],
+    refetchQueries: ["getLoggedInUserFullAccessOrgs"],
     onCompleted: () => {
       setSnackbarSuccess();
     },
