@@ -10,9 +10,13 @@ import { SidebarLabel, WorkspaceContainer, WorkspaceImageWrapper, WorkspaceWrapp
 import AddImage from "components/Icons/Add.svg";
 import { WorkspaceDAOIcon } from "components/Icons/DAOIcon";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { logout } from "components/Auth";
+import { logout, useMe, withAuth } from "components/Auth";
 import { LogoutRounded } from "@mui/icons-material";
 import { ButtonIconWrapper } from "components/Shared/styles";
+import { useMutation } from "@apollo/client";
+import { CREATE_ORG } from "graphql/mutations";
+import { generateRandomString } from "utils/discord";
+import { ALLOWLIST_ADMIN_IDS } from "utils/constants";
 
 interface GearIconProps {
   onClick?: () => void;
@@ -45,6 +49,8 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
   const { userOrgs, activeOrg, setActiveOrg } = useContext(GlobalContext);
   const navigate = useNavigate();
 
+  const { user } = useMe() || {};
+
   const handleClickAway = () => {
     if (anchorEl) setAnchorEl(null);
   };
@@ -56,6 +62,30 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
 
   const togglePopper = (e) => {
     return setAnchorEl((prev) => (prev ? null : e.currentTarget));
+  };
+
+  const [adminCreateOrg, { loading }] = useMutation(CREATE_ORG, {
+    refetchQueries: ["getLoggedInUserFullAccessOrgs"],
+    onCompleted: (data) => {
+      setActiveOrg(data?.createOrg);
+    },
+  });
+  const _adminCreateOrg = async () => {
+    const randomStr = generateRandomString(8);
+    try {
+      await adminCreateOrg({
+        variables: {
+          input: {
+            name: `New Workspace - ${randomStr}`,
+            username: `workspace-${randomStr}`,
+            cmtyEnabled: true,
+          },
+        },
+      });
+    } catch (error) {
+      alert("Error creating workspace, check console for more details");
+      console.log(error, "some error");
+    }
   };
 
   return (
@@ -194,6 +224,22 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
                 </Label>
               </Box>
             </WorkspaceWrapper>
+            {ALLOWLIST_ADMIN_IDS.includes(user?.id) && (
+              <WorkspaceWrapper onClick={_adminCreateOrg} disabled={loading}>
+                <Box display="flex" gap="10px" alignItems="center">
+                  <img
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                    }}
+                    src={AddImage}
+                  />
+                  <Label color="#1D1D1D" fontWeight={500} fontSize="15px">
+                    ADMIN - create org
+                  </Label>
+                </Box>
+              </WorkspaceWrapper>
+            )}
             <Divider />
             <WorkspaceWrapper onClick={() => logout()}>
               <Box display="flex" gap="10px" alignItems="center">
@@ -219,4 +265,4 @@ const WorkspaceSwitch = ({ isCollapsed = false }) => {
   );
 };
 
-export default WorkspaceSwitch;
+export default withAuth(WorkspaceSwitch);

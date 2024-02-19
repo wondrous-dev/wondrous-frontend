@@ -550,3 +550,5 @@ export const QUALIFYING_ACTION_TYPES = {
 export const LOCKED_PATHS = ["/store", "/store/items/create", "/store/items/:id", "/analytics"];
 
 export const LOCAL_STORAGE_ORG_ID_KEY = "default-org-id";
+
+export const ALLOWLIST_ADMIN_IDS = ["46108748309069853", "54694658413953389"];
