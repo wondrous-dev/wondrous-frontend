@@ -54,8 +54,25 @@ const ClaimButton = ({ chain, nonce, signature, tokenId, nftMetadataId, cmtyUser
       onFailure?.();
       //TODO: replace w code
       if (error.message?.toLowerCase()?.includes("signature has already been used")) {
-        setSnackbarAlertMessage("Signature has already been used");
+        const openSeaLink = `https://opensea.io/assets/${chain}/${CHAIN_TO_NFT_FACTORY[chainId]}/${tokenId}`;
         setSnackbarAlertOpen(true);
+
+        setSnackbarAlertMessage(() => (
+          <Typography textAlign="center">
+            You've already minted this NFT! Check
+            <UnderlinedLink
+              style={{
+                marginLeft: "2px",
+                marginRight: "2px",
+              }}
+              href={openSeaLink}
+            >
+              OpenSea
+            </UnderlinedLink>
+            to see it
+          </Typography>
+        ));
+
         setIsMinting(false);
         return;
       }
