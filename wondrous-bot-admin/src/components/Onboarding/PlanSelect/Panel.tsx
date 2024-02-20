@@ -78,17 +78,14 @@ const Panel = ({
           </SharedSecondaryButton>
           <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
             <>
-              <Typography
-                color="#4D4D4D"
-                fontSize="13px"
-                sx={{
-                  visibility: price ? "visibile" : "hidden",
-                }}
-              >
-                <span style={{ fontWeight: 800, fontSize: "18px" }}>${price}</span> /month
-              </Typography>
-              <Typography fontSize="12px" alignItems="center" fontWeight={500} color="#4D4D4D">
-                {!price ? "Custom pricing per server" : "No credit card required"}
+              <Typography color="#4D4D4D" fontSize="13px" lineHeight={price ? 1.5 : "26px"}>
+                {price ? (
+                  <>
+                    <span style={{ fontWeight: 800, fontSize: "18px" }}>${price}</span> /month
+                  </>
+                ) : (
+                  <span style={{ fontSize: "12px" }}>Custom pricing per server</span>
+                )}
               </Typography>
             </>
           </Box>
