@@ -67,7 +67,7 @@ const EcosystemFeature = ({
           <Button
             disableRipple
             disableFocusRipple
-            href="https://discord.gg/wonderverse-xyz"
+            href="https://discord.com/invite/wonderverse-907435897568505866"
             sx={{
               backgroundColor: "#84BCFF",
               height: "40px",
