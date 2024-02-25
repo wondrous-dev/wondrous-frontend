@@ -46,8 +46,8 @@ const BillingSettings = () => {
               }}
             >
               Only the user account who purchased the subscription for this organization can update their account!
-              Please contact us our on{" "}
-              <a href="https://discord.gg/wonderverse-xyz" target="_blank">
+              Please contact us on our{" "}
+              <a href="https://discord.com/invite/wonderverse-907435897568505866" target="_blank">
                 Discord
               </a>{" "}
               if you want to change this.
@@ -64,7 +64,7 @@ const BillingSettings = () => {
             </BillingInfoHeader>
             <BillingInfoUpdateText>
               Have any questions? Shoot us a message in our{" "}
-              <BillingInfoUpdateLink href="https://discord.gg/wonderverse-xyz" target="_blank">
+              <BillingInfoUpdateLink href="https://discord.com/invite/wonderverse-907435897568505866" target="_blank">
                 Discord
               </BillingInfoUpdateLink>
             </BillingInfoUpdateText>
