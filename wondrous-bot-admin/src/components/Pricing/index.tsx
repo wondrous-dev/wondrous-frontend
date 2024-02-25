@@ -58,10 +58,10 @@ const PricingComponent = () => {
                 }}
               >
                 There's already a subscription associated with this organization! Only the user account who purchased
-                the subscription can update their account. Please contact us our on{" "}
+                the subscription can update their account. Please contact us on our{" "}
                 <a
                   style={{ color: "white", textDecoration: "underline" }}
-                  href="https://discord.gg/wonderverse-xyz"
+                  href="https://discord.com/invite/wonderverse-907435897568505866"
                   target="_blank"
                 >
                   Discord
