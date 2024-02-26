@@ -100,8 +100,8 @@ const StoreItem = () => {
           title={isEditMode ? "Edit Store Item" : "View Store Item"}
           renderActions={() => (
             <>
-              <SharedSecondaryButton $reverse={isDeactivated} onClick={handleOnClick} disabled={isDeactivated}>
-                {isDeactivated ? "Product deactivated" : buttonTitle}
+              <SharedSecondaryButton $reverse={isDeactivated} onClick={handleOnClick} disabled={isDeactivated && isEditMode}>
+                {isDeactivated && isEditMode ? "Product deactivated" : buttonTitle}
               </SharedSecondaryButton>
             </>
           )}

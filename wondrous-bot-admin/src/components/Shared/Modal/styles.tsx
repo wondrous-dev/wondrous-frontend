@@ -86,6 +86,7 @@ export const ModalFooter = styled.div`
   padding: 24px;
   border-radius: 0 0 16px 16px;
   border-top: 1px solid #e8e8e8;
+  gap: 12px;
 `;
 
 export const ModalFooterLeft = styled.div`

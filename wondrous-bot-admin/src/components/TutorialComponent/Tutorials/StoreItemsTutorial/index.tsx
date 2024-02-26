@@ -27,7 +27,6 @@ const StoreItemsTutorial = () => {
     setIsModalOpen(false);
   };
 
-  //TODO: fix popover
   const STEPS = [
     {
       selector: "[data-tour=tutorial-store-items-page-new-store-item-button]",
@@ -54,7 +53,10 @@ const StoreItemsTutorial = () => {
     handleTourVisit(TUTORIALS.STORE_ITEMS_PAGE_GUIDE);
   };
 
-  const handleSkip = () => handleTourVisit(TUTORIALS.STORE_ITEMS_PAGE_GUIDE);
+  const handleSkip = () => {
+    if (shouldForceOpenTour) setShouldForceOpenTour(false);
+    handleTourVisit(TUTORIALS.STORE_ITEMS_PAGE_GUIDE);
+  };
 
   const POST_STORE_ITEM_CREATE_STEPS: any = [
     {
@@ -94,7 +96,6 @@ const StoreItemsTutorial = () => {
 
   const handleTourStart = () => {
     if (isOpen) return;
-    if (shouldForceOpenTour) setShouldForceOpenTour(false);
     if (completedGuides && (!completedGuides?.includes(TUTORIALS.STORE_ITEMS_PAGE_GUIDE) || shouldForceOpenTour)) {
       setIsModalOpen(true);
     }
