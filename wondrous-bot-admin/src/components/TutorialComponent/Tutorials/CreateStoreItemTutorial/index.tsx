@@ -41,6 +41,9 @@ const useCreateStoreItemTutorial = (initialType, currentType) => {
       ),
     },
     {
+      action: () => {
+        if (shouldForceOpenTour) setShouldForceOpenTour(false);
+      },
       selector: "[data-tour=tutorial-store-item-info]",
       highlightedSelectors: ["[data-tour=tutorial-store-item-panel]"],
       resizeObservables: ["[data-tour=tutorial-store-item-panel]"],
@@ -111,7 +114,6 @@ const useCreateStoreItemTutorial = (initialType, currentType) => {
     },
     {
       selector: "[data-tour=tutorial-store-item-save]",
-      action: () => handleTourVisit(TUTORIALS.STORE_ITEMS_CREATE_PAGE_GUIDE),
       position: "left",
       hideButtons: true,
       content: () => (
@@ -140,20 +142,22 @@ const useCreateStoreItemTutorial = (initialType, currentType) => {
   }, [currentType, currentStep]);
 
   useEffect(() => {
-    if (
-      !isOpen &&
-      completedGuides &&
-      (!completedGuides?.includes(TUTORIALS.STORE_ITEMS_CREATE_PAGE_GUIDE) || shouldForceOpenTour) &&
-      plan &&
-      !isBasicPLan &&
-      !id
-    ) {
+    if (shouldForceOpenTour) {
+      handleTourVisit(TUTORIALS.STORE_ITEMS_CREATE_PAGE_GUIDE);
       setSteps(steps);
       setCurrentStep(0);
       setIsOpen(true);
-      if (shouldForceOpenTour) setShouldForceOpenTour(false);
     }
-  }, [plan, isBasicPLan, shouldForceOpenTour]);
+  }, [shouldForceOpenTour]);
+
+  useEffect(() => {
+    if (completedGuides && !completedGuides?.includes(TUTORIALS.STORE_ITEMS_CREATE_PAGE_GUIDE)) {
+      handleTourVisit(TUTORIALS.STORE_ITEMS_CREATE_PAGE_GUIDE);
+      setSteps(steps);
+      setCurrentStep(0);
+      setIsOpen(true);
+    }
+  }, []);
 };
 
 export default useCreateStoreItemTutorial;

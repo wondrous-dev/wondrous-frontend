@@ -137,6 +137,7 @@ const SidebarHelpComponent = ({ isCollapsed, toggleDrawer }) => {
               return (
                 <ItemLinkElement
                   path={item.path}
+                  key={item.path}
                   onClick={() => {
                     item.onClick?.();
                     setIsOpen(false);
