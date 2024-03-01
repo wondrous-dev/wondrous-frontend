@@ -126,6 +126,7 @@ const CommandBanner = ({ banner, activeOrg }) => {
     });
     if (response?.data?.deleteOrgBanner?.success) {
       callback();
+      imageInputField.current.value = "";
     }
   };
 
