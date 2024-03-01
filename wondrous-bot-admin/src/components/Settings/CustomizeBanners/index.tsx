@@ -22,9 +22,43 @@ import {
   CustomizeBannersContainer,
   BannerUploadHeader,
   BannerUploadContainer,
+  CommandsContainer,
 } from "./styles";
 
-const CommandBanner = () => {
+const commandBanners = [
+  {
+    title: "Quests",
+    tooltip: "Quests are a series of tasks that users can complete to earn rewards.",
+  },
+
+  {
+    title: "My Submissions",
+    tooltip: "View all of your submissions and their statuses.",
+  },
+  {
+    title: "My Level",
+    tooltip: "View your current level and experience points.",
+  },
+  {
+    title: "LeaderBoard",
+    tooltip: "View the top users and their levels.",
+  },
+  {
+    title: "Store",
+    tooltip: "Purchase items with your experience points.",
+  },
+  {
+    title: "My Purchases",
+    tooltip: "View all of your purchases.",
+  },
+  {
+    title: "Onboard Me",
+    tooltip: "Complete the onboarding process.",
+  },
+];
+
+const CommandBanner = ({ banner }) => {
+  const { title, tooltip } = banner;
   const [data, setData] = useState({ profilePicture: null });
   const handleChange = (value) => setData({ profilePicture: value });
   const handleRemoveFile = () => handleChange(null);
@@ -33,7 +67,7 @@ const CommandBanner = () => {
   return (
     <CommandBannerContainer>
       <HeaderContainer>
-        <HeaderText>/Quests</HeaderText>
+        <HeaderText>/{title}</HeaderText>
       </HeaderContainer>
       <CommandBannerUploadContainer>
         <BannerUploadContainer>
@@ -79,8 +113,11 @@ const CommandBanner = () => {
 const CustomizeBanners = () => {
   return (
     <CustomizeBannersContainer>
-      <CommandBanner />
-      <CommandBanner />
+      <CommandsContainer>
+        {commandBanners.map((banner, index) => (
+          <CommandBanner key={index} banner={banner} />
+        ))}
+      </CommandsContainer>
     </CustomizeBannersContainer>
   );
 };

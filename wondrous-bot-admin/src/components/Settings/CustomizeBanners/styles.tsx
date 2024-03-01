@@ -3,24 +3,35 @@ import styled from "styled-components";
 
 export const CustomizeBannersContainer = styled(Grid)`
   && {
-    display: flex;
-    gap: 24px;
-    flex-direction: column;
+    max-width: 100%;
   }
 
   ${({ theme }) => theme.breakpoints.up("sm")} {
     && {
-      flex-grow: 1;
-      flex-direction: row;
+      max-width: 50%;
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.up("md")} {
+    && {
+      max-width: 80%;
     }
   }
 `;
 
+export const CommandsContainer = styled((props) => <Grid container item {...props} />)`
+  && {
+    gap: 24px;
+  }
+`;
+
 export const CommandBannerContainer = styled(Grid)`
-  background-color: white;
-  color: #4d4d4d;
-  border-radius: 16px;
-  width: 100%;
+  && {
+    background-color: white;
+    color: #4d4d4d;
+    border-radius: 16px;
+    width: 100%;
+  }
 
   ${({ theme }) => theme.breakpoints.up("sm")} {
     max-width: 448px;
