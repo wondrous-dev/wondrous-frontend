@@ -2,7 +2,7 @@ import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
 import DeleteIcon from "components/Icons/Delete";
 import ImageUpload from "components/ImageUpload";
 import { AVATAR_EDITOR_TYPES } from "components/ImageUpload/AvatarEditor";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import ReplaceIcon from "components/Icons/ReplaceIcon";
 import {
@@ -29,6 +29,9 @@ import {
 } from "./styles";
 import { StyledInformationTooltip } from "components/Shared/Tooltip";
 import InformationTooltip from "components/Icons/information.svg";
+import { UPDATE_ORG_BANNER } from "graphql/mutations/orgAsset";
+import { useMutation } from "@apollo/client";
+import GlobalContext from "utils/context/GlobalContext";
 
 const commandBanners = [
   {
@@ -36,6 +39,7 @@ const commandBanners = [
     tooltip: "Quests are a series of tasks that users can complete to earn rewards.",
     bannerImage: "/images/banner-images/quest-banner.png",
     topImage: "/images/banner-images/quest-circle.png",
+    command: "quests",
   },
 
   {
@@ -43,49 +47,77 @@ const commandBanners = [
     tooltip: "View all of your submissions and their statuses.",
     bannerImage: "/images/banner-images/sub-banner.png",
     topImage: "/images/banner-images/sub-circle.png",
+    command: "my-submissions",
   },
   {
     title: "My Level",
     tooltip: "View your current level and experience points.",
     bannerImage: "/images/banner-images/my-level-banner.png",
     topImage: "/images/banner-images/my-level-circle.png",
+    command: "my-level",
   },
   {
     title: "Leaderboard",
     tooltip: "View the top users and their levels.",
     bannerImage: "/images/banner-images/leaderboard-banner.png",
     topImage: "/images/banner-images/leaderboard-circle.png",
+    command: "leaderboard",
   },
   {
     title: "Store",
     tooltip: "Purchase items with your experience points.",
     bannerImage: "/images/banner-images/store-banner.png",
     topImage: "/images/banner-images/store-circle.png",
+    command: "store",
   },
   {
     title: "My Purchases",
     tooltip: "View all of your purchases.",
     bannerImage: "/images/banner-images/my-purchases-banner.png",
     topImage: "/images/banner-images/my-purchases-circle.png",
+    command: "my-purchases",
   },
   {
     title: "Onboard Me",
     tooltip: "Complete the onboarding process.",
     bannerImage: "/images/banner-images/onboard-me-banner.png",
     topImage: "/images/banner-images/onboard-me-circle.png",
+    command: "onboard-me",
   },
 ];
 
-const CommandBanner = ({ banner }) => {
-  const { title, tooltip } = banner;
+const CommandBanner = ({ banner, activeOrg }) => {
+  const { title, tooltip, command } = banner;
+  const [updateBanner, { loading }] = useMutation(UPDATE_ORG_BANNER);
 
   const [bannerImage, setBannerImage] = useState(banner.bannerImage);
-
-  const handleReplaceBannerImage = (file) => null;
+  const handleReplaceBannerImage = async (file) => {
+    await updateBanner({
+      variables: {
+        orgId: activeOrg?.id,
+        input: {
+          command,
+          url: "",
+          position: "banner",
+        },
+      },
+    });
+  };
   const handleDeleteBannerImage = () => setBannerImage(banner.bannerImage);
 
   const [topImage, setTopImage] = useState(banner.topImage);
-  const handleReplaceTopImage = (file) => null;
+  const handleReplaceTopImage = async (file) => {
+    await updateBanner({
+      variables: {
+        orgId: activeOrg?.id,
+        input: {
+          command,
+          url: "",
+          position: "top-image",
+        },
+      },
+    });
+  };
   const handleDeleteTopImage = () => setTopImage(banner.topImage);
 
   return (
@@ -144,11 +176,12 @@ const CommandBanner = ({ banner }) => {
 };
 
 const CustomizeBanners = () => {
+  const { activeOrg } = useContext(GlobalContext);
   return (
     <CustomizeBannersContainer>
       <CommandsContainer>
         {commandBanners.map((banner, index) => (
-          <CommandBanner key={index} banner={banner} />
+          <CommandBanner key={index} banner={banner} activeOrg={activeOrg} />
         ))}
       </CommandsContainer>
     </CustomizeBannersContainer>
