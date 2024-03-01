@@ -39,9 +39,19 @@ export const CommandBannerContainer = styled(Grid)`
 `;
 
 export const HeaderContainer = styled(Grid)`
-  border-bottom: 1px solid #e0e0e0;
-  margin: 14px;
-  margin-bottom: 0;
+  && {
+    border-bottom: 1px solid #e0e0e0;
+    margin: 14px;
+    margin-bottom: 0;
+  }
+`;
+
+export const HeaderContainerTooltipContent = styled(Grid)`
+  && {
+    display: flex;
+    gap: 8px;
+    width: fit-content;
+  }
 `;
 
 export const HeaderText = styled(Typography)`

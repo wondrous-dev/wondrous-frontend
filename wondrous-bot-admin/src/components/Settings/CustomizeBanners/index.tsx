@@ -23,7 +23,11 @@ import {
   BannerUploadHeader,
   BannerUploadContainer,
   CommandsContainer,
+  HeaderContainerTooltipContent,
+  HeaderInfoIconContainer,
 } from "./styles";
+import { StyledInformationTooltip } from "components/Shared/Tooltip";
+import InformationTooltip from "components/Icons/information.svg";
 
 const commandBanners = [
   {
@@ -67,7 +71,14 @@ const CommandBanner = ({ banner }) => {
   return (
     <CommandBannerContainer>
       <HeaderContainer>
-        <HeaderText>/{title}</HeaderText>
+        <StyledInformationTooltip placement="right" title={tooltip}>
+          <HeaderContainerTooltipContent>
+            <HeaderText>/{title}</HeaderText>
+            <Box>
+              <img src={InformationTooltip} alt="information" />
+            </Box>
+          </HeaderContainerTooltipContent>
+        </StyledInformationTooltip>
       </HeaderContainer>
       <CommandBannerUploadContainer>
         <BannerUploadContainer>
