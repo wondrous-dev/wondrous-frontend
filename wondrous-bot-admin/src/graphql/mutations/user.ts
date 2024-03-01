@@ -3,7 +3,7 @@ import { LoggedinUserFragment, ProfileUserFragment, CmtyUserFragment } from "gra
 
 export const LOGIN_MUTATION = gql`
   mutation emailSignin($email: String!, $password: String!) {
-    emailSignin(input: { email: $email, password: $password }) {
+    emailSignin(input: { email: $email, password: $password}) {
       user {
         ...LoggedinUser
       }
@@ -196,8 +196,8 @@ export const UPDATE_ORG_CMTY_USER_POINT_BALANCE = gql`
 `;
 
 export const GOOGLE_LOGIN_MUTATION = gql`
-  mutation googleSignin($code: String!) {
-    googleSignin(code: $code) {
+  mutation googleSignin($code: String!, $inviteToken: String) {
+    googleSignin(code: $code, inviteToken: $inviteToken) {
       user {
         ...LoggedinUser
       }

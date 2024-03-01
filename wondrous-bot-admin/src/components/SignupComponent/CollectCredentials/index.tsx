@@ -102,7 +102,7 @@ const CollectCredentials = ({ moveForward }) => {
     try {
       await validate(credentials);
       const { email, password } = credentials;
-      const result = await emailSignup(email, password);
+      const result = await emailSignup(email, password, token);
       if (result?.success) {
         moveForward();
       } else if (result === GRAPHQL_ERRORS.EMAIL_ALREADY_EXIST) {
