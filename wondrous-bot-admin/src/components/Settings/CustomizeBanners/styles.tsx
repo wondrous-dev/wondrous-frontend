@@ -123,6 +123,27 @@ export const BannerUploadButtonContainer = styled(Grid)`
   gap: 8px;
 `;
 
+export const ButtonInputContainer = styled(Grid)`
+  && {
+    position: relative;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    & > input {
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      opacity: 0;
+    }
+  }
+`;
+
 export const SectionDivider = styled(Divider)`
   ${({ theme }) => theme.breakpoints.up("md")} {
     display: none;

@@ -2,7 +2,7 @@ import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
 import DeleteIcon from "components/Icons/Delete";
 import ImageUpload from "components/ImageUpload";
 import { AVATAR_EDITOR_TYPES } from "components/ImageUpload/AvatarEditor";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import ReplaceIcon from "components/Icons/ReplaceIcon";
 import {
@@ -26,12 +26,14 @@ import {
   HeaderContainerTooltipContent,
   BannerUploadImageContainer,
   TopImageContainer,
+  ButtonInputContainer,
 } from "./styles";
 import { StyledInformationTooltip } from "components/Shared/Tooltip";
 import InformationTooltip from "components/Icons/information.svg";
 import { DELETE_ORG_BANNER, UPDATE_ORG_BANNER } from "graphql/mutations/orgAsset";
 import { useMutation } from "@apollo/client";
 import GlobalContext from "utils/context/GlobalContext";
+import { transformAndUploadMedia } from "utils/media";
 
 const commandBanners = [
   {
@@ -90,57 +92,62 @@ const CommandBanner = ({ banner, activeOrg }) => {
   const { title, tooltip, command } = banner;
   const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
+  const imageInputField = useRef(null);
 
-  const [bannerImage, setBannerImage] = useState(banner.bannerImage);
-  const handleReplaceBannerImage = async (file) => {
-    await updateBanner({
+  const handleReplaceImage = async ({ file, position, callbackSetState }) => {
+    const image = file.target.files[0];
+    const { filename } = await transformAndUploadMedia({
+      file: image,
+    });
+    const response = await updateBanner({
       variables: {
         orgId: activeOrg?.id,
         input: {
           command,
-          url: "",
-          position: "banner",
+          url: filename,
+          position,
           oldAssetId: "",
         },
       },
     });
+    if (response?.data?.updateOrgBanner?.success) {
+      callbackSetState(URL.createObjectURL(image));
+      imageInputField.current.value = "";
+    }
   };
-  const handleDeleteBannerImage = async () => {
-    await deleteBanner({
+
+  const handleDeleteImage = async ({ callback }) => {
+    const response = await deleteBanner({
       variables: {
         orgId: activeOrg?.id,
         input: {
-          assetId: "",
+          oldAssetId: "",
         },
       },
     });
-    setBannerImage(banner.bannerImage);
+    if (response?.data?.deleteOrgBanner?.success) {
+      callback();
+    }
+  };
+
+  const [bannerImage, setBannerImage] = useState(banner.bannerImage);
+  const handleReplaceBannerImage = async (file) => {
+    handleReplaceImage({ file, position: "banner", callbackSetState: setBannerImage });
+  };
+  const handleDeleteBannerImage = async () => {
+    handleDeleteImage({
+      callback: () => setBannerImage(banner.bannerImage),
+    });
   };
 
   const [topImage, setTopImage] = useState(banner.topImage);
   const handleReplaceTopImage = async (file) => {
-    await updateBanner({
-      variables: {
-        orgId: activeOrg?.id,
-        input: {
-          command,
-          url: "",
-          position: "top-image",
-          oldAssetId: "",
-        },
-      },
-    });
+    handleReplaceImage({ file, position: "topImage", callbackSetState: setTopImage });
   };
   const handleDeleteTopImage = async () => {
-    await deleteBanner({
-      variables: {
-        orgId: activeOrg?.id,
-        input: {
-          assetId: "",
-        },
-      },
+    handleDeleteImage({
+      callback: () => setTopImage(banner.topImage),
     });
-    setTopImage(banner.topImage);
   };
 
   return (
@@ -164,9 +171,12 @@ const CommandBanner = ({ banner, activeOrg }) => {
           <BannerUploadTextButtonContainer>
             <BannerUploadText>Optimal size: 640 x 140px</BannerUploadText>
             <BannerUploadButtonContainer>
-              <ButtonIconWrapper onClick={handleReplaceBannerImage}>
-                <ReplaceIcon />
-              </ButtonIconWrapper>
+              <ButtonInputContainer>
+                <input type="file" accept="image/*" ref={imageInputField} onChange={handleReplaceBannerImage} />
+                <ButtonIconWrapper>
+                  <ReplaceIcon />
+                </ButtonIconWrapper>
+              </ButtonInputContainer>
               <ButtonIconWrapper onClick={handleDeleteBannerImage}>
                 <DeleteIcon />
               </ButtonIconWrapper>
@@ -183,9 +193,12 @@ const CommandBanner = ({ banner, activeOrg }) => {
             <TopImageTextButtonContainer>
               <TopImageText>400 x 400px</TopImageText>
               <TopImageButtonContainer>
-                <ButtonIconWrapper onClick={handleReplaceTopImage}>
-                  <ReplaceIcon />
-                </ButtonIconWrapper>
+                <ButtonInputContainer>
+                  <input type="file" accept="image/*" ref={imageInputField} onChange={handleReplaceTopImage} />
+                  <ButtonIconWrapper>
+                    <ReplaceIcon />
+                  </ButtonIconWrapper>
+                </ButtonInputContainer>
                 <ButtonIconWrapper onClick={handleDeleteTopImage}>
                   <DeleteIcon />
                 </ButtonIconWrapper>
