@@ -7,3 +7,11 @@ export const UPDATE_ORG_BANNER = gql`
     }
   }
 `;
+
+export const DELETE_ORG_BANNER = gql`
+  mutation deleteOrgBanner($orgId: ID!, $input: OrgBannerDeleteInput) {
+    deleteOrgBanner(orgId: $orgId, input: $input) {
+      success
+    }
+  }
+`;

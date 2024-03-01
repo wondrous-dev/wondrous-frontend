@@ -29,7 +29,7 @@ import {
 } from "./styles";
 import { StyledInformationTooltip } from "components/Shared/Tooltip";
 import InformationTooltip from "components/Icons/information.svg";
-import { UPDATE_ORG_BANNER } from "graphql/mutations/orgAsset";
+import { DELETE_ORG_BANNER, UPDATE_ORG_BANNER } from "graphql/mutations/orgAsset";
 import { useMutation } from "@apollo/client";
 import GlobalContext from "utils/context/GlobalContext";
 
@@ -88,7 +88,8 @@ const commandBanners = [
 
 const CommandBanner = ({ banner, activeOrg }) => {
   const { title, tooltip, command } = banner;
-  const [updateBanner, { loading }] = useMutation(UPDATE_ORG_BANNER);
+  const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
+  const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
 
   const [bannerImage, setBannerImage] = useState(banner.bannerImage);
   const handleReplaceBannerImage = async (file) => {
@@ -99,11 +100,22 @@ const CommandBanner = ({ banner, activeOrg }) => {
           command,
           url: "",
           position: "banner",
+          oldAssetId: "",
         },
       },
     });
   };
-  const handleDeleteBannerImage = () => setBannerImage(banner.bannerImage);
+  const handleDeleteBannerImage = async () => {
+    await deleteBanner({
+      variables: {
+        orgId: activeOrg?.id,
+        input: {
+          assetId: "",
+        },
+      },
+    });
+    setBannerImage(banner.bannerImage);
+  };
 
   const [topImage, setTopImage] = useState(banner.topImage);
   const handleReplaceTopImage = async (file) => {
@@ -114,11 +126,22 @@ const CommandBanner = ({ banner, activeOrg }) => {
           command,
           url: "",
           position: "top-image",
+          oldAssetId: "",
         },
       },
     });
   };
-  const handleDeleteTopImage = () => setTopImage(banner.topImage);
+  const handleDeleteTopImage = async () => {
+    await deleteBanner({
+      variables: {
+        orgId: activeOrg?.id,
+        input: {
+          assetId: "",
+        },
+      },
+    });
+    setTopImage(banner.topImage);
+  };
 
   return (
     <CommandBannerContainer>
