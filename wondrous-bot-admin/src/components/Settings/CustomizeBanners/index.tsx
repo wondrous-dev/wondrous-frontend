@@ -1,7 +1,5 @@
 import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
 import DeleteIcon from "components/Icons/Delete";
-import ImageUpload from "components/ImageUpload";
-import { AVATAR_EDITOR_TYPES } from "components/ImageUpload/AvatarEditor";
 import { useContext, useRef, useState } from "react";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import ReplaceIcon from "components/Icons/ReplaceIcon";
@@ -31,9 +29,10 @@ import {
 import { StyledInformationTooltip } from "components/Shared/Tooltip";
 import InformationTooltip from "components/Icons/information.svg";
 import { DELETE_ORG_BANNER, UPDATE_ORG_BANNER } from "graphql/mutations/orgAsset";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import GlobalContext from "utils/context/GlobalContext";
 import { transformAndUploadMedia } from "utils/media";
+import { GET_ORG_BANNERS } from "graphql/queries/orgAsset";
 
 const commandBanners = [
   {
@@ -213,6 +212,12 @@ const CommandBanner = ({ banner, activeOrg }) => {
 
 const CustomizeBanners = () => {
   const { activeOrg } = useContext(GlobalContext);
+  const { data } = useQuery(GET_ORG_BANNERS, {
+    //TODO: update query when implemented in backend
+    variables: {
+      orgId: activeOrg?.id,
+    },
+  });
   return (
     <CustomizeBannersContainer>
       <CommandsContainer>
