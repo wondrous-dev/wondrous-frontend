@@ -65,7 +65,6 @@ export const HeaderText = styled(Typography)`
 export const CommandBannerUploadContainer = styled(Grid)`
   ${({ theme }) => theme.breakpoints.up("md")} {
     display: flex;
-    gap: 12px;
   }
 `;
 
@@ -78,6 +77,20 @@ export const BannerUploadHeader = styled(Typography)`
     font-size: 13px;
     font-weight: 600;
     padding-bottom: 12px;
+  }
+`;
+
+export const BannerUploadImageContainer = styled(Grid)`
+  && {
+    height: 70px;
+    width: 320px;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  && > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
   }
 `;
 
@@ -138,6 +151,20 @@ export const TopImageImageButtonContainer = styled(Grid)`
     && {
       flex-direction: column;
     }
+  }
+`;
+
+export const TopImageContainer = styled(Grid)`
+  && {
+    height: 70px;
+    width: 70px;
+    border-radius: 1000px;
+    overflow: hidden;
+  }
+  && > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
   }
 `;
 
