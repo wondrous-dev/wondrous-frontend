@@ -33,6 +33,13 @@ import { useMutation, useQuery } from "@apollo/client";
 import GlobalContext from "utils/context/GlobalContext";
 import { transformAndUploadMedia } from "utils/media";
 import { GET_ORG_BANNERS } from "graphql/queries/orgAsset";
+import groupBy from "lodash/groupBy";
+import SafeImage from "components/SafeImage";
+
+const BANNER_POSITION = {
+  topImage: "topImage",
+  banner: "banner",
+};
 
 const commandBanners = [
   {
@@ -87,66 +94,81 @@ const commandBanners = [
   },
 ];
 
-const CommandBanner = ({ banner, activeOrg }) => {
-  const { title, tooltip, command } = banner;
+const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
+  const { title, tooltip, command } = baseBanner;
   const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
   const imageInputField = useRef(null);
 
-  const handleReplaceImage = async ({ file, position, callbackSetState }) => {
+  const customBannerImage = customBanner?.find((banner) => banner?.additionalData?.position === BANNER_POSITION.banner);
+  const customTopImage = customBanner?.find((banner) => banner?.additionalData?.position === BANNER_POSITION.topImage);
+  const customBannerImageUrl = customBannerImage?.url;
+  const customTopImageUrl = customTopImage?.url;
+
+  const handleReplaceImage = async ({ file, position, oldAssetId }) => {
     const image = file.target.files[0];
     const { filename } = await transformAndUploadMedia({
       file: image,
     });
-    const response = await updateBanner({
+    await updateBanner({
       variables: {
         orgId: activeOrg?.id,
         input: {
           command,
           url: filename,
           position,
-          oldAssetId: "",
+          oldAssetId,
         },
       },
+      refetchQueries: [GET_ORG_BANNERS],
+      onCompleted: () => {
+        imageInputField.current.value = "";
+      },
     });
-    if (response?.data?.updateOrgBanner?.success) {
-      callbackSetState(URL.createObjectURL(image));
-      imageInputField.current.value = "";
-    }
   };
 
-  const handleDeleteImage = async ({ callback }) => {
-    const response = await deleteBanner({
+  const handleDeleteImage = async ({ assetId }) => {
+    if (!assetId) {
+      imageInputField.current.value = "";
+      return;
+    }
+    await deleteBanner({
       variables: {
         orgId: activeOrg?.id,
         input: {
-          oldAssetId: "",
+          assetId,
         },
       },
+      refetchQueries: [GET_ORG_BANNERS],
+      onCompleted: () => {
+        imageInputField.current.value = "";
+      },
     });
-    if (response?.data?.deleteOrgBanner?.success) {
-      callback();
-      imageInputField.current.value = "";
-    }
   };
 
-  const [bannerImage, setBannerImage] = useState(banner.bannerImage);
   const handleReplaceBannerImage = async (file) => {
-    handleReplaceImage({ file, position: "banner", callbackSetState: setBannerImage });
+    handleReplaceImage({
+      file,
+      position: BANNER_POSITION.banner,
+      oldAssetId: customBannerImage?.id,
+    });
   };
   const handleDeleteBannerImage = async () => {
     handleDeleteImage({
-      callback: () => setBannerImage(banner.bannerImage),
+      assetId: customBannerImage?.id,
     });
   };
 
-  const [topImage, setTopImage] = useState(banner.topImage);
   const handleReplaceTopImage = async (file) => {
-    handleReplaceImage({ file, position: "topImage", callbackSetState: setTopImage });
+    handleReplaceImage({
+      file,
+      position: BANNER_POSITION.topImage,
+      oldAssetId: customTopImage?.id,
+    });
   };
   const handleDeleteTopImage = async () => {
     handleDeleteImage({
-      callback: () => setTopImage(banner.topImage),
+      assetId: customTopImage?.id,
     });
   };
 
@@ -166,7 +188,20 @@ const CommandBanner = ({ banner, activeOrg }) => {
         <BannerUploadContainer>
           <BannerUploadHeader>Banner</BannerUploadHeader>
           <BannerUploadImageContainer>
-            <img src={bannerImage} alt={title} />
+            {customBannerImageUrl ? (
+              <SafeImage
+                src={customBannerImageUrl}
+                alt={`${title} banner`}
+                style={{
+                  height: "auto",
+                  objectFit: "cover",
+                  width: "100%",
+                  maxHeight: "25vh",
+                }}
+              />
+            ) : (
+              <img src={baseBanner?.bannerImage} alt={`${title} banner`} />
+            )}
           </BannerUploadImageContainer>
           <BannerUploadTextButtonContainer>
             <BannerUploadText>Optimal size: 640 x 140px</BannerUploadText>
@@ -188,7 +223,20 @@ const CommandBanner = ({ banner, activeOrg }) => {
           <BannerUploadHeader>Top Image</BannerUploadHeader>
           <TopImageImageButtonContainer>
             <TopImageContainer>
-              <img src={topImage} alt={topImage} />
+              {customTopImageUrl ? (
+                <SafeImage
+                  src={customTopImageUrl}
+                  alt={`${title} top image`}
+                  style={{
+                    height: "auto",
+                    objectFit: "cover",
+                    width: "100%",
+                    maxHeight: "25vh",
+                  }}
+                />
+              ) : (
+                <img src={baseBanner?.topImage} alt={`${title} top image`} />
+              )}
             </TopImageContainer>
             <TopImageTextButtonContainer>
               <TopImageText>400 x 400px</TopImageText>
@@ -214,17 +262,26 @@ const CommandBanner = ({ banner, activeOrg }) => {
 const CustomizeBanners = () => {
   const { activeOrg } = useContext(GlobalContext);
   const { data } = useQuery(GET_ORG_BANNERS, {
-    //TODO: update query when implemented in backend
     variables: {
       orgId: activeOrg?.id,
     },
+    skip: !activeOrg?.id,
   });
+  const groupedBannerByCommand = groupBy(data?.getOrgBanners, (banner) => banner?.additionalData?.command);
   return (
     <CustomizeBannersContainer>
       <CommandsContainer>
-        {commandBanners.map((banner, index) => (
-          <CommandBanner key={index} banner={banner} activeOrg={activeOrg} />
-        ))}
+        {commandBanners.map((banner, index) => {
+          const customBanner = groupedBannerByCommand[banner.command];
+          return (
+            <CommandBanner
+              key={`${banner.command}-banner-${index}`}
+              baseBanner={banner}
+              customBanner={customBanner}
+              activeOrg={activeOrg}
+            />
+          );
+        })}
       </CommandsContainer>
     </CustomizeBannersContainer>
   );
