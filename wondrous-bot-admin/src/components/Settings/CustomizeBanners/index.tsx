@@ -152,13 +152,22 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
         setSnackbarAlertMessage("Updated successfully");
         setSnackbarAlertOpen(true);
       },
+      onError: () => {
+        setSnackbarAlertMessage("Error updating image");
+        setSnackbarAlertOpen(true);
+      },
     });
   };
 
   const handleDeleteImage = async ({ assetId }) => {
-    if (!assetId) {
+    const onCompleted = () => {
       imageInputField.current.value = "";
+      setSnackbarAlertMessage("Deleted successfully");
+      setSnackbarAlertOpen(true);
       return;
+    };
+    if (!assetId) {
+      onCompleted();
     }
     await deleteBanner({
       variables: {
@@ -168,9 +177,9 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
         },
       },
       refetchQueries: [GET_ORG_BANNERS],
-      onCompleted: () => {
-        imageInputField.current.value = "";
-        setSnackbarAlertMessage("Deleted successfully");
+      onCompleted,
+      onError: () => {
+        setSnackbarAlertMessage("Error deleting image");
         setSnackbarAlertOpen(true);
       },
     });
