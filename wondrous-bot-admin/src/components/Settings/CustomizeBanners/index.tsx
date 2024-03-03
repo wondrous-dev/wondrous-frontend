@@ -244,7 +244,7 @@ const CustomizeBanners = () => {
     },
     skip: !activeOrg?.id,
   });
-  const { setSnackbarAlertMessage, setSnackbarAlertOpen, showError } = useAlerts();
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertSeverity, showError } = useAlerts();
   const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
 
@@ -296,6 +296,7 @@ const CustomizeBanners = () => {
       refetchQueries: [GET_ORG_BANNERS],
       onCompleted: () => {
         imageInputField.current.value = "";
+        setSnackbarAlertSeverity("success");
         setSnackbarAlertMessage("Updated successfully");
         setSnackbarAlertOpen(true);
       },
@@ -308,6 +309,7 @@ const CustomizeBanners = () => {
   const handleDeleteImage = async ({ assetId, imageInputField }) => {
     const onCompleted = () => {
       imageInputField.current.value = "";
+      setSnackbarAlertSeverity("success");
       setSnackbarAlertMessage("Deleted successfully");
       setSnackbarAlertOpen(true);
       return;
