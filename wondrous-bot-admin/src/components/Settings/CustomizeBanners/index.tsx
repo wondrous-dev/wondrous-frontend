@@ -106,6 +106,7 @@ const commandBanners: {
 
 const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
   const { title, tooltip, command } = baseBanner;
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
   const imageInputField = useRef(null);
@@ -133,6 +134,8 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
       refetchQueries: [GET_ORG_BANNERS],
       onCompleted: () => {
         imageInputField.current.value = "";
+        setSnackbarAlertMessage("Updated successfully");
+        setSnackbarAlertOpen(true);
       },
     });
   };
@@ -152,6 +155,8 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
       refetchQueries: [GET_ORG_BANNERS],
       onCompleted: () => {
         imageInputField.current.value = "";
+        setSnackbarAlertMessage("Deleted successfully");
+        setSnackbarAlertOpen(true);
       },
     });
   };
