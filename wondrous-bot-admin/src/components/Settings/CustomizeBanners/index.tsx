@@ -35,7 +35,7 @@ import { transformAndUploadMedia } from "utils/media";
 import { GET_ORG_BANNERS } from "graphql/queries/orgAsset";
 import groupBy from "lodash/groupBy";
 import SafeImage from "components/SafeImage";
-import { usePaywall, useSubscriptionPaywall } from "utils/hooks";
+import useAlerts, { usePaywall, useSubscriptionPaywall } from "utils/hooks";
 import { useNavigate } from "react-router-dom";
 
 const EXEMPTED_ORG_IDS = ["911445364593262592", "844677430694510634", "1192224585215639572"];
@@ -226,7 +226,7 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
                   height: "auto",
                   objectFit: "cover",
                   width: "100%",
-                  maxHeight: "25vh",
+                  maxHeight: "100%",
                 }}
               />
             ) : (

@@ -3,16 +3,29 @@ import styled from "styled-components";
 
 export const CustomizeBannersContainer = styled(Grid)`
   && {
+    display: flex;
     max-width: 100%;
   }
 
   ${({ theme }) => theme.breakpoints.up("sm")} {
     && {
-      max-width: 50%;
+      max-width: 65%;
     }
   }
 
   ${({ theme }) => theme.breakpoints.up("md")} {
+    && {
+      max-width: 60%;
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.up("lg")} {
+    && {
+      max-width: 70%;
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.up("xl")} {
     && {
       max-width: 80%;
     }
@@ -21,7 +34,14 @@ export const CustomizeBannersContainer = styled(Grid)`
 
 export const CommandsContainer = styled((props) => <Grid container item {...props} />)`
   && {
+    justify-content: center;
     gap: 24px;
+  }
+
+  ${({ theme }) => theme.breakpoints.up("lg")} {
+    && {
+      justify-content: flex-start;
+    }
   }
 `;
 
@@ -63,7 +83,7 @@ export const HeaderText = styled(Typography)`
 `;
 
 export const CommandBannerUploadContainer = styled(Grid)`
-  ${({ theme }) => theme.breakpoints.up("md")} {
+  ${({ theme }) => theme.breakpoints.up("lg")} {
     display: flex;
   }
 `;
@@ -83,10 +103,11 @@ export const BannerUploadHeader = styled(Typography)`
 export const BannerUploadImageContainer = styled(Grid)`
   && {
     height: 70px;
-    width: 320px;
+    width: 100%;
     border-radius: 6px;
     overflow: hidden;
   }
+
   && > img {
     height: 100%;
     width: 100%;
