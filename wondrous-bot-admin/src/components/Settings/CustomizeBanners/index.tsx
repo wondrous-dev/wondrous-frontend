@@ -45,7 +45,13 @@ const BANNER_POSITION = {
   banner: "banner",
 };
 
-const commandBanners = [
+const commandBanners: {
+  title: string;
+  tooltip: string;
+  bannerImage: string;
+  topImage: string;
+  command: string;
+}[] = [
   {
     title: "Quests",
     tooltip: "Quests are a series of tasks that users can complete to earn rewards.",
