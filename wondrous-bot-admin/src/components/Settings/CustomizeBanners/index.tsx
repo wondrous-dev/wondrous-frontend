@@ -35,6 +35,8 @@ import { transformAndUploadMedia } from "utils/media";
 import { GET_ORG_BANNERS } from "graphql/queries/orgAsset";
 import groupBy from "lodash/groupBy";
 import SafeImage from "components/SafeImage";
+import { usePaywall, useSubscriptionPaywall } from "utils/hooks";
+import { useNavigate } from "react-router-dom";
 
 const BANNER_POSITION = {
   topImage: "topImage",
@@ -260,13 +262,32 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
 };
 
 const CustomizeBanners = () => {
+  const navigate = useNavigate();
   const { activeOrg } = useContext(GlobalContext);
+  const { isPremiumPlan, isEcosystemPlan } = useSubscriptionPaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {};
   const { data } = useQuery(GET_ORG_BANNERS, {
     variables: {
       orgId: activeOrg?.id,
     },
     skip: !activeOrg?.id,
   });
+
+  if (!isPremiumPlan || !isEcosystemPlan) {
+    setOnCancel(() => {
+      return () => {
+        setPaywall(false);
+        setPaywallMessage("");
+        setOnCancel(null);
+        setCanBeClosed(true);
+        navigate(-1);
+      };
+    });
+    setPaywallMessage(`Customize Banners`);
+    setPaywall(true);
+    return;
+  }
+
   const groupedBannerByCommand = groupBy(data?.getOrgBanners, (banner) => banner?.additionalData?.command);
   return (
     <CustomizeBannersContainer>
