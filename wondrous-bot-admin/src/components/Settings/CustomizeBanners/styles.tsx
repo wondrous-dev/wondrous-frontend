@@ -146,14 +146,9 @@ export const BannerUploadButtonContainer = styled(Grid)`
 
 export const ButtonInputContainer = styled(Grid)`
   && {
-    position: relative;
-
-    &:hover {
-      opacity: 0.8;
-    }
+    position: absolute;
 
     & > input {
-      z-index: 1;
       position: absolute;
       top: 0;
       left: 0;

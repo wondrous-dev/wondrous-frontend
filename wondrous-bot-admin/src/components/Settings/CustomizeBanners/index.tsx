@@ -236,11 +236,11 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
           <BannerUploadTextButtonContainer>
             <BannerUploadText>Optimal size: 640 x 140px</BannerUploadText>
             <BannerUploadButtonContainer>
+              <ButtonIconWrapper onClick={() => imageInputField.current.click()}>
+                <ReplaceIcon />
+              </ButtonIconWrapper>
               <ButtonInputContainer>
                 <input type="file" accept="image/*" ref={imageInputField} onChange={handleReplaceBannerImage} />
-                <ButtonIconWrapper>
-                  <ReplaceIcon />
-                </ButtonIconWrapper>
               </ButtonInputContainer>
               <ButtonIconWrapper onClick={handleDeleteBannerImage}>
                 <DeleteIcon />
@@ -271,11 +271,11 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
             <TopImageTextButtonContainer>
               <TopImageText>400 x 400px</TopImageText>
               <TopImageButtonContainer>
+                <ButtonIconWrapper onClick={() => imageInputField.current.click()}>
+                  <ReplaceIcon />
+                </ButtonIconWrapper>
                 <ButtonInputContainer>
                   <input type="file" accept="image/*" ref={imageInputField} onChange={handleReplaceTopImage} />
-                  <ButtonIconWrapper>
-                    <ReplaceIcon />
-                  </ButtonIconWrapper>
                 </ButtonInputContainer>
                 <ButtonIconWrapper onClick={handleDeleteTopImage}>
                   <DeleteIcon />
