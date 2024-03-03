@@ -244,7 +244,7 @@ const CustomizeBanners = () => {
     },
     skip: !activeOrg?.id,
   });
-  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen, showError } = useAlerts();
   const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
 
@@ -269,15 +269,13 @@ const CustomizeBanners = () => {
     const image = file.target.files[0];
 
     if (!image || !image.type.includes("image")) {
-      setSnackbarAlertMessage("Invalid file type");
-      setSnackbarAlertOpen(true);
+      showError("Invalid file type");
       return;
     }
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     if (image.size > MAX_FILE_SIZE) {
-      setSnackbarAlertMessage("File size should be less than 5MB");
-      setSnackbarAlertOpen(true);
+      showError("File size should be less than 5MB");
       return;
     }
 
@@ -302,8 +300,7 @@ const CustomizeBanners = () => {
         setSnackbarAlertOpen(true);
       },
       onError: () => {
-        setSnackbarAlertMessage("Error updating image");
-        setSnackbarAlertOpen(true);
+        showError("Error updating image");
       },
     });
   };
@@ -329,8 +326,7 @@ const CustomizeBanners = () => {
       refetchQueries: [GET_ORG_BANNERS],
       onCompleted,
       onError: () => {
-        setSnackbarAlertMessage("Error deleting image");
-        setSnackbarAlertOpen(true);
+        showError("Error deleting image");
       },
     });
   };
