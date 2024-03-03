@@ -168,6 +168,7 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
     };
     if (!assetId) {
       onCompleted();
+      return;
     }
     await deleteBanner({
       variables: {
