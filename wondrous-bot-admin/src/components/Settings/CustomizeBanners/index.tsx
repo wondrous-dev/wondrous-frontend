@@ -104,19 +104,168 @@ const commandBanners: {
   },
 ];
 
-const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
+const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDeleteImage }) => {
   const { title, tooltip, command } = baseBanner;
-  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
-  const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
-  const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
-  const imageInputField = useRef(null);
+  const bannerImageInputField = useRef(null);
+  const topImageInputField = useRef(null);
 
   const customBannerImage = customBanner?.find((banner) => banner?.additionalData?.position === BANNER_POSITION.banner);
   const customTopImage = customBanner?.find((banner) => banner?.additionalData?.position === BANNER_POSITION.topImage);
   const customBannerImageUrl = customBannerImage?.url;
   const customTopImageUrl = customTopImage?.url;
 
-  const handleReplaceImage = async ({ file, position, oldAssetId }) => {
+  const handleReplaceBannerImage = async (file) => {
+    handleReplaceImage({
+      file,
+      position: BANNER_POSITION.banner,
+      oldAssetId: customBannerImage?.id,
+      command,
+      imageInputField: bannerImageInputField,
+    });
+  };
+  const handleDeleteBannerImage = async () => {
+    handleDeleteImage({
+      assetId: customBannerImage?.id,
+      imageInputField: bannerImageInputField,
+    });
+  };
+
+  const handleReplaceTopImage = async (file) => {
+    handleReplaceImage({
+      file,
+      position: BANNER_POSITION.topImage,
+      oldAssetId: customTopImage?.id,
+      command,
+      imageInputField: topImageInputField,
+    });
+  };
+  const handleDeleteTopImage = async () => {
+    handleDeleteImage({
+      assetId: customTopImage?.id,
+      imageInputField: topImageInputField,
+    });
+  };
+
+  return (
+    <CommandBannerContainer>
+      <HeaderContainer>
+        <StyledInformationTooltip placement="right" title={tooltip}>
+          <HeaderContainerTooltipContent>
+            <HeaderText>/{title}</HeaderText>
+            <Box>
+              <img src={InformationTooltip} alt="information" />
+            </Box>
+          </HeaderContainerTooltipContent>
+        </StyledInformationTooltip>
+      </HeaderContainer>
+      <CommandBannerUploadContainer>
+        <BannerUploadContainer>
+          <BannerUploadHeader>Banner</BannerUploadHeader>
+          <BannerUploadImageContainer>
+            {customBannerImageUrl ? (
+              <SafeImage
+                src={customBannerImageUrl}
+                alt={`${title} banner`}
+                style={{
+                  height: "auto",
+                  objectFit: "cover",
+                  width: "100%",
+                  maxHeight: "100%",
+                }}
+              />
+            ) : (
+              <img src={baseBanner?.bannerImage} alt={`${title} banner`} />
+            )}
+          </BannerUploadImageContainer>
+          <BannerUploadTextButtonContainer>
+            <BannerUploadText>Optimal size: 640 x 140px</BannerUploadText>
+            <BannerUploadButtonContainer>
+              <ButtonIconWrapper onClick={() => bannerImageInputField.current.click()}>
+                <ReplaceIcon />
+              </ButtonIconWrapper>
+              <ButtonInputContainer>
+                <input type="file" accept="image/*" ref={bannerImageInputField} onChange={handleReplaceBannerImage} />
+              </ButtonInputContainer>
+              <ButtonIconWrapper onClick={handleDeleteBannerImage}>
+                <DeleteIcon />
+              </ButtonIconWrapper>
+            </BannerUploadButtonContainer>
+          </BannerUploadTextButtonContainer>
+        </BannerUploadContainer>
+        <SectionDivider />
+        <TopImageSectionContainer>
+          <BannerUploadHeader>Top Image</BannerUploadHeader>
+          <TopImageImageButtonContainer>
+            <TopImageContainer>
+              {customTopImageUrl ? (
+                <SafeImage
+                  src={customTopImageUrl}
+                  alt={`${title} top image`}
+                  style={{
+                    height: "auto",
+                    objectFit: "cover",
+                    width: "100%",
+                    maxHeight: "25vh",
+                  }}
+                />
+              ) : (
+                <img src={baseBanner?.topImage} alt={`${title} top image`} />
+              )}
+            </TopImageContainer>
+            <TopImageTextButtonContainer>
+              <TopImageText>400 x 400px</TopImageText>
+              <TopImageButtonContainer>
+                <ButtonIconWrapper onClick={() => topImageInputField.current.click()}>
+                  <ReplaceIcon />
+                </ButtonIconWrapper>
+                <ButtonInputContainer>
+                  <input type="file" accept="image/*" ref={topImageInputField} onChange={handleReplaceTopImage} />
+                </ButtonInputContainer>
+                <ButtonIconWrapper onClick={handleDeleteTopImage}>
+                  <DeleteIcon />
+                </ButtonIconWrapper>
+              </TopImageButtonContainer>
+            </TopImageTextButtonContainer>
+          </TopImageImageButtonContainer>
+        </TopImageSectionContainer>
+      </CommandBannerUploadContainer>
+    </CommandBannerContainer>
+  );
+};
+
+const CustomizeBanners = () => {
+  const navigate = useNavigate();
+  const { activeOrg } = useContext(GlobalContext);
+  const { isPremiumPlan, isEcosystemPlan } = useSubscriptionPaywall();
+  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {};
+  const { data } = useQuery(GET_ORG_BANNERS, {
+    variables: {
+      orgId: activeOrg?.id,
+    },
+    skip: !activeOrg?.id,
+  });
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
+  const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
+  const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
+
+  if (!isPremiumPlan || !isEcosystemPlan || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
+    setOnCancel(() => {
+      return () => {
+        setPaywall(false);
+        setPaywallMessage("");
+        setOnCancel(null);
+        setCanBeClosed(true);
+        navigate(-1);
+      };
+    });
+    setPaywallMessage("Customize Banners");
+    setPaywall(true);
+    return;
+  }
+
+  const groupedBannerByCommand = groupBy(data?.getOrgBanners, (banner) => banner?.additionalData?.command);
+
+  const handleReplaceImage = async ({ file, position, oldAssetId, command, imageInputField }) => {
     const image = file.target.files[0];
 
     if (!image || !image.type.includes("image")) {
@@ -159,7 +308,7 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
     });
   };
 
-  const handleDeleteImage = async ({ assetId }) => {
+  const handleDeleteImage = async ({ assetId, imageInputField }) => {
     const onCompleted = () => {
       imageInputField.current.value = "";
       setSnackbarAlertMessage("Deleted successfully");
@@ -186,147 +335,6 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
     });
   };
 
-  const handleReplaceBannerImage = async (file) => {
-    handleReplaceImage({
-      file,
-      position: BANNER_POSITION.banner,
-      oldAssetId: customBannerImage?.id,
-    });
-  };
-  const handleDeleteBannerImage = async () => {
-    handleDeleteImage({
-      assetId: customBannerImage?.id,
-    });
-  };
-
-  const handleReplaceTopImage = async (file) => {
-    handleReplaceImage({
-      file,
-      position: BANNER_POSITION.topImage,
-      oldAssetId: customTopImage?.id,
-    });
-  };
-  const handleDeleteTopImage = async () => {
-    handleDeleteImage({
-      assetId: customTopImage?.id,
-    });
-  };
-
-  return (
-    <CommandBannerContainer>
-      <HeaderContainer>
-        <StyledInformationTooltip placement="right" title={tooltip}>
-          <HeaderContainerTooltipContent>
-            <HeaderText>/{title}</HeaderText>
-            <Box>
-              <img src={InformationTooltip} alt="information" />
-            </Box>
-          </HeaderContainerTooltipContent>
-        </StyledInformationTooltip>
-      </HeaderContainer>
-      <CommandBannerUploadContainer>
-        <BannerUploadContainer>
-          <BannerUploadHeader>Banner</BannerUploadHeader>
-          <BannerUploadImageContainer>
-            {customBannerImageUrl ? (
-              <SafeImage
-                src={customBannerImageUrl}
-                alt={`${title} banner`}
-                style={{
-                  height: "auto",
-                  objectFit: "cover",
-                  width: "100%",
-                  maxHeight: "100%",
-                }}
-              />
-            ) : (
-              <img src={baseBanner?.bannerImage} alt={`${title} banner`} />
-            )}
-          </BannerUploadImageContainer>
-          <BannerUploadTextButtonContainer>
-            <BannerUploadText>Optimal size: 640 x 140px</BannerUploadText>
-            <BannerUploadButtonContainer>
-              <ButtonIconWrapper onClick={() => imageInputField.current.click()}>
-                <ReplaceIcon />
-              </ButtonIconWrapper>
-              <ButtonInputContainer>
-                <input type="file" accept="image/*" ref={imageInputField} onChange={handleReplaceBannerImage} />
-              </ButtonInputContainer>
-              <ButtonIconWrapper onClick={handleDeleteBannerImage}>
-                <DeleteIcon />
-              </ButtonIconWrapper>
-            </BannerUploadButtonContainer>
-          </BannerUploadTextButtonContainer>
-        </BannerUploadContainer>
-        <SectionDivider />
-        <TopImageSectionContainer>
-          <BannerUploadHeader>Top Image</BannerUploadHeader>
-          <TopImageImageButtonContainer>
-            <TopImageContainer>
-              {customTopImageUrl ? (
-                <SafeImage
-                  src={customTopImageUrl}
-                  alt={`${title} top image`}
-                  style={{
-                    height: "auto",
-                    objectFit: "cover",
-                    width: "100%",
-                    maxHeight: "25vh",
-                  }}
-                />
-              ) : (
-                <img src={baseBanner?.topImage} alt={`${title} top image`} />
-              )}
-            </TopImageContainer>
-            <TopImageTextButtonContainer>
-              <TopImageText>400 x 400px</TopImageText>
-              <TopImageButtonContainer>
-                <ButtonIconWrapper onClick={() => imageInputField.current.click()}>
-                  <ReplaceIcon />
-                </ButtonIconWrapper>
-                <ButtonInputContainer>
-                  <input type="file" accept="image/*" ref={imageInputField} onChange={handleReplaceTopImage} />
-                </ButtonInputContainer>
-                <ButtonIconWrapper onClick={handleDeleteTopImage}>
-                  <DeleteIcon />
-                </ButtonIconWrapper>
-              </TopImageButtonContainer>
-            </TopImageTextButtonContainer>
-          </TopImageImageButtonContainer>
-        </TopImageSectionContainer>
-      </CommandBannerUploadContainer>
-    </CommandBannerContainer>
-  );
-};
-
-const CustomizeBanners = () => {
-  const navigate = useNavigate();
-  const { activeOrg } = useContext(GlobalContext);
-  const { isPremiumPlan, isEcosystemPlan } = useSubscriptionPaywall();
-  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {};
-  const { data } = useQuery(GET_ORG_BANNERS, {
-    variables: {
-      orgId: activeOrg?.id,
-    },
-    skip: !activeOrg?.id,
-  });
-
-  if (!isPremiumPlan || !isEcosystemPlan || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
-    setOnCancel(() => {
-      return () => {
-        setPaywall(false);
-        setPaywallMessage("");
-        setOnCancel(null);
-        setCanBeClosed(true);
-        navigate(-1);
-      };
-    });
-    setPaywallMessage("Customize Banners");
-    setPaywall(true);
-    return;
-  }
-
-  const groupedBannerByCommand = groupBy(data?.getOrgBanners, (banner) => banner?.additionalData?.command);
   return (
     <CustomizeBannersContainer>
       <CommandsContainer>
@@ -337,7 +345,8 @@ const CustomizeBanners = () => {
               key={`${banner.command}-banner-${index}`}
               baseBanner={banner}
               customBanner={customBanner}
-              activeOrg={activeOrg}
+              handleReplaceImage={handleReplaceImage}
+              handleDeleteImage={handleDeleteImage}
             />
           );
         })}
