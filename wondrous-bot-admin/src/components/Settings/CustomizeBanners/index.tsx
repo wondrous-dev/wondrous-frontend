@@ -118,9 +118,24 @@ const CommandBanner = ({ baseBanner, activeOrg, customBanner }) => {
 
   const handleReplaceImage = async ({ file, position, oldAssetId }) => {
     const image = file.target.files[0];
+
+    if (!image || !image.type.includes("image")) {
+      setSnackbarAlertMessage("Invalid file type");
+      setSnackbarAlertOpen(true);
+      return;
+    }
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    if (image.size > MAX_FILE_SIZE) {
+      setSnackbarAlertMessage("File size should be less than 5MB");
+      setSnackbarAlertOpen(true);
+      return;
+    }
+
     const { filename } = await transformAndUploadMedia({
       file: image,
     });
+
     await updateBanner({
       variables: {
         orgId: activeOrg?.id,
