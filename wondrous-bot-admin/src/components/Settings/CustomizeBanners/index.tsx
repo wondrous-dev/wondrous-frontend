@@ -38,6 +38,8 @@ import SafeImage from "components/SafeImage";
 import { usePaywall, useSubscriptionPaywall } from "utils/hooks";
 import { useNavigate } from "react-router-dom";
 
+const EXEMPTED_ORG_IDS = ["911445364593262592", "844677430694510634", "1192224585215639572"];
+
 const BANNER_POSITION = {
   topImage: "topImage",
   banner: "banner",
@@ -273,7 +275,7 @@ const CustomizeBanners = () => {
     skip: !activeOrg?.id,
   });
 
-  if (!isPremiumPlan || !isEcosystemPlan) {
+  if (!isPremiumPlan || !isEcosystemPlan || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
     setOnCancel(() => {
       return () => {
         setPaywall(false);
@@ -283,7 +285,7 @@ const CustomizeBanners = () => {
         navigate(-1);
       };
     });
-    setPaywallMessage(`Customize Banners`);
+    setPaywallMessage("Customize Banners");
     setPaywall(true);
     return;
   }
