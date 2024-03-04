@@ -236,8 +236,8 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
 const CustomizeBanners = () => {
   const navigate = useNavigate();
   const { activeOrg } = useContext(GlobalContext);
-  const { isPremiumPlan, isEcosystemPlan } = useSubscriptionPaywall();
-  const { setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } = usePaywall() || {};
+  const { isPremiumPlan, isEcosystemPlan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } =
+    useSubscriptionPaywall();
   const { data } = useQuery(GET_ORG_BANNERS, {
     variables: {
       orgId: activeOrg?.id,
@@ -248,7 +248,7 @@ const CustomizeBanners = () => {
   const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
 
-  if (!isPremiumPlan || !isEcosystemPlan || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
+  if (!(isPremiumPlan || isEcosystemPlan) || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
     setOnCancel(() => {
       return () => {
         setPaywall(false);
