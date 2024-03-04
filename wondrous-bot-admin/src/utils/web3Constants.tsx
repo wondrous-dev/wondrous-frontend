@@ -32,6 +32,7 @@ const SUPPORTED_CHAINS = {
   8453: "base",
   59144: "linea",
   2020: "ronin",
+  42069: "fhenix"
 };
 
 export const RPC_URLS: { [chainId: number]: string } = {
@@ -213,6 +214,13 @@ const SUPPORTED_CHAINS_META = [
     currency: "RON",
     explorerUrl: "https://app.roninchain.com/",
     rpcUrl: "https://proxy.roninchain.com/ronin",
+  },
+  {
+    chainId: 42069,
+    name: "Fhenix",
+    currency: "FHE",
+    explorerUrl: "https://explorer.testnet.fhenix.zone/",
+    rpcUrl: "https://api.testnet.fhenix.zone:7747/",
   }
 ];
 
