@@ -19,7 +19,7 @@ const MyContext = React.createContext(null);
 
 export const useMe = () => useContext(MyContext);
 
-export const emailSignup = async (email: string, password: string) => {
+export const emailSignup = async (email: string, password: string, inviteToken:string = null) => {
   try {
     const {
       data: {
@@ -30,6 +30,7 @@ export const emailSignup = async (email: string, password: string) => {
       variables: {
         email,
         password,
+        inviteToken
       },
     });
 
