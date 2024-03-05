@@ -83,7 +83,7 @@ const commandBanners: {
   },
   {
     title: "Store",
-    tooltip: "Purchase items with your experience points.",
+    tooltip: "View all of the items available for purchase.",
     bannerImage: "/images/banner-images/store-banner.png",
     topImage: "/images/banner-images/store-circle.png",
     command: "store",
