@@ -1,34 +1,10 @@
-import { Divider, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import styled from "styled-components";
 
-export const CustomizeBannersContainer = styled(Grid)`
+export const CustomizeBannersContainer = styled((props) => <Grid container item {...props} />)`
   && {
     display: flex;
-    max-width: 100%;
-  }
-
-  ${({ theme }) => theme.breakpoints.up("sm")} {
-    && {
-      max-width: 65%;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.up("md")} {
-    && {
-      max-width: 60%;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.up("lg")} {
-    && {
-      max-width: 70%;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.up("xl")} {
-    && {
-      max-width: 80%;
-    }
+    flex: 1;
   }
 `;
 
@@ -38,9 +14,9 @@ export const CommandsContainer = styled((props) => <Grid container item {...prop
     gap: 24px;
   }
 
-  ${({ theme }) => theme.breakpoints.up("lg")} {
+  ${({ theme }) => theme.breakpoints.up("xl")} {
     && {
-      justify-content: flex-start;
+      justify-content: space-between;
     }
   }
 `;
