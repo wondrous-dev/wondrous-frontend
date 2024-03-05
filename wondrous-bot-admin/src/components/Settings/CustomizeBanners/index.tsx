@@ -41,7 +41,7 @@ import { useNavigate } from "react-router-dom";
 const EXEMPTED_ORG_IDS = ["911445364593262592", "844677430694510634", "1192224585215639572"];
 
 const BANNER_POSITION = {
-  topImage: "topImage",
+  topImage: "top-image",
   banner: "banner",
 };
 
