@@ -4,7 +4,7 @@ export const OrgBannerFragment = gql`
   fragment OrgBannerFragment on OrgBanner {
     id
     orgId
-    url
+    slug
     additionalData {
       command
       position

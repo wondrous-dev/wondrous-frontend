@@ -111,8 +111,8 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
 
   const customBannerImage = customBanner?.find((banner) => banner?.additionalData?.position === BANNER_POSITION.banner);
   const customTopImage = customBanner?.find((banner) => banner?.additionalData?.position === BANNER_POSITION.topImage);
-  const customBannerImageUrl = customBannerImage?.url;
-  const customTopImageUrl = customTopImage?.url;
+  const customBannerImageUrl = customBannerImage?.slug;
+  const customTopImageUrl = customTopImage?.slug;
 
   const handleReplaceBannerImage = async (file) => {
     handleReplaceImage({
@@ -292,7 +292,7 @@ const CustomizeBanners = () => {
         orgId: activeOrg?.id,
         input: {
           command,
-          url: filename,
+          slug: filename,
           position,
           oldAssetId,
         },
