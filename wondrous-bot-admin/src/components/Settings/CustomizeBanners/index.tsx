@@ -263,6 +263,10 @@ const CustomizeBanners = () => {
     return;
   }
 
+  if (isEcosystemPlan || isPremiumPlan) {
+    setPaywall(false);
+  }
+
   const groupedBannerByCommand = groupBy(data?.getOrgBanners, (banner) => banner?.additionalData?.command);
 
   const handleReplaceImage = async ({ file, position, oldAssetId, command, imageInputField }) => {
