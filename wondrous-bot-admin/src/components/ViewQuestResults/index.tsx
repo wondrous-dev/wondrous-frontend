@@ -193,6 +193,7 @@ const ViewQuestResults = ({ quest, rewards }) => {
       id: submission?.id,
       approvedAt: submission?.approvedAt,
       rejectedAt: submission?.rejectedAt,
+      createdAt: submission?.createdAt,
     }));
   }, [submissionsData?.getQuestSubmissions, loading, quest]);
 
@@ -264,7 +265,6 @@ const ViewQuestResults = ({ quest, rewards }) => {
       showBorder: false,
     },
   ];
-
   return (
     <PageWrapper
       containerProps={{

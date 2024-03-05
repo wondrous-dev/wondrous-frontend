@@ -13,7 +13,7 @@ import useAlerts from "utils/hooks";
 import { StyledCheckbox } from "components/PaymentLedger/styles";
 import { CommonTypography, TextWrapper } from "components/MembersAnalytics/styles";
 import { PointsIcon } from "components/Icons/Rewards";
-
+import { format } from "date-fns";
 /*
 
   steps -> steps details from the quest ( type, order, prompt )
@@ -159,9 +159,15 @@ const QuestResultsCard = ({ submission }) => {
   return (
     <AccordionComponent
       renderTitle={() => (
-        <Typography fontFamily="Poppins" fontWeight={600} fontSize="13px" lineHeight="20px" color="black">
-          {submission.user}
-        </Typography>
+        <Box display="flex" gap="12px" alignItems="center" width="100%" paddingRight="16px">
+          <Typography fontFamily="Poppins" fontWeight={600} fontSize="13px" lineHeight="20px" color="black">
+            {submission.user}
+          </Typography>
+          <Box flex={1} />
+          <Typography fontFamily="Poppins" fontWeight={500} fontSize="13px" lineHeight="20px" color="black">
+            Submitted {format(new Date(submission.createdAt), "MM/dd/yyyy")}
+          </Typography>
+        </Box>
       )}
     >
       <Grid bgcolor="white" gap="18px" padding="14px" display="flex" flexDirection="column">
