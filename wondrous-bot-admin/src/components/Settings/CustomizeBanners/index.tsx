@@ -236,7 +236,7 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
 const CustomizeBanners = () => {
   const navigate = useNavigate();
   const { activeOrg } = useContext(GlobalContext);
-  const { isPremiumPlan, isEcosystemPlan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } =
+  const { isLoading, isPremiumPlan, isEcosystemPlan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } =
     useSubscriptionPaywall();
   const { data } = useQuery(GET_ORG_BANNERS, {
     variables: {
@@ -247,6 +247,10 @@ const CustomizeBanners = () => {
   const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertSeverity, showError } = useAlerts();
   const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!(isPremiumPlan || isEcosystemPlan) || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
     setOnCancel(() => {
