@@ -20,7 +20,7 @@ const SelectComponent = ({
   grouped = false,
   groupedOptions = [],
   minWidth = "100px",
-  selectProps={}
+  selectProps={},
 }) => {
   const handleChange = (e) => onChange(e.target.value);
   

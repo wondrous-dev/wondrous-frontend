@@ -39,7 +39,7 @@ const OnboardingComponent = () => {
     notifyOnNetworkStatusChange: true,
     refetchQueries: ["getLoggedInUserFullAccessOrgs"],
     onCompleted: (data) => {
-      setActiveOrg(data?.createOrg);
+      setActiveOrg(data?.createCmtyOrg);
       navigate("/onboarding/plan-select");
     },
   });
