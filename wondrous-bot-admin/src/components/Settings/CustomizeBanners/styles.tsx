@@ -16,7 +16,7 @@ export const CommandsContainer = styled((props) => <Grid container item {...prop
 
   ${({ theme }) => theme.breakpoints.up("xl")} {
     && {
-      justify-content: space-between;
+      justify-content: flex-start;
     }
   }
 `;
