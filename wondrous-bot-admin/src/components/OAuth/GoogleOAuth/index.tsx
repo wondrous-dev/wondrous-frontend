@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { getBaseUrl, handleUserOnboardingRedirect } from "utils/common";
 import { GET_LOGGED_IN_USER_FULL_ACCESS_ORGS } from "graphql/queries";
 
-const GoogleOAuthButton = ({ params = {} }) => {
+const GoogleOAuthButton = ({ params = {} }: any) => {
   const navigate = useNavigate();
 
   const [getLoggedInUserFullAccessOrgs] = useLazyQuery(GET_LOGGED_IN_USER_FULL_ACCESS_ORGS, {
@@ -55,7 +55,7 @@ const GoogleOAuthButton = ({ params = {} }) => {
     redirect_uri: `${getBaseUrl()}/oauth/google/callback`,
     onSuccess: (tokenResponse) => {
       const { code } = tokenResponse;
-      signInUser({ variables: { code: code } });
+      signInUser({ variables: { code: code, inviteToken: params?.token || null } });
     },
     onError: (error) => console.log(error),
   });

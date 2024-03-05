@@ -82,8 +82,8 @@ export const RESEND_VERIFICATION_CODE = gql`
 `;
 
 export const CREATE_USER = gql`
-  mutation emailSignup($email: String!, $password: String!) {
-    emailSignup(input: { email: $email, password: $password }) {
+  mutation emailSignup($email: String!, $password: String!, $inviteToken: String) {
+    emailSignup(input: { email: $email, password: $password, inviteToken: $inviteToken }) {
       user {
         ...LoggedinUser
       }

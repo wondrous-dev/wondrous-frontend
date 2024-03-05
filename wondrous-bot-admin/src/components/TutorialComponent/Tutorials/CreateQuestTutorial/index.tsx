@@ -18,7 +18,7 @@ const getTemplateModalPosition = () => {
 
 const useCreateQuestTutorial = ({ shouldDisplay }) => {
   const { setIsOpen, setSteps, setCurrentStep } = useTour();
-  
+    
   const { handleTourVisit, shouldForceOpenTour, setShouldForceOpenTour } = useContext(TourDataContext);
   const nodes = useRef([]);
 

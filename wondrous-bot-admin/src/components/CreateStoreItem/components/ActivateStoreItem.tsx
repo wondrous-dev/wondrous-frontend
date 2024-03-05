@@ -5,15 +5,21 @@ import { ACTIVATE_STORE_ITEM, DEACTIVATE_STORE_ITEM } from "graphql/mutations/cm
 import { useState } from "react";
 
 const ActivateStoreItem = (props) => {
-  const { storeItemId, value: isActive } = props;
+  const { storeItemId, value: isActive, setQuestSettings } = props;
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(null);
 
   const [activateStoreItem] = useMutation(ACTIVATE_STORE_ITEM, {
     refetchQueries: ["getStoreItem", "getStoreItemsForOrg"],
+    onCompleted: () => {
+      setQuestSettings((prev) => ({ ...prev, deactivatedAt: null }));
+    },
   });
 
   const [deactivateStoreItem] = useMutation(DEACTIVATE_STORE_ITEM, {
     refetchQueries: ["getStoreItem", "getStoreItemsForOrg"],
+    onCompleted: () => {
+      setQuestSettings((prev) => ({ ...prev, deactivatedAt: new Date().toISOString() }));
+    },
   });
 
   const handleChange = (value) => {

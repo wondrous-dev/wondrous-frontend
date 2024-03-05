@@ -102,6 +102,7 @@ const StoreItemSettingsComponent = ({ storeItemSettings, setStoreItemSettings })
     return data;
   }, [storeItemSettings]);
 
+  
   const handleChange = (key, value) => {
     if (errors[key]) {
       setErrors({
