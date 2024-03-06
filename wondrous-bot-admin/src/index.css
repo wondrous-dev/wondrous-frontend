@@ -71,3 +71,7 @@ button:focus-visible {
   left: 42%;
   top: 30%;
 }
+
+w3m-modal {
+  z-index: 99999 !important;
+}
