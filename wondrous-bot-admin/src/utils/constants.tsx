@@ -357,6 +357,7 @@ export const EXCLUDED_PATHS = [
   "/referral",
   "/referral-campaign",
   "/activity",
+  "/oauth/google/callback"
 ];
 
 export const TUTORIALS = {
