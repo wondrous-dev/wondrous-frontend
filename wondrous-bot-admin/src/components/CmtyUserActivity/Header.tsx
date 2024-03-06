@@ -24,6 +24,8 @@ export default function CmtyUserHeaderComponent({ org }) {
               style={{
                 height: "40px",
                 width: "40px",
+                objectFit: "cover",
+                objectPosition: "center",
               }}
             />
             <Typography

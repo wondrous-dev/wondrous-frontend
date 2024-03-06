@@ -131,6 +131,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/activity",
   "/onboarding/plan-select",
   "/onboarding/finalize",
+  "/oauth/google/callback"
 ];
 
 export const BG_TYPES = {
