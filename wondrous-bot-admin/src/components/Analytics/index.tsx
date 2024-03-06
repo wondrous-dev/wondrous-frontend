@@ -61,7 +61,7 @@ const AnalyticsComponent = () => {
     data: onboardedUsersData,
     refetch: onboardedUsersRefetch,
     loading: onboardedUsersLoading,
-    error: onboardedUsersError
+    error: onboardedUsersError,
   } = useQuery(GET_ONBOARDED_USERS_DATA, {
     fetchPolicy: "cache-and-network",
     notifyOnNetworkStatusChange: true,
@@ -70,7 +70,6 @@ const AnalyticsComponent = () => {
     },
     skip: !activeOrg?.id,
   });
-
 
   return (
     <>
@@ -92,46 +91,44 @@ const AnalyticsComponent = () => {
         }}
       >
         <CardsComponent />
-        <Box data-tour="tutorial-analytics-graphs-selector" width="100%"/>
-        <Grid display="flex" flexDirection="column" data-tour="tutorial-analytics-graphs" container gap="42px" >
-        <Grid
-          display="flex"
-          gap="24px"
-          flexWrap="nowrap"
-          maxWidth="100%"
-          overflow="hidden"
-          flexDirection={{
-            xs: "column",
-            sm: "row",
-          }}
-        >
-          <MessagesAndReactions data={data?.getCmtyEntitiesCount} refetch={refetch} loading={loading} />
-          <OnboardedUsers
-            data={onboardedUsersData?.getOnboardedUsersCount}
-            refetch={onboardedUsersRefetch}
-            loading={onboardedUsersLoading}
-            error={onboardedUsersError}
-
-          />
-        </Grid>
-        <Grid
-          display="flex"
-          gap="24px"
-          flexWrap="nowrap"
-          flexDirection={{
-            xs: "column",
-            sm: "row",
-          }}
-        >
-          <Grid width="100%">
-          <Submissions
-            data={submissionReports?.getQuestsSubmissionsReport}
-            refetch={submissionRefetch}
-            loading={submissionLoading}
-          />
+        <Box data-tour="tutorial-analytics-graphs-selector" width="100%" />
+        <Grid display="flex" flexDirection="column" data-tour="tutorial-analytics-graphs" container gap="42px">
+          <Grid
+            display="flex"
+            gap="24px"
+            flexWrap="nowrap"
+            maxWidth="100%"
+            overflow="hidden"
+            flexDirection={{
+              xs: "column",
+              sm: "row",
+            }}
+          >
+            <MessagesAndReactions data={data?.getCmtyEntitiesCount} refetch={refetch} loading={loading} />
+            <OnboardedUsers
+              data={onboardedUsersData?.getOnboardedUsersCount}
+              refetch={onboardedUsersRefetch}
+              loading={onboardedUsersLoading}
+              error={onboardedUsersError}
+            />
           </Grid>
-          <Heatmap data={presenceData?.getCmtyPresenceAnalytics} loading={presenceLoading} refetch={presenceRefetch} />
-        </Grid>
+          <Grid
+            display="flex"
+            gap="24px"
+            flexWrap="nowrap"
+            flexDirection={{
+              xs: "column",
+              sm: "row",
+            }}
+          >
+            <Grid width="100%">
+              <Submissions
+                data={submissionReports?.getQuestsSubmissionsReport}
+                refetch={submissionRefetch}
+                loading={submissionLoading}
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <QuestLeaderboard />
         <UsersLeaderboard />
