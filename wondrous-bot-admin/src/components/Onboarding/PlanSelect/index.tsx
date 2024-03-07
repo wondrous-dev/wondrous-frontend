@@ -9,6 +9,7 @@ import { GET_CHECKOUT_LINK } from "graphql/queries/subscription";
 import useAlerts, { useGlobalContext } from "utils/hooks";
 import PostHeaderGoogleTag from "components/GoogleTag/PostHeaderGoogleTag";
 import PostBodyGoogleTag from "components/GoogleTag/PostBodyGoogleTag";
+import InlineWorkspacePicker from "./InlineWorkspacePicker";
 
 const PlanSelectComponent = () => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } = useAlerts();
@@ -91,11 +92,14 @@ const PlanSelectComponent = () => {
       >
         <Box
           display="flex"
-          flexDirection="column"
-          gap="18px"
+          gap="10px"
           justifyContent="center"
           alignItems="center"
           padding="42px 42px 0px 42px"
+          flexDirection={{
+            xs: "column",
+            sm: "row",
+          }}
         >
           <Typography
             fontSize={{
@@ -105,8 +109,9 @@ const PlanSelectComponent = () => {
             fontWeight={600}
             color="white"
           >
-            Select your plan
+            Select your plan for
           </Typography>
+          <InlineWorkspacePicker />
         </Box>
         <Box
           display="flex"

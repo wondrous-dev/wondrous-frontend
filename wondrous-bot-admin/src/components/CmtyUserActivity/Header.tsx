@@ -8,13 +8,24 @@ export default function CmtyUserHeaderComponent({ org }) {
   return (
     <HeaderBar>
       <Box padding="14px" display="flex" justifyContent="space-between" alignItems="center">
-        <Box display="flex" gap="24px" justifyContent="center" alignItems="center">
+        <Box
+          display="flex"
+          gap="24px"
+          justifyContent="center"
+          alignItems="center"
+          flexWrap={{
+            xs: "wrap",
+            sm: "nowrap",
+          }}
+        >
           <Box display="flex" alignItems="center" gap="8px">
             <OrgProfilePicture
               profilePicture={org?.profilePicture}
               style={{
-                height: "100%",
-                width: "100%",
+                height: "40px",
+                width: "40px",
+                objectFit: "cover",
+                objectPosition: "center",
               }}
             />
             <Typography
