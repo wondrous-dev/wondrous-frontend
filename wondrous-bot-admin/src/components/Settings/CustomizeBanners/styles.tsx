@@ -65,7 +65,10 @@ export const CommandBannerUploadContainer = styled(Grid)`
 `;
 
 export const BannerUploadContainer = styled(Grid)`
-  padding: 14px;
+  && {
+    padding: 14px;
+    flex: 1;
+  }
 `;
 
 export const BannerUploadHeader = styled(Typography)`
