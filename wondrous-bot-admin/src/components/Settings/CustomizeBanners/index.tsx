@@ -118,7 +118,6 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
     handleReplaceImage({
       file,
       position: BANNER_POSITION.banner,
-      oldAssetId: customBannerImage?.id,
       command,
       imageInputField: bannerImageInputField,
     });
@@ -134,7 +133,6 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
     handleReplaceImage({
       file,
       position: BANNER_POSITION.topImage,
-      oldAssetId: customTopImage?.id,
       command,
       imageInputField: topImageInputField,
     });
@@ -248,11 +246,7 @@ const CustomizeBanners = () => {
   const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
 
-  if (isLoading) {
-    return null;
-  }
-
-  if (!(isPremiumPlan || isEcosystemPlan) || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
+  if (isLoading || !(isPremiumPlan || isEcosystemPlan) || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
     setOnCancel(() => {
       return () => {
         setPaywall(false);
@@ -264,7 +258,7 @@ const CustomizeBanners = () => {
     });
     setPaywallMessage("Customize Banners");
     setPaywall(true);
-    return;
+    return null;
   }
 
   if (isEcosystemPlan || isPremiumPlan) {
@@ -273,7 +267,7 @@ const CustomizeBanners = () => {
 
   const groupedBannerByCommand = groupBy(data?.getOrgBanners, (banner) => banner?.additionalData?.command);
 
-  const handleReplaceImage = async ({ file, position, oldAssetId, command, imageInputField }) => {
+  const handleReplaceImage = async ({ file, position, command, imageInputField }) => {
     const image = file.target.files[0];
 
     if (!image || !image.type.includes("image")) {
@@ -298,7 +292,6 @@ const CustomizeBanners = () => {
           command,
           slug: filename,
           position,
-          oldAssetId,
         },
       },
       refetchQueries: [GET_ORG_BANNERS],
