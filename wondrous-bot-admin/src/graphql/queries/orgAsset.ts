@@ -1,11 +1,11 @@
 import { gql } from "@apollo/client";
-import { OrgBannerFragment } from "graphql/fragments/orgAsset";
+import { OrgAssetFragment } from "graphql/fragments/orgAsset";
 
-export const GET_ORG_BANNERS = gql`
-  query getOrgBanners($orgId: ID!) {
-    getOrgBanners(orgId: $orgId) {
-      ...OrgBannerFragment
+export const GET_ORG_CUSTOM_ASSETS = gql`
+  query getOrgCustomAssets($orgId: ID!) {
+    getOrgCustomAssets(orgId: $orgId) {
+      ...OrgAssetFragment
     }
   }
-  ${OrgBannerFragment}
+  ${OrgAssetFragment}
 `;

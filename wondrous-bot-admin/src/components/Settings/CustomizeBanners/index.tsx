@@ -28,97 +28,150 @@ import {
 } from "./styles";
 import { StyledInformationTooltip } from "components/Shared/Tooltip";
 import InformationTooltip from "components/Icons/information.svg";
-import { DELETE_ORG_BANNER, UPDATE_ORG_BANNER } from "graphql/mutations/orgAsset";
+import { DELETE_ORG_BANNER, UPSERT_ORG_CUSTOM_BANNER } from "graphql/mutations/orgAsset";
 import { useMutation, useQuery } from "@apollo/client";
 import GlobalContext from "utils/context/GlobalContext";
 import { transformAndUploadMedia } from "utils/media";
-import { GET_ORG_BANNERS } from "graphql/queries/orgAsset";
-import groupBy from "lodash/groupBy";
+import { GET_ORG_CUSTOM_ASSETS } from "graphql/queries/orgAsset";
 import SafeImage from "components/SafeImage";
-import useAlerts, { usePaywall, useSubscriptionPaywall } from "utils/hooks";
+import useAlerts, { useSubscriptionPaywall } from "utils/hooks";
 import { useNavigate } from "react-router-dom";
 
 const EXEMPTED_ORG_IDS = ["911445364593262592", "844677430694510634", "1192224585215639572"];
 
-const BANNER_POSITION = {
-  topImage: "top-image",
-  banner: "banner",
+const ORG_ASSET_PURPOSE = {
+  questBanner: "quest_banner",
+  levelBanner: "level_banner",
+  leaderboardBanner: "leaderboard_banner",
+  startQuestBanner: "start_quest_banner",
+  mySubmissionBanner: "my_submission_banner",
+  storeBanner: "store_banner",
+  myPurchasesBanner: "my_purchases_banner", // TODO: add to backend
+  onboardMeBanner: "onboard_me_banner", // TODO: add to backend
+  referralBanner: "referral_banner",
+  questLogo: "quest_logo",
+  levelLogo: "level_logo",
+  leaderboardLogo: "leaderboard_logo",
+  mySubmissionLogo: "my_submission_logo",
+  storeLogo: "store_logo",
+  myPurchasesLogo: "my_purchases_logo", // TODO: add to backend
+  onboardMeLogo: "onboard_me_logo", // TODO: add to backend
+  referralLogo: "referral_logo",
 };
 
 const commandBanners: {
   title: string;
   tooltip: string;
-  bannerImage: string;
-  topImage: string;
-  command: string;
+  banner: {
+    purpose: (typeof ORG_ASSET_PURPOSE)[keyof typeof ORG_ASSET_PURPOSE];
+    image: string;
+  };
+  logo: {
+    purpose: (typeof ORG_ASSET_PURPOSE)[keyof typeof ORG_ASSET_PURPOSE];
+    image: string;
+  };
 }[] = [
   {
     title: "Quests",
     tooltip: "Quests are a series of tasks that users can complete to earn rewards.",
-    bannerImage: "/images/banner-images/quest-banner.png",
-    topImage: "/images/banner-images/quest-circle.png",
-    command: "quests",
+    banner: {
+      purpose: ORG_ASSET_PURPOSE.questBanner,
+      image: "/images/banner-images/quest-banner.png",
+    },
+    logo: {
+      purpose: ORG_ASSET_PURPOSE.questLogo,
+      image: "/images/banner-images/quest-circle.png",
+    },
   },
 
   {
     title: "My Submissions",
     tooltip: "View all of your submissions and their statuses.",
-    bannerImage: "/images/banner-images/sub-banner.png",
-    topImage: "/images/banner-images/sub-circle.png",
-    command: "my-submissions",
+    banner: {
+      purpose: ORG_ASSET_PURPOSE.mySubmissionBanner,
+      image: "/images/banner-images/sub-banner.png",
+    },
+    logo: {
+      purpose: ORG_ASSET_PURPOSE.mySubmissionLogo,
+      image: "/images/banner-images/sub-circle.png",
+    },
   },
   {
     title: "My Level",
     tooltip: "View your current level and experience points.",
-    bannerImage: "/images/banner-images/my-level-banner.png",
-    topImage: "/images/banner-images/my-level-circle.png",
-    command: "my-level",
+    banner: {
+      purpose: ORG_ASSET_PURPOSE.levelBanner,
+      image: "/images/banner-images/my-level-banner.png",
+    },
+    logo: {
+      purpose: ORG_ASSET_PURPOSE.levelLogo,
+      image: "/images/banner-images/my-level-circle.png",
+    },
   },
   {
     title: "Leaderboard",
     tooltip: "View the top users and their levels.",
-    bannerImage: "/images/banner-images/leaderboard-banner.png",
-    topImage: "/images/banner-images/leaderboard-circle.png",
-    command: "leaderboard",
+    banner: {
+      purpose: ORG_ASSET_PURPOSE.leaderboardBanner,
+      image: "/images/banner-images/leaderboard-banner.png",
+    },
+    logo: {
+      purpose: ORG_ASSET_PURPOSE.leaderboardLogo,
+      image: "/images/banner-images/leaderboard-circle.png",
+    },
   },
   {
     title: "Store",
     tooltip: "View all of the items available for purchase.",
-    bannerImage: "/images/banner-images/store-banner.png",
-    topImage: "/images/banner-images/store-circle.png",
-    command: "store",
+    banner: {
+      purpose: ORG_ASSET_PURPOSE.storeBanner,
+      image: "/images/banner-images/store-banner.png",
+    },
+    logo: {
+      purpose: ORG_ASSET_PURPOSE.storeLogo,
+      image: "/images/banner-images/store-circle.png",
+    },
   },
   {
     title: "My Purchases",
     tooltip: "View all of your purchases.",
-    bannerImage: "/images/banner-images/my-purchases-banner.png",
-    topImage: "/images/banner-images/my-purchases-circle.png",
-    command: "my-purchases",
+    banner: {
+      purpose: ORG_ASSET_PURPOSE.myPurchasesBanner,
+      image: "/images/banner-images/my-purchases-banner.png",
+    },
+    logo: {
+      purpose: ORG_ASSET_PURPOSE.myPurchasesLogo,
+      image: "/images/banner-images/my-purchases-circle.png",
+    },
   },
   {
     title: "Onboard Me",
     tooltip: "Complete the onboarding process.",
-    bannerImage: "/images/banner-images/onboard-me-banner.png",
-    topImage: "/images/banner-images/onboard-me-circle.png",
-    command: "onboard-me",
+    banner: {
+      purpose: ORG_ASSET_PURPOSE.onboardMeBanner,
+      image: "/images/banner-images/onboard-me-banner.png",
+    },
+    logo: {
+      purpose: ORG_ASSET_PURPOSE.onboardMeLogo,
+      image: "/images/banner-images/onboard-me-circle.png",
+    },
   },
 ];
 
 const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDeleteImage }) => {
-  const { title, tooltip, command } = baseBanner;
+  const { title, tooltip, banner, logo } = baseBanner;
   const bannerImageInputField = useRef(null);
   const topImageInputField = useRef(null);
 
-  const customBannerImage = customBanner?.find((banner) => banner?.additionalData?.position === BANNER_POSITION.banner);
-  const customTopImage = customBanner?.find((banner) => banner?.additionalData?.position === BANNER_POSITION.topImage);
-  const customBannerImageUrl = customBannerImage?.slug;
-  const customTopImageUrl = customTopImage?.slug;
+  const customBannerImage = customBanner?.find((customBanner) => customBanner.purpose === banner.purpose);
+  const customTopImage = customBanner?.find((customBanner) => customBanner.purpose === logo.purpose);
+  const customBannerImageUrl = customBannerImage?.publicUrl;
+  const customTopImageUrl = customTopImage?.publicUrl;
 
   const handleReplaceBannerImage = async (file) => {
     handleReplaceImage({
       file,
-      position: BANNER_POSITION.banner,
-      command,
+      purpose: banner.purpose,
       imageInputField: bannerImageInputField,
     });
   };
@@ -132,8 +185,7 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
   const handleReplaceTopImage = async (file) => {
     handleReplaceImage({
       file,
-      position: BANNER_POSITION.topImage,
-      command,
+      purpose: logo.purpose,
       imageInputField: topImageInputField,
     });
   };
@@ -172,7 +224,7 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
                 }}
               />
             ) : (
-              <img src={baseBanner?.bannerImage} alt={`${title} banner`} />
+              <img src={banner.image} alt={`${title} banner`} />
             )}
           </BannerUploadImageContainer>
           <BannerUploadTextButtonContainer>
@@ -207,7 +259,7 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
                   }}
                 />
               ) : (
-                <img src={baseBanner?.topImage} alt={`${title} top image`} />
+                <img src={logo.image} alt={`${title} top image`} />
               )}
             </TopImageContainer>
             <TopImageTextButtonContainer>
@@ -236,14 +288,14 @@ const CustomizeBanners = () => {
   const { activeOrg } = useContext(GlobalContext);
   const { isLoading, isPremiumPlan, isEcosystemPlan, setPaywall, setPaywallMessage, setOnCancel, setCanBeClosed } =
     useSubscriptionPaywall();
-  const { data } = useQuery(GET_ORG_BANNERS, {
+  const { data } = useQuery(GET_ORG_CUSTOM_ASSETS, {
     variables: {
       orgId: activeOrg?.id,
     },
     skip: !activeOrg?.id,
   });
   const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertSeverity, showError } = useAlerts();
-  const [updateBanner] = useMutation(UPDATE_ORG_BANNER);
+  const [updateBanner] = useMutation(UPSERT_ORG_CUSTOM_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
 
   if (isLoading || !(isPremiumPlan || isEcosystemPlan) || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
@@ -265,9 +317,7 @@ const CustomizeBanners = () => {
     setPaywall(false);
   }
 
-  const groupedBannerByCommand = groupBy(data?.getOrgBanners, (banner) => banner?.additionalData?.command);
-
-  const handleReplaceImage = async ({ file, position, command, imageInputField }) => {
+  const handleReplaceImage = async ({ file, purpose, imageInputField }) => {
     const image = file.target.files[0];
 
     if (!image || !image.type.includes("image")) {
@@ -287,14 +337,15 @@ const CustomizeBanners = () => {
 
     await updateBanner({
       variables: {
-        orgId: activeOrg?.id,
         input: {
-          command,
-          slug: filename,
-          position,
+          orgId: activeOrg?.id,
+          purpose,
+          mediaUpload: {
+            uploadSlug: filename,
+          },
         },
       },
-      refetchQueries: [GET_ORG_BANNERS],
+      refetchQueries: [GET_ORG_CUSTOM_ASSETS],
       onCompleted: () => {
         imageInputField.current.value = "";
         setSnackbarAlertSeverity("success");
@@ -326,7 +377,7 @@ const CustomizeBanners = () => {
           assetId,
         },
       },
-      refetchQueries: [GET_ORG_BANNERS],
+      refetchQueries: [GET_ORG_CUSTOM_ASSETS],
       onCompleted,
       onError: () => {
         showError("Error deleting image");
@@ -337,13 +388,12 @@ const CustomizeBanners = () => {
   return (
     <CustomizeBannersContainer>
       <CommandsContainer>
-        {commandBanners.map((banner, index) => {
-          const customBanner = groupedBannerByCommand[banner.command];
+        {commandBanners.map((banner) => {
           return (
             <CommandBanner
-              key={`${banner.command}-banner-${index}`}
+              key={`${banner.title}-banner`}
               baseBanner={banner}
-              customBanner={customBanner}
+              customBanner={data?.getOrgCustomAssets}
               handleReplaceImage={handleReplaceImage}
               handleDeleteImage={handleDeleteImage}
             />

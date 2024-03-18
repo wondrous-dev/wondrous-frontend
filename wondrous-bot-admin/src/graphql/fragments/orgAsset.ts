@@ -1,13 +1,14 @@
 import { gql } from "@apollo/client";
 
-export const OrgBannerFragment = gql`
-  fragment OrgBannerFragment on OrgBanner {
+export const OrgAssetFragment = gql`
+  fragment OrgAssetFragment on OrgAsset {
     id
     orgId
+    purpose
+    mediaType
     slug
-    additionalData {
-      command
-      position
-    }
+    publicUrl
+    cdnUrl
+    removedAt
   }
 `;

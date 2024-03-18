@@ -1,9 +1,10 @@
 import { gql } from "@apollo/client";
 
-export const UPDATE_ORG_BANNER = gql`
-  mutation updateOrgBanner($orgId: ID!, $input: OrgBannerInput) {
-    updateOrgBanner(orgId: $orgId, input: $input) {
-      success
+export const UPSERT_ORG_CUSTOM_BANNER = gql`
+  mutation upsertOrgCustomAsset($input: OrgAssetInput!) {
+    upsertOrgCustomAsset(input: $input) {
+      id
+      orgId
     }
   }
 `;
