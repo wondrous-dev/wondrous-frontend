@@ -3,10 +3,10 @@ import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 
 import BigNumber from "bignumber.js";
 
-import { SharedSecondaryButton } from "components/Shared/styles";
+import { SharedBlackOutlineButton, SharedSecondaryButton } from "components/Shared/styles";
 
 import { ethers } from "ethers";
-import { LINK_CMTY_PAYMENTS_WITH_TRANSACTION } from "graphql/mutations/payment";
+import { LINK_CMTY_PAYMENTS_WITH_TRANSACTION, MARK_CMTY_PAYMENT_AS_COMPLETE } from "graphql/mutations/payment";
 
 import { useContext, useEffect, useMemo, useState } from "react";
 
@@ -31,12 +31,15 @@ import useAlerts from "utils/hooks";
 
 import { SUPPORTED_CHAINS } from "utils/web3Constants";
 import { getMessageFromError, verifyChain } from "./utils";
+import ConfirmActionModal from "components/ConfirmActionModal";
 import useWonderWeb3Modal from "services/web3/useWonderWeb3Modal";
 
 const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompleted }) => {
   const { activeOrg } = useContext(GlobalContext);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
   const [loading, setLoading] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(null);
+
   const paymentItems = useMemo(() => {
     return paymentData?.filter((item) => selectedPayments.includes(item.id));
   }, [paymentData, selectedPayments]);
@@ -46,6 +49,21 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     const chainId = Object.keys(SUPPORTED_CHAINS)[chainIdx];
     return chainId;
   };
+  const [markCmtyPaymentsAsComplete] = useMutation(MARK_CMTY_PAYMENT_AS_COMPLETE, {
+    onCompleted: () => {
+      const completedPaymentIds = paymentItems.map((item) => item.id);
+      return onPaymentCompleted(completedPaymentIds);
+    },
+    refetchQueries: [
+      "getPaidCmtyPaymentsForQuest",
+      "getProcessingCmtyPaymentsForQuest",
+      "getProcessingCmtyPaymentsForOrg",
+      "getCmtyPaymentsCountForOrg",
+      "getUnpaidCmtyPaymentsForQuest",
+      "getCompletedCmtyPaymentsForOrg",
+      "getUnpaidCmtyPaymentsForOrg",
+    ],
+  });
 
   const [linkCmtyPaymentsWithTransaction, { data: linkMetamaskPaymentData }] = useMutation(
     LINK_CMTY_PAYMENTS_WITH_TRANSACTION,
@@ -230,6 +248,39 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
       return txHash;
     }
   };
+  const setPaymentsAsComplete = async () => {
+    try {
+      await markCmtyPaymentsAsComplete({
+        variables: {
+          paymentIds: selectedPayments,
+        },
+      });
+      setSnackbarAlertMessage("Success!");
+      setSnackbarAlertOpen(true);
+    } catch (error) {
+      const message = getMessageFromError(error);
+      setLoading(false);
+      setSnackbarAlertMessage(message);
+      setSnackbarAlertOpen(true);
+    }
+  };
+  const handleModal = () => {
+    setIsConfirmationModalOpen({
+      title: "Confirm Payments mark as paid",
+      body: "Are you sure you want to mark these payments as paid?",
+      onConfirm: () => {
+        setPaymentsAsComplete();
+      },
+      onClose: () => {
+        setIsConfirmationModalOpen(null);
+      },
+      onCancel: () => {
+        setIsConfirmationModalOpen(null);
+      },
+      cancelButtonTitle: "Cancel",
+      confirmButtonTitle: "Confirm",
+    });
+  };
   const sendTransactionFromMetamask = async () => {
     const paymentItem = paymentItems[0];
     setLoading(true);
@@ -272,7 +323,7 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
     }
   };
 
-  const hasErrorMessage = useMemo(() => conditions?.errorsList?.some(i => i.condition), [conditions?.errorsList]);
+  const hasErrorMessage = useMemo(() => conditions?.errorsList?.some((i) => i.condition), [conditions?.errorsList]);
 
   return (
     <Grid
@@ -288,7 +339,9 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
       border="1px solid #000212"
       gap="6px"
     >
-       {hasErrorMessage ?  <Box display="flex" flexDirection="column" gap="6px">
+      <ConfirmActionModal isOpen={!!isConfirmationModalOpen} {...isConfirmationModalOpen} />
+      {hasErrorMessage ? (
+        <Box display="flex" flexDirection="column" gap="6px">
           {conditions?.errorsList?.map(({ condition, message }, idx) =>
             condition ? (
               <Typography color="black" fontSize="14px" fontFamily="Poppins" fontWeight={500} key={idx}>
@@ -296,22 +349,33 @@ const BatchPayments = ({ selectedPayments, paymentData, tokenIds, onPaymentCompl
               </Typography>
             ) : null
           )}
-        </Box> : null}
-
-      <SharedSecondaryButton disabled={!showBatchPayButton} onClick={sendTransactionFromMetamask}>
-        {loading ? (
-          <CircularProgress
-            size={30}
-            thickness={5}
-            sx={{
-              color: "#2A8D5C",
-              animationDuration: "10000ms",
-            }}
-          />
-        ) : (
-          "Batch pay"
-        )}
-      </SharedSecondaryButton>
+        </Box>
+      ) : null}
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <SharedSecondaryButton disabled={!showBatchPayButton} onClick={sendTransactionFromMetamask}>
+          {loading ? (
+            <CircularProgress
+              size={30}
+              thickness={5}
+              sx={{
+                color: "#2A8D5C",
+                animationDuration: "10000ms",
+              }}
+            />
+          ) : (
+            "Batch pay"
+          )}
+        </SharedSecondaryButton>
+        <SharedBlackOutlineButton
+          style={{
+            marginLeft: "8px",
+            borderRadius: "35px",
+          }}
+          onClick={handleModal}
+        >
+          Mark as Paid
+        </SharedBlackOutlineButton>
+      </Box>
     </Grid>
   );
 };
