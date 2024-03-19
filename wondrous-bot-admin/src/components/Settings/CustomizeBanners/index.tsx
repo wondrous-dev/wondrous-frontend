@@ -46,16 +46,16 @@ const ORG_ASSET_PURPOSE = {
   startQuestBanner: "start_quest_banner",
   mySubmissionBanner: "my_submission_banner",
   storeBanner: "store_banner",
-  myPurchasesBanner: "my_purchases_banner", // TODO: add to backend
-  onboardMeBanner: "onboard_me_banner", // TODO: add to backend
+  myPurchasesBanner: "my_purchases_banner",
+  onboardMeBanner: "onboard_me_banner",
   referralBanner: "referral_banner",
   questLogo: "quest_logo",
   levelLogo: "level_logo",
   leaderboardLogo: "leaderboard_logo",
   mySubmissionLogo: "my_submission_logo",
   storeLogo: "store_logo",
-  myPurchasesLogo: "my_purchases_logo", // TODO: add to backend
-  onboardMeLogo: "onboard_me_logo", // TODO: add to backend
+  myPurchasesLogo: "my_purchases_logo",
+  onboardMeLogo: "onboard_me_logo",
   referralLogo: "referral_logo",
 };
 
