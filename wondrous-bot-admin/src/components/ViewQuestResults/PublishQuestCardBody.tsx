@@ -15,6 +15,7 @@ import { useDiscordRoles } from "utils/discord";
 import GlobalContext from "utils/context/GlobalContext";
 import ErrorField from "components/Shared/ErrorField";
 import { useDiscordRoleRewardData } from "components/Rewards/utils";
+import { ERRORS_LABELS, QUEST_STATUSES } from "utils/constants";
 
 const PublishQuestModal = ({
   onClose,
@@ -98,7 +99,7 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
   const [mentionChannel, setMentionChannel] = useState(false);
   const [discordRoleTagged, handleDiscordRoleTagged] = useState(null);
   const [message, setMessage] = useState(`${quest?.title} is now available! Check it out here and make a submission`);
-  const [publishQuest] = useMutation(PUSH_QUEST_DISCORD_NOTFICATION, {
+  const [publishQuest, { error }] = useMutation(PUSH_QUEST_DISCORD_NOTFICATION, {
     onCompleted: () => {
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage("Success!");
@@ -108,7 +109,18 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
       });
       setOpenPublishModal(false);
     },
+    onError: (error) => {
+      const errorCode: any = error?.graphQLErrors[0]?.extensions.errorCode;
+      const errMessage = ERRORS_LABELS[errorCode] || "Error publishing quest";
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(errMessage);
+      setSnackbarAlertAnchorOrigin({
+        vertical: "top",
+        horizontal: "center",
+      });
+    },
   });
+  const mutationError = error?.graphQLErrors[0]?.extensions.errorCode;
   const channels = guildDiscordChannels?.map((channel) => ({
     label: channel.name,
     value: channel.id,
@@ -122,6 +134,7 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
     }
   }, [guildDiscordChannels]);
 
+  const isInactiveQuest = quest?.status === QUEST_STATUSES.INACTIVE;
   return (
     <>
       <Modal
@@ -173,8 +186,8 @@ const PublishQuestCardBody = ({ guildDiscordChannels, quest, orgId, existingNoti
       )}
       <Box display="flex" width={"100%"} marginTop="8px">
         <Box flex={1} />
-        <SharedSecondaryButton disabled={!channel} onClick={() => setOpenPublishModal(true)}>
-          Publish
+        <SharedSecondaryButton disabled={!channel || isInactiveQuest} onClick={() => setOpenPublishModal(true)}>
+          {isInactiveQuest ? "Quest is inactive" : "Publish"}
         </SharedSecondaryButton>
       </Box>
     </>
