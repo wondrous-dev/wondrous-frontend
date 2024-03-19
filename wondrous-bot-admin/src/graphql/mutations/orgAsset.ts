@@ -10,8 +10,8 @@ export const UPSERT_ORG_CUSTOM_BANNER = gql`
 `;
 
 export const DELETE_ORG_BANNER = gql`
-  mutation deleteOrgBanner($orgId: ID!, $input: OrgBannerDeleteInput) {
-    deleteOrgBanner(orgId: $orgId, input: $input) {
+  mutation deleteOrgCustomAsset($orgAssetId: ID!) {
+    deleteOrgCustomAsset(orgAssetId: $orgAssetId) {
       success
     }
   }

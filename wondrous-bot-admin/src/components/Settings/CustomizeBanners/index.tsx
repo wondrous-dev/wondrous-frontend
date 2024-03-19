@@ -372,10 +372,7 @@ const CustomizeBanners = () => {
     }
     await deleteBanner({
       variables: {
-        orgId: activeOrg?.id,
-        input: {
-          assetId,
-        },
+        orgAssetId: assetId,
       },
       refetchQueries: [GET_ORG_CUSTOM_ASSETS],
       onCompleted,
