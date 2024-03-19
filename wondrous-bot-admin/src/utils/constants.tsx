@@ -224,6 +224,7 @@ export const ERRORS_LABELS = {
   [REQUIREMENTS_NOT_MET_ERRORS.LEVEL]: "You must reach at least level {requiredLevel} to embark on this quest",
   [REQUIREMENTS_NOT_MET_ERRORS.DISCORD_ROLE]: "You must have {discordRole} role to take this quest",
   [REQUIREMENTS_NOT_MET_ERRORS.QUEST]: "You must complete {questTitle} before taking this quest",
+  quest_not_active: "This quest is not active. Please activate it first",
 };
 
 export const DAO_CATEGORIES_KEYS = {
