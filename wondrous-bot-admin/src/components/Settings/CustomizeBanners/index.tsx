@@ -191,7 +191,7 @@ const CommandBanner = ({
     });
   };
 
-  const handleImageReplace = async ({ file, replaceImageCallback }) => {
+  const handleOnSave = async ({ file, replaceImageCallback }) => {
     if (!file) {
       handleResetAvatarImage();
       return;
@@ -211,7 +211,7 @@ const CommandBanner = ({
       openSelectFile: () => bannerImageInputField.current.click(),
       imageType: AVATAR_EDITOR_TYPES.BANNER_IMAGE,
       onSave: async (file: File) =>
-        handleImageReplace({
+        handleOnSave({
           file,
           replaceImageCallback: async () =>
             await handleReplaceImage({ file, purpose: banner.purpose, imageInputField: bannerImageInputField }),
@@ -236,7 +236,7 @@ const CommandBanner = ({
       openSelectFile: () => topImageInputField.current.click(),
       imageType: AVATAR_EDITOR_TYPES.BANNER_LOGO_IMAGE,
       onSave: async (file: File) =>
-        handleImageReplace({
+        handleOnSave({
           file,
           replaceImageCallback: async () =>
             await handleReplaceImage({ file, purpose: logo.purpose, imageInputField: topImageInputField }),
