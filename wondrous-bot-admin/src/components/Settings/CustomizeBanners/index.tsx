@@ -220,12 +220,12 @@ const CommandBanner = ({
     });
   };
 
-  const handleBannerImageOnChange = () => {
+  const handleBannerImageOnChange = (e) => {
+    setTempImage(e.target.files[0]);
     handleSetBannerImageAvatarProps();
-    setTempImage(bannerImageInputField.current.files[0]);
   };
 
-  const handleSetTopImageAvatarProps = () => {
+  const handleSetTopImageAvatarProps = (logo) => {
     if (topImageInputField.current.value === "") {
       topImageInputField.current.click();
       return;
@@ -236,7 +236,7 @@ const CommandBanner = ({
       openSelectFile: () => topImageInputField.current.click(),
       imageType: AVATAR_EDITOR_TYPES.BANNER_LOGO_IMAGE,
       onSave: async (file: File) =>
-        handleReplaceImage({
+        handleImageReplace({
           file,
           replaceImageCallback: async () =>
             await handleReplaceImage({ file, purpose: logo.purpose, imageInputField: topImageInputField }),
@@ -245,9 +245,9 @@ const CommandBanner = ({
     });
   };
 
-  const handleSetTopImageOnChange = () => {
-    handleSetTopImageAvatarProps();
-    setTempImage(topImageInputField.current.files[0]);
+  const handleSetTopImageOnChange = (e) => {
+    setTempImage(e.target.files[0]);
+    handleSetTopImageAvatarProps(logo);
   };
 
   return (
@@ -385,6 +385,7 @@ const CustomizeBanners = () => {
   }
 
   const handleReplaceImage = async ({ file, purpose, imageInputField }) => {
+    console.log("purpose", purpose);
     const image = file[0];
 
     if (!image || !image.type.includes("image")) {
@@ -454,13 +455,13 @@ const CustomizeBanners = () => {
       <AvatarEditor
         open={false}
         onSave={() => {}}
-        clearInput={() => {}}
         openSelectFile={() => {}}
         imageType={AVATAR_EDITOR_TYPES.BANNER_IMAGE}
         title={"Upload Image"}
         {...selectedAvatarProps}
         originalImage={tempImage || selectedAvatarProps?.originalImage}
         onCancel={handleResetAvatarImage}
+        clearInput={() => setSelectedAvatarProps(selectedAvatarProps)}
       />
       <CustomizeBannersContainer>
         <CommandsContainer>
