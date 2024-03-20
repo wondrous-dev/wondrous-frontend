@@ -156,6 +156,9 @@ const AvatarEditor = ({
         </SharedSecondaryButton>
       }
       footerRight={<SharedSecondaryButton onClick={handleSave}>Confirm image</SharedSecondaryButton>}
+      modalFooterStyle={{
+        gap: "8px",
+      }}
     >
       <Grid container direction="column" alignItems="center" gap="20px">
         <Box display="flex" justifyContent="center" alignItems="center">
