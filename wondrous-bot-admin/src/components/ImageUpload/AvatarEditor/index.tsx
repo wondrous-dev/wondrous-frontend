@@ -1,20 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-import max from 'lodash/max';
-import DefaultAvatarEditor from 'react-avatar-editor';
+import max from "lodash/max";
+import DefaultAvatarEditor from "react-avatar-editor";
 
-import { AvatarEditorTypes } from 'types/assets';
-import {
-  ButtonIconWrapper,
-  SharedSecondaryButton,
-} from 'components/Shared/styles';
-import Modal from 'components/Shared/Modal';
-import { Box, Grid } from '@mui/material';
-import { pinkColors } from 'utils/theme/colors';
-import ReplaceIcon from 'components/Icons/ReplaceIcon';
-import DeleteIcon from 'components/Icons/Delete';
-import { Label } from 'components/CreateTemplate/styles';
-import { ZoomIn, ZoomOut } from '@mui/icons-material';
+import { AvatarEditorTypes } from "types/assets";
+import { ButtonIconWrapper, SharedSecondaryButton } from "components/Shared/styles";
+import Modal from "components/Shared/Modal";
+import { Box, Grid } from "@mui/material";
+import { pinkColors } from "utils/theme/colors";
+import ReplaceIcon from "components/Icons/ReplaceIcon";
+import DeleteIcon from "components/Icons/Delete";
+import { Label } from "components/CreateTemplate/styles";
+import { ZoomIn, ZoomOut } from "@mui/icons-material";
 
 type Props = {
   originalImage: string | File;
@@ -25,7 +22,7 @@ type Props = {
   clearInput: () => void;
   imageType: AvatarEditorTypes;
   title: string;
-  recommendDateionText: string;
+  recommendDateionText?: string;
 };
 
 interface ImageViewerObjectProps {
@@ -33,6 +30,29 @@ interface ImageViewerObjectProps {
   height: number;
   borderRadius: number;
 }
+
+const IMAGE_VIEWER_SIZE: Record<Props["imageType"], ImageViewerObjectProps> = {
+  HEADER_IMAGE: {
+    width: 550,
+    height: 78,
+    borderRadius: 0,
+  },
+  ICON_IMAGE: {
+    width: 250,
+    height: 250,
+    borderRadius: 250,
+  },
+  BANNER_IMAGE: {
+    width: 640,
+    height: 140,
+    borderRadius: 0,
+  },
+  BANNER_LOGO_IMAGE: {
+    width: 400,
+    height: 400,
+    borderRadius: 0,
+  },
+};
 
 const AvatarEditor = ({
   originalImage,
@@ -50,18 +70,7 @@ const AvatarEditor = ({
   const [angle, setAngle] = useState(0);
   const editorRef = useRef(null);
 
-  const imageViewerSize: Record<Props['imageType'], ImageViewerObjectProps> = {
-    HEADER_IMAGE: {
-      width: 550,
-      height: 78,
-      borderRadius: 0,
-    },
-    ICON_IMAGE: {
-      width: 250,
-      height: 250,
-      borderRadius: 250,
-    },
-  };
+  const currentImageViewerSize = IMAGE_VIEWER_SIZE[imageType];
 
   useEffect(() => {
     setScale(1.0);
@@ -83,27 +92,27 @@ const AvatarEditor = ({
   // Event handlers
   const onAction = (action) => {
     switch (action) {
-      case 'zoom_in':
+      case "zoom_in":
         setScale(scale + defaultZoomScale);
         break;
 
-      case 'zoom_out':
+      case "zoom_out":
         setScale(max([scale - defaultZoomScale, maxZoomOut]) || maxZoomOut);
         break;
 
-      case 'rotate_right':
+      case "rotate_right":
         setAngle(angle + defaultRotateAngle);
         break;
 
-      case 'rotate_left':
+      case "rotate_left":
         setAngle(angle - defaultRotateAngle);
         break;
 
-      case 'crop':
+      case "crop":
         break;
 
       default:
-        throw new Error('Unknown action');
+        throw new Error("Unknown action");
     }
   };
 
@@ -125,95 +134,86 @@ const AvatarEditor = ({
         const file = new File([blob], `profile-pic.${blob.type.substring(6)}`, {
           type: blob.type,
         });
+        console.log("fetch file", file);
         onSave([file]);
       });
   };
 
+  const maxWidth =
+    currentImageViewerSize.width > currentImageViewerSize.height
+      ? currentImageViewerSize.width * 1.5
+      : currentImageViewerSize.width * 2;
+
   return (
     <Modal
       open={open}
-      title='Upload image'
+      title="Upload image"
       onClose={onCancel}
-      maxWidth={600}
+      maxWidth={maxWidth}
       footerLeft={
         <SharedSecondaryButton $reverse onClick={onCancel}>
           Cancel
         </SharedSecondaryButton>
       }
-      footerRight={
-        <SharedSecondaryButton onClick={handleSave}>
-          Confirm image
-        </SharedSecondaryButton>
-      }
+      footerRight={<SharedSecondaryButton onClick={handleSave}>Confirm image</SharedSecondaryButton>}
     >
-      <Grid container direction='column' alignItems='center' gap='20px'>
-        <Box display='flex' justifyContent='center' alignItems='center'>
+      <Grid container direction="column" alignItems="center" gap="20px">
+        <Box display="flex" justifyContent="center" alignItems="center">
           <DefaultAvatarEditor
             styles={{ borderRadius: 6 }}
             ref={editorRef}
             image={image}
-            width={imageViewerSize[imageType].width}
-            height={imageViewerSize[imageType].height}
-            borderRadius={imageViewerSize[imageType].borderRadius}
+            width={currentImageViewerSize.width}
+            height={currentImageViewerSize.height}
+            borderRadius={currentImageViewerSize.borderRadius}
             scale={scale}
             rotate={angle}
             border={[0, 20]}
           />
         </Box>
-        <Grid
-          display='flex'
-          width='100%'
-          alignItems='center'
-          justifyContent='space-between'
-          gap='8px'
-        >
-          <Box display='flex' gap='8px'>
-            <SharedSecondaryButton
-              borderRadius='6px'
-              onClick={openSelectFile}
-              background={pinkColors.pink50}
-            >
+        <Grid container alignItems="center" justifyContent="space-between" gap="8px">
+          <Box display="flex" gap="8px">
+            <SharedSecondaryButton borderRadius="6px" onClick={openSelectFile} background={pinkColors.pink50}>
               <ReplaceIcon />
               Replace image
             </SharedSecondaryButton>
-            <SharedSecondaryButton
-              borderRadius='6px'
-              onClick={onClearInput}
-              background={pinkColors.pink50}
-            >
+            <SharedSecondaryButton borderRadius="6px" onClick={onClearInput} background={pinkColors.pink50}>
               <DeleteIcon />
               Delete image
             </SharedSecondaryButton>
           </Box>
-          <Box display='flex' gap='8px'>
-            <ButtonIconWrapper onClick={() => onAction('zoom_in')}>
+          <Box display="flex" gap="8px">
+            <ButtonIconWrapper onClick={() => onAction("zoom_in")}>
               <ZoomIn
                 sx={{
-                  color: 'black',
+                  color: "black",
                 }}
               />
             </ButtonIconWrapper>
-            <ButtonIconWrapper onClick={() => onAction('zoom_out')}>
+            <ButtonIconWrapper onClick={() => onAction("zoom_out")}>
               <ZoomOut
                 sx={{
-                  color: 'black',
+                  color: "black",
                 }}
               />
             </ButtonIconWrapper>
           </Box>
         </Grid>
-        <Box width='100%'>
-          <Label>Recommended: 800 x 800px</Label>
+        <Box width="100%">
+          <Label>
+            Recommended: {currentImageViewerSize.width} x {currentImageViewerSize.height}
+          </Label>
         </Box>
       </Grid>
     </Modal>
   );
 };
 
-export const AVATAR_EDITOR_TYPES: Record<AvatarEditorTypes, AvatarEditorTypes> =
-  {
-    HEADER_IMAGE: 'HEADER_IMAGE',
-    ICON_IMAGE: 'ICON_IMAGE',
-  };
+export const AVATAR_EDITOR_TYPES: Record<AvatarEditorTypes, AvatarEditorTypes> = {
+  HEADER_IMAGE: "HEADER_IMAGE",
+  ICON_IMAGE: "ICON_IMAGE",
+  BANNER_IMAGE: "BANNER_IMAGE",
+  BANNER_LOGO_IMAGE: "BANNER_LOGO_IMAGE",
+};
 
 export default AvatarEditor;

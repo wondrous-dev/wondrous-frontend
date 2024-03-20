@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import DeleteIcon from "components/Icons/Delete";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import ReplaceIcon from "components/Icons/ReplaceIcon";
 import {
@@ -36,6 +36,7 @@ import { GET_ORG_CUSTOM_ASSETS } from "graphql/queries/orgAsset";
 import SafeImage from "components/SafeImage";
 import useAlerts, { useSubscriptionPaywall } from "utils/hooks";
 import { useNavigate } from "react-router-dom";
+import AvatarEditor, { AVATAR_EDITOR_TYPES } from "components/ImageUpload/AvatarEditor";
 
 const EXEMPTED_ORG_IDS = ["911445364593262592", "844677430694510634", "1192224585215639572"];
 
@@ -158,7 +159,15 @@ const commandBanners: {
   },
 ];
 
-const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDeleteImage }) => {
+const CommandBanner = ({
+  baseBanner,
+  customBanner,
+  handleReplaceImage,
+  handleDeleteImage,
+  setSelectedAvatarProps,
+  setTempImage,
+  handleResetAvatarImage,
+}) => {
   const { title, tooltip, banner, logo } = baseBanner;
   const bannerImageInputField = useRef(null);
   const topImageInputField = useRef(null);
@@ -168,13 +177,6 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
   const customBannerImageUrl = customBannerImage?.publicUrl;
   const customTopImageUrl = customTopImage?.publicUrl;
 
-  const handleReplaceBannerImage = async (file) => {
-    handleReplaceImage({
-      file,
-      purpose: banner.purpose,
-      imageInputField: bannerImageInputField,
-    });
-  };
   const handleDeleteBannerImage = async () => {
     handleDeleteImage({
       assetId: customBannerImage?.id,
@@ -182,18 +184,70 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
     });
   };
 
-  const handleReplaceTopImage = async (file) => {
-    handleReplaceImage({
-      file,
-      purpose: logo.purpose,
-      imageInputField: topImageInputField,
-    });
-  };
   const handleDeleteTopImage = async () => {
     handleDeleteImage({
       assetId: customTopImage?.id,
       imageInputField: topImageInputField,
     });
+  };
+
+  const handleImageReplace = async ({ file, replaceImageCallback }) => {
+    if (!file) {
+      handleResetAvatarImage();
+      return;
+    }
+    replaceImageCallback();
+    handleResetAvatarImage();
+  };
+
+  const handleSetBannerImageAvatarProps = () => {
+    if (bannerImageInputField.current.value === "") {
+      bannerImageInputField.current.click();
+      return;
+    }
+    setSelectedAvatarProps({
+      originalImage: customBannerImageUrl || banner.image,
+      open: true,
+      openSelectFile: () => bannerImageInputField.current.click(),
+      imageType: AVATAR_EDITOR_TYPES.BANNER_IMAGE,
+      onSave: async (file: File) =>
+        handleImageReplace({
+          file,
+          replaceImageCallback: async () =>
+            await handleReplaceImage({ file, purpose: banner.purpose, imageInputField: bannerImageInputField }),
+        }),
+      onCancel: () => (bannerImageInputField.current.value = ""),
+    });
+  };
+
+  const handleBannerImageOnChange = () => {
+    handleSetBannerImageAvatarProps();
+    setTempImage(bannerImageInputField.current.files[0]);
+  };
+
+  const handleSetTopImageAvatarProps = () => {
+    if (topImageInputField.current.value === "") {
+      topImageInputField.current.click();
+      return;
+    }
+    setSelectedAvatarProps({
+      originalImage: customTopImageUrl || logo.image,
+      open: true,
+      openSelectFile: () => topImageInputField.current.click(),
+      imageType: AVATAR_EDITOR_TYPES.BANNER_LOGO_IMAGE,
+      onSave: async (file: File) =>
+        handleReplaceImage({
+          file,
+          replaceImageCallback: async () =>
+            await handleReplaceImage({ file, purpose: logo.purpose, imageInputField: topImageInputField }),
+        }),
+      onCancel: () => (topImageInputField.current.value = ""),
+    });
+  };
+
+  const handleSetTopImageOnChange = () => {
+    handleSetTopImageAvatarProps();
+    setTempImage(topImageInputField.current.files[0]);
   };
 
   return (
@@ -230,11 +284,11 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
           <BannerUploadTextButtonContainer>
             <BannerUploadText>Optimal size: 640 x 140px</BannerUploadText>
             <BannerUploadButtonContainer>
-              <ButtonIconWrapper onClick={() => bannerImageInputField.current.click()}>
+              <ButtonIconWrapper onClick={handleSetBannerImageAvatarProps}>
                 <ReplaceIcon />
               </ButtonIconWrapper>
               <ButtonInputContainer>
-                <input type="file" accept="image/*" ref={bannerImageInputField} onChange={handleReplaceBannerImage} />
+                <input type="file" accept="image/*" ref={bannerImageInputField} onChange={handleBannerImageOnChange} />
               </ButtonInputContainer>
               <ButtonIconWrapper onClick={handleDeleteBannerImage}>
                 <DeleteIcon />
@@ -265,11 +319,11 @@ const CommandBanner = ({ baseBanner, customBanner, handleReplaceImage, handleDel
             <TopImageTextButtonContainer>
               <TopImageText>400 x 400px</TopImageText>
               <TopImageButtonContainer>
-                <ButtonIconWrapper onClick={() => topImageInputField.current.click()}>
+                <ButtonIconWrapper onClick={handleSetTopImageAvatarProps}>
                   <ReplaceIcon />
                 </ButtonIconWrapper>
                 <ButtonInputContainer>
-                  <input type="file" accept="image/*" ref={topImageInputField} onChange={handleReplaceTopImage} />
+                  <input type="file" accept="image/*" ref={topImageInputField} onChange={handleSetTopImageOnChange} />
                 </ButtonInputContainer>
                 <ButtonIconWrapper onClick={handleDeleteTopImage}>
                   <DeleteIcon />
@@ -298,6 +352,19 @@ const CustomizeBanners = () => {
   const [updateBanner] = useMutation(UPSERT_ORG_CUSTOM_BANNER);
   const [deleteBanner] = useMutation(DELETE_ORG_BANNER);
 
+  const defaultAvatarProps = {
+    originalImage: null,
+    open: false,
+    onCancel: () => {},
+  };
+  const [selectedAvatarProps, setSelectedAvatarProps] = useState(defaultAvatarProps);
+  const [tempImage, setTempImage] = useState(null);
+  const handleResetAvatarImage = () => {
+    selectedAvatarProps?.onCancel();
+    setTempImage(null);
+    setSelectedAvatarProps(defaultAvatarProps);
+  };
+
   if (isLoading || !(isPremiumPlan || isEcosystemPlan) || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
     setOnCancel(() => {
       return () => {
@@ -318,7 +385,7 @@ const CustomizeBanners = () => {
   }
 
   const handleReplaceImage = async ({ file, purpose, imageInputField }) => {
-    const image = file.target.files[0];
+    const image = file[0];
 
     if (!image || !image.type.includes("image")) {
       showError("Invalid file type");
@@ -383,21 +450,37 @@ const CustomizeBanners = () => {
   };
 
   return (
-    <CustomizeBannersContainer>
-      <CommandsContainer>
-        {commandBanners.map((banner) => {
-          return (
-            <CommandBanner
-              key={`${banner.title}-banner`}
-              baseBanner={banner}
-              customBanner={data?.getOrgCustomAssets}
-              handleReplaceImage={handleReplaceImage}
-              handleDeleteImage={handleDeleteImage}
-            />
-          );
-        })}
-      </CommandsContainer>
-    </CustomizeBannersContainer>
+    <>
+      <AvatarEditor
+        open={false}
+        onSave={() => {}}
+        clearInput={() => {}}
+        openSelectFile={() => {}}
+        imageType={AVATAR_EDITOR_TYPES.BANNER_IMAGE}
+        title={"Upload Image"}
+        {...selectedAvatarProps}
+        originalImage={tempImage || selectedAvatarProps?.originalImage}
+        onCancel={handleResetAvatarImage}
+      />
+      <CustomizeBannersContainer>
+        <CommandsContainer>
+          {commandBanners.map((banner) => {
+            return (
+              <CommandBanner
+                key={`${banner.title}-banner`}
+                baseBanner={banner}
+                customBanner={data?.getOrgCustomAssets}
+                handleReplaceImage={handleReplaceImage}
+                handleDeleteImage={handleDeleteImage}
+                setSelectedAvatarProps={setSelectedAvatarProps}
+                setTempImage={setTempImage}
+                handleResetAvatarImage={handleResetAvatarImage}
+              />
+            );
+          })}
+        </CommandsContainer>
+      </CustomizeBannersContainer>
+    </>
   );
 };
 
