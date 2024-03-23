@@ -50,14 +50,13 @@ const ORG_ASSET_PURPOSE = {
   myPurchasesBanner: "my_purchases_banner",
   onboardMeBanner: "onboard_me_banner",
   referralBanner: "referral_banner",
-  questLogo: "quest_logo",
-  levelLogo: "level_logo",
-  leaderboardLogo: "leaderboard_logo",
-  mySubmissionLogo: "my_submission_logo",
-  storeLogo: "store_logo",
-  myPurchasesLogo: "my_purchases_logo",
-  onboardMeLogo: "onboard_me_logo",
-  referralLogo: "referral_logo",
+
+  questThumbnail: "quest_thumbnail",
+  levelThumbnail: "level_thumbnail",
+  leaderboardThumbnail: "leaderboard_thumbnail",
+  mySubmissionThumbnail: "my_submission_thumbnail",
+  storeThumbnail: "store_thumbnail",
+  referralThumbnail: "referral_thumbnail",
 };
 
 const commandBanners: {
@@ -67,7 +66,7 @@ const commandBanners: {
     purpose: (typeof ORG_ASSET_PURPOSE)[keyof typeof ORG_ASSET_PURPOSE];
     image: string;
   };
-  logo: {
+  thumbnail?: {
     purpose: (typeof ORG_ASSET_PURPOSE)[keyof typeof ORG_ASSET_PURPOSE];
     image: string;
   };
@@ -79,8 +78,8 @@ const commandBanners: {
       purpose: ORG_ASSET_PURPOSE.questBanner,
       image: "/images/banner-images/quest-banner.png",
     },
-    logo: {
-      purpose: ORG_ASSET_PURPOSE.questLogo,
+    thumbnail: {
+      purpose: ORG_ASSET_PURPOSE.questThumbnail,
       image: "/images/banner-images/quest-circle.png",
     },
   },
@@ -92,8 +91,8 @@ const commandBanners: {
       purpose: ORG_ASSET_PURPOSE.mySubmissionBanner,
       image: "/images/banner-images/sub-banner.png",
     },
-    logo: {
-      purpose: ORG_ASSET_PURPOSE.mySubmissionLogo,
+    thumbnail: {
+      purpose: ORG_ASSET_PURPOSE.mySubmissionThumbnail,
       image: "/images/banner-images/sub-circle.png",
     },
   },
@@ -104,8 +103,8 @@ const commandBanners: {
       purpose: ORG_ASSET_PURPOSE.levelBanner,
       image: "/images/banner-images/my-level-banner.png",
     },
-    logo: {
-      purpose: ORG_ASSET_PURPOSE.levelLogo,
+    thumbnail: {
+      purpose: ORG_ASSET_PURPOSE.levelThumbnail,
       image: "/images/banner-images/my-level-circle.png",
     },
   },
@@ -116,8 +115,8 @@ const commandBanners: {
       purpose: ORG_ASSET_PURPOSE.leaderboardBanner,
       image: "/images/banner-images/leaderboard-banner.png",
     },
-    logo: {
-      purpose: ORG_ASSET_PURPOSE.leaderboardLogo,
+    thumbnail: {
+      purpose: ORG_ASSET_PURPOSE.leaderboardThumbnail,
       image: "/images/banner-images/leaderboard-circle.png",
     },
   },
@@ -128,8 +127,8 @@ const commandBanners: {
       purpose: ORG_ASSET_PURPOSE.storeBanner,
       image: "/images/banner-images/store-banner.png",
     },
-    logo: {
-      purpose: ORG_ASSET_PURPOSE.storeLogo,
+    thumbnail: {
+      purpose: ORG_ASSET_PURPOSE.storeThumbnail,
       image: "/images/banner-images/store-circle.png",
     },
   },
@@ -140,10 +139,6 @@ const commandBanners: {
       purpose: ORG_ASSET_PURPOSE.myPurchasesBanner,
       image: "/images/banner-images/my-purchases-banner.png",
     },
-    logo: {
-      purpose: ORG_ASSET_PURPOSE.myPurchasesLogo,
-      image: "/images/banner-images/my-purchases-circle.png",
-    },
   },
   {
     title: "Onboard Me",
@@ -151,10 +146,6 @@ const commandBanners: {
     banner: {
       purpose: ORG_ASSET_PURPOSE.onboardMeBanner,
       image: "/images/banner-images/onboard-me-banner.png",
-    },
-    logo: {
-      purpose: ORG_ASSET_PURPOSE.onboardMeLogo,
-      image: "/images/banner-images/onboard-me-circle.png",
     },
   },
 ];
@@ -168,12 +159,12 @@ const CommandBanner = ({
   setTempImage,
   handleResetAvatarImage,
 }) => {
-  const { title, tooltip, banner, logo } = baseBanner;
+  const { title, tooltip, banner, thumbnail } = baseBanner;
   const bannerImageInputField = useRef(null);
   const topImageInputField = useRef(null);
 
   const customBannerImage = customBanner?.find((customBanner) => customBanner.purpose === banner.purpose);
-  const customTopImage = customBanner?.find((customBanner) => customBanner.purpose === logo.purpose);
+  const customTopImage = customBanner?.find((customBanner) => customBanner.purpose === thumbnail.purpose);
   const customBannerImageUrl = customBannerImage?.publicUrl;
   const customTopImageUrl = customTopImage?.publicUrl;
 
@@ -225,13 +216,13 @@ const CommandBanner = ({
     handleSetBannerImageAvatarProps();
   };
 
-  const handleSetTopImageAvatarProps = (logo) => {
+  const handleSetTopImageAvatarProps = (thumbnail) => {
     if (topImageInputField.current.value === "") {
       topImageInputField.current.click();
       return;
     }
     setSelectedAvatarProps({
-      originalImage: customTopImageUrl || logo.image,
+      originalImage: customTopImageUrl || thumbnail.image,
       open: true,
       openSelectFile: () => topImageInputField.current.click(),
       imageType: AVATAR_EDITOR_TYPES.BANNER_LOGO_IMAGE,
@@ -239,7 +230,7 @@ const CommandBanner = ({
         handleOnSave({
           file,
           replaceImageCallback: async () =>
-            await handleReplaceImage({ file, purpose: logo.purpose, imageInputField: topImageInputField }),
+            await handleReplaceImage({ file, purpose: thumbnail.purpose, imageInputField: topImageInputField }),
         }),
       onCancel: () => (topImageInputField.current.value = ""),
     });
@@ -247,7 +238,7 @@ const CommandBanner = ({
 
   const handleSetTopImageOnChange = (e) => {
     setTempImage(e.target.files[0]);
-    handleSetTopImageAvatarProps(logo);
+    handleSetTopImageAvatarProps(thumbnail);
   };
 
   return (
@@ -313,7 +304,7 @@ const CommandBanner = ({
                   }}
                 />
               ) : (
-                <img src={logo.image} alt={`${title} top image`} />
+                <img src={thumbnail.image} alt={`${title} top image`} />
               )}
             </TopImageContainer>
             <TopImageTextButtonContainer>
