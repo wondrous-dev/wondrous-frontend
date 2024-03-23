@@ -29,6 +29,7 @@ interface IModalProps {
   dialogComponentProps?: any;
   modalFooterStyle?: {
     padding?: string;
+    gap?: string;
   };
   modalTitleStyle?: any;
   closeButtonStyle?: any;
@@ -66,7 +67,13 @@ const Modal = ({
             {!noHeader && (
               <ModalHeader justifyContent={title ? "space-between" : "flex-end"} {...headerProps}>
                 {!!title && <ModalTitle style={modalTitleStyle}>{title}</ModalTitle>}
-                {onClose && <CloseModalBtn style={closeButtonStyle} data-tour="tutorial-default-modal-close-button" onClick={onClose} />}
+                {onClose && (
+                  <CloseModalBtn
+                    style={closeButtonStyle}
+                    data-tour="tutorial-default-modal-close-button"
+                    onClick={onClose}
+                  />
+                )}
               </ModalHeader>
             )}
 

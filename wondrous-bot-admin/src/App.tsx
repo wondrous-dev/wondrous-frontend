@@ -24,6 +24,7 @@ import { WonderWeb3Provider } from "utils/context/WonderWeb3Context";
 import SettingsPage from "pages/settings";
 import TeamSettingsPage from "pages/settings/team";
 import BillingPage from "pages/settings/billing";
+import CustomizeBannersPage from "pages/settings/customize-banners";
 import NotificationSettingsPage from "pages/settings/notification";
 import WalletConnectPage from "pages/wallet/connect";
 import OnboardingPage from "pages/onboarding";
@@ -118,6 +119,10 @@ const router = createBrowserRouter([
       {
         path: "/settings/nft",
         element: <CommunityNFTSettingsPage />,
+      },
+      {
+        path: "/settings/customize-banners",
+        element: <CustomizeBannersPage />,
       },
       {
         path: "/",
