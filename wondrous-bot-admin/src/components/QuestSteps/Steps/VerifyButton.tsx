@@ -71,7 +71,7 @@ const LinkClickButton = ({ step, cmtyUser, handleLinkClick, startCmtyUserPolling
       questStepId: step?.id,
     });
     const query = btoa(linkQuery);
-    return `${baseUrl}/verify-link?query=${query}`;
+    return `${baseUrl}/verify-link?query=${encodeURIComponent(query)}`;
   }, [step]);
 
   const onClick = async () => {
