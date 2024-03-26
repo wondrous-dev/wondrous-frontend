@@ -163,7 +163,7 @@ const CommandBanner = ({
   const bannerImageInputField = useRef(null);
   const topImageInputField = useRef(null);
 
-  const customBannerImage = customBanner?.find((customBanner) => customBanner.purpose === banner.purpose);
+  const customBannerImage = customBanner?.find((customBanner) => customBanner.purpose === banner?.purpose);
   const customTopImage = customBanner?.find((customBanner) => customBanner.purpose === thumbnail?.purpose);
   const customBannerImageUrl = customBannerImage?.publicUrl;
   const customTopImageUrl = customTopImage?.publicUrl;
@@ -254,39 +254,46 @@ const CommandBanner = ({
         </StyledInformationTooltip>
       </HeaderContainer>
       <CommandBannerUploadContainer>
-        <BannerUploadContainer>
-          <BannerUploadHeader>Banner</BannerUploadHeader>
-          <BannerUploadImageContainer>
-            {customBannerImageUrl ? (
-              <SafeImage
-                src={customBannerImageUrl}
-                alt={`${title} banner`}
-                style={{
-                  height: "auto",
-                  objectFit: "cover",
-                  width: "100%",
-                  maxHeight: "100%",
-                }}
-              />
-            ) : (
-              <img src={banner.image} alt={`${title} banner`} />
-            )}
-          </BannerUploadImageContainer>
-          <BannerUploadTextButtonContainer>
-            <BannerUploadText>Optimal size: 640 x 140px</BannerUploadText>
-            <BannerUploadButtonContainer>
-              <ButtonIconWrapper onClick={handleSetBannerImageAvatarProps}>
-                <ReplaceIcon />
-              </ButtonIconWrapper>
-              <ButtonInputContainer>
-                <input type="file" accept="image/*" ref={bannerImageInputField} onChange={handleBannerImageOnChange} />
-              </ButtonInputContainer>
-              <ButtonIconWrapper onClick={handleDeleteBannerImage}>
-                <DeleteIcon />
-              </ButtonIconWrapper>
-            </BannerUploadButtonContainer>
-          </BannerUploadTextButtonContainer>
-        </BannerUploadContainer>
+        {banner !== undefined && (
+          <BannerUploadContainer>
+            <BannerUploadHeader>Banner</BannerUploadHeader>
+            <BannerUploadImageContainer>
+              {customBannerImageUrl ? (
+                <SafeImage
+                  src={customBannerImageUrl}
+                  alt={`${title} banner`}
+                  style={{
+                    height: "auto",
+                    objectFit: "cover",
+                    width: "100%",
+                    maxHeight: "100%",
+                  }}
+                />
+              ) : (
+                <img src={banner.image} alt={`${title} banner`} />
+              )}
+            </BannerUploadImageContainer>
+            <BannerUploadTextButtonContainer>
+              <BannerUploadText>Optimal size: 640 x 140px</BannerUploadText>
+              <BannerUploadButtonContainer>
+                <ButtonIconWrapper onClick={handleSetBannerImageAvatarProps}>
+                  <ReplaceIcon />
+                </ButtonIconWrapper>
+                <ButtonInputContainer>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={bannerImageInputField}
+                    onChange={handleBannerImageOnChange}
+                  />
+                </ButtonInputContainer>
+                <ButtonIconWrapper onClick={handleDeleteBannerImage}>
+                  <DeleteIcon />
+                </ButtonIconWrapper>
+              </BannerUploadButtonContainer>
+            </BannerUploadTextButtonContainer>
+          </BannerUploadContainer>
+        )}
         <SectionDivider />
         {thumbnail !== undefined && (
           <TopImageSectionContainer>
