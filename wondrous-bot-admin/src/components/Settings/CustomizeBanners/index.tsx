@@ -164,7 +164,7 @@ const CommandBanner = ({
   const topImageInputField = useRef(null);
 
   const customBannerImage = customBanner?.find((customBanner) => customBanner.purpose === banner.purpose);
-  const customTopImage = customBanner?.find((customBanner) => customBanner.purpose === thumbnail.purpose);
+  const customTopImage = customBanner?.find((customBanner) => customBanner.purpose === thumbnail?.purpose);
   const customBannerImageUrl = customBannerImage?.publicUrl;
   const customTopImageUrl = customTopImage?.publicUrl;
 
@@ -288,41 +288,43 @@ const CommandBanner = ({
           </BannerUploadTextButtonContainer>
         </BannerUploadContainer>
         <SectionDivider />
-        <TopImageSectionContainer>
-          <BannerUploadHeader>Top Image</BannerUploadHeader>
-          <TopImageImageButtonContainer>
-            <TopImageContainer>
-              {customTopImageUrl ? (
-                <SafeImage
-                  src={customTopImageUrl}
-                  alt={`${title} top image`}
-                  style={{
-                    height: "auto",
-                    objectFit: "cover",
-                    width: "100%",
-                    maxHeight: "25vh",
-                  }}
-                />
-              ) : (
-                <img src={thumbnail.image} alt={`${title} top image`} />
-              )}
-            </TopImageContainer>
-            <TopImageTextButtonContainer>
-              <TopImageText>400 x 400px</TopImageText>
-              <TopImageButtonContainer>
-                <ButtonIconWrapper onClick={handleSetTopImageAvatarProps}>
-                  <ReplaceIcon />
-                </ButtonIconWrapper>
-                <ButtonInputContainer>
-                  <input type="file" accept="image/*" ref={topImageInputField} onChange={handleSetTopImageOnChange} />
-                </ButtonInputContainer>
-                <ButtonIconWrapper onClick={handleDeleteTopImage}>
-                  <DeleteIcon />
-                </ButtonIconWrapper>
-              </TopImageButtonContainer>
-            </TopImageTextButtonContainer>
-          </TopImageImageButtonContainer>
-        </TopImageSectionContainer>
+        {thumbnail !== undefined && (
+          <TopImageSectionContainer>
+            <BannerUploadHeader>Top Image</BannerUploadHeader>
+            <TopImageImageButtonContainer>
+              <TopImageContainer>
+                {customTopImageUrl ? (
+                  <SafeImage
+                    src={customTopImageUrl}
+                    alt={`${title} top image`}
+                    style={{
+                      height: "auto",
+                      objectFit: "cover",
+                      width: "100%",
+                      maxHeight: "25vh",
+                    }}
+                  />
+                ) : (
+                  <img src={thumbnail.image} alt={`${title} top image`} />
+                )}
+              </TopImageContainer>
+              <TopImageTextButtonContainer>
+                <TopImageText>400 x 400px</TopImageText>
+                <TopImageButtonContainer>
+                  <ButtonIconWrapper onClick={handleSetTopImageAvatarProps}>
+                    <ReplaceIcon />
+                  </ButtonIconWrapper>
+                  <ButtonInputContainer>
+                    <input type="file" accept="image/*" ref={topImageInputField} onChange={handleSetTopImageOnChange} />
+                  </ButtonInputContainer>
+                  <ButtonIconWrapper onClick={handleDeleteTopImage}>
+                    <DeleteIcon />
+                  </ButtonIconWrapper>
+                </TopImageButtonContainer>
+              </TopImageTextButtonContainer>
+            </TopImageImageButtonContainer>
+          </TopImageSectionContainer>
+        )}
       </CommandBannerUploadContainer>
     </CommandBannerContainer>
   );
