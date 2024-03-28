@@ -24,6 +24,7 @@ import QuestRewardComponent from "components/Rewards/QuestRewardComponent";
 import { constructRequestBody, handleSaveError, processSave } from "./helpers";
 import { useTour } from "@reactour/tour";
 import useDynamicSteps from "components/TutorialComponent/Tutorials/CreateQuestTutorial/useDynamicSteps";
+import ComponentOptionsModal from "components/AddFormEntity/components/ComponentOptionsModal";
 
 const CreateTemplate = ({
   setRefValue,
@@ -58,6 +59,8 @@ const CreateTemplate = ({
   const [isSaving, setIsSaving] = useState(false);
   const [questSettings, setQuestSettings] = useState({ ...defaultQuestSettings });
   const [removedMediaSlugs, setRemovedMediaSlugs] = useState({});
+
+  const [openComponentOptionsModal, setOpenComponentOptionsModal] = useState(false);
 
   const handleAdd = (type) => {
     setSteps([
@@ -186,6 +189,11 @@ const CreateTemplate = ({
 
   return (
     <>
+      <ComponentOptionsModal
+        open={openComponentOptionsModal}
+        onClose={() => setOpenComponentOptionsModal(false)}
+        onClick={(value) => handleAdd(value)}
+      />
       <Modal
         open={isSaving}
         onClose={() => setIsSaving(false)}
@@ -276,7 +284,7 @@ const CreateTemplate = ({
                 gap="14px"
                 data-tour="tutorial-add-quest-step"
                 padding="14px 24px"
-                onClick={() => handleAdd(TYPES.TEXT_FIELD)}
+                onClick={() => setOpenComponentOptionsModal(true)}
                 sx={{
                   cursor: "pointer",
                 }}
