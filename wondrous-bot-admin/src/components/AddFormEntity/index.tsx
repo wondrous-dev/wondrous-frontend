@@ -1,7 +1,7 @@
-import { Grid, Typography, Box } from "@mui/material";
+import { Grid, Typography, Box, ButtonBase } from "@mui/material";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import { Header } from "./styles";
+import { Button, Header } from "./styles";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 
@@ -20,6 +20,8 @@ import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
 import AutocompleteOptionsComponent from "./components/AutocompleteComponent";
 import GlobalContext from "utils/context/GlobalContext";
 import { COMPONENT_OPTIONS, getMultipleChoiceDefaultValue } from "./constants";
+import EditSvg from "components/Icons/edit.svg";
+import ComponentOptionsModal from "./components/ComponentOptionsModal";
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -183,140 +185,160 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     }));
   };
 
+  const [openComponentOptionsModal, setOpenComponentOptionsModal] = useState({
+    open: false,
+    order: 0,
+    idx: 0,
+  });
+  const handleToggleComponentOptionsModal = () =>
+    setOpenComponentOptionsModal((prev) => ({ ...prev, open: !prev.open }));
+
   return (
-    <Grid
-      display="flex"
-      gap="24px"
-      flexDirection="column"
-      alignItems="flex-start"
-      justifyContent="flex-start"
-      width="100%"
-    >
-      <EcosystemFeature open={openEcosystemDialog} onClose={() => setOpenEcosystemDialog(false)} />
-      <Typography
-        fontFamily="Poppins"
-        fontWeight={600}
-        fontSize="18px"
-        lineHeight="24px"
-        color="black"
-        ref={(ref) => (refs.current[0] = ref)}
+    <>
+      <ComponentOptionsModal
+        open={openComponentOptionsModal.open}
+        onClose={handleToggleComponentOptionsModal}
+        onClick={(value) => handleChangeType(value, openComponentOptionsModal.order, openComponentOptionsModal.idx)}
+      />
+      <Grid
+        display="flex"
+        gap="24px"
+        flexDirection="column"
+        alignItems="flex-start"
+        justifyContent="flex-start"
+        width="100%"
       >
-        {steps?.length} {steps?.length === 1 ? "Quest Step" : "Quest Steps"}
-      </Typography>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <StrictModeDroppable droppableId="droppableId">
-          {(provided) => (
-            <Grid
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              gap="24px"
-              alignItems="center"
-              width="100%"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {steps?.map((item, idx) => {
-                const isQuiz = item.type === TYPES.MULTI_QUIZ || item.type === TYPES.SINGLE_QUIZ;
+        <EcosystemFeature open={openEcosystemDialog} onClose={() => setOpenEcosystemDialog(false)} />
+        <Typography
+          fontFamily="Poppins"
+          fontWeight={600}
+          fontSize="18px"
+          lineHeight="24px"
+          color="black"
+          ref={(ref) => (refs.current[0] = ref)}
+        >
+          {steps?.length} {steps?.length === 1 ? "Quest Step" : "Quest Steps"}
+        </Typography>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <StrictModeDroppable droppableId="droppableId">
+            {(provided) => (
+              <Grid
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                gap="24px"
+                alignItems="center"
+                width="100%"
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {steps?.map((item, idx) => {
+                  const isQuiz = item.type === TYPES.MULTI_QUIZ || item.type === TYPES.SINGLE_QUIZ;
 
-                const Component = CONFIG_COMPONENTS[item?.type];
+                  const Component = CONFIG_COMPONENTS[item?.type];
 
-                if (!Component) return null;
-                return (
-                  <Box
-                    width="100%"
-                    height="100%"
-                    ref={(ref) => (refs.current[idx + 1] = ref)}
-                    data-tour={idx === steps?.length - 1 ? "tour-quest-step" : null}
-                  >
-                    <Draggable key={idx} draggableId={`${idx}`} index={idx}>
-                      {(provided, snapshot) => (
-                        <Grid
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
-                          width="100%"
-                          isDragging={snapshot.isDragging}
-                        >
-                          <PanelComponent
-                            renderHeader={() => (
-                              <Header display="flex" justifyContent="space-between" alignItems="center">
-                                <Grid display="flex" gap="18px" alignItems="center">
-                                  <DragIndicatorIcon
-                                    sx={{
-                                      color: "#2A8D5C",
-                                    }}
-                                  />
-                                  <Typography
-                                    color="#2A8D5C"
-                                    fontFamily="Poppins"
-                                    fontWeight={700}
-                                    fontSize="12px"
-                                    lineHeight="14px"
-                                    whiteSpace="nowrap"
-                                  >
-                                    Step {idx + 1}
-                                  </Typography>
-                                  <AutocompleteOptionsComponent
-                                    options={componentOptions}
-                                    value={item.type === TYPES.SINGLE_QUIZ ? TYPES.MULTI_QUIZ : item.type}
-                                    onChange={(value) => handleChangeType(value, item.order, idx)}
-                                    setSteps={setSteps}
-                                    order={idx + 1}
-                                  />
-                                </Grid>
-                                <Grid display="flex" alignItems="center" gap="14px">
-                                  <Box display="flex" gap="10px" alignItems="center">
-                                    <Switch
-                                      value={item.required === false ? false : true}
-                                      onChange={(value) => {
-                                        handleRequiredChange(value, item.order);
+                  if (!Component) return null;
+                  return (
+                    <Box
+                      width="100%"
+                      height="100%"
+                      ref={(ref) => (refs.current[idx + 1] = ref)}
+                      data-tour={idx === steps?.length - 1 ? "tour-quest-step" : null}
+                    >
+                      <Draggable key={idx} draggableId={`${idx}`} index={idx}>
+                        {(provided, snapshot) => (
+                          <Grid
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                            width="100%"
+                            isDragging={snapshot.isDragging}
+                          >
+                            <PanelComponent
+                              renderHeader={() => (
+                                <Header display="flex" justifyContent="space-between" alignItems="center">
+                                  <Grid display="flex" gap="18px" alignItems="center">
+                                    <DragIndicatorIcon
+                                      sx={{
+                                        color: "#2A8D5C",
                                       }}
                                     />
-                                    <Label
-                                      style={{
-                                        marginRight: "8px",
-                                      }}
+                                    <Typography
+                                      color="#2A8D5C"
+                                      fontFamily="Poppins"
+                                      fontWeight={700}
+                                      fontSize="12px"
+                                      lineHeight="14px"
+                                      whiteSpace="nowrap"
                                     >
-                                      Required
-                                    </Label>
-                                  </Box>
-                                  <ButtonIconWrapper onClick={() => handleRemove(idx)}>
-                                    <DeleteIcon />
-                                  </ButtonIconWrapper>
-                                </Grid>
-                              </Header>
-                            )}
-                            renderBody={() => (
-                              <>
-                                <Component
-                                  onChange={(value) => handleChange(value, item.order, idx)}
-                                  error={errors?.steps?.[idx]}
-                                  value={item.value}
-                                  stepType={item.type}
-                                />
-                                {RESPOND_TYPES[item.type] ? (
-                                  <TypeComponent respondType={RESPOND_TYPES[item.type]} />
-                                ) : null}
-                                <StepAttachments
-                                  step={item}
-                                  removeMedia={(slug) => removeMediaItem(slug, item._id)}
-                                  handleChange={(value) => handleMedia(value, item.order)}
-                                />
-                              </>
-                            )}
-                          />
-                        </Grid>
-                      )}
-                    </Draggable>
-                  </Box>
-                );
-              })}
-            </Grid>
-          )}
-        </StrictModeDroppable>
-      </DragDropContext>
-    </Grid>
+                                      Step {idx + 1}
+                                    </Typography>
+                                    <Button
+                                      onClick={() =>
+                                        setOpenComponentOptionsModal({
+                                          open: true,
+                                          order: item.order,
+                                          idx: idx,
+                                        })
+                                      }
+                                    >
+                                      {componentOptions.find((option) => option.value === item.type).label}
+                                      <img src={EditSvg} alt="edit" />
+                                    </Button>
+                                  </Grid>
+                                  <Grid display="flex" alignItems="center" gap="14px">
+                                    <Box display="flex" gap="10px" alignItems="center">
+                                      <Switch
+                                        value={item.required === false ? false : true}
+                                        onChange={(value) => {
+                                          handleRequiredChange(value, item.order);
+                                        }}
+                                      />
+                                      <Label
+                                        style={{
+                                          marginRight: "8px",
+                                        }}
+                                      >
+                                        Required
+                                      </Label>
+                                    </Box>
+                                    <ButtonIconWrapper onClick={() => handleRemove(idx)}>
+                                      <DeleteIcon />
+                                    </ButtonIconWrapper>
+                                  </Grid>
+                                </Header>
+                              )}
+                              renderBody={() => (
+                                <>
+                                  <Component
+                                    onChange={(value) => handleChange(value, item.order, idx)}
+                                    error={errors?.steps?.[idx]}
+                                    value={item.value}
+                                    stepType={item.type}
+                                  />
+                                  {RESPOND_TYPES[item.type] ? (
+                                    <TypeComponent respondType={RESPOND_TYPES[item.type]} />
+                                  ) : null}
+                                  <StepAttachments
+                                    step={item}
+                                    removeMedia={(slug) => removeMediaItem(slug, item._id)}
+                                    handleChange={(value) => handleMedia(value, item.order)}
+                                  />
+                                </>
+                              )}
+                            />
+                          </Grid>
+                        )}
+                      </Draggable>
+                    </Box>
+                  );
+                })}
+              </Grid>
+            )}
+          </StrictModeDroppable>
+        </DragDropContext>
+      </Grid>
+    </>
   );
 };
 
