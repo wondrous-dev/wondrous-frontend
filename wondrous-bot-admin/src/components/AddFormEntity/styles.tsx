@@ -10,7 +10,7 @@ export const Header = styled(Grid)`
   }
 `;
 
-export const Button = styled(ButtonBase)`
+export const StepTypeButton = styled(ButtonBase)`
   && {
     height: 40px;
     color: #000;

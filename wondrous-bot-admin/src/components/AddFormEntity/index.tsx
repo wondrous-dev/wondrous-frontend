@@ -1,7 +1,7 @@
 import { Grid, Typography, Box, ButtonBase } from "@mui/material";
 import PanelComponent from "components/CreateTemplate/PanelComponent";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import { Button, Header } from "./styles";
+import { StepTypeButton, Header } from "./styles";
 import { ButtonIconWrapper } from "components/Shared/styles";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 
@@ -17,7 +17,6 @@ import CreateQuestContext from "utils/context/CreateQuestContext";
 import { CONFIG_COMPONENTS } from "utils/configComponents";
 import { useSubscriptionPaywall } from "utils/hooks";
 import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
-import AutocompleteOptionsComponent from "./components/AutocompleteComponent";
 import GlobalContext from "utils/context/GlobalContext";
 import { COMPONENT_OPTIONS, getMultipleChoiceDefaultValue } from "./constants";
 import EditSvg from "components/Icons/edit.svg";
@@ -37,6 +36,14 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     setOnCancel,
     setCanBeClosed,
   } = useSubscriptionPaywall();
+
+  const [openComponentOptionsModal, setOpenComponentOptionsModal] = useState({
+    open: false,
+    order: 0,
+    idx: 0,
+  });
+  const handleToggleComponentOptionsModal = () =>
+    setOpenComponentOptionsModal((prev) => ({ ...prev, open: !prev.open }));
 
   const componentOptions = useMemo(() => {
     let defaultOptions = [...COMPONENT_OPTIONS];
@@ -185,14 +192,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     }));
   };
 
-  const [openComponentOptionsModal, setOpenComponentOptionsModal] = useState({
-    open: false,
-    order: 0,
-    idx: 0,
-  });
-  const handleToggleComponentOptionsModal = () =>
-    setOpenComponentOptionsModal((prev) => ({ ...prev, open: !prev.open }));
-
   return (
     <>
       <ComponentOptionsModal
@@ -233,8 +232,6 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                 {...provided.droppableProps}
               >
                 {steps?.map((item, idx) => {
-                  const isQuiz = item.type === TYPES.MULTI_QUIZ || item.type === TYPES.SINGLE_QUIZ;
-
                   const Component = CONFIG_COMPONENTS[item?.type];
 
                   if (!Component) return null;
@@ -273,7 +270,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                     >
                                       Step {idx + 1}
                                     </Typography>
-                                    <Button
+                                    <StepTypeButton
                                       onClick={() =>
                                         setOpenComponentOptionsModal({
                                           open: true,
@@ -284,7 +281,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                                     >
                                       {componentOptions.find((option) => option.value === item.type).label}
                                       <img src={EditSvg} alt="edit" />
-                                    </Button>
+                                    </StepTypeButton>
                                   </Grid>
                                   <Grid display="flex" alignItems="center" gap="14px">
                                     <Box display="flex" gap="10px" alignItems="center">
