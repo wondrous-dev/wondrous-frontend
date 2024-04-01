@@ -51,7 +51,8 @@ const DiscordCallbackCmtyUserConnect = () => {
   };
 
   const navigate = useNavigate();
-  const [connectCmtyUser, { loading }] = useMutation(CONNECT_CMTY_USER, {
+  const [connectCmtyUser, { data, loading, error }] = useMutation(CONNECT_CMTY_USER, {
+    notifyOnNetworkStatusChange: true,
     onCompleted: ({ connectCmtyUser }) => {
       setFinishedVerification(true);
       if (connectCmtyUser?.token) {
@@ -66,13 +67,12 @@ const DiscordCallbackCmtyUserConnect = () => {
     },
     onError: (err) => {
       setFinishedVerification(true);
-      // const message = err?.graphQLErrors[0]?.extensions?.message;
-      // return handleError(message);
+      handleError(err?.graphQLErrors[0]?.extensions?.message);
     },
   });
 
   useEffect(() => {
-    if (code && !loading && (questId || referralCode)) {
+    if (code && !loading && (questId || referralCampaignExternalId) && !data && !error) {
       connectCmtyUser({
         variables: {
           code,
@@ -81,28 +81,29 @@ const DiscordCallbackCmtyUserConnect = () => {
         },
       });
     }
-  }, [code, loading, questId, referralCampaignExternalId]);
+  }, [loading, data, error]);
+
   return (
     <Grid display="flex" flexDirection="column" height="100%" minHeight="100vh">
-    <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
-      {finishedVerification && (
-        <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-          Finished connecting your Discord! You can close this window now and return to previous tab.
-        </Typography>
-      )}
-      {!finishedVerification && <Spinner />}
+      <Grid flex="2" display="flex" justifyContent="center" alignItems="center" gap="8px" flexDirection="column">
+        {finishedVerification && (
+          <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
+            Finished connecting your Discord! You can close this window now and return to previous tab.
+          </Typography>
+        )}
+        {!finishedVerification && <Spinner />}
+      </Grid>
+      <Grid
+        flex="1"
+        sx={{
+          backgroundImage: "url(/images/home-bg.png)",
+          backgroundPosition: "bottom",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+        }}
+        position="relative"
+      ></Grid>
     </Grid>
-    <Grid
-      flex="1"
-      sx={{
-        backgroundImage: "url(/images/home-bg.png)",
-        backgroundPosition: "bottom",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-      }}
-      position="relative"
-    ></Grid>
-  </Grid>
   );
 };
 
