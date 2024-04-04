@@ -6,7 +6,7 @@ import { CampaignOverviewHeader, CampaignOverview } from "./CampaignOverview";
 import PanelComponent from "./PanelComponent";
 import { Panel } from "./styles";
 import AddFormEntity from "components/AddFormEntity";
-import { BG_TYPES, QUEST_STATUSES, TYPES } from "utils/constants";
+import { BG_TYPES, CUSTOM_INTEGRATIONS, QUEST_STATUSES, TYPES } from "utils/constants";
 import PageWrapper from "components/Shared/PageWrapper";
 import Modal from "components/Shared/Modal";
 import { useMutation } from "@apollo/client";
@@ -24,7 +24,8 @@ import QuestRewardComponent from "components/Rewards/QuestRewardComponent";
 import { constructRequestBody, handleSaveError, processSave } from "./helpers";
 import { useTour } from "@reactour/tour";
 import useDynamicSteps from "components/TutorialComponent/Tutorials/CreateQuestTutorial/useDynamicSteps";
-import ComponentOptionsModal from "components/AddFormEntity/components/ComponentOptionsModal";
+import { COMPONENT_CATEGORIES, COMPONENT_OPTIONS } from "components/AddFormEntity/constants";
+import ComponentOptionsModal from "components/AddFormEntity/components/ComponentOptionsModal/ComponentOptionsModal";
 
 const CreateTemplate = ({
   setRefValue,
@@ -187,12 +188,24 @@ const CreateTemplate = ({
 
   const hasReferralStep = steps?.some((step) => step.type === TYPES.REFERRAL);
 
+  const componentOptions = useMemo(() => {
+    let defaultOptions = [...COMPONENT_OPTIONS];
+    if (activeOrg?.id in CUSTOM_INTEGRATIONS) {
+      const customIntegrations = CUSTOM_INTEGRATIONS[activeOrg?.id];
+      customIntegrations?.integrations.forEach((integration) => {
+        defaultOptions.push({ ...integration, icon: activeOrg?.profilePicture, category: COMPONENT_CATEGORIES.CUSTOM });
+      });
+    }
+    return [...defaultOptions];
+  }, [activeOrg?.id]);
+
   return (
     <>
       <ComponentOptionsModal
         open={openComponentOptionsModal}
         onClose={() => setOpenComponentOptionsModal(false)}
         onClick={(value) => handleAdd(value)}
+        options={componentOptions}
       />
       <Modal
         open={isSaving}

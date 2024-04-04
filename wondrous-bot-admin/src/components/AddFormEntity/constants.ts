@@ -27,6 +27,7 @@ export const COMPONENT_CATEGORIES = {
   DISCORD: "discord",
   YOUTUBE: "youtube",
   CRYPTO: "crypto",
+  CUSTOM: "custom",
 };
 
 export const COMPONENT_OPTIONS: {

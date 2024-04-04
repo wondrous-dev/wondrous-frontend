@@ -131,7 +131,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/activity",
   "/onboarding/plan-select",
   "/onboarding/finalize",
-  "/oauth/google/callback"
+  "/oauth/google/callback",
 ];
 
 export const BG_TYPES = {
@@ -359,7 +359,7 @@ export const EXCLUDED_PATHS = [
   "/referral",
   "/referral-campaign",
   "/activity",
-  "/oauth/google/callback"
+  "/oauth/google/callback",
 ];
 
 export const TUTORIALS = {
@@ -446,6 +446,24 @@ export const POKT_ORG_ID = import.meta.env.VITE_PRODUCTION ? "110964182503916540
 
 const FHENIX_ORG_ID = import.meta.env.VITE_PRODUCTION ? "110521236745880560" : "89444950095167649";
 export const CUSTOM_INTEGRATIONS = {
+  // test org
+  "118799079400538113": {
+    name: "Test",
+    integrations: [
+      {
+        label: "LI.FI Bridging across any EVM chain",
+        value: TYPES.LIFI_VALUE_BRIDGED,
+      },
+      {
+        label: "Migrate Origin members from Carma",
+        value: TYPES.MIGRATE_ORIGIN_USERS,
+      },
+      {
+        label: "Verify MarketsFlare trial",
+        value: TYPES.VERIFY_MARKETSFLARE_TRIAL,
+      },
+    ],
+  },
   // LIFI
   "58318954576216128": {
     name: "Lifi",

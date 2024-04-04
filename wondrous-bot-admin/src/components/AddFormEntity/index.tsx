@@ -18,9 +18,9 @@ import { CONFIG_COMPONENTS } from "utils/configComponents";
 import { useSubscriptionPaywall } from "utils/hooks";
 import EcosystemFeature from "components/PremiumFeatureDialog/ecosystem";
 import GlobalContext from "utils/context/GlobalContext";
-import { COMPONENT_OPTIONS, getMultipleChoiceDefaultValue } from "./constants";
+import { COMPONENT_CATEGORIES, COMPONENT_OPTIONS, getMultipleChoiceDefaultValue } from "./constants";
 import EditSvg from "components/Icons/edit.svg";
-import ComponentOptionsModal from "./components/ComponentOptionsModal";
+import ComponentOptionsModal from "./components/ComponentOptionsModal/ComponentOptionsModal";
 
 const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlugs }) => {
   const { errors, setErrors } = useContext(CreateQuestContext);
@@ -50,16 +50,10 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
     if (activeOrg?.id in CUSTOM_INTEGRATIONS) {
       const customIntegrations = CUSTOM_INTEGRATIONS[activeOrg?.id];
       customIntegrations?.integrations.forEach((integration) => {
-        defaultOptions.push(integration);
+        defaultOptions.push({ ...integration, icon: activeOrg?.profilePicture, category: COMPONENT_CATEGORIES.CUSTOM });
       });
     }
-    return [
-      ...defaultOptions,
-      {
-        label: "+ Add custom on chain action",
-        value: TYPES.CUSTOM_ONCHAIN_ACTION,
-      },
-    ];
+    return [...defaultOptions];
   }, [activeOrg?.id]);
 
   const handleDragEnd = (result) => {
@@ -198,6 +192,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
         open={openComponentOptionsModal.open}
         onClose={handleToggleComponentOptionsModal}
         onClick={(value) => handleChangeType(value, openComponentOptionsModal.order, openComponentOptionsModal.idx)}
+        options={componentOptions}
       />
       <Grid
         display="flex"
