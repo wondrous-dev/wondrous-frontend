@@ -27,7 +27,7 @@ export const COMPONENT_CATEGORIES = {
   DISCORD: "discord",
   YOUTUBE: "youtube",
   CRYPTO: "crypto",
-  CUSTOM: "custom",
+  CUSTOM: "custom steps",
 };
 
 export const COMPONENT_OPTIONS: {
