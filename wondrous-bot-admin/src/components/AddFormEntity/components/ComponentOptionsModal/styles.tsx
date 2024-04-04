@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { styled } from "@mui/system";
 
 export const ColumnContainer = styled(Box)`
@@ -24,6 +24,18 @@ export const OptionsColumnContainer = styled(Box)<{ $showBorder?: boolean }>`
     ${({ theme }) => theme.breakpoints.up("md")} {
       border-left: ${({ $showBorder }) => ($showBorder ? "1px solid #EEEEEE" : "none")};
       padding: 24px;
+    }
+  }
+`;
+
+export const OptionButton = styled(Button)`
+  && {
+    text-transform: capitalize;
+    gap: 1;
+    border-radius: 6px;
+    align-items: flex-start;
+    &:hover: {
+      background-color: #ededed;
     }
   }
 `;
