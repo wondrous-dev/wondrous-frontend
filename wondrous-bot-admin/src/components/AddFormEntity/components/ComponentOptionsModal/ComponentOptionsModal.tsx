@@ -25,7 +25,7 @@ const OptionsColumn = ({ colOptions, options, onClick, onClose, showBorder }) =>
   return (
     <OptionsColumnContainer $showBorder={showBorder}>
       {colOptions.map((category) => (
-        <Stack spacing={2} key={category}>
+        <Stack spacing={1} key={category}>
           <CategoryTitle>{category}</CategoryTitle>
           <Stack alignItems="start">
             {options[category].map((option) => (
