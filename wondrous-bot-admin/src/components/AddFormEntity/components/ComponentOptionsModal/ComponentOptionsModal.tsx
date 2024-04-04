@@ -2,7 +2,7 @@ import { Button, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { COMPONENT_CATEGORIES } from "components/AddFormEntity/constants";
 import SafeImage from "components/SafeImage";
 import Modal from "components/Shared/Modal";
-import { Container, OptionsColumnContainer } from "./styles";
+import { ColumnContainer, OptionsColumnContainer } from "./styles";
 
 const chooseIcon = (icon, category) => {
   if (!icon) {
@@ -84,7 +84,7 @@ const ComponentOptionsModal = ({ open, onClose, onClick, options }) => {
 
   return (
     <Modal open={open} onClose={onClose} maxWidth={hasCustomComponent ? 1200 : 800}>
-      <Container>
+      <ColumnContainer>
         <OptionsColumn
           colOptions={leftColOptions}
           options={groupedOptionsByCategory}
@@ -108,7 +108,7 @@ const ComponentOptionsModal = ({ open, onClose, onClick, options }) => {
             showBorder
           />
         )}
-      </Container>
+      </ColumnContainer>
     </Modal>
   );
 };

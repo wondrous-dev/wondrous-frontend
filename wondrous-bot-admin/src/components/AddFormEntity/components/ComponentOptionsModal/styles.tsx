@@ -1,7 +1,7 @@
 import { Box, Grid } from "@mui/material";
 import { styled } from "@mui/system";
 
-export const Container = styled(Box)`
+export const ColumnContainer = styled(Box)`
   && {
     display: flex;
     flex-direction: column;
