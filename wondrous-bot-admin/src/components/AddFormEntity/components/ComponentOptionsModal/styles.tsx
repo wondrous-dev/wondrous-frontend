@@ -1,4 +1,4 @@
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 
 export const ColumnContainer = styled(Box)`
@@ -28,6 +28,14 @@ export const OptionsColumnContainer = styled(Box)<{ $showBorder?: boolean }>`
   }
 `;
 
+export const CategoryTitle = styled(Typography)`
+  && {
+    font-weight: 600;
+    color: #737373;
+    text-transform: capitalize;
+  }
+`;
+
 export const OptionButton = styled(Button)`
   && {
     text-transform: capitalize;
@@ -37,5 +45,12 @@ export const OptionButton = styled(Button)`
     &:hover: {
       background-color: #ededed;
     }
+  }
+`;
+
+export const OptionButtonLabel = styled(Typography)`
+  && {
+    color: #262627;
+    text-align: left;
   }
 `;

@@ -2,7 +2,7 @@ import { Button, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { COMPONENT_CATEGORIES } from "components/AddFormEntity/constants";
 import SafeImage from "components/SafeImage";
 import Modal from "components/Shared/Modal";
-import { ColumnContainer, OptionButton, OptionsColumnContainer } from "./styles";
+import { CategoryTitle, ColumnContainer, OptionButton, OptionButtonLabel, OptionsColumnContainer } from "./styles";
 
 const chooseIcon = (icon, category) => {
   if (!icon) {
@@ -26,12 +26,11 @@ const OptionsColumn = ({ colOptions, options, onClick, onClose, showBorder }) =>
     <OptionsColumnContainer $showBorder={showBorder}>
       {colOptions.map((category) => (
         <Stack spacing={2} key={category}>
-          <Typography fontWeight={600} color="#737373" textTransform="capitalize">
-            {category}
-          </Typography>
+          <CategoryTitle>{category}</CategoryTitle>
           <Stack alignItems="start">
             {options[category].map((option) => (
               <OptionButton
+                key={option.value}
                 disableRipple
                 onClick={() => {
                   onClick(option.value);
@@ -39,9 +38,7 @@ const OptionsColumn = ({ colOptions, options, onClick, onClose, showBorder }) =>
                 }}
                 startIcon={chooseIcon(option.icon, category)}
               >
-                <Typography key={option.value} color="#262627" textAlign="left">
-                  {option.label}
-                </Typography>
+                <OptionButtonLabel>{option.label}</OptionButtonLabel>
               </OptionButton>
             ))}
           </Stack>
