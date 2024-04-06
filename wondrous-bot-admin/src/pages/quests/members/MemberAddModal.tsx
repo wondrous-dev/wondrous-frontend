@@ -106,7 +106,7 @@ const MemberAddBody = ({ onClose }) => {
             }
             if (points) {
               const integerPoints = parseInt(points);
-              if (!integerPoints || integerPoints < 0) {
+              if (isNaN(integerPoints)|| integerPoints < 0) {
                 setError("Points must be a positive integer");
                 return;
               }
