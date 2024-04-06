@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 import { OrgFragment } from "graphql/fragments/org";
+import { CmtyUserFragment } from "graphql/fragments";
 
 export const UPDATE_ORG = gql`
   mutation updateOrg($orgId: ID!, $input: OrgInput) {
@@ -73,6 +74,15 @@ export const RESET_ORG_CMTY_USER_POINTS = gql`
       success
     }
   }
+`;
+
+export const ADD_CMTY_USER_TO_ORG = gql`
+  mutation addCmtyUserToOrg($orgId: ID!, $discordUsername: String, $points: Int) {
+    addCmtyUserToOrg(orgId: $orgId, discordUsername: $discordUsername, points: $points) {
+      ...CmtyUserFragment
+    }
+  }
+  ${CmtyUserFragment}
 `;
 
 export const UPDATE_ORG_MODULES = gql`

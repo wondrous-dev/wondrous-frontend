@@ -13,6 +13,7 @@ import { EMPTY_STATE_TYPES, LIMIT } from "utils/constants";
 import GlobalContext from "utils/context/GlobalContext";
 import { MemberPageSearchBar } from "./MemberSearchBar";
 import ResetPointsModal from "./ResetPointsModal";
+import MemberAddModal from "./MemberAddModal";
 import MembersTutorial from "components/TutorialComponent/Tutorials/MembersTutorial";
 import { transformUser } from "utils/transformCmtyUserToMembers";
 import { FilterPill } from "components/ViewQuestResults/styles";
@@ -26,6 +27,7 @@ const MembersPage = () => {
   const [memberSearch, setMemberSearch] = useState(null);
   const [resetPointsBalance, setResetPointsBalance] = useState(null);
   const [openResetPointsModal, setOpenResetPointsModal] = useState(false);
+  const [openMemberAddModal, setOpenMemberAddModal] = useState(null);
   const [openExportModal, setOpenExportModal] = useState(false);
   const [memberInfo, setMemberInfo] = useState(null);
   const [getCmtyUsersForOrg, { data, fetchMore, refetch, loading }] = useLazyQuery(GET_COMMUNITY_USERS_FOR_ORG, {
@@ -81,6 +83,12 @@ const MembersPage = () => {
         setOpenResetPointsModal={setOpenResetPointsModal}
         pointsBalance={resetPointsBalance}
       />
+      <ResetPointsModal
+        openResetPointsModal={openResetPointsModal}
+        setOpenResetPointsModal={setOpenResetPointsModal}
+        pointsBalance={resetPointsBalance}
+      />
+      <MemberAddModal openMemberAddModal={openMemberAddModal} setOpenMemberAddModal={setOpenMemberAddModal} />
       <ExportModal isOpen={!!openExportModal} onClose={() => setOpenExportModal(false)} />
       {data?.getCmtyUsersForOrg ? (
         <MembersTutorial setMembersData={setMembersData} data={data?.getCmtyUsersForOrg} />
@@ -120,6 +128,7 @@ const MembersPage = () => {
             onClick={() => {
               setResetPointsBalance(false);
               setOpenResetPointsModal(true);
+              setOpenMemberAddModal(false);
             }}
           >
             Reset points
@@ -128,9 +137,19 @@ const MembersPage = () => {
             onClick={() => {
               setResetPointsBalance(true);
               setOpenResetPointsModal(true);
+              setOpenMemberAddModal(false);
             }}
           >
             Reset point balances
+          </SharedSecondaryButton>
+          <SharedSecondaryButton
+            onClick={() => {
+              setResetPointsBalance(false);
+              setOpenResetPointsModal(false);
+              setOpenMemberAddModal(true);
+            }}
+          >
+            Add User
           </SharedSecondaryButton>
           <Box flex={1} />
           <FilterPill
