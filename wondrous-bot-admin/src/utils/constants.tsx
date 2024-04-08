@@ -131,7 +131,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/activity",
   "/onboarding/plan-select",
   "/onboarding/finalize",
-  "/oauth/google/callback"
+  "/oauth/google/callback",
 ];
 
 export const BG_TYPES = {
@@ -359,7 +359,7 @@ export const EXCLUDED_PATHS = [
   "/referral",
   "/referral-campaign",
   "/activity",
-  "/oauth/google/callback"
+  "/oauth/google/callback",
 ];
 
 export const TUTORIALS = {
