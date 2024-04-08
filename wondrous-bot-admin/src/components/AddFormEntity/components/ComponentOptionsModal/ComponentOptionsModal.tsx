@@ -2,6 +2,7 @@ import { Button, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { COMPONENT_CATEGORIES } from "components/AddFormEntity/constants";
 import SafeImage from "components/SafeImage";
 import Modal from "components/Shared/Modal";
+import { useMemo } from "react";
 import { CategoryTitle, ColumnContainer, OptionButton, OptionButtonLabel, OptionsColumnContainer } from "./styles";
 
 const chooseIcon = (icon, category) => {
@@ -49,19 +50,23 @@ const OptionsColumn = ({ colOptions, options, onClick, onClose, showBorder }) =>
 };
 
 const ComponentOptionsModal = ({ open, onClose, onClick, options }) => {
-  const groupedOptionsByCategory = options.reduce((acc, option) => {
-    if (!acc[option.category]) {
-      acc[option.category] = [];
-    }
-    acc[option.category].push(option);
-    return acc;
-  }, {});
+  const { groupedOptionsByCategory, hasCustomComponent } = useMemo(
+    () => ({
+      groupedOptionsByCategory: options.reduce((acc, option) => {
+        if (!acc[option.category]) {
+          acc[option.category] = [];
+        }
+        acc[option.category].push(option);
+        return acc;
+      }, {}),
+      hasCustomComponent: options.some((option) => option.category === COMPONENT_CATEGORIES.CUSTOM),
+    }),
+    [options]
+  );
 
   const leftColOptions = [COMPONENT_CATEGORIES.ACTION, COMPONENT_CATEGORIES.TWITTER];
   const midColOptions = [COMPONENT_CATEGORIES.DISCORD, COMPONENT_CATEGORIES.YOUTUBE, COMPONENT_CATEGORIES.CRYPTO];
   const rightColOptions = [COMPONENT_CATEGORIES.CUSTOM];
-
-  const hasCustomComponent = options.some((option) => option.category === COMPONENT_CATEGORIES.CUSTOM);
 
   return (
     <Modal open={open} onClose={onClose} maxWidth={hasCustomComponent ? 1200 : 800}>
