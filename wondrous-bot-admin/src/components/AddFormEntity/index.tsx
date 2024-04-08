@@ -232,6 +232,7 @@ const AddFormEntity = ({ steps, setSteps, handleRemove, refs, setRemovedMediaSlu
                   if (!Component) return null;
                   return (
                     <Box
+                      key={idx}
                       width="100%"
                       height="100%"
                       ref={(ref) => (refs.current[idx + 1] = ref)}
