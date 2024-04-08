@@ -196,7 +196,7 @@ const CreateTemplate = ({
         defaultOptions.push({ ...integration, icon: activeOrg?.profilePicture, category: COMPONENT_CATEGORIES.CUSTOM });
       });
     }
-    return [...defaultOptions];
+    return defaultOptions;
   }, [activeOrg?.id]);
 
   return (
