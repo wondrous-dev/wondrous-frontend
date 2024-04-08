@@ -1,25 +1,25 @@
 import { TYPES } from "utils/constants";
-import TextSvg from "../Icons/ComponentOptions/Text.svg";
-import MultipleChoiceSvg from "../Icons/ComponentOptions/MultipleChoice.svg";
-import NumberSvg from "../Icons/ComponentOptions/Number.svg";
-import AttachmentsSvg from "../Icons/ComponentOptions/Attachments.svg";
-import ClickOnLinkSvg from "../Icons/ComponentOptions/ClickOnLink.svg";
-import DataCollectionSvg from "../Icons/ComponentOptions/DataCollection.svg";
-import LikeATweetSvg from "../Icons/ComponentOptions/LikeATweet.svg";
-import FollowATwitterAccount from "../Icons/ComponentOptions/FollowATwitterAccount.svg";
-import ReplyToATweet from "../Icons/ComponentOptions/ReplyToATweet.svg";
-import RetweetATweet from "../Icons/ComponentOptions/RetweetATweet.svg";
-import TweetWithAMention from "../Icons/ComponentOptions/TweetWithAMention.svg";
-import SendAMessageInDiscord from "../Icons/ComponentOptions/SendAMessageInDiscord.svg";
-import VerifyDiscordEventAttendance from "../Icons/ComponentOptions/VerifyDiscordEventAttendance.svg";
-import VerifyYouTubeSubs from "../Icons/ComponentOptions/VerifyYouTubeSubs.svg";
-import VerifyYouTubeLike from "../Icons/ComponentOptions/VerifyYouTubeLike.svg";
-import VerifyGitcoinPassportScore from "../Icons/ComponentOptions/VerifyGitcoinPassportScore.svg";
-import VoteOnSnapshotProposal from "../Icons/ComponentOptions/VoteOnSnapshotProposal.svg";
-import VoteOnSnapshotSpace from "../Icons/ComponentOptions/VoteOnSnapshotSpace.svg";
-import VerifyWalletConnection from "../Icons/ComponentOptions/VerifyWalletConnection.svg";
-import VerifyTokenHolding from "../Icons/ComponentOptions/VerifyTokenHolding.svg";
-import AddCustomOnChainAction from "../Icons/ComponentOptions/AddCustomOnChainAction.svg";
+import TextSvg from "components/Icons/ComponentOptions/Text.svg";
+import MultipleChoiceSvg from "components/Icons/ComponentOptions/MultipleChoice.svg";
+import NumberSvg from "components/Icons/ComponentOptions/Number.svg";
+import AttachmentsSvg from "components/Icons/ComponentOptions/Attachments.svg";
+import ClickOnLinkSvg from "components/Icons/ComponentOptions/ClickOnLink.svg";
+import DataCollectionSvg from "components/Icons/ComponentOptions/DataCollection.svg";
+import LikeATweetSvg from "components/Icons/ComponentOptions/LikeATweet.svg";
+import FollowATwitterAccount from "components/Icons/ComponentOptions/FollowATwitterAccount.svg";
+import ReplyToATweet from "components/Icons/ComponentOptions/ReplyToATweet.svg";
+import RetweetATweet from "components/Icons/ComponentOptions/RetweetATweet.svg";
+import TweetWithAMention from "components/Icons/ComponentOptions/TweetWithAMention.svg";
+import SendAMessageInDiscord from "components/Icons/ComponentOptions/SendAMessageInDiscord.svg";
+import VerifyDiscordEventAttendance from "components/Icons/ComponentOptions/VerifyDiscordEventAttendance.svg";
+import VerifyYouTubeSubs from "components/Icons/ComponentOptions/VerifyYouTubeSubs.svg";
+import VerifyYouTubeLike from "components/Icons/ComponentOptions/VerifyYouTubeLike.svg";
+import VerifyGitcoinPassportScore from "components/Icons/ComponentOptions/VerifyGitcoinPassportScore.svg";
+import VoteOnSnapshotProposal from "components/Icons/ComponentOptions/VoteOnSnapshotProposal.svg";
+import VoteOnSnapshotSpace from "components/Icons/ComponentOptions/VoteOnSnapshotSpace.svg";
+import VerifyWalletConnection from "components/Icons/ComponentOptions/VerifyWalletConnection.svg";
+import VerifyTokenHolding from "components/Icons/ComponentOptions/VerifyTokenHolding.svg";
+import AddCustomOnChainAction from "components/Icons/ComponentOptions/AddCustomOnChainAction.svg";
 
 export const COMPONENT_CATEGORIES = {
   ACTION: "action",
