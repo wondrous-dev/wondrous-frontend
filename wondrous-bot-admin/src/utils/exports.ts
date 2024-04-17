@@ -51,7 +51,8 @@ export const exportQuestSubmissionsToCsv = async ({ exportQuestSubmissionData, q
       questStepType === TYPES.ATTACHMENTS ||
       questStepType === TYPES.NUMBER ||
       questStepType === TYPES.DATA_COLLECTION ||
-      questStepType === TYPES.CONNECT_WALLET
+      questStepType === TYPES.CONNECT_WALLET ||
+      questStepType === TYPES.VERIFY_TEXT_WITH_REGEX
     ) {
       questStepTypeString = `${questStepTypeString} - ${questStep?.prompt}`;
     } else if (questStepType === TYPES.DISCORD_EVENT_ATTENDANCE) {

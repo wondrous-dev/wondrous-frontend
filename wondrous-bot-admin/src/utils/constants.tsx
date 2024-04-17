@@ -35,6 +35,7 @@ export const TYPES = {
   LIKE_YT_VIDEO: "like_yt_video",
   SUBSCRIBE_YT_CHANNEL: "subscribe_yt_channel",
   CUSTOM_ONCHAIN_ACTION: "custom_onchain_action",
+  VERIFY_TEXT_WITH_REGEX: "verify_text_with_regex",
   LIFI_VALUE_BRIDGED: "lifi_value_bridged",
   MIGRATE_ORIGIN_USERS: "migrate_origin_users",
   REFERRAL: "referral",
@@ -131,7 +132,7 @@ export const PAGES_WITHOUT_HEADER = [
   "/activity",
   "/onboarding/plan-select",
   "/onboarding/finalize",
-  "/oauth/google/callback"
+  "/oauth/google/callback",
 ];
 
 export const BG_TYPES = {
@@ -359,7 +360,7 @@ export const EXCLUDED_PATHS = [
   "/referral",
   "/referral-campaign",
   "/activity",
-  "/oauth/google/callback"
+  "/oauth/google/callback",
 ];
 
 export const TUTORIALS = {

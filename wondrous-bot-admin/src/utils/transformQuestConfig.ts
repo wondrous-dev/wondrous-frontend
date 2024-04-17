@@ -23,6 +23,7 @@ type InputQuestStep = {
     tweetLink?: string;
     tweetHandle?: string;
     tweetPhrase?: string;
+    regex?: string;
     snapshotProposalLink?: string;
     snapshotSpaceLink?: string;
     snapshotVoteTimes?: number;
@@ -123,6 +124,10 @@ type OutputQuestStep = {
       }
     | {
         prompt?: string;
+        regex?: string;
+      }
+    | {
+        prompt?: string;
         options?: string[];
         dataCollectionProps: {
           dataCollectionType?: string;
@@ -192,6 +197,11 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       outputStep.value = {
         prompt: step?.prompt,
         tweetPhrase: step?.additionalData?.tweetPhrase,
+      };
+    } else if (step.type === TYPES.VERIFY_TEXT_WITH_REGEX) {
+      outputStep.value = {
+        prompt: step?.prompt,
+        regex: step?.additionalData?.regex,
       };
     } else if (step.type === TYPES.LIKE_YT_VIDEO) {
       outputStep.value = {

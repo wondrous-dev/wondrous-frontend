@@ -115,6 +115,7 @@ export const GET_USER_QUEST_SUBMISSIONS = gql`
             tweetHandle
             tweetLink
             tweetPhrase
+            regex
             snapshotProposalLink
             snapshotSpaceLink
             snapshotVoteTimes
@@ -192,6 +193,7 @@ export const GET_ONBOARDING_QUEST_SUBMISSIONS = gql`
             tweetHandle
             tweetLink
             tweetPhrase
+            regex
             snapshotProposalLink
             snapshotSpaceLink
             snapshotVoteTimes
