@@ -39,6 +39,11 @@ const processSteps = (steps) =>
       step["additionalData"] = {
         tweetPhrase: next.value?.tweetPhrase,
       };
+    } else if (next.type === TYPES.VERIFY_TEXT_WITH_REGEX) {
+      step.prompt = next.value?.prompt;
+      step["additionalData"] = {
+        regex: next.value?.regex,
+      };
     } else if (next.type === TYPES.LIKE_YT_VIDEO) {
       step.prompt = next.value?.prompt;
       step["additionalData"] = {

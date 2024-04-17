@@ -231,6 +231,7 @@ export const QuestFragment = gql`
         discordChannelIds
         tweetHandle
         tweetLink
+        regex
         tweetPhrase
         snapshotProposalLink
         snapshotSpaceLink

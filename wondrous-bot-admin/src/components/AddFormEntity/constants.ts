@@ -18,6 +18,10 @@ export const COMPONENT_OPTIONS = [
     value: TYPES.ATTACHMENTS,
   },
   {
+    label: "Verify Text Answer with Regex",
+    value: TYPES.VERIFY_TEXT_WITH_REGEX,
+  },
+  {
     label: "Like A Tweet",
     value: TYPES.LIKE_TWEET,
   },
