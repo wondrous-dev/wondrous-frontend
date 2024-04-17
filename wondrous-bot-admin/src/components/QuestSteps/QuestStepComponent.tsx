@@ -30,7 +30,7 @@ const COMPONENTS_CONFIG: any = {
   [TYPES.FOLLOW_TWITTER]: VerifyButton,
   [TYPES.REPLY_TWEET]: VerifyButton,
   [TYPES.RETWEET]: VerifyButton,
-  [TYPES.TWEET_WITH_PHRASE]: VerifyButton,
+  [TYPES.VERIFY_TEXT_WITH_REGEX]: VerifyButton,
   [TYPES.CONNECT_WALLET]: ConnectWalletField,
 };
 

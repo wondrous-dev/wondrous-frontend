@@ -14,6 +14,7 @@ const ALL_TYPES = [
   TYPES.REPLY_TWEET,
   TYPES.RETWEET,
   TYPES.TWEET_WITH_PHRASE,
+  TYPES.VERIFY_TEXT_WITH_REGEX,
   TYPES.SNAPSHOT_PROPOSAL_VOTE,
   TYPES.SNAPSHOT_SPACE_VOTE,
   TYPES.DISCORD_MESSAGE_IN_CHANNEL,
@@ -102,6 +103,12 @@ const stepTypes = {
     ...twitterSnapshotSharedValidation,
     additionalData: Yup.object().shape({
       tweetPhrase: Yup.string().required("Tweet phrase is required"),
+    }),
+  }),
+  [TYPES.VERIFY_TEXT_WITH_REGEX]: Yup.object().shape({
+    ...sharedValidation,
+    additionalData: Yup.object().shape({
+      regex: Yup.string().required("Regex is required"),
     }),
   }),
   [TYPES.SNAPSHOT_PROPOSAL_VOTE]: Yup.object().shape({

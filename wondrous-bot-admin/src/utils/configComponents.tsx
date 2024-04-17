@@ -17,6 +17,7 @@ import VerifyApeironIntegrations from "components/AddFormEntity/components/Verif
 import ConnectWallet from "components/AddFormEntity/components/ConnectWallet";
 import VerifyFhenixIntegrations from "components/AddFormEntity/components/VerifyFhenix";
 import GitcoinPassportComponent from "components/AddFormEntity/components/GitcoinPassportComponent";
+import RegexComponent from "components/AddFormEntity/components/RegexText";
 
 const APEIRON_INTEGRATIONS = {
   [TYPES.VERIFY_APEIRON_10_MINS_PLAYED]: VerifyApeironIntegrations,
@@ -57,6 +58,7 @@ export const CONFIG_COMPONENTS = {
   [TYPES.MIGRATE_ORIGIN_USERS]: MigrateOriginUsers,
   [TYPES.VERIFY_MARKETSFLARE_TRIAL]: VerifyMarketsFlareTrial,
   [TYPES.VERIFY_GITCOIN_PASSPORT_SCORE]: GitcoinPassportComponent,
+  [TYPES.VERIFY_TEXT_WITH_REGEX]: RegexComponent,
   ...APEIRON_INTEGRATIONS,
   ...FHENIX_INTEGRATIONS,
 };
