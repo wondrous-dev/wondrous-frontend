@@ -105,6 +105,7 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
             display="flex"
             padding="13px 20px"
             flex="1 0 0"
+            height="fit-content"
             top="100px"
             zIndex="10"
             width="100%"

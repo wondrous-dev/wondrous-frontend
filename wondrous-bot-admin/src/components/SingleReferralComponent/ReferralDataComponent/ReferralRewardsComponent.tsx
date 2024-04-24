@@ -127,7 +127,7 @@ const ReferralRewardsComponent = ({ referralItemData, setReferralItemData }) => 
     setReferralItemData((prev) => {
       const filteredRewards =
         prev?.rewards?.filter((i) => {
-          if (i.type === PAYMENT_OPTIONS.TOKEN) {
+          if (i.type === PAYMENT_OPTIONS.TOKEN && i.scheme === scheme) {
             return i.paymentMethodId !== reward.paymentMethod?.id;
           }
           return true;
