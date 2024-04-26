@@ -13,6 +13,10 @@ const MENU_ITEMS = [
     path: "/settings",
   },
   {
+    title: "Customize Banners",
+    path: "/settings/customize-banners",
+  },
+  {
     title: "Notifications",
     path: "/settings/notifications",
   },
