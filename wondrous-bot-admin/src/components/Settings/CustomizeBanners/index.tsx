@@ -50,14 +50,14 @@ const ORG_ASSET_PURPOSE = {
   myPurchasesBanner: "my_purchases_banner",
   onboardMeBanner: "onboard_me_banner",
   referralBanner: "referral_banner",
-  questLogo: "quest_logo",
-  levelLogo: "level_logo",
-  leaderboardLogo: "leaderboard_logo",
-  mySubmissionLogo: "my_submission_logo",
-  storeLogo: "store_logo",
-  myPurchasesLogo: "my_purchases_logo",
-  onboardMeLogo: "onboard_me_logo",
-  referralLogo: "referral_logo",
+  questThumbnail: "quest_thumbnail",
+  levelThumbnail: "level_thumbnail",
+  leaderboardThumbnail: "leaderboard_thumbnail",
+  mySubmissionThumbnail: "my_submission_thumbnail",
+  storeThumbnail: "store_thumbnail",
+  myPurchasesThumbnail: "my_purchases_thumbnail",
+  onboardMeThumbnail: "onboard_me_thumbnail",
+  referralThumbnail: "referral_thumbnail",
 };
 
 const commandBanners: {
@@ -80,7 +80,7 @@ const commandBanners: {
       image: "/images/banner-images/quest-banner.png",
     },
     logo: {
-      purpose: ORG_ASSET_PURPOSE.questLogo,
+      purpose: ORG_ASSET_PURPOSE.questThumbnail,
       image: "/images/banner-images/quest-circle.png",
     },
   },
@@ -93,7 +93,7 @@ const commandBanners: {
       image: "/images/banner-images/sub-banner.png",
     },
     logo: {
-      purpose: ORG_ASSET_PURPOSE.mySubmissionLogo,
+      purpose: ORG_ASSET_PURPOSE.mySubmissionThumbnail,
       image: "/images/banner-images/sub-circle.png",
     },
   },
@@ -105,7 +105,7 @@ const commandBanners: {
       image: "/images/banner-images/my-level-banner.png",
     },
     logo: {
-      purpose: ORG_ASSET_PURPOSE.levelLogo,
+      purpose: ORG_ASSET_PURPOSE.levelThumbnail,
       image: "/images/banner-images/my-level-circle.png",
     },
   },
@@ -117,7 +117,7 @@ const commandBanners: {
       image: "/images/banner-images/leaderboard-banner.png",
     },
     logo: {
-      purpose: ORG_ASSET_PURPOSE.leaderboardLogo,
+      purpose: ORG_ASSET_PURPOSE.leaderboardThumbnail,
       image: "/images/banner-images/leaderboard-circle.png",
     },
   },
@@ -129,7 +129,7 @@ const commandBanners: {
       image: "/images/banner-images/store-banner.png",
     },
     logo: {
-      purpose: ORG_ASSET_PURPOSE.storeLogo,
+      purpose: ORG_ASSET_PURPOSE.storeThumbnail,
       image: "/images/banner-images/store-circle.png",
     },
   },
@@ -141,7 +141,7 @@ const commandBanners: {
       image: "/images/banner-images/my-purchases-banner.png",
     },
     logo: {
-      purpose: ORG_ASSET_PURPOSE.myPurchasesLogo,
+      purpose: ORG_ASSET_PURPOSE.myPurchasesThumbnail,
       image: "/images/banner-images/my-purchases-circle.png",
     },
   },
@@ -153,7 +153,7 @@ const commandBanners: {
       image: "/images/banner-images/onboard-me-banner.png",
     },
     logo: {
-      purpose: ORG_ASSET_PURPOSE.onboardMeLogo,
+      purpose: ORG_ASSET_PURPOSE.onboardMeThumbnail,
       image: "/images/banner-images/onboard-me-circle.png",
     },
   },
