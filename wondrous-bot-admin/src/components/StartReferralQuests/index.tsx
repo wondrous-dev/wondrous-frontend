@@ -5,12 +5,22 @@ import { OrgProfilePicture } from "components/Shared/ProjectProfilePicture";
 import { Reward } from "components/ViewQuestResults/ViewRewards";
 import { useMemo, useState } from "react";
 import { constructRewards } from "utils/common";
-import { REFERRAL_REWARD_SCHEME } from "utils/constants";
+import { REFERRAL_REWARD_SCHEME, REFERRAL_STATUSES } from "utils/constants";
 import InfoModal from "./InfoModal";
 import IndividualQuestComponent from "./IndividualQuestComponent";
 import useStartQuest from "./utils/hooks";
 import SafeImage from "components/SafeImage";
 import InactiveQuestInfoModal from "./InactiveQuest";
+import moment from "moment";
+
+const TopBarMessage = ({ displayName, hasEnded }) => {
+  if (hasEnded) return <>This campaign has ended, but you can still complete the quests below!</>;
+  return (
+    <>
+      <strong>{displayName}</strong> referred you, complete the quests below!
+    </>
+  );
+};
 
 const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignExternalId, referralCodeInfo }) => {
   const [infoModalQuestId, setInfoModalQuestId] = useState(null);
@@ -69,6 +79,11 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
 
   const referralBannerImage = referralCampaign?.media?.[0]?.slug;
 
+  const endDate = referralCampaign?.endDate ? moment(referralCampaign?.endDate) : null;
+  const hasEnded =
+    referralCampaign?.status !== REFERRAL_STATUSES.ACTIVE ||
+    (endDate && endDate.isBefore(moment().utcOffset(0)?.endOf("day")?.toISOString()));
+
   return (
     <>
       <InfoModal
@@ -113,12 +128,13 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
             justifyContent="space-between"
             alignSelf="stretch"
             borderRadius="12px"
-            border="1px solid #2A8D5C"
-            bgcolor="#d0e1d6"
+            border="1px solid transparent"
+            borderColor={hasEnded ? "#F2C30C" : "#2A8D5C"}
+            bgcolor={hasEnded ? "rgba(242, 195, 12, 0.30)" : "#d0e1d6"}
           >
             <Box />
-            <Typography color="black" fontSize="14px" fontFamily="Poppins" fontWeight={500}>
-              {<strong>{referralCodeInfo?.referrerDisplayName}</strong>} referred you, complete the quests below!
+            <Typography color="black" fontSize="14px" fontFamily="Poppins" fontWeight={500} textAlign={"center"}>
+              <TopBarMessage hasEnded={hasEnded} displayName={referralCodeInfo?.referrerDisplayName} />
             </Typography>
             <ButtonBase
               onClick={() => setDisplayReferrer(false)}
