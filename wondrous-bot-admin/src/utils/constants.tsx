@@ -556,3 +556,5 @@ export const LOCKED_PATHS = ["/store", "/store/items/create", "/store/items/:id"
 export const LOCAL_STORAGE_ORG_ID_KEY = "default-org-id";
 
 export const ALLOWLIST_ADMIN_IDS = ["46108748309069853", "54694658413953389"];
+
+export const EXOCORE_ORG_ID = '113885254110937338'
