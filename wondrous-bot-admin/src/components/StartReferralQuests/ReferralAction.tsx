@@ -18,7 +18,7 @@ const EndedCampaignPrompt = ({ orgId }) => {
   };
 
   return (
-    <Box height="100%">
+    <Box height="100%" flex="1">
       <SharedSecondaryButton onClick={handleClick}>{isMember ? "Visit Discord" : "Join Discord"}</SharedSecondaryButton>
     </Box>
   );
