@@ -97,3 +97,11 @@ export const GET_REFERRAL_CODE_INFO = gql`
     }
   }
 `;
+
+export const GET_REFERRAL_USER_LIMIT_REACHED = gql`
+  query getReferralUserLimitReached($referralCode: String!) {
+    getReferralUserLimitReached(referralCode: $referralCode) {
+      hasReachedLimit
+    }
+  }
+`;

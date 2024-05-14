@@ -12,7 +12,7 @@ import { BG_TYPES } from "utils/constants";
 import { StyledLink } from "./styles";
 import { useQuery } from "@apollo/client";
 import { useLocation } from "react-router-dom";
-import { GET_REFERRAL_CAMPAIGN_BY_EXTERNAL_ID, GET_REFERRAL_CODE_INFO } from "graphql/queries/referral";
+import { GET_REFERRAL_CAMPAIGN_BY_EXTERNAL_ID, GET_REFERRAL_CODE_INFO, GET_REFERRAL_USER_LIMIT_REACHED } from "graphql/queries/referral";
 import StartReferralQuests from "components/StartReferralQuests";
 
 const StartReferralPage = () => {
@@ -41,6 +41,15 @@ const StartReferralPage = () => {
     skip: !referralCampaignExternalId,
   });
 
+  const {data: referralLimitReached, loading: referralLimitLoading} = useQuery(GET_REFERRAL_USER_LIMIT_REACHED, {
+    variables: {
+      referralCode
+    },
+    skip: !referralCode
+  });
+
+  const {hasReachedLimit = false} = referralLimitReached?.getReferralUserLimitReached || {};
+
   return (
     <>
       <PageWrapper
@@ -64,10 +73,11 @@ const StartReferralPage = () => {
           flexDirection="column"
           flex="1"
         >
-          {!data?.getReferralCampaignByReferralExternalId || loading ? (
+          {!data?.getReferralCampaignByReferralExternalId || loading || referralLimitLoading ? (
             <PageSpinner color="#fee2ca" />
           ) : (
             <StartReferralQuests
+              hasReachedLimit={hasReachedLimit}
               referralCampaign={data?.getReferralCampaignByReferralExternalId}
               referralCode={referralCode}
               referralCodeInfo={referralCodeInfoData?.getReferralCodeInfo}
