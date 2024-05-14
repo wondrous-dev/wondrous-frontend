@@ -23,6 +23,72 @@ interface IProps {
   discordUrlParams: any;
 }
 
+export const useDiscordConnect = ({ orgId, discordUrlParams = {} }) => {
+  const [getOrgDiscordInviteLink, { data: orgDiscordInviteLinkData }] = useLazyQuery(GET_ORG_DISCORD_INVITE_LINK);
+
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useAlerts();
+  const [isDiscordConneceted, setIsDiscordConnected] = useState(false);
+  const [isMember, setIsMember] = useState(false);
+  const [isConnectionLoading, setIsConnectionLoading] = useState(false);
+
+  const handleOnCheckMembershipCompleted = async (data) => {
+    if (data?.checkCmtyUserGuildMembership?.isMember !== isMember) {
+      setIsMember(data?.checkCmtyUserGuildMembership?.isMember);
+    }
+    if (data?.checkCmtyUserGuildMembership?.isMember) {
+      setIsConnectionLoading(false);
+    }
+  };
+
+  const [checkCmtyUserGuildMembership, { startPolling: membershipStartPolling, stopPolling, data: membershipData }] =
+    useLazyQuery(CHECK_CMTY_USER_GUILD_MEMBERSHIP, {
+      notifyOnNetworkStatusChange: true,
+      fetchPolicy: "no-cache",
+      nextFetchPolicy: "no-cache",
+      onCompleted: handleOnCheckMembershipCompleted,
+    });
+
+  const handleJoinDiscord = async ({ shouldVerify } = { shouldVerify: true }) => {
+    setIsConnectionLoading(true);
+    try {
+      const { data } = await getOrgDiscordInviteLink({
+        variables: {
+          orgId: orgId,
+        },
+      });
+      const inviteLink = data?.getOrgDiscordInviteLink?.link;
+      window.open(inviteLink);
+      shouldVerify && membershipStartPolling(1000);
+    } catch (error) {
+      setIsConnectionLoading(false);
+      setSnackbarAlertMessage("Something went wrong. Please try again.");
+    }
+  };
+
+  const handleOnConnect = () => {
+    setIsConnectionLoading(true);
+    const discordAuthUrl = getDiscordUrl(
+      "/discord/callback/cmty-user-connect",
+      `&state=${encodeURIComponent(JSON.stringify(discordUrlParams))}`
+    );
+    window.open(discordAuthUrl);
+  };
+
+  return {
+    isDiscordConneceted,
+    isMember,
+    isConnectionLoading,
+    handleJoinDiscord,
+    handleOnConnect,
+    orgDiscordInviteLinkData,
+    setIsConnectionLoading,
+    handleOnCheckMembershipCompleted,
+    setIsDiscordConnected,
+    setIsMember,
+    getOrgDiscordInviteLink,
+  };
+};
+
 const useStartQuest = ({
   setInfoModalQuestId,
   orgId,
@@ -33,22 +99,22 @@ const useStartQuest = ({
   discordUrlParams,
 }: IProps) => {
   const [isQuestInactive, setIsQuestInactive] = useState(false);
-  const [isDiscordConneceted, setIsDiscordConnected] = useState(false);
-  const [isMember, setIsMember] = useState(false);
-  const [isConnectionLoading, setIsConnectionLoading] = useState(false);
-
-  const [getOrgDiscordInviteLink, { data: orgDiscordInviteLinkData }] = useLazyQuery(GET_ORG_DISCORD_INVITE_LINK);
 
   const { setSnackbarAlertMessage } = useAlerts();
 
-  const handleOnCheckMembershipCompleted = async (data) => {
-    if (data?.checkCmtyUserGuildMembership?.isMember !== isMember) {
-      setIsMember(data?.checkCmtyUserGuildMembership?.isMember);
-    }
-    if (data?.checkCmtyUserGuildMembership?.isMember) {
-      setIsConnectionLoading(false);
-    }
-  };
+  const {
+    isDiscordConneceted,
+    isMember,
+    isConnectionLoading,
+    handleJoinDiscord,
+    handleOnConnect,
+    orgDiscordInviteLinkData,
+    setIsConnectionLoading,
+    handleOnCheckMembershipCompleted,
+    setIsDiscordConnected,
+    setIsMember,
+    getOrgDiscordInviteLink,
+  } = useDiscordConnect({ orgId, discordUrlParams });
 
   const [checkCmtyUserGuildMembership, { startPolling: membershipStartPolling, stopPolling, data: membershipData }] =
     useLazyQuery(CHECK_CMTY_USER_GUILD_MEMBERSHIP, {
@@ -210,32 +276,6 @@ const useStartQuest = ({
     window.addEventListener("storage", onStorageChange);
     return () => window.removeEventListener("storage", onStorageChange);
   }, []);
-
-  const handleJoinDiscord = async () => {
-    setIsConnectionLoading(true);
-    try {
-      const { data } = await getOrgDiscordInviteLink({
-        variables: {
-          orgId: orgId,
-        },
-      });
-      const inviteLink = data?.getOrgDiscordInviteLink?.link;
-      window.open(inviteLink);
-      membershipStartPolling(1000);
-    } catch (error) {
-      setIsConnectionLoading(false);
-      setSnackbarAlertMessage("Something went wrong. Please try again.");
-    }
-  };
-
-  const handleOnConnect = () => {
-    setIsConnectionLoading(true);
-    const discordAuthUrl = getDiscordUrl(
-      "/discord/callback/cmty-user-connect",
-      `&state=${encodeURIComponent(JSON.stringify(discordUrlParams))}`
-    );
-    window.open(discordAuthUrl);
-  };
 
   const handleInfoModalClose = () => {
     setInfoModalQuestId(null);
