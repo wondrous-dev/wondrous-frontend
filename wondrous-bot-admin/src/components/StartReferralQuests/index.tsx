@@ -12,9 +12,20 @@ import useStartQuest from "./utils/hooks";
 import SafeImage from "components/SafeImage";
 import InactiveQuestInfoModal from "./InactiveQuest";
 import moment from "moment";
+import ReferralAction from "./ReferralAction";
+import { shouldDisplayJoinDiscordButton } from "./utils/customization";
 
-const TopBarMessage = ({ displayName, hasEnded }) => {
-  if (hasEnded) return <>This campaign has ended, but you can still complete the quests below!</>;
+const TopBarMessage = ({ displayName, hasEnded, orgId }) => {
+  const showDiscordButton = shouldDisplayJoinDiscordButton(orgId);
+
+  if (hasEnded)
+    return (
+      <>
+        {showDiscordButton
+          ? "This campaign is no longer active, but join our Discord to discover more quests!"
+          : "This campaign has ended, but you can still complete the quests below!"}
+      </>
+    );
   return (
     <>
       <strong>{displayName}</strong> referred you, complete the quests below!
@@ -68,15 +79,6 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
   const quests = referralCampaign?.quests || [];
   const rewardsValue = constructRewards({ rewards: referredRewards || [] });
 
-  const masonryColumnsConfig = useMemo(() => {
-    if (quests?.length <= 1) {
-      return { xs: 1 };
-    } else if (quests?.length <= 2) {
-      return { xs: 1, sm: 2 };
-    }
-    return { xs: 1, sm: 2, md: 2, lg: 3 };
-  }, [quests?.length]);
-
   const referralBannerImage = referralCampaign?.media?.[0]?.slug;
 
   const endDate = referralCampaign?.endDate ? moment(referralCampaign?.endDate) : null;
@@ -110,7 +112,6 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
           display="flex"
           width="calc(100% - 40px)"
           position="sticky"
-          flex="1 0 0"
           alignItems="center"
           justifyContent="center"
           zIndex="10"
@@ -134,7 +135,11 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
           >
             <Box />
             <Typography color="black" fontSize="14px" fontFamily="Poppins" fontWeight={500} textAlign={"center"}>
-              <TopBarMessage hasEnded={hasEnded} displayName={referralCodeInfo?.referrerDisplayName} />
+              <TopBarMessage
+                orgId={referralCampaign?.orgId}
+                hasEnded={hasEnded}
+                displayName={referralCodeInfo?.referrerDisplayName}
+              />
             </Typography>
             <ButtonBase
               onClick={() => setDisplayReferrer(false)}
@@ -222,50 +227,26 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
             {org?.description}
           </Typography>
         ) : null}
-        {referredRewards?.length ? (
+        {referredRewards?.length && !hasEnded ? (
           <Box display="flex" gap="14px" alignItems="center" justifyContent="center" flexDirection="column">
             <Typography fontFamily="Poppins" fontSize="13px" color="black" fontWeight={500}>
               Earn rewards for completing these quests!
             </Typography>
-            {!hasEnded &&<Grid container alignItems="center" gap="14px" flex="1" justifyContent="center">
-              {rewardsValue.map(Reward)}
-            </Grid>}
+            {!hasEnded && (
+              <Grid container alignItems="center" gap="14px" flex="1" justifyContent="center">
+                {rewardsValue.map(Reward)}
+              </Grid>
+            )}
           </Box>
         ) : null}
         {/* //TODO: REPLACE THIS WITH NEWEST CARD */}
 
-        <Box
-          bgcolor="#AF9EFF"
-          height="100%"
-          padding="32px 56px"
-          display="flex"
-          width="100%"
-          flex="1"
-          justifyContent="center"
-          alignItems="flex-start"
-        >
-          <Masonry
-            spacing={4}
-            columns={masonryColumnsConfig}
-            sx={{
-              alignContent: "center",
-              width: "100%",
-            }}
-          >
-            {quests?.map((quest, index) => (
-              <Box
-                width="100%"
-                display="flex"
-                justifyContent="center"
-                sx={{
-                  maxWidth: "350px",
-                }}
-              >
-                <IndividualQuestComponent quest={quest} key={index} onStartQuest={onStartQuest} />
-              </Box>
-            ))}
-          </Masonry>
-        </Box>
+        <ReferralAction
+          hasEnded={hasEnded}
+          orgId={referralCampaign?.orgId}
+          quests={quests}
+          onStartQuest={onStartQuest}
+        />
       </Grid>
     </>
   );
