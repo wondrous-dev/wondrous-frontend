@@ -232,11 +232,9 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
             <Typography fontFamily="Poppins" fontSize="13px" color="black" fontWeight={500}>
               Earn rewards for completing these quests!
             </Typography>
-            {!hasEnded && (
-              <Grid container alignItems="center" gap="14px" flex="1" justifyContent="center">
-                {rewardsValue.map(Reward)}
-              </Grid>
-            )}
+            <Grid container alignItems="center" gap="14px" flex="1" justifyContent="center">
+              {rewardsValue.map(Reward)}
+            </Grid>
           </Box>
         ) : null}
         {/* //TODO: REPLACE THIS WITH NEWEST CARD */}
