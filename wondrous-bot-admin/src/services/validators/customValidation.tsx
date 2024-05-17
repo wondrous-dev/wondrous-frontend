@@ -1,5 +1,11 @@
 export const getYouTubeVideoId = (url) => {
   let videoId = "";
+  if (url?.includes("shorts")) {
+    // https://www.youtube.com/shorts/rKANnKDu5-o
+    const shortsRegex = /youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/;
+    const match = url.match(shortsRegex);
+    return match ? match[1] : null;
+  }
   // Extract video ID from the first format: https://youtu.be/videoId
   const regex1 = /^https:\/\/youtu\.be\/([^\?]+)/;
   const match1 = url.match(regex1);

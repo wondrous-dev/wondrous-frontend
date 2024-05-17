@@ -99,8 +99,8 @@ export const GET_REFERRAL_CODE_INFO = gql`
 `;
 
 export const GET_REFERRAL_USER_LIMIT_REACHED = gql`
-  query getReferralUserLimitReached($referralCode: String!) {
-    getReferralUserLimitReached(referralCode: $referralCode) {
+  query getReferralUserLimitReached($referralCode: String!, $referralCampaignExternalId: String!) {
+    getReferralUserLimitReached(referralCode: $referralCode , referralCampaignExternalId: $referralCampaignExternalId) {
       hasReachedLimit
     }
   }

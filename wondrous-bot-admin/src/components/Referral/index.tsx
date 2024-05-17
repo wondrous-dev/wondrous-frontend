@@ -43,7 +43,8 @@ const StartReferralPage = () => {
 
   const {data: referralLimitReached, loading: referralLimitLoading} = useQuery(GET_REFERRAL_USER_LIMIT_REACHED, {
     variables: {
-      referralCode
+      referralCode,
+      referralCampaignExternalId
     },
     skip: !referralCode
   });
