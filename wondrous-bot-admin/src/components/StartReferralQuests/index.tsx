@@ -33,7 +33,7 @@ const TopBarMessage = ({ displayName, hasEnded, orgId }) => {
   );
 };
 
-const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignExternalId, referralCodeInfo }) => {
+const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignExternalId, referralCodeInfo, hasReachedLimit }) => {
   const [infoModalQuestId, setInfoModalQuestId] = useState(null);
   const discordUrlParams = {
     referralCode,
@@ -84,7 +84,7 @@ const StartReferralQuests = ({ referralCampaign, referralCode, referralCampaignE
   const endDate = referralCampaign?.endDate ? moment(referralCampaign?.endDate) : null;
   const hasEnded =
     referralCampaign?.status !== REFERRAL_STATUSES.ACTIVE ||
-    (endDate && endDate.isBefore(moment().utcOffset(0)?.endOf("day")?.toISOString()));
+    (endDate && endDate.isBefore(moment().utcOffset(0)?.endOf("day")?.toISOString())) || hasReachedLimit;
 
   return (
     <>
