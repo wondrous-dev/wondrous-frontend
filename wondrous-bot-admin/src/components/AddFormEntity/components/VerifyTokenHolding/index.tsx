@@ -272,9 +272,9 @@ const VerifyTokenHoldingComponent = ({ onChange, value, stepType, error }) => {
           marginTop: "8px",
         }}
       >
-        <Label>Token ID (optional for ERC1155)</Label>
+        <Label>Token ID (mandatory for ERC1155)</Label>
         <TextField
-          placeholder="Token ID (optional for ERC1155)"
+          placeholder="Token ID (mandatory for ERC1155)"
           value={value?.verifyTokenId}
           onChange={(value) => handleOnChange("verifyTokenId", value)}
           multiline={false}
