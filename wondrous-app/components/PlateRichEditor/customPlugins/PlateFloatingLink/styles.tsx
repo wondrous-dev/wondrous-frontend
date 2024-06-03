@@ -32,13 +32,14 @@ export const FloatingRow = styled.div`
   align-items: center;
   background: ${tundora};
 
-  button, a {
+  button,
+  a {
     color: white;
     background: none;
     border: none;
     height: 18px;
     cursor: pointer;
-    
+
     &:hover {
       background-color: ${greyColors.grey52};
     }
