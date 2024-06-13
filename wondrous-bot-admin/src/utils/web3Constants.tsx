@@ -12,7 +12,8 @@ import {
   Aurora,
   BaseCoin,
   Linea,
-  Ronin
+  Ronin,
+  Beam
 } from "components/Icons/web3";
 
 export enum SupportedChainType {
@@ -32,7 +33,8 @@ const SUPPORTED_CHAINS = {
   8453: "base",
   59144: "linea",
   2020: "ronin",
-  42069: "fhenix"
+  42069: "fhenix",
+  4337: "beam"
 };
 
 export const RPC_URLS: { [chainId: number]: string } = {
@@ -46,7 +48,8 @@ export const RPC_URLS: { [chainId: number]: string } = {
   1313161554: "https://mainnet.aurora.dev",
   8453: "https://base.llamarpc.com",
   59144: "https://rpc.linea.build",
-  2020: 'https://proxy.roninchain.com/ronin'
+  2020: 'https://proxy.roninchain.com/ronin',
+  4337: "https://build.onbeam.com/rpc"
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -63,6 +66,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   base: "Base",
   linea: "Linea",
   ronin: "Ronin",
+  beam: "Beam Mainnet"
 };
 
 export const CHAIN_TO_EXPLORER_URL = {
@@ -79,6 +83,7 @@ export const CHAIN_TO_EXPLORER_URL = {
   base: "https://basescan.org",
   linea: "https://lineascan.build",
   ronin: "https://app.roninchain.com/",
+  beam: "https://subnets.avax.network/beam"
 };
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
@@ -118,6 +123,7 @@ const CHAIN_SELECT_OPTIONS = [
   },
   { label: "Aurora", value: "aurora", icon: <Aurora /> },
   { label: "Ronin", value: "ronin", icon: <Ronin /> },
+  {label: "Beam", value: "beam", icon: <Beam /> },
 ];
 
 if (!import.meta.env.VITE_PRODUCTION) {
@@ -221,6 +227,13 @@ const SUPPORTED_CHAINS_META = [
     currency: "FHE",
     explorerUrl: "https://explorer.testnet.fhenix.zone/",
     rpcUrl: "https://api.testnet.fhenix.zone:7747/",
+  },
+  {
+    chainId: 4337,
+    name: "Beam Mainnet",
+    currency: "BEAM",
+    explorerUrl: "https://subnets.avax.network/beam",
+    rpcUrl: "https://build.onbeam.com/rpc",
   }
 ];
 
