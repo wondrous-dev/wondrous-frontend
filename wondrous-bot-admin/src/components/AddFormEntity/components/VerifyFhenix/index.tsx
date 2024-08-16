@@ -19,6 +19,14 @@ const FHENIX_INFO_TEXT = {
     "Users will be asked to verify that they have interacted with a Fhenix Faucet",
   [TYPES.VERIFY_FHENIX_CONTRACTS_CREATED]:
     "Users will be asked to verify how many contracts they've created on Fhenix.",
+  [TYPES.NEW_FHENIX_CONTRACTS_CREATED]
+    : "Users will be asked to verify how many contracts they've created on Fhenix.",
+  [TYPES.NEW_FHENIX_WALLET_GAS_USAGE]
+    : "Users will be asked to verify how much gas their wallet has used on Fhenix.",
+  [TYPES.NEW_FHENIX_GAS_CONSUMED_BY_CONTRACTS]
+    : "Users will be asked to verify how much gas their contracts have consumed on Fhenix.",
+  [TYPES.NEW_FHENIX_CONTRACTS_VERIFIED]
+    : "Users will be asked to verify how many contracts they've verified on Fhenix.",
 };
 const VerifyFhenixIntegrations = ({ error, ...rest }: Props) => {
   return (

@@ -12,6 +12,14 @@ export const FHENIX_TYPES = {
   VERIFY_FHENIX_ACTIVE_WALLET: "active_wallet",
 };
 
+
+export const FHENIX_NEW_TYPES = {
+  NEW_FHENIX_WALLET_GAS_USAGE: "fhenix_gas_usage",
+  NEW_FHENIX_CONTRACTS_CREATED: "fhenix_contract_created",
+  NEW_FHENIX_CONTRACTS_VERIFIED: "fhenix_contracts_verified",
+  NEW_FHENIX_GAS_CONSUMED_BY_CONTRACTS: "fhenix_gas_consumed_by_contracts",
+};
+
 export const APEIRON_ORG_ID = "98989259425317451";
 export const TYPES = {
   TEXT_FIELD: "text",
@@ -43,6 +51,7 @@ export const TYPES = {
   VERIFY_GITCOIN_PASSPORT_SCORE: "verify_gitcoin_passport_score",
   ...APEIRON_TYPES,
   ...FHENIX_TYPES,
+  ...FHENIX_NEW_TYPES,
 };
 
 export const CONFIG = [
@@ -427,21 +436,38 @@ const APEIRON_INTEGRATIONS = [
 
 const FHENIX_INTEGRATIONS = [
   {
-    label: "Verify Fhenix Wallet Gas Usage",
-    value: TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE,
+    label: "Verify Fhenix Wallet Gas Usage", 
+    value: TYPES.NEW_FHENIX_WALLET_GAS_USAGE,
   },
   {
-    label: "Verify Fhenix Wallet Faucet Interaction",
-    value: TYPES.VERIFY_FHENIX_FAUCET_INTERACTION,
+    label: "Verify Fhenix Gas Consumed by Contracts", 
+    value: TYPES.NEW_FHENIX_GAS_CONSUMED_BY_CONTRACTS,
   },
   {
-    label: "Verify Fhenix Wallet Contracts Created",
-    value: TYPES.VERIFY_FHENIX_CONTRACTS_CREATED,
+    label: "Verify Fhenix Contracts Verified",
+    value: TYPES.NEW_FHENIX_CONTRACTS_VERIFIED,
   },
   {
-    label: "Verify Fhenix Wallet Active",
-    value: TYPES.VERIFY_FHENIX_ACTIVE_WALLET,
+    label: "Verify Fhenix Contracts Created",
+    value: TYPES.NEW_FHENIX_CONTRACTS_CREATED,
   },
+
+  // {
+  //   label: "Verify Fhenix Wallet Gas Usage",
+  //   value: TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE,
+  // },
+  // {
+  //   label: "Verify Fhenix Wallet Faucet Interaction",
+  //   value: TYPES.VERIFY_FHENIX_FAUCET_INTERACTION,
+  // },
+  // {
+  //   label: "Verify Fhenix Wallet Contracts Created",
+  //   value: TYPES.VERIFY_FHENIX_CONTRACTS_CREATED,
+  // },
+  // {
+  //   label: "Verify Fhenix Wallet Active",
+  //   value: TYPES.VERIFY_FHENIX_ACTIVE_WALLET,
+  // },
 ];
 export const POKT_ORG_ID = import.meta.env.VITE_PRODUCTION ? "110964182503916540" : "89444950095167649";
 

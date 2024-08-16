@@ -274,7 +274,11 @@ export function transformQuestConfig(obj: InputQuestStep[]): OutputQuestStep[] {
       step.type === TYPES.VERIFY_FHENIX_ACTIVE_WALLET ||
       step.type === TYPES.VERIFY_FHENIX_CONTRACTS_CREATED ||
       step.type === TYPES.VERIFY_FHENIX_FAUCET_INTERACTION ||
-      step.type === TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE
+      step.type === TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE||
+      step.type === TYPES.NEW_FHENIX_CONTRACTS_CREATED ||
+      step.type === TYPES.NEW_FHENIX_WALLET_GAS_USAGE ||
+      step.type === TYPES.NEW_FHENIX_GAS_CONSUMED_BY_CONTRACTS ||
+      step.type === TYPES.NEW_FHENIX_CONTRACTS_VERIFIED
     ) {
       outputStep.value = step?.prompt;
     } else if (step.type === TYPES.DATA_COLLECTION) {

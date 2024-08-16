@@ -31,6 +31,10 @@ const FHENIX_INTEGRATIONS = {
   [TYPES.VERIFY_FHENIX_CONTRACTS_CREATED]: VerifyFhenixIntegrations,
   [TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE]: VerifyFhenixIntegrations,
   [TYPES.VERIFY_FHENIX_FAUCET_INTERACTION]: VerifyFhenixIntegrations,
+  [TYPES.NEW_FHENIX_CONTRACTS_CREATED]: VerifyFhenixIntegrations,
+  [TYPES.NEW_FHENIX_WALLET_GAS_USAGE]: VerifyFhenixIntegrations,
+  [TYPES.NEW_FHENIX_GAS_CONSUMED_BY_CONTRACTS]: VerifyFhenixIntegrations,
+  [TYPES.NEW_FHENIX_CONTRACTS_VERIFIED]: VerifyFhenixIntegrations,
 };
 export const CONFIG_COMPONENTS = {
   [TYPES.TEXT_FIELD]: TextComponent,
