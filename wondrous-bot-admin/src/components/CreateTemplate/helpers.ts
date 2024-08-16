@@ -118,7 +118,11 @@ const processSteps = (steps) =>
       next.type === TYPES.VERIFY_FHENIX_ACTIVE_WALLET ||
       next.type === TYPES.VERIFY_FHENIX_CONTRACTS_CREATED ||
       next.type === TYPES.VERIFY_FHENIX_FAUCET_INTERACTION ||
-      next.type === TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE
+      next.type === TYPES.VERIFY_FHENIX_WALLET_GAS_USAGE ||
+      next.type === TYPES.NEW_FHENIX_CONTRACTS_CREATED ||
+      next.type === TYPES.NEW_FHENIX_WALLET_GAS_USAGE ||
+      next.type === TYPES.NEW_FHENIX_GAS_CONSUMED_BY_CONTRACTS ||
+      next.type === TYPES.NEW_FHENIX_CONTRACTS_VERIFIED
     ) {
       step.prompt = next.value;
       step["additionalData"] = {
