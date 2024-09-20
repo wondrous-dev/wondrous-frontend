@@ -181,6 +181,12 @@ const useWeb3Auth = ({ setErrorMessage }) => {
             setIsActivating(false);
             disconnect();
           }
+          if (result === 'Wallet already connected'){
+            setErrorMessage('Wallet is already connected to another account');
+            onFail();
+            setIsActivating(false);
+            disconnect();
+          }
         } else if (!signedMessageIsString(signedMessage)) {
           setIsActivating(false);
           setErrorMessage("Signature rejected. Try again.");
