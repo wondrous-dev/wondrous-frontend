@@ -221,6 +221,8 @@ const CommandBanner = ({
   };
 
   const handleBannerImageOnChange = (e) => {
+    const image = e?.target?.files[0];
+    if (!image) return;
     setTempImage(e.target.files[0]);
     handleSetBannerImageAvatarProps();
   };
@@ -246,6 +248,8 @@ const CommandBanner = ({
   };
 
   const handleSetTopImageOnChange = (e) => {
+    const image = e?.target?.files[0];
+    if (!image) return;
     setTempImage(e.target.files[0]);
     handleSetTopImageAvatarProps(logo);
   };
@@ -356,6 +360,9 @@ const CustomizeBanners = () => {
     originalImage: null,
     open: false,
     onCancel: () => {},
+    onSave: () => {},
+    openSelectFile: () => {},
+    imageType: AVATAR_EDITOR_TYPES.BANNER_IMAGE,
   };
   const [selectedAvatarProps, setSelectedAvatarProps] = useState(defaultAvatarProps);
   const [tempImage, setTempImage] = useState(null);
@@ -363,6 +370,10 @@ const CustomizeBanners = () => {
     selectedAvatarProps?.onCancel();
     setTempImage(null);
     setSelectedAvatarProps(defaultAvatarProps);
+  };
+  const handleClearInput = () => {
+    selectedAvatarProps?.onCancel();
+    setSelectedAvatarProps({ ...selectedAvatarProps, originalImage: selectedAvatarProps?.originalImage });
   };
 
   if (isLoading || !(isPremiumPlan || isEcosystemPlan) || EXEMPTED_ORG_IDS.includes(activeOrg?.id)) {
@@ -385,7 +396,6 @@ const CustomizeBanners = () => {
   }
 
   const handleReplaceImage = async ({ file, purpose, imageInputField }) => {
-    console.log("purpose", purpose);
     const image = file[0];
 
     if (!image || !image.type.includes("image")) {
@@ -453,15 +463,14 @@ const CustomizeBanners = () => {
   return (
     <>
       <AvatarEditor
-        open={false}
-        onSave={() => {}}
-        openSelectFile={() => {}}
-        imageType={AVATAR_EDITOR_TYPES.BANNER_IMAGE}
         title={"Upload Image"}
-        {...selectedAvatarProps}
+        open={selectedAvatarProps?.open}
+        onSave={selectedAvatarProps?.onSave}
+        imageType={selectedAvatarProps?.imageType}
+        openSelectFile={selectedAvatarProps?.openSelectFile}
         originalImage={tempImage || selectedAvatarProps?.originalImage}
         onCancel={handleResetAvatarImage}
-        clearInput={() => setSelectedAvatarProps(selectedAvatarProps)}
+        clearInput={handleClearInput}
       />
       <CustomizeBannersContainer>
         <CommandsContainer>
