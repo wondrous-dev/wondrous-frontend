@@ -6,6 +6,7 @@ import useWeb3Auth from "services/web3/useWeb3Auth";
 import { SharedSecondaryButton } from "components/Shared/styles";
 import Spinner from "components/Shared/Spinner";
 import { CHAIN_TO_CHAIN_DIPLAY_NAME } from "utils/web3Constants";
+import ConnectSolanaButton from "./solana";
 
 const buttonStyles = {
   marginRight: "8px",
@@ -51,9 +52,11 @@ const WalletConnectPage = () => {
         {!connectionComplete ? (
           <Box display="flex" gap="24px" flexDirection="column">
             <Typography fontFamily="Poppins" fontWeight={600} fontSize="18px" lineHeight="24px" color="black">
-              {`Connect your wallet ${chainDisplayName? `on ${chainDisplayName}`: ""}`}
+              {`Connect your wallet ${chainDisplayName ? `on ${chainDisplayName}` : ""}`}
             </Typography>
+
             <SharedSecondaryButton onClick={open}>{isActivating ? <Spinner /> : "Connect"}</SharedSecondaryButton>
+            <ConnectSolanaButton onConnection={() => setConnectionComplete(true)} />
             {errorMessage && (
               <Typography fontFamily="Poppins" fontWeight={600} fontSize="14px" lineHeight="24px" color="red">
                 {errorMessage}

@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import Ethereum from "assets/ethereum";
-import { Beam, Ronin } from "components/Icons/web3";
+import { Beam, Ronin, Solana } from "components/Icons/web3";
 import Polygon from "assets/polygonMaticLogo.svg";
 import { SharedSecondaryButton } from "components/Shared/styles";
 
@@ -49,12 +49,24 @@ export const COMMUNITY_BADGE_CHAIN_SELECT_OPTIONS = [
     value: "beam",
     icon: (
       <Beam
-      style={{
-        width: "20px",
-        marginRight: "8px",
-      }}
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
       />
-    )
+    ),
+  },
+  {
+    label: "Solana",
+    value: "solana",
+    icon: (
+      <Solana
+        style={{
+          width: "20px",
+          marginRight: "8px",
+        }}
+      />
+    ),
   },
   ...(import.meta.env.VITE_PRODUCTION
     ? []

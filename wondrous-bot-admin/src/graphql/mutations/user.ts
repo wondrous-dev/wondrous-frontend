@@ -3,7 +3,7 @@ import { LoggedinUserFragment, ProfileUserFragment, CmtyUserFragment } from "gra
 
 export const LOGIN_MUTATION = gql`
   mutation emailSignin($email: String!, $password: String!) {
-    emailSignin(input: { email: $email, password: $password}) {
+    emailSignin(input: { email: $email, password: $password }) {
       user {
         ...LoggedinUser
       }
@@ -171,6 +171,14 @@ export const CONNECT_COMMUNITY_USER_WALLET = gql`
   ${CmtyUserFragment}
 `;
 
+export const CONNECT_SOLANA_COMMUNITY_USER_WALLET = gql`
+  mutation connectSolanaCmtyUserWallet($input: CmtyWeb3AuthInput!) {
+    connectSolanaCmtyUserWallet(input: $input) {
+      ...CmtyUserFragment
+    }
+  }
+  ${CmtyUserFragment}
+`;
 export const CONNECT_COMMUNITY_USER_GOOGLE = gql`
   mutation connectCommunityUserGoogle($code: String, $discordId: String, $telegramUserId: String) {
     connectCommunityUserGoogle(code: $code, discordId: $discordId, telegramUserId: $telegramUserId) {
