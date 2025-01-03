@@ -13,11 +13,13 @@ import {
   BaseCoin,
   Linea,
   Ronin,
-  Beam
+  Beam,
+  Solana,
 } from "components/Icons/web3";
 
 export enum SupportedChainType {
   ETH = "eth", // should be evm
+  SOLANA = "solana",
 }
 const SUPPORTED_CHAINS = {
   1: "ethereum",
@@ -34,7 +36,7 @@ const SUPPORTED_CHAINS = {
   59144: "linea",
   2020: "ronin",
   42069: "fhenix",
-  4337: "beam"
+  4337: "beam",
 };
 
 export const RPC_URLS: { [chainId: number]: string } = {
@@ -48,8 +50,8 @@ export const RPC_URLS: { [chainId: number]: string } = {
   1313161554: "https://mainnet.aurora.dev",
   8453: "https://base.llamarpc.com",
   59144: "https://rpc.linea.build",
-  2020: 'https://proxy.roninchain.com/ronin',
-  4337: "https://build.onbeam.com/rpc"
+  2020: "https://proxy.roninchain.com/ronin",
+  4337: "https://build.onbeam.com/rpc",
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -66,7 +68,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   base: "Base",
   linea: "Linea",
   ronin: "Ronin",
-  beam: "Beam Mainnet"
+  beam: "Beam Mainnet",
 };
 
 export const CHAIN_TO_EXPLORER_URL = {
@@ -83,7 +85,7 @@ export const CHAIN_TO_EXPLORER_URL = {
   base: "https://basescan.org",
   linea: "https://lineascan.build",
   ronin: "https://app.roninchain.com/",
-  beam: "https://subnets.avax.network/beam"
+  beam: "https://subnets.avax.network/beam",
 };
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
@@ -123,7 +125,8 @@ const CHAIN_SELECT_OPTIONS = [
   },
   { label: "Aurora", value: "aurora", icon: <Aurora /> },
   { label: "Ronin", value: "ronin", icon: <Ronin /> },
-  {label: "Beam", value: "beam", icon: <Beam /> },
+  { label: "Beam", value: "beam", icon: <Beam /> },
+  { label: "Solana", value: "solana", icon: <Solana /> },
 ];
 
 if (!import.meta.env.VITE_PRODUCTION) {
@@ -169,7 +172,7 @@ const SUPPORTED_CHAINS_META = [
     name: "Arbitrum One",
     currency: "ETH",
     explorerUrl: "https://arbiscan.io",
-    rpcUrl: import.meta.env.VITE_URL_ARBITRUM,  
+    rpcUrl: import.meta.env.VITE_URL_ARBITRUM,
   },
   {
     chainId: 56,
@@ -191,7 +194,6 @@ const SUPPORTED_CHAINS_META = [
     currency: "AVAX",
     explorerUrl: "https://snowtrace.io",
     rpcUrl: import.meta.env.VITE_URL_AVALANCHE,
-
   },
   {
     chainId: 1313161554,
@@ -234,7 +236,7 @@ const SUPPORTED_CHAINS_META = [
     currency: "BEAM",
     explorerUrl: "https://subnets.avax.network/beam",
     rpcUrl: "https://build.onbeam.com/rpc",
-  }
+  },
 ];
 
 export { SUPPORTED_CHAINS, CHAIN_SELECT_OPTIONS, SUPPORTED_CHAINS_META };

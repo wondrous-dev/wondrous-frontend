@@ -5,6 +5,7 @@ import apollo from "services/apollo";
 import { GET_LOGGED_IN_USER, GET_LOGGED_IN_WAITLIST_USER, GET_USER_SIGNING_MESSAGE, WHOAMI } from "graphql/queries";
 import {
   CONNECT_COMMUNITY_USER_WALLET,
+  CONNECT_SOLANA_COMMUNITY_USER_WALLET,
   CONNECT_USER_WALLET,
   CREATE_USER,
   CREATE_WALLET_USER,
@@ -19,7 +20,7 @@ const MyContext = React.createContext(null);
 
 export const useMe = () => useContext(MyContext);
 
-export const emailSignup = async (email: string, password: string, inviteToken:string = null) => {
+export const emailSignup = async (email: string, password: string, inviteToken: string = null) => {
   try {
     const {
       data: {
@@ -30,7 +31,7 @@ export const emailSignup = async (email: string, password: string, inviteToken:s
       variables: {
         email,
         password,
-        inviteToken
+        inviteToken,
       },
     });
 
@@ -189,6 +190,40 @@ export const linkWallet = async (web3Address: string, signedMessage: string, blo
     console.log("Error linking wallet: ", err?.graphQLErrors);
     if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.code) {
       return err?.graphQLErrors[0]?.extensions.errorCode;
+    }
+    return false;
+  }
+};
+
+export const linkSolanaCmtyUserWallet = async (
+  discordUserId: string,
+  web3Address: string,
+  signedMessage: string,
+  blockchain: string,
+  originalMessage: string,
+  verificationCode: string
+) => {
+  try {
+    const {
+      data: { connectSolanaCmtyUserWallet: user },
+    } = await apollo.mutate({
+      mutation: CONNECT_SOLANA_COMMUNITY_USER_WALLET,
+      variables: {
+        input: {
+          discordUserId,
+          web3Address,
+          signedMessage,
+          blockchain,
+          messageToSign: originalMessage,
+          verificationCode,
+        },
+      },
+    });
+    return true;
+  } catch (err) {
+    console.log("Error linking Solana wallet: ", err?.graphQLErrors);
+    if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.code) {
+      return err?.graphQLErrors[0]?.extensions.errorCode || err?.graphQLErrors[0]?.extensions.message;
     }
     return false;
   }

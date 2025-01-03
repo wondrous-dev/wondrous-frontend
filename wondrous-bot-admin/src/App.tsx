@@ -62,6 +62,7 @@ import CmtyUserActivityPage from "pages/activity";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import PlanSelectComponent from "components/Onboarding/PlanSelect";
 import OnboardingFinalizeComponent from "components/Onboarding/FinalizeComponent";
+import { Providers as SolanaProvider } from "services/web3/SolanaProvider";
 
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 
@@ -327,13 +328,15 @@ function App() {
       <ThemeProvider theme={theme}>
         <ApolloProvider client={client}>
           <SnackbarAlertProvider>
-            <WonderWeb3Provider>
-              <PaywallContextProvider>
-                <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-                  <RouterProvider router={router} />
-                </GoogleOAuthProvider>
-              </PaywallContextProvider>
-            </WonderWeb3Provider>
+            <SolanaProvider>
+              <WonderWeb3Provider>
+                <PaywallContextProvider>
+                  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+                    <RouterProvider router={router} />
+                  </GoogleOAuthProvider>
+                </PaywallContextProvider>
+              </WonderWeb3Provider>
+            </SolanaProvider>
             <RewardfulTag />
           </SnackbarAlertProvider>
         </ApolloProvider>
