@@ -10,7 +10,7 @@ import ImageUpload from 'components/Settings/imageUpload';
 import { useMe } from '../../Auth/withAuth';
 import { UsernameTitle, UsernameDescription, UsernameInput, ErrorText } from '../styles';
 
-export function OnboardingBuildProfile({ updateUser }) {
+function OnboardingBuildProfile({ updateUser }) {
   const router = useRouter();
   const { collabInvite } = router.query;
   const [bio, setBio] = useState('');
@@ -128,3 +128,5 @@ export function OnboardingBuildProfile({ updateUser }) {
     </OnboardingLayout>
   );
 }
+
+export default OnboardingBuildProfile;

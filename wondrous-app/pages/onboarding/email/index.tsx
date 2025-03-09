@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
-import { SetupEmail } from 'components/Onboarding/SetupEmail';
+import SetupEmail from 'components/Onboarding/SetupEmail';
 import { MainWrapper } from 'components/Onboarding/styles';
-import { UPDATE_USER } from 'graphql/mutations';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import { GET_USER_ORGS } from 'graphql/queries/org';
 import { GET_USER_PODS } from 'graphql/queries';
 
 function SetupEmailPage() {
-  const router = useRouter();
   const { data: getOrgData } = useQuery(GET_USER_ORGS);
-  const user = useMe();
 
   const { data: getPodData } = useQuery(GET_USER_PODS);
   let firstOrg;

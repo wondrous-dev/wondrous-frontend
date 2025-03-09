@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import { useIsMobile } from 'utils/hooks';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
+import { handleUserFirstOnboarding } from 'components/Onboarding/utils';
 import {
   BackButton,
   Container,
@@ -42,37 +42,6 @@ export default function ConnectTwitter({ firstOrg, firstPod }) {
     window.open(url);
   };
 
-  const handleLaterClick = () => {
-    // if user has collabInvite token and is not a member of an org we assume they want to create a new org
-    if (collabInvite && !firstOrg) {
-      return router.push(`/onboarding-dao?collabInvite=${collabInvite}`, undefined, {
-        shallow: true,
-      });
-    }
-    if (collabInvite && firstOrg) {
-      return router.push(`/invite/collab/${collabInvite}`, undefined, { shallow: true });
-    }
-    if (firstPod) {
-      router.push(`/pod/${firstPod.id}/home`, undefined, {
-        shallow: true,
-      });
-    } else if (firstOrg) {
-      router.push(
-        `/${firstOrg?.shared ? 'collaboration' : 'organization'}/${firstOrg.username}/${
-          firstOrg?.shared ? 'boards' : 'home'
-        }`,
-        undefined,
-        {
-          shallow: true,
-        }
-      );
-    } else {
-      router.push('/mission-control', undefined, {
-        shallow: true,
-      });
-    }
-  };
-
   const footer = (
     <div>
       <Container>
@@ -82,7 +51,9 @@ export default function ConnectTwitter({ firstOrg, firstPod }) {
           </BackButton>
         </div>
         <RightButtons>
-          <Later onClick={handleLaterClick}>I&apos;ll connect it later</Later>
+          <Later onClick={() => handleUserFirstOnboarding(router, collabInvite, firstOrg, firstPod)}>
+            I&apos;ll connect it later
+          </Later>
           <ContinueButton onClick={redirectToTwitterAuth}>
             <TwitterSmallLogo
               style={{
@@ -106,7 +77,7 @@ export default function ConnectTwitter({ firstOrg, firstPod }) {
       }}
     >
       <Later
-        onClick={handleLaterClick}
+        onClick={() => handleUserFirstOnboarding(router, collabInvite, firstOrg, firstPod)}
         style={{
           width: '300px',
           marginRight: 0,

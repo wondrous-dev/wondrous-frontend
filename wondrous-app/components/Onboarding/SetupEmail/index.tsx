@@ -8,7 +8,7 @@ import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import { useMe } from 'components/Auth/withAuth';
 import { UsernameTitle, UsernameInput, ErrorText } from '../styles';
 
-export function SetupEmail({ firstOrg, firstPod }) {
+function SetupEmail({ firstOrg, firstPod }) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(null);
@@ -84,3 +84,5 @@ export function SetupEmail({ firstOrg, firstPod }) {
     </OnboardingLayout>
   );
 }
+
+export default SetupEmail;
