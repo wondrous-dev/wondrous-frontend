@@ -25,7 +25,7 @@ const CreatePage = () => {
 
   const setRefValue = (value) => (headerActionsRef.current = value);
 
-  const { setCurrentStep, isOpen } = useTour();
+  const { setCurrentStep, isOpen, setIsOpen } = useTour();
   useCreateQuestTutorial({ shouldDisplay: questTemplate.open });
 
   const handleOnClose = () => {
@@ -49,8 +49,8 @@ const CreatePage = () => {
   };
 
   const handleSaveQuest = () => {
-    if(isOpen) setCurrentStep((prev) => prev + 1);
-    return headerActionsRef.current?.handleSave()
+    if (isOpen) setIsOpen(false);
+    return headerActionsRef.current?.handleSave();
   };
 
   return (

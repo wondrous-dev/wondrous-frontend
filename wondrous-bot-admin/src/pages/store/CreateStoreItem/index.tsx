@@ -15,7 +15,7 @@ const CreateStoreItemPage = () => {
 
   const { isActivateModuleModalOpen, handleSuccess } = useStorePaywall();
   const setRefValue = (value) => (headerActionsRef.current = value);
-  const { isOpen, setCurrentStep } = useTour();
+  const { isOpen, setCurrentStep, setIsOpen } = useTour();
   return (
     <>
       {isActivateModuleModalOpen ? <StoreModule onSuccess={handleSuccess} onCancel={() => navigate("/")} /> : null}
@@ -33,7 +33,7 @@ const CreateStoreItemPage = () => {
             <SharedSecondaryButton
               data-tour="tutorial-store-item-save"
               onClick={() => {
-                if (isOpen) setCurrentStep((prev) => prev + 1);
+                if (isOpen) setIsOpen(false);
                 return headerActionsRef.current?.handleSave();
               }}
             >
