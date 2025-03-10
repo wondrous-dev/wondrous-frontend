@@ -43,6 +43,13 @@ export const LINK_CMTY_PAYMENTS_WITH_TRANSACTION = gql`
     }
   }
 `;
+export const MARK_CMTY_PAYMENT_AS_COMPLETE = gql`
+  mutation markCmtyPaymentsAsComplete($paymentIds: [String]!) {
+    markCmtyPaymentsAsComplete(paymentIds: $paymentIds) {
+      success
+    }
+  }
+`;
 
 export const MARK_CMTY_PAYMENT_TRANSACTION_AS_COMPLETE = gql`
   mutation markCmtyPaymentTransactionAsComplete($txHash: String!) {
