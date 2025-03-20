@@ -26,6 +26,7 @@ import { useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 import { KudosWidget, MyProjectsWidget } from 'components/MissionControlWidgets';
 import { ConnectWallet, Notifications } from 'components/MissionControlSidebarWidgets';
 import HighlightedCone from 'components/Icons/HighlightedCone';
+import TaskViewModalWatcher from 'components/Common/TaskViewModal/TaskViewModalWatcher';
 import {
   MissionControlWrapper,
   MissionControlSidebarWrapper,
@@ -153,6 +154,7 @@ const MissionControl = () => {
   return (
     <MissionControlWrapper>
       <ChooseEntityToCreate />
+      <TaskViewModalWatcher />
       <MissionControlWidgetsWrapper>
         {CARDS_CONFIG.workspace.map(({ label, labelGradient, img, stats, hoverImg, gradient, url }, idx) => (
           <MissionControlWorkspaceCard
