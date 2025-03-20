@@ -1,8 +1,4 @@
-import {
-  LinkPlugin,
-  PlateFloatingLink,
-  RenderAfterEditable,
-} from '@udecode/plate';
+import { LinkPlugin, PlateFloatingLink, RenderAfterEditable } from '@udecode/plate';
 import { CustomPlatePlugin, TextEditorValue } from '../types';
 
 export const linkPlugin: Partial<CustomPlatePlugin<LinkPlugin>> = {

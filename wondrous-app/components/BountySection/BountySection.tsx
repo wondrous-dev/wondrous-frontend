@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import BountyBoard from 'components/Common/BountyBoard';
-import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
+import { InView } from 'react-intersection-observer';
 import { useRouter } from 'next/router';
+
+import BountyBoard from 'components/Common/BountyBoard';
 import { ButtonPrimary } from 'components/Common/button';
 import {
   BountySectionHeader,
@@ -14,7 +15,6 @@ import {
   Gr15DEIExploreOrgsContainer,
   SectionSubheader,
   SectionWrapper,
-  ShowMoreButtonWrapper,
   StyledGridContainer,
   Gr15DEIExploreOrgsInnerDiv,
   Gr15DEIButtonText,
@@ -119,11 +119,7 @@ const BountySection = ({ bounties = [], fetchMore = () => {}, hasMore, gr15DEI }
 
       <BountyBoard Container={BountyBoardContainer} tasks={bounties} displayOrg handleCardClick={handleCardClick} />
       {hasMore && !!bounties?.length && (
-        <ShowMoreButtonWrapper>
-          <ShowMoreButton type="button" onClick={() => fetchMore()}>
-            Show more
-          </ShowMoreButton>
-        </ShowMoreButtonWrapper>
+        <InView onChange={(inView) => inView && fetchMore()} style={{ width: '100%', height: '1px' }} />
       )}
     </SectionWrapper>
   );
